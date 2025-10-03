@@ -1,4 +1,3 @@
-# llm_runner.py
 from interactive import interactive_session, fetch_pubmed_study
 from llm_utils import (
     check_ollama_installed,
@@ -8,6 +7,7 @@ from llm_utils import (
     run_ollama,
 )
 from batch_runner import run_prompts_from_csv
+
 
 def start_ollama_remote(ssh_client, model_name):
     """Starts Ollama remotely via SSH."""
@@ -68,6 +68,8 @@ def run_pubmed_ollama_workflow(ssh_client):
     if model is None:
         print("No model selected. Exiting.")
         return
+    if model == "main_menu":
+        return "main_menu"
 
     try:
         ensure_model_available(ssh_client, model)
@@ -78,6 +80,14 @@ def run_pubmed_ollama_workflow(ssh_client):
     # Optional: Load PubMed study
     study_info = None
     pmid = input("Enter PubMed ID to load study (or leave blank to skip): ").strip()
+
+    if pmid.lower() == "main menu":
+        return "main_menu"
+
+    if pmid.lower() == "exit":
+        print("Exiting workflow.")
+        return
+
     if pmid:
         print(f"[INFO] Fetching PubMed study {pmid}...")
         study_info = fetch_pubmed_study(pmid)
@@ -87,6 +97,7 @@ def run_pubmed_ollama_workflow(ssh_client):
         else:
             print(study_info)
 
+
     print("\nLLM is ready to use. Type 'exit' anytime to quit, or 'main menu' to return to the main menu.\n")
 
     while True:
@@ -94,11 +105,14 @@ def run_pubmed_ollama_workflow(ssh_client):
         print("1. Interactive session")
         print("2. CSV file with prompts")
         print("3. Exit")
-        mode = input("Enter choice (1, 2, or 3): ").strip()
+        mode = input("Enter choice (1, 2, or 3): ").strip().lower()
 
-        if mode == "3" or mode.lower() == "exit":
+        if mode == "3" or mode == "exit":
             print("Exiting workflow.")
             break
+        elif mode == "main menu":
+            # Return to main menu
+            return "main_menu"
         elif mode == "1":
             try:
                 result = interactive_session(ssh_client=ssh_client, model_name=model, study_info=study_info)
@@ -135,12 +149,14 @@ def run_llm_entrypoint(ssh_client):
         print("1. Interactive terminal session (raw SSH shell)")
         print("2. Ollama PubMed workflow")
         print("3. Exit")
-        mode = input("Enter choice (1, 2, or 3): ").strip()
+        mode = input("Enter choice (1, 2, or 3): ").strip().lower()
 
-        if mode == "3" or mode.lower() == "exit":
+        if mode == "3" or mode == "exit":
             print("Exiting program.")
             break
-
+        elif mode == "main menu":
+            # Just continue and show the menu again
+            continue
         elif mode == "1":
             print("Opening interactive SSH terminal. Type 'main menu' to return to the main menu, 'exit' or Ctrl+D to quit.\n")
 
@@ -193,6 +209,5 @@ def run_llm_entrypoint(ssh_client):
                     break
                 # After workflow ends, go back to main menu
                 break
-
         else:
             print("Invalid choice. Please try again.")

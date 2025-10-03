@@ -1,69 +1,86 @@
+# batch_runner.py
 import csv
-import shlex
-from llm_utils import clean_ollama_output
+from data_fetchers import create_payload
+from llm_utils import run_ollama
+import json
 
-
-def run_batch(csv_file, model_name, ssh_client=None):
+def run_prompts_from_csv(ssh_client, model):
     """
-    Run batch prompts from a CSV file using Ollama over SSH.
-    The CSV must have a column named 'prompt'.
+    Run batch prompts from a CSV file.
+    CSV expected columns: 'type', 'input' 
+    type: "pubmed_study", "clinical_trial", "web_search", or "text"
+    input: depending on type, could be a PubMed ID, NCT ID, search query, or free text
     """
-    if ssh_client is None:
-        raise ValueError("SSH client required for remote Ollama execution.")
 
-    safe_model = shlex.quote(model_name)
-
-    with open(csv_file, newline='', encoding='utf-8') as infile:
-        reader = csv.DictReader(infile)
-        if 'prompt' not in reader.fieldnames:
-            raise ValueError("CSV file must contain a 'prompt' column.")
-
-        results = []
-        for row in reader:
-            prompt = row['prompt']
-            print(f"\n[INFO] Running prompt: {prompt[:60]}...")
-
-            command = f'zsh -l -c "ollama run {safe_model}"'
-            stdin, stdout, stderr = ssh_client.exec_command(command)
-            stdin.write(prompt + "\n")
-            stdin.flush()
-            stdin.channel.shutdown_write()
-
-            output = stdout.read().decode() or stderr.read().decode()
-            cleaned = clean_ollama_output(output)
-
-            results.append({
-                "prompt": prompt,
-                "response": cleaned
-            })
-
-            print("[RESPONSE]", cleaned[:200], "...\n")
-
-    return results
-
-
-def run_prompts_from_csv(ssh_client, model_name):
-    """
-    Prompt user for CSV path, run all prompts, and save results.
-    Returns False if user cancels.
-    """
-    csv_file = input("Enter path to CSV file with prompts (or 'exit' to cancel): ").strip()
-    if not csv_file or csv_file.lower() == 'exit':
-        return False
-
+    csv_path = input("Enter path to CSV file with prompts: ").strip()
     try:
-        results = run_batch(csv_file, model_name, ssh_client=ssh_client)
-    except Exception as e:
-        print(f"Error running prompts from CSV: {e}")
+        with open(csv_path, newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            conversation = []
+            for row in reader:
+                prompt_type = row.get("type", "").strip()
+                prompt_input = row.get("input", "").strip()
+
+                if not prompt_type or not prompt_input:
+                    print("Skipping row with missing 'type' or 'input'.")
+                    continue
+
+                # Create payload based on type
+                if prompt_type == "pubmed_study":
+                    # Expecting prompt_input is a PubMed ID
+                    try:
+                        from interactive import fetch_pubmed_study
+                        study_info = fetch_pubmed_study(prompt_input)
+                        if "error" in study_info:
+                            print(f"Error fetching study {prompt_input}: {study_info['error']}")
+                            response = f"Error fetching study {prompt_input}: {study_info['error']}"
+                        else:
+                            payload = create_payload(prompt_type, study_info)
+                            prompt = f"🧬 Summarize the following PubMed study JSON payload: 🧬\n\n{payload}"
+                            response = run_ollama(ssh_client, model, prompt)
+                    except Exception as e:
+                        response = f"Error processing PubMed study {prompt_input}: {e}"
+
+                elif prompt_type == "clinical_trial":
+                    # prompt_input expected as NCT ID or clinical trial identifier
+                    # Use create_payload to wrap it as raw string
+                    payload = create_payload(prompt_type, prompt_input)
+                    prompt = f"Summarize the following clinical trial info:\n\n{payload}"
+                    response = run_ollama(ssh_client, model, prompt)
+
+                elif prompt_type == "web_search":
+                    # prompt_input is a query string
+                    payload = create_payload(prompt_type, prompt_input)
+                    prompt = f"You are a helpful assistant. A user asked: {prompt_input}\n\nSearch results:\n{payload}"
+                    response = run_ollama(ssh_client, model, prompt)
+
+                elif prompt_type == "text":
+                    # Freeform text prompt
+                    payload = create_payload(prompt_type, prompt_input)
+                    response = run_ollama(ssh_client, model, payload)
+
+                else:
+                    response = f"Unknown prompt type: {prompt_type}"
+
+                print(f"\nPrompt type: {prompt_type}\nInput: {prompt_input}\nResponse:\n{response}\n")
+                conversation.append((prompt_input, response))
+
+            # Save conversation optionally
+            if conversation:
+                save_option = input("Save conversation to CSV? (y/n): ").strip().lower()
+                if save_option == 'y':
+                    save_path = input("Enter path for saving conversation CSV: ").strip()
+                    with open(save_path, 'w', newline='', encoding='utf-8') as outcsv:
+                        writer = csv.writer(outcsv)
+                        writer.writerow(["Input", "Response"])
+                        writer.writerows(conversation)
+                    print(f"Conversation saved to {save_path}")
+
+            return True
+
+    except FileNotFoundError:
+        print(f"File not found: {csv_path}")
         return False
-
-    print(f"[INFO] Completed {len(results)} prompts from {csv_file}")
-    # (Optional) Save results to new CSV
-    out_file = csv_file.replace(".csv", "_results.csv")
-    with open(out_file, "w", newline='', encoding="utf-8") as outfile:
-        writer = csv.DictWriter(outfile, fieldnames=["prompt", "response"])
-        writer.writeheader()
-        writer.writerows(results)
-    print(f"[INFO] Results saved to {out_file}")
-
-    return True
+    except Exception as e:
+        print(f"Error processing CSV: {e}")
+        return False
