@@ -1,7 +1,8 @@
-# main.py
+# amphoraxe/main.py
+
 import getpass
 from env_setup import setup_environment
-from networking import prompt_for_reachable_host
+from network.networking import prompt_for_reachable_host
 
 def prompt_with_default(prompt_text, default):
     user_input = input(f"{prompt_text} (default: {default}): ").strip()
@@ -13,8 +14,8 @@ def main():
     print("✅ Environment setup complete.\n")
 
     # Step 2: Import modules after env is ready to avoid import errors
-    from ssh_connection import connect_ssh
-    from llm_runner import run_llm_entrypoint
+    from network.ssh_connection import connect_ssh
+    from llm.llm_runner import run_llm_entrypoint
 
     print("=== SSH Connection Setup ===")
 
