@@ -4,6 +4,7 @@ import shlex
 import subprocess
 import re
 import requests
+from serpapi import GoogleSearch
 
 # ------------------------------
 # Configuration
@@ -66,7 +67,6 @@ def fetch_pubmed_study(pmid):
 # Query SerpAPI (Google search)
 # ------------------------------
 def search_web(query, num_results=5):
-    from serpapi import GoogleSearch
     params = {
         "engine": "google",
         "q": query,
