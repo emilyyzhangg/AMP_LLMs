@@ -85,7 +85,8 @@ def is_same_python(p1, p2):
         return False
 
 def setup_environment():
-    """Setup virtual environment, install requirements, and restart inside venv if needed."""
+    """Ensure environment is ready: venv + requirements, but skip if already good."""
+
     python_path = get_python_path()
     current_python = os.path.abspath(sys.executable)
     venv_python = os.path.abspath(python_path)
@@ -93,38 +94,58 @@ def setup_environment():
     print("Current Python:", current_python)
     print("Venv Python   :", venv_python)
 
-    # Restart script inside venv if not already inside it
+    # ✅ Step 1: Are we already in the right venv?
     if not is_same_python(current_python, venv_python):
+        # ❌ No, not inside virtualenv → try to create it if it doesn't exist
         if not os.path.exists(venv_python):
+            print("❌ Virtual environment missing. Creating it...")
             create_virtual_env()
-        print(f"Restarting script inside virtual environment:\n  {venv_python}")
+
+        # 🔁 Restart the script using the venv's Python
+        print(f"🔁 Restarting script inside virtual environment:\n  {venv_python}")
         try:
             subprocess.check_call([venv_python] + sys.argv)
         except subprocess.CalledProcessError as e:
-            print(f"Failed to restart script inside virtual environment: {e}")
+            print(f"❌ Failed to restart script inside virtual environment: {e}")
             sys.exit(1)
         sys.exit(0)
 
+    # ✅ We’re inside the correct virtual environment
     print("✅ Running inside the correct virtual environment.")
 
-    # Upgrade pip and setuptools first
-    try:
-        subprocess.check_call([venv_python, "-m", "pip", "install", "--upgrade", "pip", "setuptools"])
-    except subprocess.CalledProcessError as e:
-        print(f"Failed to upgrade pip/setuptools: {e}")
-        sys.exit(1)
+    # Step 2: Check if all required packages are installed
+    missing_packages = []
 
-    # Install all packages from requirements.txt if it exists
     if os.path.exists(REQUIREMENTS_FILE):
-        print(f"Installing packages from {REQUIREMENTS_FILE} ...")
-        install_requirements()
+        with open(REQUIREMENTS_FILE, "r") as f:
+            for line in f:
+                pkg = line.strip()
+                if not pkg or pkg.startswith("#"):
+                    continue
+                base_name = pkg.split("==")[0].split(">=")[0].split("<=")[0].strip()
+                import_name = PACKAGE_IMPORT_MAPPING.get(base_name, base_name)
+
+                if importlib.util.find_spec(import_name) is None:
+                    missing_packages.append(pkg)
+
+        if not missing_packages:
+            print("✅ All required packages already installed. Skipping installation.")
+            return
+
+        # Step 3: If missing packages, upgrade pip/setuptools and install
+        print("🔧 Upgrading pip and setuptools...")
+        try:
+            subprocess.check_call([venv_python, "-m", "pip", "install", "--upgrade", "pip", "setuptools"])
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Failed to upgrade pip/setuptools: {e}")
+            sys.exit(1)
+
+        print("📦 Installing missing packages from requirements.txt ...")
+        for pkg in missing_packages:
+            install_package(pkg)
     else:
-        print("No requirements.txt found; skipping requirements install.")
+        print("⚠️ requirements.txt not found. Skipping package installation.")
 
-
-    # Optionally, check and install missing packages individually
-    # Uncomment the following line if you want per-package checks
-    # install_requirements()
 
 if __name__ == "__main__":
     setup_environment()

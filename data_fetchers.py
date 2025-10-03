@@ -1,21 +1,18 @@
 import os
 import json
 import requests
-from serpapi.google_search import GoogleSearch
 from bs4 import BeautifulSoup
+from serpapi.google_search import GoogleSearch
+import xml.etree.ElementTree as ET
 
+
+# -----------------------------------
+# SerpAPI Web Search
+# -----------------------------------
 
 def search_web(query, api_key=None, num_results=5):
     """
     Perform a Google search using SerpAPI and return summarized results.
-
-    Args:
-        query (str): The search query.
-        api_key (str, optional): SerpAPI API key. If None, will look in env var SERPAPI_API_KEY.
-        num_results (int, optional): Number of results to fetch.
-
-    Returns:
-        list of dict: Each dict contains 'title', 'link', and 'snippet'.
     """
     if api_key is None:
         api_key = os.getenv("SERPAPI_API_KEY")
@@ -43,30 +40,77 @@ def search_web(query, api_key=None, num_results=5):
     return output
 
 
-def fetch_pubmed_study(pmid):
+# -----------------------------------
+# PubMed: API Fetch (EFetch)
+# -----------------------------------
+
+def fetch_pubmed_study_api(pmid):
     """
-    Fetch basic PubMed article details given a PubMed ID (PMID).
+    Fetch study info from PubMed using the official EFetch API.
+    """
+    url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
+    params = {
+        "db": "pubmed",
+        "id": pmid,
+        "retmode": "xml"
+    }
 
-    Args:
-        pmid (str): PubMed ID.
+    try:
+        resp = requests.get(url, params=params, timeout=10)
+        resp.raise_for_status()
+    except Exception as e:
+        return {"error": str(e), "source": "api"}
 
-    Returns:
-        dict: Metadata about the study, or dict with 'error' key if failed.
+    root = ET.fromstring(resp.text)
+    article = root.find(".//PubmedArticle")
+    if article is None:
+        return {"error": "No article found", "source": "api"}
+
+    title = article.findtext(".//ArticleTitle", default="")
+    abstract = "".join([t.text or "" for t in article.findall(".//AbstractText")])
+    journal = article.findtext(".//Journal/Title", default="")
+    pub_date = article.findtext(".//PubDate/Year", default="")
+    authors = []
+    for author in article.findall(".//Author"):
+        last = author.findtext("LastName")
+        first = author.findtext("ForeName")
+        if last and first:
+            authors.append(f"{first} {last}")
+
+    return {
+        "pmid": pmid,
+        "title": title,
+        "abstract": abstract,
+        "authors": authors,
+        "journal": journal,
+        "publication_date": pub_date,
+        "url": f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/",
+        "source": "api"
+    }
+
+
+# -----------------------------------
+# PubMed: HTML Scrape
+# -----------------------------------
+
+def fetch_pubmed_study_scrape(pmid):
+    """
+    Scrape metadata from the PubMed HTML page.
     """
     url = f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/"
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
     except requests.RequestException as e:
-        return {"error": f"Network or HTTP error fetching PubMed page: {e}"}
+        return {"error": f"Network or HTTP error: {e}", "source": "scrape"}
 
     soup = BeautifulSoup(response.text, 'html.parser')
 
     title_tag = soup.find("h1", class_="heading-title")
-    title = title_tag.get_text(strip=True) if title_tag else None
+    title = title_tag.get_text(strip=True) if title_tag else ""
 
     abstract_tag = soup.find("div", class_="abstract-content selected")
-    abstract = abstract_tag.get_text(strip=True) if abstract_tag else None
+    abstract = abstract_tag.get_text(strip=True) if abstract_tag else ""
 
     authors = []
     authors_section = soup.find("div", class_="authors-list")
@@ -75,38 +119,86 @@ def fetch_pubmed_study(pmid):
         authors = [a.get_text(strip=True) for a in author_tags]
 
     journal_tag = soup.find("button", class_="journal-actions-trigger")
-    journal = journal_tag.get_text(strip=True) if journal_tag else None
+    journal = journal_tag.get_text(strip=True) if journal_tag else ""
 
     pub_date_tag = soup.find("span", class_="cit")
-    publication_date = pub_date_tag.get_text(strip=True) if pub_date_tag else None
-
-    if not title:
-        return {"error": "Failed to extract PubMed study title."}
+    publication_date = pub_date_tag.get_text(strip=True) if pub_date_tag else ""
 
     return {
         "pmid": pmid,
         "title": title,
-        "abstract": abstract or "",
+        "abstract": abstract,
         "authors": authors,
-        "journal": journal or "",
-        "publication_date": publication_date or "",
+        "journal": journal,
+        "publication_date": publication_date,
         "url": url,
+        "source": "scrape"
     }
 
+
+# -----------------------------------
+# Merge API + Scraped PubMed Data
+# -----------------------------------
+
+def merge_pubmed_data(api_data, scraped_data):
+    """
+    Combine both API and scraped PubMed data, preferring more complete fields.
+    Annotates which source each field came from.
+    """
+    merged = {}
+    field_sources = {}
+
+    def choose(field):
+        val_api = api_data.get(field, "")
+        val_scrape = scraped_data.get(field, "")
+        if len(val_scrape) > len(val_api):
+            field_sources[field] = "scrape"
+            return val_scrape
+        else:
+            field_sources[field] = "api"
+            return val_api
+
+    merged["pmid"] = api_data.get("pmid") or scraped_data.get("pmid")
+    field_sources["pmid"] = "api" if "pmid" in api_data else "scrape"
+
+    merged["title"] = choose("title")
+    merged["abstract"] = choose("abstract")
+    merged["authors"] = scraped_data.get("authors") or api_data.get("authors", [])
+    field_sources["authors"] = "scrape" if scraped_data.get("authors") else "api"
+
+    merged["journal"] = choose("journal")
+    merged["publication_date"] = choose("publication_date")
+    merged["url"] = api_data.get("url") or scraped_data.get("url")
+    field_sources["url"] = "api" if "url" in api_data else "scrape"
+
+    # Track the sources used
+    merged["_field_sources"] = field_sources
+    return merged
+
+
+# -----------------------------------
+# LLM Payload Builder
+# -----------------------------------
 
 def create_payload(data_type, data):
     """
-    Create a JSON-serializable payload dict for bulk LLM input.
-
-    Args:
-        data_type (str): Type of data, e.g. 'pubmed_study', 'web_search'.
-        data (dict or list): Data fetched from either fetch_pubmed_study or search_web.
-
-    Returns:
-        dict: JSON-serializable payload suitable for LLM input batch processing.
+    Create a JSON-serializable payload dict for LLM input.
     """
-    payload = {
+    return {
         "type": data_type,
         "data": data,
     }
-    return payload
+
+
+def fetch_pubmed_combined_payload(pmid):
+    """
+    Fetch both API and scraped PubMed data, merge, and return payload.
+    """
+    api_data = fetch_pubmed_study_api(pmid)
+    scraped_data = fetch_pubmed_study_scrape(pmid)
+
+    if "error" in api_data and "error" in scraped_data:
+        raise ValueError(f"Failed to fetch PMID {pmid} from both API and HTML.")
+
+    merged_data = merge_pubmed_data(api_data, scraped_data)
+    return create_payload("pubmed_study_combined", merged_data)
