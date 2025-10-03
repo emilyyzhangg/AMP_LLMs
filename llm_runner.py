@@ -1,215 +1,111 @@
 # llm_runner.py
-from interactive import interactive_session
-from data_fetchers import fetch_pubmed_combined_payload 
+import os
+import sys
+import json
+from data_fetchers import fetch_clinical_trial_and_pubmed
 from llm_utils import (
-    check_ollama_installed,
-    get_available_models,
-    ensure_model_available,
-    choose_model,
-    run_ollama,
+    list_local_models,
+    run_ollama_local_with_file,
+    choose_model
 )
-from batch_runner import run_prompts_from_csv
 
 
-def start_ollama_remote(ssh_client, model_name):
-    """Starts Ollama remotely via SSH."""
-    command = f"ollama run {model_name}"
-    stdin, stdout, stderr = ssh_client.exec_command(command)
-    output = stdout.read().decode()
-    error = stderr.read().decode()
-    if error:
-        raise Exception(f"Error starting Ollama: {error.strip()}")
-    print(f"Ollama started successfully:\n{output.strip()}")
+def prompt_nct_number():
+    while True:
+        nct = input("Enter NCT number (or 'exit'/'main menu' to go back): ").strip()
+        if nct.lower() in ["exit", "main menu"]:
+            return None
+        nct_upper = nct.upper()
+        if nct_upper.startswith("NCT") and len(nct_upper) > 3:
+            return nct_upper
+        print("Invalid NCT number format. Please enter again (e.g. NCT04043065).")
 
 
-def run_llm_prompt(ssh_client, model, prompt):
-    """Send a single prompt to Ollama (remote or local)."""
-    return run_ollama(ssh_client, model, prompt)
+def prompt_action():
+    print("\nChoose an action:")
+    print("1. Dump clinical trial data to text file")
+    print("2. Enter new NCT number")
+    print("3. Start Ollama LLM with saved file")
+    print("4. Return to main menu")
+    return input("Enter choice (1-4): ").strip()
 
 
-def summarize_study(ssh_client, model, study_info):
-    """Generate a summary of the PubMed study using the LLM."""
-    if not study_info or "error" in study_info:
-        return "No study info available to summarize."
-
-    authors = ", ".join(study_info.get("authors", []))
-    prompt = (
-        f"🧬 Summarize the following PubMed study: 🧬\n\n"
-        f"PMID: {study_info.get('pmid', 'N/A')}\n"
-        f"Title: {study_info.get('title', 'N/A')}\n"
-        f"Authors: {authors}\n"
-        f"Journal: {study_info.get('journal', 'N/A')}\n"
-        f"Publication Date: {study_info.get('publication_date', 'N/A')}\n"
-        f"Abstract: {study_info.get('abstract', 'N/A')}\n"
-    )
-    return run_ollama(ssh_client, model, prompt)
-
-
-def run_pubmed_ollama_workflow(ssh_client):
-    """
-    Full LLM PubMed workflow: model selection, optional study loading, batch or interactive.
-    Returns "main_menu" if user types "main menu" in interactive session.
-    """
-    try:
-        check_ollama_installed(ssh_client)
-    except Exception as e:
-        print(f"Error checking Ollama: {e}")
-        return
-
-    try:
-        models = get_available_models(ssh_client)
-    except Exception as e:
-        print(f"Error retrieving models: {e}")
-        models = []
-
-    if not models:
-        print("No available models found. Exiting.")
-        return
-
-    model = choose_model(models)
-    if model is None:
-        print("No model selected. Exiting.")
-        return
-    if model == "main_menu":
-        return "main_menu"
-
-    try:
-        ensure_model_available(ssh_client, model)
-    except Exception as e:
-        print(f"Error ensuring model availability: {e}")
-        return
-
-    # Optional: Load PubMed study
-    study_info = None
-    pmid = input("Enter PubMed ID to load study (or leave blank to skip): ").strip()
-
-    if pmid.lower() == "main menu":
-        return "main_menu"
-
-    if pmid.lower() == "exit":
-        print("Exiting workflow.")
-        return
-
-    if pmid:
-        print(f"[INFO] Fetching PubMed study {pmid}...")
-        study_info = fetch_pubmed_combined_payload(pmid)
-        if "error" in study_info:
-            print(f"Error fetching study info: {study_info['error']}")
-            study_info = None
-        else:
-            print(study_info)
-
-
-    print("\nLLM is ready to use. Type 'exit' anytime to quit, or 'main menu' to return to the main menu.\n")
+def run_llm_entrypoint(ssh_client=None):
+    ollama_path = "/opt/homebrew/bin/ollama"  # Adjust if needed
+    print(f"Ollama path: {ollama_path}")
 
     while True:
-        print("\nSelect input mode:")
-        print("1. Interactive session")
-        print("2. CSV file with prompts")
+        print("\n=== Main Menu ===")
+        print("1. Interactive SSH shell")
+        print("2. Run ClinicalTrials + PubMed + Ollama workflow")
         print("3. Exit")
-        mode = input("Enter choice (1, 2, or 3): ").strip().lower()
+        choice = input("Choose option (1/2/3): ").strip()
 
-        if mode == "3" or mode == "exit":
-            print("Exiting workflow.")
-            break
-        elif mode == "main menu":
-            # Return to main menu
-            return "main_menu"
-        elif mode == "1":
-            try:
-                result = interactive_session(ssh_client=ssh_client, model_name=model, study_info=study_info)
-                if result == "main_menu":
-                    print("Returning to main menu from interactive session.")
-                    return "main_menu"
-            except Exception as e:
-                print(f"Error during interactive session: {e}")
-        elif mode == "2":
-            try:
-                cont = run_prompts_from_csv(ssh_client, model)
-                if cont is False:
-                    print("Exiting workflow.")
-                    break
-            except Exception as e:
-                print(f"Error running batch prompts: {e}")
-        else:
-            print("Invalid option. Please try again.")
-
-
-def run_llm_entrypoint(ssh_client):
-    """
-    Entry point with 2 options:
-    1. Open a raw interactive SSH terminal session (no model or LLM)
-    2. Run full Ollama PubMed workflow (model selection etc)
-
-    At any point, typing "main menu" returns to this menu.
-    """
-    import sys
-    import threading
-
-    while True:
-        print("\nChoose operation mode:")
-        print("1. Interactive terminal session (raw SSH shell)")
-        print("2. Ollama PubMed workflow")
-        print("3. Exit")
-        mode = input("Enter choice (1, 2, or 3): ").strip().lower()
-
-        if mode == "3" or mode == "exit":
-            print("Exiting program.")
-            break
-        elif mode == "main menu":
-            # Just continue and show the menu again
+        if choice == "1":
+            print("Interactive SSH shell not implemented.")
             continue
-        elif mode == "1":
-            print("Opening interactive SSH terminal. Type 'main menu' to return to the main menu, 'exit' or Ctrl+D to quit.\n")
 
-            channel = ssh_client.invoke_shell()
-
-            def write_all(sock):
-                try:
-                    while True:
-                        data = sock.recv(1024)
-                        if not data:
-                            break
-                        sys.stdout.buffer.write(data)
-                        sys.stdout.flush()
-                except Exception:
-                    pass
-
-            writer = threading.Thread(target=write_all, args=(channel,))
-            writer.daemon = True
-            writer.start()
-
-            try:
-                while True:
-                    line = sys.stdin.readline()
-                    if not line:
-                        # EOF (Ctrl+D)
-                        break
-                    stripped = line.strip().lower()
-                    if stripped == "main menu":
-                        print("\nReturning to main menu...\n")
-                        break
-                    if stripped == "exit":
-                        print("Exiting interactive session.")
-                        return  # Or break to exit full program if you want
-
-                    channel.send(line.encode())
-            except KeyboardInterrupt:
-                print("\nSSH terminal session ended by user.")
-            finally:
-                channel.close()
-
-        elif mode == "2":
-            # Run PubMed workflow and return to main menu if user types "main menu"
+        elif choice == "2":
             while True:
-                try:
-                    result = run_pubmed_ollama_workflow(ssh_client)
-                    if result == "main_menu":
-                        break  # Back to main menu
-                except Exception as e:
-                    print(f"Error in PubMed workflow: {e}")
+                nct = prompt_nct_number()
+                if nct is None:
+                    print("Returning to main menu.")
                     break
-                # After workflow ends, go back to main menu
-                break
+
+                print(f"Fetching data for {nct}...")
+                data = fetch_clinical_trial_and_pubmed(nct)
+
+                if "error" in data:
+                    print(f"Error: {data['error']}")
+                    continue
+
+                print(f"\nFull Clinical Trial + PubMed Data for {nct}:\n")
+                print(json.dumps(data, indent=4, sort_keys=True))
+
+                while True:
+                    action = prompt_action()
+
+                    if action == "1":
+                        filename = f"{nct}.txt"
+                        try:
+                            with open(filename, "w", encoding="utf-8") as f:
+                                json.dump(data, f, indent=4, sort_keys=True)
+                            print(f"Data saved to '{filename}'.")
+                        except Exception as e:
+                            print(f"Write error: {e}")
+
+                    elif action == "2":
+                        break  # Re-prompt NCT
+
+                    elif action == "3":
+                        filename = f"{nct}.txt"
+                        if not os.path.isfile(filename):
+                            print(f"File '{filename}' not found. Please save it first (option 1).")
+                            continue
+
+                        models = list_local_models(ollama_path)
+                        if not models:
+                            print("No models found.")
+                            continue
+
+                        selected_model = choose_model(models)
+                        if selected_model in [None, "main_menu"]:
+                            break
+
+                        run_ollama_local_with_file(ollama_path, selected_model, filename)
+
+                    elif action == "4":
+                        break
+
+                    else:
+                        print("Invalid choice. Please enter 1, 2, 3, or 4.")
+
+                if action == "4":
+                    break
+
+        elif choice == "3":
+            print("Goodbye.")
+            sys.exit(0)
+
         else:
-            print("Invalid choice. Please try again.")
+            print("Invalid choice. Please enter 1, 2, or 3.")
