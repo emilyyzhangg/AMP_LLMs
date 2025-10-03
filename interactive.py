@@ -1,11 +1,9 @@
 # interactive.py
+
 import json
 from output_handler import save_responses_to_excel
-from data_fetchers import fetch_pubmed_study, search_web, create_payload
+from data_fetchers import fetch_pubmed_combined_payload, search_web, create_payload
 from llm_utils import query_ollama
-import shlex
-import subprocess
-import re
 
 # ------------------------------
 # Interactive session
@@ -26,16 +24,18 @@ def interactive_session(ssh_client=None, model_name=None, study_info=None):
 
             # If user enters a PubMed ID (digits only)
             if prompt.isdigit():
-                study_info = fetch_pubmed_study(prompt)
-                if study_info is None or "error" in study_info:
-                    print(f"Error fetching study info: {study_info.get('error', 'Unknown error') if study_info else 'No data'}")
+                try:
+                    payload = fetch_pubmed_combined_payload(prompt)
+                except Exception as e:
+                    print(f"Error fetching study info: {e}")
                     continue
+
+                study_info = payload["data"]  # For displaying
                 print(f"\n[PubMed Study Info]:\n{json.dumps(study_info, indent=2)}\n")
 
-                # Create JSON payload for the LLM
-                payload = create_payload("pubmed_study", study_info)
                 final_prompt = (
-                    f"Summarize the following PubMed study JSON payload:\n\n{payload}"
+                    f"Summarize the following PubMed study JSON payload. "
+                    f"Each field may come from a different source (API or scrape), as indicated:\n\n{json.dumps(payload, indent=2)}"
                 )
 
             # If user enters an NCT ID
@@ -50,7 +50,7 @@ def interactive_session(ssh_client=None, model_name=None, study_info=None):
                 print(f"\n[Search Results]:\n{json.dumps(search_results, indent=2)}\n")
 
                 final_prompt = (
-                    f"Summarize the following clinical trial search JSON payload for {nct_id}:\n\n{payload}"
+                    f"Summarize the following clinical trial search JSON payload for {nct_id}:\n\n{json.dumps(payload, indent=2)}"
                 )
 
             # If user wants web search
@@ -64,12 +64,13 @@ def interactive_session(ssh_client=None, model_name=None, study_info=None):
                 payload = create_payload("web_search", search_results)
                 final_prompt = (
                     f"You are a helpful assistant. A user asked: {query}\n\n"
-                    f"Search results JSON payload:\n{payload}"
+                    f"Search results JSON payload:\n{json.dumps(payload, indent=2)}"
                 )
 
-            # If just plain text input, final_prompt stays as-is
+            # Otherwise, freeform text prompt
+            # `final_prompt` stays the same
 
-            # Send to Ollama (via SSH if needed)
+            # Send to Ollama (local or via SSH)
             if ssh_client and model_name:
                 from llm_utils import run_ollama as remote_ollama
                 response = remote_ollama(ssh_client, model_name, final_prompt)

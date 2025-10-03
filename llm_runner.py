@@ -1,4 +1,6 @@
-from interactive import interactive_session, fetch_pubmed_study
+# llm_runner.py
+from interactive import interactive_session
+from data_fetchers import fetch_pubmed_combined_payload 
 from llm_utils import (
     check_ollama_installed,
     get_available_models,
@@ -90,7 +92,7 @@ def run_pubmed_ollama_workflow(ssh_client):
 
     if pmid:
         print(f"[INFO] Fetching PubMed study {pmid}...")
-        study_info = fetch_pubmed_study(pmid)
+        study_info = fetch_pubmed_combined_payload(pmid)
         if "error" in study_info:
             print(f"Error fetching study info: {study_info['error']}")
             study_info = None
