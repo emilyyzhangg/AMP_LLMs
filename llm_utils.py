@@ -51,18 +51,20 @@ def ensure_model_available(ssh_client, model):
     else:
         print(f"Model '{model}' is already available.")
 
-
 def choose_model(models):
     """
-    Prompt user to choose a model from the list or exit.
+    Prompt user to choose a model from the list or return None if exiting or going to main menu.
     """
     print("\nAvailable LLM models:")
     for i, model in enumerate(models, 1):
         print(f"{i}. {model}")
+
     while True:
-        choice = input("Enter model number (or 'exit' to quit): ").strip()
-        if choice.lower() == 'exit':
+        choice = input("Enter model number (or 'exit' or 'main menu' to go back): ").strip().lower()
+        if choice == 'exit':
             return None
+        if choice == 'main menu':
+            return "main_menu"
         if choice.isdigit() and 1 <= int(choice) <= len(models):
             return models[int(choice) - 1]
         print("Invalid choice. Try again.")
