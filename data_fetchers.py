@@ -11,20 +11,24 @@ def fetch_clinical_trial_data(nct_id):
     url = f"{base_url}{nct_id}"
 
     try:
+        print("🔍 ClinicalTrials.gov search:")
         response = requests.get(url)
         response.raise_for_status()
         data = response.json()
+        print("\t✅ Found results.")
         return {
             "nct_id": nct_id,
             "clinical_trial_data": data,
             "source": "clinicaltrials_api"
         }
     except requests.exceptions.HTTPError as e:
+        print("\t❌ No result found.")
         return {
             "error": f"HTTP error: {e}",
             "source": "clinicaltrials_api"
         }
     except Exception as e:
+        print("\t❌ No result found.")
         return {
             "error": str(e),
             "source": "clinicaltrials_api"
@@ -185,7 +189,7 @@ def fetch_pubmed_from_references(reference_list):
                 if title:
                     print(f"🔍 Searching PubMed by title: '{title}'")
                     if authors:
-                        print(f"    With authors: {authors}")
+                        print(f"\tWith authors: {authors}")
 
                     pmid_searched = search_pubmed_by_title_authors(title, authors)
                     time.sleep(0.34)
@@ -193,14 +197,14 @@ def fetch_pubmed_from_references(reference_list):
                     if not pmid_searched:
                         # Try partial title match (e.g. use first 5 words)
                         short_title = " ".join(title.split()[:5])
-                        print(f"    🔄 No result. Retrying with short title: '{short_title}'")
+                        print(f"\t🔄 No result. Retrying with short title: '{short_title}'")
                         pmid_searched = search_pubmed_by_title_authors(short_title, authors)
                         time.sleep(0.34)
 
                     if not pmid_searched:
-                        print("    ❌ No result found.")
+                        print("\t❌ No result found.")
                     elif pmid_searched not in pmids:
-                        print(f"    ✅ Found PMID: {pmid_searched}")
+                        print(f"\t✅ Found PMID: {pmid_searched}")
                         pmids.append(pmid_searched)
 
     # Now fetch details
