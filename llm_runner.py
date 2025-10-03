@@ -1,32 +1,47 @@
-from llm_utils import check_ollama_installed, get_available_models, ensure_model_available, choose_model
-from interactive import interactive_session
+# llm_runner.py
+from interactive import interactive_session, fetch_pubmed_study
+from llm_utils import check_ollama_installed, get_available_models, ensure_model_available, choose_model, run_ollama
 from batch_runner import run_prompts_from_csv
+
+def run_llm_prompt(ssh_client, model, prompt):
+    """Send a single prompt to Ollama (remote or local)."""
+    return run_ollama(ssh_client, model, prompt)
+
+def summarize_study(ssh_client, model, study_info):
+    """Generate a summary of the PubMed study using the LLM."""
+    if not study_info or "error" in study_info:
+        return "No study info available to summarize."
+    
+    authors = ", ".join(study_info.get("authors", []))
+    prompt = (
+        f"Summarize the following PubMed study:\n\n"
+        f"PMID: {study_info.get('pmid', 'N/A')}\n"
+        f"Title: {study_info.get('title', 'N/A')}\n"
+        f"Authors: {authors}\n"
+        f"Journal: {study_info.get('journal', 'N/A')}\n"
+        f"Publication Date: {study_info.get('publication_date', 'N/A')}\n"
+        f"Abstract: {study_info.get('abstract', 'N/A')}\n"
+    )
+    return run_ollama(ssh_client, model, prompt)
 
 def run_llm_workflow(ssh_client):
     """
-    Main workflow to interact with the LLM remotely via SSH.
-
-    Steps:
-    - Check if Ollama CLI is installed on the remote host.
-    - List available models and allow user to select one.
-    - Ensure the selected model is available locally on the remote host.
-    - Offer user to run an interactive session or batch prompts from CSV.
+    Main workflow to interact with the LLM remotely via SSH using PubMed studies.
     """
-
     try:
         check_ollama_installed(ssh_client)
     except Exception as e:
-        print(f"Error checking Ollama installation: {e}")
+        print(f"Error checking Ollama: {e}")
         return
 
-    models = []
     try:
         models = get_available_models(ssh_client)
     except Exception as e:
         print(f"Error retrieving models: {e}")
+        models = []
 
     if not models:
-        print("No available models found. Aborting.")
+        print("No available models found. Exiting.")
         return
 
     model = choose_model(models)
@@ -40,8 +55,19 @@ def run_llm_workflow(ssh_client):
         print(f"Error ensuring model availability: {e}")
         return
 
-    print("\nLLM is ready to use. You can enter multiple prompts or CSV files.")
-    print("Type 'exit' anytime to quit.\n")
+    # Fetch study info before interactive loop
+    study_info = None
+    pmid = input("Enter PubMed ID to load study (or leave blank to skip): ").strip()
+    if pmid:
+        print(f"[INFO] Fetching PubMed study {pmid}...")
+        study_info = fetch_pubmed_study(pmid)
+        if "error" in study_info:
+            print(f"Error fetching study info: {study_info['error']}")
+            study_info = None
+        else:
+            print(study_info)
+
+    print("\nLLM is ready to use. Type 'exit' anytime to quit.\n")
 
     while True:
         print("\nSelect input mode:")
@@ -53,13 +79,11 @@ def run_llm_workflow(ssh_client):
         if mode == "3" or mode.lower() == "exit":
             print("Exiting workflow.")
             break
-
-        if mode == "1":
+        elif mode == "1":
             try:
-                interactive_session(ssh_client, model)
+                interactive_session(ssh_client=ssh_client, model_name=model, study_info=study_info)
             except Exception as e:
                 print(f"Error during interactive session: {e}")
-
         elif mode == "2":
             try:
                 cont = run_prompts_from_csv(ssh_client, model)
@@ -68,6 +92,5 @@ def run_llm_workflow(ssh_client):
                     break
             except Exception as e:
                 print(f"Error running batch prompts: {e}")
-
         else:
             print("Invalid option. Please try again.")
