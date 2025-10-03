@@ -202,3 +202,117 @@ def fetch_pubmed_combined_payload(pmid):
 
     merged_data = merge_pubmed_data(api_data, scraped_data)
     return create_payload("pubmed_study_combined", merged_data)
+
+
+def fetch_duckduckgo_nct_search(nct_number):
+    """
+    Perform a DuckDuckGo search for the given NCT number.
+    Returns a payload with summarized search results.
+    """
+    import requests
+
+    query = nct_number
+    url = "https://api.duckduckgo.com/"
+    params = {
+        "q": query,
+        "format": "json",
+        "no_redirect": 1,
+        "no_html": 1,
+        "skip_disambig": 1,
+    }
+
+    try:
+        resp = requests.get(url, params=params, timeout=10)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        return {
+            "error": f"Failed DuckDuckGo search: {e}",
+            "source": "duckduckgo_api",
+            "data": None
+        }
+
+    data = resp.json()
+
+    # Extract some useful info from the Instant Answer API
+    abstract = data.get("AbstractText") or ""
+    related_topics = data.get("RelatedTopics", [])
+    results = []
+
+    # RelatedTopics may contain nested results or text + URLs
+    for topic in related_topics[:5]:
+        if "Text" in topic and "FirstURL" in topic:
+            results.append({"text": topic["Text"], "url": topic["FirstURL"]})
+
+    payload_data = {
+        "query": query,
+        "abstract": abstract,
+        "results": results,
+    }
+
+    return {
+        "type": "duckduckgo_nct_search",
+        "data": payload_data,
+        "source": "duckduckgo_api",
+    }
+
+
+# -----------------------------------
+# ClinicalTrials.gov API Fetch with PMID extraction and message
+# -----------------------------------
+
+def fetch_clinical_trial_info(nct_id):
+    """
+    Fetch clinical trial data from ClinicalTrials.gov API v2.
+    Also extracts any associated PubMed IDs (PMIDs) if present.
+    Returns full JSON data + pmid metadata for clarity.
+    """
+    base_url = "https://clinicaltrials.gov/api/v2/studies/"
+    url = f"{base_url}{nct_id}"
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+    except requests.exceptions.HTTPError as e:
+        return {
+            "error": f"HTTP error: {e}",
+            "source": "clinicaltrials_api"
+        }
+    except Exception as e:
+        return {
+            "error": str(e),
+            "source": "clinicaltrials_api"
+        }
+
+    # --------------------------
+    # Extract PMIDs from response
+    # --------------------------
+    pmids = []
+    try:
+        references_module = data.get("protocolSection", {}).get("referencesModule", {})
+        reference_list = references_module.get("referenceList", [])
+        for ref in reference_list:
+            pmid = ref.get("pmid")
+            if pmid:
+                pmids.append(str(pmid))
+    except Exception:
+        pass  # Fail silently if structure changes
+
+    # --------------------------
+    # Add pmid_message
+    # --------------------------
+    if pmids:
+        pmid_message = f"PMIDs found: {', '.join(pmids)}"
+    else:
+        pmid_message = "No PMIDs found in the clinical trial data."
+
+    # --------------------------
+    # Return full payload + metadata
+    # --------------------------
+    return {
+        "type": "clinicaltrials_study",
+        "data": data,                # full original API JSON
+        "pmids": pmids,              # list of PMIDs (if any)
+        "pmid_message": pmid_message,
+        "source": "clinicaltrials_api"
+    }
