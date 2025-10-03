@@ -2,15 +2,22 @@
 import os
 import sys
 import json
+import getpass
 from data_fetchers import fetch_clinical_trial_and_pubmed
 from llm_utils import (
     list_local_models,
     run_ollama_local_with_file,
     choose_model
 )
+from interactive import interactive_session
+from networking import prompt_for_reachable_host
+from ssh_connection import connect_ssh
 
 
 def prompt_nct_number():
+    """
+    Prompt user to enter a valid NCT number or exit commands.
+    """
     while True:
         nct = input("Enter NCT number (or 'exit'/'main menu' to go back): ").strip()
         if nct.lower() in ["exit", "main menu"]:
@@ -22,6 +29,9 @@ def prompt_nct_number():
 
 
 def prompt_action():
+    """
+    Present user with possible actions and return their choice.
+    """
     print("\nChoose an action:")
     print("1. Dump clinical trial data to text file")
     print("2. Enter new NCT number")
@@ -30,7 +40,31 @@ def prompt_action():
     return input("Enter choice (1-4): ").strip()
 
 
+def prompt_ssh_credentials():
+    """
+    Prompt the user for SSH credentials securely.
+
+    Returns:
+        tuple(host, port, username, password)
+    """
+    host = prompt_for_reachable_host()
+    if not host:
+        return None, None, None, None
+
+    port_str = input("Enter SSH port (default 22): ").strip()
+    port = int(port_str) if port_str.isdigit() else 22
+
+    username = input("Enter SSH username: ").strip()
+    # Use getpass to hide password input on console
+    password = getpass.getpass("Enter SSH password: ")
+
+    return host, port, username, password
+
+
 def run_llm_entrypoint(ssh_client=None):
+    """
+    Main entry point to run the LLM workflow and interactive SSH sessions.
+    """
     ollama_path = "/opt/homebrew/bin/ollama"  # Adjust if needed
     print(f"Ollama path: {ollama_path}")
 
@@ -42,8 +76,30 @@ def run_llm_entrypoint(ssh_client=None):
         choice = input("Choose option (1/2/3): ").strip()
 
         if choice == "1":
-            print("Interactive SSH shell not implemented.")
-            continue
+            # Prompt user for SSH credentials and connect
+            print("\n🌟 Setting up SSH connection for interactive session 🌟")
+            host, port, username, password = prompt_ssh_credentials()
+
+            if not host:
+                print("SSH setup aborted. Returning to main menu.")
+                continue
+
+            ssh_client = connect_ssh(host, port, username, password)
+            if not ssh_client:
+                print("Failed to connect via SSH. Returning to main menu.")
+                continue
+
+            # Choose model for interactive session
+            model_name = input("Enter Ollama model name (or press Enter for default): ").strip()
+            if not model_name:
+                model_name = "llama2"  # or any default model you prefer
+
+            # Run interactive session with SSH client and model name
+            interactive_session(ssh_client=ssh_client, model_name=model_name)
+
+            # Close SSH connection cleanly
+            ssh_client.close()
+            print("SSH connection closed. Returning to main menu.")
 
         elif choice == "2":
             while True:
@@ -54,7 +110,6 @@ def run_llm_entrypoint(ssh_client=None):
 
                 print(f"Fetching data for {nct}...")
                 data = fetch_clinical_trial_and_pubmed(nct)
-
                 if "error" in data:
                     print(f"Error: {data['error']}")
                     continue
