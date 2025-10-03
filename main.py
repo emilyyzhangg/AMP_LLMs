@@ -8,14 +8,16 @@ def prompt_with_default(prompt_text, default):
     return user_input if user_input else default
 
 def main():
+    # Step 1: Ensure virtual environment and packages are ready
     setup_environment()
+    print("✅ Environment setup complete.\n")
 
+    # Step 2: Import dependent modules only after env ready
     from ssh_connection import connect_ssh
     from llm_runner import run_llm_entrypoint
 
     print("=== SSH Connection Setup ===")
 
-    # Use prompt_for_reachable_host with default IP and limited attempts
     host = prompt_for_reachable_host(default_host="100.99.162.98", max_attempts=1, timeout=1000)
     if host is None:
         print("❌ No reachable host provided. Exiting.")
@@ -32,8 +34,9 @@ def main():
         return
 
     try:
-        # Run the main LLM menu workflow using the established SSH connection
         run_llm_entrypoint(ssh_client)
+    except KeyboardInterrupt:
+        print("\n⏹️ Interrupted by user. Exiting...")
     except Exception as e:
         print(f"❌ Error during workflow: {e}")
     finally:

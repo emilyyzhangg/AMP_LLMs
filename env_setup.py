@@ -9,7 +9,6 @@ import pathlib
 VENV_DIR = "llm_env"
 REQUIREMENTS_FILE = "requirements.txt"
 
-# Map PyPI package names to their Python import names
 PACKAGE_IMPORT_MAPPING = {
     "beautifulsoup4": "bs4",
     "biopython": "Bio",
@@ -45,11 +44,19 @@ def check_virtual_env():
             shutil.rmtree(VENV_DIR, ignore_errors=True)
     return False
 
+def clear_pip_cache():
+    print("Clearing pip cache to avoid permission issues...")
+    try:
+        subprocess.run([sys.executable, "-m", "pip", "cache", "purge"], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Warning: Could not clear pip cache: {e}")
+
 def install_package(package):
     python_path = get_python_path()
     try:
         print(f"Installing package: {package}")
-        subprocess.check_call([python_path, "-m", "pip", "install", "--upgrade", package])
+        # Add --no-cache-dir to avoid pip cache permission issues
+        subprocess.check_call([python_path, "-m", "pip", "install", "--upgrade", package, "--no-cache-dir"])
     except subprocess.CalledProcessError as e:
         print(f"Failed to install {package}: {e}")
         sys.exit(1)
@@ -61,32 +68,28 @@ def install_requirements():
         print(f"No {REQUIREMENTS_FILE} found. Skipping requirements installation.")
         return
 
+    # Clear pip cache before starting installs
+    clear_pip_cache()
+
     with open(REQUIREMENTS_FILE, "r") as f:
         packages = [line.strip() for line in f if line.strip() and not line.startswith("#")]
 
     for pkg in packages:
-        # Extract base package name without version specifiers
         base_name = pkg.split("==")[0].split(">=")[0].split("<=")[0].strip()
-
-        # Get the import name from mapping or use base_name as fallback
         import_name = PACKAGE_IMPORT_MAPPING.get(base_name, base_name)
 
-        # Check if package is already installed by import name
         if importlib.util.find_spec(import_name) is None:
             install_package(pkg)
         else:
             print(f"Package already installed: {import_name}")
 
 def is_same_python(p1, p2):
-    """Check if two python paths point to the same file."""
     try:
         return pathlib.Path(p1).resolve().samefile(pathlib.Path(p2).resolve())
     except FileNotFoundError:
         return False
 
 def setup_environment():
-    """Ensure environment is ready: venv + requirements, but skip if already good."""
-
     python_path = get_python_path()
     current_python = os.path.abspath(sys.executable)
     venv_python = os.path.abspath(python_path)
@@ -94,14 +97,11 @@ def setup_environment():
     print("Current Python:", current_python)
     print("Venv Python   :", venv_python)
 
-    # ✅ Step 1: Are we already in the right venv?
     if not is_same_python(current_python, venv_python):
-        # ❌ No, not inside virtualenv → try to create it if it doesn't exist
         if not os.path.exists(venv_python):
             print("❌ Virtual environment missing. Creating it...")
             create_virtual_env()
 
-        # 🔁 Restart the script using the venv's Python
         print(f"🔁 Restarting script inside virtual environment:\n  {venv_python}")
         try:
             subprocess.check_call([venv_python] + sys.argv)
@@ -110,10 +110,8 @@ def setup_environment():
             sys.exit(1)
         sys.exit(0)
 
-    # ✅ We’re inside the correct virtual environment
     print("✅ Running inside the correct virtual environment.")
 
-    # Step 2: Check if all required packages are installed
     missing_packages = []
 
     if os.path.exists(REQUIREMENTS_FILE):
@@ -132,7 +130,6 @@ def setup_environment():
             print("✅ All required packages already installed. Skipping installation.")
             return
 
-        # Step 3: If missing packages, upgrade pip/setuptools and install
         print("🔧 Upgrading pip and setuptools...")
         try:
             subprocess.check_call([venv_python, "-m", "pip", "install", "--upgrade", "pip", "setuptools"])
@@ -141,6 +138,9 @@ def setup_environment():
             sys.exit(1)
 
         print("📦 Installing missing packages from requirements.txt ...")
+        # Clear cache again before installs
+        clear_pip_cache()
+
         for pkg in missing_packages:
             install_package(pkg)
     else:
