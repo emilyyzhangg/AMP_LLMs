@@ -1,100 +1,11 @@
 # interactive.py
 from output_handler import save_responses_to_excel
+from data_fetchers import fetch_pubmed_study, search_web
+from llm_utils import query_ollama
 import shlex
 import subprocess
 import re
-import requests
-from serpapi import GoogleSearch
 
-# ------------------------------
-# Configuration
-# ------------------------------
-SERPAPI_API_KEY = "c4c32ac751923eafd8d867eeb14c433e245aebfdbc0261cb2a8357e08ca34ff0"  # for web search
-
-# Regex to strip ANSI codes from Ollama
-ANSI_ESCAPE = re.compile(r'(?:\x1B[@-_][0-?]*[ -/]*[@-~])')
-
-def clean_ollama_output(text):
-    return ANSI_ESCAPE.sub("", text).strip()
-
-# ------------------------------
-# Query PubMed
-# ------------------------------
-def fetch_pubmed_study(pmid):
-    """
-    Fetch study info from PubMed for a given PMID.
-    Returns dict: title, authors, journal, abstract, publication_date
-    """
-    url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
-    params = {
-        "db": "pubmed",
-        "id": pmid,
-        "retmode": "xml"
-    }
-    try:
-        resp = requests.get(url, params=params, timeout=10)
-        resp.raise_for_status()
-    except Exception as e:
-        return {"error": str(e)}
-
-    import xml.etree.ElementTree as ET
-    root = ET.fromstring(resp.text)
-
-    article = root.find(".//PubmedArticle")
-    if article is None:
-        return {"error": "No article found"}
-
-    title = article.findtext(".//ArticleTitle", default="N/A")
-    abstract = "".join([t.text or "" for t in article.findall(".//AbstractText")])
-    journal = article.findtext(".//Journal/Title", default="N/A")
-    pub_date = article.findtext(".//PubDate/Year", default="N/A")
-    authors = []
-    for author in article.findall(".//Author"):
-        last = author.findtext("LastName")
-        first = author.findtext("ForeName")
-        if last and first:
-            authors.append(f"{first} {last}")
-    return {
-        "pmid": pmid,
-        "title": title,
-        "authors": authors,
-        "journal": journal,
-        "abstract": abstract,
-        "publication_date": pub_date
-    }
-
-# ------------------------------
-# Query SerpAPI (Google search)
-# ------------------------------
-def search_web(query, num_results=5):
-    params = {
-        "engine": "google",
-        "q": query,
-        "api_key": SERPAPI_API_KEY,
-        "num": num_results
-    }
-    search = GoogleSearch(params)
-    results = search.get_dict().get("organic_results", [])
-    snippets = [res.get("snippet", "") for res in results if "snippet" in res]
-    return "\n".join(snippets)
-
-# ------------------------------
-# Send query to local Ollama
-# ------------------------------
-def query_ollama(model, prompt):
-    safe_model = shlex.quote(model)
-    cmd = f'zsh -l -c "ollama run {safe_model}"'
-    process = subprocess.Popen(
-        cmd, shell=True, stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-    )
-    stdout, stderr = process.communicate(prompt + "\n")
-    output = stdout or stderr
-    return clean_ollama_output(output)
-
-# ------------------------------
-# Interactive session
-# ------------------------------
 # ------------------------------
 # Interactive session
 # ------------------------------

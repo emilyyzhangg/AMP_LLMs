@@ -1,12 +1,10 @@
 paramiko
 pandas
 openpyxl
-serpapi
 bs4
 requests
 beautifulsoup4
 biopython
-Bio
 pytest
 pytest-cov
 google-search-results
