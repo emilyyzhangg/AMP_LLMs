@@ -1,7 +1,17 @@
 # main.py
-from data_fetchers import fetch_pubmed_combined_payload, fetch_duckduckgo_nct_search
-from data_fetchers import fetch_clinical_trial_info
 import json
+from data_fetchers import (
+    fetch_pubmed_combined_payload,
+    fetch_duckduckgo_nct_search,
+    fetch_clinical_trial_info
+)
+
+
+def pretty_print(data, title=None):
+    if title:
+        print(f"\n{title}")
+    print(json.dumps(data, indent=2, ensure_ascii=False))
+
 
 def main():
     while True:
@@ -15,22 +25,35 @@ def main():
         if choice == "1":
             nct = input("Enter NCT number (e.g. NCT01234567): ").strip()
             result = fetch_duckduckgo_nct_search(nct)
-            print("\nDuckDuckGo NCT search payload:")
-            print(result)
+            pretty_print(result, "DuckDuckGo NCT Search Result")
 
         elif choice == "2":
             nct = input("Enter NCT number (e.g. NCT01234567): ").strip()
             result = fetch_clinical_trial_info(nct)
-            print("\nClinicalTrials.gov NCT search result:")
-            print(json.dumps(result, indent=2))  # Print full result, including pmid_message and full data
+            pretty_print(result, "ClinicalTrials.gov NCT Search Result")
 
+            # Fetch PubMed data if PMIDs are available
+            pmids = result.get("pmids", [])
+            if pmids:
+                fetch_pmids = input(f"\nFound PMIDs: {pmids}. Fetch related PubMed studies? (y/n): ").lower()
+                if fetch_pmids == "y":
+                    for pmid in pmids:
+                        try:
+                            pm_result = fetch_pubmed_combined_payload(pmid)
+                            pretty_print(pm_result, f"PubMed Study for PMID {pmid}")
+                        except Exception as e:
+                            print(f"Error fetching PMID {pmid}: {e}")
+            else:
+                print("No PMIDs found in the clinical trial data.")
 
         elif choice == "3":
-            pmid = input("Enter PubMed PMID: ").strip()
+            pmid = input("Enter PubMed PMID (numeric only): ").strip()
+            if not pmid.isdigit():
+                print("Invalid PMID. It must be numeric.")
+                continue
             try:
                 result = fetch_pubmed_combined_payload(pmid)
-                print("\nMerged PubMed study payload:")
-                print(result)
+                pretty_print(result, "Merged PubMed Study Payload")
             except Exception as e:
                 print(f"Error fetching PubMed data: {e}")
 
