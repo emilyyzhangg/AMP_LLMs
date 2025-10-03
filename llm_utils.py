@@ -1,5 +1,7 @@
+# llm_utils.py
 import shlex
 import time
+import re
 
 def check_ollama_installed(ssh_client):
     """
@@ -71,6 +73,29 @@ def clean_ollama_output(text):
     Clean Ollama output (strip extra whitespace, artifacts).
     """
     return text.strip()
+
+
+def query_ollama(model, prompt):
+    """
+    Run Ollama locally (subprocess) and clean output.
+    """
+    import subprocess
+
+    ANSI_ESCAPE = re.compile(r'(?:\x1B[@-_][0-?]*[ -/]*[@-~])')
+
+    def clean(text):
+        return ANSI_ESCAPE.sub("", text).strip()
+
+    import shlex
+    safe_model = shlex.quote(model)
+    cmd = f'zsh -l -c "ollama run {safe_model}"'
+    process = subprocess.Popen(
+        cmd, shell=True, stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+    )
+    stdout, stderr = process.communicate(prompt + "\n")
+    output = stdout or stderr
+    return clean(output)
 
 
 def run_ollama(ssh_client, model, prompt):
