@@ -17,22 +17,27 @@ PACKAGE_IMPORT_MAPPING = {
     # Add other mappings here as needed
 }
 
+
 def get_python_path():
+    """Return the Python interpreter path for the virtual environment."""
     if platform.system() == "Windows":
         return os.path.join(VENV_DIR, "Scripts", "python.exe")
     else:
         return os.path.join(VENV_DIR, "bin", "python")
 
+
 def create_virtual_env():
-    print("Creating virtual environment...")
+    print("🧱 Creating virtual environment...")
     try:
         subprocess.check_call([sys.executable, "-m", "venv", VENV_DIR])
     except subprocess.CalledProcessError as e:
-        print(f"Failed to create virtual environment: {e}")
+        print(f"❌ Failed to create virtual environment: {e}")
         sys.exit(1)
-    print("Virtual environment created.")
+    print("✅ Virtual environment created.")
+
 
 def check_virtual_env():
+    """Verify that the virtual environment exists and works."""
     python_path = get_python_path()
     if os.path.exists(python_path):
         try:
@@ -44,31 +49,32 @@ def check_virtual_env():
             shutil.rmtree(VENV_DIR, ignore_errors=True)
     return False
 
+
 def clear_pip_cache():
-    print("Clearing pip cache to avoid permission issues...")
+    print("🧹 Clearing pip cache to avoid permission issues...")
     try:
         subprocess.run([sys.executable, "-m", "pip", "cache", "purge"], check=True)
     except subprocess.CalledProcessError as e:
-        print(f"Warning: Could not clear pip cache: {e}")
+        print(f"⚠️ Could not clear pip cache: {e}")
+
 
 def install_package(package):
     python_path = get_python_path()
     try:
-        print(f"Installing package: {package}")
-        # Add --no-cache-dir to avoid pip cache permission issues
+        print(f"📦 Installing package: {package}")
         subprocess.check_call([python_path, "-m", "pip", "install", "--upgrade", package, "--no-cache-dir"])
     except subprocess.CalledProcessError as e:
-        print(f"Failed to install {package}: {e}")
+        print(f"❌ Failed to install {package}: {e}")
         sys.exit(1)
+
 
 def install_requirements():
     python_path = get_python_path()
 
     if not os.path.exists(REQUIREMENTS_FILE):
-        print(f"No {REQUIREMENTS_FILE} found. Skipping requirements installation.")
+        print(f"⚠️ No {REQUIREMENTS_FILE} found. Skipping requirements installation.")
         return
 
-    # Clear pip cache before starting installs
     clear_pip_cache()
 
     with open(REQUIREMENTS_FILE, "r") as f:
@@ -81,7 +87,8 @@ def install_requirements():
         if importlib.util.find_spec(import_name) is None:
             install_package(pkg)
         else:
-            print(f"Package already installed: {import_name}")
+            print(f"✅ Package already installed: {import_name}")
+
 
 def is_same_python(p1, p2):
     try:
@@ -89,31 +96,35 @@ def is_same_python(p1, p2):
     except FileNotFoundError:
         return False
 
-def setup_environment():
+
+def ensure_env():
+    """
+    Ensures that a virtual environment exists, is up-to-date, and the script is
+    re-executed inside it if needed. Mirrors the robust behavior you liked before.
+    """
     python_path = get_python_path()
     current_python = os.path.abspath(sys.executable)
     venv_python = os.path.abspath(python_path)
 
-    print("Current Python:", current_python)
-    print("Venv Python   :", venv_python)
+    print(f"🐍 Current Python: {current_python}")
+    print(f"🔗 Venv Python   : {venv_python}")
 
     if not is_same_python(current_python, venv_python):
         if not os.path.exists(venv_python):
-            print("❌ Virtual environment missing. Creating it...")
+            print("⚠️ Virtual environment missing. Creating...")
             create_virtual_env()
 
-        print(f"🔁 Restarting script inside virtual environment:\n  {venv_python}")
+        print(f"🔁 Relaunching inside virtual environment:\n   {venv_python}")
         try:
             subprocess.check_call([venv_python] + sys.argv)
         except subprocess.CalledProcessError as e:
-            print(f"❌ Failed to restart script inside virtual environment: {e}")
+            print(f"❌ Failed to restart inside virtual environment: {e}")
             sys.exit(1)
         sys.exit(0)
 
     print("✅ Running inside the correct virtual environment.")
 
     missing_packages = []
-
     if os.path.exists(REQUIREMENTS_FILE):
         with open(REQUIREMENTS_FILE, "r") as f:
             for line in f:
@@ -122,12 +133,11 @@ def setup_environment():
                     continue
                 base_name = pkg.split("==")[0].split(">=")[0].split("<=")[0].strip()
                 import_name = PACKAGE_IMPORT_MAPPING.get(base_name, base_name)
-
                 if importlib.util.find_spec(import_name) is None:
                     missing_packages.append(pkg)
 
         if not missing_packages:
-            print("✅ All required packages already installed. Skipping installation.")
+            print("✅ All required packages installed.")
             return
 
         print("🔧 Upgrading pip and setuptools...")
@@ -137,15 +147,13 @@ def setup_environment():
             print(f"❌ Failed to upgrade pip/setuptools: {e}")
             sys.exit(1)
 
-        print("📦 Installing missing packages from requirements.txt ...")
-        # Clear cache again before installs
+        print("📦 Installing missing packages...")
         clear_pip_cache()
-
         for pkg in missing_packages:
             install_package(pkg)
     else:
-        print("⚠️ requirements.txt not found. Skipping package installation.")
+        print("⚠️ No requirements.txt found. Skipping dependency check.")
 
 
 if __name__ == "__main__":
-    setup_environment()
+    ensure_env()

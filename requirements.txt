@@ -1,10 +1,5 @@
 paramiko
 pandas
 openpyxl
-bs4
 requests
-beautifulsoup4
-biopython
-pytest
-pytest-cov
-google-search-results
+colorama

@@ -1,37 +1,18 @@
-import paramiko
+# network/ssh_connection.py
+import paramiko, getpass, socket
 
-def connect_ssh(hostname, port, username, password, timeout=10):
-    """
-    Establishes an SSH connection using paramiko.
-
-    Args:
-        hostname (str): SSH host/IP.
-        port (int): SSH port.
-        username (str): SSH username.
-        password (str): SSH password.
-        timeout (int, optional): Connection timeout in seconds. Defaults to 10.
-
-    Returns:
-        paramiko.SSHClient or None: Connected SSH client instance, or None on failure.
-    """
-    ssh_client = paramiko.SSHClient()
-    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
+def connect_ssh(host, username, port=22, timeout=10):
+    password = getpass.getpass(f"Password for {username}@{host}: ")
     try:
-        ssh_client.connect(
-            hostname=hostname,
-            port=port,
-            username=username,
-            password=password,
-            timeout=timeout,
-        )
-        print(f"SSH connection established to {hostname}:{port} as {username}.\n")
-        return ssh_client
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.connect(hostname=host, port=port, username=username, password=password, timeout=timeout)
+        print("✅ SSH connection established.")
+        return client
     except paramiko.AuthenticationException:
-        print("Authentication failed. Please check your username and password.")
-    except paramiko.SSHException as ssh_exc:
-        print(f"SSH error occurred: {ssh_exc}")
+        print("❌ Authentication failed.")
+    except socket.timeout:
+        print("❌ Connection timed out.")
     except Exception as e:
-        print(f"SSH connection failed: {e}")
-
+        print("❌ SSH connection error:", e)
     return None
