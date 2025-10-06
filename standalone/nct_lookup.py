@@ -1,12 +1,9 @@
-# data_fetchers.py
 import requests
 import time
 import xml.etree.ElementTree as ET
+import json
 
-
-# =============================
-# ClinicalTrials.gov Fetcher
-# =============================
+# ========== ClinicalTrials.gov fetch ==========
 
 def fetch_clinical_trial_data(nct_id):
     base = "https://clinicaltrials.gov/api/v2/studies/"
@@ -29,13 +26,9 @@ def fetch_clinical_trial_data(nct_id):
         print(f"❌ ClinicalTrials.gov: Error: {e}")
         return {"error": str(e), "source": "clinicaltrials_api"}
 
-
-# =============================
-# PubMed utilities
-# =============================
+# ========== PubMed utilities ==========
 
 def fetch_pubmed_by_pmid(pmid):
-    """Fetch metadata for a PubMed article by PMID."""
     url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
     params = {"db": "pubmed", "id": pmid, "retmode": "xml"}
     try:
@@ -74,9 +67,7 @@ def fetch_pubmed_by_pmid(pmid):
         "source": "pubmed_api"
     }
 
-
 def search_pubmed_esearch(term, max_results=5):
-    """Perform a PubMed esearch query and return list of PMIDs."""
     url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
     params = {"db": "pubmed", "term": term, "retmode": "json", "retmax": max_results}
     try:
@@ -89,9 +80,7 @@ def search_pubmed_esearch(term, max_results=5):
         print(f"❌ PubMed esearch error for term '{term}': {e}")
         return []
 
-
 def search_pubmed_by_title_authors(title, authors=None):
-    """Search PubMed by title and optional authors."""
     query = f'"{title}"[Title]'
     if authors:
         last_names = [a.split()[-1] for a in authors if a.strip()]
@@ -105,9 +94,7 @@ def search_pubmed_by_title_authors(title, authors=None):
     print("❌ PubMed: title/authors search found nothing.")
     return None
 
-
 def convert_doi_to_pmid(doi):
-    """Convert DOI to PMID."""
     term = f"{doi}[DOI]"
     pmids = search_pubmed_esearch(term, max_results=1)
     if pmids:
@@ -116,9 +103,7 @@ def convert_doi_to_pmid(doi):
     print(f"❌ PubMed: DOI to PMID returned no result for {doi}")
     return None
 
-
 def convert_pmcid_to_pmid(pmcid):
-    """Convert PMCID to PMID."""
     pmcid_clean = pmcid.upper().strip()
     if not pmcid_clean.startswith("PMC"):
         print(f"❌ Invalid PMCID format: {pmcid}")
@@ -143,13 +128,9 @@ def convert_pmcid_to_pmid(pmcid):
     print(f"❌ PubMed: no PMID from PMCID {pmcid}")
     return None
 
-
-# =============================
-# PMC utilities
-# =============================
+# ========== PMC utilities ==========
 
 def search_pmc(query, max_results=5):
-    """Search PMC by query and return a list of PMCIDs."""
     url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
     params = {"db": "pmc", "term": query, "retmode": "json", "retmax": max_results}
     try:
@@ -167,9 +148,7 @@ def search_pmc(query, max_results=5):
         print(f"❌ PMC esearch error for '{query}': {e}")
         return []
 
-
 def fetch_pmc_esummary(pmcid):
-    """Fetch PMC esummary JSON."""
     url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
     params = {"db": "pmc", "id": pmcid, "retmode": "json"}
     try:
@@ -182,9 +161,7 @@ def fetch_pmc_esummary(pmcid):
         print(f"❌ PMC: esummary fetch error for PMCID {pmcid}: {e}")
         return {"error": str(e), "source": "pmc_esummary", "pmcid": pmcid}
 
-
 def convert_pmc_summary_to_metadata(esum):
-    """Convert PMC esummary JSON into clean metadata dict."""
     result = {}
     res = esum.get("result", {})
     uids = res.get("uids", [])
@@ -200,24 +177,25 @@ def convert_pmc_summary_to_metadata(esum):
         }
     return result
 
-
-# =============================
-# Combined logic
-# =============================
+# ========== Combined logic ==========
 
 def fetch_pubmed_with_order(ref):
-    """Determine the best way to find a PubMed record from a reference."""
+    """Return (pmid, method) if found, else (None, method_str)."""
+    # Direct PMID
     if ref.get("pmid"):
         print(f"🔍 PubMed: direct PMID search: {ref['pmid']}")
         return ref["pmid"], "pmid_direct"
+    # DOI → PMID
     if ref.get("doi"):
         pmid = convert_doi_to_pmid(ref["doi"])
         if pmid:
             return pmid, "doi_to_pmid"
+    # PMCID → PMID
     if ref.get("pmcid"):
         pmid = convert_pmcid_to_pmid(ref["pmcid"])
         if pmid:
             return pmid, "pmcid_to_pmid"
+    # Title + authors fallback
     title = ref.get("referenceTitle") or ref.get("title")
     authors = ref.get("authors")
     if title:
@@ -225,20 +203,24 @@ def fetch_pubmed_with_order(ref):
         pmid = search_pubmed_by_title_authors(title, authors)
         if pmid:
             return pmid, "title_author"
+    # If none found, but in your logic you want fallback always attempted, we already did
     return None, "no_match"
 
-
 def fetch_pmc_with_order(ref):
-    """Determine the best way to find a PMC record from a reference."""
+    """Return (pmcid_list, method) if found, else ([], method_str)."""
+    # Direct PMCID
     if ref.get("pmcid"):
         print(f"🔍 PMC: direct PMCID: {ref['pmcid']}")
         return [ref["pmcid"]], "pmcid_direct"
+    # Title fallback
     title = ref.get("referenceTitle") or ref.get("title")
+    authors = ref.get("authors")
     if title:
         print(f"🔍 PMC: title fallback: '{title}'")
         ids = search_pmc(title)
         if ids:
             return ids, "title_search"
+        # Retry short title
         short = " ".join(title.split()[:5])
         print(f"\t🔄 PMC: retry short title: '{short}'")
         ids2 = search_pmc(short)
@@ -246,9 +228,7 @@ def fetch_pmc_with_order(ref):
             return ids2, "short_title_search"
     return [], "no_match"
 
-
 def fetch_clinical_trial_and_pubmed_pmc(nct_id):
-    """Main function to fetch ClinicalTrials.gov + PubMed + PMC results."""
     clin = fetch_clinical_trial_data(nct_id)
     if "error" in clin:
         return clin
@@ -258,6 +238,7 @@ def fetch_clinical_trial_and_pubmed_pmc(nct_id):
     refs = protocol.get("referencesModule", {}).get("referenceList", [])
 
     if not refs:
+        # fallback synthesize
         synthesized = {}
         title = (protocol.get("identificationModule", {}).get("officialTitle")
                  or protocol.get("identificationModule", {}).get("briefTitle"))
@@ -271,14 +252,18 @@ def fetch_clinical_trial_and_pubmed_pmc(nct_id):
     pubmed = {"pmids": [], "studies": [], "search_methods": []}
     pmc = {"pmcids": [], "summaries": [], "search_methods": []}
 
+    # For each reference, run both PubMed and PMC searches
     for ref in refs:
+        # PubMed
         pmid, method = fetch_pubmed_with_order(ref)
         pubmed["search_methods"].append(method)
-        if pmid and pmid not in pubmed["pmids"]:
-            pubmed["pmids"].append(pmid)
-            study = fetch_pubmed_by_pmid(pmid)
-            pubmed["studies"].append(study)
+        if pmid:
+            if pmid not in pubmed["pmids"]:
+                pubmed["pmids"].append(pmid)
+                study = fetch_pubmed_by_pmid(pmid)
+                pubmed["studies"].append(study)
 
+        # PMC
         pmcids, pmc_method = fetch_pmc_with_order(ref)
         pmc["search_methods"].append(pmc_method)
         for pid in pmcids:
@@ -286,9 +271,12 @@ def fetch_clinical_trial_and_pubmed_pmc(nct_id):
                 pmc["pmcids"].append(pid)
                 summary_json = fetch_pmc_esummary(pid)
                 metadata = convert_pmc_summary_to_metadata(summary_json)
-                pmc["summaries"].append({"pmcid": pid, "metadata": metadata})
+                pmc["summaries"].append({
+                    "pmcid": pid,
+                    "metadata": metadata
+                })
 
-    return {
+    output = {
         "nct_id": nct_id,
         "sources": {
             "clinical_trials": {
@@ -302,10 +290,36 @@ def fetch_clinical_trial_and_pubmed_pmc(nct_id):
                 "search_methods": pubmed["search_methods"]
             },
             "pmc": {
-                "source": "pmc_api",
+                "source": "pmc",
                 "pmcids": pmc["pmcids"],
                 "summaries": pmc["summaries"],
                 "search_methods": pmc["search_methods"]
             }
         }
     }
+
+    return output
+
+def save_json(data, fname):
+    with open(fname, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    print(f"\n✅ Results saved to '{fname}'")
+
+def main():
+    print("🔬 ClinicalTrials.gov + PubMed + PMC (full, verbose) tool")
+    nct_id = input("Enter NCT ID (e.g. NCT01234567): ").strip().upper()
+    if not nct_id.startswith("NCT"):
+        print("❌ Invalid NCT ID.")
+        return
+
+    print(f"\n🔍 Looking up data for {nct_id}...\n")
+    result = fetch_clinical_trial_and_pubmed_pmc(nct_id)
+    if "error" in result:
+        print(f"❌ Error: {result['error']}")
+        return
+
+    fname = f"{nct_id}_full_verbose.json"
+    save_json(result, fname)
+
+if __name__ == "__main__":
+    main()

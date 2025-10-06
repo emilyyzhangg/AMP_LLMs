@@ -1,76 +1,61 @@
-from output_handler import save_responses_to_excel, save_responses_to_csv
+# interactive.py
 
-def interactive_session(ssh_client, model):
-    import shlex
-    import time
-    from output_handler import save_responses_to_excel
+import json
+from data.data_fetchers import fetch_clinical_trial_and_pubmed
+from data.output_handler import save_results_to_excel, save_results_to_csv
 
-    print("\nStarting interactive LLM session (type 'exit' to quit)...\n")
-    conversation = []
 
-    channel = ssh_client.get_transport().open_session()
-    channel.get_pty()  # Request a pseudo-terminal here!
-    safe_model = shlex.quote(model)
-    command = f'zsh -l -c "ollama run {safe_model}"'
-    channel.exec_command(command)
+def interactive_session():
+    """Interactive CLI tool for fetching ClinicalTrials.gov and PubMed data."""
+    print("🔬 ClinicalTrials.gov + PubMed Data Fetch Tool")
+    print("----------------------------------------------------")
 
-    # Flush initial output
-    time.sleep(0.5)
-    while channel.recv_ready():
-        _ = channel.recv(4096).decode()
+    nct_id = input("Enter NCT ID (e.g. NCT01234567): ").strip().upper()
 
-    try:
-        while True:
-            prompt = input("Enter prompt: ").strip()
-            if prompt.lower() == 'exit':
-                print("Ending interactive session.")
-                break
-            if not prompt:
-                continue  # skip empty inputs
+    if not nct_id.startswith("NCT"):
+        print("❌ Invalid NCT ID format.")
+        return
 
-            # Send prompt to LLM
-            channel.send(prompt + "\n")
+    print(f"\n🔍 Fetching data for {nct_id}...\n")
+    result = fetch_clinical_trial_and_pubmed(nct_id)
 
-            response_chunks = []
-            start_time = time.time()
+    if "error" in result:
+        print(f"❌ Error fetching data: {result['error']}")
+        return
 
-            # Read until no data arrives for 3 seconds
-            while True:
-                if channel.recv_ready():
-                    chunk = channel.recv(4096).decode()
-                    response_chunks.append(chunk)
-                    start_time = time.time()  # reset timer on data
-                else:
-                    if time.time() - start_time > 3:
-                        break
-                    time.sleep(0.1)
+    # Print summary
+    sources = result.get("sources", {})
+    pubmed_info = sources.get("pubmed", {})
+    clinical_info = sources.get("clinical_trials", {})
 
-                if channel.exit_status_ready():
-                    break
+    print("\n✅ Fetch complete!")
+    print(f"  ClinicalTrials.gov source: {clinical_info.get('source')}")
+    print(f"  PubMed source: {pubmed_info.get('source')}")
+    print(f"  PubMed PMIDs found: {len(pubmed_info.get('pmids', []))}")
+    print("----------------------------------------------------")
 
-            response = "".join(response_chunks).strip()
-            print(f"\nResponse:\n{response}\n")
-            conversation.append((prompt, response))
+    # Ask for save format
+    save_choice = input("Save results as (json/csv/xlsx/none)? ").strip().lower()
 
-    except KeyboardInterrupt:
-        print("\nSession interrupted by user.")
-    except Exception as e:
-        print(f"Error during interactive session: {e}")
-    finally:
-        # Save conversation if any
-        if conversation:
-            save_format = None
-            while save_format not in ('csv', 'xlsx', 'exit'):
-                save_format = input("Save conversation as (csv/xlsx) or 'exit' to skip saving: ").strip().lower()
+    if save_choice == "json":
+        filename = f"{nct_id}_results.json"
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(result, f, indent=2, ensure_ascii=False)
+        print(f"✅ Results saved to '{filename}'")
 
-            if save_format == 'csv':
-                path = input("Enter CSV file path to save conversation: ").strip()
-                save_responses_to_excel(conversation, path, csv_mode=True)
-            elif save_format == 'xlsx':
-                path = input("Enter Excel file path to save conversation: ").strip()
-                save_responses_to_excel(conversation, path, csv_mode=False)
-            else:
-                print("Conversation not saved.")
+    elif save_choice == "csv":
+        filename = f"{nct_id}_results.csv"
+        save_results_to_csv(result, filename)
+        print(f"✅ CSV saved to '{filename}'")
 
-        if channel is not None:
-            channel.close()
+    elif save_choice == "xlsx":
+        filename = f"{nct_id}_results.xlsx"
+        save_results_to_excel(result, filename)
+        print(f"✅ Excel file saved to '{filename}'")
+
+    else:
+        print("ℹ️ Results not saved.")
+
+
+if __name__ == "__main__":
+    interactive_session()
