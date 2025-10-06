@@ -1,0 +1,1 @@
+# small helpers for consistent prompts (sync functions ok)

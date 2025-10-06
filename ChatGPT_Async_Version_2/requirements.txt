@@ -1,0 +1,5 @@
+asyncssh
+aiohttp
+colorama
+openai
+requests
