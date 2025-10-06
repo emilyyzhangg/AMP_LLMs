@@ -1,32 +1,33 @@
 import os
 import sys
+import getpass
+from colorama import init, Fore, Style
 
-# --- Run env setup before anything else ---
+# --- Run environment setup before anything else ---
 from env_setup import ensure_env
 ensure_env()
 
-# Now safe to import modules that rely on pip-installed packages
-import getpass
-import subprocess
-from colorama import init, Fore, Style
+# After env is set, we can safely import these
 import paramiko
-
 from network.networking import ping_host
 from network.ssh_connection import connect_ssh
+from network.ssh_shell import open_interactive_shell
 from llm.llm_runner import run_llm_entrypoint
 from data.nct_lookup import run_nct_lookup
-from llm.interactive import interactive_session
-
 
 # Initialize colorama
 init(autoreset=True)
 
 
+# ===============================
+# Utility Input Helpers
+# ===============================
+
 def prompt_ip():
-    """Prompt for IP and verify connectivity."""
+    """Prompt user for IP and verify connectivity."""
     default_ip = "100.99.162.98"
     while True:
-        ip = input(Fore.CYAN + f"Enter remote host IP [{default_ip}]: ").strip() or default_ip
+        ip = input(Fore.CYAN + f"Enter remote host IP [{default_ip}]: " + Style.RESET_ALL).strip() or default_ip
         if ping_host(ip):
             print(Fore.GREEN + f"✅ Successfully reached {ip}")
             return ip
@@ -36,12 +37,27 @@ def prompt_ip():
 def prompt_username():
     """Prompt for SSH username."""
     default_user = "emilyzhang"
-    username = input(Fore.CYAN + f"Enter SSH username [{default_user}]: ").strip() or default_user
+    username = input(Fore.CYAN + f"Enter SSH username [{default_user}]: " + Style.RESET_ALL).strip() or default_user
     return username
 
 
+def prompt_password(username, ip):
+    """Prompt for SSH password (retries automatically on failure)."""
+    while True:
+        password = getpass.getpass(Fore.CYAN + f"Enter SSH password for {username}@{ip}: " + Style.RESET_ALL)
+        ssh = connect_ssh(ip, username, password)
+        if ssh:
+            print(Fore.GREEN + f"✅ Successfully connected to {username}@{ip}")
+            return ssh
+        print(Fore.RED + "❌ Incorrect password. Please try again.\n")
+
+
+# ===============================
+# Main Menu Logic
+# ===============================
+
 def main_menu(ssh):
-    """Display the main menu loop."""
+    """Main interactive AMP_LLM menu loop."""
     while True:
         print(Fore.YELLOW + Style.BRIGHT + "\n=== 🧠 AMP_LLM Main Menu ===")
         print(Fore.CYAN + "1." + Fore.WHITE + " Interactive Shell")
@@ -51,12 +67,20 @@ def main_menu(ssh):
 
         choice = input(Fore.GREEN + "\nSelect an option (1-4): " + Style.RESET_ALL).strip().lower()
 
+        # --- Interactive Shell ---
         if choice in ("1", "interactive", "shell"):
-            interactive_session(ssh)
-        elif choice in ("2", "llm", "workflow"):
-            run_llm_entrypoint()
+            open_interactive_shell(ssh)
+
+        # --- LLM Workflow ---
+        elif choice in ["2", "llm", "workflow"]:
+            print(Fore.CYAN + "\n=== ⚙️ LLM Workflow ===")
+            run_llm_entrypoint(ssh)
+
+        # --- NCT Lookup ---
         elif choice in ("3", "nct", "lookup"):
             run_nct_lookup()
+
+        # --- Exit ---
         elif choice in ("4", "exit", "quit"):
             print(Fore.MAGENTA + "👋 Exiting program. Goodbye!")
             try:
@@ -64,21 +88,25 @@ def main_menu(ssh):
             except Exception:
                 pass
             sys.exit(0)
+
         else:
             print(Fore.RED + "⚠️ Invalid option. Please choose 1–4.")
 
 
+# ===============================
+# Main Control Flow
+# ===============================
+
 def main():
-    """Top-level control flow."""
+    """Program entry point."""
     print(Fore.YELLOW + "\n=== 🔐 SSH Connection Setup ===")
     ip = prompt_ip()
     username = prompt_username()
 
-    ssh = connect_ssh(ip, username)
-    if not ssh:
-        print(Fore.RED + "❌ SSH connection could not be established.")
-        sys.exit(1)
+    # Loop until correct password
+    ssh = prompt_password(username, ip)
 
+    # Directly launch main menu after successful connection
     main_menu(ssh)
 
 
