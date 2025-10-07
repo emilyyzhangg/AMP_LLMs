@@ -10,6 +10,7 @@ import sys
 import os
 from typing import Optional
 from colorama import init, Fore, Style
+from llm.ct_research_runner import run_ct_research_assistant
 
 init(autoreset=True)
 
@@ -269,14 +270,13 @@ class AMPLLMApp:
             try:
                 await aprint(Fore.YELLOW + Style.BRIGHT + "\n=== 🧠 AMP_LLM Main Menu ===")
                 await aprint(Fore.CYAN + "1." + Fore.WHITE + " Interactive Shell")
-                await aprint(Fore.CYAN + "2." + Fore.WHITE + " LLM Workflow (API Mode) " + Fore.GREEN + "← Recommended")
+                await aprint(Fore.CYAN + "2." + Fore.WHITE + " LLM Workflow (API Mode)")
                 await aprint(Fore.CYAN + "3." + Fore.WHITE + " LLM Workflow (SSH Terminal)")
                 await aprint(Fore.CYAN + "4." + Fore.WHITE + " NCT Lookup")
-                await aprint(Fore.CYAN + "5." + Fore.WHITE + " Exit")
+                await aprint(Fore.CYAN + "5." + Fore.WHITE + " Clinical Trial Research Assistant " + Fore.GREEN + "← NEW!")
+                await aprint(Fore.CYAN + "6." + Fore.WHITE + " Exit")
                 
-                choice = await ainput(
-                    Fore.GREEN + "\nSelect an option (1-5): " + Style.RESET_ALL
-                )
+                choice = await ainput(Fore.GREEN + "\nSelect an option (1-6): ")
                 choice = choice.strip().lower()
                 
                 if choice in ("1", "interactive", "shell"):
@@ -295,9 +295,12 @@ class AMPLLMApp:
                     logger.info("User selected: NCT Lookup")
                     await run_nct_lookup()
                 
-                elif choice in ("5", "exit", "quit"):
+                elif choice in ("5", "research", "assistant"):
+                    logger.info("User selected: Clinical Trial Research Assistant")
+                    await run_ct_research_assistant(self.ssh_connection)
+            
+                elif choice in ("6", "exit", "quit"):
                     await aprint(Fore.MAGENTA + "👋 Exiting. Goodbye!")
-                    logger.info("User initiated exit")
                     break
                 
                 else:
