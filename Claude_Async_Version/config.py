@@ -23,8 +23,8 @@ class NetworkConfig:
     default_username: str = field(default_factory=lambda: os.getenv('SSH_DEFAULT_USERNAME', 'emilyzhang'))
     ping_timeout: float = 1.0
     ssh_timeout: int = 30
-    ssh_keepalive_interval: int = 30  # Send keepalive every 30 seconds
-    ssh_keepalive_count_max: int = 3  # Disconnect after 3 failed keepalives
+    ssh_keepalive_interval: int = 5  # Send keepalive every 30 seconds
+    ssh_keepalive_count_max: int = 5  # Disconnect after 3 failed keepalives
     max_auth_attempts: int = 3
 
 

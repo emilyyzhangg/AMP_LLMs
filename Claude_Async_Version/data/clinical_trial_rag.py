@@ -1,6 +1,8 @@
 """
 Clinical Trial RAG (Retrieval-Augmented Generation) System
 Indexes JSON database of clinical trials and provides structured extraction.
+
+UPDATED: Enhanced outcome normalization and validation
 """
 import json
 import re
@@ -14,7 +16,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-# Validation Enums
+# ============================================================================
+# VALIDATION ENUMS
+# ============================================================================
+
 class StudyStatus(str, Enum):
     """Valid study status values."""
     NOT_YET_RECRUITING = "NOT_YET_RECRUITING"
@@ -89,15 +94,87 @@ class FailureReason(str, Enum):
     NOT_APPLICABLE = "N/A"
 
 
-# Helper function for validation
-def validate_enum_value(value: str, enum_class, field_name: str) -> str:
+# ============================================================================
+# HELPER FUNCTIONS
+# ============================================================================
+
+def normalize_outcome(status: str) -> str:
     """
-    Validate a value against an enum class.
+    Intelligently map study status to valid outcome values.
+    Handles common variations and synonyms.
+    
+    Args:
+        status: Raw status string from trial data
+        
+    Returns:
+        Valid Outcome enum value
+    """
+    if not status:
+        return "Unknown"
+    
+    status_lower = status.lower().strip()
+    
+    # Direct mappings for common cases
+    mappings = {
+        # Active/Ongoing states
+        'ongoing': 'Active, not recruiting',
+        'active': 'Active, not recruiting',
+        'active_not_recruiting': 'Active, not recruiting',
+        'active not recruiting': 'Active, not recruiting',
+        
+        # Recruiting states
+        'recruiting': 'Recruiting',
+        'enrolling': 'Recruiting',
+        'enrolling_by_invitation': 'Recruiting',
+        'not_yet_recruiting': 'Recruiting',
+        'not yet recruiting': 'Recruiting',
+        
+        # Completed states
+        'completed': 'Positive',  # Assume positive unless evidence of failure
+        'complete': 'Positive',
+        'finished': 'Positive',
+        
+        # Failed/Stopped states
+        'terminated': 'Terminated',
+        'stopped': 'Terminated',
+        'suspended': 'Terminated',
+        'halted': 'Terminated',
+        
+        # Withdrawn
+        'withdrawn': 'Withdrawn',
+        'cancelled': 'Withdrawn',
+        'canceled': 'Withdrawn',
+        
+        # Unknown
+        'unknown': 'Unknown',
+        'unavailable': 'Unknown',
+    }
+    
+    # Try direct mapping first
+    if status_lower in mappings:
+        logger.debug(f"Mapped status '{status}' → '{mappings[status_lower]}'")
+        return mappings[status_lower]
+    
+    # Try partial matching
+    for key, value in mappings.items():
+        if key in status_lower or status_lower in key:
+            logger.info(f"Partial match: '{status}' → '{value}'")
+            return value
+    
+    # Default to Unknown
+    logger.warning(f"Could not map status '{status}' to outcome, using 'Unknown'")
+    return 'Unknown'
+
+
+def validate_enum_value(value: str, enum_class, field_name: str, fuzzy: bool = True) -> str:
+    """
+    Enhanced validation with better fuzzy matching and logging.
     
     Args:
         value: Value to validate
         enum_class: Enum class to validate against
         field_name: Name of field (for logging)
+        fuzzy: Whether to attempt fuzzy matching
         
     Returns:
         Valid enum value or closest match
@@ -105,28 +182,47 @@ def validate_enum_value(value: str, enum_class, field_name: str) -> str:
     if not value or value == "N/A":
         return "N/A"
     
-    # Direct match
-    try:
-        for member in enum_class:
-            if value.upper() == member.value.upper():
-                return member.value
-            # Also try without spaces/special chars
-            if value.upper().replace(" ", "").replace("_", "") == member.value.upper().replace(" ", "").replace("_", "").replace("|", "").replace("(", "").replace(")", ""):
-                return member.value
-    except Exception:
-        pass
+    # Clean the input
+    value_clean = value.strip()
     
-    # Fuzzy matching
-    value_lower = value.lower()
+    # Direct exact match (case insensitive)
     for member in enum_class:
-        if value_lower in member.value.lower() or member.value.lower() in value_lower:
-            logger.info(f"Fuzzy matched '{value}' to '{member.value}' for {field_name}")
+        if value_clean.upper() == member.value.upper():
             return member.value
     
-    # No match found
-    logger.warning(f"Could not validate '{value}' for {field_name}, using as-is")
-    return value
+    if not fuzzy:
+        logger.warning(f"Invalid {field_name}: '{value}' (no match found)")
+        return value_clean
+    
+    # Fuzzy matching - normalize both sides
+    def normalize(s):
+        """Remove spaces, underscores, pipes, parens for comparison."""
+        return s.upper().replace(" ", "").replace("_", "").replace("|", "").replace("(", "").replace(")", "").replace("-", "")
+    
+    value_norm = normalize(value_clean)
+    
+    # Try normalized matching
+    for member in enum_class:
+        if value_norm == normalize(member.value):
+            logger.info(f"Fuzzy matched '{value}' → '{member.value}' for {field_name}")
+            return member.value
+    
+    # Try substring matching (for cases like "Phase 1" → "PHASE1")
+    for member in enum_class:
+        member_norm = normalize(member.value)
+        if value_norm in member_norm or member_norm in value_norm:
+            logger.info(f"Substring matched '{value}' → '{member.value}' for {field_name}")
+            return member.value
+    
+    # No match found - log and return original
+    logger.warning(f"Could not validate '{value}' for {field_name}")
+    logger.debug(f"Valid options: {[m.value for m in enum_class]}")
+    return value_clean
 
+
+# ============================================================================
+# DATA CLASSES
+# ============================================================================
 
 @dataclass
 class ClinicalTrialExtraction:
@@ -147,7 +243,7 @@ class ClinicalTrialExtraction:
     sequence: str = ""
     dramp_name: str = ""
     dramp_evidence: List[str] = None
-    study_ids: List[str] = None  # PMIDs, DOIs
+    study_ids: List[str] = None
     outcome: str = ""
     failure_reason: str = ""
     subsequent_trial_ids: List[str] = None
@@ -198,11 +294,15 @@ class ClinicalTrialExtraction:
             f"Reason for Failure: {self.failure_reason}",
             f"Subsequent Trial IDs: {', '.join(self.subsequent_trial_ids) if self.subsequent_trial_ids else 'N/A'}",
             f"  Evidence: {', '.join(self.subsequent_evidence) if self.subsequent_evidence else 'N/A'}",
-            f"Peptide: {'Yes' if self.is_peptide else 'No'}",
+            f"Peptide: {'True' if self.is_peptide else 'False'}",
             f"Comments: {self.comments}",
         ]
         return "\n".join(lines)
 
+
+# ============================================================================
+# DATABASE CLASS
+# ============================================================================
 
 class ClinicalTrialDatabase:
     """Manages indexed clinical trial database."""
@@ -319,7 +419,7 @@ class ClinicalTrialDatabase:
     
     def extract_structured_data(self, nct_id: str) -> Optional[ClinicalTrialExtraction]:
         """
-        Extract structured data from trial.
+        Extract structured data from trial with enhanced outcome mapping.
         
         Args:
             nct_id: NCT number
@@ -334,7 +434,7 @@ class ClinicalTrialDatabase:
         extraction = ClinicalTrialExtraction(nct_number=nct_id.upper())
         
         try:
-            # Navigate the nested structure based on your sample
+            # Navigate the nested structure
             sources = trial.get('sources', {})
             ct_source = sources.get('clinical_trials', {})
             ct_data = ct_source.get('data', {})
@@ -348,11 +448,16 @@ class ClinicalTrialDatabase:
                 ""
             )
             
-            # Status
+            # Status - Store raw status for outcome mapping
             status_mod = protocol.get('statusModule', {})
-            extraction.study_status = status_mod.get('overallStatus', '')
+            raw_status = status_mod.get('overallStatus', '')
+            extraction.study_status = validate_enum_value(raw_status, StudyStatus, "study_status")
+            
             extraction.start_date = status_mod.get('startDateStruct', {}).get('date', '')
-            extraction.completion_date = status_mod.get('completionDateStruct', {}).get('date', '')
+            completion_date_struct = status_mod.get('completionDateStruct', {})
+            if not completion_date_struct:
+                completion_date_struct = status_mod.get('primaryCompletionDateStruct', {})
+            extraction.completion_date = completion_date_struct.get('date', '')
             
             # Description
             desc = protocol.get('descriptionModule', {})
@@ -362,9 +467,14 @@ class ClinicalTrialDatabase:
             cond_mod = protocol.get('conditionsModule', {})
             extraction.conditions = cond_mod.get('conditions', [])
             
-            # Design (phases)
+            # Design (phases & enrollment)
             design = protocol.get('designModule', {})
-            extraction.phases = design.get('phases', [])
+            raw_phases = design.get('phases', [])
+            # Validate each phase
+            extraction.phases = [
+                validate_enum_value(p, Phase, "phase") 
+                for p in raw_phases
+            ]
             extraction.enrollment = design.get('enrollmentInfo', {}).get('count', 0)
             
             # Interventions
@@ -385,26 +495,109 @@ class ClinicalTrialDatabase:
             
             # Check if peptide-related
             full_text = json.dumps(trial).lower()
-            peptide_keywords = ['peptide', 'amp', 'antimicrobial peptide']
+            peptide_keywords = ['peptide', 'amp', 'antimicrobial peptide', 'dramp']
             extraction.is_peptide = any(kw in full_text for kw in peptide_keywords)
             
-            # Determine outcome from status
-            status = extraction.study_status.upper()
-            if status == 'COMPLETED':
-                extraction.outcome = 'Completed'
-            elif status in ('TERMINATED', 'WITHDRAWN', 'SUSPENDED'):
-                extraction.outcome = 'Failed/Terminated'
-                extraction.failure_reason = f"Study {status.lower()}"
-            elif status in ('RECRUITING', 'ACTIVE_NOT_RECRUITING', 'ENROLLING_BY_INVITATION'):
-                extraction.outcome = 'Ongoing'
+            # SMART OUTCOME MAPPING - Use normalize_outcome function
+            extraction.outcome = normalize_outcome(raw_status)
+            
+            # Determine failure reason based on status and whyStopped
+            if extraction.outcome in ['Terminated', 'Withdrawn']:
+                # Try to find why-stopped reason
+                why_stopped = status_mod.get('whyStopped', '').lower()
+                
+                if any(word in why_stopped for word in ['safe', 'toxic', 'adverse', 'ae', 'safety']):
+                    extraction.failure_reason = 'Toxic/Unsafe'
+                elif any(word in why_stopped for word in ['recruit', 'enroll', 'accru', 'enrollment']):
+                    extraction.failure_reason = 'Recruitment issues'
+                elif any(word in why_stopped for word in ['covid', 'pandemic', 'coronavirus']):
+                    extraction.failure_reason = 'Due to covid'
+                elif any(word in why_stopped for word in ['business', 'sponsor', 'fund', 'financial']):
+                    extraction.failure_reason = 'Business Reason'
+                elif any(word in why_stopped for word in ['ineffective', 'efficacy', 'futility', 'futile']):
+                    extraction.failure_reason = 'Ineffective for purpose'
+                else:
+                    # Default based on status
+                    if 'TERMINATED' in raw_status.upper():
+                        extraction.failure_reason = 'Business Reason'  # Most common
+                    elif 'WITHDRAWN' in raw_status.upper():
+                        extraction.failure_reason = 'Business Reason'
+                    else:
+                        extraction.failure_reason = 'N/A'
             else:
-                extraction.outcome = status
+                extraction.failure_reason = 'N/A'
+            
+            # Classify based on peptide status and conditions
+            if extraction.is_peptide:
+                # Check if treating infection
+                condition_text = ' '.join(extraction.conditions).lower()
+                intervention_text = ' '.join(extraction.interventions).lower()
+                combined_text = condition_text + ' ' + intervention_text
+                
+                infection_keywords = [
+                    'infection', 'sepsis', 'bacterial', 'fungal', 
+                    'antimicrobial', 'antibiotic', 'pathogen', 'septic'
+                ]
+                
+                if any(kw in combined_text for kw in infection_keywords):
+                    extraction.classification = 'AMP(infection)'
+                    extraction.classification_evidence = [
+                        'Study involves antimicrobial peptide treating infections/bacterial diseases'
+                    ]
+                else:
+                    extraction.classification = 'AMP(other)'
+                    extraction.classification_evidence = [
+                        'Study involves antimicrobial peptide for non-infection purposes'
+                    ]
+            else:
+                extraction.classification = 'Other'
+                extraction.classification_evidence = ['Not an antimicrobial peptide study']
+            
+            # Try to determine delivery mode from interventions
+            intervention_text = ' '.join(extraction.interventions).lower()
+            
+            if any(word in intervention_text for word in ['intravenous', 'iv ', 'i.v.', 'infusion']):
+                extraction.delivery_mode = 'IV'
+            elif any(word in intervention_text for word in ['intramuscular', 'i.m.', 'im injection']):
+                extraction.delivery_mode = 'Injection/Infusion - Intramuscular'
+            elif any(word in intervention_text for word in ['subcutaneous', 'subq', 's.c.', 'sc injection']):
+                extraction.delivery_mode = 'Injection/Infusion - Subcutaneous/Intradermal'
+            elif any(word in intervention_text for word in ['tablet', 'oral tablet']):
+                extraction.delivery_mode = 'Oral - Tablet'
+            elif any(word in intervention_text for word in ['capsule', 'oral capsule']):
+                extraction.delivery_mode = 'Oral - Capsule'
+            elif any(word in intervention_text for word in ['topical', 'cream', 'gel', 'ointment']):
+                extraction.delivery_mode = 'Topical - Cream/Gel'
+            elif any(word in intervention_text for word in ['nasal', 'intranasal']):
+                extraction.delivery_mode = 'Intranasal'
+            elif any(word in intervention_text for word in ['inhal', 'nebuliz']):
+                extraction.delivery_mode = 'Inhalation'
+            elif 'oral' in intervention_text:
+                extraction.delivery_mode = 'Oral - Unspecified'
+            else:
+                extraction.delivery_mode = 'Other/Unspecified'
+            
+            # Add comment about extraction
+            extraction.comments = f"Auto-extracted from {nct_id}. "
+            if extraction.is_peptide:
+                extraction.comments += "Peptide-related study detected. "
+            if extraction.outcome == 'Unknown':
+                extraction.comments += f"Original status was '{raw_status}'. "
+            if extraction.classification == 'AMP(other)':
+                extraction.comments += "Classified as AMP(other) due to non-infection focus. "
+            elif extraction.classification == 'AMP(infection)':
+                extraction.comments += "Classified as AMP(infection) due to infection treatment focus. "
             
         except Exception as e:
-            logger.error(f"Error extracting data for {nct_id}: {e}")
+            logger.error(f"Error extracting data for {nct_id}: {e}", exc_info=True)
+            extraction.comments = f"Extraction encountered errors: {str(e)}"
         
         return extraction
 
+
+# ============================================================================
+# RAG SYSTEM CLASS
+# ============================================================================
 
 class ClinicalTrialRAG:
     """RAG system for clinical trial research."""

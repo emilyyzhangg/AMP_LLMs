@@ -141,6 +141,27 @@ class AMPLLMApp:
                 await asyncio.sleep(0.1)  # Give connection time to close
             except Exception as e:
                 logger.error(f"Error closing SSH: {e}")
+                # In main.py, add this method to AMPLLMApp class:
+
+    async def ensure_connected(self):
+        """Check if SSH is still connected, reconnect if needed."""
+        try:
+            if self.ssh_connection and not self.ssh_connection.is_closed():
+                return True
+        except:
+            pass
+        
+        # Connection is dead, try to reconnect
+        logger.warning("SSH connection lost, attempting reconnect...")
+        await aprint(Fore.YELLOW + "⚠️  SSH connection lost, reconnecting...")
+        
+        success = await self.reconnect_ssh()
+        if success:
+            await aprint(Fore.GREEN + "✅ Reconnected!")
+            return True
+        else:
+            await aprint(Fore.RED + "❌ Reconnection failed")
+            return False
     
     async def reconnect_ssh(self) -> bool:
         """Attempt to reconnect SSH using stored credentials."""
