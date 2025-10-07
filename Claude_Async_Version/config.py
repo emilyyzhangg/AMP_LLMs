@@ -21,9 +21,10 @@ class NetworkConfig:
     """Network and SSH configuration."""
     default_ip: str = field(default_factory=lambda: os.getenv('SSH_DEFAULT_IP', '100.99.162.98'))
     default_username: str = field(default_factory=lambda: os.getenv('SSH_DEFAULT_USERNAME', 'emilyzhang'))
-    default_password: Optional[str] = field(default_factory=lambda: os.getenv('SSH_DEFAULT_PASSWORD'))
     ping_timeout: float = 1.0
     ssh_timeout: int = 30
+    ssh_keepalive_interval: int = 30  # Send keepalive every 30 seconds
+    ssh_keepalive_count_max: int = 3  # Disconnect after 3 failed keepalives
     max_auth_attempts: int = 3
 
 
@@ -39,7 +40,7 @@ class APIConfig:
     user_agent: str = field(
         default_factory=lambda: os.getenv(
             'API_USER_AGENT',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            'AMP_LLM/2.0 (Research Tool; +https://github.com/yourorg/amp_llm)'
         )
     )
     

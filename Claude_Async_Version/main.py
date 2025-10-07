@@ -2,6 +2,7 @@
 Main entry point for AMP_LLM application.
 Uses aioconsole for non-blocking async input and proper signal handling.
 Auto-installs dependencies from requirements.txt and manages virtual environment.
+Updated with API mode for Ollama to avoid terminal fragmentation.
 """
 import asyncio
 import signal
@@ -101,6 +102,7 @@ from network.async_networking import ping_host
 from network.ssh_connection import connect_ssh
 from network.ssh_shell import open_interactive_shell
 from llm.async_llm_runner import run_llm_entrypoint
+from llm.async_llm_runner_api import run_llm_entrypoint_api
 from data.async_nct_lookup import run_nct_lookup
 
 
@@ -116,7 +118,6 @@ class AMPLLMApp:
         self.ssh_connection: Optional[object] = None
         self.ssh_ip: Optional[str] = None
         self.ssh_username: Optional[str] = None
-        self.ssh_password: Optional[str] = None
         self.running = True
         self._setup_signal_handlers()
     
@@ -163,6 +164,15 @@ class AMPLLMApp:
         
         return self.is_ssh_connected()
     
+    def is_ssh_connected(self) -> bool:
+        """Check if SSH connection is active."""
+        if not self.ssh_connection:
+            return False
+        try:
+            return not self.ssh_connection.is_closed()
+        except AttributeError:
+            return True  # Assume connected if no is_closed method
+    
     async def prompt_ip(self) -> str:
         """Prompt for IP address with validation and ping check."""
         default = config.network.default_ip
@@ -207,7 +217,7 @@ class AMPLLMApp:
         except Exception as e:
             logger.error(f"Error in username prompt: {e}")
             return default
-        
+    
     async def prompt_password_and_connect(self, username: str, ip: str) -> object:
         """Prompt for password and establish SSH connection."""
         import getpass
@@ -216,14 +226,10 @@ class AMPLLMApp:
         
         while self.running and attempt < config.network.max_auth_attempts:
             try:
-                # Check if password is in config
-                if config.network.default_password:
-                    password = config.network.default_password
-                    await aprint(Fore.YELLOW + "Using password from .env file...")
-                else:
-                    # Use getpass for hidden password input
-                    await aprint(Fore.CYAN + f"Enter SSH password for {username}@{ip}: ", end='')
-                    password = getpass.getpass('')
+                # Use getpass for hidden password input
+                # Note: This blocks briefly but is acceptable for password entry
+                await aprint(Fore.CYAN + f"Enter SSH password for {username}@{ip}: ", end='')
+                password = getpass.getpass('')
                 
                 await aprint(Fore.YELLOW + "Connecting...")
                 ssh = await connect_ssh(ip, username, password)
@@ -231,6 +237,9 @@ class AMPLLMApp:
                 if ssh:
                     await aprint(Fore.GREEN + f"✅ Successfully connected to {username}@{ip}")
                     logger.info(f"SSH connection established: {username}@{ip}")
+                    # Store connection info
+                    self.ssh_ip = ip
+                    self.ssh_username = username
                     return ssh
                 
                 attempt += 1
@@ -260,12 +269,13 @@ class AMPLLMApp:
             try:
                 await aprint(Fore.YELLOW + Style.BRIGHT + "\n=== 🧠 AMP_LLM Main Menu ===")
                 await aprint(Fore.CYAN + "1." + Fore.WHITE + " Interactive Shell")
-                await aprint(Fore.CYAN + "2." + Fore.WHITE + " LLM Workflow")
-                await aprint(Fore.CYAN + "3." + Fore.WHITE + " NCT Lookup")
-                await aprint(Fore.CYAN + "4." + Fore.WHITE + " Exit")
+                await aprint(Fore.CYAN + "2." + Fore.WHITE + " LLM Workflow (API Mode) " + Fore.GREEN + "← Recommended")
+                await aprint(Fore.CYAN + "3." + Fore.WHITE + " LLM Workflow (SSH Terminal)")
+                await aprint(Fore.CYAN + "4." + Fore.WHITE + " NCT Lookup")
+                await aprint(Fore.CYAN + "5." + Fore.WHITE + " Exit")
                 
                 choice = await ainput(
-                    Fore.GREEN + "\nSelect an option (1-4): " + Style.RESET_ALL
+                    Fore.GREEN + "\nSelect an option (1-5): " + Style.RESET_ALL
                 )
                 choice = choice.strip().lower()
                 
@@ -273,21 +283,25 @@ class AMPLLMApp:
                     logger.info("User selected: Interactive Shell")
                     await open_interactive_shell(self.ssh_connection)
                 
-                elif choice in ("2", "llm", "workflow"):
-                    logger.info("User selected: LLM Workflow")
+                elif choice in ("2", "llm", "api"):
+                    logger.info("User selected: LLM Workflow (API)")
+                    await run_llm_entrypoint_api(self.ssh_connection)
+                
+                elif choice in ("3", "terminal", "ssh"):
+                    logger.info("User selected: LLM Workflow (SSH Terminal)")
                     await run_llm_entrypoint(self.ssh_connection)
                 
-                elif choice in ("3", "nct", "lookup"):
+                elif choice in ("4", "nct", "lookup"):
                     logger.info("User selected: NCT Lookup")
                     await run_nct_lookup()
                 
-                elif choice in ("4", "exit", "quit"):
+                elif choice in ("5", "exit", "quit"):
                     await aprint(Fore.MAGENTA + "👋 Exiting. Goodbye!")
                     logger.info("User initiated exit")
                     break
                 
                 else:
-                    await aprint(Fore.RED + "❌ Invalid option. Please choose 1-4.")
+                    await aprint(Fore.RED + "❌ Invalid option. Please choose 1-5.")
                 
             except GracefulExit:
                 break

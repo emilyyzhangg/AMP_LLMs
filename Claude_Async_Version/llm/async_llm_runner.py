@@ -1,5 +1,6 @@
 """
 LLM workflow runner with async input handling and file loading support.
+Fixed: Better file search logic and clearer paste mode instructions.
 """
 from colorama import Fore
 from .async_llm_utils import list_remote_models, start_persistent_ollama, send_and_stream
@@ -96,7 +97,12 @@ async def run_llm_entrypoint(ssh):
     # Chat loop
     try:
         await aprint(Fore.GREEN + "\n✅ Model ready! Type your prompts (or 'exit'/'main menu' to quit)")
-        await aprint(Fore.CYAN + "💡 Commands: 'paste' for multi-line | 'load <filename>' to load file\n")
+        await aprint(Fore.CYAN + "💡 Commands:")
+        await aprint(Fore.CYAN + "   • 'paste' - Enter multi-line paste mode (end with '<<<end' on new line)")
+        await aprint(Fore.CYAN + "   • 'load <filename>' - Load file content")
+        await aprint(Fore.CYAN + "   • 'load <filename> <question>' - Load file and ask question")
+        await aprint(Fore.CYAN + "   • 'pwd' - Show current working directory")
+        await aprint(Fore.CYAN + "   • 'ls' or 'dir' - List files in output/ directory\n")
         
         while True:
             try:
@@ -111,69 +117,173 @@ async def run_llm_entrypoint(ssh):
                     await aprint(Fore.YELLOW + "Returning to main menu...")
                     break
                 
-                # Multi-line paste mode
+                # Show current directory
+                if prompt.lower() in ('pwd', 'cwd'):
+                    await aprint(Fore.CYAN + f"📂 Current directory: {Path.cwd().absolute()}")
+                    continue
+                
+                # List files in output directory
+                if prompt.lower() in ('ls', 'dir', 'list'):
+                    output_dir = Path('output')
+                    await aprint(Fore.CYAN + f"📂 Current directory: {Path.cwd().absolute()}")
+                    
+                    if output_dir.exists() and output_dir.is_dir():
+                        await aprint(Fore.CYAN + f"\n📁 Files in output/ directory:")
+                        try:
+                            files = list(output_dir.iterdir())
+                            if files:
+                                for f in sorted(files):
+                                    size = f.stat().st_size if f.is_file() else 0
+                                    ftype = "📄" if f.is_file() else "📁"
+                                    await aprint(Fore.WHITE + f"  {ftype} {f.name} ({size:,} bytes)")
+                            else:
+                                await aprint(Fore.YELLOW + "  (empty directory)")
+                        except Exception as e:
+                            await aprint(Fore.RED + f"  Error: {e}")
+                    else:
+                        await aprint(Fore.YELLOW + "\n⚠️ output/ directory does not exist")
+                        await aprint(Fore.CYAN + "Tip: Create it with files to load")
+                    continue
+                
+                # Multi-line paste mode with improved instructions
                 if prompt.lower() == 'paste':
-                    await aprint(Fore.YELLOW + "\n📋 Multi-line mode: Paste your content, then type '<<<END' on a new line")
+                    await aprint(Fore.YELLOW + "\n📋 Multi-line paste mode activated")
+                    await aprint(Fore.YELLOW + "Instructions:")
+                    await aprint(Fore.YELLOW + "  1. Paste your content (JSON, text, code, etc.)")
+                    await aprint(Fore.YELLOW + "  2. Press Enter after pasting")
+                    await aprint(Fore.YELLOW + "  3. Type '<<<end' on a new line and press Enter")
+                    await aprint(Fore.WHITE + "")
+                    
                     lines = []
                     while True:
-                        line = await ainput('')
-                        if line.strip() == '<<<END':
+                        try:
+                            line = await ainput('')
+                            # Check for end marker (case insensitive)
+                            if line.strip().lower() == '<<<end':
+                                break
+                            lines.append(line)
+                        except KeyboardInterrupt:
+                            await aprint(Fore.RED + "\n❌ Paste mode cancelled")
+                            lines = []
                             break
-                        lines.append(line)
+                    
+                    if not lines:
+                        await aprint(Fore.RED + "No content captured.")
+                        continue
+                        
                     prompt = '\n'.join(lines)
+                    
                     if not prompt.strip():
                         await aprint(Fore.RED + "No content provided.")
                         continue
+                    
                     await aprint(Fore.GREEN + f"✅ Captured {len(lines)} lines ({len(prompt)} characters)")
                 
-                # Load file mode
+                # Load file mode with improved path searching
                 elif prompt.lower().startswith('load '):
                     # Extract filename and optional question
                     parts = prompt[5:].strip().split(maxsplit=1)
                     filename = parts[0]
                     initial_question = parts[1] if len(parts) > 1 else None
                     
-                    try:
-                        filepath = Path(filename)
-                        
-                        # Try multiple locations
-                        search_paths = [
-                            filepath,  # Exact path as given
-                            Path('output') / filename,  # output directory
-                            Path('.') / filename,  # Current directory
-                            Path(__file__).parent.parent / 'output' / filename,  # Relative to script
-                        ]
-                        
-                        found_path = None
-                        for path in search_paths:
+                    # Normalize path separators for Windows
+                    filename = filename.replace('\\', '/')
+                    
+                    # Search for file in multiple locations
+                    search_paths = [
+                        Path(filename),  # Exact path as given
+                        Path('output') / filename,  # output directory
+                        Path('output') / f"{filename}.txt",  # output with .txt
+                        Path('output') / f"{filename}.json",  # output with .json
+                        Path('.') / filename,  # current directory
+                        Path('.') / f"{filename}.txt",  # current with .txt
+                        Path('.') / f"{filename}.json",  # current with .json
+                        Path('..') / filename,  # parent directory
+                        Path('..') / 'output' / filename,  # parent's output dir
+                    ]
+                    
+                    # Try to find the file
+                    found_path = None
+                    await aprint(Fore.YELLOW + f"🔍 Searching for: {filename}")
+                    
+                    for path in search_paths:
+                        try:
                             if path.exists() and path.is_file():
                                 found_path = path
+                                await aprint(Fore.GREEN + f"✓ Found at: {path.absolute()}")
                                 break
-                        
-                        if not found_path:
-                            await aprint(Fore.RED + f"❌ File not found: {filename}")
-                            await aprint(Fore.YELLOW + f"Searched in:")
-                            for p in search_paths[:3]:
-                                await aprint(Fore.YELLOW + f"  - {p.absolute()}")
-                            await aprint(Fore.CYAN + "\nTip: Use full path or put file in 'output' folder")
+                            else:
+                                logger.debug(f"Not found: {path.absolute()}")
+                        except Exception as e:
+                            logger.debug(f"Error checking {path}: {e}")
                             continue
+                    
+                    if not found_path:
+                        await aprint(Fore.RED + f"❌ File not found: {filename}")
+                        await aprint(Fore.YELLOW + f"\n📂 Current working directory: {Path.cwd().absolute()}")
+                        await aprint(Fore.YELLOW + "\n🔍 Searched in:")
+                        for path in search_paths:
+                            try:
+                                exists = "✓ EXISTS" if path.exists() else "✗ not found"
+                                await aprint(Fore.YELLOW + f"  • {path.absolute()} [{exists}]")
+                            except:
+                                await aprint(Fore.YELLOW + f"  • {path} [invalid path]")
                         
-                        # Read file
-                        with open(found_path, 'r', encoding='utf-8') as f:
-                            file_content = f.read()
+                        # List files in output directory if it exists
+                        output_dir = Path('output')
+                        if output_dir.exists() and output_dir.is_dir():
+                            await aprint(Fore.CYAN + f"\n📁 Files in output/ directory:")
+                            try:
+                                files = list(output_dir.iterdir())
+                                if files:
+                                    for f in sorted(files)[:10]:  # Show first 10 files
+                                        await aprint(Fore.CYAN + f"  • {f.name}")
+                                    if len(files) > 10:
+                                        await aprint(Fore.CYAN + f"  ... and {len(files)-10} more")
+                                else:
+                                    await aprint(Fore.CYAN + "  (empty)")
+                            except Exception as e:
+                                await aprint(Fore.RED + f"  Error listing: {e}")
                         
-                        await aprint(Fore.GREEN + f"✅ Loaded {found_path.name} from {found_path.parent} ({len(file_content)} characters)")
+                        await aprint(Fore.CYAN + "\n💡 Tips:")
+                        await aprint(Fore.CYAN + "  • Check the exact filename (case-sensitive on some systems)")
+                        await aprint(Fore.CYAN + "  • Try the full path: load C:\\Users\\...\\file.txt")
+                        await aprint(Fore.CYAN + "  • Use forward slashes: load C:/Users/.../file.txt")
+                        continue
+                    
+                    try:
+                        # Read file with error handling for different encodings
+                        try:
+                            with open(found_path, 'r', encoding='utf-8') as f:
+                                file_content = f.read()
+                        except UnicodeDecodeError:
+                            # Try with different encoding
+                            with open(found_path, 'r', encoding='latin-1') as f:
+                                file_content = f.read()
+                        
+                        await aprint(Fore.GREEN + f"✅ Loaded {found_path.name} from {found_path.parent}")
+                        await aprint(Fore.GREEN + f"   Size: {len(file_content)} characters")
+                        
+                        # Show preview of content
+                        preview = file_content[:200]
+                        if len(file_content) > 200:
+                            preview += "..."
+                        await aprint(Fore.CYAN + f"   Preview: {preview}\n")
                         
                         # Ask for additional context if not provided in command
                         if initial_question:
                             context = initial_question
+                            await aprint(Fore.CYAN + f"Question: {context}\n")
                         else:
-                            context = await ainput(Fore.CYAN + "Add a question/instruction (or press Enter to just analyze): ")
+                            context = await ainput(
+                                Fore.CYAN + 
+                                "Add a question/instruction (or press Enter to analyze file): "
+                            )
                         
                         if context.strip():
-                            prompt = f"{context.strip()}\n\n{file_content}"
+                            prompt = f"{context.strip()}\n\n```\n{file_content}\n```"
                         else:
-                            prompt = file_content
+                            prompt = f"Please analyze this content:\n\n```\n{file_content}\n```"
                         
                     except Exception as e:
                         await aprint(Fore.RED + f"❌ Error loading file: {e}")
@@ -184,11 +294,20 @@ async def run_llm_entrypoint(ssh):
                     continue
                 
                 # Send prompt and stream response
-                await aprint(Fore.YELLOW + "\n🤔 Thinking...")
+                await aprint(Fore.YELLOW + f"\n🤔 Sending prompt ({len(prompt)} chars) and waiting for response...")
                 try:
                     out = await send_and_stream(proc, prompt)
-                    await aprint(Fore.GREEN + '\n🧠 Model output:')
-                    await aprint(Fore.WHITE + out + '\n')
+                    
+                    if not out or len(out.strip()) < 10:
+                        await aprint(Fore.RED + "⚠️ Model returned empty or very short response.")
+                        await aprint(Fore.YELLOW + "This might indicate a problem with the model.")
+                        await aprint(Fore.YELLOW + f"Raw output length: {len(out)}")
+                        if out:
+                            await aprint(Fore.CYAN + f"Raw output: {repr(out[:200])}")
+                    else:
+                        await aprint(Fore.GREEN + '\n🧠 Model output:')
+                        await aprint(Fore.WHITE + out + '\n')
+                        
                 except BrokenPipeError:
                     await aprint(Fore.RED + "\n❌ Connection to model lost. Please restart LLM workflow.")
                     logger.error("Model process died")
