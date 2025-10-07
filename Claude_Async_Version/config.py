@@ -21,6 +21,7 @@ class NetworkConfig:
     """Network and SSH configuration."""
     default_ip: str = field(default_factory=lambda: os.getenv('SSH_DEFAULT_IP', '100.99.162.98'))
     default_username: str = field(default_factory=lambda: os.getenv('SSH_DEFAULT_USERNAME', 'emilyzhang'))
+    default_password: Optional[str] = field(default_factory=lambda: os.getenv('SSH_DEFAULT_PASSWORD'))
     ping_timeout: float = 1.0
     ssh_timeout: int = 30
     max_auth_attempts: int = 3

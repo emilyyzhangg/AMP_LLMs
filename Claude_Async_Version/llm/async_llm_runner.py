@@ -136,24 +136,33 @@ async def run_llm_entrypoint(ssh):
                     try:
                         filepath = Path(filename)
                         
-                        # Check common locations
-                        if not filepath.exists():
-                            # Try in output directory
-                            filepath = Path('output') / filename
-                        if not filepath.exists():
-                            # Try in current directory
-                            filepath = Path('.') / filename
+                        # Try multiple locations
+                        search_paths = [
+                            filepath,  # Exact path as given
+                            Path('output') / filename,  # output directory
+                            Path('.') / filename,  # Current directory
+                            Path(__file__).parent.parent / 'output' / filename,  # Relative to script
+                        ]
                         
-                        if not filepath.exists():
+                        found_path = None
+                        for path in search_paths:
+                            if path.exists() and path.is_file():
+                                found_path = path
+                                break
+                        
+                        if not found_path:
                             await aprint(Fore.RED + f"❌ File not found: {filename}")
-                            await aprint(Fore.YELLOW + "Tip: Put files in the 'output' folder or use full path")
+                            await aprint(Fore.YELLOW + f"Searched in:")
+                            for p in search_paths[:3]:
+                                await aprint(Fore.YELLOW + f"  - {p.absolute()}")
+                            await aprint(Fore.CYAN + "\nTip: Use full path or put file in 'output' folder")
                             continue
                         
                         # Read file
-                        with open(filepath, 'r', encoding='utf-8') as f:
+                        with open(found_path, 'r', encoding='utf-8') as f:
                             file_content = f.read()
                         
-                        await aprint(Fore.GREEN + f"✅ Loaded {filepath.name} ({len(file_content)} characters)")
+                        await aprint(Fore.GREEN + f"✅ Loaded {found_path.name} from {found_path.parent} ({len(file_content)} characters)")
                         
                         # Ask for additional context if not provided in command
                         if initial_question:

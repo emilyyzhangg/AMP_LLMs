@@ -139,24 +139,27 @@ async def send_and_stream(proc, prompt: str) -> str:
         logger.error("Process stdin is closed")
         raise BrokenPipeError("Process has terminated")
     
-    # Write prompt
+    # Write prompt with explicit newline - ollama needs this to know prompt is complete
     try:
-        proc.stdin.write((prompt + "\n").encode('utf-8'))
+        full_prompt = prompt + "\n"
+        proc.stdin.write(full_prompt.encode('utf-8'))
         await proc.stdin.drain()
     except Exception as e:
         logger.error(f"Error writing prompt: {e}")
         raise
     
-    # Read response with idle timeout
+    # Read response - skip echoed input and wait for actual model output
     output = []
     idle_count = 0
-    max_idle = config.llm.idle_timeout
+    max_idle = 10  # Increase timeout for large inputs
+    seen_response_start = False
+    echo_buffer = ""
     
     while True:
         try:
             chunk = await asyncio.wait_for(
-                proc.stdout.read(config.llm.stream_chunk_size),
-                timeout=1.0
+                proc.stdout.read(1024),
+                timeout=2.0
             )
             
             if not chunk:
@@ -165,11 +168,27 @@ async def send_and_stream(proc, prompt: str) -> str:
             # Decode bytes to string
             try:
                 text = chunk.decode('utf-8', errors='ignore')
-                output.append(text)
+                
+                # Skip the echoed prompt (ollama echoes input back)
+                if not seen_response_start:
+                    echo_buffer += text
+                    # Look for the response marker (usually after the echoed prompt)
+                    if '\n' in echo_buffer or len(echo_buffer) > len(prompt) + 100:
+                        # Found start of real response
+                        seen_response_start = True
+                        # Everything after the prompt is the response
+                        response_start = echo_buffer.find('\n', len(prompt))
+                        if response_start != -1:
+                            output.append(echo_buffer[response_start:])
+                        echo_buffer = ""
+                else:
+                    # We're in the actual response now
+                    output.append(text)
+                
             except Exception as e:
                 logger.warning(f"Error decoding chunk: {e}")
             
-            idle_count = 0  # Reset idle counter
+            idle_count = 0  # Reset idle counter when we get data
             
         except asyncio.TimeoutError:
             idle_count += 1
@@ -184,4 +203,4 @@ async def send_and_stream(proc, prompt: str) -> str:
     response = clean(''.join(output))
     logger.debug(f"Received response: {len(response)} characters")
     
-    return response
+    return response if response else "No response received from model."

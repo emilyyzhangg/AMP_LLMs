@@ -1,0 +1,390 @@
+{
+  "nct_id": "NCT04043065",
+  "sources": {
+    "clinical_trials": {
+      "source": "clinicaltrials_v2_detail",
+      "data": {
+        "protocolSection": {
+          "identificationModule": {
+            "nctId": "NCT04043065",
+            "orgStudyIdInfo": {
+              "id": "LEAP-2"
+            },
+            "organization": {
+              "fullName": "University Hospital, Gentofte, Copenhagen",
+              "class": "OTHER"
+            },
+            "briefTitle": "Liver-enriched Antimicrobial Peptide 2",
+            "officialTitle": "A Leap to Understand Glucoregulatory Effects of Liver-enriched Antimicrobial Peptide 2 (LEAP-2)"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2021-05",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2019-01-28",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2019-05-20",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2019-05-20",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2019-07-30",
+            "studyFirstSubmitQcDate": "2019-07-30",
+            "studyFirstPostDateStruct": {
+              "date": "2019-08-02",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2021-05-25",
+            "lastUpdatePostDateStruct": {
+              "date": "2021-05-26",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "PRINCIPAL_INVESTIGATOR",
+              "investigatorFullName": "Filip Krag Knop",
+              "investigatorTitle": "Professor, head of department",
+              "investigatorAffiliation": "University Hospital, Gentofte, Copenhagen"
+            },
+            "leadSponsor": {
+              "name": "University Hospital, Gentofte, Copenhagen",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "Gubra ApS",
+                "class": "UNKNOWN"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": true,
+            "isFdaRegulatedDrug": false,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "The investigators aim to investigate the physiological importance of LEAP-2 in healthy volunteers focusing on its potential insulinotropic effects.",
+            "detailedDescription": "The dramatic and almost immediate effects of Roux-en-Y gastric bypass (RYGB) surgery on type 2 diabetes (T2D) can only in part be explained by alterations in the plasma concentrations of known peptides. Thus, other - yet unknown - signals or hormones elicited from the endocrine cells of the small intestine may play an important role for the remission of T2D observed following RYGB. In a recent study, a predicted sequence of liver-enriched antimicrobial peptide 2 (LEAP-2) was shown to induce a glucose-stimulated insulin secretion in isolated human pancreatic islets. The fragment was subsequently identified to be circulating in human plasma in concentrations comparable to the circulating levels of other known gut secreted hormones, hereby validating that LEAP-2 is an endogenous circulating peptide.\n\nThe investigators hypothesise that LEAP-2 increases insulin secretion during a graded glucose infusion as assessed by plasma insulin and C-peptide compared with saline (placebo) in healthy subjects. The study is designed as a clinical, placebo-controlled, double-blinded cross-over study involving two experimental study days and ten young healthy male participants. The co-primary endpoints are the difference in plasma insulin levels during a graded glucose infusion and beta-cell secretion assessed by plasma C-peptide concentration relative to plasma glucose concentration between the two study days with either saline (placebo) or LEAP-2 infusion."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Type 2 Diabetes"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "EARLY_PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "CROSSOVER",
+              "interventionModelDescription": "The study is designed as a clinical, placebo-controlled, double-blinded cross-over study involving two experimental study days.",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "DOUBLE",
+                "maskingDescription": "Day A and B will be conducted in a randomised, double-blinded order (blinded for the participant and the investigator) and noted by a third person not participating in the collection or analyses of data. The infusion order will be opened after the primary data analyses.",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "INVESTIGATOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 10,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "LEAP-2",
+                "type": "EXPERIMENTAL",
+                "description": "Liver-enriched antimicrobial peptide 2",
+                "interventionNames": [
+                  "Biological: Liver-enriched antimicrobial peptide 2"
+                ]
+              },
+              {
+                "label": "Placebo",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "Saline",
+                "interventionNames": [
+                  "Other: Placebo"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "Liver-enriched antimicrobial peptide 2",
+                "description": "Infusion of LEAP-2 during a 180 min grated glucose infusion.",
+                "armGroupLabels": [
+                  "LEAP-2"
+                ]
+              },
+              {
+                "type": "OTHER",
+                "name": "Placebo",
+                "description": "Saline",
+                "armGroupLabels": [
+                  "Placebo"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Plasma insulin",
+                "description": "Difference in plasma insulin levels",
+                "timeFrame": "-45 to 180 minutes"
+              },
+              {
+                "measure": "Beta-cell secretion",
+                "description": "Beta-cell secretion assessed by plasma C-peptide concentration relative to plasma glucose concentration",
+                "timeFrame": "-45 to 180 minutes"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "LEAP-2",
+                "description": "Plasma concentrations of LEAP-2",
+                "timeFrame": "-45 to 210 minutes"
+              },
+              {
+                "measure": "Resting energy expenditure",
+                "description": "Changes in resting energy expenditure using indirect calorimetry",
+                "timeFrame": "-20 to 160 minutes"
+              },
+              {
+                "measure": "Appetite, satiety, and general well-being",
+                "description": "Appetite, satiety, and general well-being assessed by visual analogue scale (VAS)",
+                "timeFrame": "-45 to 210 minutes"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Caucasian men\n* Age between 18 and 25 years\n* Body mass index between 20-25 kg/m2\n* Informed consent\n\nExclusion Criteria:\n\n* Anaemia (haemoglobin below normal range)\n* ALAT and/or ASAT \\>2 times normal values or history of hepatobiliary and/or gastrointestinal disorder(s)\n* Nephropathy (serum creatinine above normal range and/or albuminuria)\n* Any physical or psychological condition that the investigator evaluates would interfere with trial participation including any acute or chronic illnesses\n* Any ongoing medication that the investigator evaluates would interfere with trial participation.\n* First- and second-degree relatives with diabetes\n* Regular tobacco smoking",
+            "healthyVolunteers": true,
+            "sex": "MALE",
+            "minimumAge": "18 Years",
+            "maximumAge": "25 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Filip K Knop, MD, PhD",
+                "affiliation": "University Hospital, Gentofte, Copenhagen",
+                "role": "STUDY_DIRECTOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Center for Clinical Metabolic Research",
+                "city": "Hellerup",
+                "zip": "2900",
+                "country": "Denmark",
+                "geoPoint": {
+                  "lat": 55.73204,
+                  "lon": 12.57093
+                }
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "NO"
+          }
+        },
+        "derivedSection": {
+          "miscInfoModule": {
+            "versionHolder": "2025-10-06"
+          },
+          "conditionBrowseModule": {
+            "meshes": [
+              {
+                "id": "D003924",
+                "term": "Diabetes Mellitus, Type 2"
+              }
+            ],
+            "ancestors": [
+              {
+                "id": "D003920",
+                "term": "Diabetes Mellitus"
+              },
+              {
+                "id": "D044882",
+                "term": "Glucose Metabolism Disorders"
+              },
+              {
+                "id": "D008659",
+                "term": "Metabolic Diseases"
+              },
+              {
+                "id": "D009750",
+                "term": "Nutritional and Metabolic Diseases"
+              },
+              {
+                "id": "D004700",
+                "term": "Endocrine System Diseases"
+              }
+            ]
+          }
+        },
+        "hasResults": false
+      }
+    },
+    "pubmed": {
+      "pmids": [],
+      "studies": []
+    },
+    "pmc": {
+      "pmcids": [
+        "9650057",
+        "8452786"
+      ],
+      "summaries": [
+        {
+          "pmcid": "9650057",
+          "metadata": {
+            "9650057": {
+              "title": "Involvement of POMC neurons in LEAP2 regulation of food intake and body weight",
+              "pubdate": "2022 Oct 28",
+              "authors": [
+                {
+                  "name": "Chu G",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Peng H",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Yu N",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Zhang Y",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Lin X",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Lu Y",
+                  "authtype": "Author"
+                }
+              ],
+              "doi": [
+                {
+                  "idtype": "pmid",
+                  "value": "36387867"
+                },
+                {
+                  "idtype": "doi",
+                  "value": "10.3389/fendo.2022.932761"
+                },
+                {
+                  "idtype": "pmcid",
+                  "value": "PMC9650057"
+                }
+              ],
+              "pmid": null
+            }
+          }
+        },
+        {
+          "pmcid": "8452786",
+          "metadata": {
+            "8452786": {
+              "title": "LEAP2 deletion in mice enhances ghrelin's actions as an orexigen and growth hormone secretagogue",
+              "pubdate": "2021 Aug 21",
+              "authors": [
+                {
+                  "name": "Shankar K",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Metzger NP",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Singh O",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Mani BK",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Osborne-Lawrence S",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Varshney S",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Gupta D",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Ogden SB",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Takemi S",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Richard CP",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Nandy K",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Liu C",
+                  "authtype": "Author"
+                },
+                {
+                  "name": "Zigman JM",
+                  "authtype": "Author"
+                }
+              ],
+              "doi": [
+                {
+                  "idtype": "pmid",
+                  "value": "34428557"
+                },
+                {
+                  "idtype": "doi",
+                  "value": "10.1016/j.molmet.2021.101327"
+                },
+                {
+                  "idtype": "pmcid",
+                  "value": "PMC8452786"
+                }
+              ],
+              "pmid": null
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+

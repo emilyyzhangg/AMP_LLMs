@@ -116,6 +116,7 @@ class AMPLLMApp:
         self.ssh_connection: Optional[object] = None
         self.ssh_ip: Optional[str] = None
         self.ssh_username: Optional[str] = None
+        self.ssh_password: Optional[str] = None
         self.running = True
         self._setup_signal_handlers()
     
@@ -206,7 +207,7 @@ class AMPLLMApp:
         except Exception as e:
             logger.error(f"Error in username prompt: {e}")
             return default
-    
+        
     async def prompt_password_and_connect(self, username: str, ip: str) -> object:
         """Prompt for password and establish SSH connection."""
         import getpass
@@ -215,10 +216,14 @@ class AMPLLMApp:
         
         while self.running and attempt < config.network.max_auth_attempts:
             try:
-                # Use getpass for hidden password input
-                # Note: This blocks briefly but is acceptable for password entry
-                await aprint(Fore.CYAN + f"Enter SSH password for {username}@{ip}: ", end='')
-                password = getpass.getpass('')
+                # Check if password is in config
+                if config.network.default_password:
+                    password = config.network.default_password
+                    await aprint(Fore.YELLOW + "Using password from .env file...")
+                else:
+                    # Use getpass for hidden password input
+                    await aprint(Fore.CYAN + f"Enter SSH password for {username}@{ip}: ", end='')
+                    password = getpass.getpass('')
                 
                 await aprint(Fore.YELLOW + "Connecting...")
                 ssh = await connect_ssh(ip, username, password)
