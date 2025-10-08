@@ -16,6 +16,20 @@ PACKAGE_IMPORT_MAPPING = {
     "python-dotenv": "dotenv",
 }
 
+# Enable UTF-8 output on Windows for emoji support
+if platform.system() == "Windows":
+    try:
+        # Set console to UTF-8 mode
+        import ctypes
+        kernel32 = ctypes.windll.kernel32
+        kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+        # Set stdout encoding to UTF-8
+        if hasattr(sys.stdout, 'reconfigure'):
+            sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        # If UTF-8 setup fails, continue anyway
+        pass
+
 def get_python_path():
     """Get path to venv Python executable."""
     if platform.system() == "Windows":
@@ -43,7 +57,7 @@ def is_same_python(p1, p2):
 def install_requirements(venv_python):
     """Install all requirements from requirements.txt."""
     if not os.path.exists(REQUIREMENTS_FILE):
-        print(f"⚠️ {REQUIREMENTS_FILE} not found, skipping package installation")
+        print(f"⚠️  {REQUIREMENTS_FILE} not found, skipping package installation")
         return
     
     print(f"\n📦 Installing packages from {REQUIREMENTS_FILE}...")
@@ -57,7 +71,7 @@ def install_requirements(venv_python):
             stderr=subprocess.DEVNULL
         )
     except Exception as e:
-        print(f"⚠️ Could not upgrade pip: {e}")
+        print(f"⚠️  Could not upgrade pip: {e}")
     
     # Install all requirements at once
     try:
@@ -71,7 +85,7 @@ def install_requirements(venv_python):
         if result.returncode == 0:
             print("✅ All packages installed successfully!")
         else:
-            print(f"⚠️ Some packages failed to install:")
+            print(f"⚠️  Some packages failed to install:")
             print(result.stderr)
             
             # Try installing individually
@@ -152,6 +166,9 @@ def ensure_env():
         # Now relaunch inside venv
         print(f"\n🔄 Relaunching inside virtual environment...")
         print(f"   {venv_python}")
+        print(f"\n{'='*60}")
+        print("RESTARTING IN VIRTUAL ENVIRONMENT - PLEASE WAIT")
+        print(f"{'='*60}\n")
         
         try:
             # Use subprocess.run instead of os.execv to handle spaces in paths
@@ -173,12 +190,20 @@ def ensure_env():
     missing = check_missing_packages()
     
     if missing:
-        print(f"\n⚠️ Found {len(missing)} missing package(s):")
+        print(f"\n⚠️  Found {len(missing)} missing package(s):")
         for pkg in missing:
             print(f"   - {pkg}")
         
         print("\n📦 Installing missing packages...")
         install_requirements(sys.executable)
+        
+        # Verify installation
+        still_missing = check_missing_packages()
+        if still_missing:
+            print(f"\n❌ Failed to install: {', '.join(still_missing)}")
+            print("\n💡 Try manually:")
+            print(f"   {sys.executable} -m pip install -r requirements.txt")
+            sys.exit(1)
         
         print("\n✅ All packages installed!")
     else:
