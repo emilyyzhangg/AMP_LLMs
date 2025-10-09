@@ -199,25 +199,37 @@ class ClinicalTrialResearchAssistant:
     async def ensure_model_exists(self, ssh, host: str, models: List[str]) -> bool:
         """
         Check if custom model exists, create if not using local Modelfile.
-        Uses bash login shell to find ollama in PATH.
+        FIXED: Returns immediately if model already exists.
         """
         # Check if custom model already exists
         if self.model_name in models:
-            await aprint(Fore.GREEN + f"✅ Custom model '{self.model_name}' already exists")
+            await aprint(Fore.GREEN + f"✅ Custom model '{self.model_name}' ready to use")
+            logger.info(f"Using existing model: {self.model_name}")
             return True
         
-        await aprint(Fore.YELLOW + f"\n🔧 Custom model '{self.model_name}' not found. Creating it now!")
+        # Model doesn't exist - offer to create
+        await aprint(Fore.YELLOW + f"\n🔧 Custom model '{self.model_name}' not found.")
         
         # Show available base models
         await aprint(Fore.CYAN + f"\n📋 Available base models on remote server:")
         for i, model in enumerate(models, 1):
             await aprint(Fore.WHITE + f"  {i}) {model}")
         
-        await aprint(Fore.CYAN + f"\n💡 The Modelfile will be built on top of one of these base models.")
-        await aprint(Fore.CYAN + f"    (The 'FROM llama3.2' line in Modelfile is just a placeholder)")
+        await aprint(Fore.CYAN + f"\n💡 A custom model will be built from one of these base models.")
+        await aprint(Fore.CYAN + f"    (This is a one-time setup)")
         
+        # Ask user if they want to create it
+        create = await ainput(
+            Fore.GREEN + f"\nCreate '{self.model_name}' model now? (y/n) [y]: "
+        )
+        
+        if create.strip().lower() in ('n', 'no'):
+            await aprint(Fore.YELLOW + "Model creation cancelled. Using base model instead.")
+            return False
+        
+        # Select base model
         choice = await ainput(
-            Fore.GREEN + f"Select base model by number or name [{models[0] if models else 'llama3.2'}]: "
+            Fore.GREEN + f"Select base model by number or name [{models[0] if models else 'llama3:8b'}]: "
         )
         
         # Parse choice
@@ -225,20 +237,20 @@ class ClinicalTrialResearchAssistant:
         choice = choice.strip()
         
         if not choice:
-            base_model = models[0] if models else 'llama3.2'
+            base_model = models[0] if models else 'llama3:8b'
         elif choice.isdigit():
             idx = int(choice) - 1
             if 0 <= idx < len(models):
                 base_model = models[idx]
             else:
                 await aprint(Fore.RED + "Invalid selection, using first available model")
-                base_model = models[0] if models else 'llama3.2'
+                base_model = models[0] if models else 'llama3:8b'
         else:
             if choice in models:
                 base_model = choice
             else:
-                await aprint(Fore.YELLOW + f"Model '{choice}' not found, using '{models[0] if models else 'llama3.2'}'")
-                base_model = models[0] if models else 'llama3.2'
+                await aprint(Fore.YELLOW + f"Model '{choice}' not found, using '{models[0] if models else 'llama3:8b'}'")
+                base_model = models[0] if models else 'llama3:8b'
         
         await aprint(Fore.CYAN + f"\n🏗️  Building '{self.model_name}' from base model '{base_model}'...")
         
@@ -301,7 +313,6 @@ class ClinicalTrialResearchAssistant:
             await aprint(Fore.YELLOW + "    Please wait...")
             
             try:
-                # Use bash login shell to load PATH
                 result = await ssh.run(
                     f'bash -l -c "ollama create {self.model_name} -f {temp_modelfile}"',
                     check=False
@@ -315,6 +326,7 @@ class ClinicalTrialResearchAssistant:
                     await aprint(Fore.CYAN + f"    Base: {base_model}")
                     await aprint(Fore.CYAN + f"    Name: {self.model_name}")
                     await aprint(Fore.CYAN + f"    Ready to use! 🚀")
+                    logger.info(f"Created model {self.model_name} from {base_model}")
                     return True
                 else:
                     await aprint(Fore.RED + f"\n❌ Model creation failed!")
@@ -340,135 +352,18 @@ class ClinicalTrialResearchAssistant:
             await aprint(Fore.RED + f"❌ Unexpected error: {e}")
             logger.error(f"Model creation error: {e}", exc_info=True)
             return False
-    
-    async def query_with_rag(
-        self, 
-        host: str, 
-        user_query: str,
-        auto_retrieve: bool = True
-    ) -> str:
-        """
-        Query LLM with RAG-enhanced context.
-        FIXED: Now returns a string (never None).
-        """
-        # Build prompt with RAG context
-        if auto_retrieve:
-            context = self.rag.get_context_for_llm(user_query, max_trials=5)
-            
-            enhanced_prompt = f"""Context: Clinical trial database information
-
-{context}
-
-User Query: {user_query}
-
-Please analyze the clinical trial(s) above and provide a comprehensive answer using the structured format. Extract all requested fields and provide evidence-based analysis."""
-        else:
-            enhanced_prompt = user_query
-        
-        # Send to LLM
-        response = await send_to_ollama_api(
-            host=host,
-            model=self.model_name,
-            prompt=enhanced_prompt
-        )
-        
-        # FIXED: Always return a string
-        return response if response else "Error: No response from LLM"
-    
-    async def extract_from_nct(
-        self,
-        host: str,
-        nct_number: str,
-        validate: bool = True
-    ) -> str:
-        """
-        Extract structured data from specific NCT number using LLM.
-        FIXED: Now returns a string (never None).
-        """
-        # Get trial data
-        trial_data = self.rag.db.get_trial(nct_number)
-        
-        if not trial_data:
-            return f"NCT number {nct_number} not found in database."
-        
-        # Get initial extraction
-        extraction = self.rag.db.extract_structured_data(nct_number)
-        
-        if not extraction:
-            return f"Could not extract data from {nct_number}"
-        
-        # Show validation warnings
-        if validate:
-            warnings = []
-            
-            if extraction.outcome == 'Unknown':
-                warnings.append(f"Outcome mapping unclear - original status was '{extraction.study_status}'")
-            
-            if extraction.delivery_mode == 'Other/Unspecified':
-                warnings.append("Delivery mode could not be determined from interventions")
-            
-            if not extraction.is_peptide and 'peptide' in str(trial_data).lower():
-                warnings.append("Possible peptide-related study but not detected as such")
-            
-            if warnings:
-                await aprint(Fore.YELLOW + "\n⚠️  Pre-extraction warnings:")
-                for warning in warnings:
-                    await aprint(Fore.YELLOW + f"  • {warning}")
-                await aprint("")
-        
-        # Format trial data
-        trial_json = json.dumps(trial_data, indent=2)
-        
-        # Truncate if too large
-        if len(trial_json) > 6000:
-            await aprint(Fore.YELLOW + f"📊 Trial data is large ({len(trial_json)} chars), truncating for LLM...")
-            trial_json = trial_json[:6000] + "\n... [data truncated]"
-        
-        # Create prompt
-        prompt = f"""TASK: Extract clinical trial data into the structured format.
-
-NCT NUMBER: {nct_number}
-
-TRIAL DATA (JSON):
-{trial_json}
-
-EXTRACTION INSTRUCTIONS:
-1. Find NCT number from "nct_id" field
-2. Extract title from "officialTitle" or "briefTitle"
-3. Find status from "overallStatus"
-4. Get conditions from "conditions" array
-5. Extract interventions from "interventions" array
-6. Find phases from "phases" array
-7. Get enrollment from enrollmentInfo
-8. Extract dates from dateStruct fields
-9. Check for peptide keywords
-10. Use EXACT values from validation lists
-
-KEY REMINDERS:
-- Peptide must be "True" or "False" (not Yes/No)
-- Classification must include parentheses: AMP(infection) or AMP(other)
-- Use exact delivery mode values
-- Map COMPLETED→Positive, RECRUITING→Recruiting
-
-BEGIN EXTRACTION NOW:"""
-        
-        # Send to LLM
-        response = await send_to_ollama_api(
-            host=host,
-            model=self.model_name,
-            prompt=prompt
-        )
-        
-        # FIXED: Always return a string
-        return response if response else "Error: No response from LLM"
 
 
 # ==============================================================================
 # MAIN WORKFLOW
 # ==============================================================================
 
+# ==============================================================================
+# MAIN WORKFLOW - FIXED VERSION
+# ==============================================================================
+
 async def run_ct_research_assistant(ssh):
-    """Main research assistant workflow with all features."""
+    """Main research assistant workflow with FIXED model selection."""
     await aprint(Fore.CYAN + Style.BRIGHT + "\n=== 🔬 Clinical Trial Research Assistant ===")
     await aprint(Fore.WHITE + "RAG-powered intelligent analysis of clinical trial database\n")
     
@@ -519,45 +414,16 @@ async def run_ct_research_assistant(ssh):
         return
     
     await aprint(Fore.GREEN + f"✅ Found {len(models)} model(s) on remote server")
-    # After: await aprint(Fore.GREEN + f"✅ Found {len(models)} model(s) on remote server")
-
-# ADD THIS:
-    if assistant.model_name in models:
-        await aprint(Fore.GREEN + f"\n✅ Custom model '{assistant.model_name}' already exists")
-        
-        rebuild = await ainput(
-            Fore.CYAN + "Rebuild model with updated Modelfile? (y/n) [n]: "
-        )
-        
-        if rebuild.strip().lower() in ('y', 'yes'):
-            await aprint(Fore.YELLOW + f"🔄 Deleting old model...")
-            
-            result = await ssh.run(
-                f'bash -l -c "ollama rm {assistant.model_name}"',
-                check=False
-            )
-            
-            if result.exit_status == 0:
-                await aprint(Fore.GREEN + "✅ Deleted")
-                models.remove(assistant.model_name)
-                model_ready = await assistant.ensure_model_exists(ssh, host, models)
-            else:
-                await aprint(Fore.RED + f"❌ Failed to delete")
-                model_ready = True
-        else:
-            model_ready = True
-    else:
-        # Create new model
-        model_ready = await assistant.ensure_model_exists(ssh, host, models)
     
-    # Ensure custom model exists
+    # FIXED: Single model check and setup
     model_ready = await assistant.ensure_model_exists(ssh, host, models)
     
     if not model_ready:
-        await aprint(Fore.YELLOW + "\n⚠️  Could not create custom model. Let's use a base model instead.")
+        # Model creation failed or was cancelled - offer fallback
+        await aprint(Fore.YELLOW + "\n⚠️  Custom model not available. Choose a base model instead:")
         
+        # Refresh model list
         models = await list_remote_models_api(host)
-        await aprint(Fore.CYAN + "\nAvailable models:")
         for i, m in enumerate(models, 1):
             await aprint(Fore.WHITE + f"  {i}) {m}")
         
@@ -574,6 +440,7 @@ async def run_ct_research_assistant(ssh):
     
     await aprint(Fore.GREEN + f"\n✅ Using model: {assistant.model_name}")
     
+    # [REST OF THE WORKFLOW - Commands, interaction loop, etc.]
     # Main interaction loop
     await aprint(Fore.CYAN + "\n💡 Research Assistant Commands:")
     await aprint(Fore.CYAN + "   • 'search <query>' - Search database and analyze trials")
@@ -948,7 +815,7 @@ async def run_ct_research_assistant(ssh):
             except Exception as e:
                 await aprint(Fore.RED + f"Error: {e}")
                 logger.error(f"Error in research assistant: {e}", exc_info=True)
-    
+            pass
     finally:
         # Cleanup
         if tunnel_listener:
