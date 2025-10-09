@@ -1,6 +1,7 @@
 """
 Environment setup with improved reliability and error handling.
 Ensures all dependencies are installed before application starts.
+FIXED: Properly detects already-installed packages
 """
 import os
 import sys
@@ -25,6 +26,7 @@ PACKAGE_IMPORT_MAPPING = {
     "asyncssh": "asyncssh",
     "colorama": "colorama",
     "openai": "openai",
+    "duckduckgo-search": "duckduckgo_search",  # FIXED: Added mapping
 }
 
 
@@ -168,6 +170,7 @@ def check_missing_packages() -> Tuple[List[str], List[str]]:
     """
     Check which packages are missing.
     Returns: (missing_packages, missing_import_names)
+    FIXED: Better detection logic
     """
     if not os.path.exists(REQUIREMENTS_FILE):
         return [], []
@@ -181,14 +184,24 @@ def check_missing_packages() -> Tuple[List[str], List[str]]:
             if not pkg or pkg.startswith('#'):
                 continue
             
-            # Extract base package name
-            base = pkg.split('==')[0].split('>=')[0].split('<=')[0].strip()
+            # Extract base package name (remove version specifiers)
+            base = pkg.split('==')[0].split('>=')[0].split('<=')[0].split('[')[0].strip()
             
             # Get import name
-            import_name = PACKAGE_IMPORT_MAPPING.get(base, base)
+            import_name = PACKAGE_IMPORT_MAPPING.get(base, base.replace('-', '_'))
             
-            # Check if installed
-            if importlib.util.find_spec(import_name) is None:
+            # Check if installed - FIXED: Better detection
+            try:
+                spec = importlib.util.find_spec(import_name)
+                if spec is None:
+                    # Try alternative import name (replace - with _)
+                    alt_import = base.replace('-', '_')
+                    spec = importlib.util.find_spec(alt_import)
+                    
+                    if spec is None:
+                        missing_packages.append(pkg)
+                        missing_imports.append(import_name)
+            except (ImportError, ModuleNotFoundError, ValueError):
                 missing_packages.append(pkg)
                 missing_imports.append(import_name)
     

@@ -188,26 +188,14 @@ class ClinicalTrialResearchAssistant:
         self.model_name = "ct-research-assistant"
     
     async def extract_from_nct(self, host: str, nct_id: str) -> str:
-        """
-        Extract structured data from specific NCT trial.
-        
-        Args:
-            host: Ollama API host
-            nct_id: NCT number
-            
-        Returns:
-            Formatted extraction or error message
-        """
-        # Get trial data from database
+        """Extract structured data from specific NCT trial."""
         extraction = self.rag.db.extract_structured_data(nct_id)
         
         if not extraction:
             return f"NCT number {nct_id} not found in database."
         
-        # Build context with trial data
         context = extraction.to_formatted_string()
         
-        # Create prompt for LLM
         prompt = f"""You are extracting structured clinical trial data. Use the information below to fill in the extraction format.
 
 CRITICAL RULES:
@@ -234,21 +222,9 @@ Now provide a complete extraction following the exact format specified in your s
             return f"Error: {e}"
     
     async def query_with_rag(self, host: str, query: str, max_trials: int = 10) -> str:
-        """
-        Answer query using RAG system.
-        
-        Args:
-            host: Ollama API host
-            query: User question
-            max_trials: Maximum number of trials to include in context (default: 10)
-            
-        Returns:
-            AI response with context
-        """
-        # Get relevant context from RAG with custom limit
+        """Answer query using RAG system with custom trial limit."""
         context = self.rag.get_context_for_llm(query, max_trials=max_trials)
         
-        # Build prompt
         prompt = f"""You are a clinical trial research assistant. Use the trial data below to answer the question.
 
 Question: {query}
@@ -270,185 +246,157 @@ Provide a clear, well-structured answer based on the trial data above."""
             return f"Error: {e}"
     
     async def ensure_model_exists(self, ssh, host: str, models: List[str]) -> bool:
-        """
-        Check if custom model exists, create if not.
-        FIXED: Suppress asyncssh logging before prompt.
-        """
-        # Suppress asyncssh logging temporarily
-        asyncssh_logger = logging.getLogger('asyncssh')
-        original_level = asyncssh_logger.level
-        asyncssh_logger.setLevel(logging.WARNING)
+        """Check if custom model exists, create if not."""
+        # Note: asyncssh logging is already suppressed globally in run_ct_research_assistant
         
-        try:
-            # IMMEDIATE CHECK - If exists, done!
-            if self.model_name in models:
-                await aprint(Fore.GREEN + f"✅ Using existing model: {self.model_name}")
-                logger.info(f"Found existing model: {self.model_name}")
-                return True
+        if self.model_name in models:
+            await aprint(Fore.GREEN + f"✅ Using existing model: {self.model_name}")
+            logger.info(f"Found existing model: {self.model_name}")
+            return True
+        
+        await aprint(Fore.YELLOW + f"\n🔧 Custom model '{self.model_name}' not found")
+        await aprint(Fore.CYAN + "This is a one-time setup to create a specialized model.")
+        
+        create = await ainput(Fore.GREEN + f"Create '{self.model_name}' now? (y/n) [y]: ")
             
-            # Not found - offer to create
-            await aprint(Fore.YELLOW + f"\n🔧 Custom model '{self.model_name}' not found")
-            await aprint(Fore.CYAN + "This is a one-time setup to create a specialized model.")
-            
-            # NOW prompt (after messages, logging suppressed)
-            create = await ainput(
-                Fore.GREEN + f"Create '{self.model_name}' now? (y/n) [y]: "
-            )
-            
-            if create.strip().lower() in ('n', 'no'):
+        if create.strip().lower() in ('n', 'no'):
                 await aprint(Fore.YELLOW + "Skipped. You can use a base model instead.")
                 return False
             
-            # Show available base models
-            await aprint(Fore.CYAN + f"\n📋 Available base models:")
-            for i, model in enumerate(models, 1):
+        await aprint(Fore.CYAN + f"\n📋 Available base models:")
+        for i, model in enumerate(models, 1):
                 await aprint(Fore.WHITE + f"  {i}) {model}")
             
-            # Select base model
-            choice = await ainput(
-                Fore.GREEN + f"Select base model [1]: "
+        choice = await ainput(Fore.GREEN + f"Select base model [1]: ")
+        
+        base_model = None
+        choice = choice.strip()
+        
+        if not choice:
+            base_model = models[0] if models else 'llama3:8b'
+        elif choice.isdigit():
+            idx = int(choice) - 1
+            if 0 <= idx < len(models):
+                base_model = models[idx]
+            else:
+                await aprint(Fore.RED + "Invalid selection, using first available model")
+                base_model = models[0] if models else 'llama3:8b'
+        else:
+            if choice in models:
+                base_model = choice
+            else:
+                await aprint(Fore.YELLOW + f"Model '{choice}' not found, using '{models[0] if models else 'llama3:8b'}'")
+                base_model = models[0] if models else 'llama3:8b'
+        
+        await aprint(Fore.CYAN + f"\n🏗️  Building '{self.model_name}' from base model '{base_model}'...")
+        
+        try:
+            search_paths = [
+                Path(__file__).parent.parent / "Modelfile",
+                Path(__file__).parent / "Modelfile",
+                Path.cwd() / "Modelfile",
+                Path.cwd() / "Claude_Async_Version" / "Modelfile",
+            ]
+            
+            modelfile_path = None
+            for path in search_paths:
+                if path.exists():
+                    modelfile_path = path
+                    break
+            
+            if not modelfile_path:
+                await aprint(Fore.RED + "❌ Modelfile not found!")
+                await aprint(Fore.YELLOW + "Searched in:")
+                for path in search_paths:
+                    await aprint(Fore.YELLOW + f"  • {path}")
+                return False
+            
+            await aprint(Fore.GREEN + f"✅ Found Modelfile at: {modelfile_path}")
+            
+            with open(modelfile_path, 'r', encoding='utf-8') as f:
+                modelfile_content = f.read()
+            
+            modelfile_content = re.sub(
+                r'^FROM\s+\S+',
+                f'FROM {base_model}',
+                modelfile_content,
+                flags=re.MULTILINE
             )
             
-            # Parse choice
-            base_model = None
-            choice = choice.strip()
+            await aprint(Fore.CYAN + f"📝 Replaced 'FROM' line with: FROM {base_model}")
+            await aprint(Fore.CYAN + f"📤 Uploading Modelfile to remote server...")
             
-            if not choice:
-                base_model = models[0] if models else 'llama3:8b'
-            elif choice.isdigit():
-                idx = int(choice) - 1
-                if 0 <= idx < len(models):
-                    base_model = models[idx]
-                else:
-                    await aprint(Fore.RED + "Invalid selection, using first available model")
-                    base_model = models[0] if models else 'llama3:8b'
-            else:
-                if choice in models:
-                    base_model = choice
-                else:
-                    await aprint(Fore.YELLOW + f"Model '{choice}' not found, using '{models[0] if models else 'llama3:8b'}'")
-                    base_model = models[0] if models else 'llama3:8b'
-            
-            await aprint(Fore.CYAN + f"\n🏗️  Building '{self.model_name}' from base model '{base_model}'...")
+            import time
+            temp_modelfile = f"/tmp/ct_modelfile_{int(time.time())}.modelfile"
             
             try:
-                # Find local Modelfile
-                search_paths = [
-                    Path(__file__).parent.parent / "Modelfile",
-                    Path(__file__).parent / "Modelfile",
-                    Path.cwd() / "Modelfile",
-                    Path.cwd() / "Claude_Async_Version" / "Modelfile",
-                ]
+                async with ssh.start_sftp_client() as sftp:
+                    async with sftp.open(temp_modelfile, 'w') as remote_file:
+                        await remote_file.write(modelfile_content)
                 
-                modelfile_path = None
-                for path in search_paths:
-                    if path.exists():
-                        modelfile_path = path
-                        break
-                
-                if not modelfile_path:
-                    await aprint(Fore.RED + "❌ Modelfile not found!")
-                    await aprint(Fore.YELLOW + "Searched in:")
-                    for path in search_paths:
-                        await aprint(Fore.YELLOW + f"  • {path}")
-                    return False
-                
-                await aprint(Fore.GREEN + f"✅ Found Modelfile at: {modelfile_path}")
-                
-                # Read and modify Modelfile
-                with open(modelfile_path, 'r', encoding='utf-8') as f:
-                    modelfile_content = f.read()
-                
-                # Replace FROM line
-                modelfile_content = re.sub(
-                    r'^FROM\s+\S+',
-                    f'FROM {base_model}',
-                    modelfile_content,
-                    flags=re.MULTILINE
+                await aprint(Fore.GREEN + f"✅ Uploaded to {temp_modelfile}")
+            except Exception as e:
+                await aprint(Fore.RED + f"❌ SFTP upload failed: {e}")
+                logger.error(f"SFTP error: {e}", exc_info=True)
+                return False
+            
+            await aprint(Fore.CYAN + f"🔨 Building model (this may take 1-2 minutes)...")
+            await aprint(Fore.YELLOW + "    Please wait...")
+            
+            try:
+                result = await ssh.run(
+                    f'bash -l -c "ollama create {self.model_name} -f {temp_modelfile}"',
+                    check=False
                 )
                 
-                await aprint(Fore.CYAN + f"📝 Replaced 'FROM' line with: FROM {base_model}")
-                await aprint(Fore.CYAN + f"📤 Uploading Modelfile to remote server...")
+                await ssh.run(f'rm -f {temp_modelfile}', check=False)
                 
-                # Upload via SFTP
-                import time
-                temp_modelfile = f"/tmp/ct_modelfile_{int(time.time())}.modelfile"
-                
-                try:
-                    async with ssh.start_sftp_client() as sftp:
-                        async with sftp.open(temp_modelfile, 'w') as remote_file:
-                            await remote_file.write(modelfile_content)
+                if result.exit_status == 0:
+                    await aprint(Fore.GREEN + f"\n✅ Success! Model '{self.model_name}' created!")
+                    await aprint(Fore.CYAN + f"    Base: {base_model}")
+                    await aprint(Fore.CYAN + f"    Name: {self.model_name}")
+                    await aprint(Fore.CYAN + f"    Ready to use! 🚀")
+                    logger.info(f"Created model {self.model_name} from {base_model}")
+                    return True
+                else:
+                    await aprint(Fore.RED + f"\n❌ Model creation failed!")
+                    await aprint(Fore.RED + f"Exit code: {result.exit_status}")
                     
-                    await aprint(Fore.GREEN + f"✅ Uploaded to {temp_modelfile}")
-                except Exception as e:
-                    await aprint(Fore.RED + f"❌ SFTP upload failed: {e}")
-                    logger.error(f"SFTP error: {e}", exc_info=True)
-                    return False
-                
-                # Create model - USE BASH LOGIN SHELL
-                await aprint(Fore.CYAN + f"🔨 Building model (this may take 1-2 minutes)...")
-                await aprint(Fore.YELLOW + "    Please wait...")
-                
-                try:
-                    result = await ssh.run(
-                        f'bash -l -c "ollama create {self.model_name} -f {temp_modelfile}"',
-                        check=False
-                    )
+                    if result.exit_status == 127:
+                        await aprint(Fore.YELLOW + "\n💡 The 'ollama' command was not found.")
+                        await aprint(Fore.YELLOW + "   Add ollama to PATH or create symlink")
                     
-                    # Cleanup
-                    await ssh.run(f'rm -f {temp_modelfile}', check=False)
-                    
-                    if result.exit_status == 0:
-                        await aprint(Fore.GREEN + f"\n✅ Success! Model '{self.model_name}' created!")
-                        await aprint(Fore.CYAN + f"    Base: {base_model}")
-                        await aprint(Fore.CYAN + f"    Name: {self.model_name}")
-                        await aprint(Fore.CYAN + f"    Ready to use! 🚀")
-                        logger.info(f"Created model {self.model_name} from {base_model}")
-                        return True
-                    else:
-                        await aprint(Fore.RED + f"\n❌ Model creation failed!")
-                        await aprint(Fore.RED + f"Exit code: {result.exit_status}")
-                        
-                        if result.exit_status == 127:
-                            await aprint(Fore.YELLOW + "\n💡 The 'ollama' command was not found.")
-                            await aprint(Fore.YELLOW + "   Add ollama to PATH or create symlink")
-                        
-                        if result.stderr:
-                            await aprint(Fore.RED + f"Error: {result.stderr}")
-                        if result.stdout:
-                            await aprint(Fore.YELLOW + f"Output: {result.stdout}")
-                        return False
-                        
-                except Exception as e:
-                    await aprint(Fore.RED + f"❌ Error running ollama command: {e}")
-                    logger.error(f"Ollama create error: {e}", exc_info=True)
-                    await ssh.run(f'rm -f {temp_modelfile}', check=False)
+                    if result.stderr:
+                        await aprint(Fore.RED + f"Error: {result.stderr}")
+                    if result.stdout:
+                        await aprint(Fore.YELLOW + f"Output: {result.stdout}")
                     return False
                     
             except Exception as e:
-                await aprint(Fore.RED + f"❌ Unexpected error: {e}")
-                logger.error(f"Model creation error: {e}", exc_info=True)
+                await aprint(Fore.RED + f"❌ Error running ollama command: {e}")
+                logger.error(f"Ollama create error: {e}", exc_info=True)
+                await ssh.run(f'rm -f {temp_modelfile}', check=False)
                 return False
-        
-        finally:
-            # Restore asyncssh logging level
-            asyncssh_logger.setLevel(original_level)
+                
+        except Exception as e:
+            await aprint(Fore.RED + f"❌ Unexpected error: {e}")
+            logger.error(f"Model creation error: {e}", exc_info=True)
+            return False
 
 
 # ==============================================================================
 # MAIN WORKFLOW
 # ==============================================================================
 
-# ==============================================================================
-# MAIN WORKFLOW - FIXED VERSION
-# ==============================================================================
-
 async def run_ct_research_assistant(ssh):
-    """Main research assistant workflow with FIXED model selection."""
+    """Main research assistant workflow."""
+    # FIXED: Suppress asyncssh logging globally for entire session
+    asyncssh_logger = logging.getLogger('asyncssh')
+    asyncssh_logger.setLevel(logging.WARNING)
+    
     await aprint(Fore.CYAN + Style.BRIGHT + "\n=== 🔬 Clinical Trial Research Assistant ===")
     await aprint(Fore.WHITE + "RAG-powered intelligent analysis of clinical trial database\n")
     
-    # Setup database path
     db_path_input = await ainput(
         Fore.CYAN + "Enter path to clinical trial database (JSON file or directory) [./ct_database]: "
     )
@@ -459,19 +407,16 @@ async def run_ct_research_assistant(ssh):
         await aprint(Fore.YELLOW + "Please ensure your JSON database exists at the specified path")
         return
     
-    # Initialize assistant
     await aprint(Fore.YELLOW + "Initializing research assistant...")
     assistant = ClinicalTrialResearchAssistant(db_path)
     
     await aprint(Fore.GREEN + f"✅ Indexed {len(assistant.rag.db.trials)} clinical trials")
     
-    # Get host and setup connection
     try:
         host = ssh._host if hasattr(ssh, '_host') else config.network.default_ip
     except:
         host = config.network.default_ip
     
-    # Setup tunnel if needed
     await aprint(Fore.CYAN + f"\n🔗 Connecting to Ollama at {host}:11434...")
     models = await list_remote_models_api(host)
     tunnel_listener = None
@@ -496,14 +441,11 @@ async def run_ct_research_assistant(ssh):
     
     await aprint(Fore.GREEN + f"✅ Found {len(models)} model(s) on remote server")
     
-    # FIXED: Single model check and setup
     model_ready = await assistant.ensure_model_exists(ssh, host, models)
     
     if not model_ready:
-        # Model creation failed or was cancelled - offer fallback
         await aprint(Fore.YELLOW + "\n⚠️  Custom model not available. Choose a base model instead:")
         
-        # Refresh model list
         models = await list_remote_models_api(host)
         for i, m in enumerate(models, 1):
             await aprint(Fore.WHITE + f"  {i}) {m}")
@@ -521,13 +463,11 @@ async def run_ct_research_assistant(ssh):
     
     await aprint(Fore.GREEN + f"\n✅ Using model: {assistant.model_name}")
     
-    # [REST OF THE WORKFLOW - Commands, interaction loop, etc.]
-    # Main interaction loop
     await aprint(Fore.CYAN + "\n💡 Research Assistant Commands:")
     await aprint(Fore.CYAN + "   • 'search <query>' - Search database and analyze trials")
     await aprint(Fore.CYAN + "   • 'extract <NCT>' - Extract structured data from specific trial")
     await aprint(Fore.CYAN + "   • 'save <NCT>' - Extract and save directly as JSON")
-    await aprint(Fore.CYAN + "   • 'query <question>' - Ask question with auto-retrieval")
+    await aprint(Fore.CYAN + "   • 'query <question> [--limit N]' - Ask question (default limit: 10)")
     await aprint(Fore.CYAN + "   • 'load <file>' - Load JSON file and analyze")
     await aprint(Fore.CYAN + "   • 'export <NCT1,NCT2,...>' - Export trials to JSON/CSV")
     await aprint(Fore.CYAN + "   • 'stats' - Show database statistics")
@@ -547,14 +487,10 @@ async def run_ct_research_assistant(ssh):
                     await aprint(Fore.YELLOW + "Returning to main menu...")
                     break
                 
-                # Parse command
                 parts = user_input.split(maxsplit=1)
                 command = parts[0].lower()
                 args = parts[1] if len(parts) > 1 else ""
                 
-                # ============================================================
-                # SEARCH COMMAND
-                # ============================================================
                 if command == 'search':
                     if not args:
                         await aprint(Fore.RED + "Usage: search <query>")
@@ -571,24 +507,18 @@ async def run_ct_research_assistant(ssh):
                     for nct in nct_ids:
                         await aprint(Fore.CYAN + f"  • {nct}")
                     
-                    analyze = await ainput(
-                        Fore.CYAN + "\nAnalyze these trials with AI? (y/n): "
-                    )
+                    analyze = await ainput(Fore.CYAN + "\nAnalyze these trials with AI? (y/n): ")
                     
                     if analyze.lower() in ('y', 'yes'):
                         await aprint(Fore.YELLOW + "\n🤔 Analyzing trials...")
                         response = await assistant.query_with_rag(host, args)
                         
-                        # FIXED: Check for None or error
                         if not response or response.startswith("Error:"):
                             await aprint(Fore.RED + f"\n{response}\n")
                         else:
                             await aprint(Fore.GREEN + "\n📊 Analysis:\n")
                             await aprint(Fore.WHITE + response + "\n")
                 
-                # ============================================================
-                # EXTRACT COMMAND
-                # ============================================================
                 elif command == 'extract':
                     if not args:
                         await aprint(Fore.RED + "Usage: extract <NCT_NUMBER>")
@@ -599,24 +529,20 @@ async def run_ct_research_assistant(ssh):
                     
                     response = await assistant.extract_from_nct(host, nct)
                     
-                    # FIXED: Check for None or error
                     if not response or response.startswith("Error:") or response.startswith("NCT number") or response.startswith("Could not"):
                         await aprint(Fore.RED + f"\n{response}\n")
                     else:
-                        await aprint(Fore.GREEN + "\n📊 Structured Extraction:\n")
-                        await aprint(Fore.WHITE + response + "\n")
+                        # FIXED: Removed extra newline before extraction
+                        await aprint(Fore.GREEN + "\n📊 Structured Extraction:")
+                        await aprint(Fore.WHITE + response)
                         
-                        # Ask to save
-                        save_choice = await ainput(
-                            Fore.CYAN + "Save this extraction? (json/txt/no) [no]: "
-                        )
+                        # FIXED: Single newline before prompt
+                        save_choice = await ainput(Fore.CYAN + "\nSave this extraction? (json/txt/no) [no]: ")
                         save_choice = save_choice.strip().lower()
                         
                         if save_choice in ('json', 'txt'):
                             default_filename = f"{nct}_extraction"
-                            filename = await ainput(
-                                Fore.CYAN + f"Filename (without extension) [{default_filename}]: "
-                            )
+                            filename = await ainput(Fore.CYAN + f"Filename (without extension) [{default_filename}]: ")
                             filename = filename.strip() or default_filename
                             
                             output_dir = Path('output')
@@ -636,7 +562,7 @@ async def run_ct_research_assistant(ssh):
                                     await aprint(Fore.CYAN + "\n📄 Preview:")
                                     await aprint(Fore.WHITE + preview + "...\n")
                                     
-                                else:  # txt
+                                else:
                                     with open(output_path, 'w', encoding='utf-8') as f:
                                         f.write(response)
                                     
@@ -648,9 +574,6 @@ async def run_ct_research_assistant(ssh):
                                 await aprint(Fore.RED + f"❌ Error saving: {e}")
                                 logger.error(f"Error saving extraction: {e}", exc_info=True)
                 
-                # ============================================================
-                # SAVE COMMAND
-                # ============================================================
                 elif command == 'save':
                     if not args:
                         await aprint(Fore.RED + "Usage: save <NCT_NUMBER>")
@@ -661,7 +584,6 @@ async def run_ct_research_assistant(ssh):
                     
                     response = await assistant.extract_from_nct(host, nct)
                     
-                    # FIXED: Check for errors before parsing
                     if not response or response.startswith("Error:") or response.startswith("NCT number") or response.startswith("Could not"):
                         await aprint(Fore.RED + f"\n{response}\n")
                         continue
@@ -670,9 +592,7 @@ async def run_ct_research_assistant(ssh):
                         extraction_dict = parse_extraction_to_dict(response)
                         
                         default_filename = f"{nct}_extraction"
-                        filename = await ainput(
-                            Fore.CYAN + f"Filename [{default_filename}]: "
-                        )
+                        filename = await ainput(Fore.CYAN + f"Filename [{default_filename}]: ")
                         filename = filename.strip() or default_filename
                         
                         output_dir = Path('output')
@@ -693,27 +613,34 @@ async def run_ct_research_assistant(ssh):
                         await aprint(Fore.RED + f"❌ Error: {e}")
                         logger.error(f"Error in save command: {e}", exc_info=True)
                 
-                # ============================================================
-                # QUERY COMMAND
-                # ============================================================
                 elif command == 'query':
                     if not args:
-                        await aprint(Fore.RED + "Usage: query <question>")
+                        await aprint(Fore.RED + "Usage: query <question> [--limit N]")
+                        await aprint(Fore.YELLOW + "Example: query What trials are recruiting? --limit 5")
                         continue
                     
-                    await aprint(Fore.YELLOW + f"\n🤔 Processing query...")
-                    response = await assistant.query_with_rag(host, args)
+                    max_trials = 10
+                    query_text = args
                     
-                    # FIXED: Check for None or error
+                    if '--limit' in args:
+                        parts = args.split('--limit')
+                        query_text = parts[0].strip()
+                        try:
+                            limit_str = parts[1].strip().split()[0]
+                            max_trials = int(limit_str)
+                            await aprint(Fore.CYAN + f"Using custom limit: {max_trials} trials")
+                        except (ValueError, IndexError):
+                            await aprint(Fore.YELLOW + "Invalid --limit value, using default (10)")
+                    
+                    await aprint(Fore.YELLOW + f"\n🤔 Processing query (max {max_trials} trials)...")
+                    response = await assistant.query_with_rag(host, query_text, max_trials=max_trials)
+                    
                     if not response or response.startswith("Error:"):
                         await aprint(Fore.RED + f"\n{response}\n")
                     else:
                         await aprint(Fore.GREEN + "\n💡 Answer:\n")
                         await aprint(Fore.WHITE + response + "\n")
                 
-                # ============================================================
-                # STATS COMMAND
-                # ============================================================
                 elif command == 'stats':
                     total = len(assistant.rag.db.trials)
                     await aprint(Fore.CYAN + f"\n📊 Database Statistics:")
@@ -740,49 +667,51 @@ async def run_ct_research_assistant(ssh):
                     
                     await aprint("")
                 
-                # ============================================================
-                # VALIDATE COMMAND
-                # ============================================================
                 elif command == 'validate':
-                    from data.clinical_trial_rag import (
-                        StudyStatus, Phase, Classification, 
-                        DeliveryMode, Outcome, FailureReason
-                    )
-                    
                     await aprint(Fore.CYAN + "\n📋 Valid Values for All Fields:\n")
                     
                     await aprint(Fore.GREEN + "Study Status (choose ONE):")
-                    for status in StudyStatus:
-                        await aprint(Fore.WHITE + f"  • {status.value}")
+                    for status in ["NOT_YET_RECRUITING", "RECRUITING", "ENROLLING_BY_INVITATION",
+                                  "ACTIVE_NOT_RECRUITING", "COMPLETED", "SUSPENDED",
+                                  "TERMINATED", "WITHDRAWN", "UNKNOWN"]:
+                        await aprint(Fore.WHITE + f"  • {status}")
                     
                     await aprint(Fore.GREEN + "\nPhases (can be multiple):")
-                    for phase in Phase:
-                        await aprint(Fore.WHITE + f"  • {phase.value}")
+                    for phase in ["EARLY_PHASE1", "PHASE1", "PHASE1|PHASE2",
+                                 "PHASE2", "PHASE2|PHASE3", "PHASE3", "PHASE4"]:
+                        await aprint(Fore.WHITE + f"  • {phase}")
                     
                     await aprint(Fore.GREEN + "\nClassification (choose ONE):")
-                    for cls in Classification:
-                        await aprint(Fore.WHITE + f"  • {cls.value}")
+                    for cls in ["AMP(infection)", "AMP(other)", "Other"]:
+                        await aprint(Fore.WHITE + f"  • {cls}")
                     
                     await aprint(Fore.GREEN + "\nDelivery Mode (choose ONE):")
-                    for mode in DeliveryMode:
-                        await aprint(Fore.WHITE + f"  • {mode.value}")
+                    for mode in ["Injection/Infusion - Intramuscular",
+                                "Injection/Infusion - Other/Unspecified",
+                                "Injection/Infusion - Subcutaneous/Intradermal",
+                                "IV", "Intranasal", "Oral - Tablet", "Oral - Capsule",
+                                "Oral - Food", "Oral - Drink", "Oral - Unspecified",
+                                "Topical - Cream/Gel", "Topical - Powder", "Topical - Spray",
+                                "Topical - Strip/Covering", "Topical - Wash", "Topical - Unspecified",
+                                "Other/Unspecified", "Inhalation"]:
+                        await aprint(Fore.WHITE + f"  • {mode}")
                     
                     await aprint(Fore.GREEN + "\nOutcome (choose ONE):")
-                    for outcome in Outcome:
-                        await aprint(Fore.WHITE + f"  • {outcome.value}")
+                    for outcome in ["Positive", "Withdrawn", "Terminated",
+                                   "Failed - completed trial", "Recruiting",
+                                   "Unknown", "Active, not recruiting"]:
+                        await aprint(Fore.WHITE + f"  • {outcome}")
                     
                     await aprint(Fore.GREEN + "\nReason for Failure (choose ONE if applicable):")
-                    for reason in FailureReason:
-                        await aprint(Fore.WHITE + f"  • {reason.value}")
+                    for reason in ["Business Reason", "Ineffective for purpose",
+                                  "Toxic/Unsafe", "Due to covid", "Recruitment issues", "N/A"]:
+                        await aprint(Fore.WHITE + f"  • {reason}")
                     
                     await aprint(Fore.GREEN + "\nPeptide:")
                     await aprint(Fore.WHITE + "  • True")
                     await aprint(Fore.WHITE + "  • False")
                     await aprint("")
                 
-                # ============================================================
-                # EXPORT COMMAND
-                # ============================================================
                 elif command == 'export':
                     if not args:
                         await aprint(Fore.RED + "Usage: export <NCT1,NCT2,...>")
@@ -790,9 +719,7 @@ async def run_ct_research_assistant(ssh):
                     
                     nct_list = [n.strip().upper() for n in args.split(',')]
                     
-                    fmt = await ainput(
-                        Fore.CYAN + "Export format (json/csv) [json]: "
-                    )
+                    fmt = await ainput(Fore.CYAN + "Export format (json/csv) [json]: ")
                     fmt = fmt.strip().lower() or 'json'
                     
                     if fmt not in ('json', 'csv'):
@@ -800,9 +727,7 @@ async def run_ct_research_assistant(ssh):
                         continue
                     
                     default_name = f"ct_export_{len(nct_list)}_trials"
-                    filename = await ainput(
-                        Fore.CYAN + f"Filename [{default_name}]: "
-                    )
+                    filename = await ainput(Fore.CYAN + f"Filename [{default_name}]: ")
                     filename = filename.strip() or default_name
                     
                     output_path = Path('output') / f"{filename}.{fmt}"
@@ -816,9 +741,6 @@ async def run_ct_research_assistant(ssh):
                     except Exception as e:
                         await aprint(Fore.RED + f"❌ Export failed: {e}")
                 
-                # ============================================================
-                # LOAD COMMAND
-                # ============================================================
                 elif command == 'load':
                     if not args:
                         await aprint(Fore.RED + "Usage: load <filename>")
@@ -848,9 +770,7 @@ async def run_ct_research_assistant(ssh):
                         
                         await aprint(Fore.GREEN + f"✅ Loaded {found.name} ({len(content)} chars)")
                         
-                        action = await ainput(
-                            Fore.CYAN + "Analyze as trial data? (y/n): "
-                        )
+                        action = await ainput(Fore.CYAN + "Analyze as trial data? (y/n): ")
                         
                         if action.lower() in ('y', 'yes'):
                             try:
@@ -876,14 +796,23 @@ async def run_ct_research_assistant(ssh):
                     except Exception as e:
                         await aprint(Fore.RED + f"❌ Error: {e}")
                 
-                # ============================================================
-                # DIRECT QUERY (no command prefix)
-                # ============================================================
                 else:
-                    await aprint(Fore.YELLOW + "\n🤔 Processing query...")
-                    response = await assistant.query_with_rag(host, user_input)
+                    max_trials = 10
+                    query_text = user_input
                     
-                    # FIXED: Check for None or error
+                    if '--limit' in user_input:
+                        parts = user_input.split('--limit')
+                        query_text = parts[0].strip()
+                        try:
+                            limit_str = parts[1].strip().split()[0]
+                            max_trials = int(limit_str)
+                            await aprint(Fore.CYAN + f"Using custom limit: {max_trials} trials")
+                        except (ValueError, IndexError):
+                            await aprint(Fore.YELLOW + "Invalid --limit value, using default (10)")
+                    
+                    await aprint(Fore.YELLOW + f"\n🤔 Processing query (max {max_trials} trials)...")
+                    response = await assistant.query_with_rag(host, query_text, max_trials=max_trials)
+                    
                     if not response or response.startswith("Error:"):
                         await aprint(Fore.RED + f"\n{response}\n")
                     else:
@@ -896,9 +825,8 @@ async def run_ct_research_assistant(ssh):
             except Exception as e:
                 await aprint(Fore.RED + f"Error: {e}")
                 logger.error(f"Error in research assistant: {e}", exc_info=True)
-            pass
+    
     finally:
-        # Cleanup
         if tunnel_listener:
             try:
                 tunnel_listener.close()
