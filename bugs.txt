@@ -1,37 +1,15 @@
-# always installs duckduckgo, should only be once if it doesnt exist
-Starting AMP_LLM...
-Checking environment...
-
-📁 Setting up virtual environment...
-✅ Virtual environment exists
-📦 Upgrading pip...
-📦 Installing packages from requirements.txt...
-✅ All packages installed successfully!
-
-🔄 Relaunching inside virtual environment...
-   H:\Documents\LLM Code\AMP_LLMs\llm_env\Scripts\python.exe
-
-Starting AMP_LLM...
-Checking environment...
-
-✅ Running inside virtual environment
-
-⚠️  Found 1 missing package(s):
-   - duckduckgo-search>=3.9.0
-
-📦 Installing missing packages...
-📦 Installing packages from requirements.txt...
-
 # blank space between extraction and research prompt
 
 # channel info between save and research
+
 Save this extraction? (json/txt/no) [no]: 2025-10-09 13:16:14,939 - asyncssh - INFO - [conn=0, chan=4] Received channel close
 2025-10-09 13:16:14,939 - asyncssh - INFO - [conn=0, chan=4] Closing channel
 2025-10-09 13:16:14,939 - asyncssh - INFO - [conn=0, chan=4] Channel closed
 no
 Research >>> 
 
-# RAG commands should come up between every prompt to the llm_env💡 Research Assistant Commands:
+# RAG commands should come up with a !help command to any llm
+💡 Research Assistant Commands:
    • 'search <query>' - Search database and analyze trials
    • 'extract <NCT>' - Extract structured data from specific trial
    • 'save <NCT>' - Extract and save directly as JSON
@@ -47,3 +25,6 @@ Research >>> 2025-10-09 13:17:03,393 - asyncssh - INFO - [conn=0, chan=5] Receiv
 2025-10-09 13:17:03,394 - asyncssh - INFO - [conn=0, chan=5] Closing channel
 2025-10-09 13:17:03,394 - asyncssh - INFO - [conn=0, chan=5] Channel closed
 2025-10-09 13:17:42,695 - asyncssh - INFO - [conn=0] Connection failure: [WinError 121] The semaphore timeout period has expired
+
+--------------------------------
+# data validation should occur in the config file, not hardcoded into the app, review and fix

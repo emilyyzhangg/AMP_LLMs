@@ -1,6 +1,7 @@
 """
 LLM utility functions for Ollama interaction.
 Includes both SSH terminal and HTTP API methods.
+FIXED: Better connection management, keepalive, and retry logic
 """
 import asyncio
 import aiohttp
@@ -39,10 +40,18 @@ async def list_remote_models_api(host: str, port: int = 11434) -> list:
     """
     url = f"http://{host}:{port}/api/tags"
     
+    # FIXED: Use TCPConnector with keepalive
+    connector = aiohttp.TCPConnector(
+        ttl_dns_cache=300,
+        limit=100,
+        force_close=False,
+        enable_cleanup_closed=True
+    )
+    
     try:
         logger.info(f"Fetching models from {url}")
         
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(connector=connector) as session:
             async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
                 if resp.status == 200:
                     data = await resp.json()
@@ -64,15 +73,16 @@ async def list_remote_models_api(host: str, port: int = 11434) -> list:
         return []
 
 
-async def send_to_ollama_api(host: str, model: str, prompt: str, port: int = 11434) -> str:
+async def send_to_ollama_api(host: str, model: str, prompt: str, port: int = 11434, max_retries: int = 3) -> str:
     """
-    Send prompt to Ollama via HTTP API (non-streaming).
+    Send prompt to Ollama via HTTP API (non-streaming) with retry logic.
     
     Args:
         host: Remote host IP/hostname
         model: Model name
         prompt: User prompt
         port: Ollama API port (default 11434)
+        max_retries: Number of retry attempts (default 3)
         
     Returns:
         Model response text
@@ -93,31 +103,79 @@ async def send_to_ollama_api(host: str, model: str, prompt: str, port: int = 114
     print(f"   Model: {model}")
     print(f"   Length: {len(prompt)} chars")
     
-    try:
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, json=payload, timeout=aiohttp.ClientTimeout(total=120)) as resp:
-                if resp.status == 200:
-                    data = await resp.json()
-                    response = data.get('response', '')
-                    
-                    logger.info(f"Received response: {len(response)} characters")
-                    print(f"✅ Received response: {len(response)} chars")
-                    
-                    return response
-                else:
-                    error_text = await resp.text()
-                    logger.error(f"API error {resp.status}: {error_text}")
-                    return f"Error: API returned status {resp.status}"
-                    
-    except asyncio.TimeoutError:
-        logger.error("Request timed out")
-        return "Error: Request timed out after 120 seconds"
-    except aiohttp.ClientConnectorError:
-        logger.error(f"Cannot connect to {url}")
-        return f"Error: Cannot connect to Ollama at {host}:{port}"
-    except Exception as e:
-        logger.error(f"Error sending prompt: {e}", exc_info=True)
-        return f"Error: {e}"
+    # FIXED: TCPConnector with keepalive and no force_close
+    connector = aiohttp.TCPConnector(
+        ttl_dns_cache=300,
+        limit=100,
+        force_close=False,  # IMPORTANT: Keep connections alive
+        enable_cleanup_closed=True,
+        keepalive_timeout=300  # 5 minutes keepalive
+    )
+    
+    last_error = None
+    
+    for attempt in range(max_retries):
+        try:
+            # FIXED: Longer timeout for LLM responses (5 minutes)
+            timeout = aiohttp.ClientTimeout(
+                total=300,  # 5 minutes total
+                connect=30,  # 30 seconds to connect
+                sock_read=300  # 5 minutes to read response
+            )
+            
+            async with aiohttp.ClientSession(connector=connector) as session:
+                async with session.post(url, json=payload, timeout=timeout) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        response = data.get('response', '')
+                        
+                        logger.info(f"Received response: {len(response)} characters")
+                        print(f"✅ Received response: {len(response)} chars")
+                        
+                        return response
+                    else:
+                        error_text = await resp.text()
+                        logger.error(f"API error {resp.status}: {error_text}")
+                        return f"Error: API returned status {resp.status}"
+                        
+        except asyncio.TimeoutError:
+            last_error = "Request timed out after 5 minutes"
+            logger.warning(f"Attempt {attempt + 1}/{max_retries}: Timeout")
+            if attempt < max_retries - 1:
+                print(f"⚠️  Timeout, retrying... ({attempt + 1}/{max_retries})")
+                await asyncio.sleep(2)  # Wait 2 seconds before retry
+                continue
+            else:
+                logger.error(last_error)
+                return f"Error: {last_error}"
+                
+        except aiohttp.ServerDisconnectedError:
+            last_error = "Server disconnected"
+            logger.warning(f"Attempt {attempt + 1}/{max_retries}: Server disconnected")
+            if attempt < max_retries - 1:
+                print(f"⚠️  Connection lost, retrying... ({attempt + 1}/{max_retries})")
+                await asyncio.sleep(2)  # Wait 2 seconds before retry
+                continue
+            else:
+                logger.error(last_error)
+                return f"Error: {last_error}. Please check if Ollama is still running."
+                
+        except aiohttp.ClientConnectorError:
+            last_error = f"Cannot connect to Ollama at {host}:{port}"
+            logger.error(last_error)
+            return f"Error: {last_error}. Check if SSH tunnel is still active."
+            
+        except Exception as e:
+            last_error = str(e)
+            logger.error(f"Error sending prompt: {e}", exc_info=True)
+            if attempt < max_retries - 1:
+                print(f"⚠️  Error occurred, retrying... ({attempt + 1}/{max_retries})")
+                await asyncio.sleep(2)
+                continue
+            else:
+                return f"Error: {e}"
+    
+    return f"Error: {last_error}"
 
 
 async def send_to_ollama_api_streaming(host: str, model: str, prompt: str, port: int = 11434):
@@ -144,9 +202,20 @@ async def send_to_ollama_api_streaming(host: str, model: str, prompt: str, port:
     
     logger.info(f"Streaming prompt to {model}: {len(prompt)} chars")
     
+    # FIXED: TCPConnector with keepalive
+    connector = aiohttp.TCPConnector(
+        ttl_dns_cache=300,
+        limit=100,
+        force_close=False,
+        enable_cleanup_closed=True,
+        keepalive_timeout=300
+    )
+    
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, json=payload, timeout=aiohttp.ClientTimeout(total=300)) as resp:
+        timeout = aiohttp.ClientTimeout(total=300, sock_read=300)
+        
+        async with aiohttp.ClientSession(connector=connector) as session:
+            async with session.post(url, json=payload, timeout=timeout) as resp:
                 if resp.status != 200:
                     error_text = await resp.text()
                     logger.error(f"API error {resp.status}: {error_text}")
