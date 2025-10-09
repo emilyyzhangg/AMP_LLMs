@@ -33,7 +33,7 @@ ssh emilyzhang@100.99.162.98
 11. llm chosen starts up, user then has the choice to prompt the llm or to upload a csv file with prompts. prompt option runs the llm and allows the user to interact
 12. the handling of the prompting file and responses will be programmed later, input is csv, output is csv for now
 
-NCT lookup
+# NCT lookup
 13. prompts for NCT number or multiple, comma seperated NCT numbers. not case sensitive. "main menu" still returns to main
 14. searches ClinicalTrials for NCT number info. 
 15. extracts DOI, PMID, PMCID if available and attempts conversion to PMID
@@ -42,6 +42,25 @@ NCT lookup
 18. repeat 14-17 for all NCT numbers entered
 19. Option to save to txt file or csv. multiple NCT numbers will be seperated by commas in csv
 20. ask user if they want additional NCT lookups otherwise return to main menu
+
+# Web seach
+21. prompts for NCT number or multiple, comma seperated NCT numbers. not case sensitive. "main menu" still returns to main
+22. Runs Google search with NCT number
+22. Extracts first 10 webpages that come up in the search, found or not found messaging for all results and also JSON dumps
+23. repeat 21-22 for all NCT numbers entered
+24. Option to save to txt file or csv. multiple webpages will be seperated by commas in csv
+25. ask user if they want additional NCT lookups otherwise return to main menu
+
+
+# DrugBank/Uniprot search
+26. prompts for drug name or multiple, comma seperated drug names. not case sensitive. "main menu" still returns to main
+27. Searches Uniprot with drug name
+28. Extracts protein sequence from Uniprot API,  found or not found messaging for all results and also JSON dumps
+29. Searches DrugBank with drug name
+30. Extracts protein sequence from DrugBank API,  found or not found messaging for all results and also JSON dumps
+31. repeat 26-30 for all drug names entered
+32. Option to save to txt file or csv. multiple webpages will be seperated by commas in csv
+33. ask user if they want additional drug lookups otherwise return to main menu
 
 # prompt for modelfile
  i want to use a modelfile or rag, or both if it makes sense, to get the llm to be a research assistant that digs through a json database with clinical trial information (sorted by NCT number) and pull out the following info: NCT Number Study Title Study Status Brief Summary Conditions Interventions/Drug Phases Enrollment Start Date Completion Date Classification <- evidence link(s) Delivery Mode Sequence dramp_name <- evidence link(s) Study ID (PMID OR DOI) Outcome Reason for Failure/withdrawal/termination Subsequent Trial ID <- evidence link(s) Peptide? Comments. a sample txt file is provided with the data structure for one single study, identified by NCT number. give me guidance and a full code that i can add to my project to make this possible
@@ -73,10 +92,10 @@ stats                   # Database statistics
 Data Validation
 Study Status --> NOT_YET_RECRUITING, RECRUITING, ENROLLING_BY_INVITATION, ACTIVE_NOT_RECRUITING, COMPLETED, SUSPENDED, TERMINATED, WITHDRAWN, UNKNOWN
 Phases --> EARLY_PHASE1, PHASE1, PHASE1|PHASE2, PHASE2, PHASE2|PHASE3, PHASE3, PHASE4
-Classification --> AMP(infection), AMP(other), Other
-Delivery Mode --> Injection/Infusion - Intramuscular, Injection/Infusion - Other/Unspecified, Injection/Infusion - Subcutaneous/Intradermal, IV, Intranasal, Oral - Tablet, Oral - Capsule, Oral - Food, Oral - Drink, Oral - Unspecified, Topical - Cream/Gel, Topical - Powder, Topical - Spray, Topical - Strip/Covering, Topical - Wash, Topical - Unspecified, Other/Unspecified, Oral - Unspecified, Inhalation
+Classification --> AMP, Other
+Delivery Mode --> Injection/Infusion, Oral, Topical, Other
 Outcome --> Positive, Withdrawn, Terminated, Failed - completed trial, Recruiting, Unknown, Active, not recruiting
-Reason for Failure/withdrawl --> Business Reason, Ineffective for purpose, Toxic/Unsafe, Due to covid, Recruitment issues
+Reason for Failure/withdrawl --> Business Reason, Ineffective for purpose, Toxic/Unsafe, Recruitment issues
 Peptide? --> True, False
 
 

@@ -3,108 +3,51 @@ Main entry point for AMP_LLM application.
 Uses aioconsole for non-blocking async input and proper signal handling.
 Auto-installs dependencies from requirements.txt and manages virtual environment.
 Updated with API mode for Ollama to avoid terminal fragmentation.
+
+FIXED: Import order - env_setup runs FIRST, before any module imports.
 """
-import asyncio
-import signal
 import sys
 import os
-from typing import Optional
-from colorama import init, Fore, Style
-from llm.ct_research_runner import run_ct_research_assistant
 
-init(autoreset=True)
-
-# Ensure environment before imports
+# CRITICAL: Ensure environment FIRST, before any other imports
+# This may restart Python in the virtual environment
 from env_setup import ensure_env
 ensure_env()
 
-# Now try imports, install from requirements.txt if missing
-def ensure_packages_from_requirements():
-    """Ensure all required packages from requirements.txt are installed."""
-    import importlib.util
-    import subprocess
-    from pathlib import Path
-    
-    # Package import name mapping (some packages have different import names)
-    PACKAGE_IMPORT_MAPPING = {
-        'asyncssh': 'asyncssh',
-        'aiohttp': 'aiohttp',
-        'aioconsole': 'aioconsole',
-        'colorama': 'colorama',
-        'python-dotenv': 'dotenv',
-        'openai': 'openai',
-    }
-    
-    requirements_file = Path(__file__).parent / 'requirements.txt'
-    
-    if not requirements_file.exists():
-        print(Fore.RED + f"❌ requirements.txt not found at {requirements_file}")
-        print(Fore.YELLOW + "Creating basic requirements.txt...")
-        with open(requirements_file, 'w') as f:
-            f.write("asyncssh>=2.14.0\n")
-            f.write("aiohttp>=3.9.0\n")
-            f.write("aioconsole>=0.7.0\n")
-            f.write("colorama>=0.4.6\n")
-            f.write("python-dotenv>=1.0.0\n")
-            f.write("openai>=1.0.0\n")
-        print(Fore.GREEN + "✅ Created requirements.txt\n")
-    
-    # Parse requirements.txt
-    required_packages = {}
-    with open(requirements_file, 'r') as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith('#'):
-                continue
-            
-            # Extract package name (before any version specifier)
-            pkg_name = line.split('>=')[0].split('==')[0].split('<=')[0].split('>')[0].split('<')[0].strip()
-            
-            # Get import name
-            import_name = PACKAGE_IMPORT_MAPPING.get(pkg_name, pkg_name)
-            required_packages[import_name] = pkg_name
-    
-    # Check which packages are missing
-    missing = []
-    for import_name, package_name in required_packages.items():
-        if importlib.util.find_spec(import_name) is None:
-            missing.append(package_name)
-    
-    if missing:
-        print(Fore.YELLOW + f"Installing {len(missing)} missing package(s) from requirements.txt...")
-        try:
-            # Install all at once from requirements.txt
-            subprocess.check_call([
-                sys.executable, "-m", "pip", "install", "-r", str(requirements_file)
-            ])
-            print(Fore.GREEN + "✅ All packages installed successfully!\n")
-        except subprocess.CalledProcessError as e:
-            print(Fore.RED + f"❌ Failed to install packages: {e}")
-            print(Fore.YELLOW + "\nTrying to install missing packages individually...")
-            for pkg in missing:
-                print(Fore.CYAN + f"  Installing {pkg}...")
-                try:
-                    subprocess.check_call([sys.executable, "-m", "pip", "install", pkg])
-                    print(Fore.GREEN + f"  ✅ {pkg} installed")
-                except subprocess.CalledProcessError as e:
-                    print(Fore.RED + f"  ❌ Failed to install {pkg}: {e}")
-                    sys.exit(1)
+# ============================================================================
+# NOW safe to import everything else (we're in venv with packages installed)
+# ============================================================================
 
-ensure_packages_from_requirements()
+import asyncio
+import signal
+from typing import Optional
+from colorama import init, Fore, Style
 
-# Now import everything else
+init(autoreset=True)
+
+# Import project modules (after env is confirmed)
 from config import get_config, get_logger
 
 logger = get_logger(__name__)
 config = get_config()
 
-from aioconsole import ainput, aprint
+# Import async modules
+try:
+    from aioconsole import ainput, aprint
+except ImportError:
+    print(Fore.RED + "❌ Failed to import aioconsole after environment setup")
+    print(Fore.YELLOW + "Please run: pip install -r requirements.txt")
+    sys.exit(1)
+
 from network.async_networking import ping_host
 from network.ssh_connection import connect_ssh
 from network.ssh_shell import open_interactive_shell
 from llm.async_llm_runner import run_llm_entrypoint
 from llm.async_llm_runner_api import run_llm_entrypoint_api
 from data.async_nct_lookup import run_nct_lookup
+
+# Import research assistant AFTER all dependencies are confirmed
+from llm.ct_research_runner import run_ct_research_assistant
 
 
 class GracefulExit(SystemExit):
@@ -138,11 +81,10 @@ class AMPLLMApp:
             try:
                 logger.info("Closing SSH connection...")
                 self.ssh_connection.close()
-                await asyncio.sleep(0.1)  # Give connection time to close
+                await asyncio.sleep(0.1)
             except Exception as e:
                 logger.error(f"Error closing SSH: {e}")
-                # In main.py, add this method to AMPLLMApp class:
-
+    
     async def ensure_connected(self):
         """Check if SSH is still connected, reconnect if needed."""
         try:
@@ -151,7 +93,6 @@ class AMPLLMApp:
         except:
             pass
         
-        # Connection is dead, try to reconnect
         logger.warning("SSH connection lost, attempting reconnect...")
         await aprint(Fore.YELLOW + "⚠️  SSH connection lost, reconnecting...")
         
@@ -171,14 +112,12 @@ class AMPLLMApp:
         
         await aprint(Fore.YELLOW + f"Reconnecting to {self.ssh_username}@{self.ssh_ip}...")
         
-        # Close old connection if exists
         if self.ssh_connection:
             try:
                 self.ssh_connection.close()
             except Exception:
                 pass
         
-        # Reconnect
         self.ssh_connection = await self.prompt_password_and_connect(
             self.ssh_username, 
             self.ssh_ip
@@ -193,7 +132,7 @@ class AMPLLMApp:
         try:
             return not self.ssh_connection.is_closed()
         except AttributeError:
-            return True  # Assume connected if no is_closed method
+            return True
     
     async def prompt_ip(self) -> str:
         """Prompt for IP address with validation and ping check."""
@@ -248,8 +187,6 @@ class AMPLLMApp:
         
         while self.running and attempt < config.network.max_auth_attempts:
             try:
-                # Use getpass for hidden password input
-                # Note: This blocks briefly but is acceptable for password entry
                 await aprint(Fore.CYAN + f"Enter SSH password for {username}@{ip}: ", end='')
                 password = getpass.getpass('')
                 
@@ -259,7 +196,6 @@ class AMPLLMApp:
                 if ssh:
                     await aprint(Fore.GREEN + f"✅ Successfully connected to {username}@{ip}")
                     logger.info(f"SSH connection established: {username}@{ip}")
-                    # Store connection info
                     self.ssh_ip = ip
                     self.ssh_username = username
                     return ssh
@@ -325,7 +261,7 @@ class AMPLLMApp:
                     break
                 
                 else:
-                    await aprint(Fore.RED + "❌ Invalid option. Please choose 1-5.")
+                    await aprint(Fore.RED + "❌ Invalid option. Please choose 1-6.")
                 
             except GracefulExit:
                 break
@@ -342,14 +278,11 @@ class AMPLLMApp:
             
             await aprint(Fore.YELLOW + "\n=== 🔐 SSH Connection Setup ===")
             
-            # Get connection details
             ip = await self.prompt_ip()
             username = await self.prompt_username()
             
-            # Establish connection
             self.ssh_connection = await self.prompt_password_and_connect(username, ip)
             
-            # Run main menu
             await self.main_menu()
             
         except GracefulExit:
