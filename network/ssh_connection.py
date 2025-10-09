@@ -1,28 +1,35 @@
-import paramiko
+"""
+SSH connection management with keepalive support.
+"""
+import asyncssh
+import asyncio
 from colorama import Fore
+from config import get_config
 
-def connect_ssh(ip, username, password):
-    """Attempt SSH connection once using given credentials."""
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+config = get_config()
 
+
+async def connect_ssh(ip, username, password):
+    """
+    Attempt SSH connection with keepalive configuration.
+    """
     try:
-        print(Fore.YELLOW + f"🔐 Connecting to {username}@{ip} ...")
-        ssh.connect(ip, username=username, password=password, port=22, timeout=10)
-        return ssh
-
-    except paramiko.AuthenticationException:
-        print(Fore.RED + "❌ Authentication failed.")
+        conn = await asyncssh.connect(
+            host=ip,
+            username=username,
+            password=password,
+            keepalive_interval=5,  # Send SSH keepalive every 10 seconds
+            keepalive_count_max=6,   # Allow 6 failures (60 seconds total)
+            known_hosts=None,
+            # ADD THESE TCP KEEPALIVE OPTIONS:
+            tcp_keepalive=True,          # Enable TCP keepalive
+            client_keys=None,            # Don't try key auth first
+            connect_timeout=30,          # Connection timeout
+        )
+        return conn
+    except asyncssh.PermissionDenied:
+        print(Fore.RED + "Authentication failed.")
         return None
-
-    except paramiko.SSHException as e:
-        print(Fore.RED + f"⚠️ SSH error: {e}")
-        return None
-
-    except KeyboardInterrupt:
-        print(Fore.MAGENTA + "\n🚪 Connection cancelled by user.")
-        return None
-
     except Exception as e:
-        print(Fore.RED + f"❌ Unexpected error: {e}")
+        print(Fore.RED + f"SSH connection error: {e}")
         return None

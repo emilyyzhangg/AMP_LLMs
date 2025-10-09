@@ -1,21 +1,28 @@
+"""
+Hybrid async/sync data fetchers for clinical trial and PubMed/PMC data.
+Uses proven synchronous requests library wrapped in async executor to avoid rate limiting issues.
+Maintains original emoji output format.
+"""
 import requests
 import time
 import xml.etree.ElementTree as ET
 import json
+import asyncio
 from pathlib import Path
+from typing import Dict, List, Any, Optional
+from functools import partial
 
-# ---------------------------------
 # Configuration
-# ---------------------------------
 DEFAULT_TIMEOUT = 15
 SLEEP_BETWEEN_REQUESTS = 0.34
 CTG_V2_BASE = "https://clinicaltrials.gov/api/v2/studies"
 CTG_LEGACY_FULL = "https://clinicaltrials.gov/api/query/full_studies"
 
 # ---------------------------------
-# ClinicalTrials.gov (v2-first, with fallback)
+# ClinicalTrials.gov (synchronous - proven to work)
 # ---------------------------------
-def fetch_clinical_trial_data(nct_id):
+def _sync_fetch_clinical_trial_data(nct_id):
+    """Synchronous version that actually works."""
     nct = nct_id.strip().upper()
     v2_detail_url = f"{CTG_V2_BASE}/{nct}"
 
@@ -35,7 +42,7 @@ def fetch_clinical_trial_data(nct_id):
 
     # v2 search fallback
     try:
-        params = {"query.nctId": nct, "pageSize": 1}
+        params = {"query.term": nct, "pageSize": 1}
         print(f"🔍 ClinicalTrials.gov v2: searching with params {params}")
         resp2 = requests.get(CTG_V2_BASE, params=params, timeout=DEFAULT_TIMEOUT)
         if resp2.status_code == 200:
@@ -68,10 +75,10 @@ def fetch_clinical_trial_data(nct_id):
 
 
 # ---------------------------------
-# PubMed Utilities
+# PubMed Utilities (synchronous - proven to work)
 # ---------------------------------
-def fetch_pubmed_by_pmid(pmid):
-    """Fetch and parse as much metadata as possible from PubMed efetch."""
+def _sync_fetch_pubmed_by_pmid(pmid):
+    """Fetch and parse full metadata from PubMed efetch."""
     url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
     params = {"db": "pubmed", "id": pmid, "retmode": "xml"}
     try:
@@ -168,7 +175,7 @@ def fetch_pubmed_by_pmid(pmid):
     }
 
 
-def search_pubmed_esearch(term, max_results=5):
+def _sync_search_pubmed_esearch(term, max_results=5):
     url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
     params = {"db": "pubmed", "term": term, "retmode": "json", "retmax": max_results}
     try:
@@ -182,13 +189,13 @@ def search_pubmed_esearch(term, max_results=5):
         return []
 
 
-def search_pubmed_by_title_authors(title, authors=None):
+def _sync_search_pubmed_by_title_authors(title, authors=None):
     query = f'"{title}"[Title]'
     if authors:
         last_names = [a.split()[-1] for a in authors if a.strip()]
         if last_names:
             query += " AND " + " AND ".join([f"{ln}[Author]" for ln in last_names])
-    pmids = search_pubmed_esearch(query, max_results=1)
+    pmids = _sync_search_pubmed_esearch(query, max_results=1)
     if pmids:
         print(f"✅ PubMed: found PMID {pmids[0]}")
         return pmids[0]
@@ -197,9 +204,9 @@ def search_pubmed_by_title_authors(title, authors=None):
 
 
 # ---------------------------------
-# PMC Utilities
+# PMC Utilities (synchronous - proven to work)
 # ---------------------------------
-def search_pmc(query, max_results=5):
+def _sync_search_pmc(query, max_results=5):
     url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
     params = {"db": "pmc", "term": query, "retmode": "json", "retmax": max_results}
     try:
@@ -217,7 +224,7 @@ def search_pmc(query, max_results=5):
         return []
 
 
-def fetch_pmc_esummary(pmcid):
+def _sync_fetch_pmc_esummary(pmcid):
     url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
     params = {"db": "pmc", "id": pmcid, "retmode": "json"}
     try:
@@ -257,58 +264,18 @@ def convert_pmc_summary_to_metadata(esum):
     return result
 
 
-def fetch_pmc_efetch(pmcid):
-    """
-    Fetch full metadata from PMC using efetch (richer than esummary).
-    Returns dict with title, journal, abstract, authors, doi, etc.
-    """
-    url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
-    params = {"db": "pmc", "id": pmcid, "retmode": "xml"}
-    try:
-        resp = requests.get(url, params=params, timeout=DEFAULT_TIMEOUT)
-        resp.raise_for_status()
-        root = ET.fromstring(resp.text)
-    except Exception as e:
-        print(f"❌ PMC efetch error for PMCID {pmcid}: {e}")
-        return {"error": str(e), "source": "pmc_efetch", "pmcid": pmcid}
-
-    article = root.find(".//article")
-    if article is None:
-        print(f"⚠️ PMC efetch: no article found for PMCID {pmcid}")
-        return {"error": "No article found", "source": "pmc_efetch", "pmcid": pmcid}
-
-    # --- Extract fields
-    title = article.findtext(".//article-title", default="")
-    abstract = " ".join([t.text or "" for t in article.findall(".//abstract//p")])
-    journal = article.findtext(".//journal-title", default="")
-    pub_date = article.findtext(".//pub-date/year", default="")
-    authors = [
-        " ".join(filter(None, [
-            a.findtext("given-names"),
-            a.findtext("surname")
-        ])).strip()
-        for a in article.findall(".//contrib[@contrib-type='author']")
-    ]
-    doi = article.findtext(".//article-id[@pub-id-type='doi']", default="")
-
-    print(f"✅ PMC efetch: fetched full metadata for {pmcid}")
-    return {
-        "pmcid": pmcid,
-        "title": title,
-        "abstract": abstract,
-        "authors": authors,
-        "journal": journal,
-        "publication_date": pub_date,
-        "doi": doi,
-        "url": f"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC{pmcid}/",
-        "source": "pmc_efetch"
-    }
-
 # ---------------------------------
-# Combined Fetcher
+# Async wrappers for synchronous functions
 # ---------------------------------
-def fetch_clinical_trial_and_pubmed_pmc(nct_id):
-    clin = fetch_clinical_trial_data(nct_id)
+async def fetch_clinical_trial_and_pubmed_pmc(nct_id: str) -> Dict[str, Any]:
+    """
+    Async wrapper that runs synchronous code in thread pool.
+    This avoids blocking the event loop while using proven working code.
+    """
+    loop = asyncio.get_event_loop()
+    
+    # Fetch clinical trial data
+    clin = await loop.run_in_executor(None, _sync_fetch_clinical_trial_data, nct_id)
     if "error" in clin:
         return clin
 
@@ -331,28 +298,29 @@ def fetch_clinical_trial_and_pubmed_pmc(nct_id):
         authors = ref.get("authors", [])
         print(f"\n📖 Searching for related publications: '{title}'")
 
-        pmid = search_pubmed_by_title_authors(title, authors)
+        # Run PubMed search in executor
+        pmid = await loop.run_in_executor(
+            None, _sync_search_pubmed_by_title_authors, title, authors
+        )
         if pmid:
             pubmed["pmids"].append(pmid)
-            pubmed["studies"].append(fetch_pubmed_by_pmid(pmid))
+            pubmed_data = await loop.run_in_executor(
+                None, _sync_fetch_pubmed_by_pmid, pmid
+            )
+            pubmed["studies"].append(pubmed_data)
 
-        pmcids = search_pmc(title)
+        # Run PMC search in executor
+        pmcids = await loop.run_in_executor(None, _sync_search_pmc, title)
         for pid in pmcids:
-            meta = convert_pmc_summary_to_metadata(fetch_pmc_esummary(pid))
-            pmc["summaries"].append({"pmcid": pid, "metadata": meta})
-
-            # NEW: fetch full text if available
-            fulltext = fetch_pmc_fulltext(pid)
-            if "error" not in fulltext:
-                pmc["summaries"][-1]["fulltext"] = fulltext
-
             if pid not in pmc["pmcids"]:
                 pmc["pmcids"].append(pid)
-                # Try full PMC efetch first, fallback to esummary if it fails
-                pmc_meta = fetch_pmc_efetch(pid)
-                if "error" in pmc_meta:
-                    pmc_meta = convert_pmc_summary_to_metadata(fetch_pmc_esummary(pid))
-                pmc["summaries"].append({"pmcid": pid, "metadata": pmc_meta})
+                pmc_meta = await loop.run_in_executor(
+                    None, _sync_fetch_pmc_esummary, pid
+                )
+                pmc["summaries"].append({
+                    "pmcid": pid,
+                    "metadata": convert_pmc_summary_to_metadata(pmc_meta)
+                })
 
     return {
         "nct_id": nct_id,
@@ -363,138 +331,18 @@ def fetch_clinical_trial_and_pubmed_pmc(nct_id):
         }
     }
 
-def fetch_pmc_fulltext(pmcid):
-    """
-    Fetch full-text article XML from PMC and extract sections, figures, references, and metadata.
-    Returns a structured dict with parsed content.
-    """
-    pmcid_clean = str(pmcid).replace("PMC", "")
-    url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
-    params = {"db": "pmc", "id": pmcid_clean, "retmode": "xml"}
-
-    try:
-        resp = requests.get(url, params=params, timeout=DEFAULT_TIMEOUT)
-        resp.raise_for_status()
-        root = ET.fromstring(resp.text)
-    except Exception as e:
-        print(f"❌ PMC efetch error for {pmcid}: {e}")
-        return {"error": str(e), "source": "pmc_efetch", "pmcid": pmcid}
-
-    article = root.find(".//article")
-    if article is None:
-        print(f"⚠️ No full-text XML found for {pmcid}")
-        return {"error": "No full-text XML", "pmcid": pmcid}
-
-    # Metadata
-    metadata = {
-        "pmcid": f"PMC{pmcid_clean}",
-        "title": article.findtext(".//article-title", default=""),
-        "journal": article.findtext(".//journal-title", default=""),
-        "pub_date": article.findtext(".//pub-date/year", default=""),
-        "volume": article.findtext(".//volume", default=""),
-        "issue": article.findtext(".//issue", default=""),
-        "fpage": article.findtext(".//fpage", default=""),
-        "lpage": article.findtext(".//lpage", default=""),
-        "doi": article.findtext(".//article-id[@pub-id-type='doi']", default=None)
-    }
-
-    # Authors
-    authors = []
-    for a in article.findall(".//contrib[@contrib-type='author']"):
-        name = " ".join(
-            filter(None, [a.findtext(".//given-names"), a.findtext(".//surname")])
-        )
-        aff = [aff.text for aff in a.findall(".//aff") if aff.text]
-        authors.append({"name": name, "affiliations": aff})
-    metadata["authors"] = authors
-
-    # Abstract
-    abstract = "\n".join(
-        [p.text or "" for p in article.findall(".//abstract//p") if p.text]
-    )
-
-    # Full text sections
-    sections = []
-    for sec in article.findall(".//body//sec"):
-        sec_title = sec.findtext("title", default="(No title)")
-        paras = [p.text or "" for p in sec.findall("p") if p.text]
-        if paras:
-            sections.append({"title": sec_title, "paragraphs": paras})
-
-    # Figures & Tables (captions only)
-    figures = []
-    for fig in article.findall(".//fig"):
-        caption = " ".join(
-            [t.text or "" for t in fig.findall(".//caption//p") if t.text]
-        )
-        label = fig.findtext("label", default="")
-        figures.append({"label": label, "caption": caption})
-
-    tables = []
-    for tbl in article.findall(".//table-wrap"):
-        caption = " ".join(
-            [t.text or "" for t in tbl.findall(".//caption//p") if t.text]
-        )
-        label = tbl.findtext("label", default="")
-        tables.append({"label": label, "caption": caption})
-
-    # References
-    refs = []
-    for ref in article.findall(".//ref"):
-        title = ref.findtext(".//article-title", default="")
-        year = ref.findtext(".//year", default="")
-        source = ref.findtext(".//source", default="")
-        doi = ref.findtext(".//pub-id[@pub-id-type='doi']", default="")
-        authors = [
-            " ".join(filter(None, [a.findtext('given-names'), a.findtext('surname')]))
-            for a in ref.findall(".//name")
-        ]
-        refs.append({
-            "title": title,
-            "authors": authors,
-            "year": year,
-            "source": source,
-            "doi": doi
-        })
-
-    print(f"✅ PMC: full-text content parsed for {pmcid}")
-
-    return {
-        "pmcid": f"PMC{pmcid_clean}",
-        "metadata": metadata,
-        "abstract": abstract,
-        "sections": sections,
-        "figures": figures,
-        "tables": tables,
-        "references": refs,
-        "source": "pmc_fulltext"
-    }
-
-def merge_pubmed_pmc(pubmed_studies, pmc_summaries):
-    merged = []
-    for p in pubmed_studies:
-        pmid = p.get("pmid")
-        doi = p.get("doi")
-        match = next(
-            (pmc for pmc in pmc_summaries
-             if str(pmid) == str(pmc.get("metadata", {}).get("pmid"))
-             or doi and doi in str(pmc)),
-            None
-        )
-        merged.append({"pubmed": p, "pmc": match})
-    return merged
 
 # ---------------------------------
 # Pretty Print
 # ---------------------------------
-def print_study_summary(result):
+def print_study_summary(result: Dict[str, Any]):
     print("\n===== 📊 CLINICAL TRIAL SUMMARY =====")
     protocol = result["sources"]["clinical_trials"]["data"].get("protocolSection", {})
     ident = protocol.get("identificationModule", {})
     print(f"🧪 {ident.get('officialTitle', ident.get('briefTitle', 'Untitled'))}")
     print(f"📅 Status: {protocol.get('statusModule', {}).get('overallStatus')}")
     print(f"🏥 Sponsor: {ident.get('organization', {}).get('fullName')}")
-    print(f"📍 Conditions: {', '.join(protocol.get('conditionsModule', {}).get('conditions', []))}")
+    print(f"🔬 Conditions: {', '.join(protocol.get('conditionsModule', {}).get('conditions', []))}")
 
     pubs = result["sources"]["pubmed"]["studies"]
     if pubs:
@@ -503,7 +351,7 @@ def print_study_summary(result):
             print(f"🔹 {p['title']} ({p['publication_date']})")
             print(f"   {p['journal']} — PMID: {p['pmid']}")
     else:
-        print("\n📭 No PubMed matches found.")
+        print("\n🔭 No PubMed matches found.")
 
     pmcids = result["sources"]["pmc"]["pmcids"]
     if pmcids:
@@ -511,9 +359,10 @@ def print_study_summary(result):
         for pid in pmcids:
             print(f"🔸 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC{pid}/")
     else:
-        print("\n📭 No PMC matches found.")
+        print("\n🔭 No PMC matches found.")
 
-def summarize_result(result):
+
+def summarize_result(result: Dict[str, Any]) -> Dict[str, Any]:
     """Return a compact summary dict for CLI or JSON output."""
     nct_id = result.get("nct_id")
     sources = result.get("sources", {})
@@ -534,11 +383,30 @@ def summarize_result(result):
         "PMC IDs": ", ".join(pmcids) if pmcids else "None",
     }
 
-def save_results(result, output_path="data/output"):
-    """Save results to JSON file inside output directory."""
-    Path(output_path).mkdir(parents=True, exist_ok=True)
-    nct_id = result.get("nct_id", "unknown")
-    filename = Path(output_path) / f"{nct_id}_results.json"
-    with open(filename, "w", encoding="utf-8") as f:
-        json.dump(result, f, ensure_ascii=False, indent=2)
-    print(f"💾 Results saved to {filename}")
+
+def save_results(results: List[Dict[str, Any]], filename: str, fmt: str = 'txt'):
+    """Save results to file."""
+    output_dir = Path("output")
+    output_dir.mkdir(exist_ok=True)
+
+    if fmt == 'csv':
+        import csv
+        path = output_dir / f'{filename}.csv'
+        keys = ['NCT', 'ClinicalTrials.gov Source', 'PubMed Count', 'PMC Count', 'PubMed IDs', 'PMC IDs']
+        with open(path, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=keys)
+            writer.writeheader()
+            for r in results:
+                writer.writerow(summarize_result(r))
+    elif fmt == 'json':
+        path = output_dir / f'{filename}.json'
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(results, f, indent=2, ensure_ascii=False)
+    else:  # txt
+        path = output_dir / f'{filename}.txt'
+        with open(path, 'w', encoding='utf-8') as f:
+            for r in results:
+                f.write(json.dumps(r, indent=2, ensure_ascii=False))
+                f.write('\n\n')
+
+    print(f"💾 Results saved to {path}")

@@ -1,76 +1,39 @@
-import threading
-import time
-import sys
-from colorama import Fore, Style
+import asyncio
+from colorama import Fore
 
+async def open_interactive_shell(ssh):
+    """Open a simple interactive remote shell using an invoked shell and relay IO."""
+    print(Fore.GREEN + "✅ Connected to remote host.")
+    print(Fore.YELLOW + "Type 'main menu' to return to AMP_LLM, or 'exit' to close SSH.\n")
+    chan, session = await ssh.open_session(term_type='xterm')
+    # invoke shell
+    await chan.request_pty(term_type='xterm')
+    await chan.exec_shell()
+    loop = asyncio.get_event_loop()
 
-def open_interactive_shell(ssh_client):
-    """
-    Launch a fully interactive SSH shell session with the remote host.
-
-    Features:
-    - Cross-platform (no termios or tty needed)
-    - Real-time remote output via background thread
-    - Graceful Ctrl+C handling
-    - Type 'main menu' or 'exit' to quit and return
-    """
-    print(Fore.CYAN + "\n=== 🖥️ Interactive Remote Shell ===")
-    print(Fore.YELLOW + "(Type 'main menu' or 'exit' to return to main menu)\n" + Style.RESET_ALL)
-
-    # Create a shell channel
-    chan = ssh_client.invoke_shell()
-    chan.settimeout(0.0)  # Non-blocking read mode
-
-    # --- Remote output reader thread ---
-    def _read_from_remote():
+    async def reader():
         try:
             while True:
-                if chan.recv_ready():
-                    data = chan.recv(4096).decode(errors="ignore")
-                    if not data:
-                        break
-                    print(data, end="", flush=True)
-                elif chan.exit_status_ready():
+                data = await chan.read(1024)
+                if not data:
                     break
-                time.sleep(0.05)
-        except Exception as e:
-            print(Fore.RED + f"\n[⚠️ Remote shell read error: {e}]" + Style.RESET_ALL)
-        finally:
-            try:
-                chan.close()
-            except Exception:
-                pass
+                print(data, end="")
+        except Exception:
+            pass
 
-    reader = threading.Thread(target=_read_from_remote, daemon=True)
-    reader.start()
+    asyncio.create_task(reader())
 
-    # --- Local input loop ---
     try:
         while True:
-            command = input(Fore.GREEN + ">>> " + Style.RESET_ALL)
-            cmd_lower = command.strip().lower()
-
-            if cmd_lower in {"exit", "main menu"}:
-                print(Fore.MAGENTA + "↩️ Returning to main menu..." + Style.RESET_ALL)
+            cmd = input('> ')
+            if cmd.lower() in ('main menu','exit','quit'):
+                print(Fore.YELLOW + 'Returning to main menu...')
                 break
-
-            if not command.strip():
-                continue
-
-            try:
-                chan.send(command + "\n")
-                time.sleep(0.1)
-            except Exception as e:
-                print(Fore.RED + f"❌ Failed to send command: {e}" + Style.RESET_ALL)
-                break
-
-    except KeyboardInterrupt:
-        print(Fore.MAGENTA + "\n⛔ Keyboard interrupt detected. Returning to main menu..." + Style.RESET_ALL)
-
+            await chan.write(cmd + "\n")
+    except (KeyboardInterrupt, EOFError):
+        pass
     finally:
         try:
             chan.close()
         except Exception:
             pass
-        time.sleep(0.2)
-        print(Fore.YELLOW + "✅ SSH shell closed.\n" + Style.RESET_ALL)
