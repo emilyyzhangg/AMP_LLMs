@@ -1,114 +1,56 @@
-import os
+"""
+Main entry point for AMP_LLM application.
+Restructured for better modularity and cleaner imports.
+
+Version: 3.0 - Modular Architecture
+"""
 import sys
-import getpass
-from colorama import init, Fore, Style
+import os
 
-# --- Run environment setup before anything else ---
-from env_setup import ensure_env
-ensure_env()
+# CRITICAL: Setup environment FIRST, before ANY other imports
+print("Starting AMP_LLM...")
+print("Checking environment...\n")
 
-# After env is set, we can safely import these
-import paramiko
-from network.networking import ping_host
-from network.ssh_connection import connect_ssh
-from network.ssh_shell import open_interactive_shell
-from llm.llm_runner import run_llm_entrypoint
-from data.nct_lookup import run_nct_lookup
+from env_setup import ensure_env, verify_critical_imports
+
+if not ensure_env():
+    print("\nEnvironment setup failed. Exiting.")
+    sys.exit(1)
+
+if not verify_critical_imports():
+    print("\nCritical imports failed. Exiting.")
+    sys.exit(1)
+
+print("\n" + "="*50)
+print("Environment ready! Starting application...")
+print("="*50 + "\n")
+
+# NOW import everything else
+import asyncio
+from colorama import init
 
 # Initialize colorama
 init(autoreset=True)
 
+# Import configuration and core app
+from config import get_logger
+from core.app import AMPLLMApp
 
-# ===============================
-# Utility Input Helpers
-# ===============================
-
-def prompt_ip():
-    """Prompt user for IP and verify connectivity."""
-    default_ip = "100.99.162.98"
-    while True:
-        ip = input(Fore.CYAN + f"Enter remote host IP [{default_ip}]: " + Style.RESET_ALL).strip() or default_ip
-        if ping_host(ip):
-            print(Fore.GREEN + f"✅ Successfully reached {ip}")
-            return ip
-        print(Fore.RED + f"❌ Could not reach {ip}. Try again.")
+logger = get_logger(__name__)
 
 
-def prompt_username():
-    """Prompt for SSH username."""
-    default_user = "emilyzhang"
-    username = input(Fore.CYAN + f"Enter SSH username [{default_user}]: " + Style.RESET_ALL).strip() or default_user
-    return username
+async def main():
+    """Application entry point wrapper."""
+    app = AMPLLMApp()
+    await app.run()
 
 
-def prompt_password(username, ip):
-    """Prompt for SSH password (retries automatically on failure)."""
-    while True:
-        password = getpass.getpass(Fore.CYAN + f"Enter SSH password for {username}@{ip}: " + Style.RESET_ALL)
-        ssh = connect_ssh(ip, username, password)
-        if ssh:
-            print(Fore.GREEN + f"✅ Successfully connected to {username}@{ip}")
-            return ssh
-        print(Fore.RED + "❌ Incorrect password. Please try again.\n")
-
-
-# ===============================
-# Main Menu Logic
-# ===============================
-
-def main_menu(ssh):
-    """Main interactive AMP_LLM menu loop."""
-    while True:
-        print(Fore.YELLOW + Style.BRIGHT + "\n=== 🧠 AMP_LLM Main Menu ===")
-        print(Fore.CYAN + "1." + Fore.WHITE + " Interactive Shell")
-        print(Fore.CYAN + "2." + Fore.WHITE + " LLM Workflow")
-        print(Fore.CYAN + "3." + Fore.WHITE + " NCT Lookup")
-        print(Fore.CYAN + "4." + Fore.WHITE + " Exit")
-
-        choice = input(Fore.GREEN + "\nSelect an option (1-4): " + Style.RESET_ALL).strip().lower()
-
-        # --- Interactive Shell ---
-        if choice in ("1", "interactive", "shell"):
-            open_interactive_shell(ssh)
-
-        # --- LLM Workflow ---
-        elif choice in ["2", "llm", "workflow"]:
-            print(Fore.CYAN + "\n=== ⚙️ LLM Workflow ===")
-            run_llm_entrypoint(ssh)
-
-        # --- NCT Lookup ---
-        elif choice in ("3", "nct", "lookup"):
-            run_nct_lookup()
-
-        # --- Exit ---
-        elif choice in ("4", "exit", "quit"):
-            print(Fore.MAGENTA + "👋 Exiting program. Goodbye!")
-            try:
-                ssh.close()
-            except Exception:
-                pass
-            sys.exit(0)
-
-        else:
-            print(Fore.RED + "⚠️ Invalid option. Please choose 1–4.")
-
-
-# ===============================
-# Main Control Flow
-# ===============================
-
-def main():
-    """Program entry point."""
-    print(Fore.YELLOW + "\n=== 🔐 SSH Connection Setup ===")
-    ip = prompt_ip()
-    username = prompt_username()
-
-    # Loop until correct password
-    ssh = prompt_password(username, ip)
-
-    # Directly launch main menu after successful connection
-    main_menu(ssh)
-
-
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\nApplication terminated by user.")
+    except Exception as e:
+        logger.error(f"Unhandled exception: {e}", exc_info=True)
+        print(f"Fatal error: {e}")
+        sys.exit(1)

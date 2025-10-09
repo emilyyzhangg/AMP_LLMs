@@ -1,1004 +1,135 @@
-2025-10-06 14:22:53,412 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:22:55,929 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:22:58,837 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:24:43,998 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:24:49,184 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:24:49,184 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:24:49,195 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:24:49,196 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 51241
-2025-10-06 14:24:49,196 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:24:49,274 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:24:49,468 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:24:49,469 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:25:12,268 - __main__ - INFO - User selected: NCT Lookup
-2025-10-06 14:25:12,269 - __main__ - ERROR - Error in main menu: name 'Style' is not defined
-Traceback (most recent call last):
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\main.py", line 259, in main_menu
-    await run_nct_lookup()
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\data\async_nct_lookup.py", line 232, in run_nct_lookup
-    await lookup.run()
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\data\async_nct_lookup.py", line 182, in run
-    Fore.YELLOW + Style.BRIGHT +
-                  ^^^^^
-NameError: name 'Style' is not defined. Did you mean: 'type'?
-2025-10-06 14:26:28,948 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:26:28,949 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:26:28,949 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 14:26:28,949 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:26:28,950 - asyncssh - INFO - [conn=0] Connection closed
-2025-10-06 14:27:06,837 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:27:10,647 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:27:10,647 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:27:10,720 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:27:10,721 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 51347
-2025-10-06 14:27:10,721 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:27:10,803 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:27:10,999 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:27:11,000 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:27:18,436 - __main__ - INFO - User selected: NCT Lookup
-2025-10-06 14:27:24,238 - data.data_fetchers - INFO - Starting comprehensive fetch for NCT04043065
-2025-10-06 14:27:24,238 - data.data_fetchers - INFO - Fetching clinical trial data for NCT04043065
-2025-10-06 14:27:24,448 - data.data_fetchers - WARNING - Attempt 1/3 failed: 403, message='Forbidden', url='https://clinicaltrials.gov/api/v2/studies/NCT04043065'
-2025-10-06 14:27:25,621 - data.data_fetchers - WARNING - Attempt 2/3 failed: 403, message='Forbidden', url='https://clinicaltrials.gov/api/v2/studies/NCT04043065'
-2025-10-06 14:27:27,795 - data.data_fetchers - WARNING - Attempt 3/3 failed: 403, message='Forbidden', url='https://clinicaltrials.gov/api/v2/studies/NCT04043065'
-2025-10-06 14:27:27,796 - data.data_fetchers - INFO - Trying legacy API for NCT04043065
-2025-10-06 14:27:27,965 - data.data_fetchers - WARNING - Attempt 1/3 failed: 403, message='Forbidden', url='https://clinicaltrials.gov/api/query/full_studies?expr=NCT04043065&min_rnk=1&max_rnk=1&fmt=json'
-2025-10-06 14:27:29,139 - data.data_fetchers - WARNING - Attempt 2/3 failed: 403, message='Forbidden', url='https://clinicaltrials.gov/api/query/full_studies?expr=NCT04043065&min_rnk=1&max_rnk=1&fmt=json'
-2025-10-06 14:27:31,318 - data.data_fetchers - WARNING - Attempt 3/3 failed: 403, message='Forbidden', url='https://clinicaltrials.gov/api/query/full_studies?expr=NCT04043065&min_rnk=1&max_rnk=1&fmt=json'
-2025-10-06 14:27:31,318 - data.data_fetchers - WARNING - No study found for NCT04043065
-2025-10-06 14:27:31,319 - data.async_nct_lookup - WARNING - Failed to fetch NCT04043065: No study found for NCT04043065
-2025-10-06 14:30:36,045 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:30:36,046 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:30:36,046 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 14:30:36,046 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:30:36,046 - asyncssh - INFO - [conn=0] Connection closed
-2025-10-06 14:30:39,418 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:30:41,922 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:30:43,416 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:30:46,439 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:30:48,913 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:31:33,074 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:31:37,583 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:31:37,583 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:31:37,678 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:31:37,678 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 54985
-2025-10-06 14:31:37,678 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:31:37,780 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:31:37,976 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:31:37,977 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:31:39,964 - __main__ - INFO - User selected: NCT Lookup
-2025-10-06 14:31:41,277 - data.data_fetchers - INFO - Starting comprehensive fetch for NCT04043065
-2025-10-06 14:31:41,277 - data.data_fetchers - INFO - Fetching clinical trial data for NCT04043065
-2025-10-06 14:31:41,475 - data.data_fetchers - WARNING - Attempt 1/3 failed: 403, message='Forbidden', url='https://clinicaltrials.gov/api/v2/studies/NCT04043065'
-2025-10-06 14:31:42,663 - data.data_fetchers - WARNING - Attempt 2/3 failed: 403, message='Forbidden', url='https://clinicaltrials.gov/api/v2/studies/NCT04043065'
-2025-10-06 14:31:44,840 - data.data_fetchers - WARNING - Attempt 3/3 failed: 403, message='Forbidden', url='https://clinicaltrials.gov/api/v2/studies/NCT04043065'
-2025-10-06 14:31:44,840 - data.data_fetchers - INFO - Trying legacy API for NCT04043065
-2025-10-06 14:31:45,011 - data.data_fetchers - WARNING - Attempt 1/3 failed: 403, message='Forbidden', url='https://clinicaltrials.gov/api/query/full_studies?expr=NCT04043065&min_rnk=1&max_rnk=1&fmt=json'
-2025-10-06 14:31:46,186 - data.data_fetchers - WARNING - Attempt 2/3 failed: 403, message='Forbidden', url='https://clinicaltrials.gov/api/query/full_studies?expr=NCT04043065&min_rnk=1&max_rnk=1&fmt=json'
-2025-10-06 14:31:48,369 - data.data_fetchers - WARNING - Attempt 3/3 failed: 403, message='Forbidden', url='https://clinicaltrials.gov/api/query/full_studies?expr=NCT04043065&min_rnk=1&max_rnk=1&fmt=json'
-2025-10-06 14:31:48,370 - data.data_fetchers - WARNING - No study found for NCT04043065
-2025-10-06 14:31:48,371 - data.async_nct_lookup - WARNING - Failed to fetch NCT04043065: No study found for NCT04043065
-2025-10-06 14:33:16,372 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:33:16,372 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:33:16,373 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 14:33:16,373 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:33:16,373 - asyncssh - INFO - [conn=0] Connection closed
-2025-10-06 14:33:19,903 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:33:22,828 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:33:22,828 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:33:22,847 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:33:22,848 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 55067
-2025-10-06 14:33:22,848 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:33:22,921 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:33:23,122 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:33:23,123 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:33:24,372 - __main__ - INFO - User selected: NCT Lookup
-2025-10-06 14:33:26,229 - data.async_nct_lookup - WARNING - Failed to fetch NCT04043065: 403, message='Forbidden', url='https://clinicaltrials.gov/api/query/full_studies?expr=NCT04043065&min_rnk=1&max_rnk=1&fmt=json'
-2025-10-06 14:35:42,924 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:35:42,924 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:35:42,924 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 14:35:42,924 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:35:42,925 - asyncssh - INFO - [conn=0] Connection closed
-2025-10-06 14:35:45,153 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:35:48,862 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:35:48,863 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:35:48,949 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:35:48,949 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 55179
-2025-10-06 14:35:48,949 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:35:49,031 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:35:49,239 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:35:49,240 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:35:50,530 - __main__ - INFO - User selected: NCT Lookup
-2025-10-06 14:35:54,819 - data.async_nct_lookup - WARNING - Failed to fetch NCT04043065: name 'CTG_LEGACY_FULL' is not defined
-2025-10-06 14:37:14,596 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 14:37:14,596 - llm.async_llm_utils - INFO - Listing remote Ollama models
-2025-10-06 14:37:14,596 - asyncssh - INFO - [conn=0, chan=0] Requesting new SSH session
-2025-10-06 14:37:14,675 - asyncssh - INFO - [conn=0, chan=0]   Command: ollama list
-2025-10-06 14:37:14,705 - asyncssh - INFO - [conn=0, chan=0] Received exit status 127
-2025-10-06 14:37:14,706 - asyncssh - INFO - [conn=0, chan=0] Received channel close
-2025-10-06 14:37:14,707 - asyncssh - INFO - [conn=0, chan=0] Channel closed
-2025-10-06 14:37:14,708 - llm.async_llm_utils - WARNING - No Ollama models found or ollama not installed
-2025-10-06 14:38:13,179 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:38:13,180 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:38:13,180 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 14:38:13,180 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:38:13,181 - asyncssh - INFO - [conn=0] Connection closed
-2025-10-06 14:38:15,201 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:38:18,077 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:38:18,077 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:38:18,165 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:38:18,165 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 65160
-2025-10-06 14:38:18,165 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:38:18,257 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:38:18,455 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:38:18,456 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:38:20,139 - __main__ - INFO - User selected: NCT Lookup
-2025-10-06 14:38:26,430 - data.async_nct_lookup - INFO - Successfully fetched data for NCT04043065
-2025-10-06 14:38:54,238 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 14:38:54,238 - llm.async_llm_utils - INFO - Listing remote Ollama models
-2025-10-06 14:38:54,238 - asyncssh - INFO - [conn=0, chan=0] Requesting new SSH session
-2025-10-06 14:39:13,425 - asyncssh - INFO - [conn=0] Connection failure: [WinError 121] The semaphore timeout period has expired
-2025-10-06 14:39:13,425 - asyncssh - INFO - [conn=0, chan=0] Closing channel due to connection close
-2025-10-06 14:39:13,425 - asyncssh - INFO - [conn=0, chan=0] Channel closed: [WinError 121] The semaphore timeout period has expired
-2025-10-06 14:39:13,426 - llm.async_llm_utils - ERROR - Error listing models: SSH connection closed
-Traceback (most recent call last):
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\llm\async_llm_utils.py", line 29, in list_remote_models
-    result = await ssh.run('ollama list', check=False)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4609, in run
-    process = await self.create_process(*args, **kwargs) # type: ignore
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4487, in create_process
-    chan, process = await self.create_session(
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
-        SSHClientProcess, *args, **kwargs) # type: ignore
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4380, in create_session
-    session = await chan.create(session_factory, command, subsystem,
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<4 lines>...
-                                bool(self._agent_forward_path))
-                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\channel.py", line 1147, in create
-    packet = await self._open(b'session')
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\channel.py", line 717, in _open
-    return await self._open_waiter
-           ^^^^^^^^^^^^^^^^^^^^^^^
-asyncssh.misc.ChannelOpenError: SSH connection closed
-2025-10-06 14:39:20,035 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 14:39:20,035 - llm.async_llm_utils - INFO - Listing remote Ollama models
-2025-10-06 14:39:20,036 - llm.async_llm_utils - ERROR - Error listing models: SSH connection closed
-Traceback (most recent call last):
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\llm\async_llm_utils.py", line 29, in list_remote_models
-    result = await ssh.run('ollama list', check=False)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4609, in run
-    process = await self.create_process(*args, **kwargs) # type: ignore
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4487, in create_process
-    chan, process = await self.create_session(
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
-        SSHClientProcess, *args, **kwargs) # type: ignore
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4377, in create_session
-    chan = SSHClientChannel(self, self._loop, encoding, errors,
-                            window, max_pktsize)
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\channel.py", line 1130, in __init__
-    super().__init__(conn, loop, encoding, errors, window, max_pktsize)
-    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\channel.py", line 147, in __init__
-    self._recv_chan: Optional[int] = conn.add_channel(self)
-                                     ~~~~~~~~~~~~~~~~^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 1438, in add_channel
-    raise ChannelOpenError(OPEN_CONNECT_FAILED,
-                           'SSH connection closed')
-asyncssh.misc.ChannelOpenError: SSH connection closed
-2025-10-06 14:40:45,275 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:40:45,276 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:40:45,276 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 14:40:45,276 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:40:47,919 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:40:49,410 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:40:50,923 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:41:07,420 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:41:08,918 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:41:26,424 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:41:27,922 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:42:46,124 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:42:48,507 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:42:51,316 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:42:51,316 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:42:51,511 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:42:51,511 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 65369
-2025-10-06 14:42:51,511 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:42:51,625 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:42:51,829 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:42:51,830 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:42:52,965 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 14:42:52,966 - llm.async_llm_runner - INFO - Starting LLM workflow
-2025-10-06 14:43:53,019 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:43:53,019 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:43:53,019 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 14:43:53,020 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:43:53,020 - asyncssh - INFO - [conn=0] Connection closed
-2025-10-06 14:43:55,417 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:43:56,417 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:43:57,428 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:43:59,914 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:44:00,395 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:44:02,657 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:44:05,837 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:44:05,837 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:44:05,916 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:44:05,916 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 58451
-2025-10-06 14:44:05,917 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:44:05,996 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:44:06,195 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:44:06,196 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:44:08,747 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 14:44:08,747 - llm.async_llm_runner - INFO - Starting LLM workflow
-2025-10-06 14:44:55,930 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:44:55,931 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:44:55,931 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 14:44:55,931 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:44:55,932 - asyncssh - INFO - [conn=0] Connection closed
-2025-10-06 14:44:58,413 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:44:58,595 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:45:03,915 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:05,414 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:06,187 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:45:19,424 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:20,423 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:22,410 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:23,918 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:25,419 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:26,919 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:29,954 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:45:33,411 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:34,139 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:45:43,913 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:45,417 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:46,914 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:48,420 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:49,428 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:50,415 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:45:50,461 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:45:50,465 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:45:50,465 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:45:50,474 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:45:50,474 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 58541
-2025-10-06 14:45:50,474 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:45:50,572 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:45:50,611 - asyncssh - INFO - [conn=0] Auth failed for user emilyzhang
-2025-10-06 14:45:50,612 - asyncssh - INFO - [conn=0] Connection failure: Permission denied for user emilyzhang on host 100.99.162.98
-2025-10-06 14:45:50,612 - asyncssh - INFO - [conn=0] Aborting connection
-2025-10-06 14:45:50,615 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:45:50,615 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:45:50,622 - asyncssh - INFO - [conn=1] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:45:50,622 - asyncssh - INFO - [conn=1]   Local address: 100.69.245.72, port 58542
-2025-10-06 14:45:50,623 - asyncssh - INFO - [conn=1]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:45:50,698 - asyncssh - INFO - [conn=1] Beginning auth for user emilyzhang
-2025-10-06 14:45:50,743 - asyncssh - INFO - [conn=1] Auth failed for user emilyzhang
-2025-10-06 14:45:50,743 - asyncssh - INFO - [conn=1] Connection failure: Permission denied for user emilyzhang on host 100.99.162.98
-2025-10-06 14:45:50,743 - asyncssh - INFO - [conn=1] Aborting connection
-2025-10-06 14:45:50,746 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:45:50,746 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:45:50,769 - asyncssh - INFO - [conn=2] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:45:50,769 - asyncssh - INFO - [conn=2]   Local address: 100.69.245.72, port 58543
-2025-10-06 14:45:50,770 - asyncssh - INFO - [conn=2]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:45:50,841 - asyncssh - INFO - [conn=2] Beginning auth for user emilyzhang
-2025-10-06 14:45:50,870 - asyncssh - INFO - [conn=2] Auth failed for user emilyzhang
-2025-10-06 14:45:50,871 - asyncssh - INFO - [conn=2] Connection failure: Permission denied for user emilyzhang on host 100.99.162.98
-2025-10-06 14:45:50,871 - asyncssh - INFO - [conn=2] Aborting connection
-2025-10-06 14:45:50,872 - __main__ - INFO - Graceful exit initiated
-2025-10-06 14:45:54,110 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:45:58,584 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:45:58,585 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:45:58,659 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:45:58,659 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 58555
-2025-10-06 14:45:58,659 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:45:58,750 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:45:58,948 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:45:58,949 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:46:00,178 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 14:46:00,179 - llm.async_llm_runner - INFO - Starting LLM workflow
-2025-10-06 14:46:00,179 - llm.async_llm_utils - ERROR - Error listing models: 'SSHClientConnection' object has no attribute '_conn'
-Traceback (most recent call last):
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\llm\async_llm_utils.py", line 29, in list_remote_models
-    if ssh._conn.is_closed():
-       ^^^^^^^^^
-AttributeError: 'SSHClientConnection' object has no attribute '_conn'
-2025-10-06 14:46:00,182 - llm.async_llm_runner - WARNING - No Ollama models found
-2025-10-06 14:46:54,338 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:46:54,339 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:46:54,339 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 14:46:54,339 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:46:54,340 - asyncssh - INFO - [conn=0] Connection closed
-2025-10-06 14:46:57,417 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:46:58,914 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:47:00,416 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:47:01,155 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:47:08,702 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:47:12,525 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:47:12,525 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:47:12,593 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:47:12,593 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 58615
-2025-10-06 14:47:12,594 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:47:12,668 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:47:12,872 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:47:12,873 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:47:13,897 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 14:47:13,898 - llm.async_llm_runner - INFO - Starting LLM workflow
-2025-10-06 14:47:13,898 - llm.async_llm_utils - INFO - Listing remote Ollama models
-2025-10-06 14:47:13,898 - asyncssh - INFO - [conn=0, chan=0] Requesting new SSH session
-2025-10-06 14:47:13,922 - asyncssh - INFO - [conn=0, chan=0]   Command: ollama list
-2025-10-06 14:47:13,943 - asyncssh - INFO - [conn=0, chan=0] Received exit status 127
-2025-10-06 14:47:13,943 - asyncssh - INFO - [conn=0, chan=0] Received channel close
-2025-10-06 14:47:13,944 - asyncssh - INFO - [conn=0, chan=0] Channel closed
-2025-10-06 14:47:13,944 - asyncssh - INFO - [conn=0, chan=1] Requesting new SSH session
-2025-10-06 14:47:13,951 - asyncssh - INFO - [conn=0, chan=1]   Command: ~/.ollama/bin/ollama list
-2025-10-06 14:47:13,969 - asyncssh - INFO - [conn=0, chan=1] Received exit status 127
-2025-10-06 14:47:13,969 - asyncssh - INFO - [conn=0, chan=1] Received channel close
-2025-10-06 14:47:13,969 - asyncssh - INFO - [conn=0, chan=1] Channel closed
-2025-10-06 14:47:13,970 - asyncssh - INFO - [conn=0, chan=2] Requesting new SSH session
-2025-10-06 14:47:13,977 - asyncssh - INFO - [conn=0, chan=2]   Command: /usr/local/bin/ollama list
-2025-10-06 14:47:13,993 - asyncssh - INFO - [conn=0, chan=2] Received exit status 127
-2025-10-06 14:47:13,993 - asyncssh - INFO - [conn=0, chan=2] Received channel close
-2025-10-06 14:47:13,993 - asyncssh - INFO - [conn=0, chan=2] Channel closed
-2025-10-06 14:47:13,994 - asyncssh - INFO - [conn=0, chan=3] Requesting new SSH session
-2025-10-06 14:47:14,001 - asyncssh - INFO - [conn=0, chan=3]   Command: /usr/bin/ollama list
-2025-10-06 14:47:14,018 - asyncssh - INFO - [conn=0, chan=3] Received exit status 127
-2025-10-06 14:47:14,018 - asyncssh - INFO - [conn=0, chan=3] Received channel close
-2025-10-06 14:47:14,018 - asyncssh - INFO - [conn=0, chan=3] Channel closed
-2025-10-06 14:47:14,019 - asyncssh - INFO - [conn=0, chan=4] Requesting new SSH session
-2025-10-06 14:47:14,027 - asyncssh - INFO - [conn=0, chan=4]   Command: source ~/.bashrc && ollama list
-2025-10-06 14:47:14,044 - asyncssh - INFO - [conn=0, chan=4] Received exit status 127
-2025-10-06 14:47:14,044 - asyncssh - INFO - [conn=0, chan=4] Received channel close
-2025-10-06 14:47:14,044 - asyncssh - INFO - [conn=0, chan=4] Channel closed
-2025-10-06 14:47:14,045 - asyncssh - INFO - [conn=0, chan=5] Requesting new SSH session
-2025-10-06 14:47:14,051 - asyncssh - INFO - [conn=0, chan=5]   Command: bash -l -c "ollama list"
-2025-10-06 14:47:14,117 - asyncssh - INFO - [conn=0, chan=5] Received exit status 0
-2025-10-06 14:47:14,117 - asyncssh - INFO - [conn=0, chan=5] Received channel close
-2025-10-06 14:47:14,118 - asyncssh - INFO - [conn=0, chan=5] Channel closed
-2025-10-06 14:47:14,118 - llm.async_llm_utils - INFO - Found 11 models using: bash -l -c "ollama list"
-2025-10-06 14:47:17,208 - llm.async_llm_runner - INFO - Starting Ollama model: gemma:2b
-2025-10-06 14:47:17,208 - llm.async_llm_utils - INFO - Starting persistent Ollama process for model: gemma:2b
-2025-10-06 14:47:17,208 - asyncssh - INFO - [conn=0, chan=6] Requesting new SSH session
-2025-10-06 14:47:17,234 - asyncssh - INFO - [conn=0, chan=6]   Command: ollama run gemma:2b
-2025-10-06 14:47:17,255 - asyncssh - INFO - [conn=0, chan=6] Received exit status 127
-2025-10-06 14:47:17,255 - asyncssh - INFO - [conn=0, chan=6] Received channel close
-2025-10-06 14:47:17,256 - asyncssh - INFO - [conn=0, chan=6] Channel closed
-2025-10-06 14:47:18,260 - llm.async_llm_utils - INFO - Ollama process started for gemma:2b
-2025-10-06 14:47:20,355 - llm.async_llm_utils - ERROR - Error writing prompt: Channel not open for sending
-2025-10-06 14:47:20,355 - llm.async_llm_runner - INFO - Cleaning up Ollama process
-2025-10-06 14:47:20,355 - asyncssh - INFO - [conn=0, chan=6] Closing channel
-2025-10-06 14:47:20,356 - llm.async_llm_runner - ERROR - Error cleaning up process: 'SSHReader' object has no attribute 'close'
-2025-10-06 14:47:20,356 - __main__ - ERROR - Error in main menu: Channel not open for sending
-Traceback (most recent call last):
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\main.py", line 273, in main_menu
-    await run_llm_entrypoint(self.ssh_connection)
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\llm\async_llm_runner.py", line 117, in run_llm_entrypoint
-    out = await send_and_stream(proc, prompt)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\llm\async_llm_utils.py", line 130, in send_and_stream
-    proc.stdin.write(prompt + "\n")
-    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\stream.py", line 345, in write
-    return self._chan.write(data, self._datatype)
-           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\channel.py", line 924, in write
-    raise BrokenPipeError('Channel not open for sending')
-BrokenPipeError: Channel not open for sending
-2025-10-06 14:48:28,299 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:48:28,299 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:48:28,299 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 14:48:28,300 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:48:28,300 - asyncssh - INFO - [conn=0] Connection closed
-2025-10-06 14:48:31,922 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:33,917 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:35,413 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:36,917 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:37,920 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:38,923 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:39,919 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:40,921 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:42,424 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:43,920 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:44,928 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:45,918 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:46,923 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:47,917 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:48,338 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:48:56,926 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:58,430 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:48:59,924 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:49:01,414 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:49:02,917 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:49:03,910 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:49:04,918 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:49:05,924 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:49:06,916 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:49:08,106 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:49:30,529 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:49:34,381 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:49:34,381 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:49:34,416 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:49:34,416 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 58726
-2025-10-06 14:49:34,417 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:49:34,503 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:49:34,705 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:49:34,706 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:49:36,114 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 14:49:36,115 - llm.async_llm_runner - INFO - Starting LLM workflow
-2025-10-06 14:49:36,115 - llm.async_llm_utils - INFO - Listing remote Ollama models
-2025-10-06 14:49:36,115 - asyncssh - INFO - [conn=0, chan=0] Requesting new SSH session
-2025-10-06 14:49:36,156 - asyncssh - INFO - [conn=0, chan=0]   Command: ollama list
-2025-10-06 14:49:36,179 - asyncssh - INFO - [conn=0, chan=0] Received exit status 127
-2025-10-06 14:49:36,179 - asyncssh - INFO - [conn=0, chan=0] Received channel close
-2025-10-06 14:49:36,180 - asyncssh - INFO - [conn=0, chan=0] Channel closed
-2025-10-06 14:49:36,180 - asyncssh - INFO - [conn=0, chan=1] Requesting new SSH session
-2025-10-06 14:49:36,188 - asyncssh - INFO - [conn=0, chan=1]   Command: ~/.ollama/bin/ollama list
-2025-10-06 14:49:36,207 - asyncssh - INFO - [conn=0, chan=1] Received exit status 127
-2025-10-06 14:49:36,207 - asyncssh - INFO - [conn=0, chan=1] Received channel close
-2025-10-06 14:49:36,208 - asyncssh - INFO - [conn=0, chan=1] Channel closed
-2025-10-06 14:49:36,208 - asyncssh - INFO - [conn=0, chan=2] Requesting new SSH session
-2025-10-06 14:49:36,215 - asyncssh - INFO - [conn=0, chan=2]   Command: /usr/local/bin/ollama list
-2025-10-06 14:49:36,233 - asyncssh - INFO - [conn=0, chan=2] Received exit status 127
-2025-10-06 14:49:36,233 - asyncssh - INFO - [conn=0, chan=2] Received channel close
-2025-10-06 14:49:36,234 - asyncssh - INFO - [conn=0, chan=2] Channel closed
-2025-10-06 14:49:36,234 - asyncssh - INFO - [conn=0, chan=3] Requesting new SSH session
-2025-10-06 14:49:36,241 - asyncssh - INFO - [conn=0, chan=3]   Command: /usr/bin/ollama list
-2025-10-06 14:49:36,258 - asyncssh - INFO - [conn=0, chan=3] Received exit status 127
-2025-10-06 14:49:36,258 - asyncssh - INFO - [conn=0, chan=3] Received channel close
-2025-10-06 14:49:36,259 - asyncssh - INFO - [conn=0, chan=3] Channel closed
-2025-10-06 14:49:36,259 - asyncssh - INFO - [conn=0, chan=4] Requesting new SSH session
-2025-10-06 14:49:36,266 - asyncssh - INFO - [conn=0, chan=4]   Command: source ~/.bashrc && ollama list
-2025-10-06 14:49:36,285 - asyncssh - INFO - [conn=0, chan=4] Received exit status 127
-2025-10-06 14:49:36,285 - asyncssh - INFO - [conn=0, chan=4] Received channel close
-2025-10-06 14:49:36,286 - asyncssh - INFO - [conn=0, chan=4] Channel closed
-2025-10-06 14:49:36,286 - asyncssh - INFO - [conn=0, chan=5] Requesting new SSH session
-2025-10-06 14:49:36,293 - asyncssh - INFO - [conn=0, chan=5]   Command: bash -l -c "ollama list"
-2025-10-06 14:49:36,356 - asyncssh - INFO - [conn=0, chan=5] Received exit status 0
-2025-10-06 14:49:36,356 - asyncssh - INFO - [conn=0, chan=5] Received channel close
-2025-10-06 14:49:36,357 - asyncssh - INFO - [conn=0, chan=5] Channel closed
-2025-10-06 14:49:36,357 - llm.async_llm_utils - INFO - Found 11 models using: bash -l -c "ollama list"
-2025-10-06 14:49:37,643 - llm.async_llm_runner - INFO - Starting Ollama model: gemma:2b
-2025-10-06 14:49:37,643 - llm.async_llm_utils - INFO - Starting persistent Ollama process for model: gemma:2b
-2025-10-06 14:49:37,643 - asyncssh - INFO - [conn=0, chan=6] Requesting new SSH session
-2025-10-06 14:49:37,705 - asyncssh - INFO - [conn=0, chan=6]   Command: bash -l -c "ollama run gemma:2b"
-2025-10-06 14:49:40,723 - llm.async_llm_utils - INFO - Ollama process started for gemma:2b
-2025-10-06 14:53:13,226 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:53:13,226 - llm.async_llm_runner - INFO - Cleaning up Ollama process
-2025-10-06 14:53:13,227 - asyncssh - INFO - [conn=0, chan=6] Closing channel
-2025-10-06 14:53:13,227 - llm.async_llm_runner - ERROR - Error cleaning up process: 'SSHReader' object has no attribute 'close'
-2025-10-06 14:53:13,227 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:53:13,228 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 14:53:13,228 - asyncssh - INFO - [conn=0, chan=6] Closing channel
-2025-10-06 14:53:13,228 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:53:13,228 - asyncssh - INFO - [conn=0] Connection closed
-2025-10-06 14:53:13,229 - asyncssh - INFO - [conn=0, chan=6] Closing channel due to connection close
-2025-10-06 14:53:13,229 - asyncssh - INFO - [conn=0, chan=6] Channel closed
-2025-10-06 14:53:17,755 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:53:20,830 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:53:20,831 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:53:20,939 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:53:20,939 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 58912
-2025-10-06 14:53:20,939 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:53:21,025 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:53:21,233 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:53:21,233 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:53:22,573 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 14:53:22,574 - llm.async_llm_runner - INFO - Starting LLM workflow
-2025-10-06 14:53:22,574 - llm.async_llm_utils - INFO - Listing remote Ollama models
-2025-10-06 14:53:22,574 - asyncssh - INFO - [conn=0, chan=0] Requesting new SSH session
-2025-10-06 14:53:22,666 - asyncssh - INFO - [conn=0, chan=0]   Command: ollama list
-2025-10-06 14:53:22,686 - asyncssh - INFO - [conn=0, chan=0] Received exit status 127
-2025-10-06 14:53:22,686 - asyncssh - INFO - [conn=0, chan=0] Received channel close
-2025-10-06 14:53:22,686 - asyncssh - INFO - [conn=0, chan=0] Channel closed
-2025-10-06 14:53:22,687 - asyncssh - INFO - [conn=0, chan=1] Requesting new SSH session
-2025-10-06 14:53:22,694 - asyncssh - INFO - [conn=0, chan=1]   Command: ~/.ollama/bin/ollama list
-2025-10-06 14:53:22,720 - asyncssh - INFO - [conn=0, chan=1] Received exit status 127
-2025-10-06 14:53:22,721 - asyncssh - INFO - [conn=0, chan=1] Received channel close
-2025-10-06 14:53:22,721 - asyncssh - INFO - [conn=0, chan=1] Channel closed
-2025-10-06 14:53:22,721 - asyncssh - INFO - [conn=0, chan=2] Requesting new SSH session
-2025-10-06 14:53:22,730 - asyncssh - INFO - [conn=0, chan=2]   Command: /usr/local/bin/ollama list
-2025-10-06 14:53:22,748 - asyncssh - INFO - [conn=0, chan=2] Received exit status 127
-2025-10-06 14:53:22,749 - asyncssh - INFO - [conn=0, chan=2] Received channel close
-2025-10-06 14:53:22,749 - asyncssh - INFO - [conn=0, chan=2] Channel closed
-2025-10-06 14:53:22,749 - asyncssh - INFO - [conn=0, chan=3] Requesting new SSH session
-2025-10-06 14:53:22,758 - asyncssh - INFO - [conn=0, chan=3]   Command: /usr/bin/ollama list
-2025-10-06 14:53:22,777 - asyncssh - INFO - [conn=0, chan=3] Received exit status 127
-2025-10-06 14:53:22,777 - asyncssh - INFO - [conn=0, chan=3] Received channel close
-2025-10-06 14:53:22,777 - asyncssh - INFO - [conn=0, chan=3] Channel closed
-2025-10-06 14:53:22,778 - asyncssh - INFO - [conn=0, chan=4] Requesting new SSH session
-2025-10-06 14:53:22,786 - asyncssh - INFO - [conn=0, chan=4]   Command: source ~/.bashrc && ollama list
-2025-10-06 14:53:22,819 - asyncssh - INFO - [conn=0, chan=4] Received exit status 127
-2025-10-06 14:53:22,819 - asyncssh - INFO - [conn=0, chan=4] Received channel close
-2025-10-06 14:53:22,819 - asyncssh - INFO - [conn=0, chan=4] Channel closed
-2025-10-06 14:53:22,819 - asyncssh - INFO - [conn=0, chan=5] Requesting new SSH session
-2025-10-06 14:53:22,833 - asyncssh - INFO - [conn=0, chan=5]   Command: bash -l -c "ollama list"
-2025-10-06 14:53:22,887 - asyncssh - INFO - [conn=0, chan=5] Received exit status 0
-2025-10-06 14:53:22,888 - asyncssh - INFO - [conn=0, chan=5] Received channel close
-2025-10-06 14:53:22,888 - asyncssh - INFO - [conn=0, chan=5] Channel closed
-2025-10-06 14:53:22,888 - llm.async_llm_utils - INFO - Found 11 models using: bash -l -c "ollama list"
-2025-10-06 14:53:25,890 - llm.async_llm_runner - INFO - Starting Ollama model: gemma:2b
-2025-10-06 14:53:25,891 - llm.async_llm_utils - INFO - Starting persistent Ollama process for model: gemma:2b
-2025-10-06 14:53:25,891 - asyncssh - INFO - [conn=0, chan=6] Requesting new SSH session
-2025-10-06 14:53:45,058 - asyncssh - INFO - [conn=0] Connection failure: [WinError 121] The semaphore timeout period has expired
-2025-10-06 14:53:45,058 - asyncssh - INFO - [conn=0, chan=6] Closing channel due to connection close
-2025-10-06 14:53:45,058 - asyncssh - INFO - [conn=0, chan=6] Channel closed: [WinError 121] The semaphore timeout period has expired
-2025-10-06 14:53:45,059 - llm.async_llm_utils - ERROR - Failed to start Ollama: SSH connection closed
-Traceback (most recent call last):
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\llm\async_llm_utils.py", line 102, in start_persistent_ollama
-    proc = await ssh.create_process(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<3 lines>...
-    )
-    ^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4487, in create_process
-    chan, process = await self.create_session(
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
-        SSHClientProcess, *args, **kwargs) # type: ignore
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4380, in create_session
-    session = await chan.create(session_factory, command, subsystem,
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<4 lines>...
-                                bool(self._agent_forward_path))
-                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\channel.py", line 1147, in create
-    packet = await self._open(b'session')
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\channel.py", line 717, in _open
-    return await self._open_waiter
-           ^^^^^^^^^^^^^^^^^^^^^^^
-asyncssh.misc.ChannelOpenError: SSH connection closed
-2025-10-06 14:53:45,065 - llm.async_llm_runner - ERROR - Error starting model: SSH connection closed
-Traceback (most recent call last):
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\llm\async_llm_runner.py", line 89, in run_llm_entrypoint
-    proc = await start_persistent_ollama(ssh, model)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\llm\async_llm_utils.py", line 102, in start_persistent_ollama
-    proc = await ssh.create_process(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<3 lines>...
-    )
-    ^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4487, in create_process
-    chan, process = await self.create_session(
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
-        SSHClientProcess, *args, **kwargs) # type: ignore
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4380, in create_session
-    session = await chan.create(session_factory, command, subsystem,
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<4 lines>...
-                                bool(self._agent_forward_path))
-                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\channel.py", line 1147, in create
-    packet = await self._open(b'session')
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\channel.py", line 717, in _open
-    return await self._open_waiter
-           ^^^^^^^^^^^^^^^^^^^^^^^
-asyncssh.misc.ChannelOpenError: SSH connection closed
-2025-10-06 14:53:50,010 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 14:53:50,010 - llm.async_llm_runner - INFO - Starting LLM workflow
-2025-10-06 14:53:50,012 - llm.async_llm_runner - WARNING - SSH connection closed when entering LLM workflow
-2025-10-06 14:53:51,810 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 14:53:51,811 - llm.async_llm_runner - INFO - Starting LLM workflow
-2025-10-06 14:53:51,812 - llm.async_llm_runner - WARNING - SSH connection closed when entering LLM workflow
-2025-10-06 14:53:55,610 - __main__ - INFO - User initiated exit
-2025-10-06 14:53:55,610 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:53:55,611 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 14:53:55,611 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:53:57,904 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:54:00,692 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:54:00,692 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:54:00,700 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:54:00,701 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 58942
-2025-10-06 14:54:00,701 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:54:00,775 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:54:02,950 - asyncssh - INFO - [conn=0] Auth failed for user emilyzhang
-2025-10-06 14:54:02,950 - asyncssh - INFO - [conn=0] Connection failure: Permission denied for user emilyzhang on host 100.99.162.98
-2025-10-06 14:54:02,950 - asyncssh - INFO - [conn=0] Aborting connection
-2025-10-06 14:54:07,667 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:54:07,667 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:54:07,722 - asyncssh - INFO - [conn=1] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:54:07,723 - asyncssh - INFO - [conn=1]   Local address: 100.69.245.72, port 58947
-2025-10-06 14:54:07,723 - asyncssh - INFO - [conn=1]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:54:07,798 - asyncssh - INFO - [conn=1] Beginning auth for user emilyzhang
-2025-10-06 14:54:09,831 - asyncssh - INFO - [conn=1] Auth failed for user emilyzhang
-2025-10-06 14:54:09,832 - asyncssh - INFO - [conn=1] Connection failure: Permission denied for user emilyzhang on host 100.99.162.98
-2025-10-06 14:54:09,832 - asyncssh - INFO - [conn=1] Aborting connection
-2025-10-06 14:54:16,364 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:54:16,364 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:54:16,374 - asyncssh - INFO - [conn=2] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:54:16,374 - asyncssh - INFO - [conn=2]   Local address: 100.69.245.72, port 58954
-2025-10-06 14:54:16,374 - asyncssh - INFO - [conn=2]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:54:16,460 - asyncssh - INFO - [conn=2] Beginning auth for user emilyzhang
-2025-10-06 14:54:16,680 - asyncssh - INFO - [conn=2] Auth for user emilyzhang succeeded
-2025-10-06 14:54:16,683 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:54:17,778 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 14:54:17,778 - llm.async_llm_runner - INFO - Starting LLM workflow
-2025-10-06 14:54:17,778 - llm.async_llm_utils - INFO - Listing remote Ollama models
-2025-10-06 14:54:17,779 - asyncssh - INFO - [conn=2, chan=0] Requesting new SSH session
-2025-10-06 14:54:17,874 - asyncssh - INFO - [conn=2, chan=0]   Command: ollama list
-2025-10-06 14:54:17,899 - asyncssh - INFO - [conn=2, chan=0] Received exit status 127
-2025-10-06 14:54:17,899 - asyncssh - INFO - [conn=2, chan=0] Received channel close
-2025-10-06 14:54:17,900 - asyncssh - INFO - [conn=2, chan=0] Channel closed
-2025-10-06 14:54:17,900 - asyncssh - INFO - [conn=2, chan=1] Requesting new SSH session
-2025-10-06 14:54:17,906 - asyncssh - INFO - [conn=2, chan=1]   Command: ~/.ollama/bin/ollama list
-2025-10-06 14:54:17,930 - asyncssh - INFO - [conn=2, chan=1] Received exit status 127
-2025-10-06 14:54:17,930 - asyncssh - INFO - [conn=2, chan=1] Received channel close
-2025-10-06 14:54:17,931 - asyncssh - INFO - [conn=2, chan=1] Channel closed
-2025-10-06 14:54:17,931 - asyncssh - INFO - [conn=2, chan=2] Requesting new SSH session
-2025-10-06 14:54:17,938 - asyncssh - INFO - [conn=2, chan=2]   Command: /usr/local/bin/ollama list
-2025-10-06 14:54:17,955 - asyncssh - INFO - [conn=2, chan=2] Received exit status 127
-2025-10-06 14:54:17,956 - asyncssh - INFO - [conn=2, chan=2] Received channel close
-2025-10-06 14:54:17,956 - asyncssh - INFO - [conn=2, chan=2] Channel closed
-2025-10-06 14:54:17,957 - asyncssh - INFO - [conn=2, chan=3] Requesting new SSH session
-2025-10-06 14:54:17,964 - asyncssh - INFO - [conn=2, chan=3]   Command: /usr/bin/ollama list
-2025-10-06 14:54:17,981 - asyncssh - INFO - [conn=2, chan=3] Received exit status 127
-2025-10-06 14:54:17,982 - asyncssh - INFO - [conn=2, chan=3] Received channel close
-2025-10-06 14:54:17,983 - asyncssh - INFO - [conn=2, chan=3] Channel closed
-2025-10-06 14:54:17,983 - asyncssh - INFO - [conn=2, chan=4] Requesting new SSH session
-2025-10-06 14:54:17,991 - asyncssh - INFO - [conn=2, chan=4]   Command: source ~/.bashrc && ollama list
-2025-10-06 14:54:18,009 - asyncssh - INFO - [conn=2, chan=4] Received exit status 127
-2025-10-06 14:54:18,009 - asyncssh - INFO - [conn=2, chan=4] Received channel close
-2025-10-06 14:54:18,009 - asyncssh - INFO - [conn=2, chan=4] Channel closed
-2025-10-06 14:54:18,010 - asyncssh - INFO - [conn=2, chan=5] Requesting new SSH session
-2025-10-06 14:54:18,016 - asyncssh - INFO - [conn=2, chan=5]   Command: bash -l -c "ollama list"
-2025-10-06 14:54:18,066 - asyncssh - INFO - [conn=2, chan=5] Received exit status 0
-2025-10-06 14:54:18,066 - asyncssh - INFO - [conn=2, chan=5] Received channel close
-2025-10-06 14:54:18,067 - asyncssh - INFO - [conn=2, chan=5] Channel closed
-2025-10-06 14:54:18,067 - llm.async_llm_utils - INFO - Found 11 models using: bash -l -c "ollama list"
-2025-10-06 14:54:18,802 - llm.async_llm_runner - INFO - Starting Ollama model: gemma:2b
-2025-10-06 14:54:18,802 - llm.async_llm_utils - INFO - Starting persistent Ollama process for model: gemma:2b
-2025-10-06 14:54:18,802 - asyncssh - INFO - [conn=2, chan=6] Requesting new SSH session
-2025-10-06 14:54:18,826 - asyncssh - INFO - [conn=2, chan=6]   Command: bash -l -c "ollama run gemma:2b"
-2025-10-06 14:54:21,839 - llm.async_llm_utils - INFO - Ollama process started for gemma:2b
-2025-10-06 14:54:56,594 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:54:56,594 - llm.async_llm_runner - INFO - Cleaning up Ollama process
-2025-10-06 14:54:56,595 - asyncssh - INFO - [conn=2, chan=6] Closing channel
-2025-10-06 14:54:56,595 - llm.async_llm_runner - ERROR - Error cleaning up process: 'SSHReader' object has no attribute 'close'
-2025-10-06 14:54:56,595 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:54:56,595 - asyncssh - INFO - [conn=2] Closing connection
-2025-10-06 14:54:56,596 - asyncssh - INFO - [conn=2, chan=6] Closing channel
-2025-10-06 14:54:56,596 - asyncssh - INFO - [conn=2] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:54:56,596 - asyncssh - INFO - [conn=2] Connection closed
-2025-10-06 14:54:56,596 - asyncssh - INFO - [conn=2, chan=6] Closing channel due to connection close
-2025-10-06 14:54:56,597 - asyncssh - INFO - [conn=2, chan=6] Channel closed
-2025-10-06 14:55:51,412 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:55:52,925 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:55:53,545 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:56:01,099 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:56:04,963 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:56:04,964 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:56:04,973 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:56:04,973 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 59036
-2025-10-06 14:56:04,974 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:56:05,051 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:56:05,265 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:56:05,266 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:56:07,490 - __main__ - INFO - User selected: NCT Lookup
-2025-10-06 14:56:20,804 - data.async_nct_lookup - INFO - Successfully fetched data for NCT04043065
-2025-10-06 14:56:28,132 - data.async_nct_lookup - ERROR - Error saving results: object NoneType can't be used in 'await' expression
-Traceback (most recent call last):
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\data\async_nct_lookup.py", line 163, in prompt_save_results
-    await save_results(results, filename, fmt=save_choice)
-TypeError: object NoneType can't be used in 'await' expression
-2025-10-06 14:56:56,433 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:56:56,434 - __main__ - INFO - Closing SSH connection...
-2025-10-06 14:56:56,434 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 14:56:56,435 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 14:56:56,435 - asyncssh - INFO - [conn=0] Connection closed
-2025-10-06 14:57:18,912 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:57:19,912 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:57:21,418 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:57:22,413 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:57:23,418 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:57:24,421 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:57:25,412 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:57:35,414 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:57:36,921 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:57:38,433 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:57:39,225 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:57:41,927 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:57:42,729 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:57:45,423 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:57:46,129 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 14:57:58,412 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:57:59,920 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:58:00,910 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:58:01,920 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:58:02,920 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:58:03,943 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:58:04,911 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:58:05,916 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:58:06,926 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:58:07,923 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:58:08,913 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:58:10,921 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:58:12,417 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 14:58:26,799 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 14:58:29,955 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 14:58:29,955 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 14:58:29,966 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 14:58:29,966 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 59159
-2025-10-06 14:58:29,966 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 14:58:30,041 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 14:58:30,230 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 14:58:30,231 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 14:58:31,457 - __main__ - INFO - User selected: NCT Lookup
-2025-10-06 14:58:33,354 - data.async_nct_lookup - INFO - Fetching data for: NCT04043065
-2025-10-06 14:58:37,647 - data.async_nct_lookup - INFO - Successfully fetched data for NCT04043065
-2025-10-06 14:58:43,853 - data.async_nct_lookup - INFO - Saved 1 results to nctload.txt
-2025-10-06 14:58:48,473 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 14:58:48,474 - llm.async_llm_runner - INFO - Starting LLM workflow
-2025-10-06 14:58:48,474 - llm.async_llm_utils - INFO - Listing remote Ollama models
-2025-10-06 14:58:48,474 - asyncssh - INFO - [conn=0, chan=0] Requesting new SSH session
-2025-10-06 14:58:48,505 - asyncssh - INFO - [conn=0, chan=0]   Command: ollama list
-2025-10-06 14:58:48,527 - asyncssh - INFO - [conn=0, chan=0] Received exit status 127
-2025-10-06 14:58:48,527 - asyncssh - INFO - [conn=0, chan=0] Received channel close
-2025-10-06 14:58:48,527 - asyncssh - INFO - [conn=0, chan=0] Channel closed
-2025-10-06 14:58:48,528 - asyncssh - INFO - [conn=0, chan=1] Requesting new SSH session
-2025-10-06 14:58:48,535 - asyncssh - INFO - [conn=0, chan=1]   Command: ~/.ollama/bin/ollama list
-2025-10-06 14:58:48,553 - asyncssh - INFO - [conn=0, chan=1] Received exit status 127
-2025-10-06 14:58:48,553 - asyncssh - INFO - [conn=0, chan=1] Received channel close
-2025-10-06 14:58:48,553 - asyncssh - INFO - [conn=0, chan=1] Channel closed
-2025-10-06 14:58:48,554 - asyncssh - INFO - [conn=0, chan=2] Requesting new SSH session
-2025-10-06 14:58:48,561 - asyncssh - INFO - [conn=0, chan=2]   Command: /usr/local/bin/ollama list
-2025-10-06 14:58:48,577 - asyncssh - INFO - [conn=0, chan=2] Received exit status 127
-2025-10-06 14:58:48,577 - asyncssh - INFO - [conn=0, chan=2] Received channel close
-2025-10-06 14:58:48,577 - asyncssh - INFO - [conn=0, chan=2] Channel closed
-2025-10-06 14:58:48,578 - asyncssh - INFO - [conn=0, chan=3] Requesting new SSH session
-2025-10-06 14:58:48,585 - asyncssh - INFO - [conn=0, chan=3]   Command: /usr/bin/ollama list
-2025-10-06 14:58:48,602 - asyncssh - INFO - [conn=0, chan=3] Received exit status 127
-2025-10-06 14:58:48,602 - asyncssh - INFO - [conn=0, chan=3] Received channel close
-2025-10-06 14:58:48,602 - asyncssh - INFO - [conn=0, chan=3] Channel closed
-2025-10-06 14:58:48,603 - asyncssh - INFO - [conn=0, chan=4] Requesting new SSH session
-2025-10-06 14:58:48,610 - asyncssh - INFO - [conn=0, chan=4]   Command: source ~/.bashrc && ollama list
-2025-10-06 14:58:48,626 - asyncssh - INFO - [conn=0, chan=4] Received exit status 127
-2025-10-06 14:58:48,627 - asyncssh - INFO - [conn=0, chan=4] Received channel close
-2025-10-06 14:58:48,627 - asyncssh - INFO - [conn=0, chan=4] Channel closed
-2025-10-06 14:58:48,627 - asyncssh - INFO - [conn=0, chan=5] Requesting new SSH session
-2025-10-06 14:58:48,635 - asyncssh - INFO - [conn=0, chan=5]   Command: bash -l -c "ollama list"
-2025-10-06 14:58:48,686 - asyncssh - INFO - [conn=0, chan=5] Received exit status 0
-2025-10-06 14:58:48,686 - asyncssh - INFO - [conn=0, chan=5] Received channel close
-2025-10-06 14:58:48,686 - asyncssh - INFO - [conn=0, chan=5] Channel closed
-2025-10-06 14:58:48,686 - llm.async_llm_utils - INFO - Found 11 models using: bash -l -c "ollama list"
-2025-10-06 14:58:51,086 - llm.async_llm_runner - INFO - Starting Ollama model: gemma:2b
-2025-10-06 14:58:51,086 - llm.async_llm_utils - INFO - Starting persistent Ollama process for model: gemma:2b
-2025-10-06 14:58:51,087 - asyncssh - INFO - [conn=0, chan=6] Requesting new SSH session
-2025-10-06 14:58:51,110 - asyncssh - INFO - [conn=0, chan=6]   Command: bash -l -c "ollama run gemma:2b"
-2025-10-06 14:58:54,124 - llm.async_llm_utils - INFO - Ollama process started for gemma:2b
-2025-10-06 15:05:02,106 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 15:05:02,106 - llm.async_llm_runner - INFO - Cleaning up Ollama process
-2025-10-06 15:05:02,106 - asyncssh - INFO - [conn=0, chan=6] Closing channel
-2025-10-06 15:05:02,107 - llm.async_llm_runner - ERROR - Error cleaning up process: 'SSHReader' object has no attribute 'close'
-2025-10-06 15:05:02,107 - __main__ - INFO - Closing SSH connection...
-2025-10-06 15:05:02,107 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 15:05:02,107 - asyncssh - INFO - [conn=0, chan=6] Closing channel
-2025-10-06 15:05:02,108 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 15:05:02,108 - asyncssh - INFO - [conn=0] Connection closed
-2025-10-06 15:05:02,108 - asyncssh - INFO - [conn=0, chan=6] Closing channel due to connection close
-2025-10-06 15:05:02,109 - asyncssh - INFO - [conn=0, chan=6] Channel closed
-2025-10-06 15:05:06,297 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 15:05:09,979 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 15:05:09,979 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 15:05:10,047 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 15:05:10,048 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 59479
-2025-10-06 15:05:10,048 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 15:05:10,140 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 15:05:10,347 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 15:05:10,348 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 15:05:12,024 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 15:05:12,025 - llm.async_llm_runner - INFO - Starting LLM workflow
-2025-10-06 15:05:12,025 - llm.async_llm_utils - INFO - Listing remote Ollama models
-2025-10-06 15:05:12,026 - asyncssh - INFO - [conn=0, chan=0] Requesting new SSH session
-2025-10-06 15:05:12,033 - asyncssh - INFO - [conn=0, chan=0]   Command: ollama list
-2025-10-06 15:05:12,055 - asyncssh - INFO - [conn=0, chan=0] Received exit status 127
-2025-10-06 15:05:12,056 - asyncssh - INFO - [conn=0, chan=0] Received channel close
-2025-10-06 15:05:12,056 - asyncssh - INFO - [conn=0, chan=0] Channel closed
-2025-10-06 15:05:12,056 - asyncssh - INFO - [conn=0, chan=1] Requesting new SSH session
-2025-10-06 15:05:12,064 - asyncssh - INFO - [conn=0, chan=1]   Command: ~/.ollama/bin/ollama list
-2025-10-06 15:05:12,081 - asyncssh - INFO - [conn=0, chan=1] Received exit status 127
-2025-10-06 15:05:12,082 - asyncssh - INFO - [conn=0, chan=1] Received channel close
-2025-10-06 15:05:12,082 - asyncssh - INFO - [conn=0, chan=1] Channel closed
-2025-10-06 15:05:12,082 - asyncssh - INFO - [conn=0, chan=2] Requesting new SSH session
-2025-10-06 15:05:12,090 - asyncssh - INFO - [conn=0, chan=2]   Command: /usr/local/bin/ollama list
-2025-10-06 15:05:12,106 - asyncssh - INFO - [conn=0, chan=2] Received exit status 127
-2025-10-06 15:05:12,107 - asyncssh - INFO - [conn=0, chan=2] Received channel close
-2025-10-06 15:05:12,107 - asyncssh - INFO - [conn=0, chan=2] Channel closed
-2025-10-06 15:05:12,107 - asyncssh - INFO - [conn=0, chan=3] Requesting new SSH session
-2025-10-06 15:05:12,114 - asyncssh - INFO - [conn=0, chan=3]   Command: /usr/bin/ollama list
-2025-10-06 15:05:12,131 - asyncssh - INFO - [conn=0, chan=3] Received exit status 127
-2025-10-06 15:05:12,131 - asyncssh - INFO - [conn=0, chan=3] Received channel close
-2025-10-06 15:05:12,131 - asyncssh - INFO - [conn=0, chan=3] Channel closed
-2025-10-06 15:05:12,132 - asyncssh - INFO - [conn=0, chan=4] Requesting new SSH session
-2025-10-06 15:05:12,140 - asyncssh - INFO - [conn=0, chan=4]   Command: source ~/.bashrc && ollama list
-2025-10-06 15:05:12,157 - asyncssh - INFO - [conn=0, chan=4] Received exit status 127
-2025-10-06 15:05:12,158 - asyncssh - INFO - [conn=0, chan=4] Received channel close
-2025-10-06 15:05:12,158 - asyncssh - INFO - [conn=0, chan=4] Channel closed
-2025-10-06 15:05:12,158 - asyncssh - INFO - [conn=0, chan=5] Requesting new SSH session
-2025-10-06 15:05:12,166 - asyncssh - INFO - [conn=0, chan=5]   Command: bash -l -c "ollama list"
-2025-10-06 15:05:12,221 - asyncssh - INFO - [conn=0, chan=5] Received exit status 0
-2025-10-06 15:05:12,222 - asyncssh - INFO - [conn=0, chan=5] Received channel close
-2025-10-06 15:05:12,222 - asyncssh - INFO - [conn=0, chan=5] Channel closed
-2025-10-06 15:05:12,222 - llm.async_llm_utils - INFO - Found 11 models using: bash -l -c "ollama list"
-2025-10-06 15:05:13,966 - llm.async_llm_runner - INFO - Starting Ollama model: gemma:2b
-2025-10-06 15:05:13,966 - llm.async_llm_utils - INFO - Starting persistent Ollama process for model: gemma:2b
-2025-10-06 15:05:13,966 - asyncssh - INFO - [conn=0, chan=6] Requesting new SSH session
-2025-10-06 15:05:33,104 - asyncssh - INFO - [conn=0] Connection failure: [WinError 121] The semaphore timeout period has expired
-2025-10-06 15:05:33,104 - asyncssh - INFO - [conn=0, chan=6] Closing channel due to connection close
-2025-10-06 15:05:33,104 - asyncssh - INFO - [conn=0, chan=6] Channel closed: [WinError 121] The semaphore timeout period has expired
-2025-10-06 15:05:33,105 - llm.async_llm_utils - ERROR - Failed to start Ollama: SSH connection closed
-Traceback (most recent call last):
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\llm\async_llm_utils.py", line 102, in start_persistent_ollama
-    proc = await ssh.create_process(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<3 lines>...
-    )
-    ^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4487, in create_process
-    chan, process = await self.create_session(
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
-        SSHClientProcess, *args, **kwargs) # type: ignore
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4380, in create_session
-    session = await chan.create(session_factory, command, subsystem,
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<4 lines>...
-                                bool(self._agent_forward_path))
-                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\channel.py", line 1147, in create
-    packet = await self._open(b'session')
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\channel.py", line 717, in _open
-    return await self._open_waiter
-           ^^^^^^^^^^^^^^^^^^^^^^^
-asyncssh.misc.ChannelOpenError: SSH connection closed
-2025-10-06 15:05:33,111 - llm.async_llm_runner - ERROR - Error starting model: SSH connection closed
-Traceback (most recent call last):
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\llm\async_llm_runner.py", line 90, in run_llm_entrypoint
-    proc = await start_persistent_ollama(ssh, model)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "h:\Documents\LLM Code\AMP_LLMs\Claude_Async_Version\llm\async_llm_utils.py", line 102, in start_persistent_ollama
-    proc = await ssh.create_process(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<3 lines>...
-    )
-    ^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4487, in create_process
-    chan, process = await self.create_session(
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
-        SSHClientProcess, *args, **kwargs) # type: ignore
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\connection.py", line 4380, in create_session
-    session = await chan.create(session_factory, command, subsystem,
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<4 lines>...
-                                bool(self._agent_forward_path))
-                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\channel.py", line 1147, in create
-    packet = await self._open(b'session')
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "H:\Documents\LLM Code\AMP_LLMs\llm_env\Lib\site-packages\asyncssh\channel.py", line 717, in _open
-    return await self._open_waiter
-           ^^^^^^^^^^^^^^^^^^^^^^^
-asyncssh.misc.ChannelOpenError: SSH connection closed
-2025-10-06 15:05:35,384 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 15:05:35,385 - llm.async_llm_runner - INFO - Starting LLM workflow
-2025-10-06 15:05:35,386 - llm.async_llm_runner - WARNING - SSH connection closed when entering LLM workflow
-2025-10-06 15:05:37,970 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 15:05:37,971 - __main__ - INFO - Closing SSH connection...
-2025-10-06 15:05:37,971 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 15:05:37,971 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 15:05:41,416 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:05:42,029 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 15:05:59,920 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:06:02,924 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:06:04,411 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:06:05,422 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:06:06,419 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:06:07,410 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:06:07,848 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 15:06:10,419 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:06:11,016 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 15:07:28,916 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:07:30,417 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:07:31,430 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:07:32,120 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 15:08:09,423 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:08:10,392 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 15:12:32,924 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:12:33,369 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 15:15:19,416 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:15:20,720 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 15:15:30,436 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:15:31,922 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:15:32,917 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:15:33,921 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:15:34,922 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:22:45,743 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 15:22:48,417 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:22:49,920 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:22:50,919 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:22:52,432 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:22:53,925 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:22:54,914 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:22:55,913 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:23:01,434 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:23:12,885 - __main__ - WARNING - Failed to ping 5
-2025-10-06 15:23:15,923 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:23:16,912 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:23:17,431 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 15:23:20,917 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:23:21,343 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 15:26:14,421 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:26:15,913 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 15:26:16,970 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 19:18:28,917 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 19:18:30,412 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 19:18:38,418 - __main__ - WARNING - Failed to ping 100.99.162.98
-2025-10-06 19:18:48,163 - __main__ - INFO - Connected to 100.99.162.98
-2025-10-06 19:18:49,245 - asyncssh - INFO - Host canonicalization disabled
-2025-10-06 19:18:49,245 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
-2025-10-06 19:18:49,285 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
-2025-10-06 19:18:49,285 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 59539
-2025-10-06 19:18:49,286 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
-2025-10-06 19:18:49,366 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
-2025-10-06 19:18:49,552 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
-2025-10-06 19:18:49,553 - __main__ - INFO - SSH connection established: emilyzhang@100.99.162.98
-2025-10-06 19:18:52,578 - __main__ - INFO - User selected: LLM Workflow
-2025-10-06 19:18:52,579 - llm.async_llm_runner - INFO - Starting LLM workflow
-2025-10-06 19:18:52,579 - llm.async_llm_utils - INFO - Listing remote Ollama models
-2025-10-06 19:18:52,579 - asyncssh - INFO - [conn=0, chan=0] Requesting new SSH session
-2025-10-06 19:18:52,587 - asyncssh - INFO - [conn=0, chan=0]   Command: ollama list
-2025-10-06 19:18:52,610 - asyncssh - INFO - [conn=0, chan=0] Received exit status 127
-2025-10-06 19:18:52,610 - asyncssh - INFO - [conn=0, chan=0] Received channel close
-2025-10-06 19:18:52,611 - asyncssh - INFO - [conn=0, chan=0] Channel closed
-2025-10-06 19:18:52,611 - asyncssh - INFO - [conn=0, chan=1] Requesting new SSH session
-2025-10-06 19:18:52,622 - asyncssh - INFO - [conn=0, chan=1]   Command: ~/.ollama/bin/ollama list
-2025-10-06 19:18:52,647 - asyncssh - INFO - [conn=0, chan=1] Received exit status 127
-2025-10-06 19:18:52,647 - asyncssh - INFO - [conn=0, chan=1] Received channel close
-2025-10-06 19:18:52,648 - asyncssh - INFO - [conn=0, chan=1] Channel closed
-2025-10-06 19:18:52,648 - asyncssh - INFO - [conn=0, chan=2] Requesting new SSH session
-2025-10-06 19:18:52,660 - asyncssh - INFO - [conn=0, chan=2]   Command: /usr/local/bin/ollama list
-2025-10-06 19:18:52,679 - asyncssh - INFO - [conn=0, chan=2] Received exit status 127
-2025-10-06 19:18:52,679 - asyncssh - INFO - [conn=0, chan=2] Received channel close
-2025-10-06 19:18:52,680 - asyncssh - INFO - [conn=0, chan=2] Channel closed
-2025-10-06 19:18:52,680 - asyncssh - INFO - [conn=0, chan=3] Requesting new SSH session
-2025-10-06 19:18:52,689 - asyncssh - INFO - [conn=0, chan=3]   Command: /usr/bin/ollama list
-2025-10-06 19:18:52,709 - asyncssh - INFO - [conn=0, chan=3] Received exit status 127
-2025-10-06 19:18:52,709 - asyncssh - INFO - [conn=0, chan=3] Received channel close
-2025-10-06 19:18:52,710 - asyncssh - INFO - [conn=0, chan=3] Channel closed
-2025-10-06 19:18:52,710 - asyncssh - INFO - [conn=0, chan=4] Requesting new SSH session
-2025-10-06 19:18:52,718 - asyncssh - INFO - [conn=0, chan=4]   Command: source ~/.bashrc && ollama list
-2025-10-06 19:18:52,738 - asyncssh - INFO - [conn=0, chan=4] Received exit status 127
-2025-10-06 19:18:52,739 - asyncssh - INFO - [conn=0, chan=4] Received channel close
-2025-10-06 19:18:52,740 - asyncssh - INFO - [conn=0, chan=4] Channel closed
-2025-10-06 19:18:52,740 - asyncssh - INFO - [conn=0, chan=5] Requesting new SSH session
-2025-10-06 19:18:52,747 - asyncssh - INFO - [conn=0, chan=5]   Command: bash -l -c "ollama list"
-2025-10-06 19:18:52,813 - asyncssh - INFO - [conn=0, chan=5] Received exit status 0
-2025-10-06 19:18:52,813 - asyncssh - INFO - [conn=0, chan=5] Received channel close
-2025-10-06 19:18:52,814 - asyncssh - INFO - [conn=0, chan=5] Channel closed
-2025-10-06 19:18:52,814 - llm.async_llm_utils - INFO - Found 11 models using: bash -l -c "ollama list"
-2025-10-06 19:18:58,875 - llm.async_llm_runner - INFO - Starting Ollama model: gemma:2b
-2025-10-06 19:18:58,875 - llm.async_llm_utils - INFO - Starting persistent Ollama process for model: gemma:2b
-2025-10-06 19:18:58,875 - asyncssh - INFO - [conn=0, chan=6] Requesting new SSH session
-2025-10-06 19:18:58,927 - asyncssh - INFO - [conn=0, chan=6]   Command: bash -l -c "ollama run gemma:2b"
-2025-10-06 19:19:01,944 - llm.async_llm_utils - INFO - Ollama process started for gemma:2b
-2025-10-06 19:20:15,994 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
-2025-10-06 19:20:15,995 - llm.async_llm_runner - INFO - Cleaning up Ollama process
-2025-10-06 19:20:15,995 - asyncssh - INFO - [conn=0, chan=6] Closing channel
-2025-10-06 19:20:15,995 - asyncssh - INFO - [conn=0, chan=6] Sending TERM signal
-2025-10-06 19:20:16,019 - asyncssh - INFO - [conn=0, chan=6] Received exit signal HUP
-2025-10-06 19:20:16,019 - asyncssh - INFO - [conn=0, chan=6] Received channel close
-2025-10-06 19:20:16,019 - asyncssh - INFO - [conn=0, chan=6] Channel closed
-2025-10-06 19:20:16,019 - __main__ - INFO - Closing SSH connection...
-2025-10-06 19:20:16,019 - asyncssh - INFO - [conn=0] Closing connection
-2025-10-06 19:20:16,019 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
-2025-10-06 19:20:16,020 - asyncssh - INFO - [conn=0] Connection closed
+2025-10-06 20:15:27,485 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
+2025-10-09 08:15:19,007 - data.clinical_trial_rag - INFO - Building index from H:\Documents\LLM Code\AMP_LLMs\ct_database
+2025-10-09 08:15:19,025 - data.clinical_trial_rag - INFO - Indexed 1 clinical trials
+2025-10-09 08:15:47,646 - data.clinical_trial_rag - INFO - Building index from H:\Documents\LLM Code\AMP_LLMs\ct_database
+2025-10-09 08:15:47,648 - data.clinical_trial_rag - INFO - Indexed 1 clinical trials
+2025-10-09 08:26:07,364 - data.clinical_trial_rag - INFO - Building index from H:\Documents\LLM Code\AMP_LLMs\ct_database
+2025-10-09 08:26:07,365 - data.clinical_trial_rag - INFO - Indexed 1 clinical trials
+2025-10-09 08:26:23,225 - core.app - INFO - Connected to 100.99.162.98
+2025-10-09 08:26:26,754 - asyncssh - INFO - Host canonicalization disabled
+2025-10-09 08:26:26,754 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
+2025-10-09 08:26:26,859 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
+2025-10-09 08:26:26,859 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 50296
+2025-10-09 08:26:26,859 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
+2025-10-09 08:26:26,951 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
+2025-10-09 08:26:27,150 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
+2025-10-09 08:26:27,151 - core.app - INFO - SSH connection established: emilyzhang@100.99.162.98
+2025-10-09 08:26:30,109 - core.menu - INFO - User selected: LLM Workflow (API Mode)
+2025-10-09 08:26:30,110 - llm.async_llm_runner_api - INFO - Starting LLM workflow in API mode
+2025-10-09 08:26:30,111 - llm.async_llm_utils - INFO - Fetching models from http://100.99.162.98:11434/api/tags
+2025-10-09 08:26:32,393 - llm.async_llm_utils - ERROR - Cannot connect to http://100.99.162.98:11434/api/tags - is Ollama running and accessible?
+2025-10-09 08:26:32,394 - asyncssh - INFO - [conn=0] Creating local TCP forwarder from port 11434 to localhost, port 11434
+2025-10-09 08:26:32,396 - llm.async_llm_runner_api - INFO - SSH tunnel established
+2025-10-09 08:26:33,405 - llm.async_llm_utils - INFO - Fetching models from http://localhost:11434/api/tags
+2025-10-09 08:26:33,409 - asyncssh - INFO - [conn=0] Opening direct TCP connection to localhost, port 11434
+2025-10-09 08:26:33,410 - asyncssh - INFO - [conn=0]   Client address: ::1, port 50302
+2025-10-09 08:26:33,536 - llm.async_llm_utils - INFO - Found 13 models via API
+2025-10-09 08:26:33,542 - asyncssh - INFO - [conn=0, chan=0] Received channel close
+2025-10-09 08:26:33,543 - asyncssh - INFO - [conn=0, chan=0] Closing channel
+2025-10-09 08:26:33,543 - asyncssh - INFO - [conn=0, chan=0] Channel closed
+2025-10-09 08:27:13,118 - asyncssh - INFO - [conn=0] Connection failure: [WinError 121] The semaphore timeout period has expired
+2025-10-09 08:27:19,231 - llm.async_llm_utils - INFO - Sending 4 characters to llama3:8b
+2025-10-09 08:27:21,539 - llm.async_llm_utils - ERROR - Cannot connect to http://localhost:11434/api/generate
+2025-10-09 08:27:24,102 - llm.async_llm_runner_api - INFO - SSH tunnel closed
+2025-10-09 08:27:25,261 - core.menu - INFO - User selected: LLM Workflow (API Mode)
+2025-10-09 08:27:25,261 - core.app - WARNING - SSH connection lost, attempting reconnect...
+2025-10-09 08:27:25,263 - asyncssh - INFO - [conn=0] Closing connection
+2025-10-09 08:27:25,263 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
+2025-10-09 08:27:26,302 - asyncssh - INFO - Host canonicalization disabled
+2025-10-09 08:27:26,302 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
+2025-10-09 08:27:26,319 - asyncssh - INFO - [conn=1] Connected to SSH server at 100.99.162.98, port 22
+2025-10-09 08:27:26,319 - asyncssh - INFO - [conn=1]   Local address: 100.69.245.72, port 50310
+2025-10-09 08:27:26,320 - asyncssh - INFO - [conn=1]   Peer address: 100.99.162.98, port 22
+2025-10-09 08:27:26,404 - asyncssh - INFO - [conn=1] Beginning auth for user emilyzhang
+2025-10-09 08:27:26,433 - asyncssh - INFO - [conn=1] Auth failed for user emilyzhang
+2025-10-09 08:27:26,433 - asyncssh - INFO - [conn=1] Connection failure: Permission denied for user emilyzhang on host 100.99.162.98
+2025-10-09 08:27:26,434 - asyncssh - INFO - [conn=1] Aborting connection
+2025-10-09 08:27:29,929 - asyncssh - INFO - Host canonicalization disabled
+2025-10-09 08:27:29,929 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
+2025-10-09 08:27:29,937 - asyncssh - INFO - [conn=2] Connected to SSH server at 100.99.162.98, port 22
+2025-10-09 08:27:29,938 - asyncssh - INFO - [conn=2]   Local address: 100.69.245.72, port 50311
+2025-10-09 08:27:29,938 - asyncssh - INFO - [conn=2]   Peer address: 100.99.162.98, port 22
+2025-10-09 08:27:30,024 - asyncssh - INFO - [conn=2] Beginning auth for user emilyzhang
+2025-10-09 08:27:30,224 - asyncssh - INFO - [conn=2] Auth for user emilyzhang succeeded
+2025-10-09 08:27:30,225 - core.app - INFO - SSH connection established: emilyzhang@100.99.162.98
+2025-10-09 08:27:30,226 - llm.async_llm_runner_api - INFO - Starting LLM workflow in API mode
+2025-10-09 08:27:30,227 - llm.async_llm_utils - INFO - Fetching models from http://100.99.162.98:11434/api/tags
+2025-10-09 08:27:32,411 - llm.async_llm_utils - ERROR - Cannot connect to http://100.99.162.98:11434/api/tags - is Ollama running and accessible?
+2025-10-09 08:27:32,412 - asyncssh - INFO - [conn=2] Creating local TCP forwarder from port 11434 to localhost, port 11434
+2025-10-09 08:27:32,414 - llm.async_llm_runner_api - INFO - SSH tunnel established
+2025-10-09 08:27:33,417 - llm.async_llm_utils - INFO - Fetching models from http://localhost:11434/api/tags
+2025-10-09 08:27:33,419 - asyncssh - INFO - [conn=2] Opening direct TCP connection to localhost, port 11434
+2025-10-09 08:27:33,419 - asyncssh - INFO - [conn=2]   Client address: ::1, port 50313
+2025-10-09 08:27:33,538 - llm.async_llm_utils - INFO - Found 13 models via API
+2025-10-09 08:27:33,544 - asyncssh - INFO - [conn=2, chan=0] Received channel close
+2025-10-09 08:27:33,545 - asyncssh - INFO - [conn=2, chan=0] Closing channel
+2025-10-09 08:27:33,545 - asyncssh - INFO - [conn=2, chan=0] Channel closed
+2025-10-09 08:27:41,749 - llm.async_llm_utils - INFO - Sending 13043 characters to llama3:8b
+2025-10-09 08:27:41,751 - asyncssh - INFO - [conn=2] Opening direct TCP connection to localhost, port 11434
+2025-10-09 08:27:41,752 - asyncssh - INFO - [conn=2]   Client address: ::1, port 50316
+2025-10-09 08:28:18,213 - llm.async_llm_utils - INFO - Received response: 1857 characters
+2025-10-09 08:28:18,221 - asyncssh - INFO - [conn=2, chan=1] Received channel close
+2025-10-09 08:28:18,221 - asyncssh - INFO - [conn=2, chan=1] Closing channel
+2025-10-09 08:28:18,222 - asyncssh - INFO - [conn=2, chan=1] Channel closed
+2025-10-09 08:28:27,214 - llm.async_llm_runner_api - INFO - SSH tunnel closed
+2025-10-09 08:28:28,436 - core.menu - INFO - User selected: Clinical Trial Research Assistant
+2025-10-09 08:28:43,046 - data.clinical_trial_rag - INFO - Building index from H:\Documents\LLM Code\AMP_LLMs\output\nctload.txt
+2025-10-09 08:28:43,046 - data.clinical_trial_rag - INFO - Indexed 1 clinical trials
+2025-10-09 08:28:43,048 - llm.async_llm_utils - INFO - Fetching models from http://100.99.162.98:11434/api/tags
+2025-10-09 08:28:45,201 - llm.async_llm_utils - ERROR - Cannot connect to http://100.99.162.98:11434/api/tags - is Ollama running and accessible?
+2025-10-09 08:28:45,202 - asyncssh - INFO - [conn=2] Creating local TCP forwarder from port 11434 to localhost, port 11434
+2025-10-09 08:28:46,207 - llm.async_llm_utils - INFO - Fetching models from http://localhost:11434/api/tags
+2025-10-09 08:28:46,209 - asyncssh - INFO - [conn=2] Opening direct TCP connection to localhost, port 11434
+2025-10-09 08:28:46,209 - asyncssh - INFO - [conn=2]   Client address: ::1, port 50326
+2025-10-09 08:28:46,347 - llm.async_llm_utils - INFO - Found 13 models via API
+2025-10-09 08:28:46,355 - asyncssh - INFO - [conn=2, chan=2] Received channel close
+2025-10-09 08:28:46,356 - asyncssh - INFO - [conn=2, chan=2] Closing channel
+2025-10-09 08:28:46,356 - asyncssh - INFO - [conn=2, chan=2] Channel closed
+2025-10-09 08:28:51,455 - asyncssh - INFO - [conn=2, chan=3] Requesting new SSH session
+2025-10-09 08:28:51,475 - asyncssh - INFO - [conn=2, chan=3]   Subsystem: sftp
+2025-10-09 08:28:51,485 - asyncssh.sftp - INFO - [conn=2, chan=3] Starting SFTP client
+2025-10-09 08:28:51,550 - asyncssh - INFO - [conn=2, chan=3] Received exit status 0
+2025-10-09 08:28:51,550 - asyncssh - INFO - [conn=2, chan=3] Received channel close
+2025-10-09 08:28:51,550 - asyncssh.sftp - INFO - [conn=2, chan=3] SFTP client exited
+2025-10-09 08:28:51,550 - asyncssh - INFO - [conn=2, chan=3] Closing channel
+2025-10-09 08:28:51,551 - asyncssh - INFO - [conn=2, chan=3] Channel closed
+2025-10-09 08:28:51,552 - asyncssh - INFO - [conn=2, chan=4] Requesting new SSH session
+2025-10-09 08:28:51,563 - asyncssh - INFO - [conn=2, chan=4]   Command: bash -l -c "ollama create ct-research-assistant -f /tmp/ct_modelfile_1760023731.modelfile"
+2025-10-09 08:28:51,676 - asyncssh - INFO - [conn=2, chan=4] Received exit status 0
+2025-10-09 08:28:51,676 - asyncssh - INFO - [conn=2, chan=4] Received channel close
+2025-10-09 08:28:51,676 - asyncssh - INFO - [conn=2, chan=4] Channel closed
+2025-10-09 08:28:51,677 - asyncssh - INFO - [conn=2, chan=5] Requesting new SSH session
+2025-10-09 08:28:51,690 - asyncssh - INFO - [conn=2, chan=5]   Command: rm -f /tmp/ct_modelfile_1760023731.modelfile
+2025-10-09 08:28:51,716 - asyncssh - INFO - [conn=2, chan=5] Received exit status 0
+2025-10-09 08:28:51,716 - asyncssh - INFO - [conn=2, chan=5] Received channel close
+2025-10-09 08:28:51,717 - asyncssh - INFO - [conn=2, chan=5] Channel closed
+2025-10-09 08:29:13,816 - asyncssh - INFO - [conn=2, chan=6] Requesting new SSH session
+2025-10-09 08:29:13,822 - asyncssh - INFO - [conn=2, chan=6]   Subsystem: sftp
+2025-10-09 08:29:13,828 - asyncssh.sftp - INFO - [conn=2, chan=6] Starting SFTP client
+2025-10-09 08:29:13,888 - asyncssh.sftp - INFO - [conn=2, chan=6] SFTP client exited
+2025-10-09 08:29:13,888 - asyncssh - INFO - [conn=2, chan=6] Closing channel
+2025-10-09 08:29:13,889 - asyncssh - INFO - [conn=2, chan=6] Received exit status 0
+2025-10-09 08:29:13,889 - asyncssh - INFO - [conn=2, chan=6] Received channel close
+2025-10-09 08:29:13,890 - asyncssh - INFO - [conn=2, chan=6] Channel closed
+2025-10-09 08:29:13,891 - asyncssh - INFO - [conn=2, chan=7] Requesting new SSH session
+2025-10-09 08:29:13,898 - asyncssh - INFO - [conn=2, chan=7]   Command: bash -l -c "ollama create ct-research-assistant -f /tmp/ct_modelfile_1760023753.modelfile"
+2025-10-09 08:29:13,999 - asyncssh - INFO - [conn=2, chan=7] Received exit status 0
+2025-10-09 08:29:14,000 - asyncssh - INFO - [conn=2, chan=7] Received channel close
+2025-10-09 08:29:14,000 - asyncssh - INFO - [conn=2, chan=7] Channel closed
+2025-10-09 08:29:14,000 - asyncssh - INFO - [conn=2, chan=8] Requesting new SSH session
+2025-10-09 08:29:14,014 - asyncssh - INFO - [conn=2, chan=8]   Command: rm -f /tmp/ct_modelfile_1760023753.modelfile
+2025-10-09 08:29:14,034 - asyncssh - INFO - [conn=2, chan=8] Received exit status 0
+2025-10-09 08:29:14,035 - asyncssh - INFO - [conn=2, chan=8] Received channel close
+2025-10-09 08:29:14,035 - asyncssh - INFO - [conn=2, chan=8] Channel closed
+2025-10-09 08:29:42,455 - llm.async_llm_utils - INFO - Sending 1466 characters to ct-research-assistant
+2025-10-09 08:29:42,459 - asyncssh - INFO - [conn=2] Opening direct TCP connection to localhost, port 11434
+2025-10-09 08:29:42,460 - asyncssh - INFO - [conn=2]   Client address: ::1, port 50332
+2025-10-09 08:30:03,026 - llm.async_llm_utils - INFO - Received response: 1178 characters
+2025-10-09 08:30:03,034 - asyncssh - INFO - [conn=2, chan=9] Received channel close
+2025-10-09 08:30:03,035 - asyncssh - INFO - [conn=2, chan=9] Closing channel
+2025-10-09 08:30:03,035 - asyncssh - INFO - [conn=2, chan=9] Channel closed
+2025-10-09 08:34:42,678 - asyncssh - INFO - [conn=2] Connection failure: [WinError 121] The semaphore timeout period has expired
+2025-10-09 08:34:58,572 - core.app - INFO - Received signal 2, initiating graceful shutdown...
+2025-10-09 08:34:58,573 - core.app - INFO - Closing SSH connection...
+2025-10-09 08:34:58,574 - asyncssh - INFO - [conn=2] Closing connection
+2025-10-09 08:34:58,574 - asyncssh - INFO - [conn=2] Sending disconnect: Disconnected by application (11)
