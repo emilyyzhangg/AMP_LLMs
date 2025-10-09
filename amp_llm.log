@@ -1,1 +1,135 @@
 2025-10-06 20:15:27,485 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
+2025-10-09 08:15:19,007 - data.clinical_trial_rag - INFO - Building index from H:\Documents\LLM Code\AMP_LLMs\ct_database
+2025-10-09 08:15:19,025 - data.clinical_trial_rag - INFO - Indexed 1 clinical trials
+2025-10-09 08:15:47,646 - data.clinical_trial_rag - INFO - Building index from H:\Documents\LLM Code\AMP_LLMs\ct_database
+2025-10-09 08:15:47,648 - data.clinical_trial_rag - INFO - Indexed 1 clinical trials
+2025-10-09 08:26:07,364 - data.clinical_trial_rag - INFO - Building index from H:\Documents\LLM Code\AMP_LLMs\ct_database
+2025-10-09 08:26:07,365 - data.clinical_trial_rag - INFO - Indexed 1 clinical trials
+2025-10-09 08:26:23,225 - core.app - INFO - Connected to 100.99.162.98
+2025-10-09 08:26:26,754 - asyncssh - INFO - Host canonicalization disabled
+2025-10-09 08:26:26,754 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
+2025-10-09 08:26:26,859 - asyncssh - INFO - [conn=0] Connected to SSH server at 100.99.162.98, port 22
+2025-10-09 08:26:26,859 - asyncssh - INFO - [conn=0]   Local address: 100.69.245.72, port 50296
+2025-10-09 08:26:26,859 - asyncssh - INFO - [conn=0]   Peer address: 100.99.162.98, port 22
+2025-10-09 08:26:26,951 - asyncssh - INFO - [conn=0] Beginning auth for user emilyzhang
+2025-10-09 08:26:27,150 - asyncssh - INFO - [conn=0] Auth for user emilyzhang succeeded
+2025-10-09 08:26:27,151 - core.app - INFO - SSH connection established: emilyzhang@100.99.162.98
+2025-10-09 08:26:30,109 - core.menu - INFO - User selected: LLM Workflow (API Mode)
+2025-10-09 08:26:30,110 - llm.async_llm_runner_api - INFO - Starting LLM workflow in API mode
+2025-10-09 08:26:30,111 - llm.async_llm_utils - INFO - Fetching models from http://100.99.162.98:11434/api/tags
+2025-10-09 08:26:32,393 - llm.async_llm_utils - ERROR - Cannot connect to http://100.99.162.98:11434/api/tags - is Ollama running and accessible?
+2025-10-09 08:26:32,394 - asyncssh - INFO - [conn=0] Creating local TCP forwarder from port 11434 to localhost, port 11434
+2025-10-09 08:26:32,396 - llm.async_llm_runner_api - INFO - SSH tunnel established
+2025-10-09 08:26:33,405 - llm.async_llm_utils - INFO - Fetching models from http://localhost:11434/api/tags
+2025-10-09 08:26:33,409 - asyncssh - INFO - [conn=0] Opening direct TCP connection to localhost, port 11434
+2025-10-09 08:26:33,410 - asyncssh - INFO - [conn=0]   Client address: ::1, port 50302
+2025-10-09 08:26:33,536 - llm.async_llm_utils - INFO - Found 13 models via API
+2025-10-09 08:26:33,542 - asyncssh - INFO - [conn=0, chan=0] Received channel close
+2025-10-09 08:26:33,543 - asyncssh - INFO - [conn=0, chan=0] Closing channel
+2025-10-09 08:26:33,543 - asyncssh - INFO - [conn=0, chan=0] Channel closed
+2025-10-09 08:27:13,118 - asyncssh - INFO - [conn=0] Connection failure: [WinError 121] The semaphore timeout period has expired
+2025-10-09 08:27:19,231 - llm.async_llm_utils - INFO - Sending 4 characters to llama3:8b
+2025-10-09 08:27:21,539 - llm.async_llm_utils - ERROR - Cannot connect to http://localhost:11434/api/generate
+2025-10-09 08:27:24,102 - llm.async_llm_runner_api - INFO - SSH tunnel closed
+2025-10-09 08:27:25,261 - core.menu - INFO - User selected: LLM Workflow (API Mode)
+2025-10-09 08:27:25,261 - core.app - WARNING - SSH connection lost, attempting reconnect...
+2025-10-09 08:27:25,263 - asyncssh - INFO - [conn=0] Closing connection
+2025-10-09 08:27:25,263 - asyncssh - INFO - [conn=0] Sending disconnect: Disconnected by application (11)
+2025-10-09 08:27:26,302 - asyncssh - INFO - Host canonicalization disabled
+2025-10-09 08:27:26,302 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
+2025-10-09 08:27:26,319 - asyncssh - INFO - [conn=1] Connected to SSH server at 100.99.162.98, port 22
+2025-10-09 08:27:26,319 - asyncssh - INFO - [conn=1]   Local address: 100.69.245.72, port 50310
+2025-10-09 08:27:26,320 - asyncssh - INFO - [conn=1]   Peer address: 100.99.162.98, port 22
+2025-10-09 08:27:26,404 - asyncssh - INFO - [conn=1] Beginning auth for user emilyzhang
+2025-10-09 08:27:26,433 - asyncssh - INFO - [conn=1] Auth failed for user emilyzhang
+2025-10-09 08:27:26,433 - asyncssh - INFO - [conn=1] Connection failure: Permission denied for user emilyzhang on host 100.99.162.98
+2025-10-09 08:27:26,434 - asyncssh - INFO - [conn=1] Aborting connection
+2025-10-09 08:27:29,929 - asyncssh - INFO - Host canonicalization disabled
+2025-10-09 08:27:29,929 - asyncssh - INFO - Opening SSH connection to 100.99.162.98, port 22
+2025-10-09 08:27:29,937 - asyncssh - INFO - [conn=2] Connected to SSH server at 100.99.162.98, port 22
+2025-10-09 08:27:29,938 - asyncssh - INFO - [conn=2]   Local address: 100.69.245.72, port 50311
+2025-10-09 08:27:29,938 - asyncssh - INFO - [conn=2]   Peer address: 100.99.162.98, port 22
+2025-10-09 08:27:30,024 - asyncssh - INFO - [conn=2] Beginning auth for user emilyzhang
+2025-10-09 08:27:30,224 - asyncssh - INFO - [conn=2] Auth for user emilyzhang succeeded
+2025-10-09 08:27:30,225 - core.app - INFO - SSH connection established: emilyzhang@100.99.162.98
+2025-10-09 08:27:30,226 - llm.async_llm_runner_api - INFO - Starting LLM workflow in API mode
+2025-10-09 08:27:30,227 - llm.async_llm_utils - INFO - Fetching models from http://100.99.162.98:11434/api/tags
+2025-10-09 08:27:32,411 - llm.async_llm_utils - ERROR - Cannot connect to http://100.99.162.98:11434/api/tags - is Ollama running and accessible?
+2025-10-09 08:27:32,412 - asyncssh - INFO - [conn=2] Creating local TCP forwarder from port 11434 to localhost, port 11434
+2025-10-09 08:27:32,414 - llm.async_llm_runner_api - INFO - SSH tunnel established
+2025-10-09 08:27:33,417 - llm.async_llm_utils - INFO - Fetching models from http://localhost:11434/api/tags
+2025-10-09 08:27:33,419 - asyncssh - INFO - [conn=2] Opening direct TCP connection to localhost, port 11434
+2025-10-09 08:27:33,419 - asyncssh - INFO - [conn=2]   Client address: ::1, port 50313
+2025-10-09 08:27:33,538 - llm.async_llm_utils - INFO - Found 13 models via API
+2025-10-09 08:27:33,544 - asyncssh - INFO - [conn=2, chan=0] Received channel close
+2025-10-09 08:27:33,545 - asyncssh - INFO - [conn=2, chan=0] Closing channel
+2025-10-09 08:27:33,545 - asyncssh - INFO - [conn=2, chan=0] Channel closed
+2025-10-09 08:27:41,749 - llm.async_llm_utils - INFO - Sending 13043 characters to llama3:8b
+2025-10-09 08:27:41,751 - asyncssh - INFO - [conn=2] Opening direct TCP connection to localhost, port 11434
+2025-10-09 08:27:41,752 - asyncssh - INFO - [conn=2]   Client address: ::1, port 50316
+2025-10-09 08:28:18,213 - llm.async_llm_utils - INFO - Received response: 1857 characters
+2025-10-09 08:28:18,221 - asyncssh - INFO - [conn=2, chan=1] Received channel close
+2025-10-09 08:28:18,221 - asyncssh - INFO - [conn=2, chan=1] Closing channel
+2025-10-09 08:28:18,222 - asyncssh - INFO - [conn=2, chan=1] Channel closed
+2025-10-09 08:28:27,214 - llm.async_llm_runner_api - INFO - SSH tunnel closed
+2025-10-09 08:28:28,436 - core.menu - INFO - User selected: Clinical Trial Research Assistant
+2025-10-09 08:28:43,046 - data.clinical_trial_rag - INFO - Building index from H:\Documents\LLM Code\AMP_LLMs\output\nctload.txt
+2025-10-09 08:28:43,046 - data.clinical_trial_rag - INFO - Indexed 1 clinical trials
+2025-10-09 08:28:43,048 - llm.async_llm_utils - INFO - Fetching models from http://100.99.162.98:11434/api/tags
+2025-10-09 08:28:45,201 - llm.async_llm_utils - ERROR - Cannot connect to http://100.99.162.98:11434/api/tags - is Ollama running and accessible?
+2025-10-09 08:28:45,202 - asyncssh - INFO - [conn=2] Creating local TCP forwarder from port 11434 to localhost, port 11434
+2025-10-09 08:28:46,207 - llm.async_llm_utils - INFO - Fetching models from http://localhost:11434/api/tags
+2025-10-09 08:28:46,209 - asyncssh - INFO - [conn=2] Opening direct TCP connection to localhost, port 11434
+2025-10-09 08:28:46,209 - asyncssh - INFO - [conn=2]   Client address: ::1, port 50326
+2025-10-09 08:28:46,347 - llm.async_llm_utils - INFO - Found 13 models via API
+2025-10-09 08:28:46,355 - asyncssh - INFO - [conn=2, chan=2] Received channel close
+2025-10-09 08:28:46,356 - asyncssh - INFO - [conn=2, chan=2] Closing channel
+2025-10-09 08:28:46,356 - asyncssh - INFO - [conn=2, chan=2] Channel closed
+2025-10-09 08:28:51,455 - asyncssh - INFO - [conn=2, chan=3] Requesting new SSH session
+2025-10-09 08:28:51,475 - asyncssh - INFO - [conn=2, chan=3]   Subsystem: sftp
+2025-10-09 08:28:51,485 - asyncssh.sftp - INFO - [conn=2, chan=3] Starting SFTP client
+2025-10-09 08:28:51,550 - asyncssh - INFO - [conn=2, chan=3] Received exit status 0
+2025-10-09 08:28:51,550 - asyncssh - INFO - [conn=2, chan=3] Received channel close
+2025-10-09 08:28:51,550 - asyncssh.sftp - INFO - [conn=2, chan=3] SFTP client exited
+2025-10-09 08:28:51,550 - asyncssh - INFO - [conn=2, chan=3] Closing channel
+2025-10-09 08:28:51,551 - asyncssh - INFO - [conn=2, chan=3] Channel closed
+2025-10-09 08:28:51,552 - asyncssh - INFO - [conn=2, chan=4] Requesting new SSH session
+2025-10-09 08:28:51,563 - asyncssh - INFO - [conn=2, chan=4]   Command: bash -l -c "ollama create ct-research-assistant -f /tmp/ct_modelfile_1760023731.modelfile"
+2025-10-09 08:28:51,676 - asyncssh - INFO - [conn=2, chan=4] Received exit status 0
+2025-10-09 08:28:51,676 - asyncssh - INFO - [conn=2, chan=4] Received channel close
+2025-10-09 08:28:51,676 - asyncssh - INFO - [conn=2, chan=4] Channel closed
+2025-10-09 08:28:51,677 - asyncssh - INFO - [conn=2, chan=5] Requesting new SSH session
+2025-10-09 08:28:51,690 - asyncssh - INFO - [conn=2, chan=5]   Command: rm -f /tmp/ct_modelfile_1760023731.modelfile
+2025-10-09 08:28:51,716 - asyncssh - INFO - [conn=2, chan=5] Received exit status 0
+2025-10-09 08:28:51,716 - asyncssh - INFO - [conn=2, chan=5] Received channel close
+2025-10-09 08:28:51,717 - asyncssh - INFO - [conn=2, chan=5] Channel closed
+2025-10-09 08:29:13,816 - asyncssh - INFO - [conn=2, chan=6] Requesting new SSH session
+2025-10-09 08:29:13,822 - asyncssh - INFO - [conn=2, chan=6]   Subsystem: sftp
+2025-10-09 08:29:13,828 - asyncssh.sftp - INFO - [conn=2, chan=6] Starting SFTP client
+2025-10-09 08:29:13,888 - asyncssh.sftp - INFO - [conn=2, chan=6] SFTP client exited
+2025-10-09 08:29:13,888 - asyncssh - INFO - [conn=2, chan=6] Closing channel
+2025-10-09 08:29:13,889 - asyncssh - INFO - [conn=2, chan=6] Received exit status 0
+2025-10-09 08:29:13,889 - asyncssh - INFO - [conn=2, chan=6] Received channel close
+2025-10-09 08:29:13,890 - asyncssh - INFO - [conn=2, chan=6] Channel closed
+2025-10-09 08:29:13,891 - asyncssh - INFO - [conn=2, chan=7] Requesting new SSH session
+2025-10-09 08:29:13,898 - asyncssh - INFO - [conn=2, chan=7]   Command: bash -l -c "ollama create ct-research-assistant -f /tmp/ct_modelfile_1760023753.modelfile"
+2025-10-09 08:29:13,999 - asyncssh - INFO - [conn=2, chan=7] Received exit status 0
+2025-10-09 08:29:14,000 - asyncssh - INFO - [conn=2, chan=7] Received channel close
+2025-10-09 08:29:14,000 - asyncssh - INFO - [conn=2, chan=7] Channel closed
+2025-10-09 08:29:14,000 - asyncssh - INFO - [conn=2, chan=8] Requesting new SSH session
+2025-10-09 08:29:14,014 - asyncssh - INFO - [conn=2, chan=8]   Command: rm -f /tmp/ct_modelfile_1760023753.modelfile
+2025-10-09 08:29:14,034 - asyncssh - INFO - [conn=2, chan=8] Received exit status 0
+2025-10-09 08:29:14,035 - asyncssh - INFO - [conn=2, chan=8] Received channel close
+2025-10-09 08:29:14,035 - asyncssh - INFO - [conn=2, chan=8] Channel closed
+2025-10-09 08:29:42,455 - llm.async_llm_utils - INFO - Sending 1466 characters to ct-research-assistant
+2025-10-09 08:29:42,459 - asyncssh - INFO - [conn=2] Opening direct TCP connection to localhost, port 11434
+2025-10-09 08:29:42,460 - asyncssh - INFO - [conn=2]   Client address: ::1, port 50332
+2025-10-09 08:30:03,026 - llm.async_llm_utils - INFO - Received response: 1178 characters
+2025-10-09 08:30:03,034 - asyncssh - INFO - [conn=2, chan=9] Received channel close
+2025-10-09 08:30:03,035 - asyncssh - INFO - [conn=2, chan=9] Closing channel
+2025-10-09 08:30:03,035 - asyncssh - INFO - [conn=2, chan=9] Channel closed
+2025-10-09 08:34:42,678 - asyncssh - INFO - [conn=2] Connection failure: [WinError 121] The semaphore timeout period has expired
+2025-10-09 08:34:58,572 - core.app - INFO - Received signal 2, initiating graceful shutdown...
+2025-10-09 08:34:58,573 - core.app - INFO - Closing SSH connection...
+2025-10-09 08:34:58,574 - asyncssh - INFO - [conn=2] Closing connection
+2025-10-09 08:34:58,574 - asyncssh - INFO - [conn=2] Sending disconnect: Disconnected by application (11)
