@@ -198,38 +198,35 @@ class ClinicalTrialResearchAssistant:
     
     async def ensure_model_exists(self, ssh, host: str, models: List[str]) -> bool:
         """
-        Check if custom model exists, create if not using local Modelfile.
-        FIXED: Returns immediately if model already exists.
+        Check if custom model exists, create if not.
+        FIXED: Immediate return if exists, clearer prompts.
         """
-        # Check if custom model already exists
+        # IMMEDIATE CHECK - If exists, done!
         if self.model_name in models:
-            await aprint(Fore.GREEN + f"✅ Custom model '{self.model_name}' ready to use")
-            logger.info(f"Using existing model: {self.model_name}")
+            await aprint(Fore.GREEN + f"✅ Using existing model: {self.model_name}")
+            logger.info(f"Found existing model: {self.model_name}")
             return True
         
-        # Model doesn't exist - offer to create
-        await aprint(Fore.YELLOW + f"\n🔧 Custom model '{self.model_name}' not found.")
+        # Not found - offer to create
+        await aprint(Fore.YELLOW + f"\n🔧 Custom model '{self.model_name}' not found")
+        await aprint(Fore.CYAN + "This is a one-time setup to create a specialized model.")
         
-        # Show available base models
-        await aprint(Fore.CYAN + f"\n📋 Available base models on remote server:")
-        for i, model in enumerate(models, 1):
-            await aprint(Fore.WHITE + f"  {i}) {model}")
-        
-        await aprint(Fore.CYAN + f"\n💡 A custom model will be built from one of these base models.")
-        await aprint(Fore.CYAN + f"    (This is a one-time setup)")
-        
-        # Ask user if they want to create it
         create = await ainput(
-            Fore.GREEN + f"\nCreate '{self.model_name}' model now? (y/n) [y]: "
+            Fore.GREEN + f"Create '{self.model_name}' now? (y/n) [y]: "
         )
         
         if create.strip().lower() in ('n', 'no'):
-            await aprint(Fore.YELLOW + "Model creation cancelled. Using base model instead.")
+            await aprint(Fore.YELLOW + "Skipped. You can use a base model instead.")
             return False
+        
+        # Show available base models
+        await aprint(Fore.CYAN + f"\n📋 Available base models:")
+        for i, model in enumerate(models, 1):
+            await aprint(Fore.WHITE + f"  {i}) {model}")
         
         # Select base model
         choice = await ainput(
-            Fore.GREEN + f"Select base model by number or name [{models[0] if models else 'llama3:8b'}]: "
+            Fore.GREEN + f"Select base model [1]: "
         )
         
         # Parse choice
