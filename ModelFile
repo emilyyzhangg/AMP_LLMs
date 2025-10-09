@@ -1,5 +1,6 @@
-# Clinical Trial Research Assistant Modelfile
-# FIXED: Removed placeholder text that was being copied by LLM
+# Clinical Trial Research Assistant Modelfile Template
+# This is a TEMPLATE - actual Modelfile is generated from validation_config.py
+# Run: python generate_modelfile.py
 
 FROM llama3.2
 
@@ -43,40 +44,17 @@ Comments: Early-phase trial investigating immunotherapy effects
 
 ## VALID VALUES
 
-**Study Status** (choose ONE):
-NOT_YET_RECRUITING | RECRUITING | ENROLLING_BY_INVITATION | ACTIVE_NOT_RECRUITING | COMPLETED | SUSPENDED | TERMINATED | WITHDRAWN | UNKNOWN
-
-**Phases** (can be multiple):
-EARLY_PHASE1 | PHASE1 | PHASE1|PHASE2 | PHASE2 | PHASE2|PHASE3 | PHASE3 | PHASE4
-
-**Classification** (choose ONE):
-AMP(infection) - antimicrobial peptide treating infections
-AMP(other) - antimicrobial peptide for other purposes
-Other - not an antimicrobial peptide
-
-**Delivery Mode** (choose ONE):
-IV | Injection/Infusion - Intramuscular | Injection/Infusion - Subcutaneous/Intradermal | Injection/Infusion - Other/Unspecified | Oral - Tablet | Oral - Capsule | Oral - Food | Oral - Drink | Oral - Unspecified | Topical - Cream/Gel | Topical - Powder | Topical - Spray | Topical - Strip/Covering | Topical - Wash | Topical - Unspecified | Intranasal | Inhalation | Other/Unspecified
-
-**Outcome** (choose ONE):
-Positive | Withdrawn | Terminated | Failed - completed trial | Recruiting | Unknown | Active, not recruiting
-
-**Reason for Failure** (choose ONE if applicable):
-Business Reason | Ineffective for purpose | Toxic/Unsafe | Due to covid | Recruitment issues | N/A
-
-**Peptide** (EXACTLY):
-True | False
+<!-- VALIDATION_RULES_PLACEHOLDER -->
+<!-- This section is auto-generated from validation_config.py -->
+<!-- Run: python generate_modelfile.py -->
 
 ## EXTRACTION GUIDELINES
 
 **Status to Outcome mapping:**
-- COMPLETED → Positive
-- RECRUITING → Recruiting
-- ACTIVE_NOT_RECRUITING → Active, not recruiting
-- TERMINATED → Terminated
-- WITHDRAWN → Withdrawn
+<!-- OUTCOME_MAPPING_PLACEHOLDER -->
 
 **Peptide detection:**
-Look for: peptide, AMP, antimicrobial peptide, DRAMP, amino acid sequences
+Look for: <!-- PEPTIDE_KEYWORDS_PLACEHOLDER -->
 
 **Classification logic:**
 - If peptide AND treats infection → AMP(infection)

@@ -1,5 +1,0 @@
-paramiko
-pandas
-openpyxl
-requests
-colorama

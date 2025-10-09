@@ -18,8 +18,8 @@ async def connect_ssh(ip, username, password):
             host=ip,
             username=username,
             password=password,
-            keepalive_interval=5,  # Send SSH keepalive every 10 seconds
-            keepalive_count_max=6,   # Allow 6 failures (60 seconds total)
+            keepalive_interval=15,  # Send SSH keepalive every 15 seconds (INCREASED)
+            keepalive_count_max=3,   # Allow 3 failures = 45 seconds (ADJUSTED)
             known_hosts=None,
             # ADD THESE TCP KEEPALIVE OPTIONS:
             tcp_keepalive=True,          # Enable TCP keepalive
