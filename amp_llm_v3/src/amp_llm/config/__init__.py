@@ -6,12 +6,6 @@ This module provides centralized configuration with environment variable support
 
 # In src/amp_llm/config/__init__.py
 from functools import lru_cache
-# from src.amp_llm.config import get_logger
-
-@lru_cache(maxsize=None)
-def get_logger(name: str):
-    """Cached logger retrieval."""
-    return logging.getLogger(name)
 
 # Usage remains the same, but cached
 
