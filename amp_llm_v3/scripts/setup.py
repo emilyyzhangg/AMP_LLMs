@@ -29,15 +29,38 @@ def get_python_path() -> str:
 
 
 def create_virtual_env() -> bool:
-    """Create virtual environment."""
+    """Create virtual environment with pip."""
     print("🔧 Creating virtual environment...")
     try:
+        # Create venv with --clear to ensure clean state
         subprocess.check_call(
-            [sys.executable, "-m", "venv", VENV_DIR],
+            [sys.executable, "-m", "venv", VENV_DIR, "--clear"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.PIPE
         )
         print("✅ Virtual environment created successfully!")
+        
+        # Verify pip was installed
+        venv_python = get_python_path()
+        result = subprocess.run(
+            [venv_python, "-m", "pip", "--version"],
+            capture_output=True,
+            text=True
+        )
+        
+        if result.returncode != 0:
+            print("⚠️  pip not found in venv, installing...")
+            # Try to install pip
+            subprocess.run(
+                [sys.executable, "-m", "ensurepip", "--default-pip"],
+                capture_output=True
+            )
+            # Try installing pip into venv
+            subprocess.run(
+                [venv_python, "-m", "ensurepip", "--upgrade"],
+                capture_output=True
+            )
+            
         return True
     except subprocess.CalledProcessError as e:
         print(f"❌ Failed to create virtual environment: {e}")
