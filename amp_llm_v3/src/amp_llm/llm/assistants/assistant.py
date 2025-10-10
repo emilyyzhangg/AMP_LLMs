@@ -7,7 +7,7 @@ import asyncio
 import logging
 from pathlib import Path
 from typing import Optional
-from colorama import Fore, Style
+from colorama import Fore, Style, init
 
 try:
     from aioconsole import ainput, aprint
@@ -19,6 +19,7 @@ except ImportError:
 
 from amp_llm.config import get_logger, get_config
 from amp_llm.llm.utils.session import OllamaSessionManager
+from amp_llm.llm.research.commands import CommandHandler
 
 # Import RAG if available
 try:
@@ -36,7 +37,7 @@ except ImportError:
 
 logger = get_logger(__name__)
 config = get_config()
-
+init(autoreset=True)  # Initialize colorama
 
 class ClinicalTrialResearchAssistant:
     """
@@ -254,7 +255,55 @@ Provide a clear, well-structured answer based on the trial data above."""
             except Exception as e:
                 await aprint(Fore.RED + f"\n❌ Error: {e}")
                 logger.error(f"Interaction error: {e}", exc_info=True)
-    
+    async def run_research_assistant_with_menu(assistant):
+        """
+        Run research assistant with interactive menu system.
+        
+        Args:
+            assistant: Your ClinicalTrialResearchAssistant instance
+        """
+        handler = CommandHandler(assistant)
+        
+        # Show welcome message
+        print(Fore.CYAN + Style.BRIGHT + "\n" + "="*60)
+        print(Fore.CYAN + Style.BRIGHT + "  🧬 CLINICAL TRIAL RESEARCH ASSISTANT")
+        print(Fore.CYAN + Style.BRIGHT + "="*60 + Style.RESET_ALL)
+        print(Fore.GREEN + "\n✅ Connected and ready!")
+        print(Fore.YELLOW + "💡 Type 'menu' for options, 'help' for commands, or ask a question directly\n")
+        
+        try:
+            while True:
+                try:
+                    # Get user input
+                    user_input = await ainput(Fore.GREEN + "Research> " + Fore.RESET)
+                    
+                    # Show menu if requested
+                    if user_input.strip().lower() == 'menu':
+                        command = await handler.show_main_menu()
+                        if command:
+                            user_input = command
+                        else:
+                            continue
+                    
+                    # Handle command
+                    should_continue = await handler.handle_command(user_input)
+                    
+                    if not should_continue:
+                        break
+                        
+                except KeyboardInterrupt:
+                    print(Fore.YELLOW + "\n\n⚠️  Interrupted. Type 'exit' to quit or 'menu' for options.")
+                    continue
+                except EOFError:
+                    print(Fore.YELLOW + "\n\n🚪 Exiting...")
+                    break
+                    
+        except Exception as e:
+            print(Fore.RED + f"\n❌ Fatal error: {e}")
+            logger.error(f"Assistant loop error: {e}", exc_info=True)
+        finally:
+            print(Fore.CYAN + "\n👋 Goodbye!\n")
+
     async def _ensure_model_exists(self, ssh_connection, available_models: list) -> bool:
         """
         Check if custom model exists, create if not.

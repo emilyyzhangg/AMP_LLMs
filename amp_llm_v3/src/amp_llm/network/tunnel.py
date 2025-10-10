@@ -1,31 +1,18 @@
-# ============================================================================
-# src/amp_llm/network/tunnel.py
-# ============================================================================
-"""
-SSH tunnel management for port forwarding.
-"""
-import asyncio
-from typing import Optional
-from src.amp_llm.config.logging import get_logger
+from src.amp_llm.config import get_logger
 
 logger = get_logger(__name__)
 
 
 class SSHTunnel:
-    """SSH tunnel manager for port forwarding."""
+    """SSH tunnel manager with proper cleanup."""
     
     def __init__(self, ssh_connection):
-        """
-        Initialize tunnel manager.
-        
-        Args:
-            ssh_connection: Active AsyncSSH connection
-        """
         self.ssh = ssh_connection
         self.listener = None
         self.local_port = None
         self.remote_host = None
         self.remote_port = None
+        self._closed = False
     
     async def create_tunnel(
         self,
@@ -33,14 +20,7 @@ class SSHTunnel:
         remote_host: str = 'localhost',
         remote_port: int = 11434
     ):
-        """
-        Create SSH tunnel.
-        
-        Args:
-            local_port: Local port to forward from
-            remote_host: Remote host (from server's perspective)
-            remote_port: Remote port to forward to
-        """
+        """Create SSH tunnel with port forwarding."""
         try:
             logger.info(
                 f"Creating tunnel: localhost:{local_port} -> "
@@ -48,7 +28,7 @@ class SSHTunnel:
             )
             
             self.listener = await self.ssh.forward_local_port(
-                '',  # Listen on all interfaces
+                '',
                 local_port,
                 remote_host,
                 remote_port
@@ -64,19 +44,30 @@ class SSHTunnel:
             logger.error(f"Failed to create tunnel: {e}")
             raise
     
-    def close(self):
-        """Close the tunnel."""
+    async def close(self):
+        """Close the tunnel gracefully."""
+        if self._closed:
+            return
+        
+        self._closed = True
+        
         if self.listener:
             try:
-                self.listener.close()
+                # Close with timeout
+                await asyncio.wait_for(self._close_listener(), timeout=3.0)
                 logger.info("Tunnel closed")
+            except asyncio.TimeoutError:
+                logger.warning("Tunnel close timeout")
             except Exception as e:
                 logger.error(f"Error closing tunnel: {e}")
     
+    async def _close_listener(self):
+        """Internal close method."""
+        self.listener.close()
+        await self.listener.wait_closed()
+    
     async def __aenter__(self):
-        """Context manager entry."""
         return self
     
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        """Context manager exit."""
-        self.close()
+        await self.close()

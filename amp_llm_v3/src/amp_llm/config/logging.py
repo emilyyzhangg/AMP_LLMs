@@ -296,10 +296,10 @@ def log_function_call(logger: logging.Logger):
     """
     def decorator(func):
         async def async_wrapper(*args, **kwargs):
-            logger.output.log_level(f"Calling {func.__name__} with args={args}, kwargs={kwargs}")
+            logger.debug(f"Calling {func.__name__} with args={args}, kwargs={kwargs}")
             try:
                 result = await func(*args, **kwargs)
-                logger.output.log_level(f"{func.__name__} completed successfully")
+                logger.debug(f"{func.__name__} completed successfully")
                 return result
             except Exception as e:
                 logger.error(f"{func.__name__} raised {type(e).__name__}: {e}")

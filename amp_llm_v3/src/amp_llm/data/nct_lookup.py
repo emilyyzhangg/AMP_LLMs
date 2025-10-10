@@ -1,14 +1,11 @@
-# src/amp_llm/data/nct_lookup.py
 """
-Enhanced NCT lookup with automatic database storage.
-UPDATED: Now saves all results to ct_database/
+Async NCT (ClinicalTrials.gov) lookup module.
+ENHANCED: Now includes extended API searches (Meilisearch, Swirl, OpenFDA, etc.)
 """
 import asyncio
 from typing import List, Dict, Any
-from pathlib import Path
 from colorama import Fore, Style
-
-from amp_llm.config import get_logger, get_config
+from amp_llm.config import get_logger
 
 try:
     from aioconsole import ainput, aprint
@@ -18,27 +15,23 @@ except ImportError:
     async def aprint(*args, **kwargs):
         print(*args, **kwargs)
 
-from amp_llm.data.clinical_trials.fetchers import (
+from src.amp_llm.data.clinical_trials.fetchers import (
     fetch_clinical_trial_and_pubmed_pmc,
     print_study_summary,
+    save_results,
     summarize_result
 )
+
+# Import new API clients
 from amp_llm.data.api_clients import APIManager, SearchConfig
-from amp_llm.data.database.manager import DatabaseManager
 
 logger = get_logger(__name__)
-config = get_config()
 
 
 async def run_nct_lookup():
     """
-    Main NCT lookup workflow with automatic database storage.
-    
-    Features:
-    - Fetches clinical trial data
-    - Extended API search (optional)
-    - Automatic save to ct_database/
-    - Export options
+    Main NCT lookup workflow with extended API search.
+    ENHANCED: Now includes Meilisearch, Swirl, OpenFDA, Health Canada, DDG, SERP API.
     """
     await aprint(
         Fore.YELLOW + Style.BRIGHT + 
@@ -46,20 +39,7 @@ async def run_nct_lookup():
     )
     await aprint(
         Fore.WHITE + 
-        "Search for clinical trials and automatically save to database.\n"
-    )
-    
-    # Initialize database
-    db_path = Path("ct_database")
-    db = DatabaseManager(db_path)
-    
-    await aprint(Fore.CYAN + f"📁 Database: {db_path.absolute()}")
-    
-    stats = db.get_statistics()
-    await aprint(
-        Fore.CYAN + 
-        f"   Existing trials: {stats['total_trials']}, "
-        f"Size: {stats['database_size_mb']:.1f} MB"
+        "Search for clinical trials by NCT number and find related publications.\n"
     )
     
     # Initialize API manager
@@ -96,28 +76,6 @@ async def run_nct_lookup():
                         f"'{nct}' doesn't look like a valid NCT number, but will try..."
                     )
             
-            # Check which trials already exist
-            existing = [nct for nct in ncts if db.exists(nct)]
-            new_trials = [nct for nct in ncts if not db.exists(nct)]
-            
-            if existing:
-                await aprint(
-                    Fore.YELLOW + 
-                    f"\n⚠️  {len(existing)} trial(s) already in database: "
-                    f"{', '.join(existing)}"
-                )
-                
-                overwrite = await ainput(Fore.CYAN + "Overwrite existing? (y/n) [n]: ")
-                
-                if overwrite.strip().lower() in ('y', 'yes'):
-                    new_trials.extend(existing)
-                else:
-                    await aprint(Fore.CYAN + "Will only fetch new trials.")
-            
-            if not new_trials:
-                await aprint(Fore.YELLOW + "No new trials to fetch.")
-                continue
-            
             # Ask about extended API search
             use_extended = await ainput(
                 Fore.CYAN + 
@@ -125,67 +83,62 @@ async def run_nct_lookup():
             )
             use_extended = use_extended.strip().lower() in ('y', 'yes')
             
-            enabled_apis = []
             if use_extended:
-                # Ask which APIs
+                # Ask which APIs to use
                 await aprint(Fore.CYAN + "\nAvailable APIs:")
                 await aprint(Fore.WHITE + "  1) All (default)")
-                await aprint(Fore.WHITE + "  2) Core only (OpenFDA, DuckDuckGo)")
-                await aprint(Fore.WHITE + "  3) Custom selection")
+                await aprint(Fore.WHITE + "  2) Meilisearch only")
+                await aprint(Fore.WHITE + "  3) OpenFDA only")
+                await aprint(Fore.WHITE + "  4) SERP API (Google) only")
+                await aprint(Fore.WHITE + "  5) DuckDuckGo only")
+                await aprint(Fore.WHITE + "  6) Custom selection")
                 
                 api_choice = await ainput(Fore.CYAN + "Select [1]: ")
                 api_choice = api_choice.strip() or "1"
                 
+                # Determine enabled APIs
                 if api_choice == "1":
                     enabled_apis = None  # All
                 elif api_choice == "2":
-                    enabled_apis = ['openfda', 'duckduckgo']
+                    enabled_apis = ['meilisearch']
                 elif api_choice == "3":
+                    enabled_apis = ['openfda']
+                elif api_choice == "4":
+                    enabled_apis = ['serpapi']
+                elif api_choice == "5":
+                    enabled_apis = ['duckduckgo']
+                elif api_choice == "6":
                     await aprint(Fore.CYAN + "Enter APIs (comma-separated):")
-                    await aprint(
-                        Fore.WHITE + 
-                        "  meilisearch, swirl, openfda, health_canada, duckduckgo, serpapi"
-                    )
+                    await aprint(Fore.WHITE + "  meilisearch, swirl, openfda, health_canada, duckduckgo, serpapi")
                     custom = await ainput(Fore.CYAN + "APIs: ")
                     enabled_apis = [api.strip() for api in custom.split(',')]
+                else:
+                    enabled_apis = None
+            else:
+                enabled_apis = []
             
-            # Fetch data
-            await aprint(
-                Fore.CYAN + 
-                f"\n🔍 Processing {len(new_trials)} NCT number(s)..."
-            )
-            logger.info(f"Fetching data for: {', '.join(new_trials)}")
+            # Fetch data concurrently
+            await aprint(Fore.CYAN + f"\n🔍 Processing {len(ncts)} NCT number(s)...")
+            logger.info(f"Fetching data for: {', '.join(ncts)}")
             
-            # Fetch concurrently
-            tasks = [
-                _fetch_and_save_trial(nct, db, api_manager, enabled_apis) 
-                for nct in new_trials
-            ]
+            # Create tasks for concurrent fetching
+            tasks = [_fetch_single_nct_extended(nct, api_manager, enabled_apis) for nct in ncts]
             results_with_status = await asyncio.gather(*tasks, return_exceptions=True)
             
-            # Process results
+            # Filter valid results
             results = []
-            saved_count = 0
-            
             for i, result in enumerate(results_with_status):
                 if isinstance(result, Exception):
-                    await aprint(Fore.RED + f"Exception for {new_trials[i]}: {result}")
-                    logger.error(f"Exception for {new_trials[i]}", exc_info=result)
+                    await aprint(Fore.RED + f"Exception for {ncts[i]}: {result}")
+                    logger.error(f"Exception for {ncts[i]}", exc_info=result)
                 elif result is not None:
                     results.append(result)
-                    if result.get('saved', False):
-                        saved_count += 1
             
             if not results:
-                await aprint(Fore.RED + "No results obtained.")
+                await aprint(Fore.RED + "No results found for any NCT numbers.")
                 continue
             
             # Show summary
-            await aprint(
-                Fore.GREEN + 
-                f"\n✅ Successfully saved {saved_count}/{len(new_trials)} trials to database"
-            )
-            
             await aprint(Fore.CYAN + f"\n📊 Summary of {len(results)} result(s):")
             for r in results:
                 summary = summarize_result(r)
@@ -196,41 +149,59 @@ async def run_nct_lookup():
                     f"{summary['PMC Count']} PMC"
                 )
                 
-                # Show extended API summary
+                # Show extended API results summary
                 if 'extended_apis' in r:
-                    await _print_extended_api_summary(r['extended_apis'])
+                    ext = r['extended_apis']
+                    api_counts = []
+                    
+                    if 'meilisearch' in ext and ext['meilisearch'].get('hits'):
+                        api_counts.append(f"{len(ext['meilisearch']['hits'])} Meilisearch")
+                    
+                    if 'openfda_events' in ' '.join(ext.keys()):
+                        openfda_count = sum(
+                            len(v.get('results', [])) 
+                            for k, v in ext.items() 
+                            if k.startswith('openfda')
+                        )
+                        if openfda_count:
+                            api_counts.append(f"{openfda_count} OpenFDA")
+                    
+                    if 'serpapi_google' in ext and ext['serpapi_google'].get('organic_results'):
+                        api_counts.append(f"{len(ext['serpapi_google']['organic_results'])} Google")
+                    
+                    if 'duckduckgo' in ext and ext['duckduckgo'].get('results'):
+                        api_counts.append(f"{len(ext['duckduckgo']['results'])} DuckDuckGo")
+                    
+                    if 'health_canada' in ext and ext['health_canada'].get('results'):
+                        api_counts.append(f"{len(ext['health_canada']['results'])} Health Canada")
+                    
+                    if api_counts:
+                        await aprint(Fore.CYAN + f"    Extended: {', '.join(api_counts)}")
             
-            # Updated database stats
-            stats = db.get_statistics()
-            await aprint(
-                Fore.CYAN + 
-                f"\n📈 Database now contains {stats['total_trials']} trials "
-                f"({stats['database_size_mb']:.1f} MB)"
+            # Offer to save
+            save_choice = await ainput(
+                Fore.CYAN + "\nSave results? (txt/csv/json/none): "
             )
+            save_choice = save_choice.strip().lower()
             
-            # Offer additional export
-            export_choice = await ainput(
-                Fore.CYAN + 
-                "\nExport to additional location? (txt/csv/json/none): "
-            )
-            export_choice = export_choice.strip().lower()
-            
-            if export_choice in ('txt', 'csv', 'json'):
-                from amp_llm.data.clinical_trials.fetchers import save_results
-                
-                default_filename = f"nct_export_{len(results)}_trials"
+            if save_choice in ('txt', 'csv', 'json'):
+                # Get filename
+                default_filename = f"nct_results_{len(results)}_studies"
                 filename = await ainput(
-                    Fore.CYAN + 
-                    f"Enter filename (without extension) [{default_filename}]: "
+                    Fore.CYAN + f"Enter filename (without extension) [{default_filename}]: "
                 )
                 filename = filename.strip() or default_filename
                 
+                # Save results
                 try:
-                    save_results(results, filename, fmt=export_choice)
-                    await aprint(Fore.GREEN + f"Exported to output/{filename}.{export_choice}")
+                    save_results(results, filename, fmt=save_choice)
+                    await aprint(Fore.GREEN + f"Results saved successfully!")
+                    logger.info(f"Saved {len(results)} results to {filename}.{save_choice}")
                 except Exception as e:
-                    await aprint(Fore.RED + f"Export error: {e}")
-                    logger.error(f"Export error: {e}", exc_info=True)
+                    await aprint(Fore.RED + f"Error saving results: {e}")
+                    logger.error(f"Error saving results: {e}", exc_info=True)
+            else:
+                await aprint(Fore.YELLOW + "Results not saved.")
             
             # Ask to continue
             choice = await ainput(Fore.CYAN + "\nLookup more NCTs? (y/n): ")
@@ -245,35 +216,34 @@ async def run_nct_lookup():
             await aprint(Fore.RED + f"Unexpected error: {e}")
             logger.error(f"Error in NCT lookup: {e}", exc_info=True)
             
+            # Ask if user wants to continue despite error
             retry = await ainput(Fore.CYAN + "Try again? (y/n): ")
             if retry.strip().lower() not in ('y', 'yes'):
                 return
 
 
-async def _fetch_and_save_trial(
-    nct: str,
-    db: DatabaseManager,
-    api_manager: APIManager,
+async def _fetch_single_nct_extended(
+    nct: str, 
+    api_manager: APIManager, 
     enabled_apis: List[str]
 ) -> Dict[str, Any]:
     """
-    Fetch trial data and save to database.
+    Fetch data for a single NCT number with extended API search.
     
     Args:
         nct: NCT number
-        db: Database manager
-        api_manager: API manager
-        enabled_apis: List of enabled APIs
+        api_manager: API manager instance
+        enabled_apis: List of enabled APIs (empty list = none, None = all)
         
     Returns:
-        Result dictionary with 'saved' status
+        Combined result with clinical trial data and extended API results
     """
     await aprint(Fore.YELLOW + f"\n{'='*60}")
     await aprint(Fore.YELLOW + f"Fetching data for {nct}...")
     await aprint(Fore.YELLOW + f"{'='*60}\n")
     
     try:
-        # Fetch clinical trial data
+        # Step 1: Fetch clinical trial data (includes PubMed and PMC)
         result = await fetch_clinical_trial_and_pubmed_pmc(nct)
         
         if 'error' in result:
@@ -282,18 +252,19 @@ async def _fetch_and_save_trial(
             logger.warning(f"Failed to fetch {nct}: {error_msg}")
             return None
         
-        # Print summary
+        # Print standard summary
         await aprint(Fore.GREEN + f"✅ Successfully fetched {nct}")
         print_study_summary(result)
         
-        # Extended API search
+        # Step 2: Extended API search (if enabled)
         if enabled_apis is not None and len(enabled_apis) > 0:
             await aprint(Fore.CYAN + f"\n🔎 Running extended API search...")
             
-            # Extract search parameters
+            # Extract search parameters from clinical trial data
             ct_data = result['sources']['clinical_trials']['data']
             protocol = ct_data.get('protocolSection', {})
             
+            # Get title
             ident = protocol.get('identificationModule', {})
             title = (
                 ident.get('officialTitle') or 
@@ -301,16 +272,19 @@ async def _fetch_and_save_trial(
                 nct
             )
             
+            # Get authors
             contacts = protocol.get('contactsLocationsModule', {})
             officials = contacts.get('overallOfficials', [])
             authors = [o.get('name', '') for o in officials if o.get('name')]
             
+            # Get interventions/drugs
             arms_int = protocol.get('armsInterventionsModule', {})
             interventions_list = arms_int.get('interventions', [])
             intervention_names = [
                 i.get('name', '') for i in interventions_list if i.get('name')
             ]
             
+            # Run extended search
             try:
                 extended_results = await api_manager.search_all(
                     title=title,
@@ -320,36 +294,30 @@ async def _fetch_and_save_trial(
                     enabled_apis=enabled_apis
                 )
                 
+                # Add to result
                 result['extended_apis'] = extended_results
-                await aprint(Fore.GREEN + f"✅ Extended API search complete")
+                
+                # Print summary of extended results
+                await aprint(Fore.GREEN + f"\n✅ Extended API search complete for {nct}")
+                await _print_extended_summary(extended_results)
                 
             except Exception as e:
                 await aprint(Fore.RED + f"⚠️ Extended API search failed: {e}")
-                logger.error(f"Extended API error for {nct}: {e}", exc_info=True)
+                logger.error(f"Extended API search error for {nct}: {e}", exc_info=True)
                 result['extended_apis'] = {'error': str(e)}
         
-        # Save to database
-        try:
-            db.save_trial(nct, result, overwrite=True, backup=True)
-            result['saved'] = True
-            await aprint(Fore.GREEN + f"💾 Saved {nct} to ct_database/")
-            logger.info(f"Saved {nct} to database")
-            
-        except Exception as e:
-            await aprint(Fore.RED + f"⚠️ Failed to save {nct} to database: {e}")
-            logger.error(f"Database save error for {nct}: {e}", exc_info=True)
-            result['saved'] = False
-        
+        logger.info(f"Successfully fetched complete data for {nct}")
         return result
         
     except Exception as e:
         await aprint(Fore.RED + f"{nct}: Unexpected error: {e}")
-        logger.error(f"Error processing {nct}: {e}", exc_info=True)
+        logger.error(f"Error fetching {nct}: {e}", exc_info=True)
         return None
 
 
-async def _print_extended_api_summary(extended_results: Dict[str, Any]):
+async def _print_extended_summary(extended_results: Dict[str, Any]):
     """Print summary of extended API results."""
+    
     summary_lines = []
     
     # Meilisearch
@@ -357,14 +325,14 @@ async def _print_extended_api_summary(extended_results: Dict[str, Any]):
         ms = extended_results['meilisearch']
         if 'hits' in ms:
             count = len(ms['hits'])
-            summary_lines.append(f"    📊 Meilisearch: {count} hit(s)")
+            summary_lines.append(f"  📊 Meilisearch: {count} hit(s)")
     
     # Swirl
     if 'swirl' in extended_results:
         sw = extended_results['swirl']
         if 'results' in sw:
             count = len(sw['results'])
-            summary_lines.append(f"    🔄 Swirl: {count} result(s)")
+            summary_lines.append(f"  🔄 Swirl: {count} result(s)")
     
     # OpenFDA
     openfda_events = 0
@@ -376,37 +344,39 @@ async def _print_extended_api_summary(extended_results: Dict[str, Any]):
             openfda_labels += len(value.get('results', []))
     
     if openfda_events or openfda_labels:
-        summary_lines.append(
-            f"    💊 OpenFDA: {openfda_events} event(s), {openfda_labels} label(s)"
-        )
+        summary_lines.append(f"  💊 OpenFDA: {openfda_events} event(s), {openfda_labels} label(s)")
     
     # Health Canada
     if 'health_canada' in extended_results:
         hc = extended_results['health_canada']
         if 'results' in hc:
             count = len(hc['results'])
-            summary_lines.append(f"    🍁 Health Canada: {count} trial(s)")
+            summary_lines.append(f"  🍁 Health Canada: {count} trial(s)")
     
     # DuckDuckGo
     if 'duckduckgo' in extended_results:
         ddg = extended_results['duckduckgo']
         if 'results' in ddg:
             count = len(ddg['results'])
-            summary_lines.append(f"    🦆 DuckDuckGo: {count} result(s)")
+            summary_lines.append(f"  🦆 DuckDuckGo: {count} result(s)")
     
-    # SERP API
+    # SERP API Google
     if 'serpapi_google' in extended_results:
         serp = extended_results['serpapi_google']
         if 'organic_results' in serp:
             count = len(serp['organic_results'])
-            summary_lines.append(f"    🔍 Google: {count} result(s)")
+            summary_lines.append(f"  🔍 Google: {count} result(s)")
     
+    # SERP API Scholar
     if 'serpapi_scholar' in extended_results:
         scholar = extended_results['serpapi_scholar']
         if 'organic_results' in scholar:
             count = len(scholar['organic_results'])
-            summary_lines.append(f"    🎓 Scholar: {count} result(s)")
+            summary_lines.append(f"  🎓 Google Scholar: {count} result(s)")
     
     if summary_lines:
+        await aprint(Fore.CYAN + "\n📈 Extended API Results:")
         for line in summary_lines:
-            await aprint(Fore.CYAN + line)
+            await aprint(Fore.WHITE + line)
+    else:
+        await aprint(Fore.YELLOW + "\n⚠️ No results from extended APIs")
