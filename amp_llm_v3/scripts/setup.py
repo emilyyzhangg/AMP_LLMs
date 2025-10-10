@@ -1,335 +1,246 @@
-"""
-Environment setup with better error reporting.
-"""
+'''Enhanced cleanup program with force delete capabilities'''
 import os
+import shutil
 import sys
 import subprocess
-import importlib.util
-import platform
-import pathlib
-from typing import List, Tuple
-
-VENV_DIR = "llm_env"
-REQUIREMENTS_FILE = "requirements.txt"
-
-# Package name to import name mapping
-PACKAGE_IMPORT_MAPPING = {
-    "beautifulsoup4": "bs4",
-    "python-dotenv": "dotenv",
-    "duckduckgo-search": "duckduckgo_search",
-}
+from pathlib import Path
 
 
-def get_python_path() -> str:
-    """Get path to venv Python executable."""
-    if platform.system() == "Windows":
-        return os.path.join(VENV_DIR, "Scripts", "python.exe")
-    else:
-        return os.path.join(VENV_DIR, "bin", "python")
-
-
-def create_virtual_env() -> bool:
-    """Create virtual environment with pip."""
-    print("🔧 Creating virtual environment...")
+def force_delete_windows(target: Path) -> bool:
+    """
+    Force delete directory on Windows using PowerShell.
+    More reliable than shutil.rmtree for locked/in-use files.
+    """
     try:
-        # Create venv with --clear to ensure clean state
-        subprocess.check_call(
-            [sys.executable, "-m", "venv", VENV_DIR, "--clear"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.PIPE
-        )
-        print("✅ Virtual environment created successfully!")
+        # Use PowerShell's Remove-Item with -Force
+        cmd = [
+            'powershell',
+            '-Command',
+            f'Remove-Item -Path "{target}" -Recurse -Force -ErrorAction Stop'
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
         
-        # Verify pip was installed
-        venv_python = get_python_path()
-        result = subprocess.run(
-            [venv_python, "-m", "pip", "--version"],
-            capture_output=True,
-            text=True
-        )
-        
-        if result.returncode != 0:
-            print("⚠️  pip not found in venv, installing...")
-            # Try to install pip
-            subprocess.run(
-                [sys.executable, "-m", "ensurepip", "--default-pip"],
-                capture_output=True
-            )
-            # Try installing pip into venv
-            subprocess.run(
-                [venv_python, "-m", "ensurepip", "--upgrade"],
-                capture_output=True
-            )
-            
-        return True
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Failed to create virtual environment: {e}")
-        return False
-
-
-def upgrade_pip(venv_python: str) -> bool:
-    """Upgrade pip in virtual environment."""
-    print("📦 Upgrading pip...")
-    try:
-        # Show output for debugging
-        result = subprocess.run(
-            [venv_python, "-m", "pip", "install", "--upgrade", "pip"],
-            capture_output=True,
-            text=True,
-            timeout=120
-        )
         if result.returncode == 0:
-            print("✅ Pip upgraded")
             return True
         else:
-            print(f"⚠️ Pip upgrade warning: {result.stderr}")
-            return True  # Continue anyway
+            print(f"⚠️  PowerShell error: {result.stderr}")
+            return False
     except Exception as e:
-        print(f"⚠️  Could not upgrade pip: {e}")
-        return True  # Continue anyway
-
-
-def install_package(venv_python: str, package: str) -> Tuple[bool, str]:
-    """Install single package and return (success, error_message)."""
-    try:
-        result = subprocess.run(
-            [venv_python, "-m", "pip", "install", package],
-            capture_output=True,
-            text=True,
-            timeout=300
-        )
-        
-        if result.returncode == 0:
-            return True, ""
-        else:
-            # Return actual error message
-            error_msg = result.stderr or result.stdout
-            return False, error_msg
-            
-    except subprocess.TimeoutExpired:
-        return False, "Installation timeout (5 minutes)"
-    except Exception as e:
-        return False, str(e)
-
-
-def install_requirements(venv_python: str) -> bool:
-    """Install all requirements from requirements.txt."""
-    if not os.path.exists(REQUIREMENTS_FILE):
-        print(f"⚠️  {REQUIREMENTS_FILE} not found")
-        return create_minimal_requirements()
-    
-    print(f"📦 Installing packages from {REQUIREMENTS_FILE}...")
-    
-    # Read packages
-    with open(REQUIREMENTS_FILE) as f:
-        packages = [line.strip() for line in f if line.strip() and not line.startswith('#')]
-    
-    print(f"Found {len(packages)} package(s) to install\n")
-    
-    failed = []
-    error_details = {}
-    
-    for i, pkg in enumerate(packages, 1):
-        print(f"[{i}/{len(packages)}] Installing {pkg}...", end=" ", flush=True)
-        
-        success, error_msg = install_package(venv_python, pkg)
-        
-        if success:
-            print("✅")
-        else:
-            print("❌")
-            failed.append(pkg)
-            error_details[pkg] = error_msg
-            
-            # Print first few lines of error
-            error_lines = error_msg.split('\n')
-            print(f"  Error preview: {error_lines[-3] if len(error_lines) > 3 else error_msg[:100]}")
-    
-    if failed:
-        print(f"\n⚠️  Failed to install {len(failed)} package(s):")
-        for pkg in failed:
-            print(f"  • {pkg}")
-            if pkg in error_details:
-                # Show last line of error which usually has the key info
-                error_lines = error_details[pkg].strip().split('\n')
-                last_line = error_lines[-1] if error_lines else "Unknown error"
-                print(f"    → {last_line}")
-        
-        print("\n💡 Troubleshooting:")
-        print("  1. Check your internet connection")
-        print("  2. Try: pip install --upgrade pip setuptools wheel")
-        print("  3. Try manually: pip install colorama")
-        print("  4. Check if you need to run as Administrator")
+        print(f"⚠️  PowerShell command failed: {e}")
         return False
+
+
+def delete_directory_aggressive(target: Path) -> bool:
+    """
+    Try multiple methods to delete a directory.
     
-    print("\n✅ All packages installed successfully!")
-    return True
-
-
-def create_minimal_requirements() -> bool:
-    """Create minimal requirements.txt if missing."""
-    print("📝 Creating minimal requirements.txt...")
+    1. Try shutil.rmtree (standard)
+    2. Try shutil.rmtree with error handler (handles read-only)
+    3. On Windows: Try PowerShell force delete
+    4. On Unix: Try rm -rf
+    """
+    if not target.exists():
+        return True
     
-    minimal_requirements = """# Core async dependencies
-asyncssh>=2.14.0
-aiohttp>=3.9.0
-aioconsole>=0.7.0
-
-# HTTP requests
-requests>=2.31.0
-
-# UI and configuration
-colorama>=0.4.6
-python-dotenv>=1.0.0
-"""
+    # Method 1: Standard deletion
+    try:
+        shutil.rmtree(target)
+        return True
+    except PermissionError:
+        print(f"⚠️  Permission denied, trying alternative method...")
+    except Exception as e:
+        print(f"⚠️  Standard deletion failed: {e}")
+    
+    # Method 2: Delete with error handler (fixes read-only files)
+    def handle_remove_readonly(func, path, exc):
+        """Error handler for Windows read-only files."""
+        import stat
+        if not os.access(path, os.W_OK):
+            os.chmod(path, stat.S_IWUSR | stat.S_IRUSR)
+            func(path)
+        else:
+            raise
     
     try:
-        with open(REQUIREMENTS_FILE, 'w') as f:
-            f.write(minimal_requirements)
-        print("✅ Created requirements.txt")
+        shutil.rmtree(target, onerror=handle_remove_readonly)
         return True
     except Exception as e:
-        print(f"❌ Failed to create requirements.txt: {e}")
-        return False
-
-
-def check_missing_packages() -> List[str]:
-    """Check which packages are missing."""
-    if not os.path.exists(REQUIREMENTS_FILE):
-        return []
+        print(f"⚠️  Read-only handler failed: {e}")
     
-    missing = []
-    with open(REQUIREMENTS_FILE) as f:
-        for line in f:
-            pkg = line.strip()
-            if not pkg or pkg.startswith('#'):
-                continue
-            
-            # Extract base package name
-            base = pkg.split('==')[0].split('>=')[0].split('<=')[0].strip()
-            
-            # Get import name
-            import_name = PACKAGE_IMPORT_MAPPING.get(base, base.replace('-', '_'))
-            
-            # Check if importable
-            spec = importlib.util.find_spec(import_name)
-            if spec is None:
-                missing.append(pkg)
-    
-    return missing
-
-
-def ensure_env() -> bool:
-    """
-    Ensure virtual environment exists and has all packages.
-    Returns True if ready, False if failed.
-    """
-    python_path = get_python_path()
-    current_python = os.path.abspath(sys.executable)
-    venv_python = os.path.abspath(python_path)
-    
-    # Check if we're already in venv
-    in_venv = current_python == venv_python or VENV_DIR in current_python
-    
-    if not in_venv:
-        # Not in venv - need to create/use it
-        print("📁 Setting up virtual environment...")
-        
-        # Create venv if doesn't exist
-        if not os.path.exists(venv_python):
-            if not create_virtual_env():
-                return False
-        else:
-            print("✅ Virtual environment exists")
-        
-        # Upgrade pip
-        upgrade_pip(venv_python)
-        
-        # Install requirements
-        if not install_requirements(venv_python):
-            print("\n⚠️  Some packages failed to install")
-            print("     You can try to continue, but the application may not work correctly")
-            
-            # Ask user if they want to continue
-            try:
-                response = input("\nContinue anyway? (y/n): ").strip().lower()
-                if response != 'y':
-                    return False
-            except:
-                return False
-        
-        # Relaunch inside venv
-        print(f"\n🔄 Relaunching inside virtual environment...")
-        print(f"   {venv_python}\n")
-        
-        try:
-            result = subprocess.run([venv_python] + sys.argv)
-            sys.exit(result.returncode)
-        except Exception as e:
-            print(f"❌ Failed to restart: {e}")
-            print(f"\n💡 Manually run: {venv_python} main.py")
-            return False
-    
-    # We're in the venv - check if packages are installed
-    print("✅ Running inside virtual environment")
-    
-    # Quick check for missing packages
-    missing = check_missing_packages()
-    
-    if missing:
-        print(f"\n⚠️  Found {len(missing)} missing package(s)")
-        print("📦 Installing missing packages...")
-        
-        venv_python = sys.executable
-        failed = []
-        
-        for pkg in missing:
-            print(f"  Installing {pkg}...", end=" ", flush=True)
-            success, _ = install_package(venv_python, pkg)
-            if success:
-                print("✅")
-            else:
-                print("❌")
-                failed.append(pkg)
-        
-        if failed:
-            print(f"\n⚠️  Failed to install: {', '.join(failed)}")
-            return False
+    # Method 3: Platform-specific force delete
+    if sys.platform == 'win32':
+        print(f"🔧 Attempting PowerShell force delete...")
+        return force_delete_windows(target)
     else:
-        print("✅ All required packages are installed")
-    
-    return True
-
-
-def verify_critical_imports() -> bool:
-    """Verify critical packages can be imported."""
-    critical = ['asyncssh', 'aiohttp', 'aioconsole', 'colorama']
-    
-    failed = []
-    for pkg in critical:
+        # Unix/Linux/Mac: try rm -rf
         try:
-            importlib.import_module(pkg)
-        except ImportError:
-            failed.append(pkg)
+            print(f"🔧 Attempting rm -rf...")
+            subprocess.run(['rm', '-rf', str(target)], check=True, timeout=30)
+            return True
+        except Exception as e:
+            print(f"⚠️  rm -rf failed: {e}")
+    
+    return False
+
+
+def delete_dirs(root: Path, dir_names):
+    """Recursively delete directories matching dir_names."""
+    deleted = []
+    failed = []
+    
+    for dirpath, dirnames, _ in os.walk(root):
+        for dirname in dirnames:
+            if dirname in dir_names:
+                target = Path(dirpath) / dirname
+                
+                print(f"🗑️  Deleting: {target}")
+                
+                if delete_directory_aggressive(target):
+                    deleted.append(target)
+                    print(f"✅ Deleted: {target}")
+                else:
+                    failed.append(target)
+                    print(f"❌ Failed: {target}")
+    
+    return deleted, failed
+
+
+def delete_file_if_confirmed(file_path: Path):
+    """Prompt to delete .env file."""
+    if not file_path.exists():
+        print("✅ No .env file found.")
+        return
+    
+    resp = input(f"⚠️  Found {file_path}. Delete it? [y/N]: ").strip().lower()
+    if resp == "y":
+        try:
+            file_path.unlink()
+            print(f"🗑️  Deleted: {file_path}")
+        except Exception as e:
+            print(f"⚠️  Could not delete {file_path}: {e}")
+    else:
+        print("✅ Kept .env file.")
+
+
+def clean_pycache_only(root: Path):
+    """Quick cleanup of just __pycache__ directories."""
+    print("🧹 Quick cleanup: Removing __pycache__ only...")
+    deleted, failed = delete_dirs(root, ["__pycache__"])
+    
+    if deleted:
+        print(f"✅ Deleted {len(deleted)} __pycache__ director(ies)")
+    if failed:
+        print(f"⚠️  Failed to delete {len(failed)} director(ies)")
+    if not deleted and not failed:
+        print("✅ No __pycache__ directories found.")
+
+
+def clean_all(root: Path):
+    """Full cleanup: __pycache__ + llm_env + .env prompt."""
+    print("🧹 Full cleanup: Removing __pycache__ and llm_env...")
+    deleted, failed = delete_dirs(root, ["__pycache__", "llm_env"])
+    
+    if deleted:
+        print(f"✅ Deleted {len(deleted)} director(ies):")
+        for d in deleted:
+            print(f"   • {d.name}")
     
     if failed:
-        print(f"\n❌ Critical packages cannot be imported: {', '.join(failed)}")
-        print(f"   Current Python: {sys.executable}")
-        print(f"   Try: pip install {' '.join(failed)}")
-        return False
+        print(f"⚠️  Failed to delete {len(failed)} director(ies):")
+        for d in failed:
+            print(f"   • {d}")
+        print("\n💡 Try running as Administrator/sudo if directories are in use")
     
-    return True
+    if not deleted and not failed:
+        print("✅ No directories to clean.")
+    
+    # Handle .env deletion
+    env_file = root / ".env"
+    delete_file_if_confirmed(env_file)
+
+
+def show_menu():
+    """Show interactive cleanup menu."""
+    print("\n" + "="*60)
+    print("🧹 AMP_LLM Cleanup Utility")
+    print("="*60)
+    print("\nOptions:")
+    print("  1) Quick cleanup (__pycache__ only)")
+    print("  2) Full cleanup (__pycache__ + llm_env + .env)")
+    print("  3) Force delete llm_env only")
+    print("  4) Exit")
+    print()
+
+
+def main():
+    root = Path(__file__).resolve().parent
+    
+    # Check if running from within virtual environment
+    in_venv = sys.prefix != sys.base_prefix
+    if in_venv:
+        print("⚠️  WARNING: You are running from within a virtual environment!")
+        print("   This may prevent deletion of llm_env/")
+        print("   Recommend: Deactivate venv first, then run this script.\n")
+        resp = input("Continue anyway? [y/N]: ").strip().lower()
+        if resp != 'y':
+            print("Aborted.")
+            return
+    
+    print(f"🧭 Cleanup root: {root}\n")
+    
+    # Check for command line arguments
+    if len(sys.argv) > 1:
+        arg = sys.argv[1].lower()
+        
+        if arg in ('--quick', '-q'):
+            clean_pycache_only(root)
+        elif arg in ('--full', '-f'):
+            clean_all(root)
+        elif arg in ('--env', '-e'):
+            print("🗑️  Force deleting llm_env...")
+            target = root / "llm_env"
+            if delete_directory_aggressive(target):
+                print("✅ Successfully deleted llm_env/")
+            else:
+                print("❌ Failed to delete llm_env/")
+        else:
+            print(f"Unknown argument: {arg}")
+            print("\nUsage:")
+            print("  python cache_cleanup.py          # Interactive menu")
+            print("  python cache_cleanup.py --quick  # Quick cleanup")
+            print("  python cache_cleanup.py --full   # Full cleanup")
+            print("  python cache_cleanup.py --env    # Delete llm_env only")
+        
+        print("\n🎉 Cleanup complete!")
+        return
+    
+    # Interactive menu
+    while True:
+        show_menu()
+        choice = input("Select option [1-4]: ").strip()
+        
+        if choice == '1':
+            clean_pycache_only(root)
+            break
+        elif choice == '2':
+            clean_all(root)
+            break
+        elif choice == '3':
+            print("🗑️  Force deleting llm_env...")
+            target = root / "llm_env"
+            if delete_directory_aggressive(target):
+                print("✅ Successfully deleted llm_env/")
+            else:
+                print("❌ Failed to delete llm_env/")
+            break
+        elif choice == '4':
+            print("Exiting.")
+            return
+        else:
+            print("❌ Invalid choice. Please select 1-4.\n")
+    
+    print("\n🎉 Cleanup complete!")
 
 
 if __name__ == "__main__":
-    print("=== Testing Environment Setup ===\n")
-    
-    if ensure_env():
-        if verify_critical_imports():
-            print("\n✅ Environment is ready!")
-        else:
-            print("\n❌ Import verification failed")
-            sys.exit(1)
-    else:
-        print("\n❌ Environment setup failed")
-        sys.exit(1)
+    main()
