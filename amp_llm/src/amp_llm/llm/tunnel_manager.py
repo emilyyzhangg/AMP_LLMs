@@ -1,13 +1,11 @@
+# amp_llm/src/amp_llm/llm/tunnel_manager.py
 """
 SSH Tunnel Manager for Ollama API access.
 Handles automatic tunnel creation when direct connection fails.
-
-This fills the gap in your existing llm/tunnel_manager.py
 """
 import asyncio
-import logging
 from typing import Optional
-from config import get_logger
+from amp_llm.config.logging import get_logger
 
 logger = get_logger(__name__)
 
@@ -68,7 +66,7 @@ class OllamaTunnelManager:
             await asyncio.sleep(1)
             
             self._active = True
-            logger.info(f"SSH tunnel established successfully")
+            logger.info("SSH tunnel established successfully")
             
             return True
             

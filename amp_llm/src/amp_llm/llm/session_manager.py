@@ -1,11 +1,12 @@
+# amp_llm/src/amp_llm/llm/session_manager.py
 """
 Enhanced persistent session manager with automatic SSH tunneling.
-This is an upgraded version of your existing session_manager.py
+Combines the best of both old and new implementations.
 """
 import asyncio
 import aiohttp
-from typing import Optional
-from config import get_logger
+from typing import Optional, List
+from amp_llm.config.logging import get_logger
 
 logger = get_logger(__name__)
 
@@ -14,10 +15,12 @@ class OllamaSessionManager:
     """
     Manages persistent aiohttp session for Ollama API calls.
     
-    ENHANCEMENTS from old version:
+    Features:
     - Automatic SSH tunnel creation if direct connection fails
     - Connection health checking
     - Smart host switching (direct -> tunnel)
+    - Persistent session with keepalive
+    - Automatic retry logic
     """
     
     def __init__(self, host: str, port: int = 11434, ssh_connection=None):
@@ -96,7 +99,7 @@ class OllamaSessionManager:
         logger.info("Creating SSH tunnel for Ollama access...")
         
         try:
-            from llm.tunnel_manager import OllamaTunnelManager
+            from amp_llm.llm.tunnel_manager import OllamaTunnelManager
             
             self.tunnel_manager = OllamaTunnelManager(
                 self.ssh_connection,
@@ -194,6 +197,33 @@ class OllamaSessionManager:
         await self.close_session()
         await self.start_session()
     
+    async def list_models(self) -> List[str]:
+        """
+        List available Ollama models.
+        
+        Returns:
+            List of model names
+        """
+        if not self.session or self.session.closed:
+            await self.start_session()
+        
+        try:
+            async with self.session.get(
+                f"{self.base_url}/api/tags",
+                timeout=aiohttp.ClientTimeout(total=10)
+            ) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    models = [m['name'] for m in data.get('models', [])]
+                    logger.info(f"Found {len(models)} models")
+                    return models
+                else:
+                    logger.error(f"API returned status {resp.status}")
+                    return []
+        except Exception as e:
+            logger.error(f"Error listing models: {e}")
+            return []
+    
     async def send_prompt(
         self, 
         model: str, 
@@ -209,7 +239,7 @@ class OllamaSessionManager:
             model: Model name
             prompt: User prompt
             system: Optional system prompt
-            temperature: Temperature setting
+            temperature: Temperature parameter
             max_retries: Maximum retry attempts
             
         Returns:
@@ -220,7 +250,6 @@ class OllamaSessionManager:
         
         url = f"{self.base_url}/api/generate"
         
-        # Build payload
         payload = {
             "model": model,
             "prompt": prompt,
@@ -239,15 +268,14 @@ class OllamaSessionManager:
         
         last_error = None
         
-        # Retry loop with automatic reconnection
         for attempt in range(max_retries):
             try:
-                # Long timeout for LLM responses (10 minutes)
+                # Longer timeout for LLM responses
                 timeout = aiohttp.ClientTimeout(
-                    total=600,
-                    connect=30,
-                    sock_read=600,
-                    sock_connect=30
+                    total=600,  # 10 minutes total
+                    connect=30,  # 30 seconds to connect
+                    sock_read=600,  # 10 minutes to read response
+                    sock_connect=30  # 30 seconds for socket connection
                 )
                 
                 async with self.session.post(url, json=payload, timeout=timeout) as resp:
@@ -263,51 +291,50 @@ class OllamaSessionManager:
                         error_text = await resp.text()
                         logger.error(f"API error {resp.status}: {error_text}")
                         return f"Error: API returned status {resp.status}"
-            
+                        
             except asyncio.TimeoutError:
-                last_error = "Request timed out"
+                last_error = "Request timed out after 10 minutes"
                 logger.warning(f"Attempt {attempt + 1}/{max_retries}: Timeout")
-                
                 if attempt < max_retries - 1:
                     print(f"⚠️  Timeout, retrying... ({attempt + 1}/{max_retries})")
                     await asyncio.sleep(2)
                     continue
                 else:
                     logger.error(last_error)
-                    return f"Error: {last_error} after {max_retries} attempts"
-            
+                    return f"Error: {last_error}"
+                    
             except aiohttp.ServerDisconnectedError:
                 last_error = "Server disconnected"
                 logger.warning(f"Attempt {attempt + 1}/{max_retries}: Server disconnected")
                 
-                # Try to reconnect
+                # Try to restart session
                 if attempt < max_retries - 1:
                     print(f"⚠️  Connection lost, reconnecting... ({attempt + 1}/{max_retries})")
-                    await self.reconnect()
+                    await self.close_session()
                     await asyncio.sleep(2)
+                    await self.start_session()
                     continue
                 else:
                     logger.error(last_error)
-                    return f"Error: {last_error}. Check if Ollama is running."
-            
+                    return f"Error: {last_error}. Please check if Ollama is still running."
+                    
             except aiohttp.ClientConnectorError:
-                last_error = f"Cannot connect to {self.current_host}:{self.port}"
-                logger.warning(f"Attempt {attempt + 1}/{max_retries}: Connection error")
+                last_error = f"Cannot connect to Ollama at {self.current_host}:{self.port}"
+                logger.error(last_error)
                 
-                # Try to reconnect (may recreate tunnel)
+                # Try to restart session
                 if attempt < max_retries - 1:
                     print(f"⚠️  Connection error, reconnecting... ({attempt + 1}/{max_retries})")
-                    await self.reconnect()
+                    await self.close_session()
                     await asyncio.sleep(2)
+                    await self.start_session()
                     continue
                 else:
-                    logger.error(last_error)
-                    return f"Error: {last_error}"
-            
+                    return f"Error: {last_error}. Check if SSH tunnel is still active."
+                    
             except Exception as e:
                 last_error = str(e)
                 logger.error(f"Error sending prompt: {e}", exc_info=True)
-                
                 if attempt < max_retries - 1:
                     print(f"⚠️  Error occurred, retrying... ({attempt + 1}/{max_retries})")
                     await asyncio.sleep(2)
@@ -316,28 +343,3 @@ class OllamaSessionManager:
                     return f"Error: {e}"
         
         return f"Error: {last_error}"
-    
-    async def list_models(self) -> list:
-        """
-        List available models.
-        
-        Returns:
-            List of model names
-        """
-        if not self.session or self.session.closed:
-            await self.start_session()
-        
-        try:
-            async with self.session.get(f"{self.base_url}/api/tags") as resp:
-                if resp.status == 200:
-                    data = await resp.json()
-                    models = [m['name'] for m in data.get('models', [])]
-                    logger.info(f"Found {len(models)} models")
-                    return models
-                else:
-                    logger.error(f"API error {resp.status}")
-                    return []
-        
-        except Exception as e:
-            logger.error(f"Error listing models: {e}")
-            return []

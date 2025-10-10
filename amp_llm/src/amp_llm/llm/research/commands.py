@@ -1,13 +1,12 @@
+# amp_llm/src/amp_llm/llm/research/commands.py
 """
 Command handler for Research Assistant.
 Processes user commands and routes to appropriate functions.
 """
 import json
 from pathlib import Path
-from typing import Dict, Any, Optional, Callable
+from typing import Dict, Callable
 from colorama import Fore
-from config import get_logger
-from validation_config import get_validation_config
 
 try:
     from aioconsole import ainput, aprint
@@ -16,6 +15,15 @@ except ImportError:
         return input(prompt)
     async def aprint(*args, **kwargs):
         print(*args, **kwargs)
+
+from amp_llm.config import get_logger
+
+# Try to import validation config
+try:
+    from amp_llm.validation_config import get_validation_config
+    HAS_VALIDATION = True
+except ImportError:
+    HAS_VALIDATION = False
 
 logger = get_logger(__name__)
 
@@ -31,7 +39,11 @@ class CommandHandler:
             assistant: ClinicalTrialResearchAssistant instance
         """
         self.assistant = assistant
-        self.validation_config = get_validation_config()
+        
+        if HAS_VALIDATION:
+            self.validation_config = get_validation_config()
+        else:
+            self.validation_config = None
         
         # Command registry
         self.commands: Dict[str, Callable] = {
@@ -94,7 +106,8 @@ class CommandHandler:
         await aprint(Fore.CYAN + "   • 'save <NCT>' - Extract and save directly as JSON")
         await aprint(Fore.CYAN + "   • 'query <question> [--limit N]' - Ask question (default limit: 10)")
         await aprint(Fore.CYAN + "   • 'stats' - Show database statistics")
-        await aprint(Fore.CYAN + "   • 'validate' - Show valid values for all fields")
+        if HAS_VALIDATION:
+            await aprint(Fore.CYAN + "   • 'validate' - Show valid values for all fields")
         await aprint(Fore.CYAN + "   • 'status' - Check connection status")
         await aprint(Fore.CYAN + "   • 'exit' or 'quit' or 'main menu' - Return to main menu\n")
     
@@ -209,20 +222,26 @@ class CommandHandler:
                 if extraction:
                     status = extraction.study_status
                     status_counts[status] = status_counts.get(status, 0) + 1
-                    if extraction.is_peptide:
+                    if hasattr(extraction, 'is_peptide') and extraction.is_peptide:
                         peptide_count += 1
             except:
                 pass
         
         await aprint(Fore.WHITE + f"  Peptide trials: {peptide_count}")
-        await aprint(Fore.CYAN + "\n  By Status:")
-        for status, count in sorted(status_counts.items()):
-            await aprint(Fore.WHITE + f"    {status}: {count}")
+        
+        if status_counts:
+            await aprint(Fore.CYAN + "\n  By Status:")
+            for status, count in sorted(status_counts.items()):
+                await aprint(Fore.WHITE + f"    {status}: {count}")
         
         await aprint("")
     
     async def cmd_validate(self, args: str = ""):
         """Show valid values for all fields."""
+        if not HAS_VALIDATION:
+            await aprint(Fore.YELLOW + "⚠️  Validation config not available")
+            return
+        
         display = self.validation_config.format_valid_values_display()
         await aprint(Fore.CYAN + display + "\n")
     
@@ -243,9 +262,14 @@ class CommandHandler:
     
     async def _save_extraction(self, nct: str, response: str, format: str):
         """Helper to save extraction to file."""
-        from llm.research.parser import parse_extraction_to_dict
-        
         try:
+            # Try to import response parser
+            try:
+                from amp_llm.llm.response_parser import parse_extraction_to_dict
+                has_parser = True
+            except ImportError:
+                has_parser = False
+            
             default_filename = f"{nct}_extraction"
             filename = await ainput(Fore.CYAN + f"Filename (without extension) [{default_filename}]: ")
             filename = filename.strip() or default_filename
@@ -254,7 +278,7 @@ class CommandHandler:
             output_dir.mkdir(exist_ok=True)
             output_path = output_dir / f"{filename}.{format}"
             
-            if format == 'json':
+            if format == 'json' and has_parser:
                 extraction_dict = parse_extraction_to_dict(response)
                 
                 with open(output_path, 'w', encoding='utf-8') as f:
@@ -265,7 +289,8 @@ class CommandHandler:
                 with open(output_path, 'w', encoding='utf-8') as f:
                     f.write(response)
                 
-                await aprint(Fore.GREEN + f"✅ Saved as text: {output_path}")
+                file_type = "JSON" if format == 'json' else "text"
+                await aprint(Fore.GREEN + f"✅ Saved as {file_type}: {output_path}")
             
             logger.info(f"Saved extraction to {output_path}")
             
