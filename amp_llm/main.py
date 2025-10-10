@@ -12,9 +12,14 @@ from pathlib import Path
 print("Starting AMP_LLM...")
 print("Checking environment...\n")
 
-# Add src to path if needed
-src_dir = Path(__file__).parent / "src"
-if src_dir.exists() and str(src_dir) not in sys.path:
+# Add project root to path
+project_root = Path(__file__).parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
+# Add src to path for amp_llm imports
+src_dir = project_root / "src"
+if str(src_dir) not in sys.path:
     sys.path.insert(0, str(src_dir))
 
 try:
@@ -79,13 +84,13 @@ init(autoreset=True)
 # Support both old (core.app) and new (amp_llm.core.app) import styles
 try:
     # Try new structure first
-    from amp_llm.core.app import Application
-    from amp_llm.config import get_logger
+    from amp_llm.src.amp_llm.core.app import Application
+    from amp_llm.src.amp_llm.config import get_logger
 except ImportError:
     # Fallback to old structure for backward compatibility
     try:
-        from core.app import Application
-        from config import get_logger
+        from amp_llm.core.app import Application
+        from amp_llm.config import get_logger
     except ImportError as e:
         print(f"❌ Import error: {e}")
         print("\nTroubleshooting:")

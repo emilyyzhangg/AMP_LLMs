@@ -78,11 +78,11 @@ class MenuSystem:
         # FIXED: Use correct import paths
         from amp_llm.network.shell import open_interactive_shell
         from amp_llm.llm.handlers import run_llm_entrypoint_api, run_llm_entrypoint_ssh
-        from amp_llm.data.async_nct_lookup import run_nct_lookup
+        from amp_llm.data.nct_lookup import run_nct_lookup
         
         # Try to import research assistant (may not exist yet)
         try:
-            from amp_llm.llm.research.assistant import ClinicalTrialResearchAssistant
+            from amp_llm.llm.assistants.assistant import ClinicalTrialResearchAssistant
             has_research = True
         except ImportError:
             has_research = False
@@ -135,7 +135,7 @@ class MenuSystem:
             async def run_research_wrapper():
                 """Wrapper to run research assistant."""
                 from pathlib import Path
-                from amp_llm.llm.research.assistant import ClinicalTrialResearchAssistant
+                from amp_llm.llm.assistants.assistant import ClinicalTrialResearchAssistant
                 
                 db_path = Path("ct_database")
                 if not db_path.exists():
