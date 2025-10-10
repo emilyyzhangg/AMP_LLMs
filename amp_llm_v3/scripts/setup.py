@@ -193,6 +193,32 @@ python-dotenv>=1.0.0
         return False
 
 
+def check_missing_packages() -> List[str]:
+    """Check which packages are missing."""
+    if not os.path.exists(REQUIREMENTS_FILE):
+        return []
+    
+    missing = []
+    with open(REQUIREMENTS_FILE) as f:
+        for line in f:
+            pkg = line.strip()
+            if not pkg or pkg.startswith('#'):
+                continue
+            
+            # Extract base package name
+            base = pkg.split('==')[0].split('>=')[0].split('<=')[0].strip()
+            
+            # Get import name
+            import_name = PACKAGE_IMPORT_MAPPING.get(base, base.replace('-', '_'))
+            
+            # Check if importable
+            spec = importlib.util.find_spec(import_name)
+            if spec is None:
+                missing.append(pkg)
+    
+    return missing
+
+
 def ensure_env() -> bool:
     """
     Ensure virtual environment exists and has all packages.
@@ -244,8 +270,34 @@ def ensure_env() -> bool:
             print(f"\n💡 Manually run: {venv_python} main.py")
             return False
     
-    # We're in the venv
+    # We're in the venv - check if packages are installed
     print("✅ Running inside virtual environment")
+    
+    # Quick check for missing packages
+    missing = check_missing_packages()
+    
+    if missing:
+        print(f"\n⚠️  Found {len(missing)} missing package(s)")
+        print("📦 Installing missing packages...")
+        
+        venv_python = sys.executable
+        failed = []
+        
+        for pkg in missing:
+            print(f"  Installing {pkg}...", end=" ", flush=True)
+            success, _ = install_package(venv_python, pkg)
+            if success:
+                print("✅")
+            else:
+                print("❌")
+                failed.append(pkg)
+        
+        if failed:
+            print(f"\n⚠️  Failed to install: {', '.join(failed)}")
+            return False
+    else:
+        print("✅ All required packages are installed")
+    
     return True
 
 
