@@ -37,7 +37,7 @@ except ImportError:
 
 
 try:
-    from .parser import CLIParser, Argument, Option
+    from amp_llm.llm.assistants.parser import CLIParser, Argument, Option
 except ImportError:
     CLIParser = None
     Argument = None
@@ -45,7 +45,7 @@ except ImportError:
 
 # Formatters
 try:
-    from .formatters import (
+    from .rich_formatters import (
         format_table,
         format_list,
         format_dict,

@@ -2,19 +2,42 @@
 AMP_LLM v3.0 — Unified Application Runner
 -----------------------------------------
 FULLY AUTOMATIC: Handles all setup without user intervention
+SELF-HEALING: Detects and fixes corrupted virtual environments
 """
 
 import os
 import sys
-import signal
-import subprocess
 from pathlib import Path
+
+# ============================================================
+#  CRITICAL: SELF-HEAL CHECK BEFORE ANY OTHER IMPORTS
+# ============================================================
+# This MUST run before any other imports that might fail in corrupted venv
 
 print("Starting AMP_LLM...")
 print("Checking environment...\n")
 
-# Ensure src/ is importable
+# Ensure scripts/ is importable
 project_root = Path(__file__).parent
+scripts_dir = project_root / "scripts"
+if str(scripts_dir) not in sys.path:
+    sys.path.insert(0, str(scripts_dir))
+
+# Run self-heal check (will restart script if venv is corrupted)
+try:
+    from self_heal import check_and_heal
+    check_and_heal()  # This may not return if venv is corrupted
+except ImportError:
+    print("⚠️  Self-heal module not found, skipping venv check...")
+
+# ============================================================
+#  NOW SAFE TO CONTINUE WITH NORMAL IMPORTS
+# ============================================================
+
+import signal
+import subprocess
+
+# Ensure src/ is importable
 src_dir = project_root / "src"
 for path in (project_root, src_dir):
     if str(path) not in sys.path:
@@ -35,6 +58,44 @@ def get_venv_python():
 def is_in_venv():
     """Check if running inside virtual environment."""
     return sys.prefix != sys.base_prefix
+
+def is_venv_valid():
+    """Check if venv exists and is valid (has pyvenv.cfg)."""
+    venv_dir = project_root / "llm_env"
+    if not venv_dir.exists():
+        return False
+    
+    # Critical: Check for pyvenv.cfg
+    pyvenv_cfg = venv_dir / "pyvenv.cfg"
+    if not pyvenv_cfg.exists():
+        print("⚠️  Virtual environment is corrupted (missing pyvenv.cfg)")
+        return False
+    
+    # Check if Python executable exists
+    venv_python = get_venv_python()
+    if not venv_python.exists():
+        print("⚠️  Virtual environment is corrupted (missing Python executable)")
+        return False
+    
+    return True
+
+def delete_corrupted_venv():
+    """Delete corrupted virtual environment."""
+    venv_dir = project_root / "llm_env"
+    print(f"🗑️  Deleting corrupted venv: {venv_dir}")
+    
+    import shutil
+    try:
+        shutil.rmtree(venv_dir, ignore_errors=True)
+        print("✅ Corrupted venv deleted")
+        return True
+    except Exception as e:
+        print(f"❌ Failed to delete corrupted venv: {e}")
+        print("\n💡 Manual fix required:")
+        print(f"   1. Close this terminal")
+        print(f"   2. Run: Remove-Item -Path llm_env -Recurse -Force")
+        print(f"   3. Run: python main.py")
+        return False
 
 def check_pip_works():
     """Check if pip is available and working."""
@@ -109,26 +170,47 @@ def verify_imports():
     
     return len(missing) == 0, missing
 
+def create_fresh_venv():
+    """Create a fresh virtual environment."""
+    venv_dir = project_root / "llm_env"
+    print(f"🔧 Creating virtual environment at {venv_dir}...")
+    
+    try:
+        subprocess.check_call(
+            [sys.executable, "-m", "venv", "llm_env"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+        print("✅ Virtual environment created")
+        
+        # Verify it's valid
+        if not is_venv_valid():
+            print("❌ Newly created venv is invalid!")
+            return False
+        
+        return True
+    except Exception as e:
+        print(f"❌ Failed to create venv: {e}")
+        return False
+
 def setup_environment():
-    """Fully automatic environment setup."""
+    """Fully automatic environment setup with corruption detection."""
     venv_python = get_venv_python()
     
     # Case 1: Not in venv at all
     if not is_in_venv():
         print("📁 No virtual environment detected")
         
+        # Check if venv exists but is corrupted
+        venv_dir = project_root / "llm_env"
+        if venv_dir.exists() and not is_venv_valid():
+            print("🔧 Detected corrupted virtual environment")
+            if not delete_corrupted_venv():
+                return False
+        
         # Create venv if doesn't exist
         if not venv_python.exists():
-            print("🔧 Creating virtual environment...")
-            try:
-                subprocess.check_call(
-                    [sys.executable, "-m", "venv", "llm_env"],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL
-                )
-                print("✅ Virtual environment created")
-            except Exception as e:
-                print(f"❌ Failed to create venv: {e}")
+            if not create_fresh_venv():
                 return False
         
         # Install packages in venv
@@ -162,26 +244,25 @@ def setup_environment():
             print(f"❌ Failed to restart: {e}")
             return False
     
-    # Case 2: In venv but pip is broken
-    if not check_pip_works():
-        print("❌ pip is broken in this virtual environment")
-        print("🔧 Recreating virtual environment...")
-        
-        # Delete and recreate
-        import shutil
-        venv_dir = project_root / "llm_env"
-        try:
-            # Close current Python to avoid locks
-            print("\n⚠️  Please close this terminal and run:")
-            print(f"   Remove-Item -Path llm_env -Recurse -Force")
-            print(f"   python main.py")
-            return False
-        except:
-            pass
-        
+    # Case 2: In venv but it's corrupted (shouldn't happen due to self_heal, but check anyway)
+    if is_in_venv() and not is_venv_valid():
+        print("❌ Running in corrupted virtual environment")
+        print("💡 This shouldn't happen - self-heal should have caught this!")
+        print("   Please exit this terminal and run the cleanup script:")
+        print("   python scripts/cache_cleanup.py")
+        print("   Then run: python main.py")
         return False
     
-    # Case 3: In venv, pip works, but packages missing
+    # Case 3: In venv but pip is broken
+    if not check_pip_works():
+        print("❌ pip is broken in this virtual environment")
+        print("💡 Please exit this terminal and run:")
+        print("   deactivate")
+        print("   Remove-Item -Path llm_env -Recurse -Force")
+        print("   python main.py")
+        return False
+    
+    # Case 4: In venv, pip works, but packages missing
     print("✅ Running in virtual environment")
     
     imports_ok, missing = verify_imports()

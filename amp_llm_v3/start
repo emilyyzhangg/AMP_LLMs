@@ -1,0 +1,395 @@
+#!/usr/bin/env python3
+"""
+start - Universal AMP_LLM Launcher
+===================================
+Single entry point for all platforms.
+
+Usage:
+    Windows:  python start  (or: start.bat if created)
+    macOS:    ./start
+    Linux:    ./start
+
+This script handles EVERYTHING automatically:
+- Detects corrupted venvs (even when running from inside one)
+- Escapes corrupted venvs and restarts with system Python
+- Auto chmod +x on Unix systems
+- Finds system Python on all platforms
+- Deletes and recreates broken environments
+"""
+
+import os
+import sys
+import subprocess
+import shutil
+import stat
+from pathlib import Path
+
+
+# ============================================================================
+#  COLOR OUTPUT
+# ============================================================================
+
+class Colors:
+    RED = '\033[0;31m'
+    GREEN = '\033[0;32m'
+    YELLOW = '\033[1;33m'
+    CYAN = '\033[0;36m'
+    GRAY = '\033[0;90m'
+    BOLD = '\033[1m'
+    RESET = '\033[0m'
+    
+    @staticmethod
+    def supported():
+        return (
+            hasattr(sys.stdout, 'isatty') and sys.stdout.isatty() or
+            'ANSICON' in os.environ or
+            'WT_SESSION' in os.environ or
+            'COLORTERM' in os.environ or
+            os.environ.get('TERM', '').lower() in ('xterm', 'xterm-color', 'xterm-256color', 'screen', 'screen-256color')
+        )
+
+
+def print_color(text, color=''):
+    """Print with color if supported."""
+    if Colors.supported():
+        print(f"{color}{text}{Colors.RESET}")
+    else:
+        print(text)
+
+
+def print_banner():
+    """Print startup banner."""
+    print_color("=" * 60, Colors.CYAN)
+    print_color("  AMP_LLM v3.0", Colors.CYAN + Colors.BOLD)
+    print_color("=" * 60, Colors.CYAN)
+    print()
+
+
+# ============================================================================
+#  AUTO-SETUP FUNCTIONS
+# ============================================================================
+
+def get_script_dir():
+    """Get the directory containing this script."""
+    return Path(__file__).parent.resolve()
+
+
+def auto_chmod():
+    """Automatically make this script executable on Unix systems."""
+    if sys.platform in ('darwin', 'linux', 'linux2'):
+        script_path = Path(__file__)
+        try:
+            current_perms = script_path.stat().st_mode
+            if not (current_perms & stat.S_IXUSR):
+                new_perms = current_perms | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
+                script_path.chmod(new_perms)
+                print_color("✅ Auto-applied executable permissions", Colors.GREEN)
+                print_color(f"   Next time: ./start\n", Colors.GRAY)
+        except Exception:
+            pass  # Silently continue if chmod fails
+
+
+def create_platform_wrappers():
+    """Create platform-specific wrapper scripts for convenience."""
+    script_dir = get_script_dir()
+    
+    # Create start.bat for Windows
+    if sys.platform == "win32":
+        bat_file = script_dir / "start.bat"
+        if not bat_file.exists():
+            bat_content = """@echo off
+REM Auto-generated wrapper for start script
+python "%~dp0start" %*
+exit /b %ERRORLEVEL%
+"""
+            try:
+                bat_file.write_text(bat_content, encoding='utf-8')
+                print_color("✅ Created start.bat wrapper", Colors.GREEN)
+                print_color("   You can now run: start.bat\n", Colors.GRAY)
+            except:
+                pass  # Silently continue if creation fails
+
+
+# ============================================================================
+#  VENV CORRUPTION DETECTION & ESCAPE
+# ============================================================================
+
+def is_in_corrupted_venv():
+    """Check if currently running from inside a corrupted venv."""
+    in_venv = sys.prefix != sys.base_prefix
+    if not in_venv:
+        return False
+    
+    venv_root = Path(sys.prefix)
+    pyvenv_cfg = venv_root / "pyvenv.cfg"
+    return not pyvenv_cfg.exists()
+
+
+def find_system_python_escape():
+    """Find system Python to escape corrupted venv."""
+    if sys.platform == "win32":
+        locations = [
+            Path(sys.base_prefix) / "python.exe",
+            Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Python" / "Python311" / "python.exe",
+            Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Python" / "Python310" / "python.exe",
+            Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Python" / "Python312" / "python.exe",
+            Path("C:/Python311/python.exe"),
+            Path("C:/Python310/python.exe"),
+        ]
+    else:
+        locations = [
+            Path(sys.base_prefix) / "bin" / "python3",
+            Path("/usr/bin/python3"),
+            Path("/usr/local/bin/python3"),
+            Path("/opt/homebrew/bin/python3"),
+        ]
+    
+    # Check base_prefix first
+    if locations[0].exists() and "llm_env" not in str(locations[0]):
+        return locations[0]
+    
+    # Try PATH
+    cmd = "where" if sys.platform == "win32" else "which"
+    for name in (["python", "python3"] if sys.platform == "win32" else ["python3", "python"]):
+        try:
+            result = subprocess.run([cmd, name], capture_output=True, text=True, timeout=5)
+            if result.returncode == 0:
+                for line in result.stdout.splitlines():
+                    py_path = Path(line.strip())
+                    if py_path.exists() and "llm_env" not in str(py_path):
+                        return py_path
+        except:
+            continue
+    
+    # Try known locations
+    for location in locations:
+        if location.exists() and "llm_env" not in str(location):
+            return location
+    
+    return None
+
+
+def restart_with_system_python():
+    """Restart this script with system Python (escape corrupted venv)."""
+    system_python = find_system_python_escape()
+    
+    if system_python is None:
+        print_color("❌ Could not find system Python!", Colors.RED)
+        print_color("\n💡 Manual fix:", Colors.YELLOW)
+        print("   1. Open a NEW terminal (not in venv)")
+        print("   2. Run: python start" if sys.platform == "win32" else "   2. Run: ./start")
+        sys.exit(1)
+    
+    print_color(f"🔄 Restarting with system Python...", Colors.YELLOW)
+    print_color(f"   {system_python}\n", Colors.GRAY)
+    
+    try:
+        result = subprocess.run([str(system_python), str(Path(__file__))])
+        sys.exit(result.returncode)
+    except Exception as e:
+        print_color(f"❌ Restart failed: {e}", Colors.RED)
+        sys.exit(1)
+
+
+# ============================================================================
+#  VENV HEALTH CHECK & CLEANUP
+# ============================================================================
+
+def check_venv_health():
+    """Check if venv exists and is healthy. Returns: (exists, is_healthy)"""
+    script_dir = get_script_dir()
+    venv_dir = script_dir / "llm_env"
+    pyvenv_cfg = venv_dir / "pyvenv.cfg"
+    
+    if not venv_dir.exists():
+        return False, True
+    if not pyvenv_cfg.exists():
+        return True, False
+    return True, True
+
+
+def delete_corrupted_venv():
+    """Delete corrupted virtual environment."""
+    script_dir = get_script_dir()
+    venv_dir = script_dir / "llm_env"
+    
+    print_color(f"🗑️  Deleting corrupted venv...", Colors.YELLOW)
+    
+    try:
+        shutil.rmtree(venv_dir, ignore_errors=True)
+        
+        if venv_dir.exists():
+            # Platform-specific force delete
+            if sys.platform == "win32":
+                subprocess.run(["cmd", "/c", "rmdir", "/s", "/q", str(venv_dir)], 
+                             check=False, capture_output=True)
+            else:
+                subprocess.run(["rm", "-rf", str(venv_dir)], 
+                             check=False, capture_output=True)
+        
+        if venv_dir.exists():
+            print_color("❌ Failed to delete corrupted venv", Colors.RED)
+            print_color("\n💡 Manual cleanup:", Colors.YELLOW)
+            if sys.platform == "win32":
+                print("   Remove-Item -Path llm_env -Recurse -Force")
+            else:
+                print("   rm -rf llm_env")
+            return False
+        
+        print_color("✅ Corrupted venv deleted\n", Colors.GREEN)
+        return True
+        
+    except Exception as e:
+        print_color(f"❌ Delete failed: {e}", Colors.RED)
+        return False
+
+
+# ============================================================================
+#  FIND SYSTEM PYTHON
+# ============================================================================
+
+def find_system_python():
+    """Find system Python executable (not venv)."""
+    if sys.platform == "win32":
+        python_names = ["python.exe", "python3.exe"]
+        locations = [
+            Path(sys.base_prefix) / "python.exe",
+            Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Python" / "Python311" / "python.exe",
+            Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Python" / "Python310" / "python.exe",
+            Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Python" / "Python312" / "python.exe",
+            Path("C:/Python311/python.exe"),
+            Path("C:/Python310/python.exe"),
+        ]
+    else:
+        python_names = ["python3", "python"]
+        locations = [
+            Path(sys.base_prefix) / "bin" / "python3",
+            Path("/usr/bin/python3"),
+            Path("/usr/local/bin/python3"),
+            Path("/opt/homebrew/bin/python3"),
+        ]
+    
+    # Try PATH
+    cmd = "where" if sys.platform == "win32" else "which"
+    for name in python_names:
+        try:
+            result = subprocess.run([cmd, name], capture_output=True, text=True, timeout=5)
+            if result.returncode == 0:
+                for line in result.stdout.splitlines():
+                    py_path = Path(line.strip())
+                    if py_path.exists() and "llm_env" not in str(py_path):
+                        # Verify it works
+                        try:
+                            check = subprocess.run([str(py_path), "--version"], 
+                                                  capture_output=True, timeout=5)
+                            if check.returncode == 0:
+                                return py_path
+                        except:
+                            continue
+        except:
+            continue
+    
+    # Try known locations
+    for location in locations:
+        if location.exists() and "llm_env" not in str(location):
+            try:
+                result = subprocess.run([str(location), "--version"], 
+                                      capture_output=True, timeout=5)
+                if result.returncode == 0:
+                    return location
+            except:
+                continue
+    
+    return None
+
+
+# ============================================================================
+#  MAIN ENTRY POINT
+# ============================================================================
+
+def main():
+    """Main entry point."""
+    # CRITICAL: Escape corrupted venv FIRST (before any other action)
+    if is_in_corrupted_venv():
+        print_color("=" * 60, Colors.RED)
+        print_color("⚠️  RUNNING FROM CORRUPTED VENV", Colors.RED + Colors.BOLD)
+        print_color("=" * 60, Colors.RED)
+        print_color("Escaping to system Python...\n", Colors.YELLOW)
+        restart_with_system_python()
+    
+    # Auto-setup
+    auto_chmod()
+    create_platform_wrappers()
+    
+    # Banner
+    print_banner()
+    
+    # Platform info
+    platform_name = {"darwin": "macOS", "win32": "Windows", "linux": "Linux"}.get(sys.platform, sys.platform)
+    print_color(f"Platform: {platform_name}", Colors.GRAY)
+    print_color("Checking environment...\n", Colors.CYAN)
+    
+    # Check venv health
+    exists, healthy = check_venv_health()
+    
+    if exists and not healthy:
+        print_color("=" * 60, Colors.YELLOW)
+        print_color("⚠️  CORRUPTED VENV DETECTED", Colors.YELLOW)
+        print_color("=" * 60, Colors.YELLOW)
+        print_color("Missing pyvenv.cfg - cleaning up...\n", Colors.YELLOW)
+        
+        if not delete_corrupted_venv():
+            return 1
+    
+    # Find system Python
+    print_color("🚀 Launching application...\n", Colors.CYAN)
+    
+    python_path = find_system_python()
+    
+    if python_path is None:
+        print_color("❌ Python not found", Colors.RED)
+        print_color("\n💡 Install Python:", Colors.YELLOW)
+        if sys.platform == "darwin":
+            print("   brew install python3")
+        elif sys.platform == "win32":
+            print("   Download from python.org")
+        else:
+            print("   sudo apt install python3")
+        return 1
+    
+    print_color(f"Python: {python_path}", Colors.GRAY)
+    
+    # Show version
+    try:
+        result = subprocess.run([str(python_path), "--version"], 
+                              capture_output=True, text=True)
+        if result.returncode == 0:
+            print_color(result.stdout.strip(), Colors.GRAY)
+    except:
+        pass
+    
+    print()
+    print_color("-" * 60, Colors.CYAN)
+    print()
+    
+    # Run main.py
+    script_dir = get_script_dir()
+    main_py = script_dir / "main.py"
+    
+    if not main_py.exists():
+        print_color(f"❌ main.py not found", Colors.RED)
+        return 1
+    
+    try:
+        result = subprocess.run([str(python_path), str(main_py)])
+        return result.returncode
+    except KeyboardInterrupt:
+        print_color("\n\n👋 Interrupted", Colors.YELLOW)
+        return 130
+    except Exception as e:
+        print_color(f"\n❌ Launch failed: {e}", Colors.RED)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

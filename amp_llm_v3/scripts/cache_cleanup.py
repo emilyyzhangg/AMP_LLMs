@@ -223,7 +223,8 @@ def main():
             clean_all(root)
             break
         elif choice == "2":
-            kill_python_processes_in_path(root / "llm_env")
+            venv_path = root.parent / "llm_env"
+            kill_python_processes_in_path(venv_path)
             target = root / "llm_env"
             print("🗑️  Force deleting llm_env...")
             if delete_directory_aggressive(target):
