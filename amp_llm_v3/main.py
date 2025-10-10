@@ -1,13 +1,7 @@
 """
 AMP_LLM v3.0 — Unified Application Runner
 -----------------------------------------
-Main entry point for AMP_LLM application.
-Backward compatible with legacy structure.
-
-Features:
-- Auto environment + Modelfile validation
-- Cross-platform graceful shutdown
-- Clean asyncio lifecycle management
+FIXED: Graceful shutdown without recursion errors
 """
 
 import os
@@ -81,11 +75,9 @@ print("=" * 60 + "\n")
 colorama_init(autoreset=True)
 
 try:
-    # ✅ Preferred import path
     from src.amp_llm.core.app import Application
     from src.amp_llm.config import get_logger
 except ImportError:
-    # 🔄 Fallback to old structure
     try:
         from amp_llm.core.app import Application
         from amp_llm.config import get_logger
@@ -97,7 +89,6 @@ except ImportError:
         print("  3. Verify dependencies: pip install -r requirements.txt")
         sys.exit(1)
 
-# Backward-compatible alias
 AMPLLMApp = Application
 logger = get_logger(__name__)
 
@@ -119,47 +110,104 @@ async def main_async():
         print(Fore.CYAN + Style.BRIGHT + "\n✅ Application exited cleanly." + Style.RESET_ALL)
 
 # ============================================================
-#  STEP 5: SIGNAL + LOOP MANAGEMENT
+#  STEP 5: GRACEFUL SHUTDOWN (FIXED)
 # ============================================================
 
-async def cancel_all_tasks(loop):
-    """Gracefully cancel all running asyncio tasks."""
-    tasks = [t for t in asyncio.all_tasks(loop) if not t.done()]
+async def cancel_all_tasks_gracefully(loop):
+    """
+    Gracefully cancel all running asyncio tasks.
+    FIXED: Prevents recursion errors during cancellation.
+    """
+    # Get all pending tasks (excluding current task)
+    current_task = asyncio.current_task(loop)
+    tasks = [
+        t for t in asyncio.all_tasks(loop) 
+        if not t.done() and t is not current_task
+    ]
+    
+    if not tasks:
+        return
+    
+    logger.info(f"Cancelling {len(tasks)} pending task(s)...")
+    
+    # Cancel all tasks
     for task in tasks:
         task.cancel()
-    await asyncio.gather(*tasks, return_exceptions=True)
+    
+    # Wait for all tasks to complete cancellation (with timeout)
+    try:
+        await asyncio.wait_for(
+            asyncio.gather(*tasks, return_exceptions=True),
+            timeout=3.0
+        )
+    except asyncio.TimeoutError:
+        logger.warning("Some tasks did not cancel in time")
+
+# ============================================================
+#  STEP 6: MAIN ENTRY POINT (FIXED)
+# ============================================================
 
 def main():
     """Top-level entrypoint with robust signal handling."""
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-
-    # Register graceful shutdown signals (cross-platform safe)
-    def shutdown():
-        print(Fore.YELLOW + "\n\n🛑 Received termination signal. Shutting down...")
-        asyncio.create_task(cancel_all_tasks(loop))
-
+    
+    shutdown_event = asyncio.Event()
+    
+    def shutdown_handler(signum, frame):
+        """Handle shutdown signals."""
+        print(Fore.YELLOW + f"\n\n🛑 Received signal {signum}. Shutting down gracefully...")
+        logger.info(f"Received signal {signum}")
+        
+        # Set shutdown event (thread-safe)
+        loop.call_soon_threadsafe(shutdown_event.set)
+    
+    # Register signal handlers (cross-platform safe)
     for sig in (signal.SIGINT, signal.SIGTERM):
         try:
-            loop.add_signal_handler(sig, shutdown)
-        except NotImplementedError:
-            # Windows fallback (no signal handler support)
+            signal.signal(sig, shutdown_handler)
+        except (ValueError, OSError):
+            # Windows doesn't support all signals
             pass
-
+    
     try:
+        # Run main application
         loop.run_until_complete(main_async())
+        
     except KeyboardInterrupt:
         print(Fore.YELLOW + "\n\n👋 Keyboard interrupt detected. Exiting gracefully...")
+        logger.info("Keyboard interrupt")
+        
     except Exception as e:
         print(Fore.RED + f"\n❌ Fatal error: {e}")
-        logger.exception("Unhandled fatal error in main()")
+        logger.exception("Fatal error in main()")
+        
     finally:
-        # Ensure pending tasks are cancelled and loop closed
-        loop.run_until_complete(cancel_all_tasks(loop))
-        loop.close()
+        # Graceful cleanup
+        print(Fore.CYAN + "\n🧹 Cleaning up...")
+        
+        try:
+            # Cancel all pending tasks
+            loop.run_until_complete(cancel_all_tasks_gracefully(loop))
+        except Exception as e:
+            logger.error(f"Error during cleanup: {e}")
+        
+        # Give connections time to close
+        try:
+            loop.run_until_complete(asyncio.sleep(0.5))
+        except Exception:
+            pass
+        
+        # Close loop
+        try:
+            loop.close()
+        except Exception as e:
+            logger.error(f"Error closing loop: {e}")
+        
+        print(Fore.GREEN + "✅ Cleanup complete")
 
 # ============================================================
-#  STEP 6: ENTRYPOINT
+#  STEP 7: ENTRYPOINT
 # ============================================================
 
 if __name__ == "__main__":

@@ -49,16 +49,42 @@ async def get_api_selection() -> List[str]:
     elif api_choice == "4":
         return ['duckduckgo', 'serpapi']
     elif api_choice == "5":
-        await aprint(Fore.CYAN + "\n📋 Available APIs:")
-        await aprint(Fore.WHITE + "  • pmc_fulltext - PMC Full Text (free)")
-        await aprint(Fore.WHITE + "  • semantic_scholar - AI-powered papers (free)")
-        await aprint(Fore.WHITE + "  • eudract - European trials (free)")
-        await aprint(Fore.WHITE + "  • who_ictrp - International trials (free)")
-        await aprint(Fore.WHITE + "  • duckduckgo - Web search (free)")
-        await aprint(Fore.WHITE + "  • serpapi - Google search (requires API key)")
+        # Define API list with numbering
+        api_list = [
+            ('pmc_fulltext', 'PMC Full Text (free)'),
+            ('semantic_scholar', 'AI-powered papers (free)'),
+            ('eudract', 'European trials (free)'),
+            ('who_ictrp', 'International trials (free)'),
+            ('duckduckgo', 'Web search (free)'),
+            ('serpapi', 'Google search (requires API key)')
+        ]
         
-        custom = await ainput(Fore.CYAN + "Enter APIs (comma-separated): ")
-        return [api.strip() for api in custom.split(',') if api.strip()]
+        await aprint(Fore.CYAN + "\n📋 Available APIs:")
+        for i, (api_key, description) in enumerate(api_list, 1):
+            await aprint(Fore.WHITE + f"  {i}. {description}")
+        
+        custom = await ainput(Fore.CYAN + "Select APIs by number (comma-separated, e.g. '1,3,5'): ")
+        
+        # Parse number selections
+        selected_apis = []
+        selections = [s.strip() for s in custom.split(',') if s.strip()]
+        
+        for selection in selections:
+            try:
+                idx = int(selection) - 1
+                if 0 <= idx < len(api_list):
+                    selected_apis.append(api_list[idx][0])
+                else:
+                    await aprint(Fore.YELLOW + f"⚠️  Ignoring invalid selection: {selection}")
+            except ValueError:
+                await aprint(Fore.YELLOW + f"⚠️  Ignoring non-numeric selection: {selection}")
+        
+        if not selected_apis:
+            await aprint(Fore.RED + "❌ No valid APIs selected, using all")
+            return None
+        
+        await aprint(Fore.GREEN + f"✅ Selected {len(selected_apis)} API(s): {', '.join(selected_apis)}")
+        return selected_apis
     else:
         return None  # Default to all
 

@@ -1,6 +1,6 @@
 """
 SSH connection management with proper async cleanup.
-FIXED: Proper async close handling to prevent warnings and recursion errors.
+FIXED: Proper async close handling + prevents recursion errors
 """
 
 import asyncio
@@ -21,7 +21,9 @@ class SSHManager:
     """
     Manages SSH connection lifecycle with proper async cleanup.
     
-    FIXED: Ensures all close operations are properly awaited.
+    FIXED: 
+    - Ensures all close operations are properly awaited
+    - Prevents recursive shutdown errors
     """
     
     def __init__(self):
@@ -31,6 +33,7 @@ class SSHManager:
         self.port: int = 22
         self.settings = get_config()
         self._closing = False  # Prevent recursive closes
+        self._close_task = None  # Track close task
     
     def is_connected(self) -> bool:
         """Check if SSH connection is active."""
@@ -207,35 +210,62 @@ class SSHManager:
     async def close(self) -> None:
         """
         Close SSH connection gracefully.
-        FIXED: Properly await the close operation.
+        FIXED: Properly await the close operation and prevent recursion.
         """
+        # Prevent recursive closes
         if self._closing:
-            return  # Prevent recursive closes
+            logger.debug("Close already in progress, skipping")
+            return
         
-        if self.connection:
+        # If there's already a close task running, wait for it
+        if self._close_task and not self._close_task.done():
+            logger.debug("Waiting for existing close task")
             try:
-                self._closing = True
-                logger.info("Closing SSH connection...")
-                
-                # Properly close the connection (don't await the close method itself)
-                self.connection.close()
-                
-                # Wait for the connection to actually close
-                try:
-                    await asyncio.wait_for(
-                        self.connection.wait_closed(),
-                        timeout=5.0
-                    )
-                except asyncio.TimeoutError:
-                    logger.warning("SSH close timeout, connection may not have closed cleanly")
-                
-                self.connection = None
-                logger.info("SSH connection closed")
-                
+                await asyncio.wait_for(self._close_task, timeout=3.0)
+            except asyncio.TimeoutError:
+                logger.warning("Existing close task timed out")
+            return
+        
+        # Create new close task
+        self._close_task = asyncio.create_task(self._close_internal())
+        
+        try:
+            await asyncio.wait_for(self._close_task, timeout=5.0)
+        except asyncio.TimeoutError:
+            logger.warning("SSH close timeout")
+        finally:
+            self._close_task = None
+    
+    async def _close_internal(self) -> None:
+        """Internal close method."""
+        if not self.connection:
+            return
+        
+        try:
+            self._closing = True
+            logger.info("Closing SSH connection...")
+            
+            # Close the connection (non-blocking)
+            self.connection.close()
+            
+            # Wait for the connection to actually close
+            try:
+                await asyncio.wait_for(
+                    self.connection.wait_closed(),
+                    timeout=3.0
+                )
+                logger.info("SSH connection closed successfully")
+            except asyncio.TimeoutError:
+                logger.warning("SSH wait_closed() timeout, connection may not have closed cleanly")
             except Exception as e:
-                logger.error(f"Error closing SSH connection: {e}")
-            finally:
-                self._closing = False
+                logger.warning(f"Error during wait_closed(): {e}")
+            
+            self.connection = None
+            
+        except Exception as e:
+            logger.error(f"Error closing SSH connection: {e}")
+        finally:
+            self._closing = False
     
     def get_connection_info(self) -> dict:
         """Get current connection information."""
