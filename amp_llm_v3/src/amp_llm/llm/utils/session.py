@@ -1,18 +1,25 @@
 """
 Persistent session manager for Ollama API connections.
-Supports both direct and SSH-tunneled modes with retry logic and zsh-safe behavior.
+Supports smart connection strategy: auto, direct, or tunnel.
 """
 import asyncio
 import aiohttp
 from typing import Optional, List
-from amp_llm.config.logging import get_logger
+from amp_llm.config import get_logger, get_config
 from amp_llm.llm.utils.tunnel_manager import OllamaTunnelManager
 
 logger = get_logger(__name__)
 
 
 class OllamaSessionManager:
-    """Persistent session with automatic SSH tunneling fallback."""
+    """
+    Persistent session with smart connection strategy.
+    
+    Connection strategies:
+    - 'auto': Smart detection (tunnel for remote, direct for local)
+    - 'direct': Always try direct connection
+    - 'tunnel': Always use SSH tunnel
+    """
 
     def __init__(self, host: str, port: int = 11434, ssh_connection=None):
         self.original_host = host
@@ -25,7 +32,15 @@ class OllamaSessionManager:
 
         self.tunnel_manager = None
         self._using_tunnel = False
-        self._remote_shell = None  # Track detected remote shell
+        self._remote_shell = None
+        
+        # Load connection strategy from config
+        try:
+            config = get_config()
+            self.connection_strategy = config.llm.connection_strategy
+        except Exception:
+            self.connection_strategy = 'auto'
+            logger.debug("Could not load connection strategy from config, using 'auto'")
 
     # --------------------------------------------------------------
     async def __aenter__(self):
@@ -96,10 +111,9 @@ class OllamaSessionManager:
         result = await self.ssh_connection.run(
             wrapped,
             check=False,
-            term_type=None,   # still non-interactive (LLM-safe)
+            term_type=None,
         )
         return result
-
 
     # --------------------------------------------------------------
     async def _test_connection(self) -> bool:
@@ -134,26 +148,87 @@ class OllamaSessionManager:
         return False
 
     # --------------------------------------------------------------
-    async def start_session(self):
-        """Initialize persistent session, with SSH fallback."""
-        await self._create_session()
+    def _should_use_tunnel_immediately(self) -> bool:
+        """Determine if we should skip direct connection and use tunnel."""
+        # If no SSH, can't use tunnel
+        if not self.ssh_connection:
+            return False
+        
+        # If explicitly set to tunnel mode
+        if self.connection_strategy == 'tunnel':
+            return True
+        
+        # If auto mode and host is remote (not localhost)
+        if self.connection_strategy == 'auto':
+            is_remote = self.original_host not in ('localhost', '127.0.0.1', '::1')
+            return is_remote
+        
+        return False
 
+    # --------------------------------------------------------------
+    async def _connect_via_tunnel(self):
+        """Connect using SSH tunnel."""
+        logger.info(f"Connecting via SSH tunnel to {self.original_host}:{self.port}")
+        
+        if await self._create_tunnel():
+            await self.session.close()
+            await self._create_session()
+            
+            if await self._test_connection():
+                logger.info("✅ Connected via SSH tunnel")
+                return self
+            raise ConnectionError("Cannot connect via SSH tunnel")
+        
+        raise ConnectionError("Failed to create SSH tunnel")
+
+    async def _connect_direct(self):
+        """Connect directly without tunnel."""
+        logger.info(f"Attempting direct connection to {self.original_host}:{self.port}")
+        
         if await self._test_connection():
             logger.info("✅ Direct connection successful")
             return self
+        
+        raise ConnectionError(f"Cannot connect directly to {self.original_host}:{self.port}")
 
-        logger.warning("⚠️  Direct connection failed")
+    async def _connect_auto(self):
+        """Smart auto connection strategy."""
+        # Check if we should skip direct and go straight to tunnel
+        if self._should_use_tunnel_immediately():
+            logger.info(
+                f"Remote host detected ({self.original_host}), "
+                "using SSH tunnel (skipping direct connection)"
+            )
+            return await self._connect_via_tunnel()
+        
+        # Try direct connection first
+        logger.info("Attempting direct connection...")
+        if await self._test_connection():
+            logger.info("✅ Direct connection successful")
+            return self
+        
+        # Fallback to tunnel if we have SSH
+        if self.ssh_connection:
+            logger.warning("⚠️  Direct connection failed, trying SSH tunnel")
+            return await self._connect_via_tunnel()
+        
+        raise ConnectionError("Failed to connect to Ollama")
 
-        if self.ssh_connection and await self._create_tunnel():
-            await self.session.close()
-            await self._create_session()
-
-            if await self._test_connection():
-                logger.info("✅ Connection via SSH tunnel successful")
-                return self
-            raise ConnectionError("Cannot connect even via SSH tunnel")
-        else:
-            raise ConnectionError("Failed to connect or create SSH tunnel")
+    # --------------------------------------------------------------
+    async def start_session(self):
+        """Initialize persistent session based on connection strategy."""
+        await self._create_session()
+        
+        try:
+            if self.connection_strategy == 'tunnel':
+                return await self._connect_via_tunnel()
+            elif self.connection_strategy == 'direct':
+                return await self._connect_direct()
+            else:  # 'auto'
+                return await self._connect_auto()
+        except ConnectionError as e:
+            logger.error(f"Connection failed: {e}")
+            raise
 
     async def close_session(self):
         """Close session and SSH tunnel."""

@@ -1,6 +1,7 @@
 """
 Configuration management for AMP_LLM application.
 Supports environment variables with sensible defaults.
+All settings are configurable via .env file.
 """
 import os
 import logging
@@ -19,31 +20,61 @@ except ImportError:
 @dataclass
 class NetworkConfig:
     """Network and SSH configuration."""
-    default_ip: str = field(default_factory=lambda: os.getenv('SSH_DEFAULT_IP', '100.99.162.98'))
-    default_username: str = field(default_factory=lambda: os.getenv('SSH_DEFAULT_USERNAME', 'emilyzhang'))
-    ping_timeout: float = 1.0
-    ssh_timeout: int = 30
-    ssh_keepalive_interval: int = 15
-    ssh_keepalive_count_max: int = 3
-    max_auth_attempts: int = 3
+    default_ip: str = field(
+        default_factory=lambda: os.getenv('SSH_DEFAULT_IP', '100.99.162.98')
+    )
+    default_username: str = field(
+        default_factory=lambda: os.getenv('SSH_DEFAULT_USERNAME', 'emilyzhang')
+    )
+    ping_timeout: float = field(
+        default_factory=lambda: float(os.getenv('NETWORK_PING_TIMEOUT', '1.0'))
+    )
+    ssh_timeout: int = field(
+        default_factory=lambda: int(os.getenv('SSH_TIMEOUT', '30'))
+    )
+    ssh_keepalive_interval: int = field(
+        default_factory=lambda: int(os.getenv('SSH_KEEPALIVE_INTERVAL', '15'))
+    )
+    ssh_keepalive_count_max: int = field(
+        default_factory=lambda: int(os.getenv('SSH_KEEPALIVE_COUNT_MAX', '3'))
+    )
+    max_auth_attempts: int = field(
+        default_factory=lambda: int(os.getenv('SSH_MAX_AUTH_ATTEMPTS', '3'))
+    )
 
 
 @dataclass
 class CLIConfig:
     """CLI display configuration."""
-    use_rich: bool = field(default_factory=lambda: os.getenv('CLI_USE_RICH', 'true').lower() == 'true')
-    color_output: bool = field(default_factory=lambda: os.getenv('CLI_COLOR_OUTPUT', 'true').lower() == 'true')
-    table_width: int = field(default_factory=lambda: int(os.getenv('CLI_TABLE_WIDTH', '120')))
+    use_rich: bool = field(
+        default_factory=lambda: os.getenv('CLI_USE_RICH', 'true').lower() == 'true'
+    )
+    color_output: bool = field(
+        default_factory=lambda: os.getenv('CLI_COLOR_OUTPUT', 'true').lower() == 'true'
+    )
+    table_width: int = field(
+        default_factory=lambda: int(os.getenv('CLI_TABLE_WIDTH', '120'))
+    )
 
 
 @dataclass
 class APIConfig:
     """API client configuration for external services."""
-    timeout: int = field(default_factory=lambda: int(os.getenv('API_TIMEOUT', '15')))
-    max_retries: int = field(default_factory=lambda: int(os.getenv('API_MAX_RETRIES', '3')))
-    rate_limit_delay: float = field(default_factory=lambda: float(os.getenv('API_RATE_LIMIT_DELAY', '0.34')))
-    max_concurrent: int = field(default_factory=lambda: int(os.getenv('API_MAX_CONCURRENT', '5')))
-    max_results: int = field(default_factory=lambda: int(os.getenv('API_MAX_RESULTS', '10')))
+    timeout: int = field(
+        default_factory=lambda: int(os.getenv('API_TIMEOUT', '15'))
+    )
+    max_retries: int = field(
+        default_factory=lambda: int(os.getenv('API_MAX_RETRIES', '3'))
+    )
+    rate_limit_delay: float = field(
+        default_factory=lambda: float(os.getenv('API_RATE_LIMIT_DELAY', '0.34'))
+    )
+    max_concurrent: int = field(
+        default_factory=lambda: int(os.getenv('API_MAX_CONCURRENT', '5'))
+    )
+    max_results: int = field(
+        default_factory=lambda: int(os.getenv('API_MAX_RESULTS', '10'))
+    )
     
     cli: CLIConfig = field(default_factory=CLIConfig)
     
@@ -55,9 +86,11 @@ class APIConfig:
     )
     
     # API Keys
-    ncbi_api_key: Optional[str] = field(default_factory=lambda: os.getenv('NCBI_API_KEY'))
+    ncbi_api_key: Optional[str] = field(
+        default_factory=lambda: os.getenv('NCBI_API_KEY')
+    )
     
-    # Rate limiting
+    # Rate limiting (token bucket)
     rate_limit_requests: int = field(
         default_factory=lambda: int(os.getenv('API_RATE_LIMIT_REQUESTS', '10'))
     )
@@ -69,19 +102,49 @@ class APIConfig:
 @dataclass
 class LLMConfig:
     """LLM-related configuration."""
-    default_model: Optional[str] = field(default_factory=lambda: os.getenv('OLLAMA_DEFAULT_MODEL'))
-    timeout: int = 120
-    stream_chunk_size: int = 1024
-    idle_timeout: int = 3
+    default_model: Optional[str] = field(
+        default_factory=lambda: os.getenv('OLLAMA_DEFAULT_MODEL')
+    )
+    timeout: int = field(
+        default_factory=lambda: int(os.getenv('LLM_TIMEOUT', '120'))
+    )
+    stream_chunk_size: int = field(
+        default_factory=lambda: int(os.getenv('LLM_STREAM_CHUNK_SIZE', '1024'))
+    )
+    idle_timeout: int = field(
+        default_factory=lambda: int(os.getenv('LLM_IDLE_TIMEOUT', '3'))
+    )
+    # Connection strategy: 'auto', 'direct', or 'tunnel'
+    connection_strategy: str = field(
+        default_factory=lambda: os.getenv('OLLAMA_CONNECTION_STRATEGY', 'auto')
+    )
+    # Ollama host and port
+    host: str = field(
+        default_factory=lambda: os.getenv('OLLAMA_HOST', 'localhost')
+    )
+    port: int = field(
+        default_factory=lambda: int(os.getenv('OLLAMA_PORT', '11434'))
+    )
 
 
 @dataclass
 class OutputConfig:
     """Output and logging configuration."""
-    output_dir: Path = field(default_factory=lambda: Path(os.getenv('OUTPUT_DIR', 'output')))
-    log_file: Path = field(default_factory=lambda: Path(os.getenv('LOG_FILE', 'amp_llm.log')))
-    log_level: str = field(default_factory=lambda: os.getenv('LOG_LEVEL', 'INFO'))
-    log_format: str = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    output_dir: Path = field(
+        default_factory=lambda: Path(os.getenv('OUTPUT_DIR', 'output'))
+    )
+    log_file: Path = field(
+        default_factory=lambda: Path(os.getenv('LOG_FILE', 'amp_llm.log'))
+    )
+    log_level: str = field(
+        default_factory=lambda: os.getenv('LOG_LEVEL', 'INFO')
+    )
+    log_format: str = field(
+        default_factory=lambda: os.getenv(
+            'LOG_FORMAT',
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        )
+    )
 
 
 @dataclass
@@ -106,6 +169,7 @@ class AppConfig:
         """Validate configuration values. Returns list of errors (empty if valid)."""
         errors = []
         
+        # API validation
         if self.api.timeout <= 0:
             errors.append("API timeout must be positive")
         
@@ -124,16 +188,27 @@ class AppConfig:
         if self.api.max_results <= 0:
             errors.append("Max results must be positive")
         
+        # Network validation
         if self.network.ping_timeout <= 0:
             errors.append("Ping timeout must be positive")
         
         if self.network.max_auth_attempts <= 0:
             errors.append("Max auth attempts must be positive")
         
+        # LLM validation
         if self.llm.timeout <= 0:
             errors.append("LLM timeout must be positive")
         
-        # Validate log level
+        if self.llm.connection_strategy not in ('auto', 'direct', 'tunnel'):
+            errors.append(
+                f"Invalid connection strategy: {self.llm.connection_strategy}. "
+                "Must be 'auto', 'direct', or 'tunnel'"
+            )
+        
+        if self.llm.port <= 0 or self.llm.port > 65535:
+            errors.append("Ollama port must be between 1 and 65535")
+        
+        # Output validation
         valid_levels = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
         if self.output.log_level.upper() not in valid_levels:
             errors.append(f"Invalid log level. Must be one of: {', '.join(valid_levels)}")
