@@ -26,6 +26,16 @@ from .async_io import ainput, aprint
 # from .commands import CommandRegistry, Command
 
 # Parser (if it exists and doesn't import commands)
+
+try:
+    from .rich_formatters import RichFormatter
+    HAS_RICH = True
+except ImportError:
+    HAS_RICH = False
+    RichFormatter = None
+
+
+
 try:
     from .parser import CLIParser, Argument, Option
 except ImportError:
@@ -162,6 +172,10 @@ __all__ = [
     'CommandError',
     'ValidationError',
     'UserCancelled',
+
+    # Rich Formatter
+    'RichFormatter',
+    'HAS_RICH',
 ]
 
 __version__ = '3.0.0'

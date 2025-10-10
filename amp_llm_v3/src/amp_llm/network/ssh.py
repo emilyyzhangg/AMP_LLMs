@@ -3,7 +3,7 @@ import asyncio
 from typing import Optional
 from contextlib import asynccontextmanager
 from colorama import Fore
-from src.amp_llm.config import get_logger
+from amp_llm.config import get_logger
 
 logger = get_logger(__name__)
 

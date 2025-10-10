@@ -11,7 +11,13 @@ from colorama import Fore, Style, init
 from amp_llm.cli.async_io import ainput, aprint
 from amp_llm.config import get_logger, get_config
 from amp_llm.llm.utils.session import OllamaSessionManager
-from amp_llm.llm.assistants.commands import CommandHandler
+
+# Try to import Rich formatters
+try:
+    from amp_llm.cli.rich_formatters import RichFormatter, console
+    HAS_RICH = True
+except ImportError:
+    HAS_RICH = False
 
 # Import RAG if available
 try:
@@ -30,6 +36,7 @@ except ImportError:
 logger = get_logger(__name__)
 config = get_config()
 init(autoreset=True)  # Initialize colorama
+
 
 class ClinicalTrialResearchAssistant:
     """
@@ -70,15 +77,24 @@ class ClinicalTrialResearchAssistant:
             nct_id: NCT number
             
         Returns:
-            Formatted extraction text
+            Formatted extraction text or empty string if displayed via Rich
         """
         extraction = self.rag.db.extract_structured_data(nct_id)
         
         if not extraction:
             return f"NCT number {nct_id} not found in database."
         
-        context = extraction.to_formatted_string()
+        # Use Rich formatter if available for display
+        if HAS_RICH:
+            from dataclasses import asdict
+            RichFormatter.display_extraction(asdict(extraction))
+            # Still need to get LLM response, so continue with prompt
+            context = extraction.to_formatted_string()
+        else:
+            # Fallback to text format
+            context = extraction.to_formatted_string()
         
+        # Prepare prompt for LLM extraction
         prompt = f"""You are extracting structured clinical trial data. Use the information below to fill in the extraction format.
 
 CRITICAL RULES:
@@ -145,8 +161,17 @@ Provide a clear, well-structured answer based on the trial data above."""
             ssh_connection: SSH connection
             remote_host: Remote host IP
         """
-        await aprint(Fore.CYAN + Style.BRIGHT + "\n=== 🔬 Clinical Trial Research Assistant ===")
-        await aprint(Fore.WHITE + "RAG-powered intelligent analysis of clinical trial database\n")
+        # Display header
+        if HAS_RICH:
+            from rich.panel import Panel
+            console.print(Panel(
+                "[bold cyan]🔬 Clinical Trial Research Assistant[/bold cyan]\n"
+                "RAG-powered intelligent analysis of clinical trial database",
+                border_style="cyan"
+            ))
+        else:
+            await aprint(Fore.CYAN + Style.BRIGHT + "\n=== 🔬 Clinical Trial Research Assistant ===")
+            await aprint(Fore.WHITE + "RAG-powered intelligent analysis of clinical trial database\n")
         
         await aprint(Fore.GREEN + f"✅ Indexed {len(self.rag.db.trials)} clinical trials")
         
@@ -247,68 +272,22 @@ Provide a clear, well-structured answer based on the trial data above."""
             except Exception as e:
                 await aprint(Fore.RED + f"\n❌ Error: {e}")
                 logger.error(f"Interaction error: {e}", exc_info=True)
-    async def run_research_assistant_with_menu(assistant):
-        """
-        Run research assistant with interactive menu system.
-        
-        Args:
-            assistant: Your ClinicalTrialResearchAssistant instance
-        """
-        handler = CommandHandler(assistant)
-        
-        # Show welcome message
-        print(Fore.CYAN + Style.BRIGHT + "\n" + "="*60)
-        print(Fore.CYAN + Style.BRIGHT + "  🧬 CLINICAL TRIAL RESEARCH ASSISTANT")
-        print(Fore.CYAN + Style.BRIGHT + "="*60 + Style.RESET_ALL)
-        print(Fore.GREEN + "\n✅ Connected and ready!")
-        print(Fore.YELLOW + "💡 Type 'menu' for options, 'help' for commands, or ask a question directly\n")
-        
-        try:
-            while True:
-                try:
-                    # Get user input
-                    user_input = await ainput(Fore.GREEN + "Research> " + Fore.RESET)
-                    
-                    # Show menu if requested
-                    if user_input.strip().lower() == 'menu':
-                        command = await handler.show_main_menu()
-                        if command:
-                            user_input = command
-                        else:
-                            continue
-                    
-                    # Handle command
-                    should_continue = await handler.handle_command(user_input)
-                    
-                    if not should_continue:
-                        break
-                        
-                except KeyboardInterrupt:
-                    print(Fore.YELLOW + "\n\n⚠️  Interrupted. Type 'exit' to quit or 'menu' for options.")
-                    continue
-                except EOFError:
-                    print(Fore.YELLOW + "\n\n🚪 Exiting...")
-                    break
-                    
-        except Exception as e:
-            print(Fore.RED + f"\n❌ Fatal error: {e}")
-            logger.error(f"Assistant loop error: {e}", exc_info=True)
-        finally:
-            print(Fore.CYAN + "\n👋 Goodbye!\n")
-
-    async def _ensure_model_exists_for_research(
+    
+    async def _ensure_model_exists(
         self, 
         ssh_connection, 
         available_models: list
     ) -> bool:
         """
-        Ensure Research Assistant model exists for Option 5.
-        Same workflow as LLM mode but focused on research.
+        Ensure Research Assistant model exists.
         
+        Args:
+            ssh_connection: SSH connection
+            available_models: List of available models
+            
         Returns:
             True if model ready
         """
-        
         # Check if research assistant already exists
         model_variants = [
             self.model_name,
@@ -394,46 +373,6 @@ Provide a clear, well-structured answer based on the trial data above."""
         else:
             await aprint(Fore.RED + f"❌ Failed to create '{self.model_name}'")
             return False
-    
-    async def _get_model_info(self, ssh_connection, model_name: str) -> dict:
-        """Get information about a model."""
-        try:
-            result = await self.session_manager._run_silent(
-                f'ollama show {model_name} --modelfile'
-            )
-
-            if result.exit_status == 0 and result.stdout:
-                modelfile = result.stdout
-
-                # Parse FROM line
-                base_model = "unknown"
-                for line in modelfile.split('\n'):
-                    if line.strip().startswith('FROM'):
-                        base_model = line.split('FROM', 1)[1].strip()
-                        break
-
-                # Get size
-                result_list = await self.session_manager._run_silent(
-                    f'ollama list | grep {model_name}'
-                )
-
-                size = "unknown"
-                if result_list.exit_status == 0 and result_list.stdout:
-                    parts = result_list.stdout.split()
-                    if len(parts) >= 2:
-                        size = parts[1]
-
-                return {'base_model': base_model, 'size': size}
-
-            return None
-        except Exception as e:
-            logger.error(f"Error getting model info: {e}")
-            return None
-
-            
-        except Exception as e:
-            logger.error(f"Error getting model info: {e}")
-            return None
     
     async def _show_no_models_help(self):
         """Show help when no models found."""

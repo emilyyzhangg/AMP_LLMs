@@ -1,3 +1,4 @@
+# src/amp_llm/core/menu.py
 """
 Enhanced menu system with pluggable handlers.
 NO hardcoded dependencies - uses handler pattern.
@@ -59,7 +60,12 @@ class MenuSystem:
     """Enhanced menu system with pluggable handlers."""
     
     def __init__(self, app_context):
-        """Initialize menu system."""
+        """
+        Initialize menu system.
+        
+        Args:
+            app_context: Application context with settings, SSH manager, etc.
+        """
         self.context = app_context
         self.items: Dict[str, MenuItem] = {}
         self.aliases: Dict[str, str] = {}

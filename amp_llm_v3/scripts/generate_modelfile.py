@@ -1,189 +1,204 @@
+# scripts/generate_modelfile.py
 """
 Dynamic Modelfile Generator
 Generates Modelfile from validation_config.py to ensure single source of truth.
 
 Usage:
-    python generate_modelfile.py [--base llama3.2] [--output Modelfile]
+    python scripts/generate_modelfile.py [--base llama3.2] [--output Modelfile]
 """
-"""
-Comprehensive test script for AMP_LLM v3.0
-Verifies environment, structure, imports, and functionality.
-
-Usage:
-    python test_setup.py [--verbose] [--fix]
-"""
-import sys
-import os
-import importlib.util
 import argparse
 from pathlib import Path
-from typing import List, Tuple
+
+
+def generate_modelfile(base_model: str = "llama3.2") -> str:
+    """
+    Generate Modelfile content.
+    
+    Args:
+        base_model: Base model to use (default: llama3.2)
+        
+    Returns:
+        Complete Modelfile content as string
+    """
+    
+    # Try to import validation config
+    try:
+        from amp_llm.config.validation import get_validation_config
+        config = get_validation_config()
+        has_validation = True
+    except ImportError:
+        has_validation = False
+    
+    # Build validation rules section
+    if has_validation:
+        validation_rules = []
+        
+        # Study Status
+        statuses = config.get_valid_values('study_status')
+        validation_rules.append("**Study Status values:**")
+        validation_rules.extend([f"- {s}" for s in statuses])
+        
+        # Phases
+        phases = config.get_valid_values('phase')
+        validation_rules.append("\n**Phase values:**")
+        validation_rules.extend([f"- {p}" for p in phases])
+        
+        # Classification
+        classifications = config.get_valid_values('classification')
+        validation_rules.append("\n**Classification values:**")
+        validation_rules.extend([f"- {c}" for c in classifications])
+        
+        # Delivery Mode
+        delivery_modes = config.get_valid_values('delivery_mode')
+        validation_rules.append("\n**Delivery Mode values:**")
+        validation_rules.extend([f"- {d}" for d in delivery_modes])
+        
+        # Outcome
+        outcomes = config.get_valid_values('outcome')
+        validation_rules.append("\n**Outcome values:**")
+        validation_rules.extend([f"- {o}" for o in outcomes])
+        
+        # Failure Reason
+        failure_reasons = config.get_valid_values('failure_reason')
+        validation_rules.append("\n**Reason for Failure values:**")
+        validation_rules.extend([f"- {r}" for r in failure_reasons])
+        
+        validation_section = "\n".join(validation_rules)
+    else:
+        validation_section = "<!-- Validation config not available -->"
+    
+    # Build outcome mapping section
+    outcome_mapping = """- COMPLETED/FINISHED → Positive
+- RECRUITING/ENROLLING → Recruiting  
+- ACTIVE_NOT_RECRUITING/ONGOING → Active, not recruiting
+- TERMINATED/STOPPED → Terminated
+- WITHDRAWN/CANCELLED → Withdrawn
+- UNKNOWN/UNAVAILABLE → Unknown"""
+    
+    # Build peptide keywords section
+    peptide_keywords = "peptide, amp, antimicrobial peptide, dramp, polypeptide"
+    
+    # Generate complete Modelfile
+    modelfile = f'''# Clinical Trial Research Assistant Modelfile
+# Generated from validation_config.py
+FROM {base_model}
+
+SYSTEM """You are a Clinical Trial Data Extraction Specialist. Extract structured information from clinical trial JSON data.
+
+## OUTPUT FORMAT
+
+Format your response EXACTLY like this (use actual data, NOT placeholders):
+
+NCT Number: NCT07013110
+Study Title: An Artificial Intelligence-powered Approach to Precision Immunotherapy
+Study Status: RECRUITING
+Brief Summary: This clinical study is a multi-center, randomized study...
+Conditions: Rheumatoid Arthritis, Rheumatology
+Interventions/Drug: Biological: dnaJP1, Other: Hydroxychloroquine, Placebo
+Phases: PHASE2
+Enrollment: 124
+Start Date: 2025-06-18
+Completion Date: 2028-11
+Classification: AMP(other)
+  Evidence: Study involves antimicrobial peptide for non-infection purposes
+Delivery Mode: Oral - Tablet
+Sequence: N/A
+DRAMP Name: dnaJP1
+  Evidence: DRAMP database entry for dnaJP1
+Study IDs: PMC:11855921
+Outcome: Recruiting
+Reason for Failure: N/A
+Subsequent Trial IDs: N/A
+  Evidence: N/A
+Peptide: True
+Comments: Early-phase trial investigating immunotherapy effects
+
+## CRITICAL RULES
+
+1. Use ACTUAL data from the trial, NOT placeholder text like [title here] or [PHASE#]
+2. Do NOT wrap response in markdown code blocks (no ```)
+3. Write values directly without brackets [ ]
+4. For missing data, write exactly: N/A
+5. Use EXACT values from validation lists below
+
+## VALID VALUES
+
+{validation_section}
+
+## EXTRACTION GUIDELINES
+
+**Status to Outcome mapping:**
+{outcome_mapping}
+
+**Peptide detection:**
+Look for: {peptide_keywords}
+
+**Classification logic:**
+- If peptide AND treats infection → AMP(infection)
+- If peptide BUT other purpose → AMP(other)
+- If not peptide → Other
+
+**DO NOT:**
+- Use placeholder text like [title here], [PHASE#], [condition1, condition2]
+- Wrap output in code blocks
+- Include brackets in actual data
+- Leave fields blank (use N/A instead)
+
+**DO:**
+- Extract actual values from the JSON
+- Write values directly without formatting
+- Use exact validation list values
+- Provide clear evidence for classifications
+
+Now extract the clinical trial data following this exact format with actual data."""
+
+# Optimized parameters
+PARAMETER temperature 0.15
+PARAMETER top_p 0.9
+PARAMETER top_k 40
+PARAMETER repeat_penalty 1.2
+PARAMETER num_ctx 8192
+PARAMETER num_predict 2048
+
+# Stop sequences
+PARAMETER stop "<|eot_id|>"
+PARAMETER stop "<|end_of_text|>"
+PARAMETER stop "</s>"
+'''
+    
+    return modelfile
 
 
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Test AMP_LLM v3.0 setup and environment"
+        description="Generate Modelfile for Clinical Trial Research Assistant"
     )
     parser.add_argument(
-        "--verbose", "-v",
-        action="store_true",
-        help="Show detailed output"
+        "--base",
+        default="llama3.2",
+        help="Base model to use (default: llama3.2)"
     )
     parser.add_argument(
-        "--fix",
-        action="store_true",
-        help="Attempt to fix issues automatically"
+        "--output",
+        default="Modelfile",
+        help="Output file path (default: Modelfile)"
     )
     
     args = parser.parse_args()
     
-    tester = V3Tester(verbose=args.verbose, fix=args.fix)
+    # Generate Modelfile
+    print(f"Generating Modelfile with base model: {args.base}")
+    content = generate_modelfile(base_model=args.base)
     
-    try:
-        success = tester.run_all_tests()
-        return 0 if success else 1
-    except KeyboardInterrupt:
-        print(f"\n\n{Color.YELLOW}Test interrupted by user{Color.END}")
-        return 1
-    except Exception as e:
-        print(f"\n{Color.RED}Test suite error: {e}{Color.END}")
-        if args.verbose:
-            import traceback
-            traceback.print_exc()
-        return 1
+    # Write to file
+    output_path = Path(args.output)
+    output_path.write_text(content, encoding='utf-8')
+    
+    print(f"✅ Modelfile generated successfully: {output_path}")
+    print(f"   Base model: {args.base}")
+    print(f"   Size: {len(content)} characters")
 
-#!/usr/bin/env python3
-"""
-Quick setup verification script.
-Checks if all required files and dependencies are in place.
-
-Usage:
-    python check_setup.py
-"""
-import sys
-from pathlib import Path
-from colorama import Fore, Style, init
-
-init(autoreset=True)
-
-
-def check_file(path: Path, description: str) -> bool:
-    """Check if a file exists."""
-    if path.exists():
-        print(f"{Fore.GREEN}✅ {description}: {path}")
-        return True
-    else:
-        print(f"{Fore.RED}❌ {description}: {path} (MISSING)")
-        return False
-
-
-def check_directory(path: Path, description: str) -> bool:
-    """Check if a directory exists."""
-    if path.is_dir():
-        print(f"{Fore.GREEN}✅ {description}: {path}/")
-        return True
-    else:
-        print(f"{Fore.YELLOW}⚠️  {description}: {path}/ (MISSING)")
-        return False
-
-
-def check_import(module_name: str) -> bool:
-    """Check if a module can be imported."""
-    try:
-        __import__(module_name)
-        print(f"{Fore.GREEN}✅ Import: {module_name}")
-        return True
-    except ImportError:
-        print(f"{Fore.RED}❌ Import: {module_name} (FAILED)")
-        return False
-
-
-def main():
-    """Run all checks."""
-    print(f"\n{Fore.CYAN}{Style.BRIGHT}{'='*60}")
-    print(f"{Fore.CYAN}AMP_LLM Setup Verification")
-    print(f"{Fore.CYAN}{'='*60}{Style.RESET_ALL}\n")
-    
-    root = Path.cwd()
-    all_good = True
-    
-    # Check main entry points
-    print(f"{Fore.YELLOW}Main Entry Points:")
-    all_good &= check_file(root / "main.py", "Root entry point")
-    
-    # Check scripts directory
-    print(f"\n{Fore.YELLOW}Scripts Directory:")
-    all_good &= check_directory(root / "scripts", "Scripts directory")
-    all_good &= check_file(root / "scripts" / "setup_environment.py", "Environment setup")
-    all_good &= check_file(root / "scripts" / "validate_setup.py", "Setup validation")
-    all_good &= check_file(root / "scripts" / "generate_modelfile.py", "Modelfile generator")
-    
-    # Check src structure
-    print(f"\n{Fore.YELLOW}Source Structure:")
-    all_good &= check_directory(root / "src", "Source directory")
-    all_good &= check_directory(root / "src" / "amp_llm", "Package directory")
-    all_good &= check_file(root / "src" / "amp_llm" / "__init__.py", "Package init")
-    all_good &= check_file(root / "src" / "amp_llm" / "__main__.py", "Package main")
-    
-    # Check core modules
-    print(f"\n{Fore.YELLOW}Core Modules:")
-    all_good &= check_directory(root / "src" / "amp_llm" / "core", "Core module")
-    all_good &= check_file(root / "src" / "amp_llm" / "core" / "app.py", "Application class")
-    all_good &= check_file(root / "src" / "amp_llm" / "core" / "menu.py", "Menu system")
-    
-    # Check config modules
-    print(f"\n{Fore.YELLOW}Config Modules:")
-    all_good &= check_directory(root / "src" / "amp_llm" / "config", "Config module")
-    all_good &= check_file(root / "src" / "amp_llm" / "config" / "settings.py", "Settings")
-    all_good &= check_file(root / "src" / "amp_llm" / "config" / "logging.py", "Logging")
-    
-    # Check LLM modules
-    print(f"\n{Fore.YELLOW}LLM Modules:")
-    all_good &= check_directory(root / "src" / "amp_llm" / "llm", "LLM module")
-    all_good &= check_file(root / "src" / "amp_llm" / "llm" / "handlers.py", "LLM handlers")
-    
-    # Check data modules
-    print(f"\n{Fore.YELLOW}Data Modules:")
-    all_good &= check_directory(root / "src" / "amp_llm" / "data", "Data module")
-    all_good &= check_file(root / "src" / "amp_llm" / "data" / "async_nct_lookup.py", "NCT lookup")
-    
-    # Check network modules
-    print(f"\n{Fore.YELLOW}Network Modules:")
-    all_good &= check_directory(root / "src" / "amp_llm" / "network", "Network module")
-    all_good &= check_file(root / "src" / "amp_llm" / "network" / "shell.py", "Shell module")
-    
-    # Check dependencies
-    print(f"\n{Fore.YELLOW}Python Dependencies:")
-    deps = ['asyncssh', 'aiohttp', 'aioconsole', 'colorama', 'requests']
-    for dep in deps:
-        all_good &= check_import(dep)
-    
-    # Check optional files
-    print(f"\n{Fore.YELLOW}Optional Files:")
-    if check_file(root / "Modelfile", "Modelfile"):
-        pass
-    else:
-        print(f"{Fore.CYAN}   ℹ️  Will be auto-generated on first run")
-    
-    if check_file(root / "requirements.txt", "Requirements"):
-        pass
-    else:
-        print(f"{Fore.YELLOW}   ⚠️  Create requirements.txt for easy dependency management")
-    
-    # Summary
-    print(f"\n{Fore.CYAN}{Style.BRIGHT}{'='*60}")
-    if all_good:
-        print(f"{Fore.GREEN}{Style.BRIGHT}✅ ALL CHECKS PASSED!")
-        print(f"\n{Fore.GREEN}Your setup is ready. Run with:")
-        print(f"{Fore.CYAN}  python main.py")
-    else:
-        print(f"{Fore.YELLOW}{Style.BRIGHT}⚠️  SOME CHECKS FAILED")
-        print(f"\n{Fore.YELLOW}Fix the missing files above, then run:")
-        print(f"{Fore.CYAN}  python check_setup.py")
-    print(f"{Fore.CYAN}{'='*60}{Style.RESET_ALL}\n")
-    
-    return 0 if all_good else 1
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

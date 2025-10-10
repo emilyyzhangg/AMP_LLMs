@@ -39,6 +39,10 @@ class BaseAPIClient(ABC):
         self.config = config or APIConfig()
         self.session: Optional[aiohttp.ClientSession] = None
         self._last_request_time = 0
+        self.rate_limiter = AsyncRateLimiter(
+        max_requests=self.config.rate_limit_requests,
+        time_period=self.config.rate_limit_period
+    )
     
     # =========================================================================
     # ASYNC CONTEXT MANAGER SUPPORT
@@ -124,7 +128,8 @@ class BaseAPIClient(ABC):
         Returns:
             Response object
         """
-        await self._ensure_session()
+        async with self.rate_limiter:  # ✅ Automatic rate limiting
+            await self._ensure_session()
         await self._rate_limit()
         
         for attempt in range(self.config.max_retries):

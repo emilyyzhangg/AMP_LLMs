@@ -75,8 +75,8 @@ print("=" * 60 + "\n")
 colorama_init(autoreset=True)
 
 try:
-    from src.amp_llm.core.app import Application
-    from src.amp_llm.config import get_logger
+    from amp_llm.core.app import Application
+    from amp_llm.config import get_logger
 except ImportError:
     try:
         from amp_llm.core.app import Application

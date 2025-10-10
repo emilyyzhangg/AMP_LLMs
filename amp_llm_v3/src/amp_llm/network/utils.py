@@ -2,7 +2,7 @@
 
 import asyncio
 from typing import Tuple
-from src.amp_llm.config import get_logger
+from amp_llm.config import get_logger
 
 logger = get_logger(__name__)
 
