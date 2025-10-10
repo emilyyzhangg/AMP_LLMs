@@ -182,6 +182,7 @@ class ClinicalTrialResearchAssistant:
     async def _ensure_model_exists(self, ssh_connection, available_models: list) -> bool:
         """
         Check if custom model exists, create if not.
+        Shows base model information when custom model is found.
         
         Args:
             ssh_connection: SSH connection
@@ -191,128 +192,168 @@ class ClinicalTrialResearchAssistant:
             True if model ready
         """
         model_variants = [
-        self.model_name,
-        f"{self.model_name}:latest"
+            self.model_name,
+            f"{self.model_name}:latest"
         ]
-
-        if any(variant in available_models for variant in model_variants):
-            await aprint(Fore.GREEN + f"✅ Found custom model: {self.model_name}")
-            return True
-    
-        if self.model_name in available_models:
-            await aprint(Fore.GREEN + f"✅ Found custom model: {self.model_name}")
-            return True
         
-        await aprint(Fore.YELLOW + f"\n🔧 Custom model '{self.model_name}' not found")
-        await aprint(Fore.CYAN + "Would you like to create it with your Modelfile?")
+        # Check if custom model exists
+        model_found = any(variant in available_models for variant in model_variants)
         
-        create = await ainput(Fore.GREEN + "Create custom model? (y/n) [y]: ")
+        if model_found:
+            await aprint(Fore.GREEN + f"✅ Found existing model: {self.model_name}")
+            
+            # Get model information to show base model
+            model_info = await self._get_model_info(ssh_connection, self.model_name)
+            
+            if model_info:
+                await aprint(Fore.CYAN + f"   Built from: {model_info['base_model']}")
+                await aprint(Fore.CYAN + f"   Size: {model_info['size']}")
+                
+                if model_info.get('modified'):
+                    await aprint(Fore.CYAN + f"   Modified: {model_info['modified']}")
+            
+            # Ask if user wants to use it or rebuild
+            use_existing = await ainput(
+                Fore.CYAN + 
+                f"\nUse existing '{self.model_name}'? (y=use / n=rebuild / s=skip and select base model) [y]: "
+            )
+            
+            choice = use_existing.strip().lower()
+            
+            if choice in ('', 'y', 'yes'):
+                # Use existing model
+                logger.info(f"Using existing model: {self.model_name}")
+                return True
+            
+            elif choice in ('s', 'skip'):
+                # Skip to base model selection
+                await aprint(Fore.YELLOW + "Skipping custom model, will select base model instead")
+                return False
+            
+            elif choice in ('n', 'no'):
+                # Rebuild the model
+                await aprint(Fore.YELLOW + f"\n🔄 Rebuilding '{self.model_name}'...")
+                
+                # Continue to model creation below
+                pass
+            else:
+                # Invalid input, default to using existing
+                await aprint(Fore.YELLOW + "Invalid input, using existing model")
+                return True
         
-        if create.strip().lower() in ('n', 'no'):
-            await aprint(Fore.YELLOW + "Skipped. Will use base model instead.")
-            return False
+        # Model doesn't exist or user wants to rebuild
+        if not model_found:
+            await aprint(Fore.YELLOW + f"\n🔧 Custom model '{self.model_name}' not found")
         
-        # Import model builder
-        try:
-            from amp_llm.llm.models.builder import build_custom_model
-        except ImportError:
-            await aprint(Fore.RED + "❌ Model builder not available")
-            await aprint(Fore.YELLOW + "Install model builder or use base model")
-            return False
+        await aprint(Fore.CYAN + "Select a base model to create the custom model")
         
-        # Build the model
+        # Show available base models for selection
+        await aprint(Fore.CYAN + f"\n📋 Available base models:")
+        for i, model in enumerate(available_models, 1):
+            marker = "→" if model == available_models[0] else " "
+            await aprint(Fore.WHITE + f"  {marker} {i}) {model}")
+        
+        choice = await ainput(Fore.GREEN + "Select base model by number or name [1]: ")
+        choice = choice.strip()
+        
+        # Parse choice
+        base_model = None
+        if not choice:
+            base_model = available_models[0]
+        elif choice.isdigit():
+            idx = int(choice) - 1
+            if 0 <= idx < len(available_models):
+                base_model = available_models[idx]
+            else:
+                await aprint(Fore.YELLOW + "Invalid selection, using first model")
+                base_model = available_models[0]
+        elif choice in available_models:
+            base_model = choice
+        else:
+            # Try to find partial match
+            matches = [m for m in available_models if choice.lower() in m.lower()]
+            if matches:
+                base_model = matches[0]
+                await aprint(Fore.CYAN + f"Using closest match: {base_model}")
+            else:
+                await aprint(Fore.YELLOW + f"Model '{choice}' not found, using first model")
+                base_model = available_models[0]
+        
+        await aprint(Fore.CYAN + f"\n🔨 Building '{self.model_name}' from '{base_model}'...")
+        
+        # Model creation using model_builder
+        from amp_llm.llm.models.builder import build_custom_model
+        
         success = await build_custom_model(
             ssh_connection,
             self.model_name,
-            available_models
+            available_models,
+            selected_base_model=base_model
         )
         
         if success:
-            # Refresh model list
-            models = await self.session_manager.list_models()
-            return self.model_name in models
+            await aprint(Fore.GREEN + f"✅ Model '{self.model_name}' created successfully!")
+            return True
+        else:
+            await aprint(Fore.RED + f"❌ Failed to create '{self.model_name}'")
+            return False
         
-        return False
+async def _get_model_info(self, ssh_connection, model_name: str) -> dict:
+    """
+    Get information about a model from Ollama.
     
-    async def extract_from_nct(self, nct_id: str) -> str:
-        """
-        Extract structured data from specific NCT trial.
+    Args:
+        ssh_connection: SSH connection
+        model_name: Name of model to inspect
         
-        Args:
-            nct_id: NCT number
-            
-        Returns:
-            Formatted extraction text
-        """
-        extraction = self.rag.db.extract_structured_data(nct_id)
+    Returns:
+        Dictionary with model info or None if error
+    """
+    try:
+        # Run ollama show command to get model info
+        result = await ssh_connection.run(
+            f'bash -l -c "ollama show {model_name} --modelfile"',
+            check=False
+        )
         
-        if not extraction:
-            return f"NCT number {nct_id} not found in database."
+        if result.exit_status == 0 and result.stdout:
+            modelfile = result.stdout
+            
+            # Parse the FROM line to get base model
+            base_model = "unknown"
+            for line in modelfile.split('\n'):
+                if line.strip().startswith('FROM'):
+                    base_model = line.split('FROM', 1)[1].strip()
+                    break
+            
+            # Get model size
+            result_list = await ssh_connection.run(
+                f'bash -l -c "ollama list | grep {model_name}"',
+                check=False
+            )
+            
+            size = "unknown"
+            modified = None
+            
+            if result_list.exit_status == 0 and result_list.stdout:
+                # Parse output: NAME    SIZE    MODIFIED
+                parts = result_list.stdout.split()
+                if len(parts) >= 3:
+                    size = parts[1]
+                    # Modified time is the rest
+                    if len(parts) >= 4:
+                        modified = ' '.join(parts[2:])
+            
+            return {
+                'base_model': base_model,
+                'size': size,
+                'modified': modified
+            }
         
-        context = extraction.to_formatted_string()
-        
-        prompt = f"""You are extracting structured clinical trial data. Use the information below to fill in the extraction format.
-
-CRITICAL RULES:
-1. Use ACTUAL values from the data below, NOT placeholders
-2. For missing data, write exactly: N/A
-3. Use EXACT values from validation lists
-4. Do NOT wrap response in code blocks
-
-Trial Data:
-{context}
-
-Now provide a complete extraction following the exact format specified in your system prompt."""
-
-        try:
-            response = await self.session_manager.send_prompt(self.model_name, prompt)
+        else:
+            logger.warning(f"Could not get info for {model_name}")
+            return None
             
-            if not response or len(response.strip()) < 50:
-                return f"Could not extract data for {nct_id}. Response too short or empty."
-            
-            return response
-            
-        except Exception as e:
-            logger.error(f"Error extracting {nct_id}: {e}", exc_info=True)
-            return f"Error: {e}"
-    
-    async def query_with_rag(self, query: str, max_trials: int = 10) -> str:
-        """
-        Answer query using RAG system.
-        
-        Args:
-            query: User question
-            max_trials: Maximum number of trials to include
-            
-        Returns:
-            LLM answer
-        """
-        context = self.rag.get_context_for_llm(query, max_trials=max_trials)
-        
-        prompt = f"""You are a clinical trial research assistant. Use the trial data below to answer the question.
-
-Question: {query}
-
-{context}
-
-Provide a clear, well-structured answer based on the trial data above."""
-
-        try:
-            response = await self.session_manager.send_prompt(self.model_name, prompt)
-            
-            if not response:
-                return "Error: No response from LLM"
-            
-            return response
-            
-        except Exception as e:
-            logger.error(f"Error in query: {e}", exc_info=True)
-            return f"Error: {e}"
-    
-    async def _show_no_models_help(self):
-        """Show help when no models found."""
-        await aprint(Fore.RED + "❌ No models found on remote server")
-        await aprint(Fore.YELLOW + "\nInstall models on remote server:")
-        await aprint(Fore.WHITE + "  1. SSH to remote server")
-        await aprint(Fore.WHITE + "  2. Run: ollama pull llama3.2")
-        await aprint(Fore.WHITE + "  3. Verify: ollama list")
+    except Exception as e:
+        logger.error(f"Error getting model info: {e}", exc_info=True)
+        return None

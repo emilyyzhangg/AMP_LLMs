@@ -22,7 +22,8 @@ logger = get_logger(__name__)
 async def build_custom_model(
     ssh_connection, 
     model_name: str, 
-    available_models: list
+    available_models: list,
+    selected_base_model: str = None  # NEW PARAMETER
 ) -> bool:
     """
     Build custom model from Modelfile.
@@ -31,12 +32,12 @@ async def build_custom_model(
         ssh_connection: SSH connection
         model_name: Name for custom model
         available_models: List of available base models
+        selected_base_model: Pre-selected base model (optional)
         
     Returns:
         True if successful
     """
     await aprint(Fore.CYAN + "\n🏗️  Building Custom Model")
-    await aprint(Fore.YELLOW + "This is a one-time setup to create a specialized assistant.")
     
     # Find Modelfile
     modelfile_path = _find_modelfile()
@@ -59,30 +60,35 @@ async def build_custom_model(
         await aprint(Fore.RED + f"❌ Cannot read Modelfile: {e}")
         return False
     
-    # Select base model
-    await aprint(Fore.CYAN + f"\n📋 Available base models:")
-    for i, model in enumerate(available_models, 1):
-        await aprint(Fore.WHITE + f"  {i}. {model}")
-    
-    choice = await ainput(Fore.GREEN + "Select base model [1]: ")
-    choice = choice.strip()
-    
-    # Parse choice
-    base_model = None
-    if not choice:
-        base_model = available_models[0]
-    elif choice.isdigit():
-        idx = int(choice) - 1
-        if 0 <= idx < len(available_models):
-            base_model = available_models[idx]
-        else:
-            await aprint(Fore.YELLOW + "Invalid selection, using first model")
-            base_model = available_models[0]
-    elif choice in available_models:
-        base_model = choice
+    # Use pre-selected base model or prompt for selection
+    if selected_base_model:
+        base_model = selected_base_model
+        await aprint(Fore.CYAN + f"Using selected base model: {base_model}")
     else:
-        await aprint(Fore.YELLOW + f"Model '{choice}' not found, using first model")
-        base_model = available_models[0]
+        # Original selection logic (fallback)
+        await aprint(Fore.CYAN + f"\n📋 Available base models:")
+        for i, model in enumerate(available_models, 1):
+            await aprint(Fore.WHITE + f"  {i}. {model}")
+        
+        choice = await ainput(Fore.GREEN + "Select base model [1]: ")
+        choice = choice.strip()
+        
+        # Parse choice
+        base_model = None
+        if not choice:
+            base_model = available_models[0]
+        elif choice.isdigit():
+            idx = int(choice) - 1
+            if 0 <= idx < len(available_models):
+                base_model = available_models[idx]
+            else:
+                await aprint(Fore.YELLOW + "Invalid selection, using first model")
+                base_model = available_models[0]
+        elif choice in available_models:
+            base_model = choice
+        else:
+            await aprint(Fore.YELLOW + f"Model '{choice}' not found, using first model")
+            base_model = available_models[0]
     
     await aprint(Fore.CYAN + f"\n🔨 Building '{model_name}' from '{base_model}'...")
     
