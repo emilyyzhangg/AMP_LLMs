@@ -76,7 +76,7 @@ def generate_modelfile(base_model: str = "llama3.2") -> str:
 - UNKNOWN/UNAVAILABLE → Unknown"""
     
     # Build peptide keywords section
-    peptide_keywords = "peptide, amp, antimicrobial peptide, dramp, polypeptide"
+    peptide_keywords = "amp, antimicrobial peptide, dramp"
     
     # Generate complete Modelfile
     modelfile = f'''# Clinical Trial Research Assistant Modelfile
@@ -134,9 +134,24 @@ Comments: Early-phase trial investigating immunotherapy effects
 Look for: {peptide_keywords}
 
 **Classification logic:**
-- If peptide AND treats infection → AMP(infection)
-- If peptide BUT other purpose → AMP(other)
-- If not peptide → Other
+- If a peptide and antimicrobial via direct killing or immunomodulation → AMP
+- If a peptide and not antimicrovial → Other
+
+**Outcome logic**
+- if a trial is RECRUITING, ENROLLING, ACTIVE, NOT RECRUITING → Active
+- if a trial has completed and a peer reviewed publication, company newsletter, or biotech news article indicates safety and efficicacy -> Positive
+- if a trial has completed and a peer reviewed publication, company newsletter, or biotech news article indicates toxicity or lack of efficacy -> Failed - completed trial
+- if a trial is terminated or withdrawn → Terminated or Withdrawn
+- if a trial has compelted with no relevant publications or news articles → Unknown
+
+**Failure reason logic**
+- Only provide a reason if the outcome is Terminated, Withdrawn or Failed - completed trial
+- If a trial has failed due to financial reasons, issues with the company, or strategic pivots → Business Reason
+- If a trial has failed due to lack of efficacy or not meeting endpoints → Ineffective for purpose
+- If a trial has failed due to safety concerns, adverse events, or toxicity → Toxic/Unsafe
+- If a trial struggled to recruit participants due to general recruitment issues → Recruitment issues
+- If you are unsure → Unknown
+- If the outcome is not Terminated, Withdrawn or Failed - completed trial → N/A
 
 **DO NOT:**
 - Use placeholder text like [title here], [PHASE#], [condition1, condition2]

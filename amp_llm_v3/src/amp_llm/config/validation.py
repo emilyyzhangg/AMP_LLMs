@@ -39,37 +39,16 @@ class Phase(str, Enum):
 
 class Classification(str, Enum):
     """Valid trial classification values."""
-    AMP_INFECTION = "AMP(infection)"
-    AMP_OTHER = "AMP(other)"
+    AMP = "AMP"
     OTHER = "Other"
 
 
 class DeliveryMode(str, Enum):
     """Valid drug/intervention delivery modes."""
     # Injection/Infusion
-    INJECTION_INTRAMUSCULAR = "Injection/Infusion - Intramuscular"
-    INJECTION_OTHER = "Injection/Infusion - Other/Unspecified"
-    INJECTION_SUBCUTANEOUS = "Injection/Infusion - Subcutaneous/Intradermal"
-    IV = "IV"
-    
-    # Oral
-    ORAL_TABLET = "Oral - Tablet"
-    ORAL_CAPSULE = "Oral - Capsule"
-    ORAL_FOOD = "Oral - Food"
-    ORAL_DRINK = "Oral - Drink"
-    ORAL_UNSPECIFIED = "Oral - Unspecified"
-    
-    # Topical
-    TOPICAL_CREAM = "Topical - Cream/Gel"
-    TOPICAL_POWDER = "Topical - Powder"
-    TOPICAL_SPRAY = "Topical - Spray"
-    TOPICAL_STRIP = "Topical - Strip/Covering"
-    TOPICAL_WASH = "Topical - Wash"
-    TOPICAL_UNSPECIFIED = "Topical - Unspecified"
-    
-    # Other
-    INTRANASAL = "Intranasal"
-    INHALATION = "Inhalation"
+    INJECTION_INFUSION = "Injection/Infusion"
+    ORAL = "Oral"
+    TOPICAL = "Topical"
     OTHER_UNSPECIFIED = "Other/Unspecified"
 
 
@@ -79,9 +58,8 @@ class Outcome(str, Enum):
     WITHDRAWN = "Withdrawn"
     TERMINATED = "Terminated"
     FAILED_COMPLETED = "Failed - completed trial"
-    RECRUITING = "Recruiting"
+    ACTIVE = "Active"
     UNKNOWN = "Unknown"
-    ACTIVE_NOT_RECRUITING = "Active, not recruiting"
 
 
 class FailureReason(str, Enum):
@@ -89,8 +67,8 @@ class FailureReason(str, Enum):
     BUSINESS_REASON = "Business Reason"
     INEFFECTIVE = "Ineffective for purpose"
     TOXIC_UNSAFE = "Toxic/Unsafe"
-    COVID = "Due to covid"
     RECRUITMENT_ISSUES = "Recruitment issues"
+    UNKNOWN = "Unknown"
     NOT_APPLICABLE = "N/A"
 
 
@@ -158,24 +136,16 @@ INFECTION_KEYWORDS: List[str] = [
 ]
 
 DELIVERY_MODE_KEYWORDS: Dict[str, List[str]] = {
-    'IV': ['intravenous', 'iv ', 'i.v.', 'infusion'],
-    'Injection/Infusion - Intramuscular': ['intramuscular', 'i.m.', 'im injection'],
-    'Injection/Infusion - Subcutaneous/Intradermal': [
-        'subcutaneous', 'subq', 's.c.', 'sc injection', 'intradermal'
-    ],
-    'Oral - Tablet': ['tablet', 'oral tablet'],
-    'Oral - Capsule': ['capsule', 'oral capsule'],
-    'Topical - Cream/Gel': ['topical', 'cream', 'gel', 'ointment'],
-    'Intranasal': ['nasal', 'intranasal'],
-    'Inhalation': ['inhal', 'nebuliz', 'inhaler'],
-    'Oral - Unspecified': ['oral'],
+    'Injection/Infusion': ['intravenous', 'iv ', 'i.v.', 'infusion', 'intramuscular', 'i.m.', 'im injection',
+           'subcutaneous', 'subq', 's.c.', 'sc injection', 'intradermal'],
+    'Oral': ['tablet', 'oral tablet', 'capsule', 'oral capsule'],
+    'Topical': ['topical', 'cream', 'gel', 'ointment', 'varnish', 'lotion', 'dermal', 'skin']
 }
 
 FAILURE_REASON_KEYWORDS: Dict[str, List[str]] = {
-    'Toxic/Unsafe': ['safe', 'toxic', 'adverse', 'ae', 'safety'],
+    'Toxic/Unsafe': ['safe', 'toxic', 'adverse', 'ae', 'safety', 'itis', 'lytic'],
     'Recruitment issues': ['recruit', 'enroll', 'accru', 'enrollment'],
-    'Due to covid': ['covid', 'pandemic', 'coronavirus'],
-    'Business Reason': ['business', 'sponsor', 'fund', 'financial'],
+    'Business Reason': ['business', 'sponsor', 'fund', 'financial', 'strategic', 'company', 'investor'],
     'Ineffective for purpose': ['ineffective', 'efficacy', 'futility', 'futile'],
 }
 
