@@ -85,9 +85,9 @@ from colorama import init
 # Initialize colorama
 init(autoreset=True)
 
-# Import from the correct location
+# Import from the correct location (FIXED)
 try:
-    from amp_llm.src.amp_llm.core.app import Application
+    from amp_llm.core.app import Application
     from amp_llm.config import get_logger
     
     logger = get_logger(__name__)

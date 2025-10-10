@@ -8,6 +8,7 @@ import asyncio
 from typing import Optional, TYPE_CHECKING
 if TYPE_CHECKING:
     import asyncssh
+    
 from colorama import Fore, Style
 
 try:
@@ -19,8 +20,8 @@ except ImportError:
         print(*args, **kwargs)
 
 from amp_llm.config import get_config, get_logger
-from network.ping import ping_host
-from network.ssh import connect_ssh
+from amp_llm.network.ping import ping_host
+from amp_llm.network.ssh import connect_ssh
 from .exceptions import SSHConnectionError, SSHAuthenticationError
 
 logger = get_logger(__name__)
@@ -109,7 +110,7 @@ class SSHManager:
         Returns:
             Verified host IP/hostname
         """
-        default_host = self.settings.network.default_host
+        default_host = self.settings.network.default_ip
         
         while True:
             try:
@@ -122,7 +123,7 @@ class SSHManager:
                 
                 reachable = await ping_host(
                     host,
-                    timeout=self.settings.network.timeout
+                    timeout=self.settings.network.ping_timeout
                 )
                 
                 if reachable:
@@ -145,7 +146,7 @@ class SSHManager:
         Returns:
             SSH username
         """
-        default_user = self.settings.network.default_user
+        default_user = self.settings.network.default_username
         
         try:
             username = await ainput(

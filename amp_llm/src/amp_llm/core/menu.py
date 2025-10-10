@@ -76,9 +76,9 @@ class MenuSystem:
     def _register_default_items(self) -> None:
         """Register default menu items with FIXED imports."""
         # FIXED: Use correct import paths
-        from src.amp_llm.network.shell import open_interactive_shell
-        from src.amp_llm.llm.handlers import run_llm_entrypoint_api, run_llm_entrypoint_ssh
-        from data.async_nct_lookup import run_nct_lookup
+        from amp_llm.network.shell import open_interactive_shell
+        from amp_llm.llm.handlers import run_llm_entrypoint_api, run_llm_entrypoint_ssh
+        from amp_llm.data.async_nct_lookup import run_nct_lookup
         
         # Try to import research assistant (may not exist yet)
         try:

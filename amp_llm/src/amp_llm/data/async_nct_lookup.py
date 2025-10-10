@@ -15,7 +15,7 @@ except ImportError:
     async def aprint(*args, **kwargs):
         print(*args, **kwargs)
 
-from amp_llm.src.amp_llm.data.clinical_trials.fetchers import (
+from src.amp_llm.data.clinical_trials.fetchers import (
     fetch_clinical_trial_and_pubmed_pmc,
     print_study_summary,
     save_results,
@@ -23,7 +23,7 @@ from amp_llm.src.amp_llm.data.clinical_trials.fetchers import (
 )
 
 # Import new API clients
-from data.api_clients import APIManager, SearchConfig
+from amp_llm.data.api_clients import APIManager, SearchConfig
 
 logger = get_logger(__name__)
 
