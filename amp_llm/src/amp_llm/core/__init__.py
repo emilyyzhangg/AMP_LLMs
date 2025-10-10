@@ -21,9 +21,13 @@ from .exceptions import (
     GracefulExit,
 )
 
+# Backward compatibility alias for old code
+AMPLLMApp = Application
+
 __all__ = [
     # Main application
     'Application',
+    'AMPLLMApp',  # Backward compatibility
     
     # Menu system
     'MenuSystem',
