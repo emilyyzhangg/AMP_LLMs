@@ -1,7 +1,5 @@
 """
-Environment setup with improved reliability and error handling.
-Ensures all dependencies are installed before application starts.
-FIXED: Properly detects already-installed packages
+Environment setup with better error reporting.
 """
 import os
 import sys
@@ -17,16 +15,8 @@ REQUIREMENTS_FILE = "requirements.txt"
 # Package name to import name mapping
 PACKAGE_IMPORT_MAPPING = {
     "beautifulsoup4": "bs4",
-    "biopython": "Bio",
-    "google-search-results": "serpapi",
-    "pytest-cov": "pytest_cov",
     "python-dotenv": "dotenv",
-    "aiohttp": "aiohttp",
-    "aioconsole": "aioconsole",
-    "asyncssh": "asyncssh",
-    "colorama": "colorama",
-    "openai": "openai",
-    "duckduckgo-search": "duckduckgo_search",  # FIXED: Added mapping
+    "duckduckgo-search": "duckduckgo_search",
 }
 
 
@@ -54,27 +44,49 @@ def create_virtual_env() -> bool:
         return False
 
 
-def is_same_python(p1: str, p2: str) -> bool:
-    """Check if two paths point to the same Python executable."""
-    try:
-        return pathlib.Path(p1).resolve().samefile(pathlib.Path(p2).resolve())
-    except Exception:
-        return False
-
-
 def upgrade_pip(venv_python: str) -> bool:
     """Upgrade pip in virtual environment."""
     print("📦 Upgrading pip...")
     try:
-        subprocess.check_call(
+        # Show output for debugging
+        result = subprocess.run(
             [venv_python, "-m", "pip", "install", "--upgrade", "pip"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
+            capture_output=True,
+            text=True,
+            timeout=120
         )
-        return True
+        if result.returncode == 0:
+            print("✅ Pip upgraded")
+            return True
+        else:
+            print(f"⚠️ Pip upgrade warning: {result.stderr}")
+            return True  # Continue anyway
     except Exception as e:
         print(f"⚠️  Could not upgrade pip: {e}")
-        return False
+        return True  # Continue anyway
+
+
+def install_package(venv_python: str, package: str) -> Tuple[bool, str]:
+    """Install single package and return (success, error_message)."""
+    try:
+        result = subprocess.run(
+            [venv_python, "-m", "pip", "install", package],
+            capture_output=True,
+            text=True,
+            timeout=300
+        )
+        
+        if result.returncode == 0:
+            return True, ""
+        else:
+            # Return actual error message
+            error_msg = result.stderr or result.stdout
+            return False, error_msg
+            
+    except subprocess.TimeoutExpired:
+        return False, "Installation timeout (5 minutes)"
+    except Exception as e:
+        return False, str(e)
 
 
 def install_requirements(venv_python: str) -> bool:
@@ -85,54 +97,49 @@ def install_requirements(venv_python: str) -> bool:
     
     print(f"📦 Installing packages from {REQUIREMENTS_FILE}...")
     
-    # Try to install all at once
-    try:
-        result = subprocess.run(
-            [venv_python, "-m", "pip", "install", "-r", REQUIREMENTS_FILE],
-            capture_output=True,
-            text=True,
-            timeout=300  # 5 minute timeout
-        )
-        
-        if result.returncode == 0:
-            print("✅ All packages installed successfully!")
-            return True
-        else:
-            print(f"⚠️  Batch install had issues, trying individually...")
-            return install_individually(venv_python)
-            
-    except subprocess.TimeoutExpired:
-        print("⚠️  Installation timed out, trying individually...")
-        return install_individually(venv_python)
-    except Exception as e:
-        print(f"❌ Error installing requirements: {e}")
-        return False
-
-
-def install_individually(venv_python: str) -> bool:
-    """Install packages one by one."""
+    # Read packages
     with open(REQUIREMENTS_FILE) as f:
         packages = [line.strip() for line in f if line.strip() and not line.startswith('#')]
     
+    print(f"Found {len(packages)} package(s) to install\n")
+    
     failed = []
-    for pkg in packages:
-        print(f"  Installing {pkg}...", end=" ")
-        try:
-            subprocess.check_call(
-                [venv_python, "-m", "pip", "install", pkg],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                timeout=120
-            )
+    error_details = {}
+    
+    for i, pkg in enumerate(packages, 1):
+        print(f"[{i}/{len(packages)}] Installing {pkg}...", end=" ", flush=True)
+        
+        success, error_msg = install_package(venv_python, pkg)
+        
+        if success:
             print("✅")
-        except Exception as e:
-            print(f"❌ {e}")
+        else:
+            print("❌")
             failed.append(pkg)
+            error_details[pkg] = error_msg
+            
+            # Print first few lines of error
+            error_lines = error_msg.split('\n')
+            print(f"  Error preview: {error_lines[-3] if len(error_lines) > 3 else error_msg[:100]}")
     
     if failed:
-        print(f"\n⚠️  Failed to install: {', '.join(failed)}")
+        print(f"\n⚠️  Failed to install {len(failed)} package(s):")
+        for pkg in failed:
+            print(f"  • {pkg}")
+            if pkg in error_details:
+                # Show last line of error which usually has the key info
+                error_lines = error_details[pkg].strip().split('\n')
+                last_line = error_lines[-1] if error_lines else "Unknown error"
+                print(f"    → {last_line}")
+        
+        print("\n💡 Troubleshooting:")
+        print("  1. Check your internet connection")
+        print("  2. Try: pip install --upgrade pip setuptools wheel")
+        print("  3. Try manually: pip install colorama")
+        print("  4. Check if you need to run as Administrator")
         return False
     
+    print("\n✅ All packages installed successfully!")
     return True
 
 
@@ -151,9 +158,6 @@ requests>=2.31.0
 # UI and configuration
 colorama>=0.4.6
 python-dotenv>=1.0.0
-
-# Optional: OpenAI
-openai>=1.0.0
 """
     
     try:
@@ -166,48 +170,6 @@ openai>=1.0.0
         return False
 
 
-def check_missing_packages() -> Tuple[List[str], List[str]]:
-    """
-    Check which packages are missing.
-    Returns: (missing_packages, missing_import_names)
-    FIXED: Better detection logic
-    """
-    if not os.path.exists(REQUIREMENTS_FILE):
-        return [], []
-    
-    missing_packages = []
-    missing_imports = []
-    
-    with open(REQUIREMENTS_FILE) as f:
-        for line in f:
-            pkg = line.strip()
-            if not pkg or pkg.startswith('#'):
-                continue
-            
-            # Extract base package name (remove version specifiers)
-            base = pkg.split('==')[0].split('>=')[0].split('<=')[0].split('[')[0].strip()
-            
-            # Get import name
-            import_name = PACKAGE_IMPORT_MAPPING.get(base, base.replace('-', '_'))
-            
-            # Check if installed - FIXED: Better detection
-            try:
-                spec = importlib.util.find_spec(import_name)
-                if spec is None:
-                    # Try alternative import name (replace - with _)
-                    alt_import = base.replace('-', '_')
-                    spec = importlib.util.find_spec(alt_import)
-                    
-                    if spec is None:
-                        missing_packages.append(pkg)
-                        missing_imports.append(import_name)
-            except (ImportError, ModuleNotFoundError, ValueError):
-                missing_packages.append(pkg)
-                missing_imports.append(import_name)
-    
-    return missing_packages, missing_imports
-
-
 def ensure_env() -> bool:
     """
     Ensure virtual environment exists and has all packages.
@@ -217,7 +179,8 @@ def ensure_env() -> bool:
     current_python = os.path.abspath(sys.executable)
     venv_python = os.path.abspath(python_path)
     
-    in_venv = is_same_python(current_python, venv_python)
+    # Check if we're already in venv
+    in_venv = current_python == venv_python or VENV_DIR in current_python
     
     if not in_venv:
         # Not in venv - need to create/use it
@@ -235,8 +198,16 @@ def ensure_env() -> bool:
         
         # Install requirements
         if not install_requirements(venv_python):
-            print("⚠️  Some packages failed to install")
-            print("     The application may not work correctly")
+            print("\n⚠️  Some packages failed to install")
+            print("     You can try to continue, but the application may not work correctly")
+            
+            # Ask user if they want to continue
+            try:
+                response = input("\nContinue anyway? (y/n): ").strip().lower()
+                if response != 'y':
+                    return False
+            except:
+                return False
         
         # Relaunch inside venv
         print(f"\n🔄 Relaunching inside virtual environment...")
@@ -250,25 +221,8 @@ def ensure_env() -> bool:
             print(f"\n💡 Manually run: {venv_python} main.py")
             return False
     
-    # We're in the venv - check packages
+    # We're in the venv
     print("✅ Running inside virtual environment")
-    
-    missing_packages, missing_imports = check_missing_packages()
-    
-    if missing_packages:
-        print(f"\n⚠️  Found {len(missing_packages)} missing package(s):")
-        for pkg in missing_packages:
-            print(f"   - {pkg}")
-        
-        print("\n📦 Installing missing packages...")
-        if not install_requirements(sys.executable):
-            print("⚠️  Installation incomplete")
-            return False
-        
-        print("✅ All packages installed!")
-    else:
-        print("✅ All required packages are installed")
-    
     return True
 
 
@@ -285,14 +239,14 @@ def verify_critical_imports() -> bool:
     
     if failed:
         print(f"\n❌ Critical packages cannot be imported: {', '.join(failed)}")
-        print("   Run: pip install " + " ".join(failed))
+        print(f"   Current Python: {sys.executable}")
+        print(f"   Try: pip install {' '.join(failed)}")
         return False
     
     return True
 
 
 if __name__ == "__main__":
-    # Test the environment setup
     print("=== Testing Environment Setup ===\n")
     
     if ensure_env():
