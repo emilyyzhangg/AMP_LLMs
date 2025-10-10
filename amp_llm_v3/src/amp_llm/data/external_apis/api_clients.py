@@ -1,6 +1,6 @@
 """
 Unified API Manager - orchestrates all external API clients.
-NO client implementations here - only coordination.
+FIXED: Correct import paths from api_clients.extended
 """
 import asyncio
 from typing import Dict, Any, List, Optional
@@ -47,11 +47,13 @@ class APIManager:
     
     def _initialize_clients(self):
         """Lazy initialization of API clients."""
-        # Import clients only when needed
-        from amp_llm.data.external_apis.pmc_fulltext import PMCFullTextClient
-        from amp_llm.data.external_apis.eudract import EudraCTClient
-        from amp_llm.data.external_apis.who_ictrp import WHOICTRPClient
-        from amp_llm.data.external_apis.semantic_scholar import SemanticScholarClient
+        # FIXED: Import from correct location - api_clients.extended
+        from amp_llm.data.api_clients.extended.pmc_fulltext import PMCFullTextClient
+        from amp_llm.data.api_clients.extended.eudract import EudraCTClient
+        from amp_llm.data.api_clients.extended.who_ictrp import WHOICTRPClient
+        from amp_llm.data.api_clients.extended.semantic_scholar import SemanticScholarClient
+        from amp_llm.data.api_clients.extended.duckduckgo import DuckDuckGoClient
+        from amp_llm.data.api_clients.extended.serpapi import SerpAPIClient
         
         self._clients['pmc_fulltext'] = PMCFullTextClient(
             timeout=self.config.timeout,
@@ -70,6 +72,17 @@ class APIManager:
         
         self._clients['semantic_scholar'] = SemanticScholarClient(
             api_key=self.config.semantic_scholar_key,
+            timeout=self.config.timeout,
+            max_results=self.config.max_results
+        )
+        
+        self._clients['duckduckgo'] = DuckDuckGoClient(
+            timeout=self.config.timeout,
+            max_results=self.config.max_results
+        )
+        
+        self._clients['serpapi'] = SerpAPIClient(
+            api_key=self.config.serpapi_key,
             timeout=self.config.timeout,
             max_results=self.config.max_results
         )
@@ -139,6 +152,26 @@ class APIManager:
             )
             task_names.append('semantic_scholar')
         
+        # DuckDuckGo
+        if 'duckduckgo' in enabled_apis:
+            condition = conditions[0] if conditions else None
+            tasks.append(
+                self._clients['duckduckgo'].search_by_clinical_trial(
+                    nct_id, title, condition
+                )
+            )
+            task_names.append('duckduckgo')
+        
+        # Google (SerpAPI)
+        if 'serpapi' in enabled_apis:
+            condition = conditions[0] if conditions else None
+            tasks.append(
+                self._clients['serpapi'].search_by_clinical_trial(
+                    nct_id, title, condition
+                )
+            )
+            task_names.append('serpapi')
+        
         # Execute all searches concurrently
         await aprint(f"🚀 Running {len(tasks)} API search(es) concurrently...\n")
         
@@ -189,5 +222,17 @@ class APIManager:
                 'type': 'Literature (AI-Powered)',
                 'cost': 'Free',
                 'auth': 'Optional API Key'
+            },
+            'duckduckgo': {
+                'name': 'DuckDuckGo',
+                'type': 'Web Search',
+                'cost': 'Free',
+                'auth': 'None'
+            },
+            'serpapi': {
+                'name': 'Google (SerpAPI)',
+                'type': 'Web Search',
+                'cost': 'Free tier: 100/month',
+                'auth': 'API Key Required'
             }
         }

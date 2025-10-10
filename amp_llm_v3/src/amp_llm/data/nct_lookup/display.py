@@ -1,11 +1,13 @@
 """
 Display and formatting utilities for NCT lookup results.
+FIXED: Corrected import path for summarize_result
 """
 from typing import List, Dict, Any
 from colorama import Fore, Style
 
 from amp_llm.cli.async_io import aprint
-from amp_llm.data.clinical_trials.fetchers import summarize_result
+# FIXED: Import from workflows.core_fetch instead of clinical_trials.fetchers
+from amp_llm.data.workflows.core_fetch import summarize_result
 
 
 async def print_workflow_header():

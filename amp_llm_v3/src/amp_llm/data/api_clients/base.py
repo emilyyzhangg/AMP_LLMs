@@ -1,6 +1,6 @@
 """
 Abstract base class for all API clients.
-Ensures consistent interface across all data sources.
+FIXED: Added async context manager support for all API clients.
 """
 from abc import ABC, abstractmethod
 from typing import Dict, Any, List, Optional
@@ -32,12 +32,31 @@ class BaseAPIClient(ABC):
     - Built-in retry logic
     - Rate limiting
     - Error handling
+    - Async context manager support
     """
     
     def __init__(self, config: Optional[APIConfig] = None):
         self.config = config or APIConfig()
         self.session: Optional[aiohttp.ClientSession] = None
         self._last_request_time = 0
+    
+    # =========================================================================
+    # ASYNC CONTEXT MANAGER SUPPORT
+    # =========================================================================
+    
+    async def __aenter__(self):
+        """Enter async context - ensure session is created."""
+        await self._ensure_session()
+        return self
+    
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Exit async context - close session."""
+        await self.close()
+        return False  # Don't suppress exceptions
+    
+    # =========================================================================
+    # ABSTRACT PROPERTIES
+    # =========================================================================
     
     @property
     @abstractmethod
@@ -51,12 +70,27 @@ class BaseAPIClient(ABC):
         """Base URL for API."""
         pass
     
+    # =========================================================================
+    # SESSION MANAGEMENT
+    # =========================================================================
+    
     async def _ensure_session(self):
         """Ensure aiohttp session exists."""
         if self.session is None or self.session.closed:
             self.session = aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=self.config.timeout)
             )
+            logger.debug(f"{self.name}: Created new session")
+    
+    async def close(self):
+        """Close session."""
+        if self.session and not self.session.closed:
+            await self.session.close()
+            logger.debug(f"{self.name}: Closed session")
+    
+    # =========================================================================
+    # RATE LIMITING
+    # =========================================================================
     
     async def _rate_limit(self):
         """Enforce rate limiting."""
@@ -68,6 +102,10 @@ class BaseAPIClient(ABC):
             await asyncio.sleep(self.config.rate_limit_delay - elapsed)
         
         self._last_request_time = time.time()
+    
+    # =========================================================================
+    # HTTP REQUEST WITH RETRY
+    # =========================================================================
     
     async def _request(
         self,
@@ -91,24 +129,26 @@ class BaseAPIClient(ABC):
         
         for attempt in range(self.config.max_retries):
             try:
-                async with self.session.request(method, url, **kwargs) as resp:
-                    resp.raise_for_status()
-                    return resp
+                response = await self.session.request(method, url, **kwargs)
+                response.raise_for_status()
+                return response
             
             except aiohttp.ClientError as e:
                 if attempt == self.config.max_retries - 1:
-                    logger.error(f"{self.name} request failed after {self.config.max_retries} attempts: {e}")
+                    logger.error(
+                        f"{self.name} request failed after {self.config.max_retries} attempts: {e}"
+                    )
                     raise
                 
                 logger.warning(f"{self.name} request failed (attempt {attempt + 1}): {e}")
                 await asyncio.sleep(2 ** attempt)  # Exponential backoff
+        
+        # Should never reach here due to raise in loop
+        raise RuntimeError(f"{self.name}: Request failed after all retries")
     
-    async def close(self):
-        """Close session."""
-        if self.session and not self.session.closed:
-            await self.session.close()
-    
-    # Subclasses must implement these:
+    # =========================================================================
+    # ABSTRACT METHODS - Subclasses must implement
+    # =========================================================================
     
     @abstractmethod
     async def search(self, query: str, **kwargs) -> Dict[str, Any]:

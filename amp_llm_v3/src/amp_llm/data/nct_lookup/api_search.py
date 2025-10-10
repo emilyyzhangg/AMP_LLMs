@@ -1,6 +1,6 @@
 """
 Extended API search integration for NCT lookup.
-Handles 10+ external APIs for comprehensive research.
+UPDATED: Now includes DuckDuckGo and Google/SerpAPI.
 """
 from typing import List, Dict, Any, Optional
 
@@ -14,6 +14,7 @@ logger = get_logger(__name__)
 async def get_api_selection() -> List[str]:
     """
     Ask user which APIs to use for extended search.
+    UPDATED: Now includes DuckDuckGo and Google options.
     
     Returns:
         List of enabled API names (empty list = no extended search)
@@ -29,12 +30,13 @@ async def get_api_selection() -> List[str]:
     
     # Show API collections
     await aprint(Fore.CYAN + "\n📊 Available API Collections:")
-    await aprint(Fore.WHITE + "  [1] All APIs (Comprehensive)")
-    await aprint(Fore.WHITE + "  [2] Literature Only (PubMed, PMC Full Text, Semantic Scholar)")
+    await aprint(Fore.WHITE + "  [1] All APIs (Comprehensive - 6 APIs)")
+    await aprint(Fore.WHITE + "  [2] Literature Only (PMC Full Text, Semantic Scholar)")
     await aprint(Fore.WHITE + "  [3] Clinical Databases (EudraCT, WHO ICTRP)")
-    await aprint(Fore.WHITE + "  [4] Custom Selection")
+    await aprint(Fore.WHITE + "  [4] Web Search (DuckDuckGo, Google)")
+    await aprint(Fore.WHITE + "  [5] Custom Selection")
     
-    api_choice = await ainput(Fore.CYAN + "Select [1-4] or Enter for all [1]: ")
+    api_choice = await ainput(Fore.CYAN + "Select [1-5] or Enter for all [1]: ")
     api_choice = api_choice.strip() or "1"
     
     # Determine enabled APIs
@@ -45,8 +47,16 @@ async def get_api_selection() -> List[str]:
     elif api_choice == "3":
         return ['eudract', 'who_ictrp']
     elif api_choice == "4":
+        return ['duckduckgo', 'serpapi']
+    elif api_choice == "5":
         await aprint(Fore.CYAN + "\n📋 Available APIs:")
-        await aprint(Fore.WHITE + "  pmc_fulltext, eudract, who_ictrp, semantic_scholar")
+        await aprint(Fore.WHITE + "  • pmc_fulltext - PMC Full Text (free)")
+        await aprint(Fore.WHITE + "  • semantic_scholar - AI-powered papers (free)")
+        await aprint(Fore.WHITE + "  • eudract - European trials (free)")
+        await aprint(Fore.WHITE + "  • who_ictrp - International trials (free)")
+        await aprint(Fore.WHITE + "  • duckduckgo - Web search (free)")
+        await aprint(Fore.WHITE + "  • serpapi - Google search (requires API key)")
+        
         custom = await ainput(Fore.CYAN + "Enter APIs (comma-separated): ")
         return [api.strip() for api in custom.split(',') if api.strip()]
     else:

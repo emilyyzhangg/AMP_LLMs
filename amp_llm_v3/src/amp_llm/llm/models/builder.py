@@ -1,5 +1,6 @@
 """
 Model builder for creating custom Ollama models from Modelfiles.
+FIXED: Properly detects success even with stty warnings.
 """
 import time
 from pathlib import Path
@@ -30,6 +31,7 @@ async def build_custom_model(
 ) -> bool:
     """
     Build custom model from Modelfile.
+    FIXED: Properly detects success even when stty warnings occur.
 
     Args:
         ssh_connection: SSH connection
@@ -125,15 +127,37 @@ async def build_custom_model(
         # Cleanup
         await _run_silent(ssh_connection, f'rm -f {temp_path}', check=False)
 
-        if result.exit_status == 0:
+        # FIXED: Check for "success" in output, not just exit status
+        # The stty warnings can cause non-zero exit status but model still succeeds
+        output_text = (result.stdout or "") + (result.stderr or "")
+        
+        if "success" in output_text.lower():
+            await aprint(Fore.GREEN + f"\n✅ Success! Model '{model_name}' created!")
+            await aprint(Fore.CYAN + f"   Base: {base_model}")
+            await aprint(Fore.CYAN + f"   Name: {model_name}")
+            logger.info(f"Successfully created model {model_name} from {base_model}")
+            return True
+        elif result.exit_status == 0:
+            # Fallback: if exit code is 0, consider it success
             await aprint(Fore.GREEN + f"\n✅ Success! Model '{model_name}' created!")
             await aprint(Fore.CYAN + f"   Base: {base_model}")
             await aprint(Fore.CYAN + f"   Name: {model_name}")
             return True
         else:
+            # Show the actual output for debugging
+            await aprint(Fore.YELLOW + "\n⚠️  Build completed with warnings:")
+            await aprint(Fore.WHITE + "Output:")
+            for line in output_text.split('\n'):
+                await aprint(Fore.WHITE + f"  {line}")
+            
+            # If we see "writing manifest" or "success", it actually worked
+            if "writing manifest" in output_text.lower():
+                await aprint(Fore.GREEN + "\n✅ Model successfully created despite warnings!")
+                await aprint(Fore.CYAN + f"   Base: {base_model}")
+                await aprint(Fore.CYAN + f"   Name: {model_name}")
+                return True
+            
             await aprint(Fore.RED + "\n❌ Model creation failed!")
-            if result.stderr:
-                await aprint(Fore.RED + f"Error: {result.stderr}")
             return False
 
     except Exception as e:
