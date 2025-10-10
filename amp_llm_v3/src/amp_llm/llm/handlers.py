@@ -1,6 +1,6 @@
 """
-LLM workflow handlers with custom model building support.
-Includes Modelfile-based personality customization.
+Enhanced LLM workflow handlers with interactive menu and file loading.
+Includes paste mode, file loading, and trial-specific operations.
 """
 import asyncio
 import time
@@ -17,24 +17,32 @@ except ImportError:
 
 from amp_llm.config import get_logger
 from amp_llm.llm.utils.session import OllamaSessionManager
+from amp_llm.llm.utils.interactive import (
+    handle_paste_command,
+    handle_load_command,
+    list_output_files,
+    show_pwd,
+)
 
 logger = get_logger(__name__)
 
 
 async def run_llm_entrypoint_api(ssh_manager):
     """
-    LLM workflow using Ollama API with automatic tunneling and model building.
+    Enhanced LLM workflow with interactive menu options.
     
-    This version includes:
+    Features:
+    - Paste mode for multi-line input
+    - File loading from output/ directory
+    - Trial-specific questions
+    - Custom model building
     - Automatic SSH tunneling
-    - Custom model creation from Modelfile
-    - Interactive model selection
     
     Args:
         ssh_manager: SSHManager instance
     """
     await aprint(Fore.CYAN + "\n=== 🤖 LLM Workflow (API Mode) ===")
-    await aprint(Fore.YELLOW + "Using Ollama HTTP API (recommended)")
+    await aprint(Fore.YELLOW + "Enhanced with file loading and interactive features")
     
     # Get remote host and SSH connection
     remote_host = ssh_manager.host if hasattr(ssh_manager, 'host') else 'localhost'
@@ -42,12 +50,10 @@ async def run_llm_entrypoint_api(ssh_manager):
     
     await aprint(Fore.CYAN + f"Connecting to Ollama at {remote_host}:11434...")
     
-    # Use enhanced session manager with automatic tunneling
     try:
         async with OllamaSessionManager(remote_host, 11434, ssh_connection) as session:
             await aprint(Fore.GREEN + "✅ Connected to Ollama!")
             
-            # Show if using tunnel
             if session._using_tunnel:
                 await aprint(Fore.CYAN + "   (via SSH tunnel)")
             
@@ -58,54 +64,33 @@ async def run_llm_entrypoint_api(ssh_manager):
                 await _show_no_models_help(ssh_manager)
                 return
             
-            # Check for custom model or offer to create one
-            custom_model_name = "ct-research-assistant"  # Your custom model name
-            selected_model = None
+            await aprint(Fore.GREEN + f"✅ Found {len(models)} model(s)")
             
-            if custom_model_name in models:
-                # Custom model exists
-                await aprint(Fore.GREEN + f"✅ Found custom model: {custom_model_name}")
-                use_custom = await ainput(Fore.CYAN + f"Use '{custom_model_name}'? (y/n) [y]: ")
-                
-                if use_custom.strip().lower() not in ('n', 'no'):
-                    selected_model = custom_model_name
-            else:
-                # Offer to create custom model
-                await aprint(Fore.YELLOW + f"\n🔧 Custom model '{custom_model_name}' not found")
-                await aprint(Fore.CYAN + "Would you like to create it with your Modelfile?")
-                create_custom = await ainput(Fore.GREEN + "Create custom model? (y/n) [y]: ")
-                
-                if create_custom.strip().lower() not in ('n', 'no'):
-                    # Build custom model
-                    if ssh_connection:
-                        model_created = await _build_custom_model(
-                            ssh_connection,
-                            custom_model_name,
-                            models
-                        )
-                        
-                        if model_created:
-                            # Refresh model list
-                            models = await session.list_models()
-                            selected_model = custom_model_name
-                        else:
-                            await aprint(Fore.YELLOW + "Falling back to base model selection...")
-                    else:
-                        await aprint(Fore.RED + "❌ SSH connection required to build custom models")
-                        await aprint(Fore.YELLOW + "Falling back to base model selection...")
+            # Model selection with custom model option
+            selected_model = await _select_or_create_model(
+                session, 
+                models, 
+                ssh_connection
+            )
             
-            # If no custom model selected, let user choose
             if not selected_model:
-                selected_model = await _select_model_interactive(models)
-                
-                if not selected_model:
-                    return  # User cancelled
+                return
             
-            await aprint(Fore.GREEN + f"✅ Selected: {selected_model}")
+            await aprint(Fore.GREEN + f"\n✅ Using model: {selected_model}")
             
-            # Run interactive session
-            await _run_interactive_session(session, selected_model)
+            # Show enhanced menu
+            await _show_interactive_menu()
             
+            # Run interactive session with enhanced features
+            await _run_enhanced_interactive_session(
+                session, 
+                selected_model,
+                ssh_manager
+            )
+            
+    except KeyboardInterrupt:
+        await aprint(Fore.YELLOW + "\n\n⚠️ LLM session interrupted (Ctrl+C). Returning to main menu...")
+        logger.info("LLM session interrupted by user")
     except ConnectionError as e:
         await aprint(Fore.RED + f"❌ Connection failed: {e}")
         logger.error(f"Connection error: {e}")
@@ -115,34 +100,440 @@ async def run_llm_entrypoint_api(ssh_manager):
         logger.error(f"Unexpected error: {e}", exc_info=True)
 
 
-async def _build_custom_model(ssh_connection, model_name: str, available_models: list) -> bool:
+async def _select_or_create_model(session, models: list, ssh_connection) -> str:
     """
-    Build custom model from Modelfile.
+    Select existing model or create custom one.
+    
+    Returns:
+        Selected model name or None if cancelled
+    """
+    custom_model_name = "ct-research-assistant"
+    
+    # Check if custom model exists
+    if custom_model_name in models:
+        await aprint(Fore.GREEN + f"✅ Found custom model: {custom_model_name}")
+        use_custom = await ainput(Fore.CYAN + f"Use '{custom_model_name}'? (y/n/list) [y]: ")
+        
+        choice = use_custom.strip().lower()
+        
+        if choice in ('', 'y', 'yes'):
+            return custom_model_name
+        elif choice == 'list':
+            pass  # Fall through to list
+        elif choice in ('n', 'no'):
+            pass  # Fall through to list
+        else:
+            return custom_model_name
+    
+    # Show all available models
+    await aprint(Fore.CYAN + f"\n📋 Available models:")
+    for i, model in enumerate(models, 1):
+        marker = "→" if model == models[0] else " "
+        await aprint(Fore.WHITE + f"  {marker} {i}) {model}")
+    
+    # Add option to create custom model
+    create_option = len(models) + 1
+    await aprint(Fore.YELLOW + f"  ✨ {create_option}) Create custom model '{custom_model_name}'")
+    
+    choice = await ainput(Fore.GREEN + f"Select model [1-{create_option}] or Enter for first: ")
+    choice = choice.strip()
+    
+    # Parse choice
+    if not choice:
+        return models[0]
+    elif choice.isdigit():
+        idx = int(choice)
+        if idx == create_option:
+            # Create custom model
+            if ssh_connection and await _build_custom_model(ssh_connection, custom_model_name, models):
+                return custom_model_name
+            else:
+                await aprint(Fore.YELLOW + "Falling back to first available model")
+                return models[0]
+        elif 1 <= idx <= len(models):
+            return models[idx - 1]
+    elif choice in models:
+        return choice
+    
+    # Default
+    return models[0]
+
+
+async def _show_interactive_menu():
+    """Display interactive menu options."""
+    await aprint(Fore.CYAN + Style.BRIGHT + "\n" + "="*60)
+    await aprint(Fore.CYAN + Style.BRIGHT + "  💬 INTERACTIVE LLM SESSION")
+    await aprint(Fore.CYAN + Style.BRIGHT + "="*60 + Style.RESET_ALL)
+    
+    await aprint(Fore.YELLOW + "\n💡 Available Commands:")
+    await aprint(Fore.WHITE + "  📋 File Operations:")
+    await aprint(Fore.CYAN + "    • 'load <filename>' - Load file from output/ directory")
+    await aprint(Fore.CYAN + "    • 'load <filename> <question>' - Load file and ask question")
+    await aprint(Fore.CYAN + "    • 'paste' - Multi-line paste mode (end with <<<end)")
+    await aprint(Fore.CYAN + "    • 'ls' or 'dir' - List files in output/ directory")
+    
+    await aprint(Fore.WHITE + "\n  🧬 Trial Operations:")
+    await aprint(Fore.CYAN + "    • 'trial <NCT>' - Load specific trial data")
+    await aprint(Fore.CYAN + "    • 'extract <NCT>' - Extract structured data from trial")
+    await aprint(Fore.CYAN + "    • 'compare <NCT1> <NCT2>' - Compare two trials")
+    
+    await aprint(Fore.WHITE + "\n  ℹ️ Information:")
+    await aprint(Fore.CYAN + "    • 'pwd' - Show current working directory")
+    await aprint(Fore.CYAN + "    • 'help' - Show this menu again")
+    await aprint(Fore.CYAN + "    • 'models' - List available models")
+    
+    await aprint(Fore.WHITE + "\n  🚪 Exit:")
+    await aprint(Fore.CYAN + "    • 'exit', 'quit', 'main menu' - Return to main menu")
+    await aprint(Fore.YELLOW + "    • Ctrl+C - Interrupt and return to main menu")
+    
+    await aprint(Fore.CYAN + "\n" + "="*60 + "\n")
+
+
+async def _run_enhanced_interactive_session(
+    session: OllamaSessionManager, 
+    model: str,
+    ssh_manager
+):
+    """
+    Run enhanced interactive session with all features.
     
     Args:
-        ssh_connection: SSH connection
-        model_name: Name for custom model
-        available_models: List of available base models
-        
-    Returns:
-        True if successful
+        session: Ollama session manager
+        model: Model name to use
+        ssh_manager: SSH manager for trial operations
     """
+    while True:
+        try:
+            prompt = await ainput(Fore.GREEN + "LLM >>> " + Fore.WHITE)
+            
+            if prompt is None:
+                prompt = ""
+            prompt = prompt.strip()
+            
+            if not prompt:
+                continue
+            
+            # Check for exit commands
+            if prompt.lower() in ("exit", "quit", "main menu"):
+                await aprint(Fore.YELLOW + "Returning to main menu...")
+                break
+            
+            # Handle special commands
+            if await _handle_special_command(prompt, session, model, ssh_manager):
+                continue
+            
+            # Regular prompt to LLM
+            await aprint(Fore.YELLOW + f"\n🤔 Generating response...")
+            
+            try:
+                response = await session.send_prompt(
+                    model=model,
+                    prompt=prompt,
+                    temperature=0.7,
+                    max_retries=3
+                )
+                
+                if response.startswith("Error:"):
+                    await aprint(Fore.RED + f"\n{response}")
+                else:
+                    await aprint(Fore.GREEN + "\n🧠 Response:")
+                    await aprint(Fore.WHITE + response + "\n")
+                    
+            except Exception as e:
+                await aprint(Fore.RED + f"\n❌ Error: {e}")
+                logger.error(f"Generation error: {e}", exc_info=True)
+                
+        except KeyboardInterrupt:
+            await aprint(Fore.YELLOW + "\n\n⚠️ Interrupted. Type 'exit' to quit or press Enter to continue...")
+            continue
+        except EOFError:
+            await aprint(Fore.YELLOW + "\nEOF detected. Returning to main menu...")
+            break
+
+
+async def _handle_special_command(
+    prompt: str, 
+    session: OllamaSessionManager, 
+    model: str,
+    ssh_manager
+) -> bool:
+    """
+    Handle special commands.
+    
+    Returns:
+        True if command was handled, False if should treat as regular prompt
+    """
+    prompt_lower = prompt.lower()
+    
+    # Help command
+    if prompt_lower in ('help', '?', '!help'):
+        await _show_interactive_menu()
+        return True
+    
+    # Directory listing
+    if prompt_lower in ('ls', 'dir', 'list'):
+        await list_output_files(aprint)
+        return True
+    
+    # Show working directory
+    if prompt_lower in ('pwd', 'cwd'):
+        await show_pwd(aprint)
+        return True
+    
+    # Paste mode
+    if prompt_lower == 'paste':
+        pasted = await handle_paste_command(ainput, aprint)
+        if pasted:
+            await aprint(Fore.YELLOW + f"\n🤔 Sending pasted content to LLM...")
+            response = await session.send_prompt(model=model, prompt=pasted)
+            if not response.startswith("Error:"):
+                await aprint(Fore.GREEN + "\n🧠 Response:")
+                await aprint(Fore.WHITE + response + "\n")
+            else:
+                await aprint(Fore.RED + f"\n{response}")
+        return True
+    
+    # Load file
+    if prompt_lower.startswith('load '):
+        final_prompt = await handle_load_command(prompt, ainput, aprint, logger)
+        if final_prompt:
+            await aprint(Fore.YELLOW + f"\n🤔 Processing file content...")
+            response = await session.send_prompt(model=model, prompt=final_prompt)
+            if not response.startswith("Error:"):
+                await aprint(Fore.GREEN + "\n🧠 Response:")
+                await aprint(Fore.WHITE + response + "\n")
+            else:
+                await aprint(Fore.RED + f"\n{response}")
+        return True
+    
+    # Trial operations
+    if prompt_lower.startswith('trial '):
+        nct = prompt.split(maxsplit=1)[1].strip().upper()
+        await _handle_trial_command(nct, session, model)
+        return True
+    
+    if prompt_lower.startswith('extract '):
+        nct = prompt.split(maxsplit=1)[1].strip().upper()
+        await _handle_extract_command(nct, session, model)
+        return True
+    
+    if prompt_lower.startswith('compare '):
+        parts = prompt.split()[1:]
+        if len(parts) >= 2:
+            nct1, nct2 = parts[0].upper(), parts[1].upper()
+            await _handle_compare_command(nct1, nct2, session, model)
+        else:
+            await aprint(Fore.RED + "Usage: compare <NCT1> <NCT2>")
+        return True
+    
+    # List models
+    if prompt_lower in ('models', 'list models'):
+        models = await session.list_models()
+        await aprint(Fore.CYAN + f"\n📋 Available models ({len(models)}):")
+        for i, m in enumerate(models, 1):
+            await aprint(Fore.WHITE + f"  {i}. {m}")
+        await aprint("")
+        return True
+    
+    return False
+
+
+async def _handle_trial_command(nct: str, session: OllamaSessionManager, model: str):
+    """Load trial data and allow questions."""
+    await aprint(Fore.YELLOW + f"\n🔍 Loading trial data for {nct}...")
+    
+    try:
+        # Try to load from database
+        from amp_llm.data.clinical_trials.rag import ClinicalTrialRAG
+        from pathlib import Path
+        
+        db_path = Path("ct_database")
+        if not db_path.exists():
+            await aprint(Fore.RED + "❌ Trial database not found at ct_database/")
+            return
+        
+        rag = ClinicalTrialRAG(db_path)
+        if not rag.db.index_built:
+            rag.db.build_index()
+        
+        trial = rag.db.get_trial(nct)
+        
+        if not trial:
+            await aprint(Fore.RED + f"❌ Trial {nct} not found in database")
+            return
+        
+        # Extract structured data
+        extraction = rag.db.extract_structured_data(nct)
+        
+        if extraction:
+            trial_text = extraction.to_formatted_string()
+            await aprint(Fore.GREEN + f"✅ Loaded {nct}")
+            await aprint(Fore.CYAN + f"\nPreview:")
+            await aprint(Fore.WHITE + trial_text[:500] + "...\n")
+            
+            question = await ainput(Fore.CYAN + "Ask a question about this trial (or Enter to skip): ")
+            
+            if question.strip():
+                prompt = f"Based on this clinical trial data:\n\n{trial_text}\n\nQuestion: {question}"
+                
+                await aprint(Fore.YELLOW + "\n🤔 Analyzing trial data...")
+                response = await session.send_prompt(model=model, prompt=prompt)
+                
+                if not response.startswith("Error:"):
+                    await aprint(Fore.GREEN + "\n🧠 Answer:")
+                    await aprint(Fore.WHITE + response + "\n")
+                else:
+                    await aprint(Fore.RED + f"\n{response}")
+        else:
+            await aprint(Fore.RED + f"❌ Could not extract data for {nct}")
+            
+    except ImportError:
+        await aprint(Fore.RED + "❌ RAG system not available")
+    except Exception as e:
+        await aprint(Fore.RED + f"❌ Error loading trial: {e}")
+        logger.error(f"Trial load error: {e}", exc_info=True)
+
+
+async def _handle_extract_command(nct: str, session: OllamaSessionManager, model: str):
+    """Extract structured data from trial."""
+    await aprint(Fore.YELLOW + f"\n📋 Extracting structured data for {nct}...")
+    
+    try:
+        from amp_llm.data.clinical_trials.rag import ClinicalTrialRAG
+        from pathlib import Path
+        
+        db_path = Path("ct_database")
+        if not db_path.exists():
+            await aprint(Fore.RED + "❌ Trial database not found")
+            return
+        
+        rag = ClinicalTrialRAG(db_path)
+        if not rag.db.index_built:
+            rag.db.build_index()
+        
+        extraction = rag.db.extract_structured_data(nct)
+        
+        if extraction:
+            context = extraction.to_formatted_string()
+            
+            prompt = f"""Extract and format this clinical trial data in a clear, structured way:
+
+{context}
+
+Provide a summary highlighting:
+- Study status and phase
+- Conditions and interventions
+- Key dates
+- Classification
+- Outcome and any failure reasons"""
+            
+            await aprint(Fore.YELLOW + "\n🤔 Generating extraction...")
+            response = await session.send_prompt(model=model, prompt=prompt)
+            
+            if not response.startswith("Error:"):
+                await aprint(Fore.GREEN + "\n📊 Extracted Data:")
+                await aprint(Fore.WHITE + response + "\n")
+                
+                # Offer to save
+                save = await ainput(Fore.CYAN + "Save this extraction? (y/n): ")
+                if save.lower() in ('y', 'yes'):
+                    from pathlib import Path
+                    output_dir = Path('output')
+                    output_dir.mkdir(exist_ok=True)
+                    
+                    filename = f"{nct}_extraction.txt"
+                    filepath = output_dir / filename
+                    
+                    with open(filepath, 'w', encoding='utf-8') as f:
+                        f.write(response)
+                    
+                    await aprint(Fore.GREEN + f"✅ Saved to {filepath}")
+            else:
+                await aprint(Fore.RED + f"\n{response}")
+        else:
+            await aprint(Fore.RED + f"❌ Could not extract data for {nct}")
+            
+    except Exception as e:
+        await aprint(Fore.RED + f"❌ Error: {e}")
+        logger.error(f"Extract error: {e}", exc_info=True)
+
+
+async def _handle_compare_command(
+    nct1: str, 
+    nct2: str, 
+    session: OllamaSessionManager, 
+    model: str
+):
+    """Compare two clinical trials."""
+    await aprint(Fore.YELLOW + f"\n🔄 Comparing {nct1} vs {nct2}...")
+    
+    try:
+        from amp_llm.data.clinical_trials.rag import ClinicalTrialRAG
+        from pathlib import Path
+        
+        db_path = Path("ct_database")
+        if not db_path.exists():
+            await aprint(Fore.RED + "❌ Trial database not found")
+            return
+        
+        rag = ClinicalTrialRAG(db_path)
+        if not rag.db.index_built:
+            rag.db.build_index()
+        
+        # Get both trials
+        extraction1 = rag.db.extract_structured_data(nct1)
+        extraction2 = rag.db.extract_structured_data(nct2)
+        
+        if not extraction1 or not extraction2:
+            await aprint(Fore.RED + f"❌ Could not load both trials")
+            return
+        
+        trial1_text = extraction1.to_formatted_string()
+        trial2_text = extraction2.to_formatted_string()
+        
+        prompt = f"""Compare these two clinical trials and highlight key differences and similarities:
+
+TRIAL 1 ({nct1}):
+{trial1_text}
+
+TRIAL 2 ({nct2}):
+{trial2_text}
+
+Provide a comparison focusing on:
+- Similarities in approach, conditions, or interventions
+- Key differences in methodology or outcomes
+- Relative strengths and weaknesses
+- Any notable findings"""
+        
+        await aprint(Fore.YELLOW + "\n🤔 Analyzing trials...")
+        response = await session.send_prompt(model=model, prompt=prompt)
+        
+        if not response.startswith("Error:"):
+            await aprint(Fore.GREEN + "\n📊 Comparison:")
+            await aprint(Fore.WHITE + response + "\n")
+        else:
+            await aprint(Fore.RED + f"\n{response}")
+            
+    except Exception as e:
+        await aprint(Fore.RED + f"❌ Error: {e}")
+        logger.error(f"Compare error: {e}", exc_info=True)
+
+
+async def _build_custom_model(ssh_connection, model_name: str, available_models: list) -> bool:
+    """Build custom model from Modelfile."""
     await aprint(Fore.CYAN + "\n🏗️  Building Custom Model")
-    await aprint(Fore.YELLOW + "This is a one-time setup to create a specialized assistant.")
+    await aprint(Fore.YELLOW + "Creating specialized clinical trial assistant...")
     
     # Find Modelfile
     modelfile_path = _find_modelfile()
     
     if not modelfile_path:
         await aprint(Fore.RED + "❌ Modelfile not found!")
-        await aprint(Fore.YELLOW + "Expected location: project root (Modelfile)")
-        await aprint(Fore.CYAN + "\nCreate one with:")
-        await aprint(Fore.WHITE + "  python scripts/generate_modelfile.py")
+        await aprint(Fore.YELLOW + "Expected: Modelfile in project root")
         return False
     
     await aprint(Fore.GREEN + f"✅ Found Modelfile: {modelfile_path}")
     
-    # Read Modelfile
     try:
         modelfile_content = modelfile_path.read_text()
     except Exception as e:
@@ -150,56 +541,44 @@ async def _build_custom_model(ssh_connection, model_name: str, available_models:
         return False
     
     # Select base model
-    await aprint(Fore.CYAN + f"\n📋 Available base models:")
+    await aprint(Fore.CYAN + f"\n📋 Select base model:")
     for i, model in enumerate(available_models, 1):
         await aprint(Fore.WHITE + f"  {i}. {model}")
     
     choice = await ainput(Fore.GREEN + "Select base model [1]: ")
-    choice = choice.strip()
+    choice = choice.strip() or "1"
     
     # Parse choice
-    base_model = None
-    if not choice:
-        base_model = available_models[0]
-    elif choice.isdigit():
+    if choice.isdigit():
         idx = int(choice) - 1
         if 0 <= idx < len(available_models):
             base_model = available_models[idx]
         else:
-            await aprint(Fore.YELLOW + "Invalid selection, using first model")
             base_model = available_models[0]
-    elif choice in available_models:
-        base_model = choice
     else:
-        await aprint(Fore.YELLOW + f"Model '{choice}' not found, using first model")
         base_model = available_models[0]
     
     await aprint(Fore.CYAN + f"\n🔨 Building '{model_name}' from '{base_model}'...")
     
-    # Update FROM line in Modelfile
-    updated_modelfile = _update_modelfile_base(modelfile_content, base_model)
+    # Update Modelfile
+    import re
+    updated_modelfile = re.sub(
+        r'^FROM\s+\S+',
+        f'FROM {base_model}',
+        modelfile_content,
+        flags=re.MULTILINE
+    )
     
-    # Upload Modelfile
+    # Upload and build
     temp_path = f"/tmp/amp_modelfile_{int(time.time())}.modelfile"
     
     try:
-        await aprint(Fore.CYAN + "📤 Uploading Modelfile...")
-        
         async with ssh_connection.start_sftp_client() as sftp:
             async with sftp.open(temp_path, 'w') as f:
                 await f.write(updated_modelfile)
         
-        await aprint(Fore.GREEN + f"✅ Uploaded to {temp_path}")
-        
-    except Exception as e:
-        await aprint(Fore.RED + f"❌ Upload failed: {e}")
-        logger.error(f"SFTP error: {e}")
-        return False
-    
-    # Build model
-    try:
-        await aprint(Fore.CYAN + "🏗️  Building model (this may take 1-2 minutes)...")
-        await aprint(Fore.YELLOW + "   Please wait...")
+        await aprint(Fore.GREEN + "✅ Modelfile uploaded")
+        await aprint(Fore.YELLOW + "🏗️  Building... (this may take 1-2 minutes)")
         
         result = await ssh_connection.run(
             f'bash -l -c "ollama create {model_name} -f {temp_path}"',
@@ -208,49 +587,27 @@ async def _build_custom_model(ssh_connection, model_name: str, available_models:
         )
         
         # Cleanup
-        await ssh_connection.run(f'rm -f {temp_path}', 
-            check=False,
-            term_type=None 
-        )
+        await ssh_connection.run(f'rm -f {temp_path}', check=False, term_type=None)
         
         if result.exit_status == 0:
-            await aprint(Fore.GREEN + f"\n✅ Success! Model '{model_name}' created!")
-            await aprint(Fore.CYAN + f"   Base: {base_model}")
-            await aprint(Fore.CYAN + f"   Name: {model_name}")
+            await aprint(Fore.GREEN + f"\n✅ Model '{model_name}' created successfully!")
             return True
         else:
-            await aprint(Fore.RED + "\n❌ Model creation failed!")
-            if result.stderr:
-                await aprint(Fore.RED + f"Error: {result.stderr}")
+            await aprint(Fore.RED + "\n❌ Model creation failed")
             return False
             
     except Exception as e:
         await aprint(Fore.RED + f"❌ Build error: {e}")
         logger.error(f"Build error: {e}", exc_info=True)
-        
-        # Cleanup on error
-        try:
-            await ssh_connection.run(f'rm -f {temp_path}', 
-            check=False,
-            term_type=None 
-        )
-        except:
-            pass
-        
         return False
 
 
 def _find_modelfile() -> Path:
-    """
-    Find Modelfile in expected locations.
-    
-    Returns:
-        Path to Modelfile or None if not found
-    """
+    """Find Modelfile in expected locations."""
     search_paths = [
-        Path("Modelfile"),  # Project root
-        Path("amp_llm/Modelfile"),  # amp_llm directory
-        Path("../Modelfile"),  # Parent directory
+        Path("Modelfile"),
+        Path("amp_llm/Modelfile"),
+        Path("../Modelfile"),
     ]
     
     for path in search_paths:
@@ -260,121 +617,13 @@ def _find_modelfile() -> Path:
     return None
 
 
-def _update_modelfile_base(modelfile_content: str, base_model: str) -> str:
-    """
-    Update FROM line in Modelfile.
-    
-    Args:
-        modelfile_content: Original Modelfile content
-        base_model: New base model name
-        
-    Returns:
-        Updated Modelfile content
-    """
-    import re
-    
-    # Replace FROM line
-    updated = re.sub(
-        r'^FROM\s+\S+',
-        f'FROM {base_model}',
-        modelfile_content,
-        flags=re.MULTILINE
-    )
-    
-    return updated
-
-
-async def _select_model_interactive(models: list) -> str:
-    """
-    Interactive model selection.
-    
-    Args:
-        models: List of available models
-        
-    Returns:
-        Selected model name or None if cancelled
-    """
-    await aprint(Fore.CYAN + f"\n📋 Available models ({len(models)}):")
-    for i, model in enumerate(models, 1):
-        await aprint(Fore.WHITE + f"  {i}. {model}")
-    
-    while True:
-        choice = await ainput(Fore.GREEN + "\nSelect model (number or name, or 'exit'): ")
-        choice = choice.strip()
-        
-        if choice.lower() in ('exit', 'quit', 'back', 'main menu'):
-            await aprint(Fore.YELLOW + "Returning to main menu...")
-            return None
-        
-        # Try as number
-        if choice.isdigit():
-            idx = int(choice) - 1
-            if 0 <= idx < len(models):
-                return models[idx]
-        # Try as model name
-        elif choice in models:
-            return choice
-        
-        await aprint(Fore.RED + "Invalid choice. Try again.")
-
-
-async def _run_interactive_session(session: OllamaSessionManager, model: str):
-    """
-    Run interactive LLM session.
-    
-    Args:
-        session: Connected session manager
-        model: Model name to use
-    """
-    await aprint(Fore.CYAN + "\n💬 Interactive Mode")
-    await aprint(Fore.YELLOW + "Type your prompts (or 'exit' to return)")
-    
-    while True:
-        try:
-            prompt = await ainput(Fore.GREEN + "\nPrompt >>> " + Style.RESET_ALL)
-            prompt = prompt.strip()
-            
-            if not prompt:
-                continue
-            
-            if prompt.lower() in ('exit', 'quit', 'back', 'main menu'):
-                await aprint(Fore.YELLOW + "Returning to main menu...")
-                break
-            
-            # Generate response
-            await aprint(Fore.YELLOW + "\n🤔 Generating...")
-            
-            response = await session.send_prompt(
-                model=model,
-                prompt=prompt,
-                temperature=0.7
-            )
-            
-            await aprint(Fore.CYAN + "\n📝 Response:")
-            await aprint(Fore.WHITE + response)
-            
-        except KeyboardInterrupt:
-            await aprint(Fore.YELLOW + "\n\nInterrupted. Type 'exit' to return.")
-            continue
-        except Exception as e:
-            await aprint(Fore.RED + f"\n❌ Error: {e}")
-            logger.error(f"Generation error: {e}", exc_info=True)
-
-
 async def _show_no_models_help(ssh_manager):
-    """Show help when no models are found."""
+    """Show help when no models found."""
     await aprint(Fore.RED + "❌ No models found on remote server")
-    await aprint(Fore.YELLOW + "Install models using: ollama pull <model_name>")
-    await aprint(Fore.CYAN + "\nTroubleshooting:")
-    await aprint(Fore.WHITE + "  1. SSH to remote host:")
-    if hasattr(ssh_manager, 'username') and hasattr(ssh_manager, 'host'):
-        await aprint(Fore.WHITE + f"     ssh {ssh_manager.username}@{ssh_manager.host}")
-    await aprint(Fore.WHITE + "  2. Check Ollama status:")
-    await aprint(Fore.WHITE + "     systemctl status ollama")
-    await aprint(Fore.WHITE + "  3. List models:")
-    await aprint(Fore.WHITE + "     ollama list")
-    await aprint(Fore.WHITE + "  4. Pull a base model:")
-    await aprint(Fore.WHITE + "     ollama pull llama3.2")
+    await aprint(Fore.YELLOW + "\nTo install models:")
+    await aprint(Fore.WHITE + "  1. SSH to remote server")
+    await aprint(Fore.WHITE + "  2. Run: ollama pull llama3.2")
+    await aprint(Fore.WHITE + "  3. Run: ollama list (to verify)")
 
 
 async def _show_connection_help(ssh_manager, remote_host: str):
@@ -387,17 +636,9 @@ async def _show_connection_help(ssh_manager, remote_host: str):
     await aprint(Fore.WHITE + "     systemctl status ollama")
     await aprint(Fore.WHITE + "  2. Test Ollama API:")
     await aprint(Fore.WHITE + "     curl http://localhost:11434/api/tags")
-    await aprint(Fore.WHITE + "  3. Start Ollama if not running:")
-    await aprint(Fore.WHITE + "     sudo systemctl start ollama")
 
 
 async def run_llm_entrypoint_ssh(ssh_manager):
-    """
-    LLM workflow using SSH terminal (legacy method).
-    
-    Args:
-        ssh_manager: SSHManager instance
-    """
+    """Legacy SSH terminal mode."""
     await aprint(Fore.YELLOW + "\n⚠️  SSH Terminal Mode (Legacy)")
-    await aprint(Fore.YELLOW + "This method is deprecated. Use API mode for better reliability.")
-    await aprint(Fore.CYAN + "\n💡 Tip: API mode supports custom model building with Modelfiles!")
+    await aprint(Fore.YELLOW + "This method is deprecated. Use API mode for better features.")

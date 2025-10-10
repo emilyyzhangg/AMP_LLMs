@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Optional
 from colorama import Fore, Style
 from config import get_logger, get_config
-from data.clinical_trials.rag import ClinicalTrialRAG
+from amp_llm.data.clinical_trials.rag import ClinicalTrialRAG
 from llm.utils.session import OllamaSessionManager
 from llm.command_handler import CommandHandler
 

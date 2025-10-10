@@ -20,7 +20,7 @@ from amp_llm.config import get_logger
 
 # Try to import validation config
 try:
-    from amp_llm.validation_config import get_validation_config
+    from amp_llm.config.validation import get_validation_config
     HAS_VALIDATION = True
 except ImportError:
     HAS_VALIDATION = False

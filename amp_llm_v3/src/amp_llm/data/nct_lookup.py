@@ -1,6 +1,6 @@
 """
 Async NCT (ClinicalTrials.gov) lookup module.
-ENHANCED: Now includes extended API searches (Meilisearch, Swirl, OpenFDA, etc.)
+ENHANCED: Now includes all APIs including PMC Full Text, EudraCT, WHO ICTRP, Semantic Scholar
 """
 import asyncio
 from typing import List, Dict, Any
@@ -15,23 +15,23 @@ except ImportError:
     async def aprint(*args, **kwargs):
         print(*args, **kwargs)
 
-from src.amp_llm.data.clinical_trials.fetchers import (
+from amp_llm.data.clinical_trials.fetchers import (
     fetch_clinical_trial_and_pubmed_pmc,
     print_study_summary,
     save_results,
     summarize_result
 )
 
-# Import new API clients
-from amp_llm.data.api_clients import APIManager, SearchConfig
+# Import API manager with all APIs
+from amp_llm.data.external_apis.api_clients import APIManager, SearchConfig
 
 logger = get_logger(__name__)
 
 
 async def run_nct_lookup():
     """
-    Main NCT lookup workflow with extended API search.
-    ENHANCED: Now includes Meilisearch, Swirl, OpenFDA, Health Canada, DDG, SERP API.
+    Main NCT lookup workflow with ALL extended APIs.
+    NOW INCLUDES: PMC Full Text, EudraCT, WHO ICTRP, Semantic Scholar
     """
     await aprint(
         Fore.YELLOW + Style.BRIGHT + 
@@ -42,7 +42,7 @@ async def run_nct_lookup():
         "Search for clinical trials by NCT number and find related publications.\n"
     )
     
-    # Initialize API manager
+    # Initialize API manager with ALL APIs
     api_config = SearchConfig()
     api_manager = APIManager(api_config)
     
@@ -79,43 +79,49 @@ async def run_nct_lookup():
             # Ask about extended API search
             use_extended = await ainput(
                 Fore.CYAN + 
-                "Use extended API search (Meilisearch, OpenFDA, etc.)? (y/n) [n]: "
+                "Use extended API search? (y/n) [y]: "
             )
-            use_extended = use_extended.strip().lower() in ('y', 'yes')
+            use_extended = use_extended.strip().lower() in ('y', 'yes', '')
+            
+            # Initialize enabled_apis
+            # None = all APIs, [] = no APIs, [list] = specific APIs
+            if not use_extended:
+                enabled_apis = []  # Empty list means skip extended search
+            else:
+                enabled_apis = None  # Start with None (will be set by menu choice)
             
             if use_extended:
-                # Ask which APIs to use
-                await aprint(Fore.CYAN + "\nAvailable APIs:")
-                await aprint(Fore.WHITE + "  1) All (default)")
-                await aprint(Fore.WHITE + "  2) Meilisearch only")
-                await aprint(Fore.WHITE + "  3) OpenFDA only")
-                await aprint(Fore.WHITE + "  4) SERP API (Google) only")
-                await aprint(Fore.WHITE + "  5) DuckDuckGo only")
-                await aprint(Fore.WHITE + "  6) Custom selection")
+                # Show ALL available APIs
+                await aprint(Fore.CYAN + "\n📊 Available API Collections:")
+                await aprint(Fore.WHITE + "  [1] All APIs (Comprehensive)")
+                await aprint(Fore.WHITE + "  [2] Literature Only (PubMed, PMC Full Text, Semantic Scholar)")
+                await aprint(Fore.WHITE + "  [3] Clinical Databases (EudraCT, WHO ICTRP, Health Canada)")
+                await aprint(Fore.WHITE + "  [4] Drug Safety (OpenFDA)")
+                await aprint(Fore.WHITE + "  [5] Web Search (Google, DuckDuckGo)")
+                await aprint(Fore.WHITE + "  [6] Custom Selection")
                 
-                api_choice = await ainput(Fore.CYAN + "Select [1]: ")
+                api_choice = await ainput(Fore.CYAN + "Select [1-6] or Enter for all [1]: ")
                 api_choice = api_choice.strip() or "1"
                 
-                # Determine enabled APIs
+                # Determine enabled APIs (NOW INCLUDING NEW ONES)
                 if api_choice == "1":
-                    enabled_apis = None  # All
+                    enabled_apis = None  # All APIs
                 elif api_choice == "2":
-                    enabled_apis = ['meilisearch']
+                    enabled_apis = ['pmc_fulltext', 'semantic_scholar', 'serpapi_scholar']
                 elif api_choice == "3":
-                    enabled_apis = ['openfda']
+                    enabled_apis = ['eudract', 'who_ictrp', 'health_canada']
                 elif api_choice == "4":
-                    enabled_apis = ['serpapi']
+                    enabled_apis = ['openfda']
                 elif api_choice == "5":
-                    enabled_apis = ['duckduckgo']
+                    enabled_apis = ['duckduckgo', 'serpapi']
                 elif api_choice == "6":
-                    await aprint(Fore.CYAN + "Enter APIs (comma-separated):")
-                    await aprint(Fore.WHITE + "  meilisearch, swirl, openfda, health_canada, duckduckgo, serpapi")
-                    custom = await ainput(Fore.CYAN + "APIs: ")
-                    enabled_apis = [api.strip() for api in custom.split(',')]
+                    await aprint(Fore.CYAN + "\n📋 Available APIs:")
+                    await aprint(Fore.WHITE + "  Original: meilisearch, swirl, openfda, health_canada, duckduckgo, serpapi")
+                    await aprint(Fore.WHITE + "  NEW: pmc_fulltext, eudract, who_ictrp, semantic_scholar")
+                    custom = await ainput(Fore.CYAN + "Enter APIs (comma-separated): ")
+                    enabled_apis = [api.strip() for api in custom.split(',') if api.strip()]
                 else:
                     enabled_apis = None
-            else:
-                enabled_apis = []
             
             # Fetch data concurrently
             await aprint(Fore.CYAN + f"\n🔍 Processing {len(ncts)} NCT number(s)...")
@@ -138,7 +144,7 @@ async def run_nct_lookup():
                 await aprint(Fore.RED + "No results found for any NCT numbers.")
                 continue
             
-            # Show summary
+            # Show summary with NEW API results
             await aprint(Fore.CYAN + f"\n📊 Summary of {len(results)} result(s):")
             for r in results:
                 summary = summarize_result(r)
@@ -149,15 +155,16 @@ async def run_nct_lookup():
                     f"{summary['PMC Count']} PMC"
                 )
                 
-                # Show extended API results summary
+                # Show extended API results summary (INCLUDING NEW APIS)
                 if 'extended_apis' in r:
                     ext = r['extended_apis']
                     api_counts = []
                     
+                    # Original APIs
                     if 'meilisearch' in ext and ext['meilisearch'].get('hits'):
                         api_counts.append(f"{len(ext['meilisearch']['hits'])} Meilisearch")
                     
-                    if 'openfda_events' in ' '.join(ext.keys()):
+                    if any(k.startswith('openfda') for k in ext.keys()):
                         openfda_count = sum(
                             len(v.get('results', [])) 
                             for k, v in ext.items() 
@@ -174,6 +181,19 @@ async def run_nct_lookup():
                     
                     if 'health_canada' in ext and ext['health_canada'].get('results'):
                         api_counts.append(f"{len(ext['health_canada']['results'])} Health Canada")
+                    
+                    # NEW APIs
+                    if 'pmc_fulltext' in ext and ext['pmc_fulltext'].get('pmcids'):
+                        api_counts.append(f"{len(ext['pmc_fulltext']['pmcids'])} PMC Full Text")
+                    
+                    if 'eudract' in ext and ext['eudract'].get('results'):
+                        api_counts.append(f"{len(ext['eudract']['results'])} EudraCT")
+                    
+                    if 'who_ictrp' in ext and ext['who_ictrp'].get('results'):
+                        api_counts.append(f"{len(ext['who_ictrp']['results'])} WHO ICTRP")
+                    
+                    if 'semantic_scholar' in ext and ext['semantic_scholar'].get('papers'):
+                        api_counts.append(f"{len(ext['semantic_scholar']['papers'])} Semantic Scholar")
                     
                     if api_counts:
                         await aprint(Fore.CYAN + f"    Extended: {', '.join(api_counts)}")
@@ -210,7 +230,8 @@ async def run_nct_lookup():
                 return
                 
         except KeyboardInterrupt:
-            await aprint(Fore.YELLOW + "\n\nInterrupted. Returning to main menu...")
+            await aprint(Fore.YELLOW + "\n\n⚠️ Interrupted (Ctrl+C). Returning to main menu...")
+            logger.info("NCT lookup interrupted by user (Ctrl+C)")
             return
         except Exception as e:
             await aprint(Fore.RED + f"Unexpected error: {e}")
@@ -228,22 +249,15 @@ async def _fetch_single_nct_extended(
     enabled_apis: List[str]
 ) -> Dict[str, Any]:
     """
-    Fetch data for a single NCT number with extended API search.
-    
-    Args:
-        nct: NCT number
-        api_manager: API manager instance
-        enabled_apis: List of enabled APIs (empty list = none, None = all)
-        
-    Returns:
-        Combined result with clinical trial data and extended API results
+    Fetch data for a single NCT number with ALL extended APIs.
+    NOW INCLUDES: PMC Full Text, EudraCT, WHO ICTRP, Semantic Scholar
     """
     await aprint(Fore.YELLOW + f"\n{'='*60}")
     await aprint(Fore.YELLOW + f"Fetching data for {nct}...")
     await aprint(Fore.YELLOW + f"{'='*60}\n")
     
     try:
-        # Step 1: Fetch clinical trial data (includes PubMed and PMC)
+        # Step 1: Fetch clinical trial data
         result = await fetch_clinical_trial_and_pubmed_pmc(nct)
         
         if 'error' in result:
@@ -256,11 +270,19 @@ async def _fetch_single_nct_extended(
         await aprint(Fore.GREEN + f"✅ Successfully fetched {nct}")
         print_study_summary(result)
         
-        # Step 2: Extended API search (if enabled)
-        if enabled_apis is not None and len(enabled_apis) > 0:
+        # Step 2: Extended API search (INCLUDING NEW APIS)
+        # enabled_apis = None means "use all APIs"
+        # enabled_apis = [] means "skip extended search"
+        # Check if we should run extended search
+        should_run_extended = (
+            enabled_apis is None or  # All APIs selected
+            (isinstance(enabled_apis, list) and len(enabled_apis) > 0)  # Some APIs selected
+        )
+        
+        if should_run_extended:
             await aprint(Fore.CYAN + f"\n🔎 Running extended API search...")
             
-            # Extract search parameters from clinical trial data
+            # Extract search parameters
             ct_data = result['sources']['clinical_trials']['data']
             protocol = ct_data.get('protocolSection', {})
             
@@ -277,27 +299,31 @@ async def _fetch_single_nct_extended(
             officials = contacts.get('overallOfficials', [])
             authors = [o.get('name', '') for o in officials if o.get('name')]
             
-            # Get interventions/drugs
+            # Get interventions
             arms_int = protocol.get('armsInterventionsModule', {})
             interventions_list = arms_int.get('interventions', [])
             intervention_names = [
                 i.get('name', '') for i in interventions_list if i.get('name')
             ]
             
-            # Run extended search
+            # Get conditions
+            cond_mod = protocol.get('conditionsModule', {})
+            conditions = cond_mod.get('conditions', [])
+            
+            # Run extended search with ALL APIs
             try:
                 extended_results = await api_manager.search_all(
                     title=title,
                     authors=authors,
                     nct_id=nct,
                     interventions=intervention_names,
+                    conditions=conditions,
                     enabled_apis=enabled_apis
                 )
                 
-                # Add to result
                 result['extended_apis'] = extended_results
                 
-                # Print summary of extended results
+                # Print summary
                 await aprint(Fore.GREEN + f"\n✅ Extended API search complete for {nct}")
                 await _print_extended_summary(extended_results)
                 
@@ -309,6 +335,9 @@ async def _fetch_single_nct_extended(
         logger.info(f"Successfully fetched complete data for {nct}")
         return result
         
+    except KeyboardInterrupt:
+        await aprint(Fore.YELLOW + f"\n⚠️ Fetch cancelled for {nct}")
+        raise
     except Exception as e:
         await aprint(Fore.RED + f"{nct}: Unexpected error: {e}")
         logger.error(f"Error fetching {nct}: {e}", exc_info=True)
@@ -316,18 +345,17 @@ async def _fetch_single_nct_extended(
 
 
 async def _print_extended_summary(extended_results: Dict[str, Any]):
-    """Print summary of extended API results."""
+    """Print summary of ALL extended API results (including new APIs)."""
     
     summary_lines = []
     
-    # Meilisearch
+    # Original APIs
     if 'meilisearch' in extended_results:
         ms = extended_results['meilisearch']
         if 'hits' in ms:
             count = len(ms['hits'])
             summary_lines.append(f"  📊 Meilisearch: {count} hit(s)")
     
-    # Swirl
     if 'swirl' in extended_results:
         sw = extended_results['swirl']
         if 'results' in sw:
@@ -346,33 +374,54 @@ async def _print_extended_summary(extended_results: Dict[str, Any]):
     if openfda_events or openfda_labels:
         summary_lines.append(f"  💊 OpenFDA: {openfda_events} event(s), {openfda_labels} label(s)")
     
-    # Health Canada
     if 'health_canada' in extended_results:
         hc = extended_results['health_canada']
         if 'results' in hc:
             count = len(hc['results'])
             summary_lines.append(f"  🍁 Health Canada: {count} trial(s)")
     
-    # DuckDuckGo
     if 'duckduckgo' in extended_results:
         ddg = extended_results['duckduckgo']
         if 'results' in ddg:
             count = len(ddg['results'])
             summary_lines.append(f"  🦆 DuckDuckGo: {count} result(s)")
     
-    # SERP API Google
     if 'serpapi_google' in extended_results:
         serp = extended_results['serpapi_google']
         if 'organic_results' in serp:
             count = len(serp['organic_results'])
             summary_lines.append(f"  🔍 Google: {count} result(s)")
     
-    # SERP API Scholar
     if 'serpapi_scholar' in extended_results:
         scholar = extended_results['serpapi_scholar']
         if 'organic_results' in scholar:
             count = len(scholar['organic_results'])
             summary_lines.append(f"  🎓 Google Scholar: {count} result(s)")
+    
+    # NEW APIs
+    if 'pmc_fulltext' in extended_results:
+        pmc = extended_results['pmc_fulltext']
+        if 'pmcids' in pmc:
+            count = len(pmc['pmcids'])
+            summary_lines.append(f"  📄 PMC Full Text: {count} article(s)")
+    
+    if 'eudract' in extended_results:
+        eu = extended_results['eudract']
+        if 'results' in eu:
+            count = len(eu['results'])
+            summary_lines.append(f"  🇪🇺 EudraCT: {count} trial(s)")
+    
+    if 'who_ictrp' in extended_results:
+        who = extended_results['who_ictrp']
+        if 'results' in who:
+            count = len(who['results'])
+            summary_lines.append(f"  🌍 WHO ICTRP: {count} trial(s)")
+    
+    if 'semantic_scholar' in extended_results:
+        ss = extended_results['semantic_scholar']
+        if 'papers' in ss:
+            count = len(ss['papers'])
+            summary_lines.append(f"  🤖 Semantic Scholar: {count} paper(s)")
     
     if summary_lines:
         await aprint(Fore.CYAN + "\n📈 Extended API Results:")

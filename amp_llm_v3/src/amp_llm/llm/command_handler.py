@@ -1,13 +1,13 @@
 """
-Command handler for Research Assistant.
+Enhanced Command handler for Research Assistant with Ctrl+C support.
 Processes user commands and routes to appropriate functions.
 """
 import json
 from pathlib import Path
 from typing import Dict, Any, Optional, Callable
 from colorama import Fore
-from config import get_logger
-from config.validation import get_validation_config
+from amp_llm.config import get_logger
+from amp_llm.config.validation import get_validation_config
 
 try:
     from aioconsole import ainput, aprint
@@ -21,7 +21,7 @@ logger = get_logger(__name__)
 
 
 class CommandHandler:
-    """Handles Research Assistant commands."""
+    """Handles Research Assistant commands with interrupt support."""
     
     def __init__(self, assistant):
         """
@@ -38,6 +38,7 @@ class CommandHandler:
             'help': self.cmd_help,
             '!help': self.cmd_help,
             '?': self.cmd_help,
+            'menu': self.cmd_menu,
             'search': self.cmd_search,
             'extract': self.cmd_extract,
             'save': self.cmd_save,
@@ -49,7 +50,7 @@ class CommandHandler:
     
     async def handle_command(self, user_input: str) -> bool:
         """
-        Handle user command.
+        Handle user command with interrupt protection.
         
         Args:
             user_input: Raw user input
@@ -76,12 +77,18 @@ class CommandHandler:
         if command in self.commands:
             try:
                 await self.commands[command](args)
+            except KeyboardInterrupt:
+                await aprint(Fore.YELLOW + "\n⚠️ Command interrupted (Ctrl+C)")
+                logger.info(f"Command '{command}' interrupted")
             except Exception as e:
                 await aprint(Fore.RED + f"Command error: {e}")
                 logger.error(f"Command '{command}' failed: {e}", exc_info=True)
         else:
             # Treat as query
-            await self.cmd_query(user_input)
+            try:
+                await self.cmd_query(user_input)
+            except KeyboardInterrupt:
+                await aprint(Fore.YELLOW + "\n⚠️ Query interrupted (Ctrl+C)")
         
         return True
     
@@ -89,6 +96,7 @@ class CommandHandler:
         """Display help information."""
         await aprint(Fore.CYAN + "\n💡 Research Assistant Commands:")
         await aprint(Fore.CYAN + "   • 'help' or '!help' or '?' - Show this help")
+        await aprint(Fore.CYAN + "   • 'menu' - Show interactive menu")
         await aprint(Fore.CYAN + "   • 'search <query>' - Search database and analyze trials")
         await aprint(Fore.CYAN + "   • 'extract <NCT>' - Extract structured data from specific trial")
         await aprint(Fore.CYAN + "   • 'save <NCT>' - Extract and save directly as JSON")
@@ -96,103 +104,170 @@ class CommandHandler:
         await aprint(Fore.CYAN + "   • 'stats' - Show database statistics")
         await aprint(Fore.CYAN + "   • 'validate' - Show valid values for all fields")
         await aprint(Fore.CYAN + "   • 'status' - Check connection status")
+        await aprint(Fore.YELLOW + "   • Ctrl+C - Interrupt current operation")
         await aprint(Fore.CYAN + "   • 'exit' or 'quit' or 'main menu' - Return to main menu\n")
+    
+    async def cmd_menu(self, args: str = ""):
+        """Show interactive menu."""
+        await aprint(Fore.CYAN + "\n" + "="*60)
+        await aprint(Fore.CYAN + "  🧬 RESEARCH ASSISTANT MENU")
+        await aprint(Fore.CYAN + "="*60)
+        
+        await aprint(Fore.WHITE + "\n  [1] 🔍 Search & Analyze Trials")
+        await aprint(Fore.WHITE + "  [2] 📋 Extract Trial Data")
+        await aprint(Fore.WHITE + "  [3] 💾 Quick Save Trial")
+        await aprint(Fore.WHITE + "  [4] 💡 Ask Question")
+        await aprint(Fore.WHITE + "  [5] 📊 Database Statistics")
+        await aprint(Fore.WHITE + "  [6] ✅ Validation Info")
+        await aprint(Fore.WHITE + "  [7] 🔌 Connection Status")
+        await aprint(Fore.WHITE + "  [8] ❓ Help")
+        await aprint(Fore.WHITE + "  [9] 🚪 Exit to Main Menu")
+        
+        await aprint(Fore.YELLOW + "\n💡 You can also type commands directly!\n")
+        
+        choice = await ainput(Fore.GREEN + "Select [1-9]: ")
+        
+        commands = {
+            '1': 'search',
+            '2': 'extract',
+            '3': 'save',
+            '4': 'query',
+            '5': 'stats',
+            '6': 'validate',
+            '7': 'status',
+            '8': 'help',
+            '9': 'exit'
+        }
+        
+        if choice in commands:
+            if choice == '9':
+                return False
+            else:
+                await self.commands[commands[choice]]("")
     
     async def cmd_search(self, args: str):
         """Search database for trials."""
-        if not args:
-            await aprint(Fore.RED + "Usage: search <query>")
-            return
-        
-        await aprint(Fore.YELLOW + f"\n🔍 Searching for: {args}")
-        nct_ids = self.assistant.rag.db.search(args)
-        
-        if not nct_ids:
-            await aprint(Fore.RED + "No trials found matching query")
-            return
-        
-        await aprint(Fore.GREEN + f"Found {len(nct_ids)} trial(s):")
-        for nct in nct_ids:
-            await aprint(Fore.CYAN + f"  • {nct}")
-        
-        analyze = await ainput(Fore.CYAN + "\nAnalyze these trials with AI? (y/n): ")
-        
-        if analyze.lower() in ('y', 'yes'):
-            await aprint(Fore.YELLOW + "\n🤔 Analyzing trials...")
-            response = await self.assistant.query_with_rag(args)
+        try:
+            if not args:
+                args = await ainput(Fore.CYAN + "Enter search query: ")
+                if not args.strip():
+                    await aprint(Fore.RED + "Search cancelled")
+                    return
+            
+            await aprint(Fore.YELLOW + f"\n🔍 Searching for: {args}")
+            nct_ids = self.assistant.rag.db.search(args)
+            
+            if not nct_ids:
+                await aprint(Fore.RED + "No trials found matching query")
+                return
+            
+            await aprint(Fore.GREEN + f"Found {len(nct_ids)} trial(s):")
+            for nct in nct_ids:
+                await aprint(Fore.CYAN + f"  • {nct}")
+            
+            analyze = await ainput(Fore.CYAN + "\nAnalyze these trials with AI? (y/n): ")
+            
+            if analyze.lower() in ('y', 'yes'):
+                await aprint(Fore.YELLOW + "\n🤔 Analyzing trials...")
+                response = await self.assistant.query_with_rag(args)
+                
+                if not response or response.startswith("Error:"):
+                    await aprint(Fore.RED + f"\n{response}\n")
+                else:
+                    await aprint(Fore.GREEN + "\n📊 Analysis:\n")
+                    await aprint(Fore.WHITE + response + "\n")
+                    
+        except KeyboardInterrupt:
+            await aprint(Fore.YELLOW + "\n⚠️ Search interrupted")
+            raise
+    
+    async def cmd_extract(self, args: str):
+        """Extract data from specific trial."""
+        try:
+            if not args:
+                args = await ainput(Fore.CYAN + "Enter NCT number: ")
+                if not args.strip():
+                    await aprint(Fore.RED + "Extract cancelled")
+                    return
+            
+            nct = args.upper().strip()
+            await aprint(Fore.YELLOW + f"\n📋 Extracting data for {nct}...")
+            
+            response = await self.assistant.extract_from_nct(nct)
+            
+            if not response or response.startswith("Error:") or response.startswith("NCT number") or response.startswith("Could not"):
+                await aprint(Fore.RED + f"\n{response}\n")
+            else:
+                await aprint(Fore.GREEN + "\n📊 Structured Extraction:")
+                await aprint(Fore.WHITE + response)
+                
+                save_choice = await ainput(Fore.CYAN + "\nSave this extraction? (json/txt/no) [no]: ")
+                save_choice = save_choice.strip().lower()
+                
+                if save_choice in ('json', 'txt'):
+                    await self._save_extraction(nct, response, save_choice)
+                    
+        except KeyboardInterrupt:
+            await aprint(Fore.YELLOW + "\n⚠️ Extract interrupted")
+            raise
+    
+    async def cmd_save(self, args: str):
+        """Extract and save trial directly."""
+        try:
+            if not args:
+                args = await ainput(Fore.CYAN + "Enter NCT number: ")
+                if not args.strip():
+                    await aprint(Fore.RED + "Save cancelled")
+                    return
+            
+            nct = args.upper().strip()
+            await aprint(Fore.YELLOW + f"\n💾 Extracting and saving {nct}...")
+            
+            response = await self.assistant.extract_from_nct(nct)
+            
+            if not response or response.startswith("Error:"):
+                await aprint(Fore.RED + f"\n{response}\n")
+                return
+            
+            await self._save_extraction(nct, response, 'json')
+            
+        except KeyboardInterrupt:
+            await aprint(Fore.YELLOW + "\n⚠️ Save interrupted")
+            raise
+    
+    async def cmd_query(self, args: str):
+        """Query database with AI."""
+        try:
+            if not args:
+                args = await ainput(Fore.CYAN + "Enter your question: ")
+                if not args.strip():
+                    await aprint(Fore.RED + "Query cancelled")
+                    return
+            
+            max_trials = 10
+            query_text = args
+            
+            if '--limit' in args:
+                parts = args.split('--limit')
+                query_text = parts[0].strip()
+                try:
+                    limit_str = parts[1].strip().split()[0]
+                    max_trials = int(limit_str)
+                except (ValueError, IndexError):
+                    await aprint(Fore.YELLOW + "Invalid --limit value, using default (10)")
+            
+            await aprint(Fore.YELLOW + f"\n🤔 Processing query (max {max_trials} trials)...")
+            response = await self.assistant.query_with_rag(query_text, max_trials=max_trials)
             
             if not response or response.startswith("Error:"):
                 await aprint(Fore.RED + f"\n{response}\n")
             else:
-                await aprint(Fore.GREEN + "\n📊 Analysis:\n")
+                await aprint(Fore.GREEN + "\n💡 Answer:\n")
                 await aprint(Fore.WHITE + response + "\n")
-    
-    async def cmd_extract(self, args: str):
-        """Extract data from specific trial."""
-        if not args:
-            await aprint(Fore.RED + "Usage: extract <NCT_NUMBER>")
-            return
-        
-        nct = args.upper().strip()
-        await aprint(Fore.YELLOW + f"\n📋 Extracting data for {nct}...")
-        
-        response = await self.assistant.extract_from_nct(nct)
-        
-        if not response or response.startswith("Error:") or response.startswith("NCT number") or response.startswith("Could not"):
-            await aprint(Fore.RED + f"\n{response}\n")
-        else:
-            await aprint(Fore.GREEN + "\n📊 Structured Extraction:")
-            await aprint(Fore.WHITE + response)
-            
-            save_choice = await ainput(Fore.CYAN + "\nSave this extraction? (json/txt/no) [no]: ")
-            save_choice = save_choice.strip().lower()
-            
-            if save_choice in ('json', 'txt'):
-                await self._save_extraction(nct, response, save_choice)
-    
-    async def cmd_save(self, args: str):
-        """Extract and save trial directly."""
-        if not args:
-            await aprint(Fore.RED + "Usage: save <NCT_NUMBER>")
-            return
-        
-        nct = args.upper().strip()
-        await aprint(Fore.YELLOW + f"\n💾 Extracting and saving {nct}...")
-        
-        response = await self.assistant.extract_from_nct(nct)
-        
-        if not response or response.startswith("Error:"):
-            await aprint(Fore.RED + f"\n{response}\n")
-            return
-        
-        await self._save_extraction(nct, response, 'json')
-    
-    async def cmd_query(self, args: str):
-        """Query database with AI."""
-        if not args:
-            await aprint(Fore.RED + "Usage: query <question> [--limit N]")
-            return
-        
-        max_trials = 10
-        query_text = args
-        
-        if '--limit' in args:
-            parts = args.split('--limit')
-            query_text = parts[0].strip()
-            try:
-                limit_str = parts[1].strip().split()[0]
-                max_trials = int(limit_str)
-            except (ValueError, IndexError):
-                await aprint(Fore.YELLOW + "Invalid --limit value, using default (10)")
-        
-        await aprint(Fore.YELLOW + f"\n🤔 Processing query (max {max_trials} trials)...")
-        response = await self.assistant.query_with_rag(query_text, max_trials=max_trials)
-        
-        if not response or response.startswith("Error:"):
-            await aprint(Fore.RED + f"\n{response}\n")
-        else:
-            await aprint(Fore.GREEN + "\n💡 Answer:\n")
-            await aprint(Fore.WHITE + response + "\n")
+                
+        except KeyboardInterrupt:
+            await aprint(Fore.YELLOW + "\n⚠️ Query interrupted")
+            raise
     
     async def cmd_stats(self, args: str = ""):
         """Show database statistics."""
@@ -243,9 +318,15 @@ class CommandHandler:
     
     async def _save_extraction(self, nct: str, response: str, format: str):
         """Helper to save extraction to file."""
-        from llm.response_parser import parse_extraction_to_dict
-        
         try:
+            # Try to import response parser
+            try:
+                from amp_llm.llm.response_parser import parse_extraction_to_dict
+                has_parser = True
+            except ImportError:
+                has_parser = False
+                logger.warning("Response parser not available")
+            
             default_filename = f"{nct}_extraction"
             filename = await ainput(Fore.CYAN + f"Filename (without extension) [{default_filename}]: ")
             filename = filename.strip() or default_filename
@@ -254,7 +335,7 @@ class CommandHandler:
             output_dir.mkdir(exist_ok=True)
             output_path = output_dir / f"{filename}.{format}"
             
-            if format == 'json':
+            if format == 'json' and has_parser:
                 extraction_dict = parse_extraction_to_dict(response)
                 
                 with open(output_path, 'w', encoding='utf-8') as f:

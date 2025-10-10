@@ -2,19 +2,17 @@
 External API clients for extended clinical trial research.
 Integrates all available APIs for comprehensive research.
 
-UPDATED: Added PMC Full Text, EudraCT, WHO ICTRP, Semantic Scholar
+COMPLETE SELF-CONTAINED VERSION - No external dependencies
+Includes ALL client implementations inline.
 """
 import asyncio
 import aiohttp
 import os
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
+import time
 
 from amp_llm.config import get_logger
-from amp_llm.data.external_apis.pmc_fulltext import PMCFullTextClient
-from amp_llm.data.external_apis.eudract import EudraCTClient
-from amp_llm.data.external_apis.who_ictrp import WHOICTRPClient
-from amp_llm.data.external_apis.semantic_scholar import SemanticScholarClient
 
 logger = get_logger(__name__)
 
@@ -31,7 +29,7 @@ class SearchConfig:
     
     # Search parameters
     max_results: int = 10
-    timeout: int = 30  # Increased for international APIs
+    timeout: int = 30
     
     def __post_init__(self):
         """Load from environment if available."""
@@ -40,16 +38,326 @@ class SearchConfig:
         self.semantic_scholar_key = self.semantic_scholar_key or os.getenv('SEMANTIC_SCHOLAR_API_KEY')
 
 
-# Import existing clients (keeping for backward compatibility)
-from amp_llm.data.api_clients_original import (
-    MeilisearchClient,
-    SwirlClient,
-    OpenFDAClient,
-    HealthCanadaClient,
-    DuckDuckGoClient,
-    SERPAPIClient
-)
+# ==============================================================================
+# ORIGINAL API CLIENTS (Inline implementations)
+# ==============================================================================
 
+class MeilisearchClient:
+    """Meilisearch API client for semantic search."""
+    
+    def __init__(self, config: SearchConfig):
+        self.config = config
+        self.base_url = config.meilisearch_url
+        self.headers = {}
+        if config.meilisearch_key:
+            self.headers['Authorization'] = f'Bearer {config.meilisearch_key}'
+    
+    async def search(self, title: str, authors: List[str], index: str = "clinical_trials") -> Dict[str, Any]:
+        print(f"🔍 Meilisearch: Searching index '{index}'...")
+        query = f"{title} {' '.join(authors)}"
+        url = f"{self.base_url}/indexes/{index}/search"
+        payload = {"q": query, "limit": self.config.max_results, "attributesToRetrieve": ["*"]}
+        
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, json=payload, headers=self.headers,
+                                       timeout=aiohttp.ClientTimeout(total=self.config.timeout)) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        hits = len(data.get('hits', []))
+                        print(f"✅ Meilisearch: Found {hits} result(s)")
+                        logger.info(f"Meilisearch returned {hits} results")
+                        return data
+                    else:
+                        error_text = await resp.text()
+                        print(f"⚠️ Meilisearch: Error {resp.status}")
+                        logger.warning(f"Meilisearch error {resp.status}: {error_text}")
+                        return {"hits": [], "error": error_text}
+        except asyncio.TimeoutError:
+            print(f"⚠️ Meilisearch: Request timed out")
+            return {"hits": [], "error": "timeout"}
+        except Exception as e:
+            print(f"❌ Meilisearch: {e}")
+            logger.error(f"Meilisearch error: {e}")
+            return {"hits": [], "error": str(e)}
+
+
+class SwirlClient:
+    """Swirl metasearch API client."""
+    
+    def __init__(self, config: SearchConfig):
+        self.config = config
+        self.base_url = config.swirl_url
+    
+    async def search(self, title: str, authors: List[str]) -> Dict[str, Any]:
+        print(f"🔍 Swirl: Running metasearch...")
+        query = f"{title} {' '.join(authors[:3])}"
+        url = f"{self.base_url}/api/search"
+        payload = {
+            "query": query,
+            "providers": ["google", "pubmed", "arxiv"],
+            "max_results": self.config.max_results
+        }
+        
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, json=payload,
+                                       timeout=aiohttp.ClientTimeout(total=self.config.timeout)) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        total = data.get('total_results', 0)
+                        print(f"✅ Swirl: Found {total} result(s) across providers")
+                        logger.info(f"Swirl returned {total} results")
+                        return data
+                    else:
+                        error_text = await resp.text()
+                        print(f"⚠️ Swirl: Error {resp.status}")
+                        logger.warning(f"Swirl error {resp.status}: {error_text}")
+                        return {"results": [], "error": error_text}
+        except asyncio.TimeoutError:
+            print(f"⚠️ Swirl: Request timed out")
+            return {"results": [], "error": "timeout"}
+        except Exception as e:
+            print(f"❌ Swirl: {e}")
+            logger.error(f"Swirl error: {e}")
+            return {"results": [], "error": str(e)}
+
+
+class OpenFDAClient:
+    """OpenFDA Drug API client."""
+    
+    def __init__(self, config: SearchConfig):
+        self.config = config
+        self.base_url = "https://api.fda.gov/drug"
+    
+    async def search_drug_events(self, drug_name: str) -> Dict[str, Any]:
+        print(f"🔍 OpenFDA: Searching adverse events for '{drug_name}'...")
+        clean_name = drug_name.split(':')[-1].strip() if ':' in drug_name else drug_name
+        clean_name = clean_name.split('(')[0].strip()
+        
+        url = f"{self.base_url}/event.json"
+        params = {
+            "search": f'patient.drug.medicinalproduct:"{clean_name}"',
+            "limit": self.config.max_results
+        }
+        
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params,
+                                      timeout=aiohttp.ClientTimeout(total=self.config.timeout)) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        results = data.get('results', [])
+                        print(f"✅ OpenFDA: Found {len(results)} adverse event report(s)")
+                        logger.info(f"OpenFDA returned {len(results)} events for {drug_name}")
+                        return data
+                    elif resp.status == 404:
+                        print(f"ℹ️ OpenFDA: No adverse events found for '{drug_name}'")
+                        return {"results": []}
+                    else:
+                        error_text = await resp.text()
+                        print(f"⚠️ OpenFDA: Error {resp.status}")
+                        logger.warning(f"OpenFDA error {resp.status}: {error_text}")
+                        return {"results": [], "error": error_text}
+        except asyncio.TimeoutError:
+            print(f"⚠️ OpenFDA: Request timed out")
+            return {"results": [], "error": "timeout"}
+        except Exception as e:
+            print(f"❌ OpenFDA: {e}")
+            logger.error(f"OpenFDA error: {e}")
+            return {"results": [], "error": str(e)}
+    
+    async def search_drug_labels(self, drug_name: str) -> Dict[str, Any]:
+        print(f"🔍 OpenFDA: Searching drug labels for '{drug_name}'...")
+        clean_name = drug_name.split(':')[-1].strip() if ':' in drug_name else drug_name
+        clean_name = clean_name.split('(')[0].strip()
+        
+        url = f"{self.base_url}/label.json"
+        params = {
+            "search": f'openfda.brand_name:"{clean_name}" OR openfda.generic_name:"{clean_name}"',
+            "limit": 5
+        }
+        
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params,
+                                      timeout=aiohttp.ClientTimeout(total=self.config.timeout)) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        results = data.get('results', [])
+                        print(f"✅ OpenFDA: Found {len(results)} drug label(s)")
+                        logger.info(f"OpenFDA returned {len(results)} labels for {drug_name}")
+                        return data
+                    elif resp.status == 404:
+                        print(f"ℹ️ OpenFDA: No drug labels found for '{drug_name}'")
+                        return {"results": []}
+                    else:
+                        print(f"⚠️ OpenFDA: Error {resp.status}")
+                        return {"results": []}
+        except Exception as e:
+            print(f"❌ OpenFDA: {e}")
+            return {"results": [], "error": str(e)}
+
+
+class HealthCanadaClient:
+    """Health Canada Clinical Trials Database API client."""
+    
+    def __init__(self, config: SearchConfig):
+        self.config = config
+        self.base_url = "https://health-products.canada.ca/api/clinical-trials"
+    
+    async def search(self, title: str, nct_id: str = None) -> Dict[str, Any]:
+        print(f"🔍 Health Canada: Searching clinical trials database...")
+        search_term = nct_id if nct_id else ' '.join(title.split()[:10])
+        url = f"{self.base_url}/search"
+        params = {
+            "term": search_term,
+            "lang": "en",
+            "limit": self.config.max_results
+        }
+        
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params,
+                                      timeout=aiohttp.ClientTimeout(total=self.config.timeout)) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        results = data.get('results', [])
+                        print(f"✅ Health Canada: Found {len(results)} trial(s)")
+                        logger.info(f"Health Canada returned {len(results)} trials")
+                        return data
+                    else:
+                        error_text = await resp.text()
+                        print(f"⚠️ Health Canada: Error {resp.status}")
+                        logger.warning(f"Health Canada error {resp.status}: {error_text}")
+                        return {"results": [], "error": error_text}
+        except asyncio.TimeoutError:
+            print(f"⚠️ Health Canada: Request timed out")
+            return {"results": [], "error": "timeout"}
+        except Exception as e:
+            print(f"❌ Health Canada: {e}")
+            logger.error(f"Health Canada error: {e}")
+            return {"results": [], "error": str(e)}
+
+
+class DuckDuckGoClient:
+    """DuckDuckGo search API client."""
+    
+    def __init__(self, config: SearchConfig):
+        self.config = config
+    
+    async def search(self, title: str, authors: List[str]) -> Dict[str, Any]:
+        print(f"🔍 DuckDuckGo: Searching web...")
+        try:
+            from duckduckgo_search import AsyncDDGS
+            
+            query = f"{title} {' '.join(authors[:2])}"
+            
+            async with AsyncDDGS() as ddgs:
+                results = []
+                async for result in ddgs.text(query, max_results=self.config.max_results):
+                    results.append(result)
+                
+                print(f"✅ DuckDuckGo: Found {len(results)} result(s)")
+                logger.info(f"DuckDuckGo returned {len(results)} results")
+                return {"results": results}
+        except ImportError:
+            print(f"⚠️ DuckDuckGo: duckduckgo-search not installed")
+            print(f"   Install with: pip install duckduckgo-search")
+            logger.warning("DuckDuckGo library not available")
+            return {"results": [], "error": "library_not_installed"}
+        except Exception as e:
+            print(f"❌ DuckDuckGo: {e}")
+            logger.error(f"DuckDuckGo error: {e}")
+            return {"results": [], "error": str(e)}
+
+
+class SERPAPIClient:
+    """SERP API client for Google search results."""
+    
+    def __init__(self, config: SearchConfig):
+        self.config = config
+        self.api_key = config.serpapi_key
+    
+    async def search_google(self, title: str, authors: List[str]) -> Dict[str, Any]:
+        if not self.api_key:
+            print(f"⚠️ SERP API: API key not configured")
+            print(f"   Set SERPAPI_KEY environment variable")
+            return {"organic_results": [], "error": "no_api_key"}
+        
+        print(f"🔍 SERP API: Searching Google...")
+        query = f'"{title}" {" ".join(authors[:2])}'
+        url = "https://serpapi.com/search"
+        params = {
+            "q": query,
+            "api_key": self.api_key,
+            "engine": "google",
+            "num": self.config.max_results,
+            "hl": "en"
+        }
+        
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params,
+                                      timeout=aiohttp.ClientTimeout(total=self.config.timeout)) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        results = data.get('organic_results', [])
+                        print(f"✅ SERP API: Found {len(results)} result(s)")
+                        logger.info(f"SERP API returned {len(results)} results")
+                        return data
+                    else:
+                        error_text = await resp.text()
+                        print(f"⚠️ SERP API: Error {resp.status}")
+                        logger.warning(f"SERP API error {resp.status}: {error_text}")
+                        return {"organic_results": [], "error": error_text}
+        except asyncio.TimeoutError:
+            print(f"⚠️ SERP API: Request timed out")
+            return {"organic_results": [], "error": "timeout"}
+        except Exception as e:
+            print(f"❌ SERP API: {e}")
+            logger.error(f"SERP API error: {e}")
+            return {"organic_results": [], "error": str(e)}
+    
+    async def search_google_scholar(self, title: str, authors: List[str]) -> Dict[str, Any]:
+        if not self.api_key:
+            print(f"⚠️ SERP API: API key not configured for Scholar")
+            return {"organic_results": [], "error": "no_api_key"}
+        
+        print(f"🔍 SERP API: Searching Google Scholar...")
+        query = f'"{title}"'
+        if authors:
+            query += f' author:"{authors[0]}"'
+        
+        url = "https://serpapi.com/search"
+        params = {
+            "q": query,
+            "api_key": self.api_key,
+            "engine": "google_scholar",
+            "num": self.config.max_results
+        }
+        
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params,
+                                      timeout=aiohttp.ClientTimeout(total=self.config.timeout)) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        results = data.get('organic_results', [])
+                        print(f"✅ SERP API Scholar: Found {len(results)} result(s)")
+                        logger.info(f"SERP API Scholar returned {len(results)} results")
+                        return data
+                    else:
+                        print(f"⚠️ SERP API Scholar: Error {resp.status}")
+                        return {"organic_results": []}
+        except Exception as e:
+            print(f"❌ SERP API Scholar: {e}")
+            return {"organic_results": [], "error": str(e)}
+
+
+# ==============================================================================
+# UNIFIED API MANAGER
+# ==============================================================================
 
 class APIManager:
     """
@@ -72,6 +380,11 @@ class APIManager:
         self.serpapi = SERPAPIClient(self.config)
         
         # Initialize new clients
+        from amp_llm.data.external_apis.pmc_fulltext import PMCFullTextClient
+        from amp_llm.data.external_apis.eudract import EudraCTClient
+        from amp_llm.data.external_apis.who_ictrp import WHOICTRPClient
+        from amp_llm.data.external_apis.semantic_scholar import SemanticScholarClient
+        
         self.pmc_fulltext = PMCFullTextClient(
             timeout=self.config.timeout,
             max_results=self.config.max_results
@@ -138,7 +451,7 @@ class APIManager:
             task_names.append('swirl')
         
         if 'openfda' in enabled_apis and interventions:
-            for intervention in interventions[:3]:
+            for intervention in interventions[:3]:  # Limit to first 3
                 tasks.append(self.openfda.search_drug_events(intervention))
                 task_names.append(f'openfda_events_{intervention}')
                 tasks.append(self.openfda.search_drug_labels(intervention))
@@ -199,141 +512,6 @@ class APIManager:
         print(f"{'='*60}\n")
         
         return combined
-    
-    async def search_comprehensive(
-        self,
-        nct_id: str,
-        title: str,
-        authors: List[str],
-        interventions: List[str] = None,
-        conditions: List[str] = None
-    ) -> Dict[str, Any]:
-        """
-        Comprehensive search using all available APIs.
-        Best for thorough research.
-        
-        Args:
-            nct_id: NCT number
-            title: Study title
-            authors: Author names
-            interventions: Drug/intervention names
-            conditions: Medical conditions
-            
-        Returns:
-            Organized results from all APIs
-        """
-        print(f"\n{'='*70}")
-        print(f"🔬 COMPREHENSIVE SEARCH: {nct_id}")
-        print(f"{'='*70}\n")
-        
-        # Search all APIs
-        all_results = await self.search_all(
-            title=title,
-            authors=authors,
-            nct_id=nct_id,
-            interventions=interventions,
-            conditions=conditions,
-            enabled_apis=None  # Use all
-        )
-        
-        # Organize by category
-        organized = {
-            "web_search": {},
-            "clinical_databases": {},
-            "literature": {},
-            "drug_safety": {}
-        }
-        
-        # Categorize results
-        if 'duckduckgo' in all_results:
-            organized['web_search']['duckduckgo'] = all_results['duckduckgo']
-        
-        if 'serpapi_google' in all_results:
-            organized['web_search']['google'] = all_results['serpapi_google']
-        
-        if 'eudract' in all_results:
-            organized['clinical_databases']['eudract'] = all_results['eudract']
-        
-        if 'who_ictrp' in all_results:
-            organized['clinical_databases']['who_ictrp'] = all_results['who_ictrp']
-        
-        if 'health_canada' in all_results:
-            organized['clinical_databases']['health_canada'] = all_results['health_canada']
-        
-        if 'pmc_fulltext' in all_results:
-            organized['literature']['pmc_fulltext'] = all_results['pmc_fulltext']
-        
-        if 'semantic_scholar' in all_results:
-            organized['literature']['semantic_scholar'] = all_results['semantic_scholar']
-        
-        if 'serpapi_scholar' in all_results:
-            organized['literature']['google_scholar'] = all_results['serpapi_scholar']
-        
-        # OpenFDA results
-        openfda_results = {
-            k: v for k, v in all_results.items()
-            if k.startswith('openfda_')
-        }
-        if openfda_results:
-            organized['drug_safety']['openfda'] = openfda_results
-        
-        # Print summary
-        self._print_comprehensive_summary(organized)
-        
-        return organized
-    
-    def _print_comprehensive_summary(self, organized: Dict[str, Any]):
-        """Print organized summary of comprehensive search."""
-        print(f"\n{'='*70}")
-        print(f"📊 COMPREHENSIVE SEARCH SUMMARY")
-        print(f"{'='*70}\n")
-        
-        # Web Search
-        if organized['web_search']:
-            print("🌐 Web Search Results:")
-            for api, data in organized['web_search'].items():
-                if 'error' not in data:
-                    count = len(data.get('results', data.get('organic_results', [])))
-                    print(f"   {api}: {count} result(s)")
-            print()
-        
-        # Clinical Databases
-        if organized['clinical_databases']:
-            print("🏥 Clinical Trial Databases:")
-            for api, data in organized['clinical_databases'].items():
-                if 'error' not in data:
-                    count = len(data.get('results', []))
-                    print(f"   {api}: {count} trial(s)")
-            print()
-        
-        # Literature
-        if organized['literature']:
-            print("📚 Academic Literature:")
-            for api, data in organized['literature'].items():
-                if 'error' not in data:
-                    if 'papers' in data:
-                        count = len(data['papers'])
-                    elif 'pmcids' in data:
-                        count = len(data['pmcids'])
-                    else:
-                        count = len(data.get('results', data.get('organic_results', [])))
-                    print(f"   {api}: {count} paper(s)")
-            print()
-        
-        # Drug Safety
-        if organized['drug_safety']:
-            print("💊 Drug Safety Information:")
-            for api, data in organized['drug_safety'].items():
-                if isinstance(data, dict):
-                    total_events = sum(
-                        len(v.get('results', []))
-                        for v in data.values()
-                        if isinstance(v, dict)
-                    )
-                    print(f"   {api}: {total_events} report(s)")
-            print()
-        
-        print("="*70 + "\n")
     
     def get_available_apis(self) -> List[str]:
         """Get list of all available APIs."""

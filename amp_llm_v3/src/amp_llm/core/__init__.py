@@ -1,53 +1,22 @@
-"""
-Core application package.
+# In amp_llm_v3/src/amp_llm/core/__init__.py
+# Add these imports:
 
-Provides the main application orchestrator, menu system, and lifecycle management.
-
-Example:
-    >>> from amp_llm.core import Application
-    >>> app = Application()
-    >>> await app.run()
-"""
-
-from .app import Application
-from .menu import MenuSystem, MenuItem, MenuAction
-from .context import ApplicationContext
-from .lifecycle import LifecycleManager, LifecycleHook
-from .ssh_manager import SSHManager, SSHConnectionError
-from .exceptions import (
-    CoreError,
-    ApplicationError,
-    MenuError,
-    GracefulExit,
+from .interrupt_handler import (
+    handle_interrupts,
+    safe_ainput,
+    check_for_menu_exit,
+    run_with_interrupt_protection,
+    InterruptContext,
+    InterruptSignal,
 )
 
-# Backward compatibility alias for old code
-AMPLLMApp = Application
-
+# Add to __all__:
 __all__ = [
-    # Main application
-    'Application',
-    'AMPLLMApp',  # Backward compatibility
-    
-    # Menu system
-    'MenuSystem',
-    'MenuItem',
-    'MenuAction',
-    
-    # Context and lifecycle
-    'ApplicationContext',
-    'LifecycleManager',
-    'LifecycleHook',
-    
-    # SSH management
-    'SSHManager',
-    'SSHConnectionError',
-    
-    # Exceptions
-    'CoreError',
-    'ApplicationError',
-    'MenuError',
-    'GracefulExit',
+    # ... existing exports ...
+    'handle_interrupts',
+    'safe_ainput',
+    'check_for_menu_exit',
+    'run_with_interrupt_protection',
+    'InterruptContext',
+    'InterruptSignal',
 ]
-
-__version__ = '3.0.0'
