@@ -1,23 +1,16 @@
 """
-Enhanced menu system with comprehensive interrupt handling.
-FIXED: All menu items now handle Ctrl+C properly and return to main menu.
+Enhanced menu system with pluggable handlers.
+NO hardcoded dependencies - uses handler pattern.
 """
-
 from typing import Dict, Callable, Awaitable, Optional
 from dataclasses import dataclass
 from enum import Enum
 from colorama import Fore, Style
 
-try:
-    from aioconsole import ainput, aprint
-except ImportError:
-    async def ainput(prompt):
-        return input(prompt)
-    async def aprint(*args, **kwargs):
-        print(*args, **kwargs)
-
+from amp_llm.cli.async_io import ainput, aprint
 from amp_llm.config import get_logger
 from .exceptions import MenuError
+from .handlers import MenuHandler
 
 logger = get_logger(__name__)
 
@@ -34,7 +27,7 @@ class MenuItem:
     """Represents a single menu item."""
     key: str
     name: str
-    handler: Optional[Callable[[], Awaitable[MenuAction]]]
+    handler: Optional[MenuHandler]  # Changed from Callable to MenuHandler
     description: str = ""
     badge: str = ""
     enabled: bool = True
@@ -63,7 +56,7 @@ class MenuItem:
 
 
 class MenuSystem:
-    """Enhanced menu system with comprehensive interrupt handling."""
+    """Enhanced menu system with pluggable handlers."""
     
     def __init__(self, app_context):
         """Initialize menu system."""
@@ -74,13 +67,17 @@ class MenuSystem:
         self._register_default_items()
     
     def _register_default_items(self) -> None:
-        """Register default menu items with interrupt-safe wrappers."""
+        """Register default menu items with pluggable handlers."""
         # Import handlers
-        from amp_llm.network.shell import open_interactive_shell
-        from amp_llm.llm.handlers import run_llm_entrypoint_api, run_llm_entrypoint_ssh
-        from amp_llm.data.nct_lookup import run_nct_lookup
+        from .handlers import (
+            ShellHandler,
+            LLMAPIHandler,
+            LLMSSHHandler,
+            NCTLookupHandler,
+            ResearchAssistantHandler,
+        )
         
-        # Try to import research assistant
+        # Check if research assistant is available
         try:
             from amp_llm.llm.assistants.assistant import ClinicalTrialResearchAssistant
             has_research = True
@@ -92,10 +89,7 @@ class MenuSystem:
         self.add_item(
             "1",
             "Interactive Shell",
-            self._create_interrupt_safe_handler(
-                lambda: open_interactive_shell(self.context.ssh_manager.connection),
-                "Shell Session"
-            ),
+            ShellHandler(),
             description="Direct SSH terminal access (Ctrl+C returns to menu)",
             requires_ssh=True,
         )
@@ -104,10 +98,7 @@ class MenuSystem:
         self.add_item(
             "2",
             "LLM Workflow (API Mode)",
-            self._create_interrupt_safe_handler(
-                lambda: run_llm_entrypoint_api(self.context.ssh_manager),
-                "LLM API Session"
-            ),
+            LLMAPIHandler(),
             description="Recommended: Uses HTTP API (Ctrl+C returns to menu)",
             requires_ssh=True,
         )
@@ -116,10 +107,7 @@ class MenuSystem:
         self.add_item(
             "3",
             "LLM Workflow (SSH Terminal)",
-            self._create_interrupt_safe_handler(
-                lambda: run_llm_entrypoint_ssh(self.context.ssh_manager.connection),
-                "LLM SSH Session"
-            ),
+            LLMSSHHandler(),
             description="Legacy: Direct terminal (Ctrl+C returns to menu)",
             requires_ssh=True,
         )
@@ -128,56 +116,17 @@ class MenuSystem:
         self.add_item(
             "4",
             "NCT Lookup",
-            self._create_interrupt_safe_handler(
-                run_nct_lookup,
-                "NCT Lookup"
-            ),
+            NCTLookupHandler(),
             description="Search clinical trials + ALL APIs (Ctrl+C returns to menu)",
             requires_ssh=False,
         )
         
         # Research Assistant
         if has_research:
-            async def run_research_wrapper():
-                """Wrapper to run research assistant with interrupt handling."""
-                try:
-                    from pathlib import Path
-                    from amp_llm.llm.assistants.assistant import ClinicalTrialResearchAssistant
-                    
-                    db_path = Path("ct_database")
-                    if not db_path.exists():
-                        await aprint(Fore.YELLOW + "⚠️  Database not found: ct_database/")
-                        await aprint(Fore.YELLOW + "Creating directory...")
-                        db_path.mkdir(exist_ok=True)
-                        await aprint(Fore.YELLOW + "Please add JSON files to ct_database/")
-                        return
-                    
-                    assistant = ClinicalTrialResearchAssistant(db_path)
-                    
-                    remote_host = (
-                        self.context.ssh_manager.host 
-                        if self.context.ssh_manager.is_connected() 
-                        else 'localhost'
-                    )
-                    
-                    await assistant.run(
-                        self.context.ssh_manager.connection,
-                        remote_host
-                    )
-                except KeyboardInterrupt:
-                    await aprint(Fore.YELLOW + "\n⚠️ Research assistant interrupted (Ctrl+C)")
-                    logger.info("Research assistant interrupted")
-                except Exception as e:
-                    await aprint(Fore.RED + f"❌ Error: {e}")
-                    logger.error(f"Research assistant error: {e}", exc_info=True)
-            
             self.add_item(
                 "5",
                 "Clinical Trial Research Assistant",
-                self._create_interrupt_safe_handler(
-                    run_research_wrapper,
-                    "Research Assistant"
-                ),
+                ResearchAssistantHandler(),
                 description="RAG-powered analysis (Ctrl+C returns to menu)",
                 badge=f"{Fore.GREEN}← RECOMMENDED",
                 requires_ssh=True,
@@ -187,7 +136,7 @@ class MenuSystem:
         self.add_item(
             "6" if has_research else "5",
             "Exit",
-            None,
+            None,  # No handler for exit
             description="Quit application",
         )
         
@@ -209,45 +158,17 @@ class MenuSystem:
             self.register_alias("exit", "5")
             self.register_alias("quit", "5")
     
-    def _create_interrupt_safe_handler(
-        self,
-        handler: Callable[[], Awaitable[None]],
-        name: str
-    ) -> Callable[[], Awaitable[MenuAction]]:
-        """
-        Create interrupt-safe wrapper for menu handler.
-        Ensures Ctrl+C returns to main menu.
-        """
-        async def safe_wrapper() -> MenuAction:
-            try:
-                await handler()
-                return MenuAction.CONTINUE
-            except KeyboardInterrupt:
-                await aprint(
-                    Fore.YELLOW + 
-                    f"\n\n⚠️ {name} interrupted (Ctrl+C). Returning to menu..."
-                )
-                logger.info(f"{name} interrupted by user (Ctrl+C)")
-                return MenuAction.CONTINUE
-            except Exception as e:
-                logger.error(f"Error in {name}: {e}", exc_info=True)
-                await aprint(Fore.RED + f"❌ Error in {name}: {e}")
-                await aprint(Fore.YELLOW + "Returning to menu...")
-                return MenuAction.CONTINUE
-        
-        return safe_wrapper
-    
     def add_item(
         self,
         key: str,
         name: str,
-        handler: Optional[Callable[[], Awaitable[MenuAction]]],
+        handler: Optional[MenuHandler],
         description: str = "",
         badge: str = "",
         enabled: bool = True,
         requires_ssh: bool = False,
     ) -> None:
-        """Add menu item."""
+        """Add menu item with handler."""
         item = MenuItem(
             key=key,
             name=name,
@@ -296,7 +217,7 @@ class MenuSystem:
             
             return choice
         except KeyboardInterrupt:
-            # Ctrl+C during menu choice = exit
+            # Ctrl+C during menu choice = continue
             await aprint(Fore.YELLOW + "\n\nCtrl+C pressed. Type 'exit' to quit.")
             return "continue"
     
@@ -341,14 +262,13 @@ class MenuSystem:
             await aprint(Fore.MAGENTA + "Exiting. Goodbye!")
             return MenuAction.EXIT
         
-        # Run handler (already wrapped with interrupt handling)
+        # Execute handler
         logger.info(f"User selected: {item.name}")
         
         try:
-            action = await item.handler()
-            return action
+            await item.handler.execute(self.context)
+            return MenuAction.CONTINUE
         except KeyboardInterrupt:
-            # Extra safety: catch any un-caught Ctrl+C
             await aprint(Fore.YELLOW + "\n⚠️ Interrupted. Returning to menu...")
             return MenuAction.CONTINUE
         except Exception as e:

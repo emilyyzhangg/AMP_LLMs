@@ -4,15 +4,7 @@ Model builder for creating custom Ollama models from Modelfiles.
 import time
 from pathlib import Path
 from colorama import Fore
-
-try:
-    from aioconsole import ainput, aprint
-except ImportError:
-    async def ainput(prompt):
-        return input(prompt)
-    async def aprint(*args, **kwargs):
-        print(*args, **kwargs)
-
+from amp_llm.cli.async_io import ainput, aprint
 from amp_llm.config import get_logger
 
 logger = get_logger(__name__)

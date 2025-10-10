@@ -1,6 +1,7 @@
 """
 PubMed Central (PMC) data fetcher.
 Handles searching and fetching metadata from PMC via NCBI E-utilities.
+Results are esummary, not full text
 """
 import requests
 import time

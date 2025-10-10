@@ -7,17 +7,8 @@ import asyncio
 from typing import Optional, TYPE_CHECKING
 if TYPE_CHECKING:
     import asyncssh
-    
 from colorama import Fore, Style
-
-try:
-    from aioconsole import ainput, aprint
-except ImportError:
-    async def ainput(prompt):
-        return input(prompt)
-    async def aprint(*args, **kwargs):
-        print(*args, **kwargs)
-
+from amp_llm.cli.async_io import ainput, aprint
 from amp_llm.config import get_config, get_logger
 from amp_llm.network.ping import ping_host
 from amp_llm.network.ssh import connect_ssh

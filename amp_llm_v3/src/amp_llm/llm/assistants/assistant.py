@@ -8,18 +8,10 @@ import logging
 from pathlib import Path
 from typing import Optional
 from colorama import Fore, Style, init
-
-try:
-    from aioconsole import ainput, aprint
-except ImportError:
-    async def ainput(prompt):
-        return input(prompt)
-    async def aprint(*args, **kwargs):
-        print(*args, **kwargs)
-
+from amp_llm.cli.async_io import ainput, aprint
 from amp_llm.config import get_logger, get_config
 from amp_llm.llm.utils.session import OllamaSessionManager
-from amp_llm.llm.research.commands import CommandHandler
+from amp_llm.llm.assistants.commands import CommandHandler
 
 # Import RAG if available
 try:

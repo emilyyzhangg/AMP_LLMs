@@ -19,21 +19,50 @@ Example:
     ...     await do_work()
 """
 
-from .commands import CommandRegistry, Command
-from .parser import CLIParser, Argument, Option
-from .formatters import (
-    format_table,
-    format_list,
-    format_dict,
-    format_json,
-    format_tree,
-    colorize,
-    emphasize,
-    success,
-    warning,
-    error,
-    info,
-)
+# Async I/O (single source of truth)
+from .async_io import ainput, aprint
+
+# REMOVED: This line is causing the error
+# from .commands import CommandRegistry, Command
+
+# Parser (if it exists and doesn't import commands)
+try:
+    from .parser import CLIParser, Argument, Option
+except ImportError:
+    CLIParser = None
+    Argument = None
+    Option = None
+
+# Formatters
+try:
+    from .formatters import (
+        format_table,
+        format_list,
+        format_dict,
+        format_json,
+        format_tree,
+        colorize,
+        emphasize,
+        success,
+        warning,
+        error,
+        info,
+    )
+except ImportError:
+    # Formatters not implemented yet
+    format_table = None
+    format_list = None
+    format_dict = None
+    format_json = None
+    format_tree = None
+    colorize = None
+    emphasize = None
+    success = None
+    warning = None
+    error = None
+    info = None
+
+# Prompts
 from .prompts import (
     prompt_text,
     prompt_choice,
@@ -42,11 +71,15 @@ from .prompts import (
     prompt_multiline,
     prompt_file,
 )
+
+# Progress
 from .progress import (
     Spinner,
     ProgressBar,
     IndeterminateProgress,
 )
+
+# Output
 from .output import (
     OutputManager,
     ConsoleOutput,
@@ -55,6 +88,8 @@ from .output import (
     format_duration,
     format_timestamp,
 )
+
+# Validators
 from .validators import (
     validate_email,
     validate_url,
@@ -62,6 +97,8 @@ from .validators import (
     validate_file_path,
     validate_ip_address,
 )
+
+# Exceptions
 from .exceptions import (
     CLIError,
     CommandError,
@@ -70,16 +107,16 @@ from .exceptions import (
 )
 
 __all__ = [
-    # Commands
-    'CommandRegistry',
-    'Command',
+    # Async I/O
+    'ainput',
+    'aprint',
     
-    # Parser
+    # Parser (conditional)
     'CLIParser',
     'Argument',
     'Option',
     
-    # Formatters
+    # Formatters (conditional)
     'format_table',
     'format_list',
     'format_dict',

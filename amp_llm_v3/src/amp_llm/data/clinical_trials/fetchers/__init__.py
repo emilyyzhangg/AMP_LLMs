@@ -1,14 +1,11 @@
 """
 Clinical trial data fetchers package.
 
-Modularized fetchers for:
-- ClinicalTrials.gov API
-- PubMed (NCBI E-utilities)
-- PubMed Central (PMC)
-- Coordination and result aggregation
+UPDATED: Now delegates to workflows package for orchestration.
+Individual fetchers remain here for direct API access.
 """
 
-# Import from individual modules
+# Individual fetchers (still here for direct use)
 from .clinical_trials import fetch_clinical_trial_data
 from .pubmed import (
     fetch_pubmed_by_pmid,
@@ -20,7 +17,9 @@ from .pmc import (
     fetch_pmc_esummary,
     convert_pmc_summary_to_metadata,
 )
-from .coordinator import (
+
+# Coordinator functions (now from workflows)
+from amp_llm.data.workflows.core_fetch import (
     fetch_clinical_trial_and_pubmed_pmc,
     print_study_summary,
     summarize_result,
@@ -28,20 +27,16 @@ from .coordinator import (
 )
 
 __all__ = [
-    # ClinicalTrials.gov
+    # Individual fetchers
     'fetch_clinical_trial_data',
-    
-    # PubMed
     'fetch_pubmed_by_pmid',
     'search_pubmed_esearch',
     'search_pubmed_by_title_authors',
-    
-    # PMC
     'search_pmc',
     'fetch_pmc_esummary',
     'convert_pmc_summary_to_metadata',
     
-    # Coordinator (main entry point)
+    # Coordinator functions (delegated to workflows)
     'fetch_clinical_trial_and_pubmed_pmc',
     'print_study_summary',
     'summarize_result',

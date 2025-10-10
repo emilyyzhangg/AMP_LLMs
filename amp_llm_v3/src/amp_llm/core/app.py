@@ -6,13 +6,7 @@ Simplified version that delegates to specialized managers.
 
 import asyncio
 from colorama import Fore, Style, init
-
-try:
-    from aioconsole import aprint
-except ImportError:
-    async def aprint(*args, **kwargs):
-        print(*args, **kwargs)
-
+from amp_llm.cli.async_io import aprint
 from src.amp_llm.config import get_config, get_logger, setup_logging, LogConfig
 from .context import ApplicationContext
 from .lifecycle import LifecycleManager
