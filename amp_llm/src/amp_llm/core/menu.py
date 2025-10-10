@@ -1,6 +1,6 @@
 """
 Enhanced menu system with better routing and error handling.
-FIXED: Corrected all import paths for modular structure.
+FIXED: Corrected SSH manager passing to handlers.
 """
 
 from typing import Dict, Callable, Awaitable, Optional
@@ -74,7 +74,7 @@ class MenuSystem:
         self._register_default_items()
     
     def _register_default_items(self) -> None:
-        """Register default menu items with FIXED imports."""
+        """Register default menu items with FIXED SSH manager passing."""
         # FIXED: Use correct import paths
         from amp_llm.network.shell import open_interactive_shell
         from amp_llm.llm.handlers import run_llm_entrypoint_api, run_llm_entrypoint_ssh
@@ -82,7 +82,7 @@ class MenuSystem:
         
         # Try to import research assistant (may not exist yet)
         try:
-            from amp_llm.src.amp_llm.llm.research.assistant import ClinicalTrialResearchAssistant
+            from amp_llm.llm.research.assistant import ClinicalTrialResearchAssistant
             has_research = True
         except ImportError:
             has_research = False
@@ -99,18 +99,18 @@ class MenuSystem:
             requires_ssh=True,
         )
         
-        # LLM Workflow (API)
+        # LLM Workflow (API) - FIXED: Pass SSHManager instead of connection
         self.add_item(
             "2",
             "LLM Workflow (API Mode)",
             self._wrap_handler(
-                lambda: run_llm_entrypoint_api(self.context.ssh_manager.connection)
+                lambda: run_llm_entrypoint_api(self.context.ssh_manager)
             ),
             description="Recommended: Uses HTTP API, most reliable",
             requires_ssh=True,
         )
         
-        # LLM Workflow (SSH)
+        # LLM Workflow (SSH) - FIXED: Pass connection (this one is correct)
         self.add_item(
             "3",
             "LLM Workflow (SSH Terminal)",
@@ -135,7 +135,7 @@ class MenuSystem:
             async def run_research_wrapper():
                 """Wrapper to run research assistant."""
                 from pathlib import Path
-                from amp_llm.src.amp_llm.llm.research.assistant import ClinicalTrialResearchAssistant
+                from amp_llm.llm.research.assistant import ClinicalTrialResearchAssistant
                 
                 db_path = Path("ct_database")
                 if not db_path.exists():
@@ -147,7 +147,7 @@ class MenuSystem:
                 
                 assistant = ClinicalTrialResearchAssistant(db_path)
                 
-                # Get remote host for Ollama API
+                # FIXED: Get remote host from SSHManager
                 remote_host = (
                     self.context.ssh_manager.host 
                     if self.context.ssh_manager.is_connected() 

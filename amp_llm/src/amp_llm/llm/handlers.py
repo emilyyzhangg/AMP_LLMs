@@ -1,6 +1,6 @@
 """
 LLM workflow handlers and entry points.
-Provides high-level functions for menu integration.
+FIXED: Proper SSH manager handling for remote host detection.
 """
 import asyncio
 from colorama import Fore, Style
@@ -22,19 +22,24 @@ from amp_llm.llm.clients.ollama_ssh import OllamaSSHClient
 logger = get_logger(__name__)
 
 
-async def run_llm_entrypoint_api(ssh_connection):
+async def run_llm_entrypoint_api(ssh_manager):
     """
     LLM workflow using Ollama API (HTTP).
-    This is the recommended method - most reliable.
+    FIXED: Now properly extracts remote host from SSHManager.
     
     Args:
-        ssh_connection: Active SSH connection (for getting remote host)
+        ssh_manager: SSHManager instance (not the raw connection)
     """
     await aprint(Fore.CYAN + "\n=== 🤖 LLM Workflow (API Mode) ===")
     await aprint(Fore.YELLOW + "Using Ollama HTTP API (recommended)")
     
-    # Get remote host IP from SSH connection
-    remote_host = getattr(ssh_connection, 'host', 'localhost')
+    # FIXED: Properly get remote host from SSHManager
+    if hasattr(ssh_manager, 'host') and ssh_manager.host:
+        remote_host = ssh_manager.host
+    else:
+        # Fallback to localhost if no SSH connection
+        remote_host = 'localhost'
+        await aprint(Fore.YELLOW + "⚠️  No SSH connection - using localhost")
     
     await aprint(Fore.CYAN + f"Connecting to Ollama at {remote_host}:11434...")
     
@@ -49,6 +54,12 @@ async def run_llm_entrypoint_api(ssh_connection):
             if not models:
                 await aprint(Fore.RED + "❌ No models found on remote server")
                 await aprint(Fore.YELLOW + "Install models using: ollama pull <model_name>")
+                await aprint(Fore.CYAN + "\nTroubleshooting:")
+                await aprint(Fore.WHITE + "  1. Check if Ollama is running on remote host:")
+                await aprint(Fore.WHITE + f"     ssh {ssh_manager.username}@{remote_host}")
+                await aprint(Fore.WHITE + "     systemctl status ollama")
+                await aprint(Fore.WHITE + "  2. Try: ollama list")
+                await aprint(Fore.WHITE + "  3. If no models: ollama pull llama3.2")
                 return
             
             await aprint(Fore.CYAN + f"\n📋 Available models ({len(models)}):")
@@ -116,6 +127,10 @@ async def run_llm_entrypoint_api(ssh_connection):
     
     except Exception as e:
         await aprint(Fore.RED + f"❌ Failed to connect to Ollama API: {e}")
+        await aprint(Fore.CYAN + "\nTroubleshooting:")
+        await aprint(Fore.WHITE + f"  • Is Ollama running on {remote_host}?")
+        await aprint(Fore.WHITE + f"  • Can you reach port 11434?")
+        await aprint(Fore.WHITE + f"  • Try: ssh {ssh_manager.username if hasattr(ssh_manager, 'username') else 'user'}@{remote_host} 'curl http://localhost:11434/api/tags'")
         logger.error(f"Ollama API connection error: {e}", exc_info=True)
 
 
@@ -125,7 +140,7 @@ async def run_llm_entrypoint_ssh(ssh_connection):
     Legacy method - has potential issues with text fragmentation.
     
     Args:
-        ssh_connection: Active SSH connection
+        ssh_connection: Active SSH connection (asyncssh object)
     """
     await aprint(Fore.CYAN + "\n=== 🤖 LLM Workflow (SSH Terminal) ===")
     await aprint(Fore.YELLOW + "⚠️  Using SSH terminal mode (legacy)")
