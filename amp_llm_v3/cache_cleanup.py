@@ -1,15 +1,16 @@
 """
-AMP_LLM Cleanup Utility (Enhanced)
-----------------------------------
+AMP_LLM Cleanup Utility (Enhanced with Fixed Process Detection)
+----------------------------------------------------------------
 Deletes all __pycache__ and llm_env directories recursively.
 Optionally deletes .env files (with confirmation).
-Now includes automatic detection and termination of locked venv processes.
+Includes automatic detection and termination of locked venv processes.
 """
 
 import os
 import shutil
 import sys
 import subprocess
+import time
 from pathlib import Path
 
 
@@ -18,28 +19,64 @@ def kill_python_processes_in_path(target_path: Path):
     print(f"🔍 Checking for running Python processes in {target_path}...")
     try:
         if sys.platform == "win32":
+            # Use tasklist instead of wmic for better compatibility
             result = subprocess.run(
-                ["wmic", "process", "where", "name='python.exe'", "get", "ExecutablePath,ProcessId"],
+                ["tasklist", "/FI", "IMAGENAME eq python.exe", "/FO", "CSV", "/V"],
                 capture_output=True,
                 text=True,
+                timeout=10
             )
+            
             if result.returncode == 0:
-                lines = [l.strip() for l in result.stdout.splitlines() if l.strip()]
                 killed = 0
-                for line in lines:
-                    if target_path.as_posix().lower() in line.lower():
-                        parts = line.split()
-                        if parts and parts[-1].isdigit():
-                            pid = parts[-1]
-                            print(f"💀 Killing Python process {pid} using {line}")
-                            subprocess.run(["taskkill", "/F", "/PID", pid], check=False)
-                            killed += 1
+                target_str = str(target_path).lower()
+                
+                # Parse CSV output
+                lines = result.stdout.splitlines()
+                for line in lines[1:]:  # Skip header
+                    if "python.exe" in line.lower():
+                        parts = [p.strip('"') for p in line.split('","')]
+                        if len(parts) > 1:
+                            pid = parts[1]
+                            # Check if process command line contains our path
+                            process_info = subprocess.run(
+                                ["wmic", "process", "where", f"ProcessId={pid}", "get", "CommandLine"],
+                                capture_output=True,
+                                text=True,
+                                timeout=5
+                            )
+                            if process_info.returncode == 0 and target_str in process_info.stdout.lower():
+                                print(f"💀 Killing Python process PID {pid}")
+                                subprocess.run(["taskkill", "/F", "/PID", pid], check=False)
+                                killed += 1
+                                time.sleep(0.5)  # Give it time to die
+                
+                # Alternative: Kill ALL python.exe processes if none matched
+                if killed == 0:
+                    print("⚠️  Couldn't match processes to path. Trying broader approach...")
+                    result2 = subprocess.run(
+                        ["tasklist", "/FI", "IMAGENAME eq python.exe", "/NH"],
+                        capture_output=True,
+                        text=True
+                    )
+                    if result2.returncode == 0:
+                        for line in result2.stdout.splitlines():
+                            if "python.exe" in line:
+                                parts = line.split()
+                                if len(parts) >= 2:
+                                    pid = parts[1]
+                                    print(f"💀 Killing Python process PID {pid}")
+                                    subprocess.run(["taskkill", "/F", "/PID", pid], check=False)
+                                    killed += 1
+                                    time.sleep(0.5)
+                
                 if killed:
-                    print(f"✅ Terminated {killed} process(es) in {target_path}")
+                    print(f"✅ Terminated {killed} process(es)")
+                    time.sleep(1)  # Wait for file handles to release
                 else:
-                    print("✅ No running Python processes found.")
+                    print("✅ No Python processes found to terminate.")
             else:
-                print("⚠️  Could not query Python processes.")
+                print("⚠️  Could not query Python processes with tasklist.")
         else:
             # Unix/macOS version
             result = subprocess.run(["ps", "-A", "-o", "pid,command"], capture_output=True, text=True)
@@ -56,6 +93,8 @@ def kill_python_processes_in_path(target_path: Path):
                     print(f"✅ Terminated {killed} process(es) in {target_path}")
                 else:
                     print("✅ No running Python processes found.")
+    except subprocess.TimeoutExpired:
+        print("⚠️  Process scan timed out")
     except Exception as e:
         print(f"⚠️  Failed to scan/kill processes: {e}")
 
@@ -92,8 +131,11 @@ def delete_directory_aggressive(target: Path) -> bool:
     # Fix read-only
     def handle_remove_readonly(func, path, exc):
         import stat
-        os.chmod(path, stat.S_IWRITE)
-        func(path)
+        try:
+            os.chmod(path, stat.S_IWRITE)
+            func(path)
+        except Exception:
+            pass
 
     try:
         shutil.rmtree(target, onerror=handle_remove_readonly)
@@ -156,7 +198,7 @@ def clean_all(root: Path):
         print(f"✅ Deleted {len(deleted)} folder(s).")
     if failed:
         print(f"⚠️  Failed to delete {len(failed)} folder(s).")
-        print("💡 Try running as Administrator if they remain locked.")
+        print("💡 Try closing all terminals and running as Administrator.")
 
     delete_file_if_confirmed(root / ".env")
 
