@@ -4,148 +4,110 @@ Core fetching workflow - ClinicalTrials.gov + PubMed + PMC.
 This replaces data/clinical_trials/fetchers/coordinator.py
 Maintains backward compatibility with existing API.
 """
+
+
+
+"""
+Core fetching workflow - FULLY MIGRATED.
+Uses api_clients only, no fetchers dependencies.
+"""
 import asyncio
 from typing import Dict, Any, List
-
 from amp_llm.config import get_logger
-from amp_llm.data.clinical_trials.fetchers import (
-    fetch_clinical_trial_data,
-    fetch_pubmed_by_pmid,
-    search_pubmed_by_title_authors,
-    search_pmc,
-    fetch_pmc_esummary,
-    convert_pmc_summary_to_metadata,
-)
+from amp_llm.data.api_clients.core.clinical_trials import ClinicalTrialsClient
+from amp_llm.data.api_clients.core.pubmed import PubMedClient
+from amp_llm.data.api_clients.core.pmc_basic import PMCBasicClient
 
 logger = get_logger(__name__)
 
 
 async def fetch_clinical_trial_and_pubmed_pmc(nct_id: str) -> Dict[str, Any]:
     """
-    Async wrapper that orchestrates fetching from core sources.
-    
-    Workflow:
-    1. Fetch clinical trial data from ClinicalTrials.gov
-    2. Extract references (title, authors) from trial data
-    3. Search PubMed for each reference
-    4. Fetch full PubMed metadata for each PMID
-    5. Search PMC for each reference
-    6. Fetch PMC metadata for each PMC ID
+    Orchestrate fetching from core sources.
+    FULLY MIGRATED - no fetchers dependencies.
     
     Args:
-        nct_id: NCT number (e.g., "NCT12345678")
+        nct_id: NCT number
         
     Returns:
-        Combined result with data from all core sources:
-        {
-            "nct_id": "NCT...",
-            "sources": {
-                "clinical_trials": {
-                    "source": "clinicaltrials_v2_detail",
-                    "data": {...}
-                },
-                "pubmed": {
-                    "pmids": ["123", "456"],
-                    "studies": [{...}, {...}]
-                },
-                "pmc": {
-                    "pmcids": ["789", "012"],
-                    "summaries": [{...}, {...}]
-                }
-            }
-        }
+        Combined result from all core sources
     """
-    loop = asyncio.get_event_loop()
-    
-    # Step 1: Fetch clinical trial data
-    logger.info(f"Fetching clinical trial data for {nct_id}")
-    clin = await loop.run_in_executor(None, fetch_clinical_trial_data, nct_id)
-    
-    if "error" in clin:
-        logger.error(f"Failed to fetch {nct_id}: {clin.get('error')}")
-        return clin
-    
-    ctdata = clin.get("clinical_trial_data", {})
-    protocol = ctdata.get("protocolSection", {}) if isinstance(ctdata, dict) else {}
-    
-    # Extract references from trial data
-    refs = _extract_references(protocol)
-    
-    logger.info(f"Found {len(refs)} reference(s) for {nct_id}")
-    
-    # Initialize result containers
-    pubmed = {"pmids": [], "studies": []}
-    pmc = {"pmcids": [], "summaries": []}
-    
-    # Step 2-6: Search and fetch PubMed/PMC data for each reference
-    for i, ref in enumerate(refs, 1):
-        title = ref.get("title", "")
-        authors = ref.get("authors", [])
+    async with ClinicalTrialsClient() as ct_client, \
+               PubMedClient() as pubmed_client, \
+               PMCBasicClient() as pmc_client:
         
-        logger.debug(f"Processing reference {i}/{len(refs)}: {title[:50]}...")
-        print(f"\n📖 Searching for related publications: '{title}'")
+        # Step 1: Fetch clinical trial
+        logger.info(f"Fetching clinical trial data for {nct_id}")
+        ct_result = await ct_client.fetch_by_id(nct_id)
         
-        # Search PubMed
-        pmid = await loop.run_in_executor(
-            None, search_pubmed_by_title_authors, title, authors
+        if "error" in ct_result:
+            logger.error(f"Failed to fetch {nct_id}: {ct_result.get('error')}")
+            return ct_result
+        
+        # Extract references
+        ct_data = ct_result.get("clinical_trial_data", {})
+        protocol = ct_data.get("protocolSection", {}) if isinstance(ct_data, dict) else {}
+        refs = _extract_references(protocol)
+        
+        logger.info(f"Found {len(refs)} reference(s) for {nct_id}")
+        
+        # Initialize results
+        pubmed_data = {"pmids": [], "studies": []}
+        pmc_data = {"pmcids": [], "summaries": []}
+        
+        # Step 2: Process each reference
+        for i, ref in enumerate(refs, 1):
+            title = ref.get("title", "")
+            authors = ref.get("authors", [])
+            
+            logger.debug(f"Processing reference {i}/{len(refs)}: {title[:50]}...")
+            print(f"\n📖 Searching for: '{title}'")
+            
+            # Search PubMed
+            pmid = await pubmed_client.search_by_title_authors(title, authors)
+            if pmid:
+                pubmed_data["pmids"].append(pmid)
+                metadata = await pubmed_client.fetch_by_id(pmid)
+                pubmed_data["studies"].append(metadata)
+                logger.info(f"Found PubMed article: PMID {pmid}")
+            
+            # Search PMC
+            pmcids = await pmc_client.search(title)
+            for pmcid in pmcids:
+                if pmcid not in pmc_data["pmcids"]:
+                    pmc_data["pmcids"].append(pmcid)
+                    metadata = await pmc_client.fetch_by_id(pmcid)
+                    pmc_data["summaries"].append({
+                        "pmcid": pmcid,
+                        "metadata": metadata
+                    })
+                    logger.info(f"Found PMC article: PMC{pmcid}")
+        
+        logger.info(
+            f"Completed {nct_id}: "
+            f"{len(pubmed_data['pmids'])} PubMed, {len(pmc_data['pmcids'])} PMC"
         )
         
-        if pmid:
-            pubmed["pmids"].append(pmid)
-            pubmed_data = await loop.run_in_executor(
-                None, fetch_pubmed_by_pmid, pmid
-            )
-            pubmed["studies"].append(pubmed_data)
-            logger.info(f"Found PubMed article: PMID {pmid}")
-        
-        # Search PMC
-        pmcids = await loop.run_in_executor(None, search_pmc, title)
-        for pid in pmcids:
-            if pid not in pmc["pmcids"]:
-                pmc["pmcids"].append(pid)
-                pmc_meta = await loop.run_in_executor(
-                    None, fetch_pmc_esummary, pid
-                )
-                pmc["summaries"].append({
-                    "pmcid": pid,
-                    "metadata": convert_pmc_summary_to_metadata(pmc_meta)
-                })
-                logger.info(f"Found PMC article: PMC{pid}")
-    
-    logger.info(
-        f"Completed fetch for {nct_id}: "
-        f"{len(pubmed['pmids'])} PubMed, {len(pmc['pmcids'])} PMC"
-    )
-    
-    # Return combined result
-    return {
-        "nct_id": nct_id,
-        "sources": {
-            "clinical_trials": {
-                "source": clin.get("source"),
-                "data": ctdata
-            },
-            "pubmed": pubmed,
-            "pmc": pmc
+        # Return combined result
+        return {
+            "nct_id": nct_id,
+            "sources": {
+                "clinical_trials": {
+                    "source": ct_result.get("source"),
+                    "data": ct_data
+                },
+                "pubmed": pubmed_data,
+                "pmc": pmc_data
+            }
         }
-    }
 
 
 def _extract_references(protocol: Dict[str, Any]) -> List[Dict[str, Any]]:
-    """
-    Extract references from trial protocol section.
-    
-    Args:
-        protocol: Trial protocolSection dictionary
-        
-    Returns:
-        List of references with title and authors
-    """
-    # Try to get references from referencesModule
+    """Extract references from trial protocol."""
     refs = protocol.get("referencesModule", {}).get("referenceList", [])
     
     if not refs:
-        # Fallback: use study title and investigators as reference
+        # Fallback: use study title and investigators
         ident = protocol.get("identificationModule", {})
         title = ident.get("officialTitle") or ident.get("briefTitle")
         
@@ -157,23 +119,17 @@ def _extract_references(protocol: Dict[str, Any]) -> List[Dict[str, Any]]:
             refs = [{"title": title, "authors": authors}]
     else:
         # Normalize reference format
-        normalized_refs = []
+        normalized = []
         for ref in refs:
             title = ref.get("referenceTitle") or ref.get("title", "")
             authors = ref.get("authors", [])
             
-            # Handle different author formats
             if isinstance(authors, str):
-                # Split comma-separated author string
                 authors = [a.strip() for a in authors.split(",") if a.strip()]
             
             if title:
-                normalized_refs.append({
-                    "title": title,
-                    "authors": authors
-                })
-        
-        refs = normalized_refs
+                normalized.append({"title": title, "authors": authors})
+        refs = normalized
     
     return refs
 

@@ -3,7 +3,12 @@ ClinicalTrials.gov data fetcher.
 Handles fetching trial data from ClinicalTrials.gov API (v2 and legacy).
 """
 import requests
-from typing import Dict, Any
+import aiohttp
+import asyncio
+from typing import Dict, Any, Optional
+from amp_llm.config import get_logger
+
+logger = get_logger(__name__)
 
 # Configuration
 DEFAULT_TIMEOUT = 15

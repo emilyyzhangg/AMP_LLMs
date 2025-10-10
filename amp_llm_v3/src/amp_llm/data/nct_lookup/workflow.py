@@ -8,9 +8,9 @@ from colorama import Fore, Style
 
 from amp_llm.cli.async_io import ainput, aprint
 from amp_llm.config import get_logger
-from amp_llm.data.clinical_trials.fetchers import (
-    fetch_clinical_trial_and_pubmed_pmc,
-    save_results,
+from amp_llm.data.workflows.core_fetch import (
+       fetch_clinical_trial_and_pubmed_pmc,
+       save_results,
 )
 from .api_search import run_extended_api_search, get_api_selection
 from .display import (
