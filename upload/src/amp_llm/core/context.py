@@ -9,7 +9,7 @@ from typing import Optional, Dict, Any
 from datetime import datetime
 import asyncio
 
-from amp_llm.config import Settings, get_settings
+from amp_llm.config import AppConfig, get_config
 
 
 @dataclass
@@ -28,7 +28,7 @@ class ApplicationContext:
         metadata: Additional runtime metadata
     """
     
-    settings: Settings = field(default_factory=get_settings)
+    settings: AppConfig = field(default_factory=get_config)
     ssh_manager: Optional[Any] = None  # Type: SSHManager (avoid circular import)
     running: bool = True
     start_time: datetime = field(default_factory=datetime.now)

@@ -13,7 +13,7 @@ except ImportError:
     async def aprint(*args, **kwargs):
         print(*args, **kwargs)
 
-from amp_llm.config import get_logger, get_settings, setup_logging, LogConfig
+from amp_llm.config import get_logger, get_config, setup_logging, LogConfig
 from .context import ApplicationContext
 from .lifecycle import LifecycleManager
 from .signals import setup_signal_handlers
@@ -42,7 +42,7 @@ class Application:
         init(autoreset=True)
         
         # Get settings
-        self.settings = get_settings()
+        self.settings = get_config()
         
         # Setup logging
         log_config = LogConfig(

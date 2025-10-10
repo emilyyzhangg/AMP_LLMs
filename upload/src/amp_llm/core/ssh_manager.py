@@ -16,8 +16,9 @@ except ImportError:
     async def aprint(*args, **kwargs):
         print(*args, **kwargs)
 
-from amp_llm.config import get_settings, get_logger
-from amp_llm.network import ping_host, connect_ssh
+from amp_llm.config import get_config, get_logger
+from network.ping import ping_host
+from network.ssh import connect_ssh
 from .exceptions import SSHConnectionError, SSHAuthenticationError
 
 logger = get_logger(__name__)
@@ -47,7 +48,7 @@ class SSHManager:
         self.host: Optional[str] = None
         self.username: Optional[str] = None
         self.port: int = 22
-        self.settings = get_settings()
+        self.settings = get_config()
     
     def is_connected(self) -> bool:
         """

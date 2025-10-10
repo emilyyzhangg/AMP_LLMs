@@ -13,8 +13,8 @@ if str(src_dir) not in sys.path:
 from colorama import init as colorama_init
 colorama_init(autoreset=True)
 
-from amp_llm.config.settings import get_config, get_logger
-from amp_llm.core.app import AMPLLMApp  # ← Fixed import
+from config.settings import get_config, get_logger
+from core.app import AMPLLMApp  # ← Fixed import
 
 logger = get_logger(__name__)
 
