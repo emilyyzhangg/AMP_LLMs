@@ -27,6 +27,7 @@ class NetworkConfig:
     ssh_keepalive_count_max: int = 3
     max_auth_attempts: int = 3
 
+
 @dataclass
 class CLIConfig:
     """CLI display configuration."""
@@ -34,14 +35,18 @@ class CLIConfig:
     color_output: bool = field(default_factory=lambda: os.getenv('CLI_COLOR_OUTPUT', 'true').lower() == 'true')
     table_width: int = field(default_factory=lambda: int(os.getenv('CLI_TABLE_WIDTH', '120')))
 
+
 @dataclass
 class APIConfig:
     """API client configuration for external services."""
-    timeout: int = 15
-    max_retries: int = 3
-    rate_limit_delay: float = 0.34
-    max_concurrent: int = 5
+    timeout: int = field(default_factory=lambda: int(os.getenv('API_TIMEOUT', '15')))
+    max_retries: int = field(default_factory=lambda: int(os.getenv('API_MAX_RETRIES', '3')))
+    rate_limit_delay: float = field(default_factory=lambda: float(os.getenv('API_RATE_LIMIT_DELAY', '0.34')))
+    max_concurrent: int = field(default_factory=lambda: int(os.getenv('API_MAX_CONCURRENT', '5')))
+    max_results: int = field(default_factory=lambda: int(os.getenv('API_MAX_RESULTS', '10')))
+    
     cli: CLIConfig = field(default_factory=CLIConfig)
+    
     user_agent: str = field(
         default_factory=lambda: os.getenv(
             'API_USER_AGENT',
@@ -49,8 +54,17 @@ class APIConfig:
         )
     )
     
+    # API Keys
     ncbi_api_key: Optional[str] = field(default_factory=lambda: os.getenv('NCBI_API_KEY'))
     
+    # Rate limiting
+    rate_limit_requests: int = field(
+        default_factory=lambda: int(os.getenv('API_RATE_LIMIT_REQUESTS', '10'))
+    )
+    rate_limit_period: float = field(
+        default_factory=lambda: float(os.getenv('API_RATE_LIMIT_PERIOD', '1.0'))
+    )
+
 
 @dataclass
 class LLMConfig:
@@ -100,6 +114,15 @@ class AppConfig:
         
         if self.api.rate_limit_delay < 0:
             errors.append("Rate limit delay cannot be negative")
+        
+        if self.api.rate_limit_requests <= 0:
+            errors.append("Rate limit requests must be positive")
+        
+        if self.api.rate_limit_period <= 0:
+            errors.append("Rate limit period must be positive")
+        
+        if self.api.max_results <= 0:
+            errors.append("Max results must be positive")
         
         if self.network.ping_timeout <= 0:
             errors.append("Ping timeout must be positive")
