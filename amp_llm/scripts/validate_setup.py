@@ -243,7 +243,7 @@ class V3Tester:
         self.log("Testing configuration...")
         
         try:
-            from config import get_config
+            from amp_llm.config import get_config
             config = get_config()
             
             # Check critical config attributes
@@ -280,7 +280,7 @@ class V3Tester:
             return
         
         try:
-            from data.clinical_trial_rag import ClinicalTrialRAG
+            from amp_llm.src.amp_llm.data.clinical_trials.rag import ClinicalTrialRAG
             
             rag = ClinicalTrialRAG(db_path)
             rag.db.build_index()
@@ -332,14 +332,14 @@ class V3Tester:
         """Test env_setup.py."""
         self.log("Testing env_setup.py...")
         
-        env_setup_path = self.root / "env_setup.py"
+        env_setup_path = self.root / "scripts/setup_environment.py"
         
         if not env_setup_path.exists():
             all_good = False
             message = "env_setup.py not found"
         else:
             try:
-                from env_setup import ensure_env, verify_critical_imports
+                from amp_llm.scripts.setup_environment import ensure_env, verify_critical_imports
                 
                 all_good = True
                 message = "env_setup.py functional"

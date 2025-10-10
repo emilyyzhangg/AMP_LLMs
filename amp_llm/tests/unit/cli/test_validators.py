@@ -3,7 +3,7 @@ tests/unit/cli/test_validators.py
 """
 
 import pytest
-from amp_llm.cli import (
+from amp_llm.src.cli import (
     validate_email,
     validate_nct_number,
     validate_ip_address,

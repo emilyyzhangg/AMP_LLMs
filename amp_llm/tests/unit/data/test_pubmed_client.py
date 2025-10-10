@@ -2,7 +2,7 @@
 
 import pytest
 from unittest.mock import AsyncMock, patch
-from amp_llm.data.pubmed import PubMedClient, PubMedAPIError
+from amp_llm.src.amp_llm.data.pubmed import PubMedClient, PubMedAPIError
 
 @pytest.fixture
 def pubmed_client():

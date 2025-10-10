@@ -5,6 +5,7 @@
 SSH connection management with keepalive support.
 """
 import asyncssh
+import asyncio
 from typing import Optional
 from colorama import Fore
 from amp_llm.config.settings import get_config, get_logger

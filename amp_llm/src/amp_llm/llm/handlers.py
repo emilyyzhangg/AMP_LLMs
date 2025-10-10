@@ -13,9 +13,11 @@ except ImportError:
     async def aprint(*args, **kwargs):
         print(*args, **kwargs)
 
-from amp_llm.config.logging import get_logger
-from clients.ollama_api import OllamaAPIClient
-from clients.ollama_ssh import OllamaSSHClient
+from amp_llm.config import get_logger
+
+# Import clients from correct location
+from amp_llm.llm.clients.ollama_api import OllamaAPIClient
+from amp_llm.llm.clients.ollama_ssh import OllamaSSHClient
 
 logger = get_logger(__name__)
 
@@ -32,7 +34,7 @@ async def run_llm_entrypoint_api(ssh_connection):
     await aprint(Fore.YELLOW + "Using Ollama HTTP API (recommended)")
     
     # Get remote host IP from SSH connection
-    remote_host = ssh_connection._host if hasattr(ssh_connection, '_host') else 'localhost'
+    remote_host = getattr(ssh_connection, 'host', 'localhost')
     
     await aprint(Fore.CYAN + f"Connecting to Ollama at {remote_host}:11434...")
     

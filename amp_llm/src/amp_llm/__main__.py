@@ -1,11 +1,11 @@
 """
-Main entry point for AMP_LLM application.
+Main entry point for AMP_LLM package when run with python -m amp_llm.
 """
 import sys
 import asyncio
 from pathlib import Path
 
-# Add src to path when running directly
+# Ensure src is in path
 src_dir = Path(__file__).parent.parent
 if str(src_dir) not in sys.path:
     sys.path.insert(0, str(src_dir))
@@ -13,8 +13,9 @@ if str(src_dir) not in sys.path:
 from colorama import init as colorama_init
 colorama_init(autoreset=True)
 
-from config.settings import get_config, get_logger
-from core.app import AMPLLMApp  # ← Fixed import
+from amp_llm.config import get_config, get_logger
+from amp_llm.config.logging import setup_logging, LogConfig
+from amp_llm.core.app import Application
 
 logger = get_logger(__name__)
 
@@ -34,18 +35,26 @@ async def async_main():
     try:
         print_banner()
         
+        # Setup configuration and logging
         config = get_config()
+        log_config = LogConfig(
+            log_file=config.output.log_file,
+            log_level=config.output.log_level,
+        )
+        setup_logging(log_config)
+        
         logger.info("Starting AMP_LLM application")
         
-        app = AMPLLMApp()
+        # Create and run application
+        app = Application()
         await app.run()
         
     except KeyboardInterrupt:
         logger.info("Application interrupted by user")
-        print("\n\nApplication terminated by user.")
+        print("\n\n✨ Application terminated by user.")
     except Exception as e:
         logger.error(f"Fatal error: {e}", exc_info=True)
-        print(f"\nFatal error: {e}")
+        print(f"\n❌ Fatal error: {e}")
         sys.exit(1)
 
 

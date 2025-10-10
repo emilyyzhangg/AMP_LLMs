@@ -1,8 +1,9 @@
 """
 Enhanced menu system with better routing and error handling.
+FIXED: Corrected all import paths for modular structure.
 """
 
-from typing import Dict, Callable, Awaitable, Optional, List
+from typing import Dict, Callable, Awaitable, Optional
 from dataclasses import dataclass
 from enum import Enum
 from colorama import Fore, Style
@@ -30,9 +31,7 @@ class MenuAction(Enum):
 
 @dataclass
 class MenuItem:
-    """
-    Represents a single menu item.
-    """
+    """Represents a single menu item."""
     key: str
     name: str
     handler: Optional[Callable[[], Awaitable[MenuAction]]]
@@ -64,9 +63,7 @@ class MenuItem:
 
 
 class MenuSystem:
-    """
-    Enhanced menu system with better routing and state management.
-    """
+    """Enhanced menu system with better routing and state management."""
     
     def __init__(self, app_context):
         """Initialize menu system."""
@@ -77,15 +74,15 @@ class MenuSystem:
         self._register_default_items()
     
     def _register_default_items(self) -> None:
-        """Register default menu items."""
-        # FIXED: Import handlers from correct location
-        from src.network.shell import open_interactive_shell
-        from src.llm.handlers import run_llm_entrypoint_api, run_llm_entrypoint_ssh
-        from amp_llm.data.async_nct_lookup import run_nct_lookup
+        """Register default menu items with FIXED imports."""
+        # FIXED: Use correct import paths
+        from src.amp_llm.network.shell import open_interactive_shell
+        from src.amp_llm.llm.handlers import run_llm_entrypoint_api, run_llm_entrypoint_ssh
+        from data.async_nct_lookup import run_nct_lookup
         
         # Try to import research assistant (may not exist yet)
         try:
-            from src.llm.research.assistant import ClinicalTrialResearchAssistant
+            from amp_llm.src.amp_llm.llm.research.assistant import ClinicalTrialResearchAssistant
             has_research = True
         except ImportError:
             has_research = False
@@ -138,7 +135,7 @@ class MenuSystem:
             async def run_research_wrapper():
                 """Wrapper to run research assistant."""
                 from pathlib import Path
-                from src.llm.research.assistant import ClinicalTrialResearchAssistant
+                from amp_llm.src.amp_llm.llm.research.assistant import ClinicalTrialResearchAssistant
                 
                 db_path = Path("ct_database")
                 if not db_path.exists():

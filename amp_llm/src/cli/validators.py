@@ -4,7 +4,7 @@ Input validation utilities.
 
 import re
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Optional
 
 
 def validate_email(email: str) -> Tuple[bool, str]:

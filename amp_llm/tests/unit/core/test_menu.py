@@ -3,7 +3,7 @@ tests/unit/core/test_menu.py
 """
 
 import pytest
-from amp_llm.core import MenuSystem, MenuItem, MenuAction, ApplicationContext
+from amp_llm.src.amp_llm.core import MenuSystem, MenuItem, MenuAction, ApplicationContext
 
 
 @pytest.fixture

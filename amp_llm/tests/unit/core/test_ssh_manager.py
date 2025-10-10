@@ -4,7 +4,7 @@ tests/unit/core/test_ssh_manager.py
 
 import pytest
 from unittest.mock import AsyncMock, patch
-from amp_llm.core import SSHManager, SSHConnectionError
+from amp_llm.src.amp_llm.core import SSHManager, SSHConnectionError
 
 
 @pytest.fixture

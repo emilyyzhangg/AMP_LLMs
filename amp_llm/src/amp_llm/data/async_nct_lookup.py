@@ -5,7 +5,7 @@ ENHANCED: Now includes extended API searches (Meilisearch, Swirl, OpenFDA, etc.)
 import asyncio
 from typing import List, Dict, Any
 from colorama import Fore, Style
-from config import get_logger
+from amp_llm.config import get_logger
 
 try:
     from aioconsole import ainput, aprint
@@ -15,7 +15,7 @@ except ImportError:
     async def aprint(*args, **kwargs):
         print(*args, **kwargs)
 
-from data.data_fetchers import (
+from amp_llm.src.amp_llm.data.clinical_trials.fetchers import (
     fetch_clinical_trial_and_pubmed_pmc,
     print_study_summary,
     save_results,

@@ -10,7 +10,7 @@ from colorama import Fore
 
 from amp_llm.config.logging import get_logger
 from amp_llm.data.clinical_trials.rag import ClinicalTrialRAG
-from amp_llm.src.llm.utils.session import OllamaSessionManager
+from amp_llm.src.amp_llm.llm.utils.session import OllamaSessionManager
 from .commands import CommandHandler
 
 try:

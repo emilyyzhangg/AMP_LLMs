@@ -3,7 +3,7 @@ tests/unit/cli/test_formatters.py
 """
 
 import pytest
-from amp_llm.cli import format_table, format_list, colorize
+from amp_llm.src.cli import format_table, format_list, colorize
 
 
 def test_format_table_basic():
