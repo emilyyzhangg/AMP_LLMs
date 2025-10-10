@@ -102,61 +102,81 @@ async def run_llm_entrypoint_api(ssh_manager):
 
 async def _select_or_create_model(session, models: list, ssh_connection) -> str:
     """
-    Select existing model or create custom one.
+    Select base LLM, then optionally create Research Assistant model.
+    
+    Workflow:
+    1. Show available base models (exclude custom models)
+    2. User selects base model
+    3. Ask if building Research Assistant
+    4. Build appropriate model if requested
+    5. Use selected/created model
     
     Returns:
         Selected model name or None if cancelled
     """
-    custom_model_name = "ct-research-assistant"
     
-    # Check if custom model exists
-    if custom_model_name in models:
-        await aprint(Fore.GREEN + f"✅ Found custom model: {custom_model_name}")
-        use_custom = await ainput(Fore.CYAN + f"Use '{custom_model_name}'? (y/n/list) [y]: ")
-        
-        choice = use_custom.strip().lower()
-        
-        if choice in ('', 'y', 'yes'):
-            return custom_model_name
-        elif choice == 'list':
-            pass  # Fall through to list
-        elif choice in ('n', 'no'):
-            pass  # Fall through to list
-        else:
-            return custom_model_name
+    # STEP 1: Filter out custom models - show only base models
+    base_models = [m for m in models if not m.startswith('ct-research-assistant') 
+                   and not m.startswith('amp-assistant')]
     
-    # Show all available models
-    await aprint(Fore.CYAN + f"\n📋 Available models:")
-    for i, model in enumerate(models, 1):
-        marker = "→" if model == models[0] else " "
+    if not base_models:
+        await aprint(Fore.RED + "❌ No base models available")
+        return None
+    
+    await aprint(Fore.CYAN + f"\n📋 Available base models:")
+    for i, model in enumerate(base_models, 1):
+        marker = "→" if i == 1 else " "
         await aprint(Fore.WHITE + f"  {marker} {i}) {model}")
     
-    # Add option to create custom model
-    create_option = len(models) + 1
-    await aprint(Fore.YELLOW + f"  ✨ {create_option}) Create custom model '{custom_model_name}'")
+    # STEP 2: User selects base model
+    choice = await ainput(Fore.GREEN + "Select base model [1]: ")
+    choice = choice.strip() or "1"
     
-    choice = await ainput(Fore.GREEN + f"Select model [1-{create_option}] or Enter for first: ")
-    choice = choice.strip()
+    # Parse selection
+    selected_base = None
+    if choice.isdigit():
+        idx = int(choice) - 1
+        if 0 <= idx < len(base_models):
+            selected_base = base_models[idx]
+    elif choice in base_models:
+        selected_base = choice
     
-    # Parse choice
-    if not choice:
-        return models[0]
-    elif choice.isdigit():
-        idx = int(choice)
-        if idx == create_option:
-            # Create custom model
-            if ssh_connection and await _build_custom_model(ssh_connection, custom_model_name, models):
-                return custom_model_name
-            else:
-                await aprint(Fore.YELLOW + "Falling back to first available model")
-                return models[0]
-        elif 1 <= idx <= len(models):
-            return models[idx - 1]
-    elif choice in models:
-        return choice
+    if not selected_base:
+        await aprint(Fore.YELLOW + "Invalid selection, using first model")
+        selected_base = base_models[0]
     
-    # Default
-    return models[0]
+    await aprint(Fore.GREEN + f"✅ Selected base: {selected_base}\n")
+    
+    # STEP 3: Ask about Research Assistant
+    build_assistant = await ainput(
+        Fore.CYAN + 
+        "Build Research Assistant model from this base? (y/n) [n]: "
+    )
+    build_assistant = build_assistant.strip().lower()
+    
+    # STEP 4: Build model if requested
+    if build_assistant in ('y', 'yes'):
+        model_name = "ct-research-assistant:latest"
+        await aprint(Fore.CYAN + f"\n🔬 Building Research Assistant model...")
+        
+        if await _build_custom_model(
+            ssh_connection, 
+            model_name, 
+            base_models, 
+            selected_base_model=selected_base
+        ):
+            await aprint(Fore.GREEN + f"\n✅ Created: {model_name}")
+            await aprint(Fore.CYAN + f"   Base LLM: {selected_base}")
+            await aprint(Fore.CYAN + f"   Purpose: Clinical Trial Research\n")
+            return model_name
+        else:
+            await aprint(Fore.YELLOW + f"\n⚠️  Model creation failed")
+            await aprint(Fore.YELLOW + f"Falling back to base model: {selected_base}\n")
+            return selected_base
+    else:
+        # STEP 5: Use base model directly
+        await aprint(Fore.GREEN + f"\n✅ Using base model: {selected_base}\n")
+        return selected_base
 
 
 async def _show_interactive_menu():
@@ -638,7 +658,79 @@ async def _show_connection_help(ssh_manager, remote_host: str):
     await aprint(Fore.WHITE + "     curl http://localhost:11434/api/tags")
 
 
-async def run_llm_entrypoint_ssh(ssh_manager):
-    """Legacy SSH terminal mode."""
-    await aprint(Fore.YELLOW + "\n⚠️  SSH Terminal Mode (Legacy)")
-    await aprint(Fore.YELLOW + "This method is deprecated. Use API mode for better features.")
+async def run_llm_entrypoint_api(ssh_manager):
+    """
+    Enhanced LLM workflow with fixed model selection.
+    """
+    await aprint(Fore.CYAN + "\n=== 🤖 LLM Workflow (API Mode) ===")
+    await aprint(Fore.YELLOW + "Enhanced with file loading and interactive features\n")
+    
+    # Get remote host and SSH connection
+    remote_host = ssh_manager.host if hasattr(ssh_manager, 'host') else 'localhost'
+    ssh_connection = ssh_manager.connection if hasattr(ssh_manager, 'connection') else None
+    
+    await aprint(Fore.CYAN + f"Connecting to Ollama at {remote_host}:11434...")
+    
+    try:
+        async with OllamaSessionManager(remote_host, 11434, ssh_connection) as session:
+            await aprint(Fore.GREEN + "✅ Connected to Ollama!")
+            
+            if session._using_tunnel:
+                await aprint(Fore.CYAN + "   (via SSH tunnel)")
+            
+            # List available models
+            models = await session.list_models()
+            
+            if not models:
+                await _show_no_models_help(ssh_manager)
+                return
+            
+            await aprint(Fore.GREEN + f"✅ Found {len(models)} model(s)\n")
+            
+            # FIXED: Use new model selection workflow
+            selected_model = await _select_or_create_model(
+                session, 
+                models, 
+                ssh_connection
+            )
+            
+            if not selected_model:
+                await aprint(Fore.RED + "❌ No model selected")
+                return
+            
+            # Display current configuration
+            await aprint(Fore.GREEN + Style.BRIGHT + "\n" + "="*60)
+            await aprint(Fore.GREEN + Style.BRIGHT + "  🤖 CURRENT CONFIGURATION")
+            await aprint(Fore.GREEN + Style.BRIGHT + "="*60)
+            await aprint(Fore.WHITE + f"  Model: {selected_model}")
+            
+            # Check if it's the research assistant
+            if "ct-research-assistant" in selected_model:
+                await aprint(Fore.CYAN + "  Type: Clinical Trial Research Assistant")
+                await aprint(Fore.CYAN + "  Features: RAG, Structured Extraction, Trial Analysis")
+            else:
+                await aprint(Fore.CYAN + "  Type: Base LLM (General Purpose)")
+                await aprint(Fore.CYAN + "  Features: General Q&A, Code, Analysis")
+            
+            await aprint(Fore.GREEN + "="*60 + "\n")
+            
+            # Show interactive menu
+            await _show_interactive_menu()
+            
+            # Run interactive session
+            await _run_enhanced_interactive_session(
+                session, 
+                selected_model,
+                ssh_manager
+            )
+            
+    except KeyboardInterrupt:
+        await aprint(Fore.YELLOW + "\n\n⚠️ LLM session interrupted (Ctrl+C). Returning to main menu...")
+        logger.info("LLM session interrupted by user")
+    except ConnectionError as e:
+        await aprint(Fore.RED + f"❌ Connection failed: {e}")
+        logger.error(f"Connection error: {e}")
+        await _show_connection_help(ssh_manager, remote_host)
+    except Exception as e:
+        await aprint(Fore.RED + f"❌ Unexpected error: {e}")
+        logger.error(f"Unexpected error: {e}", exc_info=True)

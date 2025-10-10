@@ -304,78 +304,82 @@ Provide a clear, well-structured answer based on the trial data above."""
         finally:
             print(Fore.CYAN + "\n👋 Goodbye!\n")
 
-    async def _ensure_model_exists(self, ssh_connection, available_models: list) -> bool:
+    async def _ensure_model_exists_for_research(
+        self, 
+        ssh_connection, 
+        available_models: list
+    ) -> bool:
         """
-        Check if custom model exists, create if not.
+        Ensure Research Assistant model exists for Option 5.
+        Same workflow as LLM mode but focused on research.
         
-        Args:
-            ssh_connection: SSH connection
-            available_models: List of available models
-            
         Returns:
             True if model ready
         """
+        
+        # Check if research assistant already exists
         model_variants = [
             self.model_name,
             f"{self.model_name}:latest"
         ]
         
-        # Check if custom model exists
         model_found = any(variant in available_models for variant in model_variants)
         
         if model_found:
             await aprint(Fore.GREEN + f"✅ Found existing model: {self.model_name}")
             
-            # Get model information
-            model_info = await self._get_model_info(ssh_connection, self.model_name)
-            
-            if model_info:
-                await aprint(Fore.CYAN + f"   Built from: {model_info['base_model']}")
-                await aprint(Fore.CYAN + f"   Size: {model_info['size']}")
-            
             # Ask if user wants to use it
             use_existing = await ainput(
                 Fore.CYAN + 
-                f"\nUse existing '{self.model_name}'? (y/n/s=skip) [y]: "
+                f"\nUse existing '{self.model_name}'? (y/n/rebuild) [y]: "
             )
             
             choice = use_existing.strip().lower()
             
             if choice in ('', 'y', 'yes'):
+                await aprint(Fore.GREEN + f"\n✅ Using existing Research Assistant model")
                 return True
-            elif choice in ('s', 'skip'):
-                return False
-            elif choice in ('n', 'no'):
-                await aprint(Fore.YELLOW + f"\n🔄 Rebuilding '{self.model_name}'...")
+            elif choice == 'rebuild':
+                await aprint(Fore.YELLOW + f"\n🔄 Rebuilding model...")
+                # Fall through to rebuild
             else:
-                return True
+                return False
         
-        # Model doesn't exist - offer to create
-        await aprint(Fore.CYAN + "Select a base model to create the custom model")
-        await aprint(Fore.CYAN + f"\n📋 Available base models:")
+        # Model doesn't exist or user wants to rebuild
+        await aprint(Fore.CYAN + "\n🔬 Research Assistant Setup")
+        await aprint(Fore.WHITE + "Building specialized clinical trial research model...\n")
         
-        for i, model in enumerate(available_models, 1):
-            marker = "→" if model == available_models[0] else " "
+        # Filter base models (exclude custom models)
+        base_models = [m for m in available_models 
+                    if not m.startswith('ct-research-assistant') 
+                    and not m.startswith('amp-assistant')]
+        
+        if not base_models:
+            await aprint(Fore.RED + "❌ No base models available")
+            return False
+        
+        await aprint(Fore.CYAN + f"📋 Select base model for Research Assistant:")
+        for i, model in enumerate(base_models, 1):
+            marker = "→" if model == base_models[0] else " "
             await aprint(Fore.WHITE + f"  {marker} {i}) {model}")
         
         choice = await ainput(Fore.GREEN + "Select base model [1]: ")
-        choice = choice.strip()
+        choice = choice.strip() or "1"
         
         # Parse choice
         base_model = None
-        if not choice:
-            base_model = available_models[0]
-        elif choice.isdigit():
+        if choice.isdigit():
             idx = int(choice) - 1
-            if 0 <= idx < len(available_models):
-                base_model = available_models[idx]
-        elif choice in available_models:
+            if 0 <= idx < len(base_models):
+                base_model = base_models[idx]
+        elif choice in base_models:
             base_model = choice
         
         if not base_model:
-            base_model = available_models[0]
+            base_model = base_models[0]
         
-        await aprint(Fore.CYAN + f"\n🔨 Building '{self.model_name}' from '{base_model}'...")
+        await aprint(Fore.GREEN + f"✅ Selected: {base_model}\n")
+        await aprint(Fore.CYAN + f"🔨 Building '{self.model_name}' from '{base_model}'...")
         
         # Build model
         from amp_llm.llm.models.builder import build_custom_model
@@ -383,12 +387,17 @@ Provide a clear, well-structured answer based on the trial data above."""
         success = await build_custom_model(
             ssh_connection,
             self.model_name,
-            available_models,
+            base_models,
             selected_base_model=base_model
         )
         
         if success:
-            await aprint(Fore.GREEN + f"✅ Model '{self.model_name}' created successfully!")
+            await aprint(Fore.GREEN + "\n" + "="*60)
+            await aprint(Fore.GREEN + f"✅ Research Assistant Ready!")
+            await aprint(Fore.CYAN + f"   Model: {self.model_name}")
+            await aprint(Fore.CYAN + f"   Base LLM: {base_model}")
+            await aprint(Fore.CYAN + f"   Capabilities: RAG, Extraction, Analysis")
+            await aprint(Fore.GREEN + "="*60 + "\n")
             return True
         else:
             await aprint(Fore.RED + f"❌ Failed to create '{self.model_name}'")
