@@ -1,10 +1,6 @@
-# ============================================================================
-# src/amp_llm/llm/models/__init__.py
-# ============================================================================
 """
 Model management modules.
 """
-from .builder import ModelBuilder
-from .config import OllamaSSHClient
+from .builder import build_custom_model
 
-__all__ = ['ModelBuilder', 'OllamaSSHClient']
+__all__ = ['build_custom_model']

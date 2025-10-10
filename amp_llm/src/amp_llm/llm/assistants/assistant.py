@@ -28,7 +28,7 @@ except ImportError:
     HAS_RAG = False
     
 try:
-    from amp_llm.llm.research.commands import CommandHandler
+    from amp_llm.llm.assistants.commands import CommandHandler
     HAS_COMMANDS = True
 except ImportError:
     HAS_COMMANDS = False
@@ -64,7 +64,7 @@ class ClinicalTrialResearchAssistant:
         self.rag = ClinicalTrialRAG(database_path)
         self.rag.db.build_index()
         
-        self.model_name = "ct-research-assistant"  # Custom model name
+        self.model_name = "ct-research-assistant:latest"  # Custom model name
         self.session_manager: Optional[OllamaSessionManager] = None
         self.command_handler: Optional[CommandHandler] = None
     
@@ -190,6 +190,15 @@ class ClinicalTrialResearchAssistant:
         Returns:
             True if model ready
         """
+        model_variants = [
+        self.model_name,
+        f"{self.model_name}:latest"
+        ]
+
+        if any(variant in available_models for variant in model_variants):
+            await aprint(Fore.GREEN + f"✅ Found custom model: {self.model_name}")
+            return True
+    
         if self.model_name in available_models:
             await aprint(Fore.GREEN + f"✅ Found custom model: {self.model_name}")
             return True

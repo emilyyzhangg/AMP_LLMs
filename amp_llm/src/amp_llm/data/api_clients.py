@@ -8,7 +8,7 @@ import asyncio
 import aiohttp
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
-from config import get_logger, get_config
+from src.amp_llm.config import get_logger, get_config
 
 logger = get_logger(__name__)
 config = get_config()

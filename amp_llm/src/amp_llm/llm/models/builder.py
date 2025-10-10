@@ -1,6 +1,6 @@
-# amp_llm/src/amp_llm/llm/models/builder.py
+# src/amp_llm/llm/models/builder.py
 """
-Model builder helper for creating custom models from Modelfiles.
+Model builder for creating custom Ollama models from Modelfiles.
 """
 import time
 from pathlib import Path
@@ -47,7 +47,7 @@ async def build_custom_model(
         await aprint(Fore.WHITE + "  • Project root: Modelfile")
         await aprint(Fore.WHITE + "  • amp_llm directory: amp_llm/Modelfile")
         await aprint(Fore.CYAN + "\nCreate one with:")
-        await aprint(Fore.WHITE + "  python amp_llm/scripts/generate_modelfile.py")
+        await aprint(Fore.WHITE + "  python scripts/generate_modelfile.py")
         return False
     
     await aprint(Fore.GREEN + f"✅ Found Modelfile: {modelfile_path}")
@@ -123,7 +123,6 @@ async def build_custom_model(
             await aprint(Fore.GREEN + f"\n✅ Success! Model '{model_name}' created!")
             await aprint(Fore.CYAN + f"   Base: {base_model}")
             await aprint(Fore.CYAN + f"   Name: {model_name}")
-            await aprint(Fore.CYAN + f"   Personality: From Modelfile system prompt")
             return True
         else:
             await aprint(Fore.RED + "\n❌ Model creation failed!")
