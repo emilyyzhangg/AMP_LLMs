@@ -47,31 +47,16 @@ class Phase(str, Enum):
 
 class Classification(str, Enum):
     """Valid classification values."""
-    AMP_INFECTION = "AMP(infection)"
-    AMP_OTHER = "AMP(other)"
+    AMP = "AMP"
     OTHER = "Other"
 
 
 class DeliveryMode(str, Enum):
     """Valid delivery mode values."""
-    INJECTION_INTRAMUSCULAR = "Injection/Infusion - Intramuscular"
-    INJECTION_OTHER = "Injection/Infusion - Other/Unspecified"
-    INJECTION_SUBCUTANEOUS = "Injection/Infusion - Subcutaneous/Intradermal"
-    IV = "IV"
-    INTRANASAL = "Intranasal"
-    ORAL_TABLET = "Oral - Tablet"
-    ORAL_CAPSULE = "Oral - Capsule"
-    ORAL_FOOD = "Oral - Food"
-    ORAL_DRINK = "Oral - Drink"
-    ORAL_UNSPECIFIED = "Oral - Unspecified"
-    TOPICAL_CREAM = "Topical - Cream/Gel"
-    TOPICAL_POWDER = "Topical - Powder"
-    TOPICAL_SPRAY = "Topical - Spray"
-    TOPICAL_STRIP = "Topical - Strip/Covering"
-    TOPICAL_WASH = "Topical - Wash"
-    TOPICAL_UNSPECIFIED = "Topical - Unspecified"
+    INJECTION_INFUSION = "Injection/Infusion"
+    ORAL = "Oral"
+    TOPICAL = "Topical"
     OTHER_UNSPECIFIED = "Other/Unspecified"
-    INHALATION = "Inhalation"
 
 
 class Outcome(str, Enum):
@@ -80,9 +65,8 @@ class Outcome(str, Enum):
     WITHDRAWN = "Withdrawn"
     TERMINATED = "Terminated"
     FAILED_COMPLETED = "Failed - completed trial"
-    RECRUITING = "Recruiting"
+    ACTIVE = "Active"
     UNKNOWN = "Unknown"
-    ACTIVE_NOT_RECRUITING = "Active, not recruiting"
 
 
 class FailureReason(str, Enum):
@@ -90,8 +74,8 @@ class FailureReason(str, Enum):
     BUSINESS_REASON = "Business Reason"
     INEFFECTIVE = "Ineffective for purpose"
     TOXIC_UNSAFE = "Toxic/Unsafe"
-    COVID = "Due to covid"
     RECRUITMENT_ISSUES = "Recruitment issues"
+    UNKNOWN = "Unknown"
     NOT_APPLICABLE = "N/A"
 
 
@@ -131,9 +115,9 @@ def normalize_outcome(status: str) -> str:
         'not yet recruiting': 'Recruiting',
         
         # Completed states
-        'completed': 'Positive',  # Assume positive unless evidence of failure
-        'complete': 'Positive',
-        'finished': 'Positive',
+        'positive': 'Positive',
+        'effective': 'Positive',
+        'safe': 'Positive',
         
         # Failed/Stopped states
         'terminated': 'Terminated',
@@ -146,8 +130,8 @@ def normalize_outcome(status: str) -> str:
         'cancelled': 'Withdrawn',
         'canceled': 'Withdrawn',
         
-        # Unknown
-        'unknown': 'Unknown',
+        # Unknown 
+        'unknown': 'Unknown', 
         'unavailable': 'Unknown',
     }
     
@@ -163,7 +147,7 @@ def normalize_outcome(status: str) -> str:
             return value
     
     # Default to Unknown
-    logger.warning(f"Could not map status '{status}' to outcome, using 'Unknown'")
+    logger.warning(f"Could not map status '{status}' to outcome, using 'Unknown'") # assume unknown unless specified
     return 'Unknown'
 
 
@@ -511,8 +495,6 @@ class ClinicalTrialDatabase:
                     extraction.failure_reason = 'Toxic/Unsafe'
                 elif any(word in why_stopped for word in ['recruit', 'enroll', 'accru', 'enrollment']):
                     extraction.failure_reason = 'Recruitment issues'
-                elif any(word in why_stopped for word in ['covid', 'pandemic', 'coronavirus']):
-                    extraction.failure_reason = 'Due to covid'
                 elif any(word in why_stopped for word in ['business', 'sponsor', 'fund', 'financial']):
                     extraction.failure_reason = 'Business Reason'
                 elif any(word in why_stopped for word in ['ineffective', 'efficacy', 'futility', 'futile']):
@@ -543,12 +525,7 @@ class ClinicalTrialDatabase:
                 if any(kw in combined_text for kw in infection_keywords):
                     extraction.classification = 'AMP(infection)'
                     extraction.classification_evidence = [
-                        'Study involves antimicrobial peptide treating infections/bacterial diseases'
-                    ]
-                else:
-                    extraction.classification = 'AMP(other)'
-                    extraction.classification_evidence = [
-                        'Study involves antimicrobial peptide for non-infection purposes'
+                        'Study involves antimicrobial peptide treating infections/bacterial diseases or for non-infection purposes'
                     ]
             else:
                 extraction.classification = 'Other'
@@ -557,24 +534,16 @@ class ClinicalTrialDatabase:
             # Try to determine delivery mode from interventions
             intervention_text = ' '.join(extraction.interventions).lower()
             
-            if any(word in intervention_text for word in ['intravenous', 'iv ', 'i.v.', 'infusion']):
-                extraction.delivery_mode = 'IV'
-            elif any(word in intervention_text for word in ['intramuscular', 'i.m.', 'im injection']):
-                extraction.delivery_mode = 'Injection/Infusion - Intramuscular'
-            elif any(word in intervention_text for word in ['subcutaneous', 'subq', 's.c.', 'sc injection']):
-                extraction.delivery_mode = 'Injection/Infusion - Subcutaneous/Intradermal'
-            elif any(word in intervention_text for word in ['tablet', 'oral tablet']):
-                extraction.delivery_mode = 'Oral - Tablet'
-            elif any(word in intervention_text for word in ['capsule', 'oral capsule']):
-                extraction.delivery_mode = 'Oral - Capsule'
+            if any(word in intervention_text for word in ['intravenous', 'iv ', 'i.v.', 'infusion',
+                                                          'intramuscular', 'i.m.', 'im injection',
+                                                          'subcutaneous', 'subq', 's.c.', 'sc injection']):
+                extraction.delivery_mode = 'Injection/Infusion'
+            elif any(word in intervention_text for word in ['tablet', 'oral tablet', 'capsule', 'oral capsule',
+                                                            'pill', 'oral pill', 'oral solution', 'oral suspension',
+                                                            'drink',]):
+                extraction.delivery_mode = 'Oral'
             elif any(word in intervention_text for word in ['topical', 'cream', 'gel', 'ointment']):
-                extraction.delivery_mode = 'Topical - Cream/Gel'
-            elif any(word in intervention_text for word in ['nasal', 'intranasal']):
-                extraction.delivery_mode = 'Intranasal'
-            elif any(word in intervention_text for word in ['inhal', 'nebuliz']):
-                extraction.delivery_mode = 'Inhalation'
-            elif 'oral' in intervention_text:
-                extraction.delivery_mode = 'Oral - Unspecified'
+                extraction.delivery_mode = 'Topical'
             else:
                 extraction.delivery_mode = 'Other/Unspecified'
             
