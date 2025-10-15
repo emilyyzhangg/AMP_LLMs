@@ -1,217 +1,165 @@
-"""
-Fixed SSH and Shell modules - corrected async/await issues.
-"""
 
-# ============================================================================
-# Updated ssh.py - Add proper connection cleanup
-# ============================================================================
-
-import asyncssh
 import asyncio
-from typing import Optional
-from contextlib import asynccontextmanager
 from colorama import Fore
 from amp_llm.config import get_logger
-
-logger = get_logger(__name__)
-
-
-class SSHConnection:
-    """Wrapper for SSH connection with proper cleanup."""
-    
-    def __init__(self, connection: asyncssh.SSHClientConnection):
-        self.connection = connection
-        self._closed = False
-    
-    async def run(self, *args, **kwargs):
-        """Run command on SSH connection."""
-        if self._closed:
-            raise RuntimeError("Connection is closed")
-        return await self.connection.run(*args, **kwargs)
-    
-    async def close(self):
-        """Close connection gracefully."""
-        if not self._closed:
-            self._closed = True
-            try:
-                # Close connection with timeout
-                await asyncio.wait_for(self._close_connection(), timeout=5.0)
-            except asyncio.TimeoutError:
-                logger.warning("SSH connection close timeout, forcing close")
-                self.connection.abort()
-            except Exception as e:
-                logger.error(f"Error closing SSH connection: {e}")
-    
-    async def _close_connection(self):
-        """Internal close method."""
-        try:
-            self.connection.close()
-            await self.connection.wait_closed()
-        except Exception as e:
-            logger.warning(f"Connection close warning: {e}")
-    
-    def __getattr__(self, name):
-        """Proxy other attributes to connection."""
-        return getattr(self.connection, name)
-
-
-async def connect_ssh(
-    ip: str,
-    username: str,
-    password: str,
-    keepalive_interval: int = 15,
-    keepalive_count_max: int = 3,
-    connect_timeout: int = 30
-) -> Optional[SSHConnection]:
-    """
-    Establish SSH connection with keepalive.
-    Returns wrapped connection with proper cleanup.
-    """
-    try:
-        logger.info(f"Connecting to {username}@{ip}")
-        
-        conn = await asyncssh.connect(
-            host=ip,
-            username=username,
-            password=password,
-            keepalive_interval=keepalive_interval,
-            keepalive_count_max=keepalive_count_max,
-            known_hosts=None,
-            tcp_keepalive=True,
-            client_keys=None,
-            connect_timeout=connect_timeout,
-            term_type=None,
-        )
-        
-        logger.info(f"Successfully connected to {username}@{ip}")
-        return SSHConnection(conn)
-        
-    except asyncssh.PermissionDenied:
-        print(Fore.RED + "❌ Authentication failed.")
-        logger.error("SSH authentication failed")
-        return None
-    except asyncio.TimeoutError:
-        print(Fore.RED + f"❌ Connection timeout to {ip}")
-        logger.error(f"SSH connection timeout to {ip}")
-        return None
-    except Exception as e:
-        print(Fore.RED + f"❌ SSH connection error: {e}")
-        logger.error(f"SSH connection error: {e}", exc_info=True)
-        return None
-
-
-@asynccontextmanager
-async def ssh_context(ip: str, username: str, password: str, **kwargs):
-    """
-    Context manager for SSH connection.
-    
-    Usage:
-        async with ssh_context(ip, user, pass) as ssh:
-            await ssh.run("ls")
-    """
-    connection = await connect_ssh(ip, username, password, **kwargs)
-    if connection is None:
-        raise ConnectionError("Failed to establish SSH connection")
-    
-    try:
-        yield connection
-    finally:
-        await connection.close()
-
-
-# ============================================================================
-# FIXED shell.py - Properly handle async input
-# ============================================================================
-
-from colorama import Fore
-from amp_llm.config import get_logger
+from amp_llm.cli.async_io import ainput, aprint
 from .auto_shell import detect_remote_shell
 from .utils import get_remote_user_host
 
 logger = get_logger(__name__)
 
 
-async def _async_input(prompt: str = "") -> str:
-    """
-    Async wrapper for input() that can be properly cancelled.
-    """
-    loop = asyncio.get_event_loop()
-    return await loop.run_in_executor(None, input, prompt)
-
-
 async def open_interactive_shell(ssh):
     """
-    Open interactive shell with proper cleanup on exit.
+    Open interactive shell with proper error handling.
+    
+    This version properly handles:
+    - Non-blocking stdin issues
+    - EOF detection
+    - Ctrl+C interrupts
+    - Command timeouts
+    - Task cancellation
     """
-    print(Fore.GREEN + "✅ Connected to remote host.")
-    print(Fore.YELLOW + "Type 'exit' or 'main menu' to return.\n")
-
     try:
+        await aprint(Fore.GREEN + "✅ Connected to remote host.")
+        await aprint(Fore.YELLOW + "Type 'exit' or 'main menu' to return.\n")
+
         # Auto-detect remote shell and get user info
-        profile = await detect_remote_shell(ssh)
-        user, host = await get_remote_user_host(ssh)
+        try:
+            profile = await detect_remote_shell(ssh)
+            user, host = await get_remote_user_host(ssh)
+            logger.info(f"Detected remote shell: {profile.name if hasattr(profile, 'name') else 'unknown'}")
+        except Exception as e:
+            logger.warning(f"Shell detection failed: {e}")
+            # Fallback to simple prompt
+            user = "user"
+            host = "remote"
+            profile = type('Profile', (), {
+                'prompt_fmt': '{user}@{host} $ ',
+                'silent_prefix': '{cmd}',
+                'name': 'bash'
+            })()
+
+        # Interactive loop with robust error handling
+        consecutive_errors = 0
+        max_consecutive_errors = 3
         
-        prompt = profile.prompt_fmt.format(user=user, host=host)
-
-        # Interactive loop
-        while True:
+        while consecutive_errors < max_consecutive_errors:
             try:
-                print(Fore.CYAN + prompt, end="", flush=True)
-                
-                # Use asyncio.wait_for to make input cancellable
+                # Build dynamic prompt
                 try:
-                    line = await asyncio.wait_for(
-                        _async_input(),
-                        timeout=None  # No timeout, but still cancellable
+                    pwd_result = await asyncio.wait_for(
+                        ssh.run("pwd", check=False),
+                        timeout=2.0
                     )
-                except asyncio.CancelledError:
-                    print(Fore.YELLOW + "\nShell cancelled.\n")
-                    break
-
-                if line.strip().lower() in ("exit", "quit", "main menu"):
-                    print(Fore.YELLOW + "\nReturning to main menu...\n")
-                    break
-
-                # Execute command with timeout
-                wrapped = _prepare_command(ssh, profile, line)
+                    pwd = pwd_result.stdout.strip() if pwd_result.stdout else "~"
+                except asyncio.TimeoutError:
+                    pwd = "~"
+                except Exception:
+                    pwd = "~"
                 
+                # Create prompt
+                if hasattr(profile, 'prompt_fmt'):
+                    full_prompt = profile.prompt_fmt.format(user=user, host=host)
+                    # Add pwd if not in prompt
+                    if '{pwd}' not in full_prompt:
+                        full_prompt = f"{user}@{host} {pwd} % "
+                else:
+                    full_prompt = f"{user}@{host}:{pwd}$ "
+                
+                # Get user input
                 try:
+                    line = await ainput(Fore.CYAN + full_prompt + Fore.RESET)
+                except EOFError:
+                    await aprint(Fore.YELLOW + "\nEOF detected. Returning to main menu...")
+                    break
+                except KeyboardInterrupt:
+                    await aprint(Fore.YELLOW + "\n^C")
+                    continue
+                
+                # Reset error counter on successful input
+                consecutive_errors = 0
+                
+                # Check for empty input
+                if not line or not line.strip():
+                    continue
+                
+                # Check for exit commands
+                if line.strip().lower() in ("exit", "quit", "main menu"):
+                    await aprint(Fore.YELLOW + "\nReturning to main menu...")
+                    break
+                
+                # Execute command
+                try:
+                    wrapped = _prepare_command(profile, line)
+                    
                     result = await asyncio.wait_for(
                         ssh.run(wrapped, check=False, term_type=None),
                         timeout=30.0
                     )
+                    
+                    # Print output
                     _print_command_output(result)
+                    
                 except asyncio.TimeoutError:
-                    print(Fore.RED + "Command timeout (30s)")
+                    await aprint(Fore.RED + "⏱️  Command timeout (30s)")
                 except asyncio.CancelledError:
-                    print(Fore.YELLOW + "\nCommand cancelled.\n")
-                    break
-
-            except (KeyboardInterrupt, EOFError):
-                print(Fore.YELLOW + "\nInterrupted. Returning to main menu...\n")
+                    await aprint(Fore.YELLOW + "\n⚠️  Command cancelled")
+                    raise  # Re-raise to exit loop
+                except Exception as cmd_error:
+                    await aprint(Fore.RED + f"❌ Command error: {cmd_error}")
+                    logger.error(f"Command execution error: {cmd_error}")
+                
+            except KeyboardInterrupt:
+                await aprint(Fore.YELLOW + "\n^C (Type 'exit' to quit)")
+                continue
+            except EOFError:
+                await aprint(Fore.YELLOW + "\nInput stream closed. Returning to main menu...")
                 break
-            except Exception as e:
-                logger.warning(f"Shell error: {e}")
-                await asyncio.sleep(0.2)
-
+            except asyncio.CancelledError:
+                await aprint(Fore.YELLOW + "\nShell session cancelled. Returning to main menu...")
+                raise
+            except Exception as loop_error:
+                consecutive_errors += 1
+                await aprint(Fore.RED + f"❌ Shell error: {loop_error}")
+                logger.error(f"Shell loop error ({consecutive_errors}/{max_consecutive_errors}): {loop_error}")
+                
+                if consecutive_errors >= max_consecutive_errors:
+                    await aprint(Fore.RED + "\n❌ Too many errors. Returning to main menu...")
+                    break
+                
+                # Short delay before retry
+                await asyncio.sleep(0.5)
+        
+        if consecutive_errors >= max_consecutive_errors:
+            await aprint(Fore.RED + "Shell terminated due to repeated errors.")
+    
     except asyncio.CancelledError:
-        print(Fore.YELLOW + "\nShell session cancelled.\n")
-        raise  # Re-raise to propagate cancellation
+        await aprint(Fore.YELLOW + "\nShell session cancelled.")
+        raise
     except Exception as e:
-        logger.error(f"Shell startup failed: {e}", exc_info=True)
-        print(Fore.RED + f"Shell error: {e}")
+        await aprint(Fore.RED + f"❌ Shell startup failed: {e}")
+        logger.error(f"Shell startup error: {e}", exc_info=True)
 
 
-def _prepare_command(ssh, profile, command: str) -> str:
-    """Prepare command with silent wrapper if needed."""
-    if hasattr(ssh, "is_connected") and not getattr(ssh, "_term_type", None):
-        return command
-    return profile.silent_prefix.format(cmd=command)
+def _prepare_command(profile, command: str) -> str:
+    """Prepare command with shell wrapper if needed."""
+    if hasattr(profile, 'silent_prefix'):
+        return profile.silent_prefix.format(cmd=command)
+    return command
 
 
 def _print_command_output(result):
-    """Print command stdout and stderr."""
+    """Print command stdout and stderr synchronously."""
     if result.stdout:
-        print(result.stdout.strip())
+        output = result.stdout
+        if output.endswith('\n'):
+            print(output, end='')
+        else:
+            print(output)
+    
     if result.stderr:
-        print(Fore.RED + result.stderr.strip())
+        import sys
+        print(Fore.RED + result.stderr + Fore.RESET, end='', file=sys.stderr)
+        if not result.stderr.endswith('\n'):
+            print(file=sys.stderr)

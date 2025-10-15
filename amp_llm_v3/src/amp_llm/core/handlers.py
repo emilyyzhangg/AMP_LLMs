@@ -75,23 +75,48 @@ class NCTLookupHandler(MenuHandler):
 
 
 class ResearchAssistantHandler(MenuHandler):
-    """Handler for Research Assistant."""
+    """Handler for Research Assistant - Simple version."""
     
     async def execute(self, context: Any) -> None:
         from pathlib import Path
         from amp_llm.cli.async_io import aprint
         from colorama import Fore
         from amp_llm.llm.assistants.assistant import ClinicalTrialResearchAssistant
+        import shutil
         
         db_path = Path("ct_database")
-        if not db_path.exists():
-            await aprint(Fore.YELLOW + "⚠️  Database not found: ct_database/")
-            await aprint(Fore.YELLOW + "Creating directory...")
-            db_path.mkdir(exist_ok=True)
-            await aprint(Fore.YELLOW + "Please add JSON files to ct_database/")
+        output_path = Path("output")
+        
+        # Create directories
+        db_path.mkdir(exist_ok=True)
+        
+        # Auto-copy from output/ to ct_database/ if needed
+        if output_path.exists():
+            for json_file in output_path.glob("*.json"):
+                dest = db_path / json_file.name
+                if not dest.exists():
+                    try:
+                        shutil.copy2(json_file, dest)
+                    except:
+                        pass
+        
+        # Check for trials
+        trial_files = list(db_path.glob("*.json"))
+        
+        if not trial_files:
+            await aprint(Fore.YELLOW + "⚠️  No trial files found")
+            await aprint(Fore.CYAN + "\n💡 Use Option 4 (NCT Lookup) to fetch trials")
+            await aprint(Fore.WHITE + "   Then save to ct_database/ or output/\n")
             return
         
+        await aprint(Fore.GREEN + f"📂 Found {len(trial_files)} trial file(s)\n")
+        
+        # Initialize and run
         assistant = ClinicalTrialResearchAssistant(db_path)
+        
+        if len(assistant.rag.db.trials) == 0:
+            await aprint(Fore.RED + "❌ Failed to load trials")
+            return
         
         remote_host = (
             context.ssh_manager.host 

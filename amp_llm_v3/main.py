@@ -10,6 +10,48 @@ import sys
 from pathlib import Path
 
 # ============================================================
+#  FIX NON-BLOCKING I/O ISSUE (macOS/Unix) - MUST BE FIRST!
+# ============================================================
+def fix_all_io_blocking():
+    """
+    Fix non-blocking I/O issues on macOS/Unix.
+    Prevents [Errno 35] and stdin read failures.
+    MUST BE CALLED BEFORE asyncio starts!
+    """
+    try:
+        import fcntl
+        
+        # Fix all standard streams
+        for stream in [sys.stdin, sys.stdout, sys.stderr]:
+            if hasattr(stream, 'fileno'):
+                try:
+                    fd = stream.fileno()
+                    # Get current flags
+                    flags = fcntl.fcntl(fd, fcntl.F_GETFL)
+                    # Remove O_NONBLOCK if present
+                    if flags & os.O_NONBLOCK:
+                        fcntl.fcntl(fd, fcntl.F_SETFL, flags & ~os.O_NONBLOCK)
+                except (OSError, ValueError, AttributeError):
+                    pass
+    except ImportError:
+        pass  # Windows - fcntl not available
+    
+    # Set unbuffered mode
+    os.environ['PYTHONUNBUFFERED'] = '1'
+    
+    # Reconfigure stdin if possible (Python 3.7+)
+    try:
+        if hasattr(sys.stdin, 'reconfigure'):
+            sys.stdin.reconfigure(line_buffering=True)
+    except:
+        pass
+
+# Apply fix IMMEDIATELY
+fix_all_io_blocking()
+
+print("✅ I/O streams configured for blocking mode")
+
+# ============================================================
 #  CRITICAL: SELF-HEAL CHECK BEFORE ANY OTHER IMPORTS
 # ============================================================
 # This MUST run before any other imports that might fail in corrupted venv
@@ -29,6 +71,7 @@ try:
     check_and_heal()  # This may not return if venv is corrupted
 except ImportError:
     print("⚠️  Self-heal module not found, skipping venv check...")
+
 
 # ============================================================
 #  NOW SAFE TO CONTINUE WITH NORMAL IMPORTS

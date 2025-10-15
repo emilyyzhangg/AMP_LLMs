@@ -2,6 +2,7 @@
 """
 Clinical Trial Research Assistant with RAG and command handling.
 Combines model building, RAG, and interactive commands.
+Fixed for non-blocking I/O errors on macOS/Unix.
 """
 import asyncio
 import logging
@@ -18,6 +19,7 @@ try:
     HAS_RICH = True
 except ImportError:
     HAS_RICH = False
+    console = None
 
 # Import RAG if available
 try:
@@ -38,6 +40,15 @@ config = get_config()
 init(autoreset=True)  # Initialize colorama
 
 
+async def safe_print(*args, **kwargs):
+    """Safely print from async context (handles both Rich and regular print)."""
+    if HAS_RICH and console:
+        await asyncio.to_thread(console.print, *args, **kwargs)
+    else:
+        # Fallback to regular print
+        await asyncio.to_thread(print, *args, **kwargs)
+
+
 class ClinicalTrialResearchAssistant:
     """
     Research Assistant with RAG integration and command handling.
@@ -50,24 +61,24 @@ class ClinicalTrialResearchAssistant:
     """
     
     def __init__(self, database_path: Path):
-        """
-        Initialize research assistant.
-        
-        Args:
-            database_path: Path to JSON database
-        """
+        """Initialize research assistant."""
         if not HAS_RAG:
-            raise ImportError(
-                "RAG system not available. "
-                "Make sure amp_llm.data.clinical_trial_rag exists."
-            )
+            raise ImportError("RAG system not available")
         
         self.rag = ClinicalTrialRAG(database_path)
+        
+        import json
+        output_dir = Path("output")
+        for f in output_dir.glob("*.json") if output_dir.exists() else []:
+            try:
+                self.rag.db.trials.append(json.loads(f.read_text()))
+            except: pass
+        
         self.rag.db.build_index()
         
         self.model_name = "ct-research-assistant:latest"
-        self.session_manager: Optional[OllamaSessionManager] = None
-        self.command_handler: Optional[CommandHandler] = None
+        self.session_manager = None
+        self.command_handler = None
     
     async def extract_from_nct(self, nct_id: str) -> str:
         """
@@ -87,8 +98,8 @@ class ClinicalTrialResearchAssistant:
         # Use Rich formatter if available for display
         if HAS_RICH:
             from dataclasses import asdict
-            RichFormatter.display_extraction(asdict(extraction))
-            # Still need to get LLM response, so continue with prompt
+            # Wrap Rich display in safe_print
+            await asyncio.to_thread(RichFormatter.display_extraction, asdict(extraction))
             context = extraction.to_formatted_string()
         else:
             # Fallback to text format
@@ -161,10 +172,10 @@ Provide a clear, well-structured answer based on the trial data above."""
             ssh_connection: SSH connection
             remote_host: Remote host IP
         """
-        # Display header
+        # Display header using safe_print
         if HAS_RICH:
             from rich.panel import Panel
-            console.print(Panel(
+            await safe_print(Panel(
                 "[bold cyan]🔬 Clinical Trial Research Assistant[/bold cyan]\n"
                 "RAG-powered intelligent analysis of clinical trial database",
                 border_style="cyan"
