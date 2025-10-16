@@ -117,6 +117,20 @@ class FileContentResponse(BaseModel):
 # ============================================================================
 # Health & Models
 # ============================================================================
+@app.get("/app")
+async def app_page():
+    """Serve main app page at /app endpoint."""
+    index_file = Path(__file__).parent / "static" / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file)
+    return HTMLResponse("<h1>AMP LLM Web Interface</h1>")
+
+# Also keep the root endpoint
+@app.get("/")
+async def root():
+    """Root endpoint - redirect to /app."""
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="/app")
 
 @app.get("/health")
 async def health_check():
