@@ -5,6 +5,7 @@ Adds file management and complete terminal feature parity
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 import logging
@@ -25,8 +26,10 @@ from webapp.auth import verify_api_key
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="AMP LLM Enhanced API", version="3.0.0")
+WEBAPP_DIR = Path(__file__).parent
 
+app = FastAPI(title="AMP LLM Enhanced API", version="3.0.0")
+app.mount("/static", StaticFiles(directory=str(WEBAPP_DIR / "static")), name="static")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins + ["http://localhost:3000"],
