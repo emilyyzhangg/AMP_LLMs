@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMP LLM - Clinical Trial Research Assistant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 AMP LLM</h1>
+            <p>Clinical Trial Research Assistant</p>
+        </header>
+
+        <!-- API Key Input (shown on first visit) -->
+        <div id="auth-section" class="auth-section">
+            <div class="auth-box">
+                <h2>🔐 Authentication Required</h2>
+                <p>Enter your API key to access the LLM</p>
+                <input 
+                    type="password" 
+                    id="api-key-input" 
+                    placeholder="Enter your API key"
+                    autocomplete="off"
+                />
+                <button onclick="saveApiKey()">Connect</button>
+                <p class="help-text">Contact administrator for access</p>
+            </div>
+        </div>
+
+        <!-- Main App (hidden until authenticated) -->
+        <div id="app-section" class="app-section" style="display: none;">
+            <!-- Model Selection -->
+            <div class="controls">
+                <label for="model-select">Model:</label>
+                <select id="model-select">
+                    <option value="llama3.2">llama3.2</option>
+                </select>
+                
+                <label for="temperature">Temperature:</label>
+                <input 
+                    type="range" 
+                    id="temperature" 
+                    min="0" 
+                    max="2" 
+                    step="0.1" 
+                    value="0.7"
+                />
+                <span id="temp-value">0.7</span>
+                
+                <button onclick="logout()" class="logout-btn">Logout</button>
+            </div>
+
+            <!-- Chat Container -->
+            <div id="chat-container" class="chat-container"></div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <textarea 
+                    id="user-input" 
+                    placeholder="Ask a question about clinical trials..."
+                    rows="3"
+                ></textarea>
+                <button onclick="sendMessage()" id="send-btn">
+                    <span id="send-text">Send</span>
+                    <span id="loading-spinner" style="display: none;">⏳</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = window.location.origin;
+        let API_KEY = localStorage.getItem('amp_llm_api_key');
+        
+        // Initialize
+        window.onload = async function() {
+            // Update temperature display
+            document.getElementById('temperature').addEventListener('input', function(e) {
+                document.getElementById('temp-value').textContent = e.target.value;
+            });
+            
+            // Enter key to send
+            document.getElementById('user-input').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            // Check if already authenticated
+            if (API_KEY) {
+                const isValid = await verifyApiKey();
+                if (isValid) {
+                    showApp();
+                    await loadModels();
+                } else {
+                    showAuth();
+                }
+            } else {
+                showAuth();
+            }
+        };
+        
+        // Authentication Functions
+        async function verifyApiKey() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`, {
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`
+                    }
+                });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        async function saveApiKey() {
+            const key = document.getElementById('api-key-input').value.trim();
+            if (!key) {
+                alert('Please enter an API key');
+                return;
+            }
+            
+            API_KEY = key;
+            const isValid = await verifyApiKey();
+            
+            if (isValid) {
+                localStorage.setItem('amp_llm_api_key', API_KEY);
+                showApp();
+                await loadModels();
+                addMessage('system', 'Connected successfully! You can now chat with the LLM.');
+            } else {
+                alert('Invalid API key. Please check and try again.');
+                API_KEY = null;
+            }
+        }
+        
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('amp_llm_api_key');
+                API_KEY = null;
+                document.getElementById('chat-container').innerHTML = '';
+                showAuth();
+            }
+        }
+        
+        function showAuth() {
+            document.getElementById('auth-section').style.display = 'flex';
+            document.getElementById('app-section').style.display = 'none';
+        }
+        
+        function showApp() {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('app-section').style.display = 'flex';
+        }
+        
+        // Load Available Models
+        async function loadModels() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/models`, {
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Failed to load models');
+                
+                const data = await response.json();
+                const select = document.getElementById('model-select');
+                select.innerHTML = '';
+                
+                data.models.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.name;
+                    option.textContent = model.name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading models:', error);
+                addMessage('system', 'Warning: Could not load model list');
+            }
+        }
+        
+        // Send Message
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const query = input.value.trim();
+            
+            if (!query) return;
+            
+            // Disable input
+            input.disabled = true;
+            document.getElementById('send-btn').disabled = true;
+            document.getElementById('send-text').style.display = 'none';
+            document.getElementById('loading-spinner').style.display = 'inline';
+            
+            // Add user message
+            addMessage('user', query);
+            input.value = '';
+            
+            try {
+                const model = document.getElementById('model-select').value;
+                const temperature = parseFloat(document.getElementById('temperature').value);
+                
+                const response = await fetch(`${API_BASE_URL}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        model: model,
+                        temperature: temperature
+                    })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Request failed');
+                }
+                
+                const data = await response.json();
+                addMessage('assistant', data.response);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('error', `Error: ${error.message}`);
+            } finally {
+                // Re-enable input
+                input.disabled = false;
+                document.getElementById('send-btn').disabled = false;
+                document.getElementById('send-text').style.display = 'inline';
+                document.getElementById('loading-spinner').style.display = 'none';
+                input.focus();
+            }
+        }
+        
+        // Add Message to Chat
+        function addMessage(role, text) {
+            const container = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar';
+            avatar.textContent = role === 'user' ? '👤' : 
+                                 role === 'assistant' ? '🤖' : 
+                                 role === 'system' ? 'ℹ️' : '⚠️';
+            
+            const content = document.createElement('div');
+            content.className = 'content';
+            content.textContent = text;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            container.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        }
+    </script>
+</body>
+</html>
