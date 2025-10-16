@@ -1,14 +1,17 @@
 """
-Enhanced AMP LLM Web API Server with Menu Options
+Enhanced AMP LLM Web API Server
+Adds file management and complete terminal feature parity
 """
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 import logging
 from pathlib import Path
+import json
+import os
+from datetime import datetime
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -22,19 +25,25 @@ from webapp.auth import verify_api_key
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="AMP LLM API", version="2.0.0")
+app = FastAPI(title="AMP LLM Enhanced API", version="3.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.allowed_origins,
+    allow_origins=settings.allowed_origins + ["http://localhost:3000"],
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Directory setup
+OUTPUT_DIR = Path("output")
+DATABASE_DIR = Path("ct_database")
+OUTPUT_DIR.mkdir(exist_ok=True)
+DATABASE_DIR.mkdir(exist_ok=True)
+
 # Initialize RAG system
 try:
-    rag_system = ClinicalTrialRAG(Path("ct_database"))
+    rag_system = ClinicalTrialRAG(DATABASE_DIR)
     logger.info(f"✅ RAG system initialized with {len(rag_system.db.trials)} trials")
 except Exception as e:
     logger.warning(f"RAG system not available: {e}")
@@ -49,6 +58,7 @@ class ChatRequest(BaseModel):
     query: str
     model: str = "llama3.2"
     temperature: float = 0.7
+    context_file: Optional[str] = None  # NEW: Optional file to load as context
 
 
 class ChatResponse(BaseModel):
@@ -90,6 +100,20 @@ class ExtractResponse(BaseModel):
     extraction: Dict[str, Any]
 
 
+class FileSaveRequest(BaseModel):
+    filename: str
+    content: str
+
+
+class FileListResponse(BaseModel):
+    files: List[Dict[str, Any]]
+
+
+class FileContentResponse(BaseModel):
+    filename: str
+    content: str
+
+
 # ============================================================================
 # Health & Models
 # ============================================================================
@@ -106,6 +130,8 @@ async def health_check():
             "ollama_connected": is_alive,
             "rag_available": rag_system is not None,
             "trials_indexed": len(rag_system.db.trials) if rag_system else 0,
+            "output_dir": str(OUTPUT_DIR.absolute()),
+            "files_count": len(list(OUTPUT_DIR.glob("*.json")))
         }
     except Exception as e:
         return {
@@ -128,19 +154,29 @@ async def list_models(api_key: str = Depends(verify_api_key)):
 
 
 # ============================================================================
-# Chat Endpoint (Original)
+# Chat Endpoint (Enhanced with File Context)
 # ============================================================================
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest, api_key: str = Depends(verify_api_key)):
-    """Chat with LLM."""
+    """Chat with LLM, optionally with file context."""
     logger.info(f"Chat: model={request.model}, query_length={len(request.query)}")
     
     try:
+        # Build prompt with file context if provided
+        prompt = request.query
+        
+        if request.context_file:
+            file_path = OUTPUT_DIR / request.context_file
+            if file_path.exists():
+                file_content = file_path.read_text()
+                prompt = f"{request.query}\n\n[File: {request.context_file}]\n{file_content}"
+                logger.info(f"Added file context: {request.context_file}")
+        
         async with OllamaSessionManager(settings.ollama_host, settings.ollama_port) as session:
             response_text = await session.send_prompt(
                 model=request.model,
-                prompt=request.query,
+                prompt=prompt,
                 temperature=request.temperature,
                 max_retries=3
             )
@@ -159,15 +195,14 @@ async def chat(request: ChatRequest, api_key: str = Depends(verify_api_key)):
 
 
 # ============================================================================
-# NEW: NCT Lookup Endpoint
+# NCT Lookup Endpoint
 # ============================================================================
 
 @app.post("/nct-lookup", response_model=NCTLookupResponse)
 async def nct_lookup(request: NCTLookupRequest, api_key: str = Depends(verify_api_key)):
     """
     Fetch clinical trial data for NCT numbers.
-    
-    This is equivalent to Option 4 in the terminal menu.
+    Equivalent to terminal Option 4.
     """
     logger.info(f"NCT Lookup: {len(request.nct_ids)} trials, extended={request.use_extended_apis}")
     
@@ -199,15 +234,14 @@ async def nct_lookup(request: NCTLookupRequest, api_key: str = Depends(verify_ap
 
 
 # ============================================================================
-# NEW: Research Assistant Query
+# Research Assistant Query
 # ============================================================================
 
 @app.post("/research", response_model=ResearchQueryResponse)
 async def research_query(request: ResearchQueryRequest, api_key: str = Depends(verify_api_key)):
     """
     Query the Research Assistant with RAG.
-    
-    This is equivalent to Option 5 in the terminal menu.
+    Equivalent to terminal Option 5.
     """
     if not rag_system:
         raise HTTPException(
@@ -253,15 +287,14 @@ Provide a clear, well-structured answer based on the trial data above."""
 
 
 # ============================================================================
-# NEW: Extract Structured Data
+# Extract Structured Data
 # ============================================================================
 
 @app.post("/extract", response_model=ExtractResponse)
 async def extract_trial(request: ExtractRequest, api_key: str = Depends(verify_api_key)):
     """
     Extract structured data from a clinical trial.
-    
-    Uses RAG + LLM to generate structured extraction.
+    Uses RAG + LLM for structured extraction.
     """
     if not rag_system:
         raise HTTPException(status_code=503, detail="RAG system not available")
@@ -291,7 +324,7 @@ async def extract_trial(request: ExtractRequest, api_key: str = Depends(verify_a
 
 
 # ============================================================================
-# NEW: Database Stats
+# Database Stats
 # ============================================================================
 
 @app.get("/stats")
@@ -325,12 +358,144 @@ async def database_stats(api_key: str = Depends(verify_api_key)):
 
 
 # ============================================================================
-# Static Files
+# FILE MANAGEMENT ENDPOINTS (NEW)
 # ============================================================================
 
-static_dir = Path(__file__).parent / "static"
-if static_dir.exists():
-    app.mount("/app", StaticFiles(directory=str(static_dir), html=True), name="static")
+@app.get("/files/list", response_model=FileListResponse)
+async def list_files(api_key: str = Depends(verify_api_key)):
+    """List all files in output directory."""
+    try:
+        files = []
+        
+        for filepath in OUTPUT_DIR.glob("*.json"):
+            stat = filepath.stat()
+            files.append({
+                "name": filepath.name,
+                "size": f"{stat.st_size / 1024:.1f} KB",
+                "modified": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M"),
+                "path": str(filepath.relative_to(OUTPUT_DIR))
+            })
+        
+        # Sort by modified time (newest first)
+        files.sort(key=lambda x: x["modified"], reverse=True)
+        
+        return FileListResponse(files=files)
+    
+    except Exception as e:
+        logger.error(f"Error listing files: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/files/content/{filename}")
+async def get_file_content(filename: str, api_key: str = Depends(verify_api_key)):
+    """Get content of a specific file."""
+    try:
+        file_path = OUTPUT_DIR / filename
+        
+        if not file_path.exists():
+            raise HTTPException(status_code=404, detail="File not found")
+        
+        content = file_path.read_text()
+        
+        return FileContentResponse(
+            filename=filename,
+            content=content
+        )
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error reading file: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/files/save")
+async def save_file(request: FileSaveRequest, api_key: str = Depends(verify_api_key)):
+    """Save content to a file."""
+    try:
+        file_path = OUTPUT_DIR / request.filename
+        file_path.write_text(request.content)
+        
+        logger.info(f"Saved file: {request.filename}")
+        
+        return {"success": True, "filename": request.filename, "path": str(file_path)}
+    
+    except Exception as e:
+        logger.error(f"Error saving file: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/files/upload")
+async def upload_file(file: UploadFile = File(...), api_key: str = Depends(verify_api_key)):
+    """Upload a file to output directory."""
+    try:
+        # Validate file type
+        if not file.filename.endswith(('.json', '.txt')):
+            raise HTTPException(status_code=400, detail="Only .json and .txt files are allowed")
+        
+        file_path = OUTPUT_DIR / file.filename
+        
+        # Save file
+        content = await file.read()
+        file_path.write_bytes(content)
+        
+        logger.info(f"Uploaded file: {file.filename}")
+        
+        return {
+            "success": True,
+            "filename": file.filename,
+            "size": len(content),
+            "path": str(file_path)
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error uploading file: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/files/download/{filename}")
+async def download_file(filename: str, api_key: str = Depends(verify_api_key)):
+    """Download a file."""
+    try:
+        file_path = OUTPUT_DIR / filename
+        
+        if not file_path.exists():
+            raise HTTPException(status_code=404, detail="File not found")
+        
+        return FileResponse(
+            path=str(file_path),
+            filename=filename,
+            media_type='application/octet-stream'
+        )
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error downloading file: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/files/delete/{filename}")
+async def delete_file(filename: str, api_key: str = Depends(verify_api_key)):
+    """Delete a file."""
+    try:
+        file_path = OUTPUT_DIR / filename
+        
+        if not file_path.exists():
+            raise HTTPException(status_code=404, detail="File not found")
+        
+        file_path.unlink()
+        logger.info(f"Deleted file: {filename}")
+        
+        return {"success": True, "filename": filename}
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting file: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # ============================================================================
@@ -347,6 +512,8 @@ async def startup_event():
     logger.info(f"RAG Available: {rag_system is not None}")
     if rag_system:
         logger.info(f"Trials Indexed: {len(rag_system.db.trials)}")
+    logger.info(f"Output Directory: {OUTPUT_DIR.absolute()}")
+    logger.info(f"Files in output/: {len(list(OUTPUT_DIR.glob('*.json')))}")
     logger.info("=" * 60)
 
 
