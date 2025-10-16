@@ -1,10 +1,9 @@
 """
-Enhanced AMP LLM Web API Server
-Adds file management and complete terminal feature parity
+Enhanced AMP LLM Web API Server - FIXED STATIC FILE SERVING
 """
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
@@ -29,7 +28,10 @@ logger = logging.getLogger(__name__)
 WEBAPP_DIR = Path(__file__).parent
 
 app = FastAPI(title="AMP LLM Enhanced API", version="3.0.0")
+
+# IMPORTANT: Mount static files BEFORE other routes
 app.mount("/static", StaticFiles(directory=str(WEBAPP_DIR / "static")), name="static")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins + ["http://localhost:3000"],
@@ -61,7 +63,7 @@ class ChatRequest(BaseModel):
     query: str
     model: str = "llama3.2"
     temperature: float = 0.7
-    context_file: Optional[str] = None  # NEW: Optional file to load as context
+    context_file: Optional[str] = None
 
 
 class ChatResponse(BaseModel):
@@ -118,22 +120,56 @@ class FileContentResponse(BaseModel):
 
 
 # ============================================================================
-# Health & Models
+# MAIN ROUTES - Order matters!
 # ============================================================================
+
+@app.get("/")
+async def root():
+    """Root endpoint - serve the app."""
+    templates_dir = WEBAPP_DIR / "templates"
+    index_file = templates_dir / "index.html"
+    
+    # If templates/index.html exists, serve it
+    if index_file.exists():
+        return FileResponse(index_file)
+    
+    # Otherwise, look in static (old location)
+    static_index = WEBAPP_DIR / "static" / "index.html"
+    if static_index.exists():
+        return FileResponse(static_index)
+    
+    # Fallback
+    return HTMLResponse("""
+    <html>
+        <head>
+            <title>AMP LLM</title>
+            <style>
+                body { font-family: sans-serif; text-align: center; padding: 50px; }
+                h1 { color: #667eea; }
+            </style>
+        </head>
+        <body>
+            <h1>🔬 AMP LLM</h1>
+            <p>Static files not found. Please check file locations.</p>
+            <ul style="text-align: left; max-width: 500px; margin: 20px auto;">
+                <li>Expected: webapp/templates/index.html</li>
+                <li>Or: webapp/static/index.html</li>
+                <li>Static files mount: /static/</li>
+            </ul>
+        </body>
+    </html>
+    """)
+
+
 @app.get("/app")
 async def app_page():
     """Serve main app page at /app endpoint."""
-    index_file = Path(__file__).parent / "static" / "index.html"
-    if index_file.exists():
-        return FileResponse(index_file)
-    return HTMLResponse("<h1>AMP LLM Web Interface</h1>")
+    return await root()
 
-# Also keep the root endpoint
-@app.get("/")
-async def root():
-    """Root endpoint - redirect to /app."""
-    from fastapi.responses import RedirectResponse
-    return RedirectResponse(url="/app")
+
+# ============================================================================
+# Health & Models
+# ============================================================================
 
 @app.get("/health")
 async def health_check():
@@ -148,7 +184,9 @@ async def health_check():
             "rag_available": rag_system is not None,
             "trials_indexed": len(rag_system.db.trials) if rag_system else 0,
             "output_dir": str(OUTPUT_DIR.absolute()),
-            "files_count": len(list(OUTPUT_DIR.glob("*.json")))
+            "files_count": len(list(OUTPUT_DIR.glob("*.json"))),
+            "static_dir": str((WEBAPP_DIR / "static").absolute()),
+            "templates_dir": str((WEBAPP_DIR / "templates").absolute())
         }
     except Exception as e:
         return {
@@ -171,7 +209,7 @@ async def list_models(api_key: str = Depends(verify_api_key)):
 
 
 # ============================================================================
-# Chat Endpoint (Enhanced with File Context)
+# Chat Endpoint
 # ============================================================================
 
 @app.post("/chat", response_model=ChatResponse)
@@ -180,7 +218,6 @@ async def chat(request: ChatRequest, api_key: str = Depends(verify_api_key)):
     logger.info(f"Chat: model={request.model}, query_length={len(request.query)}")
     
     try:
-        # Build prompt with file context if provided
         prompt = request.query
         
         if request.context_file:
@@ -217,11 +254,8 @@ async def chat(request: ChatRequest, api_key: str = Depends(verify_api_key)):
 
 @app.post("/nct-lookup", response_model=NCTLookupResponse)
 async def nct_lookup(request: NCTLookupRequest, api_key: str = Depends(verify_api_key)):
-    """
-    Fetch clinical trial data for NCT numbers.
-    Equivalent to terminal Option 4.
-    """
-    logger.info(f"NCT Lookup: {len(request.nct_ids)} trials, extended={request.use_extended_apis}")
+    """Fetch clinical trial data for NCT numbers."""
+    logger.info(f"NCT Lookup: {len(request.nct_ids)} trials")
     
     results = []
     errors = []
@@ -256,23 +290,18 @@ async def nct_lookup(request: NCTLookupRequest, api_key: str = Depends(verify_ap
 
 @app.post("/research", response_model=ResearchQueryResponse)
 async def research_query(request: ResearchQueryRequest, api_key: str = Depends(verify_api_key)):
-    """
-    Query the Research Assistant with RAG.
-    Equivalent to terminal Option 5.
-    """
+    """Query the Research Assistant with RAG."""
     if not rag_system:
         raise HTTPException(
             status_code=503,
             detail="Research Assistant not available. No trials indexed."
         )
     
-    logger.info(f"Research query: {request.query[:50]}... max_trials={request.max_trials}")
+    logger.info(f"Research query: {request.query[:50]}...")
     
     try:
-        # Get RAG context
         context = rag_system.get_context_for_llm(request.query, max_trials=request.max_trials)
         
-        # Build prompt
         prompt = f"""You are a clinical trial research assistant. Use the trial data below to answer the question.
 
 Question: {request.query}
@@ -281,7 +310,6 @@ Question: {request.query}
 
 Provide a clear, well-structured answer based on the trial data above."""
         
-        # Get LLM response
         async with OllamaSessionManager(settings.ollama_host, settings.ollama_port) as session:
             response = await session.send_prompt(
                 model=request.model,
@@ -290,7 +318,6 @@ Provide a clear, well-structured answer based on the trial data above."""
                 max_retries=3
             )
         
-        # Count trials used
         extractions = rag_system.retrieve(request.query)
         
         return ResearchQueryResponse(
@@ -309,23 +336,18 @@ Provide a clear, well-structured answer based on the trial data above."""
 
 @app.post("/extract", response_model=ExtractResponse)
 async def extract_trial(request: ExtractRequest, api_key: str = Depends(verify_api_key)):
-    """
-    Extract structured data from a clinical trial.
-    Uses RAG + LLM for structured extraction.
-    """
+    """Extract structured data from a clinical trial."""
     if not rag_system:
         raise HTTPException(status_code=503, detail="RAG system not available")
     
     logger.info(f"Extract: {request.nct_id}")
     
     try:
-        # Get extraction from RAG
         extraction = rag_system.db.extract_structured_data(request.nct_id)
         
         if not extraction:
             raise HTTPException(status_code=404, detail=f"Trial {request.nct_id} not found")
         
-        # Convert to dict
         from dataclasses import asdict
         extraction_dict = asdict(extraction)
         
@@ -351,8 +373,6 @@ async def database_stats(api_key: str = Depends(verify_api_key)):
         return {"error": "RAG system not available"}
     
     total = len(rag_system.db.trials)
-    
-    # Count by status
     status_counts = {}
     peptide_count = 0
     
@@ -375,7 +395,7 @@ async def database_stats(api_key: str = Depends(verify_api_key)):
 
 
 # ============================================================================
-# FILE MANAGEMENT ENDPOINTS (NEW)
+# FILE MANAGEMENT ENDPOINTS
 # ============================================================================
 
 @app.get("/files/list", response_model=FileListResponse)
@@ -393,7 +413,6 @@ async def list_files(api_key: str = Depends(verify_api_key)):
                 "path": str(filepath.relative_to(OUTPUT_DIR))
             })
         
-        # Sort by modified time (newest first)
         files.sort(key=lambda x: x["modified"], reverse=True)
         
         return FileListResponse(files=files)
@@ -446,13 +465,10 @@ async def save_file(request: FileSaveRequest, api_key: str = Depends(verify_api_
 async def upload_file(file: UploadFile = File(...), api_key: str = Depends(verify_api_key)):
     """Upload a file to output directory."""
     try:
-        # Validate file type
         if not file.filename.endswith(('.json', '.txt')):
             raise HTTPException(status_code=400, detail="Only .json and .txt files are allowed")
         
         file_path = OUTPUT_DIR / file.filename
-        
-        # Save file
         content = await file.read()
         file_path.write_bytes(content)
         
@@ -530,7 +546,8 @@ async def startup_event():
     if rag_system:
         logger.info(f"Trials Indexed: {len(rag_system.db.trials)}")
     logger.info(f"Output Directory: {OUTPUT_DIR.absolute()}")
-    logger.info(f"Files in output/: {len(list(OUTPUT_DIR.glob('*.json')))}")
+    logger.info(f"Static Directory: {(WEBAPP_DIR / 'static').absolute()}")
+    logger.info(f"Templates Directory: {(WEBAPP_DIR / 'templates').absolute()}")
     logger.info("=" * 60)
 
 
