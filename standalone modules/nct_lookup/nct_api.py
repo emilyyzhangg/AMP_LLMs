@@ -24,7 +24,7 @@ API Endpoints:
 """
 
 from fastapi import FastAPI, HTTPException, BackgroundTasks
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 from datetime import datetime
@@ -32,9 +32,14 @@ from pathlib import Path
 import asyncio
 import json
 import logging
+import os
 
-from nct_core import NCTSearchEngine, SearchConfig
-from nct_models import SearchRequest, SearchResponse, SearchStatus, SearchSummary
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv()
+
+from nct_core import NCTSearchEngine
+from nct_models import SearchRequest, SearchResponse, SearchStatus, SearchSummary, SearchConfig
 
 # Configure logging
 logging.basicConfig(
@@ -63,7 +68,10 @@ search_status_db: Dict[str, SearchStatus] = {}
 async def startup_event():
     """Initialize search engine on startup."""
     logger.info("Starting NCT Lookup API")
+    logger.info(f"SERPAPI_KEY configured: {bool(os.getenv('SERPAPI_KEY'))}")
+    logger.info(f"NCBI_API_KEY configured: {bool(os.getenv('NCBI_API_KEY'))}")
     await search_engine.initialize()
+    logger.info("Search engine initialized successfully")
 
 
 @app.on_event("shutdown")
@@ -83,7 +91,10 @@ async def root():
         "endpoints": {
             "search": "POST /api/search/{nct_id}",
             "status": "GET /api/search/{nct_id}/status",
-            "results": "GET /api/results/{nct_id}"
+            "results": "GET /api/results/{nct_id}",
+            "save": "POST /api/results/{nct_id}/save",
+            "download": "GET /api/results/{nct_id}/download",
+            "delete": "DELETE /api/results/{nct_id}"
         }
     }
 
@@ -119,7 +130,14 @@ async def search_nct(
     if not nct_id.startswith("NCT") or len(nct_id) != 11:
         raise HTTPException(
             status_code=400,
-            detail=f"Invalid NCT format: {nct_id}. Expected: NCT########"
+            detail=f"Invalid NCT format: {nct_id}. Expected: NCT######## (NCT followed by 8 digits)"
+        )
+    
+    # Validate that the last 8 characters are digits
+    if not nct_id[3:].isdigit():
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid NCT format: {nct_id}. The 8 characters after 'NCT' must be digits"
         )
     
     # Check if search already exists
@@ -234,7 +252,7 @@ async def get_search_results(
             detail=f"Results file not found for {nct_id}"
         )
     
-    with open(results_file, 'r') as f:
+    with open(results_file, 'r', encoding='utf-8') as f:
         results = json.load(f)
     
     # Handle save to file request
@@ -245,7 +263,7 @@ async def get_search_results(
         
         # Save with NCT number as filename
         user_file = downloads_dir / f"{nct_id}.json"
-        with open(user_file, 'w') as f:
+        with open(user_file, 'w', encoding='utf-8') as f:
             json.dump(results, f, indent=2, ensure_ascii=False)
         
         # Return response with file info
@@ -305,7 +323,7 @@ async def save_results_to_file(nct_id: str):
             detail=f"Results file not found for {nct_id}"
         )
     
-    with open(results_file, 'r') as f:
+    with open(results_file, 'r', encoding='utf-8') as f:
         results = json.load(f)
     
     # Create downloads directory
@@ -314,7 +332,7 @@ async def save_results_to_file(nct_id: str):
     
     # Save with NCT number as filename
     output_file = downloads_dir / f"{nct_id}.json"
-    with open(output_file, 'w') as f:
+    with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
     
     logger.info(f"Saved results to {output_file}")
@@ -346,8 +364,6 @@ async def download_results_file(nct_id: str):
     Returns:
         File download response
     """
-    from fastapi.responses import FileResponse
-    
     nct_id = nct_id.upper().strip()
     
     # Check if results exist
@@ -375,7 +391,7 @@ def _format_file_size(size_bytes: int) -> str:
     return f"{size_bytes:.1f} TB"
 
 
-@app.delete("/api/results/{nct_id}}")
+@app.delete("/api/results/{nct_id}")
 async def delete_search(nct_id: str):
     """
     Delete search results and status.
@@ -430,7 +446,7 @@ async def _execute_search(nct_id: str, request: SearchRequest):
         results_dir.mkdir(exist_ok=True)
         
         output_file = results_dir / f"{nct_id}.json"
-        with open(output_file, 'w') as f:
+        with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(results, f, indent=2, ensure_ascii=False)
         
         # Update status
@@ -460,40 +476,88 @@ def _get_database_list(request: SearchRequest) -> List[str]:
     return databases
 
 
-def _generate_summary(results: Dict[str, Any]) -> SearchSummary:
-    """Generate summary statistics from results."""
-    summary = SearchSummary(
-        nct_id=results["nct_id"],
-        title=results.get("title", ""),
-        status=results.get("status", ""),
-        databases_searched=[],
-        total_results=0,
-        results_by_database={},
-        search_timestamp=results.get("timestamp", "")
-    )
+def _generate_summary(results: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Generate summary statistics matching both original workflow and test expectations.
+    """
+    # Extract basic info
+    nct_id = results["nct_id"]
+    title = results.get("metadata", {}).get("title", "")
+    status = results.get("metadata", {}).get("status", "")
     
-    # Count results per database
-    for db_name, db_data in results.get("databases", {}).items():
-        if db_data and not db_data.get("error"):
-            count = _count_results(db_data)
-            summary.databases_searched.append(db_name)
-            summary.results_by_database[db_name] = count
-            summary.total_results += count
+    # Initialize lists and counts
+    databases_searched = []
+    results_by_database = {}
+    
+    # Count results per source
+    sources = results.get("sources", {})
+    
+    # ClinicalTrials.gov (always present if successful)
+    if sources.get("clinical_trials", {}).get("success"):
+        databases_searched.append("clinicaltrials")
+        results_by_database["clinicaltrials"] = 1  # The trial itself
+    
+    # PubMed count
+    pubmed_count = 0
+    if sources.get("pubmed", {}).get("success"):
+        pubmed_data = sources["pubmed"].get("data", {})
+        pubmed_count = len(pubmed_data.get("pmids", []))
+        databases_searched.append("pubmed")
+        results_by_database["pubmed"] = pubmed_count
+    
+    # PMC count
+    pmc_count = 0
+    if sources.get("pmc", {}).get("success"):
+        pmc_data = sources["pmc"].get("data", {})
+        pmc_count = len(pmc_data.get("pmcids", []))
+        databases_searched.append("pmc")
+        results_by_database["pmc"] = pmc_count
+    
+    # Extended API counts
+    if "extended" in sources:
+        for api_name, api_data in sources["extended"].items():
+            if api_data.get("success"):
+                data = api_data.get("data", {})
+                count = _count_api_results(api_name, data)
+                if count > 0:
+                    databases_searched.append(api_name)
+                    results_by_database[api_name] = count
+    
+    # Calculate total
+    total_results = sum(results_by_database.values())
+    
+    summary = {
+        "nct_id": nct_id,
+        "title": title,
+        "status": status,
+        "databases_searched": databases_searched,
+        "results_by_database": results_by_database,
+        "total_results": total_results,
+        "search_timestamp": results.get("timestamp", ""),
+        # Also include original format for compatibility
+        "pubmed_count": pubmed_count,
+        "pmc_count": pmc_count,
+    }
     
     return summary
 
 
-def _count_results(db_data: Dict[str, Any]) -> int:
-    """Count results in database data."""
-    # Handle different result structures
-    if "results" in db_data:
-        return len(db_data["results"])
-    elif "pmids" in db_data:
-        return len(db_data["pmids"])
-    elif "pmcids" in db_data:
-        return len(db_data["pmcids"])
-    elif "articles" in db_data:
-        return len(db_data["articles"])
+def _count_api_results(api_name: str, data: Dict[str, Any]) -> int:
+    """Count results from extended API data."""
+    if not data or data.get("error"):
+        return 0
+    
+    # DuckDuckGo, SERP API, Scholar
+    if "results" in data:
+        results_list = data["results"]
+        if isinstance(results_list, list):
+            return len(results_list)
+        return 0
+    
+    # OpenFDA
+    if "total_found" in data:
+        return data.get("total_found", 0)
+    
     return 0
 
 

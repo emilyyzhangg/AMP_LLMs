@@ -5,7 +5,7 @@ NCT API Data Models
 Pydantic models for request/response validation.
 """
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 from enum import Enum
@@ -24,7 +24,8 @@ class SearchRequest(BaseModel):
         description="Specific databases to search (if None, searches all available)"
     )
     
-    @validator('databases')
+    @field_validator('databases')
+    @classmethod
     def validate_databases(cls, v):
         """Validate database names."""
         if v is not None:
@@ -74,8 +75,8 @@ class SearchSummary(BaseModel):
     results_by_database: Dict[str, int]
     search_timestamp: str
     
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "nct_id": "NCT12345678",
                 "title": "Study of Drug X in Disease Y",
@@ -96,6 +97,7 @@ class SearchSummary(BaseModel):
                 "search_timestamp": "2025-01-15T10:30:00"
             }
         }
+    }
 
 
 class SearchConfig(BaseModel):
@@ -106,5 +108,6 @@ class SearchConfig(BaseModel):
     max_results_per_db: int = Field(default=10, ge=1, le=100)
     timeout: int = Field(default=60, ge=10, le=300)
     
-    class Config:
-        use_enum_values = True
+    model_config = {
+        "use_enum_values": True
+    }
