@@ -1,723 +1,131 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Send, Upload, Download, FileText, Search, Database, MessageSquare, ChevronLeft, Loader, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-
-const API_BASE = window.location.origin;
-const API_KEY = localStorage.getItem('amp_llm_api_key') || '';
-
-const App = () => {
-  const [apiKey, setApiKey] = useState(API_KEY);
-  const [authenticated, setAuthenticated] = useState(!!API_KEY);
-  const [currentMode, setCurrentMode] = useState('menu');
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [files, setFiles] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [nctInput, setNctInput] = useState('');
-  const [nctResults, setNctResults] = useState(null);
-  const [useExtendedAPIs, setUseExtendedAPIs] = useState(false);
-  const [progress, setProgress] = useState('');
-  const [stats, setStats] = useState(null);
-  
-  const messagesEndRef = useRef(null);
-  const fileInputRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  useEffect(() => {
-    if (authenticated && currentMode === 'files') {
-      loadFiles();
-    }
-  }, [currentMode, authenticated]);
-
-  const handleAuth = async () => {
-    if (!apiKey) {
-      alert('Please enter an API key');
-      return;
-    }
-    
-    try {
-      const response = await fetch(`${API_BASE}/health`, {
-        headers: { 'Authorization': `Bearer ${apiKey}` }
-      });
-      
-      if (response.ok) {
-        localStorage.setItem('amp_llm_api_key', apiKey);
-        setAuthenticated(true);
-      } else {
-        alert('Invalid API key');
-      }
-    } catch (error) {
-      alert('Connection error: ' + error.message);
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('amp_llm_api_key');
-    setAuthenticated(false);
-    setApiKey('');
-    setCurrentMode('menu');
-  };
-
-  const loadFiles = async () => {
-    try {
-      const response = await fetch(`${API_BASE}/files/list`, {
-        headers: { 'Authorization': `Bearer ${apiKey}` }
-      });
-      const data = await response.json();
-      setFiles(data.files || []);
-    } catch (error) {
-      console.error('Error loading files:', error);
-    }
-  };
-
-  const sendMessage = async (messageText, mode = 'chat') => {
-    if (!messageText.trim()) return;
-    
-    const userMessage = { role: 'user', content: messageText };
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setLoading(true);
-
-    try {
-      const endpoint = mode === 'research' ? '/research' : '/chat';
-      const response = await fetch(`${API_BASE}${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          query: messageText,
-          model: 'llama3.2',
-          max_trials: 10
-        })
-      });
-
-      const data = await response.json();
-      const assistantMessage = {
-        role: 'assistant',
-        content: mode === 'research' ? data.answer : data.response,
-        meta: mode === 'research' ? `(Used ${data.trials_used} trials)` : null
-      };
-      
-      setMessages(prev => [...prev, assistantMessage]);
-    } catch (error) {
-      setMessages(prev => [...prev, {
-        role: 'error',
-        content: 'Error: ' + error.message
-      }]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadFileIntoChat = async (filename) => {
-    try {
-      const response = await fetch(`${API_BASE}/files/content/${filename}`, {
-        headers: { 'Authorization': `Bearer ${apiKey}` }
-      });
-      const data = await response.json();
-      
-      setSelectedFile({ name: filename, content: data.content });
-      setCurrentMode('chat');
-      
-      setMessages([{
-        role: 'system',
-        content: `Loaded file: ${filename} (${(data.content.length / 1024).toFixed(1)} KB)`
-      }]);
-      
-      setInput(`Analyze this clinical trial data:\n\n[File: ${filename}]`);
-    } catch (error) {
-      alert('Error loading file: ' + error.message);
-    }
-  };
-
-  const handleNCTLookup = async () => {
-    const nctIds = nctInput.split(',').map(s => s.trim().toUpperCase()).filter(s => s);
-    
-    if (nctIds.length === 0) {
-      alert('Please enter at least one NCT number');
-      return;
-    }
-
-    setLoading(true);
-    setProgress('Fetching clinical trial data...');
-    setNctResults(null);
-
-    try {
-      const response = await fetch(`${API_BASE}/nct-lookup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          nct_ids: nctIds,
-          use_extended_apis: useExtendedAPIs
-        })
-      });
-
-      const data = await response.json();
-      setNctResults(data);
-      setProgress('');
-    } catch (error) {
-      alert('Error: ' + error.message);
-      setProgress('');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const saveNCTResults = async () => {
-    if (!nctResults) return;
-
-    const filename = `nct_results_${Date.now()}.json`;
-    const blob = new Blob([JSON.stringify(nctResults.results, null, 2)], {
-      type: 'application/json'
-    });
-    
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-
-    try {
-      await fetch(`${API_BASE}/files/save`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          filename,
-          content: JSON.stringify(nctResults.results, null, 2)
-        })
-      });
-    } catch (error) {
-      console.error('Error saving to server:', error);
-    }
-  };
-
-  const loadStats = async () => {
-    try {
-      const response = await fetch(`${API_BASE}/stats`, {
-        headers: { 'Authorization': `Bearer ${apiKey}` }
-      });
-      const data = await response.json();
-      setStats(data);
-    } catch (error) {
-      console.error('Error loading stats:', error);
-    }
-  };
-
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const response = await fetch(`${API_BASE}/files/upload`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${apiKey}` },
-        body: formData
-      });
-
-      if (response.ok) {
-        alert('File uploaded successfully');
-        loadFiles();
-      }
-    } catch (error) {
-      alert('Upload error: ' + error.message);
-    }
-  };
-
-  const extractTrial = async (nctId) => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${API_BASE}/extract`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({ nct_id: nctId })
-      });
-
-      const data = await response.json();
-      
-      setMessages(prev => [...prev, {
-        role: 'system',
-        content: `Extracted ${nctId}`,
-        data: data.extraction
-      }]);
-    } catch (error) {
-      alert('Extraction error: ' + error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Auth Screen
-  if (!authenticated) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 to-purple-900 flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full">
-          <div className="text-center mb-6">
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">🔬 AMP LLM</h1>
-            <p className="text-gray-600">Clinical Trial Research Assistant</p>
-          </div>
-          <input
-            type="password"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleAuth()}
-            placeholder="Enter API Key"
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mb-4 focus:border-purple-600 focus:outline-none"
-          />
-          <button
-            onClick={handleAuth}
-            className="w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition"
-          >
-            Login
-          </button>
-          <p className="text-sm text-gray-500 mt-4 text-center">
-            Enter your API key to access the system
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // Main Menu
-  if (currentMode === 'menu') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 to-purple-900 p-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-8 flex justify-between items-center">
-              <div>
-                <h1 className="text-4xl font-bold mb-2">🔬 AMP LLM</h1>
-                <p className="text-purple-100">Clinical Trial Research Assistant</p>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="bg-white/20 hover:bg-white/30 px-6 py-2 rounded-lg transition"
-              >
-                Logout
-              </button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMP LLM - Clinical Trial Research</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Auth Section -->
+        <div id="auth-section" class="auth-section">
+            <div class="auth-box">
+                <h1>🔬 AMP LLM</h1>
+                <p>Clinical Trial Research Assistant</p>
+                <input type="password" id="api-key-input" placeholder="Enter API Key" />
+                <button onclick="app.handleAuth()">Login</button>
+                <p class="help-text">Enter your API key to access the system</p>
             </div>
-
-            <div className="p-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">Select a Mode</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <MenuCard
-                  icon={<MessageSquare size={48} />}
-                  title="Chat with LLM"
-                  description="General purpose AI conversation"
-                  onClick={() => setCurrentMode('chat')}
-                />
-                <MenuCard
-                  icon={<Search size={48} />}
-                  title="NCT Lookup"
-                  description="Search clinical trials by NCT number"
-                  onClick={() => setCurrentMode('nct')}
-                />
-                <MenuCard
-                  icon={<Database size={48} />}
-                  title="Research Assistant"
-                  description="RAG-powered trial analysis"
-                  onClick={() => setCurrentMode('research')}
-                />
-                <MenuCard
-                  icon={<FileText size={48} />}
-                  title="File Manager"
-                  description="Browse, upload, and load trial data"
-                  onClick={() => setCurrentMode('files')}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Chat/Research Mode
-  if (currentMode === 'chat' || currentMode === 'research') {
-    return (
-      <div className="h-screen flex flex-col bg-gray-50">
-        <Header
-          title={currentMode === 'chat' ? '💬 Chat Mode' : '📚 Research Assistant'}
-          onBack={() => {
-            setCurrentMode('menu');
-            setMessages([]);
-            setSelectedFile(null);
-          }}
-          onLogout={handleLogout}
-        />
-        
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
-          {selectedFile && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-blue-800">
-                📄 Loaded: {selectedFile.name}
-              </p>
-            </div>
-          )}
-          
-          {messages.map((msg, idx) => (
-            <Message key={idx} message={msg} />
-          ))}
-          
-          {loading && (
-            <div className="flex items-center gap-2 text-purple-600">
-              <Loader className="animate-spin" size={20} />
-              <span>Thinking...</span>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
         </div>
 
-        <div className="border-t bg-white p-4">
-          <div className="flex gap-3">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  sendMessage(
-                    selectedFile 
-                      ? `${input}\n\n[File Content]\n${selectedFile.content}`
-                      : input,
-                    currentMode
-                  );
-                }
-              }}
-              placeholder={currentMode === 'research' ? "Ask about clinical trials..." : "Type a message..."}
-              className="flex-1 p-3 border-2 border-gray-300 rounded-xl resize-none focus:border-purple-600 focus:outline-none"
-              rows={3}
-            />
-            <button
-              onClick={() => sendMessage(
-                selectedFile 
-                  ? `${input}\n\n[File Content]\n${selectedFile.content}`
-                  : input,
-                currentMode
-              )}
-              disabled={loading}
-              className="bg-gradient-to-r from-purple-600 to-purple-800 text-white px-6 rounded-xl hover:shadow-lg transition disabled:opacity-50"
-            >
-              <Send size={20} />
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+        <!-- Main App (hidden until authenticated) -->
+        <div id="main-app" class="hidden">
+            <!-- Header -->
+            <header id="app-header" class="hidden">
+                <div class="header-left">
+                    <button class="back-button" onclick="app.showMenu()">← Back</button>
+                    <div>
+                        <h1 id="mode-title">AMP LLM</h1>
+                        <p id="mode-subtitle"></p>
+                    </div>
+                </div>
+                <button class="logout-button" onclick="app.handleLogout()">Logout</button>
+            </header>
 
-  // NCT Lookup Mode
-  if (currentMode === 'nct') {
-    return (
-      <div className="h-screen flex flex-col bg-gray-50">
-        <Header
-          title="🔍 NCT Lookup"
-          onBack={() => {
-            setCurrentMode('menu');
-            setNctResults(null);
-          }}
-          onLogout={handleLogout}
-        />
-
-        <div className="p-6 bg-white border-b">
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Enter NCT Numbers (comma-separated):
-              </label>
-              <textarea
-                value={nctInput}
-                onChange={(e) => setNctInput(e.target.value)}
-                placeholder="NCT03936426, NCT12345678"
-                className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-purple-600 focus:outline-none"
-                rows={3}
-              />
+            <!-- Menu Section -->
+            <div id="menu-view" class="menu-section">
+                <h2 class="menu-title">Select a Mode</h2>
+                <div class="menu-grid">
+                    <div class="menu-item" onclick="app.showMode('chat')">
+                        <div class="menu-item-icon">💬</div>
+                        <div class="menu-item-title">Chat with LLM</div>
+                        <div class="menu-item-desc">General purpose AI conversation</div>
+                    </div>
+                    <div class="menu-item" onclick="app.showMode('nct')">
+                        <div class="menu-item-icon">🔍</div>
+                        <div class="menu-item-title">NCT Lookup</div>
+                        <div class="menu-item-desc">Search clinical trials by NCT number</div>
+                    </div>
+                    <div class="menu-item" onclick="app.showMode('research')">
+                        <div class="menu-item-icon">📚</div>
+                        <div class="menu-item-title">Research Assistant</div>
+                        <div class="menu-item-desc">RAG-powered trial analysis</div>
+                    </div>
+                    <div class="menu-item" onclick="app.showMode('files')">
+                        <div class="menu-item-icon">📁</div>
+                        <div class="menu-item-title">File Manager</div>
+                        <div class="menu-item-desc">Browse, upload, and load trial data</div>
+                    </div>
+                </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={useExtendedAPIs}
-                onChange={(e) => setUseExtendedAPIs(e.target.checked)}
-                className="w-4 h-4"
-              />
-              <label className="text-sm text-gray-700">
-                Use Extended APIs (PMC, EudraCT, WHO ICTRP, Semantic Scholar, etc.)
-              </label>
+            <!-- Chat Mode -->
+            <div id="chat-mode" class="mode-container">
+                <div class="chat-container" id="chat-container"></div>
+                <div class="input-area">
+                    <textarea id="chat-input" placeholder="Type a message..." rows="3"></textarea>
+                    <button onclick="app.sendMessage('chat')">Send</button>
+                </div>
             </div>
 
-            <div className="flex gap-3">
-              <button
-                onClick={handleNCTLookup}
-                disabled={loading}
-                className="flex-1 bg-gradient-to-r from-purple-600 to-purple-800 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {loading ? <Loader className="animate-spin" size={20} /> : <Search size={20} />}
-                {loading ? 'Fetching...' : 'Fetch Trials'}
-              </button>
-              
-              {nctResults && (
-                <button
-                  onClick={saveNCTResults}
-                  className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition flex items-center gap-2"
-                >
-                  <Download size={20} />
-                  Save Results
-                </button>
-              )}
+            <!-- Research Mode -->
+            <div id="research-mode" class="mode-container">
+                <div class="chat-container" id="research-container"></div>
+                <div class="input-area">
+                    <textarea id="research-input" placeholder="Ask about clinical trials..." rows="3"></textarea>
+                    <button onclick="app.sendMessage('research')">Research</button>
+                </div>
             </div>
 
-            {progress && (
-              <div className="text-sm text-purple-600 flex items-center gap-2">
-                <Loader className="animate-spin" size={16} />
-                {progress}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-6">
-          {nctResults && <NCTResults results={nctResults} onExtract={extractTrial} />}
-        </div>
-      </div>
-    );
-  }
-
-  // File Manager Mode
-  if (currentMode === 'files') {
-    return (
-      <div className="h-screen flex flex-col bg-gray-50">
-        <Header
-          title="📁 File Manager"
-          onBack={() => setCurrentMode('menu')}
-          onLogout={handleLogout}
-        />
-
-        <div className="p-6 bg-white border-b">
-          <div className="flex gap-3">
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition flex items-center gap-2"
-            >
-              <Upload size={20} />
-              Upload File
-            </button>
-            <button
-              onClick={loadFiles}
-              className="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition"
-            >
-              Refresh
-            </button>
-          </div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json,.txt"
-            onChange={handleFileUpload}
-            className="hidden"
-          />
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {files.map((file, idx) => (
-              <FileCard
-                key={idx}
-                file={file}
-                onLoad={() => loadFileIntoChat(file.name)}
-              />
-            ))}
-          </div>
-          {files.length === 0 && (
-            <div className="text-center text-gray-500 mt-12">
-              <FileText size={48} className="mx-auto mb-4 opacity-30" />
-              <p>No files found. Upload some trial data to get started.</p>
+            <!-- NCT Lookup Mode -->
+            <div id="nct-mode" class="mode-container">
+                <div class="nct-input-area">
+                    <div class="nct-input-group">
+                        <label>Enter NCT Numbers (comma-separated):</label>
+                        <textarea id="nct-input" placeholder="NCT03936426, NCT12345678"></textarea>
+                    </div>
+                    <div class="nct-input-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="use-extended-apis" />
+                            <span>Use Extended APIs (PMC, EudraCT, WHO ICTRP, Semantic Scholar, DuckDuckGo, Google)</span>
+                        </label>
+                    </div>
+                    <div class="nct-buttons">
+                        <button class="nct-submit" onclick="app.handleNCTLookup()">
+                            <span>🔍</span>
+                            <span>Fetch Trials</span>
+                        </button>
+                        <button class="nct-save hidden" id="nct-save-btn" onclick="app.saveNCTResults()">
+                            <span>💾</span>
+                            <span>Save Results</span>
+                        </button>
+                    </div>
+                    <div class="progress-text hidden" id="nct-progress"></div>
+                </div>
+                <div class="nct-results" id="nct-results"></div>
             </div>
-          )}
+
+            <!-- File Manager Mode -->
+            <div id="files-mode" class="mode-container">
+                <div class="file-controls">
+                    <button class="file-upload-btn" onclick="document.getElementById('file-upload-input').click()">
+                        <span>📤</span>
+                        <span>Upload File</span>
+                    </button>
+                    <button class="file-refresh-btn" onclick="app.loadFiles()">
+                        <span>🔄</span>
+                        <span>Refresh</span>
+                    </button>
+                    <input type="file" id="file-upload-input" accept=".json,.txt" style="display: none;" onchange="app.handleFileUpload(event)" />
+                </div>
+                <div class="files-container" id="files-container">
+                    <div class="loading">Loading files...</div>
+                </div>
+            </div>
         </div>
-      </div>
-    );
-  }
-
-  return null;
-};
-
-const MenuCard = ({ icon, title, description, onClick }) => (
-  <button
-    onClick={onClick}
-    className="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200 rounded-2xl p-6 hover:border-purple-600 hover:shadow-xl transition-all duration-300 text-left group"
-  >
-    <div className="text-purple-600 mb-4 group-hover:scale-110 transition-transform">
-      {icon}
     </div>
-    <h3 className="text-xl font-bold text-gray-800 mb-2">{title}</h3>
-    <p className="text-gray-600 text-sm">{description}</p>
-  </button>
-);
 
-const Header = ({ title, onBack, onLogout }) => (
-  <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-4 flex items-center justify-between">
-    <div className="flex items-center gap-4">
-      <button
-        onClick={onBack}
-        className="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition"
-      >
-        <ChevronLeft size={24} />
-      </button>
-      <h1 className="text-2xl font-bold">{title}</h1>
-    </div>
-    <button
-      onClick={onLogout}
-      className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition"
-    >
-      Logout
-    </button>
-  </div>
-);
-
-const Message = ({ message }) => {
-  const isUser = message.role === 'user';
-  const isError = message.role === 'error';
-  const isSystem = message.role === 'system';
-
-  return (
-    <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
-      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-        isUser ? 'bg-purple-600' : isSystem ? 'bg-blue-600' : isError ? 'bg-red-600' : 'bg-gray-300'
-      }`}>
-        {isUser ? '👤' : isSystem ? 'ℹ️' : isError ? '⚠️' : '🤖'}
-      </div>
-      <div className={`rounded-2xl p-4 max-w-3xl ${
-        isUser ? 'bg-gradient-to-br from-purple-600 to-purple-800 text-white' :
-        isError ? 'bg-red-50 border border-red-200 text-red-800' :
-        isSystem ? 'bg-blue-50 border border-blue-200 text-blue-800' :
-        'bg-white border border-gray-200'
-      }`}>
-        <p className="whitespace-pre-wrap">{message.content}</p>
-        {message.meta && (
-          <p className="text-sm mt-2 opacity-75">{message.meta}</p>
-        )}
-        {message.data && (
-          <pre className="mt-2 text-xs bg-black/10 p-2 rounded overflow-x-auto">
-            {JSON.stringify(message.data, null, 2)}
-          </pre>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const NCTResults = ({ results, onExtract }) => {
-  if (!results.success) {
-    return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-        <h3 className="text-red-800 font-semibold mb-2">Error</h3>
-        <p className="text-red-600">No results found</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-4">
-      <div className="bg-white border rounded-lg p-4">
-        <h3 className="font-semibold text-gray-800 mb-2">Summary</h3>
-        <div className="grid grid-cols-3 gap-4 text-sm">
-          <div>
-            <p className="text-gray-600">Total Requested</p>
-            <p className="text-2xl font-bold text-purple-600">{results.summary.total_requested}</p>
-          </div>
-          <div>
-            <p className="text-gray-600">Successful</p>
-            <p className="text-2xl font-bold text-green-600">{results.summary.successful}</p>
-          </div>
-          <div>
-            <p className="text-gray-600">Failed</p>
-            <p className="text-2xl font-bold text-red-600">{results.summary.failed}</p>
-          </div>
-        </div>
-      </div>
-
-      {results.results.map((result, idx) => (
-        <TrialCard key={idx} result={result} onExtract={onExtract} />
-      ))}
-    </div>
-  );
-};
-
-const TrialCard = ({ result, onExtract }) => {
-  const ct = result.sources?.clinical_trials?.data?.protocolSection || {};
-  const ident = ct.identificationModule || {};
-  const status = ct.statusModule || {};
-  
-  return (
-    <div className="bg-white border rounded-lg p-6">
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <h3 className="text-xl font-bold text-purple-600">{result.nct_id}</h3>
-          <p className="text-sm text-gray-600">{status.overallStatus}</p>
-        </div>
-        <button
-          onClick={() => onExtract(result.nct_id)}
-          className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:shadow-lg transition"
-        >
-          Extract
-        </button>
-      </div>
-      
-      <p className="text-gray-800 font-semibold mb-2">
-        {ident.officialTitle || ident.briefTitle || 'No title'}
-      </p>
-      
-      <div className="grid grid-cols-2 gap-4 text-sm">
-        <div>
-          <p className="text-gray-600">PubMed Articles</p>
-          <p className="font-semibold">{result.sources?.pubmed?.pmids?.length || 0}</p>
-        </div>
-        <div>
-          <p className="text-gray-600">PMC Articles</p>
-          <p className="font-semibold">{result.sources?.pmc?.pmcids?.length || 0}</p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const FileCard = ({ file, onLoad }) => (
-  <div className="bg-white border rounded-lg p-4 hover:border-purple-600 hover:shadow-lg transition">
-    <div className="flex items-start justify-between mb-2">
-      <FileText size={24} className="text-purple-600" />
-      <span className="text-xs text-gray-500">{file.size}</span>
-    </div>
-    <p className="font-semibold text-gray-800 mb-1 truncate">{file.name}</p>
-    <p className="text-xs text-gray-600 mb-3">{file.modified}</p>
-    <button
-      onClick={onLoad}
-      className="w-full bg-purple-600 text-white py-2 rounded-lg text-sm hover:shadow-lg transition"
-    >
-      Load into Chat
-    </button>
-  </div>
-);
-
-export default App;
+    <script src="app.js"></script>
+</body>
+</html>
