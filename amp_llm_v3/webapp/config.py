@@ -12,31 +12,32 @@ load_dotenv()
 class Settings(BaseSettings):
     """Application settings."""
     
-    # API Keys
-    api_keys: Set[str] = {
-        os.getenv("API_KEY_1", ""),
-        os.getenv("API_KEY_2", ""),
-        os.getenv("API_KEY_3", ""),
+    model_config = {
+        "extra": "allow",
+        "env_file": ".env"
     }
     
+    # API Keys
+    api_keys: Set[str] = set()
+    
     # Ollama
-    ollama_host: str = os.getenv("OLLAMA_HOST", "localhost")
-    ollama_port: int = int(os.getenv("OLLAMA_PORT", "11434"))
+    ollama_host: str = "localhost"
+    ollama_port: int = 11434
     
     # CORS
-    allowed_origins: list = os.getenv(
-        "ALLOWED_ORIGINS", 
-        "https://llm.amphoraxe.ca"
-    ).split(",")
+    allowed_origins: list = ["https://llm.amphoraxe.ca"]
     
     # Environment
-    environment: str = os.getenv("ENVIRONMENT", "development")
-    
-    class Config:
-        env_file = ".env"
+    environment: str = "development"
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        # Collect API keys from environment
+        self.api_keys = {
+            os.getenv("API_KEY_1", ""),
+            os.getenv("API_KEY_2", ""),
+            os.getenv("API_KEY_3", ""),
+        }
         # Remove empty keys
         self.api_keys = {key for key in self.api_keys if key}
         
