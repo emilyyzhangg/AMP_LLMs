@@ -95,14 +95,14 @@
 
         /* Mode Containers */
         .mode-container {
-            display: none;
+            display: none !important;
             flex: 1;
             flex-direction: column;
             overflow: hidden;
         }
 
         .mode-container.active {
-            display: flex;
+            display: flex !important;
         }
 
         .mode-header {
@@ -373,19 +373,46 @@
         const API_BASE = window.location.origin;
         const API_KEY = localStorage.getItem('amp_llm_api_key') || 'YOUR_KEY_HERE';
 
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, showing menu');
+            showMenu();
+        });
+
         function showMenu() {
-            document.getElementById('menu-view').style.display = 'block';
+            console.log('Showing menu');
+            const menu = document.getElementById('menu-view');
+            if (menu) {
+                menu.style.display = 'block';
+            }
             document.querySelectorAll('.mode-container').forEach(el => {
+                el.style.display = 'none';
                 el.classList.remove('active');
             });
         }
 
         function showMode(mode) {
-            document.getElementById('menu-view').style.display = 'none';
+            console.log('Showing mode:', mode);
+            const menu = document.getElementById('menu-view');
+            if (menu) {
+                menu.style.display = 'none';
+            }
+            
+            // Hide all modes first
             document.querySelectorAll('.mode-container').forEach(el => {
+                el.style.display = 'none';
                 el.classList.remove('active');
             });
-            document.getElementById(mode + '-mode').classList.add('active');
+            
+            // Show selected mode
+            const modeElement = document.getElementById(mode + '-mode');
+            if (modeElement) {
+                modeElement.style.display = 'flex';
+                modeElement.classList.add('active');
+                console.log('Mode element found and displayed');
+            } else {
+                console.error('Mode element not found:', mode + '-mode');
+            }
 
             if (mode === 'stats') {
                 loadStats();
