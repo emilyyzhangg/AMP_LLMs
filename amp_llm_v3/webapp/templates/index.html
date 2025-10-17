@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMP LLM - Clinical Trial Research</title>
-    <link rel="stylesheet" href="/static/style.css">
+    
+    <!-- Base styles (always loaded) -->
+    <link rel="stylesheet" href="/static/style-base.css">
+    
+    <!-- Theme stylesheet (dynamically loaded) -->
+    <link rel="stylesheet" id="theme-stylesheet" href="/static/theme-green.css">
 </head>
 <body>
     <div class="container">
@@ -30,7 +35,30 @@
                         <p id="mode-subtitle"></p>
                     </div>
                 </div>
-                <button class="logout-button" onclick="app.handleLogout()">Logout</button>
+                <div class="header-right">
+                    <!-- Theme Switcher -->
+                    <div class="theme-switcher">
+                        <button class="theme-button" onclick="app.toggleThemeDropdown()">
+                            <span>🎨</span>
+                            <span id="current-theme-name">Green</span>
+                        </button>
+                        <div class="theme-dropdown hidden" id="theme-dropdown">
+                            <div class="theme-option" onclick="app.setTheme('green')">
+                                <div class="theme-indicator" style="background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);"></div>
+                                <span>Green Primary</span>
+                            </div>
+                            <div class="theme-option" onclick="app.setTheme('blue')">
+                                <div class="theme-indicator" style="background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);"></div>
+                                <span>Blue Primary</span>
+                            </div>
+                            <div class="theme-option" onclick="app.setTheme('balanced')">
+                                <div class="theme-indicator" style="background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%);"></div>
+                                <span>Tri-Color</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="logout-button" onclick="app.handleLogout()">Logout</button>
+                </div>
             </header>
 
             <!-- Menu Section -->

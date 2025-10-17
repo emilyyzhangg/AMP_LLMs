@@ -1,5 +1,5 @@
 // ============================================================================
-// AMP LLM Enhanced Web Interface - Main Application
+// AMP LLM Enhanced Web Interface - Main Application with Theme Switching
 // ============================================================================
 
 const app = {
@@ -9,6 +9,7 @@ const app = {
     
     // State
     currentMode: 'menu',
+    currentTheme: localStorage.getItem('amp_llm_theme') || 'green',
     nctResults: null,
     selectedFile: null,
     files: [],
@@ -19,9 +20,23 @@ const app = {
     
     init() {
         this.apiKey = localStorage.getItem('amp_llm_api_key') || '';
+        this.currentTheme = localStorage.getItem('amp_llm_theme') || 'green';
+        
+        // Apply saved theme
+        this.applyTheme(this.currentTheme, false);
+        
         if (this.apiKey) {
             this.showApp();
         }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('theme-dropdown');
+            const button = document.querySelector('.theme-button');
+            if (dropdown && !dropdown.contains(e.target) && !button.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
         
         // Add enter key handlers
         document.getElementById('api-key-input')?.addEventListener('keypress', (e) => {
@@ -39,6 +54,68 @@ const app = {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 this.sendMessage('research');
+            }
+        });
+    },
+    
+    // =========================================================================
+    // Theme Management
+    // =========================================================================
+    
+    toggleThemeDropdown() {
+        const dropdown = document.getElementById('theme-dropdown');
+        dropdown.classList.toggle('hidden');
+        
+        // Update active state
+        this.updateActiveTheme();
+    },
+    
+    setTheme(theme) {
+        this.currentTheme = theme;
+        localStorage.setItem('amp_llm_theme', theme);
+        this.applyTheme(theme, true);
+        
+        // Close dropdown
+        document.getElementById('theme-dropdown').classList.add('hidden');
+    },
+    
+    applyTheme(theme, animate = false) {
+        const themeStylesheet = document.getElementById('theme-stylesheet');
+        const themeNames = {
+            'green': 'Green',
+            'blue': 'Blue',
+            'balanced': 'Tri-Color'
+        };
+        
+        // Update stylesheet
+        themeStylesheet.href = `/static/theme-${theme}.css`;
+        
+        // Update button text
+        const themeName = document.getElementById('current-theme-name');
+        if (themeName) {
+            themeName.textContent = themeNames[theme];
+        }
+        
+        // Update active state in dropdown
+        this.updateActiveTheme();
+        
+        // Optional: Add transition effect
+        if (animate) {
+            document.body.style.transition = 'background 0.5s ease';
+            setTimeout(() => {
+                document.body.style.transition = '';
+            }, 500);
+        }
+    },
+    
+    updateActiveTheme() {
+        const options = document.querySelectorAll('.theme-option');
+        options.forEach((option, index) => {
+            const themes = ['green', 'blue', 'balanced'];
+            if (themes[index] === this.currentTheme) {
+                option.classList.add('active');
+            } else {
+                option.classList.remove('active');
             }
         });
     },
