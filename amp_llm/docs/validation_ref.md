@@ -57,8 +57,8 @@ All extracted clinical trial data is validated against strict controlled vocabul
 
 | Valid Value | When to Use |
 |-------------|-------------|
-| `AMP(infection)` | Antimicrobial peptide study treating infections, sepsis, bacterial/fungal diseases |
-| `AMP(other)` | Antimicrobial peptide study for non-infection purposes (metabolism, cancer, wound healing, etc.) |
+| `AMP` | Antimicrobial peptide study treating infections, sepsis, bacterial/fungal diseases |
+| `AMP` | Antimicrobial peptide study for non-infection purposes (metabolism, cancer, wound healing, etc.) |
 | `Other` | Not an antimicrobial peptide study (traditional drugs, biologics, devices, etc.) |
 
 **Decision Tree**:
@@ -71,10 +71,10 @@ Is study about peptides/AMPs?
 ```
 
 **Examples**:
-- AMP for sepsis → `AMP(infection)`
-- AMP for diabetes → `AMP(other)`
-- Traditional antibiotic → `Other`
-- LEAP-2 for glucose regulation → `AMP(other)`
+- AMP for sepsis → `AMP`
+- AMP for diabetes → `AMP`
+- Non-antimicrobial peptide drug for diabetes → `Other`
+- LEAP-2 for glucose regulation → `AMP`
 
 ---
 

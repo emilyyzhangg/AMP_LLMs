@@ -57,24 +57,23 @@ All extracted clinical trial data is validated against strict controlled vocabul
 
 | Valid Value | When to Use |
 |-------------|-------------|
-| `AMP(infection)` | Antimicrobial peptide study treating infections, sepsis, bacterial/fungal diseases |
-| `AMP(other)` | Antimicrobial peptide study for non-infection purposes (metabolism, cancer, wound healing, etc.) |
-| `Other` | Not an antimicrobial peptide study (traditional drugs, biologics, devices, etc.) |
+| `AMP` | Antimicrobial peptide study treating infections, sepsis, bacterial/fungal, or any other type of non-infectious diseases |
+| `Other` | Not an antimicrobial peptide study |
 
 **Decision Tree**:
 ```
 Is study about peptides/AMPs?
-├─ YES: Does it treat infections?
-│   ├─ YES → AMP(infection)
-│   └─ NO → AMP(other)
+├─ YES: Is it an antimicrobial peptide?
+│   ├─ YES → AMP
+|   |– NO → Other
 └─ NO → Other
 ```
 
 **Examples**:
-- AMP for sepsis → `AMP(infection)`
-- AMP for diabetes → `AMP(other)`
-- Traditional antibiotic → `Other`
-- LEAP-2 for glucose regulation → `AMP(other)`
+- AMP for sepsis → `AMP`
+- AMP for diabetes → `AMP`
+- Peptide for diabetes → `Other`
+- LEAP-2 for glucose regulation → `AMP`
 
 ---
 
@@ -88,45 +87,45 @@ Is study about peptides/AMPs?
 
 | Valid Value | When to Use |
 |-------------|-------------|
-| `Injection/Infusion - Intramuscular` | IM injection |
-| `Injection/Infusion - Subcutaneous/Intradermal` | SubQ or intradermal injection |
-| `Injection/Infusion - Other/Unspecified` | Injection but route not specified |
+| `Injection/Infusion` | IM injection |
+| `Injection/Infusion` | SubQ or intradermal injection |
+| `Injection/Infusion` | Injection but route not specified |
 | `IV` | Intravenous infusion |
 
 #### Oral
 
 | Valid Value | When to Use |
 |-------------|-------------|
-| `Oral - Tablet` | Tablet form |
-| `Oral - Capsule` | Capsule form |
-| `Oral - Food` | Mixed in food |
-| `Oral - Drink` | Liquid/beverage form |
-| `Oral - Unspecified` | Oral but form not specified |
+| `Oral` | Tablet form |
+| `Oral` | Capsule form |
+| `Oral` | Mixed in food |
+| `Oral` | Liquid/beverage form |
+| `Orald` | Oral but form not specified |
 
 #### Topical
 
 | Valid Value | When to Use |
 |-------------|-------------|
-| `Topical - Cream/Gel` | Cream or gel application |
-| `Topical - Powder` | Powder form |
-| `Topical - Spray` | Spray application |
-| `Topical - Strip/Covering` | Adhesive strips, patches, bandages |
-| `Topical - Wash` | Wash or rinse |
-| `Topical - Unspecified` | Topical but type not specified |
+| `Topical` | Cream or gel application |
+| `Topical` | Powder form |
+| `Topical` | Spray application |
+| `Topical` | Adhesive strips, patches, bandages |
+| `Topical` | Wash or rinse |
+| `Topical` | Topical but type not specified |
 
 #### Other
 
 | Valid Value | When to Use |
 |-------------|-------------|
-| `Intranasal` | Nasal spray or drops |
-| `Inhalation` | Inhaled via nebulizer or inhaler |
+| `Other/Unspecified` | Nasal spray or drops |
+| `Other/Unspecified` | Inhaled via nebulizer or inhaler |
 | `Other/Unspecified` | Route not listed above or unclear |
 
 **Examples**:
-- Peptide infused over 180 minutes → `IV`
-- Antibiotic pill → `Oral - Tablet`
-- Wound gel with AMP → `Topical - Cream/Gel`
-- Nasal AMP spray → `Intranasal`
+- Peptide infused over 180 minutes → `Injection/Infusion`
+- Antibiotic pill → `Oral`
+- Wound gel with AMP → `Topical`
+- Nasal AMP spray → `Other`
 
 ---
 
@@ -142,22 +141,21 @@ Is study about peptides/AMPs?
 | `Failed - completed trial` | Trial completed but did not meet primary endpoints |
 | `Terminated` | Trial ended early (before completion) |
 | `Withdrawn` | Trial withdrawn before enrollment |
-| `Recruiting` | Currently recruiting participants |
-| `Active, not recruiting` | Trial ongoing but closed to enrollment |
+| `Active, not recruiting` | Trial ongoing or currently recruiting |
 | `Unknown` | Outcome not yet known or unclear |
 
 **Mapping from Status**:
 - `COMPLETED` → Usually `Positive` (check results)
 - `TERMINATED` → `Terminated`
 - `WITHDRAWN` → `Withdrawn`
-- `RECRUITING` → `Recruiting`
-- `ACTIVE_NOT_RECRUITING` → `Active, not recruiting`
+- `RECRUITING` → `Active`
+- `ACTIVE_NOT_RECRUITING` → `Active`
 
 **Examples**:
-- Trial finished, met endpoints → `Positive`
-- Trial finished, failed to meet endpoints → `Failed - completed trial`
-- Trial stopped early for safety → `Terminated`
-- Trial stopped before starting → `Withdrawn`
+- Trial finished, met clinical endpoints → `Positive`
+- Trial finished, failed to meet endpoints or showed toxicity → `Failed - completed trial`
+- Trial stopped early and will not continue → `Terminated`
+- Trial stopped before the enrollment of any participants → `Withdrawn`
 
 ---
 
@@ -172,7 +170,6 @@ Is study about peptides/AMPs?
 | `Business Reason` | Sponsor decision, funding issues, strategic reasons |
 | `Ineffective for purpose` | Intervention not showing efficacy |
 | `Toxic/Unsafe` | Safety concerns, adverse events |
-| `Due to covid` | COVID-19 pandemic impact |
 | `Recruitment issues` | Unable to enroll sufficient participants |
 | `N/A` | Trial not failed/terminated/withdrawn |
 
@@ -183,7 +180,7 @@ Is study about peptides/AMPs?
 **Examples**:
 - Trial stopped for adverse events → `Toxic/Unsafe`
 - Couldn't find enough patients → `Recruitment issues`
-- Pandemic disruption → `Due to covid`
+- Pandemic disruption → `Recruitment issues`
 - Company shut down program → `Business Reason`
 - No efficacy signal in interim analysis → `Ineffective for purpose`
 
@@ -260,8 +257,8 @@ If extraction has invalid values:
 NCT Number: NCT12345678
 Study Status: COMPLETED
 Phases: PHASE2
-Classification: AMP(infection)
-Delivery Mode: IV
+Classification: AMP
+Delivery Mode: Injection/Infusion
 Outcome: Positive
 Reason for Failure: N/A
 Peptide: True
@@ -273,8 +270,8 @@ Peptide: True
 NCT Number: NCT87654321
 Study Status: TERMINATED
 Phases: EARLY_PHASE1
-Classification: AMP(other)
-Delivery Mode: Injection/Infusion - Subcutaneous/Intradermal
+Classification: AMP
+Delivery Mode: Injection/Infusion
 Outcome: Terminated
 Reason for Failure: Recruitment issues
 Peptide: True
@@ -287,7 +284,7 @@ NCT Number: NCT11223344
 Study Status: RECRUITING
 Phases: PHASE3
 Classification: Other
-Delivery Mode: Oral - Tablet
+Delivery Mode: Oral
 Outcome: Recruiting
 Reason for Failure: N/A
 Peptide: False
@@ -302,7 +299,7 @@ Peptide: False
 1. **Copy exact values** from this document
 2. **Match capitalization** exactly (e.g., `PHASE1` not `Phase1`)
 3. **Use pipe character** for combined phases (e.g., `PHASE1|PHASE2`)
-4. **Include parentheses** in classification (e.g., `AMP(infection)`)
+4. **Include parentheses** in classification (e.g., `AMP`)
 5. **Boolean values** must be `True` or `False` (not `Yes`/`No`)
 
 ### For AI Extraction
@@ -338,26 +335,6 @@ status = validate_enum_value(raw_status, StudyStatus, "study_status")
 ✅ study_status: 'COMPLETED'
 ```
 
-### "Invalid delivery_mode" Error
-
-**Problem**: Value too generic  
-**Solution**: Use most specific option
-
-```
-❌ delivery_mode: 'oral'
-✅ delivery_mode: 'Oral - Tablet'
-```
-
-### "Invalid classification" Error
-
-**Problem**: Missing parentheses  
-**Solution**: Include exact formatting
-
-```
-❌ classification: 'AMP infection'
-✅ classification: 'AMP(infection)'
-```
-
 ---
 
 ## Updating Valid Values
@@ -385,9 +362,8 @@ To add new valid values:
 ├──────────────────────────────────────────┤
 │ Status: COMPLETED, RECRUITING, etc.      │
 │ Phases: PHASE1, PHASE2, PHASE1|PHASE2    │
-│ Classification: AMP(infection),          │
-│                 AMP(other), Other        │
-│ Delivery: IV, Oral - Tablet, etc.        │
+│ Classification: AMP, Other               │
+│ Delivery: Injection/Infusion, Oral, etc. │
 │ Outcome: Positive, Terminated, etc.      │
 │ Failure: Toxic/Unsafe, Recruitment, N/A  │
 │ Peptide: True or False                   │

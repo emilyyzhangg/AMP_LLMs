@@ -523,7 +523,7 @@ class ClinicalTrialDatabase:
                 ]
                 
                 if any(kw in combined_text for kw in infection_keywords):
-                    extraction.classification = 'AMP(infection)'
+                    extraction.classification = 'AMP'
                     extraction.classification_evidence = [
                         'Study involves antimicrobial peptide treating infections/bacterial diseases or for non-infection purposes'
                     ]
@@ -553,10 +553,8 @@ class ClinicalTrialDatabase:
                 extraction.comments += "Peptide-related study detected. "
             if extraction.outcome == 'Unknown':
                 extraction.comments += f"Original status was '{raw_status}'. "
-            if extraction.classification == 'AMP(other)':
-                extraction.comments += "Classified as AMP(other) due to non-infection focus. "
-            elif extraction.classification == 'AMP(infection)':
-                extraction.comments += "Classified as AMP(infection) due to infection treatment focus. "
+            elif extraction.classification == 'AMP':
+                extraction.comments += "Classified as AMP due to evidence of antimicrobial activity. "
             
         except Exception as e:
             logger.error(f"Error extracting data for {nct_id}: {e}", exc_info=True)

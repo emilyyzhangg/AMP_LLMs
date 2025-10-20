@@ -99,7 +99,7 @@ Phases: PHASE2
 Enrollment: 124
 Start Date: 2025-06-18
 Completion Date: 2028-11
-Classification: AMP(other)
+Classification: AMP
   Evidence: Study involves antimicrobial peptide for non-infection purposes
 Delivery Mode: Oral - Tablet
 Sequence: N/A

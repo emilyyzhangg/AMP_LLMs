@@ -73,10 +73,10 @@ stats                   # Database statistics
 Data Validation
 Study Status --> NOT_YET_RECRUITING, RECRUITING, ENROLLING_BY_INVITATION, ACTIVE_NOT_RECRUITING, COMPLETED, SUSPENDED, TERMINATED, WITHDRAWN, UNKNOWN
 Phases --> EARLY_PHASE1, PHASE1, PHASE1|PHASE2, PHASE2, PHASE2|PHASE3, PHASE3, PHASE4
-Classification --> AMP(infection), AMP(other), Other
-Delivery Mode --> Injection/Infusion - Intramuscular, Injection/Infusion - Other/Unspecified, Injection/Infusion - Subcutaneous/Intradermal, IV, Intranasal, Oral - Tablet, Oral - Capsule, Oral - Food, Oral - Drink, Oral - Unspecified, Topical - Cream/Gel, Topical - Powder, Topical - Spray, Topical - Strip/Covering, Topical - Wash, Topical - Unspecified, Other/Unspecified, Oral - Unspecified, Inhalation
-Outcome --> Positive, Withdrawn, Terminated, Failed - completed trial, Recruiting, Unknown, Active, not recruiting
-Reason for Failure/withdrawl --> Business Reason, Ineffective for purpose, Toxic/Unsafe, Due to covid, Recruitment issues
+Classification --> AMP, Other
+Delivery Mode --> Injection/Infusion, Oral, Topical, Other
+Outcome --> Positive, Withdrawn, Terminated, Failed - completed trial, Unknown, Active, 
+Reason for Failure/withdrawl --> Business Reason, Ineffective for purpose, Toxic/Unsafe, Recruitment issues
 Peptide? --> True, False
 
 

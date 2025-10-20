@@ -497,7 +497,7 @@ NCT Number: NCT04043065
 Study Title: A Leap to Understand Glucoregulatory Effects...
 Study Status: COMPLETED
 Phases: PHASE2
-Classification: AMP(other)
+Classification: AMP
 Delivery Mode: IV
 Outcome: Positive
 Peptide: True
@@ -1068,7 +1068,7 @@ Phases: PHASE2
 Enrollment: 124
 Start Date: 2025-06-18
 Completion Date: 2028-11
-Classification: AMP(other)
+Classification: AMP
   Evidence: Study involves antimicrobial peptide for metabolism
 Delivery Mode: IV
 Sequence: N/A
@@ -1104,9 +1104,8 @@ Comments: Phase 2 trial investigating metabolic effects
 - PHASE4
 
 **Classification:**
-- AMP(infection) - Treats infections
-- AMP(other) - Other purposes
-- Other - Non-peptide
+- AMP - Antimicrobial peptide
+- Other - Peptide that is not antimicrobial
 
 **Outcome:**
 - Positive
