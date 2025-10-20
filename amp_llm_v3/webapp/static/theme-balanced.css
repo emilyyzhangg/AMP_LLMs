@@ -1,0 +1,183 @@
+/* ============================================================================
+   BALANCED TRI-COLOR THEME
+   ============================================================================ */
+
+body {
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%);
+}
+
+/* Auth */
+.auth-box h1 {
+    color: #0E1F81;
+}
+
+.auth-box input:focus {
+    border-color: #1BEB49;
+}
+
+.auth-box button {
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
+}
+
+/* Menu */
+.menu-title {
+    color: #0E1F81;
+}
+
+.menu-item:hover {
+    box-shadow: 0 10px 25px rgba(27, 235, 73, 0.2);
+    border-color: #1BEB49;
+}
+
+.menu-item-title {
+    color: #0E1F81;
+}
+
+/* Messages */
+.message.user .avatar {
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
+}
+
+.message.system .avatar {
+    background: #FFA400;
+}
+
+.message.user .content {
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
+}
+
+.message.system .content {
+    background: #fff4e6;
+    color: #b37400;
+    border: 1px solid #ffd480;
+}
+
+/* Inputs */
+.input-area textarea:focus,
+.nct-input-group input:focus,
+.nct-input-group textarea:focus {
+    border-color: #1BEB49;
+}
+
+.input-area button {
+    background: #1BEB49;
+}
+
+.input-area button:hover:not(:disabled) {
+    background: #17c93e;
+}
+
+/* NCT */
+.nct-input-group label {
+    color: #0E1F81;
+}
+
+.nct-submit {
+    background: #1BEB49;
+}
+
+.nct-submit:hover:not(:disabled) {
+    background: #17c93e;
+}
+
+.nct-save {
+    background: #FFA400;
+}
+
+.nct-save:hover {
+    background: #e69500;
+}
+
+.progress-text {
+    color: #1BEB49;
+}
+
+.result-card:hover {
+    border-color: #1BEB49;
+}
+
+.result-card h3 {
+    color: #0E1F81;
+}
+
+.extract-button {
+    background: #0E1F81;
+}
+
+.extract-button:hover {
+    background: #0b1866;
+}
+
+.summary-card h3 {
+    color: #0E1F81;
+}
+
+.summary-item-value.success {
+    color: #1BEB49;
+}
+
+.summary-item-value.info {
+    color: #0E1F81;
+}
+
+/* Files */
+.file-upload-btn {
+    background: #1BEB49;
+}
+
+.file-upload-btn:hover {
+    background: #17c93e;
+}
+
+.file-refresh-btn {
+    background: #0E1F81;
+}
+
+.file-refresh-btn:hover {
+    background: #0b1866;
+}
+
+.file-card:hover {
+    border-color: #1BEB49;
+    box-shadow: 0 5px 15px rgba(27, 235, 73, 0.2);
+}
+
+.file-card-icon {
+    color: #0E1F81;
+}
+
+.file-card-load {
+    background: #1BEB49;
+}
+
+.file-card-load:hover {
+    background: #17c93e;
+}
+
+/* Loading */
+.loading {
+    color: #1BEB49;
+}
+
+.spinner {
+    border: 3px solid rgba(27, 235, 73, 0.3);
+    border-top-color: #1BEB49;
+}
+
+/* Scrollbar */
+.chat-container::-webkit-scrollbar-thumb,
+.nct-results::-webkit-scrollbar-thumb,
+.files-container::-webkit-scrollbar-thumb {
+    background: #1BEB49;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover,
+.nct-results::-webkit-scrollbar-thumb:hover,
+.files-container::-webkit-scrollbar-thumb:hover {
+    background: #17c93e;
+}

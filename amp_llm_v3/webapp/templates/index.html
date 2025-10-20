@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMP LLM - Clinical Trial Research</title>
+    
+    <!-- Base styles (always loaded) -->
+    <link rel="stylesheet" href="/static/style-base.css">
+    
+    <!-- Theme stylesheet (dynamically loaded) -->
+    <link rel="stylesheet" id="theme-stylesheet" href="/static/theme-green.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Auth Section -->
+        <div id="auth-section" class="auth-section">
+            <div class="auth-box">
+                <h1>🔬 AMP LLM</h1>
+                <p>Clinical Trial Research Assistant</p>
+                <input type="password" id="api-key-input" placeholder="Enter API Key" />
+                <button onclick="app.handleAuth()">Login</button>
+                <p class="help-text">Enter your API key to access the system</p>
+            </div>
+        </div>
+
+        <!-- Main App (hidden until authenticated) -->
+        <div id="main-app" class="hidden">
+            <!-- Header -->
+            <header id="app-header" class="hidden">
+                <div class="header-left">
+                    <button class="back-button" onclick="app.showMenu()">← Back</button>
+                    <div>
+                        <h1 id="mode-title">AMP LLM</h1>
+                        <p id="mode-subtitle"></p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <!-- Theme Switcher -->
+                    <div class="theme-switcher">
+                        <button class="theme-button" onclick="app.toggleThemeDropdown()">
+                            <span>🎨</span>
+                            <span id="current-theme-name">Green</span>
+                        </button>
+                        <div class="theme-dropdown hidden" id="theme-dropdown">
+                            <div class="theme-option" onclick="app.setTheme('green')">
+                                <div class="theme-indicator" style="background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);"></div>
+                                <span>Green Primary</span>
+                            </div>
+                            <div class="theme-option" onclick="app.setTheme('blue')">
+                                <div class="theme-indicator" style="background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);"></div>
+                                <span>Blue Primary</span>
+                            </div>
+                            <div class="theme-option" onclick="app.setTheme('balanced')">
+                                <div class="theme-indicator" style="background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%);"></div>
+                                <span>Tri-Color</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="logout-button" onclick="app.handleLogout()">Logout</button>
+                </div>
+            </header>
+
+            <!-- Menu Section -->
+            <div id="menu-view" class="menu-section">
+                <h2 class="menu-title">Select a Mode</h2>
+                <div class="menu-grid">
+                    <div class="menu-item" onclick="app.showMode('chat')">
+                        <div class="menu-item-icon">💬</div>
+                        <div class="menu-item-title">Chat with LLM</div>
+                        <div class="menu-item-desc">General purpose AI conversation</div>
+                    </div>
+                    <div class="menu-item" onclick="app.showMode('nct')">
+                        <div class="menu-item-icon">🔍</div>
+                        <div class="menu-item-title">NCT Lookup</div>
+                        <div class="menu-item-desc">Search clinical trials by NCT number</div>
+                    </div>
+                    <div class="menu-item" onclick="app.showMode('research')">
+                        <div class="menu-item-icon">📚</div>
+                        <div class="menu-item-title">Research Assistant</div>
+                        <div class="menu-item-desc">RAG-powered trial analysis</div>
+                    </div>
+                    <div class="menu-item" onclick="app.showMode('files')">
+                        <div class="menu-item-icon">📁</div>
+                        <div class="menu-item-title">File Manager</div>
+                        <div class="menu-item-desc">Browse, upload, and load trial data</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Mode -->
+            <div id="chat-mode" class="mode-container">
+                <div class="chat-container" id="chat-container"></div>
+                <div class="input-area">
+                    <textarea id="chat-input" placeholder="Type a message..." rows="3"></textarea>
+                    <button onclick="app.sendMessage('chat')">Send</button>
+                </div>
+            </div>
+
+            <!-- Research Mode -->
+            <div id="research-mode" class="mode-container">
+                <div class="chat-container" id="research-container"></div>
+                <div class="input-area">
+                    <textarea id="research-input" placeholder="Ask about clinical trials..." rows="3"></textarea>
+                    <button onclick="app.sendMessage('research')">Research</button>
+                </div>
+            </div>
+
+            <!-- NCT Lookup Mode -->
+            <div id="nct-mode" class="mode-container">
+                <div class="nct-input-area">
+                    <div class="nct-input-group">
+                        <label>Enter NCT Numbers (comma-separated):</label>
+                        <textarea id="nct-input" placeholder="NCT03936426, NCT12345678"></textarea>
+                    </div>
+                    <div class="nct-input-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="use-extended-apis" />
+                            <span>Use Extended APIs (PMC, EudraCT, WHO ICTRP, Semantic Scholar, DuckDuckGo, Google)</span>
+                        </label>
+                    </div>
+                    <div class="nct-buttons">
+                        <button class="nct-submit" onclick="app.handleNCTLookup()">
+                            <span>🔍</span>
+                            <span>Fetch Trials</span>
+                        </button>
+                        <button class="nct-save hidden" id="nct-save-btn" onclick="app.saveNCTResults()">
+                            <span>💾</span>
+                            <span>Save Results</span>
+                        </button>
+                    </div>
+                    <div class="progress-text hidden" id="nct-progress"></div>
+                </div>
+                <div class="nct-results" id="nct-results"></div>
+            </div>
+
+            <!-- File Manager Mode -->
+            <div id="files-mode" class="mode-container">
+                <div class="file-controls">
+                    <button class="file-upload-btn" onclick="document.getElementById('file-upload-input').click()">
+                        <span>📤</span>
+                        <span>Upload File</span>
+                    </button>
+                    <button class="file-refresh-btn" onclick="app.loadFiles()">
+                        <span>🔄</span>
+                        <span>Refresh</span>
+                    </button>
+                    <input type="file" id="file-upload-input" accept=".json,.txt" style="display: none;" onchange="app.handleFileUpload(event)" />
+                </div>
+                <div class="files-container" id="files-container">
+                    <div class="loading">Loading files...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

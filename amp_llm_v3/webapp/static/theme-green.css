@@ -1,0 +1,147 @@
+/* ============================================================================
+   GREEN PRIMARY THEME
+   ============================================================================ */
+
+body {
+    background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);
+}
+
+/* Auth */
+.auth-box input:focus {
+    border-color: #1BEB49;
+}
+
+.auth-box button {
+    background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);
+}
+
+/* Menu */
+.menu-item:hover {
+    box-shadow: 0 10px 25px rgba(27, 235, 73, 0.2);
+    border-color: #1BEB49;
+}
+
+/* Messages */
+.message.user .avatar {
+    background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);
+}
+
+.message.system .avatar {
+    background: #FFA400;
+}
+
+.message.user .content {
+    background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);
+}
+
+.message.system .content {
+    background: #fff4e6;
+    color: #b37400;
+    border: 1px solid #ffd480;
+}
+
+/* Inputs */
+.input-area textarea:focus,
+.nct-input-group input:focus,
+.nct-input-group textarea:focus {
+    border-color: #1BEB49;
+}
+
+.input-area button {
+    background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);
+}
+
+/* NCT */
+.nct-submit {
+    background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);
+}
+
+.nct-save {
+    background: #FFA400;
+}
+
+.nct-save:hover {
+    background: #e69500;
+}
+
+.progress-text {
+    color: #1BEB49;
+}
+
+.result-card:hover {
+    border-color: #1BEB49;
+}
+
+.result-card h3 {
+    color: #0E1F81;
+}
+
+.extract-button {
+    background: #1BEB49;
+}
+
+.extract-button:hover {
+    background: #17c93e;
+}
+
+.summary-item-value.success {
+    color: #1BEB49;
+}
+
+.summary-item-value.info {
+    color: #0E1F81;
+}
+
+/* Files */
+.file-upload-btn, .file-card-load {
+    background: #1BEB49;
+}
+
+.file-upload-btn:hover, .file-card-load:hover {
+    background: #17c93e;
+}
+
+.file-refresh-btn {
+    background: #0E1F81;
+}
+
+.file-refresh-btn:hover {
+    background: #0b1866;
+}
+
+.file-card:hover {
+    border-color: #1BEB49;
+    box-shadow: 0 5px 15px rgba(27, 235, 73, 0.2);
+}
+
+.file-card-icon {
+    color: #1BEB49;
+}
+
+/* Loading */
+.loading {
+    color: #1BEB49;
+}
+
+.spinner {
+    border: 3px solid rgba(27, 235, 73, 0.3);
+    border-top-color: #1BEB49;
+}
+
+/* Scrollbar */
+.chat-container::-webkit-scrollbar-thumb,
+.nct-results::-webkit-scrollbar-thumb,
+.files-container::-webkit-scrollbar-thumb {
+    background: #1BEB49;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover,
+.nct-results::-webkit-scrollbar-thumb:hover,
+.files-container::-webkit-scrollbar-thumb:hover {
+    background: #17c93e;
+}
