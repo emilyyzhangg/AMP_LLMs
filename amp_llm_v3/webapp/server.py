@@ -1,5 +1,5 @@
 """
-Enhanced AMP LLM Web API Server - FIXED STATIC FILE SERVING
+Enhanced AMP LLM Web API Server with Chat Service Integration
 """
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,6 +12,7 @@ from pathlib import Path
 import json
 import os
 from datetime import datetime
+import httpx
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -29,7 +30,7 @@ WEBAPP_DIR = Path(__file__).parent
 
 app = FastAPI(title="AMP LLM Enhanced API", version="3.0.0")
 
-# IMPORTANT: Mount static files BEFORE other routes
+# Mount static files BEFORE other routes
 app.mount("/static", StaticFiles(directory=str(WEBAPP_DIR / "static")), name="static")
 
 app.add_middleware(
@@ -53,6 +54,9 @@ try:
 except Exception as e:
     logger.warning(f"RAG system not available: {e}")
     rag_system = None
+
+# Chat service configuration
+CHAT_SERVICE_URL = "http://localhost:8001"
 
 
 # ============================================================================
@@ -120,7 +124,7 @@ class FileContentResponse(BaseModel):
 
 
 # ============================================================================
-# MAIN ROUTES - Order matters!
+# MAIN ROUTES
 # ============================================================================
 
 @app.get("/")
@@ -129,16 +133,13 @@ async def root():
     templates_dir = WEBAPP_DIR / "templates"
     index_file = templates_dir / "index.html"
     
-    # If templates/index.html exists, serve it
     if index_file.exists():
         return FileResponse(index_file)
     
-    # Otherwise, look in static (old location)
     static_index = WEBAPP_DIR / "static" / "index.html"
     if static_index.exists():
         return FileResponse(static_index)
     
-    # Fallback
     return HTMLResponse("""
     <html>
         <head>
@@ -173,48 +174,155 @@ async def app_page():
 
 @app.get("/health")
 async def health_check():
-    """Health check."""
+    """Health check - includes chat service status."""
+    # Check Ollama
     try:
         async with OllamaSessionManager(settings.ollama_host, settings.ollama_port) as session:
-            is_alive = await session.is_alive()
-        
-        return {
-            "status": "healthy" if is_alive else "degraded",
-            "ollama_connected": is_alive,
-            "rag_available": rag_system is not None,
-            "trials_indexed": len(rag_system.db.trials) if rag_system else 0,
-            "output_dir": str(OUTPUT_DIR.absolute()),
-            "files_count": len(list(OUTPUT_DIR.glob("*.json"))),
-            "static_dir": str((WEBAPP_DIR / "static").absolute()),
-            "templates_dir": str((WEBAPP_DIR / "templates").absolute())
-        }
+            ollama_alive = await session.is_alive()
     except Exception as e:
-        return {
-            "status": "unhealthy",
-            "ollama_connected": False,
-            "error": str(e)
-        }
+        logger.error(f"Ollama health check failed: {e}")
+        ollama_alive = False
+    
+    # Check chat service
+    chat_service_alive = False
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/health", timeout=5.0)
+            chat_service_alive = response.status_code == 200
+    except Exception as e:
+        logger.error(f"Chat service health check failed: {e}")
+    
+    return {
+        "status": "healthy" if (ollama_alive and chat_service_alive) else "degraded",
+        "ollama_connected": ollama_alive,
+        "chat_service_connected": chat_service_alive,
+        "chat_service_url": CHAT_SERVICE_URL,
+        "rag_available": rag_system is not None,
+        "trials_indexed": len(rag_system.db.trials) if rag_system else 0,
+        "output_dir": str(OUTPUT_DIR.absolute()),
+        "files_count": len(list(OUTPUT_DIR.glob("*.json"))),
+        "static_dir": str((WEBAPP_DIR / "static").absolute()),
+        "templates_dir": str((WEBAPP_DIR / "templates").absolute())
+    }
 
 
 @app.get("/models")
 async def list_models(api_key: str = Depends(verify_api_key)):
-    """List available models."""
+    """List available models from chat service."""
     try:
-        async with OllamaSessionManager(settings.ollama_host, settings.ollama_port) as session:
-            models = await session.list_models()
-        
-        return {"models": [{"name": m} for m in models], "count": len(models)}
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/models", timeout=10.0)
+            
+            if response.status_code == 200:
+                data = response.json()
+                return {"models": [{"name": m["name"]} for m in data], "count": len(data)}
+            else:
+                raise HTTPException(status_code=503, detail="Chat service unavailable")
     except Exception as e:
+        logger.error(f"Failed to list models: {e}")
         raise HTTPException(status_code=503, detail=str(e))
 
 
 # ============================================================================
-# Chat Endpoint
+# Chat Endpoints - Proxy to Chat Service
+# ============================================================================
+
+@app.post("/chat/init")
+async def init_chat(
+    model: str,
+    conversation_id: Optional[str] = None,
+    api_key: str = Depends(verify_api_key)
+):
+    """Initialize chat session (proxy to chat service)."""
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"{CHAT_SERVICE_URL}/chat/init",
+                json={"model": model, "conversation_id": conversation_id},
+                timeout=10.0
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                error_data = response.json()
+                raise HTTPException(status_code=response.status_code, detail=error_data.get("detail", "Chat init failed"))
+    except httpx.RequestError as e:
+        logger.error(f"Failed to connect to chat service: {e}")
+        raise HTTPException(status_code=503, detail="Chat service unavailable")
+
+
+@app.post("/chat/message")
+async def send_chat_message(
+    conversation_id: str,
+    message: str,
+    temperature: float = 0.7,
+    api_key: str = Depends(verify_api_key)
+):
+    """Send message to chat (proxy to chat service)."""
+    try:
+        async with httpx.AsyncClient(timeout=300.0) as client:
+            response = await client.post(
+                f"{CHAT_SERVICE_URL}/chat/message",
+                json={
+                    "conversation_id": conversation_id,
+                    "message": message,
+                    "temperature": temperature
+                }
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                error_data = response.json()
+                raise HTTPException(status_code=response.status_code, detail=error_data.get("detail", "Chat failed"))
+    except httpx.RequestError as e:
+        logger.error(f"Failed to connect to chat service: {e}")
+        raise HTTPException(status_code=503, detail="Chat service unavailable")
+
+
+@app.get("/chat/conversations")
+async def list_conversations(api_key: str = Depends(verify_api_key)):
+    """List all conversations (proxy to chat service)."""
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/conversations", timeout=10.0)
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=503, detail="Chat service unavailable")
+    except httpx.RequestError as e:
+        logger.error(f"Failed to connect to chat service: {e}")
+        raise HTTPException(status_code=503, detail="Chat service unavailable")
+
+
+@app.delete("/chat/conversations/{conversation_id}")
+async def delete_conversation(conversation_id: str, api_key: str = Depends(verify_api_key)):
+    """Delete conversation (proxy to chat service)."""
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.delete(
+                f"{CHAT_SERVICE_URL}/conversations/{conversation_id}",
+                timeout=10.0
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=404, detail="Conversation not found")
+    except httpx.RequestError as e:
+        logger.error(f"Failed to connect to chat service: {e}")
+        raise HTTPException(status_code=503, detail="Chat service unavailable")
+
+
+# ============================================================================
+# Original Chat Endpoint (Legacy - for backward compatibility)
 # ============================================================================
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest, api_key: str = Depends(verify_api_key)):
-    """Chat with LLM, optionally with file context."""
+    """Legacy chat endpoint with direct Ollama connection."""
     logger.info(f"Chat: model={request.model}, query_length={len(request.query)}")
     
     try:
@@ -542,6 +650,7 @@ async def startup_event():
     logger.info("=" * 60)
     logger.info(f"Environment: {settings.environment}")
     logger.info(f"Ollama: {settings.ollama_host}:{settings.ollama_port}")
+    logger.info(f"Chat Service: {CHAT_SERVICE_URL}")
     logger.info(f"RAG Available: {rag_system is not None}")
     if rag_system:
         logger.info(f"Trials Indexed: {len(rag_system.db.trials)}")

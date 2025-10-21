@@ -153,3 +153,8 @@ header {
 .files-container::-webkit-scrollbar-thumb:hover {
     background: #0b1866;
 }
+
+.model-button:hover {
+    border-color: #0E1F81;
+    box-shadow: 0 5px 15px rgba(14, 31, 129, 0.2);
+}

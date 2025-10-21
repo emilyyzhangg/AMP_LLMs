@@ -1,5 +1,5 @@
 // ============================================================================
-// AMP LLM Enhanced Web Interface - Main Application with Theme Switching
+// AMP LLM Enhanced Web Interface - Main Application with Chat Service
 // ============================================================================
 
 const app = {
@@ -10,9 +10,12 @@ const app = {
     // State
     currentMode: 'menu',
     currentTheme: localStorage.getItem('amp_llm_theme') || 'green',
+    currentConversationId: null,
+    currentModel: null,
     nctResults: null,
     selectedFile: null,
     files: [],
+    availableModels: [],
     
     // =========================================================================
     // Initialization
@@ -168,6 +171,8 @@ const app = {
     
     showMenu() {
         this.currentMode = 'menu';
+        this.currentConversationId = null;
+        this.currentModel = null;
         
         // Hide header
         document.getElementById('app-header').classList.add('hidden');
@@ -203,7 +208,7 @@ const app = {
         
         // Update header
         const titles = {
-            'chat': { title: '💬 Chat Mode', subtitle: 'General purpose conversation' },
+            'chat': { title: '💬 Chat with LLM', subtitle: 'Interactive conversation with AI models' },
             'research': { title: '📚 Research Assistant', subtitle: 'RAG-powered trial analysis' },
             'nct': { title: '🔍 NCT Lookup', subtitle: 'Search clinical trials' },
             'files': { title: '📁 File Manager', subtitle: 'Browse and manage trial data' }
@@ -213,70 +218,251 @@ const app = {
         document.getElementById('mode-title').textContent = info.title;
         document.getElementById('mode-subtitle').textContent = info.subtitle;
         
-        // Mode-specific actions
-        if (mode === 'files') {
+        // Mode-specific initialization
+        if (mode === 'chat') {
+            this.initializeChatMode();
+        } else if (mode === 'files') {
             this.loadFiles();
         }
     },
     
     // =========================================================================
-    // Chat & Research
+    // Chat Mode - Model Selection & Conversation
     // =========================================================================
     
-    async sendMessage(mode) {
-        const inputId = mode === 'chat' ? 'chat-input' : 'research-input';
-        const containerId = mode === 'chat' ? 'chat-container' : 'research-container';
+    async initializeChatMode() {
+        const container = document.getElementById('chat-container');
+        container.innerHTML = '';
         
-        const input = document.getElementById(inputId);
-        const text = input.value.trim();
+        // Disable input until model is selected
+        const input = document.getElementById('chat-input');
+        input.disabled = true;
+        input.placeholder = 'Select a model to start chatting...';
         
-        if (!text) return;
-        
-        // Add user message
-        this.addMessage(containerId, 'user', text);
-        input.value = '';
-        
-        // Add loading message
-        const loadingId = this.addMessage(containerId, 'system', '🤔 Thinking...');
+        // Show loading
+        this.addMessage('chat-container', 'system', '🔄 Loading available models...');
         
         try {
-            const endpoint = mode === 'research' ? '/research' : '/chat';
-            const response = await fetch(`${this.API_BASE}${endpoint}`, {
+            const response = await fetch(`${this.API_BASE}/models`, {
+                headers: { 'Authorization': `Bearer ${this.apiKey}` }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                this.availableModels = data.models;
+                
+                // Clear loading message
+                container.innerHTML = '';
+                
+                // Show model selection
+                this.showModelSelection();
+            } else {
+                container.innerHTML = '';
+                this.addMessage('chat-container', 'error', '❌ Failed to load models. Chat service may be unavailable.');
+            }
+        } catch (error) {
+            container.innerHTML = '';
+            this.addMessage('chat-container', 'error', '❌ Chat service unavailable: ' + error.message);
+        }
+    },
+    
+    showModelSelection() {
+        const container = document.getElementById('chat-container');
+        
+        this.addMessage('chat-container', 'system', 
+            '🤖 Welcome to Chat Mode!\n\nSelect a model to start your conversation:');
+        
+        // Create model selection UI
+        const selectionDiv = document.createElement('div');
+        selectionDiv.className = 'model-selection';
+        selectionDiv.style.cssText = 'margin: 20px 0; display: flex; flex-direction: column; gap: 10px;';
+        
+        this.availableModels.forEach(model => {
+            const button = document.createElement('button');
+            button.className = 'model-button';
+            button.innerHTML = `
+                <span style="font-size: 1.2em;">📦</span>
+                <span style="flex: 1; text-align: left; margin-left: 10px;">${this.escapeHtml(model.name)}</span>
+                <span style="color: #666; font-size: 0.9em;">→</span>
+            `;
+            button.onclick = () => this.selectModel(model.name);
+            selectionDiv.appendChild(button);
+        });
+        
+        container.appendChild(selectionDiv);
+    },
+    
+    async selectModel(modelName) {
+        const container = document.getElementById('chat-container');
+        
+        // Show loading
+        const loadingId = this.addMessage('chat-container', 'system', `🔄 Initializing ${modelName}...`);
+        
+        try {
+            const response = await fetch(`${this.API_BASE}/chat/init`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.apiKey}`
+                },
+                body: JSON.stringify({ model: modelName })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                this.currentConversationId = data.conversation_id;
+                this.currentModel = modelName;
+                
+                // Remove loading and model selection
+                document.getElementById(loadingId)?.remove();
+                const modelSelection = container.querySelector('.model-selection');
+                if (modelSelection) {
+                    modelSelection.remove();
+                }
+                
+                // Show ready message
+                this.addMessage('chat-container', 'system', 
+                    `✅ Connected to ${modelName}\n\n💡 Commands:\n• Type "exit" to select a different model\n• Type "main menu" to return to home`);
+                
+                // Enable input
+                const input = document.getElementById('chat-input');
+                input.disabled = false;
+                input.placeholder = 'Type your message...';
+                input.focus();
+            } else {
+                const error = await response.json();
+                document.getElementById(loadingId)?.remove();
+                this.addMessage('chat-container', 'error', '❌ Failed to initialize: ' + error.detail);
+            }
+        } catch (error) {
+            document.getElementById(loadingId)?.remove();
+            this.addMessage('chat-container', 'error', '❌ Error: ' + error.message);
+        }
+    },
+    
+    async sendChatMessage(message) {
+        // Handle special commands
+        const command = message.toLowerCase().trim();
+        
+        if (command === 'exit') {
+            // Return to model selection
+            this.currentConversationId = null;
+            this.currentModel = null;
+            
+            const container = document.getElementById('chat-container');
+            container.innerHTML = '';
+            
+            this.showModelSelection();
+            
+            // Disable input
+            const input = document.getElementById('chat-input');
+            input.disabled = true;
+            input.placeholder = 'Select a model to start chatting...';
+            return;
+        }
+        
+        if (command === 'main menu') {
+            this.showMenu();
+            return;
+        }
+        
+        if (!this.currentConversationId) {
+            this.addMessage('chat-container', 'error', '❌ No active conversation. Please select a model first.');
+            return;
+        }
+        
+        // Add user message
+        this.addMessage('chat-container', 'user', message);
+        
+        // Show loading
+        const loadingId = this.addMessage('chat-container', 'system', '🤔 Thinking...');
+        
+        try {
+            const response = await fetch(`${this.API_BASE}/chat/message`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.apiKey}`
                 },
                 body: JSON.stringify({
-                    query: text,
-                    model: 'llama3.2',
-                    max_trials: 10,
-                    context_file: this.selectedFile?.name
+                    conversation_id: this.currentConversationId,
+                    message: message,
+                    temperature: 0.7
                 })
             });
             
-            const data = await response.json();
-            
-            // Remove loading message
+            // Remove loading
             document.getElementById(loadingId)?.remove();
             
-            // Add response
-            if (mode === 'research') {
-                this.addMessage(containerId, 'assistant', 
-                    `${data.answer}\n\n💡 Used ${data.trials_used} trial(s)`);
+            if (response.ok) {
+                const data = await response.json();
+                this.addMessage('chat-container', 'assistant', data.message.content);
             } else {
-                this.addMessage(containerId, 'assistant', data.response);
+                const error = await response.json();
+                this.addMessage('chat-container', 'error', '❌ Error: ' + error.detail);
             }
-            
         } catch (error) {
             document.getElementById(loadingId)?.remove();
-            this.addMessage(containerId, 'error', 'Error: ' + error.message);
+            this.addMessage('chat-container', 'error', '❌ Error: ' + error.message);
+        }
+    },
+    
+    // =========================================================================
+    // Message Handling
+    // =========================================================================
+    
+    async sendMessage(mode) {
+        if (mode === 'chat') {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            input.value = '';
+            await this.sendChatMessage(text);
+            
+        } else if (mode === 'research') {
+            const input = document.getElementById('research-input');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            this.addMessage('research-container', 'user', text);
+            input.value = '';
+            
+            const loadingId = this.addMessage('research-container', 'system', '🤔 Processing query...');
+            
+            try {
+                const response = await fetch(`${this.API_BASE}/research`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        query: text,
+                        model: 'llama3.2',
+                        max_trials: 10
+                    })
+                });
+                
+                const data = await response.json();
+                
+                document.getElementById(loadingId)?.remove();
+                
+                this.addMessage('research-container', 'assistant', 
+                    `${data.answer}\n\n💡 Used ${data.trials_used} trial(s)`);
+                
+            } catch (error) {
+                document.getElementById(loadingId)?.remove();
+                this.addMessage('research-container', 'error', 'Error: ' + error.message);
+            }
         }
     },
     
     addMessage(containerId, role, content) {
         const container = document.getElementById(containerId);
-        const messageId = 'msg-' + Date.now();
+        const messageId = 'msg-' + Date.now() + '-' + Math.random();
         
         const avatars = {
             'user': '👤',
@@ -420,11 +606,11 @@ const app = {
                     <div class="result-card-meta">
                         <div class="meta-item">
                             PubMed Articles
-                            <strong>${result.sources?.pubmed?.pmids?.length || 0}</strong>
+                            <strong>${result.sources?.pubmed?.data?.pmids?.length || 0}</strong>
                         </div>
                         <div class="meta-item">
                             PMC Articles
-                            <strong>${result.sources?.pmc?.pmcids?.length || 0}</strong>
+                            <strong>${result.sources?.pmc?.data?.pmcids?.length || 0}</strong>
                         </div>
                     </div>
                 </div>
@@ -447,7 +633,6 @@ const app = {
             
             const data = await response.json();
             
-            // Show extraction in a nicely formatted way
             const formatted = JSON.stringify(data.extraction, null, 2);
             alert(`Extraction for ${nctId}:\n\n${formatted.substring(0, 500)}...\n\n(Check console for full output)`);
             console.log('Full extraction:', data.extraction);
@@ -560,15 +745,16 @@ const app = {
             // Switch to chat mode
             this.showMode('chat');
             
-            // Add system message
-            const container = document.getElementById('chat-container');
-            container.innerHTML = '';
-            this.addMessage('chat-container', 'system', 
-                `📄 Loaded file: ${filename} (${(data.content.length / 1024).toFixed(1)} KB)`);
-            
-            // Pre-fill input
-            document.getElementById('chat-input').value = 
-                `Analyze this clinical trial data from ${filename}`;
+            // Add system message after a brief delay to let chat mode initialize
+            setTimeout(() => {
+                const container = document.getElementById('chat-container');
+                container.innerHTML = '';
+                this.addMessage('chat-container', 'system', 
+                    `📄 Loaded file: ${filename} (${(data.content.length / 1024).toFixed(1)} KB)\n\nSelect a model to analyze this file.`);
+                
+                // Show model selection
+                this.showModelSelection();
+            }, 100);
             
         } catch (error) {
             alert('Error loading file: ' + error.message);
