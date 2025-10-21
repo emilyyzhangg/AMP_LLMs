@@ -1,0 +1,10 @@
+# Ignore Python cache
+__pycache__/
+*/__pycache__/
+**/__pycache__/
+
+# Ignore results
+results/
+
+# Ignore NCT-prefixed files
+NCT*.json
