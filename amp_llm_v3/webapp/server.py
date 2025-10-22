@@ -227,10 +227,13 @@ async def list_models(api_key: str = Depends(verify_api_key)):
 # Chat Endpoints - Proxy to Chat Service
 # ============================================================================
 
+class InitChatRequest(BaseModel):
+    model: str
+    conversation_id: Optional[str] = None
+
 @app.post("/chat/init")
 async def init_chat(
-    model: str,
-    conversation_id: Optional[str] = None,
+    request: InitChatRequest,                      # ✅ JSON body
     api_key: str = Depends(verify_api_key)
 ):
     """Initialize chat session (proxy to chat service)."""
@@ -238,7 +241,10 @@ async def init_chat(
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 f"{CHAT_SERVICE_URL}/chat/init",
-                json={"model": model, "conversation_id": conversation_id},
+                json={
+                    "model": request.model,        # ✅ Use request.model
+                    "conversation_id": request.conversation_id
+                },
                 timeout=10.0
             )
             
@@ -246,17 +252,22 @@ async def init_chat(
                 return response.json()
             else:
                 error_data = response.json()
-                raise HTTPException(status_code=response.status_code, detail=error_data.get("detail", "Chat init failed"))
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=error_data.get("detail", "Chat init failed")
+                )
     except httpx.RequestError as e:
         logger.error(f"Failed to connect to chat service: {e}")
         raise HTTPException(status_code=503, detail="Chat service unavailable")
 
+class ChatMessageRequest(BaseModel):
+    conversation_id: str
+    message: str
+    temperature: float = 0.7
 
 @app.post("/chat/message")
 async def send_chat_message(
-    conversation_id: str,
-    message: str,
-    temperature: float = 0.7,
+    request: ChatMessageRequest,  # ✅ Use request body
     api_key: str = Depends(verify_api_key)
 ):
     """Send message to chat (proxy to chat service)."""
@@ -265,9 +276,9 @@ async def send_chat_message(
             response = await client.post(
                 f"{CHAT_SERVICE_URL}/chat/message",
                 json={
-                    "conversation_id": conversation_id,
-                    "message": message,
-                    "temperature": temperature
+                    "conversation_id": request.conversation_id,
+                    "message": request.message,
+                    "temperature": request.temperature
                 }
             )
             
@@ -275,11 +286,13 @@ async def send_chat_message(
                 return response.json()
             else:
                 error_data = response.json()
-                raise HTTPException(status_code=response.status_code, detail=error_data.get("detail", "Chat failed"))
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=error_data.get("detail", "Chat failed")
+                )
     except httpx.RequestError as e:
         logger.error(f"Failed to connect to chat service: {e}")
         raise HTTPException(status_code=503, detail="Chat service unavailable")
-
 
 @app.get("/chat/conversations")
 async def list_conversations(api_key: str = Depends(verify_api_key)):
