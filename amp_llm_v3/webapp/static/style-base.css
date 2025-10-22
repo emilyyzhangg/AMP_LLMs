@@ -1,6 +1,6 @@
 /* ============================================================================
    AMP LLM Enhanced Web Interface - BASE STYLES (Theme-Independent)
-   FIXED: Proper scrolling for chat container and model selection
+   FIXED: Proper scrolling for chat container with responsive width handling
    ============================================================================ */
 
 * {
@@ -285,7 +285,7 @@ header p {
     display: none;
     flex: 1;
     flex-direction: column;
-    overflow: visible;
+    overflow: hidden;
     min-height: 0;
 }
 
@@ -294,17 +294,38 @@ header p {
 }
 
 /* ============================================================================
-   Chat Container - FIXED for proper scrolling
+   Chat Container - COMPLETELY FIXED for scrolling and responsive width
    ============================================================================ */
 
 .chat-container, .research-container {
-    flex: 1;
-    overflow-y: scroll;
+    /* Flex behavior */
+    flex: 1 1 auto;
+    
+    /* Scrolling - CRITICAL */
+    overflow-y: auto;
     overflow-x: hidden;
+    
+    /* Layout */
     padding: 30px;
     background: #ffffff;
+    
+    /* Height constraints */
     min-height: 0;
+    max-height: 100%;
+    
+    /* Positioning */
     position: relative;
+    
+    /* For proper child layout */
+    width: 100%;
+}
+
+/* Ensure messages don't break layout */
+.chat-container > *,
+.research-container > * {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .message {
@@ -312,6 +333,8 @@ header p {
     gap: 15px;
     margin-bottom: 25px;
     animation: fadeIn 0.3s ease-in;
+    width: 100%;
+    max-width: 100%;
 }
 
 @keyframes fadeIn {
@@ -350,9 +373,12 @@ header p {
     padding: 15px 20px;
     border-radius: 15px;
     max-width: 70%;
+    min-width: 0;
     line-height: 1.6;
     white-space: pre-wrap;
     word-wrap: break-word;
+    overflow-wrap: break-word;
+    flex: 0 1 auto;
 }
 
 .message.user .content {
@@ -366,7 +392,7 @@ header p {
 }
 
 /* ============================================================================
-   Model Selection - FIXED for guaranteed visibility and clicking
+   Model Selection - FIXED for scrolling and visibility
    ============================================================================ */
 
 .model-selection {
@@ -392,8 +418,10 @@ header p {
     font-family: inherit;
     transition: all 0.3s;
     width: 100%;
+    max-width: 100%;
     text-align: left;
     min-height: 60px;
+    flex-shrink: 0;
 }
 
 .model-button:hover {
@@ -434,6 +462,7 @@ header p {
     font-size: 15px;
     font-family: inherit;
     resize: none;
+    min-width: 0;
 }
 
 .input-area button {
@@ -445,6 +474,7 @@ header p {
     cursor: pointer;
     min-width: 100px;
     transition: transform 0.2s;
+    flex-shrink: 0;
 }
 
 .input-area button:hover:not(:disabled) {
@@ -796,7 +826,7 @@ header p {
 }
 
 /* ============================================================================
-   Scrollbar Styling - VISIBLE
+   Scrollbar Styling - VISIBLE and functional
    ============================================================================ */
 
 .chat-container::-webkit-scrollbar,
@@ -830,7 +860,7 @@ header p {
 }
 
 /* ============================================================================
-   Responsive Design
+   Responsive Design - Width-aware
    ============================================================================ */
 
 @media (max-width: 768px) {
@@ -879,17 +909,34 @@ header p {
     .model-selection {
         max-width: 100%;
     }
+    
+    .input-area {
+        flex-direction: column;
+    }
+    
+    .input-area button {
+        width: 100%;
+    }
 }
 
-/* CRITICAL FIX for model selection scrolling */
-.chat-container {
-    display: block !important;
-}
-
-.model-selection {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px;
-    width: 100%;
-    max-width: 100%;
+@media (max-width: 480px) {
+    .chat-container,
+    .research-container {
+        padding: 15px;
+    }
+    
+    .content {
+        max-width: 90%;
+        font-size: 0.9em;
+    }
+    
+    .avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    
+    .message {
+        gap: 10px;
+    }
 }
