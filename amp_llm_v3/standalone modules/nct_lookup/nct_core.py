@@ -57,6 +57,7 @@ class NCTSearchEngine:
         self.clients['clinicaltrials'] = ClinicalTrialsClient(self.session)
         self.clients['pubmed'] = PubMedClient(self.session, api_key=self.ncbi_key)
         self.clients['pmc'] = PMCClient(self.session, api_key=self.ncbi_key)
+        self.clients['pmc_bioc'] = PMCClient(self.session, api_key=self.ncbi_key)
         
         # Initialize extended clients (optional)
         self.clients['duckduckgo'] = DuckDuckGoClient(self.session)
@@ -98,7 +99,8 @@ class NCTSearchEngine:
             "sources": {
                 "clinical_trials": {},
                 "pubmed": {},
-                "pmc": {}
+                "pmc": {},
+                "pmc_bioc": {}
             },
             "metadata": {
                 "title": "",
@@ -187,10 +189,32 @@ class NCTSearchEngine:
                 "data": None
             }
         
-        # Step 4: Extended searches (if enabled)
+        # Step 4: Search PMC BioC
+        if status:
+            status.current_database = "pmc_bioc"
+            status.progress = 60
+            status.completed_databases.append("pmc")
+        
+        logger.info(f"Searching PMC BioC for {nct_id}")
+        try:
+            pmc_bioc_data = await self._search_pmc_bioc(nct_id, ct_data, results)
+            results["sources"]["pmc_bioc"] = {
+                "success": True,
+                "data": pmc_bioc_data,
+                "fetch_time": datetime.utcnow().isoformat()
+            }
+        except Exception as e:
+            logger.error(f"PMC BioC search failed: {e}", exc_info=True)
+            results["sources"]["pmc_bioc"] = {
+                "success": False,
+                "error": str(e),
+                "data": None
+            }
+
+        # Step 5: Extended searches (if enabled)
         if config.use_extended_apis:
             if status:
-                status.completed_databases.append("pmc")
+                status.completed_databases.append("pmc_bioc")
             
             logger.info("Starting extended database searches")
             extended_results = await self._search_extended(
@@ -205,7 +229,8 @@ class NCTSearchEngine:
         results["databases"] = {
             "clinicaltrials": results["sources"]["clinical_trials"].get("data"),
             "pubmed": results["sources"]["pubmed"].get("data"),
-            "pmc": results["sources"]["pmc"].get("data")
+            "pmc": results["sources"]["pmc"].get("data"),
+            "pmc_bioc": results["sources"]["pmc_bioc"].get("data")
         }
         
         # Add extended to databases if present
@@ -358,6 +383,109 @@ class NCTSearchEngine:
         except Exception as e:
             logger.error(f"PMC search error: {e}", exc_info=True)
             return {"error": str(e)}
+        
+    async def _search_pmc_bioc(
+        self,
+        nct_id: str,
+        ct_data: Dict[str, Any],
+        results: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        Fetch PMC BioC format for articles from Step 2 (PubMed) and Step 3 (PMC).
+        Uses PMIDs returned by previous searches.
+        
+        Args:
+            nct_id: NCT number
+            ct_data: Clinical trial data
+            results: Current results dict with PubMed and PMC data
+            
+        Returns:
+            Dict containing BioC formatted articles
+        """
+        bioc_results = {
+            "articles": [],
+            "total_found": 0,
+            "total_fetched": 0,
+            "errors": [],
+            "sources": {
+                "pubmed": 0,
+                "pmc": 0
+            }
+        }
+        
+        # Collect PMIDs from Step 2: PubMed search
+        pmids = []
+        if results["sources"]["pubmed"].get("success"):
+            pubmed_data = results["sources"]["pubmed"].get("data", {})
+            pubmed_pmids = pubmed_data.get("pmids", [])
+            
+            for pmid in pubmed_pmids:
+                if pmid and pmid not in pmids:
+                    pmids.append(pmid)
+            
+            bioc_results["sources"]["pubmed"] = len(pubmed_pmids)
+            logger.info(f"Collected {len(pubmed_pmids)} PMIDs from PubMed search")
+        
+        # Collect PMIDs from Step 3: PMC search
+        # PMC returns PMCIDs, but we can try to use them or extract PMIDs
+        if results["sources"]["pmc"].get("success"):
+            pmc_data = results["sources"]["pmc"].get("data", {})
+            
+            # Try to get PMIDs from PMC articles if available
+            pmc_articles = pmc_data.get("articles", [])
+            for article in pmc_articles:
+                pmid = article.get("pmid")
+                if pmid and pmid not in pmids:
+                    pmids.append(pmid)
+            
+            # Also check if PMC returned PMCIDs that we can use
+            pmcids = pmc_data.get("pmcids", [])
+            for pmcid in pmcids:
+                if pmcid and pmcid not in pmids:
+                    pmids.append(pmcid)
+            
+            bioc_results["sources"]["pmc"] = len(pmc_articles) + len(pmcids)
+            logger.info(f"Collected {len(pmc_articles) + len(pmcids)} IDs from PMC search")
+        
+        if not pmids:
+            logger.warning(f"No PMIDs/PMCIDs found from PubMed or PMC searches for {nct_id}")
+            return bioc_results
+        
+        bioc_results["total_found"] = len(pmids)
+        logger.info(f"Fetching BioC data for {len(pmids)} total IDs from Steps 2 & 3")
+        
+        # Fetch BioC data for each PMID/PMCID
+        for pmid in pmids:
+            try:
+                bioc_data = await self.clients['pmc_bioc'].fetch_pmc_bioc(
+                    pmid,
+                    format="json",
+                    encoding="unicode"
+                )
+                
+                if "error" not in bioc_data:
+                    bioc_results["articles"].append({
+                        "pmid": pmid,
+                        "bioc_data": bioc_data
+                    })
+                    bioc_results["total_fetched"] += 1
+                else:
+                    # Article not in PMC Open Access
+                    logger.debug(f"ID {pmid} not available in PMC OA: {bioc_data['error']}")
+                    bioc_results["errors"].append({
+                        "pmid": pmid,
+                        "error": bioc_data["error"]
+                    })
+                    
+            except Exception as e:
+                logger.error(f"Error fetching BioC for ID {pmid}: {e}")
+                bioc_results["errors"].append({
+                    "pmid": pmid,
+                    "error": str(e)
+                })
+        
+        logger.info(f"BioC search complete: {bioc_results['total_fetched']}/{bioc_results['total_found']} articles fetched")
+        return bioc_results
     
     async def _search_extended(
         self,

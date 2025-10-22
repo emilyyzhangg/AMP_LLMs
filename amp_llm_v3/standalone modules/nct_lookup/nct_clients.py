@@ -280,6 +280,77 @@ class PMCClient(BaseClient):
                 if aid.get("idtype") == "doi"
             ]
         }
+    
+class PMCBioClient(BaseClient):
+    """PMC BioC API client."""
+    async def fetch_pmc_bioc(
+        self,
+        pmid: str,
+        format: str = "json",
+        encoding: str = "unicode"
+    ) -> Dict[str, Any]:
+        """
+        Fetch article from PubMed Central Open Access in BioC format.
+        
+        Args:
+            pmid: PubMed ID or PMC ID
+            format: 'xml' or 'json'
+            encoding: 'unicode' or 'ascii'
+        
+        Returns:
+            Dict containing BioC formatted article data or error
+        """
+        base_url = "https://www.ncbi.nlm.nih.gov/research/bionlp/RESTful/pmcoa.cgi"
+        url = f"{base_url}/BioC_{format}/{pmid}/{encoding}"
+        
+        try:
+            await self._rate_limit()
+            async with self.session.get(url) as resp:
+                if resp.status == 200:
+                    if format == "json":
+                        data = await resp.json()
+                        logger.info(f"PMC BioC fetch successful for {pmid}")
+                        return data
+                    else:  # xml
+                        xml_content = await resp.text()
+                        logger.info(f"PMC BioC fetch successful for {pmid}")
+                        return {"xml": xml_content}
+                elif resp.status == 404:
+                    logger.warning(f"Article {pmid} not found in PMC Open Access")
+                    return {"error": "Article not available in PMC Open Access"}
+                else:
+                    logger.error(f"PMC BioC fetch error: HTTP {resp.status}")
+                    return {"error": f"HTTP {resp.status}"}
+        except Exception as e:
+            logger.error(f"PMC BioC fetch error for {pmid}: {e}")
+            return {"error": str(e)}
+
+
+    async def fetch_multiple_pmc_bioc(
+        self,
+        pmids: List[str],
+        format: str = "json",
+        encoding: str = "unicode"
+    ) -> Dict[str, Dict[str, Any]]:
+        """
+        Fetch multiple articles from PMC Open Access in BioC format.
+        
+        Args:
+            pmids: List of PubMed IDs or PMC IDs
+            format: 'xml' or 'json'
+            encoding: 'unicode' or 'ascii'
+        
+        Returns:
+            Dict mapping PMIDs to their BioC data
+        """
+        results = {}
+        
+        for pmid in pmids:
+            result = await self.fetch_pmc_bioc(pmid, format, encoding)
+            results[pmid] = result
+        
+        logger.info(f"Fetched {len(results)} articles from PMC BioC")
+        return results
 
 
 class DuckDuckGoClient(BaseClient):
