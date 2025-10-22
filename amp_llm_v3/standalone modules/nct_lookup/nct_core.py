@@ -3,6 +3,7 @@ NCT Core Search Engine
 =====================
 
 Core search orchestration logic matching the original workflow.
+Modified to use PubTator3 API instead of legacy BioC API.
 """
 
 import asyncio
@@ -190,16 +191,16 @@ class NCTSearchEngine:
                 "data": None
             }
         
-        # Step 4: Search PMC BioC
+        # Step 4: Search PMC BioC (using PubTator3)
         if status:
             status.current_database = "pmc_bioc"
             status.progress = 60
             status.completed_databases.append("pmc")
 
-        logger.info(f"Searching PMC BioC for {nct_id}")  # ← Should see this in logs
+        logger.info(f"Searching PMC BioC for {nct_id} using PubTator3")
         try:
             pmc_bioc_data = await self._search_pmc_bioc(nct_id, ct_data, results)
-            logger.info(f"PMC BioC returned: {pmc_bioc_data}")  # ← Add this to see what's returned
+            logger.info(f"PMC BioC returned: {pmc_bioc_data}")
             results["sources"]["pmc_bioc"] = {
                 "success": True,
                 "data": pmc_bioc_data,
@@ -385,90 +386,120 @@ class NCTSearchEngine:
         except Exception as e:
             logger.error(f"PMC search error: {e}", exc_info=True)
             return {"error": str(e)}
+    
+    async def _search_pmc_bioc(
+        self,
+        nct_id: str,
+        ct_data: Dict,
+        results: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        Search PMC BioC using PubTator3 API.
+        
+        Fetches full-text articles in BioC format for PMIDs found in PMC search.
+        """
+        try:
+            bioc_results = {
+                "articles": [],
+                "total_fetched": 0,
+                "errors": []
+            }
+            
+            # Get PMIDs from Pmc results
+            pmc_data = results.get("sources", {}).get("pmc", {})
+            pmcids = pmc_data.get("pmcids", [])
+            
+            if not pmcids:
+                logger.info("No PMIDs found for BioC fetch")
+                return bioc_results
+            
+            logger.info(f"Fetching BioC data for {len(pmcids)} PMIDs using PubTator3")
+            
+            # Fetch BioC data for each PMCID (limit to first 5)
+            for pmcid in pmcids[:5]:
+                try:
+                    bioc_data = await self.fetch_pmc_bioc(pmcid, format="biocjson")
+                    
+                    if "error" not in bioc_data:
+                        bioc_results["articles"].append({
+                            "pmid": pmcid,
+                            "data": bioc_data
+                        })
+                        bioc_results["total_fetched"] += 1
+                    else:
+                        bioc_results["errors"].append({
+                            "pmid": pmcid,
+                            "error": bioc_data["error"]
+                        })
+                        
+                except Exception as e:
+                    logger.error(f"Error fetching BioC for PMID {pmcid}: {e}")
+                    bioc_results["errors"].append({
+                        "pmid": pmcid,
+                        "error": str(e)
+                    })
+            
+            logger.info(f"BioC fetch complete: {bioc_results['total_fetched']} successful, "
+                       f"{len(bioc_results['errors'])} errors")
+            return bioc_results
+            
+        except Exception as e:
+            logger.error(f"PMC BioC search error: {e}", exc_info=True)
+            return {"error": str(e)}
         
     async def fetch_pmc_bioc(
         self,
-        pmid: str,
-        format: str = "json",
-        encoding: str = "unicode"
+        pmcid: str,
+        format: str = "biocjson"
     ) -> Dict[str, Any]:
         """
-        Fetch article from PubMed Central Open Access in BioC format.
+        Fetch article from PubTator3 API in BioC format.
         
         Args:
             pmid: PubMed ID or PMC ID
-            format: 'xml' or 'json'
-            encoding: 'unicode' or 'ascii'
+            format: 'biocjson' or 'biocxml' (default: biocjson)
         
         Returns:
             Dict containing BioC formatted article data or error
         """
-        # OLD URL (causing 502):
-        # base_url = "https://www.ncbi.nlm.nih.gov/research/bionlp/RESTful/pmcoa.cgi"
+        # PubTator3 API endpoint
+        base_url = "https://www.ncbi.nlm.nih.gov/research/pubtator3-api/publications/export"
         
-        # NEW URL - Use PubTator3 API instead (more reliable):
-        base_url = "https://www.ncbi.nlm.nih.gov/research/pubtator3-api/publications/export/biocjson"
+        # Validate format
+        if format not in ["biocjson", "biocxml"]:
+            format = "biocjson"
         
-        # Try PubTator3 first
         try:
-            await self._rate_limit()
+            # Check if we need rate limiting (implement if needed)
+            if hasattr(self, '_rate_limit'):
+                await self._rate_limit()
             
-            # PubTator3 uses a different URL structure
-            url = f"{base_url}?pmids={pmid}"
+            # PubTator3 URL structure: /export/{format}?pmids={pmid}
+            url = f"{base_url}/{format}?pmids={pmcid}"
             
             async with self.session.get(url) as resp:
                 if resp.status == 200:
-                    data = await resp.json()
-                    logger.info(f"PMC BioC fetch successful for {pmid} via PubTator3")
-                    return data
-                elif resp.status == 404:
-                    # Try the old API as fallback
-                    logger.warning(f"PubTator3 not available for {pmid}, trying legacy API")
-                    return await self._fetch_legacy_bioc(pmid, format, encoding)
-                else:
-                    logger.error(f"PubTator3 fetch error: HTTP {resp.status}")
-                    return await self._fetch_legacy_bioc(pmid, format, encoding)
-                    
-        except Exception as e:
-            logger.error(f"PubTator3 fetch error for {pmid}: {e}")
-            # Try legacy API as fallback
-            return await self._fetch_legacy_bioc(pmid, format, encoding)
-
-    async def _fetch_legacy_bioc(
-        self,
-        pmid: str,
-        format: str = "json",
-        encoding: str = "unicode"
-    ) -> Dict[str, Any]:
-        """
-        Fallback to legacy PMC BioC API.
-        """
-        base_url = "https://www.ncbi.nlm.nih.gov/research/bionlp/RESTful/pmcoa.cgi"
-        url = f"{base_url}/BioC_{format}/{pmid}/{encoding}"
-        
-        try:
-            await self._rate_limit()
-            async with self.session.get(url) as resp:
-                if resp.status == 200:
-                    if format == "json":
+                    if format == "biocjson":
                         data = await resp.json()
-                        logger.info(f"Legacy PMC BioC fetch successful for {pmid}")
+                        logger.info(f"PubTator3 BioC fetch successful for {pmcid}")
                         return data
-                    else:  # xml
+                    else:  # biocxml
                         xml_content = await resp.text()
-                        logger.info(f"Legacy PMC BioC fetch successful for {pmid}")
+                        logger.info(f"PubTator3 BioC XML fetch successful for {pmcid}")
                         return {"xml": xml_content}
                 elif resp.status == 404:
-                    logger.warning(f"Article {pmid} not found in PMC Open Access")
-                    return {"error": "Article not available in PMC Open Access"}
-                elif resp.status == 502:
-                    logger.error(f"PMC BioC API returning 502 for {pmid}")
-                    return {"error": "PMC BioC service temporarily unavailable (502)"}
+                    logger.warning(f"Article {pmcid} not found in PubTator3")
+                    return {"error": "Article not available in PubTator3"}
                 else:
-                    logger.error(f"Legacy PMC BioC fetch error: HTTP {resp.status}")
-                    return {"error": f"HTTP {resp.status}"}
+                    error_text = await resp.text()
+                    logger.error(f"PubTator3 fetch error: HTTP {resp.status} - {error_text}")
+                    return {"error": f"HTTP {resp.status}: {error_text}"}
+                    
+        except asyncio.TimeoutError:
+            logger.error(f"PubTator3 fetch timeout for {pmcid}")
+            return {"error": "Request timeout"}
         except Exception as e:
-            logger.error(f"Legacy PMC BioC fetch error for {pmid}: {e}")
+            logger.error(f"PubTator3 fetch error for {pmcid}: {e}")
             return {"error": str(e)}
     
     async def _search_extended(
