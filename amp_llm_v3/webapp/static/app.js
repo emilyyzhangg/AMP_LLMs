@@ -1,6 +1,7 @@
 // ============================================================================
 // AMP LLM Enhanced Web Interface - FIXED VERSION
-// Model selection now properly clickable and scrollable
+// ✅ Scrollable chat container and model selection
+// ✅ Smart back button navigation (main menu → model selection → active chat)
 // ============================================================================
 
 const app = {
@@ -201,10 +202,41 @@ const app = {
         document.getElementById('mode-title').textContent = info.title;
         document.getElementById('mode-subtitle').textContent = info.subtitle;
         
+        // Update back button behavior based on mode and state
+        this.updateBackButton();
+        
         if (mode === 'chat') {
             this.initializeChatMode();
         } else if (mode === 'files') {
             this.loadFiles();
+        }
+    },
+    
+    updateBackButton() {
+        const backButton = document.querySelector('.back-button');
+        
+        if (this.currentMode === 'chat' && this.currentConversationId) {
+            // In active chat - back goes to model selection
+            backButton.textContent = '← Back to Models';
+            backButton.onclick = () => {
+                this.currentConversationId = null;
+                this.currentModel = null;
+                
+                const container = document.getElementById('chat-container');
+                container.innerHTML = '';
+                
+                this.showModelSelection();
+                
+                const input = document.getElementById('chat-input');
+                input.disabled = true;
+                input.placeholder = 'Select a model to start chatting...';
+                
+                this.updateBackButton();
+            };
+        } else {
+            // Default - back goes to main menu
+            backButton.textContent = '← Back';
+            backButton.onclick = () => this.showMenu();
         }
     },
     
@@ -255,15 +287,14 @@ const app = {
         selectionDiv.className = 'model-selection';
         selectionDiv.id = 'model-selection-container';
         
-        // Create buttons with DIRECT onclick handlers (most reliable)
+        // Create buttons with DIRECT onclick handlers
         this.availableModels.forEach((model, index) => {
             const button = document.createElement('button');
             button.className = 'model-button';
             button.type = 'button';
-            button.dataset.modelName = model.name; // Store model name
+            button.dataset.modelName = model.name;
             button.dataset.index = index;
             
-            // Build button content as DOM elements (not innerHTML)
             const icon = document.createElement('span');
             icon.textContent = '📦';
             icon.style.fontSize = '1.2em';
@@ -283,7 +314,7 @@ const app = {
             button.appendChild(name);
             button.appendChild(arrow);
             
-            // Use DIRECT onclick (most reliable across browsers)
+            // Use DIRECT onclick (most reliable)
             button.onclick = function() {
                 const modelName = this.dataset.modelName;
                 app.selectModel(modelName);
@@ -298,6 +329,9 @@ const app = {
         requestAnimationFrame(() => {
             container.scrollTop = container.scrollHeight;
         });
+        
+        // Update back button to go to main menu
+        this.updateBackButton();
     },
     
     async selectModel(modelName) {
@@ -339,6 +373,9 @@ const app = {
                 input.disabled = false;
                 input.placeholder = 'Type your message...';
                 input.focus();
+                
+                // Update back button to return to model selection
+                this.updateBackButton();
             } else {
                 const error = await response.json();
                 document.getElementById(loadingId)?.remove();
@@ -485,7 +522,11 @@ const app = {
         `;
         
         container.appendChild(messageDiv);
-        container.scrollTop = container.scrollHeight;
+        
+        // Scroll to bottom smoothly
+        requestAnimationFrame(() => {
+            container.scrollTop = container.scrollHeight;
+        });
         
         return messageId;
     },
