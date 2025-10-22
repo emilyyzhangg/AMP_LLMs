@@ -285,7 +285,7 @@ header p {
     display: none;
     flex: 1;
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible;
     min-height: 0;
 }
 
@@ -879,4 +879,17 @@ header p {
     .model-selection {
         max-width: 100%;
     }
+}
+
+/* CRITICAL FIX for model selection scrolling */
+.chat-container {
+    display: block !important;
+}
+
+.model-selection {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
 }
