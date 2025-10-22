@@ -1,6 +1,6 @@
 // ============================================================================
-// AMP LLM Enhanced Web Interface - Main Application with Chat Service
-// FIXED VERSION: Model selection now works properly with scrolling
+// AMP LLM Enhanced Web Interface - FIXED VERSION
+// Model selection now properly clickable and scrollable
 // ============================================================================
 
 const app = {
@@ -69,8 +69,6 @@ const app = {
     toggleThemeDropdown() {
         const dropdown = document.getElementById('theme-dropdown');
         dropdown.classList.toggle('hidden');
-        
-        // Update active state
         this.updateActiveTheme();
     },
     
@@ -78,8 +76,6 @@ const app = {
         this.currentTheme = theme;
         localStorage.setItem('amp_llm_theme', theme);
         this.applyTheme(theme, true);
-        
-        // Close dropdown
         document.getElementById('theme-dropdown').classList.add('hidden');
     },
     
@@ -91,19 +87,15 @@ const app = {
             'balanced': 'Tri-Color'
         };
         
-        // Update stylesheet
         themeStylesheet.href = `/static/theme-${theme}.css`;
         
-        // Update button text
         const themeName = document.getElementById('current-theme-name');
         if (themeName) {
             themeName.textContent = themeNames[theme];
         }
         
-        // Update active state in dropdown
         this.updateActiveTheme();
         
-        // Optional: Add transition effect
         if (animate) {
             document.body.style.transition = 'background 0.5s ease';
             setTimeout(() => {
@@ -175,13 +167,9 @@ const app = {
         this.currentConversationId = null;
         this.currentModel = null;
         
-        // Hide header
         document.getElementById('app-header').classList.add('hidden');
-        
-        // Show menu
         document.getElementById('menu-view').classList.remove('hidden');
         
-        // Hide all modes
         document.querySelectorAll('.mode-container').forEach(el => {
             el.classList.remove('active');
         });
@@ -190,24 +178,18 @@ const app = {
     showMode(mode) {
         this.currentMode = mode;
         
-        // Show header
         document.getElementById('app-header').classList.remove('hidden');
-        
-        // Hide menu
         document.getElementById('menu-view').classList.add('hidden');
         
-        // Hide all modes
         document.querySelectorAll('.mode-container').forEach(el => {
             el.classList.remove('active');
         });
         
-        // Show selected mode
         const modeElement = document.getElementById(`${mode}-mode`);
         if (modeElement) {
             modeElement.classList.add('active');
         }
         
-        // Update header
         const titles = {
             'chat': { title: '💬 Chat with LLM', subtitle: 'Interactive conversation with AI models' },
             'research': { title: '📚 Research Assistant', subtitle: 'RAG-powered trial analysis' },
@@ -219,7 +201,6 @@ const app = {
         document.getElementById('mode-title').textContent = info.title;
         document.getElementById('mode-subtitle').textContent = info.subtitle;
         
-        // Mode-specific initialization
         if (mode === 'chat') {
             this.initializeChatMode();
         } else if (mode === 'files') {
@@ -228,19 +209,17 @@ const app = {
     },
     
     // =========================================================================
-    // Chat Mode - Model Selection & Conversation
+    // Chat Mode - Model Selection & Conversation - FIXED VERSION
     // =========================================================================
     
     async initializeChatMode() {
         const container = document.getElementById('chat-container');
         container.innerHTML = '';
         
-        // Disable input until model is selected
         const input = document.getElementById('chat-input');
         input.disabled = true;
         input.placeholder = 'Select a model to start chatting...';
         
-        // Show loading
         this.addMessage('chat-container', 'system', '🔄 Loading available models...');
         
         try {
@@ -252,10 +231,7 @@ const app = {
                 const data = await response.json();
                 this.availableModels = data.models;
                 
-                // Clear loading message
                 container.innerHTML = '';
-                
-                // Show model selection
                 this.showModelSelection();
             } else {
                 container.innerHTML = '';
@@ -274,44 +250,60 @@ const app = {
         this.addMessage('chat-container', 'system', 
             '🤖 Welcome to Chat Mode!\n\nSelect a model to start your conversation:');
         
-        // Create model selection UI with proper styling
+        // Create model selection container
         const selectionDiv = document.createElement('div');
         selectionDiv.className = 'model-selection';
         selectionDiv.id = 'model-selection-container';
         
-        this.availableModels.forEach(model => {
+        // Create buttons with DIRECT onclick handlers (most reliable)
+        this.availableModels.forEach((model, index) => {
             const button = document.createElement('button');
             button.className = 'model-button';
-            button.type = 'button'; // Explicitly set button type
-            button.innerHTML = `
-                <span style="font-size: 1.2em;">📦</span>
-                <span style="flex: 1; text-align: left; margin-left: 10px;">${this.escapeHtml(model.name)}</span>
-                <span style="color: #666; font-size: 0.9em;">→</span>
-            `;
-            // Use addEventListener instead of onclick for better event handling
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Model button clicked:', model.name);
+            button.type = 'button';
+            button.dataset.modelName = model.name; // Store model name
+            button.dataset.index = index;
+            
+            // Build button content as DOM elements (not innerHTML)
+            const icon = document.createElement('span');
+            icon.textContent = '📦';
+            icon.style.fontSize = '1.2em';
+            
+            const name = document.createElement('span');
+            name.textContent = model.name;
+            name.style.flex = '1';
+            name.style.textAlign = 'left';
+            name.style.marginLeft = '10px';
+            
+            const arrow = document.createElement('span');
+            arrow.textContent = '→';
+            arrow.style.color = '#666';
+            arrow.style.fontSize = '0.9em';
+            
+            button.appendChild(icon);
+            button.appendChild(name);
+            button.appendChild(arrow);
+            
+            // Use DIRECT onclick (most reliable across browsers)
+            button.onclick = () => {
+                console.log('Button clicked:', model.name);
                 this.selectModel(model.name);
-            });
+            };
+            
             selectionDiv.appendChild(button);
         });
         
         container.appendChild(selectionDiv);
         
-        // Ensure container is scrollable and scroll to show all models
-        container.style.overflowY = 'auto';
-        setTimeout(() => {
+        // Ensure scrolling works
+        requestAnimationFrame(() => {
             container.scrollTop = container.scrollHeight;
-        }, 100);
+        });
     },
     
     async selectModel(modelName) {
         console.log('selectModel called with:', modelName);
         const container = document.getElementById('chat-container');
         
-        // Show loading
         const loadingId = this.addMessage('chat-container', 'system', `🔄 Initializing ${modelName}...`);
         
         try {
@@ -360,11 +352,9 @@ const app = {
     },
     
     async sendChatMessage(message) {
-        // Handle special commands
         const command = message.toLowerCase().trim();
         
         if (command === 'exit') {
-            // Return to model selection
             this.currentConversationId = null;
             this.currentModel = null;
             
@@ -373,7 +363,6 @@ const app = {
             
             this.showModelSelection();
             
-            // Disable input
             const input = document.getElementById('chat-input');
             input.disabled = true;
             input.placeholder = 'Select a model to start chatting...';
@@ -390,10 +379,8 @@ const app = {
             return;
         }
         
-        // Add user message
         this.addMessage('chat-container', 'user', message);
         
-        // Show loading
         const loadingId = this.addMessage('chat-container', 'system', '🤔 Thinking...');
         
         try {
@@ -410,7 +397,6 @@ const app = {
                 })
             });
             
-            // Remove loading
             document.getElementById(loadingId)?.remove();
             
             if (response.ok) {
@@ -522,7 +508,6 @@ const app = {
         const progressDiv = document.getElementById('nct-progress');
         const saveBtn = document.getElementById('nct-save-btn');
         
-        // Show progress
         progressDiv.classList.remove('hidden');
         progressDiv.innerHTML = '<span class="spinner"></span> <span>Fetching clinical trial data...</span>';
         resultsDiv.innerHTML = '';
@@ -544,15 +529,12 @@ const app = {
             const data = await response.json();
             this.nctResults = data;
             
-            // Hide progress
             progressDiv.classList.add('hidden');
             
-            // Show save button
             if (data.success) {
                 saveBtn.classList.remove('hidden');
             }
             
-            // Display results
             this.displayNCTResults(data);
             
         } catch (error) {
@@ -579,7 +561,6 @@ const app = {
             return;
         }
         
-        // Summary card
         let html = `
             <div class="summary-card">
                 <h3>Summary</h3>
@@ -600,7 +581,6 @@ const app = {
             </div>
         `;
         
-        // Trial cards
         data.results.forEach(result => {
             const ct = result.sources?.clinical_trials?.data?.protocolSection || {};
             const ident = ct.identificationModule || {};
@@ -667,7 +647,6 @@ const app = {
         const filename = `nct_results_${Date.now()}.json`;
         const content = JSON.stringify(this.nctResults.results, null, 2);
         
-        // Download locally
         const blob = new Blob([content], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -676,7 +655,6 @@ const app = {
         a.click();
         URL.revokeObjectURL(url);
         
-        // Save to server
         try {
             await fetch(`${this.API_BASE}/files/save`, {
                 method: 'POST',
@@ -719,7 +697,6 @@ const app = {
                 return;
             }
             
-            // Display files
             let html = '<div class="files-grid">';
             this.files.forEach(file => {
                 html += `
@@ -761,17 +738,14 @@ const app = {
                 content: data.content
             };
             
-            // Switch to chat mode
             this.showMode('chat');
             
-            // Add system message after a brief delay to let chat mode initialize
             setTimeout(() => {
                 const container = document.getElementById('chat-container');
                 container.innerHTML = '';
                 this.addMessage('chat-container', 'system', 
                     `📄 Loaded file: ${filename} (${(data.content.length / 1024).toFixed(1)} KB)\n\nSelect a model to analyze this file.`);
                 
-                // Show model selection
                 this.showModelSelection();
             }, 100);
             
@@ -804,7 +778,6 @@ const app = {
             alert('Upload error: ' + error.message);
         }
         
-        // Reset file input
         event.target.value = '';
     },
     

@@ -358,9 +358,21 @@ header p {
 }
 
 /* ============================================================================
-   Model Selection - FIXED for scrolling and clicking
+   ENHANCED MODEL SELECTION - Guaranteed Clickable & Scrollable
    ============================================================================ */
 
+/* Ensure chat container allows scrolling */
+.chat-container {
+    flex: 1;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    padding: 30px;
+    background: #ffffff;
+    min-height: 0;
+    position: relative;
+}
+
+/* Model selection container */
 .model-selection {
     margin: 20px 0;
     display: flex;
@@ -368,9 +380,13 @@ header p {
     gap: 12px;
     max-width: 700px;
     width: 100%;
-    padding: 10px 0; /* Remove side padding that might interfere */
+    padding: 10px 0;
+    /* Critical: allow scrolling parent to work */
+    position: relative;
+    z-index: 1;
 }
 
+/* Model buttons - ENHANCED for guaranteed clicking */
 .model-button {
     display: flex;
     align-items: center;
@@ -378,21 +394,24 @@ header p {
     background: white;
     border: 2px solid #e9ecef;
     border-radius: 12px;
-    cursor: pointer;
+    cursor: pointer !important;
     font-size: 16px;
     font-family: inherit;
     transition: all 0.3s;
     width: 100%;
     text-align: left;
+    
+    /* Critical for clicking */
     position: relative;
-    /* Ensure button is always on top and clickable */
     z-index: 10;
+    pointer-events: auto !important;
 }
 
 .model-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     border-color: #667eea;
+    background: #f8f9fa;
 }
 
 .model-button:active {
@@ -400,9 +419,51 @@ header p {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Make sure child elements don't intercept clicks */
+/* Ensure button children don't block clicks */
 .model-button > * {
     pointer-events: none;
+}
+
+/* Fix for container hierarchy */
+.mode-container {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.mode-container.active {
+    display: flex;
+}
+
+/* Input area stays at bottom */
+.input-area {
+    display: flex;
+    gap: 15px;
+    padding: 20px 30px;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    flex-shrink: 0;
+}
+
+/* Scrollbar visibility */
+.chat-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 /* ============================================================================
