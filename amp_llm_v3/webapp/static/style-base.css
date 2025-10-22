@@ -1,6 +1,6 @@
 /* ============================================================================
    AMP LLM Enhanced Web Interface - BASE STYLES (Theme-Independent)
-   FIXED: Model selection now properly scrollable and clickable
+   FIXED: Proper scrolling for chat container and model selection
    ============================================================================ */
 
 * {
@@ -22,7 +22,7 @@ body {
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     overflow: hidden;
-    height: 90vh;  /* This is correct */
+    height: 90vh;
     display: flex;
     flex-direction: column;
 }
@@ -101,6 +101,7 @@ header {
     justify-content: space-between;
     align-items: center;
     position: relative;
+    flex-shrink: 0;
 }
 
 header h1 {
@@ -270,7 +271,7 @@ header p {
 }
 
 /* ============================================================================
-   Mode Container
+   Mode Container - CRITICAL FIX
    ============================================================================ */
 
 .mode-container {
@@ -278,8 +279,7 @@ header p {
     flex: 1;
     flex-direction: column;
     overflow: hidden;
-    min-height: 0;  /* Critical for flex child scrolling */
-    max-height: 100%; /* NEW - prevents infinite growth */
+    min-height: 0;
 }
 
 .mode-container.active {
@@ -290,14 +290,13 @@ header p {
    Chat Container - FIXED for proper scrolling
    ============================================================================ */
 
-.chat-container {
+.chat-container, .research-container {
     flex: 1;
-    overflow-y: auto !important;
+    overflow-y: auto;
     overflow-x: hidden;
     padding: 30px;
     background: #ffffff;
-    min-height: 0;  /* Critical for flex scrolling */
-    max-height: 100%; /* NEW - ensures scrollbar appears */
+    min-height: 0;
     position: relative;
 }
 
@@ -306,7 +305,6 @@ header p {
     gap: 15px;
     margin-bottom: 25px;
     animation: fadeIn 0.3s ease-in;
-    /* No height constraints - let content flow */
 }
 
 @keyframes fadeIn {
@@ -361,21 +359,9 @@ header p {
 }
 
 /* ============================================================================
-   ENHANCED MODEL SELECTION - Guaranteed Clickable & Scrollable
+   Model Selection - FIXED for guaranteed scrolling and clicking
    ============================================================================ */
 
-/* Ensure chat container allows scrolling */
-.chat-container {
-    flex: 1;
-    overflow-y: auto !important;
-    overflow-x: hidden;
-    padding: 30px;
-    background: #ffffff;
-    min-height: 0;
-    position: relative;
-}
-
-/* Model selection container */
 .model-selection {
     margin: 20px 0;
     display: flex;
@@ -384,12 +370,8 @@ header p {
     max-width: 700px;
     width: 100%;
     padding: 10px 0;
-    position: relative;
-    z-index: 1;
-    /* No max-height here - let parent container handle scrolling */
 }
 
-/* Model buttons - ENHANCED for guaranteed clicking */
 .model-button {
     display: flex;
     align-items: center;
@@ -397,17 +379,13 @@ header p {
     background: white;
     border: 2px solid #e9ecef;
     border-radius: 12px;
-    cursor: pointer !important;
+    cursor: pointer;
     font-size: 16px;
     font-family: inherit;
     transition: all 0.3s;
     width: 100%;
     text-align: left;
-    
-    /* Critical for clicking */
     position: relative;
-    z-index: 10;
-    pointer-events: auto !important;
 }
 
 .model-button:hover {
@@ -422,52 +400,8 @@ header p {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Ensure button children don't block clicks */
 .model-button > * {
     pointer-events: none;
-}
-
-/* Fix for container hierarchy */
-.mode-container {
-    display: none;
-    flex: 1;
-    flex-direction: column;
-    overflow: hidden;
-    min-height: 0;
-}
-
-.mode-container.active {
-    display: flex;
-}
-
-/* Input area stays at bottom */
-.input-area {
-    display: flex;
-    gap: 15px;
-    padding: 20px 30px;
-    background: #f8f9fa;
-    border-top: 1px solid #e9ecef;
-    flex-shrink: 0;  /* Prevents input from shrinking */
-    min-height: auto; /* Allows natural height */
-}
-
-/* Scrollbar visibility */
-.chat-container::-webkit-scrollbar {
-    width: 10px;
-}
-
-.chat-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 5px;
-}
-
-.chat-container::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 5px;
-}
-
-.chat-container::-webkit-scrollbar-thumb:hover {
-    background: #555;
 }
 
 /* ============================================================================
@@ -480,7 +414,7 @@ header p {
     padding: 20px 30px;
     background: #f8f9fa;
     border-top: 1px solid #e9ecef;
-    flex-shrink: 0; /* Prevent input area from shrinking */
+    flex-shrink: 0;
 }
 
 .input-area textarea {
@@ -656,17 +590,6 @@ header p {
     font-size: 0.85em;
     color: #666;
     margin-top: 5px;
-}
-
-.research-container {
-    flex: 1;
-    overflow-y: auto !important;
-    overflow-x: hidden;
-    padding: 30px;
-    background: #ffffff;
-    min-height: 0;
-    max-height: 100%;
-    position: relative;
 }
 
 .extract-button {
@@ -864,29 +787,34 @@ header p {
 }
 
 /* ============================================================================
-   Scrollbar Styling
+   Scrollbar Styling - ENHANCED
    ============================================================================ */
 
 .chat-container::-webkit-scrollbar,
+.research-container::-webkit-scrollbar,
 .nct-results::-webkit-scrollbar,
 .files-container::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
 }
 
 .chat-container::-webkit-scrollbar-track,
+.research-container::-webkit-scrollbar-track,
 .nct-results::-webkit-scrollbar-track,
 .files-container::-webkit-scrollbar-track {
     background: #f1f1f1;
+    border-radius: 5px;
 }
 
 .chat-container::-webkit-scrollbar-thumb,
+.research-container::-webkit-scrollbar-thumb,
 .nct-results::-webkit-scrollbar-thumb,
 .files-container::-webkit-scrollbar-thumb {
     background: #888;
-    border-radius: 4px;
+    border-radius: 5px;
 }
 
 .chat-container::-webkit-scrollbar-thumb:hover,
+.research-container::-webkit-scrollbar-thumb:hover,
 .nct-results::-webkit-scrollbar-thumb:hover,
 .files-container::-webkit-scrollbar-thumb:hover {
     background: #555;
