@@ -31,6 +31,16 @@ WEBAPP_DIR = Path(__file__).parent
 app = FastAPI(title="AMP LLM Enhanced API", version="3.0.0")
 
 # Mount static files BEFORE other routes
+# app.mount("/static", StaticFiles(directory=str(WEBAPP_DIR / "static")), name="static")
+
+# Mounting updated to MIME types
+from fastapi.staticfiles import StaticFiles
+import mimetypes
+
+# Ensure proper MIME types
+mimetypes.add_type('text/css', '.css')
+mimetypes.add_type('application/javascript', '.js')
+
 app.mount("/static", StaticFiles(directory=str(WEBAPP_DIR / "static")), name="static")
 
 app.add_middleware(
