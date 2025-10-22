@@ -465,7 +465,7 @@ async def _execute_search(nct_id: str, request: SearchRequest):
 
 def _get_database_list(request: SearchRequest) -> List[str]:
     """Get list of databases to search."""
-    databases = ["clinicaltrials", "pubmed", "pmc", "pmc_bioc"]  # ← ADD pmc_bioc
+    databases = ["clinicaltrials", "pubmed", "pmc", "pmc_bioc"]  
     
     if request.include_extended:
         if request.databases:
