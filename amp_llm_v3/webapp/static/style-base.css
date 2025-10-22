@@ -22,7 +22,7 @@ body {
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     overflow: hidden;
-    height: 90vh;
+    height: 90vh;  /* This is correct */
     display: flex;
     flex-direction: column;
 }
@@ -278,7 +278,8 @@ header p {
     flex: 1;
     flex-direction: column;
     overflow: hidden;
-    min-height: 0; /* Critical for proper flex behavior */
+    min-height: 0;  /* Critical for flex child scrolling */
+    max-height: 100%; /* NEW - prevents infinite growth */
 }
 
 .mode-container.active {
@@ -291,11 +292,12 @@ header p {
 
 .chat-container {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: auto !important;
     overflow-x: hidden;
     padding: 30px;
     background: #ffffff;
-    min-height: 0; /* Critical: allows flex child to scroll properly */
+    min-height: 0;  /* Critical for flex scrolling */
+    max-height: 100%; /* NEW - ensures scrollbar appears */
     position: relative;
 }
 
@@ -304,6 +306,7 @@ header p {
     gap: 15px;
     margin-bottom: 25px;
     animation: fadeIn 0.3s ease-in;
+    /* No height constraints - let content flow */
 }
 
 @keyframes fadeIn {
@@ -381,9 +384,9 @@ header p {
     max-width: 700px;
     width: 100%;
     padding: 10px 0;
-    /* Critical: allow scrolling parent to work */
     position: relative;
     z-index: 1;
+    /* No max-height here - let parent container handle scrolling */
 }
 
 /* Model buttons - ENHANCED for guaranteed clicking */
@@ -444,7 +447,8 @@ header p {
     padding: 20px 30px;
     background: #f8f9fa;
     border-top: 1px solid #e9ecef;
-    flex-shrink: 0;
+    flex-shrink: 0;  /* Prevents input from shrinking */
+    min-height: auto; /* Allows natural height */
 }
 
 /* Scrollbar visibility */
@@ -652,6 +656,17 @@ header p {
     font-size: 0.85em;
     color: #666;
     margin-top: 5px;
+}
+
+.research-container {
+    flex: 1;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    padding: 30px;
+    background: #ffffff;
+    min-height: 0;
+    max-height: 100%;
+    position: relative;
 }
 
 .extract-button {
