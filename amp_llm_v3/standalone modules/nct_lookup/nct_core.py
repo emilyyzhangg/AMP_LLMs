@@ -195,10 +195,11 @@ class NCTSearchEngine:
             status.current_database = "pmc_bioc"
             status.progress = 60
             status.completed_databases.append("pmc")
-        
-        logger.info(f"Searching PMC BioC for {nct_id}")
+
+        logger.info(f"Searching PMC BioC for {nct_id}")  # ← Should see this in logs
         try:
             pmc_bioc_data = await self._search_pmc_bioc(nct_id, ct_data, results)
+            logger.info(f"PMC BioC returned: {pmc_bioc_data}")  # ← Add this to see what's returned
             results["sources"]["pmc_bioc"] = {
                 "success": True,
                 "data": pmc_bioc_data,

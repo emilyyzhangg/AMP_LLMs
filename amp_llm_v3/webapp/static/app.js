@@ -538,6 +538,7 @@ const app = {
     async handleNCTLookup() {
         const input = document.getElementById('nct-input');
         const nctIds = input.value.split(',').map(s => s.trim().toUpperCase()).filter(s => s);
+
         
         if (nctIds.length === 0) {
             alert('Please enter at least one NCT number');
