@@ -15,6 +15,7 @@ import logging
 
 from nct_clients import (
     ClinicalTrialsClient,
+    PMCBioClient,
     PubMedClient,
     PMCClient,
     DuckDuckGoClient,
@@ -57,7 +58,7 @@ class NCTSearchEngine:
         self.clients['clinicaltrials'] = ClinicalTrialsClient(self.session)
         self.clients['pubmed'] = PubMedClient(self.session, api_key=self.ncbi_key)
         self.clients['pmc'] = PMCClient(self.session, api_key=self.ncbi_key)
-        self.clients['pmc_bioc'] = PMCClient(self.session, api_key=self.ncbi_key)
+        self.clients['pmc_bioc'] = PMCBioClient(self.session, api_key=self.ncbi_key)
         
         # Initialize extended clients (optional)
         self.clients['duckduckgo'] = DuckDuckGoClient(self.session)
