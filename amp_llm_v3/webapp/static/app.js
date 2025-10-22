@@ -1,5 +1,6 @@
 // ============================================================================
 // AMP LLM Enhanced Web Interface - Main Application with Chat Service
+// FIXED VERSION: Model selection now works properly with scrolling
 // ============================================================================
 
 const app = {
@@ -269,30 +270,45 @@ const app = {
     showModelSelection() {
         const container = document.getElementById('chat-container');
         
+        // Add welcome message
         this.addMessage('chat-container', 'system', 
             '🤖 Welcome to Chat Mode!\n\nSelect a model to start your conversation:');
         
-        // Create model selection UI
+        // Create model selection UI with proper styling
         const selectionDiv = document.createElement('div');
         selectionDiv.className = 'model-selection';
-        selectionDiv.style.cssText = 'margin: 20px 0; display: flex; flex-direction: column; gap: 10px;';
+        selectionDiv.id = 'model-selection-container';
         
         this.availableModels.forEach(model => {
             const button = document.createElement('button');
             button.className = 'model-button';
+            button.type = 'button'; // Explicitly set button type
             button.innerHTML = `
                 <span style="font-size: 1.2em;">📦</span>
                 <span style="flex: 1; text-align: left; margin-left: 10px;">${this.escapeHtml(model.name)}</span>
                 <span style="color: #666; font-size: 0.9em;">→</span>
             `;
-            button.onclick = () => this.selectModel(model.name);
+            // Use addEventListener instead of onclick for better event handling
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Model button clicked:', model.name);
+                this.selectModel(model.name);
+            });
             selectionDiv.appendChild(button);
         });
         
         container.appendChild(selectionDiv);
+        
+        // Ensure container is scrollable and scroll to show all models
+        container.style.overflowY = 'auto';
+        setTimeout(() => {
+            container.scrollTop = container.scrollHeight;
+        }, 100);
     },
     
     async selectModel(modelName) {
+        console.log('selectModel called with:', modelName);
         const container = document.getElementById('chat-container');
         
         // Show loading
@@ -313,9 +329,11 @@ const app = {
                 this.currentConversationId = data.conversation_id;
                 this.currentModel = modelName;
                 
+                console.log('Model initialized:', data);
+                
                 // Remove loading and model selection
                 document.getElementById(loadingId)?.remove();
-                const modelSelection = container.querySelector('.model-selection');
+                const modelSelection = document.getElementById('model-selection-container');
                 if (modelSelection) {
                     modelSelection.remove();
                 }
@@ -335,6 +353,7 @@ const app = {
                 this.addMessage('chat-container', 'error', '❌ Failed to initialize: ' + error.detail);
             }
         } catch (error) {
+            console.error('Error selecting model:', error);
             document.getElementById(loadingId)?.remove();
             this.addMessage('chat-container', 'error', '❌ Error: ' + error.message);
         }

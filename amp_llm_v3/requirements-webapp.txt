@@ -1,4 +1,35 @@
-fastapi>=0.104.0
-uvicorn[standard]>=0.24.0
+# ============================================================================
+# AMP LLM Webapp Requirements
+# ============================================================================
+
+# Web Framework
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+
+# File Upload Support (REQUIRED for /files/upload endpoint)
+python-multipart>=0.0.9
+
+# Pydantic (v2 compatible with Python 3.14+)
+pydantic>=2.9.0
+pydantic-settings>=2.6.0
+
+# HTTP Client
+aiohttp>=3.11.0
+
+# Environment Management
 python-dotenv>=1.0.0
-pydantic>=2.0.0
+
+# ============================================================================
+# Core AMP_LLM Dependencies (shared with main app)
+# ============================================================================
+
+# Async SSH
+asyncssh>=2.14.0
+
+# Console
+colorama>=0.4.6
+
+# Optional: If using Rich formatting
+rich>=13.0.0
+
+python-multipart

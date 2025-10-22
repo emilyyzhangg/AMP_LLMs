@@ -9,7 +9,7 @@ import asyncio
 from typing import Callable, Optional, List
 from functools import partial
 
-from src.amp_llm.config import get_logger
+from amp_llm.config import get_logger
 from .exceptions import GracefulExit
 
 logger = get_logger(__name__)
