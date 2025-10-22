@@ -1,9 +1,10 @@
 """
 Enhanced AMP LLM Web API Server with Chat Service Integration
+FIXED: Static file serving for proper CSS loading
 """
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
@@ -13,6 +14,7 @@ import json
 import os
 from datetime import datetime
 import httpx
+import mimetypes
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -23,6 +25,14 @@ from amp_llm.data.clinical_trials.rag import ClinicalTrialRAG
 from webapp.config import settings
 from webapp.auth import verify_api_key
 
+# ============================================================================
+# CRITICAL FIX: Configure MIME types
+# ============================================================================
+mimetypes.init()
+mimetypes.add_type('text/css', '.css')
+mimetypes.add_type('application/javascript', '.js')
+mimetypes.add_type('text/html', '.html')
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -30,19 +40,9 @@ WEBAPP_DIR = Path(__file__).parent
 
 app = FastAPI(title="AMP LLM Enhanced API", version="3.0.0")
 
-# Mount static files BEFORE other routes
-# app.mount("/static", StaticFiles(directory=str(WEBAPP_DIR / "static")), name="static")
-
-# Mounting updated to MIME types
-from fastapi.staticfiles import StaticFiles
-import mimetypes
-
-# Ensure proper MIME types
-mimetypes.add_type('text/css', '.css')
-mimetypes.add_type('application/javascript', '.js')
-
-app.mount("/static", StaticFiles(directory=str(WEBAPP_DIR / "static")), name="static")
-
+# ============================================================================
+# CORS
+# ============================================================================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins + ["http://localhost:3000"],
@@ -51,13 +51,59 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ============================================================================
 # Directory setup
+# ============================================================================
 OUTPUT_DIR = Path("output")
 DATABASE_DIR = Path("ct_database")
 OUTPUT_DIR.mkdir(exist_ok=True)
 DATABASE_DIR.mkdir(exist_ok=True)
 
+static_dir = WEBAPP_DIR / "static"
+templates_dir = WEBAPP_DIR / "templates"
+
+logger.info(f"Static directory: {static_dir.absolute()}")
+logger.info(f"Templates directory: {templates_dir.absolute()}")
+
+if static_dir.exists():
+    css_files = list(static_dir.glob("*.css"))
+    logger.info(f"CSS files found: {[f.name for f in css_files]}")
+
+# ============================================================================
+# FIXED: Explicit static file serving
+# ============================================================================
+
+@app.get("/static/{filename:path}")
+async def serve_static_file(filename: str):
+    """Serve static files with explicit content types."""
+    file_path = static_dir / filename
+    
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail=f"File not found: {filename}")
+    
+    # Determine content type
+    content_type = "application/octet-stream"
+    if filename.endswith('.css'):
+        content_type = "text/css; charset=utf-8"
+    elif filename.endswith('.js'):
+        content_type = "application/javascript; charset=utf-8"
+    elif filename.endswith('.html'):
+        content_type = "text/html; charset=utf-8"
+    
+    content = file_path.read_bytes()
+    
+    return Response(
+        content=content,
+        media_type=content_type,
+        headers={
+            "Cache-Control": "public, max-age=3600",
+            "Content-Type": content_type
+        }
+    )
+
+# ============================================================================
 # Initialize RAG system
+# ============================================================================
 try:
     rag_system = ClinicalTrialRAG(DATABASE_DIR)
     logger.info(f"✅ RAG system initialized with {len(rag_system.db.trials)} trials")
@@ -133,6 +179,16 @@ class FileContentResponse(BaseModel):
     content: str
 
 
+class InitChatRequest(BaseModel):
+    model: str
+    conversation_id: Optional[str] = None
+
+class ChatMessageRequest(BaseModel):
+    conversation_id: str
+    message: str
+    temperature: float = 0.7
+
+
 # ============================================================================
 # MAIN ROUTES
 # ============================================================================
@@ -140,7 +196,6 @@ class FileContentResponse(BaseModel):
 @app.get("/")
 async def root():
     """Root endpoint - serve the app."""
-    templates_dir = WEBAPP_DIR / "templates"
     index_file = templates_dir / "index.html"
     
     if index_file.exists():
@@ -179,13 +234,36 @@ async def app_page():
 
 
 # ============================================================================
+# Debug Endpoint
+# ============================================================================
+
+@app.get("/debug/files")
+async def debug_files():
+    """Debug endpoint to check file structure."""
+    return {
+        "webapp_dir": str(WEBAPP_DIR.absolute()),
+        "static_dir": {
+            "path": str(static_dir.absolute()),
+            "exists": static_dir.exists(),
+            "files": [f.name for f in static_dir.glob("*")] if static_dir.exists() else []
+        },
+        "templates_dir": {
+            "path": str(templates_dir.absolute()),
+            "exists": templates_dir.exists(),
+            "files": [f.name for f in templates_dir.glob("*")] if templates_dir.exists() else []
+        },
+        "css_files": [f.name for f in static_dir.glob("*.css")] if static_dir.exists() else [],
+        "js_files": [f.name for f in static_dir.glob("*.js")] if static_dir.exists() else []
+    }
+
+
+# ============================================================================
 # Health & Models
 # ============================================================================
 
 @app.get("/health")
 async def health_check():
     """Health check - includes chat service status."""
-    # Check Ollama
     try:
         async with OllamaSessionManager(settings.ollama_host, settings.ollama_port) as session:
             ollama_alive = await session.is_alive()
@@ -193,7 +271,6 @@ async def health_check():
         logger.error(f"Ollama health check failed: {e}")
         ollama_alive = False
     
-    # Check chat service
     chat_service_alive = False
     try:
         async with httpx.AsyncClient() as client:
@@ -237,13 +314,9 @@ async def list_models(api_key: str = Depends(verify_api_key)):
 # Chat Endpoints - Proxy to Chat Service
 # ============================================================================
 
-class InitChatRequest(BaseModel):
-    model: str
-    conversation_id: Optional[str] = None
-
 @app.post("/chat/init")
 async def init_chat(
-    request: InitChatRequest,                      # ✅ JSON body
+    request: InitChatRequest,
     api_key: str = Depends(verify_api_key)
 ):
     """Initialize chat session (proxy to chat service)."""
@@ -252,7 +325,7 @@ async def init_chat(
             response = await client.post(
                 f"{CHAT_SERVICE_URL}/chat/init",
                 json={
-                    "model": request.model,        # ✅ Use request.model
+                    "model": request.model,
                     "conversation_id": request.conversation_id
                 },
                 timeout=10.0
@@ -270,14 +343,9 @@ async def init_chat(
         logger.error(f"Failed to connect to chat service: {e}")
         raise HTTPException(status_code=503, detail="Chat service unavailable")
 
-class ChatMessageRequest(BaseModel):
-    conversation_id: str
-    message: str
-    temperature: float = 0.7
-
 @app.post("/chat/message")
 async def send_chat_message(
-    request: ChatMessageRequest,  # ✅ Use request body
+    request: ChatMessageRequest,
     api_key: str = Depends(verify_api_key)
 ):
     """Send message to chat (proxy to chat service)."""
