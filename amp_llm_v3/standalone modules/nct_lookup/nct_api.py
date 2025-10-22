@@ -465,7 +465,7 @@ async def _execute_search(nct_id: str, request: SearchRequest):
 
 def _get_database_list(request: SearchRequest) -> List[str]:
     """Get list of databases to search."""
-    databases = ["clinicaltrials", "pubmed", "pmc"]
+    databases = ["clinicaltrials", "pubmed", "pmc", "pmc_bioc"]  # ← ADD pmc_bioc
     
     if request.include_extended:
         if request.databases:
@@ -512,6 +512,14 @@ def _generate_summary(results: Dict[str, Any]) -> Dict[str, Any]:
         pmc_count = len(pmc_data.get("pmcids", []))
         databases_searched.append("pmc")
         results_by_database["pmc"] = pmc_count
+
+    # PMC BioC count
+    pmc_bioc_count = 0
+    if sources.get("pmc_bioc", {}).get("success"):
+        pmc_bioc_data = sources["pmc_bioc"].get("data", {})
+        pmc_bioc_count = pmc_bioc_data.get("total_fetched", 0)
+        databases_searched.append("pmc_bioc")
+        results_by_database["pmc_bioc"] = pmc_bioc_count
     
     # Extended API counts
     if "extended" in sources:
