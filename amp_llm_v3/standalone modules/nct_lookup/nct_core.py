@@ -408,6 +408,7 @@ class NCTSearchEngine:
             # Get PMIDs from Pmc results
             pmc_data = results.get("sources", {}).get("pmc", {})
             pmcids = pmc_data.get("pmcids", [])
+            logger.info(f"PMC BioC fetch will process {len(pmcids)} PMIDs")
             
             if not pmcids:
                 logger.info("No PMIDs found for BioC fetch")
