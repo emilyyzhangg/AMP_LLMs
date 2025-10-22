@@ -386,108 +386,90 @@ class NCTSearchEngine:
             logger.error(f"PMC search error: {e}", exc_info=True)
             return {"error": str(e)}
         
-    async def _search_pmc_bioc(
+    async def fetch_pmc_bioc(
         self,
-        nct_id: str,
-        ct_data: Dict[str, Any],
-        results: Dict[str, Any]
+        pmid: str,
+        format: str = "json",
+        encoding: str = "unicode"
     ) -> Dict[str, Any]:
         """
-        Fetch PMC BioC format for articles from Step 2 (PubMed) and Step 3 (PMC).
-        Uses PMIDs returned by previous searches.
+        Fetch article from PubMed Central Open Access in BioC format.
         
         Args:
-            nct_id: NCT number
-            ct_data: Clinical trial data
-            results: Current results dict with PubMed and PMC data
-            
+            pmid: PubMed ID or PMC ID
+            format: 'xml' or 'json'
+            encoding: 'unicode' or 'ascii'
+        
         Returns:
-            Dict containing BioC formatted articles
+            Dict containing BioC formatted article data or error
         """
-        bioc_results = {
-            "articles": [],
-            "total_found": 0,
-            "total_fetched": 0,
-            "errors": [],
-            "sources": {
-                "pubmed": 0,
-                "pmc": 0
-            }
-        }
+        # OLD URL (causing 502):
+        # base_url = "https://www.ncbi.nlm.nih.gov/research/bionlp/RESTful/pmcoa.cgi"
         
-        # Collect PMIDs from Step 2: PubMed search
-        pmids = []
-        if results["sources"]["pubmed"].get("success"):
-            pubmed_data = results["sources"]["pubmed"].get("data", {})
-            pubmed_pmids = pubmed_data.get("pmids", [])
-            
-            for pmid in pubmed_pmids:
-                if pmid and pmid not in pmids:
-                    pmids.append(pmid)
-            
-            bioc_results["sources"]["pubmed"] = len(pubmed_pmids)
-            logger.info(f"Collected {len(pubmed_pmids)} PMIDs from PubMed search")
+        # NEW URL - Use PubTator3 API instead (more reliable):
+        base_url = "https://www.ncbi.nlm.nih.gov/research/pubtator3-api/publications/export/biocjson"
         
-        # Collect PMIDs from Step 3: PMC search
-        # PMC returns PMCIDs, but we can try to use them or extract PMIDs
-        if results["sources"]["pmc"].get("success"):
-            pmc_data = results["sources"]["pmc"].get("data", {})
+        # Try PubTator3 first
+        try:
+            await self._rate_limit()
             
-            # Try to get PMIDs from PMC articles if available
-            pmc_articles = pmc_data.get("articles", [])
-            for article in pmc_articles:
-                pmid = article.get("pmid")
-                if pmid and pmid not in pmids:
-                    pmids.append(pmid)
+            # PubTator3 uses a different URL structure
+            url = f"{base_url}?pmids={pmid}"
             
-            # Also check if PMC returned PMCIDs that we can use
-            pmcids = pmc_data.get("pmcids", [])
-            for pmcid in pmcids:
-                if pmcid and pmcid not in pmids:
-                    pmids.append(pmcid)
-            
-            bioc_results["sources"]["pmc"] = len(pmc_articles) + len(pmcids)
-            logger.info(f"Collected {len(pmc_articles) + len(pmcids)} IDs from PMC search")
-        
-        if not pmids:
-            logger.warning(f"No PMIDs/PMCIDs found from PubMed or PMC searches for {nct_id}")
-            return bioc_results
-        
-        bioc_results["total_found"] = len(pmids)
-        logger.info(f"Fetching BioC data for {len(pmids)} total IDs from Steps 2 & 3")
-        
-        # Fetch BioC data for each PMID/PMCID
-        for pmid in pmids:
-            try:
-                bioc_data = await self.clients['pmc_bioc'].fetch_pmc_bioc(
-                    pmid,
-                    format="json",
-                    encoding="unicode"
-                )
-                
-                if "error" not in bioc_data:
-                    bioc_results["articles"].append({
-                        "pmid": pmid,
-                        "bioc_data": bioc_data
-                    })
-                    bioc_results["total_fetched"] += 1
+            async with self.session.get(url) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    logger.info(f"PMC BioC fetch successful for {pmid} via PubTator3")
+                    return data
+                elif resp.status == 404:
+                    # Try the old API as fallback
+                    logger.warning(f"PubTator3 not available for {pmid}, trying legacy API")
+                    return await self._fetch_legacy_bioc(pmid, format, encoding)
                 else:
-                    # Article not in PMC Open Access
-                    logger.debug(f"ID {pmid} not available in PMC OA: {bioc_data['error']}")
-                    bioc_results["errors"].append({
-                        "pmid": pmid,
-                        "error": bioc_data["error"]
-                    })
+                    logger.error(f"PubTator3 fetch error: HTTP {resp.status}")
+                    return await self._fetch_legacy_bioc(pmid, format, encoding)
                     
-            except Exception as e:
-                logger.error(f"Error fetching BioC for ID {pmid}: {e}")
-                bioc_results["errors"].append({
-                    "pmid": pmid,
-                    "error": str(e)
-                })
+        except Exception as e:
+            logger.error(f"PubTator3 fetch error for {pmid}: {e}")
+            # Try legacy API as fallback
+            return await self._fetch_legacy_bioc(pmid, format, encoding)
+
+    async def _fetch_legacy_bioc(
+        self,
+        pmid: str,
+        format: str = "json",
+        encoding: str = "unicode"
+    ) -> Dict[str, Any]:
+        """
+        Fallback to legacy PMC BioC API.
+        """
+        base_url = "https://www.ncbi.nlm.nih.gov/research/bionlp/RESTful/pmcoa.cgi"
+        url = f"{base_url}/BioC_{format}/{pmid}/{encoding}"
         
-        logger.info(f"BioC search complete: {bioc_results['total_fetched']}/{bioc_results['total_found']} articles fetched")
-        return bioc_results
+        try:
+            await self._rate_limit()
+            async with self.session.get(url) as resp:
+                if resp.status == 200:
+                    if format == "json":
+                        data = await resp.json()
+                        logger.info(f"Legacy PMC BioC fetch successful for {pmid}")
+                        return data
+                    else:  # xml
+                        xml_content = await resp.text()
+                        logger.info(f"Legacy PMC BioC fetch successful for {pmid}")
+                        return {"xml": xml_content}
+                elif resp.status == 404:
+                    logger.warning(f"Article {pmid} not found in PMC Open Access")
+                    return {"error": "Article not available in PMC Open Access"}
+                elif resp.status == 502:
+                    logger.error(f"PMC BioC API returning 502 for {pmid}")
+                    return {"error": "PMC BioC service temporarily unavailable (502)"}
+                else:
+                    logger.error(f"Legacy PMC BioC fetch error: HTTP {resp.status}")
+                    return {"error": f"HTTP {resp.status}"}
+        except Exception as e:
+            logger.error(f"Legacy PMC BioC fetch error for {pmid}: {e}")
+            return {"error": str(e)}
     
     async def _search_extended(
         self,
