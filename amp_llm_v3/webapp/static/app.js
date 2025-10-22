@@ -284,9 +284,9 @@ const app = {
             button.appendChild(arrow);
             
             // Use DIRECT onclick (most reliable across browsers)
-            button.onclick = () => {
-                console.log('Button clicked:', model.name);
-                this.selectModel(model.name);
+            button.onclick = function() {
+                const modelName = this.dataset.modelName;
+                app.selectModel(modelName);
             };
             
             selectionDiv.appendChild(button);
