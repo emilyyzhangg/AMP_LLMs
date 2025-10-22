@@ -283,6 +283,37 @@ class PMCClient(BaseClient):
     
 class PMCBioClient(BaseClient):
     """PMC BioC API client."""
+    
+    async def fetch(self, identifier: str) -> Dict[str, Any]:
+        """
+        Fetch article by PMID/PMCID (implements BaseClient abstract method).
+        This is a wrapper around fetch_pmc_bioc for consistency with base class.
+        
+        Args:
+            identifier: PubMed ID or PMC ID
+            
+        Returns:
+            Dict containing BioC formatted article data or error
+        """
+        return await self.fetch_pmc_bioc(identifier, format="json", encoding="unicode")
+    
+    async def search(self, query: str, **kwargs) -> Dict[str, Any]:
+        """
+        BioC API does not support search functionality.
+        Use PubMed/PMC to find PMIDs first, then use fetch() to get BioC data.
+        
+        Args:
+            query: Search query (not used - BioC doesn't support search)
+            **kwargs: Additional parameters (not used)
+            
+        Returns:
+            Error dict explaining BioC doesn't support search
+        """
+        return {
+            "error": "BioC API does not support search",
+            "message": "Use PubMed or PMC to find PMIDs first, then fetch individual articles"
+        }
+    
     async def fetch_pmc_bioc(
         self,
         pmid: str,
