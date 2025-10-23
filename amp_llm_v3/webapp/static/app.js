@@ -93,7 +93,8 @@ const app = {
         const themeNames = {
             'green': 'Green',
             'blue': 'Blue',
-            'balanced': 'Tri-Color'
+            'balanced': 'Tri-Color',
+            'professional': 'Professional' 
         };
         
         themeStylesheet.href = `/static/theme-${theme}.css`;
