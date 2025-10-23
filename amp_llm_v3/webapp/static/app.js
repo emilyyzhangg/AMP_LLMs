@@ -202,12 +202,12 @@ const app = {
         document.getElementById('mode-title').textContent = info.title;
         document.getElementById('mode-subtitle').textContent = info.subtitle;
         
-        // Update back button behavior based on mode and state
         this.updateBackButton();
         
         if (mode === 'chat') {
             this.initializeChatMode();
-            this.updateChatInfoBar();
+        } else if (mode === 'research') {
+            this.updateChatInfoBar(); // Add info bar to research mode too
         } else if (mode === 'files') {
             this.loadFiles();
         }
