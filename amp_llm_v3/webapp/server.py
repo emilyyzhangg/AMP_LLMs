@@ -144,6 +144,11 @@ async def list_available_themes():
             "id": "professional",
             "name": "Professional",
             "colors": ["#2C3E50", "#16A085", "#E67E22"]
+        },
+        "theme-company.css": {
+        "id": "company",
+        "name": "Company",
+        "colors": ["#0E1F81", "#1BEB49", "#FFA400"]
         }
     }
     

@@ -1,32 +1,62 @@
 /* ============================================================================
-   GREEN PRIMARY THEME
+   GREEN PRIMARY THEME - WITH INCREASED BANNER CONTRAST
    ============================================================================ */
 
 body {
     background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);
 }
 
-/* Auth */
+/* AUTH */
 .auth-box input:focus {
     border-color: #1BEB49;
 }
 
 .auth-box button {
-    background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);
+    background: linear-gradient(135deg, #1BEB49 0%, #17C93E 100%);
 }
 
-/* Header */
+/* HEADER - MODE PAGE - INCREASED CONTRAST */
 header {
-    background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);
+    background: linear-gradient(135deg, #14B836 0%, #0E1F81 100%);
+    border-bottom: 3px solid #1BEB49;
+    box-shadow: 0 4px 16px rgba(27, 235, 73, 0.3);
 }
 
-/* Menu */
+/* LANDING HEADER - INCREASED CONTRAST */
+.landing-header {
+    background: linear-gradient(135deg, #E8FFF2 0%, #D4F4DD 100%);
+    border-bottom: 3px solid #1BEB49;
+    box-shadow: 0 4px 12px rgba(27, 235, 73, 0.2);
+}
+
+.logo-container {
+    border-color: #1BEB49;
+}
+
+.landing-title {
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.landing-header .theme-button {
+    border-color: #1BEB49;
+    color: #0E1F81;
+}
+
+.landing-header .theme-button:hover {
+    background: #D4F4DD;
+    border-color: #17C93E;
+}
+
+/* MENU */
 .menu-item:hover {
     box-shadow: 0 10px 25px rgba(27, 235, 73, 0.2);
     border-color: #1BEB49;
 }
 
-/* Messages */
+/* MESSAGES */
 .message.user .avatar {
     background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);
 }
@@ -45,7 +75,7 @@ header {
     border: 1px solid #ffd480;
 }
 
-/* Inputs */
+/* INPUTS */
 .input-area textarea:focus,
 .nct-input-group input:focus,
 .nct-input-group textarea:focus {
@@ -97,7 +127,7 @@ header {
     color: #0E1F81;
 }
 
-/* Files */
+/* FILES */
 .file-upload-btn, .file-card-load {
     background: #1BEB49;
 }
@@ -123,7 +153,7 @@ header {
     color: #1BEB49;
 }
 
-/* Loading */
+/* LOADING */
 .loading {
     color: #1BEB49;
 }
@@ -133,7 +163,7 @@ header {
     border-top-color: #1BEB49;
 }
 
-/* Scrollbar */
+/* SCROLLBAR */
 .chat-container::-webkit-scrollbar-thumb,
 .nct-results::-webkit-scrollbar-thumb,
 .files-container::-webkit-scrollbar-thumb {
@@ -149,30 +179,4 @@ header {
 .model-button:hover {
     border-color: #1BEB49;
     box-shadow: 0 5px 15px rgba(27, 235, 73, 0.2);
-}
-
-.landing-header {
-    background: linear-gradient(135deg, #E8FFF2 0%, #F0FFF6 100%);
-    border-bottom: 3px solid #1BEB49;
-}
-
-.logo-container {
-    border-color: #1BEB49;
-}
-
-.landing-title {
-    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.landing-header .theme-button {
-    border-color: #1BEB49;
-    color: #0E1F81;
-}
-
-.landing-header .theme-button:hover {
-    background: #E8FFF2;
-    border-color: #17C93E;
 }

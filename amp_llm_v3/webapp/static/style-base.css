@@ -271,9 +271,9 @@ header p {
 }
 
 .logo-container {
-    width: 60px;
-    height: 60px;
-    padding: 8px;
+    width: 10px;
+    height: 10px;
+    padding: 2px;
     background: white;
     border-radius: 12px;
     border: 2px solid #E0E6E8;
@@ -1086,8 +1086,8 @@ header p {
     }
     
     .logo-container {
-        width: 50px;
-        height: 50px;
+        width: 2px;
+        height: 2px;
     }
 
     .menu-grid {

@@ -1,12 +1,12 @@
 /* ============================================================================
-   BALANCED TRI-COLOR THEME
+   BALANCED TRI-COLOR THEME - WITH INCREASED BANNER CONTRAST
    ============================================================================ */
 
 body {
     background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%);
 }
 
-/* Auth */
+/* AUTH */
 .auth-box h1 {
     color: #0E1F81;
 }
@@ -19,12 +19,43 @@ body {
     background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
 }
 
-/* Header */
+/* HEADER - MODE PAGE - INCREASED CONTRAST */
 header {
-    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
+    background: linear-gradient(135deg, #081250 0%, #0E1F81 100%);
+    border-bottom: 3px solid #1BEB49;
+    box-shadow: 0 4px 16px rgba(27, 235, 73, 0.3);
 }
 
-/* Menu */
+/* LANDING HEADER - INCREASED CONTRAST */
+.landing-header {
+    background: linear-gradient(135deg, #E6EEFF 0%, #E8FFF2 50%, #FFF4E6 100%);
+    border-bottom: 3px solid transparent;
+    border-image: linear-gradient(90deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%) 1;
+    box-shadow: 0 4px 12px rgba(14, 31, 129, 0.15);
+}
+
+.logo-container {
+    border-color: #1BEB49;
+}
+
+.landing-title {
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.landing-header .theme-button {
+    border-color: #1BEB49;
+    color: #0E1F81;
+}
+
+.landing-header .theme-button:hover {
+    background: linear-gradient(135deg, #E6EEFF 0%, #FFF4E6 100%);
+    border-color: #FFA400;
+}
+
+/* MENU */
 .menu-title {
     color: #0E1F81;
 }
@@ -38,7 +69,7 @@ header {
     color: #0E1F81;
 }
 
-/* Messages */
+/* MESSAGES */
 .message.user .avatar {
     background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
 }
@@ -57,7 +88,7 @@ header {
     border: 1px solid #ffd480;
 }
 
-/* Inputs */
+/* INPUTS */
 .input-area textarea:focus,
 .nct-input-group input:focus,
 .nct-input-group textarea:focus {
@@ -125,7 +156,7 @@ header {
     color: #0E1F81;
 }
 
-/* Files */
+/* FILES */
 .file-upload-btn {
     background: #1BEB49;
 }
@@ -159,7 +190,7 @@ header {
     background: #17c93e;
 }
 
-/* Loading */
+/* LOADING */
 .loading {
     color: #1BEB49;
 }
@@ -169,7 +200,7 @@ header {
     border-top-color: #1BEB49;
 }
 
-/* Scrollbar */
+/* SCROLLBAR */
 .chat-container::-webkit-scrollbar-thumb,
 .nct-results::-webkit-scrollbar-thumb,
 .files-container::-webkit-scrollbar-thumb {
@@ -185,31 +216,4 @@ header {
 .model-button:hover {
     border-color: #1BEB49;
     box-shadow: 0 5px 15px rgba(27, 235, 73, 0.2);
-}
-
-.landing-header {
-    background: linear-gradient(135deg, #E6EEFF 0%, #E8FFF2 50%, #FFF4E6 100%);
-    border-bottom: 3px solid transparent;
-    border-image: linear-gradient(90deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%) 1;
-}
-
-.logo-container {
-    border-color: #1BEB49;
-}
-
-.landing-title {
-    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.landing-header .theme-button {
-    border-color: #1BEB49;
-    color: #0E1F81;
-}
-
-.landing-header .theme-button:hover {
-    background: linear-gradient(135deg, #E6EEFF 0%, #FFF4E6 100%);
-    border-color: #FFA400;
 }
