@@ -207,6 +207,7 @@ const app = {
         
         if (mode === 'chat') {
             this.initializeChatMode();
+            this.updateChatInfoBar();
         } else if (mode === 'files') {
             this.loadFiles();
         }
@@ -274,7 +275,49 @@ const app = {
             this.addMessage('chat-container', 'error', '❌ Chat service unavailable: ' + error.message);
         }
     },
-    
+
+    updateChatInfoBar() {
+        let infoBar = document.querySelector('.chat-info-bar');
+        
+        if (!infoBar) {
+            // Create info bar if it doesn't exist
+            const chatMode = document.getElementById('chat-mode');
+            const researchMode = document.getElementById('research-mode');
+            
+            // Add to chat mode
+            if (chatMode) {
+                infoBar = document.createElement('div');
+                infoBar.className = 'chat-info-bar';
+                chatMode.insertBefore(infoBar, chatMode.firstChild);
+            }
+            
+            // Add to research mode
+            if (researchMode) {
+                const researchInfoBar = document.createElement('div');
+                researchInfoBar.className = 'chat-info-bar';
+                researchMode.insertBefore(researchInfoBar, researchMode.firstChild);
+            }
+        }
+        
+        // Update all info bars
+        document.querySelectorAll('.chat-info-bar').forEach(bar => {
+            bar.innerHTML = `
+                <div class="chat-info-item">
+                    <span class="chat-info-label">Service:</span>
+                    <span class="chat-info-value">Chat with LLM</span>
+                </div>
+                <div class="chat-info-item">
+                    <span class="chat-info-label">Model:</span>
+                    <span class="chat-info-value">${this.currentModel || 'Not selected'}</span>
+                </div>
+                <div class="chat-info-item">
+                    <span class="chat-info-label">Status:</span>
+                    <span class="chat-info-value">${this.currentConversationId ? '🟢 Connected' : '⚪ No conversation'}</span>
+                </div>
+            `;
+        });
+    },
+
     showModelSelection() {
         const container = document.getElementById('chat-container');
         

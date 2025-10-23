@@ -280,23 +280,50 @@ header p {
 }
 
 /* ============================================================================
-   Mode Container - COMPLETELY FIXED
+   Mode Container - THREE PANEL LAYOUT (header, scrollable middle, fixed input)
    ============================================================================ */
 
 .mode-container {
     display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     flex-direction: column;
+    height: 100%;
+    overflow: hidden;
 }
 
 .mode-container.active {
     display: flex;
 }
 
+/* ============================================================================
+   Chat Info Bar (Fixed Top)
+   ============================================================================ */
+
+.chat-info-bar {
+    flex: 0 0 auto;
+    padding: 15px 30px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    color: #495057;
+}
+
+.chat-info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-info-label {
+    font-weight: bold;
+    color: #333;
+}
+
+.chat-info-value {
+    color: #666;
+}
 
 /* ============================================================================
    Main App Layout - CRITICAL FIX
@@ -325,39 +352,65 @@ header p {
 
 
 /* ============================================================================
-   Chat Container - COMPLETELY FIXED for scrolling
+   Chat Container - SCROLLABLE MIDDLE SECTION
    ============================================================================ */
 
 .chat-container, .research-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 60px; /* Space for input area */
+    /* Critical flex settings */
+    flex: 1 1 auto;
     
+    /* Enable scrolling */
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     
+    /* Styling */
     padding: 30px;
     background: #ffffff;
-}
-
-/* Input area positioned at bottom */
-.input-area {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
     
+    /* Critical: Allow shrinking */
+    min-height: 0;
+    
+    /* Ensure proper width */
+    width: 100%;
+}
+/* ============================================================================
+   Input Area - FIXED BOTTOM
+   ============================================================================ */
+
+.input-area {
+    /* Fixed at bottom */
+    flex: 0 0 auto;
+    
+    /* Layout */
     display: flex;
     gap: 15px;
     padding: 20px 30px;
     background: #f8f9fa;
     border-top: 1px solid #e9ecef;
-    
-    height: 60px; /* Match the bottom offset above */
-    box-sizing: content-box;
+}
+
+.input-area textarea {
+    flex: 1;
+    padding: 15px;
+    border: 2px solid #ced4da;
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    resize: none;
+    min-width: 0;
+}
+
+.input-area button {
+    padding: 15px 30px;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    min-width: 100px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
 }
 
 /* Ensure messages don't break layout */
