@@ -2,6 +2,7 @@
 // AMP LLM Enhanced Web Interface - FIXED VERSION
 // ✅ Scrollable chat container and model selection
 // ✅ Smart back button navigation (main menu → model selection → active chat)
+// ✅ FIXED: Info bar created at parent level, not inside scrollable container
 // ============================================================================
 
 const app = {
@@ -207,7 +208,7 @@ const app = {
         if (mode === 'chat') {
             this.initializeChatMode();
         } else if (mode === 'research') {
-            this.updateChatInfoBar(); // Add info bar to research mode too
+            this.ensureChatInfoBar(); // Also add to research mode
         } else if (mode === 'files') {
             this.loadFiles();
         }
@@ -233,6 +234,7 @@ const app = {
                 input.placeholder = 'Select a model to start chatting...';
                 
                 this.updateBackButton();
+                this.updateChatInfoBar();
             };
         } else {
             // Default - back goes to main menu
@@ -246,11 +248,10 @@ const app = {
     // =========================================================================
     
     async initializeChatMode() {
+        // CRITICAL FIX: Create info bar at PARENT level first
+        this.ensureChatInfoBar();
+        
         const container = document.getElementById('chat-container');
-        
-        // CRITICAL: Create info bar FIRST before any messages
-        this.updateChatInfoBar();
-        
         container.innerHTML = '';
         
         const input = document.getElementById('chat-input');
@@ -280,37 +281,66 @@ const app = {
         }
     },
 
-    updateChatInfoBar() {
+    ensureChatInfoBar() {
         const chatMode = document.getElementById('chat-mode');
-        let infoBar = document.querySelector('.chat-info-bar');
+        const researchMode = document.getElementById('research-mode');
         
-        if (!infoBar) {
-            // Create info bar if it doesn't exist
-            const chatMode = document.getElementById('chat-mode');
-            const researchMode = document.getElementById('research-mode');
-            chatMode.insertBefore(infoBar, chatMode.firstChild);
+        // Handle chat mode
+        if (this.currentMode === 'chat' || this.currentMode === 'menu') {
+            let infoBar = chatMode.querySelector('.chat-info-bar');
+            
+            if (!infoBar) {
+                // Create new info bar
+                infoBar = document.createElement('div');
+                infoBar.className = 'chat-info-bar';
+                
+                // Insert as first child (before chat-container)
+                chatMode.insertBefore(infoBar, chatMode.firstChild);
+            }
+        }
+        
+        // Handle research mode
+        if (this.currentMode === 'research') {
+            let researchInfoBar = researchMode.querySelector('.chat-info-bar');
+            if (!researchInfoBar) {
+                researchInfoBar = document.createElement('div');
+                researchInfoBar.className = 'chat-info-bar';
+                researchMode.insertBefore(researchInfoBar, researchMode.firstChild);
+            }
         }
         
         // Update content
-            const modelDisplay = this.currentModel || '<em>Not selected</em>';
-            const statusClass = this.currentConversationId ? 'chat-info-status-connected' : 'chat-info-status-disconnected';
-            const statusText = this.currentConversationId ? '🟢 Connected' : '⚪ Select a model';
-            
-            infoBar.innerHTML = `
-                <div class="chat-info-item">
-                    <span class="chat-info-label">💬 Service:</span>
-                    <span class="chat-info-value">Chat with LLM</span>
-                </div>
-                <div class="chat-info-item">
-                    <span class="chat-info-label">🤖 Model:</span>
-                    <span class="chat-info-value">${modelDisplay}</span>
-                </div>
-                <div class="chat-info-item">
-                    <span class="chat-info-label">Status:</span>
-                    <span class="chat-info-value ${statusClass}">${statusText}</span>
-                </div>
-            `;
-        },
+        this.updateChatInfoBar();
+    },
+
+    updateChatInfoBar() {
+        const modeElement = document.getElementById(this.currentMode + '-mode');
+        if (!modeElement) return;
+        
+        let infoBar = modeElement.querySelector('.chat-info-bar');
+        if (!infoBar) return;
+        
+        const modelDisplay = this.currentModel || '<em>Not selected</em>';
+        const statusClass = this.currentConversationId ? 'chat-info-status-connected' : 'chat-info-status-disconnected';
+        const statusText = this.currentConversationId ? '🟢 Connected' : '⚪ Select a model';
+        
+        const serviceLabel = this.currentMode === 'research' ? 'Research Assistant' : 'Chat with LLM';
+        
+        infoBar.innerHTML = `
+            <div class="chat-info-item">
+                <span class="chat-info-label">💬 Service:</span>
+                <span class="chat-info-value">${serviceLabel}</span>
+            </div>
+            <div class="chat-info-item">
+                <span class="chat-info-label">🤖 Model:</span>
+                <span class="chat-info-value">${modelDisplay}</span>
+            </div>
+            <div class="chat-info-item">
+                <span class="chat-info-label">Status:</span>
+                <span class="chat-info-value ${statusClass}">${statusText}</span>
+            </div>
+        `;
+    },
 
     showModelSelection() {
         const container = document.getElementById('chat-container');
@@ -578,7 +608,6 @@ const app = {
     async handleNCTLookup() {
         const input = document.getElementById('nct-input');
         const nctIds = input.value.split(',').map(s => s.trim().toUpperCase()).filter(s => s);
-
         
         if (nctIds.length === 0) {
             alert('Please enter at least one NCT number');
