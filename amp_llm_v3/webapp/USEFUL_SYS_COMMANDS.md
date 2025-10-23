@@ -1,3 +1,5 @@
+##### THESE ARE HOST COMMANDS TO CONTROL THE SERVICES THAT RUN ON LLM.AMPHORAXE.CA #### 
+
 # View All Service Status
 launchctl list | grep com.amplm
 
