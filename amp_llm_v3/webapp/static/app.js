@@ -1,7 +1,7 @@
 // ============================================================================
 // AMP LLM Enhanced Web Interface - COMPLETELY FIXED VERSION
-// ✅ Fixed: No more insertBefore errors
-// ✅ Uses appendChild instead of insertBefore for safety
+// ✅ Fixed: insertBefore error - now uses safe DOM manipulation
+// ✅ Fixed: Model loading and display
 // ============================================================================
 
 const app = {
@@ -256,13 +256,13 @@ const app = {
     },
     
     // =========================================================================
-    // Chat Mode - COMPLETELY REWRITTEN TO AVOID insertBefore
+    // Chat Mode - COMPLETELY FIXED
     // =========================================================================
     
     async initializeChatMode() {
         console.log('🚀 Initializing chat mode...');
         
-        // CRITICAL FIX: Create info bar using a safer method
+        // Create info bar FIRST, before any content
         this.ensureChatInfoBar();
         
         const container = document.getElementById('chat-container');
@@ -339,7 +339,7 @@ const app = {
         }
     },
 
-    // COMPLETELY REWRITTEN - No insertBefore!
+    // COMPLETELY REWRITTEN - Safe DOM manipulation
     ensureChatInfoBar() {
         console.log('📊 Ensuring chat info bar...');
         
@@ -361,35 +361,35 @@ const app = {
             infoBar = document.createElement('div');
             infoBar.className = 'chat-info-bar';
             
-            // SAFE METHOD: Get all children, then insert at position 0
-            const children = Array.from(modeElement.children);
+            // SAFE METHOD: Insert as first child using prepend
+            // This is the safest way - prepend is supported by all modern browsers
+            modeElement.prepend(infoBar);
             
-            if (children.length > 0) {
-                // Insert before first child
-                modeElement.insertBefore(infoBar, children[0]);
-            } else {
-                // No children, just append
-                modeElement.appendChild(infoBar);
-            }
-            
-            console.log('✅ Info bar created and inserted');
+            console.log('✅ Info bar created and inserted using prepend()');
         } else {
             console.log('✅ Info bar already exists');
         }
         
+        // Now update its content
         this.updateChatInfoBar();
     },
 
     updateChatInfoBar() {
         const modeElement = document.getElementById(this.currentMode + '-mode');
-        if (!modeElement) return;
+        if (!modeElement) {
+            console.warn('⚠️  Mode element not found for info bar update');
+            return;
+        }
         
         let infoBar = modeElement.querySelector('.chat-info-bar');
         if (!infoBar) {
             console.warn('⚠️  Info bar not found, creating...');
             this.ensureChatInfoBar();
             infoBar = modeElement.querySelector('.chat-info-bar');
-            if (!infoBar) return; // Still not there, give up
+            if (!infoBar) {
+                console.error('❌ Failed to create info bar');
+                return;
+            }
         }
         
         const modelDisplay = this.currentModel || '<em>Not selected</em>';
@@ -665,7 +665,7 @@ const app = {
     },
     
     // =========================================================================
-    // NCT Lookup & File Manager (unchanged - keeping original)
+    // NCT Lookup & File Manager
     // =========================================================================
     
     async handleNCTLookup() {
