@@ -823,100 +823,136 @@ const app = {
             `;
         }
     },
-    
-    
         
-        displayNCTResults(data) {
-        const resultsDiv = document.getElementById('nct-results');
-        
-        if (!data.success || data.results.length === 0) {
-            resultsDiv.innerHTML = `
-                <div class="result-card">
-                    <h3>No Results</h3>
-                    <p>No trials found</p>
+    displayNCTResults(data) {
+    const resultsDiv = document.getElementById('nct-results');
+    
+    if (!data.success || data.results.length === 0) {
+        resultsDiv.innerHTML = `
+            <div class="result-card">
+                <h3>No Results</h3>
+                <p>No trials found</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = `
+        <div class="summary-card">
+            <h3>Summary</h3>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-item-label">Total Requested</div>
+                    <div class="summary-item-value info">${data.summary.total_requested}</div>
                 </div>
-            `;
-            return;
+                <div class="summary-item">
+                    <div class="summary-item-label">Successful</div>
+                    <div class="summary-item-value success">${data.summary.successful}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-item-label">Failed</div>
+                    <div class="summary-item-value error">${data.summary.failed}</div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    data.results.forEach(result => {
+        const ct = result.sources?.clinical_trials?.data?.protocolSection || {};
+        const ident = ct.identificationModule || {};
+        const status = ct.statusModule || {};
+        const conditions = ct.conditionsModule?.conditions || [];
+        
+        // ====================================================================
+        // ROBUST COUNT EXTRACTION - Tries multiple approaches
+        // ====================================================================
+        
+        let pubmedCount = 0;
+        let pmcCount = 0;
+        let pmcBiocCount = 0;
+        
+        // Try to get PubMed count from multiple possible locations
+        try {
+            if (result.sources?.pubmed?.data?.pmids) {
+                pubmedCount = result.sources.pubmed.data.pmids.length;
+            } else if (result.sources?.pubmed?.data?.total_found) {
+                pubmedCount = result.sources.pubmed.data.total_found;
+            } else if (result.sources?.pubmed?.data?.articles) {
+                pubmedCount = result.sources.pubmed.data.articles.length;
+            }
+        } catch (e) {
+            console.error('Error getting PubMed count:', e);
         }
         
-        let html = `
-            <div class="summary-card">
-                <h3>Summary</h3>
-                <div class="summary-grid">
-                    <div class="summary-item">
-                        <div class="summary-item-label">Total Requested</div>
-                        <div class="summary-item-value info">${data.summary.total_requested}</div>
+        // Try to get PMC count from multiple possible locations
+        try {
+            if (result.sources?.pmc?.data?.pmcids) {
+                pmcCount = result.sources.pmc.data.pmcids.length;
+            } else if (result.sources?.pmc?.data?.total_found) {
+                pmcCount = result.sources.pmc.data.total_found;
+            } else if (result.sources?.pmc?.data?.articles) {
+                pmcCount = result.sources.pmc.data.articles.length;
+            }
+        } catch (e) {
+            console.error('Error getting PMC count:', e);
+        }
+        
+        // Try to get PMC BioC count
+        try {
+            if (result.sources?.pmc_bioc?.data?.total_fetched) {
+                pmcBiocCount = result.sources.pmc_bioc.data.total_fetched;
+            } else if (result.sources?.pmc_bioc?.data?.articles) {
+                pmcBiocCount = result.sources.pmc_bioc.data.articles.length;
+            }
+        } catch (e) {
+            console.error('Error getting PMC BioC count:', e);
+        }
+        
+        // Log what we found for debugging
+        console.log(`${result.nct_id} counts:`, {
+            pubmed: pubmedCount,
+            pmc: pmcCount,
+            pmc_bioc: pmcBiocCount,
+            sources_available: result.sources ? Object.keys(result.sources) : []
+        });
+        
+        // ====================================================================
+        
+        html += `
+            <div class="result-card">
+                <div class="result-card-header">
+                    <div class="result-card-title">
+                        <h3>${result.nct_id}</h3>
+                        <div class="result-card-status">${status.overallStatus || 'Unknown Status'}</div>
                     </div>
-                    <div class="summary-item">
-                        <div class="summary-item-label">Successful</div>
-                        <div class="summary-item-value success">${data.summary.successful}</div>
+                    <button class="extract-button" onclick="app.extractTrial('${result.nct_id}')">
+                        Extract
+                    </button>
+                </div>
+                <div class="result-card-content">
+                    <strong>${this.escapeHtml(ident.officialTitle || ident.briefTitle || 'No title')}</strong>
+                    ${conditions.length > 0 ? `<br><em>Conditions: ${this.escapeHtml(conditions.join(', '))}</em>` : ''}
+                </div>
+                <div class="result-card-meta">
+                    <div class="meta-item">
+                        <div style="color: #666; font-size: 0.9em;">PubMed Articles</div>
+                        <strong style="font-size: 1.2em; color: ${pubmedCount > 0 ? '#28a745' : '#999'}">${pubmedCount}</strong>
                     </div>
-                    <div class="summary-item">
-                        <div class="summary-item-label">Failed</div>
-                        <div class="summary-item-value error">${data.summary.failed}</div>
+                    <div class="meta-item">
+                        <div style="color: #666; font-size: 0.9em;">PMC Articles</div>
+                        <strong style="font-size: 1.2em; color: ${pmcCount > 0 ? '#28a745' : '#999'}">${pmcCount}</strong>
+                    </div>
+                    <div class="meta-item">
+                        <div style="color: #666; font-size: 0.9em;">PMC BioC Articles</div>
+                        <strong style="font-size: 1.2em; color: ${pmcBiocCount > 0 ? '#28a745' : '#999'}">${pmcBiocCount}</strong>
                     </div>
                 </div>
             </div>
         `;
-        
-        data.results.forEach(result => {
-            const ct = result.sources?.clinical_trials?.data?.protocolSection || {};
-            const ident = ct.identificationModule || {};
-            const status = ct.statusModule || {};
-            const conditions = ct.conditionsModule?.conditions || [];
-            
-            // FIXED: Properly extract counts from the result structure
-            // The data is nested under sources -> [database] -> data
-            const pubmedData = result.sources?.pubmed?.data || {};
-            const pmcData = result.sources?.pmc?.data || {};
-            const pmcBiocData = result.sources?.pmc_bioc?.data || {};
-            
-            // Extract the actual counts with proper fallbacks
-            const pubmedCount = pubmedData.pmids?.length || 0;
-            const pmcCount = pmcData.pmcids?.length || 0;
-            const pmcBiocCount = pmcBiocData.total_fetched || 0;
-            
-            console.log(`${result.nct_id} counts:`, {
-                pubmed: pubmedCount,
-                pmc: pmcCount,
-                pmc_bioc: pmcBiocCount
-            });
-            
-            html += `
-                <div class="result-card">
-                    <div class="result-card-header">
-                        <div class="result-card-title">
-                            <h3>${result.nct_id}</h3>
-                            <div class="result-card-status">${status.overallStatus || 'Unknown Status'}</div>
-                        </div>
-                        <button class="extract-button" onclick="app.extractTrial('${result.nct_id}')">
-                            Extract
-                        </button>
-                    </div>
-                    <div class="result-card-content">
-                        <strong>${this.escapeHtml(ident.officialTitle || ident.briefTitle || 'No title')}</strong>
-                        ${conditions.length > 0 ? `<br><em>Conditions: ${this.escapeHtml(conditions.join(', '))}</em>` : ''}
-                    </div>
-                    <div class="result-card-meta">
-                        <div class="meta-item">
-                            PubMed Articles
-                            <strong>${pubmedCount}</strong>
-                        </div>
-                        <div class="meta-item">
-                            PMC Articles
-                            <strong>${pmcCount}</strong>
-                        </div>
-                        <div class="meta-item">
-                            PMC BioC Articles
-                            <strong>${pmcBiocCount}</strong>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        
-        resultsDiv.innerHTML = html;
-    },
+    });
+    
+    resultsDiv.innerHTML = html;
+},
     
     async extractTrial(nctId) {
         try {
