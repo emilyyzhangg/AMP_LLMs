@@ -618,6 +618,8 @@ const app = {
         const loadingId = this.addMessage('chat-container', 'system', '🤔 Thinking...');
         
         try {
+            console.log('📤 Sending message to chat service');
+            
             const response = await fetch(`${this.API_BASE}/chat/message`, {
                 method: 'POST',
                 headers: {
@@ -631,18 +633,54 @@ const app = {
                 })
             });
             
+            console.log('📥 Response status:', response.status);
+            
             document.getElementById(loadingId)?.remove();
             
             if (response.ok) {
-                const data = await response.json();
-                this.addMessage('chat-container', 'assistant', data.message.content);
+                let data;
+                try {
+                    const responseText = await response.text();
+                    console.log('📄 Response (first 200 chars):', responseText.substring(0, 200));
+                    
+                    if (responseText.trim().startsWith('<')) {
+                        this.addMessage('chat-container', 'error', 
+                            `❌ Server returned HTML instead of JSON\n\n` +
+                            `Check console for details.`);
+                        console.error('Full response:', responseText);
+                        return;
+                    }
+                    
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    this.addMessage('chat-container', 'error', 
+                        `❌ JSON Parse Error: ${parseError.message}\n\n` +
+                        `Check console for the full response.`);
+                    return;
+                }
+                
+                if (data.message && data.message.content) {
+                    this.addMessage('chat-container', 'assistant', data.message.content);
+                } else {
+                    this.addMessage('chat-container', 'error', 
+                        `❌ Invalid response structure\n\n` +
+                        `Expected message.content but got: ${JSON.stringify(data).substring(0, 100)}`);
+                }
             } else {
-                const error = await response.json();
-                this.addMessage('chat-container', 'error', '❌ Error: ' + error.detail);
+                let errorMessage;
+                try {
+                    const errorText = await response.text();
+                    const errorData = JSON.parse(errorText);
+                    errorMessage = errorData.detail || JSON.stringify(errorData);
+                } catch (e) {
+                    errorMessage = `HTTP ${response.status}`;
+                }
+                this.addMessage('chat-container', 'error', `❌ Error: ${errorMessage}`);
             }
         } catch (error) {
             document.getElementById(loadingId)?.remove();
-            this.addMessage('chat-container', 'error', '❌ Error: ' + error.message);
+            this.addMessage('chat-container', 'error', `❌ Error: ${error.message}`);
+            console.error('Full error:', error);
         }
     },
     
