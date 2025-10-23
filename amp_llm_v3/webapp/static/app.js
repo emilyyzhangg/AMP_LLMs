@@ -357,7 +357,15 @@ const app = {
             if (!infoBar) {
                 infoBar = document.createElement('div');
                 infoBar.className = 'chat-info-bar';
-                chatMode.insertBefore(infoBar, chatMode.firstChild);
+                
+                // Find the chat-container element to insert before it
+                const chatContainer = chatMode.querySelector('.chat-container');
+                if (chatContainer) {
+                    chatMode.insertBefore(infoBar, chatContainer);
+                } else {
+                    // Fallback: prepend to chatMode
+                    chatMode.insertBefore(infoBar, chatMode.firstChild);
+                }
             }
         }
         
@@ -367,7 +375,15 @@ const app = {
             if (!researchInfoBar) {
                 researchInfoBar = document.createElement('div');
                 researchInfoBar.className = 'chat-info-bar';
-                researchMode.insertBefore(researchInfoBar, researchMode.firstChild);
+                
+                // Find the research-container element to insert before it
+                const researchContainer = researchMode.querySelector('.research-container');
+                if (researchContainer) {
+                    researchMode.insertBefore(researchInfoBar, researchContainer);
+                } else {
+                    // Fallback: prepend to researchMode
+                    researchMode.insertBefore(researchInfoBar, researchMode.firstChild);
+                }
             }
         }
         
