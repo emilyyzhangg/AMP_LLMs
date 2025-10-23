@@ -430,6 +430,8 @@ const app = {
 
     showModelSelection() {
         console.log('📦 Showing model selection');
+        console.log('📊 Available models:', this.availableModels);
+        
         const container = document.getElementById('chat-container');
         
         this.addMessage('chat-container', 'system', 
@@ -440,17 +442,24 @@ const app = {
         selectionDiv.id = 'model-selection-container';
         
         this.availableModels.forEach((model, index) => {
+            // Handle both {name: "model"} and "model" formats
+            const modelName = typeof model === 'string' ? model : (model.name || String(model));
+            
+            console.log(`Creating button for model: ${modelName}`);
+            
             const button = document.createElement('button');
             button.className = 'model-button';
             button.type = 'button';
-            button.dataset.modelName = model.name;
+            
+            // Store model name safely - avoid special characters in dataset
+            button.setAttribute('data-model-name', modelName);
             
             const icon = document.createElement('span');
             icon.textContent = '📦';
             icon.style.fontSize = '1.2em';
             
             const name = document.createElement('span');
-            name.textContent = model.name;
+            name.textContent = modelName;
             name.style.flex = '1';
             name.style.textAlign = 'left';
             name.style.marginLeft = '10px';
@@ -465,11 +474,11 @@ const app = {
             button.appendChild(name);
             button.appendChild(arrow);
             
-            // Direct onclick for maximum compatibility
+            // Direct onclick with getAttribute for safety
             button.onclick = function() {
-                const modelName = this.dataset.modelName;
-                console.log('🖱️  Model clicked:', modelName);
-                app.selectModel(modelName);
+                const selectedModel = this.getAttribute('data-model-name');
+                console.log('🖱️  Model clicked:', selectedModel);
+                app.selectModel(selectedModel);
             };
             
             selectionDiv.appendChild(button);
@@ -501,8 +510,26 @@ const app = {
                 body: JSON.stringify({ model: modelName })
             });
             
+            console.log('📥 Init response status:', response.status);
+            
             if (response.ok) {
-                const data = await response.json();
+                let data;
+                try {
+                    const responseText = await response.text();
+                    console.log('📄 Response text:', responseText.substring(0, 200));
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('❌ JSON parse error:', parseError);
+                    document.getElementById(loadingId)?.remove();
+                    this.addMessage('chat-container', 'error', 
+                        `❌ Failed to parse server response\n\n` +
+                        `The server returned invalid JSON. This usually means:\n` +
+                        `1. The chat service is returning HTML instead of JSON\n` +
+                        `2. There's a server error\n\n` +
+                        `Error: ${parseError.message}`);
+                    return;
+                }
+                
                 this.currentConversationId = data.conversation_id;
                 this.currentModel = modelName;
                 
@@ -526,14 +553,34 @@ const app = {
                 
                 this.updateBackButton();
             } else {
-                const error = await response.json();
+                let errorMessage;
+                try {
+                    const errorText = await response.text();
+                    console.log('❌ Error response:', errorText);
+                    const errorData = JSON.parse(errorText);
+                    errorMessage = errorData.detail || errorText;
+                } catch (e) {
+                    errorMessage = `HTTP ${response.status} - ${response.statusText}`;
+                }
+                
                 document.getElementById(loadingId)?.remove();
-                this.addMessage('chat-container', 'error', '❌ Failed to initialize: ' + error.detail);
+                this.addMessage('chat-container', 'error', 
+                    `❌ Failed to initialize ${modelName}\n\n` +
+                    `Error: ${errorMessage}\n\n` +
+                    `Possible issues:\n` +
+                    `• Model name contains special characters\n` +
+                    `• Chat service can't access this model\n` +
+                    `• Ollama is not responding\n\n` +
+                    `Try a different model or check the server logs.`);
             }
         } catch (error) {
-            console.error('❌ Error selecting model:', error);
+            console.error('❌ Exception selecting model:', error);
             document.getElementById(loadingId)?.remove();
-            this.addMessage('chat-container', 'error', '❌ Error: ' + error.message);
+            this.addMessage('chat-container', 'error', 
+                `❌ Connection Error\n\n` +
+                `Failed to communicate with the chat service.\n\n` +
+                `Error: ${error.message}\n\n` +
+                `Make sure the chat service is running on port 8001.`);
         }
     },
     
