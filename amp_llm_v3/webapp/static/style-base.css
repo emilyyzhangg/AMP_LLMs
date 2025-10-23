@@ -258,8 +258,8 @@ header p {
 }
 
 .logo-container {
-    width: 60px;
-    height: 60px;
+    width: clamp(40px, 8vw, 80px);   /* Min 40px, scales with viewport, max 80px */
+    height: clamp(40px, 8vw, 80px);
     padding: 8px;
     background: white;
     border-radius: 12px;
@@ -388,6 +388,10 @@ header p {
     .landing-header-right {
         justify-content: center;
     }
+        .logo-container {
+        width: clamp(40px, 10vw, 60px);  /* Slightly larger proportion on tablets */
+        height: clamp(40px, 10vw, 60px);
+    }
 }
 
 @media (max-width: 480px) {
@@ -400,8 +404,8 @@ header p {
     }
     
     .logo-container {
-        width: 40px;
-        height: 40px;
+        width: clamp(35px, 12vw, 50px);  /* More flexible on mobile */
+        height: clamp(35px, 12vw, 50px);
     }
 }
 

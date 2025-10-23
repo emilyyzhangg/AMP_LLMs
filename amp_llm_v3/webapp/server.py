@@ -81,6 +81,7 @@ async def serve_static_file(filename: str):
         raise HTTPException(status_code=404, detail=f"File not found: {filename}")
     
     # Determine content type
+    # Determine content type
     content_type = "application/octet-stream"
     if filename.endswith('.css'):
         content_type = "text/css; charset=utf-8"
@@ -88,6 +89,12 @@ async def serve_static_file(filename: str):
         content_type = "application/javascript; charset=utf-8"
     elif filename.endswith('.html'):
         content_type = "text/html; charset=utf-8"
+    elif filename.endswith('.png'):
+        content_type = "image/png"
+    elif filename.endswith('.jpg') or filename.endswith('.jpeg'):
+        content_type = "image/jpeg"
+    elif filename.endswith('.svg'):
+        content_type = "image/svg+xml"
     
     content = file_path.read_bytes()
     
@@ -117,28 +124,28 @@ async def list_available_themes():
     
     # Theme metadata - maps filename to display info
     # You can also parse this from CSS comments if you want
-    # theme_metadata = {
-    #     "theme-green.css": {
-    #         "id": "green",
-    #         "name": "Green Primary",
-    #         "colors": ["#1BEB49", "#0E1F81"]
-    #     },
-    #     "theme-blue.css": {
-    #         "id": "blue", 
-    #         "name": "Blue Primary",
-    #         "colors": ["#0E1F81", "#1BEB49"]
-    #     },
-    #     "theme-balanced.css": {
-    #         "id": "balanced",
-    #         "name": "Tri-Color",
-    #         "colors": ["#0E1F81", "#1BEB49", "#FFA400"]
-    #     },
-    #     "theme-professional.css": {
-    #         "id": "professional",
-    #         "name": "Professional",
-    #         "colors": ["#2C3E50", "#16A085", "#E67E22"]
-    #     }
-    # }
+    theme_metadata = {
+        "theme-green.css": {
+            "id": "green",
+            "name": "Green Primary",
+            "colors": ["#1BEB49", "#0E1F81"]
+        },
+        "theme-blue.css": {
+            "id": "blue", 
+            "name": "Blue Primary",
+            "colors": ["#0E1F81", "#1BEB49"]
+        },
+        "theme-balanced.css": {
+            "id": "balanced",
+            "name": "Tri-Color",
+            "colors": ["#0E1F81", "#1BEB49", "#FFA400"]
+        },
+        "theme-professional.css": {
+            "id": "professional",
+            "name": "Professional",
+            "colors": ["#2C3E50", "#16A085", "#E67E22"]
+        }
+    }
     
     try:
         # Scan for theme files
