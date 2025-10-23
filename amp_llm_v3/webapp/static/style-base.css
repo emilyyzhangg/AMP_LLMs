@@ -241,9 +241,10 @@ header p {
 
 .landing-header {
     flex-shrink: 0;
-    height: 100px;
+    min-height: 100px;
     padding: 20px 40px;
     display: flex;
+    flex-direction: row;  /* CRITICAL: Force horizontal layout */
     justify-content: space-between;
     align-items: center;
     background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
@@ -255,11 +256,12 @@ header p {
     display: flex;
     align-items: center;
     flex: 0 0 auto;
+    min-width: 80px;  /* Ensure minimum width for logo */
 }
 
 .logo-container {
-    width: clamp(40px, 8vw, 80px);   /* Min 40px, scales with viewport, max 80px */
-    height: clamp(40px, 8vw, 80px);
+    width: 60px;   /* Fixed size for desktop */
+    height: 60px;
     padding: 8px;
     background: white;
     border-radius: 12px;
@@ -284,9 +286,10 @@ header p {
 }
 
 .landing-header-center {
-    flex: 1;
+    flex: 1 1 auto;
     text-align: center;
     padding: 0 40px;
+    min-width: 0;  /* Allow text to shrink if needed */
 }
 
 .landing-title {
@@ -299,6 +302,7 @@ header p {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    white-space: nowrap;  /* Prevent title from wrapping on medium screens */
 }
 
 .landing-version {
@@ -314,6 +318,7 @@ header p {
     display: flex;
     align-items: center;
     gap: 15px;
+    min-width: 180px;  /* Ensure minimum width for theme button */
 }
 
 /* Theme switcher in landing header */
@@ -335,6 +340,7 @@ header p {
     align-items: center;
     gap: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    white-space: nowrap;  /* Prevent button text from wrapping */
 }
 
 .landing-header .theme-button:hover {
@@ -357,8 +363,20 @@ header p {
 }
 
 /* Responsive adjustments for landing header */
+
+@media (max-width: 1024px) {
+    .landing-title {
+        font-size: 1.6em;
+    }
+    
+    .landing-header-center {
+        padding: 0 20px;
+    }
+}
+
 @media (max-width: 768px) {
     .landing-header {
+        min-height: auto;
         height: auto;
         flex-direction: column;
         padding: 20px;
@@ -378,6 +396,7 @@ header p {
     
     .landing-title {
         font-size: 1.5em;
+        white-space: normal;
     }
     
     .logo-container {
@@ -387,6 +406,7 @@ header p {
     
     .landing-header-right {
         justify-content: center;
+        min-width: auto;
     }
         .logo-container {
         width: clamp(40px, 10vw, 60px);  /* Slightly larger proportion on tablets */
