@@ -1,6 +1,7 @@
 /* ============================================================================
-   AMP LLM - COMPLETE CSS REWRITE WITH PROPER SCROLLING
+   AMP LLM - COMPLETE CSS REWRITE WITH PROPER SCROLLING + CLEAR CHAT BUTTON
    Fixed: Model selection scrolling, chat history scrolling, persistent bars
+   Added: Clear chat button styling
    ============================================================================ */
 
 * {
@@ -321,7 +322,7 @@ header p {
 }
 
 /* ============================================================================
-   CHAT INFO BAR - Fixed at top (Row 1)
+   CHAT INFO BAR - Fixed at top (Row 1) with Clear Chat button
    ============================================================================ */
 
 .chat-info-bar {
@@ -365,6 +366,7 @@ header p {
     color: #6c757d;
 }
 
+/* Clear Chat Button */
 .clear-chat-btn {
     padding: 8px 16px;
     background: #dc3545;
@@ -378,17 +380,18 @@ header p {
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-left: auto;
 }
 
 .clear-chat-btn:hover {
     background: #c82333;
     transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
 }
 
-.clear-chat-btn.hidden {
-    display: none;
+.clear-chat-btn:active {
+    transform: translateY(0);
 }
+
 /* ============================================================================
    SCROLLABLE CONTENT AREA (Row 2)
    THIS IS THE KEY: flex: 1, min-height: 0, overflow-y: auto
@@ -1007,5 +1010,10 @@ header p {
         min-height: 60px;
         padding: 15px;
         gap: 10px;
+    }
+    
+    .clear-chat-btn {
+        width: 100%;
+        justify-content: center;
     }
 }

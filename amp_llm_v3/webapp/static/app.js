@@ -1,9 +1,9 @@
 // ============================================================================
-// AMP LLM Enhanced Web Interface - IMPROVED VERSION
-// ✅ Model selection has NO chat container
-// ✅ Chats persist per model during session
-// ✅ Clear chat button to reset conversation
-// ✅ Session-based - no cross-user contamination
+// AMP LLM Enhanced Web Interface - FIXED VERSION
+// ✅ Info bar only shows after model selection
+// ✅ Chats saved per model during session
+// ✅ Clear chat button when model is active
+// ✅ Session isolation (backend handles this via conversation IDs)
 // ============================================================================
 
 const app = {
@@ -21,9 +21,8 @@ const app = {
     files: [],
     availableModels: [],
     
-    // Session-based chat storage (per model, cleared on page reload)
-    // Structure: { modelName: { conversationId: string, messages: [{id, role, content}] } }
-    chatSessions: {},
+    // Session-based chat storage (per model)
+    sessionChats: {}, // { modelName: { conversationId: 'xxx', messages: [{role, content, messageId}] } }
     
     // =========================================================================
     // Initialization
@@ -169,6 +168,8 @@ const app = {
     handleLogout() {
         localStorage.removeItem('amp_llm_api_key');
         this.apiKey = '';
+        // Clear session chats
+        this.sessionChats = {};
         location.reload();
     },
     
@@ -240,28 +241,20 @@ const app = {
         if (this.currentMode === 'chat' && this.currentConversationId) {
             backButton.textContent = '← Back to Models';
             backButton.onclick = () => {
-                // Save current chat session
-                if (this.currentModel && this.currentConversationId) {
-                    const container = document.getElementById('chat-container');
-                    const messages = Array.from(container.querySelectorAll('.message')).map(msg => ({
-                        id: msg.id,
-                        role: msg.classList.contains('user') ? 'user' : 
-                              msg.classList.contains('assistant') ? 'assistant' : 'system',
-                        content: msg.querySelector('.content')?.textContent || ''
-                    }));
-                    
-                    this.chatSessions[this.currentModel] = {
-                        conversationId: this.currentConversationId,
-                        messages: messages
-                    };
-                    
-                    console.log('💾 Saved chat session for', this.currentModel);
+                // Save current chat before going back
+                if (this.currentModel) {
+                    this.saveCurrentChat();
                 }
                 
                 this.currentConversationId = null;
                 this.currentModel = null;
                 
-                // Show model selection
+                const container = document.getElementById('chat-container');
+                container.innerHTML = '';
+                
+                // Remove info bar
+                this.removeInfoBar();
+                
                 this.showModelSelection();
                 
                 const input = document.getElementById('chat-input');
@@ -269,7 +262,6 @@ const app = {
                 input.placeholder = 'Select a model to start chatting...';
                 
                 this.updateBackButton();
-                this.updateChatInfoBar();
             };
         } else {
             backButton.textContent = '← Back';
@@ -278,25 +270,23 @@ const app = {
     },
     
     // =========================================================================
-    // Chat Mode - Model Selection and Session Management
+    // Chat Mode - WITH SESSION STORAGE
     // =========================================================================
     
     async initializeChatMode() {
         console.log('🚀 Initializing chat mode...');
         
-        // Create info bar
-        this.ensureChatInfoBar();
-        
         const container = document.getElementById('chat-container');
         container.innerHTML = '';
+        
+        // Remove info bar during model selection
+        this.removeInfoBar();
         
         const input = document.getElementById('chat-input');
         input.disabled = true;
         input.placeholder = 'Select a model to start chatting...';
         
-        // Hide clear button initially
-        const clearButton = document.getElementById('clear-chat-btn');
-        if (clearButton) clearButton.classList.add('hidden');
+        const loadingId = this.addMessage('chat-container', 'system', '🔄 Loading available models...');
         
         try {
             console.log('📡 Fetching models from:', `${this.API_BASE}/models`);
@@ -315,6 +305,7 @@ const app = {
                 console.log('✅ Models data:', data);
                 
                 if (!data.models || data.models.length === 0) {
+                    document.getElementById(loadingId)?.remove();
                     this.addMessage('chat-container', 'error', 
                         '❌ No models available.\n\n' +
                         'The chat service is running but no models are available.\n\n' +
@@ -328,11 +319,13 @@ const app = {
                 this.availableModels = data.models;
                 console.log('✅ Loaded models:', this.availableModels);
                 
+                document.getElementById(loadingId)?.remove();
                 this.showModelSelection();
             } else {
                 const errorText = await response.text();
                 console.error('❌ Failed to load models:', response.status, errorText);
                 
+                document.getElementById(loadingId)?.remove();
                 this.addMessage('chat-container', 'error', 
                     `❌ Failed to load models (HTTP ${response.status})\n\n` +
                     `The chat service may not be running properly.\n\n` +
@@ -346,6 +339,7 @@ const app = {
         } catch (error) {
             console.error('❌ Exception loading models:', error);
             
+            document.getElementById(loadingId)?.remove();
             this.addMessage('chat-container', 'error', 
                 '❌ Connection Error\n\n' +
                 'Cannot connect to the chat service.\n\n' +
@@ -359,6 +353,19 @@ const app = {
         }
     },
 
+    // NEW: Remove info bar helper
+    removeInfoBar() {
+        const modeElement = document.getElementById(this.currentMode + '-mode');
+        if (modeElement) {
+            const existingBar = modeElement.querySelector('.chat-info-bar');
+            if (existingBar) {
+                existingBar.remove();
+                console.log('🗑️  Removed info bar');
+            }
+        }
+    },
+
+    // UPDATED: Only create info bar when model is selected
     ensureChatInfoBar() {
         console.log('📊 Ensuring chat info bar...');
         
@@ -370,18 +377,22 @@ const app = {
             return;
         }
         
+        // Check if info bar already exists
         let infoBar = modeElement.querySelector('.chat-info-bar');
         
         if (!infoBar) {
             console.log('➕ Creating new info bar for', this.currentMode);
             
+            // Create the info bar element
             infoBar = document.createElement('div');
             infoBar.className = 'chat-info-bar';
             
+            // Add to top using prepend
             if (typeof modeElement.prepend === 'function') {
                 modeElement.prepend(infoBar);
                 console.log('✅ Info bar inserted using prepend()');
             } else {
+                // Fallback
                 modeElement.appendChild(infoBar);
                 if (modeElement.firstChild !== infoBar) {
                     modeElement.insertBefore(infoBar, modeElement.firstChild);
@@ -392,6 +403,7 @@ const app = {
             console.log('✅ Info bar already exists');
         }
         
+        // Now update its content
         this.updateChatInfoBar();
     },
 
@@ -406,13 +418,8 @@ const app = {
         
         let infoBar = modeElement.querySelector('.chat-info-bar');
         if (!infoBar) {
-            console.warn('⚠️  Info bar not found, creating...');
-            this.ensureChatInfoBar();
-            infoBar = modeElement.querySelector('.chat-info-bar');
-            if (!infoBar) {
-                console.error('❌ Failed to create info bar');
-                return;
-            }
+            console.warn('⚠️  Info bar not found - not creating during model selection');
+            return;
         }
         
         const modelDisplay = this.currentModel || '<em>Not selected</em>';
@@ -421,9 +428,9 @@ const app = {
         
         const serviceLabel = this.currentMode === 'research' ? 'Research Assistant' : 'Chat with LLM';
         
-        // Show clear button only when connected
-        const clearButtonHtml = this.currentConversationId ? 
-            '<button class="clear-chat-btn" id="clear-chat-btn" onclick="app.clearCurrentChat()">🗑️ Clear Chat</button>' : '';
+        // Add clear chat button if model is active
+        const clearButton = this.currentConversationId ? 
+            `<button class="clear-chat-btn" onclick="app.clearCurrentChat()">🗑️ Clear Chat</button>` : '';
         
         infoBar.innerHTML = `
             <div class="chat-info-item">
@@ -438,7 +445,7 @@ const app = {
                 <span class="chat-info-label">Status:</span>
                 <span class="chat-info-value ${statusClass}">${statusText}</span>
             </div>
-            ${clearButtonHtml}
+            ${clearButton}
         `;
         
         console.log('✅ Info bar updated');
@@ -449,18 +456,15 @@ const app = {
         console.log('📊 Available models:', this.availableModels);
         
         const container = document.getElementById('chat-container');
-        container.innerHTML = '';
         
-        // Welcome message
         this.addMessage('chat-container', 'system', 
             '🤖 Welcome to Chat Mode!\n\nSelect a model to start your conversation:');
         
-        // Model selection buttons
         const selectionDiv = document.createElement('div');
         selectionDiv.className = 'model-selection';
         selectionDiv.id = 'model-selection-container';
         
-        this.availableModels.forEach((model) => {
+        this.availableModels.forEach((model, index) => {
             const modelName = typeof model === 'string' ? model : (model.name || String(model));
             
             console.log(`Creating button for model: ${modelName}`);
@@ -468,6 +472,7 @@ const app = {
             const button = document.createElement('button');
             button.className = 'model-button';
             button.type = 'button';
+            
             button.setAttribute('data-model-name', modelName);
             
             const icon = document.createElement('span');
@@ -480,13 +485,14 @@ const app = {
             name.style.textAlign = 'left';
             name.style.marginLeft = '10px';
             
-            // Show indicator if this model has a saved session
-            if (this.chatSessions[modelName]) {
+            // Show indicator if this model has saved chat
+            const hasChat = this.sessionChats[modelName] && this.sessionChats[modelName].messages.length > 0;
+            if (hasChat) {
                 const indicator = document.createElement('span');
                 indicator.textContent = '💬';
-                indicator.style.color = '#28a745';
-                indicator.style.marginRight = '8px';
-                indicator.title = 'Has saved chat history';
+                indicator.style.marginRight = '10px';
+                indicator.style.fontSize = '0.9em';
+                indicator.title = 'Has active conversation';
                 button.appendChild(indicator);
             }
             
@@ -518,26 +524,128 @@ const app = {
         console.log('✅ Model selection displayed');
     },
     
+    // NEW: Save current chat to session storage
+    saveCurrentChat() {
+        if (!this.currentModel) return;
+        
+        const container = document.getElementById('chat-container');
+        const messages = [];
+        
+        // Extract all messages except system and model selection
+        container.querySelectorAll('.message').forEach(msg => {
+            const role = msg.classList.contains('user') ? 'user' : 
+                        msg.classList.contains('assistant') ? 'assistant' : 
+                        msg.classList.contains('system') ? 'system' : 'error';
+            
+            // Skip system messages
+            if (role === 'system' || role === 'error') return;
+            
+            const contentEl = msg.querySelector('.content');
+            if (contentEl) {
+                messages.push({
+                    role: role,
+                    content: contentEl.textContent,
+                    messageId: msg.id
+                });
+            }
+        });
+        
+        this.sessionChats[this.currentModel] = {
+            conversationId: this.currentConversationId,
+            messages: messages
+        };
+        
+        console.log(`💾 Saved ${messages.length} messages for ${this.currentModel}`);
+    },
+    
+    // NEW: Restore chat from session storage
+    restoreChat(modelName) {
+        const saved = this.sessionChats[modelName];
+        if (!saved || saved.messages.length === 0) {
+            console.log('📭 No saved chat for', modelName);
+            return false;
+        }
+        
+        console.log(`📥 Restoring ${saved.messages.length} messages for ${modelName}`);
+        
+        const container = document.getElementById('chat-container');
+        container.innerHTML = '';
+        
+        // Restore all messages
+        saved.messages.forEach(msg => {
+            this.addMessage('chat-container', msg.role, msg.content);
+        });
+        
+        // Use saved conversation ID
+        this.currentConversationId = saved.conversationId;
+        
+        return true;
+    },
+    
+    // NEW: Clear current chat
+    async clearCurrentChat() {
+        if (!this.currentModel || !this.currentConversationId) return;
+        
+        const confirmed = confirm(`Clear all chat history with ${this.currentModel}?\n\nThis will:\n• Delete all messages in this session\n• Reset the model's memory\n• Start a fresh conversation`);
+        
+        if (!confirmed) return;
+        
+        console.log('🗑️  Clearing chat for', this.currentModel);
+        
+        // Delete conversation on backend
+        try {
+            await fetch(`${this.API_BASE}/chat/conversations/${this.currentConversationId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${this.apiKey}`
+                }
+            });
+            console.log('✅ Backend conversation deleted');
+        } catch (error) {
+            console.error('⚠️  Failed to delete backend conversation:', error);
+        }
+        
+        // Clear from session storage
+        delete this.sessionChats[this.currentModel];
+        
+        // Clear UI
+        const container = document.getElementById('chat-container');
+        container.innerHTML = '';
+        
+        // Re-initialize with same model
+        const modelName = this.currentModel;
+        this.currentConversationId = null;
+        this.currentModel = null;
+        
+        this.addMessage('chat-container', 'system', '🔄 Reinitializing conversation...');
+        
+        setTimeout(() => {
+            this.selectModel(modelName);
+        }, 500);
+    },
+    
     async selectModel(modelName) {
         console.log('🎯 selectModel called with:', modelName);
         
-        const container = document.getElementById('chat-container');
+        // Check if we have a saved chat for this model
+        const hasSavedChat = this.sessionChats[modelName] && 
+                            this.sessionChats[modelName].messages.length > 0;
         
-        // Check if we have a saved session for this model
-        if (this.chatSessions[modelName]) {
-            console.log('📂 Restoring saved session for', modelName);
+        if (hasSavedChat) {
+            console.log('📥 Restoring saved chat for', modelName);
             
-            const session = this.chatSessions[modelName];
-            this.currentConversationId = session.conversationId;
+            // Clear model selection UI
+            const modelSelection = document.getElementById('model-selection-container');
+            if (modelSelection) {
+                modelSelection.remove();
+            }
+            
+            // Restore the chat
             this.currentModel = modelName;
+            this.restoreChat(modelName);
             
-            // Clear container
-            container.innerHTML = '';
-            
-            // Restore messages
-            session.messages.forEach(msg => {
-                this.addMessage('chat-container', msg.role, msg.content);
-            });
+            // Create info bar now that model is selected
+            this.ensureChatInfoBar();
             
             // Enable input
             const input = document.getElementById('chat-input');
@@ -545,13 +653,16 @@ const app = {
             input.placeholder = 'Type your message...';
             input.focus();
             
-            this.updateChatInfoBar();
             this.updateBackButton();
+            
+            // Add welcome back message
+            this.addMessage('chat-container', 'system', 
+                `✅ Resumed conversation with ${modelName}\n\n💡 Commands:\n• Click "Clear Chat" to reset\n• Click "Back to Models" to switch models`);
             
             return;
         }
         
-        // No saved session - initialize new conversation
+        // No saved chat - initialize new conversation
         const loadingId = this.addMessage('chat-container', 'system', `🔄 Initializing ${modelName}...`);
         
         try {
@@ -589,7 +700,8 @@ const app = {
                 
                 console.log('✅ Model initialized:', data);
                 
-                this.updateChatInfoBar();
+                // Create info bar now that model is selected
+                this.ensureChatInfoBar();
 
                 document.getElementById(loadingId)?.remove();
                 const modelSelection = document.getElementById('model-selection-container');
@@ -597,11 +709,8 @@ const app = {
                     modelSelection.remove();
                 }
                 
-                // Clear the container for fresh start
-                container.innerHTML = '';
-                
                 this.addMessage('chat-container', 'system', 
-                    `✅ Connected to ${modelName}\n\n💡 Commands:\n• Type "exit" to select a different model\n• Type "main menu" to return to home\n• Use "Clear Chat" button to reset conversation`);
+                    `✅ Connected to ${modelName}\n\n💡 Commands:\n• Type "exit" to select a different model\n• Type "main menu" to return to home\n• Click "Clear Chat" to reset conversation`);
                 
                 const input = document.getElementById('chat-input');
                 input.disabled = false;
@@ -641,68 +750,22 @@ const app = {
         }
     },
     
-    async clearCurrentChat() {
-        if (!this.currentConversationId || !this.currentModel) {
-            console.warn('⚠️  No active conversation to clear');
-            return;
-        }
-        
-        if (!confirm(`Clear chat history with ${this.currentModel}?\n\nThis will delete the conversation on the server and start fresh.`)) {
-            return;
-        }
-        
-        console.log('🗑️  Clearing chat for', this.currentModel);
-        
-        try {
-            // Delete conversation on server
-            await fetch(`${this.API_BASE}/conversations/${this.currentConversationId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${this.apiKey}` }
-            });
-            
-            console.log('✅ Conversation deleted on server');
-        } catch (error) {
-            console.warn('⚠️  Failed to delete conversation on server:', error);
-        }
-        
-        // Clear local session
-        delete this.chatSessions[this.currentModel];
-        
-        // Reset state
-        const savedModel = this.currentModel;
-        this.currentConversationId = null;
-        this.currentModel = null;
-        
-        // Re-select the model (will create new conversation)
-        await this.selectModel(savedModel);
-        
-        console.log('✅ Chat cleared and reinitialized');
-    },
-    
     async sendChatMessage(message) {
         const command = message.toLowerCase().trim();
         
         if (command === 'exit') {
-            // Save current session before exiting
-            if (this.currentModel && this.currentConversationId) {
-                const container = document.getElementById('chat-container');
-                const messages = Array.from(container.querySelectorAll('.message')).map(msg => ({
-                    id: msg.id,
-                    role: msg.classList.contains('user') ? 'user' : 
-                          msg.classList.contains('assistant') ? 'assistant' : 'system',
-                    content: msg.querySelector('.content')?.textContent || ''
-                }));
-                
-                this.chatSessions[this.currentModel] = {
-                    conversationId: this.currentConversationId,
-                    messages: messages
-                };
+            // Save before exiting
+            if (this.currentModel) {
+                this.saveCurrentChat();
             }
             
             this.currentConversationId = null;
             this.currentModel = null;
+            
+            const container = document.getElementById('chat-container');
+            container.innerHTML = '';
 
-            this.updateChatInfoBar();
+            this.removeInfoBar();
             this.showModelSelection();
             
             const input = document.getElementById('chat-input');
@@ -712,22 +775,10 @@ const app = {
         }
         
         if (command === 'main menu') {
-            // Save before exiting to menu
-            if (this.currentModel && this.currentConversationId) {
-                const container = document.getElementById('chat-container');
-                const messages = Array.from(container.querySelectorAll('.message')).map(msg => ({
-                    id: msg.id,
-                    role: msg.classList.contains('user') ? 'user' : 
-                          msg.classList.contains('assistant') ? 'assistant' : 'system',
-                    content: msg.querySelector('.content')?.textContent || ''
-                }));
-                
-                this.chatSessions[this.currentModel] = {
-                    conversationId: this.currentConversationId,
-                    messages: messages
-                };
+            // Save before exiting
+            if (this.currentModel) {
+                this.saveCurrentChat();
             }
-            
             this.showMenu();
             return;
         }
@@ -785,6 +836,9 @@ const app = {
                 
                 if (data.message && data.message.content) {
                     this.addMessage('chat-container', 'assistant', data.message.content);
+                    
+                    // Auto-save after successful exchange
+                    this.saveCurrentChat();
                 } else {
                     this.addMessage('chat-container', 'error', 
                         `❌ Invalid response structure\n\n` +
@@ -946,7 +1000,7 @@ const app = {
             `;
         }
     },
-        
+    
     displayNCTResults(data) {
         const resultsDiv = document.getElementById('nct-results');
         
@@ -986,52 +1040,6 @@ const app = {
             const status = ct.statusModule || {};
             const conditions = ct.conditionsModule?.conditions || [];
             
-            let pubmedCount = 0;
-            let pmcCount = 0;
-            let pmcBiocCount = 0;
-            
-            try {
-                if (result.sources?.pubmed?.data?.pmids) {
-                    pubmedCount = result.sources.pubmed.data.pmids.length;
-                } else if (result.sources?.pubmed?.data?.total_found) {
-                    pubmedCount = result.sources.pubmed.data.total_found;
-                } else if (result.sources?.pubmed?.data?.articles) {
-                    pubmedCount = result.sources.pubmed.data.articles.length;
-                }
-            } catch (e) {
-                console.error('Error getting PubMed count:', e);
-            }
-            
-            try {
-                if (result.sources?.pmc?.data?.pmcids) {
-                    pmcCount = result.sources.pmc.data.pmcids.length;
-                } else if (result.sources?.pmc?.data?.total_found) {
-                    pmcCount = result.sources.pmc.data.total_found;
-                } else if (result.sources?.pmc?.data?.articles) {
-                    pmcCount = result.sources.pmc.data.articles.length;
-                }
-            } catch (e) {
-                console.error('Error getting PMC count:', e);
-            }
-            
-            try {
-                if (result.sources?.pmc_bioc?.data?.total_fetched) {
-                    pmcBiocCount = result.sources.pmc_bioc.data.total_fetched;
-                } else if (result.sources?.pmc_bioc?.data?.articles) {
-                    pmcBiocCount = result.sources.pmc_bioc.data.articles.length;
-                }
-            } catch (e) {
-                console.error('Error getting PMC BioC count:', e);
-            }
-            
-            console.log(`${result.nct_id} counts:`, {
-                pubmed: pubmedCount,
-                pmc: pmcCount,
-                pmc_bioc: pmcBiocCount,
-                sources_available: result.sources ? Object.keys(result.sources) : []
-            });
-            
-            
             html += `
                 <div class="result-card">
                     <div class="result-card-header">
@@ -1049,16 +1057,12 @@ const app = {
                     </div>
                     <div class="result-card-meta">
                         <div class="meta-item">
-                            <div style="color: #666; font-size: 0.9em;">PubMed Articles</div>
-                            <strong style="font-size: 1.2em; color: ${pubmedCount > 0 ? '#28a745' : '#999'}">${pubmedCount}</strong>
+                            PubMed Articles
+                            <strong>${result.sources?.pubmed?.data?.pmids?.length || 0}</strong>
                         </div>
                         <div class="meta-item">
-                            <div style="color: #666; font-size: 0.9em;">PMC Articles</div>
-                            <strong style="font-size: 1.2em; color: ${pmcCount > 0 ? '#28a745' : '#999'}">${pmcCount}</strong>
-                        </div>
-                        <div class="meta-item">
-                            <div style="color: #666; font-size: 0.9em;">PMC BioC Articles</div>
-                            <strong style="font-size: 1.2em; color: ${pmcBiocCount > 0 ? '#28a745' : '#999'}">${pmcBiocCount}</strong>
+                            PMC Articles
+                            <strong>${result.sources?.pmc?.data?.pmcids?.length || 0}</strong>
                         </div>
                     </div>
                 </div>
