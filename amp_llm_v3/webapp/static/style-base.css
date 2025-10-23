@@ -13,7 +13,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow: auto;
 }
 
 body {
@@ -29,7 +29,7 @@ body {
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     overflow: hidden;
-    height: 90vh;
+    height: calc(90vh - 40px);
     display: flex;
     flex-direction: column;
 }
@@ -109,6 +109,8 @@ header {
     align-items: center;
     position: relative;
     flex-shrink: 0;
+    flex-grow: 0; /* ADDED */
+    min-height: fit-content; /* ADDED */
 }
 
 header h1 {
@@ -283,10 +285,11 @@ header p {
 
 .mode-container {
     display: none;
-    flex: 1;
+    flex: 1 1 auto;
     flex-direction: column;
     overflow: hidden;
     min-height: 0;
+    height: 100%;
 }
 
 .mode-container.active {
@@ -299,11 +302,12 @@ header p {
 
 .chat-container, .research-container {
     /* Flex behavior */
-    flex: 1 1 auto;
+    flex: 1 1 0;
     
     /* Scrolling - CRITICAL */
     overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     
     /* Layout */
     padding: 30px;
@@ -312,6 +316,7 @@ header p {
     /* Height constraints */
     min-height: 0;
     max-height: 100%;
+    height: 0;
     
     /* Positioning */
     position: relative;
