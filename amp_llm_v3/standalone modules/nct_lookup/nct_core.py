@@ -454,7 +454,7 @@ class NCTSearchEngine:
             # Fetch BioC data for each PMID (limit to first 5)
             for pmid in pmids[:5]:
                 try:
-                    bioc_data = await self.fetch_pmc_bioc(pmid, format="biocjson")
+                    bioc_data = await self.clients['pmc_bioc'].fetch_pmc_bioc(pmid, format="biocjson")
                     
                     if "error" not in bioc_data:
                         bioc_results["articles"].append({
