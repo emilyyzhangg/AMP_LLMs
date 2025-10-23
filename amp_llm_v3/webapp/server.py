@@ -1,6 +1,6 @@
 """
-Enhanced AMP LLM Web API Server with Chat Service Integration
-FIXED: Static file serving for proper CSS loading
+Enhanced AMP LLM Web API Server with Standalone NCT API Integration
+UPDATED: Now uses standalone NCT lookup service instead of amp_llm package
 """
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,8 +20,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from amp_llm.llm.utils.session import OllamaSessionManager
-from amp_llm.data.workflows.core_fetch import fetch_clinical_trial_and_pubmed_pmc
-from amp_llm.data.clinical_trials.rag import ClinicalTrialRAG
+# Note: NCT lookup now uses standalone API service
 from webapp.config import settings
 from webapp.auth import verify_api_key
 
@@ -102,17 +101,10 @@ async def serve_static_file(filename: str):
     )
 
 # ============================================================================
-# Initialize RAG system
+# Service URLs
 # ============================================================================
-try:
-    rag_system = ClinicalTrialRAG(DATABASE_DIR)
-    logger.info(f"✅ RAG system initialized with {len(rag_system.db.trials)} trials")
-except Exception as e:
-    logger.warning(f"RAG system not available: {e}")
-    rag_system = None
-
-# Chat service configuration
 CHAT_SERVICE_URL = "http://localhost:8001"
+NCT_SERVICE_URL = "http://localhost:8002"  # Standalone NCT API
 
 
 # ============================================================================
@@ -135,6 +127,7 @@ class ChatResponse(BaseModel):
 class NCTLookupRequest(BaseModel):
     nct_ids: List[str] = Field(..., description="List of NCT numbers")
     use_extended_apis: bool = Field(default=False, description="Use extended APIs")
+    databases: Optional[List[str]] = Field(default=None, description="Specific databases to query")
 
 
 class NCTLookupResponse(BaseModel):
@@ -155,16 +148,6 @@ class ResearchQueryResponse(BaseModel):
     model: str
 
 
-class ExtractRequest(BaseModel):
-    nct_id: str
-    model: str = "ct-research-assistant:latest"
-
-
-class ExtractResponse(BaseModel):
-    nct_id: str
-    extraction: Dict[str, Any]
-
-
 class FileSaveRequest(BaseModel):
     filename: str
     content: str
@@ -182,6 +165,7 @@ class FileContentResponse(BaseModel):
 class InitChatRequest(BaseModel):
     model: str
     conversation_id: Optional[str] = None
+
 
 class ChatMessageRequest(BaseModel):
     conversation_id: str
@@ -263,7 +247,7 @@ async def debug_files():
 
 @app.get("/health")
 async def health_check():
-    """Health check - includes chat service status."""
+    """Health check - includes all service statuses."""
     try:
         async with OllamaSessionManager(settings.ollama_host, settings.ollama_port) as session:
             ollama_alive = await session.is_alive()
@@ -279,13 +263,21 @@ async def health_check():
     except Exception as e:
         logger.error(f"Chat service health check failed: {e}")
     
+    nct_service_alive = False
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"{NCT_SERVICE_URL}/health", timeout=5.0)
+            nct_service_alive = response.status_code == 200
+    except Exception as e:
+        logger.error(f"NCT service health check failed: {e}")
+    
     return {
-        "status": "healthy" if (ollama_alive and chat_service_alive) else "degraded",
+        "status": "healthy" if (ollama_alive and chat_service_alive and nct_service_alive) else "degraded",
         "ollama_connected": ollama_alive,
         "chat_service_connected": chat_service_alive,
         "chat_service_url": CHAT_SERVICE_URL,
-        "rag_available": rag_system is not None,
-        "trials_indexed": len(rag_system.db.trials) if rag_system else 0,
+        "nct_service_connected": nct_service_alive,
+        "nct_service_url": NCT_SERVICE_URL,
         "output_dir": str(OUTPUT_DIR.absolute()),
         "files_count": len(list(OUTPUT_DIR.glob("*.json"))),
         "static_dir": str((WEBAPP_DIR / "static").absolute()),
@@ -343,6 +335,7 @@ async def init_chat(
         logger.error(f"Failed to connect to chat service: {e}")
         raise HTTPException(status_code=503, detail="Chat service unavailable")
 
+
 @app.post("/chat/message")
 async def send_chat_message(
     request: ChatMessageRequest,
@@ -371,6 +364,7 @@ async def send_chat_message(
     except httpx.RequestError as e:
         logger.error(f"Failed to connect to chat service: {e}")
         raise HTTPException(status_code=503, detail="Chat service unavailable")
+
 
 @app.get("/chat/conversations")
 async def list_conversations(api_key: str = Depends(verify_api_key)):
@@ -408,68 +402,126 @@ async def delete_conversation(conversation_id: str, api_key: str = Depends(verif
 
 
 # ============================================================================
-# Original Chat Endpoint (Legacy - for backward compatibility)
-# ============================================================================
-
-@app.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest, api_key: str = Depends(verify_api_key)):
-    """Legacy chat endpoint with direct Ollama connection."""
-    logger.info(f"Chat: model={request.model}, query_length={len(request.query)}")
-    
-    try:
-        prompt = request.query
-        
-        if request.context_file:
-            file_path = OUTPUT_DIR / request.context_file
-            if file_path.exists():
-                file_content = file_path.read_text()
-                prompt = f"{request.query}\n\n[File: {request.context_file}]\n{file_content}"
-                logger.info(f"Added file context: {request.context_file}")
-        
-        async with OllamaSessionManager(settings.ollama_host, settings.ollama_port) as session:
-            response_text = await session.send_prompt(
-                model=request.model,
-                prompt=prompt,
-                temperature=request.temperature,
-                max_retries=3
-            )
-            
-            if response_text.startswith("Error:"):
-                raise HTTPException(status_code=503, detail=response_text)
-            
-            return ChatResponse(
-                response=response_text,
-                model=request.model,
-                query=request.query
-            )
-    except Exception as e:
-        logger.error(f"Chat error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# ============================================================================
-# NCT Lookup Endpoint
+# NCT Lookup Endpoint - NOW USING STANDALONE API
 # ============================================================================
 
 @app.post("/nct-lookup", response_model=NCTLookupResponse)
-async def nct_lookup(request: NCTLookupRequest, api_key: str = Depends(verify_api_key)):
-    """Fetch clinical trial data for NCT numbers."""
+async def nct_lookup(
+    request: NCTLookupRequest, 
+    background_tasks: BackgroundTasks,
+    api_key: str = Depends(verify_api_key)
+):
+    """
+    Fetch clinical trial data using standalone NCT API service.
+    
+    This proxies requests to the standalone NCT lookup service running
+    on port 8002, which provides comprehensive trial data from multiple sources.
+    """
     logger.info(f"NCT Lookup: {len(request.nct_ids)} trials")
     
     results = []
     errors = []
+    search_jobs = {}
     
-    for nct_id in request.nct_ids:
-        try:
-            result = await fetch_clinical_trial_and_pubmed_pmc(nct_id)
+    try:
+        async with httpx.AsyncClient(timeout=300.0) as client:
+            # Initiate searches for each NCT number
+            for nct_id in request.nct_ids:
+                try:
+                    # Build search request
+                    search_request = {
+                        "include_extended": request.use_extended_apis
+                    }
+                    
+                    if request.databases:
+                        search_request["databases"] = request.databases
+                    
+                    # Initiate search on NCT service
+                    response = await client.post(
+                        f"{NCT_SERVICE_URL}/api/search/{nct_id}",
+                        json=search_request
+                    )
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        search_jobs[nct_id] = data["job_id"]
+                        logger.info(f"Initiated search for {nct_id}: {data['status']}")
+                    else:
+                        error_data = response.json()
+                        errors.append({
+                            "nct_id": nct_id,
+                            "error": error_data.get("detail", f"HTTP {response.status_code}")
+                        })
+                        logger.error(f"Failed to initiate search for {nct_id}: {error_data}")
+                
+                except Exception as e:
+                    logger.error(f"Error initiating search for {nct_id}: {e}")
+                    errors.append({"nct_id": nct_id, "error": str(e)})
             
-            if "error" in result:
-                errors.append({"nct_id": nct_id, "error": result["error"]})
-            else:
-                results.append(result)
-        except Exception as e:
-            logger.error(f"Error fetching {nct_id}: {e}")
-            errors.append({"nct_id": nct_id, "error": str(e)})
+            # Poll for results
+            import asyncio
+            max_wait = 300  # 5 minutes max
+            poll_interval = 2  # Check every 2 seconds
+            start_time = asyncio.get_event_loop().time()
+            
+            while search_jobs and (asyncio.get_event_loop().time() - start_time) < max_wait:
+                completed_jobs = []
+                
+                for nct_id, job_id in list(search_jobs.items()):
+                    try:
+                        # Check status
+                        status_response = await client.get(
+                            f"{NCT_SERVICE_URL}/api/search/{job_id}/status"
+                        )
+                        
+                        if status_response.status_code == 200:
+                            status_data = status_response.json()
+                            
+                            if status_data["status"] == "completed":
+                                # Fetch results
+                                results_response = await client.get(
+                                    f"{NCT_SERVICE_URL}/api/results/{job_id}"
+                                )
+                                
+                                if results_response.status_code == 200:
+                                    result_data = results_response.json()
+                                    results.append(result_data)
+                                    completed_jobs.append(nct_id)
+                                    logger.info(f"Retrieved results for {nct_id}")
+                                else:
+                                    errors.append({
+                                        "nct_id": nct_id,
+                                        "error": "Failed to retrieve results"
+                                    })
+                                    completed_jobs.append(nct_id)
+                            
+                            elif status_data["status"] == "failed":
+                                errors.append({
+                                    "nct_id": nct_id,
+                                    "error": status_data.get("error", "Search failed")
+                                })
+                                completed_jobs.append(nct_id)
+                        
+                    except Exception as e:
+                        logger.error(f"Error checking status for {nct_id}: {e}")
+                        errors.append({"nct_id": nct_id, "error": str(e)})
+                        completed_jobs.append(nct_id)
+                
+                # Remove completed jobs
+                for nct_id in completed_jobs:
+                    del search_jobs[nct_id]
+                
+                # Wait before next poll
+                if search_jobs:
+                    await asyncio.sleep(poll_interval)
+            
+            # Handle any remaining jobs that timed out
+            for nct_id in search_jobs.keys():
+                errors.append({"nct_id": nct_id, "error": "Search timeout"})
+    
+    except Exception as e:
+        logger.error(f"NCT lookup error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
     
     return NCTLookupResponse(
         success=len(results) > 0,
@@ -481,116 +533,6 @@ async def nct_lookup(request: NCTLookupRequest, api_key: str = Depends(verify_ap
             "errors": errors
         }
     )
-
-
-# ============================================================================
-# Research Assistant Query
-# ============================================================================
-
-@app.post("/research", response_model=ResearchQueryResponse)
-async def research_query(request: ResearchQueryRequest, api_key: str = Depends(verify_api_key)):
-    """Query the Research Assistant with RAG."""
-    if not rag_system:
-        raise HTTPException(
-            status_code=503,
-            detail="Research Assistant not available. No trials indexed."
-        )
-    
-    logger.info(f"Research query: {request.query[:50]}...")
-    
-    try:
-        context = rag_system.get_context_for_llm(request.query, max_trials=request.max_trials)
-        
-        prompt = f"""You are a clinical trial research assistant. Use the trial data below to answer the question.
-
-Question: {request.query}
-
-{context}
-
-Provide a clear, well-structured answer based on the trial data above."""
-        
-        async with OllamaSessionManager(settings.ollama_host, settings.ollama_port) as session:
-            response = await session.send_prompt(
-                model=request.model,
-                prompt=prompt,
-                temperature=0.7,
-                max_retries=3
-            )
-        
-        extractions = rag_system.retrieve(request.query)
-        
-        return ResearchQueryResponse(
-            answer=response,
-            trials_used=len(extractions),
-            model=request.model
-        )
-    except Exception as e:
-        logger.error(f"Research query error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# ============================================================================
-# Extract Structured Data
-# ============================================================================
-
-@app.post("/extract", response_model=ExtractResponse)
-async def extract_trial(request: ExtractRequest, api_key: str = Depends(verify_api_key)):
-    """Extract structured data from a clinical trial."""
-    if not rag_system:
-        raise HTTPException(status_code=503, detail="RAG system not available")
-    
-    logger.info(f"Extract: {request.nct_id}")
-    
-    try:
-        extraction = rag_system.db.extract_structured_data(request.nct_id)
-        
-        if not extraction:
-            raise HTTPException(status_code=404, detail=f"Trial {request.nct_id} not found")
-        
-        from dataclasses import asdict
-        extraction_dict = asdict(extraction)
-        
-        return ExtractResponse(
-            nct_id=request.nct_id,
-            extraction=extraction_dict
-        )
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Extraction error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# ============================================================================
-# Database Stats
-# ============================================================================
-
-@app.get("/stats")
-async def database_stats(api_key: str = Depends(verify_api_key)):
-    """Get database statistics."""
-    if not rag_system:
-        return {"error": "RAG system not available"}
-    
-    total = len(rag_system.db.trials)
-    status_counts = {}
-    peptide_count = 0
-    
-    for nct, trial in rag_system.db.trials.items():
-        try:
-            extraction = rag_system.db.extract_structured_data(nct)
-            if extraction:
-                status = extraction.study_status
-                status_counts[status] = status_counts.get(status, 0) + 1
-                if hasattr(extraction, 'is_peptide') and extraction.is_peptide:
-                    peptide_count += 1
-        except:
-            pass
-    
-    return {
-        "total_trials": total,
-        "peptide_trials": peptide_count,
-        "by_status": status_counts
-    }
 
 
 # ============================================================================
@@ -742,9 +684,7 @@ async def startup_event():
     logger.info(f"Environment: {settings.environment}")
     logger.info(f"Ollama: {settings.ollama_host}:{settings.ollama_port}")
     logger.info(f"Chat Service: {CHAT_SERVICE_URL}")
-    logger.info(f"RAG Available: {rag_system is not None}")
-    if rag_system:
-        logger.info(f"Trials Indexed: {len(rag_system.db.trials)}")
+    logger.info(f"NCT Service: {NCT_SERVICE_URL}")
     logger.info(f"Output Directory: {OUTPUT_DIR.absolute()}")
     logger.info(f"Static Directory: {(WEBAPP_DIR / 'static').absolute()}")
     logger.info(f"Templates Directory: {(WEBAPP_DIR / 'templates').absolute()}")
