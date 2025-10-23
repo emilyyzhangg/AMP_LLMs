@@ -1,5 +1,5 @@
 /* ============================================================================
-   BALANCED TRI-COLOR THEME
+   BALANCED TRI-COLOR THEME - WITH PROPER LANDING HEADER COLORS
    ============================================================================ */
 
 body {
@@ -21,22 +21,23 @@ body {
 
 /* HEADER - MODE PAGE */
 header {
-    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #0B1866 100%);
-    border-bottom: 3px solid #FFA400;
-    box-shadow: 0 4px 16px rgba(255, 164, 0, 0.3);
+    background: linear-gradient(135deg, #081250 0%, #0E1F81 100%);
+    border-bottom: 3px solid #1BEB49;
+    box-shadow: 0 4px 16px rgba(27, 235, 73, 0.3);
 }
 
-/* LANDING HEADER - BALANCED THEME */
+/* LANDING HEADER - MATCHES TRI-COLOR THEME */
 .landing-header {
-    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%);
-    border-bottom: 4px solid transparent;
+    background: linear-gradient(135deg, #0E1F81 0%, #14B836 50%, #FF8C00 100%);
+    border-bottom: 3px solid transparent;
     border-image: linear-gradient(90deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%) 1;
-    box-shadow: 0 4px 16px rgba(27, 235, 73, 0.3);
+    box-shadow: 0 4px 12px rgba(14, 31, 129, 0.3);
 }
 
 .logo-container {
     border-color: #1BEB49;
-    background: linear-gradient(135deg, #FFFFFF 0%, #F8FFFE 100%);
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+    box-shadow: 0 2px 8px rgba(27, 235, 73, 0.2);
 }
 
 .logo-container:hover {
@@ -51,21 +52,20 @@ header {
 
 .landing-version {
     color: #FFA400;
-    font-weight: 700;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .landing-header .theme-button {
-    border-color: rgba(255, 255, 255, 0.5);
+    border-color: #1BEB49;
     color: #FFFFFF;
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.5);
+    background: rgba(27, 235, 73, 0.15);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .landing-header .theme-button:hover {
-    background: rgba(255, 255, 255, 0.35);
-    border-color: rgba(255, 255, 255, 0.7);
-    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+    background: rgba(255, 164, 0, 0.25);
+    border-color: #FFA400;
+    box-shadow: 0 4px 12px rgba(255, 164, 0, 0.3);
 }
 
 /* MENU */

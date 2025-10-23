@@ -1,6 +1,7 @@
 /* ============================================================================
-   PROFESSIONAL THEME
+   PROFESSIONAL THEME - WITH PROPER LANDING HEADER COLORS
    Color Palette: Navy #2C3E50, Teal #16A085, Amber #E67E22
+   FIXED: Landing header now uses theme colors instead of generic teal
    ============================================================================ */
 
 body {
@@ -50,52 +51,54 @@ body {
     box-shadow: 0 6px 12px rgba(22, 160, 133, 0.3);
 }
 
-/* HEADER - MODE PAGE */
+/* HEADER - MODE PAGE - INCREASED CONTRAST */
 header {
-    background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
+    background: linear-gradient(135deg, #1A252F 0%, #2C3E50 100%);
     border-bottom: 3px solid #16A085;
 }
 
-/* LANDING HEADER - PROFESSIONAL STYLING */
+/* ============================================================================
+   LANDING HEADER - NOW MATCHES PROFESSIONAL THEME!
+   ============================================================================ */
 .landing-header {
     background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
-    border-bottom: 4px solid #16A085;
-    box-shadow: 0 4px 16px rgba(22, 160, 133, 0.3);
+    border-bottom: 3px solid #16A085;
+    box-shadow: 0 4px 16px rgba(22, 160, 133, 0.25);
 }
 
 .logo-container {
     border-color: #16A085;
-    box-shadow: 0 2px 8px rgba(22, 160, 133, 0.15);
+    box-shadow: 0 2px 8px rgba(22, 160, 133, 0.25);
     background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
 }
 
 .logo-container:hover {
-    border-color: #16A085;
-    box-shadow: 0 4px 16px rgba(22, 160, 133, 0.35);
+    border-color: #E67E22;
+    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.35);
 }
 
 .landing-title {
     color: #FFFFFF;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .landing-version {
     color: #16A085;
     font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .landing-header .theme-button {
     border-color: #16A085;
     color: #FFFFFF;
     background: rgba(22, 160, 133, 0.2);
-    border: 2px solid #16A085;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .landing-header .theme-button:hover {
     background: rgba(22, 160, 133, 0.35);
-    border-color: #16A085;
-    box-shadow: 0 2px 8px rgba(22, 160, 133, 0.3);
+    border-color: #E67E22;
+    box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
 }
 
 /* THEME SWITCHER */
