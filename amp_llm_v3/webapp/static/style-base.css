@@ -1,5 +1,6 @@
 /* ============================================================================
-   RADICAL REDESIGN - FULL RESPONSIVE SCROLLABLE CHAT
+   AMP LLM - COMPLETE CSS REWRITE WITH PROPER SCROLLING
+   Fixed: Model selection scrolling, chat history scrolling, persistent bars
    ============================================================================ */
 
 * {
@@ -8,35 +9,40 @@
     box-sizing: border-box;
 }
 
-html {
+html, body {
+    width: 100%;
     height: 100%;
     overflow: hidden;
-}
-
-body {
-    height: 100%;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    overflow: hidden;
 }
 
 /* ============================================================================
-   CONTAINER - Fixed viewport height
+   CONTAINER - Full viewport with proper constraints
    ============================================================================ */
 
 .container {
     position: fixed;
-    top: 20px;
-    left: 20px;
-    right: 20px;
-    bottom: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
     background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    display: grid;
-    grid-template-rows: auto 1fr;
     overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .container {
+        top: 20px;
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
 }
 
 /* ============================================================================
@@ -49,6 +55,7 @@ body {
     justify-content: center;
     padding: 40px;
     height: 100%;
+    overflow: auto;
 }
 
 .auth-box {
@@ -103,26 +110,26 @@ body {
 }
 
 /* ============================================================================
-   HEADER - Fixed height
+   HEADER - Fixed height, never scrolls
    ============================================================================ */
 
 header {
+    flex-shrink: 0;
+    height: 110px;
     color: white;
-    padding: 30px;
+    padding: 25px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 110px;
-    flex-shrink: 0;
 }
 
 header h1 {
-    font-size: 2em;
+    font-size: 1.8em;
     margin-bottom: 5px;
 }
 
 header p {
-    font-size: 0.9em;
+    font-size: 0.85em;
     opacity: 0.9;
 }
 
@@ -228,23 +235,26 @@ header p {
 }
 
 /* ============================================================================
-   MAIN APP - Grid layout
+   MAIN APP - Flex container
    ============================================================================ */
 
 #main-app {
-    display: grid;
-    grid-template-rows: auto 1fr;
+    display: flex;
+    flex-direction: column;
     height: 100%;
     overflow: hidden;
 }
 
 /* ============================================================================
-   MENU SECTION
+   MENU SECTION - Scrollable
    ============================================================================ */
 
 .menu-section {
+    flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 40px;
+    min-height: 0;
 }
 
 .menu-title {
@@ -293,27 +303,31 @@ header p {
 }
 
 /* ============================================================================
-   MODE CONTAINER - Grid with three rows
+   MODE CONTAINER - THREE SECTION LAYOUT
+   Row 1: Info bar (optional, 60px)
+   Row 2: Scrollable content (flex: 1)
+   Row 3: Input area (100px)
    ============================================================================ */
 
 .mode-container {
     display: none;
-    grid-template-rows: auto 1fr auto;
+    flex-direction: column;
     height: 100%;
     overflow: hidden;
 }
 
 .mode-container.active {
-    display: grid;
+    display: flex;
 }
 
 /* ============================================================================
-   CHAT INFO BAR - Row 1
+   CHAT INFO BAR - Fixed at top (Row 1)
    ============================================================================ */
 
 .chat-info-bar {
-    grid-row: 1;
-    padding: 15px 30px;
+    flex-shrink: 0;
+    height: 60px;
+    padding: 0 30px;
     background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%);
     border-bottom: 2px solid #e9ecef;
     display: flex;
@@ -321,8 +335,6 @@ header p {
     align-items: center;
     font-size: 0.9em;
     color: #495057;
-    height: 60px;
-    flex-shrink: 0;
 }
 
 .chat-info-item {
@@ -354,32 +366,34 @@ header p {
 }
 
 /* ============================================================================
-   CHAT CONTAINER - Row 2 - THE KEY TO SCROLLING
+   SCROLLABLE CONTENT AREA (Row 2)
+   THIS IS THE KEY: flex: 1, min-height: 0, overflow-y: auto
    ============================================================================ */
 
-.chat-container, .research-container {
-    grid-row: 2;
+.chat-container,
+.research-container,
+.nct-results,
+.files-container {
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 30px;
     background: #ffffff;
-    height: 100%;
-    min-height: 0;
 }
 
 /* ============================================================================
-   INPUT AREA - Row 3
+   INPUT AREA - Fixed at bottom (Row 3)
    ============================================================================ */
 
 .input-area {
-    grid-row: 3;
+    flex-shrink: 0;
+    height: 100px;
     display: flex;
     gap: 15px;
     padding: 20px 30px;
     background: #f8f9fa;
     border-top: 2px solid #e9ecef;
-    height: 100px;
-    flex-shrink: 0;
 }
 
 .input-area textarea {
@@ -393,6 +407,7 @@ header p {
 }
 
 .input-area button {
+    flex-shrink: 0;
     padding: 15px 30px;
     color: white;
     border: none;
@@ -400,7 +415,6 @@ header p {
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.2s;
-    flex-shrink: 0;
 }
 
 .input-area button:hover:not(:disabled) {
@@ -421,7 +435,6 @@ header p {
     gap: 15px;
     margin-bottom: 25px;
     animation: fadeIn 0.3s ease-in;
-    width: 100%;
 }
 
 @keyframes fadeIn {
@@ -477,7 +490,7 @@ header p {
 }
 
 /* ============================================================================
-   MODEL SELECTION
+   MODEL SELECTION - Scrollable within chat-container
    ============================================================================ */
 
 .model-selection {
@@ -514,13 +527,25 @@ header p {
 }
 
 /* ============================================================================
-   NCT MODE
+   NCT MODE - Two section layout
    ============================================================================ */
 
+#nct-mode {
+    display: none;
+    flex-direction: column;
+}
+
+#nct-mode.active {
+    display: flex;
+}
+
 .nct-input-area {
+    flex-shrink: 0;
     padding: 30px;
     background: #f8f9fa;
     border-bottom: 2px solid #e9ecef;
+    max-height: 40vh;
+    overflow-y: auto;
 }
 
 .nct-input-group {
@@ -619,9 +644,10 @@ header p {
     gap: 8px;
 }
 
+/* NCT Results scrollable */
 .nct-results {
-    overflow-y: auto;
-    padding: 30px;
+    flex: 1;
+    min-height: 0;
 }
 
 .result-card {
@@ -729,10 +755,20 @@ header p {
 }
 
 /* ============================================================================
-   FILE MANAGER
+   FILE MANAGER - Two section layout
    ============================================================================ */
 
+#files-mode {
+    display: none;
+    flex-direction: column;
+}
+
+#files-mode.active {
+    display: flex;
+}
+
 .file-controls {
+    flex-shrink: 0;
     padding: 20px 30px;
     background: #f8f9fa;
     border-bottom: 2px solid #e9ecef;
@@ -754,8 +790,8 @@ header p {
 }
 
 .files-container {
-    overflow-y: auto;
-    padding: 30px;
+    flex: 1;
+    min-height: 0;
 }
 
 .files-grid {
@@ -854,7 +890,8 @@ header p {
 .research-container::-webkit-scrollbar,
 .nct-results::-webkit-scrollbar,
 .files-container::-webkit-scrollbar,
-.menu-section::-webkit-scrollbar {
+.menu-section::-webkit-scrollbar,
+.nct-input-area::-webkit-scrollbar {
     width: 12px;
 }
 
@@ -862,7 +899,8 @@ header p {
 .research-container::-webkit-scrollbar-track,
 .nct-results::-webkit-scrollbar-track,
 .files-container::-webkit-scrollbar-track,
-.menu-section::-webkit-scrollbar-track {
+.menu-section::-webkit-scrollbar-track,
+.nct-input-area::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 6px;
 }
@@ -871,7 +909,8 @@ header p {
 .research-container::-webkit-scrollbar-thumb,
 .nct-results::-webkit-scrollbar-thumb,
 .files-container::-webkit-scrollbar-thumb,
-.menu-section::-webkit-scrollbar-thumb {
+.menu-section::-webkit-scrollbar-thumb,
+.nct-input-area::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 6px;
 }
@@ -880,7 +919,8 @@ header p {
 .research-container::-webkit-scrollbar-thumb:hover,
 .nct-results::-webkit-scrollbar-thumb:hover,
 .files-container::-webkit-scrollbar-thumb:hover,
-.menu-section::-webkit-scrollbar-thumb:hover {
+.menu-section::-webkit-scrollbar-thumb:hover,
+.nct-input-area::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
@@ -890,16 +930,12 @@ header p {
 
 @media (max-width: 768px) {
     .container {
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
         border-radius: 0;
     }
 
     header {
-        padding: 20px;
         height: 90px;
+        padding: 20px;
     }
 
     header h1 {
@@ -932,35 +968,20 @@ header p {
     }
     
     .input-area {
-        flex-direction: column;
         height: auto;
+        min-height: 100px;
+        flex-direction: column;
     }
     
     .input-area button {
         width: 100%;
     }
-}
 
-/* ============================================================================
-   CRITICAL FIX: Ensure mode containers use grid when info bar present
-   ============================================================================ */
-
-#chat-mode:has(.chat-info-bar),
-#research-mode:has(.chat-info-bar) {
-    display: grid !important;
-    grid-template-rows: 60px 1fr 100px !important;
-}
-
-#chat-mode:not(:has(.chat-info-bar)),
-#research-mode:not(:has(.chat-info-bar)) {
-    display: grid !important;
-    grid-template-rows: 1fr 100px !important;
-}
-
-/* Force chat container to be constrained */
-#chat-mode .chat-container,
-#research-mode .research-container {
-    overflow-y: auto !important;
-    height: 100% !important;
-    min-height: 0 !important;
+    .chat-info-bar {
+        flex-direction: column;
+        height: auto;
+        min-height: 60px;
+        padding: 15px;
+        gap: 10px;
+    }
 }
