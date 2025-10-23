@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMP LLM - Clinical Trial Research</title>
     
-    <!-- Base styles (always loaded) -->
+    <!-- Base styles (completely rewritten for proper scrolling) -->
     <link rel="stylesheet" href="/static/style-base.css">
     
     <!-- Theme stylesheet (dynamically loaded) -->
@@ -26,7 +26,7 @@
 
         <!-- Main App (hidden until authenticated) -->
         <div id="main-app" class="hidden">
-            <!-- Header -->
+            <!-- Header (fixed) -->
             <header id="app-header" class="hidden">
                 <div class="header-left">
                     <button class="back-button" onclick="app.showMenu()">← Back</button>
@@ -61,7 +61,7 @@
                 </div>
             </header>
 
-            <!-- Menu Section -->
+            <!-- Menu Section (scrollable) -->
             <div id="menu-view" class="menu-section">
                 <h2 class="menu-title">Select a Mode</h2>
                 <div class="menu-grid">
@@ -88,8 +88,9 @@
                 </div>
             </div>
 
-            <!-- Chat Mode -->
+            <!-- Chat Mode: Info bar (fixed) + Scrollable content + Input (fixed) -->
             <div id="chat-mode" class="mode-container">
+                <!-- Info bar will be dynamically inserted here by JS -->
                 <div class="chat-container" id="chat-container"></div>
                 <div class="input-area">
                     <textarea id="chat-input" placeholder="Type a message..." rows="3"></textarea>
@@ -97,16 +98,17 @@
                 </div>
             </div>
 
-            <!-- Research Mode -->
+            <!-- Research Mode: Info bar (fixed) + Scrollable content + Input (fixed) -->
             <div id="research-mode" class="mode-container">
-                <div class="chat-container" id="research-container"></div>
+                <!-- Info bar will be dynamically inserted here by JS -->
+                <div class="research-container" id="research-container"></div>
                 <div class="input-area">
                     <textarea id="research-input" placeholder="Ask about clinical trials..." rows="3"></textarea>
                     <button onclick="app.sendMessage('research')">Research</button>
                 </div>
             </div>
 
-            <!-- NCT Lookup Mode -->
+            <!-- NCT Lookup Mode: Input area (fixed with scroll) + Results (scrollable) -->
             <div id="nct-mode" class="mode-container">
                 <div class="nct-input-area">
                     <div class="nct-input-group">
@@ -134,7 +136,7 @@
                 <div class="nct-results" id="nct-results"></div>
             </div>
 
-            <!-- File Manager Mode -->
+            <!-- File Manager Mode: Controls (fixed) + Files grid (scrollable) -->
             <div id="files-mode" class="mode-container">
                 <div class="file-controls">
                     <button class="file-upload-btn" onclick="document.getElementById('file-upload-input').click()">

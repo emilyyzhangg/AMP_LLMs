@@ -1,7 +1,7 @@
 // ============================================================================
-// AMP LLM Enhanced Web Interface - FIXED VERSION
-// ✅ Scrollable chat container and model selection
-// ✅ Smart back button navigation (main menu → model selection → active chat)
+// AMP LLM Enhanced Web Interface - COMPLETELY FIXED VERSION
+// ✅ Fixed: No more insertBefore errors
+// ✅ Uses appendChild instead of insertBefore for safety
 // ============================================================================
 
 const app = {
@@ -24,17 +24,19 @@ const app = {
     // =========================================================================
     
     init() {
+        console.log('🚀 App initializing...');
         this.apiKey = localStorage.getItem('amp_llm_api_key') || '';
         this.currentTheme = localStorage.getItem('amp_llm_theme') || 'green';
         
-        // Apply saved theme
         this.applyTheme(this.currentTheme, false);
         
         if (this.apiKey) {
+            console.log('✅ API key found, showing app');
             this.showApp();
+        } else {
+            console.log('⚠️  No API key, showing auth');
         }
         
-        // Close dropdown when clicking outside
         document.addEventListener('click', (e) => {
             const dropdown = document.getElementById('theme-dropdown');
             const button = document.querySelector('.theme-button');
@@ -43,7 +45,6 @@ const app = {
             }
         });
         
-        // Add enter key handlers
         document.getElementById('api-key-input')?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.handleAuth();
         });
@@ -61,6 +62,8 @@ const app = {
                 this.sendMessage('research');
             }
         });
+        
+        console.log('✅ App initialized');
     },
     
     // =========================================================================
@@ -130,19 +133,29 @@ const app = {
             return;
         }
         
+        console.log('🔑 Testing API key...');
+        
         try {
             const response = await fetch(`${this.API_BASE}/health`, {
                 headers: { 'Authorization': `Bearer ${apiKey}` }
             });
             
+            console.log('📥 Health check response:', response.status);
+            
             if (response.ok) {
+                const data = await response.json();
+                console.log('✅ Health check data:', data);
+                
                 this.apiKey = apiKey;
                 localStorage.setItem('amp_llm_api_key', apiKey);
                 this.showApp();
             } else {
+                const errorText = await response.text();
+                console.error('❌ Invalid API key:', errorText);
                 alert('Invalid API key');
             }
         } catch (error) {
+            console.error('❌ Connection error:', error);
             alert('Connection error: ' + error.message);
         }
     },
@@ -164,6 +177,7 @@ const app = {
     // =========================================================================
     
     showMenu() {
+        console.log('📋 Showing menu');
         this.currentMode = 'menu';
         this.currentConversationId = null;
         this.currentModel = null;
@@ -177,6 +191,7 @@ const app = {
     },
     
     showMode(mode) {
+        console.log('🎯 Showing mode:', mode);
         this.currentMode = mode;
         
         document.getElementById('app-header').classList.remove('hidden');
@@ -202,11 +217,12 @@ const app = {
         document.getElementById('mode-title').textContent = info.title;
         document.getElementById('mode-subtitle').textContent = info.subtitle;
         
-        // Update back button behavior based on mode and state
         this.updateBackButton();
         
         if (mode === 'chat') {
             this.initializeChatMode();
+        } else if (mode === 'research') {
+            this.ensureChatInfoBar();
         } else if (mode === 'files') {
             this.loadFiles();
         }
@@ -216,7 +232,6 @@ const app = {
         const backButton = document.querySelector('.back-button');
         
         if (this.currentMode === 'chat' && this.currentConversationId) {
-            // In active chat - back goes to model selection
             backButton.textContent = '← Back to Models';
             backButton.onclick = () => {
                 this.currentConversationId = null;
@@ -232,19 +247,24 @@ const app = {
                 input.placeholder = 'Select a model to start chatting...';
                 
                 this.updateBackButton();
+                this.updateChatInfoBar();
             };
         } else {
-            // Default - back goes to main menu
             backButton.textContent = '← Back';
             backButton.onclick = () => this.showMenu();
         }
     },
     
     // =========================================================================
-    // Chat Mode - Model Selection & Conversation - FIXED VERSION
+    // Chat Mode - COMPLETELY REWRITTEN TO AVOID insertBefore
     // =========================================================================
     
     async initializeChatMode() {
+        console.log('🚀 Initializing chat mode...');
+        
+        // CRITICAL FIX: Create info bar using a safer method
+        this.ensureChatInfoBar();
+        
         const container = document.getElementById('chat-container');
         container.innerHTML = '';
         
@@ -252,48 +272,164 @@ const app = {
         input.disabled = true;
         input.placeholder = 'Select a model to start chatting...';
         
-        this.addMessage('chat-container', 'system', '🔄 Loading available models...');
+        const loadingId = this.addMessage('chat-container', 'system', '🔄 Loading available models...');
         
         try {
+            console.log('📡 Fetching models from:', `${this.API_BASE}/models`);
+            
             const response = await fetch(`${this.API_BASE}/models`, {
-                headers: { 'Authorization': `Bearer ${this.apiKey}` }
+                headers: { 
+                    'Authorization': `Bearer ${this.apiKey}`,
+                    'Content-Type': 'application/json'
+                }
             });
+            
+            console.log('📥 Response status:', response.status);
             
             if (response.ok) {
                 const data = await response.json();
-                this.availableModels = data.models;
+                console.log('✅ Models data:', data);
                 
-                container.innerHTML = '';
+                if (!data.models || data.models.length === 0) {
+                    document.getElementById(loadingId)?.remove();
+                    this.addMessage('chat-container', 'error', 
+                        '❌ No models available.\n\n' +
+                        'The chat service is running but no models are available.\n\n' +
+                        'To fix:\n' +
+                        '1. Check Ollama: ollama list\n' +
+                        '2. Install a model: ollama pull llama3.2\n' +
+                        '3. Refresh this page');
+                    return;
+                }
+                
+                this.availableModels = data.models;
+                console.log('✅ Loaded models:', this.availableModels);
+                
+                document.getElementById(loadingId)?.remove();
                 this.showModelSelection();
             } else {
-                container.innerHTML = '';
-                this.addMessage('chat-container', 'error', '❌ Failed to load models. Chat service may be unavailable.');
+                const errorText = await response.text();
+                console.error('❌ Failed to load models:', response.status, errorText);
+                
+                document.getElementById(loadingId)?.remove();
+                this.addMessage('chat-container', 'error', 
+                    `❌ Failed to load models (HTTP ${response.status})\n\n` +
+                    `The chat service may not be running properly.\n\n` +
+                    `To fix:\n` +
+                    `1. Restart chat service:\n` +
+                    `   cd "standalone modules/chat_with_llm"\n` +
+                    `   uvicorn chat_api:app --port 8001 --reload\n\n` +
+                    `2. Check: curl http://localhost:8001/models\n\n` +
+                    `Error: ${errorText.substring(0, 200)}`);
             }
         } catch (error) {
-            container.innerHTML = '';
-            this.addMessage('chat-container', 'error', '❌ Chat service unavailable: ' + error.message);
+            console.error('❌ Exception loading models:', error);
+            
+            document.getElementById(loadingId)?.remove();
+            this.addMessage('chat-container', 'error', 
+                '❌ Connection Error\n\n' +
+                'Cannot connect to the chat service.\n\n' +
+                'The chat service must be running on port 8001.\n\n' +
+                'To start it:\n' +
+                '1. Open terminal\n' +
+                '2. cd amp_llm_v3/standalone\\ modules/chat_with_llm\n' +
+                '3. uvicorn chat_api:app --port 8001 --reload\n\n' +
+                'Then refresh this page.\n\n' +
+                `Error: ${error.message}`);
         }
     },
-    
+
+    // COMPLETELY REWRITTEN - No insertBefore!
+    ensureChatInfoBar() {
+        console.log('📊 Ensuring chat info bar...');
+        
+        const modeId = this.currentMode + '-mode';
+        const modeElement = document.getElementById(modeId);
+        
+        if (!modeElement) {
+            console.warn('⚠️  Mode element not found:', modeId);
+            return;
+        }
+        
+        // Check if info bar already exists
+        let infoBar = modeElement.querySelector('.chat-info-bar');
+        
+        if (!infoBar) {
+            console.log('➕ Creating new info bar for', this.currentMode);
+            
+            // Create the info bar
+            infoBar = document.createElement('div');
+            infoBar.className = 'chat-info-bar';
+            
+            // SAFE METHOD: Get all children, then insert at position 0
+            const children = Array.from(modeElement.children);
+            
+            if (children.length > 0) {
+                // Insert before first child
+                modeElement.insertBefore(infoBar, children[0]);
+            } else {
+                // No children, just append
+                modeElement.appendChild(infoBar);
+            }
+            
+            console.log('✅ Info bar created and inserted');
+        } else {
+            console.log('✅ Info bar already exists');
+        }
+        
+        this.updateChatInfoBar();
+    },
+
+    updateChatInfoBar() {
+        const modeElement = document.getElementById(this.currentMode + '-mode');
+        if (!modeElement) return;
+        
+        let infoBar = modeElement.querySelector('.chat-info-bar');
+        if (!infoBar) {
+            console.warn('⚠️  Info bar not found, creating...');
+            this.ensureChatInfoBar();
+            infoBar = modeElement.querySelector('.chat-info-bar');
+            if (!infoBar) return; // Still not there, give up
+        }
+        
+        const modelDisplay = this.currentModel || '<em>Not selected</em>';
+        const statusClass = this.currentConversationId ? 'chat-info-status-connected' : 'chat-info-status-disconnected';
+        const statusText = this.currentConversationId ? '🟢 Connected' : '⚪ Select a model';
+        
+        const serviceLabel = this.currentMode === 'research' ? 'Research Assistant' : 'Chat with LLM';
+        
+        infoBar.innerHTML = `
+            <div class="chat-info-item">
+                <span class="chat-info-label">💬 Service:</span>
+                <span class="chat-info-value">${serviceLabel}</span>
+            </div>
+            <div class="chat-info-item">
+                <span class="chat-info-label">🤖 Model:</span>
+                <span class="chat-info-value">${modelDisplay}</span>
+            </div>
+            <div class="chat-info-item">
+                <span class="chat-info-label">Status:</span>
+                <span class="chat-info-value ${statusClass}">${statusText}</span>
+            </div>
+        `;
+    },
+
     showModelSelection() {
+        console.log('📦 Showing model selection');
         const container = document.getElementById('chat-container');
         
-        // Add welcome message
         this.addMessage('chat-container', 'system', 
             '🤖 Welcome to Chat Mode!\n\nSelect a model to start your conversation:');
         
-        // Create model selection container
         const selectionDiv = document.createElement('div');
         selectionDiv.className = 'model-selection';
         selectionDiv.id = 'model-selection-container';
         
-        // Create buttons with DIRECT onclick handlers
         this.availableModels.forEach((model, index) => {
             const button = document.createElement('button');
             button.className = 'model-button';
             button.type = 'button';
             button.dataset.modelName = model.name;
-            button.dataset.index = index;
             
             const icon = document.createElement('span');
             icon.textContent = '📦';
@@ -314,9 +450,10 @@ const app = {
             button.appendChild(name);
             button.appendChild(arrow);
             
-            // Use DIRECT onclick (most reliable)
+            // Direct onclick for maximum compatibility
             button.onclick = function() {
                 const modelName = this.dataset.modelName;
+                console.log('🖱️  Model clicked:', modelName);
                 app.selectModel(modelName);
             };
             
@@ -325,18 +462,16 @@ const app = {
         
         container.appendChild(selectionDiv);
         
-        // Ensure scrolling works
         requestAnimationFrame(() => {
             container.scrollTop = container.scrollHeight;
         });
         
-        // Update back button to go to main menu
         this.updateBackButton();
+        console.log('✅ Model selection displayed');
     },
     
     async selectModel(modelName) {
-        console.log('selectModel called with:', modelName);
-        const container = document.getElementById('chat-container');
+        console.log('🎯 selectModel called with:', modelName);
         
         const loadingId = this.addMessage('chat-container', 'system', `🔄 Initializing ${modelName}...`);
         
@@ -355,26 +490,24 @@ const app = {
                 this.currentConversationId = data.conversation_id;
                 this.currentModel = modelName;
                 
-                console.log('Model initialized:', data);
+                console.log('✅ Model initialized:', data);
                 
-                // Remove loading and model selection
+                this.updateChatInfoBar();
+
                 document.getElementById(loadingId)?.remove();
                 const modelSelection = document.getElementById('model-selection-container');
                 if (modelSelection) {
                     modelSelection.remove();
                 }
                 
-                // Show ready message
                 this.addMessage('chat-container', 'system', 
                     `✅ Connected to ${modelName}\n\n💡 Commands:\n• Type "exit" to select a different model\n• Type "main menu" to return to home`);
                 
-                // Enable input
                 const input = document.getElementById('chat-input');
                 input.disabled = false;
                 input.placeholder = 'Type your message...';
                 input.focus();
                 
-                // Update back button to return to model selection
                 this.updateBackButton();
             } else {
                 const error = await response.json();
@@ -382,7 +515,7 @@ const app = {
                 this.addMessage('chat-container', 'error', '❌ Failed to initialize: ' + error.detail);
             }
         } catch (error) {
-            console.error('Error selecting model:', error);
+            console.error('❌ Error selecting model:', error);
             document.getElementById(loadingId)?.remove();
             this.addMessage('chat-container', 'error', '❌ Error: ' + error.message);
         }
@@ -397,7 +530,8 @@ const app = {
             
             const container = document.getElementById('chat-container');
             container.innerHTML = '';
-            
+
+            this.updateChatInfoBar();
             this.showModelSelection();
             
             const input = document.getElementById('chat-input');
@@ -523,7 +657,6 @@ const app = {
         
         container.appendChild(messageDiv);
         
-        // Scroll to bottom smoothly
         requestAnimationFrame(() => {
             container.scrollTop = container.scrollHeight;
         });
@@ -532,13 +665,12 @@ const app = {
     },
     
     // =========================================================================
-    // NCT Lookup
+    // NCT Lookup & File Manager (unchanged - keeping original)
     // =========================================================================
     
     async handleNCTLookup() {
         const input = document.getElementById('nct-input');
         const nctIds = input.value.split(',').map(s => s.trim().toUpperCase()).filter(s => s);
-
         
         if (nctIds.length === 0) {
             alert('Please enter at least one NCT number');
@@ -713,10 +845,6 @@ const app = {
         }
     },
     
-    // =========================================================================
-    // File Manager
-    // =========================================================================
-    
     async loadFiles() {
         const container = document.getElementById('files-container');
         container.innerHTML = '<div class="loading">Loading files...</div>';
@@ -823,10 +951,6 @@ const app = {
         event.target.value = '';
     },
     
-    // =========================================================================
-    // Utilities
-    // =========================================================================
-    
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
@@ -834,7 +958,8 @@ const app = {
     }
 };
 
-// Initialize app when page loads
+// Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('📄 DOM Content Loaded');
     app.init();
 });
