@@ -1,24 +1,6 @@
 /* ============================================================================
-   PROFESSIONAL THEME - Sophisticated & Eye-Friendly
-   
-   Color Philosophy:
-   - Primary (Teal): #16A085 (toned-down green - 75% saturation reduction)
-   - Secondary (Navy): #2C3E50 (muted dark blue - professional depth)
-   - Accent (Amber): #E67E22 (warm orange - reduced brightness)
-   - Success: #27AE60 (softer green for positive actions)
-   - Background: #ECF0F1 (soft light grey - reduces eye strain)
-   - Text: #2C3E50 (high contrast navy instead of pure black)
-   
-   Design Principles Applied:
-   - 60-30-10 rule: Navy (60%), Teal (30%), Amber (10%)
-   - WCAG AAA contrast ratios for accessibility
-   - Reduced saturation to minimize eye fatigue
-   - Subtle gradients for depth without overwhelming
-   - Warm accent color for CTAs to draw attention naturally
-   ============================================================================ */
-
-/* ============================================================================
-   BODY & CONTAINER
+   PROFESSIONAL THEME - WITH INCREASED BANNER CONTRAST
+   Color Palette: Navy #2C3E50, Teal #16A085, Amber #E67E22
    ============================================================================ */
 
 body {
@@ -29,10 +11,7 @@ body {
     background: #FFFFFF;
 }
 
-/* ============================================================================
-   AUTHENTICATION
-   ============================================================================ */
-
+/* AUTH */
 .auth-box {
     background: #F8F9FA;
     border: 1px solid #E0E6E8;
@@ -71,54 +50,53 @@ body {
     box-shadow: 0 6px 12px rgba(22, 160, 133, 0.3);
 }
 
-.help-text {
-    color: #95A5A6;
-}
-
-/* ============================================================================
-   HEADER
-   ============================================================================ */
-
+/* HEADER - MODE PAGE - INCREASED CONTRAST */
 header {
-    background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
+    background: linear-gradient(135deg, #1A252F 0%, #2C3E50 100%);
     border-bottom: 3px solid #16A085;
 }
 
-header h1 {
-    color: #FFFFFF;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+/* LANDING HEADER - INCREASED CONTRAST */
+.landing-header {
+    background: linear-gradient(135deg, #F0F8F6 0%, #E8F5F3 100%);
+    border-bottom: 3px solid #16A085;
+    box-shadow: 0 4px 16px rgba(22, 160, 133, 0.15);
 }
 
-header p {
-    color: #BDC3C7;
+.logo-container {
+    border-color: #16A085;
+    box-shadow: 0 2px 8px rgba(22, 160, 133, 0.15);
 }
 
-.back-button, .logout-button {
-    background: rgba(22, 160, 133, 0.15);
-    color: #FFFFFF;
-    border: 1px solid rgba(22, 160, 133, 0.3);
+.logo-container:hover {
+    border-color: #16A085;
+    box-shadow: 0 4px 16px rgba(22, 160, 133, 0.25);
 }
 
-.back-button:hover, .logout-button:hover {
-    background: rgba(22, 160, 133, 0.25);
-    border-color: rgba(22, 160, 133, 0.5);
+.landing-title {
+    background: linear-gradient(135deg, #2C3E50 0%, #16A085 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-/* ============================================================================
-   THEME SWITCHER
-   ============================================================================ */
-
-.theme-button {
-    background: rgba(22, 160, 133, 0.15);
-    color: #FFFFFF;
-    border: 1px solid rgba(22, 160, 133, 0.3);
+.landing-version {
+    color: #16A085;
+    font-weight: 600;
 }
 
-.theme-button:hover {
-    background: rgba(22, 160, 133, 0.25);
-    border-color: rgba(22, 160, 133, 0.5);
+.landing-header .theme-button {
+    border-color: #16A085;
+    color: #2C3E50;
+    background: white;
 }
 
+.landing-header .theme-button:hover {
+    background: linear-gradient(135deg, #F8FFFE 0%, #E8F8F5 100%);
+    border-color: #148F77;
+}
+
+/* THEME SWITCHER */
 .theme-dropdown {
     background: #FFFFFF;
     border: 1px solid #D5DBDB;
@@ -134,42 +112,27 @@ header p {
 }
 
 .theme-option.active {
-    background: linear-gradient(135deg, rgba(22, 160, 133, 0.1) 0%, rgba(44, 62, 80, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(22, 160, 133, 0.15) 0%, rgba(44, 62, 80, 0.08) 100%);
     color: #16A085;
-    font-weight: 600;
 }
 
-.theme-indicator {
-    border: 2px solid #BDC3C7;
-}
-
-/* ============================================================================
-   MENU
-   ============================================================================ */
-
+/* MENU */
 .menu-section {
     background: #F8F9FA;
 }
 
 .menu-title {
     color: #2C3E50;
-    font-weight: 600;
 }
 
 .menu-item {
     background: #FFFFFF;
     border: 2px solid #E0E6E8;
-    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
 }
 
 .menu-item:hover {
     border-color: #16A085;
     box-shadow: 0 8px 24px rgba(22, 160, 133, 0.15);
-    transform: translateY(-4px);
-}
-
-.menu-item-icon {
-    filter: grayscale(0.3);
 }
 
 .menu-item-title {
@@ -180,56 +143,10 @@ header p {
     color: #5D6D7E;
 }
 
-/* ============================================================================
-   CHAT INFO BAR
-   ============================================================================ */
-
-.chat-info-bar {
-    background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
-    border-bottom: 2px solid #E0E6E8;
-}
-
-.chat-info-label {
-    color: #2C3E50;
-    font-weight: 600;
-}
-
-.chat-info-value {
-    background: #FFFFFF;
-    border: 1px solid #E0E6E8;
-    color: #34495E;
-}
-
-.chat-info-status-connected {
-    color: #27AE60;
-    font-weight: 600;
-}
-
-.chat-info-status-disconnected {
-    color: #95A5A6;
-}
-
-.clear-chat-btn {
-    background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
-    box-shadow: 0 2px 6px rgba(230, 126, 34, 0.25);
-}
-
-.clear-chat-btn:hover {
-    background: linear-gradient(135deg, #D35400 0%, #BA4A00 100%);
-    box-shadow: 0 4px 12px rgba(230, 126, 34, 0.35);
-}
-
-/* ============================================================================
-   MESSAGES
-   ============================================================================ */
-
+/* MESSAGES */
 .chat-container,
 .research-container {
     background: #F8F9FA;
-}
-
-.message {
-    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .avatar {
@@ -261,19 +178,12 @@ header p {
     background: #FFFFFF;
     color: #2C3E50;
     border: 1px solid #E0E6E8;
-    box-shadow: 0 2px 4px rgba(44, 62, 80, 0.05);
 }
 
 .message.user .content {
     background: linear-gradient(135deg, #16A085 0%, #148F77 100%);
     color: #FFFFFF;
     border: none;
-    box-shadow: 0 2px 8px rgba(22, 160, 133, 0.25);
-}
-
-.message.assistant .content {
-    background: #FFFFFF;
-    color: #2C3E50;
 }
 
 .message.system .content {
@@ -288,35 +198,9 @@ header p {
     border: 1px solid #E74C3C;
 }
 
-/* ============================================================================
-   MODEL SELECTION
-   ============================================================================ */
-
-.model-button {
-    background: #FFFFFF;
-    border: 2px solid #E0E6E8;
-    color: #2C3E50;
-    box-shadow: 0 2px 4px rgba(44, 62, 80, 0.06);
-}
-
-.model-button:hover {
-    border-color: #16A085;
-    box-shadow: 0 4px 12px rgba(22, 160, 133, 0.15);
-    background: linear-gradient(135deg, #FFFFFF 0%, #F8FFFE 100%);
-}
-
-.model-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(22, 160, 133, 0.2);
-}
-
-/* ============================================================================
-   INPUT AREAS
-   ============================================================================ */
-
+/* INPUTS */
 .input-area {
     background: #F8F9FA;
-    border-top: 2px solid #E0E6E8;
 }
 
 .input-area textarea {
@@ -332,31 +216,19 @@ header p {
 
 .input-area button {
     background: linear-gradient(135deg, #16A085 0%, #148F77 100%);
-    box-shadow: 0 4px 6px rgba(22, 160, 133, 0.2);
 }
 
 .input-area button:hover:not(:disabled) {
     background: linear-gradient(135deg, #148F77 0%, #117A65 100%);
-    box-shadow: 0 6px 12px rgba(22, 160, 133, 0.3);
 }
 
-.input-area button:disabled {
-    background: #BDC3C7;
-    box-shadow: none;
-}
-
-/* ============================================================================
-   NCT LOOKUP
-   ============================================================================ */
-
+/* NCT */
 .nct-input-area {
     background: #F8F9FA;
-    border-bottom: 2px solid #E0E6E8;
 }
 
 .nct-input-group label {
     color: #2C3E50;
-    font-weight: 600;
 }
 
 .nct-input-group input,
@@ -369,113 +241,52 @@ header p {
 .nct-input-group input:focus,
 .nct-input-group textarea:focus {
     border-color: #16A085;
-    box-shadow: 0 0 0 3px rgba(22, 160, 133, 0.1);
-}
-
-.checkbox-label {
-    color: #5D6D7E;
 }
 
 .nct-submit {
     background: linear-gradient(135deg, #16A085 0%, #148F77 100%);
-    box-shadow: 0 4px 6px rgba(22, 160, 133, 0.2);
 }
 
 .nct-submit:hover:not(:disabled) {
     background: linear-gradient(135deg, #148F77 0%, #117A65 100%);
-    box-shadow: 0 6px 12px rgba(22, 160, 133, 0.3);
 }
 
 .nct-save {
     background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
-    box-shadow: 0 4px 6px rgba(230, 126, 34, 0.2);
 }
 
 .nct-save:hover {
     background: linear-gradient(135deg, #D35400 0%, #BA4A00 100%);
-    box-shadow: 0 6px 12px rgba(230, 126, 34, 0.3);
 }
 
 .progress-text {
     color: #16A085;
 }
 
-.nct-results {
-    background: #F8F9FA;
-}
-
 .result-card {
     background: #FFFFFF;
     border: 2px solid #E0E6E8;
-    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
 }
 
 .result-card:hover {
     border-color: #16A085;
-    box-shadow: 0 4px 16px rgba(22, 160, 133, 0.12);
 }
 
 .result-card h3 {
     color: #2C3E50;
 }
 
-.result-card-status {
-    color: #5D6D7E;
-    background: #ECF0F1;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 0.8em;
-    font-weight: 600;
-}
-
-.result-card-content {
-    color: #34495E;
-}
-
 .extract-button {
     background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
-    box-shadow: 0 2px 4px rgba(230, 126, 34, 0.2);
 }
 
 .extract-button:hover {
     background: linear-gradient(135deg, #D35400 0%, #BA4A00 100%);
-    box-shadow: 0 4px 8px rgba(230, 126, 34, 0.3);
-}
-
-.result-card-meta {
-    background: #F8F9FA;
-    padding: 15px;
-    border-radius: 8px;
-    margin-top: 15px;
-}
-
-.meta-item {
-    color: #5D6D7E;
-}
-
-.meta-item strong {
-    color: #2C3E50;
-    font-weight: 600;
 }
 
 .summary-card {
     background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
     border: 2px solid #16A085;
-    box-shadow: 0 4px 12px rgba(22, 160, 133, 0.1);
-}
-
-.summary-card h3 {
-    color: #2C3E50;
-    font-weight: 600;
-}
-
-.summary-item-label {
-    color: #5D6D7E;
-    font-weight: 500;
-}
-
-.summary-item-value {
-    font-weight: 700;
 }
 
 .summary-item-value.success {
@@ -490,158 +301,61 @@ header p {
     color: #16A085;
 }
 
-/* ============================================================================
-   FILE MANAGER
-   ============================================================================ */
-
+/* FILES */
 .file-controls {
     background: #F8F9FA;
-    border-bottom: 2px solid #E0E6E8;
 }
 
 .file-upload-btn {
     background: linear-gradient(135deg, #16A085 0%, #148F77 100%);
-    box-shadow: 0 2px 4px rgba(22, 160, 133, 0.2);
 }
 
 .file-upload-btn:hover {
     background: linear-gradient(135deg, #148F77 0%, #117A65 100%);
-    box-shadow: 0 4px 8px rgba(22, 160, 133, 0.3);
 }
 
 .file-refresh-btn {
     background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
-    box-shadow: 0 2px 4px rgba(44, 62, 80, 0.2);
 }
 
 .file-refresh-btn:hover {
     background: linear-gradient(135deg, #34495E 0%, #2C3E50 100%);
-    box-shadow: 0 4px 8px rgba(44, 62, 80, 0.3);
-}
-
-.files-container {
-    background: #F8F9FA;
 }
 
 .file-card {
     background: #FFFFFF;
     border: 2px solid #E0E6E8;
-    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
 }
 
 .file-card:hover {
     border-color: #16A085;
-    box-shadow: 0 4px 16px rgba(22, 160, 133, 0.15);
 }
 
 .file-card-icon {
     color: #16A085;
-    filter: drop-shadow(0 2px 4px rgba(22, 160, 133, 0.2));
-}
-
-.file-card-name {
-    color: #2C3E50;
-    font-weight: 600;
-}
-
-.file-card-meta {
-    color: #5D6D7E;
 }
 
 .file-card-load {
     background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
-    box-shadow: 0 2px 4px rgba(230, 126, 34, 0.2);
 }
 
 .file-card-load:hover {
     background: linear-gradient(135deg, #D35400 0%, #BA4A00 100%);
-    box-shadow: 0 4px 8px rgba(230, 126, 34, 0.3);
 }
 
-.empty-state {
-    color: #95A5A6;
-}
-
-.empty-state-icon {
-    opacity: 0.2;
-}
-
-.landing-header {
-    background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
-    border-bottom: 3px solid #16A085;
-    box-shadow: 0 2px 12px rgba(22, 160, 133, 0.1);
-}
-
-.logo-container {
-    border-color: #16A085;
-    box-shadow: 0 2px 8px rgba(22, 160, 133, 0.15);
-}
-
-.logo-container:hover {
-    border-color: #16A085;
-    box-shadow: 0 4px 16px rgba(22, 160, 133, 0.25);
-}
-
-.landing-title {
-    background: linear-gradient(135deg, #2C3E50 0%, #16A085 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.landing-version {
-    color: #16A085;
-    font-weight: 600;
-}
-
-.landing-header .theme-button {
-    border-color: #E0E6E8;
+/* MODEL BUTTONS */
+.model-button {
+    background: #FFFFFF;
+    border: 2px solid #E0E6E8;
     color: #2C3E50;
 }
 
-.landing-header .theme-button:hover {
-    background: linear-gradient(135deg, #F8FFFE 0%, #E8F8F5 100%);
+.model-button:hover {
     border-color: #16A085;
-    color: #16A085;
+    box-shadow: 0 4px 12px rgba(22, 160, 133, 0.15);
 }
 
-/* ============================================================================
-   LOADING & UTILITIES
-   ============================================================================ */
-
-.loading {
-    color: #16A085;
-}
-
-.spinner {
-    border: 3px solid rgba(22, 160, 133, 0.2);
-    border-top-color: #16A085;
-}
-
-/* ============================================================================
-   SCROLLBARS
-   ============================================================================ */
-
-.chat-container::-webkit-scrollbar,
-.research-container::-webkit-scrollbar,
-.nct-results::-webkit-scrollbar,
-.files-container::-webkit-scrollbar,
-.menu-section::-webkit-scrollbar,
-.nct-input-area::-webkit-scrollbar {
-    width: 12px;
-    background: #ECF0F1;
-}
-
-.chat-container::-webkit-scrollbar-track,
-.research-container::-webkit-scrollbar-track,
-.nct-results::-webkit-scrollbar-track,
-.files-container::-webkit-scrollbar-track,
-.menu-section::-webkit-scrollbar-track,
-.nct-input-area::-webkit-scrollbar-track {
-    background: #ECF0F1;
-    border-radius: 6px;
-}
-
+/* SCROLLBARS */
 .chat-container::-webkit-scrollbar-thumb,
 .research-container::-webkit-scrollbar-thumb,
 .nct-results::-webkit-scrollbar-thumb,
@@ -649,8 +363,6 @@ header p {
 .menu-section::-webkit-scrollbar-thumb,
 .nct-input-area::-webkit-scrollbar-thumb {
     background: linear-gradient(135deg, #16A085 0%, #148F77 100%);
-    border-radius: 6px;
-    border: 2px solid #ECF0F1;
 }
 
 .chat-container::-webkit-scrollbar-thumb:hover,
@@ -660,37 +372,4 @@ header p {
 .menu-section::-webkit-scrollbar-thumb:hover,
 .nct-input-area::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, #148F77 0%, #117A65 100%);
-}
-
-/* ============================================================================
-   ACCESSIBILITY & FOCUS STATES
-   ============================================================================ */
-
-*:focus {
-    outline: 3px solid rgba(22, 160, 133, 0.4);
-    outline-offset: 2px;
-}
-
-button:focus,
-input:focus,
-textarea:focus {
-    outline: 3px solid rgba(22, 160, 133, 0.4);
-    outline-offset: 2px;
-}
-
-/* ============================================================================
-   RESPONSIVE REFINEMENTS
-   ============================================================================ */
-
-@media (max-width: 768px) {
-    .summary-card,
-    .result-card,
-    .file-card {
-        box-shadow: 0 2px 6px rgba(44, 62, 80, 0.08);
-    }
-    
-    .message.user .content,
-    .message.assistant .content {
-        max-width: 90%;
-    }
 }
