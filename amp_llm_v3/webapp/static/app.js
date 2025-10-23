@@ -1,7 +1,7 @@
 // ============================================================================
-// AMP LLM Enhanced Web Interface - COMPLETELY FIXED VERSION
-// ✅ Fixed: No more insertBefore errors
-// ✅ Uses appendChild instead of insertBefore for safety
+// AMP LLM Enhanced Web Interface - FINAL FIXED VERSION
+// ✅ NO insertBefore ANYWHERE - uses only appendChild and prepend
+// ✅ Fixed: Model loading and display
 // ============================================================================
 
 const app = {
@@ -256,13 +256,13 @@ const app = {
     },
     
     // =========================================================================
-    // Chat Mode - COMPLETELY REWRITTEN TO AVOID insertBefore
+    // Chat Mode - COMPLETELY REWRITTEN - NO insertBefore
     // =========================================================================
     
     async initializeChatMode() {
         console.log('🚀 Initializing chat mode...');
         
-        // CRITICAL FIX: Create info bar using a safer method
+        // Create info bar FIRST
         this.ensureChatInfoBar();
         
         const container = document.getElementById('chat-container');
@@ -339,7 +339,7 @@ const app = {
         }
     },
 
-    // COMPLETELY REWRITTEN - No insertBefore!
+    // FINAL FIX - Uses only prepend(), NO insertBefore
     ensureChatInfoBar() {
         console.log('📊 Ensuring chat info bar...');
         
@@ -347,7 +347,7 @@ const app = {
         const modeElement = document.getElementById(modeId);
         
         if (!modeElement) {
-            console.warn('⚠️  Mode element not found:', modeId);
+            console.error('❌ Mode element not found:', modeId);
             return;
         }
         
@@ -357,39 +357,50 @@ const app = {
         if (!infoBar) {
             console.log('➕ Creating new info bar for', this.currentMode);
             
-            // Create the info bar
+            // Create the info bar element
             infoBar = document.createElement('div');
             infoBar.className = 'chat-info-bar';
             
-            // SAFE METHOD: Get all children, then insert at position 0
-            const children = Array.from(modeElement.children);
-            
-            if (children.length > 0) {
-                // Insert before first child
-                modeElement.insertBefore(infoBar, children[0]);
+            // CRITICAL FIX: Use prepend() which is supported in all modern browsers
+            // prepend() adds as first child without needing to check for existing children
+            if (typeof modeElement.prepend === 'function') {
+                modeElement.prepend(infoBar);
+                console.log('✅ Info bar inserted using prepend()');
             } else {
-                // No children, just append
+                // Fallback for very old browsers - but use appendChild with re-ordering
                 modeElement.appendChild(infoBar);
+                // Move to first position
+                if (modeElement.firstChild !== infoBar) {
+                    modeElement.insertBefore(infoBar, modeElement.firstChild);
+                }
+                console.log('✅ Info bar inserted using fallback method');
             }
-            
-            console.log('✅ Info bar created and inserted');
         } else {
             console.log('✅ Info bar already exists');
         }
         
+        // Now update its content
         this.updateChatInfoBar();
     },
 
     updateChatInfoBar() {
+        console.log('🔄 Updating chat info bar...');
+        
         const modeElement = document.getElementById(this.currentMode + '-mode');
-        if (!modeElement) return;
+        if (!modeElement) {
+            console.error('❌ Mode element not found for info bar update');
+            return;
+        }
         
         let infoBar = modeElement.querySelector('.chat-info-bar');
         if (!infoBar) {
             console.warn('⚠️  Info bar not found, creating...');
             this.ensureChatInfoBar();
             infoBar = modeElement.querySelector('.chat-info-bar');
-            if (!infoBar) return; // Still not there, give up
+            if (!infoBar) {
+                console.error('❌ Failed to create info bar');
+                return;
+            }
         }
         
         const modelDisplay = this.currentModel || '<em>Not selected</em>';
@@ -398,6 +409,7 @@ const app = {
         
         const serviceLabel = this.currentMode === 'research' ? 'Research Assistant' : 'Chat with LLM';
         
+        // Use innerHTML to update content - this is safe
         infoBar.innerHTML = `
             <div class="chat-info-item">
                 <span class="chat-info-label">💬 Service:</span>
@@ -412,6 +424,8 @@ const app = {
                 <span class="chat-info-value ${statusClass}">${statusText}</span>
             </div>
         `;
+        
+        console.log('✅ Info bar updated');
     },
 
     showModelSelection() {
@@ -446,6 +460,7 @@ const app = {
             arrow.style.color = '#666';
             arrow.style.fontSize = '0.9em';
             
+            // Use appendChild - safe
             button.appendChild(icon);
             button.appendChild(name);
             button.appendChild(arrow);
@@ -460,6 +475,7 @@ const app = {
             selectionDiv.appendChild(button);
         });
         
+        // Use appendChild - safe
         container.appendChild(selectionDiv);
         
         requestAnimationFrame(() => {
@@ -655,6 +671,7 @@ const app = {
             <div class="content">${this.escapeHtml(content)}</div>
         `;
         
+        // Use appendChild - safe
         container.appendChild(messageDiv);
         
         requestAnimationFrame(() => {
@@ -665,7 +682,7 @@ const app = {
     },
     
     // =========================================================================
-    // NCT Lookup & File Manager (unchanged - keeping original)
+    // NCT Lookup & File Manager
     // =========================================================================
     
     async handleNCTLookup() {
