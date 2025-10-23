@@ -101,6 +101,75 @@ async def serve_static_file(filename: str):
     )
 
 # ============================================================================
+# Dynamic Theme Discovery API Endpoint for AMP LLM WebApp
+# ============================================================================
+
+@app.get("/api/themes")
+async def list_available_themes():
+    """
+    Scan static directory for theme-*.css files and return metadata.
+    
+    Returns:
+        List of theme objects with id, name, and preview colors
+    """
+    static_dir = WEBAPP_DIR / "static"
+    themes = []
+    
+    # Theme metadata - maps filename to display info
+    # You can also parse this from CSS comments if you want
+    # theme_metadata = {
+    #     "theme-green.css": {
+    #         "id": "green",
+    #         "name": "Green Primary",
+    #         "colors": ["#1BEB49", "#0E1F81"]
+    #     },
+    #     "theme-blue.css": {
+    #         "id": "blue", 
+    #         "name": "Blue Primary",
+    #         "colors": ["#0E1F81", "#1BEB49"]
+    #     },
+    #     "theme-balanced.css": {
+    #         "id": "balanced",
+    #         "name": "Tri-Color",
+    #         "colors": ["#0E1F81", "#1BEB49", "#FFA400"]
+    #     },
+    #     "theme-professional.css": {
+    #         "id": "professional",
+    #         "name": "Professional",
+    #         "colors": ["#2C3E50", "#16A085", "#E67E22"]
+    #     }
+    # }
+    
+    try:
+        # Scan for theme files
+        for theme_file in static_dir.glob("theme-*.css"):
+            filename = theme_file.name
+            
+            if filename in theme_metadata:
+                themes.append(theme_metadata[filename])
+            else:
+                # Auto-generate metadata for unknown themes
+                theme_id = filename.replace("theme-", "").replace(".css", "")
+                themes.append({
+                    "id": theme_id,
+                    "name": theme_id.title(),
+                    "colors": ["#667eea", "#764ba2"]  # Default colors
+                })
+        
+        return {
+            "themes": themes,
+            "count": len(themes)
+        }
+    
+    except Exception as e:
+        logger.error(f"Error listing themes: {e}")
+        return {
+            "themes": [],
+            "count": 0,
+            "error": str(e)
+        }
+
+# ============================================================================
 # Service URLs
 # ============================================================================
 CHAT_SERVICE_URL = "http://localhost:8001"

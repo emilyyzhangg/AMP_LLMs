@@ -20,18 +20,22 @@ const app = {
     selectedFile: null,
     files: [],
     availableModels: [],
+    availableThemes: [],  // NEW: Dynamic theme list
     
     // Session-based chat storage (per model)
-    sessionChats: {}, // { modelName: { conversationId: 'xxx', messages: [{role, content, messageId}] } }
+    sessionChats: {},
     
     // =========================================================================
     // Initialization
     // =========================================================================
     
-    init() {
+    async init() {
         console.log('🚀 App initializing...');
         this.apiKey = localStorage.getItem('amp_llm_api_key') || '';
         this.currentTheme = localStorage.getItem('amp_llm_theme') || 'green';
+        
+        // Load available themes dynamically
+        await this.loadAvailableThemes();
         
         this.applyTheme(this.currentTheme, false);
         
@@ -70,9 +74,105 @@ const app = {
         
         console.log('✅ App initialized');
     },
-    
     // =========================================================================
-    // Theme Management
+    // NEW: Dynamic Theme Loading
+    // =========================================================================
+    
+    async loadAvailableThemes() {
+        console.log('🎨 Loading available themes...');
+        
+        try {
+            // Try to fetch themes from API
+            const response = await fetch(`${this.API_BASE}/api/themes`);
+            
+            if (response.ok) {
+                const data = await response.json();
+                this.availableThemes = data.themes || [];
+                console.log(`✅ Loaded ${this.availableThemes.length} themes from API`);
+            } else {
+                console.warn('⚠️  API theme endpoint not available, using fallback');
+                this.useFallbackThemes();
+            }
+        } catch (error) {
+            console.warn('⚠️  Failed to load themes from API, using fallback:', error);
+            this.useFallbackThemes();
+        }
+        
+        // Build theme dropdown after loading
+        this.buildThemeDropdown();
+    },
+    
+    useFallbackThemes() {
+        // Fallback to hardcoded themes if API not available
+        this.availableThemes = [
+            {
+                id: 'green',
+                name: 'Green Primary',
+                colors: ['#1BEB49', '#0E1F81']
+            },
+            {
+                id: 'blue',
+                name: 'Blue Primary',
+                colors: ['#0E1F81', '#1BEB49']
+            },
+            {
+                id: 'balanced',
+                name: 'Tri-Color',
+                colors: ['#0E1F81', '#1BEB49', '#FFA400']
+            },
+            {
+                id: 'professional',
+                name: 'Professional',
+                colors: ['#2C3E50', '#16A085', '#E67E22']
+            }
+        ];
+        console.log('✅ Using fallback themes');
+    },
+    
+    buildThemeDropdown() {
+        const dropdown = document.getElementById('theme-dropdown');
+        if (!dropdown) {
+            console.warn('⚠️  Theme dropdown not found');
+            return;
+        }
+        
+        // Clear existing options
+        dropdown.innerHTML = '';
+        
+        // Build options from available themes
+        this.availableThemes.forEach(theme => {
+            const option = document.createElement('div');
+            option.className = 'theme-option';
+            option.onclick = () => this.setTheme(theme.id);
+            
+            // Create gradient indicator
+            const indicator = document.createElement('div');
+            indicator.className = 'theme-indicator';
+            
+            // Generate CSS gradient from colors array
+            if (theme.colors && theme.colors.length > 0) {
+                const gradientStops = theme.colors.map((color, idx) => {
+                    const position = (idx / (theme.colors.length - 1)) * 100;
+                    return `${color} ${position}%`;
+                }).join(', ');
+                indicator.style.background = `linear-gradient(135deg, ${gradientStops})`;
+            }
+            
+            // Create label
+            const label = document.createElement('span');
+            label.textContent = theme.name;
+            
+            option.appendChild(indicator);
+            option.appendChild(label);
+            dropdown.appendChild(option);
+        });
+        
+        console.log(`✅ Built theme dropdown with ${this.availableThemes.length} options`);
+        this.updateActiveTheme();
+    },
+
+    // =========================================================================
+    // Theme Management - UPDATED for dynamic themes
     // =========================================================================
     
     toggleThemeDropdown() {
@@ -81,27 +181,36 @@ const app = {
         this.updateActiveTheme();
     },
     
-    setTheme(theme) {
-        this.currentTheme = theme;
-        localStorage.setItem('amp_llm_theme', theme);
-        this.applyTheme(theme, true);
+    setTheme(themeId) {
+        console.log('🎨 Setting theme:', themeId);
+        
+        // Validate theme exists
+        const theme = this.availableThemes.find(t => t.id === themeId);
+        if (!theme) {
+            console.error('❌ Theme not found:', themeId);
+            return;
+        }
+        
+        this.currentTheme = themeId;
+        localStorage.setItem('amp_llm_theme', themeId);
+        this.applyTheme(themeId, true);
         document.getElementById('theme-dropdown').classList.add('hidden');
     },
     
-    applyTheme(theme, animate = false) {
+    applyTheme(themeId, animate = false) {
         const themeStylesheet = document.getElementById('theme-stylesheet');
-        const themeNames = {
-            'green': 'Green',
-            'blue': 'Blue',
-            'balanced': 'Tri-Color',
-            'professional': 'Professional' 
-        };
         
-        themeStylesheet.href = `/static/theme-${theme}.css`;
+        // Find theme metadata
+        const theme = this.availableThemes.find(t => t.id === themeId);
+        const themeName = theme ? theme.name : themeId.charAt(0).toUpperCase() + themeId.slice(1);
         
-        const themeName = document.getElementById('current-theme-name');
-        if (themeName) {
-            themeName.textContent = themeNames[theme];
+        // Update stylesheet href - matches filename pattern theme-{id}.css
+        themeStylesheet.href = `/static/theme-${themeId}.css`;
+        
+        // Update display name
+        const themeNameElement = document.getElementById('current-theme-name');
+        if (themeNameElement) {
+            themeNameElement.textContent = themeName;
         }
         
         this.updateActiveTheme();
@@ -112,13 +221,17 @@ const app = {
                 document.body.style.transition = '';
             }, 500);
         }
+        
+        console.log(`✅ Applied theme: ${themeName}`);
     },
     
     updateActiveTheme() {
         const options = document.querySelectorAll('.theme-option');
-        options.forEach((option, index) => {
-            const themes = ['green', 'blue', 'balanced'];
-            if (themes[index] === this.currentTheme) {
+        options.forEach(option => {
+            // Check if this option's onclick calls setTheme with current theme
+            const isActive = option.onclick && option.onclick.toString().includes(this.currentTheme);
+            
+            if (isActive) {
                 option.classList.add('active');
             } else {
                 option.classList.remove('active');
