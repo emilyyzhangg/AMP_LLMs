@@ -47,13 +47,23 @@ const app = {
         }
         
         document.addEventListener('click', (e) => {
-            const dropdown = document.getElementById('theme-dropdown');
-            const button = document.querySelector('.theme-button');
-            if (dropdown && !dropdown.contains(e.target) && !button.contains(e.target)) {
-                dropdown.classList.add('hidden');
+            const allDropdowns = document.querySelectorAll('.theme-dropdown');
+            const allButtons = document.querySelectorAll('.theme-button');
+            
+            let isButton = false;
+            allButtons.forEach(btn => {
+                if (btn.contains(e.target)) isButton = true;
+            });
+            
+            if (!isButton) {
+                allDropdowns.forEach(dropdown => {
+                    if (!dropdown.contains(e.target)) {
+                        dropdown.classList.add('hidden');
+                    }
+                });
             }
         });
-        
+    
         document.getElementById('api-key-input')?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.handleAuth();
         });
@@ -130,11 +140,13 @@ const app = {
     },
     
     buildThemeDropdown() {
-        const dropdown = document.getElementById('theme-dropdown');
-        if (!dropdown) {
-            console.warn('⚠️  Theme dropdown not found');
-            return;
-        }
+    const dropdowns = [
+        document.getElementById('theme-dropdown'),      // Landing header
+        document.getElementById('theme-dropdown-2')     // Mode header
+    ];
+    
+    dropdowns.forEach(dropdown => {
+        if (!dropdown) return;
         
         // Clear existing options
         dropdown.innerHTML = '';
@@ -166,19 +178,33 @@ const app = {
             option.appendChild(label);
             dropdown.appendChild(option);
         });
-        
-        console.log(`✅ Built theme dropdown with ${this.availableThemes.length} options`);
-        this.updateActiveTheme();
-    },
+    });
+    
+    console.log(`✅ Built theme dropdowns with ${this.availableThemes.length} options`);
+    this.updateActiveTheme();
+},
+
+
 
     // =========================================================================
     // Theme Management - UPDATED for dynamic themes
     // =========================================================================
     
     toggleThemeDropdown() {
-        const dropdown = document.getElementById('theme-dropdown');
-        dropdown.classList.toggle('hidden');
-        this.updateActiveTheme();
+        // Close all dropdowns first
+        const allDropdowns = document.querySelectorAll('.theme-dropdown');
+        allDropdowns.forEach(d => d.classList.add('hidden'));
+        
+        // Find which button was clicked by checking event
+        const clickedButton = event.target.closest('.theme-button');
+        if (!clickedButton) return;
+        
+        // Find the dropdown sibling
+        const dropdown = clickedButton.nextElementSibling;
+        if (dropdown && dropdown.classList.contains('theme-dropdown')) {
+            dropdown.classList.toggle('hidden');
+            this.updateActiveTheme();
+        }
     },
     
     setTheme(themeId) {
@@ -204,14 +230,20 @@ const app = {
         const theme = this.availableThemes.find(t => t.id === themeId);
         const themeName = theme ? theme.name : themeId.charAt(0).toUpperCase() + themeId.slice(1);
         
-        // Update stylesheet href - matches filename pattern theme-{id}.css
+        // Update stylesheet href
         themeStylesheet.href = `/static/theme-${themeId}.css`;
         
-        // Update display name
-        const themeNameElement = document.getElementById('current-theme-name');
-        if (themeNameElement) {
-            themeNameElement.textContent = themeName;
-        }
+        // Update BOTH theme name displays
+        const themeNameElements = [
+            document.getElementById('current-theme-name'),    // Landing header
+            document.getElementById('current-theme-name-2')   // Mode header
+        ];
+        
+        themeNameElements.forEach(element => {
+            if (element) {
+                element.textContent = themeName;
+            }
+        });
         
         this.updateActiveTheme();
         
@@ -302,10 +334,13 @@ const app = {
         this.currentMode = 'menu';
         this.currentConversationId = null;
         this.currentModel = null;
-        
+
+        document.getElementById('landing-header').classList.remove('hidden');
         document.getElementById('app-header').classList.add('hidden');
         document.getElementById('menu-view').classList.remove('hidden');
         
+        document.getElementById('main-app').classList.add('on-menu');
+
         document.querySelectorAll('.mode-container').forEach(el => {
             el.classList.remove('active');
         });
@@ -315,9 +350,12 @@ const app = {
         console.log('🎯 Showing mode:', mode);
         this.currentMode = mode;
         
+        document.getElementById('landing-header').classList.add('hidden');
         document.getElementById('app-header').classList.remove('hidden');
         document.getElementById('menu-view').classList.add('hidden');
         
+        document.getElementById('main-app').classList.remove('on-menu');
+
         document.querySelectorAll('.mode-container').forEach(el => {
             el.classList.remove('active');
         });

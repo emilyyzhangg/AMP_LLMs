@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMP LLM - Clinical Trial Research</title>
+    <title>AMP LLM - Clinical Trial Research Assistant</title>
     
-    <!-- Base styles (completely rewritten for proper scrolling) -->
+    <!-- Base styles -->
     <link rel="stylesheet" href="/static/style-base.css">
     
     <!-- Theme stylesheet (dynamically loaded) -->
@@ -26,7 +26,40 @@
 
         <!-- Main App (hidden until authenticated) -->
         <div id="main-app" class="hidden">
-            <!-- Header (fixed) -->
+            <!-- ============================================================
+                 LANDING PAGE HEADER BANNER
+                 Fixed banner with logo, title, and theme picker
+                 ============================================================ -->
+            <div id="landing-header" class="landing-header">
+                <div class="landing-header-left">
+                    <div class="logo-container">
+                        <img src="/static/amp-logo.png" alt="AMP Logo" class="amp-logo" />
+                    </div>
+                </div>
+                
+                <div class="landing-header-center">
+                    <h1 class="landing-title">Research Assistant LLM</h1>
+                    <p class="landing-version">v0.3</p>
+                </div>
+                
+                <div class="landing-header-right">
+                    <div class="theme-switcher">
+                        <button class="theme-button" onclick="app.toggleThemeDropdown()">
+                            <span>🎨</span>
+                            <span id="current-theme-name">Loading...</span>
+                        </button>
+                        <div class="theme-dropdown hidden" id="theme-dropdown">
+                            <div class="loading" style="padding: 20px; text-align: center; color: #999;">
+                                Loading themes...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 MODE PAGE HEADER (shown when in a specific mode)
+                 ============================================================ -->
             <header id="app-header" class="hidden">
                 <div class="header-left">
                     <button class="back-button" onclick="app.showMenu()">← Back</button>
@@ -36,28 +69,14 @@
                     </div>
                 </div>
                 <div class="header-right">
-                    <!-- Theme Switcher -->
                     <div class="theme-switcher">
                         <button class="theme-button" onclick="app.toggleThemeDropdown()">
                             <span>🎨</span>
-                            <span id="current-theme-name">Green</span>
+                            <span id="current-theme-name-2">Loading...</span>
                         </button>
-                        <div class="theme-dropdown hidden" id="theme-dropdown">
-                            <div class="theme-option" onclick="app.setTheme('green')">
-                                <div class="theme-indicator" style="background: linear-gradient(135deg, #1BEB49 0%, #0E1F81 100%);"></div>
-                                <span>Green Primary</span>
-                            </div>
-                            <div class="theme-option" onclick="app.setTheme('blue')">
-                                <div class="theme-indicator" style="background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);"></div>
-                                <span>Blue Primary</span>
-                            </div>
-                            <div class="theme-option" onclick="app.setTheme('balanced')">
-                                <div class="theme-indicator" style="background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%);"></div>
-                                <span>Tri-Color</span>
-                            </div>
-                            <div class="theme-option" onclick="app.setTheme('professional')">
-                                <div class="theme-indicator" style="background: linear-gradient(135deg, #2C3E50 0%, #16A085 50%, #E67E22 100%);"></div>
-                                <span>Professional</span>
+                        <div class="theme-dropdown hidden" id="theme-dropdown-2">
+                            <div class="loading" style="padding: 20px; text-align: center; color: #999;">
+                                Loading themes...
                             </div>
                         </div>
                     </div>
@@ -92,9 +111,8 @@
                 </div>
             </div>
 
-            <!-- Chat Mode: Info bar (fixed) + Scrollable content + Input (fixed) -->
+            <!-- Chat Mode -->
             <div id="chat-mode" class="mode-container">
-                <!-- Info bar will be dynamically inserted here by JS -->
                 <div class="chat-container" id="chat-container"></div>
                 <div class="input-area">
                     <textarea id="chat-input" placeholder="Type a message..." rows="3"></textarea>
@@ -102,9 +120,8 @@
                 </div>
             </div>
 
-            <!-- Research Mode: Info bar (fixed) + Scrollable content + Input (fixed) -->
+            <!-- Research Mode -->
             <div id="research-mode" class="mode-container">
-                <!-- Info bar will be dynamically inserted here by JS -->
                 <div class="research-container" id="research-container"></div>
                 <div class="input-area">
                     <textarea id="research-input" placeholder="Ask about clinical trials..." rows="3"></textarea>
@@ -112,7 +129,7 @@
                 </div>
             </div>
 
-            <!-- NCT Lookup Mode: Input area (fixed with scroll) + Results (scrollable) -->
+            <!-- NCT Lookup Mode -->
             <div id="nct-mode" class="mode-container">
                 <div class="nct-input-area">
                     <div class="nct-input-group">
@@ -140,7 +157,7 @@
                 <div class="nct-results" id="nct-results"></div>
             </div>
 
-            <!-- File Manager Mode: Controls (fixed) + Files grid (scrollable) -->
+            <!-- File Manager Mode -->
             <div id="files-mode" class="mode-container">
                 <div class="file-controls">
                     <button class="file-upload-btn" onclick="document.getElementById('file-upload-input').click()">

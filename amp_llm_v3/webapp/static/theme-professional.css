@@ -566,6 +566,45 @@ header p {
     opacity: 0.2;
 }
 
+.landing-header {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+    border-bottom: 3px solid #16A085;
+    box-shadow: 0 2px 12px rgba(22, 160, 133, 0.1);
+}
+
+.logo-container {
+    border-color: #16A085;
+    box-shadow: 0 2px 8px rgba(22, 160, 133, 0.15);
+}
+
+.logo-container:hover {
+    border-color: #16A085;
+    box-shadow: 0 4px 16px rgba(22, 160, 133, 0.25);
+}
+
+.landing-title {
+    background: linear-gradient(135deg, #2C3E50 0%, #16A085 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.landing-version {
+    color: #16A085;
+    font-weight: 600;
+}
+
+.landing-header .theme-button {
+    border-color: #E0E6E8;
+    color: #2C3E50;
+}
+
+.landing-header .theme-button:hover {
+    background: linear-gradient(135deg, #F8FFFE 0%, #E8F8F5 100%);
+    border-color: #16A085;
+    color: #16A085;
+}
+
 /* ============================================================================
    LOADING & UTILITIES
    ============================================================================ */

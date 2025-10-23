@@ -150,3 +150,29 @@ header {
     border-color: #1BEB49;
     box-shadow: 0 5px 15px rgba(27, 235, 73, 0.2);
 }
+
+.landing-header {
+    background: linear-gradient(135deg, #E8FFF2 0%, #F0FFF6 100%);
+    border-bottom: 3px solid #1BEB49;
+}
+
+.logo-container {
+    border-color: #1BEB49;
+}
+
+.landing-title {
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.landing-header .theme-button {
+    border-color: #1BEB49;
+    color: #0E1F81;
+}
+
+.landing-header .theme-button:hover {
+    background: #E8FFF2;
+    border-color: #17C93E;
+}

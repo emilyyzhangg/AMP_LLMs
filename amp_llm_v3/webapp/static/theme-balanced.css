@@ -186,3 +186,30 @@ header {
     border-color: #1BEB49;
     box-shadow: 0 5px 15px rgba(27, 235, 73, 0.2);
 }
+
+.landing-header {
+    background: linear-gradient(135deg, #E6EEFF 0%, #E8FFF2 50%, #FFF4E6 100%);
+    border-bottom: 3px solid transparent;
+    border-image: linear-gradient(90deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%) 1;
+}
+
+.logo-container {
+    border-color: #1BEB49;
+}
+
+.landing-title {
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.landing-header .theme-button {
+    border-color: #1BEB49;
+    color: #0E1F81;
+}
+
+.landing-header .theme-button:hover {
+    background: linear-gradient(135deg, #E6EEFF 0%, #FFF4E6 100%);
+    border-color: #FFA400;
+}

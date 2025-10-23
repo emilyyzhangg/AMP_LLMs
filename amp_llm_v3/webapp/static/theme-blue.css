@@ -158,3 +158,29 @@ header {
     border-color: #0E1F81;
     box-shadow: 0 5px 15px rgba(14, 31, 129, 0.2);
 }
+
+.landing-header {
+    background: linear-gradient(135deg, #E6EEFF 0%, #F0F4FF 100%);
+    border-bottom: 3px solid #0E1F81;
+}
+
+.logo-container {
+    border-color: #0E1F81;
+}
+
+.landing-title {
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.landing-header .theme-button {
+    border-color: #0E1F81;
+    color: #0E1F81;
+}
+
+.landing-header .theme-button:hover {
+    background: #E6EEFF;
+    border-color: #0B1866;
+}
