@@ -408,10 +408,6 @@ header p {
         justify-content: center;
         min-width: auto;
     }
-        .logo-container {
-        width: clamp(40px, 10vw, 60px);  /* Slightly larger proportion on tablets */
-        height: clamp(40px, 10vw, 60px);
-    }
 }
 
 @media (max-width: 480px) {
@@ -424,8 +420,8 @@ header p {
     }
     
     .logo-container {
-        width: clamp(35px, 12vw, 50px);  /* More flexible on mobile */
-        height: clamp(35px, 12vw, 50px);
+        width: 40px;
+        height: 40px;
     }
 }
 
