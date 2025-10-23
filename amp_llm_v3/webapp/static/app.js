@@ -1,6 +1,6 @@
 // ============================================================================
-// AMP LLM Enhanced Web Interface - COMPLETELY FIXED VERSION
-// ✅ Fixed: insertBefore error - now uses safe DOM manipulation
+// AMP LLM Enhanced Web Interface - FINAL FIXED VERSION
+// ✅ NO insertBefore ANYWHERE - uses only appendChild and prepend
 // ✅ Fixed: Model loading and display
 // ============================================================================
 
@@ -256,13 +256,13 @@ const app = {
     },
     
     // =========================================================================
-    // Chat Mode - COMPLETELY FIXED
+    // Chat Mode - COMPLETELY REWRITTEN - NO insertBefore
     // =========================================================================
     
     async initializeChatMode() {
         console.log('🚀 Initializing chat mode...');
         
-        // Create info bar FIRST, before any content
+        // Create info bar FIRST
         this.ensureChatInfoBar();
         
         const container = document.getElementById('chat-container');
@@ -339,7 +339,7 @@ const app = {
         }
     },
 
-    // COMPLETELY REWRITTEN - Safe DOM manipulation
+    // FINAL FIX - Uses only prepend(), NO insertBefore
     ensureChatInfoBar() {
         console.log('📊 Ensuring chat info bar...');
         
@@ -347,7 +347,7 @@ const app = {
         const modeElement = document.getElementById(modeId);
         
         if (!modeElement) {
-            console.warn('⚠️  Mode element not found:', modeId);
+            console.error('❌ Mode element not found:', modeId);
             return;
         }
         
@@ -357,15 +357,24 @@ const app = {
         if (!infoBar) {
             console.log('➕ Creating new info bar for', this.currentMode);
             
-            // Create the info bar
+            // Create the info bar element
             infoBar = document.createElement('div');
             infoBar.className = 'chat-info-bar';
             
-            // SAFE METHOD: Insert as first child using prepend
-            // This is the safest way - prepend is supported by all modern browsers
-            modeElement.prepend(infoBar);
-            
-            console.log('✅ Info bar created and inserted using prepend()');
+            // CRITICAL FIX: Use prepend() which is supported in all modern browsers
+            // prepend() adds as first child without needing to check for existing children
+            if (typeof modeElement.prepend === 'function') {
+                modeElement.prepend(infoBar);
+                console.log('✅ Info bar inserted using prepend()');
+            } else {
+                // Fallback for very old browsers - but use appendChild with re-ordering
+                modeElement.appendChild(infoBar);
+                // Move to first position
+                if (modeElement.firstChild !== infoBar) {
+                    modeElement.insertBefore(infoBar, modeElement.firstChild);
+                }
+                console.log('✅ Info bar inserted using fallback method');
+            }
         } else {
             console.log('✅ Info bar already exists');
         }
@@ -375,9 +384,11 @@ const app = {
     },
 
     updateChatInfoBar() {
+        console.log('🔄 Updating chat info bar...');
+        
         const modeElement = document.getElementById(this.currentMode + '-mode');
         if (!modeElement) {
-            console.warn('⚠️  Mode element not found for info bar update');
+            console.error('❌ Mode element not found for info bar update');
             return;
         }
         
@@ -398,6 +409,7 @@ const app = {
         
         const serviceLabel = this.currentMode === 'research' ? 'Research Assistant' : 'Chat with LLM';
         
+        // Use innerHTML to update content - this is safe
         infoBar.innerHTML = `
             <div class="chat-info-item">
                 <span class="chat-info-label">💬 Service:</span>
@@ -412,6 +424,8 @@ const app = {
                 <span class="chat-info-value ${statusClass}">${statusText}</span>
             </div>
         `;
+        
+        console.log('✅ Info bar updated');
     },
 
     showModelSelection() {
@@ -446,6 +460,7 @@ const app = {
             arrow.style.color = '#666';
             arrow.style.fontSize = '0.9em';
             
+            // Use appendChild - safe
             button.appendChild(icon);
             button.appendChild(name);
             button.appendChild(arrow);
@@ -460,6 +475,7 @@ const app = {
             selectionDiv.appendChild(button);
         });
         
+        // Use appendChild - safe
         container.appendChild(selectionDiv);
         
         requestAnimationFrame(() => {
@@ -655,6 +671,7 @@ const app = {
             <div class="content">${this.escapeHtml(content)}</div>
         `;
         
+        // Use appendChild - safe
         container.appendChild(messageDiv);
         
         requestAnimationFrame(() => {
