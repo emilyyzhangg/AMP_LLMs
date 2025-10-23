@@ -940,3 +940,27 @@ header p {
         width: 100%;
     }
 }
+
+/* ============================================================================
+   CRITICAL FIX: Ensure mode containers use grid when info bar present
+   ============================================================================ */
+
+#chat-mode:has(.chat-info-bar),
+#research-mode:has(.chat-info-bar) {
+    display: grid !important;
+    grid-template-rows: 60px 1fr 100px !important;
+}
+
+#chat-mode:not(:has(.chat-info-bar)),
+#research-mode:not(:has(.chat-info-bar)) {
+    display: grid !important;
+    grid-template-rows: 1fr 100px !important;
+}
+
+/* Force chat container to be constrained */
+#chat-mode .chat-container,
+#research-mode .research-container {
+    overflow-y: auto !important;
+    height: 100% !important;
+    min-height: 0 !important;
+}

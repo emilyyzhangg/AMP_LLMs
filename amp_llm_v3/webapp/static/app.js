@@ -247,14 +247,16 @@ const app = {
     
     async initializeChatMode() {
         const container = document.getElementById('chat-container');
+        
+        // CRITICAL: Create info bar FIRST before any messages
+        this.updateChatInfoBar();
+        
         container.innerHTML = '';
         
         const input = document.getElementById('chat-input');
         input.disabled = true;
         input.placeholder = 'Select a model to start chatting...';
-        // Update info bar with no model selected
-        this.updateChatInfoBar();
-
+        
         this.addMessage('chat-container', 'system', '🔄 Loading available models...');
         
         try {
@@ -434,7 +436,7 @@ const app = {
             
             const container = document.getElementById('chat-container');
             container.innerHTML = '';
-            
+
             this.updateChatInfoBar();
             this.showModelSelection();
             
