@@ -1,7 +1,9 @@
 // ============================================================================
-// AMP LLM Enhanced Web Interface - FINAL FIXED VERSION
-// ✅ NO insertBefore ANYWHERE - uses only appendChild and prepend
-// ✅ Fixed: Model loading and display
+// AMP LLM Enhanced Web Interface - IMPROVED VERSION
+// ✅ Model selection has NO chat container
+// ✅ Chats persist per model during session
+// ✅ Clear chat button to reset conversation
+// ✅ Session-based - no cross-user contamination
 // ============================================================================
 
 const app = {
@@ -18,6 +20,10 @@ const app = {
     selectedFile: null,
     files: [],
     availableModels: [],
+    
+    // Session-based chat storage (per model, cleared on page reload)
+    // Structure: { modelName: { conversationId: string, messages: [{id, role, content}] } }
+    chatSessions: {},
     
     // =========================================================================
     // Initialization
@@ -234,12 +240,28 @@ const app = {
         if (this.currentMode === 'chat' && this.currentConversationId) {
             backButton.textContent = '← Back to Models';
             backButton.onclick = () => {
+                // Save current chat session
+                if (this.currentModel && this.currentConversationId) {
+                    const container = document.getElementById('chat-container');
+                    const messages = Array.from(container.querySelectorAll('.message')).map(msg => ({
+                        id: msg.id,
+                        role: msg.classList.contains('user') ? 'user' : 
+                              msg.classList.contains('assistant') ? 'assistant' : 'system',
+                        content: msg.querySelector('.content')?.textContent || ''
+                    }));
+                    
+                    this.chatSessions[this.currentModel] = {
+                        conversationId: this.currentConversationId,
+                        messages: messages
+                    };
+                    
+                    console.log('💾 Saved chat session for', this.currentModel);
+                }
+                
                 this.currentConversationId = null;
                 this.currentModel = null;
                 
-                const container = document.getElementById('chat-container');
-                container.innerHTML = '';
-                
+                // Show model selection
                 this.showModelSelection();
                 
                 const input = document.getElementById('chat-input');
@@ -256,13 +278,13 @@ const app = {
     },
     
     // =========================================================================
-    // Chat Mode - COMPLETELY REWRITTEN - NO insertBefore
+    // Chat Mode - Model Selection and Session Management
     // =========================================================================
     
     async initializeChatMode() {
         console.log('🚀 Initializing chat mode...');
         
-        // Create info bar FIRST
+        // Create info bar
         this.ensureChatInfoBar();
         
         const container = document.getElementById('chat-container');
@@ -272,7 +294,9 @@ const app = {
         input.disabled = true;
         input.placeholder = 'Select a model to start chatting...';
         
-        const loadingId = this.addMessage('chat-container', 'system', '🔄 Loading available models...');
+        // Hide clear button initially
+        const clearButton = document.getElementById('clear-chat-btn');
+        if (clearButton) clearButton.classList.add('hidden');
         
         try {
             console.log('📡 Fetching models from:', `${this.API_BASE}/models`);
@@ -291,7 +315,6 @@ const app = {
                 console.log('✅ Models data:', data);
                 
                 if (!data.models || data.models.length === 0) {
-                    document.getElementById(loadingId)?.remove();
                     this.addMessage('chat-container', 'error', 
                         '❌ No models available.\n\n' +
                         'The chat service is running but no models are available.\n\n' +
@@ -305,13 +328,11 @@ const app = {
                 this.availableModels = data.models;
                 console.log('✅ Loaded models:', this.availableModels);
                 
-                document.getElementById(loadingId)?.remove();
                 this.showModelSelection();
             } else {
                 const errorText = await response.text();
                 console.error('❌ Failed to load models:', response.status, errorText);
                 
-                document.getElementById(loadingId)?.remove();
                 this.addMessage('chat-container', 'error', 
                     `❌ Failed to load models (HTTP ${response.status})\n\n` +
                     `The chat service may not be running properly.\n\n` +
@@ -325,7 +346,6 @@ const app = {
         } catch (error) {
             console.error('❌ Exception loading models:', error);
             
-            document.getElementById(loadingId)?.remove();
             this.addMessage('chat-container', 'error', 
                 '❌ Connection Error\n\n' +
                 'Cannot connect to the chat service.\n\n' +
@@ -339,7 +359,6 @@ const app = {
         }
     },
 
-    // FINAL FIX - Uses only prepend(), NO insertBefore
     ensureChatInfoBar() {
         console.log('📊 Ensuring chat info bar...');
         
@@ -351,25 +370,19 @@ const app = {
             return;
         }
         
-        // Check if info bar already exists
         let infoBar = modeElement.querySelector('.chat-info-bar');
         
         if (!infoBar) {
             console.log('➕ Creating new info bar for', this.currentMode);
             
-            // Create the info bar element
             infoBar = document.createElement('div');
             infoBar.className = 'chat-info-bar';
             
-            // CRITICAL FIX: Use prepend() which is supported in all modern browsers
-            // prepend() adds as first child without needing to check for existing children
             if (typeof modeElement.prepend === 'function') {
                 modeElement.prepend(infoBar);
                 console.log('✅ Info bar inserted using prepend()');
             } else {
-                // Fallback for very old browsers - but use appendChild with re-ordering
                 modeElement.appendChild(infoBar);
-                // Move to first position
                 if (modeElement.firstChild !== infoBar) {
                     modeElement.insertBefore(infoBar, modeElement.firstChild);
                 }
@@ -379,7 +392,6 @@ const app = {
             console.log('✅ Info bar already exists');
         }
         
-        // Now update its content
         this.updateChatInfoBar();
     },
 
@@ -409,7 +421,10 @@ const app = {
         
         const serviceLabel = this.currentMode === 'research' ? 'Research Assistant' : 'Chat with LLM';
         
-        // Use innerHTML to update content - this is safe
+        // Show clear button only when connected
+        const clearButtonHtml = this.currentConversationId ? 
+            '<button class="clear-chat-btn" id="clear-chat-btn" onclick="app.clearCurrentChat()">🗑️ Clear Chat</button>' : '';
+        
         infoBar.innerHTML = `
             <div class="chat-info-item">
                 <span class="chat-info-label">💬 Service:</span>
@@ -423,6 +438,7 @@ const app = {
                 <span class="chat-info-label">Status:</span>
                 <span class="chat-info-value ${statusClass}">${statusText}</span>
             </div>
+            ${clearButtonHtml}
         `;
         
         console.log('✅ Info bar updated');
@@ -433,16 +449,18 @@ const app = {
         console.log('📊 Available models:', this.availableModels);
         
         const container = document.getElementById('chat-container');
+        container.innerHTML = '';
         
+        // Welcome message
         this.addMessage('chat-container', 'system', 
             '🤖 Welcome to Chat Mode!\n\nSelect a model to start your conversation:');
         
+        // Model selection buttons
         const selectionDiv = document.createElement('div');
         selectionDiv.className = 'model-selection';
         selectionDiv.id = 'model-selection-container';
         
-        this.availableModels.forEach((model, index) => {
-            // Handle both {name: "model"} and "model" formats
+        this.availableModels.forEach((model) => {
             const modelName = typeof model === 'string' ? model : (model.name || String(model));
             
             console.log(`Creating button for model: ${modelName}`);
@@ -450,8 +468,6 @@ const app = {
             const button = document.createElement('button');
             button.className = 'model-button';
             button.type = 'button';
-            
-            // Store model name safely - avoid special characters in dataset
             button.setAttribute('data-model-name', modelName);
             
             const icon = document.createElement('span');
@@ -464,17 +480,25 @@ const app = {
             name.style.textAlign = 'left';
             name.style.marginLeft = '10px';
             
+            // Show indicator if this model has a saved session
+            if (this.chatSessions[modelName]) {
+                const indicator = document.createElement('span');
+                indicator.textContent = '💬';
+                indicator.style.color = '#28a745';
+                indicator.style.marginRight = '8px';
+                indicator.title = 'Has saved chat history';
+                button.appendChild(indicator);
+            }
+            
             const arrow = document.createElement('span');
             arrow.textContent = '→';
             arrow.style.color = '#666';
             arrow.style.fontSize = '0.9em';
             
-            // Use appendChild - safe
             button.appendChild(icon);
             button.appendChild(name);
             button.appendChild(arrow);
             
-            // Direct onclick with getAttribute for safety
             button.onclick = function() {
                 const selectedModel = this.getAttribute('data-model-name');
                 console.log('🖱️  Model clicked:', selectedModel);
@@ -484,7 +508,6 @@ const app = {
             selectionDiv.appendChild(button);
         });
         
-        // Use appendChild - safe
         container.appendChild(selectionDiv);
         
         requestAnimationFrame(() => {
@@ -498,6 +521,37 @@ const app = {
     async selectModel(modelName) {
         console.log('🎯 selectModel called with:', modelName);
         
+        const container = document.getElementById('chat-container');
+        
+        // Check if we have a saved session for this model
+        if (this.chatSessions[modelName]) {
+            console.log('📂 Restoring saved session for', modelName);
+            
+            const session = this.chatSessions[modelName];
+            this.currentConversationId = session.conversationId;
+            this.currentModel = modelName;
+            
+            // Clear container
+            container.innerHTML = '';
+            
+            // Restore messages
+            session.messages.forEach(msg => {
+                this.addMessage('chat-container', msg.role, msg.content);
+            });
+            
+            // Enable input
+            const input = document.getElementById('chat-input');
+            input.disabled = false;
+            input.placeholder = 'Type your message...';
+            input.focus();
+            
+            this.updateChatInfoBar();
+            this.updateBackButton();
+            
+            return;
+        }
+        
+        // No saved session - initialize new conversation
         const loadingId = this.addMessage('chat-container', 'system', `🔄 Initializing ${modelName}...`);
         
         try {
@@ -543,8 +597,11 @@ const app = {
                     modelSelection.remove();
                 }
                 
+                // Clear the container for fresh start
+                container.innerHTML = '';
+                
                 this.addMessage('chat-container', 'system', 
-                    `✅ Connected to ${modelName}\n\n💡 Commands:\n• Type "exit" to select a different model\n• Type "main menu" to return to home`);
+                    `✅ Connected to ${modelName}\n\n💡 Commands:\n• Type "exit" to select a different model\n• Type "main menu" to return to home\n• Use "Clear Chat" button to reset conversation`);
                 
                 const input = document.getElementById('chat-input');
                 input.disabled = false;
@@ -584,15 +641,66 @@ const app = {
         }
     },
     
+    async clearCurrentChat() {
+        if (!this.currentConversationId || !this.currentModel) {
+            console.warn('⚠️  No active conversation to clear');
+            return;
+        }
+        
+        if (!confirm(`Clear chat history with ${this.currentModel}?\n\nThis will delete the conversation on the server and start fresh.`)) {
+            return;
+        }
+        
+        console.log('🗑️  Clearing chat for', this.currentModel);
+        
+        try {
+            // Delete conversation on server
+            await fetch(`${this.API_BASE}/conversations/${this.currentConversationId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${this.apiKey}` }
+            });
+            
+            console.log('✅ Conversation deleted on server');
+        } catch (error) {
+            console.warn('⚠️  Failed to delete conversation on server:', error);
+        }
+        
+        // Clear local session
+        delete this.chatSessions[this.currentModel];
+        
+        // Reset state
+        const savedModel = this.currentModel;
+        this.currentConversationId = null;
+        this.currentModel = null;
+        
+        // Re-select the model (will create new conversation)
+        await this.selectModel(savedModel);
+        
+        console.log('✅ Chat cleared and reinitialized');
+    },
+    
     async sendChatMessage(message) {
         const command = message.toLowerCase().trim();
         
         if (command === 'exit') {
+            // Save current session before exiting
+            if (this.currentModel && this.currentConversationId) {
+                const container = document.getElementById('chat-container');
+                const messages = Array.from(container.querySelectorAll('.message')).map(msg => ({
+                    id: msg.id,
+                    role: msg.classList.contains('user') ? 'user' : 
+                          msg.classList.contains('assistant') ? 'assistant' : 'system',
+                    content: msg.querySelector('.content')?.textContent || ''
+                }));
+                
+                this.chatSessions[this.currentModel] = {
+                    conversationId: this.currentConversationId,
+                    messages: messages
+                };
+            }
+            
             this.currentConversationId = null;
             this.currentModel = null;
-            
-            const container = document.getElementById('chat-container');
-            container.innerHTML = '';
 
             this.updateChatInfoBar();
             this.showModelSelection();
@@ -604,6 +712,22 @@ const app = {
         }
         
         if (command === 'main menu') {
+            // Save before exiting to menu
+            if (this.currentModel && this.currentConversationId) {
+                const container = document.getElementById('chat-container');
+                const messages = Array.from(container.querySelectorAll('.message')).map(msg => ({
+                    id: msg.id,
+                    role: msg.classList.contains('user') ? 'user' : 
+                          msg.classList.contains('assistant') ? 'assistant' : 'system',
+                    content: msg.querySelector('.content')?.textContent || ''
+                }));
+                
+                this.chatSessions[this.currentModel] = {
+                    conversationId: this.currentConversationId,
+                    messages: messages
+                };
+            }
+            
             this.showMenu();
             return;
         }
@@ -756,7 +880,6 @@ const app = {
             <div class="content">${this.escapeHtml(content)}</div>
         `;
         
-        // Use appendChild - safe
         container.appendChild(messageDiv);
         
         requestAnimationFrame(() => {
@@ -767,7 +890,7 @@ const app = {
     },
     
     // =========================================================================
-    // NCT Lookup & File Manager
+    // NCT Lookup & File Manager (unchanged)
     // =========================================================================
     
     async handleNCTLookup() {
@@ -825,133 +948,125 @@ const app = {
     },
         
     displayNCTResults(data) {
-    const resultsDiv = document.getElementById('nct-results');
-    
-    if (!data.success || data.results.length === 0) {
-        resultsDiv.innerHTML = `
-            <div class="result-card">
-                <h3>No Results</h3>
-                <p>No trials found</p>
+        const resultsDiv = document.getElementById('nct-results');
+        
+        if (!data.success || data.results.length === 0) {
+            resultsDiv.innerHTML = `
+                <div class="result-card">
+                    <h3>No Results</h3>
+                    <p>No trials found</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = `
+            <div class="summary-card">
+                <h3>Summary</h3>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-item-label">Total Requested</div>
+                        <div class="summary-item-value info">${data.summary.total_requested}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-item-label">Successful</div>
+                        <div class="summary-item-value success">${data.summary.successful}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-item-label">Failed</div>
+                        <div class="summary-item-value error">${data.summary.failed}</div>
+                    </div>
+                </div>
             </div>
         `;
-        return;
-    }
-    
-    let html = `
-        <div class="summary-card">
-            <h3>Summary</h3>
-            <div class="summary-grid">
-                <div class="summary-item">
-                    <div class="summary-item-label">Total Requested</div>
-                    <div class="summary-item-value info">${data.summary.total_requested}</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-item-label">Successful</div>
-                    <div class="summary-item-value success">${data.summary.successful}</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-item-label">Failed</div>
-                    <div class="summary-item-value error">${data.summary.failed}</div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    data.results.forEach(result => {
-        const ct = result.sources?.clinical_trials?.data?.protocolSection || {};
-        const ident = ct.identificationModule || {};
-        const status = ct.statusModule || {};
-        const conditions = ct.conditionsModule?.conditions || [];
         
-        // ====================================================================
-        // ROBUST COUNT EXTRACTION - Tries multiple approaches
-        // ====================================================================
-        
-        let pubmedCount = 0;
-        let pmcCount = 0;
-        let pmcBiocCount = 0;
-        
-        // Try to get PubMed count from multiple possible locations
-        try {
-            if (result.sources?.pubmed?.data?.pmids) {
-                pubmedCount = result.sources.pubmed.data.pmids.length;
-            } else if (result.sources?.pubmed?.data?.total_found) {
-                pubmedCount = result.sources.pubmed.data.total_found;
-            } else if (result.sources?.pubmed?.data?.articles) {
-                pubmedCount = result.sources.pubmed.data.articles.length;
+        data.results.forEach(result => {
+            const ct = result.sources?.clinical_trials?.data?.protocolSection || {};
+            const ident = ct.identificationModule || {};
+            const status = ct.statusModule || {};
+            const conditions = ct.conditionsModule?.conditions || [];
+            
+            let pubmedCount = 0;
+            let pmcCount = 0;
+            let pmcBiocCount = 0;
+            
+            try {
+                if (result.sources?.pubmed?.data?.pmids) {
+                    pubmedCount = result.sources.pubmed.data.pmids.length;
+                } else if (result.sources?.pubmed?.data?.total_found) {
+                    pubmedCount = result.sources.pubmed.data.total_found;
+                } else if (result.sources?.pubmed?.data?.articles) {
+                    pubmedCount = result.sources.pubmed.data.articles.length;
+                }
+            } catch (e) {
+                console.error('Error getting PubMed count:', e);
             }
-        } catch (e) {
-            console.error('Error getting PubMed count:', e);
-        }
-        
-        // Try to get PMC count from multiple possible locations
-        try {
-            if (result.sources?.pmc?.data?.pmcids) {
-                pmcCount = result.sources.pmc.data.pmcids.length;
-            } else if (result.sources?.pmc?.data?.total_found) {
-                pmcCount = result.sources.pmc.data.total_found;
-            } else if (result.sources?.pmc?.data?.articles) {
-                pmcCount = result.sources.pmc.data.articles.length;
+            
+            try {
+                if (result.sources?.pmc?.data?.pmcids) {
+                    pmcCount = result.sources.pmc.data.pmcids.length;
+                } else if (result.sources?.pmc?.data?.total_found) {
+                    pmcCount = result.sources.pmc.data.total_found;
+                } else if (result.sources?.pmc?.data?.articles) {
+                    pmcCount = result.sources.pmc.data.articles.length;
+                }
+            } catch (e) {
+                console.error('Error getting PMC count:', e);
             }
-        } catch (e) {
-            console.error('Error getting PMC count:', e);
-        }
-        
-        // Try to get PMC BioC count
-        try {
-            if (result.sources?.pmc_bioc?.data?.total_fetched) {
-                pmcBiocCount = result.sources.pmc_bioc.data.total_fetched;
-            } else if (result.sources?.pmc_bioc?.data?.articles) {
-                pmcBiocCount = result.sources.pmc_bioc.data.articles.length;
+            
+            try {
+                if (result.sources?.pmc_bioc?.data?.total_fetched) {
+                    pmcBiocCount = result.sources.pmc_bioc.data.total_fetched;
+                } else if (result.sources?.pmc_bioc?.data?.articles) {
+                    pmcBiocCount = result.sources.pmc_bioc.data.articles.length;
+                }
+            } catch (e) {
+                console.error('Error getting PMC BioC count:', e);
             }
-        } catch (e) {
-            console.error('Error getting PMC BioC count:', e);
-        }
-        
-        // Log what we found for debugging
-        console.log(`${result.nct_id} counts:`, {
-            pubmed: pubmedCount,
-            pmc: pmcCount,
-            pmc_bioc: pmcBiocCount,
-            sources_available: result.sources ? Object.keys(result.sources) : []
+            
+            console.log(`${result.nct_id} counts:`, {
+                pubmed: pubmedCount,
+                pmc: pmcCount,
+                pmc_bioc: pmcBiocCount,
+                sources_available: result.sources ? Object.keys(result.sources) : []
+            });
+            
+            
+            html += `
+                <div class="result-card">
+                    <div class="result-card-header">
+                        <div class="result-card-title">
+                            <h3>${result.nct_id}</h3>
+                            <div class="result-card-status">${status.overallStatus || 'Unknown Status'}</div>
+                        </div>
+                        <button class="extract-button" onclick="app.extractTrial('${result.nct_id}')">
+                            Extract
+                        </button>
+                    </div>
+                    <div class="result-card-content">
+                        <strong>${this.escapeHtml(ident.officialTitle || ident.briefTitle || 'No title')}</strong>
+                        ${conditions.length > 0 ? `<br><em>Conditions: ${this.escapeHtml(conditions.join(', '))}</em>` : ''}
+                    </div>
+                    <div class="result-card-meta">
+                        <div class="meta-item">
+                            <div style="color: #666; font-size: 0.9em;">PubMed Articles</div>
+                            <strong style="font-size: 1.2em; color: ${pubmedCount > 0 ? '#28a745' : '#999'}">${pubmedCount}</strong>
+                        </div>
+                        <div class="meta-item">
+                            <div style="color: #666; font-size: 0.9em;">PMC Articles</div>
+                            <strong style="font-size: 1.2em; color: ${pmcCount > 0 ? '#28a745' : '#999'}">${pmcCount}</strong>
+                        </div>
+                        <div class="meta-item">
+                            <div style="color: #666; font-size: 0.9em;">PMC BioC Articles</div>
+                            <strong style="font-size: 1.2em; color: ${pmcBiocCount > 0 ? '#28a745' : '#999'}">${pmcBiocCount}</strong>
+                        </div>
+                    </div>
+                </div>
+            `;
         });
         
-        
-        html += `
-            <div class="result-card">
-                <div class="result-card-header">
-                    <div class="result-card-title">
-                        <h3>${result.nct_id}</h3>
-                        <div class="result-card-status">${status.overallStatus || 'Unknown Status'}</div>
-                    </div>
-                    <button class="extract-button" onclick="app.extractTrial('${result.nct_id}')">
-                        Extract
-                    </button>
-                </div>
-                <div class="result-card-content">
-                    <strong>${this.escapeHtml(ident.officialTitle || ident.briefTitle || 'No title')}</strong>
-                    ${conditions.length > 0 ? `<br><em>Conditions: ${this.escapeHtml(conditions.join(', '))}</em>` : ''}
-                </div>
-                <div class="result-card-meta">
-                    <div class="meta-item">
-                        <div style="color: #666; font-size: 0.9em;">AJADKMKDMAKLDMSLK</div>
-                        <strong style="font-size: 1.2em; color: ${pubmedCount > 0 ? '#28a745' : '#999'}">${pubmedCount}</strong>
-                    </div>
-                    <div class="meta-item">
-                        <div style="color: #666; font-size: 0.9em;">PMC Articles</div>
-                        <strong style="font-size: 1.2em; color: ${pmcCount > 0 ? '#28a745' : '#999'}">${pmcCount}</strong>
-                    </div>
-                    <div class="meta-item">
-                        <div style="color: #666; font-size: 0.9em;">PMC BioC Articles</div>
-                        <strong style="font-size: 1.2em; color: ${pmcBiocCount > 0 ? '#28a745' : '#999'}">${pmcBiocCount}</strong>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-    
-    resultsDiv.innerHTML = html;
-},
+        resultsDiv.innerHTML = html;
+    },
     
     async extractTrial(nctId) {
         try {
