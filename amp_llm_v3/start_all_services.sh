@@ -13,7 +13,7 @@ echo "════════════════════════�
 echo "Starting AMP LLM Services"
 echo "═══════════════════════════════════════════════════════"
 
-PROJECT_DIR="$HOME/Developer/AMP_LLMs/amp_llm_v3"
+PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Check if project directory exists
 if [ ! -d "$PROJECT_DIR" ]; then

@@ -1040,6 +1040,60 @@ const app = {
             const status = ct.statusModule || {};
             const conditions = ct.conditionsModule?.conditions || [];
             
+            // ====================================================================
+            // ROBUST COUNT EXTRACTION - Tries multiple approaches
+            // ====================================================================
+            
+            let pubmedCount = 0;
+            let pmcCount = 0;
+            let pmcBiocCount = 0;
+            
+            // Try to get PubMed count from multiple possible locations
+            try {
+                if (result.sources?.pubmed?.data?.pmids) {
+                    pubmedCount = result.sources.pubmed.data.pmids.length;
+                } else if (result.sources?.pubmed?.data?.total_found) {
+                    pubmedCount = result.sources.pubmed.data.total_found;
+                } else if (result.sources?.pubmed?.data?.articles) {
+                    pubmedCount = result.sources.pubmed.data.articles.length;
+                }
+            } catch (e) {
+                console.error('Error getting PubMed count:', e);
+            }
+            
+            // Try to get PMC count from multiple possible locations
+            try {
+                if (result.sources?.pmc?.data?.pmcids) {
+                    pmcCount = result.sources.pmc.data.pmcids.length;
+                } else if (result.sources?.pmc?.data?.total_found) {
+                    pmcCount = result.sources.pmc.data.total_found;
+                } else if (result.sources?.pmc?.data?.articles) {
+                    pmcCount = result.sources.pmc.data.articles.length;
+                }
+            } catch (e) {
+                console.error('Error getting PMC count:', e);
+            }
+            
+            // Try to get PMC BioC count
+            try {
+                if (result.sources?.pmc_bioc?.data?.total_fetched) {
+                    pmcBiocCount = result.sources.pmc_bioc.data.total_fetched;
+                } else if (result.sources?.pmc_bioc?.data?.articles) {
+                    pmcBiocCount = result.sources.pmc_bioc.data.articles.length;
+                }
+            } catch (e) {
+                console.error('Error getting PMC BioC count:', e);
+            }
+            
+            // Log what we found for debugging
+            console.log(`${result.nct_id} counts:`, {
+                pubmed: pubmedCount,
+                pmc: pmcCount,
+                pmc_bioc: pmcBiocCount,
+                sources_available: result.sources ? Object.keys(result.sources) : []
+            });
+            
+            
             html += `
                 <div class="result-card">
                     <div class="result-card-header">
@@ -1057,12 +1111,16 @@ const app = {
                     </div>
                     <div class="result-card-meta">
                         <div class="meta-item">
-                            PubMed Articles
-                            <strong>${result.sources?.pubmed?.data?.pmids?.length || 0}</strong>
+                            <div style="color: #666; font-size: 0.9em;">AJADKMKDMAKLDMSLK</div>
+                            <strong style="font-size: 1.2em; color: ${pubmedCount > 0 ? '#28a745' : '#999'}">${pubmedCount}</strong>
                         </div>
                         <div class="meta-item">
-                            PMC Articles
-                            <strong>${result.sources?.pmc?.data?.pmcids?.length || 0}</strong>
+                            <div style="color: #666; font-size: 0.9em;">PMC Articles</div>
+                            <strong style="font-size: 1.2em; color: ${pmcCount > 0 ? '#28a745' : '#999'}">${pmcCount}</strong>
+                        </div>
+                        <div class="meta-item">
+                            <div style="color: #666; font-size: 0.9em;">PMC BioC Articles</div>
+                            <strong style="font-size: 1.2em; color: ${pmcBiocCount > 0 ? '#28a745' : '#999'}">${pmcBiocCount}</strong>
                         </div>
                     </div>
                 </div>
