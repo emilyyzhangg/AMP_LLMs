@@ -1111,7 +1111,7 @@ const app = {
                     </div>
                     <div class="result-card-meta">
                         <div class="meta-item">
-                            <div style="color: #666; font-size: 0.9em;">AJADKMKDMAKLDMSLK</div>
+                            <div style="color: #666; font-size: 0.9em;">PubMed Articles</div>
                             <strong style="font-size: 1.2em; color: ${pubmedCount > 0 ? '#28a745' : '#999'}">${pubmedCount}</strong>
                         </div>
                         <div class="meta-item">
