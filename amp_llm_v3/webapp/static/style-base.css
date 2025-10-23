@@ -29,7 +29,8 @@ body {
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     overflow: hidden;
-    height: calc(90vh - 40px);
+    height: 90vh;  /* CRITICAL: Fixed height */
+    max-height: 90vh;  /* ADDED */
     display: flex;
     flex-direction: column;
 }
@@ -287,6 +288,7 @@ header p {
     display: none;
     flex-direction: column;
     height: 100%;
+    min-height: 0; 
     overflow: hidden;
 }
 
@@ -308,6 +310,7 @@ header p {
     align-items: center;
     font-size: 0.9em;
     color: #495057;
+    backdrop-filter: blur(10px);
 }
 
 .chat-info-item {
@@ -322,7 +325,20 @@ header p {
 }
 
 .chat-info-value {
-    color: #666;
+    padding: 4px 12px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95em;
+}
+
+.chat-info-status-connected {
+    color: #28a745;
+}
+
+.chat-info-status-disconnected {
+    color: #6c757d;
 }
 
 /* ============================================================================
@@ -332,8 +348,9 @@ header p {
 #main-app {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    position: relative;
+    flex: 1;
+    min-height: 0;  /* CRITICAL */
+    overflow: hidden;  /* ADDED */
 }
 
 #main-app > header {
@@ -355,17 +372,20 @@ header p {
    Chat Container - SCROLLABLE MIDDLE SECTION
    ============================================================================ */
 
+
 .chat-container, .research-container {
-    /* Critical flex settings */
+    /* CRITICAL: Must be able to shrink and scroll */
     flex: 1 1 auto;
+    min-height: 0;  /* CRITICAL */
     
     /* Enable scrolling */
-    overflow-y: auto;
+    overflow-y: scroll;  /* Changed from auto to scroll to force scrollbar */
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     
     /* Styling */
     padding: 30px;
+    padding-bottom: 20px;  /* Less padding at bottom */
     background: #ffffff;
     
     /* Critical: Allow shrinking */
@@ -374,6 +394,31 @@ header p {
     /* Ensure proper width */
     width: 100%;
 }
+
+/* Force scrollbar visibility for debugging */
+.chat-container::-webkit-scrollbar,
+.research-container::-webkit-scrollbar {
+    width: 12px;
+    display: block;  /* ADDED */
+}
+
+.chat-container::-webkit-scrollbar-track,
+.research-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 6px;
+}
+
+.chat-container::-webkit-scrollbar-thumb,
+.research-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 6px;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover,
+.research-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 /* ============================================================================
    Input Area - FIXED BOTTOM
    ============================================================================ */
@@ -387,7 +432,7 @@ header p {
     gap: 15px;
     padding: 20px 30px;
     background: #f8f9fa;
-    border-top: 1px solid #e9ecef;
+    border-top: 2px solid #e9ecef;
 }
 
 .input-area textarea {
