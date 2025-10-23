@@ -280,49 +280,84 @@ header p {
 }
 
 /* ============================================================================
-   Mode Container - CRITICAL FIX
+   Mode Container - COMPLETELY FIXED
    ============================================================================ */
 
 .mode-container {
     display: none;
-    flex: 1 1 auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     flex-direction: column;
-    overflow: hidden;
-    min-height: 0;
-    height: 100%;
 }
 
 .mode-container.active {
     display: flex;
 }
 
+
 /* ============================================================================
-   Chat Container - COMPLETELY FIXED for scrolling and responsive width
+   Main App Layout - CRITICAL FIX
+   ============================================================================ */
+
+#main-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+}
+
+#main-app > header {
+    flex: 0 0 auto;
+}
+
+/* Make modes container relative positioned to contain absolute mode-containers */
+#chat-mode,
+#research-mode,
+#nct-mode,
+#files-mode {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+}
+
+
+/* ============================================================================
+   Chat Container - COMPLETELY FIXED for scrolling
    ============================================================================ */
 
 .chat-container, .research-container {
-    /* Flex behavior */
-    flex: 1 1 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 60px; /* Space for input area */
     
-    /* Scrolling - CRITICAL */
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     
-    /* Layout */
     padding: 30px;
     background: #ffffff;
+}
+
+/* Input area positioned at bottom */
+.input-area {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     
-    /* Height constraints */
-    min-height: 0;
-    max-height: 100%;
-    height: 0;
+    display: flex;
+    gap: 15px;
+    padding: 20px 30px;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
     
-    /* Positioning */
-    position: relative;
-    
-    /* For proper child layout */
-    width: 100%;
+    height: 60px; /* Match the bottom offset above */
+    box-sizing: content-box;
 }
 
 /* Ensure messages don't break layout */
