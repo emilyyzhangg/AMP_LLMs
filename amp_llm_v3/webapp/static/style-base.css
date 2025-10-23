@@ -1,6 +1,5 @@
 /* ============================================================================
-   AMP LLM Enhanced Web Interface - BASE STYLES (Theme-Independent)
-   FIXED: Proper scrolling for chat container with responsive width handling
+   RADICAL REDESIGN - FULL RESPONSIVE SCROLLABLE CHAT
    ============================================================================ */
 
 * {
@@ -9,42 +8,47 @@
     box-sizing: border-box;
 }
 
-html, body {
+html {
     height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: auto;
+    overflow: hidden;
 }
 
 body {
+    height: 100%;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    min-height: 100vh;
-    padding: 20px;
+    overflow: hidden;
 }
 
+/* ============================================================================
+   CONTAINER - Fixed viewport height
+   ============================================================================ */
+
 .container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
     max-width: 1200px;
     margin: 0 auto;
     background: white;
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    display: grid;
+    grid-template-rows: auto 1fr;
     overflow: hidden;
-    height: 90vh;  /* CRITICAL: Fixed height */
-    max-height: 90vh;  /* ADDED */
-    display: flex;
-    flex-direction: column;
 }
 
 /* ============================================================================
-   Authentication Section
+   AUTH SECTION
    ============================================================================ */
 
 .auth-section {
-    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 40px;
+    height: 100%;
 }
 
 .auth-box {
@@ -99,7 +103,7 @@ body {
 }
 
 /* ============================================================================
-   Header
+   HEADER - Fixed height
    ============================================================================ */
 
 header {
@@ -108,10 +112,8 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
+    height: 110px;
     flex-shrink: 0;
-    flex-grow: 0; /* ADDED */
-    min-height: fit-content; /* ADDED */
 }
 
 header h1 {
@@ -152,7 +154,7 @@ header p {
 }
 
 /* ============================================================================
-   Theme Switcher
+   THEME SWITCHER
    ============================================================================ */
 
 .theme-switcher {
@@ -226,13 +228,23 @@ header p {
 }
 
 /* ============================================================================
-   Menu Section
+   MAIN APP - Grid layout
+   ============================================================================ */
+
+#main-app {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* ============================================================================
+   MENU SECTION
    ============================================================================ */
 
 .menu-section {
-    flex: 1;
-    padding: 40px;
     overflow-y: auto;
+    padding: 40px;
 }
 
 .menu-title {
@@ -281,36 +293,26 @@ header p {
 }
 
 /* ============================================================================
-   Mode Container - THREE PANEL LAYOUT (header, scrollable middle, fixed input)
+   MODE CONTAINER - Grid with three rows
    ============================================================================ */
-
 
 .mode-container {
     display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    grid-template-rows: auto 1fr auto;
+    height: 100%;
+    overflow: hidden;
 }
 
-.mode-container.active .chat-container {
-    top: 60px;  /* Space for info bar */
+.mode-container.active {
+    display: grid;
 }
-
 
 /* ============================================================================
-   Chat Info Bar (Fixed Top)
+   CHAT INFO BAR - Row 1
    ============================================================================ */
 
 .chat-info-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    z-index: 10;
-    
+    grid-row: 1;
     padding: 15px 30px;
     background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%);
     border-bottom: 2px solid #e9ecef;
@@ -319,7 +321,8 @@ header p {
     align-items: center;
     font-size: 0.9em;
     color: #495057;
-    box-sizing: border-box;
+    height: 60px;
+    flex-shrink: 0;
 }
 
 .chat-info-item {
@@ -351,92 +354,32 @@ header p {
 }
 
 /* ============================================================================
-   Main App Layout - CRITICAL FIX
+   CHAT CONTAINER - Row 2 - THE KEY TO SCROLLING
    ============================================================================ */
 
-#main-app {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;  /* CRITICAL */
-    overflow: hidden;  /* ADDED */
-}
-
-#main-app > header {
-    flex: 0 0 auto;
-}
-
-/* Make modes container relative positioned to contain absolute mode-containers */
-#chat-mode,
-#research-mode,
-#nct-mode,
-#files-mode {
-    position: relative;
-    flex: 1;
+.chat-container, .research-container {
+    grid-row: 2;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 30px;
+    background: #ffffff;
+    height: 100%;
     min-height: 0;
 }
 
-
 /* ============================================================================
-   Chat Container - SCROLLABLE MIDDLE SECTION
-   ============================================================================ */
-
-
-.chat-container, .research-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 100px;  /* Leave room for input area */
-    
-    overflow-y: scroll;
-    overflow-x: hidden;
-    
-    padding: 30px;
-    background: #ffffff;
-}
-
-/* Force scrollbar visibility for debugging */
-.chat-container::-webkit-scrollbar,
-.research-container::-webkit-scrollbar {
-    width: 12px;
-    display: block;  /* ADDED */
-}
-
-.chat-container::-webkit-scrollbar-track,
-.research-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 6px;
-}
-
-.chat-container::-webkit-scrollbar-thumb,
-.research-container::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 6px;
-}
-
-.chat-container::-webkit-scrollbar-thumb:hover,
-.research-container::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
-/* ============================================================================
-   Input Area - ABSOLUTELY POSITIONED AT BOTTOM
+   INPUT AREA - Row 3
    ============================================================================ */
 
 .input-area {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100px;
-    
+    grid-row: 3;
     display: flex;
     gap: 15px;
     padding: 20px 30px;
     background: #f8f9fa;
     border-top: 2px solid #e9ecef;
-    box-sizing: border-box;
+    height: 100px;
+    flex-shrink: 0;
 }
 
 .input-area textarea {
@@ -447,7 +390,6 @@ header p {
     font-size: 15px;
     font-family: inherit;
     resize: none;
-    min-width: 0;
 }
 
 .input-area button {
@@ -457,18 +399,22 @@ header p {
     border-radius: 12px;
     font-weight: bold;
     cursor: pointer;
-    min-width: 100px;
     transition: transform 0.2s;
     flex-shrink: 0;
 }
 
-/* Ensure messages don't break layout */
-.chat-container > *,
-.research-container > * {
-    max-width: 100%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+.input-area button:hover:not(:disabled) {
+    transform: translateY(-2px);
 }
+
+.input-area button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================================================
+   MESSAGES
+   ============================================================================ */
 
 .message {
     display: flex;
@@ -476,7 +422,6 @@ header p {
     margin-bottom: 25px;
     animation: fadeIn 0.3s ease-in;
     width: 100%;
-    max-width: 100%;
 }
 
 @keyframes fadeIn {
@@ -515,12 +460,10 @@ header p {
     padding: 15px 20px;
     border-radius: 15px;
     max-width: 70%;
-    min-width: 0;
     line-height: 1.6;
     white-space: pre-wrap;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    flex: 0 1 auto;
 }
 
 .message.user .content {
@@ -534,16 +477,13 @@ header p {
 }
 
 /* ============================================================================
-   Model Selection - FIXED for scrolling and visibility
+   MODEL SELECTION
    ============================================================================ */
 
 .model-selection {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    width: 100%;
-    max-width: 100%;
-    padding: 0;
     margin: 20px 0;
 }
 
@@ -560,83 +500,27 @@ header p {
     font-family: inherit;
     transition: all 0.3s;
     width: 100%;
-    max-width: 100%;
     text-align: left;
-    min-height: 60px;
-    flex-shrink: 0;
 }
 
 .model-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    border-color: #667eea;
-    background: #f8f9fa;
+    border-color: currentColor;
 }
 
-.model-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Prevent child elements from blocking clicks */
 .model-button * {
     pointer-events: none;
 }
 
 /* ============================================================================
-   Input Area
-   ============================================================================ */
-
-.input-area {
-    display: flex;
-    gap: 15px;
-    padding: 20px 30px;
-    background: #f8f9fa;
-    border-top: 1px solid #e9ecef;
-    flex-shrink: 0;
-}
-
-.input-area textarea {
-    flex: 1;
-    padding: 15px;
-    border: 2px solid #ced4da;
-    border-radius: 12px;
-    font-size: 15px;
-    font-family: inherit;
-    resize: none;
-    min-width: 0;
-}
-
-.input-area button {
-    padding: 15px 30px;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    min-width: 100px;
-    transition: transform 0.2s;
-    flex-shrink: 0;
-}
-
-.input-area button:hover:not(:disabled) {
-    transform: translateY(-2px);
-}
-
-.input-area button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* ============================================================================
-   NCT Lookup Specific
+   NCT MODE
    ============================================================================ */
 
 .nct-input-area {
     padding: 30px;
     background: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
-    flex-shrink: 0;
+    border-bottom: 2px solid #e9ecef;
 }
 
 .nct-input-group {
@@ -736,10 +620,8 @@ header p {
 }
 
 .nct-results {
-    flex: 1;
     overflow-y: auto;
     padding: 30px;
-    min-height: 0;
 }
 
 .result-card {
@@ -847,16 +729,15 @@ header p {
 }
 
 /* ============================================================================
-   File Manager
+   FILE MANAGER
    ============================================================================ */
 
 .file-controls {
     padding: 20px 30px;
     background: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 2px solid #e9ecef;
     display: flex;
     gap: 10px;
-    flex-shrink: 0;
 }
 
 .file-upload-btn, .file-refresh-btn {
@@ -873,10 +754,8 @@ header p {
 }
 
 .files-container {
-    flex: 1;
     overflow-y: auto;
     padding: 30px;
-    min-height: 0;
 }
 
 .files-grid {
@@ -942,7 +821,7 @@ header p {
 }
 
 /* ============================================================================
-   Loading & Utility
+   UTILITIES
    ============================================================================ */
 
 .loading {
@@ -968,20 +847,22 @@ header p {
 }
 
 /* ============================================================================
-   Scrollbar Styling - VISIBLE and functional
+   SCROLLBARS
    ============================================================================ */
 
 .chat-container::-webkit-scrollbar,
 .research-container::-webkit-scrollbar,
 .nct-results::-webkit-scrollbar,
-.files-container::-webkit-scrollbar {
+.files-container::-webkit-scrollbar,
+.menu-section::-webkit-scrollbar {
     width: 12px;
 }
 
 .chat-container::-webkit-scrollbar-track,
 .research-container::-webkit-scrollbar-track,
 .nct-results::-webkit-scrollbar-track,
-.files-container::-webkit-scrollbar-track {
+.files-container::-webkit-scrollbar-track,
+.menu-section::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 6px;
 }
@@ -989,7 +870,8 @@ header p {
 .chat-container::-webkit-scrollbar-thumb,
 .research-container::-webkit-scrollbar-thumb,
 .nct-results::-webkit-scrollbar-thumb,
-.files-container::-webkit-scrollbar-thumb {
+.files-container::-webkit-scrollbar-thumb,
+.menu-section::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 6px;
 }
@@ -997,26 +879,27 @@ header p {
 .chat-container::-webkit-scrollbar-thumb:hover,
 .research-container::-webkit-scrollbar-thumb:hover,
 .nct-results::-webkit-scrollbar-thumb:hover,
-.files-container::-webkit-scrollbar-thumb:hover {
+.files-container::-webkit-scrollbar-thumb:hover,
+.menu-section::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
 /* ============================================================================
-   Responsive Design - Width-aware
+   RESPONSIVE
    ============================================================================ */
 
 @media (max-width: 768px) {
-    body {
-        padding: 0;
-    }
-
     .container {
-        height: 100vh;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         border-radius: 0;
     }
 
     header {
         padding: 20px;
+        height: 90px;
     }
 
     header h1 {
@@ -1048,37 +931,12 @@ header p {
         left: 0;
     }
     
-    .model-selection {
-        max-width: 100%;
-    }
-    
     .input-area {
         flex-direction: column;
+        height: auto;
     }
     
     .input-area button {
         width: 100%;
-    }
-}
-
-@media (max-width: 480px) {
-    .chat-container,
-    .research-container {
-        padding: 15px;
-    }
-    
-    .content {
-        max-width: 90%;
-        font-size: 0.9em;
-    }
-    
-    .avatar {
-        width: 32px;
-        height: 32px;
-        font-size: 16px;
-    }
-    
-    .message {
-        gap: 10px;
     }
 }
