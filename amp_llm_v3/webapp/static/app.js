@@ -739,7 +739,9 @@ const app = {
         }
     },
     
-    displayNCTResults(data) {
+    
+        
+        displayNCTResults(data) {
         const resultsDiv = document.getElementById('nct-results');
         
         if (!data.success || data.results.length === 0) {
@@ -778,6 +780,23 @@ const app = {
             const status = ct.statusModule || {};
             const conditions = ct.conditionsModule?.conditions || [];
             
+            // FIXED: Properly extract counts from the result structure
+            // The data is nested under sources -> [database] -> data
+            const pubmedData = result.sources?.pubmed?.data || {};
+            const pmcData = result.sources?.pmc?.data || {};
+            const pmcBiocData = result.sources?.pmc_bioc?.data || {};
+            
+            // Extract the actual counts with proper fallbacks
+            const pubmedCount = pubmedData.pmids?.length || 0;
+            const pmcCount = pmcData.pmcids?.length || 0;
+            const pmcBiocCount = pmcBiocData.total_fetched || 0;
+            
+            console.log(`${result.nct_id} counts:`, {
+                pubmed: pubmedCount,
+                pmc: pmcCount,
+                pmc_bioc: pmcBiocCount
+            });
+            
             html += `
                 <div class="result-card">
                     <div class="result-card-header">
@@ -796,11 +815,15 @@ const app = {
                     <div class="result-card-meta">
                         <div class="meta-item">
                             PubMed Articles
-                            <strong>${result.sources?.pubmed?.data?.pmids?.length || 0}</strong>
+                            <strong>${pubmedCount}</strong>
                         </div>
                         <div class="meta-item">
                             PMC Articles
-                            <strong>${result.sources?.pmc?.data?.pmcids?.length || 0}</strong>
+                            <strong>${pmcCount}</strong>
+                        </div>
+                        <div class="meta-item">
+                            PMC BioC Articles
+                            <strong>${pmcBiocCount}</strong>
                         </div>
                     </div>
                 </div>

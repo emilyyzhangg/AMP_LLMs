@@ -479,6 +479,7 @@ def _get_database_list(request: SearchRequest) -> List[str]:
 def _generate_summary(results: Dict[str, Any]) -> Dict[str, Any]:
     """
     Generate summary statistics matching both original workflow and test expectations.
+    Now properly counts PubMed articles, PMC articles, and PMC BioC articles.
     """
     # Extract basic info
     nct_id = results["nct_id"]
@@ -497,29 +498,34 @@ def _generate_summary(results: Dict[str, Any]) -> Dict[str, Any]:
         databases_searched.append("clinicaltrials")
         results_by_database["clinicaltrials"] = 1  # The trial itself
     
-    # PubMed count
+    # PubMed count - count both PMIDs and articles
     pubmed_count = 0
+    pubmed_articles_count = 0
     if sources.get("pubmed", {}).get("success"):
         pubmed_data = sources["pubmed"].get("data", {})
         pubmed_count = len(pubmed_data.get("pmids", []))
+        pubmed_articles_count = len(pubmed_data.get("articles", []))
         databases_searched.append("pubmed")
         results_by_database["pubmed"] = pubmed_count
     
-    # PMC count
+    # PMC count - count both PMCIDs and articles
     pmc_count = 0
+    pmc_articles_count = 0
     if sources.get("pmc", {}).get("success"):
         pmc_data = sources["pmc"].get("data", {})
         pmc_count = len(pmc_data.get("pmcids", []))
+        pmc_articles_count = len(pmc_data.get("articles", []))
         databases_searched.append("pmc")
         results_by_database["pmc"] = pmc_count
 
-    # PMC BioC count
+    # PMC BioC count - count fetched articles
     pmc_bioc_count = 0
     if sources.get("pmc_bioc", {}).get("success"):
         pmc_bioc_data = sources["pmc_bioc"].get("data", {})
         pmc_bioc_count = pmc_bioc_data.get("total_fetched", 0)
-        databases_searched.append("pmc_bioc")
-        results_by_database["pmc_bioc"] = pmc_bioc_count
+        if pmc_bioc_count > 0:
+            databases_searched.append("pmc_bioc")
+            results_by_database["pmc_bioc"] = pmc_bioc_count
     
     # Extended API counts
     if "extended" in sources:
@@ -542,9 +548,12 @@ def _generate_summary(results: Dict[str, Any]) -> Dict[str, Any]:
         "results_by_database": results_by_database,
         "total_results": total_results,
         "search_timestamp": results.get("timestamp", ""),
-        # Also include original format for compatibility
+        # Detailed counts for UI display
         "pubmed_count": pubmed_count,
+        "pubmed_articles_count": pubmed_articles_count,
         "pmc_count": pmc_count,
+        "pmc_articles_count": pmc_articles_count,
+        "pmc_bioc_count": pmc_bioc_count,
     }
     
     return summary
