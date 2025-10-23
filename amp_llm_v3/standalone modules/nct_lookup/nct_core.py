@@ -387,6 +387,8 @@ class NCTSearchEngine:
             logger.error(f"PMC search error: {e}", exc_info=True)
             return {"error": str(e)}
     
+    # In nct_core.py, replace the _search_pmc_bioc method in NCTSearchEngine class
+
     async def _search_pmc_bioc(
         self,
         nct_id: str,
@@ -396,65 +398,107 @@ class NCTSearchEngine:
         """
         Search PMC BioC using PubTator3 API.
         
-        Fetches full-text articles in BioC format for PMIDs found in PMC search.
+        Fetches full-text articles in BioC format using PMIDs.
+        If PMIDs not available, converts PMCIDs to PMIDs first.
         """
         try:
             bioc_results = {
                 "articles": [],
                 "total_fetched": 0,
-                "errors": []
+                "errors": [],
+                "pmids_used": [],
+                "conversion_performed": False
             }
             
-            # Get PMIDs from Pmc results
-            pmc_data = results.get("sources", {}).get("pmc", {})
-            pmcids = pmc_data.get("pmcids", [])
-            logger.info(f"PMC BioC fetch will process {len(pmcids)} PMIDs")
+            # Strategy 1: Try to get PMIDs from PubMed results
+            pubmed_data = results.get("sources", {}).get("pubmed", {})
+            pmids = []
             
-            if not pmcids:
-                logger.info("No PMIDs found for BioC fetch")
+            if pubmed_data and isinstance(pubmed_data, dict):
+                pubmed_actual_data = pubmed_data.get("data", {})
+                pmids = pubmed_actual_data.get("pmids", [])
+                logger.info(f"Found {len(pmids)} PMIDs from PubMed results")
+            
+            # Strategy 2: If no PMIDs, try to convert PMCIDs to PMIDs
+            if not pmids:
+                logger.info("No PMIDs found, attempting PMCID to PMID conversion")
+                
+                pmc_data = results.get("sources", {}).get("pmc", {})
+                if pmc_data and isinstance(pmc_data, dict):
+                    pmc_actual_data = pmc_data.get("data", {})
+                    pmcids = pmc_actual_data.get("pmcids", [])
+                    
+                    if pmcids:
+                        logger.info(f"Found {len(pmcids)} PMCIDs, converting to PMIDs")
+                        
+                        # Convert PMCIDs to PMIDs
+                        pmcid_to_pmid = await self.clients['pmc_bioc'].convert_pmcids_to_pmids(pmcids)
+                        
+                        if pmcid_to_pmid:
+                            pmids = list(pmcid_to_pmid.values())
+                            bioc_results["conversion_performed"] = True
+                            bioc_results["pmcid_to_pmid_map"] = pmcid_to_pmid
+                            logger.info(f"Successfully converted {len(pmids)} PMCIDs to PMIDs")
+                        else:
+                            logger.warning("PMCID to PMID conversion returned no results")
+            
+            # If still no PMIDs, return empty results
+            if not pmids:
+                logger.warning(f"No PMIDs available for BioC fetch (neither from PubMed nor PMC)")
                 return bioc_results
             
-            logger.info(f"Fetching BioC data for {len(pmcids)} PMIDs using PubTator3")
+            bioc_results["pmids_used"] = pmids[:5]  # Store which PMIDs we're using
             
-            # Fetch BioC data for each PMCID (limit to first 5)
-            for pmcid in pmcids[:5]:
+            logger.info(f"Fetching BioC data for {len(pmids[:5])} PMIDs using PubTator3")
+            
+            # Fetch BioC data for each PMID (limit to first 5)
+            for pmid in pmids[:5]:
                 try:
-                    bioc_data = await self.fetch_pmc_bioc(pmcid, format="biocjson")
+                    bioc_data = await self.fetch_pmc_bioc(pmid, format="biocjson")
                     
                     if "error" not in bioc_data:
                         bioc_results["articles"].append({
-                            "pmid": pmcid,
+                            "pmid": pmid,
                             "data": bioc_data
                         })
                         bioc_results["total_fetched"] += 1
+                        logger.info(f"Successfully fetched BioC data for PMID {pmid}")
                     else:
                         bioc_results["errors"].append({
-                            "pmid": pmcid,
+                            "pmid": pmid,
                             "error": bioc_data["error"]
                         })
+                        logger.warning(f"BioC fetch failed for PMID {pmid}: {bioc_data['error']}")
                         
                 except Exception as e:
-                    logger.error(f"Error fetching BioC for PMID {pmcid}: {e}")
+                    logger.error(f"Error fetching BioC for PMID {pmid}: {e}")
                     bioc_results["errors"].append({
-                        "pmid": pmcid,
+                        "pmid": pmid,
                         "error": str(e)
                     })
             
             logger.info(f"BioC fetch complete: {bioc_results['total_fetched']} successful, "
-                       f"{len(bioc_results['errors'])} errors")
+                    f"{len(bioc_results['errors'])} errors")
+            
             return bioc_results
             
         except Exception as e:
             logger.error(f"PMC BioC search error: {e}", exc_info=True)
-            return {"error": str(e)}
+            return {
+                "error": str(e),
+                "articles": [],
+                "total_fetched": 0,
+                "errors": []
+            }
         
     async def fetch_pmc_bioc(
         self,
-        pmcid: str,
+        pmid: str,
         format: str = "biocjson"
     ) -> Dict[str, Any]:
         """
         Fetch article from PubTator3 API in BioC format.
+        Delegates to PMCBioClient.
         
         Args:
             pmid: PubMed ID or PMC ID
@@ -463,45 +507,7 @@ class NCTSearchEngine:
         Returns:
             Dict containing BioC formatted article data or error
         """
-        # PubTator3 API endpoint
-        base_url = "https://www.ncbi.nlm.nih.gov/research/pubtator3-api/publications/export"
-        
-        # Validate format
-        if format not in ["biocjson", "biocxml"]:
-            format = "biocjson"
-        
-        try:
-            # Check if we need rate limiting (implement if needed)
-            if hasattr(self, '_rate_limit'):
-                await self._rate_limit()
-            
-            # PubTator3 URL structure: /export/{format}?pmids={pmid}
-            url = f"{base_url}/{format}?pmids={pmcid}"
-            
-            async with self.session.get(url) as resp:
-                if resp.status == 200:
-                    if format == "biocjson":
-                        data = await resp.json()
-                        logger.info(f"PubTator3 BioC fetch successful for {pmcid}")
-                        return data
-                    else:  # biocxml
-                        xml_content = await resp.text()
-                        logger.info(f"PubTator3 BioC XML fetch successful for {pmcid}")
-                        return {"xml": xml_content}
-                elif resp.status == 404:
-                    logger.warning(f"Article {pmcid} not found in PubTator3")
-                    return {"error": "Article not available in PubTator3"}
-                else:
-                    error_text = await resp.text()
-                    logger.error(f"PubTator3 fetch error: HTTP {resp.status} - {error_text}")
-                    return {"error": f"HTTP {resp.status}: {error_text}"}
-                    
-        except asyncio.TimeoutError:
-            logger.error(f"PubTator3 fetch timeout for {pmcid}")
-            return {"error": "Request timeout"}
-        except Exception as e:
-            logger.error(f"PubTator3 fetch error for {pmcid}: {e}")
-            return {"error": str(e)}
+        return await self.clients['pmc_bioc'].fetch_pmc_bioc(pmid, format)
     
     async def _search_extended(
         self,

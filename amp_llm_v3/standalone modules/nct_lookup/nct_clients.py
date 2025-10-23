@@ -314,53 +314,133 @@ class PMCBioClient(BaseClient):
             "message": "Use PubMed or PMC to find PMIDs first, then fetch individual articles"
         }
     
+    async def convert_pmcids_to_pmids(self, pmcids: List[str]) -> Dict[str, str]:
+        """
+        Convert PMCIDs to PMIDs using NCBI ID Converter API.
+        
+        Args:
+            pmcids: List of PMC IDs (e.g., ['PMC1193645', 'PMC1134901'])
+            
+        Returns:
+            Dict mapping PMCID to PMID (e.g., {'PMC1193645': '14699080'})
+        """
+        if not pmcids:
+            return {}
+        
+        # Ensure PMC prefix
+        formatted_pmcids = []
+        for pmcid in pmcids:
+            if not pmcid.startswith('PMC'):
+                formatted_pmcids.append(f'PMC{pmcid}')
+            else:
+                formatted_pmcids.append(pmcid)
+        
+        # NCBI ID Converter API endpoint
+        base_url = "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/"
+        
+        # Build query parameters
+        params = {
+            'ids': ','.join(formatted_pmcids[:200]),  # API limit: 200 IDs per request
+            'format': 'json',
+            'idtype': 'pmcid'
+        }
+        
+        try:
+            # Rate limiting
+            await asyncio.sleep(0.34)
+            
+            logger.info(f"Converting {len(formatted_pmcids)} PMCIDs to PMIDs")
+            
+            async with self.session.get(base_url, params=params, timeout=aiohttp.ClientTimeout(total=30)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    
+                    # Parse the response
+                    pmcid_to_pmid = {}
+                    
+                    if 'records' in data:
+                        for record in data['records']:
+                            pmcid = record.get('pmcid', '')
+                            pmid = record.get('pmid', '')
+                            
+                            if pmcid and pmid:
+                                pmcid_to_pmid[pmcid] = pmid
+                                logger.debug(f"Converted {pmcid} → PMID {pmid}")
+                    
+                    logger.info(f"Successfully converted {len(pmcid_to_pmid)}/{len(formatted_pmcids)} PMCIDs to PMIDs")
+                    return pmcid_to_pmid
+                    
+                else:
+                    error_text = await resp.text()
+                    logger.error(f"PMCID conversion failed: HTTP {resp.status} - {error_text}")
+                    return {}
+                    
+        except asyncio.TimeoutError:
+            logger.error("PMCID conversion timeout")
+            return {}
+        except Exception as e:
+            logger.error(f"PMCID conversion error: {e}")
+            return {}
+    
     async def fetch_pmc_bioc(
         self,
         pmid: str,
-        format: str = "json",
-        encoding: str = "unicode"
+        format: str = "biocjson"
     ) -> Dict[str, Any]:
         """
-        Fetch article from PubMed Central Open Access in BioC format.
+        Fetch article from PubTator3 API in BioC format.
         
         Args:
             pmid: PubMed ID or PMC ID
-            format: 'xml' or 'json'
-            encoding: 'unicode' or 'ascii'
+            format: 'biocjson' or 'biocxml' (default: biocjson)
         
         Returns:
             Dict containing BioC formatted article data or error
         """
-        base_url = "https://www.ncbi.nlm.nih.gov/research/bionlp/RESTful/pmcoa.cgi"
-        url = f"{base_url}/BioC_{format}/{pmid}/{encoding}"
+        # PubTator3 API endpoint
+        base_url = "https://www.ncbi.nlm.nih.gov/research/pubtator3-api/publications/export"
+        
+        # Validate format
+        if format not in ["biocjson", "biocxml"]:
+            format = "biocjson"
         
         try:
-            await self._rate_limit()
-            async with self.session.get(url) as resp:
+            # Rate limiting - NCBI recommends 3 requests/second
+            await asyncio.sleep(0.34)
+            
+            # PubTator3 URL structure: /export/{format}?pmids={pmid}
+            url = f"{base_url}/{format}?pmids={pmid}"
+            
+            async with self.session.get(url, timeout=aiohttp.ClientTimeout(total=30)) as resp:
                 if resp.status == 200:
-                    if format == "json":
+                    if format == "biocjson":
                         data = await resp.json()
-                        logger.info(f"PMC BioC fetch successful for {pmid}")
+                        logger.info(f"PubTator3 BioC fetch successful for {pmid}")
                         return data
-                    else:  # xml
+                    else:  # biocxml
                         xml_content = await resp.text()
-                        logger.info(f"PMC BioC fetch successful for {pmid}")
+                        logger.info(f"PubTator3 BioC XML fetch successful for {pmid}")
                         return {"xml": xml_content}
                 elif resp.status == 404:
-                    logger.warning(f"Article {pmid} not found in PMC Open Access")
-                    return {"error": "Article not available in PMC Open Access"}
+                    logger.warning(f"Article {pmid} not found in PubTator3")
+                    return {"error": "Article not available in PubTator3"}
                 else:
-                    logger.error(f"PMC BioC fetch error: HTTP {resp.status}")
-                    return {"error": f"HTTP {resp.status}"}
+                    error_text = await resp.text()
+                    logger.error(f"PubTator3 fetch error: HTTP {resp.status} - {error_text[:200]}")
+                    return {"error": f"HTTP {resp.status}: {error_text[:200]}"}
+                    
+        except asyncio.TimeoutError:
+            logger.error(f"PubTator3 fetch timeout for {pmid}")
+            return {"error": "Request timeout"}
         except Exception as e:
-            logger.error(f"PMC BioC fetch error for {pmid}: {e}")
+            logger.error(f"PubTator3 fetch error for {pmid}: {e}")
             return {"error": str(e)}
 
 
     async def fetch_multiple_pmc_bioc(
         self,
         pmids: List[str],
-        format: str = "json",
+        format: str = "biocjson",
         encoding: str = "unicode"
     ) -> Dict[str, Dict[str, Any]]:
         """
@@ -368,7 +448,7 @@ class PMCBioClient(BaseClient):
         
         Args:
             pmids: List of PubMed IDs or PMC IDs
-            format: 'xml' or 'json'
+            format: 'biocjson' or 'biocxml'
             encoding: 'unicode' or 'ascii'
         
         Returns:
