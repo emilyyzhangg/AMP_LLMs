@@ -284,33 +284,42 @@ header p {
    Mode Container - THREE PANEL LAYOUT (header, scrollable middle, fixed input)
    ============================================================================ */
 
+
 .mode-container {
     display: none;
-    flex-direction: column;
-    height: 100%;
-    min-height: 0; 
-    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
-.mode-container.active {
-    display: flex;
+.mode-container.active .chat-container {
+    top: 60px;  /* Space for info bar */
 }
+
 
 /* ============================================================================
    Chat Info Bar (Fixed Top)
    ============================================================================ */
 
 .chat-info-bar {
-    flex: 0 0 auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 10;
+    
     padding: 15px 30px;
-    background: #f8f9fa;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%);
     border-bottom: 2px solid #e9ecef;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 0.9em;
     color: #495057;
-    backdrop-filter: blur(10px);
+    box-sizing: border-box;
 }
 
 .chat-info-item {
@@ -374,25 +383,17 @@ header p {
 
 
 .chat-container, .research-container {
-    /* CRITICAL: Must be able to shrink and scroll */
-    flex: 1 1 auto;
-    min-height: 0;  /* CRITICAL */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 100px;  /* Leave room for input area */
     
-    /* Enable scrolling */
-    overflow-y: scroll;  /* Changed from auto to scroll to force scrollbar */
+    overflow-y: scroll;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
     
-    /* Styling */
     padding: 30px;
-    padding-bottom: 20px;  /* Less padding at bottom */
     background: #ffffff;
-    
-    /* Critical: Allow shrinking */
-    min-height: 0;
-    
-    /* Ensure proper width */
-    width: 100%;
 }
 
 /* Force scrollbar visibility for debugging */
@@ -420,19 +421,22 @@ header p {
 }
 
 /* ============================================================================
-   Input Area - FIXED BOTTOM
+   Input Area - ABSOLUTELY POSITIONED AT BOTTOM
    ============================================================================ */
 
 .input-area {
-    /* Fixed at bottom */
-    flex: 0 0 auto;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
     
-    /* Layout */
     display: flex;
     gap: 15px;
     padding: 20px 30px;
     background: #f8f9fa;
     border-top: 2px solid #e9ecef;
+    box-sizing: border-box;
 }
 
 .input-area textarea {
