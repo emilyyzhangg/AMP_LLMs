@@ -1565,11 +1565,15 @@ createAPICheckbox(api, category) {
     },
 
     downloadNCTResults() {
-        if (!this.nctResults) return;
+        if (!this.nctResults) {
+            alert('No results to download');
+            return;
+        }
         
         const filename = `nct_results_${Date.now()}.json`;
         const content = JSON.stringify(this.nctResults.results, null, 2);
         
+        // Create blob and download
         const blob = new Blob([content], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1582,16 +1586,8 @@ createAPICheckbox(api, category) {
         
         console.log(`✅ Downloaded ${filename} to local computer`);
         
-        // Show toast notification
-        const toast = document.createElement('div');
-        toast.className = 'download-toast';
-        toast.textContent = `✅ Downloaded ${filename}`;
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.classList.add('fade-out');
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        // Show success message
+        alert(`✅ Downloaded: ${filename}`);
     },
     
     async loadFiles() {
@@ -1731,7 +1727,7 @@ createAPICheckbox(api, category) {
         const resultsDiv = document.getElementById('nct-results');
         const saveBtn = document.getElementById('nct-save-btn');
         const downloadBtn = document.getElementById('nct-download-btn');
-        
+
         if (downloadBtn) {
             downloadBtn.classList.remove('hidden');
         }
