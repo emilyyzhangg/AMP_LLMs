@@ -1,20 +1,13 @@
 // ============================================================================
-// AMP LLM Enhanced Web Interface - FIXED VERSION
-// ✅ Fixed progressDiv undefined error
-// ✅ Info bar only shows after model selection
-// ✅ Chats saved per model during session
-// ✅ Clear chat button when model is active
-// ✅ Session isolation (backend handles this via conversation IDs)
+// AMP LLM Enhanced Web Interface - COMPLETE WORKING VERSION
 // ============================================================================
 
 const app = {
     // Configuration
     API_BASE: (() => {
-        // For production (cloudflare tunnel)
         if (window.location.hostname === 'llm.amphoraxe.ca') {
             return 'https://llm.amphoraxe.ca';
         }
-        // For local development
         return window.location.origin;
     })(),
 
@@ -54,9 +47,7 @@ const app = {
         this.apiKey = localStorage.getItem('amp_llm_api_key') || '';
         this.currentTheme = localStorage.getItem('amp_llm_theme') || 'green';
         
-        // Load available themes dynamically
         await this.loadAvailableThemes();
-        
         this.applyTheme(this.currentTheme, false);
         
         if (this.apiKey) {
@@ -409,7 +400,7 @@ const app = {
     },
     
     // =========================================================================
-    // Chat Mode - WITH SESSION STORAGE
+    // Chat Mode
     // =========================================================================
     
     async initializeChatMode() {
@@ -944,7 +935,6 @@ const app = {
                 
                 if (data.message && data.message.content) {
                     this.addMessage('chat-container', 'assistant', data.message.content);
-                    
                     this.saveCurrentChat();
                 } else {
                     this.addMessage('chat-container', 'error', 
@@ -1214,7 +1204,7 @@ const app = {
     },
 
     // =========================================================================
-    // Progress Tracking for NCT Search - FIXED
+    // Progress Tracking for NCT Search
     // =========================================================================
 
     updateSearchProgress(message, details = {}) {
@@ -1264,7 +1254,6 @@ const app = {
     clearSearchProgress() {
         const progressDiv = document.getElementById('nct-progress');
         if (progressDiv) {
-            // Fade out animation
             progressDiv.style.transition = 'opacity 0.3s ease';
             progressDiv.style.opacity = '0';
             
@@ -1275,7 +1264,43 @@ const app = {
     },
 
     // ============================================================================
-    // Updated NCT Lookup Handler - FIXED progressDiv bug
+    // FIXED: checkForAPIFailures method
+    // ============================================================================
+
+    checkForAPIFailures(resultData, nctId, errors) {
+        const sources = resultData.sources || {};
+        
+        // Check core sources
+        ['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc'].forEach(api => {
+            if (sources[api] && !sources[api].success) {
+                errors.push({
+                    nct_id: nctId,
+                    api: api,
+                    error: sources[api].error || 'Unknown API error',
+                    stage: 'api_failure',
+                    timestamp: new Date().toISOString()
+                });
+            }
+        });
+        
+        // Check extended sources
+        if (sources.extended) {
+            Object.entries(sources.extended).forEach(([api, data]) => {
+                if (data && !data.success) {
+                    errors.push({
+                        nct_id: nctId,
+                        api: api,
+                        error: data.error || 'Unknown API error',
+                        stage: 'api_failure',
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            });
+        }
+    },
+
+    // ============================================================================
+    // NCT Lookup Handler
     // ============================================================================
 
     async handleNCTLookup() {
@@ -1296,11 +1321,9 @@ const app = {
         
         console.log('Starting NCT lookup for:', nctIds);
         
-        // Hide input area and show results area
         inputArea.classList.add('hidden');
         resultsDiv.classList.add('active');
         
-        // Clear results and show initial progress
         resultsDiv.innerHTML = `
             <div id="nct-progress" class="search-progress">
                 <div class="progress-message">
@@ -1319,7 +1342,7 @@ const app = {
         console.log('Extended APIs (user selected):', extendedAPIs);
         
         const results = [];
-        const errors = [];  // Enhanced error tracking
+        const errors = [];
         const searchJobs = {};
         
         try {
@@ -1334,13 +1357,12 @@ const app = {
                 return response.json();
             }
             
-            // Update progress: Initiating searches
             this.updateSearchProgress('Initiating searches...', {
                 current: 0,
                 total: nctIds.length
             });
             
-            // Initiate searches for each NCT number
+            // Initiate searches
             for (let i = 0; i < nctIds.length; i++) {
                 const nctId = nctIds[i];
                 
@@ -1355,7 +1377,6 @@ const app = {
                     
                     console.log(`Searching ${nctId} with request:`, searchRequest);
                     
-                    // Update progress
                     this.updateSearchProgress(`Initiating search for ${nctId}...`, {
                         current: i + 1,
                         total: nctIds.length
@@ -1387,15 +1408,14 @@ const app = {
                 }
             }
             
-            // Update progress: Fetching data
             this.updateSearchProgress('Fetching trial data from databases...', {
                 current: 0,
                 total: Object.keys(searchJobs).length
             });
             
-            // Poll for results with enhanced error tracking
-            const maxWait = 300000; // 5 minutes
-            const pollInterval = 2000; // 2 seconds
+            // Poll for results
+            const maxWait = 300000;
+            const pollInterval = 2000;
             const startTime = Date.now();
             
             while (Object.keys(searchJobs).length > 0 && (Date.now() - startTime) < maxWait) {
@@ -1412,7 +1432,6 @@ const app = {
                             }
                         );
                         
-                        // Update progress with current database
                         if (statusData.current_database) {
                             const apiDef = this.apiRegistry.core.find(a => a.id === statusData.current_database) ||
                                         this.apiRegistry.extended.find(a => a.id === statusData.current_database);
@@ -1434,14 +1453,12 @@ const app = {
                                 }
                             );
                             
-                            // Check for API-level failures within the result
                             this.checkForAPIFailures(resultData, nctId, errors);
                             
                             results.push(resultData);
                             completedJobs.push(nctId);
                             console.log(`✅ Retrieved results for ${nctId}`);
                             
-                            // Update progress
                             this.updateSearchProgress(`Completed ${nctId}`, {
                                 current: results.length + errors.filter(e => e.stage !== 'api_failure').length,
                                 total: totalJobs
@@ -1469,12 +1486,10 @@ const app = {
                     }
                 }
                 
-                // Remove completed jobs
                 completedJobs.forEach(nctId => {
                     delete searchJobs[nctId];
                 });
                 
-                // Wait before next poll (only if there are still pending jobs)
                 if (Object.keys(searchJobs).length > 0) {
                     await new Promise(resolve => setTimeout(resolve, pollInterval));
                 }
@@ -1490,13 +1505,12 @@ const app = {
                 });
             }
             
-            // Clear progress indicator
             const progressDiv = document.getElementById('nct-progress');
             if (progressDiv) {
                 progressDiv.remove();
             }
             
-            // Display results with error summary
+            // Display results
             if (results.length > 0) {
                 this.nctResults = {
                     success: true,
@@ -1512,7 +1526,6 @@ const app = {
                 
                 this.displayNCTResults(this.nctResults);
                 
-                // Add error summary if there are errors
                 if (errors.length > 0) {
                     const errorSummaryHTML = this.showSearchErrorSummary(errors);
                     resultsDiv.insertAdjacentHTML('beforeend', errorSummaryHTML);
@@ -1520,7 +1533,6 @@ const app = {
                 
                 this.addNewSearchButton();
                 
-                // Show action buttons
                 const downloadBtn = document.getElementById('nct-download-btn');
                 const saveBtn = document.getElementById('nct-save-btn');
                 if (downloadBtn) downloadBtn.classList.remove('hidden');
@@ -1543,7 +1555,6 @@ const app = {
         } catch (error) {
             console.error('❌ NCT lookup error:', error);
             
-            // Clear progress
             const progressDiv = document.getElementById('nct-progress');
             if (progressDiv) {
                 progressDiv.remove();
@@ -1591,24 +1602,9 @@ const app = {
         const filename = `nct_results_${Date.now()}.json`;
         const content = JSON.stringify(this.nctResults.results, null, 2);
         
-        // Calculate file size
         const sizeKB = (content.length / 1024).toFixed(1);
         const sizeMB = sizeKB > 1024 ? (sizeKB / 1024).toFixed(2) + ' MB' : sizeKB + ' KB';
         
-        // // Download to local computer
-        // const blob = new Blob([content], { type: 'application/json' });
-        // const url = URL.createObjectURL(blob);
-        // const a = document.createElement('a');
-        // a.href = url;
-        // a.download = filename;
-        // document.body.appendChild(a);
-        // a.click();
-        // document.body.removeChild(a);
-        // URL.revokeObjectURL(url);
-        
-        // console.log(`✅ Downloaded ${filename} to local computer`);
-        
-        // Also save to server
         try {
             const response = await fetch(`${this.API_BASE}/files/save`, {
                 method: 'POST',
@@ -1652,7 +1648,6 @@ const app = {
         const filename = `nct_results_${Date.now()}.json`;
         const content = JSON.stringify(this.nctResults.results, null, 2);
         
-        // Download to local computer
         const blob = new Blob([content], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1665,11 +1660,9 @@ const app = {
         
         console.log(`✅ Downloaded ${filename} to local computer`);
         
-        // Calculate file size
         const sizeKB = (content.length / 1024).toFixed(1);
         const sizeMB = sizeKB > 1024 ? (sizeKB / 1024).toFixed(2) + ' MB' : sizeKB + ' KB';
         
-        // Show success toast
         this.showToast(
             `📥 Downloaded: ${filename}<br><small>Size: ${sizeMB} | ${this.nctResults.results.length} trial(s)</small>`,
             'success',
@@ -1678,22 +1671,19 @@ const app = {
     },
 
     showSearchErrorSummary(errors) {
-        if (!errors || errors.length === 0) return;
+        if (!errors || errors.length === 0) return '';
         
         console.error('❌ NCT Search Errors:', errors);
         
-        // Group errors by type
         const errorsByNCT = {};
         const errorsByAPI = {};
         
         errors.forEach(error => {
-            // Track by NCT ID
             if (!errorsByNCT[error.nct_id]) {
                 errorsByNCT[error.nct_id] = [];
             }
             errorsByNCT[error.nct_id].push(error);
             
-            // Track by API if available
             if (error.api) {
                 if (!errorsByAPI[error.api]) {
                     errorsByAPI[error.api] = [];
@@ -1702,7 +1692,6 @@ const app = {
             }
         });
         
-        // Build error summary HTML
         let errorHTML = `
             <div class="result-card error-card">
                 <h3>⚠️ Search Errors (${errors.length} total)</h3>
@@ -1865,21 +1854,17 @@ const app = {
         newSearchBtn.className = 'new-search-button';
         newSearchBtn.innerHTML = '<span>🔍</span><span>New Search</span>';
         newSearchBtn.onclick = () => {
-            // Clear results
             resultsDiv.innerHTML = '';
             resultsDiv.classList.remove('active');
             inputArea.classList.remove('hidden');
             
-            // Clear input
             document.getElementById('nct-input').value = '';
             
-            // Hide action buttons
             const downloadBtn = document.getElementById('nct-download-btn');
             const saveBtn = document.getElementById('nct-save-btn');
             if (downloadBtn) downloadBtn.classList.add('hidden');
             if (saveBtn) saveBtn.classList.add('hidden');
             
-            // Reset selected APIs to defaults
             this.selectedAPIs = new Set(this.apiRegistry?.metadata?.default_enabled || []);
             this.buildAPICheckboxes();
         };
@@ -1887,13 +1872,11 @@ const app = {
         resultsDiv.insertBefore(newSearchBtn, resultsDiv.firstChild);
     },
 
-    
     displayNCTResults(data) {
         const resultsDiv = document.getElementById('nct-results');
         
         let html = '';
         
-        // Add action buttons at the top
         html += `
             <div class="results-actions">
                 <button class="action-button download-btn" onclick="app.downloadNCTResults()">
@@ -2177,7 +2160,6 @@ const app = {
         return api;
     },
 
-    // Toast notification system
     showToast(message, type = 'success', duration = 3000) {
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
@@ -2185,53 +2167,18 @@ const app = {
         
         document.body.appendChild(toast);
         
-        // Trigger animation
         requestAnimationFrame(() => {
             toast.classList.add('toast-show');
         });
         
-        // Auto-hide after duration
         setTimeout(() => {
             toast.classList.remove('toast-show');
             toast.classList.add('toast-hide');
             
-            // Remove from DOM after animation
             setTimeout(() => {
                 document.body.removeChild(toast);
             }, 300);
         }, duration);
-    },
-
-    checkForAPIFailures(resultData, nctId, errors) {
-        const sources = resultData.sources || {};
-        
-        // Check core sources
-        ['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc'].forEach(api => {
-            if (sources[api] && !sources[api].success) {
-                errors.push({
-                    nct_id: nctId,
-                    api: api,
-                    error: sources[api].error || 'Unknown API error',
-                    stage: 'api_failure',
-                    timestamp: new Date().toISOString()
-                });
-            }
-        });
-        
-        // Check extended sources
-        if (sources.extended) {
-            Object.entries(sources.extended).forEach(([api, data]) => {
-                if (data && !data.success) {
-                    errors.push({
-                        nct_id: nctId,
-                        api: api,
-                        error: data.error || 'Unknown API error',
-                        stage: 'api_failure',
-                        timestamp: new Date().toISOString()
-                    });
-                }
-            });
-        }
     },
 
     escapeHtml(text) {
