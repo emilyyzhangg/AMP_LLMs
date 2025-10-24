@@ -9,6 +9,7 @@
 const app = {
     // Configuration
     API_BASE: window.location.origin,
+    NCT_SERVICE_URL: 'http://localhost:8002',
     apiKey: localStorage.getItem('amp_llm_api_key') || '',
     
     // State
@@ -1103,29 +1104,51 @@ const app = {
     // ============================================================================
 
     async loadAPIRegistry() {
-        console.log('📚 Loading API registry...');
+        console.log('📚 Loading API registry from:', this.NCT_SERVICE_URL);
         
         try {
-            const response = await fetch(`${this.NCT_SERVICE_URL}/api/registry`, {
-                headers: { 'Authorization': `Bearer ${this.apiKey}` }
+            const url = `${this.NCT_SERVICE_URL}/api/registry`;
+            console.log('Fetching:', url);
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: { 
+                    'Authorization': `Bearer ${this.apiKey}`,
+                    'Content-Type': 'application/json'
+                }
             });
             
+            console.log('Registry response status:', response.status);
+            
             if (!response.ok) {
-                throw new Error(`Failed to load API registry: HTTP ${response.status}`);
+                const errorText = await response.text();
+                console.error('Registry error response:', errorText);
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
             }
             
             this.apiRegistry = await response.json();
             console.log('✅ API registry loaded:', this.apiRegistry);
             
             // Initialize selected APIs with defaults
-            this.selectedAPIs = new Set(this.apiRegistry.metadata.default_enabled);
+            if (this.apiRegistry.metadata?.default_enabled) {
+                this.selectedAPIs = new Set(this.apiRegistry.metadata.default_enabled);
+            } else {
+                // Fallback
+                this.selectedAPIs = new Set();
+                [...this.apiRegistry.core, ...this.apiRegistry.extended].forEach(api => {
+                    if (api.enabled_by_default) {
+                        this.selectedAPIs.add(api.id);
+                    }
+                });
+            }
             
+            console.log('Selected APIs:', Array.from(this.selectedAPIs));
             return this.apiRegistry;
             
         } catch (error) {
             console.error('❌ Failed to load API registry:', error);
             
-            // Fallback to basic setup
+            // Use fallback registry
             this.apiRegistry = {
                 core: [
                     { id: 'clinicaltrials', name: 'ClinicalTrials.gov', description: 'Primary trial registry', enabled_by_default: true, available: true },
@@ -1145,11 +1168,9 @@ const app = {
             };
             
             this.selectedAPIs = new Set(this.apiRegistry.metadata.default_enabled);
-            
             return this.apiRegistry;
         }
-    },
-
+    }
     // ============================================================================
     // Build API Checkboxes Dynamically
     // ============================================================================
@@ -1540,8 +1561,7 @@ createAPICheckbox(api, category) {
                 pmc_bioc: pmcBiocCount,
                 sources_available: result.sources ? Object.keys(result.sources) : []
             });
-            
-            
+                        
             html += `
                 <div class="result-card">
                     <div class="result-card-header">
