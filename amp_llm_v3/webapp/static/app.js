@@ -2105,41 +2105,93 @@ const app = {
         });
         
         if (Object.keys(sourceStats).length > 0) {
-            html += `
-                <div class="source-stats-container">
-                    <h4 style="margin-top: 20px; margin-bottom: 12px; color: #333;">📚 Results by Source</h4>
-                    <div class="source-stats-grid">
-            `;
+            // Separate core and extended sources
+            const coreAPIs = ['clinicaltrials', 'clinical_trials', 'pubmed', 'pmc', 'pmc_bioc'];
+            const coreSources = [];
+            const extendedSources = [];
             
-            const sortedSources = Object.entries(sourceStats).sort((a, b) => b[1].count - a[1].count);
-            
-            sortedSources.forEach(([sourceName, stats]) => {
-                const apiInfo = this.getAPIInfo(sourceName);
-                const displayName = apiInfo ? apiInfo.name : sourceName;
-                const successRate = stats.successful > 0 ? 
-                    Math.round((stats.successful / (stats.successful + stats.failed)) * 100) : 0;
-                
-                html += `
-                    <div class="source-stat-item">
-                        <div class="source-stat-header">
-                            <span class="source-stat-name">${this.escapeHtml(displayName)}</span>
-                            <span class="source-stat-badge ${stats.count > 0 ? 'success' : 'empty'}">${stats.count}</span>
-                        </div>
-                        <div class="source-stat-details">
-                            <span class="source-stat-detail">✓ ${stats.successful} successful</span>
-                            ${stats.failed > 0 ? `<span class="source-stat-detail error">✗ ${stats.failed} failed</span>` : ''}
-                            <span class="source-stat-detail">${successRate}% success rate</span>
-                        </div>
-                    </div>
-                `;
+            Object.entries(sourceStats).forEach(([sourceName, stats]) => {
+                if (coreAPIs.includes(sourceName)) {
+                    coreSources.push([sourceName, stats]);
+                } else {
+                    extendedSources.push([sourceName, stats]);
+                }
             });
             
+            // Sort by count (descending)
+            coreSources.sort((a, b) => b[1].count - a[1].count);
+            extendedSources.sort((a, b) => b[1].count - a[1].count);
+            
+            html += `<div class="source-stats-container">`;
+            
+            // Display Core Sources
+            if (coreSources.length > 0) {
+                html += `
+                    <h4 style="margin-top: 20px; margin-bottom: 12px; color: #333;">📚 Core Sources</h4>
+                    <div class="source-stats-grid">
+                `;
+                
+                coreSources.forEach(([sourceName, stats]) => {
+                    const apiInfo = this.getAPIInfo(sourceName);
+                    const displayName = apiInfo ? apiInfo.name : sourceName;
+                    const successRate = stats.successful > 0 ? 
+                        Math.round((stats.successful / (stats.successful + stats.failed)) * 100) : 0;
+                    
+                    html += `
+                        <div class="source-stat-item">
+                            <div class="source-stat-header">
+                                <span class="source-stat-name">${this.escapeHtml(displayName)}</span>
+                                <span class="source-stat-badge ${stats.count > 0 ? 'success' : 'empty'}">${stats.count}</span>
+                            </div>
+                            <div class="source-stat-details">
+                                <span class="source-stat-detail">✓ ${stats.successful} successful</span>
+                                ${stats.failed > 0 ? `<span class="source-stat-detail error">✗ ${stats.failed} failed</span>` : ''}
+                                <span class="source-stat-detail">${successRate}% success rate</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            }
+            
+            // Display Extended Sources
+            if (extendedSources.length > 0) {
+                html += `
+                    <h4 style="margin-top: 30px; margin-bottom: 12px; color: #333;">🔬 Extended Sources</h4>
+                    <div class="source-stats-grid">
+                `;
+                
+                extendedSources.forEach(([sourceName, stats]) => {
+                    const apiInfo = this.getAPIInfo(sourceName);
+                    const displayName = apiInfo ? apiInfo.name : sourceName;
+                    const successRate = stats.successful > 0 ? 
+                        Math.round((stats.successful / (stats.successful + stats.failed)) * 100) : 0;
+                    
+                    html += `
+                        <div class="source-stat-item extended-source-stat">
+                            <div class="source-stat-header">
+                                <span class="source-stat-name">${this.escapeHtml(displayName)}</span>
+                                <span class="source-stat-badge ${stats.count > 0 ? 'success' : 'empty'}">${stats.count}</span>
+                            </div>
+                            <div class="source-stat-details">
+                                <span class="source-stat-detail">✓ ${stats.successful} successful</span>
+                                ${stats.failed > 0 ? `<span class="source-stat-detail error">✗ ${stats.failed} failed</span>` : ''}
+                                <span class="source-stat-detail">${successRate}% success rate</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            }
+            
+            // Total results banner
             html += `
-                    </div>
-                    <div class="total-results-banner">
-                        <strong>Total Results Across All Sources:</strong> <span class="highlight-number">${totalResults}</span>
-                    </div>
+                <div class="total-results-banner">
+                    <strong>Total Results Across All Sources:</strong> <span class="highlight-number">${totalResults}</span>
                 </div>
+            </div>
             `;
         }
         
