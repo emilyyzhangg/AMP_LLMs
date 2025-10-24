@@ -1295,10 +1295,12 @@ const app = {
         const inputArea = document.querySelector('.nct-input-area');
         
         console.log('Starting NCT lookup for:', nctIds);
+        
+        // Hide input area and show results area
         inputArea.classList.add('hidden');
         resultsDiv.classList.add('active');
         
-        // Clear results and add progress indicator
+        // Clear results and show initial progress
         resultsDiv.innerHTML = `
             <div id="nct-progress" class="search-progress">
                 <div class="progress-message">
@@ -1307,11 +1309,6 @@ const app = {
                 </div>
             </div>
         `;
-        
-        this.updateSearchProgress('Initializing search...', {
-            current: 0,
-            total: nctIds.length
-        });
         
         const selectedAPIList = Array.from(this.selectedAPIs);
         const coreAPIs = ['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc'];
@@ -1337,7 +1334,16 @@ const app = {
                 return response.json();
             }
             
-            for (const nctId of nctIds) {
+            // Update progress: Initiating searches
+            this.updateSearchProgress('Initiating searches...', {
+                current: 0,
+                total: nctIds.length
+            });
+            
+            // Initiate searches for each NCT number
+            for (let i = 0; i < nctIds.length; i++) {
+                const nctId = nctIds[i];
+                
                 try {
                     const searchRequest = {
                         include_extended: extendedAPIs.length > 0
@@ -1348,6 +1354,12 @@ const app = {
                     }
                     
                     console.log(`Searching ${nctId} with request:`, searchRequest);
+                    
+                    // Update progress
+                    this.updateSearchProgress(`Initiating search for ${nctId}...`, {
+                        current: i + 1,
+                        total: nctIds.length
+                    });
                     
                     const data = await makeRequest(
                         `${NCT_API_BASE}/search/${nctId}`,
@@ -1373,13 +1385,21 @@ const app = {
                 }
             }
             
-            const maxWait = 300000;
-            const pollInterval = 2000;
+            // Update progress: Fetching data
+            this.updateSearchProgress('Fetching trial data from databases...', {
+                current: 0,
+                total: Object.keys(searchJobs).length
+            });
+            
+            // Poll for results
+            const maxWait = 300000; // 5 minutes
+            const pollInterval = 2000; // 2 seconds
             const startTime = Date.now();
             
-            // FIXED: Define progressDiv inside the polling loop
             while (Object.keys(searchJobs).length > 0 && (Date.now() - startTime) < maxWait) {
                 const completedJobs = [];
+                const totalJobs = nctIds.length;
+                const completedCount = results.length + errors.length;
                 
                 for (const [nctId, jobId] of Object.entries(searchJobs)) {
                     try {
@@ -1390,18 +1410,18 @@ const app = {
                             }
                         );
                         
-                        // FIXED: Get progressDiv here, inside the loop where it's used
-                        const progressDiv = document.getElementById('nct-progress');
-                        
-                        if (statusData.current_database && progressDiv) {
+                        // Update progress with current database
+                        if (statusData.current_database) {
                             const apiDef = this.apiRegistry.core.find(a => a.id === statusData.current_database) ||
                                         this.apiRegistry.extended.find(a => a.id === statusData.current_database);
                             const apiName = apiDef ? apiDef.name : statusData.current_database;
                             
-                            progressDiv.innerHTML = `
-                                <span class="spinner"></span>
-                                <span>Processing ${nctId}: ${apiName} (${statusData.progress}%)</span>
-                            `;
+                            this.updateSearchProgress(`Processing ${nctId}...`, {
+                                current: completedCount,
+                                total: totalJobs,
+                                database: apiName,
+                                completed: statusData.completed_databases || []
+                            });
                         }
                         
                         if (statusData.status === 'completed') {
@@ -1415,6 +1435,12 @@ const app = {
                             results.push(resultData);
                             completedJobs.push(nctId);
                             console.log(`✅ Retrieved results for ${nctId}`);
+                            
+                            // Update progress
+                            this.updateSearchProgress(`Completed ${nctId}`, {
+                                current: results.length + errors.length,
+                                total: totalJobs
+                            });
                             
                         } else if (statusData.status === 'failed') {
                             errors.push({
@@ -1434,15 +1460,18 @@ const app = {
                     }
                 }
                 
+                // Remove completed jobs
                 completedJobs.forEach(nctId => {
                     delete searchJobs[nctId];
                 });
                 
+                // Wait before next poll (only if there are still pending jobs)
                 if (Object.keys(searchJobs).length > 0) {
                     await new Promise(resolve => setTimeout(resolve, pollInterval));
                 }
             }
             
+            // Handle timeouts
             for (const nctId of Object.keys(searchJobs)) {
                 errors.push({
                     nct_id: nctId,
@@ -1450,9 +1479,13 @@ const app = {
                 });
             }
             
-            // FIXED: Clear progress using the method
-            this.clearSearchProgress();
+            // Clear progress indicator
+            const progressDiv = document.getElementById('nct-progress');
+            if (progressDiv) {
+                progressDiv.remove();
+            }
             
+            // Display results
             if (results.length > 0) {
                 this.nctResults = {
                     success: true,
@@ -1467,10 +1500,17 @@ const app = {
                 
                 this.displayNCTResults(this.nctResults);
                 this.addNewSearchButton();
+                
+                // ✅ SHOW ACTION BUTTONS AFTER SUCCESSFUL SEARCH
+                const downloadBtn = document.getElementById('nct-download-btn');
+                const saveBtn = document.getElementById('nct-save-btn');
+                if (downloadBtn) downloadBtn.classList.remove('hidden');
+                if (saveBtn) saveBtn.classList.remove('hidden');
+                
             } else {
                 resultsDiv.innerHTML = `
                     <div class="result-card">
-                        <h3>No Results</h3>
+                        <h3>❌ No Results</h3>
                         <p>No trials could be fetched. Check errors below:</p>
                         <pre>${JSON.stringify(errors, null, 2)}</pre>
                     </div>
@@ -1480,16 +1520,23 @@ const app = {
             
         } catch (error) {
             console.error('❌ NCT lookup error:', error);
-            this.clearSearchProgress();
+            
+            // Clear progress
+            const progressDiv = document.getElementById('nct-progress');
+            if (progressDiv) {
+                progressDiv.remove();
+            }
+            
             resultsDiv.innerHTML = `
                 <div class="result-card">
-                    <h3>Error</h3>
+                    <h3>❌ Error</h3>
                     <p>${this.escapeHtml(error.message)}</p>
                 </div>
             `;
             this.addNewSearchButton();
         }
     },
+
 
     
     async extractTrial(nctId) {
@@ -1723,18 +1770,28 @@ const app = {
         newSearchBtn.className = 'new-search-button';
         newSearchBtn.innerHTML = '<span>🔍</span><span>New Search</span>';
         newSearchBtn.onclick = () => {
+            // Clear results
             resultsDiv.innerHTML = '';
             resultsDiv.classList.remove('active');
             inputArea.classList.remove('hidden');
             
+            // Clear input
             document.getElementById('nct-input').value = '';
             
+            // ✅ HIDE ACTION BUTTONS
+            const downloadBtn = document.getElementById('nct-download-btn');
+            const saveBtn = document.getElementById('nct-save-btn');
+            if (downloadBtn) downloadBtn.classList.add('hidden');
+            if (saveBtn) saveBtn.classList.add('hidden');
+            
+            // Reset selected APIs to defaults
             this.selectedAPIs = new Set(this.apiRegistry?.metadata?.default_enabled || []);
             this.buildAPICheckboxes();
         };
         
         resultsDiv.insertBefore(newSearchBtn, resultsDiv.firstChild);
     },
+
     
     displayNCTResults(data) {
         const resultsDiv = document.getElementById('nct-results');
