@@ -9,7 +9,7 @@
 const app = {
     // Configuration
     API_BASE: window.location.origin,
-    NCT_SERVICE_URL: 'http://localhost:8002',
+    NCT_SERVICE_URL: window.location.origin,
     apiKey: localStorage.getItem('amp_llm_api_key') || '',
     
     // State
@@ -1315,7 +1315,8 @@ createAPICheckbox(api, category) {
         const searchJobs = {};
         
         try {
-            const NCT_SERVICE_URL = 'http://localhost:8002';
+            // FIXED: Use webapp URL instead of direct NCT service URL
+            const NCT_API_BASE = `${this.API_BASE}/api/nct`;
             
             async function makeRequest(url, options) {
                 const response = await fetch(url, options);
@@ -1335,7 +1336,7 @@ createAPICheckbox(api, category) {
                     };
                     
                     const data = await makeRequest(
-                        `${NCT_SERVICE_URL}/api/search/${nctId}`,
+                        `${NCT_API_BASE}/search/${nctId}`,
                         {
                             method: 'POST',
                             headers: {
@@ -1369,7 +1370,7 @@ createAPICheckbox(api, category) {
                 for (const [nctId, jobId] of Object.entries(searchJobs)) {
                     try {
                         const statusData = await makeRequest(
-                            `${NCT_SERVICE_URL}/api/search/${jobId}/status`,
+                            `${NCT_API_BASE}/search/${jobId}/status`,
                             {
                                 headers: { 'Authorization': `Bearer ${this.apiKey}` }
                             }
@@ -1389,7 +1390,7 @@ createAPICheckbox(api, category) {
                         
                         if (statusData.status === 'completed') {
                             const resultData = await makeRequest(
-                                `${NCT_SERVICE_URL}/api/results/${jobId}`,
+                                `${NCT_API_BASE}/results/${jobId}`,
                                 {
                                     headers: { 'Authorization': `Bearer ${this.apiKey}` }
                                 }
@@ -1476,182 +1477,7 @@ createAPICheckbox(api, category) {
             `;
             this.addNewSearchButton();
         }
-    },
-
-    addNewSearchButton() {
-        const resultsDiv = document.getElementById('nct-results');
-        
-        // Check if button already exists
-        if (resultsDiv.querySelector('.nct-new-search-btn')) {
-            return;
-        }
-        
-        const buttonBar = document.createElement('div');
-        buttonBar.className = 'nct-new-search-btn';
-        buttonBar.innerHTML = `
-            <button onclick="app.startNewNCTSearch()">
-                <span>🔍</span>
-                <span>New Search</span>
-            </button>
-            <button onclick="app.saveNCTResults()">
-                <span>💾</span>
-                <span>Save Results</span>
-            </button>
-        `;
-        
-        // Insert at the beginning of results
-        resultsDiv.insertBefore(buttonBar, resultsDiv.firstChild);
-    },
-
-    startNewNCTSearch() {
-        console.log('Starting new search...');
-        
-        const inputArea = document.querySelector('.nct-input-area');
-        const resultsDiv = document.getElementById('nct-results');
-        const progressDiv = document.getElementById('nct-progress');
-        
-        // Clear input
-        document.getElementById('nct-input').value = '';
-        
-        // Show input area, hide results
-        inputArea.classList.remove('hidden');
-        resultsDiv.classList.remove('active');
-        resultsDiv.innerHTML = '';
-        progressDiv.classList.add('hidden');
-        
-        // Scroll to top
-        inputArea.scrollTop = 0;
-        
-        console.log('Returned to input screen');
-    },
-
-    displayNCTResults(data) {
-            const resultsDiv = document.getElementById('nct-results');
-            
-            if (!data.success || data.results.length === 0) {
-                resultsDiv.innerHTML = `
-                    <div class="result-card">
-                        <h3>No Results</h3>
-                        <p>No trials found</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            let html = `
-                <div class="summary-card">
-                    <h3>Summary</h3>
-                    <div class="summary-grid">
-                        <div class="summary-item">
-                            <div class="summary-item-label">Total Requested</div>
-                            <div class="summary-item-value info">${data.summary.total_requested}</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-item-label">Successful</div>
-                            <div class="summary-item-value success">${data.summary.successful}</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-item-label">Failed</div>
-                            <div class="summary-item-value error">${data.summary.failed}</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            data.results.forEach(result => {
-                const ct = result.sources?.clinical_trials?.data?.protocolSection || {};
-                const ident = ct.identificationModule || {};
-                const status = ct.statusModule || {};
-                const conditions = ct.conditionsModule?.conditions || [];
-            
-            // ====================================================================
-            // ROBUST COUNT EXTRACTION - Tries multiple approaches
-            // ====================================================================
-            
-            let pubmedCount = 0;
-            let pmcCount = 0;
-            let pmcBiocCount = 0;
-            
-            // Try to get PubMed count from multiple possible locations
-            try {
-                if (result.sources?.pubmed?.data?.pmids) {
-                    pubmedCount = result.sources.pubmed.data.pmids.length;
-                } else if (result.sources?.pubmed?.data?.total_found) {
-                    pubmedCount = result.sources.pubmed.data.total_found;
-                } else if (result.sources?.pubmed?.data?.articles) {
-                    pubmedCount = result.sources.pubmed.data.articles.length;
-                }
-            } catch (e) {
-                console.error('Error getting PubMed count:', e);
-            }
-            
-            // Try to get PMC count from multiple possible locations
-            try {
-                if (result.sources?.pmc?.data?.pmcids) {
-                    pmcCount = result.sources.pmc.data.pmcids.length;
-                } else if (result.sources?.pmc?.data?.total_found) {
-                    pmcCount = result.sources.pmc.data.total_found;
-                } else if (result.sources?.pmc?.data?.articles) {
-                    pmcCount = result.sources.pmc.data.articles.length;
-                }
-            } catch (e) {
-                console.error('Error getting PMC count:', e);
-            }
-            
-            // Try to get PMC BioC count
-            try {
-                if (result.sources?.pmc_bioc?.data?.total_fetched) {
-                    pmcBiocCount = result.sources.pmc_bioc.data.total_fetched;
-                } else if (result.sources?.pmc_bioc?.data?.articles) {
-                    pmcBiocCount = result.sources.pmc_bioc.data.articles.length;
-                }
-            } catch (e) {
-                console.error('Error getting PMC BioC count:', e);
-            }
-            
-            // Log what we found for debugging
-            console.log(`${result.nct_id} counts:`, {
-                pubmed: pubmedCount,
-                pmc: pmcCount,
-                pmc_bioc: pmcBiocCount,
-                sources_available: result.sources ? Object.keys(result.sources) : []
-            });
-                        
-            html += `
-                <div class="result-card">
-                    <div class="result-card-header">
-                        <div class="result-card-title">
-                            <h3>${result.nct_id}</h3>
-                            <div class="result-card-status">${status.overallStatus || 'Unknown Status'}</div>
-                        </div>
-                        <button class="extract-button" onclick="app.extractTrial('${result.nct_id}')">
-                            Extract
-                        </button>
-                    </div>
-                    <div class="result-card-content">
-                        <strong>${this.escapeHtml(ident.officialTitle || ident.briefTitle || 'No title')}</strong>
-                        ${conditions.length > 0 ? `<br><em>Conditions: ${this.escapeHtml(conditions.join(', '))}</em>` : ''}
-                    </div>
-                    <div class="result-card-meta">
-                        <div class="meta-item">
-                            <div style="color: #666; font-size: 0.9em;">PubMed Articles</div>
-                            <strong style="font-size: 1.2em; color: ${pubmedCount > 0 ? '#28a745' : '#999'}">${pubmedCount}</strong>
-                        </div>
-                        <div class="meta-item">
-                            <div style="color: #666; font-size: 0.9em;">PMC Articles</div>
-                            <strong style="font-size: 1.2em; color: ${pmcCount > 0 ? '#28a745' : '#999'}">${pmcCount}</strong>
-                        </div>
-                        <div class="meta-item">
-                            <div style="color: #666; font-size: 0.9em;">PMC BioC Articles</div>
-                            <strong style="font-size: 1.2em; color: ${pmcBiocCount > 0 ? '#28a745' : '#999'}">${pmcBiocCount}</strong>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        
-        resultsDiv.innerHTML = html;
-    },
+    }
     
     async extractTrial(nctId) {
         try {

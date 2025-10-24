@@ -745,7 +745,103 @@ async def nct_lookup(
             "errors": errors if errors else None
         }
     )
+@app.post("/api/nct/search/{nct_id}")
+async def nct_search_proxy(
+    nct_id: str,
+    request: dict,
+    api_key: str = Depends(verify_api_key)
+):
+    """Proxy NCT search requests to the NCT service."""
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{NCT_SERVICE_URL}/api/search/{nct_id}",
+                json=request,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=response.text
+                )
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail="NCT service not available on port 8002"
+        )
+    except Exception as e:
+        logger.error(f"NCT search proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
+
+@app.get("/api/nct/search/{job_id}/status")
+async def nct_status_proxy(
+    job_id: str,
+    api_key: str = Depends(verify_api_key)
+):
+    """Proxy NCT status requests to the NCT service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(
+                f"{NCT_SERVICE_URL}/api/search/{job_id}/status"
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=response.text
+                )
+    except Exception as e:
+        logger.error(f"NCT status proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/nct/results/{job_id}")
+async def nct_results_proxy(
+    job_id: str,
+    api_key: str = Depends(verify_api_key)
+):
+    """Proxy NCT results requests to the NCT service."""
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(
+                f"{NCT_SERVICE_URL}/api/results/{job_id}"
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=response.text
+                )
+    except Exception as e:
+        logger.error(f"NCT results proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/nct/registry")
+async def nct_registry_proxy(api_key: str = Depends(verify_api_key)):
+    """Proxy NCT registry requests to the NCT service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{NCT_SERVICE_URL}/api/registry")
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=response.text
+                )
+    except Exception as e:
+        logger.error(f"NCT registry proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # ============================================================================
 # File Management Endpoints
