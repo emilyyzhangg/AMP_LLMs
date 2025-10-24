@@ -1287,7 +1287,61 @@ createAPICheckbox(api, category) {
     
     return item;
 },
+    // =========================================================================
+    // Progress Tracking for NCT Search
+    // =========================================================================
 
+    updateSearchProgress(message, details = {}) {
+        const progressDiv = document.getElementById('nct-progress');
+        if (!progressDiv) return;
+        
+        progressDiv.classList.remove('hidden');
+        
+        let html = `
+            <div class="progress-message">
+                <span class="spinner"></span>
+                <span class="progress-main-text">${message}</span>
+            </div>
+        `;
+        
+        if (details.current && details.total) {
+            const percentage = Math.round((details.current / details.total) * 100);
+            html += `
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: ${percentage}%"></div>
+                </div>
+                <div class="progress-details">
+                    Trial ${details.current} of ${details.total} (${percentage}%)
+                </div>
+            `;
+        }
+        
+        if (details.database) {
+            html += `
+                <div class="progress-database">
+                    Currently fetching: <strong>${details.database}</strong>
+                </div>
+            `;
+        }
+        
+        if (details.completed && details.completed.length > 0) {
+            html += `
+                <div class="progress-completed">
+                    ✓ Completed: ${details.completed.join(', ')}
+                </div>
+            `;
+        }
+        
+        progressDiv.innerHTML = html;
+    },
+
+    clearSearchProgress() {
+        const progressDiv = document.getElementById('nct-progress');
+        if (progressDiv) {
+            progressDiv.classList.add('hidden');
+            progressDiv.innerHTML = '';
+        }
+    },
     // ============================================================================
     // Updated NCT Lookup Handler
     // ============================================================================
@@ -1307,17 +1361,19 @@ createAPICheckbox(api, category) {
         }
         
         const resultsDiv = document.getElementById('nct-results');
-        const progressDiv = document.getElementById('nct-progress');
         const inputArea = document.querySelector('.nct-input-area');
         
         // Hide input area, show results area
-        console.log('Hiding input area, showing results area');
+        console.log('Starting NCT lookup for:', nctIds);
         inputArea.classList.add('hidden');
         resultsDiv.classList.add('active');
-        
-        progressDiv.classList.remove('hidden');
-        progressDiv.innerHTML = '<span class="spinner"></span> <span>Fetching clinical trial data...</span>';
         resultsDiv.innerHTML = '';
+        
+        // Show initial progress
+        this.updateSearchProgress('Initializing search...', {
+            current: 0,
+            total: nctIds.length
+        });
         
         // FIXED: Separate core and extended APIs
         const selectedAPIList = Array.from(this.selectedAPIs);
@@ -1730,11 +1786,15 @@ createAPICheckbox(api, category) {
 
         if (downloadBtn) {
             downloadBtn.classList.remove('hidden');
+        } else {
+            console.warn('⚠️  Download button not found in DOM');
         }
 
         // Show save button
         if (saveBtn) {
             saveBtn.classList.remove('hidden');
+        } else {
+            console.warn('⚠️  Save button not found in DOM');
         }
         
         let html = '';
