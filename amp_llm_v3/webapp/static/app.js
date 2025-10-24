@@ -1292,7 +1292,7 @@ const app = {
                         timestamp: new Date().toISOString()
                     };
                     apiFailures.push(failure);
-                    errors.push(failure); // Also add to errors for backward compatibility
+                    errors.push(failure);
                     console.error(`❌ ${api} failed for ${nctId}:`, failure.error);
                 }
             }
@@ -1321,15 +1321,13 @@ const app = {
                             timestamp: new Date().toISOString()
                         };
                         apiFailures.push(failure);
-                        errors.push(failure); // Also add to errors for backward compatibility
+                        errors.push(failure);
                         console.error(`❌ Extended ${api} failed for ${nctId}:`, failure.error);
                     } else if (data.data) {
                         // Check if extended API returned 0 results (not an error, but worth noting)
                         const resultCount = this.countSourceResults(api, data.data);
                         if (resultCount === 0) {
                             console.warn(`⚠️  Extended ${api} returned 0 results for ${nctId}`);
-                            
-                            // Log as a warning, not an error
                             console.log(`ℹ️  ${api} response:`, data.data);
                         } else {
                             console.log(`✅ Extended ${api} returned ${resultCount} results for ${nctId}`);
@@ -1341,8 +1339,6 @@ const app = {
             console.warn(`⚠️  No extended sources in result for ${nctId}`);
         }
     },
-
-
 
     // ============================================================================
     // NCT Lookup Handler
@@ -1388,7 +1384,7 @@ const app = {
         
         const results = [];
         const errors = [];
-        const apiFailures = [];  // NEW: Track API-level failures separately
+        const apiFailures = [];
         const searchJobs = {};
         
         try {
@@ -1875,7 +1871,6 @@ const app = {
         return errorHTML;
     },
 
-
     async loadFiles() {
         const container = document.getElementById('files-container');
         container.innerHTML = '<div class="loading">Loading files...</div>';
@@ -2051,7 +2046,10 @@ const app = {
         data.results.forEach(trial => {
             const sources = trial.sources || {};
             
+            // Count core sources
             Object.entries(sources).forEach(([sourceName, sourceData]) => {
+                if (sourceName === 'extended') return; // Skip extended here, handle separately
+                
                 if (!sourceStats[sourceName]) {
                     sourceStats[sourceName] = {
                         count: 0,
@@ -2070,6 +2068,29 @@ const app = {
                     sourceStats[sourceName].failed++;
                 }
             });
+            
+            // Count extended sources
+            if (sources.extended) {
+                Object.entries(sources.extended).forEach(([sourceName, sourceData]) => {
+                    if (!sourceStats[sourceName]) {
+                        sourceStats[sourceName] = {
+                            count: 0,
+                            successful: 0,
+                            failed: 0
+                        };
+                    }
+                    
+                    if (sourceData && sourceData.success && sourceData.data) {
+                        sourceStats[sourceName].successful++;
+                        
+                        const resultCount = this.countSourceResults(sourceName, sourceData.data);
+                        sourceStats[sourceName].count += resultCount;
+                        totalResults += resultCount;
+                    } else {
+                        sourceStats[sourceName].failed++;
+                    }
+                });
+            }
         });
         
         if (Object.keys(sourceStats).length > 0) {
@@ -2113,6 +2134,7 @@ const app = {
         
         html += `</div>`;
         
+        // Display individual trial cards
         data.results.forEach(trial => {
             const nctId = trial.nct_id || 'Unknown';
             const metadata = trial.metadata || {};
@@ -2124,7 +2146,15 @@ const app = {
             const trialCondition = metadata.condition || (ctData?.conditions ? ctData.conditions[0] : '') || 'N/A';
             const trialIntervention = metadata.intervention || (ctData?.interventions ? ctData.interventions[0]?.name : '') || 'N/A';
             
-            const sourceCount = Object.keys(sources).length;
+            // Count both core and extended sources
+            let sourceCount = 0;
+            Object.keys(sources).forEach(key => {
+                if (key === 'extended') {
+                    sourceCount += Object.keys(sources.extended).length;
+                } else {
+                    sourceCount++;
+                }
+            });
             
             html += `
                 <div class="result-card trial-card">
@@ -2150,7 +2180,11 @@ const app = {
                     </div>
             `;
             
+            // Display core sources
             Object.entries(sources).forEach(([sourceName, sourceData]) => {
+                // Skip extended here, we'll handle it separately
+                if (sourceName === 'extended') return;
+                
                 const apiInfo = this.getAPIInfo(sourceName);
                 const apiDisplayName = apiInfo ? apiInfo.name : sourceName;
                 
@@ -2203,18 +2237,6 @@ const app = {
                         html += `<div class="data-field">
                             <strong>Full-Text Articles:</strong> ${resultCount} retrieved
                         </div>`;
-                    } else {
-                        if (data.results && data.results.length > 0) {
-                            html += `<div class="data-field">
-                                <strong>Results:</strong> ${data.results.length} found
-                            </div>`;
-                            const firstResult = data.results[0];
-                            if (firstResult.title) {
-                                html += `<div class="data-field">
-                                    <strong>Sample:</strong> ${this.escapeHtml(firstResult.title.substring(0, 100))}...
-                                </div>`;
-                            }
-                        }
                     }
                     
                     html += `</div></div>`;
@@ -2233,155 +2255,87 @@ const app = {
                 }
             });
             
-            html += `</div>`;
-        });
-        
-        if (data.summary.errors && data.summary.errors.length > 0) {
-            html += `
-                <div class="result-card error-card">
-                    <h3>⚠️ Errors</h3>
-                    <div class="error-list">
-            `;
-            
-            data.summary.errors.forEach(error => {
+            // ====== SECTION 4: Display extended sources ======
+            if (sources.extended && Object.keys(sources.extended).length > 0) {
                 html += `
-                    <div class="error-item">
-                        <strong>${this.escapeHtml(error.nct_id)}:</strong> 
-                        ${this.escapeHtml(error.error)}
+                    <div class="extended-sources-header">
+                        <h4>🔬 Extended Sources</h4>
                     </div>
                 `;
-            });
+                
+                Object.entries(sources.extended).forEach(([sourceName, sourceData]) => {
+                    const apiInfo = this.getAPIInfo(sourceName);
+                    const apiDisplayName = apiInfo ? apiInfo.name : sourceName;
+                    
+                    if (sourceData && sourceData.success && sourceData.data) {
+                        const data = sourceData.data;
+                        const resultCount = this.countSourceResults(sourceName, data);
+                        
+                        html += `
+                            <div class="source-section extended-source">
+                                <div class="source-header">
+                                    <strong>🔬 ${this.escapeHtml(apiDisplayName)}</strong>
+                                    <div class="source-header-right">
+                                        <span class="source-count-badge">${resultCount} result${resultCount !== 1 ? 's' : ''}</span>
+                                        <span class="source-status success">✓</span>
+                                    </div>
+                                </div>
+                                <div class="source-content">
+                        `;
+                        
+                        // Display results based on source type
+                        if (data.results && Array.isArray(data.results)) {
+                            html += `<div class="data-field">
+                                <strong>Results Found:</strong> ${data.results.length}
+                            </div>`;
+                            
+                            // Show first few results
+                            const displayCount = Math.min(3, data.results.length);
+                            data.results.slice(0, displayCount).forEach((result, idx) => {
+                                html += `
+                                    <div class="extended-result-item">
+                                        <strong>${idx + 1}.</strong>
+                                        ${result.title ? `<div class="result-title">${this.escapeHtml(result.title)}</div>` : ''}
+                                        ${result.snippet ? `<div class="result-snippet">${this.escapeHtml(result.snippet)}</div>` : ''}
+                                        ${result.link ? `<div class="result-link"><a href="${result.link}" target="_blank">View Source →</a></div>` : ''}
+                                    </div>
+                                `;
+                            });
+                            
+                            if (data.results.length > displayCount) {
+                                html += `<div class="more-results-notice">... and ${data.results.length - displayCount} more results</div>`;
+                            }
+                        } else {
+                            html += `<div class="data-field">
+                                <strong>Status:</strong> Data retrieved successfully
+                            </div>`;
+                        }
+                        
+                        html += `</div></div>`;
+                        
+                    } else if (sourceData && sourceData.error) {
+                        html += `
+                            <div class="source-section extended-source">
+                                <div class="source-header">
+                                    <strong>🔬 ${this.escapeHtml(apiDisplayName)}</strong>
+                                    <span class="source-status error">✗</span>
+                                </div>
+                                <div class="source-content error">
+                                    ${this.escapeHtml(sourceData.error || 'Unknown error')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+            // ====== END OF SECTION 4 ======
             
-            html += `</div></div>`;
-        }
+            html += `</div>`; // Close trial-card
+        });
         
         resultsDiv.innerHTML = html;
     },
 
-    showSearchErrorSummary(errors, apiFailures = []) {
-        if (!errors || errors.length === 0) return '';
-        
-        console.error('❌ NCT Search Errors:', errors);
-        
-        const errorsByNCT = {};
-        const errorsByAPI = {};
-        const apiFailuresByAPI = {};
-        
-        errors.forEach(error => {
-            // Group by NCT
-            if (!errorsByNCT[error.nct_id]) {
-                errorsByNCT[error.nct_id] = [];
-            }
-            errorsByNCT[error.nct_id].push(error);
-            
-            // Group by API
-            if (error.api) {
-                if (!errorsByAPI[error.api]) {
-                    errorsByAPI[error.api] = [];
-                }
-                errorsByAPI[error.api].push(error);
-            }
-        });
-        
-        // Separate API-level failures
-        if (apiFailures && apiFailures.length > 0) {
-            apiFailures.forEach(failure => {
-                if (!apiFailuresByAPI[failure.api]) {
-                    apiFailuresByAPI[failure.api] = [];
-                }
-                apiFailuresByAPI[failure.api].push(failure);
-            });
-        }
-        
-        let errorHTML = `
-            <div class="result-card error-card">
-                <h3>⚠️ Search Issues (${errors.length} total)</h3>
-                
-                <div class="error-summary">
-        `;
-        
-        // Show trial-level errors if any
-        if (Object.keys(errorsByNCT).length > 0) {
-            errorHTML += `
-                <h4>🔴 Trial Fetch Errors:</h4>
-                <ul class="error-list">
-            `;
-            
-            Object.entries(errorsByNCT).forEach(([nctId, nctErrors]) => {
-                errorHTML += `<li><strong>${nctId}</strong>: ${nctErrors.length} error(s)`;
-                errorHTML += `<ul class="error-details">`;
-                nctErrors.forEach(err => {
-                    const apiName = err.api ? ` [${err.api}]` : '';
-                    errorHTML += `<li>${apiName} ${err.error || 'Unknown error'}</li>`;
-                });
-                errorHTML += `</ul></li>`;
-            });
-            
-            errorHTML += `</ul>`;
-        }
-        
-        // Show API-level failures prominently
-        if (Object.keys(apiFailuresByAPI).length > 0) {
-            errorHTML += `
-                <h4 style="margin-top: 20px; color: #c53030;">⚠️ API Failures:</h4>
-                <div class="api-failures-grid">
-            `;
-            
-            Object.entries(apiFailuresByAPI).forEach(([api, failures]) => {
-                const apiInfo = this.getAPIInfo(api);
-                const apiName = apiInfo ? apiInfo.name : api;
-                const uniqueErrors = [...new Set(failures.map(f => f.error))];
-                
-                errorHTML += `
-                    <div class="api-failure-card">
-                        <div class="api-failure-header">
-                            <span class="api-failure-icon">❌</span>
-                            <strong>${apiName}</strong>
-                            <span class="api-failure-count">${failures.length} failure(s)</span>
-                        </div>
-                        <div class="api-failure-details">
-                            ${uniqueErrors.map(err => `<div class="api-failure-error">• ${err}</div>`).join('')}
-                        </div>
-                        <div class="api-failure-trials">
-                            Affected trials: ${[...new Set(failures.map(f => f.nct_id))].join(', ')}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            errorHTML += `</div>`;
-        }
-        
-        // Show regular API errors
-        if (Object.keys(errorsByAPI).length > 0 && Object.keys(apiFailuresByAPI).length === 0) {
-            errorHTML += `
-                <h4 style="margin-top: 20px;">Errors by API:</h4>
-                <ul class="error-list">
-            `;
-            
-            Object.entries(errorsByAPI).forEach(([api, apiErrors]) => {
-                const apiInfo = this.getAPIInfo(api);
-                const apiName = apiInfo ? apiInfo.name : api;
-                errorHTML += `<li><strong>${apiName}</strong>: ${apiErrors.length} failure(s)</li>`;
-            });
-            
-            errorHTML += `</ul>`;
-        }
-        
-        errorHTML += `
-                </div>
-                <button class="error-details-toggle" onclick="this.nextElementSibling.classList.toggle('hidden')">
-                    Show Full Error Details
-                </button>
-                <pre class="error-full-details hidden">${JSON.stringify({
-                    errors: errors,
-                    apiFailures: apiFailures
-                }, null, 2)}</pre>
-            </div>
-        `;
-        
-        return errorHTML;
-    },
     countSourceResults(sourceName, data) {
         if (!data) return 0;
         
