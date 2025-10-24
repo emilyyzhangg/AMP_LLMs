@@ -16,7 +16,7 @@ const app = {
         // For local development
         return window.location.origin;
     })(),
-    
+
     NCT_SERVICE_URL: (() => {
         if (window.location.hostname === 'llm.amphoraxe.ca') {
             return 'https://llm.amphoraxe.ca';
@@ -1649,6 +1649,201 @@ createAPICheckbox(api, category) {
         }
         
         event.target.value = '';
+    },
+    // Add "New Search" button to results
+    addNewSearchButton() {
+        const resultsDiv = document.getElementById('nct-results');
+        const inputArea = document.querySelector('.nct-input-area');
+        
+        // Add "New Search" button at top of results
+        const newSearchBtn = document.createElement('button');
+        newSearchBtn.className = 'new-search-button';
+        newSearchBtn.innerHTML = '<span>🔍</span><span>New Search</span>';
+        newSearchBtn.onclick = () => {
+            // Clear results and show input area
+            resultsDiv.innerHTML = '';
+            resultsDiv.classList.remove('active');
+            inputArea.classList.remove('hidden');
+            
+            // Clear input
+            document.getElementById('nct-input').value = '';
+            
+            // Reset selected APIs to defaults
+            this.selectedAPIs = new Set(this.apiRegistry?.metadata?.default_enabled || []);
+            this.buildAPICheckboxes();
+        };
+        
+        // Insert at the beginning of results
+        resultsDiv.insertBefore(newSearchBtn, resultsDiv.firstChild);
+    },
+    
+    // Display NCT search results
+    displayNCTResults(data) {
+        const resultsDiv = document.getElementById('nct-results');
+        const saveBtn = document.getElementById('nct-save-btn');
+        
+        // Show save button
+        if (saveBtn) {
+            saveBtn.classList.remove('hidden');
+        }
+        
+        let html = '';
+        
+        // Summary card
+        html += `
+            <div class="result-card summary-card">
+                <h3>📊 Search Summary</h3>
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Requested:</span>
+                        <span class="stat-value">${data.summary.total_requested}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Successful:</span>
+                        <span class="stat-value success">${data.summary.successful}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Failed:</span>
+                        <span class="stat-value ${data.summary.failed > 0 ? 'error' : ''}">${data.summary.failed}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Individual trial results
+        data.results.forEach(trial => {
+            const nctId = trial.nct_id || 'Unknown';
+            const sources = trial.data_sources || {};
+            const sourceCount = Object.keys(sources).length;
+            
+            html += `
+                <div class="result-card trial-card">
+                    <div class="trial-header">
+                        <h3>${nctId}</h3>
+                        <span class="source-count">${sourceCount} sources</span>
+                    </div>
+            `;
+            
+            // Display data from each source
+            Object.entries(sources).forEach(([sourceName, sourceData]) => {
+                const apiInfo = this.getAPIInfo(sourceName);
+                const apiDisplayName = apiInfo ? apiInfo.name : sourceName;
+                
+                if (sourceData && sourceData.status === 'success' && sourceData.data) {
+                    const data = sourceData.data;
+                    
+                    html += `
+                        <div class="source-section">
+                            <div class="source-header">
+                                <strong>📚 ${this.escapeHtml(apiDisplayName)}</strong>
+                                <span class="source-status success">✓</span>
+                            </div>
+                            <div class="source-content">
+                    `;
+                    
+                    // Display relevant fields
+                    if (data.brief_title || data.official_title) {
+                        html += `<div class="data-field">
+                            <strong>Title:</strong> ${this.escapeHtml(data.brief_title || data.official_title)}
+                        </div>`;
+                    }
+                    
+                    if (data.brief_summary || data.detailed_description) {
+                        const summary = data.brief_summary || data.detailed_description;
+                        const truncated = summary.length > 300 ? summary.substring(0, 300) + '...' : summary;
+                        html += `<div class="data-field">
+                            <strong>Summary:</strong> ${this.escapeHtml(truncated)}
+                        </div>`;
+                    }
+                    
+                    if (data.overall_status) {
+                        html += `<div class="data-field">
+                            <strong>Status:</strong> <span class="status-badge">${this.escapeHtml(data.overall_status)}</span>
+                        </div>`;
+                    }
+                    
+                    if (data.phase) {
+                        html += `<div class="data-field">
+                            <strong>Phase:</strong> ${this.escapeHtml(Array.isArray(data.phase) ? data.phase.join(', ') : data.phase)}
+                        </div>`;
+                    }
+                    
+                    if (data.enrollment) {
+                        html += `<div class="data-field">
+                            <strong>Enrollment:</strong> ${data.enrollment}
+                        </div>`;
+                    }
+                    
+                    if (data.conditions) {
+                        const conditions = Array.isArray(data.conditions) ? data.conditions : [data.conditions];
+                        html += `<div class="data-field">
+                            <strong>Conditions:</strong> ${conditions.map(c => this.escapeHtml(c)).join(', ')}
+                        </div>`;
+                    }
+                    
+                    if (data.interventions) {
+                        const interventions = Array.isArray(data.interventions) ? data.interventions : [data.interventions];
+                        html += `<div class="data-field">
+                            <strong>Interventions:</strong> ${interventions.slice(0, 3).map(i => {
+                                if (typeof i === 'string') return this.escapeHtml(i);
+                                return this.escapeHtml(i.name || i.intervention_name || JSON.stringify(i));
+                            }).join(', ')}${interventions.length > 3 ? ` (+${interventions.length - 3} more)` : ''}
+                        </div>`;
+                    }
+                    
+                    html += `</div></div>`;
+                } else if (sourceData && sourceData.status === 'error') {
+                    html += `
+                        <div class="source-section">
+                            <div class="source-header">
+                                <strong>📚 ${this.escapeHtml(apiDisplayName)}</strong>
+                                <span class="source-status error">✗</span>
+                            </div>
+                            <div class="source-content error">
+                                ${this.escapeHtml(sourceData.error || 'Unknown error')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            html += `</div>`;
+        });
+        
+        // Show errors if any
+        if (data.summary.errors && data.summary.errors.length > 0) {
+            html += `
+                <div class="result-card error-card">
+                    <h3>⚠️ Errors</h3>
+                    <div class="error-list">
+            `;
+            
+            data.summary.errors.forEach(error => {
+                html += `
+                    <div class="error-item">
+                        <strong>${this.escapeHtml(error.nct_id)}:</strong> 
+                        ${this.escapeHtml(error.error)}
+                    </div>
+                `;
+            });
+            
+            html += `</div></div>`;
+        }
+        
+        resultsDiv.innerHTML = html;
+    },
+    
+    // Helper to get API metadata from registry
+    getAPIInfo(sourceId) {
+        if (!this.apiRegistry) return null;
+        
+        // Check core APIs
+        let api = this.apiRegistry.core.find(a => a.id === sourceId);
+        if (api) return api;
+        
+        // Check extended APIs
+        api = this.apiRegistry.extended.find(a => a.id === sourceId);
+        return api;
     },
     
     escapeHtml(text) {
