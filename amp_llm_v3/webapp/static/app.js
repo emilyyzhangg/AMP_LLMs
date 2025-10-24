@@ -1267,37 +1267,75 @@ const app = {
     // FIXED: checkForAPIFailures method
     // ============================================================================
 
-    checkForAPIFailures(resultData, nctId, errors) {
+    checkForAPIFailures(resultData, nctId, errors, apiFailures) {
         const sources = resultData.sources || {};
+        
+        console.log(`🔍 Checking API failures for ${nctId}`);
+        console.log('Sources available:', Object.keys(sources));
         
         // Check core sources
         ['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc'].forEach(api => {
-            if (sources[api] && !sources[api].success) {
-                errors.push({
-                    nct_id: nctId,
-                    api: api,
-                    error: sources[api].error || 'Unknown API error',
-                    stage: 'api_failure',
-                    timestamp: new Date().toISOString()
+            if (sources[api]) {
+                const apiData = sources[api];
+                console.log(`📊 ${api}:`, {
+                    success: apiData.success,
+                    hasData: !!apiData.data,
+                    error: apiData.error
                 });
+                
+                if (!apiData.success) {
+                    const failure = {
+                        nct_id: nctId,
+                        api: api,
+                        error: apiData.error || 'Unknown API error',
+                        stage: 'api_failure',
+                        timestamp: new Date().toISOString()
+                    };
+                    apiFailures.push(failure);
+                    console.error(`❌ ${api} failed for ${nctId}:`, failure.error);
+                }
             }
         });
         
         // Check extended sources
         if (sources.extended) {
+            console.log('📦 Extended sources found:', Object.keys(sources.extended));
+            
             Object.entries(sources.extended).forEach(([api, data]) => {
-                if (data && !data.success) {
-                    errors.push({
-                        nct_id: nctId,
-                        api: api,
-                        error: data.error || 'Unknown API error',
-                        stage: 'api_failure',
-                        timestamp: new Date().toISOString()
+                if (data) {
+                    console.log(`📊 Extended ${api}:`, {
+                        success: data.success,
+                        hasData: !!data.data,
+                        error: data.error,
+                        dataKeys: data.data ? Object.keys(data.data) : []
                     });
+                    
+                    // Check if API failed OR returned 0 results
+                    if (!data.success) {
+                        const failure = {
+                            nct_id: nctId,
+                            api: api,
+                            error: data.error || 'Unknown API error',
+                            stage: 'api_failure',
+                            timestamp: new Date().toISOString()
+                        };
+                        apiFailures.push(failure);
+                        console.error(`❌ Extended ${api} failed for ${nctId}:`, failure.error);
+                    } else if (data.data) {
+                        // Check if extended API returned 0 results (not an error, but worth noting)
+                        const resultCount = this.countSourceResults(api, data.data);
+                        if (resultCount === 0) {
+                            console.warn(`⚠️  Extended ${api} returned 0 results for ${nctId}`);
+                        }
+                    }
                 }
             });
+        } else {
+            console.warn(`⚠️  No extended sources in result for ${nctId}`);
         }
     },
+
+
 
     // ============================================================================
     // NCT Lookup Handler
@@ -1509,7 +1547,37 @@ const app = {
             if (progressDiv) {
                 progressDiv.remove();
             }
+
+            // ENHANCED: Log all collected errors and API failures
+            console.log('📊 Search Complete Summary:');
+            console.log(`✅ Successful results: ${results.length}`);
+            console.log(`❌ Total errors: ${errors.length}`);
+            console.log(`⚠️  API-level failures: ${apiFailures.length}`);
             
+            if (errors.length > 0) {
+                console.group('❌ Errors by Type:');
+                const errorsByType = {};
+                errors.forEach(err => {
+                    errorsByType[err.stage] = (errorsByType[err.stage] || 0) + 1;
+                });
+                Object.entries(errorsByType).forEach(([stage, count]) => {
+                    console.log(`  ${stage}: ${count}`);
+                });
+                console.groupEnd();
+            }
+            
+            if (apiFailures.length > 0) {
+                console.group('⚠️  API Failures by API:');
+                const failuresByAPI = {};
+                apiFailures.forEach(fail => {
+                    failuresByAPI[fail.api] = (failuresByAPI[fail.api] || 0) + 1;
+                });
+                Object.entries(failuresByAPI).forEach(([api, count]) => {
+                    console.log(`  ${api}: ${count} failure(s)`);
+                });
+                console.groupEnd();
+            }
+
             // Display results
             if (results.length > 0) {
                 this.nctResults = {
@@ -1526,8 +1594,9 @@ const app = {
                 
                 this.displayNCTResults(this.nctResults);
                 
-                if (errors.length > 0) {
-                    const errorSummaryHTML = this.showSearchErrorSummary(errors);
+                const allErrors = [...errors, ...apiFailures];
+                if (allErrors.length > 0) {
+                    const errorSummaryHTML = this.showSearchErrorSummary(allErrors, apiFailures);
                     resultsDiv.insertAdjacentHTML('beforeend', errorSummaryHTML);
                 }
                 
@@ -1546,7 +1615,8 @@ const app = {
                     </div>
                 `;
                 
-                const errorSummaryHTML = this.showSearchErrorSummary(errors);
+                const allErrors = [...errors, ...apiFailures];
+                const errorSummaryHTML = this.showSearchErrorSummary(allErrors, apiFailures);
                 resultsDiv.insertAdjacentHTML('beforeend', errorSummaryHTML);
                 
                 this.addNewSearchButton();
@@ -2121,7 +2191,131 @@ const app = {
         
         resultsDiv.innerHTML = html;
     },
-
+    
+    showSearchErrorSummary(errors, apiFailures = []) {
+        if (!errors || errors.length === 0) return '';
+        
+        console.error('❌ NCT Search Errors:', errors);
+        
+        const errorsByNCT = {};
+        const errorsByAPI = {};
+        const apiFailuresByAPI = {};
+        
+        errors.forEach(error => {
+            // Group by NCT
+            if (!errorsByNCT[error.nct_id]) {
+                errorsByNCT[error.nct_id] = [];
+            }
+            errorsByNCT[error.nct_id].push(error);
+            
+            // Group by API
+            if (error.api) {
+                if (!errorsByAPI[error.api]) {
+                    errorsByAPI[error.api] = [];
+                }
+                errorsByAPI[error.api].push(error);
+            }
+        });
+        
+        // Separate API-level failures
+        if (apiFailures && apiFailures.length > 0) {
+            apiFailures.forEach(failure => {
+                if (!apiFailuresByAPI[failure.api]) {
+                    apiFailuresByAPI[failure.api] = [];
+                }
+                apiFailuresByAPI[failure.api].push(failure);
+            });
+        }
+        
+        let errorHTML = `
+            <div class="result-card error-card">
+                <h3>⚠️ Search Issues (${errors.length} total)</h3>
+                
+                <div class="error-summary">
+        `;
+        
+        // Show trial-level errors if any
+        if (Object.keys(errorsByNCT).length > 0) {
+            errorHTML += `
+                <h4>🔴 Trial Fetch Errors:</h4>
+                <ul class="error-list">
+            `;
+            
+            Object.entries(errorsByNCT).forEach(([nctId, nctErrors]) => {
+                errorHTML += `<li><strong>${nctId}</strong>: ${nctErrors.length} error(s)`;
+                errorHTML += `<ul class="error-details">`;
+                nctErrors.forEach(err => {
+                    const apiName = err.api ? ` [${err.api}]` : '';
+                    errorHTML += `<li>${apiName} ${err.error || 'Unknown error'}</li>`;
+                });
+                errorHTML += `</ul></li>`;
+            });
+            
+            errorHTML += `</ul>`;
+        }
+        
+        // Show API-level failures prominently
+        if (Object.keys(apiFailuresByAPI).length > 0) {
+            errorHTML += `
+                <h4 style="margin-top: 20px; color: #c53030;">⚠️ API Failures:</h4>
+                <div class="api-failures-grid">
+            `;
+            
+            Object.entries(apiFailuresByAPI).forEach(([api, failures]) => {
+                const apiInfo = this.getAPIInfo(api);
+                const apiName = apiInfo ? apiInfo.name : api;
+                const uniqueErrors = [...new Set(failures.map(f => f.error))];
+                
+                errorHTML += `
+                    <div class="api-failure-card">
+                        <div class="api-failure-header">
+                            <span class="api-failure-icon">❌</span>
+                            <strong>${apiName}</strong>
+                            <span class="api-failure-count">${failures.length} failure(s)</span>
+                        </div>
+                        <div class="api-failure-details">
+                            ${uniqueErrors.map(err => `<div class="api-failure-error">• ${err}</div>`).join('')}
+                        </div>
+                        <div class="api-failure-trials">
+                            Affected trials: ${[...new Set(failures.map(f => f.nct_id))].join(', ')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            errorHTML += `</div>`;
+        }
+        
+        // Show regular API errors
+        if (Object.keys(errorsByAPI).length > 0 && Object.keys(apiFailuresByAPI).length === 0) {
+            errorHTML += `
+                <h4 style="margin-top: 20px;">Errors by API:</h4>
+                <ul class="error-list">
+            `;
+            
+            Object.entries(errorsByAPI).forEach(([api, apiErrors]) => {
+                const apiInfo = this.getAPIInfo(api);
+                const apiName = apiInfo ? apiInfo.name : api;
+                errorHTML += `<li><strong>${apiName}</strong>: ${apiErrors.length} failure(s)</li>`;
+            });
+            
+            errorHTML += `</ul>`;
+        }
+        
+        errorHTML += `
+                </div>
+                <button class="error-details-toggle" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                    Show Full Error Details
+                </button>
+                <pre class="error-full-details hidden">${JSON.stringify({
+                    errors: errors,
+                    apiFailures: apiFailures
+                }, null, 2)}</pre>
+            </div>
+        `;
+        
+        return errorHTML;
+    },
     countSourceResults(sourceName, data) {
         if (!data) return 0;
         
