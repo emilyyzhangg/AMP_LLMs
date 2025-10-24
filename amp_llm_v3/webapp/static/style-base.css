@@ -268,16 +268,16 @@ header p {
     display: flex;
     align-items: center;
     flex: 0 0 auto;
-    min-width: 70px;
+    min-width: 120px;
 }
 
 .logo-container {
-    width: 70px;
-    height: 70px;
-    padding: 8px;
+    width: 100px;
+    height: 100px;
+    padding: 12px;
     background: white;
-    border-radius: 12px;
-    border: 2px solid #E0E6E8;
+    border-radius: 16px;
+    border: 3px solid #E0E6E8;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     display: flex;
     align-items: center;
@@ -1112,8 +1112,8 @@ header p {
     }
     
     .logo-container {
-        width: 60px;
-        height: 60px;
+        width: 80px;
+        height: 80px;
     }
 
     .menu-grid {
@@ -1166,14 +1166,14 @@ header p {
 
 @media (min-width: 769px) and (max-width: 1024px) {
     .logo-container {
-        width: 65px;
-        height: 65px;
+        width: 90px;
+        height: 90px;
     }
 }
 
 @media (min-width: 1025px) {
     .logo-container {
-        width: 70px;
-        height: 70px;
+        width: 100px;
+        height: 100px;
     }
 }
