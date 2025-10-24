@@ -61,6 +61,19 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:3000",  # if using separate frontend
+        "*"  # For development only - restrict in production
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Global search engine instance
 search_engine = NCTSearchEngine()
 
@@ -606,6 +619,7 @@ def _count_source_results(api_id: str, data: Dict[str, Any]) -> int:
     """
     Count results from a specific API source.
     Handles different response formats dynamically.
+    Enhanced with proper OpenFDA counting.
     """
     if not data or data.get("error"):
         return 0
@@ -623,6 +637,17 @@ def _count_source_results(api_id: str, data: Dict[str, Any]) -> int:
     elif api_id == "pmc_bioc":
         return data.get("total_fetched", 0)
     
+    # Enhanced OpenFDA counting
+    elif api_id == "openfda":
+        total = 0
+        # Count drug labels
+        total += len(data.get("drug_labels", []))
+        # Count adverse events
+        total += len(data.get("adverse_events", []))
+        # Count enforcement reports
+        total += len(data.get("enforcement_reports", []))
+        return total
+    
     # Extended API result counting (generic patterns)
     # Most extended APIs use "results" array
     if "results" in data:
@@ -639,6 +664,33 @@ def _count_source_results(api_id: str, data: Dict[str, Any]) -> int:
         return data.get("count", 0)
     
     return 0
+
+def _format_openfda_details(data: Dict[str, Any]) -> str:
+    """
+    Format OpenFDA results for display.
+    Returns a formatted string showing breakdown by category.
+    """
+    if not data or data.get("error"):
+        return ""
+    
+    details = []
+    
+    drug_labels = len(data.get("drug_labels", []))
+    if drug_labels > 0:
+        details.append(f"{drug_labels} drug label(s)")
+    
+    adverse_events = len(data.get("adverse_events", []))
+    if adverse_events > 0:
+        details.append(f"{adverse_events} adverse event(s)")
+    
+    enforcement = len(data.get("enforcement_reports", []))
+    if enforcement > 0:
+        details.append(f"{enforcement} enforcement report(s)")
+    
+    if not details:
+        return "No FDA data found"
+    
+    return ", ".join(details)
 
 
 if __name__ == "__main__":

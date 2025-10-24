@@ -3,6 +3,7 @@ NCT Database Clients
 ===================
 
 Individual client implementations for each database.
+Enhanced with comprehensive error handling and improved search strategies.
 """
 
 import asyncio
@@ -494,7 +495,7 @@ class DuckDuckGoClient(BaseClient):
                 query
             )
             
-            logger.info(f"DuckDuckGo found {len(results)} results")
+            logger.info(f"DuckDuckGo found {len(results)} results for '{query}'")
             
             return {
                 "query": query,
@@ -503,10 +504,20 @@ class DuckDuckGoClient(BaseClient):
             }
             
         except ImportError:
-            return {"error": "duckduckgo-search not installed"}
+            return {
+                "error": "duckduckgo-search library not installed",
+                "query": nct_id,
+                "results": [],
+                "total_found": 0
+            }
         except Exception as e:
             logger.error(f"DuckDuckGo error: {e}")
-            return {"error": str(e)}
+            return {
+                "error": f"DuckDuckGo search failed: {str(e)}",
+                "query": nct_id,
+                "results": [],
+                "total_found": 0
+            }
     
     def _search_sync(self, query: str) -> List[Dict]:
         """Synchronous search helper."""
@@ -530,7 +541,7 @@ class DuckDuckGoClient(BaseClient):
 
 
 class SerpAPIClient(BaseClient):
-    """SERP API (Google Search) client."""
+    """SERP API (Google Search) client with proper error handling."""
     
     BASE_URL = "https://serpapi.com/search"
     
@@ -542,7 +553,12 @@ class SerpAPIClient(BaseClient):
     ) -> Dict[str, Any]:
         """Search via SERP API."""
         if not self.api_key:
-            return {"error": "SERPAPI_KEY not configured"}
+            return {
+                "error": "SERPAPI_KEY not configured",
+                "query": nct_id,
+                "results": [],
+                "total_found": 0
+            }
         
         query_parts = [nct_id]
         if title:
@@ -560,9 +576,20 @@ class SerpAPIClient(BaseClient):
         }
         
         try:
-            async with self.session.get(self.BASE_URL, params=params) as resp:
+            async with self.session.get(self.BASE_URL, params=params, timeout=aiohttp.ClientTimeout(total=30)) as resp:
                 if resp.status == 200:
                     data = await resp.json()
+                    
+                    # Check for API-level errors
+                    if 'error' in data:
+                        logger.error(f"SERP API error: {data['error']}")
+                        return {
+                            "error": f"SERP API error: {data['error']}",
+                            "query": query,
+                            "results": [],
+                            "total_found": 0
+                        }
+                    
                     results = [
                         {
                             'title': r.get('title', ''),
@@ -572,7 +599,7 @@ class SerpAPIClient(BaseClient):
                         for r in data.get('organic_results', [])
                     ]
                     
-                    logger.info(f"SERP API found {len(results)} results")
+                    logger.info(f"SERP API found {len(results)} results for '{query}'")
                     
                     return {
                         "query": query,
@@ -580,10 +607,30 @@ class SerpAPIClient(BaseClient):
                         "total_found": len(results)
                     }
                 else:
-                    return {"error": f"HTTP {resp.status}"}
+                    error_text = await resp.text()
+                    logger.error(f"SERP API HTTP {resp.status}: {error_text[:200]}")
+                    return {
+                        "error": f"SERP API request failed (HTTP {resp.status})",
+                        "query": query,
+                        "results": [],
+                        "total_found": 0
+                    }
+        except asyncio.TimeoutError:
+            logger.error(f"SERP API timeout for query: {query}")
+            return {
+                "error": "SERP API request timeout",
+                "query": query,
+                "results": [],
+                "total_found": 0
+            }
         except Exception as e:
             logger.error(f"SERP API error: {e}")
-            return {"error": str(e)}
+            return {
+                "error": f"SERP API request failed: {str(e)}",
+                "query": query,
+                "results": [],
+                "total_found": 0
+            }
     
     async def fetch(self, identifier: str) -> Dict[str, Any]:
         """Not implemented."""
@@ -591,7 +638,7 @@ class SerpAPIClient(BaseClient):
 
 
 class GoogleScholarClient(BaseClient):
-    """Google Scholar via SERP API."""
+    """Google Scholar via SERP API with proper error handling."""
     
     BASE_URL = "https://serpapi.com/search"
     
@@ -603,7 +650,12 @@ class GoogleScholarClient(BaseClient):
     ) -> Dict[str, Any]:
         """Search Google Scholar."""
         if not self.api_key:
-            return {"error": "SERPAPI_KEY not configured"}
+            return {
+                "error": "SERPAPI_KEY not configured",
+                "query": nct_id,
+                "results": [],
+                "total_found": 0
+            }
         
         query_parts = [nct_id]
         if title:
@@ -621,9 +673,20 @@ class GoogleScholarClient(BaseClient):
         }
         
         try:
-            async with self.session.get(self.BASE_URL, params=params) as resp:
+            async with self.session.get(self.BASE_URL, params=params, timeout=aiohttp.ClientTimeout(total=30)) as resp:
                 if resp.status == 200:
                     data = await resp.json()
+                    
+                    # Check for API-level errors
+                    if 'error' in data:
+                        logger.error(f"Google Scholar API error: {data['error']}")
+                        return {
+                            "error": f"Google Scholar API error: {data['error']}",
+                            "query": query,
+                            "results": [],
+                            "total_found": 0
+                        }
+                    
                     results = [
                         {
                             'title': r.get('title', ''),
@@ -634,7 +697,7 @@ class GoogleScholarClient(BaseClient):
                         for r in data.get('organic_results', [])
                     ]
                     
-                    logger.info(f"Scholar found {len(results)} results")
+                    logger.info(f"Google Scholar found {len(results)} results for '{query}'")
                     
                     return {
                         "query": query,
@@ -642,10 +705,30 @@ class GoogleScholarClient(BaseClient):
                         "total_found": len(results)
                     }
                 else:
-                    return {"error": f"HTTP {resp.status}"}
+                    error_text = await resp.text()
+                    logger.error(f"Google Scholar HTTP {resp.status}: {error_text[:200]}")
+                    return {
+                        "error": f"Google Scholar request failed (HTTP {resp.status})",
+                        "query": query,
+                        "results": [],
+                        "total_found": 0
+                    }
+        except asyncio.TimeoutError:
+            logger.error(f"Google Scholar timeout for query: {query}")
+            return {
+                "error": "Google Scholar request timeout",
+                "query": query,
+                "results": [],
+                "total_found": 0
+            }
         except Exception as e:
-            logger.error(f"Scholar error: {e}")
-            return {"error": str(e)}
+            logger.error(f"Google Scholar error: {e}")
+            return {
+                "error": f"Google Scholar request failed: {str(e)}",
+                "query": query,
+                "results": [],
+                "total_found": 0
+            }
     
     async def fetch(self, identifier: str) -> Dict[str, Any]:
         """Not implemented."""
@@ -653,40 +736,251 @@ class GoogleScholarClient(BaseClient):
 
 
 class OpenFDAClient(BaseClient):
-    """OpenFDA API client."""
+    """
+    OpenFDA API client with comprehensive search capabilities.
+    
+    Searches across multiple FDA databases:
+    - Drug labels
+    - Adverse events
+    - Drug enforcement reports
+    """
     
     BASE_URL = "https://api.fda.gov/drug"
     
-    async def search(self, query: str) -> Dict[str, Any]:
-        """Search OpenFDA drug database."""
-        if not query:
-            return {"error": "No query provided"}
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Comprehensive OpenFDA search using trial data.
         
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data dictionary
+            
+        Returns:
+            Dict with combined results from multiple FDA endpoints
+        """
+        # Extract all possible drug identifiers from trial data
+        search_terms = self._extract_drug_identifiers(trial_data)
+        
+        if not search_terms:
+            logger.info(f"OpenFDA: No drug/intervention identifiers found for {nct_id}")
+            return {
+                "query": "No drug identifiers found",
+                "drug_labels": [],
+                "adverse_events": [],
+                "enforcement_reports": [],
+                "total_found": 0,
+                "search_terms_used": []
+            }
+        
+        logger.info(f"OpenFDA: Searching with terms: {search_terms}")
+        
+        # Search across all FDA databases
+        results = {
+            "query": ", ".join(search_terms[:3]),  # Show first 3 terms
+            "drug_labels": [],
+            "adverse_events": [],
+            "enforcement_reports": [],
+            "total_found": 0,
+            "search_terms_used": search_terms
+        }
+        
+        # Search each term across databases
+        for term in search_terms[:5]:  # Limit to first 5 terms
+            # Drug labels
+            labels = await self._search_drug_labels(term)
+            results["drug_labels"].extend(labels)
+            
+            # Adverse events
+            events = await self._search_adverse_events(term)
+            results["adverse_events"].extend(events)
+            
+            # Enforcement reports
+            enforcement = await self._search_enforcement(term)
+            results["enforcement_reports"].extend(enforcement)
+        
+        # Remove duplicates and count
+        results["drug_labels"] = self._deduplicate_results(results["drug_labels"])
+        results["adverse_events"] = self._deduplicate_results(results["adverse_events"])
+        results["enforcement_reports"] = self._deduplicate_results(results["enforcement_reports"])
+        
+        results["total_found"] = (
+            len(results["drug_labels"]) +
+            len(results["adverse_events"]) +
+            len(results["enforcement_reports"])
+        )
+        
+        logger.info(f"OpenFDA: Found {results['total_found']} total results for {nct_id}")
+        
+        return results
+    
+    def _extract_drug_identifiers(self, trial_data: Dict[str, Any]) -> List[str]:
+        """Extract all possible drug/intervention identifiers from trial data."""
+        identifiers = []
+        
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            
+            # Get interventions
+            arms_interventions = protocol.get("armsInterventionsModule", {})
+            interventions = arms_interventions.get("interventions", [])
+            
+            for intervention in interventions:
+                if isinstance(intervention, dict):
+                    # Intervention name
+                    name = intervention.get("name", "").strip()
+                    if name:
+                        identifiers.append(name)
+                    
+                    # Other names/synonyms
+                    other_names = intervention.get("otherNames", [])
+                    if isinstance(other_names, list):
+                        identifiers.extend([n.strip() for n in other_names if n.strip()])
+            
+            # Get from conditions (some drugs are condition-specific)
+            conditions_module = protocol.get("conditionsModule", {})
+            conditions = conditions_module.get("conditions", [])
+            if isinstance(conditions, list):
+                identifiers.extend([c.strip() for c in conditions if c.strip()])
+            
+            # Get from trial title (may contain drug names)
+            ident_module = protocol.get("identificationModule", {})
+            title = ident_module.get("officialTitle", "") or ident_module.get("briefTitle", "")
+            if title:
+                # Extract potential drug names (words in title that might be drugs)
+                # This is a simple heuristic - could be improved
+                title_words = title.split()
+                for i, word in enumerate(title_words):
+                    # Check if word looks like a drug name (capitalized, not common words)
+                    if (word[0].isupper() and len(word) > 3 and 
+                        word.lower() not in ['trial', 'study', 'phase', 'randomized', 'controlled']):
+                        identifiers.append(word.strip('()[]{}:,;.'))
+            
+        except Exception as e:
+            logger.warning(f"Error extracting drug identifiers: {e}")
+        
+        # Clean and deduplicate
+        cleaned = []
+        seen = set()
+        for identifier in identifiers:
+            clean = identifier.lower().strip()
+            if clean and clean not in seen and len(clean) > 2:
+                seen.add(clean)
+                cleaned.append(identifier)
+        
+        return cleaned[:10]  # Limit to 10 most relevant terms
+    
+    async def _search_drug_labels(self, drug_name: str) -> List[Dict]:
+        """Search FDA drug labels."""
         url = f"{self.BASE_URL}/label.json"
         params = {
-            "search": f"openfda.generic_name:\"{query}\" OR openfda.brand_name:\"{query}\"",
-            "limit": 5
+            "search": f'openfda.generic_name:"{drug_name}" OR openfda.brand_name:"{drug_name}"',
+            "limit": 3
         }
         
         try:
-            async with self.session.get(url, params=params) as resp:
+            async with self.session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=10)) as resp:
                 if resp.status == 200:
                     data = await resp.json()
                     results = data.get("results", [])
-                    
-                    logger.info(f"OpenFDA found {len(results)} results")
-                    
-                    return {
-                        "query": query,
-                        "results": results,
-                        "total_found": len(results)
-                    }
+                    return [self._format_label_result(r) for r in results]
+                elif resp.status == 404:
+                    return []  # No results, not an error
                 else:
-                    return {"error": f"HTTP {resp.status}"}
+                    logger.debug(f"OpenFDA labels returned {resp.status} for '{drug_name}'")
+                    return []
         except Exception as e:
-            logger.error(f"OpenFDA error: {e}")
-            return {"error": str(e)}
+            logger.debug(f"OpenFDA labels search error for '{drug_name}': {e}")
+            return []
+    
+    async def _search_adverse_events(self, drug_name: str) -> List[Dict]:
+        """Search FDA adverse events."""
+        url = f"{self.BASE_URL}/event.json"
+        params = {
+            "search": f'patient.drug.openfda.generic_name:"{drug_name}" OR patient.drug.openfda.brand_name:"{drug_name}"',
+            "limit": 3
+        }
+        
+        try:
+            async with self.session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    results = data.get("results", [])
+                    return [self._format_event_result(r) for r in results]
+                elif resp.status == 404:
+                    return []
+                else:
+                    logger.debug(f"OpenFDA events returned {resp.status} for '{drug_name}'")
+                    return []
+        except Exception as e:
+            logger.debug(f"OpenFDA events search error for '{drug_name}': {e}")
+            return []
+    
+    async def _search_enforcement(self, drug_name: str) -> List[Dict]:
+        """Search FDA enforcement reports."""
+        url = f"{self.BASE_URL}/enforcement.json"
+        params = {
+            "search": f'openfda.generic_name:"{drug_name}" OR openfda.brand_name:"{drug_name}"',
+            "limit": 3
+        }
+        
+        try:
+            async with self.session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    results = data.get("results", [])
+                    return [self._format_enforcement_result(r) for r in results]
+                elif resp.status == 404:
+                    return []
+                else:
+                    logger.debug(f"OpenFDA enforcement returned {resp.status} for '{drug_name}'")
+                    return []
+        except Exception as e:
+            logger.debug(f"OpenFDA enforcement search error for '{drug_name}': {e}")
+            return []
+    
+    def _format_label_result(self, result: Dict) -> Dict:
+        """Format drug label result."""
+        return {
+            "type": "drug_label",
+            "product": result.get("openfda", {}).get("brand_name", [""])[0] if result.get("openfda", {}).get("brand_name") else "Unknown",
+            "manufacturer": result.get("openfda", {}).get("manufacturer_name", [""])[0] if result.get("openfda", {}).get("manufacturer_name") else "Unknown",
+            "purpose": result.get("purpose", [""])[0] if result.get("purpose") else None,
+            "warnings": result.get("warnings", [""])[0][:200] if result.get("warnings") else None
+        }
+    
+    def _format_event_result(self, result: Dict) -> Dict:
+        """Format adverse event result."""
+        return {
+            "type": "adverse_event",
+            "date": result.get("receivedate", "Unknown"),
+            "serious": result.get("serious", 0),
+            "reactions": [r.get("reactionmeddrapt", "Unknown") for r in result.get("patient", {}).get("reaction", [])[:3]]
+        }
+    
+    def _format_enforcement_result(self, result: Dict) -> Dict:
+        """Format enforcement report result."""
+        return {
+            "type": "enforcement",
+            "classification": result.get("classification", "Unknown"),
+            "status": result.get("status", "Unknown"),
+            "recall_date": result.get("recall_initiation_date", "Unknown"),
+            "reason": result.get("reason_for_recall", "")[:200]
+        }
+    
+    def _deduplicate_results(self, results: List[Dict]) -> List[Dict]:
+        """Remove duplicate results."""
+        seen = set()
+        unique = []
+        
+        for result in results:
+            # Create a simple hash of the result
+            result_hash = json.dumps(result, sort_keys=True)
+            if result_hash not in seen:
+                seen.add(result_hash)
+                unique.append(result)
+        
+        return unique
     
     async def fetch(self, identifier: str) -> Dict[str, Any]:
-        """Not implemented."""
-        return {"error": "Fetch not supported"}
+        """Not implemented - use search() instead."""
+        return {"error": "Use search() method with trial data"}

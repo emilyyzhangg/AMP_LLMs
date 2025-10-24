@@ -3,7 +3,7 @@ NCT Core Search Engine
 =====================
 
 Core search orchestration logic matching the original workflow.
-Modified to use PubTator3 API instead of legacy BioC API.
+Enhanced with improved OpenFDA search integration.
 """
 
 import asyncio
@@ -387,8 +387,6 @@ class NCTSearchEngine:
             logger.error(f"PMC search error: {e}", exc_info=True)
             return {"error": str(e)}
     
-    # In nct_core.py, replace the _search_pmc_bioc method in NCTSearchEngine class
-
     async def _search_pmc_bioc(
         self,
         nct_id: str,
@@ -517,7 +515,7 @@ class NCTSearchEngine:
         status = None
     ) -> Dict[str, Any]:
         """
-        Search extended databases matching original API integration.
+        Search extended databases with enhanced OpenFDA integration.
         """
         # Determine which databases to search
         if config.enabled_databases:
@@ -559,10 +557,9 @@ class NCTSearchEngine:
                 nct_id, title, condition
             )
         
+        # Enhanced OpenFDA search - pass full trial data
         if "openfda" in databases:
-            search_term = intervention or condition
-            if search_term:
-                tasks["openfda"] = self.clients['openfda'].search(search_term)
+            tasks["openfda"] = self.clients['openfda'].search(nct_id, ct_data)
         
         # Execute concurrently
         logger.info(f"Executing {len(tasks)} extended searches")
