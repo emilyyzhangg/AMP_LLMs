@@ -1,7 +1,6 @@
 /* ============================================================================
-   PROFESSIONAL THEME - WITH PROPER LANDING HEADER COLORS
+   PROFESSIONAL THEME - Clean Landing Header
    Color Palette: Navy #2C3E50, Teal #16A085, Amber #E67E22
-   FIXED: Landing header now uses theme colors instead of generic teal
    ============================================================================ */
 
 body {
@@ -58,18 +57,18 @@ header {
 }
 
 /* ============================================================================
-   LANDING HEADER - NOW MATCHES PROFESSIONAL THEME!
+   LANDING HEADER - CLEAN WHITE BACKGROUND
    ============================================================================ */
 .landing-header {
-    background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
     border-bottom: 3px solid #16A085;
-    box-shadow: 0 4px 16px rgba(22, 160, 133, 0.25);
+    box-shadow: 0 4px 12px rgba(22, 160, 133, 0.15);
 }
 
 .logo-container {
     border-color: #16A085;
-    box-shadow: 0 2px 8px rgba(22, 160, 133, 0.25);
-    background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+    box-shadow: 0 2px 8px rgba(22, 160, 133, 0.2);
+    background: linear-gradient(135deg, #FFFFFF 0%, #ECF0F1 100%);
 }
 
 .logo-container:hover {
@@ -78,27 +77,37 @@ header {
 }
 
 .landing-title {
-    color: #FFFFFF;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #2C3E50 0%, #16A085 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .landing-version {
-    color: #16A085;
+    color: #E67E22;
     font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-.landing-header .theme-button {
+.landing-header .theme-button,
+.landing-header .logout-button {
     border-color: #16A085;
-    color: #FFFFFF;
-    background: rgba(22, 160, 133, 0.2);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    color: #2C3E50;
+    background: #FFFFFF;
+    box-shadow: 0 2px 6px rgba(22, 160, 133, 0.15);
 }
 
 .landing-header .theme-button:hover {
-    background: rgba(22, 160, 133, 0.35);
-    border-color: #E67E22;
-    box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+    background: linear-gradient(135deg, #ECF0F1 0%, #D5DBDB 100%);
+    border-color: #16A085;
+    color: #16A085;
+    box-shadow: 0 4px 12px rgba(22, 160, 133, 0.25);
+}
+
+.landing-header .logout-button:hover {
+    background: linear-gradient(135deg, #FADBD8 0%, #F5B7B1 100%);
+    border-color: #E74C3C;
+    color: #C0392B;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
 }
 
 /* THEME SWITCHER */
