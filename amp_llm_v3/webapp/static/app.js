@@ -1264,8 +1264,13 @@ const app = {
     clearSearchProgress() {
         const progressDiv = document.getElementById('nct-progress');
         if (progressDiv) {
-            progressDiv.classList.add('hidden');
-            progressDiv.innerHTML = '';
+            // Fade out animation
+            progressDiv.style.transition = 'opacity 0.3s ease';
+            progressDiv.style.opacity = '0';
+            
+            setTimeout(() => {
+                progressDiv.remove();
+            }, 300);
         }
     },
 
@@ -1292,7 +1297,16 @@ const app = {
         console.log('Starting NCT lookup for:', nctIds);
         inputArea.classList.add('hidden');
         resultsDiv.classList.add('active');
-        resultsDiv.innerHTML = '';
+        
+        // Clear results and add progress indicator
+        resultsDiv.innerHTML = `
+            <div id="nct-progress" class="search-progress">
+                <div class="progress-message">
+                    <span class="spinner"></span>
+                    <span class="progress-main-text">Initializing search...</span>
+                </div>
+            </div>
+        `;
         
         this.updateSearchProgress('Initializing search...', {
             current: 0,
@@ -1501,46 +1515,19 @@ const app = {
     },
     
     async saveNCTResults() {
-        if (!this.nctResults) return;
-        
-        const filename = `nct_results_${Date.now()}.json`;
-        const content = JSON.stringify(this.nctResults.results, null, 2);
-        
-        const blob = new Blob([content], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        try {
-            await fetch(`${this.API_BASE}/files/save`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.apiKey}`
-                },
-                body: JSON.stringify({ filename, content })
-            });
-            
-            alert(`✅ Results saved!\n\n📥 Downloaded to: ${filename}\n💾 Saved to server: output/${filename}`);
-        } catch (error) {
-            alert(`✅ Downloaded to local computer: ${filename}\n\n⚠️ Server save failed: ${error.message}`);
-        }
-    },
-
-    downloadNCTResults() {
         if (!this.nctResults) {
-            alert('No results to download');
+            this.showToast('⚠️ No results to save', 'error');
             return;
         }
         
         const filename = `nct_results_${Date.now()}.json`;
         const content = JSON.stringify(this.nctResults.results, null, 2);
         
+        // Calculate file size
+        const sizeKB = (content.length / 1024).toFixed(1);
+        const sizeMB = sizeKB > 1024 ? (sizeKB / 1024).toFixed(2) + ' MB' : sizeKB + ' KB';
+        
+        // Download to local computer
         const blob = new Blob([content], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1552,7 +1539,74 @@ const app = {
         URL.revokeObjectURL(url);
         
         console.log(`✅ Downloaded ${filename} to local computer`);
-        alert(`✅ Downloaded: ${filename}`);
+        
+        // Also save to server
+        try {
+            const response = await fetch(`${this.API_BASE}/files/save`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.apiKey}`
+                },
+                body: JSON.stringify({ filename, content })
+            });
+            
+            if (response.ok) {
+                this.showToast(
+                    `✅ Results saved successfully!<br>` +
+                    `<small>📥 Downloaded: ${filename}<br>` +
+                    `💾 Saved to server: output/${filename}<br>` +
+                    `Size: ${sizeMB} | ${this.nctResults.results.length} trial(s)</small>`,
+                    'success',
+                    5000
+                );
+            } else {
+                throw new Error('Server save failed');
+            }
+        } catch (error) {
+            console.error('Server save error:', error);
+            this.showToast(
+                `⚠️ Partial save<br>` +
+                `<small>📥 Downloaded locally: ${filename}<br>` +
+                `❌ Server save failed: ${error.message}</small>`,
+                'warning',
+                5000
+            );
+        }
+    },
+
+    downloadNCTResults() {
+        if (!this.nctResults) {
+            this.showToast('⚠️ No results to download', 'error');
+            return;
+        }
+        
+        const filename = `nct_results_${Date.now()}.json`;
+        const content = JSON.stringify(this.nctResults.results, null, 2);
+        
+        // Download to local computer
+        const blob = new Blob([content], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        console.log(`✅ Downloaded ${filename} to local computer`);
+        
+        // Calculate file size
+        const sizeKB = (content.length / 1024).toFixed(1);
+        const sizeMB = sizeKB > 1024 ? (sizeKB / 1024).toFixed(2) + ' MB' : sizeKB + ' KB';
+        
+        // Show success toast
+        this.showToast(
+            `📥 Downloaded: ${filename}<br><small>Size: ${sizeMB} | ${this.nctResults.results.length} trial(s)</small>`,
+            'success',
+            4000
+        );
     },
     
     async loadFiles() {
@@ -1684,18 +1738,22 @@ const app = {
     
     displayNCTResults(data) {
         const resultsDiv = document.getElementById('nct-results');
-        const saveBtn = document.getElementById('nct-save-btn');
-        const downloadBtn = document.getElementById('nct-download-btn');
-
-        if (downloadBtn) {
-            downloadBtn.classList.remove('hidden');
-        }
-
-        if (saveBtn) {
-            saveBtn.classList.remove('hidden');
-        }
         
         let html = '';
+        
+        // Add action buttons at the top
+        html += `
+            <div class="results-actions">
+                <button class="action-button download-btn" onclick="app.downloadNCTResults()">
+                    <span class="btn-icon">📥</span>
+                    <span class="btn-text">Download</span>
+                </button>
+                <button class="action-button save-btn" onclick="app.saveNCTResults()">
+                    <span class="btn-icon">💾</span>
+                    <span class="btn-text">Save to Server</span>
+                </button>
+            </div>
+        `;
         
         html += `
             <div class="result-card summary-card">
@@ -1965,6 +2023,31 @@ const app = {
         
         api = this.apiRegistry.extended.find(a => a.id === sourceId);
         return api;
+    },
+
+    // Toast notification system
+    showToast(message, type = 'success', duration = 3000) {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = message;
+        
+        document.body.appendChild(toast);
+        
+        // Trigger animation
+        requestAnimationFrame(() => {
+            toast.classList.add('toast-show');
+        });
+        
+        // Auto-hide after duration
+        setTimeout(() => {
+            toast.classList.remove('toast-show');
+            toast.classList.add('toast-hide');
+            
+            // Remove from DOM after animation
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, duration);
     },
 
     escapeHtml(text) {

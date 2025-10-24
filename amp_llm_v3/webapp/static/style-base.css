@@ -1538,7 +1538,208 @@ header p {
         opacity: 0;
     }
 }
+/* ============================================================================
+   TOAST NOTIFICATIONS - Add this to style-base.css
+   ============================================================================ */
 
+.toast {
+    position: fixed;
+    bottom: -100px;
+    right: 30px;
+    min-width: 300px;
+    max-width: 500px;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    font-weight: 600;
+    font-size: 0.95em;
+    line-height: 1.5;
+    z-index: 10000;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.toast-show {
+    opacity: 1;
+    transform: translateY(-100px);
+}
+
+.toast-hide {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.toast-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.toast-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    color: #333;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.toast small {
+    display: block;
+    margin-top: 6px;
+    opacity: 0.9;
+    font-weight: 400;
+    font-size: 0.85em;
+    line-height: 1.4;
+}
+
+/* ============================================================================
+   RESULTS ACTION BUTTONS
+   ============================================================================ */
+
+.results-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 12px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 240, 240, 0.9) 100%);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    font-size: 1em;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.action-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.download-btn {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+}
+
+.download-btn:hover {
+    background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+    color: white;
+}
+
+.save-btn:hover {
+    background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+}
+
+.btn-icon {
+    font-size: 1.2em;
+}
+
+.btn-text {
+    font-size: 1em;
+}
+
+/* ============================================================================
+   SEARCH PROGRESS INDICATOR
+   ============================================================================ */
+
+.search-progress {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 247, 255, 0.95) 100%);
+    border: 2px solid #007bff;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+    animation: pulse-border 2s ease-in-out infinite;
+}
+
+@keyframes pulse-border {
+    0%, 100% {
+        border-color: #007bff;
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+    }
+    50% {
+        border-color: #0056b3;
+        box-shadow: 0 4px 16px rgba(0, 123, 255, 0.4);
+    }
+}
+
+.progress-message {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.progress-main-text {
+    flex: 1;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 12px;
+    background: rgba(0, 123, 255, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 12px 0;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #007bff 0%, #0056b3 100%);
+    border-radius: 6px;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+.progress-details,
+.progress-database,
+.progress-completed {
+    font-size: 0.9em;
+    margin-top: 8px;
+    color: #666;
+}
+
+.progress-database {
+    font-weight: 600;
+    color: #007bff;
+}
+
+.progress-database strong {
+    color: #0056b3;
+}
+
+.progress-completed {
+    color: #28a745;
+    font-weight: 500;
+}
 /* ============================================================================
    RESPONSIVE
    ============================================================================ */
@@ -1647,6 +1848,249 @@ header p {
     
     .result-card-meta {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================================
+   TOAST NOTIFICATIONS - Add this to style-base.css
+   ============================================================================ */
+
+.toast {
+    position: fixed;
+    bottom: -100px;
+    right: 30px;
+    min-width: 300px;
+    max-width: 500px;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    font-weight: 600;
+    font-size: 0.95em;
+    line-height: 1.5;
+    z-index: 10000;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.toast-show {
+    opacity: 1;
+    transform: translateY(-100px);
+}
+
+.toast-hide {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.toast-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.toast-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    color: #333;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.toast small {
+    display: block;
+    margin-top: 6px;
+    opacity: 0.9;
+    font-weight: 400;
+    font-size: 0.85em;
+    line-height: 1.4;
+}
+
+/* ============================================================================
+   Real-Time NCT Search Progress Indicators
+   Add these styles to your existing style-base.css
+   ============================================================================ */
+
+/* Progress Container */
+.progress-text {
+    font-size: 0.9em;
+    margin-top: 15px;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    color: #495057;
+}
+
+.progress-message {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.progress-main-text {
+    font-weight: 600;
+    font-size: 1.05em;
+    color: #333;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+    width: 100%;
+    height: 30px;
+    background: #e9ecef;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 15px 0;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #1BEB49 0%, #17C93E 100%);
+    transition: width 0.3s ease;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Progress Details */
+.progress-details {
+    text-align: center;
+    font-size: 0.95em;
+    color: #6c757d;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.progress-database {
+    padding: 10px 15px;
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #856404;
+}
+
+.progress-database strong {
+    color: #533f03;
+    font-weight: 700;
+}
+
+.progress-completed {
+    padding: 10px 15px;
+    background: #d4edda;
+    border: 1px solid #28a745;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #155724;
+}
+
+/* Spinner Animation */
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: #1BEB49;
+    animation: spin 1s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Small spinner for loading states */
+.spinner-small {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: #1BEB49;
+    animation: spin 1s linear infinite;
+}
+
+/* Error Card Styling */
+.error-card {
+    background: #fff5f5;
+    border: 2px solid #feb2b2;
+}
+
+.error-card h3 {
+    color: #c53030;
+}
+
+.error-card pre {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.85em;
+    color: #2d3748;
+    border: 1px solid #e2e8f0;
+    margin-top: 10px;
+}
+
+/* Success Animations */
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.progress-completed {
+    animation: successPulse 0.5s ease-out;
+}
+
+/* Responsive Progress */
+@media (max-width: 768px) {
+    .progress-text {
+        padding: 15px;
+    }
+    
+    .progress-bar-container {
+        height: 25px;
+    }
+    
+    .progress-message {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .progress-details {
+        font-size: 0.85em;
     }
 }
 
