@@ -1505,7 +1505,7 @@ createAPICheckbox(api, category) {
             `;
             this.addNewSearchButton();
         }
-    }
+    },
 
     
     async extractTrial(nctId) {
