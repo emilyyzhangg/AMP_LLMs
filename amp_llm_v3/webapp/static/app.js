@@ -1319,7 +1319,7 @@ const app = {
         console.log('Extended APIs (user selected):', extendedAPIs);
         
         const results = [];
-        const errors = [];
+        const errors = [];  // Enhanced error tracking
         const searchJobs = {};
         
         try {
@@ -1380,7 +1380,9 @@ const app = {
                     console.error(`❌ Error initiating search for ${nctId}:`, error);
                     errors.push({
                         nct_id: nctId,
-                        error: error.message
+                        error: error.message,
+                        stage: 'initiation',
+                        timestamp: new Date().toISOString()
                     });
                 }
             }
@@ -1391,7 +1393,7 @@ const app = {
                 total: Object.keys(searchJobs).length
             });
             
-            // Poll for results
+            // Poll for results with enhanced error tracking
             const maxWait = 300000; // 5 minutes
             const pollInterval = 2000; // 2 seconds
             const startTime = Date.now();
@@ -1399,7 +1401,7 @@ const app = {
             while (Object.keys(searchJobs).length > 0 && (Date.now() - startTime) < maxWait) {
                 const completedJobs = [];
                 const totalJobs = nctIds.length;
-                const completedCount = results.length + errors.length;
+                const completedCount = results.length + errors.filter(e => e.stage !== 'api_failure').length;
                 
                 for (const [nctId, jobId] of Object.entries(searchJobs)) {
                     try {
@@ -1432,20 +1434,25 @@ const app = {
                                 }
                             );
                             
+                            // Check for API-level failures within the result
+                            this.checkForAPIFailures(resultData, nctId, errors);
+                            
                             results.push(resultData);
                             completedJobs.push(nctId);
                             console.log(`✅ Retrieved results for ${nctId}`);
                             
                             // Update progress
                             this.updateSearchProgress(`Completed ${nctId}`, {
-                                current: results.length + errors.length,
+                                current: results.length + errors.filter(e => e.stage !== 'api_failure').length,
                                 total: totalJobs
                             });
                             
                         } else if (statusData.status === 'failed') {
                             errors.push({
                                 nct_id: nctId,
-                                error: statusData.error || 'Search failed'
+                                error: statusData.error || 'Search failed',
+                                stage: 'execution',
+                                timestamp: new Date().toISOString()
                             });
                             completedJobs.push(nctId);
                         }
@@ -1454,7 +1461,9 @@ const app = {
                         console.error(`❌ Error checking status for ${nctId}:`, error);
                         errors.push({
                             nct_id: nctId,
-                            error: error.message
+                            error: error.message,
+                            stage: 'status_check',
+                            timestamp: new Date().toISOString()
                         });
                         completedJobs.push(nctId);
                     }
@@ -1475,7 +1484,9 @@ const app = {
             for (const nctId of Object.keys(searchJobs)) {
                 errors.push({
                     nct_id: nctId,
-                    error: 'Search timeout'
+                    error: 'Search timeout (exceeded 5 minutes)',
+                    stage: 'timeout',
+                    timestamp: new Date().toISOString()
                 });
             }
             
@@ -1485,7 +1496,7 @@ const app = {
                 progressDiv.remove();
             }
             
-            // Display results
+            // Display results with error summary
             if (results.length > 0) {
                 this.nctResults = {
                     success: true,
@@ -1493,15 +1504,23 @@ const app = {
                     summary: {
                         total_requested: nctIds.length,
                         successful: results.length,
-                        failed: errors.length,
+                        failed: errors.filter(e => e.stage !== 'api_failure').length,
+                        api_failures: errors.filter(e => e.stage === 'api_failure').length,
                         errors: errors.length > 0 ? errors : null
                     }
                 };
                 
                 this.displayNCTResults(this.nctResults);
+                
+                // Add error summary if there are errors
+                if (errors.length > 0) {
+                    const errorSummaryHTML = this.showSearchErrorSummary(errors);
+                    resultsDiv.insertAdjacentHTML('beforeend', errorSummaryHTML);
+                }
+                
                 this.addNewSearchButton();
                 
-                // ✅ SHOW ACTION BUTTONS AFTER SUCCESSFUL SEARCH
+                // Show action buttons
                 const downloadBtn = document.getElementById('nct-download-btn');
                 const saveBtn = document.getElementById('nct-save-btn');
                 if (downloadBtn) downloadBtn.classList.remove('hidden');
@@ -1512,9 +1531,12 @@ const app = {
                     <div class="result-card">
                         <h3>❌ No Results</h3>
                         <p>No trials could be fetched. Check errors below:</p>
-                        <pre>${JSON.stringify(errors, null, 2)}</pre>
                     </div>
                 `;
+                
+                const errorSummaryHTML = this.showSearchErrorSummary(errors);
+                resultsDiv.insertAdjacentHTML('beforeend', errorSummaryHTML);
+                
                 this.addNewSearchButton();
             }
             
@@ -1528,16 +1550,15 @@ const app = {
             }
             
             resultsDiv.innerHTML = `
-                <div class="result-card">
-                    <h3>❌ Error</h3>
+                <div class="result-card error-card">
+                    <h3>❌ Critical Error</h3>
                     <p>${this.escapeHtml(error.message)}</p>
+                    <pre>${error.stack || 'No stack trace available'}</pre>
                 </div>
             `;
             this.addNewSearchButton();
         }
     },
-
-
     
     async extractTrial(nctId) {
         try {
@@ -1574,18 +1595,18 @@ const app = {
         const sizeKB = (content.length / 1024).toFixed(1);
         const sizeMB = sizeKB > 1024 ? (sizeKB / 1024).toFixed(2) + ' MB' : sizeKB + ' KB';
         
-        // Download to local computer
-        const blob = new Blob([content], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        // // Download to local computer
+        // const blob = new Blob([content], { type: 'application/json' });
+        // const url = URL.createObjectURL(blob);
+        // const a = document.createElement('a');
+        // a.href = url;
+        // a.download = filename;
+        // document.body.appendChild(a);
+        // a.click();
+        // document.body.removeChild(a);
+        // URL.revokeObjectURL(url);
         
-        console.log(`✅ Downloaded ${filename} to local computer`);
+        // console.log(`✅ Downloaded ${filename} to local computer`);
         
         // Also save to server
         try {
@@ -1655,7 +1676,81 @@ const app = {
             4000
         );
     },
-    
+
+    showSearchErrorSummary(errors) {
+        if (!errors || errors.length === 0) return;
+        
+        console.error('❌ NCT Search Errors:', errors);
+        
+        // Group errors by type
+        const errorsByNCT = {};
+        const errorsByAPI = {};
+        
+        errors.forEach(error => {
+            // Track by NCT ID
+            if (!errorsByNCT[error.nct_id]) {
+                errorsByNCT[error.nct_id] = [];
+            }
+            errorsByNCT[error.nct_id].push(error);
+            
+            // Track by API if available
+            if (error.api) {
+                if (!errorsByAPI[error.api]) {
+                    errorsByAPI[error.api] = [];
+                }
+                errorsByAPI[error.api].push(error);
+            }
+        });
+        
+        // Build error summary HTML
+        let errorHTML = `
+            <div class="result-card error-card">
+                <h3>⚠️ Search Errors (${errors.length} total)</h3>
+                
+                <div class="error-summary">
+                    <h4>Failed NCT Numbers:</h4>
+                    <ul class="error-list">
+        `;
+        
+        Object.entries(errorsByNCT).forEach(([nctId, nctErrors]) => {
+            errorHTML += `<li><strong>${nctId}</strong>: ${nctErrors.length} error(s)`;
+            errorHTML += `<ul class="error-details">`;
+            nctErrors.forEach(err => {
+                const apiName = err.api ? ` [${err.api}]` : '';
+                errorHTML += `<li>${apiName} ${err.error || 'Unknown error'}</li>`;
+            });
+            errorHTML += `</ul></li>`;
+        });
+        
+        errorHTML += `</ul>`;
+        
+        if (Object.keys(errorsByAPI).length > 0) {
+            errorHTML += `
+                <h4 style="margin-top: 20px;">Errors by API:</h4>
+                <ul class="error-list">
+            `;
+            
+            Object.entries(errorsByAPI).forEach(([api, apiErrors]) => {
+                const apiInfo = this.getAPIInfo(api);
+                const apiName = apiInfo ? apiInfo.name : api;
+                errorHTML += `<li><strong>${apiName}</strong>: ${apiErrors.length} failure(s)</li>`;
+            });
+            
+            errorHTML += `</ul>`;
+        }
+        
+        errorHTML += `
+                </div>
+                <button class="error-details-toggle" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                    Show Full Error Details
+                </button>
+                <pre class="error-full-details hidden">${JSON.stringify(errors, null, 2)}</pre>
+            </div>
+        `;
+        
+        return errorHTML;
+    },
+
     async loadFiles() {
         const container = document.getElementById('files-container');
         container.innerHTML = '<div class="loading">Loading files...</div>';
@@ -1778,7 +1873,7 @@ const app = {
             // Clear input
             document.getElementById('nct-input').value = '';
             
-            // ✅ HIDE ACTION BUTTONS
+            // Hide action buttons
             const downloadBtn = document.getElementById('nct-download-btn');
             const saveBtn = document.getElementById('nct-save-btn');
             if (downloadBtn) downloadBtn.classList.add('hidden');

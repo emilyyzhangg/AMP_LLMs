@@ -238,3 +238,11 @@ header {
     border-color: #1BEB49;
     box-shadow: 0 5px 15px rgba(27, 235, 73, 0.2);
 }
+
+.new-search-button {
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%);
+}
+
+.new-search-button:hover {
+    background: linear-gradient(135deg, #0A1659 0%, #17C93E 50%, #E69500 100%);
+}

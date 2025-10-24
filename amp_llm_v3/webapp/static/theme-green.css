@@ -201,3 +201,12 @@ header {
     border-color: #1BEB49;
     box-shadow: 0 5px 15px rgba(27, 235, 73, 0.2);
 }
+
+.new-search-button {
+    background: linear-gradient(135deg, #1BEB49 0%, #17C93E 100%);
+}
+
+.new-search-button:hover {
+    background: linear-gradient(135deg, #17C93E 0%, #14B036 100%);
+}
+

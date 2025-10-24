@@ -382,3 +382,19 @@ header {
 .nct-input-area::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, #148F77 0%, #117A65 100%);
 }
+
+.new-search-button {
+    background: linear-gradient(135deg, #2C3E50 0%, #16A085 100%);
+}
+
+.new-search-button:hover {
+    background: linear-gradient(135deg, #1A252F 0%, #138D75 100%);
+}
+
+.new-search-button {
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
+}
+
+.new-search-button:hover {
+    background: linear-gradient(135deg, #0A1659 0%, #17C93E 100%);
+}
