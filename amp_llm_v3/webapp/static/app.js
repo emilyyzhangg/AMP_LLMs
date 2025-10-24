@@ -1294,17 +1294,16 @@ createAPICheckbox(api, category) {
         
         const resultsDiv = document.getElementById('nct-results');
         const progressDiv = document.getElementById('nct-progress');
-        const saveBtn = document.getElementById('nct-save-btn');
         const inputArea = document.querySelector('.nct-input-area');
-    
-        // Hide input area, show results area
+        
+        // CRITICAL: Hide input area, show results area
+        console.log('Hiding input area, showing results area');
         inputArea.classList.add('hidden');
         resultsDiv.classList.add('active');
-
+        
         progressDiv.classList.remove('hidden');
         progressDiv.innerHTML = '<span class="spinner"></span> <span>Fetching clinical trial data...</span>';
         resultsDiv.innerHTML = '';
-        saveBtn.classList.add('hidden');
         
         // Get selected APIs
         const selectedAPIList = Array.from(this.selectedAPIs);
@@ -1331,8 +1330,8 @@ createAPICheckbox(api, category) {
             for (const nctId of nctIds) {
                 try {
                     const searchRequest = {
-                        include_extended: false, // Not used anymore
-                        databases: selectedAPIList  // Send selected databases
+                        include_extended: false,
+                        databases: selectedAPIList
                     };
                     
                     const data = await makeRequest(
@@ -1440,7 +1439,6 @@ createAPICheckbox(api, category) {
             progressDiv.classList.add('hidden');
             
             if (results.length > 0) {
-                this.addNewSearchButton();
                 this.nctResults = {
                     success: true,
                     results: results,
@@ -1450,11 +1448,12 @@ createAPICheckbox(api, category) {
                         failed: errors.length,
                         errors: errors.length > 0 ? errors : null
                     }
-                
                 };
                 
-                saveBtn.classList.remove('hidden');
                 this.displayNCTResults(this.nctResults);
+                
+                // Add new search button at the top
+                this.addNewSearchButton();
             } else {
                 resultsDiv.innerHTML = `
                     <div class="result-card">
@@ -1463,6 +1462,7 @@ createAPICheckbox(api, category) {
                         <pre>${JSON.stringify(errors, null, 2)}</pre>
                     </div>
                 `;
+                this.addNewSearchButton();
             }
             
         } catch (error) {
@@ -1474,6 +1474,7 @@ createAPICheckbox(api, category) {
                     <p>${this.escapeHtml(error.message)}</p>
                 </div>
             `;
+            this.addNewSearchButton();
         }
     },
 
@@ -1488,11 +1489,11 @@ createAPICheckbox(api, category) {
         const buttonBar = document.createElement('div');
         buttonBar.className = 'nct-new-search-btn';
         buttonBar.innerHTML = `
-            <button onclick="app.startNewNCTSearch()" style="background: linear-gradient(135deg, #1BEB49 0%, #17C93E 100%);">
+            <button onclick="app.startNewNCTSearch()">
                 <span>🔍</span>
                 <span>New Search</span>
             </button>
-            <button onclick="app.saveNCTResults()" style="background: linear-gradient(135deg, #FFA400 0%, #FF8C00 100%);">
+            <button onclick="app.saveNCTResults()">
                 <span>💾</span>
                 <span>Save Results</span>
             </button>
@@ -1502,8 +1503,9 @@ createAPICheckbox(api, category) {
         resultsDiv.insertBefore(buttonBar, resultsDiv.firstChild);
     },
 
-    // Add this new function
     startNewNCTSearch() {
+        console.log('Starting new search...');
+        
         const inputArea = document.querySelector('.nct-input-area');
         const resultsDiv = document.getElementById('nct-results');
         const progressDiv = document.getElementById('nct-progress');
@@ -1519,6 +1521,8 @@ createAPICheckbox(api, category) {
         
         // Scroll to top
         inputArea.scrollTop = 0;
+        
+        console.log('Returned to input screen');
     },
 
     displayNCTResults(data) {
