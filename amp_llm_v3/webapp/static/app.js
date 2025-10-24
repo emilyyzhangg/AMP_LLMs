@@ -1310,7 +1310,7 @@ createAPICheckbox(api, category) {
         const progressDiv = document.getElementById('nct-progress');
         const inputArea = document.querySelector('.nct-input-area');
         
-        // CRITICAL: Hide input area, show results area
+        // Hide input area, show results area
         console.log('Hiding input area, showing results area');
         inputArea.classList.add('hidden');
         resultsDiv.classList.add('active');
@@ -1319,17 +1319,24 @@ createAPICheckbox(api, category) {
         progressDiv.innerHTML = '<span class="spinner"></span> <span>Fetching clinical trial data...</span>';
         resultsDiv.innerHTML = '';
         
-        // Get selected APIs
+        // FIXED: Separate core and extended APIs
         const selectedAPIList = Array.from(this.selectedAPIs);
         
-        console.log('🔍 Starting NCT lookup with APIs:', selectedAPIList);
+        // Core APIs are ALWAYS included (don't send in databases parameter)
+        const coreAPIs = ['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc'];
+        
+        // Extended APIs are optional (send only these in databases parameter)
+        const extendedAPIs = selectedAPIList.filter(api => !coreAPIs.includes(api));
+        
+        console.log('🔍 Starting NCT lookup');
+        console.log('Core APIs (always included):', coreAPIs);
+        console.log('Extended APIs (user selected):', extendedAPIs);
         
         const results = [];
         const errors = [];
         const searchJobs = {};
         
         try {
-            // FIXED: Use webapp URL instead of direct NCT service URL
             const NCT_API_BASE = `${this.API_BASE}/api/nct`;
             
             async function makeRequest(url, options) {
@@ -1344,10 +1351,17 @@ createAPICheckbox(api, category) {
             // Initiate searches for each NCT number
             for (const nctId of nctIds) {
                 try {
+                    // FIXED: Build request based on whether extended APIs are selected
                     const searchRequest = {
-                        include_extended: false,
-                        databases: selectedAPIList
+                        include_extended: extendedAPIs.length > 0
                     };
+                    
+                    // Only include databases parameter if there are extended APIs
+                    if (extendedAPIs.length > 0) {
+                        searchRequest.databases = extendedAPIs;
+                    }
+                    
+                    console.log(`Searching ${nctId} with request:`, searchRequest);
                     
                     const data = await makeRequest(
                         `${NCT_API_BASE}/search/${nctId}`,
@@ -1491,7 +1505,8 @@ createAPICheckbox(api, category) {
             `;
             this.addNewSearchButton();
         }
-    },
+    }
+
     
     async extractTrial(nctId) {
         try {
@@ -1845,7 +1860,7 @@ createAPICheckbox(api, category) {
         api = this.apiRegistry.extended.find(a => a.id === sourceId);
         return api;
     },
-    
+
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
