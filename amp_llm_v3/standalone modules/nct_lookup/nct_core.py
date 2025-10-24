@@ -574,9 +574,21 @@ class NCTSearchEngine:
                     status.progress = 50 + int((completed / len(tasks)) * 40)
                 
                 result = await task
+                
+                # Enhanced error detection and logging
+                has_error = "error" in result
+                
+                if has_error:
+                    error_msg = result.get("error", "Unknown error")
+                    logger.error(f"❌ {db_name} API error: {error_msg}")
+                else:
+                    total = result.get("total_found", 0)
+                    logger.info(f"✅ {db_name} completed: {total} results found")
+                
                 results[db_name] = {
-                    "success": "error" not in result,
+                    "success": not has_error,
                     "data": result,
+                    "error": result.get("error") if has_error else None,
                     "fetch_time": datetime.utcnow().isoformat()
                 }
                 
@@ -584,14 +596,13 @@ class NCTSearchEngine:
                     status.completed_databases.append(db_name)
                 
                 completed += 1
-                logger.info(f"Completed {db_name} search")
                 
             except Exception as e:
-                logger.error(f"{db_name} search error: {e}", exc_info=True)
+                logger.error(f"💥 {db_name} search exception: {e}", exc_info=True)
                 results[db_name] = {
                     "success": False,
                     "error": str(e),
-                    "data": None
+                    "data": {"error": str(e), "results": [], "total_found": 0}
                 }
         
         return results
