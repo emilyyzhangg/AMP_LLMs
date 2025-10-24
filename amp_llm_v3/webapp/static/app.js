@@ -1170,7 +1170,7 @@ const app = {
             this.selectedAPIs = new Set(this.apiRegistry.metadata.default_enabled);
             return this.apiRegistry;
         }
-    }
+    },
     // ============================================================================
     // Build API Checkboxes Dynamically
     // ============================================================================
