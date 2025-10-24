@@ -10,6 +10,7 @@ Features:
 - JSON output with database tagging
 - Summary statistics
 - Async processing for performance
+- Dynamic API registry for easy extensibility
 
 Installation:
     pip install fastapi uvicorn aiohttp requests python-dotenv beautifulsoup4
@@ -18,6 +19,7 @@ Usage:
     uvicorn nct_api:app --reload --port 8000
 
 API Endpoints:
+    GET /api/registry - List all available APIs
     POST /api/search/{nct_id}
     GET /api/search/{nct_id}/status
     GET /api/results/{nct_id}
@@ -40,6 +42,7 @@ load_dotenv()
 
 from nct_core import NCTSearchEngine
 from nct_models import SearchRequest, SearchResponse, SearchStatus, SearchSummary, SearchConfig
+from nct_api_registry import APIRegistry
 
 # Configure logging
 logging.basicConfig(
@@ -51,8 +54,8 @@ logger = logging.getLogger(__name__)
 # Initialize FastAPI app
 app = FastAPI(
     title="NCT Lookup API",
-    description="Comprehensive clinical trial literature search service",
-    version="1.0.0",
+    description="Comprehensive clinical trial literature search service with dynamic API registry",
+    version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
 )
@@ -70,6 +73,14 @@ async def startup_event():
     logger.info("Starting NCT Lookup API")
     logger.info(f"SERPAPI_KEY configured: {bool(os.getenv('SERPAPI_KEY'))}")
     logger.info(f"NCBI_API_KEY configured: {bool(os.getenv('NCBI_API_KEY'))}")
+    
+    # Log available APIs
+    all_apis = APIRegistry.get_all_apis()
+    logger.info(f"Registered APIs: {len(all_apis)}")
+    for api in all_apis:
+        status = "✓" if not api.requires_key or os.getenv(api.config.get('env_var', '')) else "⚠"
+        logger.info(f"  {status} {api.name} ({api.id}) - {api.category}")
+    
     await search_engine.initialize()
     logger.info("Search engine initialized successfully")
 
@@ -86,15 +97,21 @@ async def root():
     """API root endpoint."""
     return {
         "service": "NCT Lookup API",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "status": "operational",
         "endpoints": {
+            "api_registry": "GET /api/registry",
             "search": "POST /api/search/{nct_id}",
             "status": "GET /api/search/{nct_id}/status",
             "results": "GET /api/results/{nct_id}",
             "save": "POST /api/results/{nct_id}/save",
             "download": "GET /api/results/{nct_id}/download",
             "delete": "DELETE /api/results/{nct_id}"
+        },
+        "features": {
+            "core_apis": len(APIRegistry.get_core_apis()),
+            "extended_apis": len(APIRegistry.get_extended_apis()),
+            "total_apis": len(APIRegistry.get_all_apis())
         }
     }
 
@@ -105,7 +122,49 @@ async def health_check():
     return {
         "status": "healthy",
         "timestamp": datetime.utcnow().isoformat(),
-        "active_searches": len([s for s in search_status_db.values() if s.status == "running"])
+        "active_searches": len([s for s in search_status_db.values() if s.status == "running"]),
+        "registered_apis": len(APIRegistry.get_all_apis())
+    }
+
+
+@app.get("/api/registry")
+async def get_api_registry():
+    """
+    Get the complete API registry with all available data sources.
+    
+    This endpoint returns metadata about all APIs (core and extended)
+    that can be used to dynamically generate UI controls.
+    
+    Returns:
+        Dictionary with 'core' and 'extended' API lists, each containing:
+        - id: API identifier
+        - name: Display name
+        - description: Brief description
+        - requires_key: Whether API key is needed
+        - enabled_by_default: Default checkbox state
+        - available: Whether API is currently usable (has key if required)
+    """
+    registry_data = APIRegistry.to_dict()
+    
+    # Add availability status based on API keys
+    for category in ['core', 'extended']:
+        for api_data in registry_data[category]:
+            api_def = APIRegistry.get_api_by_id(api_data['id'])
+            if api_def and api_def.requires_key:
+                env_var = api_def.config.get('env_var')
+                api_data['available'] = bool(os.getenv(env_var)) if env_var else False
+            else:
+                api_data['available'] = True
+    
+    return {
+        **registry_data,
+        "metadata": {
+            "total_core": len(registry_data['core']),
+            "total_extended": len(registry_data['extended']),
+            "total_apis": len(registry_data['core']) + len(registry_data['extended']),
+            "apis_requiring_keys": len(APIRegistry.get_apis_requiring_keys()),
+            "default_enabled": APIRegistry.get_default_enabled_apis()
+        }
     }
 
 
@@ -120,7 +179,7 @@ async def search_nct(
     
     Args:
         nct_id: NCT number (e.g., NCT12345678)
-        request: Search configuration
+        request: Search configuration with selected databases
         
     Returns:
         Search response with job ID and initial status
@@ -139,6 +198,16 @@ async def search_nct(
             status_code=400,
             detail=f"Invalid NCT format: {nct_id}. The 8 characters after 'NCT' must be digits"
         )
+    
+    # Validate selected databases
+    if request.databases:
+        valid_ids, invalid_ids = APIRegistry.validate_api_ids(request.databases)
+        if invalid_ids:
+            available = [api.id for api in APIRegistry.get_all_apis()]
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid database IDs: {invalid_ids}. Available: {available}"
+            )
     
     # Check if search already exists
     if nct_id in search_status_db:
@@ -167,7 +236,7 @@ async def search_nct(
         request
     )
     
-    logger.info(f"Queued search for {nct_id}")
+    logger.info(f"Queued search for {nct_id} with databases: {status.databases_to_search}")
     
     return SearchResponse(
         job_id=nct_id,
@@ -204,6 +273,7 @@ async def get_search_status(nct_id: str):
         "progress": status.progress,
         "current_database": status.current_database,
         "completed_databases": status.completed_databases,
+        "databases_to_search": status.databases_to_search,
         "created_at": status.created_at.isoformat(),
         "updated_at": status.updated_at.isoformat() if status.updated_at else None,
         "error": status.error
@@ -464,78 +534,56 @@ async def _execute_search(nct_id: str, request: SearchRequest):
 
 
 def _get_database_list(request: SearchRequest) -> List[str]:
-    """Get list of databases to search."""
-    databases = ["clinicaltrials", "pubmed", "pmc", "pmc_bioc"]  
+    """Get list of databases to search based on request."""
+    if request.databases:
+        # User specified exact databases
+        return request.databases
+    
+    # Build default list
+    databases = [api.id for api in APIRegistry.get_core_apis()]
     
     if request.include_extended:
-        if request.databases:
-            databases.extend(request.databases)
-        else:
-            databases.extend(["duckduckgo", "serpapi", "scholar", "openfda"])
+        databases.extend([api.id for api in APIRegistry.get_extended_apis()])
     
     return databases
 
 
 def _generate_summary(results: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Generate summary statistics matching both original workflow and test expectations.
-    Now properly counts PubMed articles, PMC articles, and PMC BioC articles.
+    Generate summary statistics from search results.
+    Uses API registry to dynamically handle all data sources.
     """
     # Extract basic info
     nct_id = results["nct_id"]
     title = results.get("metadata", {}).get("title", "")
     status = results.get("metadata", {}).get("status", "")
     
-    # Initialize lists and counts
+    # Initialize
     databases_searched = []
     results_by_database = {}
     
-    # Count results per source
+    # Count results per source dynamically
     sources = results.get("sources", {})
     
-    # ClinicalTrials.gov (always present if successful)
-    if sources.get("clinical_trials", {}).get("success"):
-        databases_searched.append("clinicaltrials")
-        results_by_database["clinicaltrials"] = 1  # The trial itself
-    
-    # PubMed count - count both PMIDs and articles
-    pubmed_count = 0
-    pubmed_articles_count = 0
-    if sources.get("pubmed", {}).get("success"):
-        pubmed_data = sources["pubmed"].get("data", {})
-        pubmed_count = len(pubmed_data.get("pmids", []))
-        pubmed_articles_count = len(pubmed_data.get("articles", []))
-        databases_searched.append("pubmed")
-        results_by_database["pubmed"] = pubmed_count
-    
-    # PMC count - count both PMCIDs and articles
-    pmc_count = 0
-    pmc_articles_count = 0
-    if sources.get("pmc", {}).get("success"):
-        pmc_data = sources["pmc"].get("data", {})
-        pmc_count = len(pmc_data.get("pmcids", []))
-        pmc_articles_count = len(pmc_data.get("articles", []))
-        databases_searched.append("pmc")
-        results_by_database["pmc"] = pmc_count
-
-    # PMC BioC count - count fetched articles
-    pmc_bioc_count = 0
-    if sources.get("pmc_bioc", {}).get("success"):
-        pmc_bioc_data = sources["pmc_bioc"].get("data", {})
-        pmc_bioc_count = pmc_bioc_data.get("total_fetched", 0)
-        if pmc_bioc_count > 0:
-            databases_searched.append("pmc_bioc")
-            results_by_database["pmc_bioc"] = pmc_bioc_count
-    
-    # Extended API counts
-    if "extended" in sources:
-        for api_name, api_data in sources["extended"].items():
-            if api_data.get("success"):
-                data = api_data.get("data", {})
-                count = _count_api_results(api_name, data)
+    # Process each registered API
+    for api_def in APIRegistry.get_all_apis():
+        api_id = api_def.id
+        
+        # Check core sources
+        if api_id in sources and sources[api_id].get("success"):
+            databases_searched.append(api_id)
+            count = _count_source_results(api_id, sources[api_id].get("data", {}))
+            if count > 0:
+                results_by_database[api_id] = count
+        
+        # Check extended sources
+        if "extended" in sources and api_id in sources["extended"]:
+            ext_data = sources["extended"][api_id]
+            if ext_data.get("success"):
+                databases_searched.append(api_id)
+                count = _count_source_results(api_id, ext_data.get("data", {}))
                 if count > 0:
-                    databases_searched.append(api_name)
-                    results_by_database[api_name] = count
+                    results_by_database[api_id] = count
     
     # Calculate total
     total_results = sum(results_by_database.values())
@@ -547,33 +595,47 @@ def _generate_summary(results: Dict[str, Any]) -> Dict[str, Any]:
         "databases_searched": databases_searched,
         "results_by_database": results_by_database,
         "total_results": total_results,
-        "search_timestamp": results.get("timestamp", ""),
-        # Detailed counts for UI display
-        "pubmed_count": pubmed_count,
-        "pubmed_articles_count": pubmed_articles_count,
-        "pmc_count": pmc_count,
-        "pmc_articles_count": pmc_articles_count,
-        "pmc_bioc_count": pmc_bioc_count,
+        "search_timestamp": results.get("timestamp", "")
     }
     
     return summary
 
 
-def _count_api_results(api_name: str, data: Dict[str, Any]) -> int:
-    """Count results from extended API data."""
+def _count_source_results(api_id: str, data: Dict[str, Any]) -> int:
+    """
+    Count results from a specific API source.
+    Handles different response formats dynamically.
+    """
     if not data or data.get("error"):
         return 0
     
-    # DuckDuckGo, SERP API, Scholar
+    # Core API result counting
+    if api_id == "clinicaltrials":
+        return 1  # The trial itself
+    
+    elif api_id == "pubmed":
+        return len(data.get("pmids", []))
+    
+    elif api_id == "pmc":
+        return len(data.get("pmcids", []))
+    
+    elif api_id == "pmc_bioc":
+        return data.get("total_fetched", 0)
+    
+    # Extended API result counting (generic patterns)
+    # Most extended APIs use "results" array
     if "results" in data:
         results_list = data["results"]
         if isinstance(results_list, list):
             return len(results_list)
-        return 0
     
-    # OpenFDA
+    # Some APIs use "total_found"
     if "total_found" in data:
         return data.get("total_found", 0)
+    
+    # Some APIs use "count"
+    if "count" in data:
+        return data.get("count", 0)
     
     return 0
 
