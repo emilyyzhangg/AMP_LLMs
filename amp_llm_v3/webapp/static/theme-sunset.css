@@ -1,0 +1,193 @@
+/* ============================================================================
+   THEME_NAME: Sunset Vibes
+   THEME_COLORS: #FF6B6B, #FFD93D, #6BCB77
+   
+   EXAMPLE CUSTOM THEME
+   Just drop this file into webapp/static/ and it will automatically appear!
+   ============================================================================ */
+
+body {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 50%, #6BCB77 100%);
+}
+
+/* AUTH */
+.auth-box input:focus {
+    border-color: #FF6B6B;
+}
+
+.auth-box button {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 100%);
+}
+
+/* HEADER - MODE PAGE */
+header {
+    background: linear-gradient(135deg, #E63946 0%, #FF6B6B 100%);
+    border-bottom: 3px solid #FFD93D;
+    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.3);
+}
+
+/* LANDING HEADER - CLEAN WHITE BACKGROUND */
+.landing-header {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFF8F0 100%);
+    border-bottom: 3px solid #FF6B6B;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.15);
+}
+
+.logo-container {
+    border-color: #FF6B6B;
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFF8F0 100%);
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
+}
+
+.landing-title {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 50%, #6BCB77 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.landing-version {
+    color: #FFD93D;
+    font-weight: 600;
+}
+
+.landing-header .theme-button,
+.landing-header .logout-button {
+    border-color: #FF6B6B;
+    color: #E63946;
+    background: #FFFFFF;
+    box-shadow: 0 2px 6px rgba(255, 107, 107, 0.15);
+}
+
+.landing-header .theme-button:hover {
+    background: linear-gradient(135deg, #FFF8F0 0%, #FFEBCC 100%);
+    border-color: #FFD93D;
+    color: #FF6B6B;
+    box-shadow: 0 4px 12px rgba(255, 217, 61, 0.25);
+}
+
+.landing-header .logout-button:hover {
+    background: linear-gradient(135deg, #FFF0F0 0%, #FFE0E0 100%);
+    border-color: #E74C3C;
+    color: #C0392B;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
+}
+
+/* MENU */
+.menu-item:hover {
+    box-shadow: 0 10px 25px rgba(255, 107, 107, 0.2);
+    border-color: #FF6B6B;
+}
+
+/* MESSAGES */
+.message.user .avatar {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 100%);
+}
+
+.message.user .content {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 100%);
+}
+
+/* INPUTS */
+.input-area textarea:focus,
+.nct-input-group input:focus,
+.nct-input-group textarea:focus {
+    border-color: #FF6B6B;
+}
+
+.input-area button {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 100%);
+}
+
+/* NCT */
+.nct-submit {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 100%);
+}
+
+.nct-save {
+    background: #6BCB77;
+}
+
+.nct-save:hover {
+    background: #5AB563;
+}
+
+.progress-text {
+    color: #FF6B6B;
+}
+
+.result-card:hover {
+    border-color: #FF6B6B;
+}
+
+.extract-button {
+    background: #FFD93D;
+}
+
+.extract-button:hover {
+    background: #FFC700;
+}
+
+.summary-item-value.success {
+    color: #6BCB77;
+}
+
+.summary-item-value.info {
+    color: #FF6B6B;
+}
+
+/* FILES */
+.file-upload-btn {
+    background: #FF6B6B;
+}
+
+.file-upload-btn:hover {
+    background: #E63946;
+}
+
+.file-refresh-btn {
+    background: #6BCB77;
+}
+
+.file-refresh-btn:hover {
+    background: #5AB563;
+}
+
+.file-card:hover {
+    border-color: #FF6B6B;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+}
+
+.file-card-icon {
+    color: #FF6B6B;
+}
+
+.file-card-load {
+    background: #FFD93D;
+}
+
+.file-card-load:hover {
+    background: #FFC700;
+}
+
+/* LOADING */
+.loading {
+    color: #FF6B6B;
+}
+
+.spinner {
+    border: 3px solid rgba(255, 107, 107, 0.3);
+    border-top-color: #FF6B6B;
+}
+
+/* SCROLLBAR */
+.chat-container::-webkit-scrollbar-thumb,
+.nct-results::-webkit-scrollbar-thumb,
+.files-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 100%);
+}
+
+.model-button:hover {
+    border-color: #FF6B6B;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+}
