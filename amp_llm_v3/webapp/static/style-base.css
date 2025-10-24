@@ -1134,7 +1134,7 @@ header p {
     display: flex;
     flex-direction: column;
     padding: 30px;
-    background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%);
+    background: #f8f9fa;
     overflow-y: auto;
     min-height: 0;
 }
@@ -1145,17 +1145,16 @@ header p {
 
 /* Results area COMPLETELY HIDDEN by default - NO EMPTY SPACE */
 .nct-results {
-    display: none !important;
-    /* Remove all flex properties when hidden */
-}
-
-.nct-results.active {
-    display: block !important;
     flex: 1;
     min-height: 0;
     overflow-y: auto;
     padding: 30px;
-    background: #FFFFFF;
+    background: #ffffff;
+    display: none !important; /* Force hide until activated */
+}
+
+.nct-results.active {
+    display: block !important;
 }
 
 /* API Selection Container */
@@ -1260,14 +1259,14 @@ header p {
     gap: 0.5rem;
     font-size: 1rem;
     font-weight: 700;
-    color: #2C3E50;
+    color: #2C3E50 !important;
     margin-bottom: 0.35rem;
     line-height: 1.4;
 }
 
 .api-checkbox-desc {
     font-size: 0.9rem;
-    color: #5D6D7E;
+    color: #5D6D7E !important;
     line-height: 1.5;
     font-weight: 400;
 }
@@ -1287,13 +1286,13 @@ header p {
 
 .api-status-badge.requires-key {
     background: #FFF8E6;
-    color: #8B5A00;
+    color: #8B5A00!important;
     border: 1px solid #FFD666;
 }
 
 .api-status-badge.unavailable {
     background: #FFF0F0;
-    color: #8B2E3B;
+    color: #8B2E3B !important;
     border: 1px solid #FFCCCC;
 }
 
