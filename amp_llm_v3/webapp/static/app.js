@@ -1,5 +1,6 @@
 // ============================================================================
 // AMP LLM Enhanced Web Interface - FIXED VERSION
+// ✅ Fixed progressDiv undefined error
 // ✅ Info bar only shows after model selection
 // ✅ Chats saved per model during session
 // ✅ Clear chat button when model is active
@@ -35,10 +36,14 @@ const app = {
     selectedFile: null,
     files: [],
     availableModels: [],
-    availableThemes: [],  // NEW: Dynamic theme list
+    availableThemes: [],
     
     // Session-based chat storage (per model)
     sessionChats: {},
+    
+    // API registry
+    apiRegistry: null,
+    selectedAPIs: new Set(),
     
     // =========================================================================
     // Initialization
@@ -48,8 +53,7 @@ const app = {
         console.log('🚀 App initializing...');
         this.apiKey = localStorage.getItem('amp_llm_api_key') || '';
         this.currentTheme = localStorage.getItem('amp_llm_theme') || 'green';
-        app.apiRegistry = null;
-        app.selectedAPIs = new Set();
+        
         // Load available themes dynamically
         await this.loadAvailableThemes();
         
@@ -62,6 +66,7 @@ const app = {
             console.log('⚠️  No API key, showing auth');
         }
         
+        // Global click handler for theme dropdowns
         document.addEventListener('click', (e) => {
             const allDropdowns = document.querySelectorAll('.theme-dropdown');
             const allButtons = document.querySelectorAll('.theme-button');
@@ -80,6 +85,7 @@ const app = {
             }
         });
     
+        // Enter key handlers
         document.getElementById('api-key-input')?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.handleAuth();
         });
@@ -100,15 +106,15 @@ const app = {
         
         console.log('✅ App initialized');
     },
+
     // =========================================================================
-    // NEW: Dynamic Theme Loading
+    // Dynamic Theme Loading
     // =========================================================================
     
     async loadAvailableThemes() {
         console.log('🎨 Loading available themes...');
         
         try {
-            // Try to fetch themes from API
             const response = await fetch(`${this.API_BASE}/api/themes`);
             
             if (response.ok) {
@@ -124,98 +130,70 @@ const app = {
             this.useFallbackThemes();
         }
         
-        // Build theme dropdown after loading
         this.buildThemeDropdown();
     },
     
     useFallbackThemes() {
-        // Fallback to hardcoded themes if API not available
         this.availableThemes = [
-            {
-                id: 'green',
-                name: 'Green Primary',
-                colors: ['#1BEB49', '#0E1F81']
-            },
-            {
-                id: 'blue',
-                name: 'Blue Primary',
-                colors: ['#0E1F81', '#1BEB49']
-            },
-            {
-                id: 'balanced',
-                name: 'Tri-Color',
-                colors: ['#0E1F81', '#1BEB49', '#FFA400']
-            },
-            {
-                id: 'professional',
-                name: 'Professional',
-                colors: ['#2C3E50', '#16A085', '#E67E22']
-            }
+            { id: 'green', name: 'Green Primary', colors: ['#1BEB49', '#0E1F81'] },
+            { id: 'blue', name: 'Blue Primary', colors: ['#0E1F81', '#1BEB49'] },
+            { id: 'balanced', name: 'Tri-Color', colors: ['#0E1F81', '#1BEB49', '#FFA400'] },
+            { id: 'professional', name: 'Professional', colors: ['#2C3E50', '#16A085', '#E67E22'] }
         ];
         console.log('✅ Using fallback themes');
     },
     
     buildThemeDropdown() {
-    const dropdowns = [
-        document.getElementById('theme-dropdown'),      // Landing header
-        document.getElementById('theme-dropdown-2')     // Mode header
-    ];
-    
-    dropdowns.forEach(dropdown => {
-        if (!dropdown) return;
+        const dropdowns = [
+            document.getElementById('theme-dropdown'),
+            document.getElementById('theme-dropdown-2')
+        ];
         
-        // Clear existing options
-        dropdown.innerHTML = '';
-        
-        // Build options from available themes
-        this.availableThemes.forEach(theme => {
-            const option = document.createElement('div');
-            option.className = 'theme-option';
-            option.onclick = () => this.setTheme(theme.id);
+        dropdowns.forEach(dropdown => {
+            if (!dropdown) return;
             
-            // Create gradient indicator
-            const indicator = document.createElement('div');
-            indicator.className = 'theme-indicator';
+            dropdown.innerHTML = '';
             
-            // Generate CSS gradient from colors array
-            if (theme.colors && theme.colors.length > 0) {
-                const gradientStops = theme.colors.map((color, idx) => {
-                    const position = (idx / (theme.colors.length - 1)) * 100;
-                    return `${color} ${position}%`;
-                }).join(', ');
-                indicator.style.background = `linear-gradient(135deg, ${gradientStops})`;
-            }
-            
-            // Create label
-            const label = document.createElement('span');
-            label.textContent = theme.name;
-            
-            option.appendChild(indicator);
-            option.appendChild(label);
-            dropdown.appendChild(option);
+            this.availableThemes.forEach(theme => {
+                const option = document.createElement('div');
+                option.className = 'theme-option';
+                option.onclick = () => this.setTheme(theme.id);
+                
+                const indicator = document.createElement('div');
+                indicator.className = 'theme-indicator';
+                
+                if (theme.colors && theme.colors.length > 0) {
+                    const gradientStops = theme.colors.map((color, idx) => {
+                        const position = (idx / (theme.colors.length - 1)) * 100;
+                        return `${color} ${position}%`;
+                    }).join(', ');
+                    indicator.style.background = `linear-gradient(135deg, ${gradientStops})`;
+                }
+                
+                const label = document.createElement('span');
+                label.textContent = theme.name;
+                
+                option.appendChild(indicator);
+                option.appendChild(label);
+                dropdown.appendChild(option);
+            });
         });
-    });
-    
-    console.log(`✅ Built theme dropdowns with ${this.availableThemes.length} options`);
-    this.updateActiveTheme();
-},
-
-
+        
+        console.log(`✅ Built theme dropdowns with ${this.availableThemes.length} options`);
+        this.updateActiveTheme();
+    },
 
     // =========================================================================
-    // Theme Management - UPDATED for dynamic themes
+    // Theme Management
     // =========================================================================
     
     toggleThemeDropdown() {
-        // Close all dropdowns first
         const allDropdowns = document.querySelectorAll('.theme-dropdown');
         allDropdowns.forEach(d => d.classList.add('hidden'));
         
-        // Find which button was clicked by checking event
         const clickedButton = event.target.closest('.theme-button');
         if (!clickedButton) return;
         
-        // Find the dropdown sibling
         const dropdown = clickedButton.nextElementSibling;
         if (dropdown && dropdown.classList.contains('theme-dropdown')) {
             dropdown.classList.toggle('hidden');
@@ -226,7 +204,6 @@ const app = {
     setTheme(themeId) {
         console.log('🎨 Setting theme:', themeId);
         
-        // Validate theme exists
         const theme = this.availableThemes.find(t => t.id === themeId);
         if (!theme) {
             console.error('❌ Theme not found:', themeId);
@@ -242,17 +219,14 @@ const app = {
     applyTheme(themeId, animate = false) {
         const themeStylesheet = document.getElementById('theme-stylesheet');
         
-        // Find theme metadata
         const theme = this.availableThemes.find(t => t.id === themeId);
         const themeName = theme ? theme.name : themeId.charAt(0).toUpperCase() + themeId.slice(1);
         
-        // Update stylesheet href
         themeStylesheet.href = `/static/theme-${themeId}.css`;
         
-        // Update BOTH theme name displays
         const themeNameElements = [
-            document.getElementById('current-theme-name'),    // Landing header
-            document.getElementById('current-theme-name-2')   // Mode header
+            document.getElementById('current-theme-name'),
+            document.getElementById('current-theme-name-2')
         ];
         
         themeNameElements.forEach(element => {
@@ -276,7 +250,6 @@ const app = {
     updateActiveTheme() {
         const options = document.querySelectorAll('.theme-option');
         options.forEach(option => {
-            // Check if this option's onclick calls setTheme with current theme
             const isActive = option.onclick && option.onclick.toString().includes(this.currentTheme);
             
             if (isActive) {
@@ -330,7 +303,6 @@ const app = {
     handleLogout() {
         localStorage.removeItem('amp_llm_api_key');
         this.apiKey = '';
-        // Clear session chats
         this.sessionChats = {};
         location.reload();
     },
@@ -411,7 +383,6 @@ const app = {
         if (this.currentMode === 'chat' && this.currentConversationId) {
             backButton.textContent = '← Back to Models';
             backButton.onclick = () => {
-                // Save current chat before going back
                 if (this.currentModel) {
                     this.saveCurrentChat();
                 }
@@ -422,9 +393,7 @@ const app = {
                 const container = document.getElementById('chat-container');
                 container.innerHTML = '';
                 
-                // Remove info bar
                 this.removeInfoBar();
-                
                 this.showModelSelection();
                 
                 const input = document.getElementById('chat-input');
@@ -449,7 +418,6 @@ const app = {
         const container = document.getElementById('chat-container');
         container.innerHTML = '';
         
-        // Remove info bar during model selection
         this.removeInfoBar();
         
         const input = document.getElementById('chat-input');
@@ -523,7 +491,6 @@ const app = {
         }
     },
 
-    // NEW: Remove info bar helper
     removeInfoBar() {
         const modeElement = document.getElementById(this.currentMode + '-mode');
         if (modeElement) {
@@ -535,7 +502,6 @@ const app = {
         }
     },
 
-    // UPDATED: Only create info bar when model is selected
     ensureChatInfoBar() {
         console.log('📊 Ensuring chat info bar...');
         
@@ -547,22 +513,18 @@ const app = {
             return;
         }
         
-        // Check if info bar already exists
         let infoBar = modeElement.querySelector('.chat-info-bar');
         
         if (!infoBar) {
             console.log('➕ Creating new info bar for', this.currentMode);
             
-            // Create the info bar element
             infoBar = document.createElement('div');
             infoBar.className = 'chat-info-bar';
             
-            // Add to top using prepend
             if (typeof modeElement.prepend === 'function') {
                 modeElement.prepend(infoBar);
                 console.log('✅ Info bar inserted using prepend()');
             } else {
-                // Fallback
                 modeElement.appendChild(infoBar);
                 if (modeElement.firstChild !== infoBar) {
                     modeElement.insertBefore(infoBar, modeElement.firstChild);
@@ -573,7 +535,6 @@ const app = {
             console.log('✅ Info bar already exists');
         }
         
-        // Now update its content
         this.updateChatInfoBar();
     },
 
@@ -598,7 +559,6 @@ const app = {
         
         const serviceLabel = this.currentMode === 'research' ? 'Research Assistant' : 'Chat with LLM';
         
-        // Add clear chat button if model is active
         const clearButton = this.currentConversationId ? 
             `<button class="clear-chat-btn" onclick="app.clearCurrentChat()">🗑️ Clear Chat</button>` : '';
         
@@ -655,7 +615,6 @@ const app = {
             name.style.textAlign = 'left';
             name.style.marginLeft = '10px';
             
-            // Show indicator if this model has saved chat
             const hasChat = this.sessionChats[modelName] && this.sessionChats[modelName].messages.length > 0;
             if (hasChat) {
                 const indicator = document.createElement('span');
@@ -694,20 +653,17 @@ const app = {
         console.log('✅ Model selection displayed');
     },
     
-    // NEW: Save current chat to session storage
     saveCurrentChat() {
         if (!this.currentModel) return;
         
         const container = document.getElementById('chat-container');
         const messages = [];
         
-        // Extract all messages except system and model selection
         container.querySelectorAll('.message').forEach(msg => {
             const role = msg.classList.contains('user') ? 'user' : 
                         msg.classList.contains('assistant') ? 'assistant' : 
                         msg.classList.contains('system') ? 'system' : 'error';
             
-            // Skip system messages
             if (role === 'system' || role === 'error') return;
             
             const contentEl = msg.querySelector('.content');
@@ -728,7 +684,6 @@ const app = {
         console.log(`💾 Saved ${messages.length} messages for ${this.currentModel}`);
     },
     
-    // NEW: Restore chat from session storage
     restoreChat(modelName) {
         const saved = this.sessionChats[modelName];
         if (!saved || saved.messages.length === 0) {
@@ -741,18 +696,15 @@ const app = {
         const container = document.getElementById('chat-container');
         container.innerHTML = '';
         
-        // Restore all messages
         saved.messages.forEach(msg => {
             this.addMessage('chat-container', msg.role, msg.content);
         });
         
-        // Use saved conversation ID
         this.currentConversationId = saved.conversationId;
         
         return true;
     },
     
-    // NEW: Clear current chat
     async clearCurrentChat() {
         if (!this.currentModel || !this.currentConversationId) return;
         
@@ -762,7 +714,6 @@ const app = {
         
         console.log('🗑️  Clearing chat for', this.currentModel);
         
-        // Delete conversation on backend
         try {
             await fetch(`${this.API_BASE}/chat/conversations/${this.currentConversationId}`, {
                 method: 'DELETE',
@@ -775,14 +726,11 @@ const app = {
             console.error('⚠️  Failed to delete backend conversation:', error);
         }
         
-        // Clear from session storage
         delete this.sessionChats[this.currentModel];
         
-        // Clear UI
         const container = document.getElementById('chat-container');
         container.innerHTML = '';
         
-        // Re-initialize with same model
         const modelName = this.currentModel;
         this.currentConversationId = null;
         this.currentModel = null;
@@ -797,27 +745,22 @@ const app = {
     async selectModel(modelName) {
         console.log('🎯 selectModel called with:', modelName);
         
-        // Check if we have a saved chat for this model
         const hasSavedChat = this.sessionChats[modelName] && 
                             this.sessionChats[modelName].messages.length > 0;
         
         if (hasSavedChat) {
             console.log('📥 Restoring saved chat for', modelName);
             
-            // Clear model selection UI
             const modelSelection = document.getElementById('model-selection-container');
             if (modelSelection) {
                 modelSelection.remove();
             }
             
-            // Restore the chat
             this.currentModel = modelName;
             this.restoreChat(modelName);
             
-            // Create info bar now that model is selected
             this.ensureChatInfoBar();
             
-            // Enable input
             const input = document.getElementById('chat-input');
             input.disabled = false;
             input.placeholder = 'Type your message...';
@@ -825,14 +768,12 @@ const app = {
             
             this.updateBackButton();
             
-            // Add welcome back message
             this.addMessage('chat-container', 'system', 
                 `✅ Resumed conversation with ${modelName}\n\n💡 Commands:\n• Click "Clear Chat" to reset\n• Click "Back to Models" to switch models`);
             
             return;
         }
         
-        // No saved chat - initialize new conversation
         const loadingId = this.addMessage('chat-container', 'system', `🔄 Initializing ${modelName}...`);
         
         try {
@@ -870,7 +811,6 @@ const app = {
                 
                 console.log('✅ Model initialized:', data);
                 
-                // Create info bar now that model is selected
                 this.ensureChatInfoBar();
 
                 document.getElementById(loadingId)?.remove();
@@ -924,7 +864,6 @@ const app = {
         const command = message.toLowerCase().trim();
         
         if (command === 'exit') {
-            // Save before exiting
             if (this.currentModel) {
                 this.saveCurrentChat();
             }
@@ -945,7 +884,6 @@ const app = {
         }
         
         if (command === 'main menu') {
-            // Save before exiting
             if (this.currentModel) {
                 this.saveCurrentChat();
             }
@@ -1007,7 +945,6 @@ const app = {
                 if (data.message && data.message.content) {
                     this.addMessage('chat-container', 'assistant', data.message.content);
                     
-                    // Auto-save after successful exchange
                     this.saveCurrentChat();
                 } else {
                     this.addMessage('chat-container', 'error', 
@@ -1143,11 +1080,9 @@ const app = {
             this.apiRegistry = await response.json();
             console.log('✅ API registry loaded:', this.apiRegistry);
             
-            // Initialize selected APIs with defaults
             if (this.apiRegistry.metadata?.default_enabled) {
                 this.selectedAPIs = new Set(this.apiRegistry.metadata.default_enabled);
             } else {
-                // Fallback
                 this.selectedAPIs = new Set();
                 [...this.apiRegistry.core, ...this.apiRegistry.extended].forEach(api => {
                     if (api.enabled_by_default) {
@@ -1162,7 +1097,6 @@ const app = {
         } catch (error) {
             console.error('❌ Failed to load API registry:', error);
             
-            // Use fallback registry
             this.apiRegistry = {
                 core: [
                     { id: 'clinicaltrials', name: 'ClinicalTrials.gov', description: 'Primary trial registry', enabled_by_default: true, available: true },
@@ -1185,6 +1119,7 @@ const app = {
             return this.apiRegistry;
         }
     },
+
     // ============================================================================
     // Build API Checkboxes Dynamically
     // ============================================================================
@@ -1192,12 +1127,10 @@ const app = {
     async buildAPICheckboxes() {
         console.log('🏗️  Building API checkboxes...');
         
-        // Load registry if not already loaded
         if (!this.apiRegistry) {
             await this.loadAPIRegistry();
         }
         
-        // Build core APIs
         const coreContainer = document.getElementById('core-apis-container');
         if (coreContainer) {
             coreContainer.innerHTML = '';
@@ -1210,7 +1143,6 @@ const app = {
             console.log(`✅ Built ${this.apiRegistry.core.length} core API checkboxes`);
         }
         
-        // Build extended APIs
         const extendedContainer = document.getElementById('extended-apis-container');
         if (extendedContainer) {
             extendedContainer.innerHTML = '';
@@ -1224,71 +1156,65 @@ const app = {
         }
     },
 
-createAPICheckbox(api, category) {
-    const item = document.createElement('div');
-    item.className = 'api-checkbox-item';
-    
-    // Disable if API is not available (missing key)
-    if (!api.available) {
-        item.classList.add('disabled');
-    }
-    
-    // Checkbox input
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.id = `api-${api.id}`;
-    checkbox.value = api.id;
-    checkbox.checked = this.selectedAPIs.has(api.id);
-    checkbox.disabled = !api.available;
-    
-    // Handle checkbox change
-    checkbox.addEventListener('change', (e) => {
-        if (e.target.checked) {
-            this.selectedAPIs.add(api.id);
-        } else {
-            this.selectedAPIs.delete(api.id);
+    createAPICheckbox(api, category) {
+        const item = document.createElement('div');
+        item.className = 'api-checkbox-item';
+        
+        if (!api.available) {
+            item.classList.add('disabled');
         }
-        console.log('Selected APIs:', Array.from(this.selectedAPIs));
-    });
-    
-    // Label
-    const label = document.createElement('label');
-    label.className = 'api-checkbox-label';
-    label.htmlFor = `api-${api.id}`;
-    
-    // Name with badges
-    const nameDiv = document.createElement('div');
-    nameDiv.className = 'api-checkbox-name';
-    nameDiv.textContent = api.name;
-    
-    // Add status badges
-    if (api.requires_key && !api.available) {
-        const badge = document.createElement('span');
-        badge.className = 'api-status-badge unavailable';
-        badge.textContent = '🔑 Key Required';
-        nameDiv.appendChild(badge);
-    } else if (api.requires_key) {
-        const badge = document.createElement('span');
-        badge.className = 'api-status-badge requires-key';
-        badge.textContent = '🔑 API Key';
-        nameDiv.appendChild(badge);
-    }
-    
-    // Description
-    const descDiv = document.createElement('div');
-    descDiv.className = 'api-checkbox-desc';
-    descDiv.textContent = api.description;
-    
-    label.appendChild(nameDiv);
-    label.appendChild(descDiv);
-    
-    item.appendChild(checkbox);
-    item.appendChild(label);
-    
-    return item;
-},
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `api-${api.id}`;
+        checkbox.value = api.id;
+        checkbox.checked = this.selectedAPIs.has(api.id);
+        checkbox.disabled = !api.available;
+        
+        checkbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                this.selectedAPIs.add(api.id);
+            } else {
+                this.selectedAPIs.delete(api.id);
+            }
+            console.log('Selected APIs:', Array.from(this.selectedAPIs));
+        });
+        
+        const label = document.createElement('label');
+        label.className = 'api-checkbox-label';
+        label.htmlFor = `api-${api.id}`;
+        
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'api-checkbox-name';
+        nameDiv.textContent = api.name;
+        
+        if (api.requires_key && !api.available) {
+            const badge = document.createElement('span');
+            badge.className = 'api-status-badge unavailable';
+            badge.textContent = '🔑 Key Required';
+            nameDiv.appendChild(badge);
+        } else if (api.requires_key) {
+            const badge = document.createElement('span');
+            badge.className = 'api-status-badge requires-key';
+            badge.textContent = '🔑 API Key';
+            nameDiv.appendChild(badge);
+        }
+        
+        const descDiv = document.createElement('div');
+        descDiv.className = 'api-checkbox-desc';
+        descDiv.textContent = api.description;
+        
+        label.appendChild(nameDiv);
+        label.appendChild(descDiv);
+        
+        item.appendChild(checkbox);
+        item.appendChild(label);
+        
+        return item;
+    },
+
     // =========================================================================
-    // Progress Tracking for NCT Search
+    // Progress Tracking for NCT Search - FIXED
     // =========================================================================
 
     updateSearchProgress(message, details = {}) {
@@ -1342,8 +1268,9 @@ createAPICheckbox(api, category) {
             progressDiv.innerHTML = '';
         }
     },
+
     // ============================================================================
-    // Updated NCT Lookup Handler
+    // Updated NCT Lookup Handler - FIXED progressDiv bug
     // ============================================================================
 
     async handleNCTLookup() {
@@ -1355,7 +1282,6 @@ createAPICheckbox(api, category) {
             return;
         }
         
-        // Ensure API registry is loaded
         if (!this.apiRegistry) {
             await this.loadAPIRegistry();
         }
@@ -1363,25 +1289,18 @@ createAPICheckbox(api, category) {
         const resultsDiv = document.getElementById('nct-results');
         const inputArea = document.querySelector('.nct-input-area');
         
-        // Hide input area, show results area
         console.log('Starting NCT lookup for:', nctIds);
         inputArea.classList.add('hidden');
         resultsDiv.classList.add('active');
         resultsDiv.innerHTML = '';
         
-        // Show initial progress
         this.updateSearchProgress('Initializing search...', {
             current: 0,
             total: nctIds.length
         });
         
-        // FIXED: Separate core and extended APIs
         const selectedAPIList = Array.from(this.selectedAPIs);
-        
-        // Core APIs are ALWAYS included (don't send in databases parameter)
         const coreAPIs = ['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc'];
-        
-        // Extended APIs are optional (send only these in databases parameter)
         const extendedAPIs = selectedAPIList.filter(api => !coreAPIs.includes(api));
         
         console.log('🔍 Starting NCT lookup');
@@ -1404,15 +1323,12 @@ createAPICheckbox(api, category) {
                 return response.json();
             }
             
-            // Initiate searches for each NCT number
             for (const nctId of nctIds) {
                 try {
-                    // FIXED: Build request based on whether extended APIs are selected
                     const searchRequest = {
                         include_extended: extendedAPIs.length > 0
                     };
                     
-                    // Only include databases parameter if there are extended APIs
                     if (extendedAPIs.length > 0) {
                         searchRequest.databases = extendedAPIs;
                     }
@@ -1443,11 +1359,11 @@ createAPICheckbox(api, category) {
                 }
             }
             
-            // Poll for results
-            const maxWait = 300000; // 5 minutes
-            const pollInterval = 2000; // 2 seconds
+            const maxWait = 300000;
+            const pollInterval = 2000;
             const startTime = Date.now();
             
+            // FIXED: Define progressDiv inside the polling loop
             while (Object.keys(searchJobs).length > 0 && (Date.now() - startTime) < maxWait) {
                 const completedJobs = [];
                 
@@ -1460,8 +1376,10 @@ createAPICheckbox(api, category) {
                             }
                         );
                         
-                        // Update progress display
-                        if (statusData.current_database) {
+                        // FIXED: Get progressDiv here, inside the loop where it's used
+                        const progressDiv = document.getElementById('nct-progress');
+                        
+                        if (statusData.current_database && progressDiv) {
                             const apiDef = this.apiRegistry.core.find(a => a.id === statusData.current_database) ||
                                         this.apiRegistry.extended.find(a => a.id === statusData.current_database);
                             const apiName = apiDef ? apiDef.name : statusData.current_database;
@@ -1502,18 +1420,15 @@ createAPICheckbox(api, category) {
                     }
                 }
                 
-                // Remove completed jobs
                 completedJobs.forEach(nctId => {
                     delete searchJobs[nctId];
                 });
                 
-                // Wait before next poll
                 if (Object.keys(searchJobs).length > 0) {
                     await new Promise(resolve => setTimeout(resolve, pollInterval));
                 }
             }
             
-            // Handle timeouts
             for (const nctId of Object.keys(searchJobs)) {
                 errors.push({
                     nct_id: nctId,
@@ -1521,7 +1436,8 @@ createAPICheckbox(api, category) {
                 });
             }
             
-            progressDiv.classList.add('hidden');
+            // FIXED: Clear progress using the method
+            this.clearSearchProgress();
             
             if (results.length > 0) {
                 this.nctResults = {
@@ -1536,8 +1452,6 @@ createAPICheckbox(api, category) {
                 };
                 
                 this.displayNCTResults(this.nctResults);
-                
-                // Add new search button at the top
                 this.addNewSearchButton();
             } else {
                 resultsDiv.innerHTML = `
@@ -1552,7 +1466,7 @@ createAPICheckbox(api, category) {
             
         } catch (error) {
             console.error('❌ NCT lookup error:', error);
-            progressDiv.classList.add('hidden');
+            this.clearSearchProgress();
             resultsDiv.innerHTML = `
                 <div class="result-card">
                     <h3>Error</h3>
@@ -1592,7 +1506,6 @@ createAPICheckbox(api, category) {
         const filename = `nct_results_${Date.now()}.json`;
         const content = JSON.stringify(this.nctResults.results, null, 2);
         
-        // Download to local computer
         const blob = new Blob([content], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1603,7 +1516,6 @@ createAPICheckbox(api, category) {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        // Also save to server
         try {
             await fetch(`${this.API_BASE}/files/save`, {
                 method: 'POST',
@@ -1629,7 +1541,6 @@ createAPICheckbox(api, category) {
         const filename = `nct_results_${Date.now()}.json`;
         const content = JSON.stringify(this.nctResults.results, null, 2);
         
-        // Create blob and download
         const blob = new Blob([content], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1641,8 +1552,6 @@ createAPICheckbox(api, category) {
         URL.revokeObjectURL(url);
         
         console.log(`✅ Downloaded ${filename} to local computer`);
-        
-        // Show success message
         alert(`✅ Downloaded: ${filename}`);
     },
     
@@ -1751,34 +1660,28 @@ createAPICheckbox(api, category) {
         
         event.target.value = '';
     },
-    // Add "New Search" button to results
+
     addNewSearchButton() {
         const resultsDiv = document.getElementById('nct-results');
         const inputArea = document.querySelector('.nct-input-area');
         
-        // Add "New Search" button at top of results
         const newSearchBtn = document.createElement('button');
         newSearchBtn.className = 'new-search-button';
         newSearchBtn.innerHTML = '<span>🔍</span><span>New Search</span>';
         newSearchBtn.onclick = () => {
-            // Clear results and show input area
             resultsDiv.innerHTML = '';
             resultsDiv.classList.remove('active');
             inputArea.classList.remove('hidden');
             
-            // Clear input
             document.getElementById('nct-input').value = '';
             
-            // Reset selected APIs to defaults
             this.selectedAPIs = new Set(this.apiRegistry?.metadata?.default_enabled || []);
             this.buildAPICheckboxes();
         };
         
-        // Insert at the beginning of results
         resultsDiv.insertBefore(newSearchBtn, resultsDiv.firstChild);
     },
     
-    // Display NCT search results
     displayNCTResults(data) {
         const resultsDiv = document.getElementById('nct-results');
         const saveBtn = document.getElementById('nct-save-btn');
@@ -1786,22 +1689,14 @@ createAPICheckbox(api, category) {
 
         if (downloadBtn) {
             downloadBtn.classList.remove('hidden');
-        } else {
-            console.warn('⚠️  Download button not found in DOM');
         }
 
-        // Show save button
         if (saveBtn) {
             saveBtn.classList.remove('hidden');
-        } else {
-            console.warn('⚠️  Save button not found in DOM');
         }
         
         let html = '';
         
-        // ========================================================================
-        // ENHANCED SUMMARY CARD WITH SOURCE COUNTS
-        // ========================================================================
         html += `
             <div class="result-card summary-card">
                 <h3>📊 Search Summary</h3>
@@ -1821,14 +1716,12 @@ createAPICheckbox(api, category) {
                 </div>
         `;
         
-        // Calculate results per source across all trials
         const sourceStats = {};
         let totalResults = 0;
         
         data.results.forEach(trial => {
             const sources = trial.sources || {};
             
-            // Count results from each source
             Object.entries(sources).forEach(([sourceName, sourceData]) => {
                 if (!sourceStats[sourceName]) {
                     sourceStats[sourceName] = {
@@ -1841,7 +1734,6 @@ createAPICheckbox(api, category) {
                 if (sourceData && sourceData.success && sourceData.data) {
                     sourceStats[sourceName].successful++;
                     
-                    // Count actual results from this source
                     const resultCount = this.countSourceResults(sourceName, sourceData.data);
                     sourceStats[sourceName].count += resultCount;
                     totalResults += resultCount;
@@ -1851,7 +1743,6 @@ createAPICheckbox(api, category) {
             });
         });
         
-        // Display source statistics
         if (Object.keys(sourceStats).length > 0) {
             html += `
                 <div class="source-stats-container">
@@ -1859,7 +1750,6 @@ createAPICheckbox(api, category) {
                     <div class="source-stats-grid">
             `;
             
-            // Sort sources by count (highest first)
             const sortedSources = Object.entries(sourceStats).sort((a, b) => b[1].count - a[1].count);
             
             sortedSources.forEach(([sourceName, stats]) => {
@@ -1892,17 +1782,13 @@ createAPICheckbox(api, category) {
             `;
         }
         
-        html += `</div>`; // Close summary-card
+        html += `</div>`;
         
-        // ========================================================================
-        // INDIVIDUAL TRIAL CARDS
-        // ========================================================================
         data.results.forEach(trial => {
             const nctId = trial.nct_id || 'Unknown';
             const metadata = trial.metadata || {};
             const sources = trial.sources || {};
             
-            // Get ClinicalTrials.gov summary
             const ctData = sources.clinicaltrials?.data || sources.clinical_trials?.data;
             const trialTitle = metadata.title || ctData?.brief_title || ctData?.official_title || 'Title not available';
             const trialStatus = metadata.status || ctData?.overall_status || 'Unknown';
@@ -1935,7 +1821,6 @@ createAPICheckbox(api, category) {
                     </div>
             `;
             
-            // Display data from each source
             Object.entries(sources).forEach(([sourceName, sourceData]) => {
                 const apiInfo = this.getAPIInfo(sourceName);
                 const apiDisplayName = apiInfo ? apiInfo.name : sourceName;
@@ -1956,9 +1841,7 @@ createAPICheckbox(api, category) {
                             <div class="source-content">
                     `;
                     
-                    // Display key information based on source
                     if (sourceName === 'clinicaltrials' || sourceName === 'clinical_trials') {
-                        // Already displayed in summary, show additional details
                         if (data.enrollment) {
                             html += `<div class="data-field">
                                 <strong>Enrollment:</strong> ${data.enrollment}
@@ -1992,12 +1875,10 @@ createAPICheckbox(api, category) {
                             <strong>Full-Text Articles:</strong> ${resultCount} retrieved
                         </div>`;
                     } else {
-                        // Extended sources - show result count and brief info
                         if (data.results && data.results.length > 0) {
                             html += `<div class="data-field">
                                 <strong>Results:</strong> ${data.results.length} found
                             </div>`;
-                            // Show first result as example
                             const firstResult = data.results[0];
                             if (firstResult.title) {
                                 html += `<div class="data-field">
@@ -2023,10 +1904,9 @@ createAPICheckbox(api, category) {
                 }
             });
             
-            html += `</div>`; // Close trial-card
+            html += `</div>`;
         });
         
-        // Show errors if any
         if (data.summary.errors && data.summary.errors.length > 0) {
             html += `
                 <div class="result-card error-card">
@@ -2049,14 +1929,13 @@ createAPICheckbox(api, category) {
         resultsDiv.innerHTML = html;
     },
 
-    // Helper function to count results from a source
     countSourceResults(sourceName, data) {
         if (!data) return 0;
         
         switch (sourceName) {
             case 'clinicaltrials':
             case 'clinical_trials':
-                return 1; // The trial itself
+                return 1;
             
             case 'pubmed':
                 return data.pmids ? data.pmids.length : 0;
@@ -2068,7 +1947,6 @@ createAPICheckbox(api, category) {
                 return data.total_fetched || 0;
             
             default:
-                // Extended sources
                 if (data.results && Array.isArray(data.results)) {
                     return data.results.length;
                 }
@@ -2079,15 +1957,12 @@ createAPICheckbox(api, category) {
         }
     },
     
-    // Helper to get API metadata from registry
     getAPIInfo(sourceId) {
         if (!this.apiRegistry) return null;
         
-        // Check core APIs
         let api = this.apiRegistry.core.find(a => a.id === sourceId);
         if (api) return api;
         
-        // Check extended APIs
         api = this.apiRegistry.extended.find(a => a.id === sourceId);
         return api;
     },
@@ -2099,7 +1974,6 @@ createAPICheckbox(api, category) {
     }
 };
 
-// Initialize
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📄 DOM Content Loaded');
     app.init();
