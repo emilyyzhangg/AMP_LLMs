@@ -1536,14 +1536,18 @@ createAPICheckbox(api, category) {
         const filename = `nct_results_${Date.now()}.json`;
         const content = JSON.stringify(this.nctResults.results, null, 2);
         
+        // Download to local computer
         const blob = new Blob([content], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = filename;
+        document.body.appendChild(a);
         a.click();
+        document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
+        // Also save to server
         try {
             await fetch(`${this.API_BASE}/files/save`, {
                 method: 'POST',
@@ -1554,10 +1558,40 @@ createAPICheckbox(api, category) {
                 body: JSON.stringify({ filename, content })
             });
             
-            alert('Results saved successfully!\nDownloaded locally and saved to server.');
+            alert(`✅ Results saved!\n\n📥 Downloaded to: ${filename}\n💾 Saved to server: output/${filename}`);
         } catch (error) {
-            alert('Saved locally, but server save failed: ' + error.message);
+            alert(`✅ Downloaded to local computer: ${filename}\n\n⚠️ Server save failed: ${error.message}`);
         }
+    },
+
+    downloadNCTResults() {
+        if (!this.nctResults) return;
+        
+        const filename = `nct_results_${Date.now()}.json`;
+        const content = JSON.stringify(this.nctResults.results, null, 2);
+        
+        const blob = new Blob([content], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        console.log(`✅ Downloaded ${filename} to local computer`);
+        
+        // Show toast notification
+        const toast = document.createElement('div');
+        toast.className = 'download-toast';
+        toast.textContent = `✅ Downloaded ${filename}`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.add('fade-out');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     },
     
     async loadFiles() {
@@ -1697,6 +1731,10 @@ createAPICheckbox(api, category) {
         const resultsDiv = document.getElementById('nct-results');
         const saveBtn = document.getElementById('nct-save-btn');
         
+        if (downloadBtn) {
+            downloadBtn.classList.remove('hidden');
+        }
+        
         // Show save button
         if (saveBtn) {
             saveBtn.classList.remove('hidden');
@@ -1704,17 +1742,19 @@ createAPICheckbox(api, category) {
         
         let html = '';
         
-        // Summary card
+        // ========================================================================
+        // ENHANCED SUMMARY CARD WITH SOURCE COUNTS
+        // ========================================================================
         html += `
             <div class="result-card summary-card">
                 <h3>📊 Search Summary</h3>
                 <div class="summary-stats">
                     <div class="stat-item">
-                        <span class="stat-label">Requested:</span>
+                        <span class="stat-label">Trials Requested:</span>
                         <span class="stat-value">${data.summary.total_requested}</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Successful:</span>
+                        <span class="stat-label">Successfully Retrieved:</span>
                         <span class="stat-value success">${data.summary.successful}</span>
                     </div>
                     <div class="stat-item">
@@ -1722,20 +1762,119 @@ createAPICheckbox(api, category) {
                         <span class="stat-value ${data.summary.failed > 0 ? 'error' : ''}">${data.summary.failed}</span>
                     </div>
                 </div>
-            </div>
         `;
         
-        // Individual trial results
+        // Calculate results per source across all trials
+        const sourceStats = {};
+        let totalResults = 0;
+        
+        data.results.forEach(trial => {
+            const sources = trial.sources || {};
+            
+            // Count results from each source
+            Object.entries(sources).forEach(([sourceName, sourceData]) => {
+                if (!sourceStats[sourceName]) {
+                    sourceStats[sourceName] = {
+                        count: 0,
+                        successful: 0,
+                        failed: 0
+                    };
+                }
+                
+                if (sourceData && sourceData.success && sourceData.data) {
+                    sourceStats[sourceName].successful++;
+                    
+                    // Count actual results from this source
+                    const resultCount = this.countSourceResults(sourceName, sourceData.data);
+                    sourceStats[sourceName].count += resultCount;
+                    totalResults += resultCount;
+                } else {
+                    sourceStats[sourceName].failed++;
+                }
+            });
+        });
+        
+        // Display source statistics
+        if (Object.keys(sourceStats).length > 0) {
+            html += `
+                <div class="source-stats-container">
+                    <h4 style="margin-top: 20px; margin-bottom: 12px; color: #333;">📚 Results by Source</h4>
+                    <div class="source-stats-grid">
+            `;
+            
+            // Sort sources by count (highest first)
+            const sortedSources = Object.entries(sourceStats).sort((a, b) => b[1].count - a[1].count);
+            
+            sortedSources.forEach(([sourceName, stats]) => {
+                const apiInfo = this.getAPIInfo(sourceName);
+                const displayName = apiInfo ? apiInfo.name : sourceName;
+                const successRate = stats.successful > 0 ? 
+                    Math.round((stats.successful / (stats.successful + stats.failed)) * 100) : 0;
+                
+                html += `
+                    <div class="source-stat-item">
+                        <div class="source-stat-header">
+                            <span class="source-stat-name">${this.escapeHtml(displayName)}</span>
+                            <span class="source-stat-badge ${stats.count > 0 ? 'success' : 'empty'}">${stats.count}</span>
+                        </div>
+                        <div class="source-stat-details">
+                            <span class="source-stat-detail">✓ ${stats.successful} successful</span>
+                            ${stats.failed > 0 ? `<span class="source-stat-detail error">✗ ${stats.failed} failed</span>` : ''}
+                            <span class="source-stat-detail">${successRate}% success rate</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                    <div class="total-results-banner">
+                        <strong>Total Results Across All Sources:</strong> <span class="highlight-number">${totalResults}</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        html += `</div>`; // Close summary-card
+        
+        // ========================================================================
+        // INDIVIDUAL TRIAL CARDS
+        // ========================================================================
         data.results.forEach(trial => {
             const nctId = trial.nct_id || 'Unknown';
-            const sources = trial.data_sources || {};
+            const metadata = trial.metadata || {};
+            const sources = trial.sources || {};
+            
+            // Get ClinicalTrials.gov summary
+            const ctData = sources.clinicaltrials?.data || sources.clinical_trials?.data;
+            const trialTitle = metadata.title || ctData?.brief_title || ctData?.official_title || 'Title not available';
+            const trialStatus = metadata.status || ctData?.overall_status || 'Unknown';
+            const trialCondition = metadata.condition || (ctData?.conditions ? ctData.conditions[0] : '') || 'N/A';
+            const trialIntervention = metadata.intervention || (ctData?.interventions ? ctData.interventions[0]?.name : '') || 'N/A';
+            
             const sourceCount = Object.keys(sources).length;
             
             html += `
                 <div class="result-card trial-card">
                     <div class="trial-header">
-                        <h3>${nctId}</h3>
+                        <div>
+                            <h3>${nctId}</h3>
+                            <div class="trial-title-display">${this.escapeHtml(trialTitle)}</div>
+                        </div>
                         <span class="source-count">${sourceCount} sources</span>
+                    </div>
+                    
+                    <div class="trial-summary-box">
+                        <div class="trial-summary-item">
+                            <strong>Status:</strong> 
+                            <span class="status-badge status-${trialStatus.toLowerCase().replace(/\s+/g, '-')}">${this.escapeHtml(trialStatus)}</span>
+                        </div>
+                        <div class="trial-summary-item">
+                            <strong>Condition:</strong> ${this.escapeHtml(trialCondition)}
+                        </div>
+                        <div class="trial-summary-item">
+                            <strong>Intervention:</strong> ${this.escapeHtml(trialIntervention)}
+                        </div>
                     </div>
             `;
             
@@ -1744,70 +1883,75 @@ createAPICheckbox(api, category) {
                 const apiInfo = this.getAPIInfo(sourceName);
                 const apiDisplayName = apiInfo ? apiInfo.name : sourceName;
                 
-                if (sourceData && sourceData.status === 'success' && sourceData.data) {
+                if (sourceData && sourceData.success && sourceData.data) {
                     const data = sourceData.data;
+                    const resultCount = this.countSourceResults(sourceName, data);
                     
                     html += `
                         <div class="source-section">
                             <div class="source-header">
                                 <strong>📚 ${this.escapeHtml(apiDisplayName)}</strong>
-                                <span class="source-status success">✓</span>
+                                <div class="source-header-right">
+                                    <span class="source-count-badge">${resultCount} result${resultCount !== 1 ? 's' : ''}</span>
+                                    <span class="source-status success">✓</span>
+                                </div>
                             </div>
                             <div class="source-content">
                     `;
                     
-                    // Display relevant fields
-                    if (data.brief_title || data.official_title) {
+                    // Display key information based on source
+                    if (sourceName === 'clinicaltrials' || sourceName === 'clinical_trials') {
+                        // Already displayed in summary, show additional details
+                        if (data.enrollment) {
+                            html += `<div class="data-field">
+                                <strong>Enrollment:</strong> ${data.enrollment}
+                            </div>`;
+                        }
+                        if (data.phase) {
+                            html += `<div class="data-field">
+                                <strong>Phase:</strong> ${this.escapeHtml(Array.isArray(data.phase) ? data.phase.join(', ') : data.phase)}
+                            </div>`;
+                        }
+                    } else if (sourceName === 'pubmed') {
                         html += `<div class="data-field">
-                            <strong>Title:</strong> ${this.escapeHtml(data.brief_title || data.official_title)}
+                            <strong>PubMed Articles:</strong> ${resultCount} found
                         </div>`;
-                    }
-                    
-                    if (data.brief_summary || data.detailed_description) {
-                        const summary = data.brief_summary || data.detailed_description;
-                        const truncated = summary.length > 300 ? summary.substring(0, 300) + '...' : summary;
+                        if (data.pmids && data.pmids.length > 0) {
+                            html += `<div class="data-field">
+                                <strong>PMIDs:</strong> ${data.pmids.slice(0, 5).join(', ')}${data.pmids.length > 5 ? ` (+${data.pmids.length - 5} more)` : ''}
+                            </div>`;
+                        }
+                    } else if (sourceName === 'pmc') {
                         html += `<div class="data-field">
-                            <strong>Summary:</strong> ${this.escapeHtml(truncated)}
+                            <strong>PMC Articles:</strong> ${resultCount} found
                         </div>`;
-                    }
-                    
-                    if (data.overall_status) {
+                        if (data.pmcids && data.pmcids.length > 0) {
+                            html += `<div class="data-field">
+                                <strong>PMCIDs:</strong> ${data.pmcids.slice(0, 5).join(', ')}${data.pmcids.length > 5 ? ` (+${data.pmcids.length - 5} more)` : ''}
+                            </div>`;
+                        }
+                    } else if (sourceName === 'pmc_bioc') {
                         html += `<div class="data-field">
-                            <strong>Status:</strong> <span class="status-badge">${this.escapeHtml(data.overall_status)}</span>
+                            <strong>Full-Text Articles:</strong> ${resultCount} retrieved
                         </div>`;
-                    }
-                    
-                    if (data.phase) {
-                        html += `<div class="data-field">
-                            <strong>Phase:</strong> ${this.escapeHtml(Array.isArray(data.phase) ? data.phase.join(', ') : data.phase)}
-                        </div>`;
-                    }
-                    
-                    if (data.enrollment) {
-                        html += `<div class="data-field">
-                            <strong>Enrollment:</strong> ${data.enrollment}
-                        </div>`;
-                    }
-                    
-                    if (data.conditions) {
-                        const conditions = Array.isArray(data.conditions) ? data.conditions : [data.conditions];
-                        html += `<div class="data-field">
-                            <strong>Conditions:</strong> ${conditions.map(c => this.escapeHtml(c)).join(', ')}
-                        </div>`;
-                    }
-                    
-                    if (data.interventions) {
-                        const interventions = Array.isArray(data.interventions) ? data.interventions : [data.interventions];
-                        html += `<div class="data-field">
-                            <strong>Interventions:</strong> ${interventions.slice(0, 3).map(i => {
-                                if (typeof i === 'string') return this.escapeHtml(i);
-                                return this.escapeHtml(i.name || i.intervention_name || JSON.stringify(i));
-                            }).join(', ')}${interventions.length > 3 ? ` (+${interventions.length - 3} more)` : ''}
-                        </div>`;
+                    } else {
+                        // Extended sources - show result count and brief info
+                        if (data.results && data.results.length > 0) {
+                            html += `<div class="data-field">
+                                <strong>Results:</strong> ${data.results.length} found
+                            </div>`;
+                            // Show first result as example
+                            const firstResult = data.results[0];
+                            if (firstResult.title) {
+                                html += `<div class="data-field">
+                                    <strong>Sample:</strong> ${this.escapeHtml(firstResult.title.substring(0, 100))}...
+                                </div>`;
+                            }
+                        }
                     }
                     
                     html += `</div></div>`;
-                } else if (sourceData && sourceData.status === 'error') {
+                } else if (sourceData && sourceData.error) {
                     html += `
                         <div class="source-section">
                             <div class="source-header">
@@ -1822,7 +1966,7 @@ createAPICheckbox(api, category) {
                 }
             });
             
-            html += `</div>`;
+            html += `</div>`; // Close trial-card
         });
         
         // Show errors if any
@@ -1846,6 +1990,36 @@ createAPICheckbox(api, category) {
         }
         
         resultsDiv.innerHTML = html;
+    },
+
+    // Helper function to count results from a source
+    countSourceResults(sourceName, data) {
+        if (!data) return 0;
+        
+        switch (sourceName) {
+            case 'clinicaltrials':
+            case 'clinical_trials':
+                return 1; // The trial itself
+            
+            case 'pubmed':
+                return data.pmids ? data.pmids.length : 0;
+            
+            case 'pmc':
+                return data.pmcids ? data.pmcids.length : 0;
+            
+            case 'pmc_bioc':
+                return data.total_fetched || 0;
+            
+            default:
+                // Extended sources
+                if (data.results && Array.isArray(data.results)) {
+                    return data.results.length;
+                }
+                if (data.total_found) {
+                    return data.total_found;
+                }
+                return 0;
+        }
     },
     
     // Helper to get API metadata from registry
