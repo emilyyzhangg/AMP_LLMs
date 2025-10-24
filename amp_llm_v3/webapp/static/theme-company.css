@@ -73,12 +73,6 @@ header {
     background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFE 100%);
 }
 
-.logo-container:hover {
-    border-color: #1BEB49;
-    box-shadow: 0 6px 20px rgba(27, 235, 73, 0.3);
-    transform: translateY(-2px) scale(1.05);
-}
-
 .landing-title {
     background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%);
     -webkit-background-clip: text;

@@ -42,11 +42,6 @@ header {
     box-shadow: 0 2px 8px rgba(27, 235, 73, 0.2);
 }
 
-.logo-container:hover {
-    border-color: #FFA400;
-    box-shadow: 0 4px 16px rgba(255, 164, 0, 0.3);
-}
-
 .landing-title {
     background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%);
     -webkit-background-clip: text;

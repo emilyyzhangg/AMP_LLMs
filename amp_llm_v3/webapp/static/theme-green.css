@@ -1,6 +1,5 @@
 /* ============================================================================
-   GREEN PRIMARY THEME - WITH PROPER LANDING HEADER COLORS
-   FIXED: Landing header now uses green/blue gradient theme colors
+   GREEN PRIMARY THEME - Clean Landing Header
    ============================================================================ */
 
 body {
@@ -24,12 +23,12 @@ header {
 }
 
 /* ============================================================================
-   LANDING HEADER - NOW MATCHES GREEN THEME!
+   LANDING HEADER - CLEAN WHITE BACKGROUND
    ============================================================================ */
 .landing-header {
-    background: linear-gradient(135deg, #17C93E 0%, #0E1F81 100%);
+    background: linear-gradient(135deg, #FFFFFF 0%, #F0FFF4 100%);
     border-bottom: 3px solid #1BEB49;
-    box-shadow: 0 4px 12px rgba(27, 235, 73, 0.3);
+    box-shadow: 0 4px 12px rgba(27, 235, 73, 0.15);
 }
 
 .logo-container {
@@ -38,32 +37,38 @@ header {
     box-shadow: 0 2px 8px rgba(27, 235, 73, 0.2);
 }
 
-.logo-container:hover {
-    border-color: #1BEB49;
-    box-shadow: 0 4px 16px rgba(27, 235, 73, 0.4);
-}
-
 .landing-title {
-    color: #FFFFFF;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .landing-version {
     color: #1BEB49;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    font-weight: 600;
 }
 
-.landing-header .theme-button {
+.landing-header .theme-button,
+.landing-header .logout-button {
     border-color: #1BEB49;
-    color: #FFFFFF;
-    background: rgba(27, 235, 73, 0.2);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    color: #0E1F81;
+    background: #FFFFFF;
+    box-shadow: 0 2px 6px rgba(27, 235, 73, 0.15);
 }
 
 .landing-header .theme-button:hover {
-    background: rgba(27, 235, 73, 0.35);
-    border-color: #FFFFFF;
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, #F0FFF4 0%, #D4F4DD 100%);
+    border-color: #1BEB49;
+    color: #17C93E;
+    box-shadow: 0 4px 12px rgba(27, 235, 73, 0.25);
+}
+
+.landing-header .logout-button:hover {
+    background: linear-gradient(135deg, #FFF0F0 0%, #FFE0E0 100%);
+    border-color: #E74C3C;
+    color: #C0392B;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
 }
 
 /* MENU */
