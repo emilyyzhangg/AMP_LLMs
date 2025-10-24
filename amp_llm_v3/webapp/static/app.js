@@ -1730,11 +1730,12 @@ createAPICheckbox(api, category) {
     displayNCTResults(data) {
         const resultsDiv = document.getElementById('nct-results');
         const saveBtn = document.getElementById('nct-save-btn');
+        const downloadBtn = document.getElementById('nct-download-btn');
         
         if (downloadBtn) {
             downloadBtn.classList.remove('hidden');
         }
-        
+
         // Show save button
         if (saveBtn) {
             saveBtn.classList.remove('hidden');
