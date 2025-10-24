@@ -423,7 +423,8 @@ async def list_models():
     """
     CRITICAL FIX: Proxy request to chat service to list available Ollama models.
     
-    This endpoint was MISSING and causing 404 errors in the web interface.
+    BUGFIX: Chat service returns a LIST directly, not a dict with 'models' key!
+    We need to wrap it for the frontend.
     """
     try:
         logger.info(f"Proxying /models request to {CHAT_SERVICE_URL}/models")
@@ -436,8 +437,22 @@ async def list_models():
             
             if response.status_code == 200:
                 data = response.json()
-                logger.info(f"Successfully fetched {len(data.get('models', []))} models from chat service")
-                return data
+                
+                # BUGFIX: Chat service returns list directly, not {"models": [...]}
+                if isinstance(data, list):
+                    # Wrap list in dict for frontend compatibility
+                    logger.info(f"Successfully fetched {len(data)} models from chat service")
+                    return {"models": data}
+                elif isinstance(data, dict) and "models" in data:
+                    # Already in correct format
+                    logger.info(f"Successfully fetched {len(data['models'])} models from chat service")
+                    return data
+                else:
+                    logger.error(f"Unexpected response format: {type(data)}")
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"Unexpected response format from chat service"
+                    )
             else:
                 error_detail = response.text
                 logger.error(f"Chat service /models returned {response.status_code}: {error_detail}")
@@ -456,12 +471,13 @@ async def list_models():
         logger.error("Connection refused to chat service for /models")
         raise HTTPException(
             status_code=503,
-            detail="Cannot connect to chat service on port 8001"
+            detail="Cannot connect to chat service on port 8001. "
+                   "Start it with: cd 'standalone modules/chat_with_llm' && uvicorn chat_api:app --port 8001 --reload"
         )
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Unexpected error fetching models: {e}")
+        logger.error(f"Unexpected error fetching models: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Error fetching models: {str(e)}")
 
 
