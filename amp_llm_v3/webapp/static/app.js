@@ -182,7 +182,7 @@ const app = {
         console.log(`✅ Built theme dropdowns with ${this.availableThemes.length} options`);
         this.updateActiveTheme();
     },
-
+    
     // =========================================================================
     // Theme Management
     // =========================================================================
@@ -2200,6 +2200,38 @@ const app = {
                 document.body.removeChild(toast);
             }, 300);
         }, duration);
+    },
+
+    checkForAPIFailures(resultData, nctId, errors) {
+        const sources = resultData.sources || {};
+        
+        // Check core sources
+        ['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc'].forEach(api => {
+            if (sources[api] && !sources[api].success) {
+                errors.push({
+                    nct_id: nctId,
+                    api: api,
+                    error: sources[api].error || 'Unknown API error',
+                    stage: 'api_failure',
+                    timestamp: new Date().toISOString()
+                });
+            }
+        });
+        
+        // Check extended sources
+        if (sources.extended) {
+            Object.entries(sources.extended).forEach(([api, data]) => {
+                if (data && !data.success) {
+                    errors.push({
+                        nct_id: nctId,
+                        api: api,
+                        error: data.error || 'Unknown API error',
+                        stage: 'api_failure',
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            });
+        }
     },
 
     escapeHtml(text) {
