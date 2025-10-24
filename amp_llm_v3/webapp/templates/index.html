@@ -129,20 +129,46 @@
                     <button onclick="app.sendMessage('research')">Research</button>
                 </div>
             </div>
-
-            <!-- NCT Lookup Mode -->
+            
+            <!-- NCT Lookup Mode - UPDATED with Dynamic API Selection -->
             <div id="nct-mode" class="mode-container">
                 <div class="nct-input-area">
                     <div class="nct-input-group">
                         <label>Enter NCT Numbers (comma-separated):</label>
                         <textarea id="nct-input" placeholder="NCT03936426, NCT12345678"></textarea>
                     </div>
-                    <div class="nct-input-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="use-extended-apis" />
-                            <span>Use Extended APIs (PMC, EudraCT, WHO ICTRP, Semantic Scholar, DuckDuckGo, Google)</span>
-                        </label>
+                    
+                    <!-- Dynamic API Selection -->
+                    <div class="nct-api-selection">
+                        <div class="api-section">
+                            <div class="api-section-header">
+                                <h4>📚 Core Databases</h4>
+                                <p class="api-section-desc">Essential trial data sources (always included)</p>
+                            </div>
+                            <div id="core-apis-container" class="api-checkboxes">
+                                <!-- Core API checkboxes will be dynamically inserted here -->
+                                <div class="loading-apis">
+                                    <span class="spinner-small"></span>
+                                    <span>Loading available APIs...</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="api-section">
+                            <div class="api-section-header">
+                                <h4>🌐 Extended Databases</h4>
+                                <p class="api-section-desc">Additional sources for comprehensive coverage</p>
+                            </div>
+                            <div id="extended-apis-container" class="api-checkboxes">
+                                <!-- Extended API checkboxes will be dynamically inserted here -->
+                                <div class="loading-apis">
+                                    <span class="spinner-small"></span>
+                                    <span>Loading...</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    
                     <div class="nct-buttons">
                         <button class="nct-submit" onclick="app.handleNCTLookup()">
                             <span>🔍</span>

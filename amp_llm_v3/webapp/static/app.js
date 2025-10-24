@@ -33,7 +33,8 @@ const app = {
         console.log('🚀 App initializing...');
         this.apiKey = localStorage.getItem('amp_llm_api_key') || '';
         this.currentTheme = localStorage.getItem('amp_llm_theme') || 'green';
-        
+        app.apiRegistry = null;
+        app.selectedAPIs = new Set();
         // Load available themes dynamically
         await this.loadAvailableThemes();
         
@@ -384,7 +385,9 @@ const app = {
             this.ensureChatInfoBar();
         } else if (mode === 'files') {
             this.loadFiles();
-        }
+        } else if (mode === 'nct') {
+            this.buildAPICheckboxes();
+        }    
     },
     
     updateBackButton() {
@@ -1094,11 +1097,166 @@ const app = {
         
         return messageId;
     },
+
+    // ============================================================================
+    // Load API Registry
+    // ============================================================================
+
+    async loadAPIRegistry() {
+        console.log('📚 Loading API registry...');
+        
+        try {
+            const response = await fetch(`${this.NCT_SERVICE_URL}/api/registry`, {
+                headers: { 'Authorization': `Bearer ${this.apiKey}` }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Failed to load API registry: HTTP ${response.status}`);
+            }
+            
+            this.apiRegistry = await response.json();
+            console.log('✅ API registry loaded:', this.apiRegistry);
+            
+            // Initialize selected APIs with defaults
+            this.selectedAPIs = new Set(this.apiRegistry.metadata.default_enabled);
+            
+            return this.apiRegistry;
+            
+        } catch (error) {
+            console.error('❌ Failed to load API registry:', error);
+            
+            // Fallback to basic setup
+            this.apiRegistry = {
+                core: [
+                    { id: 'clinicaltrials', name: 'ClinicalTrials.gov', description: 'Primary trial registry', enabled_by_default: true, available: true },
+                    { id: 'pubmed', name: 'PubMed', description: 'Biomedical literature', enabled_by_default: true, available: true },
+                    { id: 'pmc', name: 'PMC', description: 'Full-text articles', enabled_by_default: true, available: true },
+                    { id: 'pmc_bioc', name: 'PMC BioC', description: 'Annotated full-text', enabled_by_default: true, available: true }
+                ],
+                extended: [
+                    { id: 'duckduckgo', name: 'DuckDuckGo', description: 'Web search', enabled_by_default: false, available: true },
+                    { id: 'serpapi', name: 'Google Search', description: 'Google results', enabled_by_default: false, available: false, requires_key: true },
+                    { id: 'scholar', name: 'Google Scholar', description: 'Academic papers', enabled_by_default: false, available: false, requires_key: true },
+                    { id: 'openfda', name: 'OpenFDA', description: 'FDA drug data', enabled_by_default: false, available: true }
+                ],
+                metadata: {
+                    default_enabled: ['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc']
+                }
+            };
+            
+            this.selectedAPIs = new Set(this.apiRegistry.metadata.default_enabled);
+            
+            return this.apiRegistry;
+        }
+    },
+
+    // ============================================================================
+    // Build API Checkboxes Dynamically
+    // ============================================================================
+
+    async buildAPICheckboxes() {
+        console.log('🏗️  Building API checkboxes...');
+        
+        // Load registry if not already loaded
+        if (!this.apiRegistry) {
+            await this.loadAPIRegistry();
+        }
+        
+        // Build core APIs
+        const coreContainer = document.getElementById('core-apis-container');
+        if (coreContainer) {
+            coreContainer.innerHTML = '';
+            
+            this.apiRegistry.core.forEach(api => {
+                const checkboxItem = this.createAPICheckbox(api, 'core');
+                coreContainer.appendChild(checkboxItem);
+            });
+            
+            console.log(`✅ Built ${this.apiRegistry.core.length} core API checkboxes`);
+        }
+        
+        // Build extended APIs
+        const extendedContainer = document.getElementById('extended-apis-container');
+        if (extendedContainer) {
+            extendedContainer.innerHTML = '';
+            
+            this.apiRegistry.extended.forEach(api => {
+                const checkboxItem = this.createAPICheckbox(api, 'extended');
+                extendedContainer.appendChild(checkboxItem);
+            });
+            
+            console.log(`✅ Built ${this.apiRegistry.extended.length} extended API checkboxes`);
+        }
+    },
+
+createAPICheckbox(api, category) {
+    const item = document.createElement('div');
+    item.className = 'api-checkbox-item';
     
-    // =========================================================================
-    // NCT Lookup & File Manager (unchanged)
-    // =========================================================================
+    // Disable if API is not available (missing key)
+    if (!api.available) {
+        item.classList.add('disabled');
+    }
     
+    // Checkbox input
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = `api-${api.id}`;
+    checkbox.value = api.id;
+    checkbox.checked = this.selectedAPIs.has(api.id);
+    checkbox.disabled = !api.available;
+    
+    // Handle checkbox change
+    checkbox.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            this.selectedAPIs.add(api.id);
+        } else {
+            this.selectedAPIs.delete(api.id);
+        }
+        console.log('Selected APIs:', Array.from(this.selectedAPIs));
+    });
+    
+    // Label
+    const label = document.createElement('label');
+    label.className = 'api-checkbox-label';
+    label.htmlFor = `api-${api.id}`;
+    
+    // Name with badges
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'api-checkbox-name';
+    nameDiv.textContent = api.name;
+    
+    // Add status badges
+    if (api.requires_key && !api.available) {
+        const badge = document.createElement('span');
+        badge.className = 'api-status-badge unavailable';
+        badge.textContent = '🔑 Key Required';
+        nameDiv.appendChild(badge);
+    } else if (api.requires_key) {
+        const badge = document.createElement('span');
+        badge.className = 'api-status-badge requires-key';
+        badge.textContent = '🔑 API Key';
+        nameDiv.appendChild(badge);
+    }
+    
+    // Description
+    const descDiv = document.createElement('div');
+    descDiv.className = 'api-checkbox-desc';
+    descDiv.textContent = api.description;
+    
+    label.appendChild(nameDiv);
+    label.appendChild(descDiv);
+    
+    item.appendChild(checkbox);
+    item.appendChild(label);
+    
+    return item;
+},
+
+    // ============================================================================
+    // Updated NCT Lookup Handler
+    // ============================================================================
+
     async handleNCTLookup() {
         const input = document.getElementById('nct-input');
         const nctIds = input.value.split(',').map(s => s.trim().toUpperCase()).filter(s => s);
@@ -1108,7 +1266,11 @@ const app = {
             return;
         }
         
-        const useExtended = document.getElementById('use-extended-apis').checked;
+        // Ensure API registry is loaded
+        if (!this.apiRegistry) {
+            await this.loadAPIRegistry();
+        }
+        
         const resultsDiv = document.getElementById('nct-results');
         const progressDiv = document.getElementById('nct-progress');
         const saveBtn = document.getElementById('nct-save-btn');
@@ -1118,31 +1280,165 @@ const app = {
         resultsDiv.innerHTML = '';
         saveBtn.classList.add('hidden');
         
+        // Get selected APIs
+        const selectedAPIList = Array.from(this.selectedAPIs);
+        
+        console.log('🔍 Starting NCT lookup with APIs:', selectedAPIList);
+        
+        const results = [];
+        const errors = [];
+        const searchJobs = {};
+        
         try {
-            const response = await fetch(`${this.API_BASE}/nct-lookup`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.apiKey}`
-                },
-                body: JSON.stringify({
-                    nct_ids: nctIds,
-                    use_extended_apis: useExtended
-                })
-            });
+            const NCT_SERVICE_URL = 'http://localhost:8002';
             
-            const data = await response.json();
-            this.nctResults = data;
+            async function makeRequest(url, options) {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                return response.json();
+            }
+            
+            // Initiate searches for each NCT number
+            for (const nctId of nctIds) {
+                try {
+                    const searchRequest = {
+                        include_extended: false, // Not used anymore
+                        databases: selectedAPIList  // Send selected databases
+                    };
+                    
+                    const data = await makeRequest(
+                        `${NCT_SERVICE_URL}/api/search/${nctId}`,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${this.apiKey}`
+                            },
+                            body: JSON.stringify(searchRequest)
+                        }
+                    );
+                    
+                    searchJobs[nctId] = data.job_id;
+                    console.log(`✅ Initiated search for ${nctId}: ${data.status}`);
+                    
+                } catch (error) {
+                    console.error(`❌ Error initiating search for ${nctId}:`, error);
+                    errors.push({
+                        nct_id: nctId,
+                        error: error.message
+                    });
+                }
+            }
+            
+            // Poll for results
+            const maxWait = 300000; // 5 minutes
+            const pollInterval = 2000; // 2 seconds
+            const startTime = Date.now();
+            
+            while (Object.keys(searchJobs).length > 0 && (Date.now() - startTime) < maxWait) {
+                const completedJobs = [];
+                
+                for (const [nctId, jobId] of Object.entries(searchJobs)) {
+                    try {
+                        const statusData = await makeRequest(
+                            `${NCT_SERVICE_URL}/api/search/${jobId}/status`,
+                            {
+                                headers: { 'Authorization': `Bearer ${this.apiKey}` }
+                            }
+                        );
+                        
+                        // Update progress display
+                        if (statusData.current_database) {
+                            const apiDef = this.apiRegistry.core.find(a => a.id === statusData.current_database) ||
+                                        this.apiRegistry.extended.find(a => a.id === statusData.current_database);
+                            const apiName = apiDef ? apiDef.name : statusData.current_database;
+                            
+                            progressDiv.innerHTML = `
+                                <span class="spinner"></span>
+                                <span>Processing ${nctId}: ${apiName} (${statusData.progress}%)</span>
+                            `;
+                        }
+                        
+                        if (statusData.status === 'completed') {
+                            const resultData = await makeRequest(
+                                `${NCT_SERVICE_URL}/api/results/${jobId}`,
+                                {
+                                    headers: { 'Authorization': `Bearer ${this.apiKey}` }
+                                }
+                            );
+                            
+                            results.push(resultData);
+                            completedJobs.push(nctId);
+                            console.log(`✅ Retrieved results for ${nctId}`);
+                            
+                        } else if (statusData.status === 'failed') {
+                            errors.push({
+                                nct_id: nctId,
+                                error: statusData.error || 'Search failed'
+                            });
+                            completedJobs.push(nctId);
+                        }
+                        
+                    } catch (error) {
+                        console.error(`❌ Error checking status for ${nctId}:`, error);
+                        errors.push({
+                            nct_id: nctId,
+                            error: error.message
+                        });
+                        completedJobs.push(nctId);
+                    }
+                }
+                
+                // Remove completed jobs
+                completedJobs.forEach(nctId => {
+                    delete searchJobs[nctId];
+                });
+                
+                // Wait before next poll
+                if (Object.keys(searchJobs).length > 0) {
+                    await new Promise(resolve => setTimeout(resolve, pollInterval));
+                }
+            }
+            
+            // Handle timeouts
+            for (const nctId of Object.keys(searchJobs)) {
+                errors.push({
+                    nct_id: nctId,
+                    error: 'Search timeout'
+                });
+            }
             
             progressDiv.classList.add('hidden');
             
-            if (data.success) {
+            if (results.length > 0) {
+                this.nctResults = {
+                    success: true,
+                    results: results,
+                    summary: {
+                        total_requested: nctIds.length,
+                        successful: results.length,
+                        failed: errors.length,
+                        errors: errors.length > 0 ? errors : null
+                    }
+                };
+                
                 saveBtn.classList.remove('hidden');
+                this.displayNCTResults(this.nctResults);
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="result-card">
+                        <h3>No Results</h3>
+                        <p>No trials could be fetched. Check errors below:</p>
+                        <pre>${JSON.stringify(errors, null, 2)}</pre>
+                    </div>
+                `;
             }
             
-            this.displayNCTResults(data);
-            
         } catch (error) {
+            console.error('❌ NCT lookup error:', error);
             progressDiv.classList.add('hidden');
             resultsDiv.innerHTML = `
                 <div class="result-card">
@@ -1152,45 +1448,45 @@ const app = {
             `;
         }
     },
-    
+
     displayNCTResults(data) {
-        const resultsDiv = document.getElementById('nct-results');
-        
-        if (!data.success || data.results.length === 0) {
-            resultsDiv.innerHTML = `
-                <div class="result-card">
-                    <h3>No Results</h3>
-                    <p>No trials found</p>
+            const resultsDiv = document.getElementById('nct-results');
+            
+            if (!data.success || data.results.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="result-card">
+                        <h3>No Results</h3>
+                        <p>No trials found</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div class="summary-card">
+                    <h3>Summary</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <div class="summary-item-label">Total Requested</div>
+                            <div class="summary-item-value info">${data.summary.total_requested}</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-item-label">Successful</div>
+                            <div class="summary-item-value success">${data.summary.successful}</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-item-label">Failed</div>
+                            <div class="summary-item-value error">${data.summary.failed}</div>
+                        </div>
+                    </div>
                 </div>
             `;
-            return;
-        }
-        
-        let html = `
-            <div class="summary-card">
-                <h3>Summary</h3>
-                <div class="summary-grid">
-                    <div class="summary-item">
-                        <div class="summary-item-label">Total Requested</div>
-                        <div class="summary-item-value info">${data.summary.total_requested}</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-item-label">Successful</div>
-                        <div class="summary-item-value success">${data.summary.successful}</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-item-label">Failed</div>
-                        <div class="summary-item-value error">${data.summary.failed}</div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        data.results.forEach(result => {
-            const ct = result.sources?.clinical_trials?.data?.protocolSection || {};
-            const ident = ct.identificationModule || {};
-            const status = ct.statusModule || {};
-            const conditions = ct.conditionsModule?.conditions || [];
+            
+            data.results.forEach(result => {
+                const ct = result.sources?.clinical_trials?.data?.protocolSection || {};
+                const ident = ct.identificationModule || {};
+                const status = ct.statusModule || {};
+                const conditions = ct.conditionsModule?.conditions || [];
             
             // ====================================================================
             // ROBUST COUNT EXTRACTION - Tries multiple approaches
