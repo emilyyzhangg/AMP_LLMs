@@ -1,5 +1,6 @@
 """
 Enhanced AMP LLM Web API Server with Automatic Theme Discovery
+COMPLETE VERSION - All endpoints included
 """
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,6 +16,7 @@ from datetime import datetime
 import httpx
 import mimetypes
 import re
+import asyncio
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -154,28 +156,11 @@ def parse_theme_metadata_from_css(css_file: Path) -> Optional[dict]:
 async def list_available_themes():
     """
     Automatically discover and list all theme-*.css files in static directory.
-    
-    **Auto-Discovery**: Just drop a new `theme-*.css` file into the static directory!
-    
-    **Optional Metadata in CSS**: Add these comments to the top of your CSS file:
-    ```css
-    /* THEME_NAME: My Beautiful Theme
-       THEME_COLORS: #1BEB49, #0E1F81, #FFA400
-    *\/
-    ```
-    
-    If metadata comments are not found, the system will:
-    1. Use fallback metadata for known themes
-    2. Auto-generate a name from the filename
-    3. Use default colors
-    
-    Returns:
-        List of theme objects with id, name, and preview colors
     """
     static_dir = WEBAPP_DIR / "static"
     themes = []
     
-    # Fallback metadata for known themes (used if CSS comments not found)
+    # Fallback metadata for known themes
     fallback_metadata = {
         "theme-green.css": {
             "name": "Green Primary",
@@ -200,18 +185,15 @@ async def list_available_themes():
     }
     
     try:
-        # Scan for all theme-*.css files
         theme_files = sorted(static_dir.glob("theme-*.css"))
         
         for theme_file in theme_files:
             filename = theme_file.name
             theme_id = filename.replace("theme-", "").replace(".css", "")
             
-            # Try to parse metadata from CSS comments first
             css_metadata = parse_theme_metadata_from_css(theme_file)
             
             if css_metadata:
-                # Use metadata from CSS file
                 theme_data = {
                     "id": theme_id,
                     "name": css_metadata.get("name", theme_id.title()),
@@ -219,18 +201,16 @@ async def list_available_themes():
                 }
                 logger.info(f"✅ Discovered theme from CSS: {theme_data['name']} ({filename})")
             elif filename in fallback_metadata:
-                # Use fallback metadata for known themes
                 theme_data = {
                     "id": theme_id,
                     **fallback_metadata[filename]
                 }
                 logger.info(f"📦 Using fallback metadata: {theme_data['name']} ({filename})")
             else:
-                # Auto-generate metadata for unknown themes
                 theme_data = {
                     "id": theme_id,
                     "name": theme_id.replace("-", " ").title(),
-                    "colors": ["#667eea", "#764ba2"]  # Default gradient
+                    "colors": ["#667eea", "#764ba2"]
                 }
                 logger.info(f"🔧 Auto-generated theme: {theme_data['name']} ({filename})")
             
@@ -255,7 +235,7 @@ async def list_available_themes():
 # Service URLs
 # ============================================================================
 CHAT_SERVICE_URL = "http://localhost:8001"
-NCT_SERVICE_URL = "http://localhost:8002"  # Standalone NCT API
+NCT_SERVICE_URL = "http://localhost:8002"
 
 
 # ============================================================================
@@ -324,6 +304,15 @@ class ChatMessageRequest(BaseModel):
     temperature: float = 0.7
 
 
+class ExtractRequest(BaseModel):
+    nct_id: str
+
+
+class ExtractResponse(BaseModel):
+    nct_id: str
+    extraction: Dict[str, Any]
+
+
 # ============================================================================
 # MAIN ROUTES
 # ============================================================================
@@ -352,11 +341,6 @@ async def root():
         <body>
             <h1>🔬 AMP LLM</h1>
             <p>Static files not found. Please check file locations.</p>
-            <ul style="text-align: left; max-width: 500px; margin: 20px auto;">
-                <li>Expected: webapp/templates/index.html</li>
-                <li>Or: webapp/static/index.html</li>
-                <li>Static files mount: /static/</li>
-            </ul>
         </body>
     </html>
     """)
@@ -386,9 +370,7 @@ async def debug_files():
             "path": str(templates_dir.absolute()),
             "exists": templates_dir.exists(),
             "files": [f.name for f in templates_dir.glob("*")] if templates_dir.exists() else []
-        },
-        "css_files": [f.name for f in static_dir.glob("*.css")] if static_dir.exists() else [],
-        "js_files": [f.name for f in static_dir.glob("*.js")] if static_dir.exists() else []
+        }
     }
 
 
@@ -436,8 +418,417 @@ async def health_check():
     }
 
 
-# NOTE: Additional endpoints (models, chat, NCT lookup, files) would continue here
-# This file shows just the theme discovery portion - the rest remains unchanged
+@app.get("/models")
+async def list_models():
+    """
+    CRITICAL FIX: Proxy request to chat service to list available Ollama models.
+    
+    This endpoint was MISSING and causing 404 errors in the web interface.
+    """
+    try:
+        logger.info(f"Proxying /models request to {CHAT_SERVICE_URL}/models")
+        
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(
+                f"{CHAT_SERVICE_URL}/models",
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                logger.info(f"Successfully fetched {len(data.get('models', []))} models from chat service")
+                return data
+            else:
+                error_detail = response.text
+                logger.error(f"Chat service /models returned {response.status_code}: {error_detail}")
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"Chat service error: {error_detail}"
+                )
+    
+    except httpx.TimeoutException:
+        logger.error("Timeout connecting to chat service for /models")
+        raise HTTPException(
+            status_code=503,
+            detail="Chat service timeout - is it running on port 8001?"
+        )
+    except httpx.ConnectError:
+        logger.error("Connection refused to chat service for /models")
+        raise HTTPException(
+            status_code=503,
+            detail="Cannot connect to chat service on port 8001"
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error fetching models: {e}")
+        raise HTTPException(status_code=500, detail=f"Error fetching models: {str(e)}")
+
+
+# ============================================================================
+# Chat Endpoints - Proxy to Chat Service
+# ============================================================================
+
+@app.post("/chat/init")
+async def initialize_chat(request: InitChatRequest):
+    """Initialize a chat session - proxied to chat service."""
+    try:
+        logger.info(f"Initializing chat with model: {request.model}")
+        
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{CHAT_SERVICE_URL}/chat/init",
+                json=request.dict(),
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                logger.info(f"Chat initialized: {data.get('conversation_id')}")
+                return data
+            else:
+                error_detail = response.text
+                logger.error(f"Chat init failed: {error_detail}")
+                raise HTTPException(status_code=response.status_code, detail=error_detail)
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error initializing chat: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/chat/message")
+async def send_chat_message(request: ChatMessageRequest):
+    """Send a message in a chat session - proxied to chat service."""
+    try:
+        logger.info(f"Sending message to conversation: {request.conversation_id}")
+        
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            response = await client.post(
+                f"{CHAT_SERVICE_URL}/chat/message",
+                json=request.dict(),
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error sending message: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/chat/conversations")
+async def list_conversations():
+    """List all conversations - proxied to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/conversations")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/chat/conversations/{conversation_id}")
+async def get_conversation(conversation_id: str):
+    """Get conversation history - proxied to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/conversations/{conversation_id}")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/chat/conversations/{conversation_id}")
+async def delete_conversation(conversation_id: str):
+    """Delete a conversation - proxied to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.delete(f"{CHAT_SERVICE_URL}/conversations/{conversation_id}")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# Legacy Chat Endpoint (for backward compatibility)
+# ============================================================================
+
+@app.post("/chat", response_model=ChatResponse)
+async def chat(request: ChatRequest, api_key: str = Depends(verify_api_key)):
+    """Legacy chat endpoint with direct Ollama connection."""
+    logger.info(f"Chat: model={request.model}, query_length={len(request.query)}")
+    
+    try:
+        prompt = request.query
+        
+        if request.context_file:
+            file_path = OUTPUT_DIR / request.context_file
+            if file_path.exists():
+                file_content = file_path.read_text()
+                prompt = f"{request.query}\n\n[File: {request.context_file}]\n{file_content}"
+                logger.info(f"Added file context: {request.context_file}")
+        
+        async with OllamaSessionManager(settings.ollama_host, settings.ollama_port) as session:
+            response_text = await session.send_prompt(
+                model=request.model,
+                prompt=prompt,
+                temperature=request.temperature,
+                max_retries=3
+            )
+            
+            if response_text.startswith("Error:"):
+                raise HTTPException(status_code=503, detail=response_text)
+            
+            return ChatResponse(
+                response=response_text,
+                model=request.model,
+                query=request.query
+            )
+    except Exception as e:
+        logger.error(f"Chat error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# NCT Lookup Endpoint - Proxy to Standalone API
+# ============================================================================
+
+@app.post("/nct-lookup", response_model=NCTLookupResponse)
+async def nct_lookup(
+    request: NCTLookupRequest, 
+    background_tasks: BackgroundTasks,
+    api_key: str = Depends(verify_api_key)
+):
+    """
+    Fetch clinical trial data using standalone NCT API service.
+    
+    This proxies requests to the standalone NCT lookup service running
+    on port 8002, which provides comprehensive trial data from multiple sources.
+    """
+    logger.info(f"NCT Lookup: {len(request.nct_ids)} trials")
+    
+    results = []
+    errors = []
+    search_jobs = {}
+    
+    try:
+        async with httpx.AsyncClient(timeout=300.0) as client:
+            # Initiate searches for each NCT number
+            for nct_id in request.nct_ids:
+                try:
+                    search_request = {
+                        "include_extended": request.use_extended_apis
+                    }
+                    
+                    if request.databases:
+                        search_request["databases"] = request.databases
+                    
+                    response = await client.post(
+                        f"{NCT_SERVICE_URL}/api/search/{nct_id}",
+                        json=search_request
+                    )
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        search_jobs[nct_id] = data["job_id"]
+                        logger.info(f"Initiated search for {nct_id}: {data['status']}")
+                    else:
+                        error_data = response.json()
+                        errors.append({
+                            "nct_id": nct_id,
+                            "error": error_data.get("detail", f"HTTP {response.status_code}")
+                        })
+                
+                except Exception as e:
+                    logger.error(f"Error initiating search for {nct_id}: {e}")
+                    errors.append({"nct_id": nct_id, "error": str(e)})
+            
+            # Poll for results
+            max_wait = 300  # 5 minutes max
+            poll_interval = 2  # Check every 2 seconds
+            start_time = asyncio.get_event_loop().time()
+            
+            while search_jobs and (asyncio.get_event_loop().time() - start_time) < max_wait:
+                completed_jobs = []
+                
+                for nct_id, job_id in list(search_jobs.items()):
+                    try:
+                        status_response = await client.get(
+                            f"{NCT_SERVICE_URL}/api/search/{job_id}/status"
+                        )
+                        
+                        if status_response.status_code == 200:
+                            status_data = status_response.json()
+                            
+                            if status_data["status"] == "completed":
+                                results_response = await client.get(
+                                    f"{NCT_SERVICE_URL}/api/results/{job_id}"
+                                )
+                                
+                                if results_response.status_code == 200:
+                                    result_data = results_response.json()
+                                    results.append(result_data)
+                                    completed_jobs.append(nct_id)
+                                    logger.info(f"Retrieved results for {nct_id}")
+                            
+                            elif status_data["status"] == "failed":
+                                errors.append({
+                                    "nct_id": nct_id,
+                                    "error": status_data.get("error", "Search failed")
+                                })
+                                completed_jobs.append(nct_id)
+                    
+                    except Exception as e:
+                        logger.error(f"Error checking status for {nct_id}: {e}")
+                        errors.append({"nct_id": nct_id, "error": str(e)})
+                        completed_jobs.append(nct_id)
+                
+                for nct_id in completed_jobs:
+                    del search_jobs[nct_id]
+                
+                if search_jobs:
+                    await asyncio.sleep(poll_interval)
+            
+            # Handle timeouts
+            for nct_id in search_jobs.keys():
+                errors.append({"nct_id": nct_id, "error": "Search timeout"})
+    
+    except Exception as e:
+        logger.error(f"NCT lookup error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    return NCTLookupResponse(
+        success=len(results) > 0,
+        results=results,
+        summary={
+            "total_requested": len(request.nct_ids),
+            "successful": len(results),
+            "failed": len(errors),
+            "errors": errors if errors else None
+        }
+    )
+
+
+# ============================================================================
+# File Management Endpoints
+# ============================================================================
+
+@app.get("/files/list")
+async def list_files():
+    """List all JSON files in the output directory."""
+    try:
+        files = []
+        for file_path in OUTPUT_DIR.glob("*.json"):
+            stat = file_path.stat()
+            files.append({
+                "name": file_path.name,
+                "size": f"{stat.st_size / 1024:.1f} KB",
+                "modified": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
+            })
+        
+        files.sort(key=lambda x: x["modified"], reverse=True)
+        return FileListResponse(files=files)
+    
+    except Exception as e:
+        logger.error(f"Error listing files: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/files/content/{filename}")
+async def get_file_content(filename: str):
+    """Get the content of a specific file."""
+    try:
+        safe_filename = Path(filename).name
+        file_path = OUTPUT_DIR / safe_filename
+        
+        if not file_path.exists():
+            raise HTTPException(status_code=404, detail="File not found")
+        
+        if not file_path.is_file():
+            raise HTTPException(status_code=400, detail="Not a file")
+        
+        content = file_path.read_text(encoding='utf-8')
+        
+        return FileContentResponse(
+            filename=safe_filename,
+            content=content
+        )
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error reading file: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/files/save")
+async def save_file(request: FileSaveRequest):
+    """Save content to a file in the output directory."""
+    try:
+        safe_filename = Path(request.filename).name
+        
+        if not safe_filename.endswith('.json'):
+            safe_filename += '.json'
+        
+        file_path = OUTPUT_DIR / safe_filename
+        file_path.write_text(request.content, encoding='utf-8')
+        
+        logger.info(f"Saved file: {safe_filename}")
+        
+        return {
+            "status": "success",
+            "filename": safe_filename,
+            "path": str(file_path.absolute())
+        }
+    
+    except Exception as e:
+        logger.error(f"Error saving file: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/files/upload")
+async def upload_file(file: UploadFile = File(...)):
+    """Upload a file to the output directory."""
+    try:
+        safe_filename = Path(file.filename).name
+        file_path = OUTPUT_DIR / safe_filename
+        
+        content = await file.read()
+        file_path.write_bytes(content)
+        
+        logger.info(f"Uploaded file: {safe_filename}")
+        
+        return {
+            "status": "success",
+            "filename": safe_filename,
+            "size": len(content)
+        }
+    
+    except Exception as e:
+        logger.error(f"Error uploading file: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # ============================================================================
