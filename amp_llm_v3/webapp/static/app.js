@@ -2046,6 +2046,11 @@ const app = {
         data.results.forEach(trial => {
             const sources = trial.sources || {};
             
+            console.log('🔍 Trial sources structure:', Object.keys(sources));
+            if (sources.extended) {
+                console.log('🔬 Extended sources:', Object.keys(sources.extended));
+            }
+            
             // Count core sources
             Object.entries(sources).forEach(([sourceName, sourceData]) => {
                 if (sourceName === 'extended') return; // Skip extended here, handle separately
@@ -2072,6 +2077,12 @@ const app = {
             // Count extended sources
             if (sources.extended) {
                 Object.entries(sources.extended).forEach(([sourceName, sourceData]) => {
+                    console.log(`📊 Extended source ${sourceName}:`, {
+                        success: sourceData?.success,
+                        hasData: !!sourceData?.data,
+                        error: sourceData?.error
+                    });
+                    
                     if (!sourceStats[sourceName]) {
                         sourceStats[sourceName] = {
                             count: 0,
