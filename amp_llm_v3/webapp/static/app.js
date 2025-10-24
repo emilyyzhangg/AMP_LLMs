@@ -8,8 +8,22 @@
 
 const app = {
     // Configuration
-    API_BASE: window.location.origin,
-    NCT_SERVICE_URL: window.location.origin,
+    API_BASE: (() => {
+        // For production (cloudflare tunnel)
+        if (window.location.hostname === 'llm.amphoraxe.ca') {
+            return 'https://llm.amphoraxe.ca';
+        }
+        // For local development
+        return window.location.origin;
+    })(),
+    
+    NCT_SERVICE_URL: (() => {
+        if (window.location.hostname === 'llm.amphoraxe.ca') {
+            return 'https://llm.amphoraxe.ca';
+        }
+        return window.location.origin;
+    })(),
+
     apiKey: localStorage.getItem('amp_llm_api_key') || '',
     
     // State
@@ -1104,10 +1118,10 @@ const app = {
     // ============================================================================
 
     async loadAPIRegistry() {
-        console.log('📚 Loading API registry from:', this.NCT_SERVICE_URL);
+        console.log('📚 Loading API registry...');        
         
         try {
-            const url = `${this.NCT_SERVICE_URL}/api/registry`;
+            const url = `${this.API_BASE}/api/nct/registry`;
             console.log('Fetching:', url);
             
             const response = await fetch(url, {
@@ -1477,7 +1491,7 @@ createAPICheckbox(api, category) {
             `;
             this.addNewSearchButton();
         }
-    }
+    },
     
     async extractTrial(nctId) {
         try {
