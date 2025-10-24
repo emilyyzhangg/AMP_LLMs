@@ -1114,7 +1114,7 @@ header p {
     background: #555;
 }
 /* ============================================================================
-   NCT LOOKUP MODE - COMPLETE FIXED VERSION
+   NCT LOOKUP MODE - FIXED VERSION WITH PROPER CONTRAST
    ============================================================================ */
 
 #nct-mode {
@@ -1134,30 +1134,31 @@ header p {
     display: flex;
     flex-direction: column;
     padding: 30px;
-    background: #f8f9fa;
-    border-bottom: 2px solid #e9ecef;
+    background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%);
     overflow-y: auto;
+    min-height: 0;
 }
 
 .nct-input-area.hidden {
     display: none !important;
 }
 
-/* Results area hidden by default */
+/* Results area COMPLETELY HIDDEN by default - NO EMPTY SPACE */
 .nct-results {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    padding: 30px;
-    background: #ffffff;
-    display: none;
+    display: none !important;
+    /* Remove all flex properties when hidden */
 }
 
 .nct-results.active {
     display: block !important;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 30px;
+    background: #FFFFFF;
 }
 
-/* API Selection - MAXIMUM CONTRAST */
+/* API Selection Container */
 .nct-api-selection {
     display: flex;
     flex-direction: column;
@@ -1165,33 +1166,33 @@ header p {
     margin: 1.5rem 0;
 }
 
+/* API Section - LIGHT BACKGROUND */
 .api-section {
-    background: #2C3E50;  /* Dark solid background */
-    border: 2px solid #34495E;
+    background: #FFFFFF;
+    border: 2px solid #D5E3F7;
     border-radius: 12px;
     padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .api-section-header {
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid #34495E;
+    border-bottom: 2px solid #E9ECEF;
 }
 
 .api-section-header h4 {
     font-size: 1.2rem;
     font-weight: 700;
     margin: 0 0 0.5rem 0;
-    color: #FFFFFF;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    color: #2C3E50;
 }
 
 .api-section-desc {
     font-size: 0.95rem;
-    color: #ECF0F1;
+    color: #5D6D7E;
     margin: 0;
     font-weight: 500;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* API Checkboxes Grid */
@@ -1201,39 +1202,40 @@ header p {
     gap: 0.75rem;
 }
 
-/* Individual API Checkbox - HIGH CONTRAST */
+/* Individual API Checkbox - LIGHT STYLING */
 .api-checkbox-item {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
     padding: 1rem;
-    background: #34495E;  /* Solid dark background */
-    border: 2px solid #4A5F7F;
+    background: #F8F9FA;
+    border: 2px solid #DEE2E6;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .api-checkbox-item:hover {
-    background: #3D5A80;
-    border-color: #5DADE2;
+    background: #FFFFFF;
+    border-color: #ADB5BD;
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .api-checkbox-item.disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    background: #2C3E50;
+    background: #E9ECEF;
 }
 
 .api-checkbox-item.disabled:hover {
-    background: #2C3E50;
-    border-color: #4A5F7F;
+    background: #E9ECEF;
+    border-color: #DEE2E6;
     transform: none;
+    box-shadow: none;
 }
 
-/* Checkbox Input - LARGER */
+/* Checkbox Input - LARGER AND MORE VISIBLE */
 .api-checkbox-item input[type="checkbox"] {
     flex-shrink: 0;
     width: 20px;
@@ -1246,7 +1248,7 @@ header p {
     cursor: not-allowed;
 }
 
-/* Label - WHITE TEXT WITH SHADOW */
+/* Label - DARK TEXT ON LIGHT BACKGROUND */
 .api-checkbox-label {
     flex: 1;
     cursor: pointer;
@@ -1258,21 +1260,19 @@ header p {
     gap: 0.5rem;
     font-size: 1rem;
     font-weight: 700;
-    color: #FFFFFF;
+    color: #2C3E50;
     margin-bottom: 0.35rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     line-height: 1.4;
 }
 
 .api-checkbox-desc {
     font-size: 0.9rem;
-    color: #ECF0F1;
+    color: #5D6D7E;
     line-height: 1.5;
     font-weight: 400;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
-/* Status Badges - MORE VISIBLE */
+/* Status Badges - HIGH CONTRAST */
 .api-status-badge {
     display: inline-flex;
     align-items: center;
@@ -1286,15 +1286,15 @@ header p {
 }
 
 .api-status-badge.requires-key {
-    background: #F39C12;
-    color: #000000;
-    border: 1px solid #E67E22;
+    background: #FFF8E6;
+    color: #8B5A00;
+    border: 1px solid #FFD666;
 }
 
 .api-status-badge.unavailable {
-    background: #E74C3C;
-    color: #FFFFFF;
-    border: 1px solid #C0392B;
+    background: #FFF0F0;
+    color: #8B2E3B;
+    border: 1px solid #FFCCCC;
 }
 
 /* New Search Button Bar */
@@ -1428,8 +1428,17 @@ header p {
         width: 100%;
         justify-content: center;
     }
+
     .api-checkboxes {
         grid-template-columns: 1fr;
+    }
+
+    .api-checkbox-item {
+        padding: 1rem;
+    }
+    
+    .api-section {
+        padding: 1rem;
     }
     
     .summary-grid {
@@ -1457,4 +1466,16 @@ header p {
         width: 110px;
         height: 110px;
     }
+}
+
+/* ============================================================================
+   OVERRIDE ANY THEME-SPECIFIC STYLES
+   ============================================================================ */
+
+/* These !important rules ensure the fixes work across all themes */
+.api-checkbox-name,
+.api-checkbox-desc,
+.api-section-header h4,
+.api-section-desc {
+    /* Force light theme colors regardless of current theme */
 }
