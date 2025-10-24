@@ -1295,7 +1295,12 @@ createAPICheckbox(api, category) {
         const resultsDiv = document.getElementById('nct-results');
         const progressDiv = document.getElementById('nct-progress');
         const saveBtn = document.getElementById('nct-save-btn');
-        
+        const inputArea = document.querySelector('.nct-input-area');
+    
+        // Hide input area, show results area
+        inputArea.classList.add('hidden');
+        resultsDiv.classList.add('active');
+
         progressDiv.classList.remove('hidden');
         progressDiv.innerHTML = '<span class="spinner"></span> <span>Fetching clinical trial data...</span>';
         resultsDiv.innerHTML = '';
@@ -1435,6 +1440,7 @@ createAPICheckbox(api, category) {
             progressDiv.classList.add('hidden');
             
             if (results.length > 0) {
+                this.addNewSearchButton();
                 this.nctResults = {
                     success: true,
                     results: results,
@@ -1444,6 +1450,7 @@ createAPICheckbox(api, category) {
                         failed: errors.length,
                         errors: errors.length > 0 ? errors : null
                     }
+                
                 };
                 
                 saveBtn.classList.remove('hidden');
@@ -1468,6 +1475,50 @@ createAPICheckbox(api, category) {
                 </div>
             `;
         }
+    },
+
+    addNewSearchButton() {
+        const resultsDiv = document.getElementById('nct-results');
+        
+        // Check if button already exists
+        if (resultsDiv.querySelector('.nct-new-search-btn')) {
+            return;
+        }
+        
+        const buttonBar = document.createElement('div');
+        buttonBar.className = 'nct-new-search-btn';
+        buttonBar.innerHTML = `
+            <button onclick="app.startNewNCTSearch()" style="background: linear-gradient(135deg, #1BEB49 0%, #17C93E 100%);">
+                <span>🔍</span>
+                <span>New Search</span>
+            </button>
+            <button onclick="app.saveNCTResults()" style="background: linear-gradient(135deg, #FFA400 0%, #FF8C00 100%);">
+                <span>💾</span>
+                <span>Save Results</span>
+            </button>
+        `;
+        
+        // Insert at the beginning of results
+        resultsDiv.insertBefore(buttonBar, resultsDiv.firstChild);
+    },
+
+    // Add this new function
+    startNewNCTSearch() {
+        const inputArea = document.querySelector('.nct-input-area');
+        const resultsDiv = document.getElementById('nct-results');
+        const progressDiv = document.getElementById('nct-progress');
+        
+        // Clear input
+        document.getElementById('nct-input').value = '';
+        
+        // Show input area, hide results
+        inputArea.classList.remove('hidden');
+        resultsDiv.classList.remove('active');
+        resultsDiv.innerHTML = '';
+        progressDiv.classList.add('hidden');
+        
+        // Scroll to top
+        inputArea.scrollTop = 0;
     },
 
     displayNCTResults(data) {

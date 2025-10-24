@@ -678,6 +678,8 @@ header p {
 #nct-mode {
     display: none;
     flex-direction: column;
+    height: 100%;
+    overflow: hidden;
 }
 
 #nct-mode.active {
@@ -685,12 +687,62 @@ header p {
 }
 
 .nct-input-area {
-    flex-shrink: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     padding: 30px;
     background: #f8f9fa;
     border-bottom: 2px solid #e9ecef;
-    max-height: 40vh;
     overflow-y: auto;
+}
+
+.nct-input-area.hidden {
+    display: none;
+}
+
+.nct-results {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 30px;
+    background: #ffffff;
+    display: none;  /* Hidden by default */
+}
+
+.nct-results.active {
+    display: block;
+}
+
+.nct-new-search-btn {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    padding: 15px 30px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.95) 100%);
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nct-new-search-btn button {
+    padding: 12px 24px;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.nct-new-search-btn button:hover {
+    transform: translateY(-2px);
 }
 
 .nct-input-group {
@@ -1092,17 +1144,17 @@ header p {
 }
 
 .api-section-header h4 {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 700;
     margin: 0 0 0.25rem 0;
-    color: var(--text-primary, #ffffff);
+    color: (#ffffff);
 }
 
 .api-section-desc {
-    font-size: 0.85rem;
-    color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+    font-size: 0.9rem;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.8));
     margin: 0;
-    font-weight: 400;
+    font-weight: 500;
 }
 
 /* API Checkboxes Grid */
@@ -1118,8 +1170,8 @@ header p {
     align-items: flex-start;
     gap: 0.75rem;
     padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -1165,15 +1217,16 @@ header p {
     align-items: center;
     gap: 0.5rem;
     font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-primary, #ffffff);
+    font-weight: 600;
+    color: (#ffffff);
     margin-bottom: 0.25rem;
 }
 
 .api-checkbox-desc {
-    font-size: 0.8rem;
-    color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.85);
     line-height: 1.4;
+    font-weight: 400;
 }
 
 /* API Status Badges */
