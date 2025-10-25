@@ -6,17 +6,15 @@
     <string>com.amplm.chat.dev</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/llm_env/bin/python</string>
-        <string>-m</string>
-        <string>uvicorn</string>
-        <string>standalone modules.chat_with_llm.chat_api:app</string>
+        <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/llm_env/bin/uvicorn</string>
+        <string>chat_api:app</string>
         <string>--host</string>
         <string>0.0.0.0</string>
         <string>--port</string>
         <string>9001</string>
     </array>
     <key>WorkingDirectory</key>
-    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3</string>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/standalone modules/chat_with_llm</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>

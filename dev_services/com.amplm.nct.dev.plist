@@ -6,15 +6,13 @@
     <string>com.amplm.nct.dev</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/llm_env/bin/python</string>
-        <string>-m</string>
-        <string>uvicorn</string>
-        <string>standalone modules.nct_lookup.nct_api:app</string>
+        <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/llm_env/bin/uvicorn</string>
+        <string>nct_api:app</string>
         <string>--port</string>
         <string>9002</string>
     </array>
     <key>WorkingDirectory</key>
-    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3</string>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/standalone modules/nct_lookup</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>
