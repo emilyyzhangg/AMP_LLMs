@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.amplm.chat.dev</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/llm_env/bin/python</string>
+        <string>-m</string>
+        <string>uvicorn</string>
+        <string>standalone modules.chat_with_llm.chat_api:app</string>
+        <string>--host</string>
+        <string>0.0.0.0</string>
+        <string>--port</string>
+        <string>9001</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/llm_env/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/logs/chat_dev.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/logs/chat_dev.error.log</string>
+</dict>
+</plist>

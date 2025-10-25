@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.amplm.nct</string>
+    <key>Program</key>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/start_nct.sh</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/logs/nct.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/logs/nct.error.log</string>
+</dict>
+</plist>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.amplm.chat</string>
+    <key>Program</key>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/start_chat.sh</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/logs/chat.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/logs/chat.error.log</string>
+</dict>
+</plist>
