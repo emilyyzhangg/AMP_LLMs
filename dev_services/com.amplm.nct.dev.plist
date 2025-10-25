@@ -17,6 +17,8 @@
     <dict>
         <key>PATH</key>
         <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/llm_env/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>PYTHONPATH</key>
+        <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/standalone modules/nct_lookup</string>
     </dict>
     <key>RunAtLoad</key>
     <true/>
