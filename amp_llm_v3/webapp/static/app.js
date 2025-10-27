@@ -1098,7 +1098,8 @@ const app = {
                     { id: 'duckduckgo', name: 'DuckDuckGo', description: 'Web search', enabled_by_default: false, available: true },
                     { id: 'serpapi', name: 'Google Search', description: 'Google results', enabled_by_default: false, available: false, requires_key: true },
                     { id: 'scholar', name: 'Google Scholar', description: 'Academic papers', enabled_by_default: false, available: false, requires_key: true },
-                    { id: 'openfda', name: 'OpenFDA', description: 'FDA drug data', enabled_by_default: false, available: true }
+                    { id: 'openfda', name: 'OpenFDA', description: 'FDA drug data', enabled_by_default: false, available: true },
+                    { id: 'uniprot', name: 'UniProt', description: 'Protein database', enabled_by_default: false, available: true }
                 ],
                 metadata: {
                     default_enabled: ['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc']
