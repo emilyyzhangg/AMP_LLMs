@@ -112,7 +112,7 @@ class APIRegistry:
         APIDefinition(
             id="openfda",
             name="OpenFDA",
-            description="FDA drug labels and adverse events",
+            description="FDA drug labels and adverse events 1",
             category="extended",
             client_class="OpenFDAClient",
             enabled_by_default=True

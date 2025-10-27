@@ -1098,7 +1098,8 @@ const app = {
                     { id: 'duckduckgo', name: 'DuckDuckGo', description: 'Web search', enabled_by_default: false, available: true },
                     { id: 'serpapi', name: 'Google Search', description: 'Google results', enabled_by_default: false, available: false, requires_key: true },
                     { id: 'scholar', name: 'Google Scholar', description: 'Academic papers', enabled_by_default: false, available: false, requires_key: true },
-                    { id: 'openfda', name: 'OpenFDA', description: 'FDA drug data', enabled_by_default: false, available: true }
+                    { id: 'openfda', name: 'OpenFDA', description: 'FDA drug data', enabled_by_default: false, available: true },
+                    { id: 'uniprot', name: 'UniProt', description: 'Protein database', enabled_by_default: false, available: true }
                 ],
                 metadata: {
                     default_enabled: ['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc']
@@ -2443,19 +2444,76 @@ const app = {
                                 <div class="source-content">
                         `;
                         
-                        // === DUCKDUCKGO ENHANCED DISPLAY ===
-                        if (sourceName === 'duckduckgo') {
-                            html += this.formatDuckDuckGoDisplay(data);
+                        // Show search query/parameters
+                        if (data.query) {
+                            html += `<div class="search-info">
+                                <span class="search-info-label">🔍 Query:</span>
+                                <span class="search-info-value">"${this.escapeHtml(data.query)}"</span>
+                            </div>`;
                         }
                         
-                        // === OPENFDA ENHANCED DISPLAY ===
-                        else if (sourceName === 'openfda') {
-                            html += this.formatOpenFDADisplay(data);
+                        if (data.search_terms_used && data.search_terms_used.length > 0) {
+                            html += `<div class="search-info">
+                                <span class="search-info-label">📝 Search Terms:</span>
+                                <span class="search-info-value">${data.search_terms_used.map(t => `"${this.escapeHtml(t)}"`).join(', ')}</span>
+                            </div>`;
                         }
                         
-                        // === GENERIC EXTENDED SOURCE DISPLAY ===
-                        else {
-                            html += this.formatGenericExtendedDisplay(data);
+                        // Display results based on source type
+                        if (data.results && Array.isArray(data.results)) {
+                            html += `<div class="data-field">
+                                <strong>Results Found:</strong> ${data.results.length}
+                            </div>`;
+                            
+                            // Show first 3 results
+                            const displayCount = Math.min(3, data.results.length);
+                            const visibleResults = data.results.slice(0, displayCount);
+                            const hiddenResults = data.results.slice(displayCount);
+                            
+                            html += `<div class="extended-results-container">`;
+                            
+                            visibleResults.forEach((result, idx) => {
+                                html += `
+                                    <div class="extended-result-item">
+                                        <div class="result-number">${idx + 1}.</div>
+                                        <div class="result-content">
+                                            ${result.title ? `<div class="result-title">${this.escapeHtml(result.title)}</div>` : ''}
+                                            ${result.snippet ? `<div class="result-snippet">${this.escapeHtml(result.snippet)}</div>` : ''}
+                                            ${result.url ? `<div class="result-link"><a href="${result.url}" target="_blank" rel="noopener noreferrer">View Source →</a></div>` : ''}
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            
+                            html += `</div>`; // Close extended-results-container
+                            
+                            if (hiddenResults.length > 0) {
+                                html += `
+                                    <button class="show-more-button" onclick="app.toggleExtendedResults('${uniqueId}-hidden')">
+                                        ... and ${hiddenResults.length} more results
+                                    </button>
+                                    <div id="${uniqueId}-hidden" class="extended-results-container hidden">
+                                `;
+                                
+                                hiddenResults.forEach((result, idx) => {
+                                    html += `
+                                        <div class="extended-result-item">
+                                            <div class="result-number">${displayCount + idx + 1}.</div>
+                                            <div class="result-content">
+                                                ${result.title ? `<div class="result-title">${this.escapeHtml(result.title)}</div>` : ''}
+                                                ${result.snippet ? `<div class="result-snippet">${this.escapeHtml(result.snippet)}</div>` : ''}
+                                                ${result.url ? `<div class="result-link"><a href="${result.url}" target="_blank" rel="noopener noreferrer">View Source →</a></div>` : ''}
+                                            </div>
+                                        </div>
+                                    `;
+                                });
+                                
+                                html += `</div>`;
+                            }
+                        } else {
+                            html += `<div class="data-field">
+                                <strong>Status:</strong> Data retrieved successfully
+                            </div>`;
                         }
                         
                         html += `</div></div>`;
@@ -2733,7 +2791,11 @@ const app = {
                 return 0;
         }
     },
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> e7ccf4abf3afe792fd34950ae1306fc207e7491b
     getAPIInfo(sourceId) {
         if (!this.apiRegistry) return null;
         
