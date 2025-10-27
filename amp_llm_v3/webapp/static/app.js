@@ -2051,58 +2051,65 @@ const app = {
                 console.log('🔬 Extended sources:', Object.keys(sources.extended));
             }
             
-            // Count core sources
-            Object.entries(sources).forEach(([sourceName, sourceData]) => {
-                if (sourceName === 'extended') return; // Skip extended here, handle separately
-                
-                if (!sourceStats[sourceName]) {
-                    sourceStats[sourceName] = {
-                        count: 0,
-                        successful: 0,
-                        failed: 0
-                    };
-                }
-                
-                if (sourceData && sourceData.success && sourceData.data) {
-                    sourceStats[sourceName].successful++;
-                    
-                    const resultCount = this.countSourceResults(sourceName, sourceData.data);
-                    sourceStats[sourceName].count += resultCount;
-                    totalResults += resultCount;
-                } else {
-                    sourceStats[sourceName].failed++;
-                }
-            });
+    // ====== SECTION 3: Display core sources with enhanced formatting ======
+    Object.entries(sources).forEach(([sourceName, sourceData]) => {
+        // Skip extended here
+        if (sourceName === 'extended') return;
+        
+        const apiInfo = this.getAPIInfo(sourceName);
+        const apiDisplayName = apiInfo ? apiInfo.name : sourceName;
+        
+        if (sourceData && sourceData.success && sourceData.data) {
+            const data = sourceData.data;
+            const resultCount = this.countSourceResults(sourceName, data);
             
-            // Count extended sources
-            if (sources.extended) {
-                Object.entries(sources.extended).forEach(([sourceName, sourceData]) => {
-                    console.log(`📊 Extended source ${sourceName}:`, {
-                        success: sourceData?.success,
-                        hasData: !!sourceData?.data,
-                        error: sourceData?.error
-                    });
-                    
-                    if (!sourceStats[sourceName]) {
-                        sourceStats[sourceName] = {
-                            count: 0,
-                            successful: 0,
-                            failed: 0
-                        };
-                    }
-                    
-                    if (sourceData && sourceData.success && sourceData.data) {
-                        sourceStats[sourceName].successful++;
-                        
-                        const resultCount = this.countSourceResults(sourceName, sourceData.data);
-                        sourceStats[sourceName].count += resultCount;
-                        totalResults += resultCount;
-                    } else {
-                        sourceStats[sourceName].failed++;
-                    }
-                });
+            html += `
+                <div class="source-section">
+                    <div class="source-header">
+                        <strong>📚 ${this.escapeHtml(apiDisplayName)}</strong>
+                        <div class="source-header-right">
+                            <span class="source-count-badge">${resultCount} result${resultCount !== 1 ? 's' : ''}</span>
+                            <span class="source-status success">✓</span>
+                        </div>
+                    </div>
+                    <div class="source-content">
+            `;
+            
+            // === CLINICAL TRIALS DISPLAY ===
+            if (sourceName === 'clinicaltrials' || sourceName === 'clinical_trials') {
+                html += this.formatClinicalTrialsDisplay(nct_id, data, metadata);
             }
-        });
+            
+            // === PUBMED DISPLAY ===
+            else if (sourceName === 'pubmed') {
+                html += this.formatPubMedDisplay(nct_id, data);
+            }
+            
+            // === PMC DISPLAY ===
+            else if (sourceName === 'pmc') {
+                html += this.formatPMCDisplay(nct_id, data);
+            }
+            
+            // === PMC BIOC DISPLAY ===
+            else if (sourceName === 'pmc_bioc') {
+                html += this.formatPMCBioCDisplay(nct_id, data);
+            }
+            
+            html += `</div></div>`;
+        } else if (sourceData && sourceData.error) {
+            html += `
+                <div class="source-section">
+                    <div class="source-header">
+                        <strong>📚 ${this.escapeHtml(apiDisplayName)}</strong>
+                        <span class="source-status error">✗</span>
+                    </div>
+                    <div class="source-content error">
+                        ${this.escapeHtml(sourceData.error || 'Unknown error')}
+                    </div>
+                </div>
+            `;
+        }
+    });
         
         if (Object.keys(sourceStats).length > 0) {
             // Separate core and extended sources
@@ -2417,7 +2424,7 @@ const app = {
                 }
             });
             
-            // ====== SECTION 4: Display extended sources ======
+            // ====== SECTION 4: Display extended sources with enhanced formatting ======
             if (sources.extended && Object.keys(sources.extended).length > 0) {
                 html += `
                     <div class="extended-sources-header">
@@ -2446,76 +2453,19 @@ const app = {
                                 <div class="source-content">
                         `;
                         
-                        // Show search query/parameters
-                        if (data.query) {
-                            html += `<div class="search-info">
-                                <span class="search-info-label">🔍 Query:</span>
-                                <span class="search-info-value">"${this.escapeHtml(data.query)}"</span>
-                            </div>`;
+                        // === DUCKDUCKGO ENHANCED DISPLAY ===
+                        if (sourceName === 'duckduckgo') {
+                            html += this.formatDuckDuckGoDisplay(data);
                         }
                         
-                        if (data.search_terms_used && data.search_terms_used.length > 0) {
-                            html += `<div class="search-info">
-                                <span class="search-info-label">📝 Search Terms:</span>
-                                <span class="search-info-value">${data.search_terms_used.map(t => `"${this.escapeHtml(t)}"`).join(', ')}</span>
-                            </div>`;
+                        // === OPENFDA ENHANCED DISPLAY ===
+                        else if (sourceName === 'openfda') {
+                            html += this.formatOpenFDADisplay(data);
                         }
                         
-                        // Display results based on source type
-                        if (data.results && Array.isArray(data.results)) {
-                            html += `<div class="data-field">
-                                <strong>Results Found:</strong> ${data.results.length}
-                            </div>`;
-                            
-                            // Show first 3 results
-                            const displayCount = Math.min(3, data.results.length);
-                            const visibleResults = data.results.slice(0, displayCount);
-                            const hiddenResults = data.results.slice(displayCount);
-                            
-                            html += `<div class="extended-results-container">`;
-                            
-                            visibleResults.forEach((result, idx) => {
-                                html += `
-                                    <div class="extended-result-item">
-                                        <div class="result-number">${idx + 1}.</div>
-                                        <div class="result-content">
-                                            ${result.title ? `<div class="result-title">${this.escapeHtml(result.title)}</div>` : ''}
-                                            ${result.snippet ? `<div class="result-snippet">${this.escapeHtml(result.snippet)}</div>` : ''}
-                                            ${result.url ? `<div class="result-link"><a href="${result.url}" target="_blank" rel="noopener noreferrer">View Source →</a></div>` : ''}
-                                        </div>
-                                    </div>
-                                `;
-                            });
-                            
-                            html += `</div>`; // Close extended-results-container
-                            
-                            if (hiddenResults.length > 0) {
-                                html += `
-                                    <button class="show-more-button" onclick="app.toggleExtendedResults('${uniqueId}-hidden')">
-                                        ... and ${hiddenResults.length} more results
-                                    </button>
-                                    <div id="${uniqueId}-hidden" class="extended-results-container hidden">
-                                `;
-                                
-                                hiddenResults.forEach((result, idx) => {
-                                    html += `
-                                        <div class="extended-result-item">
-                                            <div class="result-number">${displayCount + idx + 1}.</div>
-                                            <div class="result-content">
-                                                ${result.title ? `<div class="result-title">${this.escapeHtml(result.title)}</div>` : ''}
-                                                ${result.snippet ? `<div class="result-snippet">${this.escapeHtml(result.snippet)}</div>` : ''}
-                                                ${result.url ? `<div class="result-link"><a href="${result.url}" target="_blank" rel="noopener noreferrer">View Source →</a></div>` : ''}
-                                            </div>
-                                        </div>
-                                    `;
-                                });
-                                
-                                html += `</div>`;
-                            }
-                        } else {
-                            html += `<div class="data-field">
-                                <strong>Status:</strong> Data retrieved successfully
-                            </div>`;
+                        // === GENERIC EXTENDED SOURCE DISPLAY ===
+                        else {
+                            html += this.formatGenericExtendedDisplay(data);
                         }
                         
                         html += `</div></div>`;
@@ -2570,7 +2520,269 @@ const app = {
                 return 0;
         }
     },
-    
+
+    formatClinicalTrialsDisplay(nctId, data, metadata) {
+        let html = '';
+        
+        // Display NCT number prominently
+        html += `<div class="nct-id-display">
+            <strong>NCT Number:</strong> <span class="nct-id-badge">${nctId}</span>
+        </div>`;
+        
+        // Display abstract with show more/less
+        if (metadata && metadata.abstract) {
+            const abstract = metadata.abstract;
+            const shortAbstract = abstract.substring(0, 300);
+            const needsExpand = abstract.length > 300;
+            
+            const uniqueId = `abstract-${nctId}-${Date.now()}`;
+            
+            html += `
+                <div class="data-field abstract-field">
+                    <strong>Abstract:</strong>
+                    <div class="abstract-content">
+                        <span id="${uniqueId}-short">${this.escapeHtml(shortAbstract)}${needsExpand ? '...' : ''}</span>
+                        ${needsExpand ? `
+                            <span id="${uniqueId}-full" class="hidden">${this.escapeHtml(abstract)}</span>
+                            <button class="show-more-button inline" onclick="app.toggleAbstract('${uniqueId}')">
+                                Show More
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Display other trial info
+        if (data.enrollment) {
+            html += `<div class="data-field">
+                <strong>Enrollment:</strong> ${data.enrollment}
+            </div>`;
+        }
+        if (data.phase) {
+            html += `<div class="data-field">
+                <strong>Phase:</strong> ${this.escapeHtml(Array.isArray(data.phase) ? data.phase.join(', ') : data.phase)}
+            </div>`;
+        }
+        
+        return html;
+    },
+
+    formatPubMedDisplay(nctId, data) {
+        let html = '';
+        
+        // Display queries used box
+        if (data.queries_used && data.queries_used.length > 0) {
+            html += `<div class="queries-used-box">
+                <div class="queries-used-header">
+                    <span class="queries-icon">🔍</span>
+                    <strong>Queries Used</strong>
+                </div>
+                <div class="queries-list">`;
+            
+            data.queries_used.forEach((query, idx) => {
+                html += `<div class="query-item">
+                    <span class="query-number">${idx + 1}.</span>
+                    <span class="query-text">"${this.escapeHtml(query)}"</span>
+                </div>`;
+            });
+            
+            html += `</div></div>`;
+        }
+        
+        // Display search strategy
+        if (data.search_strategy) {
+            html += `<div class="search-info">
+                <span class="search-info-label">🔍 Search Strategy:</span>
+                <span class="search-info-value">${this.escapeHtml(data.search_strategy)}</span>
+            </div>`;
+        }
+        
+        html += `<div class="data-field">
+            <strong>Articles Found:</strong> ${data.total_found || 0}
+        </div>`;
+        
+        // Display PMIDs
+        if (data.pmids && data.pmids.length > 0) {
+            const uniqueId = `source-${nctId}-pubmed-${Date.now()}`;
+            const visibleCount = 5;
+            const visiblePMIDs = data.pmids.slice(0, visibleCount);
+            const hiddenPMIDs = data.pmids.slice(visibleCount);
+            
+            html += `<div class="data-field pmid-field">
+                <strong>PMIDs:</strong> 
+                <span class="id-list">
+                    ${visiblePMIDs.join(', ')}
+                    ${hiddenPMIDs.length > 0 ? `
+                        <span class="show-more-inline" onclick="app.toggleExpandedList('${uniqueId}-pmids')">
+                            <strong>(+${hiddenPMIDs.length} more)</strong>
+                        </span>
+                        <span id="${uniqueId}-pmids" class="expanded-list hidden">
+                            , ${hiddenPMIDs.join(', ')}
+                        </span>
+                    ` : ''}
+                </span>
+            </div>`;
+        }
+        
+        return html;
+    },
+
+    formatPMCDisplay(nctId, data) {
+        let html = '';
+        
+        // Display results grouped by query
+        if (data.results_by_query && data.results_by_query.length > 0) {
+            html += `<div class="results-by-query-container">
+                <div class="results-by-query-header">
+                    <strong>📊 Results by Query</strong>
+                </div>`;
+            
+            data.results_by_query.forEach((queryGroup, idx) => {
+                const uniqueId = `pmc-query-${nctId}-${idx}-${Date.now()}`;
+                const visibleCount = 3;
+                const visiblePMCIDs = queryGroup.pmcids.slice(0, visibleCount);
+                const hiddenPMCIDs = queryGroup.pmcids.slice(visibleCount);
+                
+                html += `
+                    <div class="query-group">
+                        <div class="query-group-header">
+                            <span class="query-type-badge">${this.escapeHtml(queryGroup.query_type)}</span>
+                            <span class="query-text">"${this.escapeHtml(queryGroup.query)}"</span>
+                            <span class="query-count">${queryGroup.count} result${queryGroup.count !== 1 ? 's' : ''}</span>
+                        </div>
+                        <div class="query-group-results">
+                            <div class="numbered-list">
+                                ${visiblePMCIDs.map((pmcid, i) => `
+                                    <div class="numbered-item">
+                                        <span class="item-number">${i + 1}.</span>
+                                        <span class="item-id">${pmcid}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            ${hiddenPMCIDs.length > 0 ? `
+                                <button class="show-more-button" onclick="app.toggleQueryResults('${uniqueId}')">
+                                    Show ${hiddenPMCIDs.length} more...
+                                </button>
+                                <div id="${uniqueId}" class="numbered-list hidden">
+                                    ${hiddenPMCIDs.map((pmcid, i) => `
+                                        <div class="numbered-item">
+                                            <span class="item-number">${visibleCount + i + 1}.</span>
+                                            <span class="item-id">${pmcid}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+        } else {
+            // Fallback to simple display
+            html += `<div class="data-field">
+                <strong>Articles Found:</strong> ${data.total_found || 0}
+            </div>`;
+            
+            if (data.pmcids && data.pmcids.length > 0) {
+                html += `<div class="data-field">
+                    <strong>PMCIDs:</strong> ${data.pmcids.slice(0, 10).join(', ')}
+                    ${data.pmcids.length > 10 ? ` (+${data.pmcids.length - 10} more)` : ''}
+                </div>`;
+            }
+        }
+        
+        return html;
+    },
+
+    formatPMCBioCDisplay(nctId, data) {
+        let html = '';
+        
+        // Display search parameters
+        if (data.search_parameters) {
+            const params = data.search_parameters;
+            
+            html += `<div class="search-parameters-box">
+                <div class="search-parameters-header">
+                    <span class="params-icon">⚙️</span>
+                    <strong>Search Parameters</strong>
+                </div>
+                <div class="search-parameters-content">`;
+            
+            if (params.source) {
+                html += `<div class="param-item">
+                    <strong>Source:</strong> ${this.escapeHtml(params.source)}
+                </div>`;
+            }
+            
+            if (params.query_type) {
+                html += `<div class="param-item">
+                    <strong>Query Type:</strong> ${this.escapeHtml(params.query_type)}
+                </div>`;
+            }
+            
+            if (params.identifiers_used && params.identifiers_used.length > 0) {
+                html += `<div class="param-item">
+                    <strong>Identifiers Used:</strong> ${params.identifiers_used.slice(0, 5).join(', ')}
+                </div>`;
+            }
+            
+            html += `</div></div>`;
+        }
+        
+        html += `<div class="data-field">
+            <strong>Articles Fetched:</strong> ${data.total_fetched || 0}
+        </div>`;
+        
+        if (data.pmids_used && data.pmids_used.length > 0) {
+            html += `<div class="data-field">
+                <strong>PMIDs Processed:</strong> ${data.pmids_used.join(', ')}
+            </div>`;
+        }
+        
+        if (data.conversion_performed) {
+            html += `<div class="data-field conversion-notice">
+                <span class="conversion-icon">🔄</span>
+                <strong>Note:</strong> PMCIDs were converted to PMIDs for PubTator3 access
+            </div>`;
+        }
+        
+        return html;
+    },
+
+    toggleAbstract(uniqueId) {
+        const shortElem = document.getElementById(`${uniqueId}-short`);
+        const fullElem = document.getElementById(`${uniqueId}-full`);
+        const button = event.target;
+        
+        if (fullElem.classList.contains('hidden')) {
+            // Show full
+            shortElem.classList.add('hidden');
+            fullElem.classList.remove('hidden');
+            button.textContent = 'Show Less';
+        } else {
+            // Show short
+            fullElem.classList.add('hidden');
+            shortElem.classList.remove('hidden');
+            button.textContent = 'Show More';
+        }
+    },
+
+    toggleQueryResults(uniqueId) {
+        const element = document.getElementById(uniqueId);
+        const button = event.target;
+        
+        if (element.classList.contains('hidden')) {
+            element.classList.remove('hidden');
+            button.textContent = 'Show less';
+        } else {
+            element.classList.add('hidden');
+            const count = element.querySelectorAll('.numbered-item').length;
+            button.textContent = `Show ${count} more...`;
+        }
+    },
+
     getAPIInfo(sourceId) {
         if (!this.apiRegistry) return null;
         
