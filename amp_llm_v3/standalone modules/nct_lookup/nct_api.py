@@ -6,7 +6,7 @@ A FastAPI-based service for comprehensive clinical trial literature search.
 
 Features:
 - Core databases: ClinicalTrials.gov, PubMed, PMC
-- Extended databases: DuckDuckGo, SERP API, Google Scholar, OpenFDA
+- Extended databases: DuckDuckGo, SERP API, Google Scholar, OpenFDA, UniProt
 - JSON output with database tagging
 - Summary statistics
 - Async processing for performance
