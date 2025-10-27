@@ -1,7 +1,11 @@
 #!/bin/bash
 # Auto-update AMP_LLMs repo and restart PROD services on macOS
 # Automatically discovers all com.amplm.* services EXCLUDING dev and autoupdate
+<<<<<<< HEAD
 REPO_DIR="/Users/amphoraxe/Developer/AMP_LLMs"
+=======
+REPO_DIR="/Users/amphoraxe/Developer/AMP_LLMs_main"
+>>>>>>> dev
 LOG_FILE="/tmp/amp_autoupdate.log"
 PLIST_DIR="$HOME/Library/LaunchAgents"
 SELF_SERVICE="com.amplm.autoupdate"
@@ -32,8 +36,13 @@ if [ "$LOCAL_HASH" != "$REMOTE_HASH" ]; then
     
     # Discover all loaded com.amplm.* services EXCLUDING:
     # - autoupdate (self)
+<<<<<<< HEAD
     # - anything with .dev. (dev services)
     SERVICES=$(launchctl list | grep "com\.amplm\." | grep -v "\.dev\." | grep -v "$SELF_SERVICE" | awk '{print $3}')
+=======
+    # - anything with .dev (dev services)
+    SERVICES=$(launchctl list | grep "com\.amplm\." | grep -v "\.dev" | grep -v "$SELF_SERVICE" | awk '{print $3}')
+>>>>>>> dev
     
     if [ -z "$SERVICES" ]; then
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️ No com.amplm PROD services found running" >> "$LOG_FILE"
