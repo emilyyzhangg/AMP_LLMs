@@ -21,6 +21,13 @@ launchctl load ~/Library/LaunchAgents/com.amplm.nct.plist
 launchctl unload ~/Library/LaunchAgents/com.amplm.chat.plist
 launchctl load ~/Library/LaunchAgents/com.amplm.chat.plist
 
+launchctl unload ~/Library/LaunchAgents/com.amplm.webapp.dev.plist
+launchctl load ~/Library/LaunchAgents/com.amplm.webapp.dev.plist
+launchctl unload ~/Library/LaunchAgents/com.amplm.nct.dev.plist
+launchctl load ~/Library/LaunchAgents/com.amplm.nct.dev.plist
+launchctl unload ~/Library/LaunchAgents/com.amplm.chat.dev.plist
+launchctl load ~/Library/LaunchAgents/com.amplm.chat.dev.plist
+
 #####                                       💡 When to use each                                  #######
                             Use case	                                        Recommended command
         Just restart the service executable after code changes	                launchctl stop/start
@@ -40,4 +47,6 @@ launchctl load ~/Library/LaunchAgents/com.amplm.autoupdate.plist
 # Watch auto-updater log
 tail -f /tmp/amp_autoupdate.log
 tail -f /tmp/amp_autoupdate_dev.log
+
+test update
 #
