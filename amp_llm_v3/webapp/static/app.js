@@ -2266,16 +2266,43 @@ const app = {
                     `;
                     
                     if (sourceName === 'clinicaltrials' || sourceName === 'clinical_trials') {
-                        if (data.enrollment) {
-                            html += `<div class="data-field">
-                                <strong>Enrollment:</strong> ${data.enrollment}
+                        // Show Clinical Trials (not clinical_trials)
+                        html += `
+                            <div class="source-section">
+                                <div class="source-header">
+                                    <strong>📚 Clinical Trials</strong>
+                                    <span class="source-status success">✓</span>
+                                </div>
+                                <div class="source-content">
+                        `;
+                        
+                        // Show NCT ID prominently
+                        html += `<div class="data-field">
+                            <strong>NCT Number:</strong> ${nctId}
+                        </div>`;
+                        
+                        // Show abstract with expand option
+                        if (data.description || data.brief_summary) {
+                            const abstract = data.description || data.brief_summary;
+                            const shortAbstract = abstract.substring(0, 300);
+                            const needsExpand = abstract.length > 300;
+                            
+                            html += `<div class="data-field abstract-field">
+                                <strong>Abstract:</strong>
+                                <div class="abstract-text">
+                                    ${this.escapeHtml(shortAbstract)}${needsExpand ? '...' : ''}
+                                    ${needsExpand ? `
+                                        <span class="show-more-inline" onclick="app.toggleAbstract('abstract-${nctId}')">
+                                            <strong>Show More</strong>
+                                        </span>
+                                        <span id="abstract-${nctId}" class="expanded-text hidden">
+                                            ${this.escapeHtml(abstract.substring(300))}
+                                        </span>
+                                    ` : ''}
+                                </div>
                             </div>`;
                         }
-                        if (data.phase) {
-                            html += `<div class="data-field">
-                                <strong>Phase:</strong> ${this.escapeHtml(Array.isArray(data.phase) ? data.phase.join(', ') : data.phase)}
-                            </div>`;
-                        }
+                    
                     } else if (sourceName === 'pubmed') {
                         // Show search strategy and queries
                         if (data.search_strategy) {
@@ -2791,11 +2818,6 @@ const app = {
                 return 0;
         }
     },
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> e7ccf4abf3afe792fd34950ae1306fc207e7491b
     getAPIInfo(sourceId) {
         if (!this.apiRegistry) return null;
         
