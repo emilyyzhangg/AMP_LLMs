@@ -6,7 +6,7 @@
     <string>com.amplm.autoupdate</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_autoupdate.sh</string>
+        <string>/Users/amphoraxe/Developer/AMP_LLMs_main/amp_autoupdate.sh</string>
     </array>
     <key>StartInterval</key>
     <integer>30</integer> <!-- every 0.5 minute -->

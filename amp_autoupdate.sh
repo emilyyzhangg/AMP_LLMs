@@ -1,7 +1,7 @@
 #!/bin/bash
 # Auto-update AMP_LLMs repo and restart PROD services on macOS
 # Automatically discovers all com.amplm.* services EXCLUDING dev and autoupdate
-REPO_DIR="/Users/amphoraxe/Developer/AMP_LLMs"
+REPO_DIR="/Users/amphoraxe/Developer/AMP_LLMs_main"
 LOG_FILE="/tmp/amp_autoupdate.log"
 PLIST_DIR="$HOME/Library/LaunchAgents"
 SELF_SERVICE="com.amplm.autoupdate"
