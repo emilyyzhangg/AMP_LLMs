@@ -1,0 +1,6 @@
+# LaunchAgent service files and auto-update scripts
+amp_autoupdate.sh
+amp_autoupdate_dev.sh
+services/
+dev_services/
+EOF
