@@ -41,5 +41,4 @@ launchctl load ~/Library/LaunchAgents/com.amplm.autoupdate.plist
 tail -f /tmp/amp_autoupdate.log
 tail -f /tmp/amp_autoupdate_dev.log
 
-test update
 #
