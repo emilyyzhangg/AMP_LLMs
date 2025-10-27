@@ -6,7 +6,7 @@
     <string>com.amplm.webapp</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/llm_env/bin/python</string>
+        <string>/Users/amphoraxe/Developer/AMP_LLMs_main/amp_llm_v3/llm_env/bin/python</string>
         <string>-m</string>
         <string>uvicorn</string>
         <string>webapp.server:app</string>
@@ -16,19 +16,19 @@
         <string>8000</string>
     </array>
     <key>WorkingDirectory</key>
-    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3</string>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs_main/amp_llm_v3</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>
-        <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/llm_env/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <string>/Users/amphoraxe/Developer/AMP_LLMs_main/amp_llm_v3/llm_env/bin:/usr/local/bin:/usr/bin:/bin</string>
     </dict>
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/logs/webapp.log</string>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs_main/amp_llm_v3/logs/webapp.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/amphoraxe/Developer/AMP_LLMs/amp_llm_v3/logs/webapp.error.log</string>
+    <string>/Users/amphoraxe/Developer/AMP_LLMs_main/amp_llm_v3/logs/webapp.error.log</string>
 </dict>
 </plist>
