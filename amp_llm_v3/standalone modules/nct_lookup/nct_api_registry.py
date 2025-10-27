@@ -117,6 +117,14 @@ class APIRegistry:
             client_class="OpenFDAClient",
             enabled_by_default=True
         ),
+        APIDefinition(
+            id="uniprot",
+            name="UniProt",
+            description="Protein sequence and functional information for drug targets",
+            category="extended",
+            client_class="UniProtClient",
+            enabled_by_default=True
+        ),
         # Example of how to add more APIs:
         # APIDefinition(
         #     id="eudract",
