@@ -1,9 +1,8 @@
 """
-NCT Core Search Engine
+NCT Core Search Engine - UPDATED
 =====================
 
-Core search orchestration logic matching the original workflow.
-Enhanced with improved OpenFDA search integration.
+Enhanced search orchestration with improved data structure and search strategies.
 """
 
 import asyncio
@@ -22,8 +21,7 @@ from nct_clients import (
     DuckDuckGoClient,
     SerpAPIClient,
     GoogleScholarClient,
-    OpenFDAClient,
-    UniProtClient
+    OpenFDAClient
 )
 from nct_models import SearchConfig
 
@@ -33,7 +31,7 @@ logger = logging.getLogger(__name__)
 class NCTSearchEngine:
     """
     Core search engine orchestrating multi-database searches.
-    Updated to match the original amp_llm workflow behavior.
+    Updated with improved search strategies and data structure.
     """
     
     def __init__(self):
@@ -51,23 +49,21 @@ class NCTSearchEngine:
     
     async def initialize(self):
         """Initialize search engine and clients."""
-        # Create persistent session with longer timeout
         self.session = aiohttp.ClientSession(
             timeout=aiohttp.ClientTimeout(total=120, connect=30)
         )
         
-        # Initialize core clients (always available)
+        # Initialize core clients
         self.clients['clinicaltrials'] = ClinicalTrialsClient(self.session)
         self.clients['pubmed'] = PubMedClient(self.session, api_key=self.ncbi_key)
         self.clients['pmc'] = PMCClient(self.session, api_key=self.ncbi_key)
         self.clients['pmc_bioc'] = PMCBioClient(self.session, api_key=self.ncbi_key)
         
-        # Initialize extended clients (optional)
+        # Initialize extended clients
         self.clients['duckduckgo'] = DuckDuckGoClient(self.session)
         self.clients['serpapi'] = SerpAPIClient(self.session, api_key=self.serpapi_key)
         self.clients['scholar'] = GoogleScholarClient(self.session, api_key=self.serpapi_key)
         self.clients['openfda'] = OpenFDAClient(self.session)
-        self.clients['uniprot'] = UniProtClient(self.session)
         
         logger.info("Search engine initialized with all clients")
     
@@ -84,18 +80,7 @@ class NCTSearchEngine:
         status = None
     ) -> Dict[str, Any]:
         """
-        Execute comprehensive search matching original workflow.
-        
-        This follows the same pattern as fetch_clinical_trial_and_pubmed_pmc
-        from the original amp_llm implementation.
-        
-        Args:
-            nct_id: NCT number
-            config: Search configuration
-            status: Optional status object to update
-            
-        Returns:
-            Complete search results in the same format as original
+        Execute comprehensive search with improved data structure.
         """
         results = {
             "nct_id": nct_id,
@@ -110,13 +95,13 @@ class NCTSearchEngine:
                 "title": "",
                 "status": "",
                 "condition": "",
-                "intervention": ""
+                "intervention": "",
+                "abstract": ""  # NEW: Store abstract
             },
-            # Include databases for backward compatibility with tests
             "databases": {}
         }
         
-        # Step 1: Fetch ClinicalTrials.gov data (REQUIRED)
+        # Step 1: Fetch ClinicalTrials.gov data
         if status:
             status.current_database = "clinicaltrials"
             status.progress = 10
@@ -134,22 +119,23 @@ class NCTSearchEngine:
             }
             return results
         
-        # Store clinical trial data
+        # Store clinical trial data with enhanced metadata
         results["sources"]["clinical_trials"] = {
             "success": True,
             "data": ct_data,
             "fetch_time": datetime.utcnow().isoformat()
         }
         
-        # Extract metadata
+        # Extract enhanced metadata including abstract
         results["metadata"]["title"] = self._extract_title(ct_data)
         results["metadata"]["status"] = self._extract_status(ct_data)
         results["metadata"]["condition"] = self._extract_condition(ct_data)
         results["metadata"]["intervention"] = self._extract_intervention(ct_data)
+        results["metadata"]["abstract"] = self._extract_abstract(ct_data)  # NEW
         
         logger.info(f"Trial: {results['metadata']['title'][:100]}")
         
-        # Step 2: Search PubMed
+        # Step 2: Search PubMed with enhanced query tracking
         if status:
             status.current_database = "pubmed"
             status.progress = 30
@@ -157,7 +143,7 @@ class NCTSearchEngine:
         
         logger.info(f"Searching PubMed for {nct_id}")
         try:
-            pubmed_data = await self._search_pubmed(nct_id, ct_data)
+            pubmed_data = await self._search_pubmed_enhanced(nct_id, ct_data)
             results["sources"]["pubmed"] = {
                 "success": True,
                 "data": pubmed_data,
@@ -171,7 +157,7 @@ class NCTSearchEngine:
                 "data": None
             }
         
-        # Step 3: Search PMC
+        # Step 3: Search PMC with query grouping
         if status:
             status.current_database = "pmc"
             status.progress = 50
@@ -179,7 +165,7 @@ class NCTSearchEngine:
         
         logger.info(f"Searching PMC for {nct_id}")
         try:
-            pmc_data = await self._search_pmc(nct_id, ct_data)
+            pmc_data = await self._search_pmc_enhanced(nct_id, ct_data)
             results["sources"]["pmc"] = {
                 "success": True,
                 "data": pmc_data,
@@ -193,7 +179,7 @@ class NCTSearchEngine:
                 "data": None
             }
         
-        # Step 4: Search PMC BioC (using PubTator3)
+        # Step 4: Search PMC BioC with enhanced metadata
         if status:
             status.current_database = "pmc_bioc"
             status.progress = 60
@@ -201,8 +187,7 @@ class NCTSearchEngine:
 
         logger.info(f"Searching PMC BioC for {nct_id} using PubTator3")
         try:
-            pmc_bioc_data = await self._search_pmc_bioc(nct_id, ct_data, results)
-            logger.info(f"PMC BioC returned: {pmc_bioc_data}")
+            pmc_bioc_data = await self._search_pmc_bioc_enhanced(nct_id, ct_data, results)
             results["sources"]["pmc_bioc"] = {
                 "success": True,
                 "data": pmc_bioc_data,
@@ -216,21 +201,22 @@ class NCTSearchEngine:
                 "data": None
             }
 
-        # Step 5: Extended searches (if enabled)
+        # Step 5: Extended searches
         if config.use_extended_apis:
             if status:
                 status.completed_databases.append("pmc_bioc")
             
             logger.info("Starting extended database searches")
-            extended_results = await self._search_extended(
+            extended_results = await self._search_extended_enhanced(
                 nct_id,
                 ct_data,
+                results,
                 config,
                 status
             )
             results["sources"]["extended"] = extended_results
         
-        # Add backward compatibility: copy sources to databases
+        # Backward compatibility
         results["databases"] = {
             "clinicaltrials": results["sources"]["clinical_trials"].get("data"),
             "pubmed": results["sources"]["pubmed"].get("data"),
@@ -238,7 +224,6 @@ class NCTSearchEngine:
             "pmc_bioc": results["sources"]["pmc_bioc"].get("data")
         }
         
-        # Add extended to databases if present
         if "extended" in results["sources"]:
             for api_name, api_data in results["sources"]["extended"].items():
                 results["databases"][api_name] = api_data.get("data")
@@ -250,12 +235,11 @@ class NCTSearchEngine:
         logger.info(f"Search completed for {nct_id}")
         return results
     
-    async def _search_pubmed(self, nct_id: str, ct_data: Dict) -> Dict[str, Any]:
+    async def _search_pubmed_enhanced(self, nct_id: str, ct_data: Dict) -> Dict[str, Any]:
         """
-        Search PubMed matching original workflow logic.
+        Enhanced PubMed search with query tracking.
         """
         try:
-            # Extract references from trial data
             references = self._extract_references(ct_data)
             
             results = {
@@ -263,19 +247,18 @@ class NCTSearchEngine:
                 "articles": [],
                 "total_found": 0,
                 "search_strategy": "references",
-                "search_queries": []
+                "queries_used": []  # NEW: Track all queries used
             }
             
-            # Strategy 1: Search by references from ClinicalTrials.gov
+            # Strategy 1: Search by references
             if references:
                 logger.info(f"Searching PubMed using {len(references)} references")
                 
-                for ref in references[:5]:  # Limit to first 5 references
+                for ref in references[:5]:
                     title = ref.get("title", "")
                     citation = ref.get("citation", "")
                     pmid = ref.get("pmid", "")
                     
-                    # If we already have a PMID from reference, use it
                     if pmid and pmid not in results["pmids"]:
                         results["pmids"].append(pmid)
                         article = await self.clients['pubmed'].fetch(pmid)
@@ -283,10 +266,15 @@ class NCTSearchEngine:
                             results["articles"].append(article)
                         continue
                     
-                    # Search by title if available
                     if title or citation:
                         search_title = title or citation
                         authors = ref.get("authors", [])
+                        
+                        # Track the query
+                        query = f"{search_title[:50]}..."
+                        if authors:
+                            query += f" AND {authors[0]}"
+                        results["queries_used"].append(query)
                         
                         found_pmid = await self.clients['pubmed'].search_by_title_authors(
                             search_title, authors
@@ -298,11 +286,11 @@ class NCTSearchEngine:
                             if article and "error" not in article:
                                 results["articles"].append(article)
             
-            # Strategy 2: Direct NCT ID search (if no references found)
+            # Strategy 2: Direct NCT ID search
             if len(results["pmids"]) == 0:
                 logger.info(f"No references found, searching PubMed by NCT ID: {nct_id}")
                 results["search_strategy"] = "nct_id"
-                results["search_queries"].append(nct_id)
+                results["queries_used"].append(nct_id)
                 
                 pmids = await self.clients['pubmed'].search(nct_id, max_results=20)
                 
@@ -310,21 +298,19 @@ class NCTSearchEngine:
                     if pmid not in results["pmids"]:
                         results["pmids"].append(pmid)
                         
-                        # Fetch metadata for first 10
                         if len(results["articles"]) < 10:
                             article = await self.clients['pubmed'].fetch(pmid)
                             if article and "error" not in article:
                                 results["articles"].append(article)
             
-            # Strategy 3: Search by trial title (if still no results)
+            # Strategy 3: Search by trial title
             if len(results["pmids"]) == 0:
                 title = self._extract_title(ct_data)
                 if title:
                     logger.info(f"Searching PubMed by trial title")
                     results["search_strategy"] = "title"
-                    # Use first 10 words of title
                     title_query = " ".join(title.split()[:10])
-                    results["search_queries"].append(title_query)
+                    results["queries_used"].append(title_query)
                     
                     pmids = await self.clients['pubmed'].search(title_query, max_results=20)
                     
@@ -343,45 +329,58 @@ class NCTSearchEngine:
             logger.error(f"PubMed search error: {e}", exc_info=True)
             return {"error": str(e)}
     
-    async def _search_pmc(self, nct_id: str, ct_data: Dict) -> Dict[str, Any]:
+    async def _search_pmc_enhanced(self, nct_id: str, ct_data: Dict) -> Dict[str, Any]:
         """
-        Search PMC matching original workflow logic.
+        Enhanced PMC search with query grouping and results by query.
         """
         try:
             results = {
                 "pmcids": [],
                 "articles": [],
                 "total_found": 0,
-                "search_strategy": "nct_id",
-                "search_queries": []
+                "results_by_query": [],  # NEW: Group results by query
+                "search_strategy": "nct_id"
             }
             
             # Strategy 1: Search by NCT ID
             logger.info(f"Searching PMC by NCT ID: {nct_id}")
-            results["search_queries"].append(nct_id)
-            pmcids = await self.clients['pmc'].search(nct_id, max_results=20)
+            nct_pmcids = await self.clients['pmc'].search(nct_id, max_results=20)
             
-            # Strategy 2: If no results, try title search
-            if not pmcids:
+            if nct_pmcids:
+                results["results_by_query"].append({
+                    "query": nct_id,
+                    "query_type": "NCT ID",
+                    "pmcids": nct_pmcids,
+                    "count": len(nct_pmcids)
+                })
+                results["pmcids"].extend(nct_pmcids)
+            
+            # Strategy 2: Search by title if no NCT results
+            if not nct_pmcids:
                 title = self._extract_title(ct_data)
                 if title:
                     logger.info(f"Searching PMC by trial title")
                     results["search_strategy"] = "title"
-                    # Use first 10 words of title
                     title_query = " ".join(title.split()[:10])
-                    results["search_queries"].append(title_query)
-                    pmcids = await self.clients['pmc'].search(title_query, max_results=20)
+                    title_pmcids = await self.clients['pmc'].search(title_query, max_results=20)
+                    
+                    if title_pmcids:
+                        results["results_by_query"].append({
+                            "query": title_query,
+                            "query_type": "Trial Title",
+                            "pmcids": title_pmcids,
+                            "count": len(title_pmcids)
+                        })
+                        results["pmcids"].extend(title_pmcids)
             
-            if pmcids:
-                results["pmcids"] = pmcids
-                
-                # Fetch article metadata for first 10
-                for pmcid in pmcids[:10]:
+            # Fetch article metadata for first 10
+            if results["pmcids"]:
+                for pmcid in results["pmcids"][:10]:
                     article = await self.clients['pmc'].fetch(pmcid)
                     if article and "error" not in article:
                         results["articles"].append(article)
             
-            results["total_found"] = len(pmcids)
+            results["total_found"] = len(results["pmcids"])
             logger.info(f"PMC search found {results['total_found']} results")
             return results
             
@@ -389,17 +388,14 @@ class NCTSearchEngine:
             logger.error(f"PMC search error: {e}", exc_info=True)
             return {"error": str(e)}
     
-    async def _search_pmc_bioc(
+    async def _search_pmc_bioc_enhanced(
         self,
         nct_id: str,
         ct_data: Dict,
         results: Dict[str, Any]
     ) -> Dict[str, Any]:
         """
-        Search PMC BioC using PubTator3 API.
-        
-        Fetches full-text articles in BioC format using PMIDs.
-        If PMIDs not available, converts PMCIDs to PMIDs first.
+        Enhanced PMC BioC search with search parameters tracking.
         """
         try:
             bioc_results = {
@@ -407,10 +403,15 @@ class NCTSearchEngine:
                 "total_fetched": 0,
                 "errors": [],
                 "pmids_used": [],
-                "conversion_performed": False
+                "conversion_performed": False,
+                "search_parameters": {  # NEW: Track search parameters
+                    "source": "",
+                    "query_type": "",
+                    "identifiers_used": []
+                }
             }
             
-            # Strategy 1: Try to get PMIDs from PubMed results
+            # Get PMIDs from PubMed results
             pubmed_data = results.get("sources", {}).get("pubmed", {})
             pmids = []
             
@@ -418,8 +419,10 @@ class NCTSearchEngine:
                 pubmed_actual_data = pubmed_data.get("data", {})
                 pmids = pubmed_actual_data.get("pmids", [])
                 logger.info(f"Found {len(pmids)} PMIDs from PubMed results")
+                bioc_results["search_parameters"]["source"] = "PubMed"
+                bioc_results["search_parameters"]["query_type"] = pubmed_actual_data.get("search_strategy", "unknown")
             
-            # Strategy 2: If no PMIDs, try to convert PMCIDs to PMIDs
+            # If no PMIDs, convert PMCIDs
             if not pmids:
                 logger.info("No PMIDs found, attempting PMCID to PMID conversion")
                 
@@ -430,8 +433,9 @@ class NCTSearchEngine:
                     
                     if pmcids:
                         logger.info(f"Found {len(pmcids)} PMCIDs, converting to PMIDs")
+                        bioc_results["search_parameters"]["source"] = "PMC (converted)"
+                        bioc_results["search_parameters"]["identifiers_used"] = pmcids[:5]
                         
-                        # Convert PMCIDs to PMIDs
                         pmcid_to_pmid = await self.clients['pmc_bioc'].convert_pmcids_to_pmids(pmcids)
                         
                         if pmcid_to_pmid:
@@ -441,17 +445,18 @@ class NCTSearchEngine:
                             logger.info(f"Successfully converted {len(pmids)} PMCIDs to PMIDs")
                         else:
                             logger.warning("PMCID to PMID conversion returned no results")
+            else:
+                bioc_results["search_parameters"]["identifiers_used"] = pmids[:5]
             
-            # If still no PMIDs, return empty results
             if not pmids:
-                logger.warning(f"No PMIDs available for BioC fetch (neither from PubMed nor PMC)")
+                logger.warning(f"No PMIDs available for BioC fetch")
                 return bioc_results
             
-            bioc_results["pmids_used"] = pmids[:5]  # Store which PMIDs we're using
+            bioc_results["pmids_used"] = pmids[:5]
             
             logger.info(f"Fetching BioC data for {len(pmids[:5])} PMIDs using PubTator3")
             
-            # Fetch BioC data for each PMID (limit to first 5)
+            # Fetch BioC data
             for pmid in pmids[:5]:
                 try:
                     bioc_data = await self.clients['pmc_bioc'].fetch_pmc_bioc(pmid, format="biocjson")
@@ -490,40 +495,24 @@ class NCTSearchEngine:
                 "total_fetched": 0,
                 "errors": []
             }
-        
-    async def fetch_pmc_bioc(
-        self,
-        pmid: str,
-        format: str = "biocjson"
-    ) -> Dict[str, Any]:
-        """
-        Fetch article from PubTator3 API in BioC format.
-        Delegates to PMCBioClient.
-        
-        Args:
-            pmid: PubMed ID or PMC ID
-            format: 'biocjson' or 'biocxml' (default: biocjson)
-        
-        Returns:
-            Dict containing BioC formatted article data or error
-        """
-        return await self.clients['pmc_bioc'].fetch_pmc_bioc(pmid, format)
     
-    async def _search_extended(
+    async def _search_extended_enhanced(
         self,
         nct_id: str,
         ct_data: Dict,
+        trial_results: Dict,
         config: SearchConfig,
         status = None
     ) -> Dict[str, Any]:
         """
-        Search extended databases with enhanced OpenFDA integration.
+        Search extended databases with enhanced parameters.
+        NOW INCLUDES: PMIDs, PMCIDs, DOIs for DuckDuckGo multi-search
         """
         # Determine which databases to search
         if config.enabled_databases:
             databases = config.enabled_databases
         else:
-            databases = ["duckduckgo", "serpapi", "scholar", "openfda", "uniprot"]
+            databases = ["duckduckgo", "serpapi", "scholar", "openfda"]
         
         # Filter to available clients
         databases = [db for db in databases if db in self.clients]
@@ -538,15 +527,58 @@ class NCTSearchEngine:
         officials = contacts.get("overallOfficials", [])
         authors = [o.get("name", "") for o in officials if o.get("name")]
         
+        # ============================================================================
+        # NEW: Extract PMIDs, PMCIDs, DOIs from trial_results for DuckDuckGo
+        # ============================================================================
+        pubmed_pmids = []
+        pmc_pmcids = []
+        dois = []
+        
+        # Get PMIDs from PubMed results
+        sources = trial_results.get("sources", {})
+        if "pubmed" in sources and sources["pubmed"].get("success"):
+            pubmed_data = sources["pubmed"].get("data", {})
+            pubmed_pmids = pubmed_data.get("pmids", [])
+            logger.info(f"Extracted {len(pubmed_pmids)} PMIDs for DuckDuckGo search")
+        
+        # Get PMCIDs from PMC results
+        if "pmc" in sources and sources["pmc"].get("success"):
+            pmc_data = sources["pmc"].get("data", {})
+            pmc_pmcids = pmc_data.get("pmcids", [])
+            logger.info(f"Extracted {len(pmc_pmcids)} PMCIDs for DuckDuckGo search")
+        
+        # Extract DOIs from PMC articles if available
+        if "pmc" in sources and sources["pmc"].get("success"):
+            pmc_data = sources["pmc"].get("data", {})
+            articles = pmc_data.get("articles", [])
+            for article in articles:
+                if isinstance(article, dict) and "doi" in article:
+                    doi_list = article.get("doi", [])
+                    if isinstance(doi_list, list):
+                        dois.extend([d for d in doi_list if d])
+                    elif doi_list:  # Single DOI string
+                        dois.append(doi_list)
+            
+            if dois:
+                logger.info(f"Extracted {len(dois)} DOIs for DuckDuckGo search")
+        
         logger.info(f"Extended search params - Title: {title[:50] if title else 'None'}, "
-                   f"Condition: {condition}, Intervention: {intervention}")
+                f"Condition: {condition}, Intervention: {intervention}")
+        logger.info(f"DuckDuckGo will search with: NCT={nct_id}, PMIDs={len(pubmed_pmids)}, "
+                f"PMCIDs={len(pmc_pmcids)}, DOIs={len(dois)}")
         
         # Create search tasks
         tasks = {}
         
         if "duckduckgo" in databases:
+            # NEW: Pass PMIDs, PMCIDs, DOIs to DuckDuckGo for separate searches
             tasks["duckduckgo"] = self.clients['duckduckgo'].search(
-                nct_id, title, condition
+                nct_id=nct_id,
+                title=title,
+                condition=condition,
+                pmids=pubmed_pmids,
+                pmcids=pmc_pmcids,
+                dois=dois
             )
         
         if "serpapi" in databases and self.serpapi_key:
@@ -559,12 +591,9 @@ class NCTSearchEngine:
                 nct_id, title, condition
             )
         
-        # Enhanced OpenFDA search - pass full trial data
+        # Enhanced OpenFDA search - pass full trial data (now with common term filtering)
         if "openfda" in databases:
             tasks["openfda"] = self.clients['openfda'].search(nct_id, ct_data)
-        
-        if "uniprot" in databases:
-            tasks["uniprot"] = self.clients['uniprot'].search(nct_id, ct_data)
         
         # Execute concurrently
         logger.info(f"Executing {len(tasks)} extended searches")
@@ -587,8 +616,14 @@ class NCTSearchEngine:
                     error_msg = result.get("error", "Unknown error")
                     logger.error(f"❌ {db_name} API error: {error_msg}")
                 else:
-                    total = result.get("total_found", 0)
-                    logger.info(f"✅ {db_name} completed: {total} results found")
+                    # Special handling for DuckDuckGo multi-search results
+                    if db_name == "duckduckgo" and "results_by_type" in result:
+                        total = result.get("total_results", 0)
+                        searches = result.get("searches_performed", [])
+                        logger.info(f"✅ {db_name} completed: {total} results from {len(searches)} searches")
+                    else:
+                        total = result.get("total_found", 0)
+                        logger.info(f"✅ {db_name} completed: {total} results found")
                 
                 results[db_name] = {
                     "success": not has_error,
@@ -612,18 +647,77 @@ class NCTSearchEngine:
         
         return results
     
-    # Helper methods for safe data extraction from v2 API
+    def _extract_all_identifiers(self, ct_data: Dict, trial_results: Dict) -> Dict[str, List[str]]:
+        """
+        Extract all identifiers (PMIDs, PMCIDs, DOIs) from trial data.
+        """
+        identifiers = {
+            "pmids": [],
+            "pmcids": [],
+            "dois": []
+        }
+        
+        # Get PMIDs from PubMed results
+        pubmed_data = trial_results.get("sources", {}).get("pubmed", {}).get("data", {})
+        if pubmed_data:
+            identifiers["pmids"] = pubmed_data.get("pmids", [])[:5]
+        
+        # Get PMCIDs from PMC results
+        pmc_data = trial_results.get("sources", {}).get("pmc", {}).get("data", {})
+        if pmc_data:
+            identifiers["pmcids"] = pmc_data.get("pmcids", [])[:5]
+        
+        # Extract DOIs from references
+        try:
+            protocol = ct_data.get("protocolSection", {})
+            refs_mod = protocol.get("referencesModule", {})
+            refs_list = refs_mod.get("references", [])
+            
+            for ref in refs_list[:5]:
+                if isinstance(ref, dict):
+                    citation = ref.get("citation", "")
+                    # Simple DOI extraction
+                    if "doi" in citation.lower():
+                        # Extract DOI pattern
+                        import re
+                        doi_match = re.search(r'10\.\d{4,}/[^\s]+', citation)
+                        if doi_match:
+                            identifiers["dois"].append(doi_match.group(0))
+        except Exception as e:
+            logger.warning(f"Failed to extract DOIs: {e}")
+        
+        return identifiers
+    
+    def _extract_abstract(self, ct_data: Dict) -> str:
+        """Extract trial abstract/summary."""
+        try:
+            protocol = ct_data.get("protocolSection", {})
+            if not protocol:
+                return ""
+            
+            desc_mod = protocol.get("descriptionModule", {})
+            
+            # Try detailed description first, then brief summary
+            abstract = (
+                desc_mod.get("detailedDescription") or
+                desc_mod.get("briefSummary") or
+                ""
+            )
+            
+            return abstract.strip()
+            
+        except Exception as e:
+            logger.warning(f"Failed to extract abstract: {e}")
+            return ""
     
     def _extract_title(self, ct_data: Dict) -> str:
-        """Extract trial title from clinical trial v2 data."""
+        """Extract trial title."""
         try:
             protocol = ct_data.get("protocolSection", {})
             if not protocol:
                 return ""
             
             ident = protocol.get("identificationModule", {})
-            
-            # Try officialTitle first, then briefTitle
             title = (
                 ident.get("officialTitle") or
                 ident.get("briefTitle") or
@@ -691,15 +785,12 @@ class NCTSearchEngine:
             return ""
     
     def _extract_references(self, ct_data: Dict) -> List[Dict[str, Any]]:
-        """
-        Extract references from trial data matching original logic.
-        """
+        """Extract references from trial data."""
         try:
             protocol = ct_data.get("protocolSection", {})
             if not protocol:
                 return []
             
-            # Get references from referencesModule
             refs_mod = protocol.get("referencesModule", {})
             refs_list = refs_mod.get("references", [])
             
@@ -707,7 +798,6 @@ class NCTSearchEngine:
             
             for ref in refs_list:
                 if isinstance(ref, dict):
-                    # Extract all available info
                     parsed_ref = {
                         "pmid": ref.get("pmid", ""),
                         "citation": ref.get("citation", ""),
@@ -715,17 +805,14 @@ class NCTSearchEngine:
                         "authors": []
                     }
                     
-                    # Try to extract title from citation
                     citation = ref.get("citation", "")
                     if citation:
-                        # Simple heuristic: title is usually before the first period
                         parts = citation.split(".")
                         if parts:
                             parsed_ref["title"] = parts[0].strip()
                     
                     parsed_refs.append(parsed_ref)
             
-            # If no references found, create synthetic reference from trial data
             if not parsed_refs:
                 title = self._extract_title(ct_data)
                 if title:
