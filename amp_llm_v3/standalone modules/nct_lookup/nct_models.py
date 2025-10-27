@@ -16,7 +16,7 @@ class SearchRequest(BaseModel):
     
     include_extended: bool = Field(
         default=False,
-        description="Include extended databases (DuckDuckGo, SERP, Scholar, OpenFDA)"
+        description="Include extended databases (DuckDuckGo, SERP, Scholar, OpenFDA, UniProt)"
     )
     
     databases: Optional[List[str]] = Field(
@@ -30,7 +30,7 @@ class SearchRequest(BaseModel):
         """Validate database names."""
         if v is not None:
             valid_databases = [
-                'duckduckgo', 'serpapi', 'scholar', 'openfda'
+                'duckduckgo', 'serpapi', 'scholar', 'openfda', 'uniprot'
             ]
             invalid = [db for db in v if db not in valid_databases]
             if invalid:

@@ -647,6 +647,7 @@ def _count_source_results(api_id: str, data: Dict[str, Any]) -> int:
         # Count enforcement reports
         total += len(data.get("enforcement_reports", []))
         return total
+    
     elif api_id == "uniprot":
         return len(data.get("results", []))
     
