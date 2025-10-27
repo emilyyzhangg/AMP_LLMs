@@ -1,0 +1,620 @@
+/* ============================================================================
+   THEME_NAME: Cherry Blossom
+   THEME_COLORS: #FFB3C1, #C8A882, #FF8FA3, #8B6F47
+   
+   Inspired by cherry blossom pathways with soft pink petals and warm brown trees
+   ============================================================================ */
+
+body {
+    background: linear-gradient(135deg, #FFE4E9 0%, #C8A882 50%, #8B6F47 100%);
+}
+
+.container {
+    background: #FFFBF7;
+}
+
+/* ============================================================================
+   AUTH SECTION
+   ============================================================================ */
+
+.auth-box {
+    background: linear-gradient(135deg, #FFF5F8 0%, #FFF0F3 100%);
+    border: 2px solid #FFB3C1;
+}
+
+.auth-box h1 {
+    background: linear-gradient(135deg, #D4738C 0%, #A67B5B 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.auth-box p {
+    color: #8B6F47;
+}
+
+.auth-box input {
+    border: 2px solid #FFD4DD;
+    background: #FFFFFF;
+    color: #8B6F47;
+}
+
+.auth-box input:focus {
+    border-color: #FF8FA3;
+    box-shadow: 0 0 0 3px rgba(255, 143, 163, 0.15);
+}
+
+.auth-box button {
+    background: linear-gradient(135deg, #D4738C 0%, #B65F7A 100%);
+    box-shadow: 0 4px 12px rgba(212, 115, 140, 0.3);
+}
+
+.auth-box button:hover {
+    background: linear-gradient(135deg, #B65F7A 0%, #9E4C68 100%);
+    box-shadow: 0 6px 16px rgba(212, 115, 140, 0.4);
+}
+
+/* ============================================================================
+   HEADER - MODE PAGE
+   ============================================================================ */
+
+header {
+    background: linear-gradient(135deg, #6B5339 0%, #8B6F47 100%);
+    border-bottom: 4px solid #FFB3C1;
+    box-shadow: 0 4px 20px rgba(139, 111, 71, 0.4);
+}
+
+/* ============================================================================
+   LANDING HEADER
+   ============================================================================ */
+
+.landing-header {
+    background: linear-gradient(135deg, #FFFBF7 0%, #FFF5F8 100%);
+    border-bottom: 4px solid #FFB3C1;
+    box-shadow: 0 4px 16px rgba(255, 179, 193, 0.2);
+}
+
+.logo-container {
+    border-color: #FF8FA3;
+    box-shadow: 0 4px 12px rgba(255, 143, 163, 0.2);
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F8 100%);
+}
+
+.landing-title {
+    background: linear-gradient(135deg, #D4738C 0%, #A67B5B 50%, #FF8FA3 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.landing-version {
+    color: #C8A882;
+    font-weight: 700;
+}
+
+.landing-header .theme-button,
+.landing-header .logout-button {
+    border-color: #FFB3C1;
+    color: #8B6F47;
+    background: white;
+    box-shadow: 0 2px 8px rgba(255, 179, 193, 0.15);
+}
+
+.landing-header .theme-button:hover {
+    background: linear-gradient(135deg, #FFF5F8 0%, #FFE4E9 100%);
+    border-color: #FF8FA3;
+    color: #D4738C;
+    box-shadow: 0 4px 12px rgba(255, 143, 163, 0.25);
+}
+
+.landing-header .logout-button:hover {
+    background: linear-gradient(135deg, #FFF0F0 0%, #FFE0E0 100%);
+    border-color: #E74C3C;
+    color: #C0392B;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
+}
+
+/* ============================================================================
+   THEME SWITCHER
+   ============================================================================ */
+
+.theme-dropdown {
+    background: #FFFFFF;
+    border: 2px solid #FFB3C1;
+    box-shadow: 0 8px 24px rgba(255, 179, 193, 0.2);
+}
+
+.theme-option {
+    color: #8B6F47;
+}
+
+.theme-option:hover {
+    background: linear-gradient(135deg, #FFF5F8 0%, #FFE4E9 100%);
+}
+
+.theme-option.active {
+    background: linear-gradient(135deg, rgba(255, 179, 193, 0.2) 0%, rgba(200, 168, 130, 0.15) 100%);
+    color: #D4738C;
+    border-left: 4px solid #FF8FA3;
+}
+
+/* ============================================================================
+   MENU
+   ============================================================================ */
+
+.menu-section {
+    background: linear-gradient(135deg, #FFFBF7 0%, #FFF5F8 100%);
+}
+
+.menu-title {
+    color: #8B6F47;
+    font-weight: 700;
+}
+
+.menu-item {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F8 100%);
+    border: 2px solid #FFD4DD;
+    box-shadow: 0 2px 8px rgba(255, 179, 193, 0.1);
+}
+
+.menu-item:hover {
+    border-color: #FF8FA3;
+    box-shadow: 0 8px 24px rgba(255, 143, 163, 0.25);
+    transform: translateY(-5px);
+}
+
+.menu-item-icon {
+    filter: drop-shadow(0 2px 4px rgba(255, 179, 193, 0.3));
+}
+
+.menu-item-title {
+    color: #8B6F47;
+    font-weight: 700;
+}
+
+.menu-item-desc {
+    color: #A67B5B;
+}
+
+/* ============================================================================
+   CHAT INFO BAR
+   ============================================================================ */
+
+.chat-info-bar {
+    background: linear-gradient(135deg, #FFF5F8 0%, #FFE4E9 100%);
+    border-bottom: 2px solid #FFB3C1;
+}
+
+.chat-info-label {
+    color: #8B6F47;
+    font-weight: 700;
+}
+
+.chat-info-value {
+    background: #FFFFFF;
+    border: 1px solid #FFD4DD;
+    color: #8B6F47;
+}
+
+.chat-info-status-connected {
+    color: #6B9E4D;
+    font-weight: 700;
+}
+
+.clear-chat-btn {
+    background: linear-gradient(135deg, #D4738C 0%, #B65F7A 100%);
+    box-shadow: 0 2px 8px rgba(212, 115, 140, 0.3);
+}
+
+.clear-chat-btn:hover {
+    background: linear-gradient(135deg, #B65F7A 0%, #9E4C68 100%);
+    box-shadow: 0 4px 12px rgba(212, 115, 140, 0.4);
+}
+
+/* ============================================================================
+   MESSAGES
+   ============================================================================ */
+
+.chat-container,
+.research-container {
+    background: linear-gradient(135deg, #FFFBF7 0%, #FFFFFF 100%);
+}
+
+.avatar {
+    background: #FFF5F8;
+    border: 2px solid #FFD4DD;
+}
+
+.message.user .avatar {
+    background: linear-gradient(135deg, #D4738C 0%, #B65F7A 100%);
+    border-color: #FF8FA3;
+}
+
+.message.assistant .avatar {
+    background: linear-gradient(135deg, #A67B5B 0%, #8B6F47 100%);
+    border-color: #C8A882;
+}
+
+.message.system .avatar {
+    background: linear-gradient(135deg, #FFB3C1 0%, #FF8FA3 100%);
+    border-color: #FFB3C1;
+}
+
+.message.error .avatar {
+    background: linear-gradient(135deg, #DC3545 0%, #C82333 100%);
+    border-color: #DC3545;
+}
+
+.content {
+    background: #FFFFFF;
+    color: #5D4E3A;
+    border: 1px solid #FFE4E9;
+    box-shadow: 0 1px 3px rgba(255, 179, 193, 0.08);
+}
+
+.message.user .content {
+    background: linear-gradient(135deg, #D4738C 0%, #B65F7A 100%);
+    color: #FFFFFF;
+    border: none;
+    box-shadow: 0 2px 8px rgba(212, 115, 140, 0.25);
+}
+
+.message.assistant .content {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F8 100%);
+    color: #5D4E3A;
+    border: 1px solid #FFD4DD;
+}
+
+.message.system .content {
+    background: linear-gradient(135deg, #FFF5F8 0%, #FFE4E9 100%);
+    color: #8B6F47;
+    border: 1px solid #FFB3C1;
+}
+
+.message.error .content {
+    background: linear-gradient(135deg, #FFF0F0 0%, #FFE0E0 100%);
+    color: #8B2E3B;
+    border: 1px solid #FFCCCC;
+}
+
+/* ============================================================================
+   MODEL SELECTION
+   ============================================================================ */
+
+.model-button {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F8 100%);
+    border: 2px solid #FFD4DD;
+    color: #8B6F47;
+    box-shadow: 0 2px 6px rgba(255, 179, 193, 0.1);
+}
+
+.model-button:hover {
+    border-color: #FF8FA3;
+    box-shadow: 0 4px 16px rgba(255, 143, 163, 0.2);
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFE4E9 100%);
+}
+
+/* ============================================================================
+   INPUTS
+   ============================================================================ */
+
+.input-area {
+    background: linear-gradient(135deg, #FFF5F8 0%, #FFE4E9 100%);
+    border-top: 2px solid #FFD4DD;
+}
+
+.input-area textarea {
+    border: 2px solid #FFD4DD;
+    background: #FFFFFF;
+    color: #8B6F47;
+}
+
+.input-area textarea:focus {
+    border-color: #FF8FA3;
+    box-shadow: 0 0 0 3px rgba(255, 143, 163, 0.15);
+}
+
+.input-area button {
+    background: linear-gradient(135deg, #D4738C 0%, #B65F7A 100%);
+    box-shadow: 0 4px 12px rgba(212, 115, 140, 0.3);
+}
+
+.input-area button:hover:not(:disabled) {
+    background: linear-gradient(135deg, #B65F7A 0%, #9E4C68 100%);
+    box-shadow: 0 6px 16px rgba(212, 115, 140, 0.4);
+}
+
+/* ============================================================================
+   NCT MODE
+   ============================================================================ */
+
+.nct-input-area {
+    background: linear-gradient(135deg, #FFF5F8 0%, #FFE4E9 100%);
+    border-bottom: 2px solid #FFD4DD;
+}
+
+.nct-input-group label {
+    color: #8B6F47;
+    font-weight: 700;
+}
+
+.nct-input-group input,
+.nct-input-group textarea {
+    border: 2px solid #FFD4DD;
+    background: #FFFFFF;
+    color: #8B6F47;
+}
+
+.nct-input-group input:focus,
+.nct-input-group textarea:focus {
+    border-color: #FF8FA3;
+    box-shadow: 0 0 0 3px rgba(255, 143, 163, 0.15);
+}
+
+/* API Selection Sections */
+.api-section {
+    background: #FFFFFF;
+    border: 2px solid #FFD4DD;
+}
+
+.api-section-header h4 {
+    color: #8B6F47;
+}
+
+.api-section-desc {
+    color: #A67B5B;
+}
+
+.api-checkbox-item {
+    background: #FFF5F8;
+    border: 2px solid #FFD4DD;
+}
+
+.api-checkbox-item:hover {
+    background: #FFFFFF;
+    border-color: #FF8FA3;
+}
+
+.api-checkbox-name {
+    color: #8B6F47 !important;
+}
+
+.api-checkbox-desc {
+    color: #A67B5B !important;
+}
+
+.api-status-badge.requires-key {
+    background: #FFF8E6;
+    color: #A67B5B !important;
+    border: 1px solid #FFD666;
+}
+
+.api-status-badge.unavailable {
+    background: #FFF0F0;
+    color: #8B2E3B !important;
+    border: 1px solid #FFCCCC;
+}
+
+/* NCT Buttons */
+.nct-submit {
+    background: linear-gradient(135deg, #8B6F47 0%, #6B5339 100%);
+    box-shadow: 0 4px 12px rgba(139, 111, 71, 0.3);
+}
+
+.nct-submit:hover:not(:disabled) {
+    background: linear-gradient(135deg, #6B5339 0%, #4D3B25 100%);
+    box-shadow: 0 6px 16px rgba(139, 111, 71, 0.4);
+}
+
+.nct-save {
+    background: linear-gradient(135deg, #D4738C 0%, #B65F7A 100%);
+    box-shadow: 0 4px 12px rgba(212, 115, 140, 0.3);
+}
+
+.nct-save:hover {
+    background: linear-gradient(135deg, #B65F7A 0%, #9E4C68 100%);
+    box-shadow: 0 6px 16px rgba(212, 115, 140, 0.4);
+}
+
+.new-search-button {
+    background: linear-gradient(135deg, #8B6F47 0%, #6B5339 100%);
+}
+
+.new-search-button:hover {
+    background: linear-gradient(135deg, #6B5339 0%, #4D3B25 100%);
+}
+
+.progress-text {
+    color: #D4738C;
+    font-weight: 600;
+}
+
+.nct-results {
+    background: linear-gradient(135deg, #FFFBF7 0%, #FFFFFF 100%);
+}
+
+.result-card {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F8 100%);
+    border: 2px solid #FFD4DD;
+    box-shadow: 0 2px 8px rgba(255, 179, 193, 0.1);
+}
+
+.result-card:hover {
+    border-color: #FF8FA3;
+    box-shadow: 0 4px 16px rgba(255, 143, 163, 0.2);
+}
+
+.result-card h3 {
+    color: #8B6F47;
+    font-weight: 700;
+}
+
+.result-card-status {
+    background: linear-gradient(135deg, #FFF5F8 0%, #FFE4E9 100%);
+    color: #8B6F47;
+    padding: 4px 12px;
+    border-radius: 12px;
+    border: 1px solid #FFB3C1;
+}
+
+.extract-button {
+    background: linear-gradient(135deg, #A67B5B 0%, #8B6F47 100%);
+    box-shadow: 0 2px 6px rgba(166, 123, 91, 0.25);
+}
+
+.extract-button:hover {
+    background: linear-gradient(135deg, #8B6F47 0%, #6B5339 100%);
+    box-shadow: 0 4px 12px rgba(166, 123, 91, 0.35);
+}
+
+.summary-card {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F8 100%);
+    border: 3px solid #FFB3C1;
+    box-shadow: 0 4px 16px rgba(255, 179, 193, 0.15);
+}
+
+.summary-card h3 {
+    color: #8B6F47;
+    font-weight: 700;
+}
+
+.summary-item-value.success {
+    color: #6B9E4D;
+}
+
+.summary-item-value.error {
+    color: #DC3545;
+}
+
+.summary-item-value.info {
+    color: #8B6F47;
+}
+
+/* ============================================================================
+   FILE MANAGER
+   ============================================================================ */
+
+.file-controls {
+    background: linear-gradient(135deg, #FFF5F8 0%, #FFE4E9 100%);
+    border-bottom: 2px solid #FFD4DD;
+}
+
+.file-upload-btn {
+    background: linear-gradient(135deg, #D4738C 0%, #B65F7A 100%);
+    box-shadow: 0 2px 8px rgba(212, 115, 140, 0.25);
+}
+
+.file-upload-btn:hover {
+    background: linear-gradient(135deg, #B65F7A 0%, #9E4C68 100%);
+    box-shadow: 0 4px 12px rgba(212, 115, 140, 0.35);
+}
+
+.file-refresh-btn {
+    background: linear-gradient(135deg, #A67B5B 0%, #8B6F47 100%);
+    box-shadow: 0 2px 8px rgba(166, 123, 91, 0.25);
+}
+
+.file-refresh-btn:hover {
+    background: linear-gradient(135deg, #8B6F47 0%, #6B5339 100%);
+    box-shadow: 0 4px 12px rgba(166, 123, 91, 0.35);
+}
+
+.files-container {
+    background: linear-gradient(135deg, #FFFBF7 0%, #FFFFFF 100%);
+}
+
+.file-card {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F8 100%);
+    border: 2px solid #FFD4DD;
+    box-shadow: 0 2px 8px rgba(255, 179, 193, 0.1);
+}
+
+.file-card:hover {
+    border-color: #FF8FA3;
+    box-shadow: 0 4px 16px rgba(255, 143, 163, 0.2);
+}
+
+.file-card-icon {
+    color: #D4738C;
+    filter: drop-shadow(0 2px 4px rgba(212, 115, 140, 0.3));
+}
+
+.file-card-name {
+    color: #8B6F47;
+    font-weight: 700;
+}
+
+.file-card-load {
+    background: linear-gradient(135deg, #D4738C 0%, #B65F7A 100%);
+    box-shadow: 0 2px 6px rgba(212, 115, 140, 0.25);
+}
+
+.file-card-load:hover {
+    background: linear-gradient(135deg, #B65F7A 0%, #9E4C68 100%);
+    box-shadow: 0 4px 12px rgba(212, 115, 140, 0.35);
+}
+
+/* ============================================================================
+   LOADING
+   ============================================================================ */
+
+.loading {
+    color: #D4738C;
+}
+
+.spinner {
+    border: 3px solid rgba(212, 115, 140, 0.2);
+    border-top-color: #FF8FA3;
+}
+
+/* ============================================================================
+   SCROLLBARS
+   ============================================================================ */
+
+.chat-container::-webkit-scrollbar-track,
+.research-container::-webkit-scrollbar-track,
+.nct-results::-webkit-scrollbar-track,
+.files-container::-webkit-scrollbar-track,
+.menu-section::-webkit-scrollbar-track,
+.nct-input-area::-webkit-scrollbar-track {
+    background: #FFF5F8;
+}
+
+.chat-container::-webkit-scrollbar-thumb,
+.research-container::-webkit-scrollbar-thumb,
+.nct-results::-webkit-scrollbar-thumb,
+.files-container::-webkit-scrollbar-thumb,
+.menu-section::-webkit-scrollbar-thumb,
+.nct-input-area::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #FFB3C1 0%, #D4738C 100%);
+    border: 2px solid #FFF5F8;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover,
+.research-container::-webkit-scrollbar-thumb:hover,
+.nct-results::-webkit-scrollbar-thumb:hover,
+.files-container::-webkit-scrollbar-thumb:hover,
+.menu-section::-webkit-scrollbar-thumb:hover,
+.nct-input-area::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #D4738C 0%, #B65F7A 100%);
+}
+
+/* ============================================================================
+   RESULTS ACTIONS
+   ============================================================================ */
+
+.results-actions .download-btn {
+    background: linear-gradient(135deg, #8B6F47 0%, #6B5339 100%);
+}
+
+.results-actions .download-btn:hover {
+    background: linear-gradient(135deg, #6B5339 0%, #4D3B25 100%);
+}
+
+.results-actions .save-btn {
+    background: linear-gradient(135deg, #D4738C 0%, #B65F7A 100%);
+}
+
+.results-actions .save-btn:hover {
+    background: linear-gradient(135deg, #B65F7A 0%, #9E4C68 100%);
+}
