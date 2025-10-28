@@ -1000,267 +1000,131 @@ class OpenFDAClient(BaseClient):
 
 
 class UniProtClient(BaseClient):
-    """
-    UniProt API client for protein sequence and functional information.
+    """UniProt API client for protein data."""
     
-    Searches UniProt database using drug/intervention names from clinical trials.
-    """
+    BASE_URL = "https://rest.uniprot.org"
     
-    BASE_URL = "https://rest.uniprot.org/uniprotkb/search"
-    
-    async def search(self, query: str, **kwargs) -> Dict[str, Any]:
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Search UniProt using intervention data from clinical trial.
+        Search UniProt using protein/gene names from trial data.
         
         Args:
-            query: NCT trial identifier
-            **kwargs: Must include 'trial_data' with full clinical trial data dictionary
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
             
         Returns:
             Dict with UniProt search results
         """
-        nct_id = query
-        trial_data = kwargs.get('trial_data', {})
+        # Extract intervention names that might be proteins/genes
+        search_terms = self._extract_protein_terms(trial_data)
         
-        # Extract intervention names
-        interventions = self._extract_interventions(trial_data)
-        
-        if not interventions:
-            logger.info(f"UniProt: No interventions found for {nct_id}")
+        if not search_terms:
+            logger.info(f"UniProt: No protein/gene identifiers found for {nct_id}")
             return {
-                "query": "No interventions found",
+                "query": "No protein identifiers found",
                 "results": [],
                 "total_found": 0,
-                "interventions_searched": []
+                "search_terms_used": []
             }
         
-        logger.info(f"UniProt: Searching with interventions: {interventions}")
+        logger.info(f"UniProt: Searching with terms: {search_terms}")
         
-        # Initialize results
         results = {
-            "interventions_searched": interventions,
+            "query": ", ".join(search_terms[:3]),
             "results": [],
             "total_found": 0,
-            "query": ", ".join(interventions[:3])  # Show first 3
+            "search_terms_used": search_terms
         }
         
-        # Search each intervention
-        for intervention in interventions[:5]:  # Limit to first 5
-            intervention_results = await self._search_intervention(intervention)
-            
-            if intervention_results:
-                results["results"].extend(intervention_results)
+        # Search each term
+        for term in search_terms[:5]:  # Limit to first 5
+            proteins = await self._search_proteins(term)
+            results["results"].extend(proteins)
         
-        # Deduplicate by UniProt ID
-        results["results"] = self._deduplicate_results(results["results"])
-        results["total_found"] = len(results["results"])
+        # Deduplicate by accession
+        seen = set()
+        unique_results = []
+        for protein in results["results"]:
+            acc = protein.get("accession")
+            if acc and acc not in seen:
+                seen.add(acc)
+                unique_results.append(protein)
         
-        logger.info(f"UniProt: Found {results['total_found']} results for {nct_id}")
+        results["results"] = unique_results
+        results["total_found"] = len(unique_results)
+        
+        logger.info(f"UniProt: Found {results['total_found']} proteins for {nct_id}")
         
         return results
     
-    async def _search_intervention(self, intervention: str) -> List[Dict[str, Any]]:
-        """
-        Search UniProt for a specific intervention/drug name.
-        
-        Args:
-            intervention: Drug or intervention name
-            
-        Returns:
-            List of UniProt entries
-        """
-        # Build query - search in protein names and gene names
-        # This searches for proteins that might be drug targets
-        query = f'({intervention}) AND (reviewed:true)'
-        
-        params = {
-            'query': query,
-            'format': 'json',
-            'size': 10  # Limit results per intervention
-        }
-        
-        try:
-            await asyncio.sleep(0.1)  # Rate limiting - UniProt is generous
-            
-            async with self.session.get(
-                self.BASE_URL,
-                params=params,
-                timeout=aiohttp.ClientTimeout(total=30)
-            ) as resp:
-                if resp.status == 200:
-                    data = await resp.json()
-                    results = data.get("results", [])
-                    
-                    # Format results
-                    formatted_results = [
-                        self._format_uniprot_entry(entry, intervention)
-                        for entry in results
-                    ]
-                    
-                    logger.info(f"UniProt: Found {len(formatted_results)} results for '{intervention}'")
-                    return formatted_results
-                    
-                elif resp.status == 400:
-                    logger.warning(f"UniProt: Invalid query for '{intervention}'")
-                    return []
-                    
-                else:
-                    error_text = await resp.text()
-                    logger.error(f"UniProt HTTP {resp.status}: {error_text[:200]}")
-                    return []
-                    
-        except asyncio.TimeoutError:
-            logger.error(f"UniProt: Timeout for query '{intervention}'")
-            return []
-        except Exception as e:
-            logger.error(f"UniProt error for '{intervention}': {e}")
-            return []
-    
-    def _extract_interventions(self, trial_data: Dict[str, Any]) -> List[str]:
-        """
-        Extract intervention names from clinical trial data.
-        
-        Args:
-            trial_data: Full clinical trial data
-            
-        Returns:
-            List of intervention/drug names
-        """
-        interventions = []
+    def _extract_protein_terms(self, trial_data: Dict[str, Any]) -> List[str]:
+        """Extract potential protein/gene names from trial data."""
+        terms = []
         
         try:
             protocol = trial_data.get("protocolSection", {})
             arms_interventions = protocol.get("armsInterventionsModule", {})
-            intervention_list = arms_interventions.get("interventions", [])
+            interventions = arms_interventions.get("interventions", [])
             
-            for intervention in intervention_list:
+            for intervention in interventions:
                 if isinstance(intervention, dict):
-                    # Get intervention name
                     name = intervention.get("name", "").strip()
                     if name:
-                        interventions.append(name)
+                        terms.append(name)
                     
-                    # Get other names/synonyms
                     other_names = intervention.get("otherNames", [])
                     if isinstance(other_names, list):
-                        interventions.extend([n.strip() for n in other_names if n.strip()])
-            
+                        terms.extend([n.strip() for n in other_names if n.strip()])
+        
         except Exception as e:
-            logger.warning(f"Error extracting interventions: {e}")
+            logger.warning(f"Error extracting protein terms: {e}")
         
-        # Clean and deduplicate
-        cleaned = []
-        seen = set()
-        for intervention in interventions:
-            clean = intervention.lower().strip()
-            if clean and clean not in seen and len(clean) > 2:
-                seen.add(clean)
-                cleaned.append(intervention)
-        
-        return cleaned[:10]  # Limit to 10 most relevant
+        return terms[:10]  # Limit to 10 terms
     
-    def _format_uniprot_entry(self, entry: Dict[str, Any], intervention: str) -> Dict[str, Any]:
-        """
-        Format a UniProt entry for storage.
+    async def _search_proteins(self, query: str) -> List[Dict]:
+        """Search UniProt for proteins matching query."""
+        url = f"{self.BASE_URL}/uniprotkb/search"
         
-        Args:
-            entry: Raw UniProt entry
-            intervention: The intervention that matched this entry
-            
-        Returns:
-            Formatted entry dict
-        """
-        # Extract primary accession
-        primary_accession = entry.get("primaryAccession", "")
-        
-        # Extract protein names
-        protein_description = entry.get("proteinDescription", {})
-        recommended_name = protein_description.get("recommendedName", {})
-        full_name = recommended_name.get("fullName", {}).get("value", "")
-        
-        # Get alternative names
-        alternative_names = []
-        alt_names_list = protein_description.get("alternativeNames", [])
-        for alt in alt_names_list[:3]:  # Limit to 3
-            if isinstance(alt, dict):
-                alt_full = alt.get("fullName", {}).get("value", "")
-                if alt_full:
-                    alternative_names.append(alt_full)
-        
-        # Extract gene names
-        gene_names = []
-        genes = entry.get("genes", [])
-        for gene in genes[:3]:  # Limit to 3
-            if isinstance(gene, dict):
-                gene_name = gene.get("geneName", {}).get("value", "")
-                if gene_name:
-                    gene_names.append(gene_name)
-        
-        # Extract organism
-        organism = entry.get("organism", {})
-        organism_name = organism.get("scientificName", "")
-        
-        # Extract function (first comment of type FUNCTION)
-        function = ""
-        comments = entry.get("comments", [])
-        for comment in comments:
-            if isinstance(comment, dict) and comment.get("commentType") == "FUNCTION":
-                texts = comment.get("texts", [])
-                if texts and isinstance(texts, list):
-                    function = texts[0].get("value", "")[:500]  # Limit length
-                    break
-        
-        return {
-            "type": "uniprot_entry",
-            "intervention_matched": intervention,
-            "accession": primary_accession,
-            "protein_name": full_name,
-            "alternative_names": alternative_names,
-            "gene_names": gene_names,
-            "organism": organism_name,
-            "function": function if function else None,
-            "url": f"https://www.uniprot.org/uniprotkb/{primary_accession}"
+        params = {
+            "query": query,
+            "format": "json",
+            "size": 5  # Limit results per query
         }
-    
-    def _deduplicate_results(self, results: List[Dict]) -> List[Dict]:
-        """Remove duplicate UniProt entries by accession."""
-        seen = set()
-        unique = []
-        
-        for result in results:
-            accession = result.get("accession", "")
-            if accession and accession not in seen:
-                seen.add(accession)
-                unique.append(result)
-        
-        return unique
-    
-    async def fetch(self, identifier: str) -> Dict[str, Any]:
-        """
-        Fetch a specific UniProt entry by accession.
-        
-        Args:
-            identifier: UniProt accession (e.g., P12345)
-            
-        Returns:
-            UniProt entry data
-        """
-        url = f"https://rest.uniprot.org/uniprotkb/{identifier}.json"
         
         try:
-            await asyncio.sleep(0.1)  # Rate limiting
-            
-            async with self.session.get(url, timeout=aiohttp.ClientTimeout(total=30)) as resp:
+            async with self.session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=10)) as resp:
                 if resp.status == 200:
                     data = await resp.json()
-                    logger.info(f"UniProt: Fetched entry {identifier}")
-                    return data
-                elif resp.status == 404:
-                    return {"error": f"UniProt entry {identifier} not found"}
-                else:
-                    error_text = await resp.text()
-                    return {"error": f"HTTP {resp.status}: {error_text[:200]}"}
+                    results = data.get("results", [])
                     
+                    return [self._format_protein(p) for p in results]
+                else:
+                    logger.debug(f"UniProt search returned {resp.status} for '{query}'")
+                    return []
+        
         except Exception as e:
-            logger.error(f"UniProt fetch error for {identifier}: {e}")
+            logger.debug(f"UniProt search error for '{query}': {e}")
+            return []
+    
+    def _format_protein(self, protein: Dict) -> Dict:
+        """Format UniProt protein entry."""
+        return {
+            "accession": protein.get("primaryAccession"),
+            "name": protein.get("uniProtkbId"),
+            "protein_name": protein.get("proteinDescription", {}).get("recommendedName", {}).get("fullName", {}).get("value"),
+            "organism": protein.get("organism", {}).get("scientificName"),
+            "gene": protein.get("genes", [{}])[0].get("geneName", {}).get("value") if protein.get("genes") else None
+        }
+    
+    async def fetch(self, identifier: str) -> Dict[str, Any]:
+        """Fetch specific protein by accession."""
+        url = f"{self.BASE_URL}/uniprotkb/{identifier}"
+        
+        try:
+            async with self.session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status == 200:
+                    return await resp.json()
+                else:
+                    return {"error": f"HTTP {resp.status}"}
+        except Exception as e:
             return {"error": str(e)}
