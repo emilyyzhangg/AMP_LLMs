@@ -2006,21 +2006,31 @@ const app = {
 
     displayNCTResults(data) {
         const resultsDiv = document.getElementById('nct-results');
+        const inputArea = document.querySelector('.nct-input-area');
+        
+        // Store results globally for action buttons
+        window.lastNCTResults = data;
         
         let html = '';
         
+        // ====== NEW: ACTION BAR (STICKY AT TOP) ======
         html += `
-            <div class="results-actions">
-                <button class="action-button download-btn" onclick="app.downloadNCTResults()">
+            <div class="nct-action-bar">
+                <button class="nct-action-button new-search-btn" onclick="app.startNewNCTSearch()">
+                    <span class="btn-icon">🔍</span>
+                    <span class="btn-text">New Search</span>
+                </button>
+                <button class="nct-action-button download-btn" onclick="app.downloadNCTResults()">
                     <span class="btn-icon">📥</span>
                     <span class="btn-text">Download</span>
                 </button>
-                <button class="action-button save-btn" onclick="app.saveNCTResults()">
+                <button class="nct-action-button save-btn" onclick="app.saveNCTResults()">
                     <span class="btn-icon">💾</span>
                     <span class="btn-text">Save to Server</span>
                 </button>
             </div>
         `;
+        // ====== END ACTION BAR ======
         
         html += `
             <div class="result-card summary-card">
@@ -2054,7 +2064,7 @@ const app = {
             
             // Count core sources
             Object.entries(sources).forEach(([sourceName, sourceData]) => {
-                if (sourceName === 'extended') return; // Skip extended here, handle separately
+                if (sourceName === 'extended') return;
                 
                 if (!sourceStats[sourceName]) {
                     sourceStats[sourceName] = {
@@ -2106,7 +2116,6 @@ const app = {
         });
         
         if (Object.keys(sourceStats).length > 0) {
-            // Separate core and extended sources
             const coreAPIs = ['clinicaltrials', 'clinical_trials', 'pubmed', 'pmc', 'pmc_bioc'];
             const coreSources = [];
             const extendedSources = [];
@@ -2119,13 +2128,11 @@ const app = {
                 }
             });
             
-            // Sort by count (descending)
             coreSources.sort((a, b) => b[1].count - a[1].count);
             extendedSources.sort((a, b) => b[1].count - a[1].count);
             
             html += `<div class="source-stats-container">`;
             
-            // Display Core Sources
             if (coreSources.length > 0) {
                 html += `
                     <h4 style="margin-top: 20px; margin-bottom: 12px; color: #333;">📚 Core Sources</h4>
@@ -2156,7 +2163,6 @@ const app = {
                 html += `</div>`;
             }
             
-            // Display Extended Sources
             if (extendedSources.length > 0) {
                 html += `
                     <h4 style="margin-top: 30px; margin-bottom: 12px; color: #333;">🔬 Extended Sources</h4>
@@ -2187,7 +2193,6 @@ const app = {
                 html += `</div>`;
             }
             
-            // Total results banner
             html += `
                 <div class="total-results-banner">
                     <strong>Total Results Across All Sources:</strong> <span class="highlight-number">${totalResults}</span>
@@ -2210,7 +2215,6 @@ const app = {
             const trialCondition = metadata.condition || (ctData?.conditions ? ctData.conditions[0] : '') || 'N/A';
             const trialIntervention = metadata.intervention || (ctData?.interventions ? ctData.interventions[0]?.name : '') || 'N/A';
             
-            // Count both core and extended sources
             let sourceCount = 0;
             Object.keys(sources).forEach(key => {
                 if (key === 'extended') {
@@ -2246,7 +2250,6 @@ const app = {
             
             // Display core sources
             Object.entries(sources).forEach(([sourceName, sourceData]) => {
-                // Skip extended here, we'll handle it separately
                 if (sourceName === 'extended') return;
                 
                 const apiInfo = this.getAPIInfo(sourceName);
@@ -2269,22 +2272,10 @@ const app = {
                     `;
                     
                     if (sourceName === 'clinicaltrials' || sourceName === 'clinical_trials') {
-                        // Show Clinical Trials (not clinical_trials)
-                        html += `
-                            <div class="source-section">
-                                <div class="source-header">
-                                    <strong>📚 Clinical Trials</strong>
-                                    <span class="source-status success">✓</span>
-                                </div>
-                                <div class="source-content">
-                        `;
-                        
-                        // Show NCT ID prominently
                         html += `<div class="data-field">
                             <strong>NCT Number:</strong> ${nctId}
                         </div>`;
                         
-                        // Show abstract with expand option
                         if (data.description || data.brief_summary) {
                             const abstract = data.description || data.brief_summary;
                             const shortAbstract = abstract.substring(0, 300);
@@ -2307,7 +2298,6 @@ const app = {
                         }
                     
                     } else if (sourceName === 'pubmed') {
-                        // Show search strategy and queries
                         if (data.search_strategy) {
                             html += `<div class="search-info">
                                 <span class="search-info-label">🔍 Search Strategy:</span>
@@ -2348,7 +2338,6 @@ const app = {
                         }
                     
                     } else if (sourceName === 'pmc') {
-                        // Show search strategy and queries
                         if (data.search_strategy) {
                             html += `<div class="search-info">
                                 <span class="search-info-label">🔍 Search Strategy:</span>
@@ -2388,7 +2377,6 @@ const app = {
                             </div>`;
                         }
                     } else if (sourceName === 'pmc_bioc') {
-                        // Show conversion info if performed
                         if (data.conversion_performed) {
                             html += `<div class="search-info">
                                 <span class="search-info-label">🔄 Conversion:</span>
@@ -2407,7 +2395,6 @@ const app = {
                             </div>`;
                         }
                         
-                        // Show detailed error information
                         if (data.errors && data.errors.length > 0) {
                             const errorsByType = {};
                             data.errors.forEach(err => {
@@ -2461,7 +2448,7 @@ const app = {
                 }
             });
             
-            // ====== SECTION 4: Display extended sources ======
+            // Display extended sources
             if (sources.extended && Object.keys(sources.extended).length > 0) {
                 html += `
                     <div class="extended-sources-header">
@@ -2490,7 +2477,6 @@ const app = {
                                 <div class="source-content">
                         `;
                         
-                        // Show search query/parameters
                         if (data.query) {
                             html += `<div class="search-info">
                                 <span class="search-info-label">🔍 Query:</span>
@@ -2505,13 +2491,11 @@ const app = {
                             </div>`;
                         }
                         
-                        // Display results based on source type
                         if (data.results && Array.isArray(data.results)) {
                             html += `<div class="data-field">
                                 <strong>Results Found:</strong> ${data.results.length}
                             </div>`;
                             
-                            // Show first 3 results
                             const displayCount = Math.min(3, data.results.length);
                             const visibleResults = data.results.slice(0, displayCount);
                             const hiddenResults = data.results.slice(displayCount);
@@ -2531,7 +2515,7 @@ const app = {
                                 `;
                             });
                             
-                            html += `</div>`; // Close extended-results-container
+                            html += `</div>`;
                             
                             if (hiddenResults.length > 0) {
                                 html += `
@@ -2579,12 +2563,15 @@ const app = {
                     }
                 });
             }
-            // ====== END OF SECTION 4 ======
             
-            html += `</div>`; // Close trial-card
+            html += `</div>`;
         });
         
         resultsDiv.innerHTML = html;
+        
+        // Show results, hide input
+        inputArea.classList.add('hidden');
+        resultsDiv.classList.add('active');
     },
 
     // ============================================================================

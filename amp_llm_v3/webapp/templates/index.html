@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/static/style-base.css">
     
     <!-- Theme stylesheet (dynamically loaded) -->
-    <link rel="stylesheet" id="theme-stylesheet" href="/static/theme-green.css">
+    <link rel="stylesheet" id="theme-stylesheet" href="/static/theme-cherry-blossom.css">
 </head>
 <body>
     <div class="container">
@@ -26,10 +26,7 @@
 
         <!-- Main App (hidden until authenticated) -->
         <div id="main-app" class="hidden">
-            <!-- ============================================================
-                 LANDING PAGE HEADER BANNER
-                 Fixed banner with logo, title, theme picker, and LOGOUT
-                 ============================================================ -->
+            <!-- LANDING PAGE HEADER -->
             <div id="landing-header" class="landing-header">
                 <div class="landing-header-left">
                     <div class="logo-container">
@@ -49,18 +46,14 @@
                             <span id="current-theme-name">Loading...</span>
                         </button>
                         <div class="theme-dropdown hidden" id="theme-dropdown">
-                            <div class="loading" style="padding: 20px; text-align: center; color: #999;">
-                                Loading themes...
-                            </div>
+                            <div class="loading">Loading themes...</div>
                         </div>
                     </div>
                     <button class="logout-button" onclick="app.handleLogout()">Logout</button>
                 </div>
             </div>
 
-            <!-- ============================================================
-                 MODE PAGE HEADER (shown when in a specific mode)
-                 ============================================================ -->
+            <!-- MODE PAGE HEADER -->
             <header id="app-header" class="hidden">
                 <div class="header-left">
                     <button class="back-button" onclick="app.showMenu()">← Back</button>
@@ -76,16 +69,14 @@
                             <span id="current-theme-name-2">Loading...</span>
                         </button>
                         <div class="theme-dropdown hidden" id="theme-dropdown-2">
-                            <div class="loading" style="padding: 20px; text-align: center; color: #999;">
-                                Loading themes...
-                            </div>
+                            <div class="loading">Loading themes...</div>
                         </div>
                     </div>
                     <button class="logout-button" onclick="app.handleLogout()">Logout</button>
                 </div>
             </header>
 
-            <!-- Menu Section (scrollable) -->
+            <!-- Menu Section -->
             <div id="menu-view" class="menu-section">
                 <h2 class="menu-title">Select a Mode</h2>
                 <div class="menu-grid">
@@ -130,7 +121,7 @@
                 </div>
             </div>
             
-            <!-- NCT Lookup Mode - UPDATED with Dynamic API Selection -->
+            <!-- NCT Lookup Mode -->
             <div id="nct-mode" class="mode-container">
                 <div class="nct-input-area">
                     <div class="nct-input-group">
@@ -146,7 +137,6 @@
                                 <p class="api-section-desc">Essential trial data sources (always included)</p>
                             </div>
                             <div id="core-apis-container" class="api-checkboxes">
-                                <!-- Core API checkboxes will be dynamically inserted here -->
                                 <div class="loading-apis">
                                     <span class="spinner-small"></span>
                                     <span>Loading available APIs...</span>
@@ -160,7 +150,6 @@
                                 <p class="api-section-desc">Additional sources for comprehensive coverage</p>
                             </div>
                             <div id="extended-apis-container" class="api-checkboxes">
-                                <!-- Extended API checkboxes will be dynamically inserted here -->
                                 <div class="loading-apis">
                                     <span class="spinner-small"></span>
                                     <span>Loading...</span>
@@ -174,18 +163,14 @@
                             <span>🔍</span>
                             <span>Fetch Trials</span>
                         </button>
-                        <button class="nct-save hidden" id="nct-download-btn" onclick="app.downloadNCTResults()">
-                            <span>📥</span>
-                            <span>Download</span>
-                        </button>
-                        <button class="nct-save hidden" id="nct-save-btn" onclick="app.saveNCTResults()">
-                            <span>💾</span>
-                            <span>Save to Server</span>
-                        </button>
                     </div>
                     <div class="progress-text hidden" id="nct-progress"></div>
                 </div>
-                <div class="nct-results" id="nct-results"></div>
+                
+                <!-- NCT RESULTS WITH NEW ACTION BAR -->
+                <div class="nct-results" id="nct-results">
+                    <!-- Action buttons will be dynamically inserted here at the top when results are displayed -->
+                </div>
             </div>
 
             <!-- File Manager Mode -->
