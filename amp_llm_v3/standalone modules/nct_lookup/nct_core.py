@@ -21,7 +21,8 @@ from nct_clients import (
     DuckDuckGoClient,
     SerpAPIClient,
     GoogleScholarClient,
-    OpenFDAClient
+    OpenFDAClient,
+    UniProtClient
 )
 from nct_models import SearchConfig
 
@@ -64,6 +65,7 @@ class NCTSearchEngine:
         self.clients['serpapi'] = SerpAPIClient(self.session, api_key=self.serpapi_key)
         self.clients['scholar'] = GoogleScholarClient(self.session, api_key=self.serpapi_key)
         self.clients['openfda'] = OpenFDAClient(self.session)
+        self.clients['uniprot'] = UniProtClient(self.session)
         
         logger.info("Search engine initialized with all clients")
     
@@ -593,8 +595,11 @@ class NCTSearchEngine:
         
         # Enhanced OpenFDA search - pass full trial data (now with common term filtering)
         if "openfda" in databases:
-            tasks["openfda"] = self.clients['openfda'].search(nct_id, ct_data)
-        
+            tasks["openfda"] = self.clients['openfda'].search(nct_id, trial_data=ct_data)
+            
+        if "uniprot" in databases:
+            tasks["uniprot"] = self.clients['uniprot'].search(nct_id, trial_data=ct_data)
+
         # Execute concurrently
         logger.info(f"Executing {len(tasks)} extended searches")
         
