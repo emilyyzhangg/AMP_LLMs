@@ -470,11 +470,24 @@ class PMCBioClient(BaseClient):
 class DuckDuckGoClient(BaseClient):
     """DuckDuckGo search client."""
     
-    async def search(self, query: str, **kwargs) -> Dict[str, Any]:
-        """Search DuckDuckGo."""
-        nct_id = kwargs.get('nct_id', query)
-        title = kwargs.get('title', '')
-        condition = kwargs.get('condition')
+    async def search(
+        self,
+        nct_id: str,
+        trial_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        Search DuckDuckGo using trial data.
+        
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+            
+        Returns:
+            Dict with search results
+        """
+        # Extract search parameters from trial data
+        title = self._extract_title(trial_data)
+        condition = self._extract_condition(trial_data)
         
         try:
             from duckduckgo_search import DDGS
@@ -486,20 +499,20 @@ class DuckDuckGoClient(BaseClient):
             if condition:
                 query_parts.append(condition)
             
-            query_str = " ".join(query_parts)
+            query = " ".join(query_parts)
             
             # Run search in executor (blocking operation)
             loop = asyncio.get_event_loop()
             results = await loop.run_in_executor(
                 None,
                 self._search_sync,
-                query_str
+                query
             )
             
-            logger.info(f"DuckDuckGo found {len(results)} results for '{query_str}'")
+            logger.info(f"DuckDuckGo found {len(results)} results for '{query}'")
             
             return {
-                "query": query_str,
+                "query": query,
                 "results": results,
                 "total_found": len(results)
             }
@@ -519,6 +532,27 @@ class DuckDuckGoClient(BaseClient):
                 "results": [],
                 "total_found": 0
             }
+    
+    def _extract_title(self, trial_data: Dict[str, Any]) -> str:
+        """Extract trial title."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            ident = protocol.get("identificationModule", {})
+            return ident.get("officialTitle") or ident.get("briefTitle") or ""
+        except:
+            return ""
+    
+    def _extract_condition(self, trial_data: Dict[str, Any]) -> str:
+        """Extract primary condition."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            cond_mod = protocol.get("conditionsModule", {})
+            conditions = cond_mod.get("conditions", [])
+            if conditions and isinstance(conditions, list):
+                return conditions[0].strip()
+            return ""
+        except:
+            return ""
     
     def _search_sync(self, query: str) -> List[Dict]:
         """Synchronous search helper."""

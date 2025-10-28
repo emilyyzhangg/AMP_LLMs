@@ -497,109 +497,33 @@ class NCTSearchEngine:
                 "total_fetched": 0,
                 "errors": []
             }
-    
     async def _search_extended_enhanced(
         self,
         nct_id: str,
         ct_data: Dict,
-        trial_results: Dict,
         config: SearchConfig,
         status = None
     ) -> Dict[str, Any]:
         """
-        Search extended databases with enhanced parameters.
-        NOW INCLUDES: PMIDs, PMCIDs, DOIs for DuckDuckGo multi-search
+        Search extended databases with standardized interface.
         """
         # Determine which databases to search
         if config.enabled_databases:
             databases = config.enabled_databases
         else:
-            databases = ["duckduckgo", "serpapi", "scholar", "openfda"]
+            databases = ["duckduckgo", "serpapi", "scholar", "openfda", "uniprot"]
         
         # Filter to available clients
         databases = [db for db in databases if db in self.clients]
         
-        # Build search parameters
-        title = self._extract_title(ct_data)
-        condition = self._extract_condition(ct_data)
-        intervention = self._extract_intervention(ct_data)
+        logger.info(f"Extended search for {nct_id} using: {databases}")
         
-        # Extract authors for Scholar search
-        contacts = ct_data.get("protocolSection", {}).get("contactsLocationsModule", {})
-        officials = contacts.get("overallOfficials", [])
-        authors = [o.get("name", "") for o in officials if o.get("name")]
-        
-        # ============================================================================
-        # NEW: Extract PMIDs, PMCIDs, DOIs from trial_results for DuckDuckGo
-        # ============================================================================
-        pubmed_pmids = []
-        pmc_pmcids = []
-        dois = []
-        
-        # Get PMIDs from PubMed results
-        sources = trial_results.get("sources", {})
-        if "pubmed" in sources and sources["pubmed"].get("success"):
-            pubmed_data = sources["pubmed"].get("data", {})
-            pubmed_pmids = pubmed_data.get("pmids", [])
-            logger.info(f"Extracted {len(pubmed_pmids)} PMIDs for DuckDuckGo search")
-        
-        # Get PMCIDs from PMC results
-        if "pmc" in sources and sources["pmc"].get("success"):
-            pmc_data = sources["pmc"].get("data", {})
-            pmc_pmcids = pmc_data.get("pmcids", [])
-            logger.info(f"Extracted {len(pmc_pmcids)} PMCIDs for DuckDuckGo search")
-        
-        # Extract DOIs from PMC articles if available
-        if "pmc" in sources and sources["pmc"].get("success"):
-            pmc_data = sources["pmc"].get("data", {})
-            articles = pmc_data.get("articles", [])
-            for article in articles:
-                if isinstance(article, dict) and "doi" in article:
-                    doi_list = article.get("doi", [])
-                    if isinstance(doi_list, list):
-                        dois.extend([d for d in doi_list if d])
-                    elif doi_list:  # Single DOI string
-                        dois.append(doi_list)
-            
-            if dois:
-                logger.info(f"Extracted {len(dois)} DOIs for DuckDuckGo search")
-        
-        logger.info(f"Extended search params - Title: {title[:50] if title else 'None'}, "
-                f"Condition: {condition}, Intervention: {intervention}")
-        logger.info(f"DuckDuckGo will search with: NCT={nct_id}, PMIDs={len(pubmed_pmids)}, "
-                f"PMCIDs={len(pmc_pmcids)}, DOIs={len(dois)}")
-        
-        # Create search tasks
+        # Create search tasks - ALL use (nct_id, ct_data) interface
         tasks = {}
         
-        if "duckduckgo" in databases:
-            # NEW: Pass PMIDs, PMCIDs, DOIs to DuckDuckGo for separate searches
-            tasks["duckduckgo"] = self.clients['duckduckgo'].search(
-                nct_id=nct_id,
-                title=title,
-                condition=condition,
-                pmids=pubmed_pmids,
-                pmcids=pmc_pmcids,
-                dois=dois
-            )
+        for db_name in databases:
+            tasks[db_name] = self.clients[db_name].search(nct_id, ct_data)
         
-        if "serpapi" in databases and self.serpapi_key:
-            tasks["serpapi"] = self.clients['serpapi'].search(
-                nct_id, title, condition
-            )
-        
-        if "scholar" in databases and self.serpapi_key:
-            tasks["scholar"] = self.clients['scholar'].search(
-                nct_id, title, condition
-            )
-        
-        # Enhanced OpenFDA search - pass full trial data (now with common term filtering)
-        if "openfda" in databases:
-            tasks["openfda"] = self.clients['openfda'].search(nct_id, trial_data=ct_data)
-            
-        if "uniprot" in databases:
-            tasks["uniprot"] = self.clients['uniprot'].search(nct_id, trial_data=ct_data)
-
         # Execute concurrently
         logger.info(f"Executing {len(tasks)} extended searches")
         
@@ -614,21 +538,14 @@ class NCTSearchEngine:
                 
                 result = await task
                 
-                # Enhanced error detection and logging
                 has_error = "error" in result
                 
                 if has_error:
                     error_msg = result.get("error", "Unknown error")
                     logger.error(f"❌ {db_name} API error: {error_msg}")
                 else:
-                    # Special handling for DuckDuckGo multi-search results
-                    if db_name == "duckduckgo" and "results_by_type" in result:
-                        total = result.get("total_results", 0)
-                        searches = result.get("searches_performed", [])
-                        logger.info(f"✅ {db_name} completed: {total} results from {len(searches)} searches")
-                    else:
-                        total = result.get("total_found", 0)
-                        logger.info(f"✅ {db_name} completed: {total} results found")
+                    total = result.get("total_found", 0)
+                    logger.info(f"✅ {db_name} completed: {total} results found")
                 
                 results[db_name] = {
                     "success": not has_error,
@@ -651,7 +568,6 @@ class NCTSearchEngine:
                 }
         
         return results
-    
     def _extract_all_identifiers(self, ct_data: Dict, trial_results: Dict) -> Dict[str, List[str]]:
         """
         Extract all identifiers (PMIDs, PMCIDs, DOIs) from trial data.
