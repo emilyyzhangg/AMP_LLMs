@@ -850,6 +850,22 @@ class OpenFDAClient(BaseClient):
     
     BASE_URL = "https://api.fda.gov/drug"
     
+    async def fetch(self, identifier: str) -> Dict[str, Any]:
+        """
+        Fetch is not the primary method for OpenFDA.
+        Use search() method with trial data instead.
+        
+        Args:
+            identifier: Not used for OpenFDA
+            
+        Returns:
+            Error message directing to use search() instead
+        """
+        return {
+            "error": "Use search() method with trial data",
+            "note": "OpenFDA requires trial context for effective searching"
+        }
+    
     async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Comprehensive OpenFDA search using trial data.
@@ -1054,7 +1070,52 @@ class OpenFDAClient(BaseClient):
     
     def _format_label_result(self, result: Dict) -> Dict:
         """Format drug label result."""
-
+        openfda = result.get("openfda", {})
+        return {
+            "type": "drug_label",
+            "product": openfda.get("brand_name", ["Unknown"])[0] if openfda.get("brand_name") else "Unknown",
+            "manufacturer": openfda.get("manufacturer_name", ["Unknown"])[0] if openfda.get("manufacturer_name") else "Unknown",
+            "purpose": result.get("purpose", [""])[0][:200] if result.get("purpose") else None,
+            "warnings": result.get("warnings", [""])[0][:200] if result.get("warnings") else None
+        }
+    
+    def _format_event_result(self, result: Dict) -> Dict:
+        """Format adverse event result."""
+        patient = result.get("patient", {})
+        reactions = patient.get("reaction", [])
+        
+        return {
+            "type": "adverse_event",
+            "date": result.get("receivedate", "Unknown"),
+            "serious": result.get("serious", 0),
+            "reactions": [r.get("reactionmeddrapt", "Unknown") for r in reactions[:3]]
+        }
+    
+    def _format_enforcement_result(self, result: Dict) -> Dict:
+        """Format enforcement report result."""
+        return {
+            "type": "enforcement",
+            "classification": result.get("classification", "Unknown"),
+            "status": result.get("status", "Unknown"),
+            "recall_date": result.get("recall_initiation_date", "Unknown"),
+            "reason": result.get("reason_for_recall", "")[:200]
+        }
+    
+    def _deduplicate_results(self, results: List[Dict]) -> List[Dict]:
+        """Remove duplicate results."""
+        import json
+        seen = set()
+        unique = []
+        
+        for result in results:
+            # Create a simple hash of the result
+            result_hash = json.dumps(result, sort_keys=True)
+            if result_hash not in seen:
+                seen.add(result_hash)
+                unique.append(result)
+        
+        return unique
+    
 class UniProtClient(BaseClient):
     """UniProt API client for protein data."""
     
