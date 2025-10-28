@@ -1263,7 +1263,45 @@ class UniProtClient(BaseClient):
             }
         
         logger.info(f"OpenFDA: Searching with {len(search_terms)} valid terms: {search_terms}")
-
+        
+        # Search across all FDA databases
+        results = {
+            "query": ", ".join(search_terms[:3]),  # Show first 3 terms
+            "drug_labels": [],
+            "adverse_events": [],
+            "enforcement_reports": [],
+            "total_found": 0,
+            "search_terms_used": search_terms
+        }
+        
+        # Search each term across databases
+        for term in search_terms[:5]:  # Limit to first 5 terms
+            # Drug labels
+            labels = await self._search_drug_labels(term)
+            results["drug_labels"].extend(labels)
+            
+            # Adverse events
+            events = await self._search_adverse_events(term)
+            results["adverse_events"].extend(events)
+            
+            # Enforcement reports
+            enforcement = await self._search_enforcement(term)
+            results["enforcement_reports"].extend(enforcement)
+        
+        # Remove duplicates and count
+        results["drug_labels"] = self._deduplicate_results(results["drug_labels"])
+        results["adverse_events"] = self._deduplicate_results(results["adverse_events"])
+        results["enforcement_reports"] = self._deduplicate_results(results["enforcement_reports"])
+        
+        results["total_found"] = (
+            len(results["drug_labels"]) +
+            len(results["adverse_events"]) +
+            len(results["enforcement_reports"])
+        )
+        
+        logger.info(f"OpenFDA: Found {results['total_found']} total results for {nct_id}")
+        
+        return results
     def _format_uniprot_entry(self, entry: Dict[str, Any], intervention: str) -> Dict[str, Any]:
         """
         Format a UniProt entry for storage.
