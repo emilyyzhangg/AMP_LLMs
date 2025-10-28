@@ -1233,11 +1233,21 @@ class UniProtClient(BaseClient):
         
         return True
     
-    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def search(self, query: str, **kwargs) -> Dict[str, Any]:
         """
-        Comprehensive OpenFDA search using trial data with common term filtering.
+        Comprehensive OpenFDA search using trial data.
+        
+        Args:
+            query: NCT trial identifier (nct_id)
+            **kwargs: Additional parameters including 'trial_data' with full trial info
+            
+        Returns:
+            Dict with combined results from multiple FDA endpoints
         """
-        # Extract drug identifiers (now with filtering)
+        nct_id = query
+        trial_data = kwargs.get('trial_data', {})
+        
+        # Extract all possible drug identifiers from trial data
         search_terms = self._extract_drug_identifiers(trial_data)
         
         if not search_terms:
