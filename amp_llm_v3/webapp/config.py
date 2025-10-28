@@ -23,7 +23,12 @@ class Settings(BaseSettings):
     # Ollama
     ollama_host: str = "localhost"
     ollama_port: int = 11434
-    
+
+    # Service ports - NEW
+    main_server_port: int
+    chat_service_port: int
+    nct_service_port: int
+
     # CORS
     allowed_origins: list = ["https://llm.amphoraxe.ca"]
     
