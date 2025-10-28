@@ -236,6 +236,9 @@ async def list_available_themes():
 CHAT_SERVICE_URL = f"http://localhost:{settings.chat_service_port}"
 NCT_SERVICE_URL = f"http://localhost:{settings.nct_service_port}"
 
+# DEBUG - Remove after confirming
+logger.info(f"🔍 DEBUG: NCT_SERVICE_URL = {NCT_SERVICE_URL}")
+logger.info(f"🔍 DEBUG: settings.nct_service_port = {settings.nct_service_port}")
 
 # ============================================================================
 # Request/Response Models
