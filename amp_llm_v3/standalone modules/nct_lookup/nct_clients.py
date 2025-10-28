@@ -84,8 +84,9 @@ class PubMedClient(BaseClient):
     
     BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
     
-    async def search(self, query: str, max_results: int = 10) -> List[str]:
+    async def search(self, query: str, **kwargs) -> List[str]:
         """Search PubMed, return PMIDs."""
+        max_results = kwargs.get("max_results", 10)
         url = f"{self.BASE_URL}/esearch.fcgi"
         params = {
             "db": "pubmed",
@@ -208,8 +209,9 @@ class PMCClient(BaseClient):
     
     BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
     
-    async def search(self, query: str, max_results: int = 10) -> List[str]:
+    async def search(self, query: str, **kwargs) -> List[str]:
         """Search PMC, return PMC IDs."""
+        max_results = kwargs.get("max_results", 10)
         url = f"{self.BASE_URL}/esearch.fcgi"
         params = {
             "db": "pmc",
@@ -281,7 +283,8 @@ class PMCClient(BaseClient):
                 if aid.get("idtype") == "doi"
             ]
         }
-    
+
+
 class PMCBioClient(BaseClient):
     """PMC BioC API client."""
     
@@ -296,7 +299,7 @@ class PMCBioClient(BaseClient):
         Returns:
             Dict containing BioC formatted article data or error
         """
-        return await self.fetch_pmc_bioc(identifier, format="json", encoding="unicode")
+        return await self.fetch_pmc_bioc(identifier, format="biocjson")
     
     async def search(self, query: str, **kwargs) -> Dict[str, Any]:
         """
@@ -437,7 +440,6 @@ class PMCBioClient(BaseClient):
             logger.error(f"PubTator3 fetch error for {pmid}: {e}")
             return {"error": str(e)}
 
-
     async def fetch_multiple_pmc_bioc(
         self,
         pmids: List[str],
@@ -458,7 +460,7 @@ class PMCBioClient(BaseClient):
         results = {}
         
         for pmid in pmids:
-            result = await self.fetch_pmc_bioc(pmid, format, encoding)
+            result = await self.fetch_pmc_bioc(pmid, format)
             results[pmid] = result
         
         logger.info(f"Fetched {len(results)} articles from PMC BioC")
@@ -466,27 +468,16 @@ class PMCBioClient(BaseClient):
 
 
 class DuckDuckGoClient(BaseClient):
-    """DuckDuckGo search client with enhanced error handling."""
+    """DuckDuckGo search client."""
     
-    async def search(
-        self,
-        nct_id: str,
-        title: str,
-        condition: Optional[str] = None
-    ) -> Dict[str, Any]:
+    async def search(self, query: str, **kwargs) -> Dict[str, Any]:
         """Search DuckDuckGo."""
+        nct_id = kwargs.get('nct_id', query)
+        title = kwargs.get('title', '')
+        condition = kwargs.get('condition')
+        
         try:
-            # Check if library is available
-            try:
-                from duckduckgo_search import DDGS
-            except ImportError:
-                logger.error("duckduckgo-search library not installed")
-                return {
-                    "error": "duckduckgo-search library not installed. Install with: pip install duckduckgo-search",
-                    "query": nct_id,
-                    "results": [],
-                    "total_found": 0
-                }
+            from duckduckgo_search import DDGS
             
             # Build query
             query_parts = [nct_id]
@@ -495,39 +486,33 @@ class DuckDuckGoClient(BaseClient):
             if condition:
                 query_parts.append(condition)
             
-            query = " ".join(query_parts)
-            
-            logger.info(f"DuckDuckGo searching for: {query}")
+            query_str = " ".join(query_parts)
             
             # Run search in executor (blocking operation)
             loop = asyncio.get_event_loop()
             results = await loop.run_in_executor(
                 None,
                 self._search_sync,
-                query
+                query_str
             )
             
-            if not results:
-                logger.warning(f"DuckDuckGo returned no results for: {query}")
-            else:
-                logger.info(f"DuckDuckGo found {len(results)} results for: {query}")
+            logger.info(f"DuckDuckGo found {len(results)} results for '{query_str}'")
             
             return {
-                "query": query,
+                "query": query_str,
                 "results": results,
                 "total_found": len(results)
             }
             
-        except ImportError as e:
-            logger.error(f"DuckDuckGo import error: {e}")
+        except ImportError:
             return {
-                "error": f"Required library not available: {str(e)}",
+                "error": "duckduckgo-search library not installed",
                 "query": nct_id,
                 "results": [],
                 "total_found": 0
             }
         except Exception as e:
-            logger.error(f"DuckDuckGo search error: {e}", exc_info=True)
+            logger.error(f"DuckDuckGo error: {e}")
             return {
                 "error": f"DuckDuckGo search failed: {str(e)}",
                 "query": nct_id,
@@ -536,59 +521,44 @@ class DuckDuckGoClient(BaseClient):
             }
     
     def _search_sync(self, query: str) -> List[Dict]:
-        """Synchronous search helper with timeout and error handling."""
-        try:
-            from duckduckgo_search import DDGS
-            
-            results = []
-            
-            # Use context manager with timeout
-            with DDGS(timeout=20) as ddgs:
-                try:
-                    search_results = ddgs.text(query, max_results=10)
-                    
-                    for result in search_results:
-                        results.append({
-                            'title': result.get('title', ''),
-                            'url': result.get('href', ''),
-                            'snippet': result.get('body', '')
-                        })
-                    
-                    logger.info(f"DuckDuckGo sync search completed: {len(results)} results")
-                    
-                except Exception as search_error:
-                    logger.error(f"DuckDuckGo search execution error: {search_error}")
-                    raise
-            
-            return results
-            
-        except Exception as e:
-            logger.error(f"DuckDuckGo _search_sync error: {e}")
-            return []
+        """Synchronous search helper."""
+        from duckduckgo_search import DDGS
+        
+        results = []
+        with DDGS() as ddgs:
+            search_results = ddgs.text(query, max_results=10)
+            for result in search_results:
+                results.append({
+                    'title': result.get('title', ''),
+                    'url': result.get('href', ''),
+                    'snippet': result.get('body', '')
+                })
+        
+        return results
     
     async def fetch(self, identifier: str) -> Dict[str, Any]:
         """Not implemented for DuckDuckGo."""
-        return {"error": "Fetch not supported for DuckDuckGo"}
-    
+        return {"error": "Fetch not supported"}
+
+
 class SerpAPIClient(BaseClient):
     """SERP API (Google Search) client with proper error handling."""
     
     BASE_URL = "https://serpapi.com/search"
     
-    async def search(
-        self,
-        nct_id: str,
-        title: str,
-        condition: Optional[str] = None
-    ) -> Dict[str, Any]:
+    async def search(self, query: str, **kwargs) -> Dict[str, Any]:
         """Search via SERP API."""
         if not self.api_key:
             return {
                 "error": "SERPAPI_KEY not configured",
-                "query": nct_id,
+                "query": query,
                 "results": [],
                 "total_found": 0
             }
+        
+        nct_id = kwargs.get('nct_id', query)
+        title = kwargs.get('title', '')
+        condition = kwargs.get('condition')
         
         query_parts = [nct_id]
         if title:
@@ -596,10 +566,10 @@ class SerpAPIClient(BaseClient):
         if condition:
             query_parts.append(condition)
         
-        query = " ".join(query_parts)
+        query_str = " ".join(query_parts)
         
         params = {
-            'q': query,
+            'q': query_str,
             'api_key': self.api_key,
             'num': 10,
             'engine': 'google'
@@ -615,7 +585,7 @@ class SerpAPIClient(BaseClient):
                         logger.error(f"SERP API error: {data['error']}")
                         return {
                             "error": f"SERP API error: {data['error']}",
-                            "query": query,
+                            "query": query_str,
                             "results": [],
                             "total_found": 0
                         }
@@ -629,10 +599,10 @@ class SerpAPIClient(BaseClient):
                         for r in data.get('organic_results', [])
                     ]
                     
-                    logger.info(f"SERP API found {len(results)} results for '{query}'")
+                    logger.info(f"SERP API found {len(results)} results for '{query_str}'")
                     
                     return {
-                        "query": query,
+                        "query": query_str,
                         "results": results,
                         "total_found": len(results)
                     }
@@ -641,15 +611,15 @@ class SerpAPIClient(BaseClient):
                     logger.error(f"SERP API HTTP {resp.status}: {error_text[:200]}")
                     return {
                         "error": f"SERP API request failed (HTTP {resp.status})",
-                        "query": query,
+                        "query": query_str,
                         "results": [],
                         "total_found": 0
                     }
         except asyncio.TimeoutError:
-            logger.error(f"SERP API timeout for query: {query}")
+            logger.error(f"SERP API timeout for query: {query_str}")
             return {
                 "error": "SERP API request timeout",
-                "query": query,
+                "query": query_str,
                 "results": [],
                 "total_found": 0
             }
@@ -657,7 +627,7 @@ class SerpAPIClient(BaseClient):
             logger.error(f"SERP API error: {e}")
             return {
                 "error": f"SERP API request failed: {str(e)}",
-                "query": query,
+                "query": query_str,
                 "results": [],
                 "total_found": 0
             }
@@ -672,20 +642,19 @@ class GoogleScholarClient(BaseClient):
     
     BASE_URL = "https://serpapi.com/search"
     
-    async def search(
-        self,
-        nct_id: str,
-        title: str,
-        condition: Optional[str] = None
-    ) -> Dict[str, Any]:
+    async def search(self, query: str, **kwargs) -> Dict[str, Any]:
         """Search Google Scholar."""
         if not self.api_key:
             return {
                 "error": "SERPAPI_KEY not configured",
-                "query": nct_id,
+                "query": query,
                 "results": [],
                 "total_found": 0
             }
+        
+        nct_id = kwargs.get('nct_id', query)
+        title = kwargs.get('title', '')
+        condition = kwargs.get('condition')
         
         query_parts = [nct_id]
         if title:
@@ -693,10 +662,10 @@ class GoogleScholarClient(BaseClient):
         if condition:
             query_parts.append(condition)
         
-        query = " ".join(query_parts)
+        query_str = " ".join(query_parts)
         
         params = {
-            'q': query,
+            'q': query_str,
             'api_key': self.api_key,
             'num': 10,
             'engine': 'google_scholar'
@@ -712,7 +681,7 @@ class GoogleScholarClient(BaseClient):
                         logger.error(f"Google Scholar API error: {data['error']}")
                         return {
                             "error": f"Google Scholar API error: {data['error']}",
-                            "query": query,
+                            "query": query_str,
                             "results": [],
                             "total_found": 0
                         }
@@ -727,10 +696,10 @@ class GoogleScholarClient(BaseClient):
                         for r in data.get('organic_results', [])
                     ]
                     
-                    logger.info(f"Google Scholar found {len(results)} results for '{query}'")
+                    logger.info(f"Google Scholar found {len(results)} results for '{query_str}'")
                     
                     return {
-                        "query": query,
+                        "query": query_str,
                         "results": results,
                         "total_found": len(results)
                     }
@@ -739,15 +708,15 @@ class GoogleScholarClient(BaseClient):
                     logger.error(f"Google Scholar HTTP {resp.status}: {error_text[:200]}")
                     return {
                         "error": f"Google Scholar request failed (HTTP {resp.status})",
-                        "query": query,
+                        "query": query_str,
                         "results": [],
                         "total_found": 0
                     }
         except asyncio.TimeoutError:
-            logger.error(f"Google Scholar timeout for query: {query}")
+            logger.error(f"Google Scholar timeout for query: {query_str}")
             return {
                 "error": "Google Scholar request timeout",
-                "query": query,
+                "query": query_str,
                 "results": [],
                 "total_found": 0
             }
@@ -755,7 +724,7 @@ class GoogleScholarClient(BaseClient):
             logger.error(f"Google Scholar error: {e}")
             return {
                 "error": f"Google Scholar request failed: {str(e)}",
-                "query": query,
+                "query": query_str,
                 "results": [],
                 "total_found": 0
             }
@@ -777,72 +746,50 @@ class OpenFDAClient(BaseClient):
     
     BASE_URL = "https://api.fda.gov/drug"
     
-    COMMON_TERMS_BLACKLIST = {
-        # Generic/broad terms
-        "human", "humans", "patient", "patients", "subject", "subjects",
-        "people", "person", "individual", "individuals",
-        
-        # Technology terms
-        "artificial intelligence", "ai", "machine learning", "ml",
-        "computer", "software", "algorithm", "technology",
-        
-        # Generic medical terms
-        "treatment", "therapy", "drug", "medication", "medicine",
-        "disease", "condition", "diagnosis", "symptom",
-        
-        # Study terms
-        "study", "trial", "research", "investigation", "analysis",
-        "clinical", "medical", "health", "healthcare",
-        
-        # Very common conditions
-        "pain", "fever", "infection", "inflammation",
-        
-        # Single letters/numbers
-        "a", "b", "c", "d", "e", "i", "ii", "iii", "iv", "v",
-        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
-    }
-
-    def _filter_common_terms(self, identifiers: List[str]) -> List[str]:
-        """Filter out very common terms that won't yield useful FDA results."""
-        filtered = []
-        for term in identifiers:
-            term_lower = term.lower().strip()
-            # Skip if it's a common term
-            if term_lower in self.COMMON_TERMS_BLACKLIST:
-                logger.info(f"Skipping common term: {term}")
-                continue
-            # Skip if it's too short (less than 4 characters)
-            if len(term_lower) < 4:
-                continue
-            filtered.append(term)
-        return filtered
-
-    async def search_enhanced(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def search(self, query: str, **kwargs) -> Dict[str, Any]:
         """
-        Enhanced OpenFDA search with common term filtering.
+        Comprehensive OpenFDA search using trial data.
+        
+        Args:
+            query: NCT trial identifier
+            **kwargs: Must include 'trial_data' with full clinical trial data dictionary
+            
+        Returns:
+            Dict with combined results from multiple FDA endpoints
         """
-        search_terms = self._extract_drug_identifiers(trial_data)
+        nct_id = query
+        trial_data = kwargs.get('trial_data', {})
         
-        # Filter out common terms
-        search_terms = self._filter_common_terms(search_terms)
-        
-        if not search_terms:
-            logger.info(f"OpenFDA: All terms were common/generic for {nct_id}")
+        if not trial_data:
             return {
-                "query": "No specific drug identifiers found (only common terms)",
+                "error": "trial_data required in kwargs",
+                "query": nct_id,
                 "drug_labels": [],
                 "adverse_events": [],
                 "enforcement_reports": [],
                 "total_found": 0,
-                "search_terms_used": [],
-                "filtered_out": "Common terms filtered"
+                "search_terms_used": []
             }
         
-        logger.info(f"OpenFDA: Searching with filtered terms: {search_terms}")
+        # Extract all possible drug identifiers from trial data
+        search_terms = self._extract_drug_identifiers(trial_data)
         
-        # Continue with normal search logic...
+        if not search_terms:
+            logger.info(f"OpenFDA: No drug/intervention identifiers found for {nct_id}")
+            return {
+                "query": "No drug identifiers found",
+                "drug_labels": [],
+                "adverse_events": [],
+                "enforcement_reports": [],
+                "total_found": 0,
+                "search_terms_used": []
+            }
+        
+        logger.info(f"OpenFDA: Searching with terms: {search_terms}")
+        
+        # Search across all FDA databases
         results = {
-            "query": ", ".join(search_terms[:3]),
+            "query": ", ".join(search_terms[:3]),  # Show first 3 terms
             "drug_labels": [],
             "adverse_events": [],
             "enforcement_reports": [],
@@ -850,16 +797,21 @@ class OpenFDAClient(BaseClient):
             "search_terms_used": search_terms
         }
         
-        for term in search_terms[:10]:
+        # Search each term across databases
+        for term in search_terms[:5]:  # Limit to first 5 terms
+            # Drug labels
             labels = await self._search_drug_labels(term)
             results["drug_labels"].extend(labels)
             
+            # Adverse events
             events = await self._search_adverse_events(term)
             results["adverse_events"].extend(events)
             
+            # Enforcement reports
             enforcement = await self._search_enforcement(term)
             results["enforcement_reports"].extend(enforcement)
         
+        # Remove duplicates and count
         results["drug_labels"] = self._deduplicate_results(results["drug_labels"])
         results["adverse_events"] = self._deduplicate_results(results["adverse_events"])
         results["enforcement_reports"] = self._deduplicate_results(results["enforcement_reports"])
@@ -875,57 +827,60 @@ class OpenFDAClient(BaseClient):
         return results
     
     def _extract_drug_identifiers(self, trial_data: Dict[str, Any]) -> List[str]:
-            """Extract drug identifiers with common term filtering."""
-            identifiers = []
+        """Extract all possible drug/intervention identifiers from trial data."""
+        identifiers = []
+        
+        try:
+            protocol = trial_data.get("protocolSection", {})
             
-            try:
-                protocol = trial_data.get("protocolSection", {})
-                
-                # Get interventions
-                arms_interventions = protocol.get("armsInterventionsModule", {})
-                interventions = arms_interventions.get("interventions", [])
-                
-                for intervention in interventions:
-                    if isinstance(intervention, dict):
-                        # Intervention name
-                        name = intervention.get("name", "").strip()
-                        if name and self._is_valid_search_term(name):
-                            identifiers.append(name)
-                        
-                        # Other names/synonyms
-                        other_names = intervention.get("otherNames", [])
-                        if isinstance(other_names, list):
-                            for alt_name in other_names:
-                                alt_name = alt_name.strip()
-                                if alt_name and self._is_valid_search_term(alt_name):
-                                    identifiers.append(alt_name)
-                
-                # Get from conditions (some drugs are condition-specific)
-                conditions_module = protocol.get("conditionsModule", {})
-                conditions = conditions_module.get("conditions", [])
-                if isinstance(conditions, list):
-                    for condition in conditions:
-                        condition = condition.strip()
-                        if condition and self._is_valid_search_term(condition):
-                            identifiers.append(condition)
+            # Get interventions
+            arms_interventions = protocol.get("armsInterventionsModule", {})
+            interventions = arms_interventions.get("interventions", [])
             
-            except Exception as e:
-                logger.warning(f"Error extracting drug identifiers: {e}")
+            for intervention in interventions:
+                if isinstance(intervention, dict):
+                    # Intervention name
+                    name = intervention.get("name", "").strip()
+                    if name:
+                        identifiers.append(name)
+                    
+                    # Other names/synonyms
+                    other_names = intervention.get("otherNames", [])
+                    if isinstance(other_names, list):
+                        identifiers.extend([n.strip() for n in other_names if n.strip()])
             
-            # Clean and deduplicate
-            cleaned = []
-            seen = set()
-            for identifier in identifiers:
-                clean = identifier.lower().strip()
-                if clean and clean not in seen and len(clean) > 2:
-                    seen.add(clean)
-                    cleaned.append(identifier)
+            # Get from conditions (some drugs are condition-specific)
+            conditions_module = protocol.get("conditionsModule", {})
+            conditions = conditions_module.get("conditions", [])
+            if isinstance(conditions, list):
+                identifiers.extend([c.strip() for c in conditions if c.strip()])
             
-            filtered_count = len(identifiers) - len(cleaned)
-            if filtered_count > 0:
-                logger.info(f"OpenFDA: Filtered out {filtered_count} common/invalid terms")
+            # Get from trial title (may contain drug names)
+            ident_module = protocol.get("identificationModule", {})
+            title = ident_module.get("officialTitle", "") or ident_module.get("briefTitle", "")
+            if title:
+                # Extract potential drug names (words in title that might be drugs)
+                # This is a simple heuristic - could be improved
+                title_words = title.split()
+                for i, word in enumerate(title_words):
+                    # Check if word looks like a drug name (capitalized, not common words)
+                    if (word[0].isupper() and len(word) > 3 and 
+                        word.lower() not in ['trial', 'study', 'phase', 'randomized', 'controlled']):
+                        identifiers.append(word.strip('()[]{}:,;.'))
             
-            return cleaned[:10]  # Limit to 10 most relevant terms
+        except Exception as e:
+            logger.warning(f"Error extracting drug identifiers: {e}")
+        
+        # Clean and deduplicate
+        cleaned = []
+        seen = set()
+        for identifier in identifiers:
+            clean = identifier.lower().strip()
+            if clean and clean not in seen and len(clean) > 2:
+                seen.add(clean)
+                cleaned.append(identifier)
+        
+        return cleaned[:10]  # Limit to 10 most relevant terms
     
     async def _search_drug_labels(self, drug_name: str) -> List[Dict]:
         """Search FDA drug labels."""
@@ -1039,39 +994,11 @@ class OpenFDAClient(BaseClient):
         
         return unique
     
-    def _is_valid_search_term(self, term: str) -> bool:
-        """
-        Check if a term is valid for OpenFDA search.
-        Returns False for common/generic terms.
-        """
-        if not term:
-            return False
-        
-        term_lower = term.lower().strip()
-        
-        # Check blacklist
-        if term_lower in self.COMMON_TERMS_BLACKLIST:
-            logger.debug(f"OpenFDA: Skipping blacklisted term '{term}'")
-            return False
-        
-        # Check for very short terms (< 3 chars)
-        if len(term_lower) < 3:
-            logger.debug(f"OpenFDA: Skipping short term '{term}'")
-            return False
-        
-        # Check for terms that are too generic (all common words)
-        common_words = ["the", "and", "or", "for", "with", "without", "in", "on", "at"]
-        words = term_lower.split()
-        if all(word in common_words for word in words):
-            logger.debug(f"OpenFDA: Skipping generic term '{term}'")
-            return False
-        
-        return True
-    
     async def fetch(self, identifier: str) -> Dict[str, Any]:
         """Not implemented - use search() instead."""
         return {"error": "Use search() method with trial data"}
-    
+
+
 class UniProtClient(BaseClient):
     """
     UniProt API client for protein sequence and functional information.
@@ -1081,21 +1008,20 @@ class UniProtClient(BaseClient):
     
     BASE_URL = "https://rest.uniprot.org/uniprotkb/search"
     
-    async def search(
-        self,
-        nct_id: str,
-        trial_data: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    async def search(self, query: str, **kwargs) -> Dict[str, Any]:
         """
         Search UniProt using intervention data from clinical trial.
         
         Args:
-            nct_id: NCT trial identifier
-            trial_data: Full clinical trial data dictionary
+            query: NCT trial identifier
+            **kwargs: Must include 'trial_data' with full clinical trial data dictionary
             
         Returns:
             Dict with UniProt search results
         """
+        nct_id = query
+        trial_data = kwargs.get('trial_data', {})
+        
         # Extract intervention names
         interventions = self._extract_interventions(trial_data)
         
@@ -1233,75 +1159,6 @@ class UniProtClient(BaseClient):
         
         return cleaned[:10]  # Limit to 10 most relevant
     
-    async def search(self, query: str, **kwargs) -> Dict[str, Any]:
-        """
-        Comprehensive OpenFDA search using trial data.
-        
-        Args:
-            query: NCT trial identifier (nct_id)
-            **kwargs: Additional parameters including 'trial_data' with full trial info
-            
-        Returns:
-            Dict with combined results from multiple FDA endpoints
-        """
-        nct_id = query
-        trial_data = kwargs.get('trial_data', {})
-        
-        # Extract all possible drug identifiers from trial data
-        search_terms = self._extract_drug_identifiers(trial_data)
-        
-        if not search_terms:
-            logger.info(f"OpenFDA: No valid drug/intervention identifiers found for {nct_id}")
-            return {
-                "query": "No valid identifiers found (common terms filtered)",
-                "drug_labels": [],
-                "adverse_events": [],
-                "enforcement_reports": [],
-                "total_found": 0,
-                "search_terms_used": [],
-                "terms_filtered": "Common terms like 'human', 'AI', etc. were excluded"
-            }
-        
-        logger.info(f"OpenFDA: Searching with {len(search_terms)} valid terms: {search_terms}")
-        
-        # Search across all FDA databases
-        results = {
-            "query": ", ".join(search_terms[:3]),  # Show first 3 terms
-            "drug_labels": [],
-            "adverse_events": [],
-            "enforcement_reports": [],
-            "total_found": 0,
-            "search_terms_used": search_terms
-        }
-        
-        # Search each term across databases
-        for term in search_terms[:5]:  # Limit to first 5 terms
-            # Drug labels
-            labels = await self._search_drug_labels(term)
-            results["drug_labels"].extend(labels)
-            
-            # Adverse events
-            events = await self._search_adverse_events(term)
-            results["adverse_events"].extend(events)
-            
-            # Enforcement reports
-            enforcement = await self._search_enforcement(term)
-            results["enforcement_reports"].extend(enforcement)
-        
-        # Remove duplicates and count
-        results["drug_labels"] = self._deduplicate_results(results["drug_labels"])
-        results["adverse_events"] = self._deduplicate_results(results["adverse_events"])
-        results["enforcement_reports"] = self._deduplicate_results(results["enforcement_reports"])
-        
-        results["total_found"] = (
-            len(results["drug_labels"]) +
-            len(results["adverse_events"]) +
-            len(results["enforcement_reports"])
-        )
-        
-        logger.info(f"OpenFDA: Found {results['total_found']} total results for {nct_id}")
-        
-        return results
     def _format_uniprot_entry(self, entry: Dict[str, Any], intervention: str) -> Dict[str, Any]:
         """
         Format a UniProt entry for storage.
