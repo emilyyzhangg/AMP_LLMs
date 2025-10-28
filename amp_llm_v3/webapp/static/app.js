@@ -2023,7 +2023,7 @@ const app = {
         
         resultsDiv.insertBefore(newSearchBtn, resultsDiv.firstChild);
     },
-    
+
     displayNCTResults(data) {
         const resultsDiv = document.getElementById('nct-results');
         const inputArea = document.querySelector('.nct-input-area');
@@ -2036,7 +2036,7 @@ const app = {
         // ====== NEW: ACTION BAR (STICKY AT TOP) ======
         html += `
             <div class="nct-action-bar">
-                <button class="nct-action-button new-search-btn" onclick="app.startNewNCTSearch()">
+                <button class="nct-action-button new-search-btn" onclick="app.addNewSearchButton()">
                     <span class="btn-icon">🔍</span>
                     <span class="btn-text">New Search</span>
                 </button>
