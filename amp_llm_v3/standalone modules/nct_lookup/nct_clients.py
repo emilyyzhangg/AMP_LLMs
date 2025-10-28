@@ -1039,6 +1039,35 @@ class OpenFDAClient(BaseClient):
         
         return unique
     
+    def _is_valid_search_term(self, term: str) -> bool:
+        """
+        Check if a term is valid for OpenFDA search.
+        Returns False for common/generic terms.
+        """
+        if not term:
+            return False
+        
+        term_lower = term.lower().strip()
+        
+        # Check blacklist
+        if term_lower in self.COMMON_TERMS_BLACKLIST:
+            logger.debug(f"OpenFDA: Skipping blacklisted term '{term}'")
+            return False
+        
+        # Check for very short terms (< 3 chars)
+        if len(term_lower) < 3:
+            logger.debug(f"OpenFDA: Skipping short term '{term}'")
+            return False
+        
+        # Check for terms that are too generic (all common words)
+        common_words = ["the", "and", "or", "for", "with", "without", "in", "on", "at"]
+        words = term_lower.split()
+        if all(word in common_words for word in words):
+            logger.debug(f"OpenFDA: Skipping generic term '{term}'")
+            return False
+        
+        return True
+    
     async def fetch(self, identifier: str) -> Dict[str, Any]:
         """Not implemented - use search() instead."""
         return {"error": "Use search() method with trial data"}
@@ -1203,35 +1232,6 @@ class UniProtClient(BaseClient):
                 cleaned.append(intervention)
         
         return cleaned[:10]  # Limit to 10 most relevant
-    
-    def _is_valid_search_term(self, term: str) -> bool:
-        """
-        Check if a term is valid for OpenFDA search.
-        Returns False for common/generic terms.
-        """
-        if not term:
-            return False
-        
-        term_lower = term.lower().strip()
-        
-        # Check blacklist
-        if term_lower in self.COMMON_TERMS_BLACKLIST:
-            logger.debug(f"OpenFDA: Skipping blacklisted term '{term}'")
-            return False
-        
-        # Check for very short terms (< 3 chars)
-        if len(term_lower) < 3:
-            logger.debug(f"OpenFDA: Skipping short term '{term}'")
-            return False
-        
-        # Check for terms that are too generic (all common words)
-        common_words = ["the", "and", "or", "for", "with", "without", "in", "on", "at"]
-        words = term_lower.split()
-        if all(word in common_words for word in words):
-            logger.debug(f"OpenFDA: Skipping generic term '{term}'")
-            return False
-        
-        return True
     
     async def search(self, query: str, **kwargs) -> Dict[str, Any]:
         """
