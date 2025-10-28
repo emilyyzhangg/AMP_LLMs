@@ -209,10 +209,9 @@ class NCTSearchEngine:
                 status.completed_databases.append("pmc_bioc")
             
             logger.info("Starting extended database searches")
-            extended_results = await self._search_extended_enhanced(
+            extended_results = await self._search_extended(
                 nct_id,
                 ct_data,
-                results,
                 config,
                 status
             )
@@ -389,114 +388,81 @@ class NCTSearchEngine:
         except Exception as e:
             logger.error(f"PMC search error: {e}", exc_info=True)
             return {"error": str(e)}
-    
-    async def _search_pmc_bioc_enhanced(
+    async def _search_extended(
         self,
         nct_id: str,
         ct_data: Dict,
-        results: Dict[str, Any]
+        config: SearchConfig,
+        status = None
     ) -> Dict[str, Any]:
         """
-        Enhanced PMC BioC search with search parameters tracking.
+        Search extended databases with enhanced OpenFDA integration.
+        All extended APIs use standardized (nct_id, trial_data) interface.
         """
-        try:
-            bioc_results = {
-                "articles": [],
-                "total_fetched": 0,
-                "errors": [],
-                "pmids_used": [],
-                "conversion_performed": False,
-                "search_parameters": {  # NEW: Track search parameters
-                    "source": "",
-                    "query_type": "",
-                    "identifiers_used": []
-                }
-            }
-            
-            # Get PMIDs from PubMed results
-            pubmed_data = results.get("sources", {}).get("pubmed", {})
-            pmids = []
-            
-            if pubmed_data and isinstance(pubmed_data, dict):
-                pubmed_actual_data = pubmed_data.get("data", {})
-                pmids = pubmed_actual_data.get("pmids", [])
-                logger.info(f"Found {len(pmids)} PMIDs from PubMed results")
-                bioc_results["search_parameters"]["source"] = "PubMed"
-                bioc_results["search_parameters"]["query_type"] = pubmed_actual_data.get("search_strategy", "unknown")
-            
-            # If no PMIDs, convert PMCIDs
-            if not pmids:
-                logger.info("No PMIDs found, attempting PMCID to PMID conversion")
+        # Determine which databases to search
+        if config.enabled_databases:
+            databases = config.enabled_databases
+        else:
+            databases = ["duckduckgo", "serpapi", "scholar", "openfda", "uniprot"]
+        
+        # Filter to available clients
+        databases = [db for db in databases if db in self.clients]
+        
+        logger.info(f"Extended search params for {nct_id}")
+        logger.info(f"Databases to search: {databases}")
+        
+        # Create search tasks - ALL use (nct_id, ct_data) interface
+        tasks = {}
+        
+        for db_name in databases:
+            tasks[db_name] = self.clients[db_name].search(nct_id, ct_data)
+        
+        # Execute concurrently
+        logger.info(f"Executing {len(tasks)} extended searches")
+        
+        results = {}
+        completed = 0
+        
+        for db_name, task in tasks.items():
+            try:
+                if status:
+                    status.current_database = db_name
+                    status.progress = 50 + int((completed / len(tasks)) * 40)
                 
-                pmc_data = results.get("sources", {}).get("pmc", {})
-                if pmc_data and isinstance(pmc_data, dict):
-                    pmc_actual_data = pmc_data.get("data", {})
-                    pmcids = pmc_actual_data.get("pmcids", [])
-                    
-                    if pmcids:
-                        logger.info(f"Found {len(pmcids)} PMCIDs, converting to PMIDs")
-                        bioc_results["search_parameters"]["source"] = "PMC (converted)"
-                        bioc_results["search_parameters"]["identifiers_used"] = pmcids[:5]
-                        
-                        pmcid_to_pmid = await self.clients['pmc_bioc'].convert_pmcids_to_pmids(pmcids)
-                        
-                        if pmcid_to_pmid:
-                            pmids = list(pmcid_to_pmid.values())
-                            bioc_results["conversion_performed"] = True
-                            bioc_results["pmcid_to_pmid_map"] = pmcid_to_pmid
-                            logger.info(f"Successfully converted {len(pmids)} PMCIDs to PMIDs")
-                        else:
-                            logger.warning("PMCID to PMID conversion returned no results")
-            else:
-                bioc_results["search_parameters"]["identifiers_used"] = pmids[:5]
+                result = await task
+                
+                # Enhanced error detection and logging
+                has_error = "error" in result
+                
+                if has_error:
+                    error_msg = result.get("error", "Unknown error")
+                    logger.error(f"❌ {db_name} API error: {error_msg}")
+                else:
+                    total = result.get("total_found", 0)
+                    logger.info(f"✅ {db_name} completed: {total} results found")
+                
+                results[db_name] = {
+                    "success": not has_error,
+                    "data": result,
+                    "error": result.get("error") if has_error else None,
+                    "fetch_time": datetime.utcnow().isoformat()
+                }
+                
+                if status:
+                    status.completed_databases.append(db_name)
+                
+                completed += 1
+                
+            except Exception as e:
+                logger.error(f"💥 {db_name} search exception: {e}", exc_info=True)
+                results[db_name] = {
+                    "success": False,
+                    "error": str(e),
+                    "data": {"error": str(e), "results": [], "total_found": 0}
+                }
+        
+        return results
             
-            if not pmids:
-                logger.warning(f"No PMIDs available for BioC fetch")
-                return bioc_results
-            
-            bioc_results["pmids_used"] = pmids[:5]
-            
-            logger.info(f"Fetching BioC data for {len(pmids[:5])} PMIDs using PubTator3")
-            
-            # Fetch BioC data
-            for pmid in pmids[:5]:
-                try:
-                    bioc_data = await self.clients['pmc_bioc'].fetch_pmc_bioc(pmid, format="biocjson")
-                    
-                    if "error" not in bioc_data:
-                        bioc_results["articles"].append({
-                            "pmid": pmid,
-                            "data": bioc_data
-                        })
-                        bioc_results["total_fetched"] += 1
-                        logger.info(f"Successfully fetched BioC data for PMID {pmid}")
-                    else:
-                        bioc_results["errors"].append({
-                            "pmid": pmid,
-                            "error": bioc_data["error"]
-                        })
-                        logger.warning(f"BioC fetch failed for PMID {pmid}: {bioc_data['error']}")
-                        
-                except Exception as e:
-                    logger.error(f"Error fetching BioC for PMID {pmid}: {e}")
-                    bioc_results["errors"].append({
-                        "pmid": pmid,
-                        "error": str(e)
-                    })
-            
-            logger.info(f"BioC fetch complete: {bioc_results['total_fetched']} successful, "
-                    f"{len(bioc_results['errors'])} errors")
-            
-            return bioc_results
-            
-        except Exception as e:
-            logger.error(f"PMC BioC search error: {e}", exc_info=True)
-            return {
-                "error": str(e),
-                "articles": [],
-                "total_fetched": 0,
-                "errors": []
-            }
     async def _search_extended_enhanced(
         self,
         nct_id: str,
@@ -568,6 +534,8 @@ class NCTSearchEngine:
                 }
         
         return results
+    
+    
     def _extract_all_identifiers(self, ct_data: Dict, trial_results: Dict) -> Dict[str, List[str]]:
         """
         Extract all identifiers (PMIDs, PMCIDs, DOIs) from trial data.
