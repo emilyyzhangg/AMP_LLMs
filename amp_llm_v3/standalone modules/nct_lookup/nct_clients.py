@@ -832,7 +832,7 @@ class OpenFDAClient(BaseClient):
     
     BASE_URL = "https://api.fda.gov/drug"
     
-    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]: 
         """
         Comprehensive OpenFDA search using trial data.
         
