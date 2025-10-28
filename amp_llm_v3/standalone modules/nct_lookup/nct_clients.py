@@ -470,11 +470,7 @@ class PMCBioClient(BaseClient):
 class DuckDuckGoClient(BaseClient):
     """DuckDuckGo search client."""
     
-    async def search(
-        self,
-        nct_id: str,
-        trial_data: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Search DuckDuckGo using trial data.
         
@@ -580,19 +576,28 @@ class SerpAPIClient(BaseClient):
     
     BASE_URL = "https://serpapi.com/search"
     
-    async def search(self, query: str, **kwargs) -> Dict[str, Any]:
-        """Search via SERP API."""
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search via SERP API using trial data.
+        
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+            
+        Returns:
+            Dict with search results
+        """
         if not self.api_key:
             return {
                 "error": "SERPAPI_KEY not configured",
-                "query": query,
+                "query": nct_id,
                 "results": [],
                 "total_found": 0
             }
         
-        nct_id = kwargs.get('nct_id', query)
-        title = kwargs.get('title', '')
-        condition = kwargs.get('condition')
+        # Extract search parameters
+        title = self._extract_title(trial_data)
+        condition = self._extract_condition(trial_data)
         
         query_parts = [nct_id]
         if title:
@@ -600,10 +605,10 @@ class SerpAPIClient(BaseClient):
         if condition:
             query_parts.append(condition)
         
-        query_str = " ".join(query_parts)
+        query = " ".join(query_parts)
         
         params = {
-            'q': query_str,
+            'q': query,
             'api_key': self.api_key,
             'num': 10,
             'engine': 'google'
@@ -614,12 +619,11 @@ class SerpAPIClient(BaseClient):
                 if resp.status == 200:
                     data = await resp.json()
                     
-                    # Check for API-level errors
                     if 'error' in data:
                         logger.error(f"SERP API error: {data['error']}")
                         return {
                             "error": f"SERP API error: {data['error']}",
-                            "query": query_str,
+                            "query": query,
                             "results": [],
                             "total_found": 0
                         }
@@ -633,10 +637,10 @@ class SerpAPIClient(BaseClient):
                         for r in data.get('organic_results', [])
                     ]
                     
-                    logger.info(f"SERP API found {len(results)} results for '{query_str}'")
+                    logger.info(f"SERP API found {len(results)} results for '{query}'")
                     
                     return {
-                        "query": query_str,
+                        "query": query,
                         "results": results,
                         "total_found": len(results)
                     }
@@ -645,15 +649,15 @@ class SerpAPIClient(BaseClient):
                     logger.error(f"SERP API HTTP {resp.status}: {error_text[:200]}")
                     return {
                         "error": f"SERP API request failed (HTTP {resp.status})",
-                        "query": query_str,
+                        "query": query,
                         "results": [],
                         "total_found": 0
                     }
         except asyncio.TimeoutError:
-            logger.error(f"SERP API timeout for query: {query_str}")
+            logger.error(f"SERP API timeout for query: {query}")
             return {
                 "error": "SERP API request timeout",
-                "query": query_str,
+                "query": query,
                 "results": [],
                 "total_found": 0
             }
@@ -661,34 +665,63 @@ class SerpAPIClient(BaseClient):
             logger.error(f"SERP API error: {e}")
             return {
                 "error": f"SERP API request failed: {str(e)}",
-                "query": query_str,
+                "query": query,
                 "results": [],
                 "total_found": 0
             }
     
+    def _extract_title(self, trial_data: Dict[str, Any]) -> str:
+        """Extract trial title."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            ident = protocol.get("identificationModule", {})
+            return ident.get("officialTitle") or ident.get("briefTitle") or ""
+        except:
+            return ""
+    
+    def _extract_condition(self, trial_data: Dict[str, Any]) -> str:
+        """Extract primary condition."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            cond_mod = protocol.get("conditionsModule", {})
+            conditions = cond_mod.get("conditions", [])
+            if conditions and isinstance(conditions, list):
+                return conditions[0].strip()
+            return ""
+        except:
+            return ""
+    
     async def fetch(self, identifier: str) -> Dict[str, Any]:
         """Not implemented."""
         return {"error": "Fetch not supported"}
-
 
 class GoogleScholarClient(BaseClient):
     """Google Scholar via SERP API with proper error handling."""
     
     BASE_URL = "https://serpapi.com/search"
     
-    async def search(self, query: str, **kwargs) -> Dict[str, Any]:
-        """Search Google Scholar."""
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search Google Scholar using trial data.
+        
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+            
+        Returns:
+            Dict with search results
+        """
         if not self.api_key:
             return {
                 "error": "SERPAPI_KEY not configured",
-                "query": query,
+                "query": nct_id,
                 "results": [],
                 "total_found": 0
             }
         
-        nct_id = kwargs.get('nct_id', query)
-        title = kwargs.get('title', '')
-        condition = kwargs.get('condition')
+        # Extract search parameters
+        title = self._extract_title(trial_data)
+        condition = self._extract_condition(trial_data)
         
         query_parts = [nct_id]
         if title:
@@ -696,10 +729,10 @@ class GoogleScholarClient(BaseClient):
         if condition:
             query_parts.append(condition)
         
-        query_str = " ".join(query_parts)
+        query = " ".join(query_parts)
         
         params = {
-            'q': query_str,
+            'q': query,
             'api_key': self.api_key,
             'num': 10,
             'engine': 'google_scholar'
@@ -710,12 +743,11 @@ class GoogleScholarClient(BaseClient):
                 if resp.status == 200:
                     data = await resp.json()
                     
-                    # Check for API-level errors
                     if 'error' in data:
                         logger.error(f"Google Scholar API error: {data['error']}")
                         return {
                             "error": f"Google Scholar API error: {data['error']}",
-                            "query": query_str,
+                            "query": query,
                             "results": [],
                             "total_found": 0
                         }
@@ -730,10 +762,10 @@ class GoogleScholarClient(BaseClient):
                         for r in data.get('organic_results', [])
                     ]
                     
-                    logger.info(f"Google Scholar found {len(results)} results for '{query_str}'")
+                    logger.info(f"Google Scholar found {len(results)} results for '{query}'")
                     
                     return {
-                        "query": query_str,
+                        "query": query,
                         "results": results,
                         "total_found": len(results)
                     }
@@ -742,15 +774,15 @@ class GoogleScholarClient(BaseClient):
                     logger.error(f"Google Scholar HTTP {resp.status}: {error_text[:200]}")
                     return {
                         "error": f"Google Scholar request failed (HTTP {resp.status})",
-                        "query": query_str,
+                        "query": query,
                         "results": [],
                         "total_found": 0
                     }
         except asyncio.TimeoutError:
-            logger.error(f"Google Scholar timeout for query: {query_str}")
+            logger.error(f"Google Scholar timeout for query: {query}")
             return {
                 "error": "Google Scholar request timeout",
-                "query": query_str,
+                "query": query,
                 "results": [],
                 "total_found": 0
             }
@@ -758,15 +790,35 @@ class GoogleScholarClient(BaseClient):
             logger.error(f"Google Scholar error: {e}")
             return {
                 "error": f"Google Scholar request failed: {str(e)}",
-                "query": query_str,
+                "query": query,
                 "results": [],
                 "total_found": 0
             }
     
+    def _extract_title(self, trial_data: Dict[str, Any]) -> str:
+        """Extract trial title."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            ident = protocol.get("identificationModule", {})
+            return ident.get("officialTitle") or ident.get("briefTitle") or ""
+        except:
+            return ""
+    
+    def _extract_condition(self, trial_data: Dict[str, Any]) -> str:
+        """Extract primary condition."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            cond_mod = protocol.get("conditionsModule", {})
+            conditions = cond_mod.get("conditions", [])
+            if conditions and isinstance(conditions, list):
+                return conditions[0].strip()
+            return ""
+        except:
+            return ""
+    
     async def fetch(self, identifier: str) -> Dict[str, Any]:
         """Not implemented."""
         return {"error": "Fetch not supported"}
-
 
 class OpenFDAClient(BaseClient):
     """
@@ -780,7 +832,7 @@ class OpenFDAClient(BaseClient):
     
     BASE_URL = "https://api.fda.gov/drug"
     
-    async def search(self, query: str, **kwargs) -> Dict[str, Any]:
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Comprehensive OpenFDA search using trial data.
         
