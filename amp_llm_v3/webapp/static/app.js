@@ -1068,6 +1068,8 @@ const app = {
             }
             
             this.apiRegistry = await response.json();
+            console.log('📋 Registry loaded:', JSON.stringify(this.apiRegistry, null, 2));
+            console.log('📊 Extended APIs:', this.apiRegistry.extended?.map(a => a.id));
             console.log('✅ API registry loaded:', this.apiRegistry);
             
             if (this.apiRegistry.metadata?.default_enabled) {
