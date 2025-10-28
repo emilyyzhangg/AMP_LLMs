@@ -772,7 +772,7 @@ async def nct_search_proxy(
     except httpx.ConnectError:
         raise HTTPException(
             status_code=503,
-            detail="NCT service not available on port 8002"
+            detail=f"NCT service not available on port {settings.nct_service_port}"
         )
     except Exception as e:
         logger.error(f"NCT search proxy error: {e}")
