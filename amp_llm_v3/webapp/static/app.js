@@ -1986,24 +1986,44 @@ const app = {
         newSearchBtn.className = 'new-search-button';
         newSearchBtn.innerHTML = '<span>🔍</span><span>New Search</span>';
         newSearchBtn.onclick = () => {
+            console.log('🔄 Starting new search...');
+            
+            // Clear results
             resultsDiv.innerHTML = '';
             resultsDiv.classList.remove('active');
             inputArea.classList.remove('hidden');
             
-            document.getElementById('nct-input').value = '';
+            // Reset input field
+            const nctInput = document.getElementById('nct-input');
+            if (nctInput) {
+                nctInput.value = '';
+            }
             
+            // Hide download/save buttons
             const downloadBtn = document.getElementById('nct-download-btn');
             const saveBtn = document.getElementById('nct-save-btn');
             if (downloadBtn) downloadBtn.classList.add('hidden');
             if (saveBtn) saveBtn.classList.add('hidden');
             
-            this.selectedAPIs = new Set(this.apiRegistry?.metadata?.default_enabled || []);
+            // Reset API selection to defaults
+            if (this.apiRegistry && this.apiRegistry.metadata && this.apiRegistry.metadata.default_enabled) {
+                this.selectedAPIs = new Set(this.apiRegistry.metadata.default_enabled);
+            } else {
+                this.selectedAPIs = new Set(['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc']);
+            }
+            
+            // Rebuild checkboxes with reset selections
             this.buildAPICheckboxes();
+            
+            // Clear stored results
+            this.nctResults = null;
+            
+            console.log('✅ New search initiated - form reset');
         };
         
         resultsDiv.insertBefore(newSearchBtn, resultsDiv.firstChild);
     },
-
+    
     displayNCTResults(data) {
         const resultsDiv = document.getElementById('nct-results');
         const inputArea = document.querySelector('.nct-input-area');
