@@ -385,7 +385,7 @@ class PMCBioClient(BaseClient):
         except Exception as e:
             logger.error(f"PMCID conversion error: {e}")
             return {}
-    
+
     async def fetch_pmc_bioc(
         self,
         pmid: str,
@@ -399,7 +399,7 @@ class PMCBioClient(BaseClient):
             format: 'biocjson' or 'biocxml' (default: biocjson)
         
         Returns:
-            Dict containing BioC formatted article data or error
+            Dict containing BioC formatted article data or detailed error
         """
         # PubTator3 API endpoint
         base_url = "https://www.ncbi.nlm.nih.gov/research/pubtator3-api/publications/export"
@@ -427,19 +427,37 @@ class PMCBioClient(BaseClient):
                         return {"xml": xml_content}
                 elif resp.status == 404:
                     logger.warning(f"Article {pmid} not found in PubTator3")
-                    return {"error": "Article not available in PubTator3"}
+                    return {
+                        "error": "Not available in PubTator3",
+                        "error_type": "not_found",
+                        "pmid": pmid,
+                        "note": "Article may not be open access or not yet processed by PubTator3"
+                    }
                 else:
                     error_text = await resp.text()
                     logger.error(f"PubTator3 fetch error: HTTP {resp.status} - {error_text[:200]}")
-                    return {"error": f"HTTP {resp.status}: {error_text[:200]}"}
+                    return {
+                        "error": f"HTTP {resp.status}",
+                        "error_type": "http_error",
+                        "pmid": pmid,
+                        "details": error_text[:200]
+                    }
                     
         except asyncio.TimeoutError:
             logger.error(f"PubTator3 fetch timeout for {pmid}")
-            return {"error": "Request timeout"}
+            return {
+                "error": "Request timeout",
+                "error_type": "timeout",
+                "pmid": pmid
+            }
         except Exception as e:
             logger.error(f"PubTator3 fetch error for {pmid}: {e}")
-            return {"error": str(e)}
-
+            return {
+                "error": str(e),
+                "error_type": "exception",
+                "pmid": pmid
+            }
+        
     async def fetch_multiple_pmc_bioc(
         self,
         pmids: List[str],
@@ -832,31 +850,17 @@ class OpenFDAClient(BaseClient):
     
     BASE_URL = "https://api.fda.gov/drug"
     
-    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]: 
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Comprehensive OpenFDA search using trial data.
         
         Args:
-            query: NCT trial identifier
-            **kwargs: Must include 'trial_data' with full clinical trial data dictionary
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data dictionary
             
         Returns:
             Dict with combined results from multiple FDA endpoints
         """
-        nct_id = query
-        trial_data = kwargs.get('trial_data', {})
-        
-        if not trial_data:
-            return {
-                "error": "trial_data required in kwargs",
-                "query": nct_id,
-                "drug_labels": [],
-                "adverse_events": [],
-                "enforcement_reports": [],
-                "total_found": 0,
-                "search_terms_used": []
-            }
-        
         # Extract all possible drug identifiers from trial data
         search_terms = self._extract_drug_identifiers(trial_data)
         
@@ -946,13 +950,15 @@ class OpenFDAClient(BaseClient):
             title = ident_module.get("officialTitle", "") or ident_module.get("briefTitle", "")
             if title:
                 # Extract potential drug names (words in title that might be drugs)
-                # This is a simple heuristic - could be improved
                 title_words = title.split()
-                for i, word in enumerate(title_words):
+                for word in title_words:
                     # Check if word looks like a drug name (capitalized, not common words)
-                    if (word[0].isupper() and len(word) > 3 and 
-                        word.lower() not in ['trial', 'study', 'phase', 'randomized', 'controlled']):
-                        identifiers.append(word.strip('()[]{}:,;.'))
+                    if (word and len(word) > 3 and 
+                        word[0].isupper() and 
+                        word.lower() not in ['trial', 'study', 'phase', 'randomized', 'controlled', 'versus', 'with', 'without']):
+                        clean_word = word.strip('()[]{}:,;.')
+                        if clean_word:
+                            identifiers.append(clean_word)
             
         except Exception as e:
             logger.warning(f"Error extracting drug identifiers: {e}")
@@ -987,6 +993,9 @@ class OpenFDAClient(BaseClient):
                 else:
                     logger.debug(f"OpenFDA labels returned {resp.status} for '{drug_name}'")
                     return []
+        except asyncio.TimeoutError:
+            logger.debug(f"OpenFDA labels timeout for '{drug_name}'")
+            return []
         except Exception as e:
             logger.debug(f"OpenFDA labels search error for '{drug_name}': {e}")
             return []
@@ -1010,6 +1019,9 @@ class OpenFDAClient(BaseClient):
                 else:
                     logger.debug(f"OpenFDA events returned {resp.status} for '{drug_name}'")
                     return []
+        except asyncio.TimeoutError:
+            logger.debug(f"OpenFDA events timeout for '{drug_name}'")
+            return []
         except Exception as e:
             logger.debug(f"OpenFDA events search error for '{drug_name}': {e}")
             return []
@@ -1033,57 +1045,15 @@ class OpenFDAClient(BaseClient):
                 else:
                     logger.debug(f"OpenFDA enforcement returned {resp.status} for '{drug_name}'")
                     return []
+        except asyncio.TimeoutError:
+            logger.debug(f"OpenFDA enforcement timeout for '{drug_name}'")
+            return []
         except Exception as e:
             logger.debug(f"OpenFDA enforcement search error for '{drug_name}': {e}")
             return []
     
     def _format_label_result(self, result: Dict) -> Dict:
         """Format drug label result."""
-        return {
-            "type": "drug_label",
-            "product": result.get("openfda", {}).get("brand_name", [""])[0] if result.get("openfda", {}).get("brand_name") else "Unknown",
-            "manufacturer": result.get("openfda", {}).get("manufacturer_name", [""])[0] if result.get("openfda", {}).get("manufacturer_name") else "Unknown",
-            "purpose": result.get("purpose", [""])[0] if result.get("purpose") else None,
-            "warnings": result.get("warnings", [""])[0][:200] if result.get("warnings") else None
-        }
-    
-    def _format_event_result(self, result: Dict) -> Dict:
-        """Format adverse event result."""
-        return {
-            "type": "adverse_event",
-            "date": result.get("receivedate", "Unknown"),
-            "serious": result.get("serious", 0),
-            "reactions": [r.get("reactionmeddrapt", "Unknown") for r in result.get("patient", {}).get("reaction", [])[:3]]
-        }
-    
-    def _format_enforcement_result(self, result: Dict) -> Dict:
-        """Format enforcement report result."""
-        return {
-            "type": "enforcement",
-            "classification": result.get("classification", "Unknown"),
-            "status": result.get("status", "Unknown"),
-            "recall_date": result.get("recall_initiation_date", "Unknown"),
-            "reason": result.get("reason_for_recall", "")[:200]
-        }
-    
-    def _deduplicate_results(self, results: List[Dict]) -> List[Dict]:
-        """Remove duplicate results."""
-        seen = set()
-        unique = []
-        
-        for result in results:
-            # Create a simple hash of the result
-            result_hash = json.dumps(result, sort_keys=True)
-            if result_hash not in seen:
-                seen.add(result_hash)
-                unique.append(result)
-        
-        return unique
-    
-    async def fetch(self, identifier: str) -> Dict[str, Any]:
-        """Not implemented - use search() instead."""
-        return {"error": "Use search() method with trial data"}
-
 
 class UniProtClient(BaseClient):
     """UniProt API client for protein data."""

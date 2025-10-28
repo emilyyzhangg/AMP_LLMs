@@ -337,7 +337,7 @@ class NCTSearchEngine:
         results: Dict[str, Any]
     ) -> Dict[str, Any]:
         """
-        Search PMC BioC using PubTator3 API with enhanced tracking.
+        Search PMC BioC using PubTator3 API with enhanced tracking and error details.
         """
         try:
             bioc_results = {
@@ -345,7 +345,14 @@ class NCTSearchEngine:
                 "total_fetched": 0,
                 "errors": [],
                 "pmids_used": [],
-                "conversion_performed": False
+                "pmids_attempted": [],
+                "conversion_performed": False,
+                "error_summary": {
+                    "not_found": [],
+                    "timeout": [],
+                    "http_error": [],
+                    "other": []
+                }
             }
             
             # Strategy 1: Try to get PMIDs from PubMed results
@@ -386,6 +393,7 @@ class NCTSearchEngine:
                 return bioc_results
             
             bioc_results["pmids_used"] = pmids[:5]
+            bioc_results["pmids_attempted"] = pmids[:5]
             
             logger.info(f"Fetching BioC data for {len(pmids[:5])} PMIDs using PubTator3")
             
@@ -402,21 +410,48 @@ class NCTSearchEngine:
                         bioc_results["total_fetched"] += 1
                         logger.info(f"Successfully fetched BioC data for PMID {pmid}")
                     else:
-                        bioc_results["errors"].append({
+                        # Categorize the error
+                        error_type = bioc_data.get("error_type", "other")
+                        error_msg = bioc_data.get("error", "Unknown error")
+                        note = bioc_data.get("note", "")
+                        
+                        error_detail = {
                             "pmid": pmid,
-                            "error": bioc_data["error"]
-                        })
-                        logger.warning(f"BioC fetch failed for PMID {pmid}: {bioc_data['error']}")
+                            "error": error_msg,
+                            "type": error_type
+                        }
+                        
+                        if note:
+                            error_detail["note"] = note
+                        
+                        bioc_results["errors"].append(error_detail)
+                        
+                        # Add to error summary
+                        if error_type in bioc_results["error_summary"]:
+                            bioc_results["error_summary"][error_type].append(pmid)
+                        else:
+                            bioc_results["error_summary"]["other"].append(pmid)
+                        
+                        logger.warning(f"BioC fetch failed for PMID {pmid}: {error_msg}")
                         
                 except Exception as e:
                     logger.error(f"Error fetching BioC for PMID {pmid}: {e}")
                     bioc_results["errors"].append({
                         "pmid": pmid,
-                        "error": str(e)
+                        "error": str(e),
+                        "type": "exception"
                     })
+                    bioc_results["error_summary"]["other"].append(pmid)
             
             logger.info(f"BioC fetch complete: {bioc_results['total_fetched']} successful, "
                     f"{len(bioc_results['errors'])} errors")
+            
+            # Log error breakdown
+            if bioc_results["errors"]:
+                logger.info(f"BioC error breakdown:")
+                for error_type, pmid_list in bioc_results["error_summary"].items():
+                    if pmid_list:
+                        logger.info(f"  {error_type}: {len(pmid_list)} article(s)")
             
             return bioc_results
             
@@ -428,7 +463,7 @@ class NCTSearchEngine:
                 "total_fetched": 0,
                 "errors": []
             }
-        
+
     async def _search_pmc_enhanced(self, nct_id: str, ct_data: Dict) -> Dict[str, Any]:
         """
         Enhanced PMC search with query grouping and results by query.
