@@ -2024,6 +2024,45 @@ const app = {
         resultsDiv.insertBefore(newSearchBtn, resultsDiv.firstChild);
     },
 
+    startNewNCTSearch() {
+        console.log('🔄 Starting new search...');
+        
+        const resultsDiv = document.getElementById('nct-results');
+        const inputArea = document.querySelector('.nct-input-area');
+        
+        // Clear results
+        resultsDiv.innerHTML = '';
+        resultsDiv.classList.remove('active');
+        inputArea.classList.remove('hidden');
+        
+        // Reset input field
+        const nctInput = document.getElementById('nct-input');
+        if (nctInput) {
+            nctInput.value = '';
+        }
+        
+        // Hide download/save buttons
+        const downloadBtn = document.getElementById('nct-download-btn');
+        const saveBtn = document.getElementById('nct-save-btn');
+        if (downloadBtn) downloadBtn.classList.add('hidden');
+        if (saveBtn) saveBtn.classList.add('hidden');
+        
+        // Reset API selection to defaults
+        if (this.apiRegistry && this.apiRegistry.metadata && this.apiRegistry.metadata.default_enabled) {
+            this.selectedAPIs = new Set(this.apiRegistry.metadata.default_enabled);
+        } else {
+            this.selectedAPIs = new Set(['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc']);
+        }
+        
+        // Rebuild checkboxes with reset selections
+        this.buildAPICheckboxes();
+        
+        // Clear stored results
+        this.nctResults = null;
+        
+        console.log('✅ New search initiated - form reset');
+    },
+    
     displayNCTResults(data) {
         const resultsDiv = document.getElementById('nct-results');
         const inputArea = document.querySelector('.nct-input-area');
@@ -2036,7 +2075,7 @@ const app = {
         // ====== NEW: ACTION BAR (STICKY AT TOP) ======
         html += `
             <div class="nct-action-bar">
-                <button class="nct-action-button new-search-btn" onclick="app.addNewSearchButton()">
+                <button class="nct-action-button new-search-btn" onclick="app.startNewNCTSearch()">
                     <span class="btn-icon">🔍</span>
                     <span class="btn-text">New Search</span>
                 </button>
