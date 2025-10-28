@@ -231,11 +231,10 @@ async def list_available_themes():
             "error": str(e)
         }
 
-# ============================================================================
-# Service URLs
-# ============================================================================
-CHAT_SERVICE_URL = "http://localhost:8001"
-NCT_SERVICE_URL = "http://localhost:8002"
+
+# Service URLs - use port from config
+CHAT_SERVICE_URL = f"http://localhost:{settings.chat_service_port}"
+NCT_SERVICE_URL = f"http://localhost:{settings.nct_service_port}"
 
 
 # ============================================================================
@@ -964,4 +963,9 @@ async def startup_event():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("webapp.server:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(
+        "webapp.server:app", 
+        host="0.0.0.0", 
+        port=settings.main_server_port,  # <-- NOW READS FROM .ENV
+        reload=True
+    )

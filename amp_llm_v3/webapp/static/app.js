@@ -4,21 +4,8 @@
 
 const app = {
     // Configuration
-    API_BASE: (() => {
-        if (window.location.hostname === 'llm.amphoraxe.ca' || 
-            window.location.hostname === 'dev-llm.amphoraxe.ca') {
-            return `https://${window.location.hostname}`;
-        }
-        return window.location.origin;
-    })(),
-
-    NCT_SERVICE_URL: (() => {
-        if (window.location.hostname === 'llm.amphoraxe.ca' || 
-            window.location.hostname === 'dev-llm.amphoraxe.ca') {
-            return `https://${window.location.hostname}`;
-        }
-        return window.location.origin;
-    })(),
+    API_BASE: window.location.origin,
+    NCT_SERVICE_URL: window.location.origin,
 
     apiKey: localStorage.getItem('amp_llm_api_key') || '',
 
@@ -48,6 +35,17 @@ const app = {
         console.log('🚀 App initializing...');
         this.apiKey = localStorage.getItem('amp_llm_api_key') || '';
         this.currentTheme = localStorage.getItem('amp_llm_theme') || 'green';
+
+        // ============================================================================
+        // SERVICE CONFIGURATION LOGGING
+        // ============================================================================
+        console.group('🔧 Service Configuration');
+        console.log('🌐 API Base URL:', this.API_BASE);
+        console.log('🔍 NCT Service URL:', this.NCT_SERVICE_URL);
+        console.log('📍 Current Hostname:', window.location.hostname);
+        console.log('🔗 Current Origin:', window.location.origin);
+        console.log('🔌 Current Port:', window.location.port || '(default)');
+        console.groupEnd();
         
         await this.loadAvailableThemes();
         this.applyTheme(this.currentTheme, false);

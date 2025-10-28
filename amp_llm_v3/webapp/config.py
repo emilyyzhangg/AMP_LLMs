@@ -57,6 +57,7 @@ class Settings(BaseSettings):
         # Set CORS origins dynamically
         self.allowed_origins = [
             f"https://{self.public_domain}",
+            f"http://localhost:{self.main_server_port}",
             "http://localhost:3000"  # For local frontend development
         ]
 
