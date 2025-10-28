@@ -1742,6 +1742,7 @@ const app = {
             'success',
             4000
         );
+        link.click();
     },
 
     showSearchErrorSummary(errors, apiFailures = []) {
@@ -2385,32 +2386,59 @@ const app = {
                             </div>`;
                         }
                     } else if (sourceName === 'pmc_bioc') {
-                        // Show search strategy and queries
-                        if (data.search_strategy) {
-                            html += `<div class="search-info">
-                                <span class="search-info-label">🔍 Search Strategy:</span>
-                                <span class="search-info-value">${this.escapeHtml(data.search_strategy)}</span>
-                            </div>`;
-                        }
-                        if (data.search_queries && data.search_queries.length > 0) {
-                            html += `<div class="search-info">
-                                <span class="search-info-label">📝 Queries Used:</span>
-                                <span class="search-info-value">${data.search_queries.map(q => `"${this.escapeHtml(q)}"`).join(', ')}</span>
-                            </div>`;
-                        }
-                        
                         html += `<div class="data-field">
-                            <strong>Articles Found:</strong> ${resultCount}
+                            <strong>Full-Text Articles Fetched:</strong> ${resultCount}
                         </div>`;
+                        // Display article summaries
+                        if (data.articles && data.articles.length > 0) {
+                            html += `<div class="extended-results-container" style="margin-top: 15px;">`;
+                            
+                            const displayCount = Math.min(3, data.articles.length);
+                            for (let i = 0; i < displayCount; i++) {
+                                const article = data.articles[i];
+                                html += `
+                                    <div class="extended-result-item">
+                                        <div class="result-number">${i + 1}.</div>
+                                        <div class="result-content">
+                                            <div class="result-title">${this.escapeHtml(article.title || 'Title not available')}</div>
+                                            <div class="result-snippet">
+                                                <strong>Journal:</strong> ${this.escapeHtml(article.journal || 'N/A')}<br>
+                                                <strong>PMCID:</strong> ${this.escapeHtml(article.pmcid)}
+                                                ${article.doi && article.doi.length > 0 ? `<br><strong>DOI:</strong> ${article.doi[0]}` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                            
+                            if (data.articles.length > displayCount) {
+                                const hiddenCount = data.articles.length - displayCount;
+                                html += `
+                                    <div class="data-field" style="text-align: center; margin-top: 10px; color: #666;">
+                                        ... and ${hiddenCount} more article(s)
+                                    </div>
+                                `;
+                            }
+                            
+                            html += `</div>`;
+                        }
+                        // Show conversion info if PMCIDs were converted
+                        if (data.conversion_performed) {
+                            html += `<div class="search-info">
+                                <span class="search-info-label">🔄 Conversion:</span>
+                                <span class="search-info-value">PMC IDs converted to PubMed IDs</span>
+                            </div>`;
+                        }
                         
-                        if (data.pmids && data.pmids.length > 0) {
+                        // Show which PMIDs were used
+                        if (data.pmids_used && data.pmids_used.length > 0) {
                             const uniqueId = `source-${nctId}-${sourceName}-${Date.now()}`;
                             const visibleCount = 5;
-                            const visiblePMIDs = data.pmids.slice(0, visibleCount);
-                            const hiddenPMIDs = data.pmids.slice(visibleCount);
+                            const visiblePMIDs = data.pmids_used.slice(0, visibleCount);
+                            const hiddenPMIDs = data.pmids_used.slice(visibleCount);
                             
                             html += `<div class="data-field pmid-field">
-                                <strong>PMIDs:</strong> 
+                                <strong>PMIDs Fetched:</strong> 
                                 <span class="id-list">
                                     ${visiblePMIDs.join(', ')}
                                     ${hiddenPMIDs.length > 0 ? `
@@ -2422,6 +2450,40 @@ const app = {
                                         </span>
                                     ` : ''}
                                 </span>
+                            </div>`;
+                        }
+                        
+                        // Show article summaries if available
+                        if (data.articles && data.articles.length > 0) {
+                            html += `<div class="extended-results-container" style="margin-top: 15px;">`;
+                            
+                            const displayCount = Math.min(3, data.articles.length);
+                            for (let i = 0; i < displayCount; i++) {
+                                const article = data.articles[i];
+                                const pmid = article.pmid;
+                                const hasData = article.data && !article.data.error;
+                                
+                                html += `
+                                    <div class="extended-result-item">
+                                        <div class="result-number">${i + 1}.</div>
+                                        <div class="result-content">
+                                            <div class="result-title">PMID: ${this.escapeHtml(pmid)}</div>
+                                            ${hasData ? 
+                                                `<div class="result-snippet">✓ Full-text with entity annotations retrieved via PubTator3</div>` :
+                                                `<div class="result-snippet" style="color: #dc3545;">✗ Full-text not available</div>`
+                                            }
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                            
+                            html += `</div>`;
+                        }
+                        
+                        // Show errors if any
+                        if (data.errors && data.errors.length > 0) {
+                            html += `<div class="data-field" style="color: #dc3545;">
+                                <strong>Errors:</strong> ${data.errors.length} article(s) could not be retrieved
                             </div>`;
                         }
                     }

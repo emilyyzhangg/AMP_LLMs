@@ -466,158 +466,110 @@ class PMCBioClient(BaseClient):
 
 
 class DuckDuckGoClient(BaseClient):
-    """DuckDuckGo search client with separate searches for different identifiers."""
+    """DuckDuckGo search client with enhanced error handling."""
     
     async def search(
         self,
         nct_id: str,
         title: str,
-        condition: Optional[str] = None,
-        pmids: Optional[List[str]] = None,
-        pmcids: Optional[List[str]] = None,
-        dois: Optional[List[str]] = None
+        condition: Optional[str] = None
     ) -> Dict[str, Any]:
-        """
-        Execute SEPARATE searches for each identifier type.
-        
-        Args:
-            nct_id: NCT trial number
-            title: Trial title
-            condition: Trial condition
-            pmids: List of PubMed IDs
-            pmcids: List of PMC IDs
-            dois: List of DOIs
-        
-        Returns:
-            Dict with separate result sets for each search type
-        """
+        """Search DuckDuckGo."""
         try:
-            from duckduckgo_search import DDGS
+            # Check if library is available
+            try:
+                from duckduckgo_search import DDGS
+            except ImportError:
+                logger.error("duckduckgo-search library not installed")
+                return {
+                    "error": "duckduckgo-search library not installed. Install with: pip install duckduckgo-search",
+                    "query": nct_id,
+                    "results": [],
+                    "total_found": 0
+                }
             
-            all_results = {
-                "searches_performed": [],
-                "results_by_type": {},
-                "total_results": 0
-            }
-            
-            # Search 1: NCT ID
-            nct_results = await self._search_by_identifier("NCT ID", nct_id)
-            if nct_results:
-                all_results["searches_performed"].append("NCT ID")
-                all_results["results_by_type"]["nct"] = nct_results
-                all_results["total_results"] += len(nct_results)
-            
-            # Search 2: Title (first 10 words)
+            # Build query
+            query_parts = [nct_id]
             if title:
-                title_query = " ".join(title.split()[:10])
-                title_results = await self._search_by_identifier("Title", title_query)
-                if title_results:
-                    all_results["searches_performed"].append("Title")
-                    all_results["results_by_type"]["title"] = title_results
-                    all_results["total_results"] += len(title_results)
+                query_parts.append(" ".join(title.split()[:10]))
+            if condition:
+                query_parts.append(condition)
             
-            # Search 3: PMIDs (first 3)
-            if pmids and len(pmids) > 0:
-                pmid_results = []
-                for pmid in pmids[:3]:
-                    results = await self._search_by_identifier("PMID", pmid)
-                    if results:
-                        pmid_results.extend(results)
-                
-                if pmid_results:
-                    all_results["searches_performed"].append("PMID")
-                    all_results["results_by_type"]["pmid"] = pmid_results
-                    all_results["total_results"] += len(pmid_results)
+            query = " ".join(query_parts)
             
-            # Search 4: PMCIDs (first 3)
-            if pmcids and len(pmcids) > 0:
-                pmcid_results = []
-                for pmcid in pmcids[:3]:
-                    results = await self._search_by_identifier("PMCID", pmcid)
-                    if results:
-                        pmcid_results.extend(results)
-                
-                if pmcid_results:
-                    all_results["searches_performed"].append("PMCID")
-                    all_results["results_by_type"]["pmcid"] = pmcid_results
-                    all_results["total_results"] += len(pmcid_results)
+            logger.info(f"DuckDuckGo searching for: {query}")
             
-            # Search 5: DOIs (first 3)
-            if dois and len(dois) > 0:
-                doi_results = []
-                for doi in dois[:3]:
-                    results = await self._search_by_identifier("DOI", doi)
-                    if results:
-                        doi_results.extend(results)
-                
-                if doi_results:
-                    all_results["searches_performed"].append("DOI")
-                    all_results["results_by_type"]["doi"] = doi_results
-                    all_results["total_results"] += len(doi_results)
-            
-            logger.info(f"DuckDuckGo performed {len(all_results['searches_performed'])} searches, "
-                       f"found {all_results['total_results']} total results")
-            
-            return all_results
-            
-        except ImportError:
-            return {
-                "error": "duckduckgo-search library not installed",
-                "searches_performed": [],
-                "results_by_type": {},
-                "total_results": 0
-            }
-        except Exception as e:
-            logger.error(f"DuckDuckGo error: {e}")
-            return {
-                "error": f"DuckDuckGo search failed: {str(e)}",
-                "searches_performed": [],
-                "results_by_type": {},
-                "total_results": 0
-            }
-    
-    async def _search_by_identifier(self, search_type: str, query: str) -> List[Dict]:
-        """Execute a single DuckDuckGo search."""
-        try:
-            from duckduckgo_search import DDGS
-            
+            # Run search in executor (blocking operation)
             loop = asyncio.get_event_loop()
             results = await loop.run_in_executor(
                 None,
                 self._search_sync,
-                query,
-                5  # Max 5 results per identifier
+                query
             )
             
-            logger.info(f"DuckDuckGo {search_type} search for '{query}': {len(results)} results")
+            if not results:
+                logger.warning(f"DuckDuckGo returned no results for: {query}")
+            else:
+                logger.info(f"DuckDuckGo found {len(results)} results for: {query}")
             
-            # Tag results with search type
-            for result in results:
-                result['search_type'] = search_type
-                result['query_used'] = query
+            return {
+                "query": query,
+                "results": results,
+                "total_found": len(results)
+            }
+            
+        except ImportError as e:
+            logger.error(f"DuckDuckGo import error: {e}")
+            return {
+                "error": f"Required library not available: {str(e)}",
+                "query": nct_id,
+                "results": [],
+                "total_found": 0
+            }
+        except Exception as e:
+            logger.error(f"DuckDuckGo search error: {e}", exc_info=True)
+            return {
+                "error": f"DuckDuckGo search failed: {str(e)}",
+                "query": nct_id,
+                "results": [],
+                "total_found": 0
+            }
+    
+    def _search_sync(self, query: str) -> List[Dict]:
+        """Synchronous search helper with timeout and error handling."""
+        try:
+            from duckduckgo_search import DDGS
+            
+            results = []
+            
+            # Use context manager with timeout
+            with DDGS(timeout=20) as ddgs:
+                try:
+                    search_results = ddgs.text(query, max_results=10)
+                    
+                    for result in search_results:
+                        results.append({
+                            'title': result.get('title', ''),
+                            'url': result.get('href', ''),
+                            'snippet': result.get('body', '')
+                        })
+                    
+                    logger.info(f"DuckDuckGo sync search completed: {len(results)} results")
+                    
+                except Exception as search_error:
+                    logger.error(f"DuckDuckGo search execution error: {search_error}")
+                    raise
             
             return results
             
         except Exception as e:
-            logger.error(f"DuckDuckGo {search_type} search failed: {e}")
+            logger.error(f"DuckDuckGo _search_sync error: {e}")
             return []
     
-    def _search_sync(self, query: str, max_results: int = 5) -> List[Dict]:
-        """Synchronous search helper."""
-        from duckduckgo_search import DDGS
-        
-        results = []
-        with DDGS() as ddgs:
-            search_results = ddgs.text(query, max_results=max_results)
-            for result in search_results:
-                results.append({
-                    'title': result.get('title', ''),
-                    'url': result.get('href', ''),
-                    'snippet': result.get('body', '')
-                })
-        
-        return results
-        
+    async def fetch(self, identifier: str) -> Dict[str, Any]:
+        """Not implemented for DuckDuckGo."""
+        return {"error": "Fetch not supported for DuckDuckGo"}
+    
 class SerpAPIClient(BaseClient):
     """SERP API (Google Search) client with proper error handling."""
     
@@ -1280,6 +1232,7 @@ class UniProtClient(BaseClient):
             return False
         
         return True
+    
     async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Comprehensive OpenFDA search using trial data with common term filtering.
@@ -1300,7 +1253,7 @@ class UniProtClient(BaseClient):
             }
         
         logger.info(f"OpenFDA: Searching with {len(search_terms)} valid terms: {search_terms}")
-        
+
     def _format_uniprot_entry(self, entry: Dict[str, Any], intervention: str) -> Dict[str, Any]:
         """
         Format a UniProt entry for storage.
