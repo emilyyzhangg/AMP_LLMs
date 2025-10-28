@@ -5,15 +5,17 @@
 const app = {
     // Configuration
     API_BASE: (() => {
-        if (window.location.hostname === 'llm.amphoraxe.ca') {
-            return 'https://llm.amphoraxe.ca';
+        if (window.location.hostname === 'llm.amphoraxe.ca' || 
+            window.location.hostname === 'dev-llm.amphoraxe.ca') {
+            return `https://${window.location.hostname}`;
         }
         return window.location.origin;
     })(),
 
     NCT_SERVICE_URL: (() => {
-        if (window.location.hostname === 'llm.amphoraxe.ca') {
-            return 'https://llm.amphoraxe.ca';
+        if (window.location.hostname === 'llm.amphoraxe.ca' || 
+            window.location.hostname === 'dev-llm.amphoraxe.ca') {
+            return `https://${window.location.hostname}`;
         }
         return window.location.origin;
     })(),

@@ -20,17 +20,20 @@ class Settings(BaseSettings):
     # API Keys
     api_keys: Set[str] = set()
     
+    # Port Configuration - READ FROM .ENV
+    main_server_port: int = 8000
+    chat_service_port: int = 8001
+    nct_service_port: int = 8002
+    
+    # Domain Configuration - READ FROM .ENV
+    public_domain: str = "llm.amphoraxe.ca"
+    
     # Ollama
     ollama_host: str = "localhost"
     ollama_port: int = 11434
-
-    # Service ports - NEW
-    main_server_port: int
-    chat_service_port: int
-    nct_service_port: int
-
-    # CORS
-    allowed_origins: list = ["https://llm.amphoraxe.ca"]
+    
+    # CORS - DYNAMIC BASED ON DOMAIN
+    allowed_origins: list = []
     
     # Environment
     environment: str = "development"
@@ -50,6 +53,12 @@ class Settings(BaseSettings):
             raise ValueError(
                 "No API keys configured! Set API_KEY_1, API_KEY_2, etc. in .env"
             )
+        
+        # Set CORS origins dynamically
+        self.allowed_origins = [
+            f"https://{self.public_domain}",
+            "http://localhost:3000"  # For local frontend development
+        ]
 
 
 settings = Settings()
