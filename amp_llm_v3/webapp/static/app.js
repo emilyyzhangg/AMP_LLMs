@@ -356,6 +356,7 @@ const app = {
             'chat': { title: '💬 Chat with LLM', subtitle: 'Interactive conversation with AI models' },
             'research': { title: '📚 Research Assistant', subtitle: 'RAG-powered trial analysis' },
             'nct': { title: '🔍 NCT Lookup', subtitle: 'Search clinical trials' },
+            'nct2step': { title: '🔬 NCT 2-Step Search', subtitle: 'Advanced search with customizable fields' },
             'files': { title: '📁 File Manager', subtitle: 'Browse and manage trial data' }
         };
         
@@ -373,7 +374,12 @@ const app = {
             this.loadFiles();
         } else if (mode === 'nct') {
             this.buildAPICheckboxes();
-        }    
+        } else if (mode === 'nct2step') {  // ✅ ADD THIS
+        // Reset if needed
+        if (!this.nct2step.currentNCT) {
+            this.resetStep1();
+            }   
+        }
     },
 
     updateBackButton() {
@@ -3530,12 +3536,6 @@ const app = {
             case 'pmc_bioc':
                 return data.total_fetched || 0;
 
-            case 'nct2step':
-            document.getElementById('nct2step-mode').classList.add('active');
-            // Reset if needed
-            if (!this.nct2step.currentNCT) {
-                this.resetStep1();
-            }
             default:
                 if (data.results && Array.isArray(data.results)) {
                     return data.results.length;
