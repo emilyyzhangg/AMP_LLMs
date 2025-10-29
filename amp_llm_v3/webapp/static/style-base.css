@@ -850,6 +850,8 @@ header p {
 
 /* New Search button - green theme */
 .new-search-btn {
+    position: sticky;
+    top: 0;
     align-items: center;
     justify-content: center;
     gap: 10px;
@@ -871,6 +873,8 @@ header p {
 
 /* Download button - blue/teal theme */
 .download-btn {
+    position: sticky;
+    top: 0;
     align-items: center;
     justify-content: center;
     gap: 10px;
@@ -892,6 +896,8 @@ header p {
 
 /* Save to Server button - purple/pink theme */
 .save-btn {
+    position: sticky;
+    top: 0;
     align-items: center;
     justify-content: center;
     gap: 10px;
