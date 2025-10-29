@@ -2014,14 +2014,14 @@ const app = {
         
         // Compact button HTML with smaller styling
         html += `
-            <div class="results-actions-compact">
-                <button class="compact-btn new-search-compact" onclick="app.startNewNCTSearch(); event.preventDefault();">
+            <div class="results-actions-bar">
+                <button class="results-actions-btn new-search-btn" onclick="app.startNewNCTSearch(); event.preventDefault();">
                     🔍 New Search
                 </button>
-                <button class="compact-btn download-compact" onclick="app.downloadNCTResults(); event.preventDefault();">
+                <button class="results-actions-btn download-btn" onclick="app.downloadNCTResults(); event.preventDefault();">
                     📥 Download
                 </button>
-                <button class="compact-btn save-compact" onclick="app.saveNCTResults(); event.preventDefault();">
+                <button class="results-actions-btn save-btn" onclick="app.saveNCTResults(); event.preventDefault();">
                     💾 Save to Server
                 </button>
             </div>
