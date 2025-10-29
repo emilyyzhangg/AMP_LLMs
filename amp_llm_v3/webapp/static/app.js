@@ -2263,31 +2263,17 @@ const app = {
                             const shortAbstract = abstract.substring(0, 300);
                             const needsExpand = abstract.length > 300;
                             
-                            html += `<div class="data-field summary-field">
-                                <div class="trial-summary-box">
-                                    <div class="trial-summary-item">
-                                        <strong>Status:</strong> 
-                                        <span class="status-badge status-${trialStatus.toLowerCase().replace(/\s+/g, '-')}">${this.escapeHtml(trialStatus)}</span>
-                                    </div>
-                                    <div class="trial-summary-item">
-                                        <strong>Condition:</strong> ${this.escapeHtml(trialCondition)}
-                                    </div>
-                                    <div class="trial-summary-item">
-                                        <strong>Intervention:</strong> ${this.escapeHtml(trialIntervention)}
-                                    </div>
+                            html += `<div class="trial-summary-box">
+                                <div class="trial-title-display">${this.escapeHtml(trialTitle)}</div>
+                                <div class="trial-summary-item">
+                                    <strong>Status:</strong> 
+                                    <span class="status-badge status-${trialStatus.toLowerCase().replace(/\s+/g, '-')}">${this.escapeHtml(trialStatus)}</span>
                                 </div>
-
-                                <strong>Abstract:</strong>
-                                <div class="abstract-text">
-                                    ${this.escapeHtml(shortAbstract)}${needsExpand ? '...' : ''}
-                                    ${needsExpand ? `
-                                        <span class="show-more-inline" onclick="app.toggleAbstract('abstract-${nctId}')">
-                                            <strong>Show More</strong>
-                                        </span>
-                                        <span id="abstract-${nctId}" class="expanded-text hidden">
-                                            ${this.escapeHtml(abstract.substring(300))}
-                                        </span>
-                                    ` : ''}
+                                <div class="trial-summary-item">
+                                    <strong>Condition:</strong> ${this.escapeHtml(trialCondition)}
+                                </div>
+                                <div class="trial-summary-item">
+                                    <strong>Intervention:</strong> ${this.escapeHtml(trialIntervention)}
                                 </div>
                             </div>`;
                         }
