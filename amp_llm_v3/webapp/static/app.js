@@ -2969,7 +2969,6 @@ const app = {
                     <div class="trial-header">
                         <div>
                             <h3>${nctId}</h3>
-                            <div class="trial-title-display">${this.escapeHtml(trialTitle)}</div>
                         </div>
                         <span class="source-count">${sourceCount} sources</span>
                     </div>
