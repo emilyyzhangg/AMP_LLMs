@@ -23,6 +23,14 @@ const app = {
     // Session-based chat storage (per model)
     sessionChats: {},
 
+    nct2step: {
+        currentNCT: null,
+        step1Results: null,
+        step2Results: null,
+        selectedAPIs: new Set(),
+        selectedFields: {}
+    },
+
     // API registry
     apiRegistry: null,
     selectedAPIs: new Set(),
@@ -343,7 +351,7 @@ const app = {
         if (modeElement) {
             modeElement.classList.add('active');
         }
-        
+
         const titles = {
             'chat': { title: '💬 Chat with LLM', subtitle: 'Interactive conversation with AI models' },
             'research': { title: '📚 Research Assistant', subtitle: 'RAG-powered trial analysis' },
@@ -398,6 +406,737 @@ const app = {
             backButton.onclick = () => this.showMenu();
         }
     },
+    // ============================================================================
+    // STEP 1: Core API Search
+    // ============================================================================
+
+    async executeStep1() {
+        const input = document.getElementById('nct2step-input');
+        const nctId = input.value.trim().toUpperCase();
+        
+        if (!nctId) {
+            alert('Please enter an NCT number');
+            return;
+        }
+        
+        // Validate NCT format
+        if (!nctId.startsWith('NCT') || nctId.length !== 11) {
+            alert('Invalid NCT format. Expected: NCT followed by 8 digits (e.g., NCT03936426)');
+            return;
+        }
+        
+        this.nct2step.currentNCT = nctId;
+        
+        // Show progress
+        const progressDiv = document.getElementById('nct2step-step1-progress');
+        progressDiv.classList.remove('hidden');
+        progressDiv.classList.add('step-progress');
+        progressDiv.innerHTML = `
+            <span class="progress-spinner"></span>
+            <strong>Step 1 in progress...</strong> Searching core APIs (ClinicalTrials, PubMed, PMC, PMC BioC)
+        `;
+        
+        console.log('🔬 Starting Step 1 for:', nctId);
+        
+        try {
+            const response = await fetch(`${this.API_BASE}/api/nct-2step/step1/${nctId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-Key': this.apiKey
+                }
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || `HTTP ${response.status}`);
+            }
+            
+            const results = await response.json();
+            this.nct2step.step1Results = results;
+            
+            console.log('✅ Step 1 complete:', results);
+            
+            // Hide progress
+            progressDiv.classList.add('hidden');
+            
+            // Hide input area, show results
+            document.getElementById('nct2step-step1-area').classList.add('hidden');
+            document.getElementById('nct2step-step1-results').classList.remove('hidden');
+            
+            // Display Step 1 results
+            this.displayStep1Results(results);
+            
+            // Load extended APIs for Step 2
+            await this.loadExtendedAPIs();
+            
+        } catch (error) {
+            console.error('❌ Step 1 error:', error);
+            progressDiv.innerHTML = `
+                <span style="color: #dc3545;">❌ <strong>Step 1 failed:</strong> ${error.message}</span>
+            `;
+            
+            // Show error toast
+            this.showToast('Step 1 search failed: ' + error.message, 'error');
+        }
+    },
+
+    displayStep1Results(results) {
+        const container = document.getElementById('nct2step-step1-data');
+        
+        const metadata = results.metadata || {};
+        const coreAPIs = results.core_apis || {};
+        const summary = results.summary || {};
+        
+        let html = `
+            <!-- Trial Metadata -->
+            <div class="step1-result-card">
+                <div class="step1-result-header">
+                    <h3 class="step1-result-title">${results.nct_id}</h3>
+                    <span class="step1-result-badge">${summary.total_results || 0} Results</span>
+                </div>
+                
+                <div class="step1-metadata">
+                    <div class="metadata-item">
+                        <div class="metadata-label">Title</div>
+                        <div class="metadata-value">${metadata.title || 'N/A'}</div>
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">Status</div>
+                        <div class="metadata-value">${metadata.status || 'N/A'}</div>
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">Condition</div>
+                        <div class="metadata-value">${this.formatArrayOrString(metadata.condition)}</div>
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">Intervention</div>
+                        <div class="metadata-value">${this.formatArrayOrString(metadata.intervention)}</div>
+                    </div>
+                </div>
+                
+                <!-- API Results Summary -->
+                <div class="api-results-table">
+                    <h4 style="margin-bottom: 15px; color: #2C3E50;">Core API Results</h4>
+        `;
+        
+        // Display results from each core API
+        for (const [apiName, apiData] of Object.entries(coreAPIs)) {
+            if (!apiData.success) {
+                html += `
+                    <div class="api-results-row" style="background: #FFF3CD; border-left: 4px solid #FFC107;">
+                        <div class="api-name">${this.formatAPIName(apiName)}</div>
+                        <div class="api-searches-list" style="color: #856404;">
+                            ❌ Error: ${apiData.error || 'Unknown error'}
+                        </div>
+                        <div class="api-result-count" style="color: #856404;">0</div>
+                    </div>
+                `;
+                continue;
+            }
+            
+            const searches = apiData.searches || [];
+            const totalResults = apiData.total_results || 0;
+            
+            const searchSummary = searches.map(s => 
+                `${s.search_type}: ${s.results_count} results`
+            ).join('<br>');
+            
+            html += `
+                <div class="api-results-row">
+                    <div class="api-name">${this.formatAPIName(apiName)}</div>
+                    <div class="api-searches-list">
+                        ${searches.length} searches performed<br>
+                        <small>${searchSummary}</small>
+                    </div>
+                    <div class="api-result-count">${totalResults}</div>
+                </div>
+            `;
+        }
+        
+        html += `
+                </div>
+            </div>
+            
+            <!-- Summary Stats -->
+            <div class="summary-stats">
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.core_apis_searched?.length || 0}</div>
+                    <div class="summary-stat-label">APIs Searched</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.total_searches || 0}</div>
+                    <div class="summary-stat-label">Total Searches</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.total_results || 0}</div>
+                    <div class="summary-stat-label">Results Found</div>
+                </div>
+            </div>
+        `;
+        
+        container.innerHTML = html;
+    },
+
+    formatAPIName(apiName) {
+        const names = {
+            'clinicaltrials': 'ClinicalTrials.gov',
+            'pubmed': 'PubMed',
+            'pmc': 'PMC',
+            'pmc_bioc': 'PMC BioC'
+        };
+        return names[apiName] || apiName;
+    },
+
+    formatArrayOrString(value) {
+        if (!value) return 'N/A';
+        if (Array.isArray(value)) {
+            return value.join(', ') || 'N/A';
+        }
+        return value;
+    },
+
+    // ============================================================================
+    // STEP 2: Extended API Selection
+    // ============================================================================
+
+    async loadExtendedAPIs() {
+        console.log('📡 Loading extended APIs registry...');
+        
+        try {
+            const response = await fetch(`${this.API_BASE}/api/nct-2step/registry`, {
+                headers: { 'X-API-Key': this.apiKey }
+            });
+            
+            if (!response.ok) throw new Error('Failed to load API registry');
+            
+            const registry = await response.json();
+            const extendedAPIs = registry.extended || [];
+            
+            console.log('✅ Loaded', extendedAPIs.length, 'extended APIs');
+            
+            this.renderExtendedAPICheckboxes(extendedAPIs);
+            
+        } catch (error) {
+            console.error('❌ Error loading extended APIs:', error);
+            document.getElementById('nct2step-extended-apis-container').innerHTML = `
+                <div style="color: #dc3545; padding: 20px; text-align: center;">
+                    Failed to load extended APIs: ${error.message}
+                </div>
+            `;
+        }
+    },
+
+    renderExtendedAPICheckboxes(apis) {
+        const container = document.getElementById('nct2step-extended-apis-container');
+        
+        let html = '';
+        
+        for (const api of apis) {
+            const disabled = !api.available;
+            const disabledClass = disabled ? 'disabled' : '';
+            
+            html += `
+                <div class="api-checkbox-item ${disabledClass}" data-api-id="${api.id}">
+                    <input 
+                        type="checkbox" 
+                        id="ext-api-${api.id}" 
+                        value="${api.id}"
+                        ${disabled ? 'disabled' : ''}
+                        onchange="app.handleExtendedAPISelection('${api.id}', this.checked)"
+                    />
+                    <label class="api-checkbox-label" for="ext-api-${api.id}">
+                        <div class="api-checkbox-name">
+                            ${api.name}
+                            ${api.requires_key && !api.available ? 
+                                '<span class="api-status-badge unavailable">🔑 Key Required</span>' : 
+                                ''}
+                        </div>
+                        <div class="api-checkbox-desc">${api.description}</div>
+                    </label>
+                </div>
+            `;
+        }
+        
+        container.innerHTML = html;
+    },
+
+    handleExtendedAPISelection(apiId, checked) {
+        if (checked) {
+            this.nct2step.selectedAPIs.add(apiId);
+            document.querySelector(`[data-api-id="${apiId}"]`)?.classList.add('selected');
+        } else {
+            this.nct2step.selectedAPIs.delete(apiId);
+            document.querySelector(`[data-api-id="${apiId}"]`)?.classList.remove('selected');
+            // Remove field selections for this API
+            delete this.nct2step.selectedFields[apiId];
+        }
+        
+        console.log('Selected APIs:', Array.from(this.nct2step.selectedAPIs));
+        
+        // Show field selection if any API is selected
+        if (this.nct2step.selectedAPIs.size > 0) {
+            this.renderFieldSelection();
+            document.getElementById('nct2step-field-selection').classList.remove('hidden');
+        } else {
+            document.getElementById('nct2step-field-selection').classList.add('hidden');
+        }
+        
+        this.updateExecuteButton();
+    },
+    
+    /* ============================================================================
+    NCT 2-STEP WORKFLOW - PART 2 (Field Selection & Step 2 Execution)
+    ============================================================================ */
+
+    renderFieldSelection() {
+        const container = document.getElementById('nct2step-field-checkboxes');
+        const step1Results = this.nct2step.step1Results;
+        
+        if (!step1Results) {
+            container.innerHTML = '<p>No Step 1 results available</p>';
+            return;
+        }
+        
+        // Available fields to select from
+        const availableFields = this.extractAvailableFields(step1Results);
+        
+        let html = '';
+        
+        // Group fields by API
+        for (const apiId of this.nct2step.selectedAPIs) {
+            const apiName = this.getExtendedAPIName(apiId);
+            
+            html += `
+                <div class="field-checkbox-group">
+                    <div class="field-checkbox-group-title">${apiName}</div>
+                    <div class="field-checkbox-grid">
+            `;
+            
+            for (const field of availableFields) {
+                if (field.values.length === 0) continue;
+                
+                const fieldId = `field-${apiId}-${field.name}`;
+                const isChecked = this.nct2step.selectedFields[apiId]?.includes(field.name);
+                
+                html += `
+                    <div class="field-checkbox-item">
+                        <input 
+                            type="checkbox" 
+                            id="${fieldId}" 
+                            value="${field.name}"
+                            ${isChecked ? 'checked' : ''}
+                            onchange="app.handleFieldSelection('${apiId}', '${field.name}', this.checked)"
+                        />
+                        <label class="field-checkbox-label" for="${fieldId}">
+                            <div class="field-checkbox-name">${field.label}</div>
+                            <div class="field-checkbox-value">
+                                ${field.preview}
+                            </div>
+                            <div class="field-checkbox-count">
+                                ${field.values.length} value${field.values.length > 1 ? 's' : ''}
+                            </div>
+                        </label>
+                    </div>
+                `;
+            }
+            
+            html += `
+                    </div>
+                </div>
+            `;
+        }
+        
+        container.innerHTML = html;
+    },
+
+    extractAvailableFields(step1Results) {
+        const metadata = step1Results.metadata || {};
+        const coreAPIs = step1Results.core_apis || {};
+        
+        const fields = [];
+        
+        // Title
+        if (metadata.title) {
+            fields.push({
+                name: 'title',
+                label: 'Trial Title',
+                values: [metadata.title],
+                preview: metadata.title.substring(0, 60) + (metadata.title.length > 60 ? '...' : '')
+            });
+        }
+        
+        // NCT ID
+        fields.push({
+            name: 'nct_id',
+            label: 'NCT ID',
+            values: [step1Results.nct_id],
+            preview: step1Results.nct_id
+        });
+        
+        // Condition
+        const conditions = Array.isArray(metadata.condition) ? 
+            metadata.condition : 
+            (metadata.condition ? [metadata.condition] : []);
+        
+        if (conditions.length > 0) {
+            fields.push({
+                name: 'condition',
+                label: 'Condition(s)',
+                values: conditions,
+                preview: conditions.slice(0, 2).join(', ') + (conditions.length > 2 ? '...' : '')
+            });
+        }
+        
+        // Intervention
+        const interventions = Array.isArray(metadata.intervention) ? 
+            metadata.intervention : 
+            (metadata.intervention ? [metadata.intervention] : []);
+        
+        if (interventions.length > 0) {
+            fields.push({
+                name: 'intervention',
+                label: 'Intervention(s)',
+                values: interventions,
+                preview: interventions.slice(0, 2).join(', ') + (interventions.length > 2 ? '...' : '')
+            });
+        }
+        
+        // PMIDs from PubMed
+        const pubmedData = coreAPIs.pubmed?.data || {};
+        const pmids = pubmedData.pmids || [];
+        
+        if (pmids.length > 0) {
+            fields.push({
+                name: 'pmid',
+                label: 'PubMed IDs',
+                values: pmids,
+                preview: `${pmids.length} PMIDs found`
+            });
+        }
+        
+        return fields;
+    },
+
+    getExtendedAPIName(apiId) {
+        const names = {
+            'duckduckgo': 'DuckDuckGo',
+            'serpapi': 'Google Search (SERP API)',
+            'scholar': 'Google Scholar',
+            'openfda': 'OpenFDA'
+        };
+        return names[apiId] || apiId;
+    },
+
+    handleFieldSelection(apiId, fieldName, checked) {
+        if (!this.nct2step.selectedFields[apiId]) {
+            this.nct2step.selectedFields[apiId] = [];
+        }
+        
+        if (checked) {
+            if (!this.nct2step.selectedFields[apiId].includes(fieldName)) {
+                this.nct2step.selectedFields[apiId].push(fieldName);
+            }
+        } else {
+            this.nct2step.selectedFields[apiId] = this.nct2step.selectedFields[apiId]
+                .filter(f => f !== fieldName);
+        }
+        
+        console.log('Selected fields:', this.nct2step.selectedFields);
+        
+        this.updateExecuteButton();
+    },
+
+    updateExecuteButton() {
+        const button = document.getElementById('nct2step-execute-btn');
+        
+        // Check if at least one API has at least one field selected
+        const hasSelections = Array.from(this.nct2step.selectedAPIs).some(apiId => {
+            const fields = this.nct2step.selectedFields[apiId] || [];
+            return fields.length > 0;
+        });
+        
+        button.disabled = !hasSelections;
+        
+        if (hasSelections) {
+            button.style.opacity = '1';
+            button.style.cursor = 'pointer';
+        } else {
+            button.style.opacity = '0.5';
+            button.style.cursor = 'not-allowed';
+        }
+    },
+
+    // ============================================================================
+    // STEP 2: Execute Extended Search
+    // ============================================================================
+
+    async executeStep2() {
+        const nctId = this.nct2step.currentNCT;
+        
+        if (!nctId || !this.nct2step.step1Results) {
+            alert('Please complete Step 1 first');
+            return;
+        }
+        
+        // Prepare request
+        const selectedAPIs = Array.from(this.nct2step.selectedAPIs);
+        const fieldSelections = {};
+        
+        for (const apiId of selectedAPIs) {
+            const fields = this.nct2step.selectedFields[apiId] || [];
+            if (fields.length > 0) {
+                fieldSelections[apiId] = fields;
+            }
+        }
+        
+        if (Object.keys(fieldSelections).length === 0) {
+            alert('Please select at least one field to search');
+            return;
+        }
+        
+        console.log('🚀 Starting Step 2');
+        console.log('APIs:', selectedAPIs);
+        console.log('Fields:', fieldSelections);
+        
+        // Show progress
+        const progressDiv = document.getElementById('nct2step-step2-progress');
+        progressDiv.classList.remove('hidden');
+        progressDiv.classList.add('step-progress');
+        progressDiv.innerHTML = `
+            <span class="progress-spinner"></span>
+            <strong>Step 2 in progress...</strong> Searching extended APIs with selected fields
+        `;
+        
+        try {
+            const response = await fetch(`${this.API_BASE}/api/nct-2step/step2/${nctId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-Key': this.apiKey
+                },
+                body: JSON.stringify({
+                    selected_apis: selectedAPIs,
+                    field_selections: fieldSelections
+                })
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || `HTTP ${response.status}`);
+            }
+            
+            const results = await response.json();
+            this.nct2step.step2Results = results;
+            
+            console.log('✅ Step 2 complete:', results);
+            
+            // Hide progress
+            progressDiv.classList.add('hidden');
+            
+            // Hide step 2 config, show final results
+            document.getElementById('nct2step-step1-results').classList.add('hidden');
+            document.getElementById('nct2step-step2-results').classList.remove('hidden');
+            
+            // Display Step 2 results
+            this.displayStep2Results(results);
+            
+            this.showToast('Step 2 complete!', 'success');
+            
+        } catch (error) {
+            console.error('❌ Step 2 error:', error);
+            progressDiv.innerHTML = `
+                <span style="color: #dc3545;">❌ <strong>Step 2 failed:</strong> ${error.message}</span>
+            `;
+            
+            this.showToast('Step 2 search failed: ' + error.message, 'error');
+        }
+    },
+
+    displayStep2Results(results) {
+        const container = document.getElementById('nct2step-final-data');
+        
+        const extendedAPIs = results.extended_apis || {};
+        const summary = results.summary || {};
+        
+        let html = `
+            <!-- Summary Stats -->
+            <div class="summary-stats">
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.extended_apis_searched?.length || 0}</div>
+                    <div class="summary-stat-label">APIs Searched</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.total_searches || 0}</div>
+                    <div class="summary-stat-label">Total Searches</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.successful_searches || 0}</div>
+                    <div class="summary-stat-label">Successful Searches</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.total_results || 0}</div>
+                    <div class="summary-stat-label">Results Found</div>
+                </div>
+            </div>
+        `;
+        
+        // Display results from each extended API
+        for (const [apiName, apiData] of Object.entries(extendedAPIs)) {
+            if (!apiData.success) {
+                html += `
+                    <div class="step2-result-card" style="border-color: #FFC107;">
+                        <div class="step2-api-header">
+                            <h3 class="step2-api-title">${this.getExtendedAPIName(apiName)}</h3>
+                            <span class="step1-result-badge" style="background: #FFF3CD; color: #856404;">Error</span>
+                        </div>
+                        <p style="color: #856404;">❌ ${apiData.error || 'Unknown error'}</p>
+                    </div>
+                `;
+                continue;
+            }
+            
+            const searches = apiData.searches || [];
+            const data = apiData.data || {};
+            const results_list = data.results || [];
+            
+            html += `
+                <div class="step2-result-card">
+                    <div class="step2-api-header">
+                        <h3 class="step2-api-title">${this.getExtendedAPIName(apiName)}</h3>
+                        <span class="step1-result-badge">${data.total_found || 0} Results</span>
+                    </div>
+                    
+                    <h4 style="margin-bottom: 15px; color: #34495E;">Searches Performed</h4>
+            `;
+            
+            // Display each search
+            for (const search of searches) {
+                const statusClass = search.status === 'success' ? 'success' : 'error';
+                
+                html += `
+                    <div class="step2-search-record">
+                        <div class="search-record-header">
+                            <span class="search-record-number">Search ${search.search_number}</span>
+                            <span class="search-record-status ${statusClass}">
+                                ${search.status === 'success' ? '✓ Success' : '✗ Failed'}
+                            </span>
+                        </div>
+                        <div class="search-record-query">
+                            <strong>Query:</strong> ${search.query}
+                        </div>
+                        <div class="search-record-results">
+                            <strong>Fields used:</strong> ${this.formatFieldsUsed(search.fields_used)}
+                            ${search.status === 'success' ? 
+                                `<br><strong>Results:</strong> ${search.results_count}` :
+                                `<br><strong>Error:</strong> ${search.error}`
+                            }
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Display actual results
+            if (results_list.length > 0) {
+                html += `
+                    <h4 style="margin: 25px 0 15px 0; color: #34495E;">Results (${results_list.length})</h4>
+                `;
+                
+                for (const result of results_list.slice(0, 20)) {  // Show first 20
+                    html += `
+                        <div class="result-item">
+                            <div class="result-item-title">${result.title || 'No title'}</div>
+                            ${result.url ? 
+                                `<a href="${result.url}" target="_blank" class="result-item-url">${result.url}</a>` : 
+                                ''
+                            }
+                            ${result.snippet ? 
+                                `<div class="result-item-snippet">${result.snippet}</div>` : 
+                                ''
+                            }
+                        </div>
+                    `;
+                }
+                
+                if (results_list.length > 20) {
+                    html += `
+                        <p style="text-align: center; color: #7F8C8D; margin-top: 15px;">
+                            ... and ${results_list.length - 20} more results
+                        </p>
+                    `;
+                }
+            }
+            
+            html += `</div>`;
+        }
+        
+        container.innerHTML = html;
+    },
+
+    formatFieldsUsed(fields) {
+        return Object.entries(fields)
+            .map(([key, value]) => `${key}="${value}"`)
+            .join(', ');
+    },
+
+    // ============================================================================
+    // Reset & Utility Functions
+    // ============================================================================
+
+    resetStep1() {
+        // Reset state
+        this.nct2step.currentNCT = null;
+        this.nct2step.step1Results = null;
+        this.nct2step.step2Results = null;
+        this.nct2step.selectedAPIs.clear();
+        this.nct2step.selectedFields = {};
+        
+        // Clear input
+        document.getElementById('nct2step-input').value = '';
+        
+        // Hide all result areas, show input
+        document.getElementById('nct2step-step1-area').classList.remove('hidden');
+        document.getElementById('nct2step-step1-results').classList.add('hidden');
+        document.getElementById('nct2step-step2-results').classList.add('hidden');
+        
+        // Clear progress
+        document.getElementById('nct2step-step1-progress').classList.add('hidden');
+        document.getElementById('nct2step-step2-progress').classList.add('hidden');
+    },
+
+    async downloadStep2Results() {
+        const results = {
+            step1: this.nct2step.step1Results,
+            step2: this.nct2step.step2Results
+        };
+        
+        const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `nct_2step_${this.nct2step.currentNCT}_${Date.now()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showToast('Results downloaded', 'success');
+    },
+
+    showToast(message, type = 'success') {
+        // Implement toast notification
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type} toast-show`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.remove('toast-show');
+            toast.classList.add('toast-hide');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    },
+
 
     // =========================================================================
     // Chat Mode
@@ -2790,7 +3529,13 @@ const app = {
             
             case 'pmc_bioc':
                 return data.total_fetched || 0;
-            
+
+            case 'nct2step':
+            document.getElementById('nct2step-mode').classList.add('active');
+            // Reset if needed
+            if (!this.nct2step.currentNCT) {
+                this.resetStep1();
+            }
             default:
                 if (data.results && Array.isArray(data.results)) {
                     return data.results.length;
