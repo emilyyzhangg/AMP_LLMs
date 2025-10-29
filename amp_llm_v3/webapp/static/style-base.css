@@ -823,6 +823,7 @@ header p {
     gap: 12px;
     margin-bottom: 20px;
     padding: 0;
+    background: white;
 }
 
 /* New Search button - green theme */
