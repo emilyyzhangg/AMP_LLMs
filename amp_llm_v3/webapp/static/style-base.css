@@ -853,31 +853,70 @@ header p {
 
 /* New Search button - green theme */
 .new-search-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    font-size: 1em;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
     background: linear-gradient(135deg, #1BEB49 0%, #18d142 100%);
     color: #0E1F81;
 }
 
 .new-search-btn:hover {
+    transform: translateY(-2px);
     background: linear-gradient(135deg, #18d142 0%, #15b838 100%);
 }
 
 /* Download button - blue/teal theme */
 .download-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    font-size: 1em;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
     background: linear-gradient(135deg, #00C9FF 0%, #00A8E8 100%);
     color: white;
 }
 
 .download-btn:hover {
+    transform: translateY(-2px);
     background: linear-gradient(135deg, #00B8EE 0%, #0096D6 100%);
 }
 
 /* Save to Server button - purple/pink theme */
 .save-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    font-size: 1em;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
     background: linear-gradient(135deg, #FF6B9D 0%, #C06C84 100%);
     color: white;
 }
 
 .save-btn:hover {
+    transform: translateY(-2px);
     background: linear-gradient(135deg, #F55A8E 0%, #B05A72 100%);
 }
 
