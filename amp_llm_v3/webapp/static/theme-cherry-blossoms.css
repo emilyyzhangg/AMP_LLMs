@@ -175,6 +175,10 @@ header {
     background: linear-gradient(135deg, #FF8FA3 0%, #FF7A90 100%);
 }
 
+.total-results-banner {
+    background: linear-gradient(135deg, #FF8FA3 0%, #49A56B 100%);
+}
+
 /* API SECTION STYLING */
 .api-section {
     background: #FFFFFF;
