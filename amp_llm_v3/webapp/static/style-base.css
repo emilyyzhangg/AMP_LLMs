@@ -828,8 +828,7 @@ header p {
     padding: 15px;
     
     background: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-bottom: 2px solid #e9ecef;
+    transition: box-shadow 0.3s ease, background 0.3s ease;
 }
 
 /* New Search button - green theme */
@@ -1202,7 +1201,7 @@ header p {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    padding: 30px;
+    padding: 0 30px 30px 30px;
     background: #ffffff;
     display: none !important; /* Force hide until activated */
 }
