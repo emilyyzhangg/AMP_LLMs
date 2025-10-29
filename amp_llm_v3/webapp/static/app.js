@@ -2258,7 +2258,7 @@ const app = {
                             <strong>NCT Number:</strong> ${nctId}
                         </div>`;
                         
-                        if (data.description || data.brief_summary) {
+                        if (trialTitle) {
                             const abstract = data.description || data.brief_summary;
                             const shortAbstract = abstract.substring(0, 300);
                             const needsExpand = abstract.length > 300;
