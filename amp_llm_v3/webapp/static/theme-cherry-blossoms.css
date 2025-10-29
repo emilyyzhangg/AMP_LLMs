@@ -116,6 +116,10 @@ header {
     }
 }
 
+.progress-bar-container {
+    background: #2d7046;
+}
+
 .progress-bar {
     background: linear-gradient(90deg, #5AB67C 0%, #2d7046 100%);
     box-shadow: 0 0 10px rgba(28, 85, 24, 0.5);
