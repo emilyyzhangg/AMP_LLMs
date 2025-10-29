@@ -315,6 +315,7 @@ Select [1-6]: 1
 - 🍁 Health Canada trials
 - 🔍 Google Search results
 - 🦆 DuckDuckGo results
+- 🧬 Uniprot results
 - 📊 Meilisearch hits
 - 🔄 Swirl metasearch
 

@@ -31,7 +31,7 @@ async def get_api_selection() -> List[str]:
     # Show API collections
     await aprint(Fore.CYAN + "\n📊 Available API Collections:")
     await aprint(Fore.WHITE + "  [1] All APIs (Comprehensive - 6 APIs)")
-    await aprint(Fore.WHITE + "  [2] Literature Only (PMC Full Text, Semantic Scholar)")
+    await aprint(Fore.WHITE + "  [2] Literature Only ( Semantic Scholar)")
     await aprint(Fore.WHITE + "  [3] Clinical Databases (EudraCT, WHO ICTRP)")
     await aprint(Fore.WHITE + "  [4] Web Search (DuckDuckGo, Google)")
     await aprint(Fore.WHITE + "  [5] Custom Selection")

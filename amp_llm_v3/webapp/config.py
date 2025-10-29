@@ -24,11 +24,23 @@ class Settings(BaseSettings):
     ollama_host: str = "localhost"
     ollama_port: int = 11434
     
-    # CORS
-    allowed_origins: list = ["https://llm.amphoraxe.ca"]
+    # Service Ports (read from environment)
+    main_server_port: int = int(os.getenv("MAIN_SERVER_PORT", "9000"))
+    chat_service_port: int = int(os.getenv("CHAT_SERVICE_PORT", "9001"))
+    nct_service_port: int = int(os.getenv("NCT_SERVICE_PORT", "9002"))
+    
+    # Public domain
+    public_domain: str = os.getenv("PUBLIC_DOMAIN", "localhost")
+    
+    # CORS - allow both production and dev domains
+    allowed_origins: list = [
+        "https://llm.amphoraxe.ca",
+        "https://dev-llm.amphoraxe.ca",
+        "http://localhost:3000"
+    ]
     
     # Environment
-    environment: str = "development"
+    environment: str = os.getenv("environment", "development")
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -45,6 +57,16 @@ class Settings(BaseSettings):
             raise ValueError(
                 "No API keys configured! Set API_KEY_1, API_KEY_2, etc. in .env"
             )
+    
+    @property
+    def chat_service_url(self) -> str:
+        """Get chat service URL based on environment."""
+        return f"http://localhost:{self.chat_service_port}"
+    
+    @property
+    def nct_service_url(self) -> str:
+        """Get NCT service URL based on environment."""
+        return f"http://localhost:{self.nct_service_port}"
 
 
 settings = Settings()

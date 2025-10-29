@@ -54,6 +54,8 @@ class APIManager:
         from amp_llm.data.api_clients.extended.semantic_scholar import SemanticScholarClient
         from amp_llm.data.api_clients.extended.duckduckgo import DuckDuckGoClient
         from amp_llm.data.api_clients.extended.serpapi import SerpAPIClient
+        from amp_llm.data.api_clients.extended.openfda import OpenFDAClient
+        from amp_llm.data.api_clients.extended.uniprot import UniProtClient
         
         self._clients['pmc_fulltext'] = PMCFullTextClient(
             timeout=self.config.timeout,
@@ -83,6 +85,16 @@ class APIManager:
         
         self._clients['serpapi'] = SerpAPIClient(
             api_key=self.config.serpapi_key,
+            timeout=self.config.timeout,
+            max_results=self.config.max_results
+        )
+
+        self._clients['openfda'] = OpenFDAClient(
+            timeout=self.config.timeout,
+            max_results=self.config.max_results
+        )
+
+        self._clients['uniprot'] = UniProtClient(
             timeout=self.config.timeout,
             max_results=self.config.max_results
         )
@@ -171,6 +183,26 @@ class APIManager:
                 )
             )
             task_names.append('serpapi')
+
+        # OpenFDA
+        if 'openfda' in enabled_apis:
+            condition = conditions[0] if conditions else None
+            tasks.append(
+                self._clients['openfda'].search_by_clinical_trial(
+                    interventions
+                )
+            )
+            task_names.append('openfda')
+
+        # UniProt
+        if 'uniprot' in enabled_apis:
+            condition = conditions[0] if conditions else None
+            tasks.append(
+                self._clients['uniprot'].search_by_clinical_trial(
+                    interventions
+                )
+            )
+            task_names.append('uniprot')
         
         # Execute all searches concurrently
         await aprint(f"🚀 Running {len(tasks)} API search(es) concurrently...\n")
@@ -234,5 +266,19 @@ class APIManager:
                 'type': 'Web Search',
                 'cost': 'Free tier: 100/month',
                 'auth': 'API Key Required'
+            }
+            ,
+            'openfda': {
+                'name': 'OpenFDA',
+                'type': 'FDA Drug Database',
+                'cost': 'Free',
+                'auth': 'None'
+            }
+            ,
+            'uniprot': {
+                'name': 'UniProt',
+                'type': 'Sequence Database',
+                'cost': 'Free',
+                'auth': 'None'
             }
         }

@@ -6,7 +6,7 @@ A FastAPI-based service for comprehensive clinical trial literature search.
 
 Features:
 - Core databases: ClinicalTrials.gov, PubMed, PMC
-- Extended databases: DuckDuckGo, SERP API, Google Scholar, OpenFDA
+- Extended databases: DuckDuckGo, SERP API, Google Scholar, OpenFDA, UniProt
 - JSON output with database tagging
 - Summary statistics
 - Async processing for performance
@@ -648,6 +648,9 @@ def _count_source_results(api_id: str, data: Dict[str, Any]) -> int:
         total += len(data.get("enforcement_reports", []))
         return total
     
+    elif api_id == "uniprot":
+        return len(data.get("results", []))
+    
     # Extended API result counting (generic patterns)
     # Most extended APIs use "results" array
     if "results" in data:
@@ -695,4 +698,11 @@ def _format_openfda_details(data: Dict[str, Any]) -> str:
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    from dotenv import load_dotenv
+    import os
+    
+    load_dotenv()
+    port = int(os.getenv("NCT_SERVICE_PORT", "9002"))
+    
+    logger.info(f"Starting NCT Lookup API on port {port}")
+    uvicorn.run(app, host="0.0.0.0", port=port)

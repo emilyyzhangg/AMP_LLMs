@@ -84,8 +84,9 @@ class PubMedClient(BaseClient):
     
     BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
     
-    async def search(self, query: str, max_results: int = 10) -> List[str]:
+    async def search(self, query: str, **kwargs) -> List[str]:
         """Search PubMed, return PMIDs."""
+        max_results = kwargs.get("max_results", 10)
         url = f"{self.BASE_URL}/esearch.fcgi"
         params = {
             "db": "pubmed",
@@ -208,8 +209,9 @@ class PMCClient(BaseClient):
     
     BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
     
-    async def search(self, query: str, max_results: int = 10) -> List[str]:
+    async def search(self, query: str, **kwargs) -> List[str]:
         """Search PMC, return PMC IDs."""
+        max_results = kwargs.get("max_results", 10)
         url = f"{self.BASE_URL}/esearch.fcgi"
         params = {
             "db": "pmc",
@@ -281,7 +283,8 @@ class PMCClient(BaseClient):
                 if aid.get("idtype") == "doi"
             ]
         }
-    
+
+
 class PMCBioClient(BaseClient):
     """PMC BioC API client."""
     
@@ -296,7 +299,7 @@ class PMCBioClient(BaseClient):
         Returns:
             Dict containing BioC formatted article data or error
         """
-        return await self.fetch_pmc_bioc(identifier, format="json", encoding="unicode")
+        return await self.fetch_pmc_bioc(identifier, format="biocjson")
     
     async def search(self, query: str, **kwargs) -> Dict[str, Any]:
         """
@@ -382,7 +385,7 @@ class PMCBioClient(BaseClient):
         except Exception as e:
             logger.error(f"PMCID conversion error: {e}")
             return {}
-    
+
     async def fetch_pmc_bioc(
         self,
         pmid: str,
@@ -396,7 +399,7 @@ class PMCBioClient(BaseClient):
             format: 'biocjson' or 'biocxml' (default: biocjson)
         
         Returns:
-            Dict containing BioC formatted article data or error
+            Dict containing BioC formatted article data or detailed error
         """
         # PubTator3 API endpoint
         base_url = "https://www.ncbi.nlm.nih.gov/research/pubtator3-api/publications/export"
@@ -424,20 +427,37 @@ class PMCBioClient(BaseClient):
                         return {"xml": xml_content}
                 elif resp.status == 404:
                     logger.warning(f"Article {pmid} not found in PubTator3")
-                    return {"error": "Article not available in PubTator3"}
+                    return {
+                        "error": "Not available in PubTator3",
+                        "error_type": "not_found",
+                        "pmid": pmid,
+                        "note": "Article may not be open access or not yet processed by PubTator3"
+                    }
                 else:
                     error_text = await resp.text()
                     logger.error(f"PubTator3 fetch error: HTTP {resp.status} - {error_text[:200]}")
-                    return {"error": f"HTTP {resp.status}: {error_text[:200]}"}
+                    return {
+                        "error": f"HTTP {resp.status}",
+                        "error_type": "http_error",
+                        "pmid": pmid,
+                        "details": error_text[:200]
+                    }
                     
         except asyncio.TimeoutError:
             logger.error(f"PubTator3 fetch timeout for {pmid}")
-            return {"error": "Request timeout"}
+            return {
+                "error": "Request timeout",
+                "error_type": "timeout",
+                "pmid": pmid
+            }
         except Exception as e:
             logger.error(f"PubTator3 fetch error for {pmid}: {e}")
-            return {"error": str(e)}
-
-
+            return {
+                "error": str(e),
+                "error_type": "exception",
+                "pmid": pmid
+            }
+        
     async def fetch_multiple_pmc_bioc(
         self,
         pmids: List[str],
@@ -458,7 +478,7 @@ class PMCBioClient(BaseClient):
         results = {}
         
         for pmid in pmids:
-            result = await self.fetch_pmc_bioc(pmid, format, encoding)
+            result = await self.fetch_pmc_bioc(pmid, format)
             results[pmid] = result
         
         logger.info(f"Fetched {len(results)} articles from PMC BioC")
@@ -468,13 +488,21 @@ class PMCBioClient(BaseClient):
 class DuckDuckGoClient(BaseClient):
     """DuckDuckGo search client."""
     
-    async def search(
-        self,
-        nct_id: str,
-        title: str,
-        condition: Optional[str] = None
-    ) -> Dict[str, Any]:
-        """Search DuckDuckGo."""
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search DuckDuckGo using trial data.
+        
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+            
+        Returns:
+            Dict with search results
+        """
+        # Extract search parameters from trial data
+        title = self._extract_title(trial_data)
+        condition = self._extract_condition(trial_data)
+        
         try:
             from duckduckgo_search import DDGS
             
@@ -519,6 +547,27 @@ class DuckDuckGoClient(BaseClient):
                 "total_found": 0
             }
     
+    def _extract_title(self, trial_data: Dict[str, Any]) -> str:
+        """Extract trial title."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            ident = protocol.get("identificationModule", {})
+            return ident.get("officialTitle") or ident.get("briefTitle") or ""
+        except:
+            return ""
+    
+    def _extract_condition(self, trial_data: Dict[str, Any]) -> str:
+        """Extract primary condition."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            cond_mod = protocol.get("conditionsModule", {})
+            conditions = cond_mod.get("conditions", [])
+            if conditions and isinstance(conditions, list):
+                return conditions[0].strip()
+            return ""
+        except:
+            return ""
+    
     def _search_sync(self, query: str) -> List[Dict]:
         """Synchronous search helper."""
         from duckduckgo_search import DDGS
@@ -545,13 +594,17 @@ class SerpAPIClient(BaseClient):
     
     BASE_URL = "https://serpapi.com/search"
     
-    async def search(
-        self,
-        nct_id: str,
-        title: str,
-        condition: Optional[str] = None
-    ) -> Dict[str, Any]:
-        """Search via SERP API."""
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search via SERP API using trial data.
+        
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+            
+        Returns:
+            Dict with search results
+        """
         if not self.api_key:
             return {
                 "error": "SERPAPI_KEY not configured",
@@ -559,6 +612,10 @@ class SerpAPIClient(BaseClient):
                 "results": [],
                 "total_found": 0
             }
+        
+        # Extract search parameters
+        title = self._extract_title(trial_data)
+        condition = self._extract_condition(trial_data)
         
         query_parts = [nct_id]
         if title:
@@ -580,7 +637,6 @@ class SerpAPIClient(BaseClient):
                 if resp.status == 200:
                     data = await resp.json()
                     
-                    # Check for API-level errors
                     if 'error' in data:
                         logger.error(f"SERP API error: {data['error']}")
                         return {
@@ -632,23 +688,47 @@ class SerpAPIClient(BaseClient):
                 "total_found": 0
             }
     
+    def _extract_title(self, trial_data: Dict[str, Any]) -> str:
+        """Extract trial title."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            ident = protocol.get("identificationModule", {})
+            return ident.get("officialTitle") or ident.get("briefTitle") or ""
+        except:
+            return ""
+    
+    def _extract_condition(self, trial_data: Dict[str, Any]) -> str:
+        """Extract primary condition."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            cond_mod = protocol.get("conditionsModule", {})
+            conditions = cond_mod.get("conditions", [])
+            if conditions and isinstance(conditions, list):
+                return conditions[0].strip()
+            return ""
+        except:
+            return ""
+    
     async def fetch(self, identifier: str) -> Dict[str, Any]:
         """Not implemented."""
         return {"error": "Fetch not supported"}
-
 
 class GoogleScholarClient(BaseClient):
     """Google Scholar via SERP API with proper error handling."""
     
     BASE_URL = "https://serpapi.com/search"
     
-    async def search(
-        self,
-        nct_id: str,
-        title: str,
-        condition: Optional[str] = None
-    ) -> Dict[str, Any]:
-        """Search Google Scholar."""
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search Google Scholar using trial data.
+        
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+            
+        Returns:
+            Dict with search results
+        """
         if not self.api_key:
             return {
                 "error": "SERPAPI_KEY not configured",
@@ -656,6 +736,10 @@ class GoogleScholarClient(BaseClient):
                 "results": [],
                 "total_found": 0
             }
+        
+        # Extract search parameters
+        title = self._extract_title(trial_data)
+        condition = self._extract_condition(trial_data)
         
         query_parts = [nct_id]
         if title:
@@ -677,7 +761,6 @@ class GoogleScholarClient(BaseClient):
                 if resp.status == 200:
                     data = await resp.json()
                     
-                    # Check for API-level errors
                     if 'error' in data:
                         logger.error(f"Google Scholar API error: {data['error']}")
                         return {
@@ -730,10 +813,30 @@ class GoogleScholarClient(BaseClient):
                 "total_found": 0
             }
     
+    def _extract_title(self, trial_data: Dict[str, Any]) -> str:
+        """Extract trial title."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            ident = protocol.get("identificationModule", {})
+            return ident.get("officialTitle") or ident.get("briefTitle") or ""
+        except:
+            return ""
+    
+    def _extract_condition(self, trial_data: Dict[str, Any]) -> str:
+        """Extract primary condition."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            cond_mod = protocol.get("conditionsModule", {})
+            conditions = cond_mod.get("conditions", [])
+            if conditions and isinstance(conditions, list):
+                return conditions[0].strip()
+            return ""
+        except:
+            return ""
+    
     async def fetch(self, identifier: str) -> Dict[str, Any]:
         """Not implemented."""
         return {"error": "Fetch not supported"}
-
 
 class OpenFDAClient(BaseClient):
     """
@@ -746,6 +849,22 @@ class OpenFDAClient(BaseClient):
     """
     
     BASE_URL = "https://api.fda.gov/drug"
+    
+    async def fetch(self, identifier: str) -> Dict[str, Any]:
+        """
+        Fetch is not the primary method for OpenFDA.
+        Use search() method with trial data instead.
+        
+        Args:
+            identifier: Not used for OpenFDA
+            
+        Returns:
+            Error message directing to use search() instead
+        """
+        return {
+            "error": "Use search() method with trial data",
+            "note": "OpenFDA requires trial context for effective searching"
+        }
     
     async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -847,13 +966,15 @@ class OpenFDAClient(BaseClient):
             title = ident_module.get("officialTitle", "") or ident_module.get("briefTitle", "")
             if title:
                 # Extract potential drug names (words in title that might be drugs)
-                # This is a simple heuristic - could be improved
                 title_words = title.split()
-                for i, word in enumerate(title_words):
+                for word in title_words:
                     # Check if word looks like a drug name (capitalized, not common words)
-                    if (word[0].isupper() and len(word) > 3 and 
-                        word.lower() not in ['trial', 'study', 'phase', 'randomized', 'controlled']):
-                        identifiers.append(word.strip('()[]{}:,;.'))
+                    if (word and len(word) > 3 and 
+                        word[0].isupper() and 
+                        word.lower() not in ['trial', 'study', 'phase', 'randomized', 'controlled', 'versus', 'with', 'without']):
+                        clean_word = word.strip('()[]{}:,;.')
+                        if clean_word:
+                            identifiers.append(clean_word)
             
         except Exception as e:
             logger.warning(f"Error extracting drug identifiers: {e}")
@@ -888,6 +1009,9 @@ class OpenFDAClient(BaseClient):
                 else:
                     logger.debug(f"OpenFDA labels returned {resp.status} for '{drug_name}'")
                     return []
+        except asyncio.TimeoutError:
+            logger.debug(f"OpenFDA labels timeout for '{drug_name}'")
+            return []
         except Exception as e:
             logger.debug(f"OpenFDA labels search error for '{drug_name}': {e}")
             return []
@@ -911,6 +1035,9 @@ class OpenFDAClient(BaseClient):
                 else:
                     logger.debug(f"OpenFDA events returned {resp.status} for '{drug_name}'")
                     return []
+        except asyncio.TimeoutError:
+            logger.debug(f"OpenFDA events timeout for '{drug_name}'")
+            return []
         except Exception as e:
             logger.debug(f"OpenFDA events search error for '{drug_name}': {e}")
             return []
@@ -934,27 +1061,34 @@ class OpenFDAClient(BaseClient):
                 else:
                     logger.debug(f"OpenFDA enforcement returned {resp.status} for '{drug_name}'")
                     return []
+        except asyncio.TimeoutError:
+            logger.debug(f"OpenFDA enforcement timeout for '{drug_name}'")
+            return []
         except Exception as e:
             logger.debug(f"OpenFDA enforcement search error for '{drug_name}': {e}")
             return []
     
     def _format_label_result(self, result: Dict) -> Dict:
         """Format drug label result."""
+        openfda = result.get("openfda", {})
         return {
             "type": "drug_label",
-            "product": result.get("openfda", {}).get("brand_name", [""])[0] if result.get("openfda", {}).get("brand_name") else "Unknown",
-            "manufacturer": result.get("openfda", {}).get("manufacturer_name", [""])[0] if result.get("openfda", {}).get("manufacturer_name") else "Unknown",
-            "purpose": result.get("purpose", [""])[0] if result.get("purpose") else None,
+            "product": openfda.get("brand_name", ["Unknown"])[0] if openfda.get("brand_name") else "Unknown",
+            "manufacturer": openfda.get("manufacturer_name", ["Unknown"])[0] if openfda.get("manufacturer_name") else "Unknown",
+            "purpose": result.get("purpose", [""])[0][:200] if result.get("purpose") else None,
             "warnings": result.get("warnings", [""])[0][:200] if result.get("warnings") else None
         }
     
     def _format_event_result(self, result: Dict) -> Dict:
         """Format adverse event result."""
+        patient = result.get("patient", {})
+        reactions = patient.get("reaction", [])
+        
         return {
             "type": "adverse_event",
             "date": result.get("receivedate", "Unknown"),
             "serious": result.get("serious", 0),
-            "reactions": [r.get("reactionmeddrapt", "Unknown") for r in result.get("patient", {}).get("reaction", [])[:3]]
+            "reactions": [r.get("reactionmeddrapt", "Unknown") for r in reactions[:3]]
         }
     
     def _format_enforcement_result(self, result: Dict) -> Dict:
@@ -969,6 +1103,7 @@ class OpenFDAClient(BaseClient):
     
     def _deduplicate_results(self, results: List[Dict]) -> List[Dict]:
         """Remove duplicate results."""
+        import json
         seen = set()
         unique = []
         
@@ -981,6 +1116,132 @@ class OpenFDAClient(BaseClient):
         
         return unique
     
+class UniProtClient(BaseClient):
+    """UniProt API client for protein data."""
+    
+    BASE_URL = "https://rest.uniprot.org"
+    
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search UniProt using protein/gene names from trial data.
+        
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+            
+        Returns:
+            Dict with UniProt search results
+        """
+        # Extract intervention names that might be proteins/genes
+        search_terms = self._extract_protein_terms(trial_data)
+        
+        if not search_terms:
+            logger.info(f"UniProt: No protein/gene identifiers found for {nct_id}")
+            return {
+                "query": "No protein identifiers found",
+                "results": [],
+                "total_found": 0,
+                "search_terms_used": []
+            }
+        
+        logger.info(f"UniProt: Searching with terms: {search_terms}")
+        
+        results = {
+            "query": ", ".join(search_terms[:3]),
+            "results": [],
+            "total_found": 0,
+            "search_terms_used": search_terms
+        }
+        
+        # Search each term
+        for term in search_terms[:5]:  # Limit to first 5
+            proteins = await self._search_proteins(term)
+            results["results"].extend(proteins)
+        
+        # Deduplicate by accession
+        seen = set()
+        unique_results = []
+        for protein in results["results"]:
+            acc = protein.get("accession")
+            if acc and acc not in seen:
+                seen.add(acc)
+                unique_results.append(protein)
+        
+        results["results"] = unique_results
+        results["total_found"] = len(unique_results)
+        
+        logger.info(f"UniProt: Found {results['total_found']} proteins for {nct_id}")
+        
+        return results
+    
+    def _extract_protein_terms(self, trial_data: Dict[str, Any]) -> List[str]:
+        """Extract potential protein/gene names from trial data."""
+        terms = []
+        
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            arms_interventions = protocol.get("armsInterventionsModule", {})
+            interventions = arms_interventions.get("interventions", [])
+            
+            for intervention in interventions:
+                if isinstance(intervention, dict):
+                    name = intervention.get("name", "").strip()
+                    if name:
+                        terms.append(name)
+                    
+                    other_names = intervention.get("otherNames", [])
+                    if isinstance(other_names, list):
+                        terms.extend([n.strip() for n in other_names if n.strip()])
+        
+        except Exception as e:
+            logger.warning(f"Error extracting protein terms: {e}")
+        
+        return terms[:10]  # Limit to 10 terms
+    
+    async def _search_proteins(self, query: str) -> List[Dict]:
+        """Search UniProt for proteins matching query."""
+        url = f"{self.BASE_URL}/uniprotkb/search"
+        
+        params = {
+            "query": query,
+            "format": "json",
+            "size": 5  # Limit results per query
+        }
+        
+        try:
+            async with self.session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    results = data.get("results", [])
+                    
+                    return [self._format_protein(p) for p in results]
+                else:
+                    logger.debug(f"UniProt search returned {resp.status} for '{query}'")
+                    return []
+        
+        except Exception as e:
+            logger.debug(f"UniProt search error for '{query}': {e}")
+            return []
+    
+    def _format_protein(self, protein: Dict) -> Dict:
+        """Format UniProt protein entry."""
+        return {
+            "accession": protein.get("primaryAccession"),
+            "name": protein.get("uniProtkbId"),
+            "protein_name": protein.get("proteinDescription", {}).get("recommendedName", {}).get("fullName", {}).get("value"),
+            "organism": protein.get("organism", {}).get("scientificName"),
+            "gene": protein.get("genes", [{}])[0].get("geneName", {}).get("value") if protein.get("genes") else None
+        }
+    
     async def fetch(self, identifier: str) -> Dict[str, Any]:
-        """Not implemented - use search() instead."""
-        return {"error": "Use search() method with trial data"}
+        """Fetch specific protein by accession."""
+        url = f"{self.BASE_URL}/uniprotkb/{identifier}"
+        
+        try:
+            async with self.session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status == 200:
+                    return await resp.json()
+                else:
+                    return {"error": f"HTTP {resp.status}"}
+        except Exception as e:
+            return {"error": str(e)}

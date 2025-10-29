@@ -231,12 +231,14 @@ async def list_available_themes():
             "error": str(e)
         }
 
-# ============================================================================
-# Service URLs
-# ============================================================================
-CHAT_SERVICE_URL = "http://localhost:8001"
-NCT_SERVICE_URL = "http://localhost:8002"
 
+# Service URLs - use port from config
+CHAT_SERVICE_URL = f"http://localhost:{settings.chat_service_port}"
+NCT_SERVICE_URL = f"http://localhost:{settings.nct_service_port}"
+
+# DEBUG - Remove after confirming
+logger.info(f"🔍 DEBUG: NCT_SERVICE_URL = {NCT_SERVICE_URL}")
+logger.info(f"🔍 DEBUG: settings.nct_service_port = {settings.nct_service_port}")
 
 # ============================================================================
 # Request/Response Models
@@ -641,7 +643,7 @@ async def nct_lookup(
     Fetch clinical trial data using standalone NCT API service.
     
     This proxies requests to the standalone NCT lookup service running
-    on port 8002, which provides comprehensive trial data from multiple sources.
+    on port 9002, which provides comprehensive trial data from multiple sources.
     """
     logger.info(f"NCT Lookup: {len(request.nct_ids)} trials")
     
@@ -770,7 +772,7 @@ async def nct_search_proxy(
     except httpx.ConnectError:
         raise HTTPException(
             status_code=503,
-            detail="NCT service not available on port 8002"
+            detail=f"NCT service not available on port {settings.nct_service_port}"
         )
     except Exception as e:
         logger.error(f"NCT search proxy error: {e}")
@@ -964,4 +966,9 @@ async def startup_event():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("webapp.server:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(
+        "webapp.server:app", 
+        host="0.0.0.0", 
+        port=settings.main_server_port,  # <-- NOW READS FROM .ENV
+        reload=True
+    )

@@ -156,7 +156,7 @@ cat > "$HOME/Library/LaunchAgents/com.amplm.nct.plist" <<EOF
         <string>--host</string>
         <string>0.0.0.0</string>
         <string>--port</string>
-        <string>8002</string>
+        <string>9002</string>
         <string>--reload</string>
     </array>
     
@@ -365,27 +365,27 @@ launchctl list | grep -E "com.amplm.(webapp|chat|nct)" || echo "❌ No services 
 
 echo ""
 echo "Port Status:"
-echo "Port 8000 (Webapp):"
-lsof -i :8000 | grep LISTEN || echo "  ❌ Not listening"
+echo "Port 9000 (Webapp):"
+lsof -i :9000 | grep LISTEN || echo "  ❌ Not listening"
 
-echo "Port 8001 (Chat):"
-lsof -i :8001 | grep LISTEN || echo "  ❌ Not listening"
+echo "Port 9001 (Chat):"
+lsof -i :9001 | grep LISTEN || echo "  ❌ Not listening"
 
-echo "Port 8002 (NCT):"
-lsof -i :8002 | grep LISTEN || echo "  ❌ Not listening"
+echo "Port 9002 (NCT):"
+lsof -i :9002 | grep LISTEN || echo "  ❌ Not listening"
 
 echo ""
 echo "Health Checks:"
 echo "Webapp:"
-curl -s http://localhost:8000/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
+curl -s http://localhost:9000/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
 
 echo ""
 echo "Chat Service:"
-curl -s http://localhost:8001/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
+curl -s http://localhost:9001/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
 
 echo ""
 echo "NCT Service:"
-curl -s http://localhost:8002/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
+curl -s http://localhost:9002/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
 
 # ============================================================================
 # Summary
@@ -409,9 +409,9 @@ When you run 'git pull', the post-merge hook will:
 
 Services:
 ─────────
-• Webapp    - http://localhost:8000
-• Chat      - http://localhost:8001  
-• NCT       - http://localhost:8002
+• Webapp    - http://localhost:9000
+• Chat      - http://localhost:9001  
+• NCT       - http://localhost:9002
 
 Test It:
 ────────

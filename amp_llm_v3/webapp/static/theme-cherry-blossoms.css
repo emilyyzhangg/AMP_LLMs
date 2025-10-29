@@ -1,22 +1,13 @@
 /* ============================================================================
    THEME_NAME: Cherry Blossom
-   THEME_COLORS: #FFB7C5, #87D4A9, #FF8FA3, #E8C4A8
-   
-   Inspired by cherry blossom pathways with delicate pink petals and fresh spring greens
+   THEME_COLORS: #FFB7C5, #87D4A9, #FF8FA3
    ============================================================================ */
 
 body {
     background: linear-gradient(135deg, #FFE4EC 0%, #B8E6CF 50%, #FFD4DD 100%);
 }
 
-.container {
-    background: #FFFCFD;
-}
-
-/* ============================================================================
-   AUTH SECTION
-   ============================================================================ */
-
+/* AUTH */
 .auth-box {
     background: linear-gradient(135deg, #FFF5F7 0%, #F0FFF4 100%);
     border: 2px solid #FFB7C5;
@@ -29,54 +20,28 @@ body {
     background-clip: text;
 }
 
-.auth-box p {
-    color: #5D8B6F;
-}
-
-.auth-box input {
-    border: 2px solid #FFD4E1;
-    background: #FFFFFF;
-    color: #4A6A5A;
+.auth-box button {
+    background: linear-gradient(135deg, #FF8FA3 0%, #6BC98C 100%);
 }
 
 .auth-box input:focus {
     border-color: #87D4A9;
-    box-shadow: 0 0 0 3px rgba(135, 212, 169, 0.15);
 }
 
-.auth-box button {
-    background: linear-gradient(135deg, #FF8FA3 0%, #6BC98C 100%);
-    box-shadow: 0 4px 12px rgba(255, 143, 163, 0.3);
-}
-
-.auth-box button:hover {
-    background: linear-gradient(135deg, #FF7A90 0%, #5AB67C 100%);
-    box-shadow: 0 6px 16px rgba(255, 143, 163, 0.4);
-}
-
-/* ============================================================================
-   HEADER - MODE PAGE
-   ============================================================================ */
-
+/* HEADER - MODE PAGE */
 header {
     background: linear-gradient(135deg, #5AB67C 0%, #6BC98C 100%);
     border-bottom: 4px solid #FFB7C5;
-    box-shadow: 0 4px 20px rgba(107, 201, 140, 0.4);
 }
 
-/* ============================================================================
-   LANDING HEADER
-   ============================================================================ */
-
+/* LANDING HEADER */
 .landing-header {
     background: linear-gradient(135deg, #FFFCFD 0%, #FFF5F7 100%);
     border-bottom: 4px solid #FFB7C5;
-    box-shadow: 0 4px 16px rgba(255, 183, 197, 0.2);
 }
 
 .logo-container {
     border-color: #87D4A9;
-    box-shadow: 0 4px 12px rgba(135, 212, 169, 0.2);
     background: linear-gradient(135deg, #FFFFFF 0%, #F0FFF4 100%);
 }
 
@@ -89,280 +54,135 @@ header {
 
 .landing-version {
     color: #6BC98C;
-    font-weight: 700;
 }
 
 .landing-header .theme-button,
 .landing-header .logout-button {
     border-color: #FFB7C5;
     color: #5D8B6F;
-    background: white;
-    box-shadow: 0 2px 8px rgba(255, 183, 197, 0.15);
 }
 
 .landing-header .theme-button:hover {
     background: linear-gradient(135deg, #FFF5F7 0%, #F0FFF4 100%);
     border-color: #87D4A9;
     color: #6BC98C;
-    box-shadow: 0 4px 12px rgba(135, 212, 169, 0.25);
 }
 
-.landing-header .logout-button:hover {
-    background: linear-gradient(135deg, #FFF0F0 0%, #FFE0E0 100%);
-    border-color: #E74C3C;
-    color: #C0392B;
-    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
-}
-
-/* ============================================================================
-   THEME SWITCHER
-   ============================================================================ */
-
-.theme-dropdown {
-    background: #FFFFFF;
-    border: 2px solid #FFB7C5;
-    box-shadow: 0 8px 24px rgba(255, 183, 197, 0.2);
-}
-
-.theme-option {
-    color: #5D8B6F;
-}
-
-.theme-option:hover {
-    background: linear-gradient(135deg, #FFF5F7 0%, #F0FFF4 100%);
-}
-
-.theme-option.active {
-    background: linear-gradient(135deg, rgba(255, 183, 197, 0.2) 0%, rgba(135, 212, 169, 0.15) 100%);
-    color: #FF8FA3;
-    border-left: 4px solid #87D4A9;
-}
-
-/* ============================================================================
-   MENU
-   ============================================================================ */
-
-.menu-section {
-    background: linear-gradient(135deg, #FFFCFD 0%, #FFF5F7 100%);
-}
-
-.menu-title {
-    color: #4A6A5A;
-    font-weight: 700;
-}
-
+/* MENU */
 .menu-item {
     background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F7 100%);
     border: 2px solid #FFD4E1;
-    box-shadow: 0 2px 8px rgba(255, 183, 197, 0.1);
 }
 
 .menu-item:hover {
     border-color: #87D4A9;
-    box-shadow: 0 8px 24px rgba(135, 212, 169, 0.25);
-    transform: translateY(-5px);
 }
 
-.menu-item-icon {
-    filter: drop-shadow(0 2px 4px rgba(255, 183, 197, 0.3));
-}
-
-.menu-item-title {
-    color: #4A6A5A;
-    font-weight: 700;
-}
-
-.menu-item-desc {
-    color: #7A9A8A;
-}
-
-/* ============================================================================
-   CHAT INFO BAR
-   ============================================================================ */
-
-.chat-info-bar {
-    background: linear-gradient(135deg, #FFF5F7 0%, #F0FFF4 100%);
-    border-bottom: 2px solid #FFB7C5;
-}
-
-.chat-info-label {
-    color: #4A6A5A;
-    font-weight: 700;
-}
-
-.chat-info-value {
-    background: #FFFFFF;
-    border: 1px solid #FFD4E1;
-    color: #5D8B6F;
-}
-
-.chat-info-status-connected {
-    color: #6BC98C;
-    font-weight: 700;
-}
-
-.clear-chat-btn {
-    background: linear-gradient(135deg, #FF8FA3 0%, #FF7A90 100%);
-    box-shadow: 0 2px 8px rgba(255, 143, 163, 0.3);
-}
-
-.clear-chat-btn:hover {
-    background: linear-gradient(135deg, #FF7A90 0%, #FF6580 100%);
-    box-shadow: 0 4px 12px rgba(255, 143, 163, 0.4);
-}
-
-/* ============================================================================
-   MESSAGES
-   ============================================================================ */
-
-.chat-container,
-.research-container {
-    background: linear-gradient(135deg, #FFFCFD 0%, #FFFFFF 100%);
-}
-
-.avatar {
-    background: #FFF5F7;
-    border: 2px solid #FFD4E1;
-}
-
+/* MESSAGES */
 .message.user .avatar {
     background: linear-gradient(135deg, #FF8FA3 0%, #FF7A90 100%);
-    border-color: #FFB7C5;
 }
 
 .message.assistant .avatar {
     background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
-    border-color: #87D4A9;
-}
-
-.message.system .avatar {
-    background: linear-gradient(135deg, #FFB7C5 0%, #FF8FA3 100%);
-    border-color: #FFB7C5;
-}
-
-.message.error .avatar {
-    background: linear-gradient(135deg, #DC3545 0%, #C82333 100%);
-    border-color: #DC3545;
-}
-
-.content {
-    background: #FFFFFF;
-    color: #3A4A42;
-    border: 1px solid #F0FFF4;
-    box-shadow: 0 1px 3px rgba(255, 183, 197, 0.08);
 }
 
 .message.user .content {
     background: linear-gradient(135deg, #FF8FA3 0%, #FF7A90 100%);
-    color: #FFFFFF;
-    border: none;
-    box-shadow: 0 2px 8px rgba(255, 143, 163, 0.25);
 }
 
-.message.assistant .content {
-    background: linear-gradient(135deg, #FFFFFF 0%, #F0FFF4 100%);
-    color: #3A4A42;
-    border: 1px solid #D4EFD9;
-}
-
-.message.system .content {
-    background: linear-gradient(135deg, #FFF5F7 0%, #FFE4EC 100%);
-    color: #5D8B6F;
-    border: 1px solid #FFB7C5;
-}
-
-.message.error .content {
-    background: linear-gradient(135deg, #FFF0F0 0%, #FFE0E0 100%);
-    color: #8B2E3B;
-    border: 1px solid #FFCCCC;
-}
-
-/* ============================================================================
-   MODEL SELECTION
-   ============================================================================ */
-
-.model-button {
-    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F7 100%);
-    border: 2px solid #FFD4E1;
-    color: #4A6A5A;
-    box-shadow: 0 2px 6px rgba(255, 183, 197, 0.1);
-}
-
-.model-button:hover {
+/* INPUT AREAS */
+.input-area textarea:focus,
+.nct-input-group input:focus,
+.nct-input-group textarea:focus {
     border-color: #87D4A9;
-    box-shadow: 0 4px 16px rgba(135, 212, 169, 0.2);
-    background: linear-gradient(135deg, #FFFFFF 0%, #F0FFF4 100%);
-}
-
-/* ============================================================================
-   INPUTS
-   ============================================================================ */
-
-.input-area {
-    background: linear-gradient(135deg, #FFF5F7 0%, #F0FFF4 100%);
-    border-top: 2px solid #FFD4E1;
-}
-
-.input-area textarea {
-    border: 2px solid #FFD4E1;
-    background: #FFFFFF;
-    color: #4A6A5A;
-}
-
-.input-area textarea:focus {
-    border-color: #87D4A9;
-    box-shadow: 0 0 0 3px rgba(135, 212, 169, 0.15);
 }
 
 .input-area button {
     background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
-    box-shadow: 0 4px 12px rgba(107, 201, 140, 0.3);
 }
 
-.input-area button:hover:not(:disabled) {
+.search-progress {
+    border: 2px solid #5AB67C;
+
+}
+
+@keyframes pulse-border {
+    0%, 100% {
+        border-color: #5AB67C;
+    }
+    50% {
+        border-color: #2d7046;
+    }
+}
+
+.progress-bar-container {
+    background: #2d7046;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #bdf4d1 0%, #2d7046 100%);
+    box-shadow: 0 0 10px rgba(28, 85, 24, 0.5);
+}
+
+.progress-database {
+    color: #5AB67C;
+}
+
+.progress-database strong {
+    color: #5AB67C;
+}
+
+.progress-completed {
+    color: #FF6580;
+}
+
+/* NCT BUTTONS - ACTION BAR */
+.new-search-btn {
+    background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
+}
+
+.new-search-btn:hover {
     background: linear-gradient(135deg, #5AB67C 0%, #49A56B 100%);
-    box-shadow: 0 6px 16px rgba(107, 201, 140, 0.4);
 }
 
-/* ============================================================================
-   NCT MODE
-   ============================================================================ */
-
-.nct-input-area {
-    background: linear-gradient(135deg, #FFF5F7 0%, #F0FFF4 100%);
-    border-bottom: 2px solid #FFD4E1;
+.download-btn {
+    background: linear-gradient(135deg, #FF8FA3 0%, #FF7A90 100%);
 }
 
-.nct-input-group label {
-    color: #4A6A5A;
-    font-weight: 700;
+.download-btn:hover {
+    background: linear-gradient(135deg, #FF7A90 0%, #FF6580 100%);
 }
 
-.nct-input-group input,
-.nct-input-group textarea {
-    border: 2px solid #FFD4E1;
-    background: #FFFFFF;
-    color: #4A6A5A;
+.save-btn {
+    background: linear-gradient(135deg, #FFB7C5 0%, #FF8FA3 100%);
 }
 
-.nct-input-group input:focus,
-.nct-input-group textarea:focus {
-    border-color: #87D4A9;
-    box-shadow: 0 0 0 3px rgba(135, 212, 169, 0.15);
+.save-btn:hover {
+    background: linear-gradient(135deg, #FF8FA3 0%, #FF7A90 100%);
 }
 
-/* API Selection Sections */
+/* NCT SUBMIT BUTTON */
+.nct-submit {
+    background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
+}
+
+.nct-submit:hover:not(:disabled) {
+    background: linear-gradient(135deg, #5AB67C 0%, #49A56B 100%);
+}
+
+.nct-save {
+    background: linear-gradient(135deg, #FF8FA3 0%, #FF7A90 100%);
+}
+
+.total-results-banner {
+    background: linear-gradient(135deg, #FF8FA3 0%, #49A56B 100%);
+}
+
+/* API SECTION STYLING */
 .api-section {
     background: #FFFFFF;
     border: 2px solid #FFD4E1;
-}
-
-.api-section-header h4 {
-    color: #4A6A5A;
-}
-
-.api-section-desc {
-    color: #7A9A8A;
 }
 
 .api-checkbox-item {
@@ -383,203 +203,57 @@ header {
     color: #7A9A8A !important;
 }
 
-.api-status-badge.requires-key {
-    background: #FFF8E6;
-    color: #8B7345 !important;
-    border: 1px solid #E8C4A8;
-}
-
-.api-status-badge.unavailable {
-    background: #FFF0F0;
-    color: #8B2E3B !important;
-    border: 1px solid #FFCCCC;
-}
-
-/* NCT Buttons */
-.nct-submit {
-    background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
-    box-shadow: 0 4px 12px rgba(107, 201, 140, 0.3);
-}
-
-.nct-submit:hover:not(:disabled) {
-    background: linear-gradient(135deg, #5AB67C 0%, #49A56B 100%);
-    box-shadow: 0 6px 16px rgba(107, 201, 140, 0.4);
-}
-
-.nct-save {
-    background: linear-gradient(135deg, #FF8FA3 0%, #FF7A90 100%);
-    box-shadow: 0 4px 12px rgba(255, 143, 163, 0.3);
-}
-
-.nct-save:hover {
-    background: linear-gradient(135deg, #FF7A90 0%, #FF6580 100%);
-    box-shadow: 0 6px 16px rgba(255, 143, 163, 0.4);
-}
-
-.new-search-button {
-    background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
-}
-
-.new-search-button:hover {
-    background: linear-gradient(135deg, #5AB67C 0%, #49A56B 100%);
-}
-
-.progress-text {
-    color: #FF8FA3;
-    font-weight: 600;
-}
-
-.nct-results {
-    background: linear-gradient(135deg, #FFFCFD 0%, #FFFFFF 100%);
-}
-
+/* RESULT CARDS */
 .result-card {
     background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F7 100%);
     border: 2px solid #FFD4E1;
-    box-shadow: 0 2px 8px rgba(255, 183, 197, 0.1);
 }
 
 .result-card:hover {
     border-color: #87D4A9;
-    box-shadow: 0 4px 16px rgba(135, 212, 169, 0.2);
-}
-
-.result-card h3 {
-    color: #4A6A5A;
-    font-weight: 700;
-}
-
-.result-card-status {
-    background: linear-gradient(135deg, #FFF5F7 0%, #FFE4EC 100%);
-    color: #5D8B6F;
-    padding: 4px 12px;
-    border-radius: 12px;
-    border: 1px solid #FFB7C5;
 }
 
 .extract-button {
     background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
-    box-shadow: 0 2px 6px rgba(107, 201, 140, 0.25);
-}
-
-.extract-button:hover {
-    background: linear-gradient(135deg, #5AB67C 0%, #49A56B 100%);
-    box-shadow: 0 4px 12px rgba(107, 201, 140, 0.35);
-}
-
-.summary-card {
-    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F7 100%);
-    border: 3px solid #FFB7C5;
-    box-shadow: 0 4px 16px rgba(255, 183, 197, 0.15);
-}
-
-.summary-card h3 {
-    color: #4A6A5A;
-    font-weight: 700;
 }
 
 .summary-item-value.success {
     color: #6BC98C;
 }
 
-.summary-item-value.error {
-    color: #DC3545;
-}
-
-.summary-item-value.info {
-    color: #5D8B6F;
-}
-
-/* ============================================================================
-   FILE MANAGER
-   ============================================================================ */
-
-.file-controls {
-    background: linear-gradient(135deg, #FFF5F7 0%, #F0FFF4 100%);
-    border-bottom: 2px solid #FFD4E1;
-}
-
+/* FILE MANAGER */
 .file-upload-btn {
     background: linear-gradient(135deg, #FF8FA3 0%, #FF7A90 100%);
-    box-shadow: 0 2px 8px rgba(255, 143, 163, 0.25);
-}
-
-.file-upload-btn:hover {
-    background: linear-gradient(135deg, #FF7A90 0%, #FF6580 100%);
-    box-shadow: 0 4px 12px rgba(255, 143, 163, 0.35);
 }
 
 .file-refresh-btn {
     background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
-    box-shadow: 0 2px 8px rgba(107, 201, 140, 0.25);
-}
-
-.file-refresh-btn:hover {
-    background: linear-gradient(135deg, #5AB67C 0%, #49A56B 100%);
-    box-shadow: 0 4px 12px rgba(107, 201, 140, 0.35);
-}
-
-.files-container {
-    background: linear-gradient(135deg, #FFFCFD 0%, #FFFFFF 100%);
 }
 
 .file-card {
     background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F7 100%);
     border: 2px solid #FFD4E1;
-    box-shadow: 0 2px 8px rgba(255, 183, 197, 0.1);
 }
 
 .file-card:hover {
     border-color: #87D4A9;
-    box-shadow: 0 4px 16px rgba(135, 212, 169, 0.2);
 }
 
 .file-card-icon {
     color: #FF8FA3;
-    filter: drop-shadow(0 2px 4px rgba(255, 143, 163, 0.3));
-}
-
-.file-card-name {
-    color: #4A6A5A;
-    font-weight: 700;
 }
 
 .file-card-load {
     background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
-    box-shadow: 0 2px 6px rgba(107, 201, 140, 0.25);
 }
 
-.file-card-load:hover {
-    background: linear-gradient(135deg, #5AB67C 0%, #49A56B 100%);
-    box-shadow: 0 4px 12px rgba(107, 201, 140, 0.35);
-}
-
-/* ============================================================================
-   LOADING
-   ============================================================================ */
-
-.loading {
-    color: #FF8FA3;
-}
-
+/* LOADING */
 .spinner {
     border: 3px solid rgba(255, 143, 163, 0.2);
     border-top-color: #87D4A9;
 }
 
-/* ============================================================================
-   SCROLLBARS
-   ============================================================================ */
-
-.chat-container::-webkit-scrollbar-track,
-.research-container::-webkit-scrollbar-track,
-.nct-results::-webkit-scrollbar-track,
-.files-container::-webkit-scrollbar-track,
-.menu-section::-webkit-scrollbar-track,
-.nct-input-area::-webkit-scrollbar-track {
-    background: #FFF5F7;
-}
-
+/* SCROLLBARS */
 .chat-container::-webkit-scrollbar-thumb,
 .research-container::-webkit-scrollbar-thumb,
 .nct-results::-webkit-scrollbar-thumb,
@@ -587,7 +261,6 @@ header {
 .menu-section::-webkit-scrollbar-thumb,
 .nct-input-area::-webkit-scrollbar-thumb {
     background: linear-gradient(135deg, #FFB7C5 0%, #87D4A9 100%);
-    border: 2px solid #FFF5F7;
 }
 
 .chat-container::-webkit-scrollbar-thumb:hover,
@@ -597,24 +270,4 @@ header {
 .menu-section::-webkit-scrollbar-thumb:hover,
 .nct-input-area::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, #FF8FA3 0%, #6BC98C 100%);
-}
-
-/* ============================================================================
-   RESULTS ACTIONS
-   ============================================================================ */
-
-.results-actions .download-btn {
-    background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
-}
-
-.results-actions .download-btn:hover {
-    background: linear-gradient(135deg, #5AB67C 0%, #49A56B 100%);
-}
-
-.results-actions .save-btn {
-    background: linear-gradient(135deg, #FF8FA3 0%, #FF7A90 100%);
-}
-
-.results-actions .save-btn:hover {
-    background: linear-gradient(135deg, #FF7A90 0%, #FF6580 100%);
 }

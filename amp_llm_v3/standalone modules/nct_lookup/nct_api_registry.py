@@ -35,14 +35,14 @@ class APIDefinition:
 class APIRegistry:
     """
     Central registry for all API sources.
-    
+
     To add a new API:
     1. Add an APIDefinition entry below
     2. Create a client class in nct_clients.py
     3. Register the client in nct_core.py's _initialize_clients()
     4. That's it! UI will automatically update.
     """
-    
+
     # Core APIs (always enabled, foundational data)
     CORE_APIS = [
         APIDefinition(
@@ -78,7 +78,7 @@ class APIRegistry:
             enabled_by_default=True
         ),
     ]
-    
+
     # Extended APIs (optional, additional sources)
     EXTENDED_APIS = [
         APIDefinition(
@@ -117,6 +117,14 @@ class APIRegistry:
             client_class="OpenFDAClient",
             enabled_by_default=True
         ),
+        APIDefinition(
+            id="uniprot",
+            name="UniProt",
+            description="Protein sequence and functional information database",
+            category="extended",
+            client_class="UniProtClient",
+            enabled_by_default=True
+        ),
         # Example of how to add more APIs:
         # APIDefinition(
         #     id="eudract",
@@ -135,22 +143,22 @@ class APIRegistry:
         #     enabled_by_default=True
         # ),
     ]
-    
+
     @classmethod
     def get_all_apis(cls) -> List[APIDefinition]:
         """Get all registered APIs (core + extended)."""
         return cls.CORE_APIS + cls.EXTENDED_APIS
-    
+
     @classmethod
     def get_core_apis(cls) -> List[APIDefinition]:
         """Get only core APIs."""
         return cls.CORE_APIS
-    
+
     @classmethod
     def get_extended_apis(cls) -> List[APIDefinition]:
         """Get only extended APIs."""
         return cls.EXTENDED_APIS
-    
+
     @classmethod
     def get_api_by_id(cls, api_id: str) -> Optional[APIDefinition]:
         """Get API definition by ID."""
@@ -158,7 +166,7 @@ class APIRegistry:
             if api.id == api_id:
                 return api
         return None
-    
+
     @classmethod
     def get_api_categories(cls) -> Dict[str, List[APIDefinition]]:
         """Get APIs grouped by category."""
@@ -166,22 +174,22 @@ class APIRegistry:
             "core": cls.CORE_APIS,
             "extended": cls.EXTENDED_APIS
         }
-    
+
     @classmethod
     def get_default_enabled_apis(cls) -> List[str]:
         """Get IDs of APIs that should be enabled by default."""
         return [api.id for api in cls.get_all_apis() if api.enabled_by_default]
-    
+
     @classmethod
     def get_apis_requiring_keys(cls) -> List[APIDefinition]:
         """Get APIs that require API keys."""
         return [api for api in cls.get_all_apis() if api.requires_key]
-    
+
     @classmethod
     def validate_api_ids(cls, api_ids: List[str]) -> tuple[List[str], List[str]]:
         """
         Validate a list of API IDs.
-        
+
         Returns:
             Tuple of (valid_ids, invalid_ids)
         """
@@ -189,7 +197,7 @@ class APIRegistry:
         valid = [id for id in api_ids if id in all_valid_ids]
         invalid = [id for id in api_ids if id not in all_valid_ids]
         return valid, invalid
-    
+
     @classmethod
     def to_dict(cls) -> Dict[str, Any]:
         """Export registry as dictionary for API responses."""

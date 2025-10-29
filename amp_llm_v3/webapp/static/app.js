@@ -4,22 +4,11 @@
 
 const app = {
     // Configuration
-    API_BASE: (() => {
-        if (window.location.hostname === 'llm.amphoraxe.ca') {
-            return 'https://llm.amphoraxe.ca';
-        }
-        return window.location.origin;
-    })(),
-
-    NCT_SERVICE_URL: (() => {
-        if (window.location.hostname === 'llm.amphoraxe.ca') {
-            return 'https://llm.amphoraxe.ca';
-        }
-        return window.location.origin;
-    })(),
+    API_BASE: window.location.origin,
+    NCT_SERVICE_URL: window.location.origin,
 
     apiKey: localStorage.getItem('amp_llm_api_key') || '',
-    
+
     // State
     currentMode: 'menu',
     currentTheme: localStorage.getItem('amp_llm_theme') || 'green',
@@ -30,22 +19,33 @@ const app = {
     files: [],
     availableModels: [],
     availableThemes: [],
-    
+
     // Session-based chat storage (per model)
     sessionChats: {},
-    
+
     // API registry
     apiRegistry: null,
     selectedAPIs: new Set(),
-    
+
     // =========================================================================
     // Initialization
     // =========================================================================
-    
+
     async init() {
         console.log('🚀 App initializing...');
         this.apiKey = localStorage.getItem('amp_llm_api_key') || '';
         this.currentTheme = localStorage.getItem('amp_llm_theme') || 'green';
+
+        // ============================================================================
+        // SERVICE CONFIGURATION LOGGING
+        // ============================================================================
+        console.group('🔧 Service Configuration');
+        console.log('🌐 API Base URL:', this.API_BASE);
+        console.log('🔍 NCT Service URL:', this.NCT_SERVICE_URL);
+        console.log('📍 Current Hostname:', window.location.hostname);
+        console.log('🔗 Current Origin:', window.location.origin);
+        console.log('🔌 Current Port:', window.location.port || '(default)');
+        console.groupEnd();
         
         await this.loadAvailableThemes();
         this.applyTheme(this.currentTheme, false);
@@ -75,7 +75,7 @@ const app = {
                 });
             }
         });
-    
+
         // Enter key handlers
         document.getElementById('api-key-input')?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.handleAuth();
@@ -101,7 +101,7 @@ const app = {
     // =========================================================================
     // Dynamic Theme Loading
     // =========================================================================
-    
+
     async loadAvailableThemes() {
         console.log('🎨 Loading available themes...');
         
@@ -123,7 +123,7 @@ const app = {
         
         this.buildThemeDropdown();
     },
-    
+
     useFallbackThemes() {
         this.availableThemes = [
             { id: 'green', name: 'Green Primary', colors: ['#1BEB49', '#0E1F81'] },
@@ -133,7 +133,7 @@ const app = {
         ];
         console.log('✅ Using fallback themes');
     },
-    
+
     buildThemeDropdown() {
         const dropdowns = [
             document.getElementById('theme-dropdown'),
@@ -173,11 +173,11 @@ const app = {
         console.log(`✅ Built theme dropdowns with ${this.availableThemes.length} options`);
         this.updateActiveTheme();
     },
-    
+
     // =========================================================================
     // Theme Management
     // =========================================================================
-    
+
     toggleThemeDropdown() {
         const allDropdowns = document.querySelectorAll('.theme-dropdown');
         allDropdowns.forEach(d => d.classList.add('hidden'));
@@ -191,7 +191,7 @@ const app = {
             this.updateActiveTheme();
         }
     },
-    
+
     setTheme(themeId) {
         console.log('🎨 Setting theme:', themeId);
         
@@ -206,7 +206,7 @@ const app = {
         this.applyTheme(themeId, true);
         document.getElementById('theme-dropdown').classList.add('hidden');
     },
-    
+
     applyTheme(themeId, animate = false) {
         const themeStylesheet = document.getElementById('theme-stylesheet');
         
@@ -237,7 +237,7 @@ const app = {
         
         console.log(`✅ Applied theme: ${themeName}`);
     },
-    
+
     updateActiveTheme() {
         const options = document.querySelectorAll('.theme-option');
         options.forEach(option => {
@@ -250,11 +250,11 @@ const app = {
             }
         });
     },
-    
+
     // =========================================================================
     // Authentication
     // =========================================================================
-    
+
     async handleAuth() {
         const input = document.getElementById('api-key-input');
         const apiKey = input.value.trim();
@@ -290,24 +290,24 @@ const app = {
             alert('Connection error: ' + error.message);
         }
     },
-    
+
     handleLogout() {
         localStorage.removeItem('amp_llm_api_key');
         this.apiKey = '';
         this.sessionChats = {};
         location.reload();
     },
-    
+
     showApp() {
         document.getElementById('auth-section').classList.add('hidden');
         document.getElementById('main-app').classList.remove('hidden');
         this.showMenu();
     },
-    
+
     // =========================================================================
     // Navigation
     // =========================================================================
-    
+
     showMenu() {
         console.log('📋 Showing menu');
         this.currentMode = 'menu';
@@ -324,7 +324,7 @@ const app = {
             el.classList.remove('active');
         });
     },
-    
+
     showMode(mode) {
         console.log('🎯 Showing mode:', mode);
         this.currentMode = mode;
@@ -367,7 +367,7 @@ const app = {
             this.buildAPICheckboxes();
         }    
     },
-    
+
     updateBackButton() {
         const backButton = document.querySelector('.back-button');
         
@@ -398,11 +398,11 @@ const app = {
             backButton.onclick = () => this.showMenu();
         }
     },
-    
+
     // =========================================================================
     // Chat Mode
     // =========================================================================
-    
+
     async initializeChatMode() {
         console.log('🚀 Initializing chat mode...');
         
@@ -643,7 +643,7 @@ const app = {
         this.updateBackButton();
         console.log('✅ Model selection displayed');
     },
-    
+
     saveCurrentChat() {
         if (!this.currentModel) return;
         
@@ -674,7 +674,7 @@ const app = {
         
         console.log(`💾 Saved ${messages.length} messages for ${this.currentModel}`);
     },
-    
+
     restoreChat(modelName) {
         const saved = this.sessionChats[modelName];
         if (!saved || saved.messages.length === 0) {
@@ -695,7 +695,7 @@ const app = {
         
         return true;
     },
-    
+
     async clearCurrentChat() {
         if (!this.currentModel || !this.currentConversationId) return;
         
@@ -732,7 +732,7 @@ const app = {
             this.selectModel(modelName);
         }, 500);
     },
-    
+
     async selectModel(modelName) {
         console.log('🎯 selectModel called with:', modelName);
         
@@ -850,7 +850,7 @@ const app = {
                 `Make sure the chat service is running on port 8001.`);
         }
     },
-    
+
     async sendChatMessage(message) {
         const command = message.toLowerCase().trim();
         
@@ -958,11 +958,11 @@ const app = {
             console.error('Full error:', error);
         }
     },
-    
+
     // =========================================================================
     // Message Handling
     // =========================================================================
-    
+
     async sendMessage(mode) {
         if (mode === 'chat') {
             const input = document.getElementById('chat-input');
@@ -1011,7 +1011,7 @@ const app = {
             }
         }
     },
-    
+
     addMessage(containerId, role, content) {
         const container = document.getElementById(containerId);
         const messageId = 'msg-' + Date.now() + '-' + Math.random();
@@ -1068,6 +1068,8 @@ const app = {
             }
             
             this.apiRegistry = await response.json();
+            console.log('📋 Registry loaded:', JSON.stringify(this.apiRegistry, null, 2));
+            console.log('📊 Extended APIs:', this.apiRegistry.extended?.map(a => a.id));
             console.log('✅ API registry loaded:', this.apiRegistry);
             
             if (this.apiRegistry.metadata?.default_enabled) {
@@ -1098,7 +1100,8 @@ const app = {
                     { id: 'duckduckgo', name: 'DuckDuckGo', description: 'Web search', enabled_by_default: false, available: true },
                     { id: 'serpapi', name: 'Google Search', description: 'Google results', enabled_by_default: false, available: false, requires_key: true },
                     { id: 'scholar', name: 'Google Scholar', description: 'Academic papers', enabled_by_default: false, available: false, requires_key: true },
-                    { id: 'openfda', name: 'OpenFDA', description: 'FDA drug data', enabled_by_default: false, available: true }
+                    { id: 'openfda', name: 'OpenFDA', description: 'FDA drug data', enabled_by_default: false, available: true },
+                    { id: 'uniprot', name: 'UniProt', description: 'Protein database', enabled_by_default: false, available: true }
                 ],
                 metadata: {
                     default_enabled: ['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc']
@@ -1273,33 +1276,31 @@ const app = {
         console.log(`🔍 Checking API failures for ${nctId}`);
         console.log('Sources available:', Object.keys(sources));
         
-        // Check core sources
-        ['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc'].forEach(api => {
-            if (sources[api]) {
-                const apiData = sources[api];
-                console.log(`📊 ${api}:`, {
-                    success: apiData.success,
-                    hasData: !!apiData.data,
-                    error: apiData.error
-                });
-                
-                if (!apiData.success) {
-                    const failure = {
-                        nct_id: nctId,
-                        api: api,
-                        error: apiData.error || 'Unknown API error',
-                        stage: 'api_failure',
-                        timestamp: new Date().toISOString()
-                    };
-                    apiFailures.push(failure);
-                    errors.push(failure);
-                    console.error(`❌ ${api} failed for ${nctId}:`, failure.error);
-                }
+        // Check core sources (don't include 'extended' itself)
+        Object.entries(sources).forEach(([sourceName, sourceData]) => {
+            if (sourceName === 'extended') return; // Skip, handle separately
+            
+            console.log(`📊 ${sourceName}:`, {
+                success: sourceData?.success,
+                hasData: !!sourceData?.data,
+                error: sourceData?.error
+            });
+            
+            if (sourceData && !sourceData.success) {
+                const failure = {
+                    nct_id: nctId,
+                    api: sourceName,
+                    error: sourceData.error || 'Unknown API error',
+                    stage: 'api_failure',
+                    timestamp: new Date().toISOString()
+                };
+                apiFailures.push(failure);
+                console.error(`❌ ${sourceName} failed for ${nctId}:`, failure.error);
             }
         });
         
         // Check extended sources
-        if (sources.extended) {
+        if (sources.extended && typeof sources.extended === 'object') {
             console.log('📦 Extended sources found:', Object.keys(sources.extended));
             
             Object.entries(sources.extended).forEach(([api, data]) => {
@@ -1321,7 +1322,6 @@ const app = {
                             timestamp: new Date().toISOString()
                         };
                         apiFailures.push(failure);
-                        errors.push(failure);
                         console.error(`❌ Extended ${api} failed for ${nctId}:`, failure.error);
                     } else if (data.data) {
                         // Check if extended API returned 0 results (not an error, but worth noting)
@@ -1599,19 +1599,14 @@ const app = {
                 
                 this.displayNCTResults(this.nctResults);
                 
-                // FIXED: Combine all errors and API failures for display
-                const allErrors = [...errors, ...apiFailures];
-                if (allErrors.length > 0) {
-                    const errorSummaryHTML = this.showSearchErrorSummary(allErrors, apiFailures);
+                // Add errors after results are displayed
+                if (errors.length > 0 || apiFailures.length > 0) {
+                    const errorSummaryHTML = this.showSearchErrorSummary(errors, apiFailures);
                     resultsDiv.insertAdjacentHTML('beforeend', errorSummaryHTML);
                 }
                 
-                this.addNewSearchButton();
-                
-                const downloadBtn = document.getElementById('nct-download-btn');
-                const saveBtn = document.getElementById('nct-save-btn');
-                if (downloadBtn) downloadBtn.classList.remove('hidden');
-                if (saveBtn) saveBtn.classList.remove('hidden');
+                // Note: Buttons are now created inside displayNCTResults()
+                // No need to show/hide them separately
                 
             } else {
                 resultsDiv.innerHTML = `
@@ -1621,11 +1616,10 @@ const app = {
                     </div>
                 `;
                 
-                const allErrors = [...errors, ...apiFailures];
-                const errorSummaryHTML = this.showSearchErrorSummary(allErrors, apiFailures);
-                resultsDiv.insertAdjacentHTML('beforeend', errorSummaryHTML);
-                
-                this.addNewSearchButton();
+                if (errors.length > 0 || apiFailures.length > 0) {
+                    const errorSummaryHTML = this.showSearchErrorSummary(errors, apiFailures);
+                    resultsDiv.insertAdjacentHTML('beforeend', errorSummaryHTML);
+                }
             }
             
         } catch (error) {
@@ -1643,10 +1637,9 @@ const app = {
                     <pre>${error.stack || 'No stack trace available'}</pre>
                 </div>
             `;
-            this.addNewSearchButton();
         }
     },
-    
+
     async extractTrial(nctId) {
         try {
             const response = await fetch(`${this.API_BASE}/extract`, {
@@ -1668,7 +1661,7 @@ const app = {
             alert('Extraction error: ' + error.message);
         }
     },
-    
+
     async saveNCTResults() {
         if (!this.nctResults) {
             this.showToast('⚠️ No results to save', 'error');
@@ -1920,7 +1913,7 @@ const app = {
             `;
         }
     },
-    
+
     async loadFileIntoChat(filename) {
         try {
             const response = await fetch(`${this.API_BASE}/files/content/${filename}`, {
@@ -1949,7 +1942,7 @@ const app = {
             alert('Error loading file: ' + error.message);
         }
     },
-    
+
     async handleFileUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -1977,46 +1970,59 @@ const app = {
         event.target.value = '';
     },
 
-    addNewSearchButton() {
+    startNewNCTSearch() {
+        console.log('🔄 Starting new search...');
+        
         const resultsDiv = document.getElementById('nct-results');
         const inputArea = document.querySelector('.nct-input-area');
         
-        const newSearchBtn = document.createElement('button');
-        newSearchBtn.className = 'new-search-button';
-        newSearchBtn.innerHTML = '<span>🔍</span><span>New Search</span>';
-        newSearchBtn.onclick = () => {
-            resultsDiv.innerHTML = '';
-            resultsDiv.classList.remove('active');
-            inputArea.classList.remove('hidden');
-            
-            document.getElementById('nct-input').value = '';
-            
-            const downloadBtn = document.getElementById('nct-download-btn');
-            const saveBtn = document.getElementById('nct-save-btn');
-            if (downloadBtn) downloadBtn.classList.add('hidden');
-            if (saveBtn) saveBtn.classList.add('hidden');
-            
-            this.selectedAPIs = new Set(this.apiRegistry?.metadata?.default_enabled || []);
-            this.buildAPICheckboxes();
-        };
+        // Clear results
+        resultsDiv.innerHTML = '';
+        resultsDiv.classList.remove('active');
+        inputArea.classList.remove('hidden');
         
-        resultsDiv.insertBefore(newSearchBtn, resultsDiv.firstChild);
+        // Reset input field
+        const nctInput = document.getElementById('nct-input');
+        if (nctInput) {
+            nctInput.value = '';
+        }
+        
+        // Reset API selection to defaults
+        if (this.apiRegistry && this.apiRegistry.metadata && this.apiRegistry.metadata.default_enabled) {
+            this.selectedAPIs = new Set(this.apiRegistry.metadata.default_enabled);
+        } else {
+            this.selectedAPIs = new Set(['clinicaltrials', 'pubmed', 'pmc', 'pmc_bioc']);
+        }
+        
+        // Rebuild checkboxes with reset selections
+        this.buildAPICheckboxes();
+        
+        // Clear stored results
+        this.nctResults = null;
+        
+        console.log('✅ New search initiated - form reset');
     },
 
     displayNCTResults(data) {
         const resultsDiv = document.getElementById('nct-results');
+        const inputArea = document.querySelector('.nct-input-area');
         
+        // Store results globally for action buttons
+        window.lastNCTResults = data;
+    
         let html = '';
         
+        // Compact button HTML with smaller styling
         html += `
-            <div class="results-actions">
-                <button class="action-button download-btn" onclick="app.downloadNCTResults()">
-                    <span class="btn-icon">📥</span>
-                    <span class="btn-text">Download</span>
+            <div class="results-actions-bar">
+                <button class="results-actions-btn new-search-btn" onclick="app.startNewNCTSearch(); event.preventDefault();">
+                    🔍 New Search
                 </button>
-                <button class="action-button save-btn" onclick="app.saveNCTResults()">
-                    <span class="btn-icon">💾</span>
-                    <span class="btn-text">Save to Server</span>
+                <button class="results-actions-btn download-btn" onclick="app.downloadNCTResults(); event.preventDefault();">
+                    📥 Download
+                </button>
+                <button class="results-actions-btn save-btn" onclick="app.saveNCTResults(); event.preventDefault();">
+                    💾 Save to Server
                 </button>
             </div>
         `;
@@ -2053,7 +2059,7 @@ const app = {
             
             // Count core sources
             Object.entries(sources).forEach(([sourceName, sourceData]) => {
-                if (sourceName === 'extended') return; // Skip extended here, handle separately
+                if (sourceName === 'extended') return;
                 
                 if (!sourceStats[sourceName]) {
                     sourceStats[sourceName] = {
@@ -2105,7 +2111,6 @@ const app = {
         });
         
         if (Object.keys(sourceStats).length > 0) {
-            // Separate core and extended sources
             const coreAPIs = ['clinicaltrials', 'clinical_trials', 'pubmed', 'pmc', 'pmc_bioc'];
             const coreSources = [];
             const extendedSources = [];
@@ -2118,13 +2123,11 @@ const app = {
                 }
             });
             
-            // Sort by count (descending)
             coreSources.sort((a, b) => b[1].count - a[1].count);
             extendedSources.sort((a, b) => b[1].count - a[1].count);
             
             html += `<div class="source-stats-container">`;
             
-            // Display Core Sources
             if (coreSources.length > 0) {
                 html += `
                     <h4 style="margin-top: 20px; margin-bottom: 12px; color: #333;">📚 Core Sources</h4>
@@ -2155,7 +2158,6 @@ const app = {
                 html += `</div>`;
             }
             
-            // Display Extended Sources
             if (extendedSources.length > 0) {
                 html += `
                     <h4 style="margin-top: 30px; margin-bottom: 12px; color: #333;">🔬 Extended Sources</h4>
@@ -2186,7 +2188,6 @@ const app = {
                 html += `</div>`;
             }
             
-            // Total results banner
             html += `
                 <div class="total-results-banner">
                     <strong>Total Results Across All Sources:</strong> <span class="highlight-number">${totalResults}</span>
@@ -2209,7 +2210,6 @@ const app = {
             const trialCondition = metadata.condition || (ctData?.conditions ? ctData.conditions[0] : '') || 'N/A';
             const trialIntervention = metadata.intervention || (ctData?.interventions ? ctData.interventions[0]?.name : '') || 'N/A';
             
-            // Count both core and extended sources
             let sourceCount = 0;
             Object.keys(sources).forEach(key => {
                 if (key === 'extended') {
@@ -2245,7 +2245,6 @@ const app = {
             
             // Display core sources
             Object.entries(sources).forEach(([sourceName, sourceData]) => {
-                // Skip extended here, we'll handle it separately
                 if (sourceName === 'extended') return;
                 
                 const apiInfo = this.getAPIInfo(sourceName);
@@ -2268,18 +2267,32 @@ const app = {
                     `;
                     
                     if (sourceName === 'clinicaltrials' || sourceName === 'clinical_trials') {
-                        if (data.enrollment) {
-                            html += `<div class="data-field">
-                                <strong>Enrollment:</strong> ${data.enrollment}
+                        html += `<div class="data-field">
+                            <strong>NCT Number:</strong> ${nctId}
+                        </div>`;
+                        
+                        if (data.description || data.brief_summary) {
+                            const abstract = data.description || data.brief_summary;
+                            const shortAbstract = abstract.substring(0, 300);
+                            const needsExpand = abstract.length > 300;
+                            
+                            html += `<div class="data-field abstract-field">
+                                <strong>Abstract:</strong>
+                                <div class="abstract-text">
+                                    ${this.escapeHtml(shortAbstract)}${needsExpand ? '...' : ''}
+                                    ${needsExpand ? `
+                                        <span class="show-more-inline" onclick="app.toggleAbstract('abstract-${nctId}')">
+                                            <strong>Show More</strong>
+                                        </span>
+                                        <span id="abstract-${nctId}" class="expanded-text hidden">
+                                            ${this.escapeHtml(abstract.substring(300))}
+                                        </span>
+                                    ` : ''}
+                                </div>
                             </div>`;
                         }
-                        if (data.phase) {
-                            html += `<div class="data-field">
-                                <strong>Phase:</strong> ${this.escapeHtml(Array.isArray(data.phase) ? data.phase.join(', ') : data.phase)}
-                            </div>`;
-                        }
+                    
                     } else if (sourceName === 'pubmed') {
-                        // Show search strategy and queries
                         if (data.search_strategy) {
                             html += `<div class="search-info">
                                 <span class="search-info-label">🔍 Search Strategy:</span>
@@ -2320,7 +2333,6 @@ const app = {
                         }
                     
                     } else if (sourceName === 'pmc') {
-                        // Show search strategy and queries
                         if (data.search_strategy) {
                             html += `<div class="search-info">
                                 <span class="search-info-label">🔍 Search Strategy:</span>
@@ -2360,17 +2372,10 @@ const app = {
                             </div>`;
                         }
                     } else if (sourceName === 'pmc_bioc') {
-                        // Show search strategy and queries
-                        if (data.search_strategy) {
+                        if (data.conversion_performed) {
                             html += `<div class="search-info">
-                                <span class="search-info-label">🔍 Search Strategy:</span>
-                                <span class="search-info-value">${this.escapeHtml(data.search_strategy)}</span>
-                            </div>`;
-                        }
-                        if (data.search_queries && data.search_queries.length > 0) {
-                            html += `<div class="search-info">
-                                <span class="search-info-label">📝 Queries Used:</span>
-                                <span class="search-info-value">${data.search_queries.map(q => `"${this.escapeHtml(q)}"`).join(', ')}</span>
+                                <span class="search-info-label">🔄 Conversion:</span>
+                                <span class="search-info-value">PMCIDs converted to PMIDs</span>
                             </div>`;
                         }
                         
@@ -2378,26 +2383,47 @@ const app = {
                             <strong>Articles Found:</strong> ${resultCount}
                         </div>`;
                         
-                        if (data.pmids && data.pmids.length > 0) {
-                            const uniqueId = `source-${nctId}-${sourceName}-${Date.now()}`;
-                            const visibleCount = 5;
-                            const visiblePMIDs = data.pmids.slice(0, visibleCount);
-                            const hiddenPMIDs = data.pmids.slice(visibleCount);
-                            
+                        if (data.pmids_used && data.pmids_used.length > 0) {
                             html += `<div class="data-field pmid-field">
-                                <strong>PMIDs:</strong> 
-                                <span class="id-list">
-                                    ${visiblePMIDs.join(', ')}
-                                    ${hiddenPMIDs.length > 0 ? `
-                                        <span class="show-more-inline" onclick="app.toggleExpandedList('${uniqueId}-pmids')">
-                                            <strong>(+${hiddenPMIDs.length} more)</strong>
-                                        </span>
-                                        <span id="${uniqueId}-pmids" class="expanded-list hidden">
-                                            , ${hiddenPMIDs.join(', ')}
-                                        </span>
-                                    ` : ''}
-                                </span>
+                                <strong>PMIDs Fetched:</strong> 
+                                <span class="id-list">${data.pmids_used.join(', ')}</span>
                             </div>`;
+                        }
+                        
+                        if (data.errors && data.errors.length > 0) {
+                            const errorsByType = {};
+                            data.errors.forEach(err => {
+                                const type = err.type || 'other';
+                                if (!errorsByType[type]) errorsByType[type] = [];
+                                errorsByType[type].push(err);
+                            });
+                            
+                            html += `<div class="data-field error-details">
+                                <strong>Errors:</strong> ${data.errors.length} article(s) could not be retrieved
+                                <ul class="error-breakdown">`;
+                            
+                            Object.entries(errorsByType).forEach(([type, errors]) => {
+                                const typeLabels = {
+                                    'not_found': '📭 Not available in PubTator3 (may not be open access)',
+                                    'timeout': '⏱️ Timeout',
+                                    'http_error': '⚠️ HTTP Error',
+                                    'exception': '❌ Exception',
+                                    'other': '❓ Unknown'
+                                };
+                                
+                                const label = typeLabels[type] || type;
+                                const pmids = errors.map(e => e.pmid).join(', ');
+                                
+                                html += `<li>${label}: ${pmids}`;
+                                
+                                if (type === 'not_found' && errors[0].note) {
+                                    html += `<br><small class="error-note">${this.escapeHtml(errors[0].note)}</small>`;
+                                }
+                                
+                                html += `</li>`;
+                            });
+                            
+                            html += `</ul></div>`;
                         }
                     }
                     
@@ -2417,7 +2443,7 @@ const app = {
                 }
             });
             
-            // ====== SECTION 4: Display extended sources ======
+            // Display extended sources
             if (sources.extended && Object.keys(sources.extended).length > 0) {
                 html += `
                     <div class="extended-sources-header">
@@ -2446,7 +2472,6 @@ const app = {
                                 <div class="source-content">
                         `;
                         
-                        // Show search query/parameters
                         if (data.query) {
                             html += `<div class="search-info">
                                 <span class="search-info-label">🔍 Query:</span>
@@ -2461,13 +2486,11 @@ const app = {
                             </div>`;
                         }
                         
-                        // Display results based on source type
                         if (data.results && Array.isArray(data.results)) {
                             html += `<div class="data-field">
                                 <strong>Results Found:</strong> ${data.results.length}
                             </div>`;
                             
-                            // Show first 3 results
                             const displayCount = Math.min(3, data.results.length);
                             const visibleResults = data.results.slice(0, displayCount);
                             const hiddenResults = data.results.slice(displayCount);
@@ -2487,7 +2510,7 @@ const app = {
                                 `;
                             });
                             
-                            html += `</div>`; // Close extended-results-container
+                            html += `</div>`;
                             
                             if (hiddenResults.length > 0) {
                                 html += `
@@ -2535,12 +2558,238 @@ const app = {
                     }
                 });
             }
-            // ====== END OF SECTION 4 ======
             
-            html += `</div>`; // Close trial-card
+            html += `</div>`;
         });
         
         resultsDiv.innerHTML = html;
+        
+        // Show results, hide input
+        inputArea.classList.add('hidden');
+        resultsDiv.classList.add('active');
+    },
+
+    // ============================================================================
+    // Extended Source Formatting Methods
+    // ============================================================================
+
+    formatDuckDuckGoDisplay(data) {
+        let html = '';
+        
+        if (data.query) {
+            html += `<div class="search-info">
+                <span class="search-info-label">🔍 Query:</span>
+                <span class="search-info-value">"${this.escapeHtml(data.query)}"</span>
+            </div>`;
+        }
+        
+        if (data.search_terms_used && data.search_terms_used.length > 0) {
+            html += `<div class="search-info">
+                <span class="search-info-label">📝 Search Terms:</span>
+                <span class="search-info-value">${data.search_terms_used.map(t => `"${this.escapeHtml(t)}"`).join(', ')}</span>
+            </div>`;
+        }
+        
+        if (data.results && Array.isArray(data.results)) {
+            html += `<div class="data-field">
+                <strong>Results Found:</strong> ${data.results.length}
+            </div>`;
+            
+            const displayCount = Math.min(3, data.results.length);
+            const visibleResults = data.results.slice(0, displayCount);
+            const hiddenResults = data.results.slice(displayCount);
+            
+            html += `<div class="extended-results-container">`;
+            
+            visibleResults.forEach((result, idx) => {
+                html += `
+                    <div class="extended-result-item">
+                        <div class="result-number">${idx + 1}.</div>
+                        <div class="result-content">
+                            ${result.title ? `<div class="result-title">${this.escapeHtml(result.title)}</div>` : ''}
+                            ${result.snippet ? `<div class="result-snippet">${this.escapeHtml(result.snippet)}</div>` : ''}
+                            ${result.url ? `<div class="result-link"><a href="${result.url}" target="_blank" rel="noopener noreferrer">View Source →</a></div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            
+            if (hiddenResults.length > 0) {
+                const uniqueId = `ddg-hidden-${Date.now()}`;
+                html += `
+                    <button class="show-more-button" onclick="app.toggleExtendedResults('${uniqueId}')">
+                        ... and ${hiddenResults.length} more results
+                    </button>
+                    <div id="${uniqueId}" class="extended-results-container hidden">
+                `;
+                
+                hiddenResults.forEach((result, idx) => {
+                    html += `
+                        <div class="extended-result-item">
+                            <div class="result-number">${displayCount + idx + 1}.</div>
+                            <div class="result-content">
+                                ${result.title ? `<div class="result-title">${this.escapeHtml(result.title)}</div>` : ''}
+                                ${result.snippet ? `<div class="result-snippet">${this.escapeHtml(result.snippet)}</div>` : ''}
+                                ${result.url ? `<div class="result-link"><a href="${result.url}" target="_blank" rel="noopener noreferrer">View Source →</a></div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            }
+        }
+        
+        return html;
+    },
+
+    formatOpenFDADisplay(data) {
+        let html = '';
+        
+        if (data.query) {
+            html += `<div class="search-info">
+                <span class="search-info-label">🔍 Query:</span>
+                <span class="search-info-value">"${this.escapeHtml(data.query)}"</span>
+            </div>`;
+        }
+        
+        if (data.results && Array.isArray(data.results)) {
+            html += `<div class="data-field">
+                <strong>FDA Records Found:</strong> ${data.results.length}
+            </div>`;
+            
+            const displayCount = Math.min(3, data.results.length);
+            const visibleResults = data.results.slice(0, displayCount);
+            const hiddenResults = data.results.slice(displayCount);
+            
+            html += `<div class="extended-results-container">`;
+            
+            visibleResults.forEach((result, idx) => {
+                html += `
+                    <div class="extended-result-item">
+                        <div class="result-number">${idx + 1}.</div>
+                        <div class="result-content">
+                            ${result.brand_name ? `<div class="result-title"><strong>Brand:</strong> ${this.escapeHtml(result.brand_name)}</div>` : ''}
+                            ${result.generic_name ? `<div class="result-snippet"><strong>Generic:</strong> ${this.escapeHtml(result.generic_name)}</div>` : ''}
+                            ${result.manufacturer_name ? `<div class="result-snippet"><strong>Manufacturer:</strong> ${this.escapeHtml(result.manufacturer_name)}</div>` : ''}
+                            ${result.product_type ? `<div class="result-snippet"><strong>Type:</strong> ${this.escapeHtml(result.product_type)}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            
+            if (hiddenResults.length > 0) {
+                const uniqueId = `fda-hidden-${Date.now()}`;
+                html += `
+                    <button class="show-more-button" onclick="app.toggleExtendedResults('${uniqueId}')">
+                        ... and ${hiddenResults.length} more results
+                    </button>
+                    <div id="${uniqueId}" class="extended-results-container hidden">
+                `;
+                
+                hiddenResults.forEach((result, idx) => {
+                    html += `
+                        <div class="extended-result-item">
+                            <div class="result-number">${displayCount + idx + 1}.</div>
+                            <div class="result-content">
+                                ${result.brand_name ? `<div class="result-title"><strong>Brand:</strong> ${this.escapeHtml(result.brand_name)}</div>` : ''}
+                                ${result.generic_name ? `<div class="result-snippet"><strong>Generic:</strong> ${this.escapeHtml(result.generic_name)}</div>` : ''}
+                                ${result.manufacturer_name ? `<div class="result-snippet"><strong>Manufacturer:</strong> ${this.escapeHtml(result.manufacturer_name)}</div>` : ''}
+                                ${result.product_type ? `<div class="result-snippet"><strong>Type:</strong> ${this.escapeHtml(result.product_type)}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            }
+        } else {
+            html += `<div class="data-field">
+                <strong>Status:</strong> Data retrieved successfully
+            </div>`;
+        }
+        
+        return html;
+    },
+
+    formatGenericExtendedDisplay(data) {
+        let html = '';
+        
+        if (data.query) {
+            html += `<div class="search-info">
+                <span class="search-info-label">🔍 Query:</span>
+                <span class="search-info-value">"${this.escapeHtml(data.query)}"</span>
+            </div>`;
+        }
+        
+        if (data.search_terms_used && data.search_terms_used.length > 0) {
+            html += `<div class="search-info">
+                <span class="search-info-label">📝 Search Terms:</span>
+                <span class="search-info-value">${data.search_terms_used.map(t => `"${this.escapeHtml(t)}"`).join(', ')}</span>
+            </div>`;
+        }
+        
+        if (data.results && Array.isArray(data.results)) {
+            html += `<div class="data-field">
+                <strong>Results Found:</strong> ${data.results.length}
+            </div>`;
+            
+            const displayCount = Math.min(3, data.results.length);
+            const visibleResults = data.results.slice(0, displayCount);
+            const hiddenResults = data.results.slice(displayCount);
+            
+            html += `<div class="extended-results-container">`;
+            
+            visibleResults.forEach((result, idx) => {
+                html += `
+                    <div class="extended-result-item">
+                        <div class="result-number">${idx + 1}.</div>
+                        <div class="result-content">
+                            ${result.title ? `<div class="result-title">${this.escapeHtml(result.title)}</div>` : ''}
+                            ${result.snippet ? `<div class="result-snippet">${this.escapeHtml(result.snippet)}</div>` : ''}
+                            ${result.url ? `<div class="result-link"><a href="${result.url}" target="_blank" rel="noopener noreferrer">View Source →</a></div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            
+            if (hiddenResults.length > 0) {
+                const uniqueId = `ext-hidden-${Date.now()}`;
+                html += `
+                    <button class="show-more-button" onclick="app.toggleExtendedResults('${uniqueId}')">
+                        ... and ${hiddenResults.length} more results
+                    </button>
+                    <div id="${uniqueId}" class="extended-results-container hidden">
+                `;
+                
+                hiddenResults.forEach((result, idx) => {
+                    html += `
+                        <div class="extended-result-item">
+                            <div class="result-number">${displayCount + idx + 1}.</div>
+                            <div class="result-content">
+                                ${result.title ? `<div class="result-title">${this.escapeHtml(result.title)}</div>` : ''}
+                                ${result.snippet ? `<div class="result-snippet">${this.escapeHtml(result.snippet)}</div>` : ''}
+                                ${result.url ? `<div class="result-link"><a href="${result.url}" target="_blank" rel="noopener noreferrer">View Source →</a></div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            }
+        } else {
+            html += `<div class="data-field">
+                <strong>Status:</strong> Data retrieved successfully
+            </div>`;
+        }
+        
+        return html;
     },
 
     countSourceResults(sourceName, data) {
@@ -2570,7 +2819,6 @@ const app = {
                 return 0;
         }
     },
-    
     getAPIInfo(sourceId) {
         if (!this.apiRegistry) return null;
         
@@ -2601,7 +2849,7 @@ const app = {
             }, 300);
         }, duration);
     },
-    
+
     toggleExpandedList(elementId) {
         const element = document.getElementById(elementId);
         if (element) {
@@ -2637,7 +2885,7 @@ const app = {
         div.textContent = text;
         return div.innerHTML;
     }
-};
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📄 DOM Content Loaded');
