@@ -102,6 +102,37 @@ header {
     background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
 }
 
+.search-progress {
+    border: 2px solid #5AB67C;
+
+}
+
+@keyframes pulse-border {
+    0%, 100% {
+        border-color: #5AB67C;
+    }
+    50% {
+        border-color: #2d7046;
+    }
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #5AB67C 0%, #2d7046 100%);
+    box-shadow: 0 0 10px rgba(28, 85, 24, 0.5);
+}
+
+.progress-database {
+    color: #5AB67C;
+}
+
+.progress-database strong {
+    color: #5AB67C;
+}
+
+.progress-completed {
+    color: #FF6580;
+}
+
 /* NCT BUTTONS - ACTION BAR */
 .new-search-btn {
     background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
