@@ -820,10 +820,16 @@ header p {
 .results-actions-bar {
     position: sticky;
     top: 0;
+    z-index: 100;
+    
+    display: flex;
     gap: 12px;
     margin-bottom: 20px;
-    padding: 0;
+    padding: 15px;
+    
     background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-bottom: 2px solid #e9ecef;
 }
 
 /* New Search button - green theme */
