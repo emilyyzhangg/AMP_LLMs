@@ -2029,7 +2029,7 @@ const app = {
         
         html += `
             <div class="result-card summary-card">
-                <h3>📊 Search Summary 5</h3>
+                <h3>📊 Search Summary 6</h3>
                 <div class="summary-stats">
                     <div class="stat-item">
                         <span class="stat-label">Trials Requested:</span>
