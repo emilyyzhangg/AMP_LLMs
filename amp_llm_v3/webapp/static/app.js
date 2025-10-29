@@ -2258,11 +2258,7 @@ const app = {
                             <strong>NCT Number:</strong> ${nctId}
                         </div>`;
                         
-                        if (trialTitle) {
-                            const abstract = data.description || data.brief_summary;
-                            const shortAbstract = abstract.substring(0, 300);
-                            const needsExpand = abstract.length > 300;
-                            
+                        if (trialTitle && trialCondition && trialIntervention && trialStatus) {
                             html += `<div class="data-field abstract-field">
                                 <div class="trial-title-display">${this.escapeHtml(trialTitle)}</div>
                                 <div class="trial-summary-item">
