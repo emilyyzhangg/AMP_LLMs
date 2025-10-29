@@ -523,6 +523,7 @@ header p {
 .files-container {
     flex: 1;
     min-height: 0;
+    align-items: center;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 30px;
