@@ -818,7 +818,6 @@ header p {
 
 /* Container for compact buttons */
 .results-actions-bar {
-    display: flex;
     gap: 12px;
     margin-bottom: 20px;
     padding: 0;
@@ -826,8 +825,6 @@ header p {
 
 /* Base compact button style */
 .results-action-btn {
-    flex: 1;
-    display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
@@ -853,7 +850,6 @@ header p {
 
 /* New Search button - green theme */
 .new-search-btn {
-    display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
@@ -875,8 +871,6 @@ header p {
 
 /* Download button - blue/teal theme */
 .download-btn {
-    flex: 1;
-    display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
@@ -898,8 +892,6 @@ header p {
 
 /* Save to Server button - purple/pink theme */
 .save-btn {
-    flex: 1;
-    display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
