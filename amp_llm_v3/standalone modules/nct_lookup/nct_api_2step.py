@@ -20,7 +20,7 @@ import asyncio
 import json
 import logging
 
-from config import config
+from nct_config import config
 from nct_models_extended import (
     Step1Request, Step1Response, Step1Status,
     Step2Request, Step2Response, Step2Status,
