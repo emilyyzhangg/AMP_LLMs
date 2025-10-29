@@ -1983,8 +1983,11 @@ const app = {
         const inputArea = document.querySelector('.nct-input-area');
         
         const newSearchBtn = document.createElement('button');
-        newSearchBtn.className = 'new-search-button';
-        newSearchBtn.innerHTML = '<span>🔍</span><span>New Search</span>';
+        newSearchBtn.className = 'action-button new-search-btn';
+        newSearchBtn.innerHTML = `
+            <span class="btn-icon">🔍</span>
+            <span class="btn-text">New Search</span>
+        `;
         newSearchBtn.onclick = () => {
             resultsDiv.innerHTML = '';
             resultsDiv.classList.remove('active');
@@ -2003,7 +2006,6 @@ const app = {
         
         resultsDiv.insertBefore(newSearchBtn, resultsDiv.firstChild);
     },
-
     displayNCTResults(data) {
         const resultsDiv = document.getElementById('nct-results');
         

@@ -465,6 +465,61 @@ header p {
     padding: 30px;
 }
 
+/* ============================================================================
+   NCT Results Action Buttons
+   ============================================================================ */
+
+.results-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.action-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+}
+
+.action-button .btn-icon {
+    font-size: 1.2em;
+}
+
+.download-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.save-btn {
+    background: #28a745;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #218838;
+}
+
+.new-search-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-bottom: 20px;
+}
+
+.action-button.hidden {
+    display: none;
+}
+
 .result-card {
     background: white;
     border: 2px solid #e9ecef;
