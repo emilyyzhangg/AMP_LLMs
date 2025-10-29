@@ -2263,7 +2263,7 @@ const app = {
                             const shortAbstract = abstract.substring(0, 300);
                             const needsExpand = abstract.length > 300;
                             
-                            html += `<div class="trial-summary-box">
+                            html += `<div class="data-field abstract-field">
                                 <div class="trial-title-display">${this.escapeHtml(trialTitle)}</div>
                                 <div class="trial-summary-item">
                                     <strong>Status:</strong> 
