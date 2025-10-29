@@ -1605,10 +1605,8 @@ const app = {
                     resultsDiv.insertAdjacentHTML('beforeend', errorSummaryHTML);
                 }
                 
-                const downloadBtn = document.getElementById('nct-download-btn');
-                const saveBtn = document.getElementById('nct-save-btn');
-                if (downloadBtn) downloadBtn.classList.remove('hidden');
-                if (saveBtn) saveBtn.classList.remove('hidden');
+                // Note: Buttons are now created inside displayNCTResults()
+                // No need to show/hide them separately
                 
             } else {
                 resultsDiv.innerHTML = `
@@ -1989,11 +1987,8 @@ const app = {
             nctInput.value = '';
         }
         
-        // Hide download/save buttons
-        const downloadBtn = document.getElementById('nct-download-btn');
-        const saveBtn = document.getElementById('nct-save-btn');
-        if (downloadBtn) downloadBtn.classList.add('hidden');
-        if (saveBtn) saveBtn.classList.add('hidden');
+        // Note: Buttons are now created dynamically in displayNCTResults()
+        // No need to hide/show them here - they'll be removed when innerHTML is cleared
         
         // Reset API selection to defaults
         if (this.apiRegistry && this.apiRegistry.metadata && this.apiRegistry.metadata.default_enabled) {
