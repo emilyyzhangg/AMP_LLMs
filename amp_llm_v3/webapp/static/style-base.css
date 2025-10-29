@@ -518,8 +518,8 @@ header p {
    ============================================================================ */
 
 .chat-container,
-.research-container,
 .nct-results,
+.research-container,
 .files-container {
     flex: 1;
     min-height: 0;
@@ -1680,6 +1680,7 @@ header p {
    ============================================================================ */
 
 .search-progress {
+    margin-top: 30px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 247, 255, 0.95) 100%);
     border: 2px solid #007bff;
     border-radius: 12px;
