@@ -1987,9 +1987,6 @@ const app = {
             nctInput.value = '';
         }
         
-        // Note: Buttons are now created dynamically in displayNCTResults()
-        // No need to hide/show them here - they'll be removed when innerHTML is cleared
-        
         // Reset API selection to defaults
         if (this.apiRegistry && this.apiRegistry.metadata && this.apiRegistry.metadata.default_enabled) {
             this.selectedAPIs = new Set(this.apiRegistry.metadata.default_enabled);
@@ -2032,7 +2029,7 @@ const app = {
         
         html += `
             <div class="result-card summary-card">
-                <h3>📊 Search Summary</h3>
+                <h3>📊 Search Summary 1</h3>
                 <div class="summary-stats">
                     <div class="stat-item">
                         <span class="stat-label">Trials Requested:</span>
