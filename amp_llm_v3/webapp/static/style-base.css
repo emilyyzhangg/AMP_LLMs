@@ -716,37 +716,6 @@ header p {
     display: block;
 }
 
-.nct-new-search-btn {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    width: 100%;
-    padding: 15px 30px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.95) 100%);
-    border-bottom: 2px solid #e9ecef;
-    margin-bottom: 20px;
-    display: flex;
-    gap: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.nct-new-search-btn button {
-    padding: 12px 24px;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s;
-}
-
-.nct-new-search-btn button:hover {
-    transform: translateY(-2px);
-}
-
 .nct-input-group {
     margin-bottom: 20px;
 }
@@ -1298,47 +1267,6 @@ header p {
     border: 1px solid #FFCCCC;
 }
 
-/* New Search Button Bar */
-.nct-new-search-btn {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    width: calc(100% + 60px);
-    margin: -30px -30px 20px -30px;
-    padding: 15px 30px;
-    background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
-    border-bottom: 2px solid #e9ecef;
-    display: flex;
-    gap: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.nct-new-search-btn button {
-    padding: 12px 24px;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 0.95rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s;
-}
-
-.nct-new-search-btn button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.nct-new-search-btn button:first-child {
-    background: linear-gradient(135deg, #1BEB49 0%, #17C93E 100%);
-}
-
-.nct-new-search-btn button:last-child {
-    background: linear-gradient(135deg, #FFA400 0%, #FF8C00 100%);
-}
 /* ============================================================================
    ENHANCED NCT RESULTS DISPLAY
    ============================================================================ */
