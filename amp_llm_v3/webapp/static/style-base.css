@@ -1,6 +1,6 @@
 /* ============================================================================
    AMP LLM - COMPLETE CSS WITH ALL FIXES
-   UPDATED: Consistent button fonts, reasonable logo size, logout on landing page
+   FIXED: No gap between landing header and content sections
    ============================================================================ */
 
 * {
@@ -250,18 +250,19 @@ header p {
 
 /* ============================================================================
    LANDING PAGE HEADER BANNER - CONSISTENT BUTTON STYLING & LOGOUT
+   FIXED: Remove bottom border and padding to eliminate gap
    ============================================================================ */
 
 .landing-header {
     flex-shrink: 0;
     min-height: 100px;
-    padding: 20px 40px;
+    padding: 20px 40px 20px 40px; /* Remove bottom padding */
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 3px solid #E0E6E8;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-bottom: none; /* Remove border */
+    box-shadow: none; /* Remove shadow */
 }
 
 .landing-header-left {
@@ -356,7 +357,7 @@ header p {
 }
 
 /* ============================================================================
-   MAIN APP - ADDED BORDER FOR CONTRAST
+   MAIN APP - REMOVED BORDER, NO PADDING/MARGIN
    ============================================================================ */
 
 #main-app {
@@ -364,8 +365,8 @@ header p {
     flex-direction: column;
     height: 100%;
     overflow: hidden;
-    border: 3px solid #E0E6E8;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+    margin: 0;
+    padding: 0;
 }
 
 #main-app.on-menu {
@@ -374,14 +375,14 @@ header p {
 }
 
 /* ============================================================================
-   MENU SECTION
+   MENU SECTION - Remove top padding to eliminate gap
    ============================================================================ */
 
 .menu-section {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 40px;
+    padding: 0 40px 40px 40px; /* Remove top padding */
     min-height: 0;
 }
 
@@ -389,6 +390,7 @@ header p {
     font-size: 1.8em;
     color: #333;
     margin-bottom: 30px;
+    margin-top: 30px; /* Add margin-top instead of padding */
     text-align: center;
 }
 
@@ -400,7 +402,7 @@ header p {
 
 .menu-item {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border: 3px solid #dee2e6;
+    border: 2px solid #dee2e6;
     border-radius: 15px;
     padding: 30px 20px;
     cursor: pointer;
@@ -544,7 +546,7 @@ header p {
 .input-area textarea {
     flex: 1;
     padding: 15px;
-    border: 3px solid #ced4da;
+    border: 2px solid #ced4da;
     border-radius: 12px;
     font-size: 15px;
     font-family: inherit;
@@ -611,29 +613,6 @@ header p {
 
 .message.error .avatar {
     background: #dc3545;
-}
-
-.error-breakdown {
-    list-style: none;
-    padding-left: 15px;
-    margin-top: 8px;
-    font-size: 0.9em;
-    color: #666;
-}
-
-.error-breakdown li {
-    margin: 5px 0;
-    padding: 5px;
-    background: #f8f8f8;
-    border-left: 3px solid #ff9800;
-    border-radius: 3px;
-}
-
-.error-note {
-    display: block;
-    margin-top: 3px;
-    color: #888;
-    font-style: italic;
 }
 
 .content {
@@ -783,7 +762,7 @@ header p {
 .nct-input-group textarea {
     width: 100%;
     padding: 12px;
-    border: 3px solid #ced4da;
+    border: 2px solid #ced4da;
     border-radius: 8px;
     font-size: 15px;
     font-family: inherit;
@@ -866,7 +845,7 @@ header p {
 
 .result-card {
     background: white;
-    border: 4px solid #e9ecef;
+    border: 2px solid #e9ecef;
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
@@ -932,7 +911,7 @@ header p {
 
 .summary-card {
     background: white;
-    border: 4px solid #e9ecef;
+    border: 2px solid #e9ecef;
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 25px;
@@ -1015,7 +994,7 @@ header p {
 
 .file-card {
     background: white;
-    border: 3px solid #e9ecef;
+    border: 2px solid #e9ecef;
     border-radius: 12px;
     padding: 20px;
     cursor: pointer;
@@ -1191,7 +1170,7 @@ header p {
 /* API Section - LIGHT BACKGROUND */
 .api-section {
     background: #FFFFFF;
-    border: 4px solid #D5E3F7;
+    border: 2px solid #D5E3F7;
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -1231,7 +1210,7 @@ header p {
     gap: 0.75rem;
     padding: 1rem;
     background: #F8F9FA;
-    border: 3px solid #DEE2E6;
+    border: 2px solid #DEE2E6;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -1692,7 +1671,7 @@ header p {
 
 .search-progress {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 247, 255, 0.95) 100%);
-    border: 4px solid #007bff;
+    border: 2px solid #007bff;
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 20px;
@@ -1975,7 +1954,7 @@ header p {
 /* FIX 3: Enhanced Error Display Styling */
 .error-card {
     background: #fff5f5;
-    border: 4px solid #feb2b2 !important;
+    border: 2px solid #feb2b2 !important;
 }
 
 .error-card h3 {
@@ -2100,7 +2079,7 @@ header p {
 .api-failure-card {
     background: white;
     border: 2px solid #feb2b2;
-    border-left: 6px solid #dc3545;
+    border-left: 5px solid #dc3545;
     border-radius: 8px;
     padding: 15px;
     transition: all 0.3s;
@@ -2432,7 +2411,7 @@ header p {
     padding: 15px;
     margin-bottom: 12px;
     background: #f8f9fa;
-    border-left: 5px solid #0066cc;
+    border-left: 3px solid #0066cc;
     border-radius: 6px;
     transition: all 0.3s;
 }
@@ -2513,7 +2492,7 @@ header p {
 .source-section {
     margin-bottom: 25px;
     background: #ffffff;
-    border: 4px solid #e9ecef;
+    border: 2px solid #e9ecef;
     border-radius: 10px;
     overflow: hidden;
     transition: all 0.3s;
@@ -2554,374 +2533,6 @@ header p {
     margin: 0;
     color: #0056b3;
     font-size: 1.1em;
-}
-/* NCT ID Display */
-.nct-id-display {
-    background: #e3f2fd;
-    padding: 12px 15px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-    border-left: 4px solid #2196F3;
-}
-
-.nct-id-badge {
-    font-family: 'Courier New', monospace;
-    font-weight: 700;
-    color: #1976D2;
-    font-size: 1.1em;
-}
-
-/* Abstract Field */
-.abstract-field {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-}
-
-.abstract-content {
-    line-height: 1.6;
-    margin-top: 8px;
-}
-
-.show-more-button.inline {
-    display: inline;
-    padding: 4px 12px;
-    margin-left: 8px;
-    background: #2196F3;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 0.9em;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.show-more-button.inline:hover {
-    background: #1976D2;
-}
-
-/* Queries Used Box */
-.queries-used-box {
-    background: #fff3e0;
-    border: 2px solid #ff9800;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
-}
-
-.queries-used-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    font-size: 1.05em;
-    color: #e65100;
-}
-
-.queries-icon {
-    font-size: 1.2em;
-}
-
-.queries-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.query-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    padding: 8px 12px;
-    background: white;
-    border-radius: 4px;
-}
-
-.query-number {
-    font-weight: 700;
-    color: #ff9800;
-    min-width: 20px;
-}
-
-.query-text {
-    flex: 1;
-    font-family: 'Courier New', monospace;
-    font-size: 0.95em;
-    color: #5d4037;
-}
-
-/* Results by Query */
-.results-by-query-container {
-    margin-top: 15px;
-}
-
-.results-by-query-header {
-    padding: 10px 15px;
-    background: #e8f5e9;
-    border-left: 4px solid #4caf50;
-    margin-bottom: 15px;
-    border-radius: 4px;
-}
-
-.query-group {
-    background: #f1f8f4;
-    border: 1px solid #c8e6c9;
-    border-radius: 6px;
-    padding: 15px;
-    margin-bottom: 15px;
-}
-
-.query-group-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-}
-
-.query-type-badge {
-    background: #4caf50;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.85em;
-    font-weight: 700;
-}
-
-.query-text {
-    flex: 1;
-    font-family: 'Courier New', monospace;
-    font-size: 0.95em;
-    color: #2e7d32;
-}
-
-.query-count {
-    background: white;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.9em;
-    font-weight: 600;
-    color: #1b5e20;
-}
-
-.numbered-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.numbered-item {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    padding: 6px 12px;
-    background: white;
-    border-radius: 4px;
-}
-
-.item-number {
-    font-weight: 700;
-    color: #4caf50;
-    min-width: 25px;
-}
-
-.item-id {
-    font-family: 'Courier New', monospace;
-    font-size: 0.95em;
-    color: #424242;
-}
-
-/* Search Parameters Box */
-.search-parameters-box {
-    background: #e8eaf6;
-    border: 2px solid #5c6bc0;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
-}
-
-.search-parameters-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    font-size: 1.05em;
-    color: #283593;
-}
-
-.params-icon {
-    font-size: 1.2em;
-}
-
-.search-parameters-content {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.param-item {
-    padding: 8px 12px;
-    background: white;
-    border-radius: 4px;
-    font-size: 0.95em;
-}
-
-.param-item strong {
-    color: #3f51b5;
-    margin-right: 8px;
-}
-
-.conversion-notice {
-    background: #fff8e1;
-    border: 1px solid #ffc107;
-    padding: 10px 15px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.conversion-icon {
-    font-size: 1.2em;
-}
-
-/* Searches Performed (DuckDuckGo) */
-.searches-performed-box {
-    background: #f3e5f5;
-    border: 2px solid #9c27b0;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
-}
-
-.searches-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-    font-size: 1.05em;
-    color: #6a1b9a;
-}
-
-.searches-count {
-    background: white;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.9em;
-    font-weight: 600;
-}
-
-.searches-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
-}
-
-.search-item {
-    background: white;
-    padding: 12px;
-    border-radius: 6px;
-    border: 1px solid #ce93d8;
-}
-
-.search-type-badge {
-    background: #9c27b0;
-    color: white;
-    padding: 3px 8px;
-    border-radius: 3px;
-    font-size: 0.75em;
-    font-weight: 700;
-    display: inline-block;
-    margin-bottom: 6px;
-}
-
-.search-identifier {
-    font-family: 'Courier New', monospace;
-    font-size: 0.9em;
-    color: #4a148c;
-    margin-bottom: 4px;
-    word-break: break-word;
-}
-
-.search-results {
-    font-size: 0.85em;
-    color: #7b1fa2;
-    font-weight: 600;
-}
-
-/* FDA Display */
-.filter-notice {
-    background: #fff8e1;
-    border: 1px solid #ffc107;
-    padding: 12px 15px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.filter-icon {
-    font-size: 1.2em;
-}
-
-.fda-category {
-    margin-bottom: 20px;
-}
-
-.fda-category-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 15px;
-    background: #fafafa;
-    border-left: 4px solid #ff9800;
-    margin-bottom: 12px;
-    border-radius: 4px;
-}
-
-.fda-icon {
-    font-size: 1.3em;
-}
-
-.fda-count {
-    background: #ff9800;
-    color: white;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-size: 0.85em;
-    font-weight: 700;
-    margin-left: auto;
-}
-
-.fda-category-results {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.fda-item {
-    padding: 12px;
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 0.95em;
-}
-
-.fda-item-product {
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 4px;
-}
-
-.fda-item-manufacturer,
-.fda-item-date,
-.fda-item-reactions,
-.fda-item-classification {
-    color: #666;
-    font-size: 0.9em;
-    margin-top: 4px;
 }
 
 /* Responsive Progress */

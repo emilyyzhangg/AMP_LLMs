@@ -1,5 +1,6 @@
 /* ============================================================================
-   BALANCED TRI-COLOR THEME - Clean Landing Header
+   THEME_NAME: Tri-Color Balanced
+   THEME_COLORS: #0E1F81, #1BEB49, #FFA400
    ============================================================================ */
 
 body {
@@ -23,23 +24,17 @@ body {
 header {
     background: linear-gradient(135deg, #081250 0%, #0E1F81 100%);
     border-bottom: 3px solid #1BEB49;
-    box-shadow: 0 4px 16px rgba(27, 235, 73, 0.3);
 }
 
-/* ============================================================================
-   LANDING HEADER - CLEAN WHITE BACKGROUND
-   ============================================================================ */
+/* LANDING HEADER */
 .landing-header {
     background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
-    border-bottom: 3px solid transparent;
-    border-image: linear-gradient(90deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%) 1;
-    box-shadow: 0 4px 12px rgba(14, 31, 129, 0.15);
+    border-bottom: 3px solid #0E1F81;
 }
 
 .logo-container {
     border-color: #1BEB49;
     background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
-    box-shadow: 0 2px 8px rgba(27, 235, 73, 0.2);
 }
 
 .landing-title {
@@ -51,43 +46,22 @@ header {
 
 .landing-version {
     color: #FFA400;
-    font-weight: 600;
 }
 
 .landing-header .theme-button,
 .landing-header .logout-button {
     border-color: #1BEB49;
     color: #0E1F81;
-    background: #FFFFFF;
-    box-shadow: 0 2px 6px rgba(27, 235, 73, 0.15);
 }
 
 .landing-header .theme-button:hover {
     background: linear-gradient(135deg, #F0FFF4 0%, #E6F7FF 100%);
     border-color: #1BEB49;
-    color: #17C93E;
-    box-shadow: 0 4px 12px rgba(27, 235, 73, 0.25);
-}
-
-.landing-header .logout-button:hover {
-    background: linear-gradient(135deg, #FFF0F0 0%, #FFE0E0 100%);
-    border-color: #E74C3C;
-    color: #C0392B;
-    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
 }
 
 /* MENU */
-.menu-title {
-    color: #0E1F81;
-}
-
 .menu-item:hover {
-    box-shadow: 0 10px 25px rgba(27, 235, 73, 0.2);
     border-color: #1BEB49;
-}
-
-.menu-item-title {
-    color: #0E1F81;
 }
 
 /* MESSAGES */
@@ -95,24 +69,13 @@ header {
     background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
 }
 
-.message.system .avatar {
-    background: #FFA400;
-}
-
 .message.user .content {
     background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
 }
 
-.message.system .content {
-    background: #fff4e6;
-    color: #b37400;
-    border: 1px solid #ffd480;
-}
-
 /* INPUTS */
 .input-area textarea:focus,
-.nct-input-group input:focus,
-.nct-input-group textarea:focus {
+.nct-input-group input:focus {
     border-color: #1BEB49;
 }
 
@@ -120,35 +83,29 @@ header {
     background: #1BEB49;
 }
 
-.input-area button:hover:not(:disabled) {
-    background: #17c93e;
+/* NCT ACTION BAR */
+.new-search-btn {
+    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 100%);
 }
 
-/* NCT */
-.nct-input-group label {
-    color: #0E1F81;
+.download-btn {
+    background: linear-gradient(135deg, #1BEB49 0%, #17C93E 100%);
 }
 
+.save-btn {
+    background: linear-gradient(135deg, #FFA400 0%, #FF8C00 100%);
+}
+
+/* NCT INPUTS */
 .nct-submit {
     background: #1BEB49;
-}
-
-.nct-submit:hover:not(:disabled) {
-    background: #17c93e;
 }
 
 .nct-save {
     background: #FFA400;
 }
 
-.nct-save:hover {
-    background: #e69500;
-}
-
-.progress-text {
-    color: #1BEB49;
-}
-
+/* RESULTS */
 .result-card:hover {
     border-color: #1BEB49;
 }
@@ -161,88 +118,29 @@ header {
     background: #0E1F81;
 }
 
-.extract-button:hover {
-    background: #0b1866;
-}
-
-.summary-card h3 {
-    color: #0E1F81;
-}
-
-.summary-item-value.success {
-    color: #1BEB49;
-}
-
-.summary-item-value.info {
-    color: #0E1F81;
-}
-
 /* FILES */
 .file-upload-btn {
     background: #1BEB49;
-}
-
-.file-upload-btn:hover {
-    background: #17c93e;
 }
 
 .file-refresh-btn {
     background: #0E1F81;
 }
 
-.file-refresh-btn:hover {
-    background: #0b1866;
-}
-
 .file-card:hover {
     border-color: #1BEB49;
-    box-shadow: 0 5px 15px rgba(27, 235, 73, 0.2);
-}
-
-.file-card-icon {
-    color: #0E1F81;
 }
 
 .file-card-load {
     background: #1BEB49;
 }
 
-.file-card-load:hover {
-    background: #17c93e;
-}
-
 /* LOADING */
-.loading {
-    color: #1BEB49;
-}
-
 .spinner {
-    border: 3px solid rgba(27, 235, 73, 0.3);
     border-top-color: #1BEB49;
 }
 
 /* SCROLLBAR */
-.chat-container::-webkit-scrollbar-thumb,
-.nct-results::-webkit-scrollbar-thumb,
-.files-container::-webkit-scrollbar-thumb {
+.chat-container::-webkit-scrollbar-thumb {
     background: #1BEB49;
-}
-
-.chat-container::-webkit-scrollbar-thumb:hover,
-.nct-results::-webkit-scrollbar-thumb:hover,
-.files-container::-webkit-scrollbar-thumb:hover {
-    background: #17c93e;
-}
-
-.model-button:hover {
-    border-color: #1BEB49;
-    box-shadow: 0 5px 15px rgba(27, 235, 73, 0.2);
-}
-
-.new-search-button {
-    background: linear-gradient(135deg, #0E1F81 0%, #1BEB49 50%, #FFA400 100%);
-}
-
-.new-search-button:hover {
-    background: linear-gradient(135deg, #0A1659 0%, #17C93E 50%, #E69500 100%);
 }
