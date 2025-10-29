@@ -120,7 +120,7 @@ class APIRegistry:
         APIDefinition(
             id="uniprot",
             name="UniProt",
-            description="Protein sequence and functional information database",
+            description="Protein sequence and functional information database 1",
             category="extended",
             client_class="UniProtClient",
             enabled_by_default=True
