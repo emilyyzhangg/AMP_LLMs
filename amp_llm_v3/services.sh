@@ -76,7 +76,7 @@ show_status() {
     
     echo ""
     echo "Ports:"
-    for port in 8000 8001 8002; do
+    for port in 9000 9001 9002; do
         if lsof -i :$port | grep -q LISTEN; then
             echo -e "  ${GREEN}✅ Port $port - Active${NC}"
         else

@@ -702,7 +702,7 @@ if __name__ == "__main__":
     import os
     
     load_dotenv()
-    port = int(os.getenv("NCT_SERVICE_PORT", "8002"))
+    port = int(os.getenv("NCT_SERVICE_PORT", "9002"))
     
     logger.info(f"Starting NCT Lookup API on port {port}")
     uvicorn.run(app, host="0.0.0.0", port=port)

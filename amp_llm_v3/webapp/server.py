@@ -643,7 +643,7 @@ async def nct_lookup(
     Fetch clinical trial data using standalone NCT API service.
     
     This proxies requests to the standalone NCT lookup service running
-    on port 8002, which provides comprehensive trial data from multiple sources.
+    on port 9002, which provides comprehensive trial data from multiple sources.
     """
     logger.info(f"NCT Lookup: {len(request.nct_ids)} trials")
     
