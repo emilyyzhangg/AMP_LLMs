@@ -812,6 +812,75 @@ header p {
     gap: 8px;
 }
 
+/* ============================================================================
+   NCT Results Action Buttons - COMPACT VERSION
+   ============================================================================ */
+
+/* Container for compact buttons */
+.results-actions-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 0;
+}
+
+/* Base compact button style */
+.results-action-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+    justify-content: center;
+}
+
+.results-action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.results-action-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* New Search button - green theme */
+.new-search-btn {
+    background: linear-gradient(135deg, #1BEB49 0%, #18d142 100%);
+    color: #0E1F81;
+}
+
+.new-search-btn:hover {
+    background: linear-gradient(135deg, #18d142 0%, #15b838 100%);
+}
+
+/* Download button - blue/teal theme */
+.download-btn {
+    background: linear-gradient(135deg, #00C9FF 0%, #00A8E8 100%);
+    color: white;
+}
+
+.download-btn:hover {
+    background: linear-gradient(135deg, #00B8EE 0%, #0096D6 100%);
+}
+
+/* Save to Server button - purple/pink theme */
+.save-btn {
+    background: linear-gradient(135deg, #FF6B9D 0%, #C06C84 100%);
+    color: white;
+}
+
+.save-btn:hover {
+    background: linear-gradient(135deg, #F55A8E 0%, #B05A72 100%);
+}
+
 .result-card {
     background: white;
     border: 2px solid #e9ecef;
