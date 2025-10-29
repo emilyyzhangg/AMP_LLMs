@@ -2218,7 +2218,7 @@ const app = {
                     sourceCount++;
                 }
             });
-            
+
             html += `
                 <div class="result-card trial-card">
                     <div class="trial-header">
@@ -2227,19 +2227,6 @@ const app = {
                             <div class="trial-title-display">${this.escapeHtml(trialTitle)}</div>
                         </div>
                         <span class="source-count">${sourceCount} sources</span>
-                    </div>
-                    
-                    <div class="trial-summary-box">
-                        <div class="trial-summary-item">
-                            <strong>Status:</strong> 
-                            <span class="status-badge status-${trialStatus.toLowerCase().replace(/\s+/g, '-')}">${this.escapeHtml(trialStatus)}</span>
-                        </div>
-                        <div class="trial-summary-item">
-                            <strong>Condition:</strong> ${this.escapeHtml(trialCondition)}
-                        </div>
-                        <div class="trial-summary-item">
-                            <strong>Intervention:</strong> ${this.escapeHtml(trialIntervention)}
-                        </div>
                     </div>
             `;
             
@@ -2276,7 +2263,20 @@ const app = {
                             const shortAbstract = abstract.substring(0, 300);
                             const needsExpand = abstract.length > 300;
                             
-                            html += `<div class="data-field abstract-field">
+                            html += `<div class="data-field summary-field">
+                                <div class="trial-summary-box">
+                                    <div class="trial-summary-item">
+                                        <strong>Status:</strong> 
+                                        <span class="status-badge status-${trialStatus.toLowerCase().replace(/\s+/g, '-')}">${this.escapeHtml(trialStatus)}</span>
+                                    </div>
+                                    <div class="trial-summary-item">
+                                        <strong>Condition:</strong> ${this.escapeHtml(trialCondition)}
+                                    </div>
+                                    <div class="trial-summary-item">
+                                        <strong>Intervention:</strong> ${this.escapeHtml(trialIntervention)}
+                                    </div>
+                                </div>
+
                                 <strong>Abstract:</strong>
                                 <div class="abstract-text">
                                     ${this.escapeHtml(shortAbstract)}${needsExpand ? '...' : ''}
