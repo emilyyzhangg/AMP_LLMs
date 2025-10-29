@@ -2070,27 +2070,26 @@ const app = {
         
         // Store results globally for action buttons
         window.lastNCTResults = data;
-        
+    
         let html = '';
         
-        // ====== NEW: ACTION BAR (STICKY AT TOP) ======
+        // Updated button HTML structure to match the New Search button
         html += `
-            <div class="nct-action-bar">
-                <button class="nct-action-button new-search-btn" onclick="app.startNewNCTSearch()">
+            <div class="results-actions">
+                <button class="action-button new-search-btn" onclick="this.parentElement.nextElementSibling.querySelector('.new-search-button')?.click(); event.preventDefault();">
                     <span class="btn-icon">🔍</span>
                     <span class="btn-text">New Search</span>
                 </button>
-                <button class="nct-action-button download-btn" onclick="app.downloadNCTResults()">
+                <button class="action-button download-btn" onclick="app.downloadNCTResults(); event.preventDefault();">
                     <span class="btn-icon">📥</span>
                     <span class="btn-text">Download</span>
                 </button>
-                <button class="nct-action-button save-btn" onclick="app.saveNCTResults()">
+                <button class="action-button save-btn" onclick="app.saveNCTResults(); event.preventDefault();">
                     <span class="btn-icon">💾</span>
                     <span class="btn-text">Save to Server</span>
                 </button>
             </div>
         `;
-        // ====== END ACTION BAR ======
         
         html += `
             <div class="result-card summary-card">

@@ -473,6 +473,7 @@ header p {
     display: flex;
     gap: 12px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .action-button {
@@ -486,38 +487,55 @@ header p {
     align-items: center;
     gap: 10px;
     transition: all 0.2s;
+    background: #4CAF50;  /* Green background like the top button */
+    color: white;
 }
 
 .action-button:hover {
     transform: translateY(-2px);
+    opacity: 0.9;
 }
 
 .action-button .btn-icon {
     font-size: 1.2em;
 }
 
-.download-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+.action-button .btn-text {
+    font-size: 15px;
 }
 
+/* All three buttons get the same green style */
+.new-search-btn,
+.download-btn,
 .save-btn {
-    background: #28a745;
+    background: #4CAF50;
     color: white;
-}
-
-.save-btn:hover {
-    background: #218838;
-}
-
-.new-search-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    margin-bottom: 20px;
 }
 
 .action-button.hidden {
     display: none;
+}
+
+/* Keep the separate button that gets added via JS */
+.new-search-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+    background: #4CAF50;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.new-search-button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
 }
 
 .result-card {
