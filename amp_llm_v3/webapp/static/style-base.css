@@ -853,7 +853,6 @@ header p {
 
 /* New Search button - green theme */
 .new-search-btn {
-    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -866,7 +865,7 @@ header p {
     cursor: pointer;
     transition: all 0.3s ease;
     background: linear-gradient(135deg, #1BEB49 0%, #18d142 100%);
-    color: #0E1F81;
+    color: white;
 }
 
 .new-search-btn:hover {
