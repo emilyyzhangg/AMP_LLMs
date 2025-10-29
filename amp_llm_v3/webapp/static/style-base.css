@@ -1196,7 +1196,6 @@ header p {
     display: none !important;
 }
 
-/* Results area COMPLETELY HIDDEN by default - NO EMPTY SPACE */
 .nct-results {
     flex: 1;
     min-height: 0;
