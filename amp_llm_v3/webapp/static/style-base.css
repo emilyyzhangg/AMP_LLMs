@@ -818,40 +818,15 @@ header p {
 
 /* Container for compact buttons */
 .results-actions-bar {
+    position: sticky;
+    top: 0;
     gap: 12px;
     margin-bottom: 20px;
     padding: 0;
 }
 
-/* Base compact button style */
-.results-action-btn {
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 14px 24px;
-    font-size: 1em;
-    font-weight: 600;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.results-action-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.results-action-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
 /* New Search button - green theme */
 .new-search-btn {
-    position: sticky;
-    top: 0;
     align-items: center;
     justify-content: center;
     gap: 10px;
@@ -873,8 +848,6 @@ header p {
 
 /* Download button - blue/teal theme */
 .download-btn {
-    position: sticky;
-    top: 0;
     align-items: center;
     justify-content: center;
     gap: 10px;
@@ -896,8 +869,6 @@ header p {
 
 /* Save to Server button - purple/pink theme */
 .save-btn {
-    position: sticky;
-    top: 0;
     align-items: center;
     justify-content: center;
     gap: 10px;
