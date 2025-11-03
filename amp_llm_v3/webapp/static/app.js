@@ -3046,15 +3046,7 @@ const app = {
                         if (data.query_string) {
                             html += `<div class="search-info">
                                 <span class="search-info-label">🔗 Exact API Query:</span>
-                                <code class="api-query-string">${this.escapeHtml(data.query_string)}</code>
-                            </div>`;
-                        }
-                        
-                        // Display search parameters if available
-                        if (data.search_params) {
-                            html += `<div class="search-info">
-                                <span class="search-info-label">⚙️ Search Parameters:</span>
-                                <pre class="search-params-json">${JSON.stringify(data.search_params, null, 2)}</pre>
+                                <code class="api-query-string">${this.escapeHtml(data.queries_used)}</code>
                             </div>`;
                         }
                         
