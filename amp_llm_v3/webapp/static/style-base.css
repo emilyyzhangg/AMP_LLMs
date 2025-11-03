@@ -2485,6 +2485,195 @@ header p {
     }
 }
 
+/* Search query display */
+.search-queries-list {
+    margin-top: 8px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 12px;
+    border-left: 3px solid #1BEB49;
+}
+
+.search-query-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 8px;
+}
+
+.search-query-item:last-child {
+    margin-bottom: 0;
+}
+
+.query-number {
+    color: #666;
+    font-weight: 600;
+    min-width: 20px;
+}
+
+.query-code {
+    flex: 1;
+    background: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-size: 0.9em;
+    color: #0E1F81;
+    word-break: break-all;
+    border: 1px solid #e1e4e8;
+}
+
+/* API query string display */
+.api-query-string {
+    display: block;
+    background: #f8f9fa;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-size: 0.85em;
+    color: #24292e;
+    word-break: break-all;
+    border: 1px solid #e1e4e8;
+    margin-top: 6px;
+    overflow-x: auto;
+}
+
+/* Search parameters JSON display */
+.search-params-json {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-size: 0.85em;
+    color: #24292e;
+    border: 1px solid #e1e4e8;
+    margin-top: 6px;
+    overflow-x: auto;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* PMID list field */
+.pmid-list-field {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e1e4e8;
+}
+
+.toggle-list-btn {
+    background: #1BEB49;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    margin-left: 12px;
+    transition: all 0.2s ease;
+}
+
+.toggle-list-btn:hover {
+    background: #0E1F81;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(14, 31, 129, 0.2);
+}
+
+.toggle-list-btn:active {
+    transform: translateY(0);
+}
+
+/* PMID list container */
+.pmid-list-container {
+    margin-top: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #e1e4e8;
+}
+
+.pmid-list-container.hidden {
+    display: none;
+}
+
+/* PMID grid - responsive grid layout */
+.pmid-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+}
+
+/* Individual PMID links */
+.pmid-link {
+    display: block;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    text-align: center;
+    color: #0E1F81;
+    text-decoration: none;
+    font-weight: 500;
+    border: 1px solid #e1e4e8;
+    transition: all 0.2s ease;
+    font-size: 0.9em;
+}
+
+.pmid-link:hover {
+    background: #0E1F81;
+    color: white;
+    border-color: #0E1F81;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(14, 31, 129, 0.15);
+}
+
+.pmid-link:active {
+    transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .pmid-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 6px;
+    }
+    
+    .pmid-link {
+        padding: 6px 8px;
+        font-size: 0.85em;
+    }
+    
+    .query-code {
+        font-size: 0.85em;
+    }
+    
+    .api-query-string {
+        font-size: 0.8em;
+    }
+}
+
+/* Enhanced search info sections */
+.search-info {
+    margin-bottom: 12px;
+}
+
+.search-info-label {
+    display: inline-block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.search-info-value {
+    display: inline-block;
+    color: #666;
+}
+
+/* Make sure existing data-field styling works well with new content */
+.data-field strong {
+    color: #333;
+    font-weight: 600;
+}
+
 /* ============================================================================
    LOGO SIZE RESPONSIVE BREAKPOINTS
    ============================================================================ */

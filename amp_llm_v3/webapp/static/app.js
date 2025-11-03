@@ -3019,16 +3019,42 @@ const app = {
                         }
                     
                     } else if (sourceName === 'pubmed') {
+                        // Display search strategy
                         if (data.search_strategy) {
                             html += `<div class="search-info">
                                 <span class="search-info-label">🔍 Search Strategy:</span>
                                 <span class="search-info-value">${this.escapeHtml(data.search_strategy)}</span>
                             </div>`;
                         }
+                        
+                        // Display exact search queries with full details
                         if (data.search_queries && data.search_queries.length > 0) {
                             html += `<div class="search-info">
-                                <span class="search-info-label">📝 Queries Used:</span>
-                                <span class="search-info-value">${data.search_queries.map(q => `"${this.escapeHtml(q)}"`).join(', ')}</span>
+                                <span class="search-info-label">📝 Search Queries Executed:</span>
+                                <div class="search-queries-list">
+                                    ${data.search_queries.map((q, idx) => `
+                                        <div class="search-query-item">
+                                            <span class="query-number">${idx + 1}.</span>
+                                            <code class="query-code">${this.escapeHtml(q)}</code>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>`;
+                        }
+                        
+                        // Display exact API query string if available
+                        if (data.query_string) {
+                            html += `<div class="search-info">
+                                <span class="search-info-label">🔗 Exact API Query:</span>
+                                <code class="api-query-string">${this.escapeHtml(data.query_string)}</code>
+                            </div>`;
+                        }
+                        
+                        // Display search parameters if available
+                        if (data.search_params) {
+                            html += `<div class="search-info">
+                                <span class="search-info-label">⚙️ Search Parameters:</span>
+                                <pre class="search-params-json">${JSON.stringify(data.search_params, null, 2)}</pre>
                             </div>`;
                         }
                         
@@ -3036,39 +3062,64 @@ const app = {
                             <strong>Articles Found:</strong> ${resultCount}
                         </div>`;
                         
+                        // Display all PMIDs as a formatted list with links
                         if (data.pmids && data.pmids.length > 0) {
                             const uniqueId = `source-${nctId}-${sourceName}-${Date.now()}`;
-                            const visibleCount = 5;
-                            const visiblePMIDs = data.pmids.slice(0, visibleCount);
-                            const hiddenPMIDs = data.pmids.slice(visibleCount);
                             
-                            html += `<div class="data-field pmid-field">
-                                <strong>PMIDs:</strong> 
-                                <span class="id-list">
-                                    ${visiblePMIDs.join(', ')}
-                                    ${hiddenPMIDs.length > 0 ? `
-                                        <span class="show-more-inline" onclick="app.toggleExpandedList('${uniqueId}-pmids')">
-                                            <strong>(+${hiddenPMIDs.length} more)</strong>
-                                        </span>
-                                        <span id="${uniqueId}-pmids" class="expanded-list hidden">
-                                            , ${hiddenPMIDs.join(', ')}
-                                        </span>
-                                    ` : ''}
-                                </span>
+                            html += `<div class="data-field pmid-list-field">
+                                <strong>PMIDs (${data.pmids.length} total):</strong>
+                                <button class="toggle-list-btn" onclick="app.togglePMIDList('${uniqueId}-pmids')">
+                                    Show All
+                                </button>
+                                <div id="${uniqueId}-pmids" class="pmid-list-container hidden">
+                                    <div class="pmid-grid">
+                                        ${data.pmids.map(pmid => `
+                                            <a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            class="pmid-link">${pmid}</a>
+                                        `).join('')}
+                                    </div>
+                                </div>
                             </div>`;
                         }
-                    
                     } else if (sourceName === 'pmc') {
+                        // Display search strategy
                         if (data.search_strategy) {
                             html += `<div class="search-info">
                                 <span class="search-info-label">🔍 Search Strategy:</span>
                                 <span class="search-info-value">${this.escapeHtml(data.search_strategy)}</span>
                             </div>`;
                         }
+                        
+                        // Display exact search queries with full details
                         if (data.search_queries && data.search_queries.length > 0) {
                             html += `<div class="search-info">
-                                <span class="search-info-label">📝 Queries Used:</span>
-                                <span class="search-info-value">${data.search_queries.map(q => `"${this.escapeHtml(q)}"`).join(', ')}</span>
+                                <span class="search-info-label">📝 Search Queries Executed:</span>
+                                <div class="search-queries-list">
+                                    ${data.search_queries.map((q, idx) => `
+                                        <div class="search-query-item">
+                                            <span class="query-number">${idx + 1}.</span>
+                                            <code class="query-code">${this.escapeHtml(q)}</code>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>`;
+                        }
+                        
+                        // Display exact API query string if available
+                        if (data.query_string) {
+                            html += `<div class="search-info">
+                                <span class="search-info-label">🔗 Exact API Query:</span>
+                                <code class="api-query-string">${this.escapeHtml(data.query_string)}</code>
+                            </div>`;
+                        }
+                        
+                        // Display search parameters if available
+                        if (data.search_params) {
+                            html += `<div class="search-info">
+                                <span class="search-info-label">⚙️ Search Parameters:</span>
+                                <pre class="search-params-json">${JSON.stringify(data.search_params, null, 2)}</pre>
                             </div>`;
                         }
                         
@@ -3076,25 +3127,47 @@ const app = {
                             <strong>Articles Found:</strong> ${resultCount}
                         </div>`;
                         
-                        if (data.pmids && data.pmids.length > 0) {
+                        // Display PMCIDs as a formatted list with links
+                        if (data.pmcids && data.pmcids.length > 0) {
                             const uniqueId = `source-${nctId}-${sourceName}-${Date.now()}`;
-                            const visibleCount = 5;
-                            const visiblePMIDs = data.pmids.slice(0, visibleCount);
-                            const hiddenPMIDs = data.pmids.slice(visibleCount);
                             
-                            html += `<div class="data-field pmid-field">
-                                <strong>PMIDs:</strong> 
-                                <span class="id-list">
-                                    ${visiblePMIDs.join(', ')}
-                                    ${hiddenPMIDs.length > 0 ? `
-                                        <span class="show-more-inline" onclick="app.toggleExpandedList('${uniqueId}-pmids')">
-                                            <strong>(+${hiddenPMIDs.length} more)</strong>
-                                        </span>
-                                        <span id="${uniqueId}-pmids" class="expanded-list hidden">
-                                            , ${hiddenPMIDs.join(', ')}
-                                        </span>
-                                    ` : ''}
-                                </span>
+                            html += `<div class="data-field pmid-list-field">
+                                <strong>PMCIDs (${data.pmcids.length} total):</strong>
+                                <button class="toggle-list-btn" onclick="app.togglePMIDList('${uniqueId}-pmcids')">
+                                    Show All
+                                </button>
+                                <div id="${uniqueId}-pmcids" class="pmid-list-container hidden">
+                                    <div class="pmid-grid">
+                                        ${data.pmcids.map(pmcid => `
+                                            <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/${pmcid}/" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            class="pmid-link">${pmcid}</a>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>`;
+                        }
+                        
+                        // Also show PMIDs if available (PMC often returns both)
+                        if (data.pmids && data.pmids.length > 0) {
+                            const uniqueId = `source-${nctId}-${sourceName}-pmids-${Date.now()}`;
+                            
+                            html += `<div class="data-field pmid-list-field">
+                                <strong>PMIDs (${data.pmids.length} total):</strong>
+                                <button class="toggle-list-btn" onclick="app.togglePMIDList('${uniqueId}')">
+                                    Show All
+                                </button>
+                                <div id="${uniqueId}" class="pmid-list-container hidden">
+                                    <div class="pmid-grid">
+                                        ${data.pmids.map(pmid => `
+                                            <a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            class="pmid-link">${pmid}</a>
+                                        `).join('')}
+                                    </div>
+                                </div>
                             </div>`;
                         }
                     } else if (sourceName === 'pmc_bioc') {
@@ -3603,6 +3676,21 @@ const app = {
             button.textContent = isHidden ? 
                 `... and ${count} more results` : 
                 `Show less`;
+        }
+    },
+
+    togglePMIDList(elementId) {
+        const element = document.getElementById(elementId);
+        const button = document.querySelector(`[onclick="app.togglePMIDList('${elementId}')"]`);
+        if (element && button) {
+            element.classList.toggle('hidden');
+            const isHidden = element.classList.contains('hidden');
+            button.textContent = isHidden ? 'Show All' : 'Hide';
+            
+            // Smooth scroll to button if showing
+            if (!isHidden) {
+                button.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         }
     },
 
