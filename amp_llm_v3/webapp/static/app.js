@@ -3830,7 +3830,7 @@ const app = {
         
         this.addMessage('research-container', 'user', `Annotate: ${nctId}`);
         
-        // Use port 8002 for research API
+        // Use port 9002 for research API
         const RESEARCH_API = 'http://localhost:9002';
         
         // Step 1: Check if file exists

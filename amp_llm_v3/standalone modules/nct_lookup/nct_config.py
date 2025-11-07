@@ -30,9 +30,9 @@ class NCTConfig:
     """Configuration for NCT lookup service"""
     
     # Service Ports (from .env)
-    MAIN_SERVER_PORT: int = int(os.getenv("MAIN_SERVER_PORT", "8000"))
-    CHAT_SERVICE_PORT: int = int(os.getenv("CHAT_SERVICE_PORT", "8001"))
-    NCT_SERVICE_PORT: int = int(os.getenv("NCT_SERVICE_PORT", "8002"))
+    MAIN_SERVER_PORT: int = int(os.getenv("MAIN_SERVER_PORT", "9000"))
+    CHAT_SERVICE_PORT: int = int(os.getenv("CHAT_SERVICE_PORT", "9001"))
+    NCT_SERVICE_PORT: int = int(os.getenv("NCT_SERVICE_PORT", "9002"))
     
     # Domain
     PUBLIC_DOMAIN: str = os.getenv("PUBLIC_DOMAIN", "localhost")
