@@ -3831,7 +3831,7 @@ const app = {
         this.addMessage('research-container', 'user', `Annotate: ${nctId}`);
         
         // Use port 8002 for research API
-        const RESEARCH_API = 'http://localhost:8002';
+        const RESEARCH_API = 'http://localhost:9002';
         
         // Step 1: Check if file exists
         const checkingId = this.addMessage('research-container', 'system', 
@@ -3951,7 +3951,7 @@ const app = {
             this.addMessage('research-container', 'error', 
                 `❌ System Error\n\n${error.message}\n\n` +
                 `This usually means:\n` +
-                `• Research API is not running (port 8002)\n` +
+                `• Research API is not running (port 9002)\n` +
                 `• Network connection issues\n\n` +
                 `Start the research API:\n` +
                 `cd amp_llm_v3/webapp\n` +
@@ -3960,7 +3960,7 @@ const app = {
             console.error('Annotation error:', error);
         }
     },
-    
+
     countSources(sources) {
         if (!sources) return 0;
         
