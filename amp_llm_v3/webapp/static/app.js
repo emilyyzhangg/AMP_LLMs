@@ -351,12 +351,11 @@ const app = {
         if (modeElement) {
             modeElement.classList.add('active');
         }
-
+        
         const titles = {
             'chat': { title: '💬 Chat with LLM', subtitle: 'Interactive conversation with AI models' },
-            'research': { title: '📚 Research Assistant', subtitle: 'RAG-powered trial analysis' },
+            'research': { title: '🔬 Research Assistant', subtitle: 'Automated clinical trial annotation' },
             'nct': { title: '🔍 NCT Lookup', subtitle: 'Search clinical trials' },
-            'nct2step': { title: '🔬 NCT 2-Step Search', subtitle: 'Advanced search with customizable fields' },
             'files': { title: '📁 File Manager', subtitle: 'Browse and manage trial data' }
         };
         
@@ -369,17 +368,12 @@ const app = {
         if (mode === 'chat') {
             this.initializeChatMode();
         } else if (mode === 'research') {
-            this.ensureChatInfoBar();
+            this.initializeResearchMode();  // ← ADD THIS LINE
         } else if (mode === 'files') {
             this.loadFiles();
         } else if (mode === 'nct') {
             this.buildAPICheckboxes();
-        } else if (mode === 'nct2step') {  // ✅ ADD THIS
-        // Reset if needed
-        if (!this.nct2step.currentNCT) {
-            this.resetStep1();
-            }   
-        }
+        }    
     },
 
     updateBackButton() {
@@ -1724,36 +1718,16 @@ const app = {
             
             if (!text) return;
             
-            this.addMessage('research-container', 'user', text);
             input.value = '';
             
-            const loadingId = this.addMessage('research-container', 'system', '🤔 Processing query...');
-            
-            try {
-                const response = await fetch(`${this.API_BASE}/research`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${this.apiKey}`
-                    },
-                    body: JSON.stringify({
-                        query: text,
-                        model: 'llama3.2',
-                        max_trials: 10
-                    })
-                });
-                
-                const data = await response.json();
-                
-                document.getElementById(loadingId)?.remove();
-                
-                this.addMessage('research-container', 'assistant', 
-                    `${data.answer}\n\n💡 Used ${data.trials_used} trial(s)`);
-                
-            } catch (error) {
-                document.getElementById(loadingId)?.remove();
-                this.addMessage('research-container', 'error', 'Error: ' + error.message);
+            // Check if model is selected
+            if (!this.currentModel) {
+                this.addMessage('research-container', 'error', 
+                    '❌ Please select a model first');
+                return;
             }
+            
+            await this.sendResearchMessage(text);
         }
     },
 
@@ -3618,6 +3592,392 @@ const app = {
         
         api = this.apiRegistry.extended.find(a => a.id === sourceId);
         return api;
+    },
+
+    // =========================================================================
+    // Research Assistant Mode - NCT Annotation System
+    // =========================================================================
+
+    async initializeResearchMode() {
+        console.log('🚀 Initializing Research Assistant mode...');
+        
+        const container = document.getElementById('research-container');
+        container.innerHTML = '';
+        
+        // Remove any existing info bar
+        this.removeInfoBar();
+        
+        // Reset state
+        this.currentModel = null;
+        this.currentConversationId = null;
+        
+        const input = document.getElementById('research-input');
+        input.disabled = true;
+        input.placeholder = 'Select a model first...';
+        
+        const loadingId = this.addMessage('research-container', 'system', 
+            '🔄 Loading available models...');
+        
+        try {
+            // Fetch models from chat service
+            console.log('📡 Fetching models from:', `${this.API_BASE}/models`);
+            
+            const response = await fetch(`${this.API_BASE}/models`, {
+                headers: { 
+                    'Authorization': `Bearer ${this.apiKey}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            console.log('📥 Response status:', response.status);
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ Models data:', data);
+                
+                if (!data.models || data.models.length === 0) {
+                    document.getElementById(loadingId)?.remove();
+                    this.addMessage('research-container', 'error', 
+                        '❌ No models available.\n\n' +
+                        'The chat service is running but no models are available.\n\n' +
+                        'To fix:\n' +
+                        '1. Check Ollama: ollama list\n' +
+                        '2. Install a model: ollama pull llama3.2\n' +
+                        '3. Refresh this page');
+                    return;
+                }
+                
+                this.availableModels = data.models;
+                console.log('✅ Loaded models:', this.availableModels);
+                
+                document.getElementById(loadingId)?.remove();
+                this.showResearchModelSelection();
+                
+            } else {
+                const errorText = await response.text();
+                console.error('❌ Failed to load models:', response.status, errorText);
+                
+                document.getElementById(loadingId)?.remove();
+                this.addMessage('research-container', 'error', 
+                    `❌ Failed to load models (HTTP ${response.status})\n\n` +
+                    `The chat service may not be running properly.\n\n` +
+                    `To fix:\n` +
+                    `1. Restart chat service:\n` +
+                    `   cd "standalone modules/chat_with_llm"\n` +
+                    `   uvicorn chat_api:app --port 8001 --reload\n\n` +
+                    `2. Check: curl http://localhost:8001/models\n\n` +
+                    `Error: ${errorText.substring(0, 200)}`);
+            }
+        } catch (error) {
+            console.error('❌ Exception loading models:', error);
+            
+            document.getElementById(loadingId)?.remove();
+            this.addMessage('research-container', 'error', 
+                '❌ Connection Error\n\n' +
+                'Cannot connect to the chat service.\n\n' +
+                'The chat service must be running on port 8001.\n\n' +
+                'To start it:\n' +
+                '1. Open terminal\n' +
+                '2. cd amp_llm_v3/standalone\\ modules/chat_with_llm\n' +
+                '3. uvicorn chat_api:app --port 8001 --reload\n\n' +
+                'Then refresh this page.\n\n' +
+                `Error: ${error.message}`);
+        }
+    },
+
+    showResearchModelSelection() {
+        console.log('📦 Showing model selection for Research Assistant');
+        
+        const container = document.getElementById('research-container');
+        
+        this.addMessage('research-container', 'system', 
+            '🔬 Clinical Trial Annotation System\n\n' +
+            'This tool will:\n' +
+            '1. Load trial data from saved JSON files\n' +
+            '2. Parse and extract relevant information\n' +
+            '3. Generate structured annotation prompts\n' +
+            '4. Use AI to annotate peptide clinical trials\n\n' +
+            '📋 Select a model to begin:');
+        
+        const selectionDiv = document.createElement('div');
+        selectionDiv.className = 'model-selection';
+        selectionDiv.id = 'research-model-selection';
+        
+        this.availableModels.forEach((model) => {
+            const modelName = typeof model === 'string' ? model : (model.name || String(model));
+            
+            console.log(`Creating button for model: ${modelName}`);
+            
+            const button = document.createElement('button');
+            button.className = 'model-button';
+            button.type = 'button';
+            button.setAttribute('data-model-name', modelName);
+            
+            const icon = document.createElement('span');
+            icon.textContent = '🤖';
+            icon.style.fontSize = '1.2em';
+            
+            const name = document.createElement('span');
+            name.textContent = modelName;
+            name.style.flex = '1';
+            name.style.textAlign = 'left';
+            name.style.marginLeft = '10px';
+            
+            const arrow = document.createElement('span');
+            arrow.textContent = '→';
+            arrow.style.color = '#666';
+            arrow.style.fontSize = '0.9em';
+            
+            button.appendChild(icon);
+            button.appendChild(name);
+            button.appendChild(arrow);
+            
+            button.onclick = function() {
+                const selectedModel = this.getAttribute('data-model-name');
+                console.log('🖱️  Model selected:', selectedModel);
+                app.selectResearchModel(selectedModel);
+            };
+            
+            selectionDiv.appendChild(button);
+        });
+        
+        container.appendChild(selectionDiv);
+        
+        requestAnimationFrame(() => {
+            container.scrollTop = container.scrollHeight;
+        });
+        
+        console.log('✅ Model selection displayed');
+    },
+
+    async selectResearchModel(modelName) {
+        console.log('🎯 Selected model for research:', modelName);
+        
+        this.currentModel = modelName;
+        
+        // Remove model selection
+        const modelSelection = document.getElementById('research-model-selection');
+        if (modelSelection) {
+            modelSelection.remove();
+        }
+        
+        // Create info bar
+        this.ensureChatInfoBar();
+        
+        // Show success and instructions
+        this.addMessage('research-container', 'system', 
+            `✅ Model Selected: ${modelName}\n\n` +
+            `📝 How to use:\n\n` +
+            `1. Enter an NCT ID (e.g., NCT12345678)\n` +
+            `2. System finds the JSON file from File Manager\n` +
+            `3. Parses data and generates annotation prompt\n` +
+            `4. ${modelName} annotates the clinical trial\n` +
+            `5. Structured annotation is returned\n\n` +
+            `⚠️  Important: Run NCT Lookup first!\n` +
+            `The system needs trial data before it can annotate.\n\n` +
+            `💡 Commands:\n` +
+            `• Type an NCT ID to annotate\n` +
+            `• Type "models" to switch models\n` +
+            `• Type "exit" to return to menu`);
+        
+        // Enable input
+        const input = document.getElementById('research-input');
+        input.disabled = false;
+        input.placeholder = 'Enter NCT ID (e.g., NCT12345678)...';
+        input.focus();
+        
+        console.log('✅ Research Assistant ready');
+    },
+
+    async sendResearchMessage(message) {
+        const trimmedMessage = message.trim();
+        const command = trimmedMessage.toLowerCase();
+        
+        // Handle commands
+        if (command === 'exit' || command === 'main menu') {
+            this.showMenu();
+            return;
+        }
+        
+        if (command === 'models') {
+            const container = document.getElementById('research-container');
+            container.innerHTML = '';
+            this.removeInfoBar();
+            this.initializeResearchMode();
+            return;
+        }
+        
+        // Extract NCT ID
+        const nctId = trimmedMessage.toUpperCase();
+        
+        // Validate NCT ID format
+        if (!nctId.match(/^NCT\d{8}$/)) {
+            this.addMessage('research-container', 'error', 
+                '❌ Invalid NCT ID format.\n\n' +
+                'Please enter in format: NCT12345678\n' +
+                'Example: NCT04123456\n\n' +
+                '💡 Commands:\n' +
+                '• "models" - Switch models\n' +
+                '• "exit" - Return to menu');
+            return;
+        }
+        
+        if (!this.currentModel) {
+            this.addMessage('research-container', 'error', 
+                '❌ No model selected. Please select a model first.');
+            return;
+        }
+        
+        this.addMessage('research-container', 'user', `Annotate: ${nctId}`);
+        
+        // Use port 8002 for research API
+        const RESEARCH_API = 'http://localhost:8002';
+        
+        // Step 1: Check if file exists
+        const checkingId = this.addMessage('research-container', 'system', 
+            `🔍 Step 1: Searching for JSON file...\n\nLooking for ${nctId} in File Manager...`);
+        
+        try {
+            const checkResponse = await fetch(
+                `${RESEARCH_API}/api/research/files/${nctId}`
+            );
+            
+            const checkData = await checkResponse.json();
+            
+            document.getElementById(checkingId)?.remove();
+            
+            if (!checkData.exists) {
+                this.addMessage('research-container', 'error', 
+                    `❌ No JSON file found for ${nctId}\n\n` +
+                    `⚠️  Missing Data:\n` +
+                    `The system couldn't find trial data for this NCT ID.\n\n` +
+                    `📋 To fix this:\n` +
+                    `1. Go to "NCT Lookup" tab\n` +
+                    `2. Search for ${nctId}\n` +
+                    `3. Save the results\n` +
+                    `4. Return here and try again\n\n` +
+                    `The annotation system needs the raw trial data\n` +
+                    `before it can generate annotations.`);
+                return;
+            }
+            
+            this.addMessage('research-container', 'system', 
+                `✅ Step 1 Complete: Found data file\n\nFile: ${checkData.file}`);
+            
+            // Step 2: Run annotation
+            const annotatingId = this.addMessage('research-container', 'system', 
+                `🤖 Step 2: Running annotation...\n\n` +
+                `Model: ${this.currentModel}\n` +
+                `Trial: ${nctId}\n\n` +
+                `Processing:\n` +
+                `• Parsing JSON data\n` +
+                `• Extracting trial information\n` +
+                `• Generating structured prompt\n` +
+                `• Sending to LLM for annotation\n\n` +
+                `⏳ This may take 30-90 seconds...`);
+            
+            const startTime = Date.now();
+            
+            const response = await fetch(`${RESEARCH_API}/api/research/annotate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nct_id: nctId,
+                    model: this.currentModel,
+                    temperature: 0.15
+                })
+            });
+            
+            const endTime = Date.now();
+            const duration = ((endTime - startTime) / 1000).toFixed(1);
+            
+            document.getElementById(annotatingId)?.remove();
+            
+            if (response.ok) {
+                const data = await response.json();
+                
+                // Display annotation result
+                this.addMessage('research-container', 'assistant', 
+                    `✅ Annotation Complete for ${data.nct_id}\n\n` +
+                    `═══════════════════════════════════\n` +
+                    `Model: ${data.model}\n` +
+                    `Status: ${data.status}\n` +
+                    `Processing Time: ${duration}s\n` +
+                    `═══════════════════════════════════\n\n` +
+                    `${data.annotation}\n\n` +
+                    `═══════════════════════════════════\n\n` +
+                    `💾 To save this annotation:\n` +
+                    `   Copy the text above or export as file\n\n` +
+                    `🔄 To annotate another trial:\n` +
+                    `   Enter a new NCT ID\n\n` +
+                    `📊 Sources used: ${this.countSources(data.sources_used)}`);
+                
+                // Log sources used for debugging
+                console.log('📚 Sources used for annotation:', data.sources_used);
+                
+                // Offer to save
+                this.addMessage('research-container', 'system', 
+                    `💡 Next steps:\n\n` +
+                    `• Enter another NCT ID to annotate\n` +
+                    `• Type "models" to switch models\n` +
+                    `• Type "exit" to return to menu`);
+                
+            } else {
+                const errorText = await response.text();
+                let errorData;
+                try {
+                    errorData = JSON.parse(errorText);
+                } catch {
+                    errorData = { detail: errorText };
+                }
+                
+                this.addMessage('research-container', 'error', 
+                    `❌ Annotation Failed\n\n` +
+                    `Error: ${errorData.detail}\n\n` +
+                    `Possible issues:\n` +
+                    `• JSON file is corrupted or incomplete\n` +
+                    `• Model ${this.currentModel} is not responding\n` +
+                    `• Network connectivity issues\n\n` +
+                    `Try:\n` +
+                    `1. Re-fetch the trial data in NCT Lookup\n` +
+                    `2. Switch to a different model\n` +
+                    `3. Check if all services are running`);
+            }
+            
+        } catch (error) {
+            document.getElementById(checkingId)?.remove();
+            this.addMessage('research-container', 'error', 
+                `❌ System Error\n\n${error.message}\n\n` +
+                `This usually means:\n` +
+                `• Research API is not running (port 8002)\n` +
+                `• Network connection issues\n\n` +
+                `Start the research API:\n` +
+                `cd amp_llm_v3/webapp\n` +
+                `python research_api.py\n\n` +
+                `Check the console for more details.`);
+            console.error('Annotation error:', error);
+        }
+    },
+    
+    countSources(sources) {
+        if (!sources) return 0;
+        
+        let count = 0;
+        
+        // Count core sources
+        if (sources.clinicaltrials || sources.clinical_trials) count++;
+        if (sources.pubmed) count++;
+        if (sources.pmc) count++;
+        if (sources.pmc_bioc) count++;
+        
+        // Count extended sources
+        if (sources.extended) {
+            count += Object.keys(sources.extended).length;
+        }
+        
+        return count;
     },
 
     showToast(message, type = 'success', duration = 3000) {
