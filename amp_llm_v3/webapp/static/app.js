@@ -3830,54 +3830,23 @@ const app = {
         
         this.addMessage('research-container', 'user', `Annotate: ${nctId}`);
         
-        // Use port 9002 for research API
-        const RESEARCH_API = 'http://localhost:9002';
+        // Research API runs on port 8002
+        const RESEARCH_API = 'http://localhost:8002';
         
-        // Step 1: Check if file exists
-        const checkingId = this.addMessage('research-container', 'system', 
-            `🔍 Step 1: Searching for JSON file...\n\nLooking for ${nctId} in File Manager...`);
+        // Show initial processing message
+        const processingId = this.addMessage('research-container', 'system', 
+            `🔄 Processing ${nctId}...\n\n` +
+            `⏳ This may take 1-3 minutes depending on whether\n` +
+            `   data needs to be fetched automatically.\n\n` +
+            `Steps:\n` +
+            `1. Check for existing data file\n` +
+            `2. Auto-fetch if needed (30-60s)\n` +
+            `3. Generate annotation prompt\n` +
+            `4. Send to LLM for annotation (30-90s)`);
+        
+        const startTime = Date.now();
         
         try {
-            const checkResponse = await fetch(
-                `${RESEARCH_API}/api/research/files/${nctId}`
-            );
-            
-            const checkData = await checkResponse.json();
-            
-            document.getElementById(checkingId)?.remove();
-            
-            if (!checkData.exists) {
-                this.addMessage('research-container', 'error', 
-                    `❌ No JSON file found for ${nctId}\n\n` +
-                    `⚠️  Missing Data:\n` +
-                    `The system couldn't find trial data for this NCT ID.\n\n` +
-                    `📋 To fix this:\n` +
-                    `1. Go to "NCT Lookup" tab\n` +
-                    `2. Search for ${nctId}\n` +
-                    `3. Save the results\n` +
-                    `4. Return here and try again\n\n` +
-                    `The annotation system needs the raw trial data\n` +
-                    `before it can generate annotations.`);
-                return;
-            }
-            
-            this.addMessage('research-container', 'system', 
-                `✅ Step 1 Complete: Found data file\n\nFile: ${checkData.file}`);
-            
-            // Step 2: Run annotation
-            const annotatingId = this.addMessage('research-container', 'system', 
-                `🤖 Step 2: Running annotation...\n\n` +
-                `Model: ${this.currentModel}\n` +
-                `Trial: ${nctId}\n\n` +
-                `Processing:\n` +
-                `• Parsing JSON data\n` +
-                `• Extracting trial information\n` +
-                `• Generating structured prompt\n` +
-                `• Sending to LLM for annotation\n\n` +
-                `⏳ This may take 30-90 seconds...`);
-            
-            const startTime = Date.now();
-            
             const response = await fetch(`${RESEARCH_API}/api/research/annotate`, {
                 method: 'POST',
                 headers: {
@@ -3886,17 +3855,24 @@ const app = {
                 body: JSON.stringify({
                     nct_id: nctId,
                     model: this.currentModel,
-                    temperature: 0.15
+                    temperature: 0.15,
+                    auto_fetch: true  // Enable automatic fetching
                 })
             });
             
             const endTime = Date.now();
             const duration = ((endTime - startTime) / 1000).toFixed(1);
             
-            document.getElementById(annotatingId)?.remove();
+            document.getElementById(processingId)?.remove();
             
             if (response.ok) {
                 const data = await response.json();
+                
+                // Show if data was auto-fetched
+                let fetchNote = '';
+                if (data.auto_fetched) {
+                    fetchNote = `\n✨ Data was automatically fetched from NCT Lookup\n`;
+                }
                 
                 // Display annotation result
                 this.addMessage('research-container', 'assistant', 
@@ -3904,7 +3880,7 @@ const app = {
                     `═══════════════════════════════════\n` +
                     `Model: ${data.model}\n` +
                     `Status: ${data.status}\n` +
-                    `Processing Time: ${duration}s\n` +
+                    `Processing Time: ${duration}s${fetchNote}\n` +
                     `═══════════════════════════════════\n\n` +
                     `${data.annotation}\n\n` +
                     `═══════════════════════════════════\n\n` +
@@ -3937,27 +3913,31 @@ const app = {
                     `❌ Annotation Failed\n\n` +
                     `Error: ${errorData.detail}\n\n` +
                     `Possible issues:\n` +
-                    `• JSON file is corrupted or incomplete\n` +
+                    `• NCT Lookup service not running (port 8000)\n` +
+                    `• Invalid NCT ID or trial not found\n` +
                     `• Model ${this.currentModel} is not responding\n` +
                     `• Network connectivity issues\n\n` +
                     `Try:\n` +
-                    `1. Re-fetch the trial data in NCT Lookup\n` +
-                    `2. Switch to a different model\n` +
-                    `3. Check if all services are running`);
+                    `1. Verify NCT ID is correct\n` +
+                    `2. Check if all services are running\n` +
+                    `3. Try a different model`);
             }
             
         } catch (error) {
-            document.getElementById(checkingId)?.remove();
+            if (document.getElementById(processingId)) {
+                document.getElementById(processingId).remove();
+            }
+            
             this.addMessage('research-container', 'error', 
-                `❌ System Error\n\n${error.message}\n\n` +
-                `This usually means:\n` +
-                `• Research API is not running (port 9002)\n` +
-                `• Network connection issues\n\n` +
-                `Start the research API:\n` +
-                `cd amp_llm_v3/webapp\n` +
-                `python research_api.py\n\n` +
-                `Check the console for more details.`);
-            console.error('Annotation error:', error);
+                `❌ Connection Error\n\n${error.message}\n\n` +
+                `Cannot connect to Research API (port 8002).\n\n` +
+                `The Research API must be running.\n\n` +
+                `To start it:\n` +
+                `1. Open a new terminal\n` +
+                `2. cd amp_llm_v3/standalone\\ modules/llm_assistant\n` +
+                `3. python -m uvicorn research_assistant_api:app --port 8002 --reload\n\n` +
+                `Or use: ./start_all.sh`);
+            console.error('Research API connection error:', error);
         }
     },
 
