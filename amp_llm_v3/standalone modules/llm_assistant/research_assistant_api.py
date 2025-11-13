@@ -1,444 +1,569 @@
 """
-Research Assistant API
-======================
-
-FastAPI application for Research Assistant service with RAG capabilities.
-
-Usage:
-    uvicorn research_assistant_api:app --host 0.0.0.0 --port 9002 --reload
+Research Assistant API Router
+Handles NCT annotation workflow with automatic data fetching
 """
 import logging
-import os
-from datetime import datetime
-from typing import List, Optional
+import json
+import sys
 from pathlib import Path
-
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, WebSocket, WebSocketDisconnect
+from typing import Dict, Any, Optional, Tuple
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+import aiohttp
+from assistant_config import config
 
-# Import your existing modules
-from prompt_generator import PromptGenerator
-
-# Configure logging
+# Setup logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
-# ============================================================================
-# Initialize PromptGenerator
-# ============================================================================
+# Add parent directory to path
+sys.path.insert(0, str(Path(__file__).parent))
+
 try:
-    prompt_gen = PromptGenerator()
+    from prompt_generator import PromptGenerator
+    HAS_PROMPT_GEN = True
     logger.info("✅ PromptGenerator loaded successfully")
 except Exception as e:
-    logger.error(f"❌ Failed to load PromptGenerator: {e}")
-    prompt_gen = None
+    logger.warning(f"⚠️  Could not load PromptGenerator: {e}")
+    HAS_PROMPT_GEN = False
 
 # ============================================================================
-# Pydantic Models
-# ============================================================================
-
-class HealthResponse(BaseModel):
-    status: str
-    version: str
-    prompt_generator_loaded: bool
-    timestamp: str
-
-class ResearchQuery(BaseModel):
-    query: str
-    nct_id: Optional[str] = None
-    use_rag: bool = True
-    model: str = "llama3.2:3b"
-    temperature: float = 0.7
-
-class ResearchResponse(BaseModel):
-    query: str
-    response: str
-    nct_id: Optional[str] = None
-    model: str
-    timestamp: str
-
-class FileUploadResponse(BaseModel):
-    filename: str
-    size: int
-    status: str
-    message: str
-
-class NCTInfo(BaseModel):
-    nct_id: str
-    title: Optional[str] = None
-    status: Optional[str] = None
-    brief_summary: Optional[str] = None
-
-# ============================================================================
-# FastAPI Application
+# Initialize FastAPI app
 # ============================================================================
 
 app = FastAPI(
-    title="Research Assistant API",
-    description="AI-powered research assistant with RAG capabilities for clinical trial analysis",
-    version="1.0.0"
+    title="LLM Research Assistant API",
+    description="Modular service for annotating clinical trials with automatic data fetching",
+    version="3.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc"
 )
 
-# CORS middleware
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
+    allow_origins=config.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # ============================================================================
-# Configuration
+# Models
 # ============================================================================
 
-# Directories
-UPLOAD_DIR = Path("uploads")
-DOCUMENTS_DIR = Path("documents")
-RAG_DB_DIR = Path("rag_database")
+class AnnotationRequest(BaseModel):
+    nct_id: str
+    model: str
+    temperature: float = 0.15
+    auto_fetch: bool = True  # NEW: automatically fetch if not found
 
-# Create directories if they don't exist
-UPLOAD_DIR.mkdir(exist_ok=True)
-DOCUMENTS_DIR.mkdir(exist_ok=True)
-RAG_DB_DIR.mkdir(exist_ok=True)
+
+class AnnotationResponse(BaseModel):
+    nct_id: str
+    annotation: str
+    model: str
+    sources_used: Dict[str, Any]
+    status: str
+    auto_fetched: bool = False  # NEW: indicates if data was auto-fetched
+
+
+class FileCheckResponse(BaseModel):
+    exists: bool
+    nct_id: str
+    file: Optional[str] = None
+    message: Optional[str] = None
+
+
+class AutoFetchProgress(BaseModel):
+    """Progress update for auto-fetch"""
+    stage: str
+    message: str
+    progress: int  # 0-100
+
 
 # ============================================================================
-# Lifecycle Events
+# Helper Functions
 # ============================================================================
 
-@app.on_event("startup")
-async def startup_event():
-    """Initialize service on startup"""
-    logger.info("Research Assistant API v1.0.0 starting...")
+def get_output_directory() -> Path:
+    """Get the output directory path"""
+    base_path = Path(__file__).parent
+    possible_dirs = [
+        base_path / "output",
+        base_path.parent / "output",
+        base_path.parent.parent / "output",
+        base_path.parent.parent / "webapp" / "output",
+        Path("output"),
+    ]
     
-    if prompt_gen:
-        logger.info("✅ PromptGenerator ready")
-    else:
-        logger.warning("⚠️ PromptGenerator not available")
+    for dir_path in possible_dirs:
+        if dir_path.exists() and dir_path.is_dir():
+            logger.info(f"✅ Found output directory: {dir_path}")
+            return dir_path
     
-    logger.info(f"📁 Upload directory: {UPLOAD_DIR.absolute()}")
-    logger.info(f"📁 Documents directory: {DOCUMENTS_DIR.absolute()}")
-    logger.info(f"📁 RAG database directory: {RAG_DB_DIR.absolute()}")
+    # Create output directory if none exists
+    output_dir = base_path.parent.parent / "output"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    logger.info(f"✅ Created output directory: {output_dir}")
+    return output_dir
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Cleanup on shutdown"""
-    logger.info("Research Assistant API stopped")
+
+def find_nct_file(nct_id: str) -> Tuple[Path, Dict]:
+    """
+    Find JSON file containing the specified NCT ID.
+    
+    Returns:
+        Tuple of (file_path, trial_data)
+    
+    Raises:
+        HTTPException: If file not found
+    """
+    output_dir = get_output_directory()
+    
+    # Search for the NCT ID in JSON files
+    logger.info(f"🔍 Searching for {nct_id} in {output_dir}")
+    
+    for file in output_dir.glob("*.json"):
+        try:
+            with open(file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            # Check if this file contains the NCT ID
+            if isinstance(data, list):
+                for item in data:
+                    if item.get('nct_id') == nct_id:
+                        logger.info(f"✅ Found {nct_id} in {file.name}")
+                        return file, item
+            elif isinstance(data, dict):
+                if data.get('nct_id') == nct_id:
+                    logger.info(f"✅ Found {nct_id} in {file.name}")
+                    return file, data
+                    
+        except json.JSONDecodeError as e:
+            logger.warning(f"⚠️  Invalid JSON in {file.name}: {e}")
+            continue
+        except Exception as e:
+            logger.warning(f"⚠️  Error reading {file.name}: {e}")
+            continue
+    
+    logger.error(f"❌ {nct_id} not found in any JSON files")
+    raise HTTPException(
+        status_code=404,
+        detail=f"No JSON file found for NCT ID: {nct_id}"
+    )
+
+
+async def fetch_nct_data(nct_id: str) -> Dict[str, Any]:
+    """
+    Automatically fetch NCT data if it doesn't exist.
+    Uses the NCT Lookup service to fetch trial data.
+    
+    Returns:
+        Trial data dictionary
+    """
+    logger.info(f"🌐 Auto-fetching data for {nct_id}")
+    
+    # NCT Lookup service should be on port 8000 (main webapp backend)
+    # We'll search for it on common ports
+    nct_service_urls = [
+        "http://localhost:8000",  # Main webapp
+        "http://localhost:8003",  # Dedicated NCT service if exists
+    ]
+    
+    nct_service_url = None
+    
+    # Find active NCT service
+    async with aiohttp.ClientSession() as session:
+        for url in nct_service_urls:
+            try:
+                async with session.get(f"{url}/health", timeout=aiohttp.ClientTimeout(total=2)) as resp:
+                    if resp.status == 200:
+                        nct_service_url = url
+                        logger.info(f"✅ Found NCT service at {url}")
+                        break
+            except:
+                continue
+    
+    if not nct_service_url:
+        raise HTTPException(
+            status_code=503,
+            detail="NCT Lookup service not available. Cannot auto-fetch trial data."
+        )
+    
+    async with aiohttp.ClientSession() as session:
+        try:
+            # Step 1: Initiate search
+            logger.info(f"📡 Initiating search for {nct_id}")
+            search_url = f"{nct_service_url}/api/nct/search/{nct_id}"
+            
+            async with session.post(
+                search_url,
+                json={
+                    "include_extended": False  # Just core sources for speed
+                },
+                timeout=aiohttp.ClientTimeout(total=30)
+            ) as resp:
+                if resp.status != 200:
+                    error_text = await resp.text()
+                    raise HTTPException(
+                        status_code=503,
+                        detail=f"Failed to initiate NCT search: {error_text}"
+                    )
+                
+                search_data = await resp.json()
+                job_id = search_data.get("job_id")
+                
+                if not job_id:
+                    raise HTTPException(
+                        status_code=503,
+                        detail="No job ID returned from NCT search"
+                    )
+            
+            logger.info(f"✅ Search initiated, job_id: {job_id}")
+            
+            # Step 2: Poll for results
+            import asyncio
+            max_wait = 120  # 2 minutes
+            poll_interval = 3  # 3 seconds
+            elapsed = 0
+            
+            status_url = f"{nct_service_url}/api/nct/search/{job_id}/status"
+            results_url = f"{nct_service_url}/api/nct/results/{job_id}"
+            
+            while elapsed < max_wait:
+                await asyncio.sleep(poll_interval)
+                elapsed += poll_interval
+                
+                # Check status
+                async with session.get(status_url) as resp:
+                    if resp.status != 200:
+                        continue
+                    
+                    status_data = await resp.json()
+                    status = status_data.get("status")
+                    
+                    logger.info(f"⏳ Status: {status} ({elapsed}s elapsed)")
+                    
+                    if status == "completed":
+                        # Fetch results
+                        async with session.get(results_url) as result_resp:
+                            if result_resp.status != 200:
+                                raise HTTPException(
+                                    status_code=503,
+                                    detail="Failed to fetch NCT results"
+                                )
+                            
+                            trial_data = await result_resp.json()
+                            logger.info(f"✅ Retrieved trial data for {nct_id}")
+                            
+                            # Save to output directory
+                            await save_trial_data(nct_id, trial_data)
+                            
+                            return trial_data
+                    
+                    elif status == "failed":
+                        error = status_data.get("error", "Unknown error")
+                        raise HTTPException(
+                            status_code=503,
+                            detail=f"NCT search failed: {error}"
+                        )
+            
+            # Timeout
+            raise HTTPException(
+                status_code=504,
+                detail=f"NCT search timed out after {max_wait} seconds"
+            )
+            
+        except aiohttp.ClientConnectorError:
+            raise HTTPException(
+                status_code=503,
+                detail="Cannot connect to NCT Lookup service"
+            )
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"❌ Auto-fetch error: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=500,
+                detail=f"Auto-fetch failed: {str(e)}"
+            )
+
+
+async def save_trial_data(nct_id: str, trial_data: Dict[str, Any]):
+    """Save trial data to output directory"""
+    output_dir = get_output_directory()
+    
+    # Create filename
+    from datetime import datetime
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"nct_{nct_id}_{timestamp}.json"
+    filepath = output_dir / filename
+    
+    # Save data
+    try:
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(trial_data, f, indent=2, ensure_ascii=False)
+        
+        logger.info(f"💾 Saved trial data to: {filepath}")
+    except Exception as e:
+        logger.error(f"❌ Failed to save trial data: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to save trial data: {str(e)}"
+        )
+
+
+async def send_to_llm(model: str, prompt: str, temperature: float) -> str:
+    """
+    Send prompt to LLM via chat service.
+    """
+    chat_service_url = "http://localhost:8001"
+    
+    async with aiohttp.ClientSession() as session:
+        # Initialize conversation
+        try:
+            init_url = f"{chat_service_url}/chat/init"
+            logger.info(f"🔗 Connecting to chat service: {init_url}")
+            
+            async with session.post(
+                init_url,
+                json={"model": model},
+                timeout=aiohttp.ClientTimeout(total=30)
+            ) as resp:
+                if resp.status != 200:
+                    error_text = await resp.text()
+                    logger.error(f"❌ Chat init failed: {error_text}")
+                    raise HTTPException(
+                        status_code=503,
+                        detail=f"Failed to initialize chat with {model}: {error_text}"
+                    )
+                init_data = await resp.json()
+                conversation_id = init_data["conversation_id"]
+            
+            logger.info(f"✅ Initialized conversation {conversation_id} with {model}")
+            
+        except aiohttp.ClientConnectorError as e:
+            logger.error(f"❌ Cannot connect to chat service: {e}")
+            raise HTTPException(
+                status_code=503,
+                detail="Cannot connect to chat service on port 8001. "
+                       "Make sure it's running: cd 'standalone modules/chat_with_llm' && "
+                       "uvicorn chat_api:app --port 8001 --reload"
+            )
+        except Exception as e:
+            logger.error(f"❌ Chat service error: {e}")
+            raise HTTPException(
+                status_code=503,
+                detail=f"Chat service error: {str(e)}"
+            )
+        
+        # Send annotation request
+        try:
+            msg_url = f"{chat_service_url}/chat/message"
+            logger.info(f"📤 Sending prompt to LLM ({len(prompt)} chars)")
+            
+            async with session.post(
+                msg_url,
+                json={
+                    "conversation_id": conversation_id,
+                    "message": prompt,
+                    "temperature": temperature
+                },
+                timeout=aiohttp.ClientTimeout(total=300)  # 5 minutes for annotation
+            ) as resp:
+                if resp.status != 200:
+                    error_text = await resp.text()
+                    logger.error(f"❌ LLM annotation failed: {error_text}")
+                    raise HTTPException(
+                        status_code=503,
+                        detail=f"LLM annotation failed: {error_text}"
+                    )
+                response_data = await resp.json()
+                annotation = response_data["message"]["content"]
+                
+                logger.info(f"✅ Received annotation ({len(annotation)} chars)")
+                return annotation
+                
+        except aiohttp.ServerTimeoutError:
+            logger.error(f"❌ LLM annotation timed out")
+            raise HTTPException(
+                status_code=504,
+                detail="LLM annotation timed out. Try a smaller trial or different model."
+            )
+        except Exception as e:
+            logger.error(f"❌ LLM communication error: {e}")
+            raise HTTPException(
+                status_code=503,
+                detail=f"LLM communication error: {str(e)}"
+            )
+
 
 # ============================================================================
 # API Endpoints
 # ============================================================================
 
-@app.get("/")
-async def root():
-    """Root endpoint"""
+@app.get("/health")
+async def health():
+    """Health check"""
     return {
+        "status": "healthy",
         "service": "Research Assistant API",
-        "version": "1.0.0",
-        "status": "running",
-        "endpoints": {
-            "health": "GET /health",
-            "research": "POST /research",
-            "upload": "POST /upload",
-            "documents": "GET /documents",
-            "nct_lookup": "GET /nct/{nct_id}",
-            "websocket": "WS /ws/research"
-        }
+        "prompt_generator": "available" if HAS_PROMPT_GEN else "unavailable",
+        "auto_fetch": "enabled"
     }
 
-@app.get("/health", response_model=HealthResponse)
-async def health_check():
-    """Health check endpoint"""
-    return HealthResponse(
-        status="healthy" if prompt_gen else "degraded",
-        version="1.0.0",
-        prompt_generator_loaded=prompt_gen is not None,
-        timestamp=datetime.utcnow().isoformat()
-    )
 
-@app.post("/research", response_model=ResearchResponse)
-async def research_query(request: ResearchQuery):
+@app.get("/files/{nct_id}", response_model=FileCheckResponse)
+async def check_file_exists(nct_id: str):
     """
-    Process a research query with optional RAG enhancement.
+    Check if a JSON file exists for the given NCT ID.
+    """
+    nct_id = nct_id.strip().upper()
+    logger.info(f"🔍 Checking for file: {nct_id}")
     
-    Args:
-        request: Research query with optional NCT ID and RAG settings
-        
-    Returns:
-        AI-generated research response
+    try:
+        file_path, trial_data = find_nct_file(nct_id)
+        return FileCheckResponse(
+            exists=True,
+            file=str(file_path.name),
+            nct_id=nct_id
+        )
+    except HTTPException as e:
+        logger.warning(f"⚠️  File not found: {e.detail}")
+        return FileCheckResponse(
+            exists=False,
+            nct_id=nct_id,
+            message=e.detail
+        )
+
+
+@app.post("/annotate", response_model=AnnotationResponse)
+async def annotate_trial(request: AnnotationRequest):
+    """
+    Annotate a clinical trial based on NCT ID.
+    
+    Workflow:
+    1. Check if JSON file exists
+    2. If not exists and auto_fetch=True: Fetch from NCT Lookup
+    3. Extract trial data
+    4. Generate prompt with prompt_generator.py
+    5. Send to LLM for annotation
+    6. Return structured annotation
     """
     try:
-        if not prompt_gen:
+        nct_id = request.nct_id.strip().upper()
+        logger.info(f"🔬 Starting annotation for {nct_id} with model {request.model}")
+        
+        # Check if prompt generator is available
+        if not HAS_PROMPT_GEN:
+            logger.error("❌ PromptGenerator not available")
             raise HTTPException(
-                status_code=503,
-                detail="PromptGenerator not available"
+                status_code=500,
+                detail="PromptGenerator not available. Check server logs."
             )
         
-        logger.info(f"Processing research query: {request.query[:100]}...")
+        auto_fetched = False
         
-        # TODO: Implement your research logic here
-        # This is a placeholder - replace with your actual implementation
-        
-        response_text = f"Research response for: {request.query}"
-        
-        if request.nct_id:
-            response_text += f"\n\nNCT ID: {request.nct_id}"
-        
-        if request.use_rag:
-            response_text += "\n\n[RAG context would be applied here]"
-        
-        return ResearchResponse(
-            query=request.query,
-            response=response_text,
-            nct_id=request.nct_id,
-            model=request.model,
-            timestamp=datetime.utcnow().isoformat()
-        )
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Research query failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/upload", response_model=FileUploadResponse)
-async def upload_file(file: UploadFile = File(...)):
-    """
-    Upload a document for RAG processing.
-    
-    Args:
-        file: File to upload
-        
-    Returns:
-        Upload confirmation with file details
-    """
-    try:
-        # Save file
-        file_path = UPLOAD_DIR / file.filename
-        
-        content = await file.read()
-        with open(file_path, "wb") as f:
-            f.write(content)
-        
-        file_size = len(content)
-        
-        logger.info(f"Uploaded file: {file.filename} ({file_size} bytes)")
-        
-        # TODO: Process file for RAG (extract text, create embeddings, etc.)
-        
-        return FileUploadResponse(
-            filename=file.filename,
-            size=file_size,
-            status="success",
-            message=f"File uploaded successfully to {file_path}"
-        )
-        
-    except Exception as e:
-        logger.error(f"File upload failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/documents")
-async def list_documents():
-    """List all uploaded documents"""
-    try:
-        documents = []
-        
-        for file_path in UPLOAD_DIR.iterdir():
-            if file_path.is_file():
-                stat = file_path.stat()
-                documents.append({
-                    "filename": file_path.name,
-                    "size": stat.st_size,
-                    "modified": datetime.fromtimestamp(stat.st_mtime).isoformat()
-                })
-        
-        return {
-            "documents": documents,
-            "count": len(documents)
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to list documents: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/documents/{filename}")
-async def download_document(filename: str):
-    """Download a specific document"""
-    try:
-        file_path = UPLOAD_DIR / filename
-        
-        if not file_path.exists():
-            raise HTTPException(status_code=404, detail="File not found")
-        
-        return FileResponse(
-            path=file_path,
-            filename=filename,
-            media_type="application/octet-stream"
-        )
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"File download failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.delete("/documents/{filename}")
-async def delete_document(filename: str):
-    """Delete a document"""
-    try:
-        file_path = UPLOAD_DIR / filename
-        
-        if not file_path.exists():
-            raise HTTPException(status_code=404, detail="File not found")
-        
-        file_path.unlink()
-        logger.info(f"Deleted file: {filename}")
-        
-        return {
-            "status": "deleted",
-            "filename": filename
-        }
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"File deletion failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/nct/{nct_id}", response_model=NCTInfo)
-async def get_nct_info(nct_id: str):
-    """
-    Get clinical trial information by NCT ID.
-    
-    Args:
-        nct_id: ClinicalTrials.gov NCT identifier
-        
-    Returns:
-        Clinical trial information
-    """
-    try:
-        # TODO: Implement NCT lookup logic
-        # This is a placeholder - replace with your actual NCT lookup
-        
-        logger.info(f"Looking up NCT ID: {nct_id}")
-        
-        return NCTInfo(
-            nct_id=nct_id,
-            title="[NCT lookup not yet implemented]",
-            status="Unknown",
-            brief_summary="Placeholder summary"
-        )
-        
-    except Exception as e:
-        logger.error(f"NCT lookup failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.websocket("/ws/research")
-async def websocket_research(websocket: WebSocket):
-    """
-    WebSocket endpoint for streaming research responses.
-    
-    Protocol:
-        Client -> {"action": "query", "query": "...", "use_rag": true, "model": "..."}
-        Client -> {"action": "exit"}
-        
-        Server -> {"type": "chunk", "content": "...", "done": false}
-        Server -> {"type": "done"}
-        Server -> {"type": "error", "message": "..."}
-    """
-    await websocket.accept()
-    
-    try:
-        while True:
-            data = await websocket.receive_json()
-            action = data.get("action")
-            
-            if action == "query":
-                query = data.get("query")
-                use_rag = data.get("use_rag", True)
-                model = data.get("model", "llama3.2:3b")
-                
-                if not query:
-                    await websocket.send_json({
-                        "type": "error",
-                        "message": "Query required"
-                    })
-                    continue
-                
-                # TODO: Implement streaming research response
-                # This is a placeholder
-                response = f"Streaming response for: {query}"
-                
-                # Send in chunks
-                for i, char in enumerate(response):
-                    await websocket.send_json({
-                        "type": "chunk",
-                        "content": char,
-                        "done": i == len(response) - 1
-                    })
-                
-                await websocket.send_json({
-                    "type": "done"
-                })
-            
-            elif action == "exit":
-                await websocket.send_json({
-                    "type": "exit",
-                    "message": "Connection closed"
-                })
-                break
-            
-            else:
-                await websocket.send_json({
-                    "type": "error",
-                    "message": f"Unknown action: {action}"
-                })
-    
-    except WebSocketDisconnect:
-        logger.info("WebSocket client disconnected")
-    except Exception as e:
-        logger.error(f"WebSocket error: {e}")
+        # Step 1: Try to find existing file
+        logger.info(f"📁 Step 1: Looking for existing JSON file for {nct_id}")
         try:
-            await websocket.send_json({
-                "type": "error",
-                "message": str(e)
-            })
-        except:
-            pass
-
-@app.get("/stats")
-async def get_statistics():
-    """Get service statistics"""
-    try:
-        doc_count = len(list(UPLOAD_DIR.iterdir()))
+            json_file, trial_data = find_nct_file(nct_id)
+            logger.info(f"✅ Found existing file: {json_file.name}")
+        except HTTPException as e:
+            # File not found
+            if not request.auto_fetch:
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"No JSON file found for {nct_id} and auto_fetch is disabled"
+                )
+            
+            # Auto-fetch the data
+            logger.info(f"📥 Step 1b: Auto-fetching trial data for {nct_id}")
+            trial_data = await fetch_nct_data(nct_id)
+            auto_fetched = True
+            logger.info(f"✅ Successfully auto-fetched data for {nct_id}")
         
-        return {
-            "service": "Research Assistant API",
-            "version": "1.0.0",
-            "prompt_generator_loaded": prompt_gen is not None,
-            "documents_count": doc_count,
-            "timestamp": datetime.utcnow().isoformat()
+        # Step 2: Generate prompt using PromptGenerator
+        logger.info(f"📝 Step 2: Generating extraction prompt")
+        prompt_gen = PromptGenerator()
+        
+        # The prompt generator expects search_results format
+        search_results = {
+            "nct_id": nct_id,
+            "sources": trial_data.get("sources", {}),
+            "metadata": trial_data.get("metadata", {})
         }
         
+        prompt = prompt_gen.generate_extraction_prompt(search_results, nct_id)
+        logger.info(f"✅ Generated prompt ({len(prompt)} characters)")
+        
+        # Optional: Save prompt for debugging
+        try:
+            prompt_dir = Path(__file__).parent / "prompts"
+            prompt_dir.mkdir(exist_ok=True)
+            prompt_file = prompt_dir / f"{nct_id}_annotation.txt"
+            with open(prompt_file, 'w', encoding='utf-8') as f:
+                f.write(prompt)
+            logger.info(f"💾 Saved prompt to: {prompt_file}")
+        except Exception as e:
+            logger.warning(f"⚠️  Could not save prompt: {e}")
+        
+        # Step 3: Send to LLM
+        logger.info(f"🤖 Step 3: Sending to LLM ({request.model})")
+        annotation = await send_to_llm(request.model, prompt, request.temperature)
+        logger.info(f"✅ Received annotation ({len(annotation)} characters)")
+        
+        # Step 4: Return structured response
+        return AnnotationResponse(
+            nct_id=nct_id,
+            annotation=annotation,
+            model=request.model,
+            sources_used=search_results.get("sources", {}),
+            status="success",
+            auto_fetched=auto_fetched
+        )
+        
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"Stats retrieval failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"❌ Annotation error: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Annotation error: {str(e)}"
+        )
 
+    
+app = FastAPI(title="Research Assistant API", version="1.0.0")
 # ============================================================================
-# Main Entry Point
+# Standalone App (for testing)
 # ============================================================================
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(
-        "research_assistant_api:app",
-        host="0.0.0.0",
-        port=9002,
-        reload=True,
-        log_level="info"
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
+    
+    @app.get("/")
+    async def root():
+        return {
+            "service": "Research Assistant API",
+            "status": "running",
+            "features": {
+                "auto_fetch": "enabled",
+                "annotation": "enabled"
+            }
+        }
+    
+    import uvicorn
+    print("🚀 Starting Research Assistant API on port 9002...")
+    print("✨ Auto-fetch enabled: Will automatically fetch missing trial data")
+    uvicorn.run(app, host="0.0.0.0", port=9002, reload=True)
