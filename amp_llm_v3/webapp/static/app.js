@@ -3946,8 +3946,8 @@ const app = {
         
         this.addMessage('research-container', 'user', `Annotate: ${nctId}`);
         
-        // Research API runs on port 8002
-        const RESEARCH_API = 'http://localhost:8002';
+        // Research API runs on port 9002
+        const RESEARCH_API = 'http://localhost:9002';
         
         // Show initial processing message
         const processingId = this.addMessage('research-container', 'system', 
@@ -4046,12 +4046,12 @@ const app = {
             
             this.addMessage('research-container', 'error', 
                 `❌ Connection Error\n\n${error.message}\n\n` +
-                `Cannot connect to Research API (port 8002).\n\n` +
+                `Cannot connect to Research API (port 9002).\n\n` +
                 `The Research API must be running.\n\n` +
                 `To start it:\n` +
                 `1. Open a new terminal\n` +
                 `2. cd amp_llm_v3/standalone\\ modules/llm_assistant\n` +
-                `3. python -m uvicorn research_assistant_api:app --port 8002 --reload\n\n` +
+                `3. python -m uvicorn research_assistant_api:app --port 9002 --reload\n\n` +
                 `Or use: ./start_all.sh`);
             console.error('Research API connection error:', error);
         }
