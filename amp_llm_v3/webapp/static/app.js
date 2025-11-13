@@ -4046,12 +4046,12 @@ const app = {
             
             this.addMessage('research-container', 'error', 
                 `❌ Connection Error\n\n${error.message}\n\n` +
-                `Cannot connect to Research API (port 9002).\n\n` +
+                `Cannot connect to Research API (port 9003).\n\n` +
                 `The Research API must be running.\n\n` +
                 `To start it:\n` +
                 `1. Open a new terminal\n` +
                 `2. cd amp_llm_v3/standalone\\ modules/llm_assistant\n` +
-                `3. python -m uvicorn research_assistant_api:app --port 9002 --reload\n\n` +
+                `3. python -m uvicorn research_assistant_api:app --port 9003 --reload\n\n` +
                 `Or use: ./start_all.sh`);
             console.error('Research API connection error:', error);
         }
