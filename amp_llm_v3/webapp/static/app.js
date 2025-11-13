@@ -1200,8 +1200,8 @@ const app = {
                     `To fix:\n` +
                     `1. Restart chat service:\n` +
                     `   cd "standalone modules/chat_with_llm"\n` +
-                    `   uvicorn chat_api:app --port 8001 --reload\n\n` +
-                    `2. Check: curl http://localhost:8001/models\n\n` +
+                    `   uvicorn chat_api:app --port 9001 --reload\n\n` +
+                    `2. Check: curl http://localhost:9001/models\n\n` +
                     `Error: ${errorText.substring(0, 200)}`);
             }
         } catch (error) {
@@ -3780,8 +3780,8 @@ const app = {
                     `To fix:\n` +
                     `1. Restart chat service:\n` +
                     `   cd "standalone modules/chat_with_llm"\n` +
-                    `   uvicorn chat_api:app --port 8001 --reload\n\n` +
-                    `2. Check: curl http://localhost:8001/models\n\n` +
+                    `   uvicorn chat_api:app --port 9003 --reload\n\n` +
+                    `2. Check: curl http://localhost:9003/models\n\n` +
                     `Error: ${errorText.substring(0, 200)}`);
             }
         } catch (error) {
@@ -3791,11 +3791,11 @@ const app = {
             this.addMessage('research-container', 'error', 
                 '❌ Connection Error\n\n' +
                 'Cannot connect to the chat service.\n\n' +
-                'The chat service must be running on port 8001.\n\n' +
+                'The chat service must be running on port 9003.\n\n' +
                 'To start it:\n' +
                 '1. Open terminal\n' +
                 '2. cd amp_llm_v3/standalone\\ modules/chat_with_llm\n' +
-                '3. uvicorn chat_api:app --port 8001 --reload\n\n' +
+                '3. uvicorn chat_api:app --port 9003 --reload\n\n' +
                 'Then refresh this page.\n\n' +
                 `Error: ${error.message}`);
         }
@@ -3946,8 +3946,8 @@ const app = {
         
         this.addMessage('research-container', 'user', `Annotate: ${nctId}`);
         
-        // Research API runs on port 9002
-        const RESEARCH_API = 'http://localhost:9002';
+        // Research API runs on port 9003
+        const RESEARCH_API = 'http://localhost:9003';
         
         // Show initial processing message
         const processingId = this.addMessage('research-container', 'system', 

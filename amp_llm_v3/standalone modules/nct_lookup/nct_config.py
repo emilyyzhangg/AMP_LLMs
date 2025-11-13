@@ -33,6 +33,7 @@ class NCTConfig:
     MAIN_SERVER_PORT: int = int(os.getenv("MAIN_SERVER_PORT", "9000"))
     CHAT_SERVICE_PORT: int = int(os.getenv("CHAT_SERVICE_PORT", "9001"))
     NCT_SERVICE_PORT: int = int(os.getenv("NCT_SERVICE_PORT", "9002"))
+    RA_SERVICE_PORT: int = int(os.getenv("RA_SERVICE_PORT", "9003"))
     
     # Domain
     PUBLIC_DOMAIN: str = os.getenv("PUBLIC_DOMAIN", "localhost")

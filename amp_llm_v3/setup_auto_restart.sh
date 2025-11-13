@@ -387,6 +387,10 @@ echo ""
 echo "NCT Service:"
 curl -s http://localhost:9002/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
 
+echo ""
+echo "RA Service:"
+curl -s http://localhost:9003/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
+
 # ============================================================================
 # Summary
 # ============================================================================
@@ -412,6 +416,7 @@ Services:
 • Webapp    - http://localhost:9000
 • Chat      - http://localhost:9001  
 • NCT       - http://localhost:9002
+• RA        - http://localhost:9003
 
 Test It:
 ────────

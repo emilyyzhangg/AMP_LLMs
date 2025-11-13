@@ -171,8 +171,8 @@ async def fetch_nct_data(nct_id: str) -> Dict[str, Any]:
     # NCT Lookup service should be on port 8000 (main webapp backend)
     # We'll search for it on common ports
     nct_service_urls = [
-        "http://localhost:8000",  # Main webapp
-        "http://localhost:8003",  # Dedicated NCT service if exists
+        "http://localhost:9000",  # Main webapp
+        "http://localhost:9002",  # Dedicated NCT service if exists
     ]
     
     nct_service_url = None
@@ -322,7 +322,7 @@ async def send_to_llm(model: str, prompt: str, temperature: float) -> str:
     """
     Send prompt to LLM via chat service.
     """
-    chat_service_url = "http://localhost:8001"
+    chat_service_url = "http://localhost:9001"
     
     async with aiohttp.ClientSession() as session:
         # Initialize conversation

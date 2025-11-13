@@ -38,9 +38,6 @@ curl http://localhost:8000/api/health
 
 
 
-
-
-
 ## Overview
 
 Your NCT lookup now supports 6 additional external APIs for comprehensive research:

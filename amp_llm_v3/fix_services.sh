@@ -238,7 +238,7 @@ launchctl list | grep com.amplm
 
 echo ""
 echo "Port Status:"
-for port in 9000 9001 9002; do
+for port in 9000 9001 9002 9003; do
     if lsof -i :$port | grep -q LISTEN; then
         echo "✅ Port $port - Active"
     else
@@ -248,7 +248,7 @@ done
 
 echo ""
 echo "Health Checks:"
-for service in "webapp:9000" "chat:9001" "nct:9002"; do
+for service in "webapp:9000" "chat:9001" "nct:9002" "ra:9003"; do
     name=${service%:*}
     port=${service#*:}
     echo ""
