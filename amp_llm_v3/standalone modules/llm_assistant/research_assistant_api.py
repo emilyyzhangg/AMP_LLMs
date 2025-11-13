@@ -537,32 +537,21 @@ async def annotate_trial(request: AnnotationRequest):
             detail=f"Annotation error: {str(e)}"
         )
 
-    
-app = FastAPI(title="Research Assistant API", version="1.0.0")
 # ============================================================================
 # Standalone App (for testing)
 # ============================================================================
+@app.get("/")
+async def root():
+    return {
+        "service": "Research Assistant API",
+        "status": "running",
+        "features": {
+            "auto_fetch": "enabled",
+            "annotation": "enabled"
+        }
+    }
 
 if __name__ == "__main__":
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-    
-    @app.get("/")
-    async def root():
-        return {
-            "service": "Research Assistant API",
-            "status": "running",
-            "features": {
-                "auto_fetch": "enabled",
-                "annotation": "enabled"
-            }
-        }
-    
     import uvicorn
     print("🚀 Starting Research Assistant API on port 9002...")
     print("✨ Auto-fetch enabled: Will automatically fetch missing trial data")
