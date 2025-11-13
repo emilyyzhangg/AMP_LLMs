@@ -2387,53 +2387,160 @@ const app = {
             return;
         }
         
-        const filename = `nct_results_${Date.now()}.json`;
-        const content = JSON.stringify(this.nctResults.results, null, 2);
-        
-        const sizeKB = (content.length / 1024).toFixed(1);
-        const sizeMB = sizeKB > 1024 ? (sizeKB / 1024).toFixed(2) + ' MB' : sizeKB + ' KB';
+        const nctId = this.nctResults.summary.nct_id;
         
         try {
-            const response = await fetch(`${this.API_BASE}/files/save`, {
+            // Step 1: Check for duplicates
+            const checkResponse = await fetch(`${this.NCT_SERVICE_URL}/api/results/${nctId}/check-duplicate`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.apiKey}`
-                },
-                body: JSON.stringify({ filename, content })
+                    'Content-Type': 'application/json'
+                }
             });
             
-            if (response.ok) {
-                this.showToast(
-                    `✅ Results saved successfully!<br>` +
-                    `<small>📥 Downloaded: ${filename}<br>` +
-                    `💾 Saved to server: output/${filename}<br>` +
-                    `Size: ${sizeMB} | ${this.nctResults.results.length} trial(s)</small>`,
-                    'success',
-                    5000
-                );
-            } else {
-                throw new Error('Server save failed');
+            if (!checkResponse.ok) {
+                throw new Error('Failed to check for duplicates');
             }
+            
+            const duplicateInfo = await checkResponse.json();
+            
+            // Step 2: If file exists, prompt user
+            if (duplicateInfo.exists) {
+                this.showDuplicateDialog(nctId, duplicateInfo);
+            } else {
+                // No duplicate, proceed with save
+                await this.performSave(nctId, false);
+            }
+            
         } catch (error) {
-            console.error('Server save error:', error);
+            console.error('Save error:', error);
             this.showToast(
-                `⚠️ Partial save<br>` +
-                `<small>📥 Downloaded locally: ${filename}<br>` +
-                `❌ Server save failed: ${error.message}</small>`,
-                'warning',
+                `❌ Save failed: ${error.message}`,
+                'error',
                 5000
             );
         }
     },
 
+    // New function to show duplicate dialog
+    showDuplicateDialog(nctId, duplicateInfo) {
+        const existingFiles = duplicateInfo.existing_files.join(', ');
+        const suggestedFilename = duplicateInfo.suggested_filename;
+        
+        // Create modal dialog
+        const dialog = document.createElement('div');
+        dialog.className = 'duplicate-dialog-overlay';
+        dialog.innerHTML = `
+            <div class="duplicate-dialog">
+                <div class="duplicate-dialog-header">
+                    <h3>⚠️ File Already Exists</h3>
+                </div>
+                <div class="duplicate-dialog-content">
+                    <p>Files already exist for <strong>${nctId}</strong>:</p>
+                    <ul class="existing-files-list">
+                        ${duplicateInfo.existing_files.map(f => `<li>📄 ${f}</li>`).join('')}
+                    </ul>
+                    <p>What would you like to do?</p>
+                </div>
+                <div class="duplicate-dialog-actions">
+                    <button class="dialog-btn dialog-btn-primary" id="save-new-version">
+                        💾 Save as New Version
+                        <small>(${suggestedFilename})</small>
+                    </button>
+                    <button class="dialog-btn dialog-btn-warning" id="overwrite-existing">
+                        ⚠️ Overwrite Existing
+                        <small>(${nctId}.json)</small>
+                    </button>
+                    <button class="dialog-btn dialog-btn-secondary" id="cancel-save">
+                        ❌ Cancel
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(dialog);
+        
+        // Add event listeners
+        document.getElementById('save-new-version').addEventListener('click', async () => {
+            document.body.removeChild(dialog);
+            await this.performSave(nctId, false);
+        });
+        
+        document.getElementById('overwrite-existing').addEventListener('click', async () => {
+            document.body.removeChild(dialog);
+            await this.performSave(nctId, true);
+        });
+        
+        document.getElementById('cancel-save').addEventListener('click', () => {
+            document.body.removeChild(dialog);
+            this.showToast('💭 Save cancelled', 'info', 2000);
+        });
+        
+        // Close on overlay click
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) {
+                document.body.removeChild(dialog);
+                this.showToast('💭 Save cancelled', 'info', 2000);
+            }
+        });
+    },
+
+    // New function to perform the actual save
+    async performSave(nctId, overwrite = false) {
+        try {
+            const response = await fetch(`${this.NCT_SERVICE_URL}/api/results/${nctId}/save`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    overwrite: overwrite
+                })
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.detail || 'Save failed');
+            }
+            
+            const saveInfo = await response.json();
+            
+            // Show success message
+            const sizeFormatted = this.formatFileSize(saveInfo.size_bytes);
+            const action = saveInfo.overwritten ? 'Overwritten' : 
+                        saveInfo.was_duplicate ? 'Saved as new version' : 'Saved';
+            
+            this.showToast(
+                `✅ ${action} successfully!<br>` +
+                `<small>📄 File: ${saveInfo.filename}<br>` +
+                `💾 Size: ${sizeFormatted}<br>` +
+                `📍 Location: ${saveInfo.filepath}</small>`,
+                'success',
+                5000
+            );
+            
+            console.log('✅ Save successful:', saveInfo);
+            
+        } catch (error) {
+            console.error('Save error:', error);
+            this.showToast(
+                `❌ Save failed: ${error.message}`,
+                'error',
+                5000
+            );
+        }
+    },
+
+    // Updated downloadNCTResults with NCT ID-based naming
     downloadNCTResults() {
         if (!this.nctResults) {
             this.showToast('⚠️ No results to download', 'error');
             return;
         }
         
-        const filename = `nct_results_${Date.now()}.json`;
+        // Use NCT ID for filename
+        const nctId = this.nctResults.summary.nct_id;
+        const filename = `${nctId}.json`;
         const content = JSON.stringify(this.nctResults.results, null, 2);
         
         const blob = new Blob([content], { type: 'application/json' });
@@ -2448,15 +2555,24 @@ const app = {
         
         console.log(`✅ Downloaded ${filename} to local computer`);
         
-        const sizeKB = (content.length / 1024).toFixed(1);
-        const sizeMB = sizeKB > 1024 ? (sizeKB / 1024).toFixed(2) + ' MB' : sizeKB + ' KB';
+        const sizeFormatted = this.formatFileSize(content.length);
         
         this.showToast(
-            `📥 Downloaded: ${filename}<br><small>Size: ${sizeMB} | ${this.nctResults.results.length} trial(s)</small>`,
+            `📥 Downloaded: ${filename}<br><small>Size: ${sizeFormatted}</small>`,
             'success',
             4000
         );
     },
+
+    // Helper function for file size formatting
+    formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        const kb = bytes / 1024;
+        if (kb < 1024) return kb.toFixed(1) + ' KB';
+        const mb = kb / 1024;
+        return mb.toFixed(2) + ' MB';
+    },
+
 
     showSearchErrorSummary(errors, apiFailures = []) {
         if (!errors || errors.length === 0) return '';

@@ -11,6 +11,7 @@ Features:
 - Summary statistics
 - Async processing for performance
 - Dynamic API registry for easy extensibility
+- NCT ID-based file naming with duplicate detection
 
 Installation:
     pip install fastapi uvicorn aiohttp requests python-dotenv beautifulsoup4
@@ -23,6 +24,8 @@ API Endpoints:
     POST /api/search/{nct_id}
     GET /api/search/{nct_id}/status
     GET /api/results/{nct_id}
+    POST /api/results/{nct_id}/check-duplicate - Check if file exists
+    POST /api/results/{nct_id}/save - Save results with duplicate handling
 """
 
 from fastapi import FastAPI, HTTPException, BackgroundTasks
@@ -36,6 +39,7 @@ import asyncio
 import json
 import logging
 import os
+import re
 
 # Load environment variables
 from dotenv import load_dotenv
@@ -81,6 +85,123 @@ search_engine = NCTSearchEngine()
 search_status_db: Dict[str, SearchStatus] = {}
 
 
+# ============================================================================
+# NEW: Models for Duplicate Handling
+# ============================================================================
+
+class DuplicateCheckResponse(BaseModel):
+    """Response for duplicate file check."""
+    exists: bool
+    filename: str
+    suggested_filename: str
+    existing_files: List[str] = Field(default_factory=list)
+    message: str
+
+
+class SaveRequest(BaseModel):
+    """Request model for saving results."""
+    overwrite: bool = Field(
+        default=False,
+        description="Whether to overwrite existing file or create new version"
+    )
+    custom_filename: Optional[str] = Field(
+        default=None,
+        description="Optional custom filename (without extension)"
+    )
+
+
+class SaveResponse(BaseModel):
+    """Response model for save operation."""
+    success: bool
+    filename: str
+    filepath: str
+    message: str
+    size_bytes: int
+    was_duplicate: bool = False
+    overwritten: bool = False
+
+
+# ============================================================================
+# Helper Functions for File Management
+# ============================================================================
+
+def get_next_version_filename(nct_id: str, results_dir: Path) -> str:
+    """
+    Get the next available versioned filename for an NCT ID.
+    
+    Args:
+        nct_id: The NCT identifier (e.g., NCT12345678)
+        results_dir: Directory where results are stored
+        
+    Returns:
+        Filename like "NCT12345678.json" or "NCT12345678_1.json"
+    """
+    base_filename = f"{nct_id}.json"
+    base_path = results_dir / base_filename
+    
+    # If base file doesn't exist, use it
+    if not base_path.exists():
+        return base_filename
+    
+    # Find next available version number
+    version = 1
+    while True:
+        versioned_filename = f"{nct_id}_{version}.json"
+        versioned_path = results_dir / versioned_filename
+        if not versioned_path.exists():
+            return versioned_filename
+        version += 1
+        
+        # Safety check to prevent infinite loops
+        if version > 1000:
+            raise ValueError(f"Too many versions for {nct_id}")
+
+
+def find_existing_files(nct_id: str, results_dir: Path) -> List[str]:
+    """
+    Find all existing files for a given NCT ID.
+    
+    Args:
+        nct_id: The NCT identifier
+        results_dir: Directory where results are stored
+        
+    Returns:
+        List of existing filenames (base + all versions)
+    """
+    pattern = re.compile(rf"^{re.escape(nct_id)}(_\d+)?\.json$")
+    existing = []
+    
+    if results_dir.exists():
+        for file in results_dir.iterdir():
+            if file.is_file() and pattern.match(file.name):
+                existing.append(file.name)
+    
+    # Sort to show base file first, then versions in order
+    existing.sort(key=lambda x: (
+        0 if x == f"{nct_id}.json" else int(x.split('_')[1].split('.')[0])
+    ))
+    
+    return existing
+
+
+def get_file_info(filepath: Path) -> Dict[str, Any]:
+    """Get information about a file."""
+    if not filepath.exists():
+        return None
+    
+    stat = filepath.stat()
+    return {
+        "size_bytes": stat.st_size,
+        "size_formatted": _format_file_size(stat.st_size),
+        "modified": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+        "created": datetime.fromtimestamp(stat.st_ctime).isoformat()
+    }
+
+
+# ============================================================================
+# API Endpoints
+# ============================================================================
+
 @app.on_event("startup")
 async def startup_event():
     """Initialize search engine on startup."""
@@ -118,6 +239,7 @@ async def root():
             "search": "POST /api/search/{nct_id}",
             "status": "GET /api/search/{nct_id}/status",
             "results": "GET /api/results/{nct_id}",
+            "check_duplicate": "POST /api/results/{nct_id}/check-duplicate",
             "save": "POST /api/results/{nct_id}/save",
             "download": "GET /api/results/{nct_id}/download",
             "delete": "DELETE /api/results/{nct_id}"
@@ -125,7 +247,9 @@ async def root():
         "features": {
             "core_apis": len(APIRegistry.get_core_apis()),
             "extended_apis": len(APIRegistry.get_extended_apis()),
-            "total_apis": len(APIRegistry.get_all_apis())
+            "total_apis": len(APIRegistry.get_all_apis()),
+            "duplicate_detection": True,
+            "versioned_saves": True
         }
     }
 
@@ -263,13 +387,13 @@ async def search_nct(
 @app.get("/api/search/{nct_id}/status")
 async def get_search_status(nct_id: str):
     """
-    Get current search status.
+    Get current status of a search.
     
     Args:
         nct_id: NCT number
         
     Returns:
-        Current search status and progress
+        Current search status
     """
     nct_id = nct_id.upper().strip()
     
@@ -280,7 +404,6 @@ async def get_search_status(nct_id: str):
         )
     
     status = search_status_db[nct_id]
-    
     return {
         "job_id": status.job_id,
         "status": status.status,
@@ -295,158 +418,15 @@ async def get_search_status(nct_id: str):
 
 
 @app.get("/api/results/{nct_id}")
-async def get_search_results(
-    nct_id: str, 
-    summary_only: bool = False,
-    save_to_file: bool = False
-):
+async def get_results(nct_id: str):
     """
-    Get search results.
-    
-    Args:
-        nct_id: NCT number
-        summary_only: If True, return only summary statistics
-        save_to_file: If True, save results to file with NCT number as filename
-        
-    Returns:
-        Search results or summary with optional file save confirmation
-    """
-    nct_id = nct_id.upper().strip()
-    
-    # Check status
-    if nct_id not in search_status_db:
-        raise HTTPException(
-            status_code=404,
-            detail=f"No search found for {nct_id}"
-        )
-    
-    status = search_status_db[nct_id]
-    
-    if status.status != "completed":
-        raise HTTPException(
-            status_code=400,
-            detail=f"Search not completed. Current status: {status.status}"
-        )
-    
-    # Load results
-    results_file = Path(f"results/{nct_id}.json")
-    if not results_file.exists():
-        raise HTTPException(
-            status_code=404,
-            detail=f"Results file not found for {nct_id}"
-        )
-    
-    with open(results_file, 'r', encoding='utf-8') as f:
-        results = json.load(f)
-    
-    # Handle save to file request
-    if save_to_file:
-        # Create user downloads directory if it doesn't exist
-        downloads_dir = Path("downloads")
-        downloads_dir.mkdir(exist_ok=True)
-        
-        # Save with NCT number as filename
-        user_file = downloads_dir / f"{nct_id}.json"
-        with open(user_file, 'w', encoding='utf-8') as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
-        
-        # Return response with file info
-        response_data = _generate_summary(results) if summary_only else results
-        
-        # Add file save metadata
-        if isinstance(response_data, dict):
-            response_data["file_saved"] = {
-                "saved": True,
-                "filename": f"{nct_id}.json",
-                "filepath": str(user_file.absolute()),
-                "size_bytes": user_file.stat().st_size
-            }
-        
-        return response_data
-    
-    # Return summary or full results
-    if summary_only:
-        return _generate_summary(results)
-    else:
-        return results
-
-
-@app.post("/api/results/{nct_id}/save")
-async def save_results_to_file(nct_id: str):
-    """
-    Save search results to downloads folder with NCT number as filename.
+    Get search results for an NCT ID.
     
     Args:
         nct_id: NCT number
         
     Returns:
-        File save confirmation with path and metadata
-    """
-    nct_id = nct_id.upper().strip()
-    
-    # Check status
-    if nct_id not in search_status_db:
-        raise HTTPException(
-            status_code=404,
-            detail=f"No search found for {nct_id}"
-        )
-    
-    status = search_status_db[nct_id]
-    
-    if status.status != "completed":
-        raise HTTPException(
-            status_code=400,
-            detail=f"Search not completed. Current status: {status.status}"
-        )
-    
-    # Load results from internal storage
-    results_file = Path(f"results/{nct_id}.json")
-    if not results_file.exists():
-        raise HTTPException(
-            status_code=404,
-            detail=f"Results file not found for {nct_id}"
-        )
-    
-    with open(results_file, 'r', encoding='utf-8') as f:
-        results = json.load(f)
-    
-    # Create downloads directory
-    downloads_dir = Path("downloads")
-    downloads_dir.mkdir(exist_ok=True)
-    
-    # Save with NCT number as filename
-    output_file = downloads_dir / f"{nct_id}.json"
-    with open(output_file, 'w', encoding='utf-8') as f:
-        json.dump(results, f, indent=2, ensure_ascii=False)
-    
-    logger.info(f"Saved results to {output_file}")
-    
-    # Generate summary for response
-    summary = _generate_summary(results)
-    
-    return {
-        "success": True,
-        "message": f"Results saved successfully",
-        "file": {
-            "filename": f"{nct_id}.json",
-            "path": str(output_file.absolute()),
-            "size_bytes": output_file.stat().st_size,
-            "size_human": _format_file_size(output_file.stat().st_size)
-        },
-        "summary": summary
-    }
-
-
-@app.get("/api/results/{nct_id}/download")
-async def download_results_file(nct_id: str):
-    """
-    Download results as a file attachment.
-    
-    Args:
-        nct_id: NCT number
-        
-    Returns:
-        File download response
+        Complete search results with summary
     """
     nct_id = nct_id.upper().strip()
     
@@ -458,11 +438,185 @@ async def download_results_file(nct_id: str):
             detail=f"Results file not found for {nct_id}"
         )
     
+    try:
+        with open(results_file, 'r', encoding='utf-8') as f:
+            results = json.load(f)
+        
+        # Generate summary
+        summary = _generate_summary(results)
+        
+        return {
+            "nct_id": nct_id,
+            "summary": summary,
+            "results": results,
+            "file_info": get_file_info(results_file)
+        }
+    except Exception as e:
+        logger.error(f"Error loading results for {nct_id}: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error loading results: {str(e)}"
+        )
+
+
+# ============================================================================
+# NEW: Duplicate Check Endpoint
+# ============================================================================
+
+@app.post("/api/results/{nct_id}/check-duplicate", response_model=DuplicateCheckResponse)
+async def check_duplicate(nct_id: str):
+    """
+    Check if a file already exists for the given NCT ID.
+    
+    Args:
+        nct_id: NCT number
+        
+    Returns:
+        Information about existing files and suggested filename
+    """
+    nct_id = nct_id.upper().strip()
+    results_dir = Path("results")
+    results_dir.mkdir(exist_ok=True)
+    
+    # Find existing files
+    existing_files = find_existing_files(nct_id, results_dir)
+    base_filename = f"{nct_id}.json"
+    base_exists = base_filename in existing_files
+    
+    if not existing_files:
+        return DuplicateCheckResponse(
+            exists=False,
+            filename=base_filename,
+            suggested_filename=base_filename,
+            existing_files=[],
+            message=f"No existing files found for {nct_id}"
+        )
+    
+    # Get suggested filename (next available version)
+    suggested = get_next_version_filename(nct_id, results_dir)
+    
+    return DuplicateCheckResponse(
+        exists=True,
+        filename=base_filename,
+        suggested_filename=suggested,
+        existing_files=existing_files,
+        message=f"Found {len(existing_files)} existing file(s) for {nct_id}"
+    )
+
+
+# ============================================================================
+# NEW: Enhanced Save Endpoint with Duplicate Handling
+# ============================================================================
+
+@app.post("/api/results/{nct_id}/save", response_model=SaveResponse)
+async def save_results(nct_id: str, request: SaveRequest):
+    """
+    Save search results with duplicate handling.
+    
+    Args:
+        nct_id: NCT number
+        request: Save configuration (overwrite flag, custom filename)
+        
+    Returns:
+        Save response with file information
+    """
+    nct_id = nct_id.upper().strip()
+    results_dir = Path("results")
+    results_dir.mkdir(exist_ok=True)
+    
+    # Load results from temporary location
+    temp_results_file = results_dir / f"{nct_id}.json"
+    if not temp_results_file.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"No results found for {nct_id}. Please run a search first."
+        )
+    
+    try:
+        with open(temp_results_file, 'r', encoding='utf-8') as f:
+            results = json.load(f)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error loading results: {str(e)}"
+        )
+    
+    # Determine target filename
+    if request.custom_filename:
+        # Use custom filename if provided
+        target_filename = f"{request.custom_filename}.json"
+    elif request.overwrite:
+        # Overwrite base file
+        target_filename = f"{nct_id}.json"
+    else:
+        # Get next versioned filename
+        target_filename = get_next_version_filename(nct_id, results_dir)
+    
+    target_path = results_dir / target_filename
+    was_duplicate = target_path.exists()
+    
+    # Save the file
+    try:
+        with open(target_path, 'w', encoding='utf-8') as f:
+            json.dump(results, f, indent=2, ensure_ascii=False)
+        
+        file_size = target_path.stat().st_size
+        
+        logger.info(
+            f"Saved results for {nct_id} to {target_filename} "
+            f"({'overwrite' if was_duplicate and request.overwrite else 'new file'})"
+        )
+        
+        return SaveResponse(
+            success=True,
+            filename=target_filename,
+            filepath=str(target_path.absolute()),
+            message=f"Results saved successfully to {target_filename}",
+            size_bytes=file_size,
+            was_duplicate=was_duplicate,
+            overwritten=request.overwrite and was_duplicate
+        )
+        
+    except Exception as e:
+        logger.error(f"Error saving results for {nct_id}: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error saving results: {str(e)}"
+        )
+
+
+@app.get("/api/results/{nct_id}/download")
+async def download_results(nct_id: str, version: Optional[int] = None):
+    """
+    Download search results as JSON file.
+    
+    Args:
+        nct_id: NCT number
+        version: Optional version number (for versioned files)
+        
+    Returns:
+        JSON file download
+    """
+    nct_id = nct_id.upper().strip()
+    
+    # Determine filename
+    if version is not None:
+        filename = f"{nct_id}_{version}.json"
+    else:
+        filename = f"{nct_id}.json"
+    
+    results_file = Path(f"results/{filename}")
+    if not results_file.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Results file not found: {filename}"
+        )
+    
     # Return file for download
     return FileResponse(
         path=str(results_file),
         media_type='application/json',
-        filename=f"{nct_id}.json"
+        filename=filename
     )
 
 
@@ -476,34 +630,57 @@ def _format_file_size(size_bytes: int) -> str:
 
 
 @app.delete("/api/results/{nct_id}")
-async def delete_search(nct_id: str):
+async def delete_search(nct_id: str, version: Optional[int] = None):
     """
     Delete search results and status.
     
     Args:
         nct_id: NCT number
+        version: Optional version number (deletes specific version, or all if not specified)
         
     Returns:
         Deletion confirmation
     """
     nct_id = nct_id.upper().strip()
+    results_dir = Path("results")
+    deleted_files = []
     
-    # Remove from status db
-    if nct_id in search_status_db:
-        del search_status_db[nct_id]
+    if version is not None:
+        # Delete specific version
+        filename = f"{nct_id}_{version}.json"
+        results_file = results_dir / filename
+        if results_file.exists():
+            results_file.unlink()
+            deleted_files.append(filename)
+    else:
+        # Delete all versions
+        existing_files = find_existing_files(nct_id, results_dir)
+        for filename in existing_files:
+            filepath = results_dir / filename
+            if filepath.exists():
+                filepath.unlink()
+                deleted_files.append(filename)
+        
+        # Remove from status db
+        if nct_id in search_status_db:
+            del search_status_db[nct_id]
     
-    # Remove results file
-    results_file = Path(f"results/{nct_id}.json")
-    if results_file.exists():
-        results_file.unlink()
+    if not deleted_files:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No files found to delete for {nct_id}"
+        )
     
     return {
-        "message": f"Deleted search data for {nct_id}",
-        "nct_id": nct_id
+        "message": f"Deleted {len(deleted_files)} file(s) for {nct_id}",
+        "nct_id": nct_id,
+        "deleted_files": deleted_files
     }
 
 
+# ============================================================================
 # Internal helper functions
+# ============================================================================
 
 async def _execute_search(nct_id: str, request: SearchRequest):
     """Execute search in background."""
@@ -525,7 +702,7 @@ async def _execute_search(nct_id: str, request: SearchRequest):
         # Execute search
         results = await search_engine.search(nct_id, config, status)
         
-        # Save results
+        # Save results to temporary location (will be renamed on save)
         results_dir = Path("results")
         results_dir.mkdir(exist_ok=True)
         
@@ -667,6 +844,7 @@ def _count_source_results(api_id: str, data: Dict[str, Any]) -> int:
         return data.get("count", 0)
     
     return 0
+
 
 def _format_openfda_details(data: Dict[str, Any]) -> str:
     """
