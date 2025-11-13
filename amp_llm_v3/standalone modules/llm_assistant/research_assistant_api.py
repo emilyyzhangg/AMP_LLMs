@@ -7,9 +7,11 @@ import json
 import sys
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple
-from fastapi import APIRouter, HTTPException
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import aiohttp
+from assistant_config import config
 
 # Setup logging
 logging.basicConfig(
@@ -30,10 +32,25 @@ except Exception as e:
     HAS_PROMPT_GEN = False
 
 # ============================================================================
-# Router
+# Initialize FastAPI app
 # ============================================================================
 
-router = APIRouter(prefix="/api/research", tags=["research"])
+app = FastAPI(
+    title="LLM Research Assistant API",
+    description="Modular service for annotating clinical trials with automatic data fetching",
+    version="3.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc"
+)
+
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=config.CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ============================================================================
 # Models
@@ -520,17 +537,13 @@ async def annotate_trial(request: AnnotationRequest):
             detail=f"Annotation error: {str(e)}"
         )
 
-
+    
+app = FastAPI(title="Research Assistant API", version="1.0.0")
 # ============================================================================
 # Standalone App (for testing)
 # ============================================================================
 
 if __name__ == "__main__":
-    from fastapi import FastAPI
-    from fastapi.middleware.cors import CORSMiddleware
-    
-    app = FastAPI(title="Research Assistant API", version="1.0.0")
-    
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
