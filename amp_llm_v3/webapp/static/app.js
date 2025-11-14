@@ -3963,7 +3963,7 @@ const app = {
         const startTime = Date.now();
         
         try {
-            const response = await fetch(`${RESEARCH_API}/api/research/annotate`, {
+            const response = await fetch(`${RESEARCH_API}/annotate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
