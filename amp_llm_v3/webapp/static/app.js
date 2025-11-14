@@ -1211,11 +1211,11 @@ const app = {
             this.addMessage('chat-container', 'error', 
                 '❌ Connection Error\n\n' +
                 'Cannot connect to the chat service.\n\n' +
-                'The chat service must be running on port 8001.\n\n' +
+                'The chat service must be running on port 9001.\n\n' +
                 'To start it:\n' +
                 '1. Open terminal\n' +
                 '2. cd amp_llm_v3/standalone\\ modules/chat_with_llm\n' +
-                '3. uvicorn chat_api:app --port 8001 --reload\n\n' +
+                '3. uvicorn chat_api:app --port 9001 --reload\n\n' +
                 'Then refresh this page.\n\n' +
                 `Error: ${error.message}`);
         }
@@ -1586,7 +1586,7 @@ const app = {
                 `❌ Connection Error\n\n` +
                 `Failed to communicate with the chat service.\n\n` +
                 `Error: ${error.message}\n\n` +
-                `Make sure the chat service is running on port 8001.`);
+                `Make sure the chat service is running on port 9001.`);
         }
     },
 

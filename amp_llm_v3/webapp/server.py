@@ -468,14 +468,14 @@ async def list_models():
         logger.error("Timeout connecting to chat service for /models")
         raise HTTPException(
             status_code=503,
-            detail="Chat service timeout - is it running on port 8001?"
+            detail="Chat service timeout - is it running on port 9001?"
         )
     except httpx.ConnectError:
         logger.error("Connection refused to chat service for /models")
         raise HTTPException(
             status_code=503,
-            detail="Cannot connect to chat service on port 8001. "
-                   "Start it with: cd 'standalone modules/chat_with_llm' && uvicorn chat_api:app --port 8001 --reload"
+            detail="Cannot connect to chat service on port 9001. "
+                   "Start it with: cd 'standalone modules/chat_with_llm' && uvicorn chat_api:app --port 9001 --reload"
         )
     except HTTPException:
         raise

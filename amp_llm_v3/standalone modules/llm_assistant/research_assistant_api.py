@@ -351,9 +351,9 @@ async def send_to_llm(model: str, prompt: str, temperature: float) -> str:
             logger.error(f"❌ Cannot connect to chat service: {e}")
             raise HTTPException(
                 status_code=503,
-                detail="Cannot connect to chat service on port 8001. "
+                detail="Cannot connect to chat service on port 9001. "
                        "Make sure it's running: cd 'standalone modules/chat_with_llm' && "
-                       "uvicorn chat_api:app --port 8001 --reload"
+                       "uvicorn chat_api:app --port 9001 --reload"
             )
         except Exception as e:
             logger.error(f"❌ Chat service error: {e}")

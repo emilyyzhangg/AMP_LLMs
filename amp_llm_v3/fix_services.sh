@@ -111,7 +111,7 @@ cat > "$HOME/Library/LaunchAgents/com.amplm.chat.plist" <<EOF
         <string>--host</string>
         <string>0.0.0.0</string>
         <string>--port</string>
-        <string>8001</string>
+        <string>89001</string>
     </array>
     
     <key>WorkingDirectory</key>
