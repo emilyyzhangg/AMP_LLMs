@@ -3946,8 +3946,8 @@ const app = {
         
         this.addMessage('research-container', 'user', `Annotate: ${nctId}`);
         
-        // Research API runs on port 9003
-        const RESEARCH_API = 'http://localhost:9003';
+        // Research assistant now integrated with chat service on port 9001
+        const RESEARCH_API = `${this.API_BASE}/research`;
         
         // Show initial processing message
         const processingId = this.addMessage('research-container', 'system', 
@@ -4029,7 +4029,7 @@ const app = {
                     `❌ Annotation Failed\n\n` +
                     `Error: ${errorData.detail}\n\n` +
                     `Possible issues:\n` +
-                    `• NCT Lookup service not running (port 8000)\n` +
+                    `• NCT Lookup service not running (port 9002)\n` +
                     `• Invalid NCT ID or trial not found\n` +
                     `• Model ${this.currentModel} is not responding\n` +
                     `• Network connectivity issues\n\n` +
@@ -4046,12 +4046,12 @@ const app = {
             
             this.addMessage('research-container', 'error', 
                 `❌ Connection Error\n\n${error.message}\n\n` +
-                `Cannot connect to Research API (port 9003).\n\n` +
-                `The Research API must be running.\n\n` +
+                `Cannot connect to Research Assistant on Chat Service (port 9001).\n\n` +
+                `The Chat Service with integrated Research Assistant must be running.\n\n` +
                 `To start it:\n` +
                 `1. Open a new terminal\n` +
-                `2. cd amp_llm_v3/standalone\\ modules/llm_assistant\n` +
-                `3. python -m uvicorn research_assistant_api:app --port 9003 --reload\n\n` +
+                `2. cd amp_llm_v3/standalone\\ modules/chat_with_llm\n` +
+                `3. python -m uvicorn chat_service_integrated:app --port 9001 --reload\n\n` +
                 `Or use: ./start_all.sh`);
             console.error('Research API connection error:', error);
         }

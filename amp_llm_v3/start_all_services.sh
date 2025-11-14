@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # ============================================================================
-# AMP LLM - Start All Services
+# AMP LLM - Start All Services (Updated for Integrated Architecture)
 # ============================================================================
 # This script starts all three required services:
-# 1. Chat Service (port 9001)
+# 1. Integrated Chat + Research Service (port 9001)
 # 2. NCT Lookup Service (port 9002)
 # 3. Web Interface (port 9000)
 # ============================================================================
 
 echo "═══════════════════════════════════════════════════════"
-echo "Starting AMP LLM Services"
+echo "Starting AMP LLM Services (Integrated Architecture)"
 echo "═══════════════════════════════════════════════════════"
 
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -26,16 +26,17 @@ cd "$PROJECT_DIR"
 
 # Check if virtual environment exists
 if [ ! -d "llm_env" ]; then
-    echo "❌ Virtual environment not found"
-    echo "Please create it first: python3 -m venv llm_env"
-    exit 1
+    echo "⚠️  Virtual environment not found at llm_env/"
+    echo "Looking for alternative Python..."
+    PYTHON_CMD="python3"
+else
+    # Activate virtual environment
+    source llm_env/bin/activate
+    echo "✅ Virtual environment activated"
+    PYTHON_CMD="python"
 fi
 
-# Activate virtual environment
-source llm_env/bin/activate
-
 echo ""
-echo "✅ Virtual environment activated"
 
 # Create logs directory
 mkdir -p logs
@@ -47,12 +48,12 @@ check_port() {
 }
 
 # ============================================================================
-# Start Chat Service (Port 9001)
+# Start Integrated Chat + Research Service (Port 9001)
 # ============================================================================
 
 echo ""
 echo "─────────────────────────────────────────────────────"
-echo "Starting Chat Service on port 9001..."
+echo "Starting Integrated Chat + Research Service on port 9001..."
 echo "─────────────────────────────────────────────────────"
 
 if check_port 9001; then
@@ -62,30 +63,52 @@ if check_port 9001; then
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         lsof -ti:9001 | xargs kill -9
         echo "✅ Killed existing process on port 9001"
+        sleep 2
     else
         echo "Skipping chat service..."
+        SKIP_CHAT=true
     fi
-else
+fi
+
+if [ "$SKIP_CHAT" != "true" ]; then
     cd "standalone modules/chat_with_llm"
+    
+    # Check if integrated service exists
+    if [ ! -f "chat_service_integrated.py" ]; then
+        echo "⚠️  chat_service_integrated.py not found!"
+        echo "   Looking for fallback chat_api.py..."
+        if [ -f "chat_api.py" ]; then
+            SERVICE_FILE="chat_api"
+            echo "   Using chat_api.py (legacy mode - no research integration)"
+        else
+            echo "❌ No chat service file found!"
+            exit 1
+        fi
+    else
+        SERVICE_FILE="chat_service_integrated"
+        echo "✅ Using integrated service (chat + research)"
+    fi
     
     # Check if requirements are installed
     if [ ! -f ".installed" ]; then
         echo "📦 Installing chat service dependencies..."
-        pip install -r requirements.txt
+        $PYTHON_CMD -m pip install -r requirements.txt
         touch .installed
     fi
     
     # Start service in background
-    nohup uvicorn chat_api:app --port 9001 > "$PROJECT_DIR/logs/chat_service.log" 2>&1 &
+    nohup $PYTHON_CMD -m uvicorn ${SERVICE_FILE}:app --port 9001 > "$PROJECT_DIR/logs/chat_service.log" 2>&1 &
     CHAT_PID=$!
     
     echo "✅ Chat service starting (PID: $CHAT_PID)"
+    echo "   Service: ${SERVICE_FILE}"
+    echo "   Endpoints: /chat/* and /research/*"
     echo "   Log: $PROJECT_DIR/logs/chat_service.log"
     
     cd "$PROJECT_DIR"
 fi
 
-sleep 2
+sleep 3
 
 # ============================================================================
 # Start NCT Lookup Service (Port 9002)
@@ -103,16 +126,20 @@ if check_port 9002; then
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         lsof -ti:9002 | xargs kill -9
         echo "✅ Killed existing process on port 9002"
+        sleep 2
     else
         echo "Skipping NCT service..."
+        SKIP_NCT=true
     fi
-else
+fi
+
+if [ "$SKIP_NCT" != "true" ]; then
     cd "standalone modules/nct_lookup"
     
     # Check if requirements are installed
     if [ ! -f ".installed" ]; then
         echo "📦 Installing NCT service dependencies..."
-        pip install -r requirements.txt
+        $PYTHON_CMD -m pip install -r requirements.txt
         touch .installed
     fi
     
@@ -120,7 +147,7 @@ else
     mkdir -p results
     
     # Start service in background
-    nohup uvicorn nct_api:app --port 9002 > "$PROJECT_DIR/logs/nct_service.log" 2>&1 &
+    nohup $PYTHON_CMD -m uvicorn nct_api:app --port 9002 > "$PROJECT_DIR/logs/nct_service.log" 2>&1 &
     NCT_PID=$!
     
     echo "✅ NCT service starting (PID: $NCT_PID)"
@@ -129,7 +156,7 @@ else
     cd "$PROJECT_DIR"
 fi
 
-sleep 2
+sleep 3
 
 # ============================================================================
 # Start Web Interface (Port 9000)
@@ -146,20 +173,24 @@ if check_port 9000; then
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         lsof -ti:9000 | xargs kill -9
-        echo "✅ Killed existing process on port 8900"
+        echo "✅ Killed existing process on port 9000"
+        sleep 2
     else
         echo "Skipping web interface..."
+        SKIP_WEB=true
     fi
-else
+fi
+
+if [ "$SKIP_WEB" != "true" ]; then
     # Check if requirements are installed
     if [ ! -f "webapp/.installed" ]; then
         echo "📦 Installing webapp dependencies..."
-        pip install fastapi uvicorn aiohttp httpx python-dotenv pydantic-settings
+        $PYTHON_CMD -m pip install fastapi uvicorn aiohttp httpx python-dotenv pydantic-settings
         touch webapp/.installed
     fi
     
     # Start service in background
-    nohup uvicorn webapp.server:app --host 0.0.0.0 --port 9000 > "$PROJECT_DIR/logs/webapp.log" 2>&1 &
+    nohup $PYTHON_CMD -m uvicorn webapp.server:app --host 0.0.0.0 --port 9000 > "$PROJECT_DIR/logs/webapp.log" 2>&1 &
     WEBAPP_PID=$!
     
     echo "✅ Web interface starting (PID: $WEBAPP_PID)"
@@ -182,9 +213,11 @@ echo "Checking services..."
 
 # Chat Service
 if check_port 9001; then
-    echo "✅ Chat Service: Running on port 9001"
+    echo "✅ Integrated Chat + Research Service: Running on port 9001"
+    echo "   • Chat endpoints: /chat/*"
+    echo "   • Research endpoints: /research/*"
 else
-    echo "❌ Chat Service: Not running"
+    echo "❌ Integrated Chat + Research Service: Not running"
 fi
 
 # NCT Service
@@ -208,20 +241,30 @@ echo "════════════════════════�
 
 echo ""
 echo "🌐 Web Interface:"
-echo "   http://localhost:8000"
+echo "   http://localhost:9000"
 echo ""
 echo "📚 API Documentation:"
-echo "   Chat Service:      http://localhost:9001/docs"
-echo "   NCT Lookup:        http://localhost:9002/docs"
-echo "   RA:                http://localhost:9002/docs"
-echo "   Web API:           http://localhost:9000/docs"
+echo "   Integrated Service:  http://localhost:9001/docs"
+echo "     - Chat API:        /chat/*"
+echo "     - Research API:    /research/*"
+echo "   NCT Lookup:          http://localhost:9002/docs"
+echo "   Web API:             http://localhost:9000/docs"
+echo ""
+echo "🔬 Architecture:"
+echo "   Port 9001 - Unified service for chat AND research"
+echo "   Port 9002 - NCT lookup and data fetching"
+echo "   Port 9000 - Web interface"
 echo ""
 echo "📋 Logs:"
-echo "   Chat:              tail -f logs/chat_service.log"
+echo "   Chat + Research:   tail -f logs/chat_service.log"
 echo "   NCT Lookup:        tail -f logs/nct_service.log"
 echo "   Web Interface:     tail -f logs/webapp.log"
+echo "   All Services:      tail -f logs/*.log"
 echo ""
 echo "🛑 Stop All Services:"
 echo "   lsof -ti:9000,9001,9002 | xargs kill"
+echo ""
+echo "ℹ️  Note: Research assistant is now integrated with chat service"
+echo "   No separate service needed on port 9003"
 echo ""
 echo "═══════════════════════════════════════════════════════"

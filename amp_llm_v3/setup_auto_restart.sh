@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Setup Automatic Service Restart on Git Pull
+# Setup Automatic Service Restart on Git Pull (Updated for Integrated Architecture)
 # ============================================================================
 
 set -e
@@ -10,6 +10,7 @@ USER_HOME="$HOME"
 
 echo "═══════════════════════════════════════════════════════"
 echo "Setting Up Auto-Restart on Git Pull"
+echo "Updated for Integrated Chat + Research Architecture"
 echo "═══════════════════════════════════════════════════════"
 
 # Get current username
@@ -48,7 +49,7 @@ cat > "$HOME/Library/LaunchAgents/com.amplm.webapp.plist" <<EOF
         <string>--host</string>
         <string>0.0.0.0</string>
         <string>--port</string>
-        <string>8000</string>
+        <string>9000</string>
         <string>--reload</string>
     </array>
     
@@ -77,10 +78,21 @@ cat > "$HOME/Library/LaunchAgents/com.amplm.webapp.plist" <<EOF
 </dict>
 </plist>
 EOF
-echo "✅ Created webapp LaunchAgent"
+echo "✅ Created webapp LaunchAgent (port 9000)"
 
-# --- Chat Service LaunchAgent ---
-echo "Creating chat service LaunchAgent..."
+# --- Integrated Chat + Research Service LaunchAgent ---
+echo "Creating integrated chat + research service LaunchAgent..."
+
+# Check which service file exists
+if [ -f "$PROJECT_DIR/standalone modules/chat_with_llm/chat_service_integrated.py" ]; then
+    SERVICE_MODULE="chat_service_integrated:app"
+    SERVICE_DESC="Integrated Chat + Research Service"
+else
+    SERVICE_MODULE="chat_api:app"
+    SERVICE_DESC="Chat Service (legacy - no research integration)"
+    echo "⚠️  chat_service_integrated.py not found, using chat_api.py"
+fi
+
 cat > "$HOME/Library/LaunchAgents/com.amplm.chat.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -94,11 +106,11 @@ cat > "$HOME/Library/LaunchAgents/com.amplm.chat.plist" <<EOF
         <string>/usr/bin/python3</string>
         <string>-m</string>
         <string>uvicorn</string>
-        <string>chat_api:app</string>
+        <string>$SERVICE_MODULE</string>
         <string>--host</string>
         <string>0.0.0.0</string>
         <string>--port</string>
-        <string>8001</string>
+        <string>9001</string>
         <string>--reload</string>
     </array>
     
@@ -127,7 +139,8 @@ cat > "$HOME/Library/LaunchAgents/com.amplm.chat.plist" <<EOF
 </dict>
 </plist>
 EOF
-echo "✅ Created chat service LaunchAgent"
+echo "✅ Created chat service LaunchAgent (port 9001)"
+echo "   Service: $SERVICE_DESC"
 
 # --- NCT Service LaunchAgent ---
 echo "Creating NCT service LaunchAgent..."
@@ -189,7 +202,7 @@ cat > "$HOME/Library/LaunchAgents/com.amplm.nct.plist" <<EOF
 </dict>
 </plist>
 EOF
-echo "✅ Created NCT service LaunchAgent"
+echo "✅ Created NCT service LaunchAgent (port 9002)"
 
 # Set permissions
 chmod 644 "$HOME/Library/LaunchAgents/com.amplm."*.plist
@@ -213,6 +226,7 @@ cat > "$HOOK_FILE" <<'EOF'
 #!/bin/bash
 # ============================================================================
 # Git Post-Merge Hook - Auto-restart services after git pull
+# Updated for Integrated Chat + Research Architecture
 # ============================================================================
 
 set -e
@@ -224,6 +238,7 @@ cd "$PROJECT_DIR"
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m'
 
 echo ""
@@ -270,10 +285,11 @@ if files_changed_in_dir "webapp"; then
     RESTART_NEEDED=true
 fi
 
-# Check chat service changes
+# Check chat service changes (now includes research)
 if files_changed_in_dir "standalone modules/chat_with_llm"; then
     echo "📝 Changes detected in chat_with_llm/"
-    restart_service "Chat Service" "com.amplm.chat"
+    echo -e "${BLUE}   Note: This includes both chat AND research functionality${NC}"
+    restart_service "Integrated Chat + Research Service" "com.amplm.chat"
     RESTART_NEEDED=true
 fi
 
@@ -284,14 +300,23 @@ if files_changed_in_dir "standalone modules/nct_lookup"; then
     RESTART_NEEDED=true
 fi
 
-# Check for Python/config file changes
+# Check for specific file changes that require restart
 if git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep -qE '\.(py|json|env)$'; then
     if [ "$RESTART_NEEDED" = false ]; then
-        echo "📝 Python/config changes detected, restarting all services..."
-        restart_service "Webapp" "com.amplm.webapp"
-        restart_service "Chat Service" "com.amplm.chat"
-        restart_service "NCT Service" "com.amplm.nct"
-        RESTART_NEEDED=true
+        echo "📝 Python/config changes detected"
+        
+        # Check if it's in a service directory
+        if git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep -qE 'chat_service_integrated|research_routes|chat_api'; then
+            echo "   Restarting chat service (integrated chat + research)"
+            restart_service "Integrated Chat + Research Service" "com.amplm.chat"
+            RESTART_NEEDED=true
+        else
+            echo "   Restarting all services as precaution..."
+            restart_service "Webapp" "com.amplm.webapp"
+            restart_service "Integrated Chat + Research Service" "com.amplm.chat"
+            restart_service "NCT Service" "com.amplm.nct"
+            RESTART_NEEDED=true
+        fi
     fi
 fi
 
@@ -303,7 +328,15 @@ echo ""
 echo "═══════════════════════════════════════════════════════"
 echo "Service Status:"
 echo "═══════════════════════════════════════════════════════"
+echo ""
+echo "LaunchCtl Services:"
 launchctl list | grep -E "com.amplm.(webapp|chat|nct)" || echo "No services running"
+echo ""
+echo "Port Status:"
+echo "  Port 9000 (Webapp):                $(lsof -i :9000 | grep -q LISTEN && echo '✅ Active' || echo '❌ Inactive')"
+echo "  Port 9001 (Chat + Research):       $(lsof -i :9001 | grep -q LISTEN && echo '✅ Active' || echo '❌ Inactive')"
+echo "  Port 9002 (NCT Lookup):            $(lsof -i :9002 | grep -q LISTEN && echo '✅ Active' || echo '❌ Inactive')"
+echo ""
 echo "═══════════════════════════════════════════════════════"
 echo ""
 EOF
@@ -331,9 +364,9 @@ echo "Loading webapp..."
 launchctl load "$HOME/Library/LaunchAgents/com.amplm.webapp.plist"
 echo "✅ Webapp loaded"
 
-echo "Loading chat service..."
+echo "Loading integrated chat + research service..."
 launchctl load "$HOME/Library/LaunchAgents/com.amplm.chat.plist"
-echo "✅ Chat service loaded"
+echo "✅ Integrated chat + research service loaded"
 
 echo "Loading NCT service..."
 launchctl load "$HOME/Library/LaunchAgents/com.amplm.nct.plist"
@@ -368,10 +401,12 @@ echo "Port Status:"
 echo "Port 9000 (Webapp):"
 lsof -i :9000 | grep LISTEN || echo "  ❌ Not listening"
 
-echo "Port 9001 (Chat):"
+echo ""
+echo "Port 9001 (Integrated Chat + Research):"
 lsof -i :9001 | grep LISTEN || echo "  ❌ Not listening"
 
-echo "Port 9002 (NCT):"
+echo ""
+echo "Port 9002 (NCT Lookup):"
 lsof -i :9002 | grep LISTEN || echo "  ❌ Not listening"
 
 echo ""
@@ -380,16 +415,16 @@ echo "Webapp:"
 curl -s http://localhost:9000/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
 
 echo ""
-echo "Chat Service:"
+echo "Integrated Chat + Research Service:"
 curl -s http://localhost:9001/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
+
+echo ""
+echo "Research Endpoints:"
+curl -s http://localhost:9001/research/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
 
 echo ""
 echo "NCT Service:"
 curl -s http://localhost:9002/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
-
-echo ""
-echo "RA Service:"
-curl -s http://localhost:9003/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
 
 # ============================================================================
 # Summary
@@ -404,19 +439,30 @@ cat <<EOF
 
 ✅ All services configured for auto-restart on git pull!
 
+Architecture:
+─────────────
+• Port 9001 now runs INTEGRATED service with:
+  - Chat endpoints:     /chat/*
+  - Research endpoints: /research/*
+• Port 9002 - NCT Lookup (data fetching)
+• Port 9000 - Web Interface
+
 What This Does:
 ───────────────
 When you run 'git pull', the post-merge hook will:
 1. Detect which files changed
 2. Automatically restart affected services
-3. Show you the status
+3. Handle integrated chat + research as one service
+4. Show you the status
 
 Services:
 ─────────
-• Webapp    - http://localhost:9000
-• Chat      - http://localhost:9001  
-• NCT       - http://localhost:9002
-• RA        - http://localhost:9003
+• Webapp                      - http://localhost:9000
+• Integrated Chat + Research  - http://localhost:9001
+  - API Docs                  - http://localhost:9001/docs
+  - Chat API                  - http://localhost:9001/chat/*
+  - Research API              - http://localhost:9001/research/*
+• NCT Lookup                  - http://localhost:9002
 
 Test It:
 ────────
@@ -425,22 +471,26 @@ Test It:
 3. Run: git pull
 4. Watch services auto-restart!
 
+Test Research Integration:
+─────────────────────────
+curl http://localhost:9001/research/health
+
 View Logs:
 ──────────
 tail -f $PROJECT_DIR/logs/webapp.log
-tail -f $PROJECT_DIR/logs/chat.log
+tail -f $PROJECT_DIR/logs/chat.log       # Includes research logs
 tail -f $PROJECT_DIR/logs/nct.log
 
 Manage Services:
 ────────────────
 # Stop all
 launchctl stop com.amplm.webapp
-launchctl stop com.amplm.chat
+launchctl stop com.amplm.chat     # Stops both chat AND research
 launchctl stop com.amplm.nct
 
 # Start all
 launchctl start com.amplm.webapp
-launchctl start com.amplm.chat
+launchctl start com.amplm.chat    # Starts both chat AND research
 launchctl start com.amplm.nct
 
 # Restart all
@@ -453,6 +503,13 @@ launchctl list | grep com.amplm
 
 # View realtime logs
 tail -f $PROJECT_DIR/logs/*.log
+
+Important Notes:
+────────────────
+• Research assistant is now INTEGRATED with chat service
+• No separate service needed on port 9003
+• Both chat and research share same Ollama connection
+• Restarting com.amplm.chat restarts BOTH functionalities
 
 Disable Auto-Restart:
 ─────────────────────
