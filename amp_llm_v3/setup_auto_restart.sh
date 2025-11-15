@@ -84,8 +84,6 @@ echo "✅ Created webapp LaunchAgent (port 9000)"
 echo "Creating integrated chat + research service LaunchAgent..."
 
 # Check which service file exists
-SERVICE_MODULE="chat_service_integrated:app"
-SERVICE_DESC="Integrated Chat + Research Service"
 
 cat > "$HOME/Library/LaunchAgents/com.amplm.chat.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -100,7 +98,7 @@ cat > "$HOME/Library/LaunchAgents/com.amplm.chat.plist" <<EOF
         <string>/usr/bin/python3</string>
         <string>-m</string>
         <string>uvicorn</string>
-        <string>$SERVICE_MODULE</string>
+        <string>chat_service_integrated:app</string>
         <string>--host</string>
         <string>0.0.0.0</string>
         <string>--port</string>
@@ -134,7 +132,7 @@ cat > "$HOME/Library/LaunchAgents/com.amplm.chat.plist" <<EOF
 </plist>
 EOF
 echo "✅ Created chat service LaunchAgent (port 9001)"
-echo "   Service: $SERVICE_DESC"
+echo "   Service: Integrated Chat + Research Service"
 
 # --- NCT Service LaunchAgent ---
 echo "Creating NCT service LaunchAgent..."

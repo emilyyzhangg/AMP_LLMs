@@ -63,7 +63,7 @@ cat > "$HOME/Library/LaunchAgents/com.amplm.webapp.plist" <<EOF
         <string>--host</string>
         <string>0.0.0.0</string>
         <string>--port</string>
-        <string>8000</string>
+        <string>9000</string>
     </array>
     
     <key>WorkingDirectory</key>
@@ -107,11 +107,11 @@ cat > "$HOME/Library/LaunchAgents/com.amplm.chat.plist" <<EOF
         <string>$VENV_PYTHON</string>
         <string>-m</string>
         <string>uvicorn</string>
-        <string>chat_api:app</string>
+        <string>chat_service_integrated:app</string>
         <string>--host</string>
         <string>0.0.0.0</string>
         <string>--port</string>
-        <string>89001</string>
+        <string>9001</string>
     </array>
     
     <key>WorkingDirectory</key>
