@@ -157,11 +157,11 @@ except ImportError as e:
             raise HTTPException(status_code=404, detail="Conversation not found")
         return conversations[conversation_id]
     
-    @chat_router.get("/models")
-    async def list_models():
-        """List available Ollama models"""
+    @app.get("/models")
+    async def get_models():
+        """Get available Ollama models"""
         try:
-            async with httpx.AsyncClient() as client:
+            async with httpx.AsyncClient(timeout=10.0) as client:
                 response = await client.get(f"{config.OLLAMA_BASE_URL}/api/tags")
                 if response.status_code == 200:
                     return response.json()
