@@ -248,7 +248,7 @@ done
 
 echo ""
 echo "Health Checks:"
-for service in "webapp:9000" "chat:9001" "nct:9002" "ra:9003"; do
+for service in "webapp:9000" "chat:9001" "nct:9002"; do
     name=${service%:*}
     port=${service#*:}
     echo ""

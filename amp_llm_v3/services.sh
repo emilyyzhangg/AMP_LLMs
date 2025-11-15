@@ -65,7 +65,7 @@ show_status() {
         if [ "$pid" != "-" ]; then
             echo "     PID: $pid"
         fi
-        echo "     Port: 9000"
+        echo "     Port: 8000"
     else
         echo -e "  ${RED}❌ Not running${NC}"
     fi
@@ -101,10 +101,10 @@ show_status() {
     
     echo ""
     echo "Port Status:"
-    if lsof -i :9000 | grep -q LISTEN; then
-        echo -e "  ${GREEN}✅ Port 9000 (Webapp)${NC}"
+    if lsof -i :8000 | grep -q LISTEN; then
+        echo -e "  ${GREEN}✅ Port 8000 (Webapp)${NC}"
     else
-        echo -e "  ${RED}❌ Port 9000 (Webapp)${NC}"
+        echo -e "  ${RED}❌ Port 8000 (Webapp)${NC}"
     fi
     
     if lsof -i :9001 | grep -q LISTEN; then
@@ -142,7 +142,7 @@ if [ $# -eq 0 ]; then
     echo "  logs [service]     - Tail logs"
     echo ""
     echo "Services:"
-    echo "  webapp  - Web interface (port 9000)"
+    echo "  webapp  - Web interface (port 8000)"
     echo "  chat    - Integrated chat + research service (port 9001)"
     echo "  nct     - NCT lookup service (port 9002)"
     echo "  all     - All services"
@@ -229,7 +229,7 @@ case $COMMAND in
         echo "Health Checks:"
         
         # Webapp
-        if curl -sf http://localhost:9000/health > /dev/null 2>&1; then
+        if curl -sf http://localhost:8000/health > /dev/null 2>&1; then
             echo -e "  ${GREEN}✅ Webapp responding${NC}"
         else
             echo -e "  ${RED}❌ Webapp not responding${NC}"

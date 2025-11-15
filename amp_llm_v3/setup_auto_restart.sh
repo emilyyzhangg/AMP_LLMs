@@ -84,14 +84,8 @@ echo "✅ Created webapp LaunchAgent (port 9000)"
 echo "Creating integrated chat + research service LaunchAgent..."
 
 # Check which service file exists
-if [ -f "$PROJECT_DIR/standalone modules/chat_with_llm/chat_service_integrated.py" ]; then
-    SERVICE_MODULE="chat_service_integrated:app"
-    SERVICE_DESC="Integrated Chat + Research Service"
-else
-    SERVICE_MODULE="chat_api:app"
-    SERVICE_DESC="Chat Service (legacy - no research integration)"
-    echo "⚠️  chat_service_integrated.py not found, using chat_api.py"
-fi
+SERVICE_MODULE="chat_service_integrated:app"
+SERVICE_DESC="Integrated Chat + Research Service"
 
 cat > "$HOME/Library/LaunchAgents/com.amplm.chat.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
