@@ -2,12 +2,31 @@
 LLM Chat Service with Research Assistant Integration (Port 9001)
 ================================================================
 
-Main chat service that now includes research assistant functionality.
+Complete standalone version with all chat routes inline.
+No dependencies on chat_api.py or chat_routes.py needed.
 """
 import logging
-from fastapi import FastAPI
+import uuid
+from typing import Dict, List, Optional
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from assistant_config import config
+from pydantic import BaseModel
+import httpx
+
+try:
+    from assistant_config import config
+except ImportError:
+    # Fallback config if assistant_config doesn't exist
+    class ChatConfig:
+        OLLAMA_HOST = "localhost"
+        OLLAMA_PORT = 11434
+        @property
+        def OLLAMA_BASE_URL(self):
+            return f"http://{self.OLLAMA_HOST}:{self.OLLAMA_PORT}"
+        API_VERSION = "3.0.0"
+        SERVICE_NAME = "LLM Chat Service with Research Assistant"
+        CORS_ORIGINS = ["*"]
+    config = ChatConfig()
 
 # Setup logging
 logging.basicConfig(
@@ -38,174 +57,146 @@ app.add_middleware(
 )
 
 # ============================================================================
-# Import and include routers
+# In-memory conversation storage
 # ============================================================================
 
-# Import chat routes (your existing chat functionality)
-try:
-    from chat_routes import router as chat_router
-    app.include_router(chat_router)
-    logger.info("✅ Chat routes loaded")
-except ImportError as e:
-    logger.warning(f"⚠️  Chat routes not found: {e}")
-    logger.info("💡 Using inline chat routes")
+conversations: Dict[str, Dict] = {}
+
+# ============================================================================
+# Chat Models
+# ============================================================================
+
+class ChatInitRequest(BaseModel):
+    model: str
+
+class ChatMessageRequest(BaseModel):
+    conversation_id: str
+    message: str
+    temperature: float = 0.7
+
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+class ChatResponse(BaseModel):
+    conversation_id: str
+    message: ChatMessage
+    model: str
+
+# ============================================================================
+# Chat Endpoints
+# ============================================================================
+
+@app.post("/chat/init")
+async def init_conversation(request: ChatInitRequest):
+    """Initialize a new conversation"""
+    conversation_id = str(uuid.uuid4())
+    conversations[conversation_id] = {
+        "model": request.model,
+        "messages": []
+    }
+    logger.info(f"✅ Created conversation {conversation_id} with {request.model}")
+    return {
+        "conversation_id": conversation_id,
+        "model": request.model
+    }
+
+@app.post("/chat/message", response_model=ChatResponse)
+async def send_message(request: ChatMessageRequest):
+    """Send a message in an existing conversation"""
+    if request.conversation_id not in conversations:
+        raise HTTPException(status_code=404, detail="Conversation not found")
     
-    # Inline basic chat routes if separate file doesn't exist
-    from fastapi import APIRouter, HTTPException
-    from pydantic import BaseModel
-    from typing import Optional, List, Dict, Any
-    import httpx
-    import uuid
+    conv = conversations[request.conversation_id]
     
-    chat_router = APIRouter(prefix="/chat", tags=["chat"])
+    # Add user message
+    conv["messages"].append({
+        "role": "user",
+        "content": request.message
+    })
     
-    # Store conversations in memory (you might want to use Redis/DB)
-    conversations: Dict[str, List[Dict]] = {}
-    
-    class ChatInitRequest(BaseModel):
-        model: str
-    
-    class ChatMessageRequest(BaseModel):
-        conversation_id: str
-        message: str
-        temperature: float = 0.7
-    
-    class ChatMessage(BaseModel):
-        role: str
-        content: str
-    
-    class ChatResponse(BaseModel):
-        conversation_id: str
-        message: ChatMessage
-        model: str
-    
-    @chat_router.post("/init")
-    async def init_conversation(request: ChatInitRequest):
-        """Initialize a new conversation"""
-        conversation_id = str(uuid.uuid4())
-        conversations[conversation_id] = {
-            "model": request.model,
-            "messages": []
-        }
-        logger.info(f"✅ Created conversation {conversation_id} with {request.model}")
-        return {
-            "conversation_id": conversation_id,
-            "model": request.model
-        }
-    
-    @chat_router.post("/message", response_model=ChatResponse)
-    async def send_message(request: ChatMessageRequest):
-        """Send a message in an existing conversation"""
-        if request.conversation_id not in conversations:
-            raise HTTPException(status_code=404, detail="Conversation not found")
-        
-        conv = conversations[request.conversation_id]
-        
-        # Add user message
-        conv["messages"].append({
-            "role": "user",
-            "content": request.message
-        })
-        
-        # Call Ollama
-        try:
-            async with httpx.AsyncClient(timeout=300.0) as client:
-                response = await client.post(
-                    f"{config.OLLAMA_BASE_URL}/api/chat",
-                    json={
-                        "model": conv["model"],
-                        "messages": conv["messages"],
-                        "temperature": request.temperature,
-                        "stream": False
-                    }
-                )
-                
-                if response.status_code != 200:
-                    raise HTTPException(
-                        status_code=503,
-                        detail=f"Ollama error: {response.text}"
-                    )
-                
-                data = response.json()
-                assistant_message = data["message"]["content"]
-                
-                # Add assistant message
-                conv["messages"].append({
-                    "role": "assistant",
-                    "content": assistant_message
-                })
-                
-                return ChatResponse(
-                    conversation_id=request.conversation_id,
-                    message=ChatMessage(role="assistant", content=assistant_message),
-                    model=conv["model"]
-                )
-                
-        except httpx.ConnectError:
-            raise HTTPException(
-                status_code=503,
-                detail=f"Cannot connect to Ollama at {config.OLLAMA_BASE_URL}"
+    # Call Ollama
+    try:
+        async with httpx.AsyncClient(timeout=300.0) as client:
+            response = await client.post(
+                f"{config.OLLAMA_BASE_URL}/api/chat",
+                json={
+                    "model": conv["model"],
+                    "messages": conv["messages"],
+                    "temperature": request.temperature,
+                    "stream": False
+                }
             )
-        except Exception as e:
-            logger.error(f"❌ Chat error: {e}", exc_info=True)
-            raise HTTPException(status_code=500, detail=str(e))
-    
-    @chat_router.get("/conversations/{conversation_id}")
-    async def get_conversation(conversation_id: str):
-        """Get conversation history"""
-        if conversation_id not in conversations:
-            raise HTTPException(status_code=404, detail="Conversation not found")
-        return conversations[conversation_id]
-    
-    @app.get("/models")
-    async def get_models():
-        """Get available Ollama models"""
-        try:
-            async with httpx.AsyncClient(timeout=10.0) as client:
-                response = await client.get(f"{config.OLLAMA_BASE_URL}/api/tags")
-                if response.status_code == 200:
-                    return response.json()
-                else:
-                    raise HTTPException(status_code=503, detail="Cannot fetch models")
-        except Exception as e:
-            raise HTTPException(status_code=503, detail=str(e))
-    
-    app.include_router(chat_router)
+            
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=503,
+                    detail=f"Ollama error: {response.text}"
+                )
+            
+            data = response.json()
+            assistant_message = data["message"]["content"]
+            
+            # Add assistant message
+            conv["messages"].append({
+                "role": "assistant",
+                "content": assistant_message
+            })
+            
+            return ChatResponse(
+                conversation_id=request.conversation_id,
+                message=ChatMessage(role="assistant", content=assistant_message),
+                model=conv["model"]
+            )
+            
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to Ollama at {config.OLLAMA_BASE_URL}"
+        )
+    except Exception as e:
+        logger.error(f"❌ Chat error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
 
-# Import research routes (NEW - integrated research assistant)
-import os
-import sys
+@app.get("/chat/conversations/{conversation_id}")
+async def get_conversation(conversation_id: str):
+    """Get conversation history"""
+    if conversation_id not in conversations:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    return conversations[conversation_id]
 
-print("=" * 60)
-print("DEBUG: Attempting to load research routes")
-print(f"Current working directory: {os.getcwd()}")
-print(f"Python path: {sys.path[:3]}")
-print(f"Files in current directory:")
-for f in sorted(os.listdir('.')):
-    if f.endswith('.py'):
-        print(f"  - {f}")
-print(f"research_routes.py exists: {os.path.exists('research_routes.py')}")
-print("=" * 60)
+@app.get("/chat/models")
+async def list_models():
+    """List available Ollama models"""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{config.OLLAMA_BASE_URL}/api/tags")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=503, detail="Cannot fetch models from Ollama")
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to Ollama at {config.OLLAMA_BASE_URL}"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=str(e))
+
+# ============================================================================
+# Research Routes
+# ============================================================================
 
 try:
     from research_routes import router as research_router
-    print("✅ Successfully imported research_router")
     app.include_router(research_router)
-    print("✅ Successfully included research_router in app")
     logger.info("✅ Research assistant routes loaded")
 except ImportError as e:
-    print(f"❌ ImportError: {e}")
-    logger.error(f"❌ Failed to load research routes: {e}")
-    import traceback
-    traceback.print_exc()
-except Exception as e:
-    print(f"❌ Other error: {e}")
-    logger.error(f"❌ Error loading research routes: {e}")
-    import traceback
-    traceback.print_exc()
+    logger.warning(f"⚠️  Research routes not available: {e}")
+    logger.info("💡 Chat-only mode - research functionality disabled")
 
 # ============================================================================
-# Root endpoints
+# Root Endpoints
 # ============================================================================
 
 @app.get("/")
@@ -217,7 +208,7 @@ async def root():
         "status": "running",
         "features": {
             "chat": "enabled",
-            "research_assistant": "enabled",
+            "research_assistant": "enabled" if "research_routes" in locals() else "disabled",
             "auto_fetch": "enabled"
         },
         "endpoints": {
@@ -227,17 +218,27 @@ async def root():
         }
     }
 
-
 @app.get("/health")
 async def health():
     """Health check"""
+    
+    # Check Ollama connection
+    ollama_connected = False
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.get(f"{config.OLLAMA_BASE_URL}/api/tags")
+            ollama_connected = response.status_code == 200
+    except:
+        pass
+    
     return {
         "status": "healthy",
         "service": config.SERVICE_NAME,
         "version": config.API_VERSION,
-        "ollama": config.OLLAMA_BASE_URL
+        "ollama": config.OLLAMA_BASE_URL,
+        "ollama_connected": ollama_connected,
+        "active_conversations": len(conversations)
     }
-
 
 # ============================================================================
 # Run standalone
