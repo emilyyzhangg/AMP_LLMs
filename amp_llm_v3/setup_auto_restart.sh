@@ -499,7 +499,6 @@ tail -f $PROJECT_DIR/logs/*.log
 Important Notes:
 ────────────────
 • Research assistant is now INTEGRATED with chat service
-• No separate service needed on port 9003
 • Both chat and research share same Ollama connection
 • Restarting com.amplm.chat restarts BOTH functionalities
 

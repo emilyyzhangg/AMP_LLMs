@@ -238,7 +238,7 @@ launchctl list | grep com.amplm
 
 echo ""
 echo "Port Status:"
-for port in 9000 9001 9002 9003; do
+for port in 9000 9001 9002; do
     if lsof -i :$port | grep -q LISTEN; then
         echo "✅ Port $port - Active"
     else

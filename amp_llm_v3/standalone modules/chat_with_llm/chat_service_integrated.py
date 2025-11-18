@@ -165,23 +165,19 @@ async def get_conversation(conversation_id: str):
         raise HTTPException(status_code=404, detail="Conversation not found")
     return conversations[conversation_id]
 
-@app.get("/chat/models")
-async def list_models():
-    """List available Ollama models"""
+@app.get("/models")
+async def get_models():
+    """Get available Ollama models"""
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.get(f"{config.OLLAMA_BASE_URL}/api/tags")
             if response.status_code == 200:
                 return response.json()
             else:
-                raise HTTPException(status_code=503, detail="Cannot fetch models from Ollama")
-    except httpx.ConnectError:
-        raise HTTPException(
-            status_code=503,
-            detail=f"Cannot connect to Ollama at {config.OLLAMA_BASE_URL}"
-        )
+                raise HTTPException(status_code=503, detail="Cannot fetch models")
     except Exception as e:
         raise HTTPException(status_code=503, detail=str(e))
+    
 
 # ============================================================================
 # Research Routes

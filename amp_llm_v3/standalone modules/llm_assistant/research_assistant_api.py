@@ -553,6 +553,6 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    print("🚀 Starting Research Assistant API on port 9003...")
+    print("🚀 Starting Research Assistant API on port 9001...")
     print("✨ Auto-fetch enabled: Will automatically fetch missing trial data")
-    uvicorn.run(app, host="0.0.0.0", port=9003, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=9001, reload=True)

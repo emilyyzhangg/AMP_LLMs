@@ -119,12 +119,6 @@ show_status() {
         echo -e "  ${RED}❌ Port 9002 (NCT Lookup)${NC}"
     fi
     
-    # Check if old research service is running (shouldn't be)
-    if lsof -i :9003 | grep -q LISTEN; then
-        echo -e "  ${YELLOW}⚠️  Port 9003 - Old research service still running!${NC}"
-        echo -e "     ${YELLOW}This should be stopped (research is now integrated on 9001)${NC}"
-    fi
-    
     echo ""
 }
 

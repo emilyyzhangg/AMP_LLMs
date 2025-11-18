@@ -28,7 +28,6 @@ class Settings(BaseSettings):
     main_server_port: int = int(os.getenv("MAIN_SERVER_PORT", "9000"))
     chat_service_port: int = int(os.getenv("CHAT_SERVICE_PORT", "9001"))
     nct_service_port: int = int(os.getenv("NCT_SERVICE_PORT", "9002"))
-    ra_service_port: int = int(os.getenv("RA_SERVICE_PORT", "9003"))
     
     # Public domain
     public_domain: str = os.getenv("PUBLIC_DOMAIN", "localhost")
