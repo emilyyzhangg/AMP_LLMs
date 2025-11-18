@@ -173,13 +173,36 @@ except ImportError as e:
     app.include_router(chat_router)
 
 # Import research routes (NEW - integrated research assistant)
+import os
+import sys
+
+print("=" * 60)
+print("DEBUG: Attempting to load research routes")
+print(f"Current working directory: {os.getcwd()}")
+print(f"Python path: {sys.path[:3]}")
+print(f"Files in current directory:")
+for f in sorted(os.listdir('.')):
+    if f.endswith('.py'):
+        print(f"  - {f}")
+print(f"research_routes.py exists: {os.path.exists('research_routes.py')}")
+print("=" * 60)
+
 try:
     from research_routes import router as research_router
+    print("✅ Successfully imported research_router")
     app.include_router(research_router)
+    print("✅ Successfully included research_router in app")
     logger.info("✅ Research assistant routes loaded")
 except ImportError as e:
+    print(f"❌ ImportError: {e}")
     logger.error(f"❌ Failed to load research routes: {e}")
-    logger.info("💡 Research assistant functionality will not be available")
+    import traceback
+    traceback.print_exc()
+except Exception as e:
+    print(f"❌ Other error: {e}")
+    logger.error(f"❌ Error loading research routes: {e}")
+    import traceback
+    traceback.print_exc()
 
 # ============================================================================
 # Root endpoints
