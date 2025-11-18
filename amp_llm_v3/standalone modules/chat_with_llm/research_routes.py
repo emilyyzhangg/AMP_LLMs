@@ -373,10 +373,7 @@ async def annotate_trial(request: AnnotationRequest):
     Note: This uses the chat service's session manager to communicate with the LLM.
     """
     from assistant_config import config as chat_config
-    import sys
-    from pathlib import Path
-    sys.path.append(str(Path(__file__).parent.parent / "llm_assistant"))
-    from assistant import ChatAssistant
+    from assistant import ChatAssistant  # Import from same module
     
     try:
         nct_id = request.nct_id.strip().upper()
