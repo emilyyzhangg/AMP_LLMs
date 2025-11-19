@@ -19,8 +19,6 @@ const app = {
     files: [],
     availableModels: [],
     availableThemes: [],
-    annotationMode: true,  // Track if annotation mode is active
-    annotationConversationId: null,  // Separate conversation for annotations
 
     // Session-based chat storage (per model)
     sessionChats: {},
@@ -103,17 +101,6 @@ const app = {
                 e.preventDefault();
                 this.sendMessage('research');
             }
-        });
-
-        document.getElementById('annotation-mode-checkbox')?.addEventListener('change', (e) => {
-            this.annotationMode = e.target.checked;
-            const annotationInputs = document.getElementById('annotation-inputs');
-            if (this.annotationMode) {
-                annotationInputs?.classList.add('active');
-            } else {
-                annotationInputs?.classList.remove('active');
-            }
-            console.log('Annotation mode:', this.annotationMode ? 'ON' : 'OFF');
         });
         
         console.log('✅ App initialized');
@@ -1156,131 +1143,81 @@ const app = {
     // =========================================================================
 
     async initializeChatMode() {
-        console.log('💬 Initializing Chat mode');
+        console.log('🚀 Initializing chat mode...');
         
         const container = document.getElementById('chat-container');
-        const input = document.getElementById('chat-input');
-        
-        // Clear any existing content
         container.innerHTML = '';
         
-        // Add annotation controls BEFORE model selection
-        this.addAnnotationControls();
+        this.removeInfoBar();
         
-        // Disable input initially
+        const input = document.getElementById('chat-input');
         input.disabled = true;
         input.placeholder = 'Select a model to start chatting...';
         
-        // Load available models
-        await this.loadModels();
+        const loadingId = this.addMessage('chat-container', 'system', '🔄 Loading available models...');
         
-        // Show model selection
-        this.showModelSelection();
-    },
-
-    addAnnotationControls() {
-        const container = document.getElementById('chat-container');
-        
-        const controls = document.createElement('div');
-        controls.className = 'annotation-controls';
-        controls.innerHTML = `
-            <div class="annotation-mode-toggle">
-                <input type="checkbox" id="annotation-mode-checkbox" />
-                <label for="annotation-mode-checkbox">
-                    <strong>Annotation Mode</strong> - Annotate clinical trials
-                </label>
-            </div>
-            
-            <div id="annotation-inputs" class="annotation-inputs">
-                <div class="nct-input-group">
-                    <label for="nct-ids-input">Enter NCT IDs (comma-separated):</label>
-                    <input 
-                        type="text" 
-                        id="nct-ids-input" 
-                        placeholder="NCT12345678, NCT87654321, NCT11111111"
-                    />
-                    <div class="annotation-help-text">
-                        Enter one or more NCT IDs separated by commas
-                    </div>
-                </div>
-                
-                <div class="annotation-separator">
-                    <span>OR</span>
-                </div>
-                
-                <div class="csv-upload-group">
-                    <label for="nct-csv-upload">Upload CSV file with NCT IDs:</label>
-                    <input 
-                        type="file" 
-                        id="nct-csv-upload" 
-                        accept=".csv"
-                    />
-                    <div class="annotation-help-text">
-                        CSV should have NCT IDs in the first column
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        container.appendChild(controls);
-        
-        // Add event listener for checkbox
-        const checkbox = document.getElementById('annotation-mode-checkbox');
-        checkbox?.addEventListener('change', (e) => {
-            this.annotationMode = e.target.checked;
-            const inputs = document.getElementById('annotation-inputs');
-            if (this.annotationMode) {
-                inputs?.classList.add('active');
-                // Update header to show annotation mode
-                const header = document.getElementById('app-header');
-                header?.classList.add('annotation-active');
-            } else {
-                inputs?.classList.remove('active');
-                const header = document.getElementById('app-header');
-                header?.classList.remove('annotation-active');
-            }
-        });
-        
-        // CSV file handler
-        const csvInput = document.getElementById('nct-csv-upload');
-        csvInput?.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                this.handleCSVUpload(file);
-            }
-        });
-    },
-
-    async handleCSVUpload(file) {
         try {
-            const text = await file.text();
-            const lines = text.split('\n');
-            const nctIds = [];
+            console.log('📡 Fetching models from:', `${this.API_BASE}/models`);
             
-            for (const line of lines) {
-                const cols = line.split(',');
-                const nctId = cols[0]?.trim().toUpperCase();
-                if (nctId && nctId.startsWith('NCT')) {
-                    nctIds.push(nctId);
+            const response = await fetch(`${this.API_BASE}/models`, {
+                headers: { 
+                    'Authorization': `Bearer ${this.apiKey}`,
+                    'Content-Type': 'application/json'
                 }
+            });
+            
+            console.log('📥 Response status:', response.status);
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ Models data:', data);
+                
+                if (!data.models || data.models.length === 0) {
+                    document.getElementById(loadingId)?.remove();
+                    this.addMessage('chat-container', 'error', 
+                        '❌ No models available.\n\n' +
+                        'The chat service is running but no models are available.\n\n' +
+                        'To fix:\n' +
+                        '1. Check Ollama: ollama list\n' +
+                        '2. Install a model: ollama pull llama3.2\n' +
+                        '3. Refresh this page');
+                    return;
+                }
+                
+                this.availableModels = data.models;
+                console.log('✅ Loaded models:', this.availableModels);
+                
+                document.getElementById(loadingId)?.remove();
+                this.showModelSelection();
+            } else {
+                const errorText = await response.text();
+                console.error('❌ Failed to load models:', response.status, errorText);
+                
+                document.getElementById(loadingId)?.remove();
+                this.addMessage('chat-container', 'error', 
+                    `❌ Failed to load models (HTTP ${response.status})\n\n` +
+                    `The chat service may not be running properly.\n\n` +
+                    `To fix:\n` +
+                    `1. Restart chat service:\n` +
+                    `   cd "standalone modules/chat_with_llm"\n` +
+                    `   uvicorn chat_api:app --port 9001 --reload\n\n` +
+                    `2. Check: curl http://localhost:9001/models\n\n` +
+                    `Error: ${errorText.substring(0, 200)}`);
             }
-            
-            if (nctIds.length === 0) {
-                alert('No valid NCT IDs found in CSV file');
-                return;
-            }
-            
-            // Set the NCT IDs in the input
-            document.getElementById('nct-ids-input').value = nctIds.join(', ');
-            
-            // Show success message
-            this.addMessage('chat-container', 'system', 
-                `✅ Loaded ${nctIds.length} NCT IDs from ${file.name}\n\n` +
-                `Click Send to annotate these trials.`);
-            
         } catch (error) {
-            console.error('CSV upload error:', error);
-            alert('Failed to read CSV file: ' + error.message);
+            console.error('❌ Exception loading models:', error);
+            
+            document.getElementById(loadingId)?.remove();
+            this.addMessage('chat-container', 'error', 
+                '❌ Connection Error\n\n' +
+                'Cannot connect to the chat service.\n\n' +
+                'The chat service must be running on port 9001.\n\n' +
+                'To start it:\n' +
+                '1. Open terminal\n' +
+                '2. cd amp_llm_v3/standalone\\ modules/chat_with_llm\n' +
+                '3. uvicorn chat_api:app --port 9001 --reload\n\n' +
+                'Then refresh this page.\n\n' +
+                `Error: ${error.message}`);
         }
     },
 
@@ -1382,6 +1319,67 @@ const app = {
         
         this.addMessage('chat-container', 'system', 
             '🤖 Welcome to Chat Mode!\n\nSelect a model to start your conversation:');
+        
+        // ADD ANNOTATION MODE CONTROLS
+        if (this.currentMode === 'chat') {
+            const annotationControlsDiv = document.createElement('div');
+            annotationControlsDiv.className = 'annotation-controls';
+            annotationControlsDiv.id = 'annotation-controls';
+            annotationControlsDiv.innerHTML = `
+                <div class="annotation-mode-toggle">
+                    <input type="checkbox" id="annotation-mode-checkbox" />
+                    <label for="annotation-mode-checkbox">
+                        <strong>🔬 Annotation Mode</strong> - Annotate clinical trials
+                    </label>
+                </div>
+                <div class="annotation-inputs" id="annotation-inputs">
+                    <div class="nct-input-group">
+                        <label for="nct-ids-input">Enter NCT IDs (comma-separated):</label>
+                        <input 
+                            type="text" 
+                            id="nct-ids-input" 
+                            placeholder="NCT12345678, NCT87654321, NCT11111111"
+                        />
+                        <div class="annotation-help-text">
+                            Enter one or more NCT IDs separated by commas
+                        </div>
+                    </div>
+                    
+                    <div class="annotation-separator">
+                        <span>OR</span>
+                    </div>
+                    
+                    <div class="csv-upload-group">
+                        <label for="nct-csv-upload">Upload CSV file with NCT IDs:</label>
+                        <input 
+                            type="file" 
+                            id="nct-csv-upload" 
+                            accept=".csv"
+                        />
+                        <div class="annotation-help-text">
+                            CSV should have NCT IDs in the first column
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(annotationControlsDiv);
+            
+            // Add event listener for checkbox
+            const checkbox = document.getElementById('annotation-mode-checkbox');
+            const inputs = document.getElementById('annotation-inputs');
+            
+            checkbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    inputs.classList.add('active');
+                    console.log('✅ Annotation mode enabled');
+                } else {
+                    inputs.classList.remove('active');
+                    console.log('⭕ Annotation mode disabled');
+                }
+            });
+        }
+        // END OF ANNOTATION CONTROLS
         
         const selectionDiv = document.createElement('div');
         selectionDiv.className = 'model-selection';
@@ -1538,15 +1536,29 @@ const app = {
     async selectModel(modelName) {
         console.log('🎯 selectModel called with:', modelName);
         
+        // Check if annotation mode is enabled (only for chat mode)
+        let annotationMode = false;
+        if (this.currentMode === 'chat') {
+            const checkbox = document.getElementById('annotation-mode-checkbox');
+            annotationMode = checkbox ? checkbox.checked : false;
+            console.log('🔬 Annotation mode:', annotationMode);
+        }
+        
         const hasSavedChat = this.sessionChats[modelName] && 
                             this.sessionChats[modelName].messages.length > 0;
         
-        if (hasSavedChat) {
+        if (hasSavedChat && !annotationMode) {
             console.log('📥 Restoring saved chat for', modelName);
             
             const modelSelection = document.getElementById('model-selection-container');
             if (modelSelection) {
                 modelSelection.remove();
+            }
+            
+            // Remove annotation controls
+            const annotationControls = document.getElementById('annotation-controls');
+            if (annotationControls) {
+                annotationControls.remove();
             }
             
             this.currentModel = modelName;
@@ -1576,7 +1588,10 @@ const app = {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.apiKey}`
                 },
-                body: JSON.stringify({ model: modelName })
+                body: JSON.stringify({ 
+                    model: modelName,
+                    annotation_mode: annotationMode  // ADD ANNOTATION MODE
+                })
             });
             
             console.log('📥 Init response status:', response.status);
@@ -1603,6 +1618,14 @@ const app = {
                 this.currentModel = modelName;
                 
                 console.log('✅ Model initialized:', data);
+                console.log('🔬 Annotation mode active:', annotationMode);
+                
+                // Store annotation mode in session
+                this.sessionChats[modelName] = {
+                    conversationId: this.currentConversationId,
+                    messages: [],
+                    annotationMode: annotationMode
+                };
                 
                 this.ensureChatInfoBar();
 
@@ -1612,12 +1635,35 @@ const app = {
                     modelSelection.remove();
                 }
                 
-                this.addMessage('chat-container', 'system', 
-                    `✅ Connected to ${modelName}\n\n💡 Commands:\n• Type "exit" to select a different model\n• Type "main menu" to return to home\n• Click "Clear Chat" to reset conversation`);
+                // Remove annotation controls after model is selected
+                const annotationControls = document.getElementById('annotation-controls');
+                if (annotationControls) {
+                    annotationControls.remove();
+                }
+                
+                let welcomeMsg = `✅ Connected to ${modelName}`;
+                if (annotationMode) {
+                    welcomeMsg += '\n\n🔬 Annotation Mode Active\n\n' +
+                                'Enter NCT IDs (comma-separated) in the chat box.\n' +
+                                'Example: NCT12345678, NCT87654321\n\n' +
+                                '💡 Commands:\n' +
+                                '• Type "exit" to select a different model\n' +
+                                '• Click "Clear Chat" to reset';
+                } else {
+                    welcomeMsg += '\n\n💡 Commands:\n• Type "exit" to select a different model\n• Type "main menu" to return to home\n• Click "Clear Chat" to reset conversation';
+                }
+                
+                this.addMessage('chat-container', 'system', welcomeMsg);
                 
                 const input = document.getElementById('chat-input');
                 input.disabled = false;
-                input.placeholder = 'Type your message...';
+                
+                if (annotationMode) {
+                    input.placeholder = 'Enter NCT IDs (e.g., NCT12345678, NCT87654321)...';
+                } else {
+                    input.placeholder = 'Type your message...';
+                }
+                
                 input.focus();
                 
                 this.updateBackButton();
@@ -1766,126 +1812,31 @@ const app = {
     // =========================================================================
 
     async sendMessage(mode) {
-        const inputId = mode === 'chat' ? 'chat-input' : 'research-input';
-        const containerId = mode === 'chat' ? 'chat-container' : 'research-container';
-        
-        const input = document.getElementById(inputId);
-        let message = input.value.trim();
-        
-        // Check for annotation mode in chat
-        if (mode === 'chat' && this.annotationMode) {
-            // Get NCT IDs from input
-            const nctIdsInput = document.getElementById('nct-ids-input');
-            const nctIdsText = nctIdsInput?.value.trim();
+        if (mode === 'chat') {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
             
-            if (!nctIdsText) {
-                alert('Please enter NCT IDs or upload a CSV file');
+            if (!text) return;
+            
+            input.value = '';
+            await this.sendChatMessage(text);
+            
+        } else if (mode === 'research') {
+            const input = document.getElementById('research-input');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            input.value = '';
+            
+            // Check if model is selected
+            if (!this.currentModel) {
+                this.addMessage('research-container', 'error', 
+                    '❌ Please select a model first');
                 return;
             }
             
-            // Parse NCT IDs
-            const nctIds = nctIdsText.split(',')
-                .map(id => id.trim().toUpperCase())
-                .filter(id => id.startsWith('NCT'));
-            
-            if (nctIds.length === 0) {
-                alert('Please enter valid NCT IDs (e.g., NCT12345678)');
-                return;
-            }
-            
-            // Handle annotation request
-            await this.handleAnnotationRequest(nctIds);
-            return;
-        }
-    },
-
-    async handleAnnotationRequest(nctIds) {
-        if (!this.currentModel) {
-            alert('Please select a model first');
-            return;
-        }
-        
-        // Initialize annotation conversation if needed
-        if (!this.annotationConversationId) {
-            try {
-                const response = await fetch(`${this.API_BASE}/chat/init`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        model: this.currentModel,
-                        annotation_mode: true
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    this.annotationConversationId = data.conversation_id;
-                    console.log('✅ Annotation conversation initialized');
-                } else {
-                    throw new Error('Failed to initialize annotation conversation');
-                }
-            } catch (error) {
-                this.addMessage('chat-container', 'error', 
-                    `Failed to initialize: ${error.message}`);
-                return;
-            }
-        }
-        
-        // Show user message
-        this.addMessage('chat-container', 'user', 
-            `Annotate trials: ${nctIds.join(', ')}`);
-        
-        // Show processing message
-        const processingId = this.addMessage('chat-container', 'system', 
-            `🔬 Annotating ${nctIds.length} trial${nctIds.length > 1 ? 's' : ''}...\n\n` +
-            `This may take 1-3 minutes...`);
-        
-        const startTime = Date.now();
-        
-        try {
-            const response = await fetch(`${this.API_BASE}/chat/message`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    conversation_id: this.annotationConversationId,
-                    message: "Annotate trials",
-                    nct_ids: nctIds,
-                    temperature: 0.15
-                })
-            });
-            
-            const endTime = Date.now();
-            const duration = ((endTime - startTime) / 1000).toFixed(1);
-            
-            // Remove processing message
-            document.getElementById(processingId)?.remove();
-            
-            if (response.ok) {
-                const data = await response.json();
-                
-                // Display annotation
-                this.addMessage('chat-container', 'assistant', 
-                    `✅ Annotation Complete (${duration}s)\n\n` +
-                    `${data.message.content}`);
-                
-                // Clear NCT IDs input
-                document.getElementById('nct-ids-input').value = '';
-                
-            } else {
-                const errorData = await response.json();
-                this.addMessage('chat-container', 'error', 
-                    `❌ Annotation Failed\n\n${errorData.detail}`);
-            }
-            
-        } catch (error) {
-            document.getElementById(processingId)?.remove();
-            this.addMessage('chat-container', 'error', 
-                `❌ Connection Error\n\n${error.message}\n\n` +
-                `Ensure all services are running:\n` +
-                `• Chat Service (9001)\n` +
-                `• Runner Service (9003)\n` +
-                `• NCT Service (9002)`);
-            console.error('Annotation error:', error);
+            await this.sendResearchMessage(text);
         }
     },
 
@@ -3873,6 +3824,7 @@ const app = {
         
         if (!input) return;
         
+        // Command handling
         if (input.toLowerCase() === 'exit') {
             this.showMenu();
             return;
@@ -3885,11 +3837,12 @@ const app = {
         
         if (!this.currentModel) {
             this.addMessage('research-container', 'error', 
-                '⚠️  Please select a model first\n\nType "models" to see available models');
+                '⚠️  Please select a model first\n\n' +
+                'Type "models" to see available models');
             return;
         }
         
-        // Parse NCT IDs
+        // Parse NCT IDs (comma-separated)
         const nctIds = input.split(',')
             .map(id => id.trim().toUpperCase())
             .filter(id => id.startsWith('NCT'));
@@ -3897,8 +3850,12 @@ const app = {
         if (nctIds.length === 0) {
             this.addMessage('research-container', 'error', 
                 '⚠️  Invalid NCT ID format\n\n' +
-                'Enter NCT IDs: NCT12345678, NCT87654321\n\n' +
-                'Commands:\n  models - Change model\n  exit - Return to menu');
+                'Enter one or more NCT IDs:\n' +
+                '  Single: NCT12345678\n' +
+                '  Multiple: NCT12345678, NCT87654321, NCT11111111\n\n' +
+                'Commands:\n' +
+                '  models - Change model\n' +
+                '  exit - Return to menu');
             return;
         }
         
@@ -3917,17 +3874,27 @@ const app = {
                 if (response.ok) {
                     const data = await response.json();
                     this.currentConversationId = data.conversation_id;
+                    console.log('✅ Annotation conversation initialized:', this.currentConversationId);
+                } else {
+                    throw new Error('Failed to initialize annotation conversation');
                 }
             } catch (error) {
                 this.addMessage('research-container', 'error', 
-                    `Failed to initialize: ${error.message}`);
+                    `❌ Failed to initialize\n\n${error.message}\n\n` +
+                    `Ensure Chat Service (port 9001) is running.`);
                 return;
             }
         }
         
-        // Show processing
+        // Show processing message
         const processingId = this.addMessage('research-container', 'system', 
-            `🔬 Annotating ${nctIds.length} trial(s)...\n\nThis may take 1-3 minutes...`);
+            `🔬 Annotating ${nctIds.length} trial${nctIds.length > 1 ? 's' : ''}...\n\n` +
+            `NCT IDs: ${nctIds.join(', ')}\n\n` +
+            `Steps:\n` +
+            `1. Runner checks for existing JSON files\n` +
+            `2. Auto-fetches missing data (if needed)\n` +
+            `3. Generates annotations with LLM\n\n` +
+            `⏳ This may take 1-3 minutes...`);
         
         const startTime = Date.now();
         
@@ -3943,25 +3910,102 @@ const app = {
                 })
             });
             
-            const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-            document.getElementById(processingId)?.remove();
+            const endTime = Date.now();
+            const duration = ((endTime - startTime) / 1000).toFixed(1);
+            
+            // Remove processing message
+            const processingElement = document.getElementById(processingId);
+            if (processingElement) {
+                processingElement.remove();
+            }
             
             if (response.ok) {
                 const data = await response.json();
+                
+                // Display annotation results
                 this.addMessage('research-container', 'assistant', 
-                    `✅ Annotation Complete (${duration}s)\n\n${data.message.content}`);
+                    `✅ Annotation Complete\n\n` +
+                    `═══════════════════════════════════════════\n` +
+                    `Trials Annotated: ${nctIds.length}\n` +
+                    `Model: ${data.model}\n` +
+                    `Processing Time: ${duration}s\n` +
+                    `═══════════════════════════════════════════\n\n` +
+                    `${data.message.content}\n\n` +
+                    `═══════════════════════════════════════════\n\n` +
+                    `💡 Next:\n` +
+                    `  • Enter more NCT IDs to annotate\n` +
+                    `  • Type "models" to change model\n` +
+                    `  • Type "exit" to return to menu`);
+                
+                // Store in session
+                if (!this.sessionChats[this.currentModel]) {
+                    this.sessionChats[this.currentModel] = {
+                        conversationId: this.currentConversationId,
+                        messages: [],
+                        annotationMode: true
+                    };
+                }
+                
+                this.sessionChats[this.currentModel].messages.push({
+                    role: 'user',
+                    content: `Annotate: ${nctIds.join(', ')}`
+                });
+                
+                this.sessionChats[this.currentModel].messages.push({
+                    role: 'assistant',
+                    content: data.message.content
+                });
+                
             } else {
-                const errorData = await response.json();
+                const errorText = await response.text();
+                let errorData;
+                try {
+                    errorData = JSON.parse(errorText);
+                } catch {
+                    errorData = { detail: errorText };
+                }
+                
                 this.addMessage('research-container', 'error', 
-                    `❌ Failed\n\n${errorData.detail}`);
+                    `❌ Annotation Failed\n\n` +
+                    `Error: ${errorData.detail}\n\n` +
+                    `Possible Issues:\n` +
+                    `• Invalid NCT ID(s)\n` +
+                    `• Runner Service (port 9003) not running\n` +
+                    `• NCT Lookup (port 9002) not available\n` +
+                    `• Chat Service (port 9001) error\n` +
+                    `• Model ${this.currentModel} not responding\n\n` +
+                    `Troubleshooting:\n` +
+                    `1. Verify NCT IDs are correct\n` +
+                    `2. Check services: ./services.sh status\n` +
+                    `3. View logs: ./services.sh logs all\n` +
+                    `4. Try: ./start_all_services.sh`);
             }
+            
         } catch (error) {
-            document.getElementById(processingId)?.remove();
+            // Remove processing message if still there
+            const processingElement = document.getElementById(processingId);
+            if (processingElement) {
+                processingElement.remove();
+            }
+            
             this.addMessage('research-container', 'error', 
-                `❌ Connection Error\n\n${error.message}`);
+                `❌ Connection Error\n\n` +
+                `${error.message}\n\n` +
+                `Cannot connect to Chat Service (port 9001).\n\n` +
+                `Required Services:\n` +
+                `• Chat Service (9001) - Main annotation service\n` +
+                `• Runner Service (9003) - File manager\n` +
+                `• NCT Service (9002) - Data fetching\n\n` +
+                `Start all services:\n` +
+                `  cd ~/amp_llm_v3\n` +
+                `  ./start_all_services.sh\n\n` +
+                `Check status:\n` +
+                `  ./services.sh status`);
+            
+            console.error('❌ Annotation error:', error);
         }
     },
-
+    
     countSources(sources) {
         if (!sources) return 0;
         
