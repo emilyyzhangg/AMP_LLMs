@@ -19,7 +19,7 @@ const app = {
     files: [],
     availableModels: [],
     availableThemes: [],
-    annotationMode: false,  // Track if annotation mode is active
+    annotationMode: true,  // Track if annotation mode is active
     annotationConversationId: null,  // Separate conversation for annotations
 
     // Session-based chat storage (per model)
