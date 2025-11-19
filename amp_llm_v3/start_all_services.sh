@@ -1,16 +1,17 @@
 #!/bin/bash
 
 # ============================================================================
-# AMP LLM - Start All Services (Updated for Integrated Architecture)
+# AMP LLM - Start All Services (4-Service Architecture)
 # ============================================================================
-# This script starts all three required services:
-# 1. Integrated Chat + Research Service (port 9001)
+# This script starts all four required services:
+# 1. Chat Service with Annotation (port 9001)
 # 2. NCT Lookup Service (port 9002)
-# 3. Web Interface (port 9000)
+# 3. Runner Service - File Manager (port 9003)
+# 4. Web Interface (port 9000)
 # ============================================================================
 
 echo "═══════════════════════════════════════════════════════"
-echo "Starting AMP LLM Services (Integrated Architecture)"
+echo "Starting AMP LLM Services (4-Service Architecture)"
 echo "═══════════════════════════════════════════════════════"
 
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -48,12 +49,12 @@ check_port() {
 }
 
 # ============================================================================
-# Start Integrated Chat + Research Service (Port 9001)
+# Start Chat Service with Annotation (Port 9001)
 # ============================================================================
 
 echo ""
 echo "─────────────────────────────────────────────────────"
-echo "Starting Integrated Chat + Research Service on port 9001..."
+echo "Starting Chat Service with Annotation on port 9001..."
 echo "─────────────────────────────────────────────────────"
 
 if check_port 9001; then
@@ -73,20 +74,20 @@ fi
 if [ "$SKIP_CHAT" != "true" ]; then
     cd "standalone modules/chat_with_llm"
     
-    # Check if integrated service exists
-    if [ ! -f "chat_service_integrated.py" ]; then
-        echo "⚠️  chat_service_integrated.py not found!"
+    # Check if chat service with annotation exists
+    if [ ! -f "chat_api_with_annotation.py" ]; then
+        echo "⚠️  chat_api_with_annotation.py not found!"
         echo "   Looking for fallback chat_api.py..."
         if [ -f "chat_api.py" ]; then
             SERVICE_FILE="chat_api"
-            echo "   Using chat_api.py (legacy mode - no research integration)"
+            echo "   Using chat_api.py (basic mode - no annotation)"
         else
             echo "❌ No chat service file found!"
             exit 1
         fi
     else
-        SERVICE_FILE="chat_service_integrated"
-        echo "✅ Using integrated service (chat + research)"
+        SERVICE_FILE="chat_api_with_annotation"
+        echo "✅ Using chat service with annotation support"
     fi
     
     # Check if requirements are installed
@@ -102,7 +103,7 @@ if [ "$SKIP_CHAT" != "true" ]; then
     
     echo "✅ Chat service starting (PID: $CHAT_PID)"
     echo "   Service: ${SERVICE_FILE}"
-    echo "   Endpoints: /chat/* and /research/*"
+    echo "   Endpoints: /chat/* (with annotation support)"
     echo "   Log: $PROJECT_DIR/logs/chat_service.log"
     
     cd "$PROJECT_DIR"
@@ -154,6 +155,65 @@ if [ "$SKIP_NCT" != "true" ]; then
     echo "   Log: $PROJECT_DIR/logs/nct_service.log"
     
     cd "$PROJECT_DIR"
+fi
+
+sleep 3
+
+# ============================================================================
+# Start Runner Service - File Manager (Port 9003)
+# ============================================================================
+
+echo ""
+echo "─────────────────────────────────────────────────────"
+echo "Starting Runner Service on port 9003..."
+echo "─────────────────────────────────────────────────────"
+
+if check_port 9003; then
+    echo "⚠️  Port 9003 already in use"
+    read -p "Kill existing process? (y/n): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        lsof -ti:9003 | xargs kill -9
+        echo "✅ Killed existing process on port 9003"
+        sleep 2
+    else
+        echo "Skipping runner service..."
+        SKIP_RUNNER=true
+    fi
+fi
+
+if [ "$SKIP_RUNNER" != "true" ]; then
+    cd "standalone modules/runner"
+    
+    # Check if runner_service.py exists
+    if [ ! -f "runner_service.py" ]; then
+        echo "❌ runner_service.py not found!"
+        echo "   Please ensure the file is in standalone modules/runner/"
+        cd "$PROJECT_DIR"
+        SKIP_RUNNER=true
+    else
+        # Check if requirements are installed
+        if [ ! -f ".installed" ]; then
+            echo "📦 Installing runner service dependencies..."
+            $PYTHON_CMD -m pip install -r requirements.txt 2>/dev/null || \
+            $PYTHON_CMD -m pip install fastapi uvicorn httpx pydantic
+            touch .installed
+        fi
+        
+        # Create results directory
+        mkdir -p results
+        
+        # Start service in background
+        nohup $PYTHON_CMD -m uvicorn runner_service:app --port 9003 > "$PROJECT_DIR/logs/runner_service.log" 2>&1 &
+        RUNNER_PID=$!
+        
+        echo "✅ Runner service starting (PID: $RUNNER_PID)"
+        echo "   Function: File manager and NCT data fetcher"
+        echo "   Endpoints: /get-data, /batch-get-data"
+        echo "   Log: $PROJECT_DIR/logs/runner_service.log"
+        
+        cd "$PROJECT_DIR"
+    fi
 fi
 
 sleep 3
@@ -213,11 +273,9 @@ echo "Checking services..."
 
 # Chat Service
 if check_port 9001; then
-    echo "✅ Integrated Chat + Research Service: Running on port 9001"
-    echo "   • Chat endpoints: /chat/*"
-    echo "   • Research endpoints: /research/*"
+    echo "✅ Chat Service with Annotation: Running on port 9001"
 else
-    echo "❌ Integrated Chat + Research Service: Not running"
+    echo "❌ Chat Service: Not running"
 fi
 
 # NCT Service
@@ -225,6 +283,13 @@ if check_port 9002; then
     echo "✅ NCT Lookup Service: Running on port 9002"
 else
     echo "❌ NCT Lookup Service: Not running"
+fi
+
+# Runner Service
+if check_port 9003; then
+    echo "✅ Runner Service (File Manager): Running on port 9003"
+else
+    echo "❌ Runner Service: Not running"
 fi
 
 # Web Interface
@@ -244,27 +309,28 @@ echo "🌐 Web Interface:"
 echo "   http://localhost:9000"
 echo ""
 echo "📚 API Documentation:"
-echo "   Integrated Service:  http://localhost:9001/docs"
-echo "     - Chat API:        /chat/*"
-echo "     - Research API:    /research/*"
+echo "   Chat Service:        http://localhost:9001/docs"
 echo "   NCT Lookup:          http://localhost:9002/docs"
+echo "   Research Assistant:  http://localhost:9003/docs"
 echo "   Web API:             http://localhost:9000/docs"
 echo ""
 echo "🔬 Architecture:"
-echo "   Port 9001 - Unified service for chat AND research"
-echo "   Port 9002 - NCT lookup and data fetching"
 echo "   Port 9000 - Web interface"
+echo "   Port 9001 - Chat with LLM (includes annotation mode)"
+echo "   Port 9002 - NCT lookup and data fetching"
+echo "   Port 9003 - Runner service (file manager)"
 echo ""
 echo "📋 Logs:"
-echo "   Chat + Research:   tail -f logs/chat_service.log"
+echo "   Chat Service:      tail -f logs/chat_service.log"
 echo "   NCT Lookup:        tail -f logs/nct_service.log"
+echo "   Runner Service:    tail -f logs/runner_service.log"
 echo "   Web Interface:     tail -f logs/webapp.log"
 echo "   All Services:      tail -f logs/*.log"
 echo ""
 echo "🛑 Stop All Services:"
-echo "   lsof -ti:9000,9001,9002 | xargs kill"
+echo "   lsof -ti:9000,9001,9002,9003 | xargs kill"
 echo ""
-echo "ℹ️  Note: Research assistant is now integrated with chat service"
-echo "   No separate service needed on port 9003"
+echo "ℹ️  Note: Annotation is now integrated into Chat with LLM"
+echo "   No separate research assistant button needed"
 echo ""
 echo "═══════════════════════════════════════════════════════"

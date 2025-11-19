@@ -1,33 +1,37 @@
 """
-Chat Service API
-================
+LLM Chat Service with Annotation Support (Port 9001)
+====================================================
 
-FastAPI application for LLM chat service.
-
-Usage:
-    uvicorn chat_api:app --host 0.0.0.0 --port 8001 --reload
+Chat service that can operate in two modes:
+1. Normal chat mode - regular conversation
+2. Annotation mode - clinical trial annotation using NCT data from runner service
 """
 import logging
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+import uuid
+import httpx
+from typing import Dict, List, Optional
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List
+from pydantic import BaseModel
+import io
+import csv
 
-from chat_config import config
-from chat_models import (
-    ModelInfo,
-    InitChatRequest,
-    InitChatResponse,
-    SendMessageRequest,
-    SendMessageResponse,
-    ConversationInfo,
-    ConversationHistory,
-    HealthResponse,
-    ChatMessage
-)
-from chat_client import OllamaClient
-from chat_manager import ConversationManager
+try:
+    from assistant_config import config
+except ImportError:
+    # Fallback config
+    class ChatConfig:
+        OLLAMA_HOST = "localhost"
+        OLLAMA_PORT = 11434
+        @property
+        def OLLAMA_BASE_URL(self):
+            return f"http://{self.OLLAMA_HOST}:{self.OLLAMA_PORT}"
+        API_VERSION = "3.0.0"
+        SERVICE_NAME = "LLM Chat Service"
+        CORS_ORIGINS = ["*"]
+    config = ChatConfig()
 
-# Configure logging
+# Setup logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -35,16 +39,18 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # ============================================================================
-# FastAPI Application
+# Initialize FastAPI app
 # ============================================================================
 
 app = FastAPI(
-    title=config.SERVICE_NAME,
-    description="Modular service for interactive chat with Ollama models",
-    version=config.API_VERSION
+    title="LLM Chat Service with Annotation",
+    description="Chat and clinical trial annotation service",
+    version="3.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc"
 )
 
-# CORS middleware
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=config.CORS_ORIGINS,
@@ -53,396 +59,503 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global instances
-ollama_client = OllamaClient()
-conversation_manager = ConversationManager()
-
-
 # ============================================================================
-# Lifecycle Events
+# Configuration
 # ============================================================================
 
-@app.on_event("startup")
-async def startup_event():
-    """Initialize service on startup"""
-    logger.info(f"{config.SERVICE_NAME} v{config.API_VERSION} starting...")
-    logger.info(f"Ollama endpoint: {config.OLLAMA_BASE_URL}")
+RUNNER_SERVICE_URL = "http://localhost:9003"
+
+# ============================================================================
+# In-memory conversation storage
+# ============================================================================
+
+conversations: Dict[str, Dict] = {}
+
+# ============================================================================
+# Chat Models
+# ============================================================================
+
+class ChatInitRequest(BaseModel):
+    model: str
+    annotation_mode: bool = False
+
+class ChatMessageRequest(BaseModel):
+    conversation_id: str
+    message: str
+    temperature: float = 0.7
+    nct_ids: Optional[List[str]] = None  # For annotation mode
+
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+class ChatResponse(BaseModel):
+    conversation_id: str
+    message: ChatMessage
+    model: str
+    annotation_mode: bool = False
+
+# ============================================================================
+# Helper Functions
+# ============================================================================
+
+def generate_annotation_prompt(trial_data: dict, nct_id: str) -> str:
+    """Generate annotation prompt from trial data."""
     
-    await ollama_client.initialize()
+    # Extract metadata
+    metadata = trial_data.get("metadata", {})
+    sources = trial_data.get("sources", {})
     
-    is_healthy = await ollama_client.check_health()
-    if is_healthy:
-        logger.info("✅ Connected to Ollama")
+    title = metadata.get("title", "Unknown")
+    status = metadata.get("status", "Unknown")
+    condition = metadata.get("condition", "Unknown")
+    intervention = metadata.get("intervention", "Unknown")
+    
+    prompt = f"""You are an expert clinical trial annotator specializing in antimicrobial peptide research.
+
+Analyze the following clinical trial and provide a structured annotation.
+
+TRIAL INFORMATION:
+==================
+NCT ID: {nct_id}
+Title: {title}
+Status: {status}
+Condition: {condition}
+Intervention: {intervention}
+
+TASK:
+=====
+Provide a comprehensive annotation of this clinical trial including:
+
+1. **Trial Classification**
+   - Is this an antimicrobial peptide trial? (Yes/No)
+   - Type of intervention (drug, device, procedure, etc.)
+   - Phase of trial
+
+2. **Scientific Assessment**
+   - Primary objective
+   - Study design
+   - Key endpoints
+   - Expected outcomes
+
+3. **Peptide Analysis** (if applicable)
+   - Peptide sequence (if mentioned)
+   - Mechanism of action
+   - Target pathogens
+   - Delivery method
+
+4. **Clinical Relevance**
+   - Potential impact on antimicrobial resistance
+   - Novel aspects
+   - Limitations
+
+5. **Data Quality**
+   - Completeness of available data
+   - Number of sources found
+   - Reliability assessment
+
+AVAILABLE DATA SOURCES:
+=======================
+"""
+    
+    # Add source information
+    for source_name, source_data in sources.items():
+        if source_name == "extended":
+            continue
+        if source_data and source_data.get("success"):
+            prompt += f"- {source_name}: Available\n"
+    
+    prompt += "\nProvide your annotation in a clear, structured format."
+    
+    return prompt
+
+async def get_nct_data_batch(nct_ids: List[str]) -> List[dict]:
+    """Get NCT data for multiple IDs from runner service."""
+    try:
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            response = await client.post(
+                f"{RUNNER_SERVICE_URL}/batch-get-data",
+                json={"nct_ids": nct_ids}
+            )
+            
+            if response.status_code != 200:
+                logger.error(f"Runner service error: {response.text}")
+                return []
+            
+            data = response.json()
+            results = data.get("results", [])
+            
+            # Extract successful results
+            trial_data_list = []
+            for result in results:
+                if result.get("status") == "success":
+                    trial_data_list.append({
+                        "nct_id": result.get("nct_id"),
+                        "data": result.get("data"),
+                        "source": result.get("source")
+                    })
+            
+            return trial_data_list
+            
+    except Exception as e:
+        logger.error(f"Error getting NCT data batch: {e}")
+        return []
+
+async def annotate_trials(nct_ids: List[str], model: str, temperature: float) -> str:
+    """
+    Annotate multiple clinical trials.
+    Gets data from runner service and generates annotations.
+    """
+    logger.info(f"🔬 Annotating {len(nct_ids)} trials with {model}")
+    
+    # Get trial data from runner service
+    trial_data_list = await get_nct_data_batch(nct_ids)
+    
+    if not trial_data_list:
+        return "❌ Could not retrieve trial data. Please check that the NCT IDs are valid and the runner service is available."
+    
+    # Generate annotations
+    annotations = []
+    
+    for trial_info in trial_data_list:
+        nct_id = trial_info["nct_id"]
+        trial_data = trial_info["data"]
+        source = trial_info["source"]
+        
+        logger.info(f"📝 Generating annotation for {nct_id} (source: {source})")
+        
+        # Generate prompt
+        prompt = generate_annotation_prompt(trial_data, nct_id)
+        
+        # Call Ollama
         try:
-            models = await ollama_client.list_models()
-            logger.info(f"✅ Found {len(models)} models")
+            async with httpx.AsyncClient(timeout=300.0) as client:
+                response = await client.post(
+                    f"{config.OLLAMA_BASE_URL}/api/generate",
+                    json={
+                        "model": model,
+                        "prompt": prompt,
+                        "temperature": temperature,
+                        "stream": False
+                    }
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    annotation_text = data.get("response", "")
+                    
+                    annotations.append(f"""
+{'='*80}
+NCT ID: {nct_id}
+Data Source: {source}
+{'='*80}
+
+{annotation_text}
+
+""")
+                else:
+                    annotations.append(f"\n❌ Failed to generate annotation for {nct_id}\n")
+                    
         except Exception as e:
-            logger.warning(f"⚠️ Could not list models: {e}")
-    else:
-        logger.warning("⚠️ Warning: Ollama not available")
+            logger.error(f"Error annotating {nct_id}: {e}")
+            annotations.append(f"\n❌ Error annotating {nct_id}: {str(e)}\n")
+    
+    # Combine all annotations
+    result = f"""
+Clinical Trial Annotation Report
+Generated for {len(trial_data_list)} trial(s)
+Model: {model}
 
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Cleanup on shutdown"""
-    await ollama_client.close()
-    logger.info(f"{config.SERVICE_NAME} stopped")
-
+{'='*80}
+""" + "\n".join(annotations)
+    
+    return result
 
 # ============================================================================
-# API Endpoints
+# Chat Endpoints
+# ============================================================================
+
+@app.post("/chat/init")
+async def init_conversation(request: ChatInitRequest):
+    """Initialize a new conversation"""
+    conversation_id = str(uuid.uuid4())
+    conversations[conversation_id] = {
+        "model": request.model,
+        "messages": [],
+        "annotation_mode": request.annotation_mode
+    }
+    logger.info(f"✅ Created conversation {conversation_id} with {request.model} (annotation_mode={request.annotation_mode})")
+    return {
+        "conversation_id": conversation_id,
+        "model": request.model,
+        "annotation_mode": request.annotation_mode
+    }
+
+@app.post("/chat/message", response_model=ChatResponse)
+async def send_message(request: ChatMessageRequest):
+    """Send a message in an existing conversation"""
+    if request.conversation_id not in conversations:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    
+    conv = conversations[request.conversation_id]
+    annotation_mode = conv.get("annotation_mode", False)
+    
+    # Handle annotation mode
+    if annotation_mode and request.nct_ids:
+        logger.info(f"🔬 Annotation mode: Processing {len(request.nct_ids)} NCT IDs")
+        
+        # Add user message
+        user_message = f"Annotate trials: {', '.join(request.nct_ids)}"
+        conv["messages"].append({
+            "role": "user",
+            "content": user_message
+        })
+        
+        # Generate annotations
+        annotation_result = await annotate_trials(
+            request.nct_ids,
+            conv["model"],
+            request.temperature
+        )
+        
+        # Add assistant message
+        conv["messages"].append({
+            "role": "assistant",
+            "content": annotation_result
+        })
+        
+        return ChatResponse(
+            conversation_id=request.conversation_id,
+            message=ChatMessage(role="assistant", content=annotation_result),
+            model=conv["model"],
+            annotation_mode=True
+        )
+    
+    # Normal chat mode
+    conv["messages"].append({
+        "role": "user",
+        "content": request.message
+    })
+    
+    # Call Ollama
+    try:
+        async with httpx.AsyncClient(timeout=300.0) as client:
+            response = await client.post(
+                f"{config.OLLAMA_BASE_URL}/api/chat",
+                json={
+                    "model": conv["model"],
+                    "messages": conv["messages"],
+                    "temperature": request.temperature,
+                    "stream": False
+                }
+            )
+            
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=503,
+                    detail=f"Ollama error: {response.text}"
+                )
+            
+            data = response.json()
+            assistant_message = data["message"]["content"]
+            
+            # Add assistant message
+            conv["messages"].append({
+                "role": "assistant",
+                "content": assistant_message
+            })
+            
+            return ChatResponse(
+                conversation_id=request.conversation_id,
+                message=ChatMessage(role="assistant", content=assistant_message),
+                model=conv["model"],
+                annotation_mode=False
+            )
+            
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to Ollama at {config.OLLAMA_BASE_URL}"
+        )
+    except Exception as e:
+        logger.error(f"❌ Chat error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/chat/annotate-csv")
+async def annotate_csv(
+    conversation_id: str,
+    model: str,
+    temperature: float = 0.15,
+    file: UploadFile = File(...)
+):
+    """
+    Upload a CSV file with NCT IDs and generate annotations.
+    CSV should have NCT IDs in first column.
+    """
+    if conversation_id not in conversations:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    
+    try:
+        # Read CSV file
+        contents = await file.read()
+        csv_text = contents.decode('utf-8')
+        
+        # Parse NCT IDs
+        nct_ids = []
+        csv_reader = csv.reader(io.StringIO(csv_text))
+        for row in csv_reader:
+            if row and row[0].strip():
+                nct_id = row[0].strip().upper()
+                if nct_id.startswith("NCT"):
+                    nct_ids.append(nct_id)
+        
+        if not nct_ids:
+            raise HTTPException(
+                status_code=400,
+                detail="No valid NCT IDs found in CSV file"
+            )
+        
+        logger.info(f"📄 Processing CSV with {len(nct_ids)} NCT IDs")
+        
+        # Generate annotations
+        conv = conversations[conversation_id]
+        
+        # Add user message
+        user_message = f"Annotate trials from CSV: {len(nct_ids)} trials"
+        conv["messages"].append({
+            "role": "user",
+            "content": user_message
+        })
+        
+        # Generate annotations
+        annotation_result = await annotate_trials(nct_ids, model, temperature)
+        
+        # Add assistant message
+        conv["messages"].append({
+            "role": "assistant",
+            "content": annotation_result
+        })
+        
+        return ChatResponse(
+            conversation_id=conversation_id,
+            message=ChatMessage(role="assistant", content=annotation_result),
+            model=model,
+            annotation_mode=True
+        )
+        
+    except Exception as e:
+        logger.error(f"❌ CSV processing error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/chat/conversations/{conversation_id}")
+async def get_conversation(conversation_id: str):
+    """Get conversation history"""
+    if conversation_id not in conversations:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    return conversations[conversation_id]
+
+@app.get("/chat/models")
+async def list_models():
+    """List available Ollama models"""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{config.OLLAMA_BASE_URL}/api/tags")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=503, detail="Cannot fetch models from Ollama")
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to Ollama at {config.OLLAMA_BASE_URL}"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=str(e))
+
+# ============================================================================
+# Root Endpoints
 # ============================================================================
 
 @app.get("/")
 async def root():
     """Root endpoint"""
     return {
-        "service": config.SERVICE_NAME,
-        "version": config.API_VERSION,
+        "service": "LLM Chat Service with Annotation",
+        "version": "3.0.0",
         "status": "running",
+        "features": {
+            "chat": "enabled",
+            "annotation": "enabled"
+        },
         "endpoints": {
-            "health": "GET /health",
-            "models": "GET /models",
-            "init_chat": "POST /chat/init",
-            "send_message": "POST /chat/message",
-            "websocket": "WS /ws/chat",
-            "conversations": "GET /conversations",
-            "conversation_detail": "GET /conversations/{id}",
-            "delete_conversation": "DELETE /conversations/{id}",
-            "statistics": "GET /stats"
+            "chat": "/chat/*",
+            "docs": "/docs"
         }
     }
 
-
-@app.get("/health", response_model=HealthResponse)
-async def health_check():
-    """Health check endpoint"""
-    ollama_connected = await ollama_client.check_health()
+@app.get("/health")
+async def health():
+    """Health check"""
     
-    return HealthResponse(
-        status="healthy" if ollama_connected else "degraded",
-        ollama_connected=ollama_connected,
-        version=config.API_VERSION,
-        active_conversations=len(conversation_manager.conversations)
-    )
-
-
-@app.get("/models", response_model=List[ModelInfo])
-async def list_models():
-    """List available Ollama models"""
-    return await ollama_client.list_models()
-
-
-@app.post("/chat/init", response_model=InitChatResponse)
-async def initialize_chat(request: InitChatRequest):
-    """
-    Initialize a new chat session or resume existing one.
-    
-    Returns conversation_id to use for subsequent messages.
-    """
+    # Check Ollama connection
+    ollama_connected = False
     try:
-        # Verify model exists
-        model_exists = await ollama_client.verify_model(request.model)
-        if not model_exists:
-            models = await ollama_client.list_models()
-            model_names = [m.name for m in models]
-            raise HTTPException(
-                status_code=400,
-                detail=f"Model '{request.model}' not found. Available: {model_names}"
-            )
-        
-        # Create or resume conversation
-        conv_id = conversation_manager.create_conversation(
-            model=request.model,
-            conversation_id=request.conversation_id
-        )
-        
-        return InitChatResponse(
-            conversation_id=conv_id,
-            model=request.model,
-            status="ready",
-            message=f"Chat session initialized with {request.model}"
-        )
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Failed to initialize chat: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/chat/message", response_model=SendMessageResponse)
-async def send_message(request: SendMessageRequest):
-    """
-    Send a message and get AI response (non-streaming).
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.get(f"{config.OLLAMA_BASE_URL}/api/tags")
+            ollama_connected = response.status_code == 200
+    except:
+        pass
     
-    Conversation history is maintained automatically.
-    """
+    # Check Runner service
+    runner_connected = False
     try:
-        # Get conversation data
-        model = conversation_manager.get_model(request.conversation_id)
-        
-        # Add user message
-        conversation_manager.add_message(
-            request.conversation_id,
-            "user",
-            request.message
-        )
-        
-        # Prepare messages for Ollama (convert to OpenAI format)
-        messages = conversation_manager.get_messages(request.conversation_id)
-        ollama_messages = [
-            {"role": msg["role"], "content": msg["content"]}
-            for msg in messages
-        ]
-        
-        # Generate response
-        response_text = ""
-        async for chunk in ollama_client.generate_response(
-            model=model,
-            messages=ollama_messages,
-            temperature=request.temperature,
-            stream=False
-        ):
-            response_text = chunk.get("message", {}).get("content", "")
-        
-        if not response_text:
-            raise HTTPException(status_code=500, detail="Empty response from model")
-        
-        # Add assistant message
-        from datetime import datetime
-        timestamp = datetime.utcnow().isoformat()
-        conversation_manager.add_message(
-            request.conversation_id,
-            "assistant",
-            response_text
-        )
-        
-        # Save conversation
-        conversation_manager.save_conversation(request.conversation_id)
-        
-        return SendMessageResponse(
-            conversation_id=request.conversation_id,
-            message=ChatMessage(
-                role="assistant",
-                content=response_text,
-                timestamp=timestamp
-            ),
-            model=model
-        )
-        
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Message sending failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.websocket("/ws/chat")
-async def websocket_chat(websocket: WebSocket):
-    """
-    WebSocket endpoint for streaming chat.
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.get(f"{RUNNER_SERVICE_URL}/health")
+            runner_connected = response.status_code == 200
+    except:
+        pass
     
-    Protocol:
-        Client -> {"action": "init", "model": "...", "conversation_id": "..."}
-        Client -> {"action": "message", "message": "...", "temperature": 0.7}
-        Client -> {"action": "exit"}
-        
-        Server -> {"type": "init", "conversation_id": "...", "model": "..."}
-        Server -> {"type": "chunk", "content": "...", "done": false}
-        Server -> {"type": "done"}
-        Server -> {"type": "error", "message": "..."}
-    """
-    await websocket.accept()
-    conversation_id = None
-    current_model = None
-    
-    try:
-        while True:
-            # Receive message from client
-            data = await websocket.receive_json()
-            action = data.get("action")
-            
-            if action == "init":
-                # Initialize conversation
-                model = data.get("model")
-                conv_id = data.get("conversation_id")
-                
-                if not model:
-                    await websocket.send_json({
-                        "type": "error",
-                        "message": "Model name required"
-                    })
-                    continue
-                
-                # Verify model exists
-                model_exists = await ollama_client.verify_model(model)
-                if not model_exists:
-                    await websocket.send_json({
-                        "type": "error",
-                        "message": f"Model '{model}' not found"
-                    })
-                    continue
-                
-                # Create conversation
-                conversation_id = conversation_manager.create_conversation(
-                    model=model,
-                    conversation_id=conv_id
-                )
-                current_model = model
-                
-                await websocket.send_json({
-                    "type": "init",
-                    "conversation_id": conversation_id,
-                    "model": model,
-                    "status": "ready"
-                })
-            
-            elif action == "message":
-                if not conversation_id or not current_model:
-                    await websocket.send_json({
-                        "type": "error",
-                        "message": "Conversation not initialized. Send 'init' first."
-                    })
-                    continue
-                
-                message = data.get("message")
-                temperature = data.get("temperature", 0.7)
-                
-                if not message:
-                    await websocket.send_json({
-                        "type": "error",
-                        "message": "Message content required"
-                    })
-                    continue
-                
-                # Add user message
-                conversation_manager.add_message(
-                    conversation_id,
-                    "user",
-                    message
-                )
-                
-                # Prepare messages for Ollama
-                messages = conversation_manager.get_messages(conversation_id)
-                ollama_messages = [
-                    {"role": msg["role"], "content": msg["content"]}
-                    for msg in messages
-                ]
-                
-                # Stream response
-                full_response = ""
-                async for chunk in ollama_client.generate_response(
-                    model=current_model,
-                    messages=ollama_messages,
-                    temperature=temperature,
-                    stream=True
-                ):
-                    content = chunk.get("message", {}).get("content", "")
-                    done = chunk.get("done", False)
-                    
-                    if content:
-                        full_response += content
-                        await websocket.send_json({
-                            "type": "chunk",
-                            "content": content,
-                            "done": done
-                        })
-                
-                # Add assistant response
-                conversation_manager.add_message(
-                    conversation_id,
-                    "assistant",
-                    full_response
-                )
-                
-                # Save conversation
-                conversation_manager.save_conversation(conversation_id)
-                
-                # Send completion
-                await websocket.send_json({
-                    "type": "done"
-                })
-            
-            elif action == "exit":
-                await websocket.send_json({
-                    "type": "exit",
-                    "message": "Conversation ended"
-                })
-                break
-            
-            else:
-                await websocket.send_json({
-                    "type": "error",
-                    "message": f"Unknown action: {action}"
-                })
-    
-    except WebSocketDisconnect:
-        logger.info(f"Client disconnected from conversation: {conversation_id}")
-    except Exception as e:
-        logger.error(f"WebSocket error: {e}")
-        try:
-            await websocket.send_json({
-                "type": "error",
-                "message": str(e)
-            })
-        except:
-            pass
-
-
-@app.get("/conversations", response_model=List[ConversationInfo])
-async def list_conversations():
-    """List all active conversations"""
-    conversations = conversation_manager.list_conversations()
-    return [ConversationInfo(**conv) for conv in conversations]
-
-
-@app.get("/conversations/{conversation_id}", response_model=ConversationHistory)
-async def get_conversation(conversation_id: str):
-    """Get full conversation history"""
-    try:
-        conv_data = conversation_manager.get_conversation(conversation_id)
-        return ConversationHistory(
-            conversation_id=conv_data["conversation_id"],
-            model=conv_data["model"],
-            created_at=conv_data["created_at"],
-            updated_at=conv_data["updated_at"],
-            messages=[ChatMessage(**msg) for msg in conv_data["messages"]]
-        )
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-
-
-@app.delete("/conversations/{conversation_id}")
-async def delete_conversation(conversation_id: str):
-    """Delete a conversation"""
-    conversation_manager.delete_conversation(conversation_id)
     return {
-        "status": "deleted",
-        "conversation_id": conversation_id
+        "status": "healthy",
+        "service": config.SERVICE_NAME,
+        "version": config.API_VERSION,
+        "ollama": {
+            "url": config.OLLAMA_BASE_URL,
+            "connected": ollama_connected
+        },
+        "runner_service": {
+            "url": RUNNER_SERVICE_URL,
+            "connected": runner_connected
+        },
+        "active_conversations": len(conversations)
     }
 
-
-@app.get("/stats")
-async def get_statistics():
-    """Get service statistics"""
-    stats = conversation_manager.get_statistics()
-    stats["ollama_connected"] = await ollama_client.check_health()
-    return stats
-
+@app.get("/models")
+async def get_models():
+    """Get available Ollama models - root level endpoint"""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{config.OLLAMA_BASE_URL}/api/tags")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=503, detail="Cannot fetch models from Ollama")
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to Ollama at {config.OLLAMA_BASE_URL}"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=str(e))
 
 # ============================================================================
-# Main Entry Point
+# Run standalone
 # ============================================================================
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(
-        "chat_api:app",
-        host="0.0.0.0",
-        port=8001,
-        reload=True,
-        log_level="info"
-    )
+    print("🚀 Starting LLM Chat Service with Annotation on port 9001...")
+    print(f"🤖 Ollama: {config.OLLAMA_BASE_URL}")
+    print(f"📁 Runner Service: {RUNNER_SERVICE_URL}")
+    print("📚 Docs: http://localhost:9001/docs")
+    uvicorn.run(app, host="0.0.0.0", port=9001, reload=True)

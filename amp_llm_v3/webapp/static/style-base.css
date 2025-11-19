@@ -3002,3 +3002,268 @@ body[data-theme="light"] .existing-files-list li {
 .api-section-desc {
     /* Force light theme colors regardless of current theme */
 }
+/* ============================================================================
+   ANNOTATION MODE CONTROLS - ADDED FOR RUNNER SERVICE ARCHITECTURE
+   ============================================================================ */
+
+.annotation-controls {
+    background: var(--bg-secondary, #f5f5f5);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 2px solid var(--border, #ddd);
+}
+
+.annotation-mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.annotation-mode-toggle input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.annotation-mode-toggle label {
+    font-weight: 600;
+    color: var(--text-primary, #333);
+    cursor: pointer;
+    user-select: none;
+}
+
+.annotation-inputs {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    background: var(--bg-elevated, white);
+    border-radius: 6px;
+    border: 1px solid var(--border-subtle, #e0e0e0);
+}
+
+.annotation-inputs.active {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nct-input-group,
+.csv-upload-group {
+    margin: 12px 0;
+}
+
+.nct-input-group label,
+.csv-upload-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-primary, #333);
+    margin-bottom: 6px;
+    font-size: 0.95em;
+}
+
+.nct-input-group input[type="text"],
+.csv-upload-group input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid var(--border, #ddd);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
+    background: var(--bg-primary, white);
+    color: var(--text-primary, #333);
+    transition: border-color 0.2s;
+}
+
+.nct-input-group input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent, #1BEB49);
+    box-shadow: 0 0 0 3px rgba(27, 235, 73, 0.1);
+}
+
+.nct-input-group input[type="text"]::placeholder {
+    color: var(--text-tertiary, #999);
+    font-style: italic;
+}
+
+.annotation-help-text {
+    font-size: 0.85em;
+    color: var(--text-secondary, #666);
+    margin-top: 6px;
+    font-style: italic;
+}
+
+.annotation-separator {
+    text-align: center;
+    margin: 15px 0;
+    position: relative;
+}
+
+.annotation-separator::before,
+.annotation-separator::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: var(--border, #ddd);
+}
+
+.annotation-separator::before {
+    left: 0;
+}
+
+.annotation-separator::after {
+    right: 0;
+}
+
+.annotation-separator span {
+    padding: 0 15px;
+    background: var(--bg-elevated, white);
+    color: var(--text-secondary, #666);
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.csv-upload-group input[type="file"] {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.csv-upload-group input[type="file"]::-webkit-file-upload-button {
+    padding: 8px 16px;
+    background: var(--accent, #1BEB49);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 10px;
+    transition: all 0.2s;
+}
+
+.csv-upload-group input[type="file"]::-webkit-file-upload-button:hover {
+    background: var(--accent-hover, #16C63C);
+    transform: translateY(-1px);
+}
+
+.chat-header.annotation-active {
+    border-left: 4px solid var(--accent, #1BEB49);
+}
+
+.annotation-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--accent, #1BEB49);
+    color: white;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 10px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.annotation-progress {
+    background: var(--bg-secondary, #f5f5f5);
+    padding: 15px;
+    border-radius: 6px;
+    border-left: 4px solid var(--accent, #1BEB49);
+    margin: 10px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.annotation-progress-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0;
+    color: var(--text-secondary, #666);
+}
+
+.annotation-progress-step.active {
+    color: var(--accent, #1BEB49);
+    font-weight: 600;
+}
+
+.annotation-progress-step.complete {
+    color: var(--success, #10b981);
+}
+
+.annotation-progress-step::before {
+    content: '○';
+    font-size: 1.2em;
+}
+
+.annotation-progress-step.active::before {
+    content: '◉';
+    animation: spin 2s linear infinite;
+}
+
+.annotation-progress-step.complete::before {
+    content: '✓';
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+body[data-theme="dark"] .annotation-controls {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body[data-theme="dark"] .annotation-inputs {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+body[data-theme="dark"] .nct-input-group input[type="text"],
+body[data-theme="dark"] .csv-upload-group input[type="file"] {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .annotation-controls {
+        padding: 12px;
+    }
+    
+    .annotation-inputs {
+        padding: 12px;
+    }
+    
+    .nct-input-group input[type="text"] {
+        font-size: 16px;
+    }
+}
+
+.annotation-mode-toggle input[type="checkbox"]:focus {
+    outline: 2px solid var(--accent, #1BEB49);
+    outline-offset: 2px;
+}
+
+.nct-input-group input[type="text"]:focus,
+.csv-upload-group input[type="file"]:focus {
+    outline: none;
+    border-color: var(--accent, #1BEB49);
+}

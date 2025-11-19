@@ -3710,311 +3710,142 @@ const app = {
         return api;
     },
 
-    // =========================================================================
-    // Research Assistant Mode - NCT Annotation System
-    // =========================================================================
-
-    async initializeResearchMode() {
-        console.log('🚀 Initializing Research Assistant mode...');
+    async handleResearchInput(input) {
+        input = input.trim();
         
-        const container = document.getElementById('research-container');
-        container.innerHTML = '';
+        if (!input) return;
         
-        // Remove any existing info bar
-        this.removeInfoBar();
-        
-        // Reset state
-        this.currentModel = null;
-        this.currentConversationId = null;
-        
-        const input = document.getElementById('research-input');
-        input.disabled = true;
-        input.placeholder = 'Select a model first...';
-        
-        const loadingId = this.addMessage('research-container', 'system', 
-            '🔄 Loading available models...');
-        
-        try {
-            // Fetch models from chat service
-            console.log('📡 Fetching models from:', `${this.API_BASE}/models`);
-            
-            const response = await fetch(`${this.API_BASE}/models`, {
-                headers: { 
-                    'Authorization': `Bearer ${this.apiKey}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            console.log('📥 Response status:', response.status);
-            
-            if (response.ok) {
-                const data = await response.json();
-                console.log('✅ Models data:', data);
-                
-                if (!data.models || data.models.length === 0) {
-                    document.getElementById(loadingId)?.remove();
-                    this.addMessage('research-container', 'error', 
-                        '❌ No models available.\n\n' +
-                        'The chat service is running but no models are available.\n\n' +
-                        'To fix:\n' +
-                        '1. Check Ollama: ollama list\n' +
-                        '2. Install a model: ollama pull llama3.2\n' +
-                        '3. Refresh this page');
-                    return;
-                }
-                
-                this.availableModels = data.models;
-                console.log('✅ Loaded models:', this.availableModels);
-                
-                document.getElementById(loadingId)?.remove();
-                this.showResearchModelSelection();
-                
-            } else {
-                const errorText = await response.text();
-                console.error('❌ Failed to load models:', response.status, errorText);
-                
-                document.getElementById(loadingId)?.remove();
-                this.addMessage('research-container', 'error', 
-                    `❌ Failed to load models (HTTP ${response.status})\n\n` +
-                    `The chat service may not be running properly.\n\n` +
-                    `To fix:\n` +
-                    `1. Restart chat service:\n` +
-                    `   cd "standalone modules/chat_with_llm"\n` +
-                    `   uvicorn chat_api:app --port 9001 --reload\n\n` +
-                    `2. Check: curl http://localhost:9001/models\n\n` +
-                    `Error: ${errorText.substring(0, 200)}`);
-            }
-        } catch (error) {
-            console.error('❌ Exception loading models:', error);
-            
-            document.getElementById(loadingId)?.remove();
-            this.addMessage('research-container', 'error', 
-                '❌ Connection Error\n\n' +
-                'Cannot connect to the chat service.\n\n' +
-                'The chat service must be running on port 9001.\n\n' +
-                'To start it:\n' +
-                '1. Open terminal\n' +
-                '2. cd amp_llm_v3/standalone\\ modules/chat_with_llm\n' +
-                '3. uvicorn chat_api:app --port 9001 --reload\n\n' +
-                'Then refresh this page.\n\n' +
-                `Error: ${error.message}`);
-        }
-    },
-
-    showResearchModelSelection() {
-        console.log('📦 Showing model selection for Research Assistant');
-        
-        const container = document.getElementById('research-container');
-        
-        this.addMessage('research-container', 'system', 
-            '🔬 Clinical Trial Annotation System\n\n' +
-            'This tool will:\n' +
-            '1. Load trial data from saved JSON files\n' +
-            '2. Parse and extract relevant information\n' +
-            '3. Generate structured annotation prompts\n' +
-            '4. Use AI to annotate peptide clinical trials\n\n' +
-            '📋 Select a model to begin:');
-        
-        const selectionDiv = document.createElement('div');
-        selectionDiv.className = 'model-selection';
-        selectionDiv.id = 'research-model-selection';
-        
-        this.availableModels.forEach((model) => {
-            const modelName = typeof model === 'string' ? model : (model.name || String(model));
-            
-            console.log(`Creating button for model: ${modelName}`);
-            
-            const button = document.createElement('button');
-            button.className = 'model-button';
-            button.type = 'button';
-            button.setAttribute('data-model-name', modelName);
-            
-            const icon = document.createElement('span');
-            icon.textContent = '🤖';
-            icon.style.fontSize = '1.2em';
-            
-            const name = document.createElement('span');
-            name.textContent = modelName;
-            name.style.flex = '1';
-            name.style.textAlign = 'left';
-            name.style.marginLeft = '10px';
-            
-            const arrow = document.createElement('span');
-            arrow.textContent = '→';
-            arrow.style.color = '#666';
-            arrow.style.fontSize = '0.9em';
-            
-            button.appendChild(icon);
-            button.appendChild(name);
-            button.appendChild(arrow);
-            
-            button.onclick = function() {
-                const selectedModel = this.getAttribute('data-model-name');
-                console.log('🖱️  Model selected:', selectedModel);
-                app.selectResearchModel(selectedModel);
-            };
-            
-            selectionDiv.appendChild(button);
-        });
-        
-        container.appendChild(selectionDiv);
-        
-        requestAnimationFrame(() => {
-            container.scrollTop = container.scrollHeight;
-        });
-        
-        console.log('✅ Model selection displayed');
-    },
-
-    async selectResearchModel(modelName) {
-        console.log('🎯 Selected model for research:', modelName);
-        
-        this.currentModel = modelName;
-        
-        // Remove model selection
-        const modelSelection = document.getElementById('research-model-selection');
-        if (modelSelection) {
-            modelSelection.remove();
-        }
-        
-        // Create info bar
-        this.ensureChatInfoBar();
-        
-        // Show success and instructions
-        this.addMessage('research-container', 'system', 
-            `✅ Model Selected: ${modelName}\n\n` +
-            `📝 How to use:\n\n` +
-            `1. Enter an NCT ID (e.g., NCT12345678)\n` +
-            `2. System finds the JSON file from File Manager\n` +
-            `3. Parses data and generates annotation prompt\n` +
-            `4. ${modelName} annotates the clinical trial\n` +
-            `5. Structured annotation is returned\n\n` +
-            `⚠️  Important: Run NCT Lookup first!\n` +
-            `The system needs trial data before it can annotate.\n\n` +
-            `💡 Commands:\n` +
-            `• Type an NCT ID to annotate\n` +
-            `• Type "models" to switch models\n` +
-            `• Type "exit" to return to menu`);
-        
-        // Enable input
-        const input = document.getElementById('research-input');
-        input.disabled = false;
-        input.placeholder = 'Enter NCT ID (e.g., NCT12345678)...';
-        input.focus();
-        
-        console.log('✅ Research Assistant ready');
-    },
-
-    async sendResearchMessage(message) {
-        const trimmedMessage = message.trim();
-        const command = trimmedMessage.toLowerCase();
-        
-        // Handle commands
-        if (command === 'exit' || command === 'main menu') {
+        // Command handling
+        if (input.toLowerCase() === 'exit') {
             this.showMenu();
             return;
         }
         
-        if (command === 'models') {
-            const container = document.getElementById('research-container');
-            container.innerHTML = '';
-            this.removeInfoBar();
-            this.initializeResearchMode();
-            return;
-        }
-        
-        // Extract NCT ID
-        const nctId = trimmedMessage.toUpperCase();
-        
-        // Validate NCT ID format
-        if (!nctId.match(/^NCT\d{8}$/)) {
-            this.addMessage('research-container', 'error', 
-                '❌ Invalid NCT ID format.\n\n' +
-                'Please enter in format: NCT12345678\n' +
-                'Example: NCT04123456\n\n' +
-                '💡 Commands:\n' +
-                '• "models" - Switch models\n' +
-                '• "exit" - Return to menu');
+        if (input.toLowerCase() === 'models') {
+            await this.selectModel('research');
             return;
         }
         
         if (!this.currentModel) {
             this.addMessage('research-container', 'error', 
-                '❌ No model selected. Please select a model first.');
+                '⚠️  Please select a model first\n\n' +
+                'Type "models" to see available models');
             return;
         }
         
-        this.addMessage('research-container', 'user', `Annotate: ${nctId}`);
+        // Parse NCT IDs (comma-separated)
+        const nctIds = input.split(',')
+            .map(id => id.trim().toUpperCase())
+            .filter(id => id.startsWith('NCT'));
         
-        // Research assistant now integrated with chat service on port 9001
-        const RESEARCH_API = `${this.API_BASE}/research`;
+        if (nctIds.length === 0) {
+            this.addMessage('research-container', 'error', 
+                '⚠️  Invalid NCT ID format\n\n' +
+                'Enter one or more NCT IDs:\n' +
+                '  Single: NCT12345678\n' +
+                '  Multiple: NCT12345678, NCT87654321, NCT11111111\n\n' +
+                'Commands:\n' +
+                '  models - Change model\n' +
+                '  exit - Return to menu');
+            return;
+        }
         
-        // Show initial processing message
+        // Initialize annotation conversation if needed
+        if (!this.currentConversationId) {
+            try {
+                const response = await fetch(`${this.API_BASE}/chat/init`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: this.currentModel,
+                        annotation_mode: true
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    this.currentConversationId = data.conversation_id;
+                    console.log('✅ Annotation conversation initialized:', this.currentConversationId);
+                } else {
+                    throw new Error('Failed to initialize annotation conversation');
+                }
+            } catch (error) {
+                this.addMessage('research-container', 'error', 
+                    `❌ Failed to initialize\n\n${error.message}\n\n` +
+                    `Ensure Chat Service (port 9001) is running.`);
+                return;
+            }
+        }
+        
+        // Show processing message
         const processingId = this.addMessage('research-container', 'system', 
-            `🔄 Processing ${nctId}...\n\n` +
-            `⏳ This may take 1-3 minutes depending on whether\n` +
-            `   data needs to be fetched automatically.\n\n` +
+            `🔬 Annotating ${nctIds.length} trial${nctIds.length > 1 ? 's' : ''}...\n\n` +
+            `NCT IDs: ${nctIds.join(', ')}\n\n` +
             `Steps:\n` +
-            `1. Check for existing data file\n` +
-            `2. Auto-fetch if needed (30-60s)\n` +
-            `3. Generate annotation prompt\n` +
-            `4. Send to LLM for annotation (30-90s)`);
+            `1. Runner checks for existing JSON files\n` +
+            `2. Auto-fetches missing data (if needed)\n` +
+            `3. Generates annotations with LLM\n\n` +
+            `⏳ This may take 1-3 minutes...`);
         
         const startTime = Date.now();
         
         try {
-            const response = await fetch(`${RESEARCH_API}/annotate`, {
+            const response = await fetch(`${this.API_BASE}/chat/message`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    nct_id: nctId,
-                    model: this.currentModel,
-                    temperature: 0.15,
-                    auto_fetch: true  // Enable automatic fetching
+                    conversation_id: this.currentConversationId,
+                    message: "Annotate trials",
+                    nct_ids: nctIds,
+                    temperature: 0.15
                 })
             });
             
             const endTime = Date.now();
             const duration = ((endTime - startTime) / 1000).toFixed(1);
             
-            document.getElementById(processingId)?.remove();
+            // Remove processing message
+            const processingElement = document.getElementById(processingId);
+            if (processingElement) {
+                processingElement.remove();
+            }
             
             if (response.ok) {
                 const data = await response.json();
                 
-                // Show if data was auto-fetched
-                let fetchNote = '';
-                if (data.auto_fetched) {
-                    fetchNote = `\n✨ Data was automatically fetched from NCT Lookup\n`;
+                // Display annotation results
+                this.addMessage('research-container', 'assistant', 
+                    `✅ Annotation Complete\n\n` +
+                    `═══════════════════════════════════════════\n` +
+                    `Trials Annotated: ${nctIds.length}\n` +
+                    `Model: ${data.model}\n` +
+                    `Processing Time: ${duration}s\n` +
+                    `═══════════════════════════════════════════\n\n` +
+                    `${data.message.content}\n\n` +
+                    `═══════════════════════════════════════════\n\n` +
+                    `💡 Next:\n` +
+                    `  • Enter more NCT IDs to annotate\n` +
+                    `  • Type "models" to change model\n` +
+                    `  • Type "exit" to return to menu`);
+                
+                // Store in session
+                if (!this.sessionChats[this.currentModel]) {
+                    this.sessionChats[this.currentModel] = {
+                        conversationId: this.currentConversationId,
+                        messages: [],
+                        annotationMode: true
+                    };
                 }
                 
-                // Display annotation result
-                this.addMessage('research-container', 'assistant', 
-                    `✅ Annotation Complete for ${data.nct_id}\n\n` +
-                    `═══════════════════════════════════\n` +
-                    `Model: ${data.model}\n` +
-                    `Status: ${data.status}\n` +
-                    `Processing Time: ${duration}s${fetchNote}\n` +
-                    `═══════════════════════════════════\n\n` +
-                    `${data.annotation}\n\n` +
-                    `═══════════════════════════════════\n\n` +
-                    `💾 To save this annotation:\n` +
-                    `   Copy the text above or export as file\n\n` +
-                    `🔄 To annotate another trial:\n` +
-                    `   Enter a new NCT ID\n\n` +
-                    `📊 Sources used: ${this.countSources(data.sources_used)}`);
+                this.sessionChats[this.currentModel].messages.push({
+                    role: 'user',
+                    content: `Annotate: ${nctIds.join(', ')}`
+                });
                 
-                // Log sources used for debugging
-                console.log('📚 Sources used for annotation:', data.sources_used);
-                
-                // Offer to save
-                this.addMessage('research-container', 'system', 
-                    `💡 Next steps:\n\n` +
-                    `• Enter another NCT ID to annotate\n` +
-                    `• Type "models" to switch models\n` +
-                    `• Type "exit" to return to menu`);
+                this.sessionChats[this.currentModel].messages.push({
+                    role: 'assistant',
+                    content: data.message.content
+                });
                 
             } else {
                 const errorText = await response.text();
@@ -4028,35 +3859,44 @@ const app = {
                 this.addMessage('research-container', 'error', 
                     `❌ Annotation Failed\n\n` +
                     `Error: ${errorData.detail}\n\n` +
-                    `Possible issues:\n` +
-                    `• NCT Lookup service not running (port 9002)\n` +
-                    `• Invalid NCT ID or trial not found\n` +
-                    `• Model ${this.currentModel} is not responding\n` +
-                    `• Network connectivity issues\n\n` +
-                    `Try:\n` +
-                    `1. Verify NCT ID is correct\n` +
-                    `2. Check if all services are running\n` +
-                    `3. Try a different model`);
+                    `Possible Issues:\n` +
+                    `• Invalid NCT ID(s)\n` +
+                    `• Runner Service (port 9003) not running\n` +
+                    `• NCT Lookup (port 9002) not available\n` +
+                    `• Chat Service (port 9001) error\n` +
+                    `• Model ${this.currentModel} not responding\n\n` +
+                    `Troubleshooting:\n` +
+                    `1. Verify NCT IDs are correct\n` +
+                    `2. Check services: ./services.sh status\n` +
+                    `3. View logs: ./services.sh logs all\n` +
+                    `4. Try: ./start_all_services.sh`);
             }
             
         } catch (error) {
-            if (document.getElementById(processingId)) {
-                document.getElementById(processingId).remove();
+            // Remove processing message if still there
+            const processingElement = document.getElementById(processingId);
+            if (processingElement) {
+                processingElement.remove();
             }
             
             this.addMessage('research-container', 'error', 
-                `❌ Connection Error\n\n${error.message}\n\n` +
-                `Cannot connect to Research Assistant on Chat Service (port 9001).\n\n` +
-                `The Chat Service with integrated Research Assistant must be running.\n\n` +
-                `To start it:\n` +
-                `1. Open a new terminal\n` +
-                `2. cd amp_llm_v3/standalone\\ modules/chat_with_llm\n` +
-                `3. python -m uvicorn chat_service_integrated:app --port 9001 --reload\n\n` +
-                `Or use: ./start_all.sh`);
-            console.error('Research API connection error:', error);
+                `❌ Connection Error\n\n` +
+                `${error.message}\n\n` +
+                `Cannot connect to Chat Service (port 9001).\n\n` +
+                `Required Services:\n` +
+                `• Chat Service (9001) - Main annotation service\n` +
+                `• Runner Service (9003) - File manager\n` +
+                `• NCT Service (9002) - Data fetching\n\n` +
+                `Start all services:\n` +
+                `  cd ~/amp_llm_v3\n` +
+                `  ./start_all_services.sh\n\n` +
+                `Check status:\n` +
+                `  ./services.sh status`);
+            
+            console.error('❌ Annotation error:', error);
         }
     },
-
+    
     countSources(sources) {
         if (!sources) return 0;
         
