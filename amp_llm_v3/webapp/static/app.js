@@ -14,6 +14,7 @@ const app = {
     currentTheme: localStorage.getItem('amp_llm_theme') || 'green',
     currentConversationId: null,
     currentModel: null,
+    annotationModeSelected: false,  // Track annotation mode selection
     nctResults: null,
     selectedFile: null,
     files: [],
@@ -388,6 +389,9 @@ const app = {
                 
                 this.currentConversationId = null;
                 this.currentModel = null;
+                
+                // Reset annotation mode selection for fresh start
+                this.annotationModeSelected = false;
                 
                 const container = document.getElementById('chat-container');
                 container.innerHTML = '';
@@ -1150,6 +1154,9 @@ const app = {
         
         this.removeInfoBar();
         
+        // Reset annotation mode selection
+        this.annotationModeSelected = false;
+        
         const input = document.getElementById('chat-input');
         input.disabled = true;
         input.placeholder = 'Select a model to start chatting...';
@@ -1317,69 +1324,85 @@ const app = {
         
         const container = document.getElementById('chat-container');
         
-        this.addMessage('chat-container', 'system', 
-            '🤖 Welcome to Chat Mode!\n\nSelect a model to start your conversation:');
-        
-        // ADD ANNOTATION MODE CONTROLS
-        if (this.currentMode === 'chat') {
-            const annotationControlsDiv = document.createElement('div');
-            annotationControlsDiv.className = 'annotation-controls';
-            annotationControlsDiv.id = 'annotation-controls';
-            annotationControlsDiv.innerHTML = `
-                <div class="annotation-mode-toggle">
-                    <input type="checkbox" id="annotation-mode-checkbox" />
-                    <label for="annotation-mode-checkbox">
-                        <strong>🔬 Annotation Mode</strong> - Annotate clinical trials
-                    </label>
-                </div>
-                <div class="annotation-inputs" id="annotation-inputs">
-                    <div class="nct-input-group">
-                        <label for="nct-ids-input">Enter NCT IDs (comma-separated):</label>
-                        <input 
-                            type="text" 
-                            id="nct-ids-input" 
-                            placeholder="NCT12345678, NCT87654321, NCT11111111"
-                        />
-                        <div class="annotation-help-text">
-                            Enter one or more NCT IDs separated by commas
-                        </div>
-                    </div>
-                    
-                    <div class="annotation-separator">
-                        <span>OR</span>
-                    </div>
-                    
-                    <div class="csv-upload-group">
-                        <label for="nct-csv-upload">Upload CSV file with NCT IDs:</label>
-                        <input 
-                            type="file" 
-                            id="nct-csv-upload" 
-                            accept=".csv"
-                        />
-                        <div class="annotation-help-text">
-                            CSV should have NCT IDs in the first column
-                        </div>
-                    </div>
-                </div>
+        // STEP 1: Show annotation mode selection first (only for chat mode)
+        if (this.currentMode === 'chat' && !this.annotationModeSelected) {
+            this.addMessage('chat-container', 'system', 
+                '🤖 Welcome to Chat Mode!\n\n' +
+                'Please choose your chat type:');
+            
+            const annotationSelectionDiv = document.createElement('div');
+            annotationSelectionDiv.className = 'model-selection';
+            annotationSelectionDiv.id = 'annotation-mode-selection';
+            
+            // Regular chat button
+            const regularButton = document.createElement('button');
+            regularButton.className = 'model-button';
+            regularButton.type = 'button';
+            regularButton.innerHTML = `
+                <span style="font-size: 1.2em;">💬</span>
+                <span style="flex: 1; text-align: left; margin-left: 10px;">
+                    <strong>Regular Chat</strong><br>
+                    <small style="color: #666;">Conversational AI chat</small>
+                </span>
+                <span style="color: #666; font-size: 0.9em;">→</span>
             `;
+            regularButton.onclick = () => {
+                console.log('✅ Regular chat mode selected');
+                this.annotationModeSelected = false;
+                document.getElementById('annotation-mode-selection')?.remove();
+                this.showModelSelectionStep2();
+            };
             
-            container.appendChild(annotationControlsDiv);
+            // Annotation mode button
+            const annotationButton = document.createElement('button');
+            annotationButton.className = 'model-button';
+            annotationButton.type = 'button';
+            annotationButton.innerHTML = `
+                <span style="font-size: 1.2em;">🔬</span>
+                <span style="flex: 1; text-align: left; margin-left: 10px;">
+                    <strong>Annotation Mode</strong><br>
+                    <small style="color: #666;">Annotate clinical trials with NCT IDs</small>
+                </span>
+                <span style="color: #666; font-size: 0.9em;">→</span>
+            `;
+            annotationButton.onclick = () => {
+                console.log('✅ Annotation mode selected');
+                this.annotationModeSelected = true;
+                document.getElementById('annotation-mode-selection')?.remove();
+                this.showModelSelectionStep2();
+            };
             
-            // Add event listener for checkbox
-            const checkbox = document.getElementById('annotation-mode-checkbox');
-            const inputs = document.getElementById('annotation-inputs');
+            annotationSelectionDiv.appendChild(regularButton);
+            annotationSelectionDiv.appendChild(annotationButton);
+            container.appendChild(annotationSelectionDiv);
             
-            checkbox.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    inputs.classList.add('active');
-                    console.log('✅ Annotation mode enabled');
-                } else {
-                    inputs.classList.remove('active');
-                    console.log('⭕ Annotation mode disabled');
-                }
+            requestAnimationFrame(() => {
+                container.scrollTop = container.scrollHeight;
             });
+            
+            this.updateBackButton();
+            console.log('✅ Annotation mode selection displayed');
+            return;
         }
-        // END OF ANNOTATION CONTROLS
+        
+        // If not chat mode or already selected, go directly to model selection
+        this.showModelSelectionStep2();
+    },
+    
+    showModelSelectionStep2() {
+        console.log('📦 Showing model selection (Step 2)');
+        
+        const container = document.getElementById('chat-container');
+        
+        let modeInfo = '';
+        if (this.currentMode === 'chat') {
+            modeInfo = this.annotationModeSelected ? 
+                '\n\n🔬 Mode: Clinical Trial Annotation' : 
+                '\n\n💬 Mode: Regular Chat';
+        }
+        
+        this.addMessage('chat-container', 'system', 
+            `Select a model to start:${modeInfo}`);
         
         const selectionDiv = document.createElement('div');
         selectionDiv.className = 'model-selection';
@@ -1536,11 +1559,10 @@ const app = {
     async selectModel(modelName) {
         console.log('🎯 selectModel called with:', modelName);
         
-        // Check if annotation mode is enabled (only for chat mode)
+        // Check if annotation mode is enabled (from stored selection)
         let annotationMode = false;
-        if (this.currentMode === 'chat') {
-            const checkbox = document.getElementById('annotation-mode-checkbox');
-            annotationMode = checkbox ? checkbox.checked : false;
+        if (this.currentMode === 'chat' && this.annotationModeSelected) {
+            annotationMode = true;
             console.log('🔬 Annotation mode:', annotationMode);
         }
         
@@ -1553,12 +1575,6 @@ const app = {
             const modelSelection = document.getElementById('model-selection-container');
             if (modelSelection) {
                 modelSelection.remove();
-            }
-            
-            // Remove annotation controls
-            const annotationControls = document.getElementById('annotation-controls');
-            if (annotationControls) {
-                annotationControls.remove();
             }
             
             this.currentModel = modelName;
@@ -1590,7 +1606,7 @@ const app = {
                 },
                 body: JSON.stringify({ 
                     model: modelName,
-                    annotation_mode: annotationMode  // ADD ANNOTATION MODE
+                    annotation_mode: annotationMode  // Use stored annotation mode
                 })
             });
             
@@ -1633,12 +1649,6 @@ const app = {
                 const modelSelection = document.getElementById('model-selection-container');
                 if (modelSelection) {
                     modelSelection.remove();
-                }
-                
-                // Remove annotation controls after model is selected
-                const annotationControls = document.getElementById('annotation-controls');
-                if (annotationControls) {
-                    annotationControls.remove();
                 }
                 
                 let welcomeMsg = `✅ Connected to ${modelName}`;
@@ -1709,6 +1719,9 @@ const app = {
             
             this.currentConversationId = null;
             this.currentModel = null;
+            
+            // Reset annotation mode selection for fresh start
+            this.annotationModeSelected = false;
             
             const container = document.getElementById('chat-container');
             container.innerHTML = '';
