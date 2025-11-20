@@ -452,15 +452,23 @@ async def send_message(request: ChatMessageRequest):
     """
     conversation_id = request.conversation_id
     
+    logger.info(f"📥 Message request for conversation: {conversation_id}")
+    logger.info(f"📊 Active conversations: {list(conversations.keys())}")
+    logger.info(f"📊 Total active: {len(conversations)}")
+    
     if conversation_id not in conversations:
+        logger.error(f"❌ Conversation {conversation_id} not found!")
+        logger.error(f"❌ Available conversations: {list(conversations.keys())}")
         raise HTTPException(
             status_code=404,
-            detail=f"Conversation {conversation_id} not found"
+            detail=f"Conversation not found"
         )
     
     conversation = conversations[conversation_id]
     model = conversation["model"]
     annotation_mode = conversation["annotation_mode"]
+    
+    logger.info(f"✅ Found conversation: model={model}, annotation_mode={annotation_mode}")
     
     # Handle annotation mode
     if annotation_mode:

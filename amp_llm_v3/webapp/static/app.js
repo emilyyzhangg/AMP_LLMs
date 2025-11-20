@@ -1868,6 +1868,19 @@ const app = {
 
     async annotateTrials(nctIds) {
         console.log(`🔬 Starting annotation for ${nctIds.length} trial(s):`, nctIds);
+        console.log('📊 Current conversation ID:', this.currentConversationId);
+        console.log('📊 Current model:', this.currentModel);
+        
+        if (!this.currentConversationId) {
+            this.addMessage('chat-container', 'error', 
+                '❌ No active conversation!\n\n' +
+                'Please try:\n' +
+                '1. Reload the page\n' +
+                '2. Click "Chat with LLM" again\n' +
+                '3. Select annotation mode\n' +
+                '4. Select a model');
+            return;
+        }
         
         // Show processing message
         const processingId = this.addMessage('chat-container', 'system', 
@@ -1881,6 +1894,11 @@ const app = {
         const startTime = Date.now();
         
         try {
+            console.log('📤 Sending annotation request:');
+            console.log('   conversation_id:', this.currentConversationId);
+            console.log('   message:', nctIds.join(', '));
+            console.log('   nct_ids:', nctIds);
+            
             // Call chat service with NCT IDs
             const response = await fetch(`${this.API_BASE}/chat/message`, {
                 method: 'POST',
