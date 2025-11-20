@@ -84,6 +84,7 @@ class ChatResponse(BaseModel):
     conversation_id: str
     model: str
     message: Message
+    annotation_mode: bool = False  # Whether annotation mode was used
     nct_data_used: Optional[List[str]] = None  # NCT IDs that were processed
 
 # ============================================================================
@@ -517,6 +518,7 @@ async def send_message(request: ChatMessageRequest):
             conversation_id=conversation_id,
             model=model,
             message=Message(role="assistant", content=response_content),
+            annotation_mode=True,
             nct_data_used=successful_nct_ids
         )
     
@@ -547,7 +549,8 @@ async def send_message(request: ChatMessageRequest):
         return ChatResponse(
             conversation_id=conversation_id,
             model=model,
-            message=Message(role="assistant", content=response_content)
+            message=Message(role="assistant", content=response_content),
+            annotation_mode=False
         )
 
 @app.delete("/chat/conversations/{conversation_id}")
