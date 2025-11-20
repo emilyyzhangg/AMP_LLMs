@@ -1605,16 +1605,24 @@ const app = {
         const loadingId = this.addMessage('chat-container', 'system', `🔄 Initializing ${modelName}...`);
         
         try {
+            // DEBUG: Log exactly what we're sending
+            const requestBody = { 
+                model: modelName,
+                annotation_mode: annotationMode
+            };
+            console.log('📤 Sending /chat/init request:');
+            console.log('   URL:', `${this.API_BASE}/chat/init`);
+            console.log('   Body:', JSON.stringify(requestBody));
+            console.log('   annotation_mode value:', annotationMode);
+            console.log('   annotation_mode type:', typeof annotationMode);
+            
             const response = await fetch(`${this.API_BASE}/chat/init`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.apiKey}`
                 },
-                body: JSON.stringify({ 
-                    model: modelName,
-                    annotation_mode: annotationMode  // Use stored annotation mode
-                })
+                body: JSON.stringify(requestBody)
             });
             
             console.log('📥 Init response status:', response.status);
