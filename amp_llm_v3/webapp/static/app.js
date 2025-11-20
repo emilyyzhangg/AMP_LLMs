@@ -1321,11 +1321,14 @@ const app = {
     showModelSelection() {
         console.log('📦 Showing model selection');
         console.log('📊 Available models:', this.availableModels);
+        console.log('📊 Current mode:', this.currentMode);
+        console.log('📊 annotationModeSelected:', this.annotationModeSelected);
         
         const container = document.getElementById('chat-container');
         
         // STEP 1: Show annotation mode selection first (only for chat mode)
         if (this.currentMode === 'chat' && !this.annotationModeSelected) {
+            console.log('✅ Showing annotation mode selection screen');
             this.addMessage('chat-container', 'system', 
                 '🤖 Welcome to Chat Mode!\n\n' +
                 'Please choose your chat type:');
@@ -1558,12 +1561,16 @@ const app = {
 
     async selectModel(modelName) {
         console.log('🎯 selectModel called with:', modelName);
+        console.log('📊 Current mode:', this.currentMode);
+        console.log('📊 annotationModeSelected:', this.annotationModeSelected);
         
         // Check if annotation mode is enabled (from stored selection)
         let annotationMode = false;
         if (this.currentMode === 'chat' && this.annotationModeSelected) {
             annotationMode = true;
-            console.log('🔬 Annotation mode:', annotationMode);
+            console.log('🔬 Annotation mode ENABLED:', annotationMode);
+        } else {
+            console.log('💬 Regular chat mode (annotationModeSelected=' + this.annotationModeSelected + ')');
         }
         
         const hasSavedChat = this.sessionChats[modelName] && 
