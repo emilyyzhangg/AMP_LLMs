@@ -57,15 +57,7 @@ class ClinicalTrialAnnotationParser:
         protocol = self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'protocolSection', default={})
         
         info = {
-            'nct_id': self.safe_get(trial, 'nct_id'),
-            'brief_title': self.safe_get(protocol, 'identificationModule', 'briefTitle'),
-            'official_title': self.safe_get(protocol, 'identificationModule', 'officialTitle'),
-            'study_type': self.safe_get(protocol, 'designModule', 'studyType'),
-            'phases': self.safe_get(protocol, 'designModule', 'phases', default=[]),
-            'conditions': self.safe_get(protocol, 'conditionsModule', 'conditions', default=[]),
-            'keywords': self.safe_get(protocol, 'conditionsModule', 'keywords', default=[]),
-            'brief_summary': self.safe_get(protocol, 'descriptionModule', 'briefSummary'),
-            'detailed_description': self.safe_get(protocol, 'descriptionModule', 'detailedDescription'),
+
         }
         
         # Extract intervention information

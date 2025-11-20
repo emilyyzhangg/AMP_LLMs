@@ -1748,75 +1748,251 @@ const app = {
             return;
         }
         
-        this.addMessage('chat-container', 'user', message);
+        // Check if annotation mode is active
+        const isAnnotationMode = this.sessionChats[this.currentModel]?.annotationMode || false;
         
-        const loadingId = this.addMessage('chat-container', 'system', '🤔 Thinking...');
+        if (isAnnotationMode) {
+            // ANNOTATION MODE - Parse NCT IDs and call annotation endpoint
+            console.log('🔬 Annotation mode: Processing NCT IDs');
+            
+            // Extract NCT IDs from message
+            const nctPattern = /NCT\d{8}/gi;
+            const nctIds = message.match(nctPattern);
+            
+            if (!nctIds || nctIds.length === 0) {
+                this.addMessage('chat-container', 'error', 
+                    '❌ No valid NCT IDs found\n\n' +
+                    'Please enter NCT IDs in the format: NCT12345678\n' +
+                    'You can enter multiple IDs separated by commas.\n\n' +
+                    'Example: NCT03936426, NCT04123456');
+                return;
+            }
+            
+            // Normalize NCT IDs to uppercase
+            const normalizedNctIds = nctIds.map(id => id.toUpperCase());
+            
+            console.log(`📝 Extracted ${normalizedNctIds.length} NCT IDs:`, normalizedNctIds);
+            
+            this.addMessage('chat-container', 'user', `Annotate: ${normalizedNctIds.join(', ')}`);
+            
+            // Call the annotation function (which uses the runner service)
+            await this.annotateTrials(normalizedNctIds);
+            
+        } else {
+            // REGULAR CHAT MODE
+            console.log('💬 Regular chat mode: Sending message');
+            
+            this.addMessage('chat-container', 'user', message);
+            
+            const loadingId = this.addMessage('chat-container', 'system', '🤔 Thinking...');
+            
+            try {
+                console.log('📤 Sending message to chat service');
+                
+                const response = await fetch(`${this.API_BASE}/chat/message`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        conversation_id: this.currentConversationId,
+                        message: message,
+                        temperature: 0.7
+                    })
+                });
+                
+                console.log('📥 Response status:', response.status);
+                
+                document.getElementById(loadingId)?.remove();
+                
+                if (response.ok) {
+                    let data;
+                    try {
+                        const responseText = await response.text();
+                        console.log('📄 Response (first 200 chars):', responseText.substring(0, 200));
+                        
+                        if (responseText.trim().startsWith('<')) {
+                            this.addMessage('chat-container', 'error', 
+                                `❌ Server returned HTML instead of JSON\n\n` +
+                                `Check console for details.`);
+                            console.error('Full response:', responseText);
+                            return;
+                        }
+                        
+                        data = JSON.parse(responseText);
+                    } catch (parseError) {
+                        this.addMessage('chat-container', 'error', 
+                            `❌ JSON Parse Error: ${parseError.message}\n\n` +
+                            `Check console for the full response.`);
+                        return;
+                    }
+                    
+                    if (data.message && data.message.content) {
+                        this.addMessage('chat-container', 'assistant', data.message.content);
+                        this.saveCurrentChat();
+                    } else {
+                        this.addMessage('chat-container', 'error', 
+                            `❌ Invalid response structure\n\n` +
+                            `Expected message.content but got: ${JSON.stringify(data).substring(0, 100)}`);
+                    }
+                } else {
+                    let errorMessage;
+                    try {
+                        const errorText = await response.text();
+                        const errorData = JSON.parse(errorText);
+                        errorMessage = errorData.detail || JSON.stringify(errorData);
+                    } catch (e) {
+                        errorMessage = `HTTP ${response.status}`;
+                    }
+                    this.addMessage('chat-container', 'error', `❌ Error: ${errorMessage}`);
+                }
+            } catch (error) {
+                document.getElementById(loadingId)?.remove();
+                this.addMessage('chat-container', 'error', `❌ Error: ${error.message}`);
+                console.error('Full error:', error);
+            }
+        }
+    },
+
+    // =========================================================================
+    // Annotation Mode - Trial Annotation
+    // =========================================================================
+
+    async annotateTrials(nctIds) {
+        console.log(`🔬 Starting annotation for ${nctIds.length} trial(s):`, nctIds);
+        
+        // Show processing message
+        const processingId = this.addMessage('chat-container', 'system', 
+            `🔄 Annotating ${nctIds.length} clinical trial(s)...\n\n` +
+            `Steps:\n` +
+            `1. Fetching trial data from Runner Service\n` +
+            `2. Processing JSON with annotation parser\n` +
+            `3. Generating annotations with LLM\n\n` +
+            `⏳ This may take 1-3 minutes...`);
+        
+        const startTime = Date.now();
         
         try {
-            console.log('📤 Sending message to chat service');
-            
+            // Call chat service with NCT IDs
             const response = await fetch(`${this.API_BASE}/chat/message`, {
                 method: 'POST',
-                headers: {
+                headers: { 
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.apiKey}`
                 },
                 body: JSON.stringify({
                     conversation_id: this.currentConversationId,
-                    message: message,
-                    temperature: 0.7
+                    message: nctIds.join(', '),
+                    nct_ids: nctIds,  // Explicit NCT IDs list
+                    temperature: 0.15  // Lower temperature for consistent annotations
                 })
             });
             
-            console.log('📥 Response status:', response.status);
+            const endTime = Date.now();
+            const duration = ((endTime - startTime) / 1000).toFixed(1);
             
-            document.getElementById(loadingId)?.remove();
+            // Remove processing message
+            const processingElement = document.getElementById(processingId);
+            if (processingElement) {
+                processingElement.remove();
+            }
             
             if (response.ok) {
-                let data;
-                try {
-                    const responseText = await response.text();
-                    console.log('📄 Response (first 200 chars):', responseText.substring(0, 200));
-                    
-                    if (responseText.trim().startsWith('<')) {
-                        this.addMessage('chat-container', 'error', 
-                            `❌ Server returned HTML instead of JSON\n\n` +
-                            `Check console for details.`);
-                        console.error('Full response:', responseText);
-                        return;
-                    }
-                    
-                    data = JSON.parse(responseText);
-                } catch (parseError) {
-                    this.addMessage('chat-container', 'error', 
-                        `❌ JSON Parse Error: ${parseError.message}\n\n` +
-                        `Check console for the full response.`);
-                    return;
+                const data = await response.json();
+                
+                console.log('✅ Annotation response received:', data);
+                
+                // Display annotation results
+                let resultMessage = `✅ Annotation Complete\n\n` +
+                    `═══════════════════════════════════════════\n` +
+                    `Trials Annotated: ${data.nct_data_used ? data.nct_data_used.length : nctIds.length}\n` +
+                    `Model: ${data.model}\n` +
+                    `Processing Time: ${duration}s\n` +
+                    `═══════════════════════════════════════════\n\n`;
+                
+                // Add NCT IDs that were successfully processed
+                if (data.nct_data_used && data.nct_data_used.length > 0) {
+                    resultMessage += `NCT IDs Processed: ${data.nct_data_used.join(', ')}\n\n`;
                 }
                 
-                if (data.message && data.message.content) {
-                    this.addMessage('chat-container', 'assistant', data.message.content);
-                    this.saveCurrentChat();
-                } else {
-                    this.addMessage('chat-container', 'error', 
-                        `❌ Invalid response structure\n\n` +
-                        `Expected message.content but got: ${JSON.stringify(data).substring(0, 100)}`);
+                // Add the annotation content
+                resultMessage += `${data.message.content}\n\n` +
+                    `═══════════════════════════════════════════\n\n` +
+                    `💡 Next:\n` +
+                    `  • Enter more NCT IDs to annotate\n` +
+                    `  • Type "exit" to select a different model\n` +
+                    `  • Click "Clear Chat" to reset`;
+                
+                this.addMessage('chat-container', 'assistant', resultMessage);
+                
+                // Store in session
+                if (!this.sessionChats[this.currentModel]) {
+                    this.sessionChats[this.currentModel] = {
+                        conversationId: this.currentConversationId,
+                        messages: [],
+                        annotationMode: true
+                    };
                 }
+                
+                this.sessionChats[this.currentModel].messages.push({
+                    role: 'user',
+                    content: `Annotate: ${nctIds.join(', ')}`
+                });
+                
+                this.sessionChats[this.currentModel].messages.push({
+                    role: 'assistant',
+                    content: data.message.content
+                });
+                
             } else {
-                let errorMessage;
+                const errorText = await response.text();
+                let errorData;
                 try {
-                    const errorText = await response.text();
-                    const errorData = JSON.parse(errorText);
-                    errorMessage = errorData.detail || JSON.stringify(errorData);
-                } catch (e) {
-                    errorMessage = `HTTP ${response.status}`;
+                    errorData = JSON.parse(errorText);
+                } catch {
+                    errorData = { detail: errorText };
                 }
-                this.addMessage('chat-container', 'error', `❌ Error: ${errorMessage}`);
+                
+                console.error('❌ Annotation failed:', errorData);
+                
+                this.addMessage('chat-container', 'error', 
+                    `❌ Annotation Failed\n\n` +
+                    `Error: ${errorData.detail}\n\n` +
+                    `Possible Issues:\n` +
+                    `• Invalid NCT ID(s)\n` +
+                    `• Runner Service (port 9003) not running\n` +
+                    `• NCT Lookup (port 9002) not available\n` +
+                    `• Chat Service (port 9001) error\n` +
+                    `• Model ${this.currentModel} not responding\n\n` +
+                    `Troubleshooting:\n` +
+                    `1. Verify NCT IDs are correct (NCT + 8 digits)\n` +
+                    `2. Check services: ./services.sh status\n` +
+                    `3. View logs: ./services.sh logs chat\n` +
+                    `4. Try: ./services.sh restart`);
             }
+            
         } catch (error) {
-            document.getElementById(loadingId)?.remove();
-            this.addMessage('chat-container', 'error', `❌ Error: ${error.message}`);
-            console.error('Full error:', error);
+            // Remove processing message if still there
+            const processingElement = document.getElementById(processingId);
+            if (processingElement) {
+                processingElement.remove();
+            }
+            
+            console.error('❌ Annotation error:', error);
+            
+            this.addMessage('chat-container', 'error', 
+                `❌ Connection Error\n\n` +
+                `${error.message}\n\n` +
+                `Cannot connect to Chat Service (port 9001).\n\n` +
+                `Required Services:\n` +
+                `• Chat Service (9001) - Main annotation service\n` +
+                `• Runner Service (9003) - File manager\n` +
+                `• NCT Service (9002) - Data fetching\n\n` +
+                `Start all services:\n` +
+                `  ./services.sh start\n\n` +
+                `Check status:\n` +
+                `  ./services.sh status`);
         }
     },
 
