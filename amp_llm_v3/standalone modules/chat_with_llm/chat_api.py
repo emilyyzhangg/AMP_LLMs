@@ -299,6 +299,8 @@ async def send_message(request: ChatMessageRequest):
     
     conv = conversations[request.conversation_id]
     annotation_mode = conv.get("annotation_mode", False)
+
+    logger.info(f"🔍 DEBUG /chat/message: annotation_mode={annotation_mode}, nct_ids={request.nct_ids}, message={request.message[:50] if request.message else None}")
     
     # Handle annotation mode
     if annotation_mode and request.nct_ids:
