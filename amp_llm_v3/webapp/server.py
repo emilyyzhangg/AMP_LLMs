@@ -298,12 +298,13 @@ class FileContentResponse(BaseModel):
 class InitChatRequest(BaseModel):
     model: str
     conversation_id: Optional[str] = None
-
+    annotation_mode: bool = False  
 
 class ChatMessageRequest(BaseModel):
     conversation_id: str
     message: str
     temperature: float = 0.7
+    nct_ids: Optional[List[str]] = None  
 
 
 class ExtractRequest(BaseModel):
