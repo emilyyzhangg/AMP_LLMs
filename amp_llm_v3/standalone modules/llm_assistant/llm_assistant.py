@@ -186,19 +186,41 @@ class TrialAnnotator:
         }
         
         # Extract using parser logic adapted for dict input
+        # Try multiple possible paths for the protocol section
+        protocol = None
+        
+        # Path 1: results.sources.clinical_trials.data.protocolSection (NCT Lookup format)
         protocol = self._safe_get(
             trial_data, 
-            'sources', 'clinical_trials', 'data', 'protocolSection',
+            'results', 'sources', 'clinical_trials', 'data', 'protocolSection',
             default={}
         )
         
         if not protocol:
-            # Try alternate path
+            # Path 2: sources.clinical_trials.data.protocolSection
+            protocol = self._safe_get(
+                trial_data, 
+                'sources', 'clinical_trials', 'data', 'protocolSection',
+                default={}
+            )
+        
+        if not protocol:
+            # Path 3: results.sources.clinicaltrials (alternate naming)
+            protocol = self._safe_get(
+                trial_data,
+                'results', 'sources', 'clinicaltrials', 'data', 'protocolSection',
+                default={}
+            )
+        
+        if not protocol:
+            # Path 4: sources.clinicaltrials (alternate naming)
             protocol = self._safe_get(
                 trial_data,
                 'sources', 'clinicaltrials', 'data', 'protocolSection',
                 default={}
             )
+        
+        logger.info(f"Protocol section found: {bool(protocol)}")
         
         # Classification info
         parsed_info["classification"] = self._extract_classification_info(trial_data, protocol)
@@ -234,8 +256,11 @@ class TrialAnnotator:
         arms_module = self._safe_get(protocol, 'armsInterventionsModule', default={})
         conditions_module = self._safe_get(protocol, 'conditionsModule', default={})
         
+        # Get NCT ID from multiple possible locations
+        nct_id = trial_data.get("nct_id") or self._safe_get(id_module, 'nctId', default="Unknown")
+        
         info = {
-            "nct_id": trial_data.get("nct_id"),
+            "nct_id": nct_id,
             "brief_title": id_module.get("briefTitle", "Not available"),
             "official_title": id_module.get("officialTitle", "Not available"),
             "brief_summary": desc_module.get("briefSummary", "Not available"),
@@ -292,6 +317,11 @@ class TrialAnnotator:
         outcomes_module = self._safe_get(protocol, 'outcomesModule', default={})
         conditions_module = self._safe_get(protocol, 'conditionsModule', default={})
         
+        # Try multiple paths for has_results
+        has_results = self._safe_get(trial_data, 'results', 'sources', 'clinical_trials', 'data', 'hasResults', default=False)
+        if not has_results:
+            has_results = self._safe_get(trial_data, 'sources', 'clinical_trials', 'data', 'hasResults', default=False)
+        
         info = {
             "nct_id": trial_data.get("nct_id"),
             "brief_title": id_module.get("briefTitle", "Not available"),
@@ -301,7 +331,7 @@ class TrialAnnotator:
             "start_date": self._safe_get(status_module, 'startDateStruct', 'date', default="Not available"),
             "completion_date": self._safe_get(status_module, 'completionDateStruct', 'date', default="Not available"),
             "primary_completion_date": self._safe_get(status_module, 'primaryCompletionDateStruct', 'date', default="Not available"),
-            "has_results": self._safe_get(trial_data, 'sources', 'clinical_trials', 'data', 'hasResults', default=False),
+            "has_results": has_results,
             "primary_outcomes": [],
             "secondary_outcomes": [],
             "conditions": conditions_module.get("conditions", [])
@@ -368,9 +398,12 @@ class TrialAnnotator:
                 'description': intervention.get('description', 'Not specified')
             })
         
-        # Add PubMed/PMC data if available
+        # Handle nested sources structure (results.sources or sources)
         sources = trial_data.get("sources", {})
+        if not sources and "results" in trial_data:
+            sources = trial_data.get("results", {}).get("sources", {})
         
+        # Add PubMed/PMC data if available
         pubmed_data = sources.get("pubmed", {})
         if pubmed_data.get("success"):
             info["pubmed_articles"] = pubmed_data.get("data", {}).get("pmids", [])
@@ -405,18 +438,44 @@ class TrialAnnotator:
             return self._generate_basic_prompt(trial_data, nct_id)
         
         # Format data for prompt generator
+        # Handle both direct sources and nested results.sources structures
+        sources = trial_data.get("sources", {})
+        if not sources and "results" in trial_data:
+            sources = trial_data.get("results", {}).get("sources", {})
+        
+        metadata = trial_data.get("metadata", {})
+        if not metadata and "summary" in trial_data:
+            # Extract metadata from summary if available
+            summary = trial_data.get("summary", {})
+            metadata = {
+                "title": summary.get("title", ""),
+                "status": summary.get("status", "")
+            }
+        
         search_results = {
             "nct_id": nct_id,
-            "sources": trial_data.get("sources", {}),
-            "metadata": trial_data.get("metadata", {})
+            "sources": sources,
+            "metadata": metadata
         }
+        
+        logger.info(f"Generating prompt with sources: {list(sources.keys())}")
         
         return self.prompt_generator.generate_extraction_prompt(search_results, nct_id)
     
     def _generate_basic_prompt(self, trial_data: Dict[str, Any], nct_id: str) -> str:
         """Generate a basic annotation prompt when PromptGenerator is unavailable."""
+        # Handle nested structure
         metadata = trial_data.get("metadata", {})
+        if not metadata and "summary" in trial_data:
+            summary = trial_data.get("summary", {})
+            metadata = {
+                "title": summary.get("title", "Unknown"),
+                "status": summary.get("status", "Unknown")
+            }
+        
         sources = trial_data.get("sources", {})
+        if not sources and "results" in trial_data:
+            sources = trial_data.get("results", {}).get("sources", {})
         
         title = metadata.get("title", "Unknown")
         status = metadata.get("status", "Unknown")
@@ -437,7 +496,7 @@ AVAILABLE DATA SOURCES:
         for source_name, source_data in sources.items():
             if source_name == "extended":
                 continue
-            if source_data and source_data.get("success"):
+            if source_data and isinstance(source_data, dict) and source_data.get("success"):
                 prompt += f"- {source_name}: Available\n"
         
         prompt += """

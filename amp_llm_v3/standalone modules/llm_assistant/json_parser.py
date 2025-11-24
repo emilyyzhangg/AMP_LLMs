@@ -91,15 +91,31 @@ class ClinicalTrialAnnotationParser:
     
     def _get_protocol_section(self, trial: Dict) -> Dict:
         """Get the protocol section from trial data, handling different data structures."""
-        # Try standard path
+        # Try standard path: results.sources.clinical_trials.data.protocolSection
         protocol = self.safe_get(
             trial, 
-            'sources', 'clinical_trials', 'data', 'protocolSection',
+            'results', 'sources', 'clinical_trials', 'data', 'protocolSection',
             default={}
         )
         
         if not protocol:
-            # Try alternate path (clinicaltrials vs clinical_trials)
+            # Try alternate path: sources.clinical_trials.data.protocolSection
+            protocol = self.safe_get(
+                trial,
+                'sources', 'clinical_trials', 'data', 'protocolSection',
+                default={}
+            )
+        
+        if not protocol:
+            # Try with alternate naming: results.sources.clinicaltrials
+            protocol = self.safe_get(
+                trial,
+                'results', 'sources', 'clinicaltrials', 'data', 'protocolSection',
+                default={}
+            )
+        
+        if not protocol:
+            # Try alternate naming without results wrapper
             protocol = self.safe_get(
                 trial,
                 'sources', 'clinicaltrials', 'data', 'protocolSection',
@@ -217,6 +233,11 @@ class ClinicalTrialAnnotationParser:
         outcomes_module = self.safe_get(protocol, 'outcomesModule', default={})
         conditions_module = self.safe_get(protocol, 'conditionsModule', default={})
         
+        # Try multiple paths for has_results
+        has_results = self.safe_get(trial, 'results', 'sources', 'clinical_trials', 'data', 'hasResults', default=False)
+        if not has_results:
+            has_results = self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'hasResults', default=False)
+        
         info = {
             'nct_id': trial.get('nct_id', self.safe_get(id_module, 'nctId')),
             'brief_title': id_module.get('briefTitle', 'Not available'),
@@ -226,7 +247,7 @@ class ClinicalTrialAnnotationParser:
             'start_date': self.safe_get(status_module, 'startDateStruct', 'date'),
             'completion_date': self.safe_get(status_module, 'completionDateStruct', 'date'),
             'primary_completion_date': self.safe_get(status_module, 'primaryCompletionDateStruct', 'date'),
-            'has_results': self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'hasResults', default=False),
+            'has_results': has_results,
             'primary_outcomes': [],
             'secondary_outcomes': [],
             'conditions': conditions_module.get('conditions', [])
@@ -319,8 +340,10 @@ class ClinicalTrialAnnotationParser:
                 'description': intervention.get('description', 'Not specified')
             })
         
-        # Add external data sources if available
+        # Handle nested sources structure (results.sources or sources)
         sources = trial.get('sources', {})
+        if not sources and 'results' in trial:
+            sources = trial.get('results', {}).get('sources', {})
         
         # PubMed data
         pubmed_data = sources.get('pubmed', {})

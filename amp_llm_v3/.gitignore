@@ -16,10 +16,11 @@ ENV/
 .env.local
 .env.*.local
 
-# Output and logs
+# Output and logsls
 output/
 *.log
 upload
+standalone modules/runners/
 
 # IDE
 .vscode/
