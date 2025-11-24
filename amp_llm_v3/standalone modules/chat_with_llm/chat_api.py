@@ -77,7 +77,7 @@ conversations: Dict[str, Dict] = {}
 
 class ChatInitRequest(BaseModel):
     model: str
-    annotation_mode: bool = True
+    annotation_mode: bool = False
 
 class ChatMessageRequest(BaseModel):
     conversation_id: str
@@ -93,7 +93,7 @@ class ChatResponse(BaseModel):
     conversation_id: str
     message: ChatMessage
     model: str
-    annotation_mode: bool = True
+    annotation_mode: bool = False
 
 # ============================================================================
 # Helper Functions
