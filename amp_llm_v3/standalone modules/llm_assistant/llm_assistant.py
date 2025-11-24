@@ -480,18 +480,42 @@ class TrialAnnotator:
         title = metadata.get("title", "Unknown")
         status = metadata.get("status", "Unknown")
         
-        prompt = f"""You are an expert clinical trial annotator specializing in antimicrobial peptide research.
+        # Get protocol section for more details
+        protocol = self._safe_get(
+            trial_data, 'results', 'sources', 'clinical_trials', 'data', 'protocolSection',
+            default={}
+        )
+        if not protocol:
+            protocol = self._safe_get(
+                trial_data, 'sources', 'clinical_trials', 'data', 'protocolSection',
+                default={}
+            )
+        
+        id_module = protocol.get('identificationModule', {})
+        desc_module = protocol.get('descriptionModule', {})
+        status_module = protocol.get('statusModule', {})
+        conditions_module = protocol.get('conditionsModule', {})
+        arms_module = protocol.get('armsInterventionsModule', {})
+        
+        brief_summary = desc_module.get('briefSummary', 'Not available')
+        conditions = ', '.join(conditions_module.get('conditions', [])) or 'Not available'
+        
+        interventions = []
+        for intv in arms_module.get('interventions', []):
+            interventions.append(f"{intv.get('type', '')}: {intv.get('name', '')}")
+        interventions_str = ', '.join(interventions) or 'Not available'
+        
+        prompt = f"""You are an expert clinical trial annotator. Extract structured data from this trial.
 
-Analyze the following clinical trial and provide a structured annotation.
-
-TRIAL INFORMATION:
-==================
+## TRIAL DATA:
 NCT ID: {nct_id}
 Title: {title}
 Status: {status}
+Conditions: {conditions}
+Interventions: {interventions_str}
+Brief Summary: {brief_summary[:500] if brief_summary else 'Not available'}
 
-AVAILABLE DATA SOURCES:
-=======================
+## AVAILABLE DATA SOURCES:
 """
         for source_name, source_data in sources.items():
             if source_name == "extended":
@@ -500,18 +524,55 @@ AVAILABLE DATA SOURCES:
                 prompt += f"- {source_name}: Available\n"
         
         prompt += """
+## REQUIRED OUTPUT FORMAT (use EXACTLY this structure):
 
-TASK:
-=====
-Please provide annotations for:
+NCT Number: {nct_id}
+Study Title: {title}
+Study Status: {status}
+Brief Summary: [1-2 sentences]
+Conditions: {conditions}
+Interventions/Drug: {interventions}
+Phases: [from data or N/A]
+Enrollment: [number or N/A]
+Start Date: [date or N/A]
+Completion Date: [date or N/A]
 
-1. Classification: AMP or Other
-2. Delivery Mode: Injection/Infusion, Topical, Oral, or Other
-3. Outcome: Positive, Withdrawn, Terminated, Failed, Active, or Unknown
-4. Reason for Failure: Business reasons, Ineffective, Toxic/unsafe, Covid, Recruitment issues, or N/A
-5. Peptide: True or False
+Classification: [AMP or Other]
+  Evidence: [brief reason]
 
-Provide evidence for each classification.
+Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
+  Evidence: [brief reason]
+
+Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
+  Evidence: [brief reason]
+
+Reason for Failure: [Business reasons, Ineffective for purpose, Toxic/unsafe, Due to covid, Recruitment issues, or N/A]
+  Evidence: [brief reason]
+
+Peptide: [True or False]
+  Evidence: [brief reason]
+
+Sequence: [amino acid sequence or N/A]
+DRAMP Name: [name or N/A]
+Study IDs: [PMIDs or N/A]
+Comments: [any notes]
+
+## VALID VALUES (use ONLY these):
+- Classification: AMP | Other
+- Delivery Mode: Injection/Infusion | Topical | Oral | Other  
+- Outcome: Positive | Withdrawn | Terminated | Failed - completed trial | Active | Unknown
+- Reason for Failure: Business reasons | Ineffective for purpose | Toxic/unsafe | Due to covid | Recruitment issues | N/A
+- Peptide: True | False
+
+## RULES:
+- AMP = antimicrobial peptide (has antimicrobial activity)
+- Status RECRUITING/ACTIVE → Outcome = Active
+- Status WITHDRAWN → Outcome = Withdrawn
+- Status TERMINATED → Outcome = Terminated  
+- Status COMPLETED → Outcome = Positive or Failed - completed trial
+- Peptide = True only if drug is a short peptide (<200 amino acids)
+
+Now extract the data using the exact format above:
 """
         return prompt
     

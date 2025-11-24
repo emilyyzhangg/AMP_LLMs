@@ -209,53 +209,124 @@ PARAMETER stop "</s>"
         """
         sections = []
         
-        # Add header
+        # Add header with strict output format instructions
         sections.append(f"# Clinical Trial Data Extraction: {nct_id}")
-        sections.append("\nExtract structured information from the following data sources:\n")
+        sections.append("""
+You MUST extract and output the following fields in EXACTLY this format.
+Use ONLY the valid values listed for each field. Do NOT add explanations within the field values.
+
+## REQUIRED OUTPUT FORMAT (copy this structure exactly):
+
+```
+NCT Number: [NCT ID]
+Study Title: [title from data]
+Study Status: [status from data]
+Brief Summary: [1-2 sentence summary]
+Conditions: [comma-separated list]
+Interventions/Drug: [comma-separated list]
+Phases: [phase from data]
+Enrollment: [number]
+Start Date: [date]
+Completion Date: [date]
+
+Classification: [AMP or Other]
+  Evidence: [brief reason]
+
+Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
+  Evidence: [brief reason]
+
+Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
+  Evidence: [brief reason]
+
+Reason for Failure: [Business reasons, Ineffective for purpose, Toxic/unsafe, Due to covid, Recruitment issues, or N/A]
+  Evidence: [brief reason]
+
+Peptide: [True or False]
+  Evidence: [brief reason]
+
+Sequence: [amino acid sequence or N/A]
+DRAMP Name: [name or N/A]
+Study IDs: [PMIDs or N/A]
+Comments: [any additional notes]
+```
+
+## VALID VALUES (use ONLY these exact values):
+
+**Classification:** AMP | Other
+**Delivery Mode:** Injection/Infusion | Topical | Oral | Other
+**Outcome:** Positive | Withdrawn | Terminated | Failed - completed trial | Active | Unknown
+**Reason for Failure:** Business reasons | Ineffective for purpose | Toxic/unsafe | Due to covid | Recruitment issues | N/A
+**Peptide:** True | False
+
+## CLASSIFICATION RULES:
+
+- **Classification = AMP**: The trial involves an antimicrobial peptide (peptide with antimicrobial activity through direct killing, growth inhibition, or immune-modulation)
+- **Classification = Other**: Not an antimicrobial peptide trial
+
+- **Delivery Mode**: Infer from intervention descriptions
+  - IV, intravenous, subcutaneous, intramuscular, infusion → Injection/Infusion
+  - cream, topical, dermal, skin, varnish, rinse, spray → Topical
+  - oral, tablet, capsule, by mouth → Oral
+  - Otherwise → Other
+
+- **Outcome**: Map from study status
+  - RECRUITING, NOT_YET_RECRUITING, ACTIVE_NOT_RECRUITING → Active
+  - WITHDRAWN → Withdrawn
+  - TERMINATED → Terminated
+  - COMPLETED with positive results → Positive
+  - COMPLETED with negative/no results → Failed - completed trial
+  - Otherwise → Unknown
+
+- **Peptide = True**: Trial tests a peptide drug (short amino acid chain, typically <200 amino acids)
+- **Peptide = False**: Non-peptide drug, antibody, large protein, or small molecule
+
+---
+## DATA TO ANALYZE:
+""")
         
         # Section 1: ClinicalTrials.gov Data
         ct_data = self._format_clinical_trials_data(search_results)
         if ct_data:
-            sections.append("## 1. ClinicalTrials.gov Data")
+            sections.append("\n### ClinicalTrials.gov Data")
             sections.append(ct_data)
         
         # Section 2: PubMed Articles
         pubmed_data = self._format_pubmed_data(search_results)
         if pubmed_data:
-            sections.append("\n## 2. PubMed Literature")
+            sections.append("\n### PubMed Literature")
             sections.append(pubmed_data)
         
         # Section 3: PMC Full-Text Articles
         pmc_data = self._format_pmc_data(search_results)
         if pmc_data:
-            sections.append("\n## 3. PubMed Central Articles")
+            sections.append("\n### PubMed Central Articles")
             sections.append(pmc_data)
         
         # Section 4: PMC BioC Data
         bioc_data = self._format_bioc_data(search_results)
         if bioc_data:
-            sections.append("\n## 4. BioC Annotated Data")
+            sections.append("\n### BioC Annotated Data")
             sections.append(bioc_data)
         
         # Section 5: Extended API Data (if available)
         extended_data = self._format_extended_data(search_results)
         if extended_data:
-            sections.append("\n## 5. Extended Web & Database Search")
+            sections.append("\n### Extended Web & Database Search")
             sections.append(extended_data)
         
-        # Add extraction instructions
-        sections.append("\n## EXTRACTION TASK")
+        # Add final instruction
         sections.append("""
-Using ALL the data above, extract the clinical trial information following the exact format specified in your system prompt.
+---
+## EXTRACTION TASK
 
-CRITICAL REMINDERS:
-- Use ACTUAL data from above, NOT placeholders
-- For missing information, write exactly: N/A
-- Use exact validation list values
-- Provide evidence for classifications
-- Do NOT wrap response in code blocks
+Now extract the clinical trial data using the EXACT format shown above.
+- Use ONLY the valid values listed
+- Include evidence for each classification
+- Write N/A for missing information
+- Do NOT wrap output in code blocks
+- Do NOT add extra explanations outside the format
 
-Begin extraction now:
+Begin extraction:
 """)
         
         return "\n".join(sections)
