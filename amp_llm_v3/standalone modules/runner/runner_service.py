@@ -155,7 +155,7 @@ async def fetch_and_save_nct_data(nct_id: str) -> tuple[Optional[dict], Optional
                 return None, error_msg
             
             # Step 2: Initiate search
-            search_url = f"{NCT_SERVICE_URL}/api/nct/search/{nct_id}"
+            search_url = f"{NCT_SERVICE_URL}/api/search/{nct_id}"
             logger.info(f"📤 POST {search_url}")
             
             try:
@@ -204,7 +204,7 @@ async def fetch_and_save_nct_data(nct_id: str) -> tuple[Optional[dict], Optional
             for attempt in range(max_attempts):
                 await asyncio.sleep(poll_interval)
                 
-                status_url = f"{NCT_SERVICE_URL}/api/nct/search/{job_id}/status"
+                status_url = f"{NCT_SERVICE_URL}/api/search/{job_id}/status"
                 logger.info(f"📤 GET {status_url} (attempt {attempt + 1}/{max_attempts})")
                 
                 try:
@@ -221,7 +221,7 @@ async def fetch_and_save_nct_data(nct_id: str) -> tuple[Optional[dict], Optional
                     
                     if status == "completed":
                         # Step 4: Get results
-                        results_url = f"{NCT_SERVICE_URL}/api/nct/results/{job_id}"
+                        results_url = f"{NCT_SERVICE_URL}/api/results/{job_id}"
                         logger.info(f"📤 GET {results_url}")
                         
                         results_response = await client.get(results_url, timeout=30.0)
