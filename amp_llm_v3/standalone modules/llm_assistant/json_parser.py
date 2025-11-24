@@ -1,5 +1,7 @@
 """
 Clinical Trial Annotation Parser
+================================
+
 Extracts relevant information from ClinicalTrials.gov JSON data for LLM annotation.
 
 Annotation fields:
@@ -8,30 +10,74 @@ Annotation fields:
 - Outcome: Positive, Withdrawn, Terminated, Failed - completed trial, Active, Unknown
 - Reason for Failure: Business reasons, Ineffective for purpose, Toxic/unsafe, Due to covid, Recruitment issues
 - Peptide: True or False
+
+Usage:
+    # From file
+    parser = ClinicalTrialAnnotationParser.from_file("path/to/trial.json")
+    
+    # From dictionary
+    parser = ClinicalTrialAnnotationParser.from_dict(trial_data)
+    
+    # Get combined annotation text
+    text = parser.get_combined_annotation_text()
 """
 
 import json
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Union
+from pathlib import Path
 
 
 class ClinicalTrialAnnotationParser:
     """Parser for extracting annotation-relevant data from clinical trial JSON."""
     
-    def __init__(self, json_file_path: str):
+    def __init__(self, trials: List[Dict[str, Any]]):
         """
-        Initialize parser with JSON file path.
+        Initialize parser with trial data.
+        
+        Args:
+            trials: List of trial dictionaries
+        """
+        self.trials = trials
+    
+    @classmethod
+    def from_file(cls, json_file_path: Union[str, Path]) -> 'ClinicalTrialAnnotationParser':
+        """
+        Create parser from JSON file path.
         
         Args:
             json_file_path: Path to the clinical trial JSON file
+            
+        Returns:
+            ClinicalTrialAnnotationParser instance
         """
         with open(json_file_path, 'r', encoding='utf-8') as f:
-            self.data = json.load(f)
+            data = json.load(f)
         
         # Handle both single trial and list of trials
-        if isinstance(self.data, list):
-            self.trials = self.data
+        if isinstance(data, list):
+            trials = data
         else:
-            self.trials = [self.data]
+            trials = [data]
+        
+        return cls(trials)
+    
+    @classmethod
+    def from_dict(cls, data: Union[Dict[str, Any], List[Dict[str, Any]]]) -> 'ClinicalTrialAnnotationParser':
+        """
+        Create parser from dictionary or list of dictionaries.
+        
+        Args:
+            data: Trial data dictionary or list of trial dictionaries
+            
+        Returns:
+            ClinicalTrialAnnotationParser instance
+        """
+        if isinstance(data, list):
+            trials = data
+        else:
+            trials = [data]
+        
+        return cls(trials)
     
     def safe_get(self, dictionary: Dict, *keys, default="Not available") -> Any:
         """Safely navigate nested dictionary keys."""
@@ -42,6 +88,29 @@ class ClinicalTrialAnnotationParser:
             else:
                 return default
         return current if current is not None else default
+    
+    def _get_protocol_section(self, trial: Dict) -> Dict:
+        """Get the protocol section from trial data, handling different data structures."""
+        # Try standard path
+        protocol = self.safe_get(
+            trial, 
+            'sources', 'clinical_trials', 'data', 'protocolSection',
+            default={}
+        )
+        
+        if not protocol:
+            # Try alternate path (clinicaltrials vs clinical_trials)
+            protocol = self.safe_get(
+                trial,
+                'sources', 'clinicaltrials', 'data', 'protocolSection',
+                default={}
+            )
+        
+        if not protocol:
+            # Try direct path (if trial is the protocol section itself)
+            protocol = self.safe_get(trial, 'protocolSection', default={})
+        
+        return protocol if isinstance(protocol, dict) else {}
     
     def extract_classification_info(self, trial: Dict) -> Dict[str, Any]:
         """
@@ -54,16 +123,29 @@ class ClinicalTrialAnnotationParser:
         - Brief and detailed descriptions
         - Intervention descriptions
         """
-        protocol = self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'protocolSection', default={})
+        protocol = self._get_protocol_section(trial)
+        
+        id_module = self.safe_get(protocol, 'identificationModule', default={})
+        desc_module = self.safe_get(protocol, 'descriptionModule', default={})
+        conditions_module = self.safe_get(protocol, 'conditionsModule', default={})
+        design_module = self.safe_get(protocol, 'designModule', default={})
+        arms_interventions = self.safe_get(protocol, 'armsInterventionsModule', default={})
         
         info = {
-
+            'nct_id': trial.get('nct_id', self.safe_get(id_module, 'nctId')),
+            'brief_title': id_module.get('briefTitle', 'Not available'),
+            'official_title': id_module.get('officialTitle', 'Not available'),
+            'brief_summary': desc_module.get('briefSummary', 'Not available'),
+            'detailed_description': desc_module.get('detailedDescription', 'Not available'),
+            'conditions': conditions_module.get('conditions', []),
+            'keywords': conditions_module.get('keywords', []),
+            'study_type': design_module.get('studyType', 'Not available'),
+            'phases': design_module.get('phases', []),
+            'interventions': []
         }
         
         # Extract intervention information
-        arms_interventions = self.safe_get(protocol, 'armsInterventionsModule', default={})
         interventions = arms_interventions.get('interventions', [])
-        info['interventions'] = []
         for intervention in interventions:
             info['interventions'].append({
                 'type': intervention.get('type', 'Not specified'),
@@ -82,17 +164,23 @@ class ClinicalTrialAnnotationParser:
         - Administration routes mentioned in descriptions
         - Arm group descriptions
         """
-        protocol = self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'protocolSection', default={})
+        protocol = self._get_protocol_section(trial)
+        
+        id_module = self.safe_get(protocol, 'identificationModule', default={})
+        desc_module = self.safe_get(protocol, 'descriptionModule', default={})
+        arms_interventions = self.safe_get(protocol, 'armsInterventionsModule', default={})
         
         info = {
-            'nct_id': self.safe_get(trial, 'nct_id'),
-            'brief_title': self.safe_get(protocol, 'identificationModule', 'briefTitle'),
+            'nct_id': trial.get('nct_id', self.safe_get(id_module, 'nctId')),
+            'brief_title': id_module.get('briefTitle', 'Not available'),
+            'brief_summary': desc_module.get('briefSummary', 'Not available'),
+            'detailed_description': desc_module.get('detailedDescription', 'Not available'),
+            'interventions': [],
+            'arm_groups': []
         }
         
         # Extract detailed intervention information
-        arms_interventions = self.safe_get(protocol, 'armsInterventionsModule', default={})
         interventions = arms_interventions.get('interventions', [])
-        info['interventions'] = []
         for intervention in interventions:
             info['interventions'].append({
                 'type': intervention.get('type', 'Not specified'),
@@ -102,17 +190,12 @@ class ClinicalTrialAnnotationParser:
         
         # Extract arm group information for administration details
         arm_groups = arms_interventions.get('armGroups', [])
-        info['arm_groups'] = []
         for arm in arm_groups:
             info['arm_groups'].append({
                 'label': arm.get('label', 'Not specified'),
                 'type': arm.get('type', 'Not specified'),
                 'description': arm.get('description', 'Not specified')
             })
-        
-        # Include brief summary and detailed description as they often mention route
-        info['brief_summary'] = self.safe_get(protocol, 'descriptionModule', 'briefSummary')
-        info['detailed_description'] = self.safe_get(protocol, 'descriptionModule', 'detailedDescription')
         
         return info
     
@@ -127,26 +210,29 @@ class ClinicalTrialAnnotationParser:
         - Study results availability
         - Primary and secondary outcomes
         """
-        protocol = self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'protocolSection', default={})
-        derived = self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'derivedSection', default={})
+        protocol = self._get_protocol_section(trial)
         
+        id_module = self.safe_get(protocol, 'identificationModule', default={})
         status_module = self.safe_get(protocol, 'statusModule', default={})
+        outcomes_module = self.safe_get(protocol, 'outcomesModule', default={})
+        conditions_module = self.safe_get(protocol, 'conditionsModule', default={})
         
         info = {
-            'nct_id': self.safe_get(trial, 'nct_id'),
-            'brief_title': self.safe_get(protocol, 'identificationModule', 'briefTitle'),
+            'nct_id': trial.get('nct_id', self.safe_get(id_module, 'nctId')),
+            'brief_title': id_module.get('briefTitle', 'Not available'),
             'overall_status': status_module.get('overallStatus', 'Not available'),
             'status_verified_date': status_module.get('statusVerifiedDate', 'Not available'),
             'why_stopped': status_module.get('whyStopped', 'Not available'),
             'start_date': self.safe_get(status_module, 'startDateStruct', 'date'),
             'completion_date': self.safe_get(status_module, 'completionDateStruct', 'date'),
             'primary_completion_date': self.safe_get(status_module, 'primaryCompletionDateStruct', 'date'),
-            'has_results': self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'hasResults'),
+            'has_results': self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'hasResults', default=False),
+            'primary_outcomes': [],
+            'secondary_outcomes': [],
+            'conditions': conditions_module.get('conditions', [])
         }
         
         # Extract outcome measures
-        outcomes_module = self.safe_get(protocol, 'outcomesModule', default={})
-        info['primary_outcomes'] = []
         for outcome in outcomes_module.get('primaryOutcomes', []):
             info['primary_outcomes'].append({
                 'measure': outcome.get('measure', 'Not specified'),
@@ -154,16 +240,12 @@ class ClinicalTrialAnnotationParser:
                 'timeFrame': outcome.get('timeFrame', 'Not specified')
             })
         
-        info['secondary_outcomes'] = []
         for outcome in outcomes_module.get('secondaryOutcomes', []):
             info['secondary_outcomes'].append({
                 'measure': outcome.get('measure', 'Not specified'),
                 'description': outcome.get('description', 'Not specified'),
                 'timeFrame': outcome.get('timeFrame', 'Not specified')
             })
-        
-        # Include condition information
-        info['conditions'] = self.safe_get(protocol, 'conditionsModule', 'conditions', default=[])
         
         return info
     
@@ -178,31 +260,25 @@ class ClinicalTrialAnnotationParser:
         - Adverse events (if available)
         - Completion information
         """
-        protocol = self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'protocolSection', default={})
+        protocol = self._get_protocol_section(trial)
+        
+        id_module = self.safe_get(protocol, 'identificationModule', default={})
         status_module = self.safe_get(protocol, 'statusModule', default={})
+        design_module = self.safe_get(protocol, 'designModule', default={})
+        
+        enrollment_info = design_module.get('enrollmentInfo', {})
         
         info = {
-            'nct_id': self.safe_get(trial, 'nct_id'),
-            'brief_title': self.safe_get(protocol, 'identificationModule', 'briefTitle'),
+            'nct_id': trial.get('nct_id', self.safe_get(id_module, 'nctId')),
+            'brief_title': id_module.get('briefTitle', 'Not available'),
             'overall_status': status_module.get('overallStatus', 'Not available'),
             'why_stopped': status_module.get('whyStopped', 'Not available'),
             'start_date': self.safe_get(status_module, 'startDateStruct', 'date'),
             'completion_date': self.safe_get(status_module, 'completionDateStruct', 'date'),
             'primary_completion_date': self.safe_get(status_module, 'primaryCompletionDateStruct', 'date'),
+            'enrollment_count': enrollment_info.get('count', 'Not available'),
+            'enrollment_type': enrollment_info.get('type', 'Not available')
         }
-        
-        # Enrollment information can indicate recruitment issues
-        design_module = self.safe_get(protocol, 'designModule', default={})
-        enrollment_info = design_module.get('enrollmentInfo', {})
-        info['enrollment_count'] = enrollment_info.get('count', 'Not available')
-        info['enrollment_type'] = enrollment_info.get('type', 'Not available')
-        
-        # Extract adverse events if available
-        # Note: Adverse events are typically in results section
-        results_section = self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'resultsSection', default={})
-        adverse_events = results_section.get('adverseEventsModule', {})
-        info['serious_events'] = adverse_events.get('seriousEvents', 'Not available')
-        info['other_events'] = adverse_events.get('otherEvents', 'Not available')
         
         return info
     
@@ -212,34 +288,62 @@ class ClinicalTrialAnnotationParser:
         
         Relevant factors:
         - Intervention names and descriptions
-        - Keywords
-        - Conditions
-        - Brief and detailed descriptions
-        - Chemical/biological terminology
+        - Drug/treatment details
+        - Keywords mentioning peptide
+        - PubMed/PMC references
+        - DRAMP database matches
         """
-        protocol = self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'protocolSection', default={})
+        protocol = self._get_protocol_section(trial)
+        
+        id_module = self.safe_get(protocol, 'identificationModule', default={})
+        desc_module = self.safe_get(protocol, 'descriptionModule', default={})
+        conditions_module = self.safe_get(protocol, 'conditionsModule', default={})
+        arms_interventions = self.safe_get(protocol, 'armsInterventionsModule', default={})
         
         info = {
-            'nct_id': self.safe_get(trial, 'nct_id'),
-            'brief_title': self.safe_get(protocol, 'identificationModule', 'briefTitle'),
-            'official_title': self.safe_get(protocol, 'identificationModule', 'officialTitle'),
-            'keywords': self.safe_get(protocol, 'conditionsModule', 'keywords', default=[]),
-            'conditions': self.safe_get(protocol, 'conditionsModule', 'conditions', default=[]),
-            'brief_summary': self.safe_get(protocol, 'descriptionModule', 'briefSummary'),
-            'detailed_description': self.safe_get(protocol, 'descriptionModule', 'detailedDescription'),
+            'nct_id': trial.get('nct_id', self.safe_get(id_module, 'nctId')),
+            'brief_title': id_module.get('briefTitle', 'Not available'),
+            'official_title': id_module.get('officialTitle', 'Not available'),
+            'brief_summary': desc_module.get('briefSummary', 'Not available'),
+            'conditions': conditions_module.get('conditions', []),
+            'keywords': conditions_module.get('keywords', []),
+            'interventions': []
         }
         
-        # Extract intervention information with detailed descriptions
-        arms_interventions = self.safe_get(protocol, 'armsInterventionsModule', default={})
+        # Extract intervention information
         interventions = arms_interventions.get('interventions', [])
-        info['interventions'] = []
         for intervention in interventions:
             info['interventions'].append({
                 'type': intervention.get('type', 'Not specified'),
                 'name': intervention.get('name', 'Not specified'),
-                'description': intervention.get('description', 'Not specified'),
-                'other_names': intervention.get('otherNames', [])
+                'description': intervention.get('description', 'Not specified')
             })
+        
+        # Add external data sources if available
+        sources = trial.get('sources', {})
+        
+        # PubMed data
+        pubmed_data = sources.get('pubmed', {})
+        if pubmed_data.get('success'):
+            pmids = pubmed_data.get('data', {}).get('pmids', [])
+            if pmids:
+                info['pubmed_pmids'] = pmids
+        
+        # PMC data
+        pmc_data = sources.get('pmc', {})
+        if pmc_data.get('success'):
+            pmcids = pmc_data.get('data', {}).get('pmcids', [])
+            if pmcids:
+                info['pmc_ids'] = pmcids
+        
+        # PMC BioC data
+        pmc_bioc = sources.get('pmc_bioc', {})
+        if pmc_bioc.get('success'):
+            bioc_data = pmc_bioc.get('data', {})
+            info['bioc_data'] = {
+                'total_fetched': bioc_data.get('total_fetched', 0),
+                'articles': len(bioc_data.get('articles', []))
+            }
         
         return info
     
@@ -263,11 +367,11 @@ class ClinicalTrialAnnotationParser:
         ]
         
         # Add title if available
-        if 'brief_title' in info_dict:
+        if 'brief_title' in info_dict and info_dict['brief_title'] != 'Not available':
             lines.append(f"Brief Title: {info_dict['brief_title']}")
             lines.append("")
         
-        if 'official_title' in info_dict:
+        if 'official_title' in info_dict and info_dict['official_title'] != 'Not available':
             lines.append(f"Official Title: {info_dict['official_title']}")
             lines.append("")
         
@@ -342,30 +446,6 @@ class ClinicalTrialAnnotationParser:
         
         return annotation_texts
     
-    def save_annotation_texts(self, output_dir: str = '.', trial_index: int = 0):
-        """
-        Save all annotation texts to separate files.
-        
-        Args:
-            output_dir: Directory to save the files
-            trial_index: Index of the trial to process
-        """
-        import os
-        
-        os.makedirs(output_dir, exist_ok=True)
-        
-        annotation_texts = self.generate_annotation_text(trial_index)
-        nct_id = self.trials[trial_index].get('nct_id', f'trial_{trial_index}')
-        
-        for field_name, text in annotation_texts.items():
-            filename = f"{nct_id}_{field_name}.txt"
-            filepath = os.path.join(output_dir, filename)
-            
-            with open(filepath, 'w', encoding='utf-8') as f:
-                f.write(text)
-            
-            print(f"Saved: {filepath}")
-    
     def get_combined_annotation_text(self, trial_index: int = 0) -> str:
         """
         Get all annotation fields combined into a single text for LLM processing.
@@ -401,6 +481,53 @@ class ClinicalTrialAnnotationParser:
             combined.append("")
         
         return "\n".join(combined)
+    
+    def get_extracted_info(self, trial_index: int = 0) -> Dict[str, Dict[str, Any]]:
+        """
+        Get all extracted information as dictionaries (not formatted text).
+        
+        Args:
+            trial_index: Index of the trial to process
+            
+        Returns:
+            Dictionary with field names as keys and extracted info dicts as values
+        """
+        if trial_index >= len(self.trials):
+            raise IndexError(f"Trial index {trial_index} out of range.")
+        
+        trial = self.trials[trial_index]
+        
+        return {
+            'classification': self.extract_classification_info(trial),
+            'delivery_mode': self.extract_delivery_mode_info(trial),
+            'outcome': self.extract_outcome_info(trial),
+            'failure_reason': self.extract_failure_reason_info(trial),
+            'peptide': self.extract_peptide_info(trial)
+        }
+    
+    def save_annotation_texts(self, output_dir: str = '.', trial_index: int = 0):
+        """
+        Save all annotation texts to separate files.
+        
+        Args:
+            output_dir: Directory to save the files
+            trial_index: Index of the trial to process
+        """
+        import os
+        
+        os.makedirs(output_dir, exist_ok=True)
+        
+        annotation_texts = self.generate_annotation_text(trial_index)
+        nct_id = self.trials[trial_index].get('nct_id', f'trial_{trial_index}')
+        
+        for field_name, text in annotation_texts.items():
+            filename = f"{nct_id}_{field_name}.txt"
+            filepath = os.path.join(output_dir, filename)
+            
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(text)
+            
+            print(f"Saved: {filepath}")
 
 
 def main():
@@ -408,15 +535,18 @@ def main():
     import sys
     
     if len(sys.argv) < 2:
-        print("Usage: python ct_annotation_parser.py <json_file_path> [output_dir] [trial_index]")
+        print("Usage: python json_parser.py <json_file_path> [output_dir] [trial_index]")
+        print("\nExamples:")
+        print("  python json_parser.py NCT12345678.json")
+        print("  python json_parser.py NCT12345678.json ./output 0")
         sys.exit(1)
     
     json_file = sys.argv[1]
     output_dir = sys.argv[2] if len(sys.argv) > 2 else './annotation_outputs'
     trial_index = int(sys.argv[3]) if len(sys.argv) > 3 else 0
     
-    # Create parser
-    parser = ClinicalTrialAnnotationParser(json_file)
+    # Create parser from file
+    parser = ClinicalTrialAnnotationParser.from_file(json_file)
     
     print(f"Loaded {len(parser.trials)} trial(s) from {json_file}")
     print(f"Processing trial index {trial_index}")

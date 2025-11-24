@@ -1,17 +1,20 @@
 """
-Runner Service (Port 9003) - FIXED VERSION
-===========================================
+Runner Service (Port 9003) - Enhanced with Annotation Support
+==============================================================
 
-Simple file manager and data fetcher for NCT trial data.
-- Finds existing JSON files for NCT IDs
-- Fetches new data from NCT service (9002) if not found
-- Returns JSON data to chat service (9001)
+File manager and data fetcher for NCT trial data with integrated annotation.
 
-FIXES:
-- Better error logging
-- More detailed status messages
-- Validates JSON structure before saving
-- Better timeout handling
+Endpoints:
+- GET /get-data - Get NCT data (from file or fetch)
+- POST /batch-get-data - Get multiple NCT trials
+- POST /annotate - Annotate a single trial (calls LLM Assistant API)
+- POST /batch-annotate - Annotate multiple trials
+- GET /files - List available JSON files
+- GET /health - Health check with service dependencies
+
+Service Dependencies:
+- NCT Service (9002) - Fetches trial data from ClinicalTrials.gov
+- LLM Assistant API (9004) - Handles annotation with JSON parsing
 """
 import logging
 import httpx
@@ -20,14 +23,16 @@ from pathlib import Path
 from typing import Optional, List, Dict, Any
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+import time
 
-# Setup logging with more detail
+# Setup logging with detail
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
 
 # ============================================================================
 # Initialize FastAPI app
@@ -35,8 +40,8 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Runner Service",
-    description="File manager and NCT data fetcher",
-    version="1.1.0",
+    description="File manager, NCT data fetcher, and annotation orchestrator",
+    version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
 )
@@ -50,16 +55,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # ============================================================================
 # Configuration
 # ============================================================================
 
 NCT_SERVICE_URL = "http://localhost:9002"
+LLM_ASSISTANT_URL = "http://localhost:9004"
 RESULTS_DIR = Path(__file__).parent / "results"
 RESULTS_DIR.mkdir(exist_ok=True)
 
 logger.info(f"📁 Results directory: {RESULTS_DIR}")
 logger.info(f"🔗 NCT Service URL: {NCT_SERVICE_URL}")
+logger.info(f"🤖 LLM Assistant URL: {LLM_ASSISTANT_URL}")
+
 
 # ============================================================================
 # Models
@@ -68,8 +77,10 @@ logger.info(f"🔗 NCT Service URL: {NCT_SERVICE_URL}")
 class DataRequest(BaseModel):
     nct_id: str
 
+
 class BatchDataRequest(BaseModel):
     nct_ids: List[str]
+
 
 class DataResponse(BaseModel):
     nct_id: str
@@ -79,14 +90,53 @@ class DataResponse(BaseModel):
     file_path: Optional[str] = None
     error: Optional[str] = None
 
+
 class BatchDataResponse(BaseModel):
     results: List[DataResponse]
     total: int
     successful: int
     failed: int
 
+
+class AnnotationRequest(BaseModel):
+    """Request for annotating a single trial"""
+    nct_id: str
+    model: str = "llama3.2"
+    temperature: float = Field(default=0.15, ge=0.0, le=2.0)
+    fetch_if_missing: bool = True  # Automatically fetch if not in cache
+
+
+class BatchAnnotationRequest(BaseModel):
+    """Request for annotating multiple trials"""
+    nct_ids: List[str]
+    model: str = "llama3.2"
+    temperature: float = Field(default=0.15, ge=0.0, le=2.0)
+    fetch_if_missing: bool = True
+
+
+class AnnotationResult(BaseModel):
+    """Result of a single annotation"""
+    nct_id: str
+    annotation: str
+    model: str
+    status: str
+    source: str  # "file" or "fetched"
+    processing_time_seconds: float
+    sources_summary: Dict[str, Any] = {}
+    error: Optional[str] = None
+
+
+class BatchAnnotationResponse(BaseModel):
+    """Response for batch annotation"""
+    results: List[AnnotationResult]
+    total: int
+    successful: int
+    failed: int
+    total_time_seconds: float
+
+
 # ============================================================================
-# Helper Functions
+# Helper Functions - Data Fetching
 # ============================================================================
 
 def find_nct_file(nct_id: str) -> tuple[Optional[Path], Optional[dict]]:
@@ -131,6 +181,7 @@ def find_nct_file(nct_id: str) -> tuple[Optional[Path], Optional[dict]]:
     logger.info(f"📂 No file found for {nct_id}")
     return None, None
 
+
 async def fetch_and_save_nct_data(nct_id: str) -> tuple[Optional[dict], Optional[str]]:
     """
     Fetch NCT data from service (9002) and save to JSON file.
@@ -168,124 +219,78 @@ async def fetch_and_save_nct_data(nct_id: str) -> tuple[Optional[dict], Optional
                 logger.info(f"📥 Response status: {response.status_code}")
                 
                 if response.status_code != 200:
-                    error_text = await response.text()
+                    error_text = response.text
                     logger.error(f"❌ Search initiation failed: {response.status_code}")
-                    logger.error(f"❌ Response: {error_text[:500]}")
                     return None, f"NCT service returned {response.status_code}: {error_text[:200]}"
                 
                 data = response.json()
-                logger.info(f"📊 Search response: {json.dumps(data, indent=2)[:500]}")
-                
                 job_id = data.get("job_id")
                 
                 if not job_id:
                     logger.error("❌ No job_id in response")
-                    logger.error(f"❌ Full response: {json.dumps(data, indent=2)}")
                     return None, "No job_id returned from NCT search"
                 
                 logger.info(f"✅ Search initiated with job_id: {job_id}")
                 
             except httpx.TimeoutException:
-                error_msg = "Timeout initiating search (30s)"
-                logger.error(f"❌ {error_msg}")
-                return None, error_msg
+                return None, "Timeout initiating search (30s)"
             except Exception as e:
-                error_msg = f"Error initiating search: {e}"
-                logger.error(f"❌ {error_msg}")
-                return None, error_msg
+                return None, f"Error initiating search: {e}"
             
             # Step 3: Poll for results
             import asyncio
             max_attempts = 30
             poll_interval = 2
             
-            logger.info(f"⏳ Polling for results (max {max_attempts} attempts, {poll_interval}s interval)")
+            logger.info(f"⏳ Polling for results (max {max_attempts} attempts)")
             
             for attempt in range(max_attempts):
                 await asyncio.sleep(poll_interval)
                 
                 status_url = f"{NCT_SERVICE_URL}/api/search/{job_id}/status"
-                logger.info(f"📤 GET {status_url} (attempt {attempt + 1}/{max_attempts})")
                 
                 try:
                     status_response = await client.get(status_url, timeout=10.0)
                     
                     if status_response.status_code != 200:
-                        logger.warning(f"⚠️ Status check failed: {status_response.status_code}")
                         continue
                     
                     status_data = status_response.json()
                     status = status_data.get("status")
                     
-                    logger.info(f"📊 Status: {status}")
+                    logger.info(f"📊 Status: {status} (attempt {attempt + 1})")
                     
                     if status == "completed":
-                        # Step 4: Get results
+                        # Get results
                         results_url = f"{NCT_SERVICE_URL}/api/results/{job_id}"
-                        logger.info(f"📤 GET {results_url}")
-                        
                         results_response = await client.get(results_url, timeout=30.0)
                         
                         if results_response.status_code == 200:
                             trial_data = results_response.json()
                             
-                            # Validate data structure
-                            if not isinstance(trial_data, dict):
-                                error_msg = f"Invalid data type: expected dict, got {type(trial_data)}"
-                                logger.error(f"❌ {error_msg}")
-                                return None, error_msg
-                            
-                            # Check if it has the NCT ID
-                            if "nct_id" not in trial_data and "sources" not in trial_data:
-                                logger.warning("⚠️ Data structure may be incomplete")
-                                logger.info(f"📊 Data keys: {list(trial_data.keys())}")
-                            
                             # Save to file
                             output_file = RESULTS_DIR / f"{nct_id}.json"
-                            logger.info(f"💾 Saving to {output_file}")
-                            
                             with open(output_file, 'w') as f:
                                 json.dump(trial_data, f, indent=2)
                             
-                            file_size = output_file.stat().st_size
-                            logger.info(f"✅ Saved {file_size} bytes to {output_file.name}")
-                            
+                            logger.info(f"✅ Saved to {output_file.name}")
                             return trial_data, None
                         else:
-                            error_text = await results_response.text()
-                            error_msg = f"Failed to get results: {results_response.status_code}"
-                            logger.error(f"❌ {error_msg}")
-                            logger.error(f"❌ Response: {error_text[:500]}")
-                            return None, error_msg
+                            return None, f"Failed to get results: {results_response.status_code}"
                     
                     elif status == "failed":
                         error = status_data.get("error", "Unknown error")
-                        logger.error(f"❌ Search failed: {error}")
                         return None, f"NCT search failed: {error}"
                     
-                    elif status == "pending" or status == "running":
-                        logger.info(f"⏳ Still {status}...")
-                        continue
-                    else:
-                        logger.warning(f"⚠️ Unknown status: {status}")
-                        continue
-                        
-                except httpx.TimeoutException:
-                    logger.warning(f"⚠️ Timeout checking status (attempt {attempt + 1})")
-                    continue
                 except Exception as e:
-                    logger.error(f"❌ Error polling status: {e}")
+                    logger.warning(f"⚠️ Error polling: {e}")
                     continue
             
-            # Timeout
-            error_msg = f"Search timed out after {max_attempts * poll_interval}s"
-            logger.error(f"❌ {error_msg}")
-            return None, error_msg
+            return None, f"Search timed out after {max_attempts * poll_interval}s"
             
     except Exception as e:
-        error_msg = f"Unexpected error: {str(e)}"
-        logger.error(f"❌ {error_msg}", exc_info=True)
-        return None, error_msg
+        return None, f"Unexpected error: {str(e)}"
+
 
 async def get_or_fetch_nct_data(nct_id: str) -> tuple[Optional[dict], str, Optional[str], Optional[str]]:
     """
@@ -311,14 +316,103 @@ async def get_or_fetch_nct_data(nct_id: str) -> tuple[Optional[dict], str, Optio
     
     if data:
         file_path = RESULTS_DIR / f"{nct_id}.json"
-        logger.info(f"✅ Successfully fetched and saved data")
         return data, "fetched", str(file_path), None
     else:
-        logger.error(f"❌ Failed to fetch data: {error}")
         return None, "failed", None, error
 
+
 # ============================================================================
-# Routes
+# Helper Functions - Annotation
+# ============================================================================
+
+async def annotate_single_trial(
+    nct_id: str,
+    trial_data: dict,
+    source: str,
+    model: str,
+    temperature: float
+) -> AnnotationResult:
+    """
+    Send trial data to LLM Assistant API for annotation.
+    """
+    logger.info(f"🔬 Annotating {nct_id} with {model}")
+    start_time = time.time()
+    
+    try:
+        async with httpx.AsyncClient(timeout=300.0) as client:
+            # Check LLM Assistant health
+            try:
+                health = await client.get(f"{LLM_ASSISTANT_URL}/health", timeout=5.0)
+                if health.status_code != 200:
+                    raise HTTPException(
+                        status_code=503,
+                        detail="LLM Assistant service not available"
+                    )
+            except httpx.ConnectError:
+                raise HTTPException(
+                    status_code=503,
+                    detail=f"Cannot connect to LLM Assistant at {LLM_ASSISTANT_URL}"
+                )
+            
+            # Send annotation request
+            response = await client.post(
+                f"{LLM_ASSISTANT_URL}/annotate",
+                json={
+                    "trial_data": {
+                        "nct_id": nct_id,
+                        "data": trial_data,
+                        "source": source
+                    },
+                    "model": model,
+                    "temperature": temperature,
+                    "use_extraction_prompt": True
+                }
+            )
+            
+            if response.status_code != 200:
+                error_text = response.text
+                logger.error(f"❌ Annotation failed: {error_text}")
+                
+                return AnnotationResult(
+                    nct_id=nct_id,
+                    annotation="",
+                    model=model,
+                    status="error",
+                    source=source,
+                    processing_time_seconds=time.time() - start_time,
+                    error=f"LLM Assistant error: {error_text[:200]}"
+                )
+            
+            result = response.json()
+            
+            return AnnotationResult(
+                nct_id=nct_id,
+                annotation=result.get("annotation", ""),
+                model=model,
+                status=result.get("status", "success"),
+                source=source,
+                processing_time_seconds=result.get("processing_time_seconds", 0),
+                sources_summary=result.get("sources_summary", {}),
+                error=result.get("error")
+            )
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Annotation error for {nct_id}: {e}", exc_info=True)
+        return AnnotationResult(
+            nct_id=nct_id,
+            annotation="",
+            model=model,
+            status="error",
+            source=source,
+            processing_time_seconds=time.time() - start_time,
+            error=str(e)
+        )
+
+
+# ============================================================================
+# Routes - Data
 # ============================================================================
 
 @app.get("/")
@@ -326,20 +420,27 @@ async def root():
     """Root endpoint"""
     return {
         "service": "Runner Service",
-        "version": "1.1.0",
+        "version": "2.0.0",
         "status": "running",
-        "description": "File manager and NCT data fetcher (FIXED VERSION)",
+        "description": "File manager, NCT fetcher, and annotation orchestrator",
         "endpoints": {
             "get_data": "POST /get-data",
             "batch_get_data": "POST /batch-get-data",
+            "annotate": "POST /annotate",
+            "batch_annotate": "POST /batch-annotate",
             "list_files": "GET /files",
             "health": "GET /health"
+        },
+        "dependencies": {
+            "nct_service": NCT_SERVICE_URL,
+            "llm_assistant": LLM_ASSISTANT_URL
         }
     }
 
+
 @app.get("/health")
 async def health_check():
-    """Health check with NCT service status"""
+    """Health check with service dependencies"""
     
     # Check NCT service
     nct_connected = False
@@ -351,23 +452,44 @@ async def health_check():
     except Exception as e:
         nct_error = str(e)
     
+    # Check LLM Assistant
+    llm_connected = False
+    llm_error = None
+    llm_features = {}
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.get(f"{LLM_ASSISTANT_URL}/health")
+            if response.status_code == 200:
+                llm_connected = True
+                data = response.json()
+                llm_features = data.get("dependencies", {})
+    except Exception as e:
+        llm_error = str(e)
+    
     # Count available files
     files_count = len(list(RESULTS_DIR.glob("*.json")))
     
     return {
         "status": "healthy",
         "service": "Runner Service",
-        "version": "1.1.0",
+        "version": "2.0.0",
         "nct_service": {
             "url": NCT_SERVICE_URL,
             "connected": nct_connected,
             "error": nct_error
+        },
+        "llm_assistant": {
+            "url": LLM_ASSISTANT_URL,
+            "connected": llm_connected,
+            "error": llm_error,
+            "features": llm_features
         },
         "storage": {
             "results_dir": str(RESULTS_DIR),
             "files_count": files_count
         }
     }
+
 
 @app.post("/get-data", response_model=DataResponse)
 async def get_data(request: DataRequest):
@@ -401,106 +523,221 @@ async def get_data(request: DataRequest):
         logger.error(f"❌ Error processing request: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.post("/batch-get-data", response_model=BatchDataResponse)
 async def batch_get_data(request: BatchDataRequest):
     """
     Get NCT data for multiple NCT IDs.
-    Returns existing files or fetches new data for each.
     """
-    try:
-        logger.info(f"📥 Batch request for {len(request.nct_ids)} NCT IDs: {request.nct_ids}")
-        
-        results = []
-        successful = 0
-        failed = 0
-        
-        for nct_id in request.nct_ids:
-            try:
-                nct_id = nct_id.strip().upper()
-                if not nct_id:
-                    continue
-                
-                data, source, file_path, error = await get_or_fetch_nct_data(nct_id)
-                
-                if data:
-                    results.append(DataResponse(
-                        nct_id=nct_id,
-                        status="success",
-                        data=data,
-                        source=source,
-                        file_path=file_path
-                    ))
-                    successful += 1
-                    logger.info(f"✅ {nct_id}: SUCCESS ({source})")
-                else:
-                    results.append(DataResponse(
-                        nct_id=nct_id,
-                        status="failed",
-                        data={},
-                        source="failed",
-                        file_path=None,
-                        error=error
-                    ))
-                    failed += 1
-                    logger.error(f"❌ {nct_id}: FAILED - {error}")
-                    
-            except Exception as e:
-                logger.error(f"❌ Error processing {nct_id}: {e}")
+    logger.info(f"📥 Batch request for {len(request.nct_ids)} NCT IDs")
+    
+    results = []
+    successful = 0
+    failed = 0
+    
+    for nct_id in request.nct_ids:
+        try:
+            nct_id = nct_id.strip().upper()
+            if not nct_id:
+                continue
+            
+            data, source, file_path, error = await get_or_fetch_nct_data(nct_id)
+            
+            if data:
+                results.append(DataResponse(
+                    nct_id=nct_id,
+                    status="success",
+                    data=data,
+                    source=source,
+                    file_path=file_path
+                ))
+                successful += 1
+            else:
                 results.append(DataResponse(
                     nct_id=nct_id,
                     status="failed",
                     data={},
-                    source="error",
-                    file_path=None,
-                    error=str(e)
+                    source="failed",
+                    error=error
                 ))
                 failed += 1
+                
+        except Exception as e:
+            logger.error(f"❌ Error processing {nct_id}: {e}")
+            results.append(DataResponse(
+                nct_id=nct_id,
+                status="failed",
+                data={},
+                source="error",
+                error=str(e)
+            ))
+            failed += 1
+    
+    return BatchDataResponse(
+        results=results,
+        total=len(request.nct_ids),
+        successful=successful,
+        failed=failed
+    )
+
+
+# ============================================================================
+# Routes - Annotation
+# ============================================================================
+
+@app.post("/annotate", response_model=AnnotationResult)
+async def annotate(request: AnnotationRequest):
+    """
+    Annotate a single clinical trial.
+    
+    Workflow:
+    1. Get trial data (from cache or fetch)
+    2. Send to LLM Assistant API for annotation
+    3. Return structured annotation
+    """
+    nct_id = request.nct_id.strip().upper()
+    logger.info(f"🔬 Annotation request for {nct_id}")
+    
+    start_time = time.time()
+    
+    try:
+        # Step 1: Get trial data
+        data, source, file_path, error = await get_or_fetch_nct_data(nct_id)
         
-        logger.info(f"📊 Batch complete: {successful} successful, {failed} failed")
+        if not data:
+            if not request.fetch_if_missing:
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"No data found for {nct_id} and fetch_if_missing=False"
+                )
+            raise HTTPException(
+                status_code=404,
+                detail=error or f"Could not find or fetch data for {nct_id}"
+            )
         
-        return BatchDataResponse(
-            results=results,
-            total=len(request.nct_ids),
-            successful=successful,
-            failed=failed
+        logger.info(f"✅ Got data for {nct_id} (source: {source})")
+        
+        # Step 2: Send to LLM Assistant
+        result = await annotate_single_trial(
+            nct_id=nct_id,
+            trial_data=data,
+            source=source,
+            model=request.model,
+            temperature=request.temperature
         )
         
+        return result
+        
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"❌ Batch processing error: {e}", exc_info=True)
+        logger.error(f"❌ Error annotating {nct_id}: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/batch-annotate", response_model=BatchAnnotationResponse)
+async def batch_annotate(request: BatchAnnotationRequest):
+    """
+    Annotate multiple clinical trials.
+    """
+    logger.info(f"🔬 Batch annotation for {len(request.nct_ids)} trials with {request.model}")
+    
+    start_time = time.time()
+    results = []
+    successful = 0
+    failed = 0
+    
+    for nct_id in request.nct_ids:
+        nct_id = nct_id.strip().upper()
+        if not nct_id:
+            continue
+        
+        try:
+            # Get trial data
+            data, source, file_path, error = await get_or_fetch_nct_data(nct_id)
+            
+            if not data:
+                results.append(AnnotationResult(
+                    nct_id=nct_id,
+                    annotation="",
+                    model=request.model,
+                    status="error",
+                    source="failed",
+                    processing_time_seconds=0,
+                    error=error or f"Could not find or fetch data for {nct_id}"
+                ))
+                failed += 1
+                continue
+            
+            # Annotate
+            result = await annotate_single_trial(
+                nct_id=nct_id,
+                trial_data=data,
+                source=source,
+                model=request.model,
+                temperature=request.temperature
+            )
+            
+            results.append(result)
+            
+            if result.status == "success":
+                successful += 1
+            else:
+                failed += 1
+                
+        except Exception as e:
+            logger.error(f"❌ Error with {nct_id}: {e}")
+            results.append(AnnotationResult(
+                nct_id=nct_id,
+                annotation="",
+                model=request.model,
+                status="error",
+                source="error",
+                processing_time_seconds=0,
+                error=str(e)
+            ))
+            failed += 1
+    
+    total_time = time.time() - start_time
+    
+    logger.info(f"✅ Batch complete: {successful}/{len(request.nct_ids)} in {total_time:.1f}s")
+    
+    return BatchAnnotationResponse(
+        results=results,
+        total=len(request.nct_ids),
+        successful=successful,
+        failed=failed,
+        total_time_seconds=round(total_time, 2)
+    )
+
+
+# ============================================================================
+# Routes - Files
+# ============================================================================
 
 @app.get("/files")
 async def list_files():
     """List all available NCT data files"""
-    try:
-        files = []
-        for file_path in sorted(RESULTS_DIR.glob("*.json")):
-            try:
-                # Extract NCT ID from filename
-                nct_id = file_path.stem.split('_')[0]  # Handle versioned files
-                
-                # Get file size
-                size_bytes = file_path.stat().st_size
-                size_kb = round(size_bytes / 1024, 2)
-                
-                files.append({
-                    "nct_id": nct_id,
-                    "filename": file_path.name,
-                    "size_kb": size_kb,
-                    "path": str(file_path)
-                })
-            except Exception as e:
-                logger.error(f"Error processing file {file_path}: {e}")
-                continue
-        
-        return {
-            "total_files": len(files),
-            "files": files
-        }
-        
-    except Exception as e:
-        logger.error(f"❌ Error listing files: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    files = []
+    for file_path in sorted(RESULTS_DIR.glob("*.json")):
+        try:
+            nct_id = file_path.stem.split('_')[0]
+            size_bytes = file_path.stat().st_size
+            
+            files.append({
+                "nct_id": nct_id,
+                "filename": file_path.name,
+                "size_kb": round(size_bytes / 1024, 2),
+                "path": str(file_path)
+            })
+        except Exception as e:
+            logger.error(f"Error processing file {file_path}: {e}")
+    
+    return {
+        "total_files": len(files),
+        "files": files
+    }
+
 
 @app.get("/files/{nct_id}")
 async def get_file_info(nct_id: str):
@@ -515,15 +752,14 @@ async def get_file_info(nct_id: str):
             detail=f"No file found for {nct_id}"
         )
     
-    size_bytes = file_path.stat().st_size
-    
     return {
         "nct_id": nct_id,
         "filename": file_path.name,
-        "size_kb": round(size_bytes / 1024, 2),
+        "size_kb": round(file_path.stat().st_size / 1024, 2),
         "path": str(file_path),
         "exists": True
     }
+
 
 # ============================================================================
 # Run standalone
@@ -531,12 +767,13 @@ async def get_file_info(nct_id: str):
 
 if __name__ == "__main__":
     import uvicorn
-    print("="*80)
-    print("🚀 Starting Runner Service (FIXED VERSION) on port 9003...")
-    print("="*80)
+    print("=" * 80)
+    print("🚀 Starting Runner Service (Enhanced) on port 9003...")
+    print("=" * 80)
     print(f"📡 NCT Service: {NCT_SERVICE_URL}")
+    print(f"🤖 LLM Assistant: {LLM_ASSISTANT_URL}")
     print(f"📁 Results Directory: {RESULTS_DIR}")
     print(f"📚 API Docs: http://localhost:9003/docs")
     print(f"🔍 Health Check: http://localhost:9003/health")
-    print("="*80)
+    print("=" * 80)
     uvicorn.run(app, host="0.0.0.0", port=9003, reload=True)
