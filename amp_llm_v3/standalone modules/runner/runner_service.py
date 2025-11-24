@@ -9,6 +9,8 @@ Endpoints:
 - POST /batch-get-data - Get multiple NCT trials
 - POST /annotate - Annotate a single trial (calls LLM Assistant API)
 - POST /batch-annotate - Annotate multiple trials
+- POST /annotate-csv - Upload CSV with NCT IDs, get back annotated CSV
+- GET /download-csv/{filename} - Download a generated CSV
 - GET /files - List available JSON files
 - GET /health - Health check with service dependencies
 
@@ -19,10 +21,16 @@ Service Dependencies:
 import logging
 import httpx
 import json
+import csv
+import io
+import re
+import uuid
+from datetime import datetime
 from pathlib import Path
 from typing import Optional, List, Dict, Any
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse, FileResponse
 from pydantic import BaseModel, Field
 import time
 
@@ -64,8 +72,24 @@ NCT_SERVICE_URL = "http://localhost:9002"
 LLM_ASSISTANT_URL = "http://localhost:9004"
 RESULTS_DIR = Path(__file__).parent / "results"
 RESULTS_DIR.mkdir(exist_ok=True)
+CSV_OUTPUT_DIR = Path(__file__).parent / "csv_outputs"
+CSV_OUTPUT_DIR.mkdir(exist_ok=True)
+
+# CSV column definitions for export
+CSV_COLUMNS = [
+    'NCT ID', 'Study Title', 'Study Status', 'Brief Summary', 'Conditions',
+    'Drug', 'Phase', 'Enrollment', 'Start Date', 'Completion Date',
+    'Classification', 'Classification Evidence',
+    'Delivery Mode', 'Delivery Mode Evidence',
+    'Outcome', 'Outcome Evidence',
+    'Reason for Failure', 'Reason for Failure Evidence',
+    'Peptide', 'Peptide Evidence',
+    'Sequence', 'Sequence Evidence',
+    'Study ID'
+]
 
 logger.info(f"📁 Results directory: {RESULTS_DIR}")
+logger.info(f"📁 CSV Output directory: {CSV_OUTPUT_DIR}")
 logger.info(f"🔗 NCT Service URL: {NCT_SERVICE_URL}")
 logger.info(f"🤖 LLM Assistant URL: {LLM_ASSISTANT_URL}")
 
@@ -118,6 +142,7 @@ class AnnotationResult(BaseModel):
     """Result of a single annotation"""
     nct_id: str
     annotation: str
+    parsed_data: Dict[str, str] = {}  # Structured data for CSV export
     model: str
     status: str
     source: str  # "file" or "fetched"
@@ -133,6 +158,17 @@ class BatchAnnotationResponse(BaseModel):
     successful: int
     failed: int
     total_time_seconds: float
+
+
+class CSVAnnotationResponse(BaseModel):
+    """Response for CSV annotation"""
+    csv_filename: str
+    download_url: str
+    total: int
+    successful: int
+    failed: int
+    total_time_seconds: float
+    errors: List[Dict[str, str]] = []
 
 
 # ============================================================================
@@ -376,6 +412,7 @@ async def annotate_single_trial(
                 return AnnotationResult(
                     nct_id=nct_id,
                     annotation="",
+                    parsed_data={},
                     model=model,
                     status="error",
                     source=source,
@@ -388,6 +425,7 @@ async def annotate_single_trial(
             return AnnotationResult(
                 nct_id=nct_id,
                 annotation=result.get("annotation", ""),
+                parsed_data=result.get("parsed_data", {}),
                 model=model,
                 status=result.get("status", "success"),
                 source=source,
@@ -403,6 +441,7 @@ async def annotate_single_trial(
         return AnnotationResult(
             nct_id=nct_id,
             annotation="",
+            parsed_data={},
             model=model,
             status="error",
             source=source,
@@ -420,14 +459,17 @@ async def root():
     """Root endpoint"""
     return {
         "service": "Runner Service",
-        "version": "2.0.0",
+        "version": "2.1.0",
         "status": "running",
-        "description": "File manager, NCT fetcher, and annotation orchestrator",
+        "description": "File manager, NCT fetcher, and annotation orchestrator with CSV support",
         "endpoints": {
             "get_data": "POST /get-data",
             "batch_get_data": "POST /batch-get-data",
             "annotate": "POST /annotate",
             "batch_annotate": "POST /batch-annotate",
+            "annotate_csv": "POST /annotate-csv",
+            "download_csv": "GET /download-csv/{filename}",
+            "list_csv_files": "GET /csv-files",
             "list_files": "GET /files",
             "health": "GET /health"
         },
@@ -758,6 +800,268 @@ async def get_file_info(nct_id: str):
         "size_kb": round(file_path.stat().st_size / 1024, 2),
         "path": str(file_path),
         "exists": True
+    }
+
+
+# ============================================================================
+# Routes - CSV Annotation
+# ============================================================================
+
+def extract_nct_ids_from_csv(csv_content: str) -> List[str]:
+    """
+    Extract NCT IDs from CSV content.
+    Looks for NCT IDs in any column, handles various formats.
+    """
+    nct_ids = []
+    nct_pattern = re.compile(r'NCT\d{8}', re.IGNORECASE)
+    
+    # Try to read as CSV
+    try:
+        reader = csv.reader(io.StringIO(csv_content))
+        for row in reader:
+            for cell in row:
+                matches = nct_pattern.findall(cell.upper())
+                nct_ids.extend(matches)
+    except Exception as e:
+        logger.warning(f"CSV parsing failed, trying line-by-line: {e}")
+        # Fallback: just search for NCT patterns in the text
+        nct_ids = nct_pattern.findall(csv_content.upper())
+    
+    # Remove duplicates while preserving order
+    seen = set()
+    unique_ids = []
+    for nct_id in nct_ids:
+        nct_id = nct_id.upper()
+        if nct_id not in seen:
+            seen.add(nct_id)
+            unique_ids.append(nct_id)
+    
+    return unique_ids
+
+
+def create_annotation_csv(results: List[AnnotationResult]) -> str:
+    """
+    Create CSV content from annotation results.
+    """
+    output = io.StringIO()
+    writer = csv.DictWriter(output, fieldnames=CSV_COLUMNS)
+    writer.writeheader()
+    
+    for result in results:
+        if result.status == "success" and result.parsed_data:
+            row = {col: result.parsed_data.get(col, '') for col in CSV_COLUMNS}
+            # Ensure NCT ID is set
+            if not row.get('NCT ID'):
+                row['NCT ID'] = result.nct_id
+            writer.writerow(row)
+        else:
+            # Write error row with just the NCT ID and error message
+            row = {col: '' for col in CSV_COLUMNS}
+            row['NCT ID'] = result.nct_id
+            row['Study Status'] = f"ERROR: {result.error or 'Unknown error'}"
+            writer.writerow(row)
+    
+    return output.getvalue()
+
+
+@app.post("/annotate-csv", response_model=CSVAnnotationResponse)
+async def annotate_csv(
+    file: UploadFile = File(...),
+    model: str = Form(default="llama3.2"),
+    temperature: float = Form(default=0.15)
+):
+    """
+    Upload a CSV file with NCT IDs and get back an annotated CSV.
+    
+    The input CSV can have NCT IDs in any column - they will be automatically detected.
+    Returns a CSV file with all annotation columns.
+    """
+    start_time = time.time()
+    
+    logger.info(f"📤 Received CSV upload: {file.filename}")
+    
+    # Read and decode file
+    try:
+        content = await file.read()
+        csv_content = content.decode('utf-8')
+    except UnicodeDecodeError:
+        try:
+            csv_content = content.decode('latin-1')
+        except Exception as e:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Cannot decode file: {e}"
+            )
+    
+    # Extract NCT IDs
+    nct_ids = extract_nct_ids_from_csv(csv_content)
+    
+    if not nct_ids:
+        raise HTTPException(
+            status_code=400,
+            detail="No valid NCT IDs found in uploaded file. NCT IDs should be in format NCT########."
+        )
+    
+    logger.info(f"📋 Found {len(nct_ids)} NCT IDs to annotate")
+    
+    # Process each NCT ID
+    results = []
+    errors = []
+    successful = 0
+    failed = 0
+    
+    for i, nct_id in enumerate(nct_ids):
+        logger.info(f"🔄 Processing {nct_id} ({i+1}/{len(nct_ids)})")
+        
+        try:
+            # Get data (from file or fetch)
+            file_path, data = find_nct_file(nct_id)
+            
+            if file_path and data:
+                source = "file"
+            else:
+                # Fetch from NCT service
+                data = await fetch_nct_data(nct_id)
+                source = "fetched"
+                
+                if data:
+                    # Save for future use
+                    save_path = RESULTS_DIR / f"{nct_id}.json"
+                    with open(save_path, 'w') as f:
+                        json.dump(data, f, indent=2)
+            
+            if not data:
+                failed += 1
+                errors.append({
+                    "nct_id": nct_id,
+                    "error": "Could not fetch trial data"
+                })
+                results.append(AnnotationResult(
+                    nct_id=nct_id,
+                    annotation="",
+                    parsed_data={},
+                    model=model,
+                    status="error",
+                    source="none",
+                    processing_time_seconds=0,
+                    error="Could not fetch trial data"
+                ))
+                continue
+            
+            # Annotate
+            result = await annotate_single_trial(
+                nct_id=nct_id,
+                trial_data=data,
+                source=source,
+                model=model,
+                temperature=temperature
+            )
+            
+            results.append(result)
+            
+            if result.status == "success":
+                successful += 1
+            else:
+                failed += 1
+                errors.append({
+                    "nct_id": nct_id,
+                    "error": result.error or "Unknown error"
+                })
+                
+        except Exception as e:
+            logger.error(f"❌ Error processing {nct_id}: {e}")
+            failed += 1
+            errors.append({
+                "nct_id": nct_id,
+                "error": str(e)
+            })
+            results.append(AnnotationResult(
+                nct_id=nct_id,
+                annotation="",
+                parsed_data={},
+                model=model,
+                status="error",
+                source="none",
+                processing_time_seconds=0,
+                error=str(e)
+            ))
+    
+    # Create output CSV
+    csv_content = create_annotation_csv(results)
+    
+    # Generate filename with timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    csv_filename = f"annotations_{timestamp}.csv"
+    csv_path = CSV_OUTPUT_DIR / csv_filename
+    
+    # Save to file
+    with open(csv_path, 'w', newline='', encoding='utf-8') as f:
+        f.write(csv_content)
+    
+    total_time = time.time() - start_time
+    
+    logger.info(f"✅ CSV annotation complete: {successful}/{len(nct_ids)} successful in {total_time:.1f}s")
+    logger.info(f"📁 Saved to: {csv_path}")
+    
+    return CSVAnnotationResponse(
+        csv_filename=csv_filename,
+        download_url=f"/download-csv/{csv_filename}",
+        total=len(nct_ids),
+        successful=successful,
+        failed=failed,
+        total_time_seconds=round(total_time, 2),
+        errors=errors
+    )
+
+
+@app.get("/download-csv/{filename}")
+async def download_csv(filename: str):
+    """
+    Download a generated CSV file.
+    """
+    # Security check - only allow .csv files from the output directory
+    if not filename.endswith('.csv') or '/' in filename or '\\' in filename:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid filename"
+        )
+    
+    file_path = CSV_OUTPUT_DIR / filename
+    
+    if not file_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"File not found: {filename}"
+        )
+    
+    return FileResponse(
+        path=file_path,
+        filename=filename,
+        media_type="text/csv"
+    )
+
+
+@app.get("/csv-files")
+async def list_csv_files():
+    """
+    List all available CSV output files.
+    """
+    files = []
+    for file_path in sorted(CSV_OUTPUT_DIR.glob("*.csv"), reverse=True):
+        try:
+            stat = file_path.stat()
+            files.append({
+                "filename": file_path.name,
+                "size_kb": round(stat.st_size / 1024, 2),
+                "created": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                "download_url": f"/download-csv/{file_path.name}"
+            })
+        except Exception as e:
+            logger.error(f"Error processing file {file_path}: {e}")
+    
+    return {
+        "total_files": len(files),
+        "files": files
     }
 
 

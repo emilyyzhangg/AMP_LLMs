@@ -387,58 +387,102 @@ async def annotate_csv(
 ):
     """
     Upload a CSV file with NCT IDs and generate annotations.
-    CSV should have NCT IDs in first column.
+    Returns a link to download the annotated CSV file.
+    
+    The input CSV can have NCT IDs in any column - they will be automatically detected.
     """
     if conversation_id not in conversations:
         raise HTTPException(status_code=404, detail="Conversation not found")
     
     try:
-        # Read CSV file
+        # Read file contents
         contents = await file.read()
-        csv_text = contents.decode('utf-8')
         
-        # Parse NCT IDs
-        nct_ids = []
-        csv_reader = csv.reader(io.StringIO(csv_text))
-        for row in csv_reader:
-            if row and row[0].strip():
-                nct_id = row[0].strip().upper()
-                if nct_id.startswith("NCT"):
-                    nct_ids.append(nct_id)
-        
-        if not nct_ids:
-            raise HTTPException(
-                status_code=400,
-                detail="No valid NCT IDs found in CSV file"
-            )
-        
-        logger.info(f"📄 Processing CSV with {len(nct_ids)} NCT IDs")
+        logger.info(f"📄 Forwarding CSV to Runner Service: {file.filename}")
         
         conv = conversations[conversation_id]
         
         # Add user message
-        user_message = f"Annotate trials from CSV: {len(nct_ids)} trials"
+        user_message = f"Annotate trials from CSV: {file.filename}"
         conv["messages"].append({
             "role": "user",
             "content": user_message
         })
         
-        # Generate annotations via runner service
-        annotation_result, summary = await annotate_trials_via_runner(
-            nct_ids, 
-            model, 
-            temperature
-        )
+        # Forward to runner service's CSV endpoint
+        async with httpx.AsyncClient(timeout=1800.0) as client:  # 30 min timeout
+            try:
+                # Check runner health
+                health = await client.get(f"{RUNNER_SERVICE_URL}/health", timeout=5.0)
+                if health.status_code != 200:
+                    raise HTTPException(
+                        status_code=503,
+                        detail="Runner service not available"
+                    )
+            except httpx.ConnectError:
+                raise HTTPException(
+                    status_code=503,
+                    detail=f"Cannot connect to Runner Service at {RUNNER_SERVICE_URL}"
+                )
+            
+            # Send file to runner's CSV endpoint
+            files = {"file": (file.filename, contents, "text/csv")}
+            data = {"model": model, "temperature": str(temperature)}
+            
+            response = await client.post(
+                f"{RUNNER_SERVICE_URL}/annotate-csv",
+                files=files,
+                data=data
+            )
+            
+            if response.status_code != 200:
+                error_text = response.text
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"Runner service error: {error_text}"
+                )
+            
+            result = response.json()
         
-        # Format response
-        response_content = f"""CSV Annotation Report
-File: {file.filename}
-Total Trials: {summary.total}
-Model: {model}
-Successful: {summary.successful} | Failed: {summary.failed}
-Total Time: {summary.processing_time_seconds:.1f}s
+        # Format response with download link
+        download_url = f"{RUNNER_SERVICE_URL}{result['download_url']}"
+        
+        # Build error summary if any
+        error_summary = ""
+        if result.get("errors"):
+            error_lines = [f"  - {e['nct_id']}: {e['error']}" for e in result["errors"][:5]]
+            if len(result["errors"]) > 5:
+                error_lines.append(f"  ... and {len(result['errors']) - 5} more errors")
+            error_summary = f"\n\nErrors:\n" + "\n".join(error_lines)
+        
+        response_content = f"""✅ CSV Annotation Complete
+═══════════════════════════════════════════
+📄 Input File: {file.filename}
+📊 Total NCT IDs: {result['total']}
+✓ Successful: {result['successful']}
+✗ Failed: {result['failed']}
+⏱ Processing Time: {result['total_time_seconds']:.1f}s
+═══════════════════════════════════════════
 
-{annotation_result}"""
+📥 Download annotated CSV:
+{download_url}
+
+The output CSV includes columns:
+• Study Title, Status, Summary, Conditions, Drug
+• Phase, Enrollment, Start/Completion Dates  
+• Classification (AMP/Other) with Evidence
+• Delivery Mode with Evidence
+• Outcome with Evidence
+• Reason for Failure with Evidence
+• Peptide (True/False) with Evidence
+• Sequence, Study ID{error_summary}
+
+═══════════════════════════════════════════
+💡 Next Steps:
+  • Click the download link above to get your annotated CSV
+  • Upload another CSV to annotate more trials
+  • Type "exit" to leave annotation mode
+═══════════════════════════════════════════"""
         
         # Add assistant message
         conv["messages"].append({
@@ -451,9 +495,11 @@ Total Time: {summary.processing_time_seconds:.1f}s
             message=ChatMessage(role="assistant", content=response_content),
             model=model,
             annotation_mode=True,
-            processing_time_seconds=summary.processing_time_seconds
+            processing_time_seconds=result['total_time_seconds']
         )
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ CSV processing error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))

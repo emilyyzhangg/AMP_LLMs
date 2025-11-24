@@ -124,6 +124,7 @@ class AnnotationResult(BaseModel):
     """Response model for a single annotation"""
     nct_id: str
     annotation: str
+    parsed_data: Dict[str, str] = {}  # Parsed structured data for CSV export
     model: str
     status: str  # "success" or "error"
     processing_time_seconds: float
@@ -154,6 +155,207 @@ class ParsedTrialInfo(BaseModel):
 # ============================================================================
 # Core Annotation Functions
 # ============================================================================
+
+class AnnotationResponseParser:
+    """Parse LLM annotation responses into structured data."""
+    
+    # Define the expected output columns
+    CSV_COLUMNS = [
+        'NCT ID', 'Study Title', 'Study Status', 'Brief Summary', 'Conditions',
+        'Drug', 'Phase', 'Enrollment', 'Start Date', 'Completion Date',
+        'Classification', 'Classification Evidence',
+        'Delivery Mode', 'Delivery Mode Evidence',
+        'Outcome', 'Outcome Evidence',
+        'Reason for Failure', 'Reason for Failure Evidence',
+        'Peptide', 'Peptide Evidence',
+        'Sequence', 'Sequence Evidence',
+        'Study ID'
+    ]
+    
+    # Field mappings from LLM output to CSV columns
+    FIELD_MAPPINGS = {
+        'NCT Number': 'NCT ID',
+        'Study Title': 'Study Title',
+        'Study Status': 'Study Status',
+        'Brief Summary': 'Brief Summary',
+        'Conditions': 'Conditions',
+        'Interventions/Drug': 'Drug',
+        'Phases': 'Phase',
+        'Enrollment': 'Enrollment',
+        'Start Date': 'Start Date',
+        'Completion Date': 'Completion Date',
+        'Classification': 'Classification',
+        'Delivery Mode': 'Delivery Mode',
+        'Outcome': 'Outcome',
+        'Reason for Failure': 'Reason for Failure',
+        'Peptide': 'Peptide',
+        'Sequence': 'Sequence',
+        'DRAMP Name': 'DRAMP Name',
+        'Study IDs': 'Study ID',
+        'Comments': 'Comments'
+    }
+    
+    @classmethod
+    def parse_response(cls, llm_response: str, nct_id: str) -> Dict[str, str]:
+        """
+        Parse LLM response text into structured dictionary.
+        
+        Args:
+            llm_response: Raw text response from LLM
+            nct_id: NCT ID for fallback
+            
+        Returns:
+            Dictionary with CSV column keys
+        """
+        result = {col: '' for col in cls.CSV_COLUMNS}
+        result['NCT ID'] = nct_id
+        
+        if not llm_response:
+            return result
+        
+        lines = llm_response.strip().split('\n')
+        current_field = None
+        current_value = ''
+        evidence_buffer = {}
+        
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+            
+            # Check if this is an evidence line
+            if line.startswith('Evidence:'):
+                evidence = line.replace('Evidence:', '').strip()
+                if current_field:
+                    evidence_buffer[current_field] = evidence
+                continue
+            
+            # Check if this is a field line (contains a colon)
+            if ':' in line:
+                # Save previous field if exists
+                if current_field and current_value:
+                    cls._set_field(result, current_field, current_value.strip(), evidence_buffer)
+                
+                # Parse new field
+                parts = line.split(':', 1)
+                field_name = parts[0].strip()
+                field_value = parts[1].strip() if len(parts) > 1 else ''
+                
+                # Map to our column names
+                if field_name in cls.FIELD_MAPPINGS:
+                    current_field = field_name
+                    current_value = field_value
+                elif field_name.lower() == 'evidence':
+                    # This is evidence for the previous field
+                    if current_field:
+                        evidence_buffer[current_field] = field_value
+                    current_field = None
+                    current_value = ''
+                else:
+                    # Unknown field, might be continuation
+                    if current_field and current_value:
+                        current_value += ' ' + line
+            else:
+                # Continuation of previous value
+                if current_field and current_value:
+                    current_value += ' ' + line
+        
+        # Don't forget the last field
+        if current_field and current_value:
+            cls._set_field(result, current_field, current_value.strip(), evidence_buffer)
+        
+        return result
+    
+    @classmethod
+    def _set_field(cls, result: Dict, field_name: str, value: str, evidence_buffer: Dict):
+        """Set a field value in the result dictionary."""
+        csv_column = cls.FIELD_MAPPINGS.get(field_name)
+        if not csv_column:
+            return
+        
+        # Clean up the value
+        value = value.strip()
+        if value.lower() in ['n/a', 'not available', 'none', 'unknown']:
+            value = 'N/A'
+        
+        result[csv_column] = value
+        
+        # Check for evidence
+        evidence_column = f"{csv_column} Evidence"
+        if evidence_column in cls.CSV_COLUMNS:
+            evidence = evidence_buffer.get(field_name, '')
+            result[evidence_column] = evidence
+    
+    @classmethod
+    def parse_response_regex(cls, llm_response: str, nct_id: str) -> Dict[str, str]:
+        """
+        Alternative parser using regex patterns for more robust extraction.
+        
+        Args:
+            llm_response: Raw text response from LLM
+            nct_id: NCT ID for fallback
+            
+        Returns:
+            Dictionary with CSV column keys
+        """
+        import re
+        
+        result = {col: '' for col in cls.CSV_COLUMNS}
+        result['NCT ID'] = nct_id
+        
+        if not llm_response:
+            return result
+        
+        # Define patterns for each field
+        patterns = {
+            'Study Title': r'Study Title:\s*(.+?)(?=\n(?:Study Status|Brief Summary|$))',
+            'Study Status': r'Study Status:\s*(.+?)(?=\n|$)',
+            'Brief Summary': r'Brief Summary:\s*(.+?)(?=\nConditions:|$)',
+            'Conditions': r'Conditions:\s*(.+?)(?=\n(?:Interventions|Drug)|$)',
+            'Drug': r'(?:Interventions/Drug|Drug):\s*(.+?)(?=\nPhases?:|$)',
+            'Phase': r'Phases?:\s*(.+?)(?=\n|$)',
+            'Enrollment': r'Enrollment:\s*(.+?)(?=\n|$)',
+            'Start Date': r'Start Date:\s*(.+?)(?=\n|$)',
+            'Completion Date': r'Completion Date:\s*(.+?)(?=\n|$)',
+            'Classification': r'Classification:\s*(.+?)(?=\n\s*Evidence:|$)',
+            'Delivery Mode': r'Delivery Mode:\s*(.+?)(?=\n\s*Evidence:|$)',
+            'Outcome': r'Outcome:\s*(.+?)(?=\n\s*Evidence:|$)',
+            'Reason for Failure': r'Reason for Failure:\s*(.+?)(?=\n\s*Evidence:|$)',
+            'Peptide': r'Peptide:\s*(.+?)(?=\n\s*Evidence:|$)',
+            'Sequence': r'Sequence:\s*(.+?)(?=\n|$)',
+            'Study ID': r'Study IDs?:\s*(.+?)(?=\n|$)',
+        }
+        
+        # Evidence patterns
+        evidence_patterns = {
+            'Classification Evidence': r'Classification:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nDelivery|$)',
+            'Delivery Mode Evidence': r'Delivery Mode:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nOutcome|$)',
+            'Outcome Evidence': r'Outcome:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nReason|$)',
+            'Reason for Failure Evidence': r'Reason for Failure:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nPeptide|$)',
+            'Peptide Evidence': r'Peptide:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nSequence|$)',
+            'Sequence Evidence': r'Sequence:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nDRAMP|$)',
+        }
+        
+        # Extract main fields
+        for field, pattern in patterns.items():
+            match = re.search(pattern, llm_response, re.DOTALL | re.IGNORECASE)
+            if match:
+                value = match.group(1).strip()
+                value = re.sub(r'\s+', ' ', value)  # Normalize whitespace
+                if value.lower() in ['n/a', 'not available', 'none']:
+                    value = 'N/A'
+                result[field] = value
+        
+        # Extract evidence fields
+        for field, pattern in evidence_patterns.items():
+            match = re.search(pattern, llm_response, re.DOTALL | re.IGNORECASE)
+            if match:
+                value = match.group(1).strip()
+                value = re.sub(r'\s+', ' ', value)
+                result[field] = value
+        
+        return result
+
 
 class TrialAnnotator:
     """Core class for annotating clinical trials"""
@@ -766,7 +968,8 @@ async def annotate_trial(request: AnnotationRequest):
     1. Parses trial data using json_parser
     2. Generates prompt using prompt_generator
     3. Calls LLM for annotation
-    4. Returns structured result
+    4. Parses response into structured data
+    5. Returns structured result
     """
     import time
     start_time = time.time()
@@ -790,10 +993,17 @@ async def annotate_trial(request: AnnotationRequest):
             request.temperature
         )
         
+        # Parse the response into structured data
+        parsed_data = AnnotationResponseParser.parse_response_regex(annotation, trial.nct_id)
+        logger.info(f"📊 Parsed {len([v for v in parsed_data.values() if v])} fields from response")
+        
         processing_time = time.time() - start_time
         
         # Build sources summary
         sources = trial.data.get("sources", {})
+        if not sources and "results" in trial.data:
+            sources = trial.data.get("results", {}).get("sources", {})
+        
         sources_summary = {}
         for src_name, src_data in sources.items():
             if src_name == "extended":
@@ -807,6 +1017,7 @@ async def annotate_trial(request: AnnotationRequest):
         return AnnotationResult(
             nct_id=trial.nct_id,
             annotation=annotation,
+            parsed_data=parsed_data,
             model=request.model,
             status="success",
             processing_time_seconds=round(processing_time, 2),
@@ -822,6 +1033,7 @@ async def annotate_trial(request: AnnotationRequest):
         return AnnotationResult(
             nct_id=trial.nct_id,
             annotation="",
+            parsed_data={},
             model=request.model,
             status="error",
             processing_time_seconds=round(processing_time, 2),
@@ -867,6 +1079,7 @@ async def batch_annotate(request: BatchAnnotationRequest):
             results.append(AnnotationResult(
                 nct_id=trial.nct_id,
                 annotation="",
+                parsed_data={},
                 model=request.model,
                 status="error",
                 processing_time_seconds=0,
