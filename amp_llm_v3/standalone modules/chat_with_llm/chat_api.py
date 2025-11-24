@@ -212,7 +212,7 @@ async def annotate_trials(nct_ids: List[str], model: str, temperature: float) ->
     trial_data_list = await get_nct_data_batch(nct_ids)
     
     if not trial_data_list:
-        return "❌ Could not retrieve trial data. Please check that the NCT IDs are valid and the runner service is available. "
+        return "❌ Could not retrieve trial data. Please check that the NCT IDs are valid and the runner service is available."
     
     # Generate annotations
     annotations = []
