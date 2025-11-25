@@ -17,6 +17,7 @@ const app = {
     annotationModeSelected: false,  // Track annotation mode selection
     nctResults: null,
     selectedFile: null,
+    selectedCSVFile: null,  // Track selected CSV file for batch annotation
     files: [],
     availableModels: [],
     availableThemes: [],
@@ -1545,6 +1546,9 @@ const app = {
         
         delete this.sessionChats[this.currentModel];
         
+        // Clear CSV file selection
+        this.selectedCSVFile = null;
+        
         const container = document.getElementById('chat-container');
         container.innerHTML = '';
         
@@ -1669,11 +1673,17 @@ const app = {
                 let welcomeMsg = `✅ Connected to ${modelName}`;
                 if (annotationMode) {
                     welcomeMsg += '\n\n🔬 Annotation Mode Active\n\n' +
-                                'Enter NCT IDs (comma-separated) in the chat box.\n' +
+                                '📝 **Option 1: Enter NCT IDs manually**\n' +
+                                'Type NCT IDs (comma-separated) in the chat box.\n' +
                                 'Example: NCT12345678, NCT87654321\n\n' +
+                                '📄 **Option 2: Upload CSV file**\n' +
+                                'Click the "Upload CSV" button below to batch annotate.\n\n' +
                                 '💡 Commands:\n' +
                                 '• Type "exit" to select a different model\n' +
                                 '• Click "Clear Chat" to reset';
+                    
+                    // Show CSV upload UI after a small delay
+                    setTimeout(() => this.showCSVUploadUI(), 100);
                 } else {
                     welcomeMsg += '\n\n💡 Commands:\n• Type "exit" to select a different model\n• Type "main menu" to return to home\n• Click "Clear Chat" to reset conversation';
                 }
@@ -2027,6 +2037,293 @@ const app = {
                 `Check status:\n` +
                 `  ./services.sh status`);
         }
+    },
+
+    // =========================================================================
+    // CSV Upload Functionality
+    // =========================================================================
+
+    showCSVUploadUI() {
+        // Remove any existing CSV upload UI
+        document.getElementById('csv-upload-container')?.remove();
+        
+        const container = document.getElementById('chat-container');
+        
+        const csvUploadDiv = document.createElement('div');
+        csvUploadDiv.id = 'csv-upload-container';
+        csvUploadDiv.className = 'csv-upload-container';
+        csvUploadDiv.innerHTML = `
+            <div class="csv-upload-icon">📄</div>
+            <div class="csv-upload-text">Upload CSV for Batch Annotation</div>
+            <div class="csv-upload-subtext">CSV can have NCT IDs in any column - they will be auto-detected</div>
+            
+            <input type="file" id="csv-file-input" class="csv-file-input" accept=".csv,.txt">
+            
+            <button type="button" class="csv-upload-btn" onclick="app.triggerCSVFileSelect()">
+                <span class="csv-upload-btn-icon">📤</span>
+                <span>Choose CSV File</span>
+            </button>
+            
+            <div id="csv-file-selected" class="csv-file-selected" style="display: none;">
+                <span id="csv-file-name" class="csv-file-name"></span>
+                <span id="csv-file-size" class="csv-file-size"></span>
+                <button type="button" class="csv-file-remove" onclick="app.clearCSVFile()">✕</button>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <button type="button" id="csv-submit-btn" class="submit-csv-btn" onclick="app.uploadCSVForAnnotation()" style="display: none;">
+                    <span>🔬</span>
+                    <span>Start Batch Annotation</span>
+                </button>
+            </div>
+        `;
+        
+        container.appendChild(csvUploadDiv);
+        
+        // Set up file input change handler
+        const fileInput = document.getElementById('csv-file-input');
+        fileInput.addEventListener('change', (e) => this.handleCSVFileSelect(e));
+        
+        // Set up drag and drop
+        csvUploadDiv.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            csvUploadDiv.classList.add('drag-over');
+        });
+        
+        csvUploadDiv.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            csvUploadDiv.classList.remove('drag-over');
+        });
+        
+        csvUploadDiv.addEventListener('drop', (e) => {
+            e.preventDefault();
+            csvUploadDiv.classList.remove('drag-over');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.name.endsWith('.csv') || file.name.endsWith('.txt')) {
+                    this.selectedCSVFile = file;
+                    this.showSelectedCSVFile(file);
+                } else {
+                    this.addMessage('chat-container', 'error', '❌ Please upload a CSV or TXT file');
+                }
+            }
+        });
+        
+        // Scroll to show the upload UI
+        requestAnimationFrame(() => {
+            container.scrollTop = container.scrollHeight;
+        });
+    },
+    
+    triggerCSVFileSelect() {
+        document.getElementById('csv-file-input')?.click();
+    },
+    
+    handleCSVFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            this.selectedCSVFile = file;
+            this.showSelectedCSVFile(file);
+        }
+    },
+    
+    showSelectedCSVFile(file) {
+        const selectedDiv = document.getElementById('csv-file-selected');
+        const nameSpan = document.getElementById('csv-file-name');
+        const sizeSpan = document.getElementById('csv-file-size');
+        const submitBtn = document.getElementById('csv-submit-btn');
+        
+        if (selectedDiv && nameSpan && sizeSpan) {
+            nameSpan.textContent = file.name;
+            sizeSpan.textContent = `(${(file.size / 1024).toFixed(1)} KB)`;
+            selectedDiv.style.display = 'flex';
+            submitBtn.style.display = 'inline-flex';
+        }
+    },
+    
+    clearCSVFile() {
+        this.selectedCSVFile = null;
+        
+        const fileInput = document.getElementById('csv-file-input');
+        if (fileInput) fileInput.value = '';
+        
+        const selectedDiv = document.getElementById('csv-file-selected');
+        if (selectedDiv) selectedDiv.style.display = 'none';
+        
+        const submitBtn = document.getElementById('csv-submit-btn');
+        if (submitBtn) submitBtn.style.display = 'none';
+    },
+    
+    async uploadCSVForAnnotation() {
+        if (!this.selectedCSVFile) {
+            this.addMessage('chat-container', 'error', '❌ No CSV file selected');
+            return;
+        }
+        
+        if (!this.currentConversationId) {
+            this.addMessage('chat-container', 'error', '❌ No active conversation. Please select a model first.');
+            return;
+        }
+        
+        const file = this.selectedCSVFile;
+        const fileName = file.name;
+        
+        console.log(`📤 Uploading CSV for annotation: ${fileName}`);
+        
+        // Hide upload UI and show processing message
+        document.getElementById('csv-upload-container').style.display = 'none';
+        
+        this.addMessage('chat-container', 'user', `📄 Upload CSV: ${fileName}`);
+        
+        const processingId = this.addMessage('chat-container', 'system', 
+            `🔄 Processing CSV: ${fileName}\n\n` +
+            `Steps:\n` +
+            `1. Extracting NCT IDs from CSV\n` +
+            `2. Fetching trial data for each ID\n` +
+            `3. Generating annotations with LLM\n` +
+            `4. Creating output CSV\n\n` +
+            `⏳ This may take several minutes for large files...`);
+        
+        const startTime = Date.now();
+        
+        try {
+            // Create form data
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('model', this.currentModel);
+            formData.append('temperature', '0.15');
+            
+            // Send to Runner Service CSV endpoint
+            const response = await fetch(`http://localhost:9003/annotate-csv`, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const endTime = Date.now();
+            const duration = ((endTime - startTime) / 1000).toFixed(1);
+            
+            // Remove processing message
+            document.getElementById(processingId)?.remove();
+            
+            if (response.ok) {
+                const data = await response.json();
+                
+                console.log('✅ CSV annotation response:', data);
+                
+                // Build error summary if any
+                let errorSummary = '';
+                if (data.errors && data.errors.length > 0) {
+                    errorSummary = '\n\n⚠️ Errors:\n';
+                    data.errors.slice(0, 5).forEach(err => {
+                        errorSummary += `  • ${err.nct_id}: ${err.error}\n`;
+                    });
+                    if (data.errors.length > 5) {
+                        errorSummary += `  ... and ${data.errors.length - 5} more errors\n`;
+                    }
+                }
+                
+                // Create download link
+                const downloadUrl = `http://localhost:9003${data.download_url}`;
+                
+                const resultMessage = `✅ CSV Annotation Complete\n\n` +
+                    `═══════════════════════════════════════════\n` +
+                    `📄 Input File: ${fileName}\n` +
+                    `📊 Total NCT IDs: ${data.total}\n` +
+                    `✓ Successful: ${data.successful}\n` +
+                    `✗ Failed: ${data.failed}\n` +
+                    `⏱ Processing Time: ${data.total_time_seconds}s\n` +
+                    `═══════════════════════════════════════════\n\n` +
+                    `📥 Download your annotated CSV:\n` +
+                    `${downloadUrl}\n` +
+                    `${errorSummary}\n` +
+                    `═══════════════════════════════════════════\n\n` +
+                    `💡 The output CSV includes columns:\n` +
+                    `  • Study Title, Status, Summary, Conditions, Drug\n` +
+                    `  • Phase, Enrollment, Start/Completion Dates\n` +
+                    `  • Classification, Delivery Mode, Outcome\n` +
+                    `  • Reason for Failure, Peptide (with Evidence)\n` +
+                    `  • Sequence, Study ID\n\n` +
+                    `═══════════════════════════════════════════\n\n` +
+                    `💡 Next:\n` +
+                    `  • Click the download link above\n` +
+                    `  • Upload another CSV for more annotations\n` +
+                    `  • Type "exit" to select a different model`;
+                
+                this.addMessage('chat-container', 'assistant', resultMessage);
+                
+                // Add clickable download button
+                this.addDownloadButton(downloadUrl, data.csv_filename);
+                
+                // Show upload UI again
+                setTimeout(() => {
+                    this.clearCSVFile();
+                    document.getElementById('csv-upload-container').style.display = 'block';
+                }, 500);
+                
+            } else {
+                const errorText = await response.text();
+                let errorData;
+                try {
+                    errorData = JSON.parse(errorText);
+                } catch {
+                    errorData = { detail: errorText };
+                }
+                
+                console.error('❌ CSV annotation failed:', errorData);
+                
+                this.addMessage('chat-container', 'error', 
+                    `❌ CSV Annotation Failed\n\n` +
+                    `Error: ${errorData.detail}\n\n` +
+                    `Possible Issues:\n` +
+                    `• No valid NCT IDs found in CSV\n` +
+                    `• Runner Service (port 9003) not running\n` +
+                    `• LLM Assistant (port 9004) not available\n\n` +
+                    `Make sure all services are running:\n` +
+                    `  ./start_all_services.sh`);
+                
+                // Show upload UI again
+                document.getElementById('csv-upload-container').style.display = 'block';
+            }
+            
+        } catch (error) {
+            document.getElementById(processingId)?.remove();
+            
+            console.error('❌ CSV upload error:', error);
+            
+            this.addMessage('chat-container', 'error', 
+                `❌ Connection Error\n\n` +
+                `${error.message}\n\n` +
+                `Cannot connect to Runner Service (port 9003).\n\n` +
+                `Make sure all services are running:\n` +
+                `  ./start_all_services.sh`);
+            
+            // Show upload UI again
+            document.getElementById('csv-upload-container').style.display = 'block';
+        }
+    },
+    
+    addDownloadButton(url, filename) {
+        const container = document.getElementById('chat-container');
+        
+        const downloadDiv = document.createElement('div');
+        downloadDiv.className = 'csv-download-section success-pulse';
+        downloadDiv.innerHTML = `
+            <div class="csv-download-icon">✅</div>
+            <div class="csv-download-title">Annotated CSV Ready!</div>
+            <div class="csv-download-info">${filename}</div>
+            <a href="${url}" download="${filename}" class="csv-download-btn" target="_blank">
+                <span class="csv-download-btn-icon">📥</span>
+                <span>Download CSV</span>
+            </a>
+        `;
+        
+        container.appendChild(downloadDiv);
+        
+        requestAnimationFrame(() => {
+            container.scrollTop = container.scrollHeight;
+        });
     },
 
     // =========================================================================
