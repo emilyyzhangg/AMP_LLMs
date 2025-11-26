@@ -590,6 +590,60 @@ async def delete_conversation(conversation_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/chat/annotate-csv")
+async def annotate_csv_proxy(
+    conversation_id: str,
+    model: str,
+    temperature: float = 0.15,
+    file: UploadFile = File(...)
+):
+    """
+    Proxy CSV annotation requests to chat service.
+    Forwards multipart form data for batch annotation of clinical trials.
+    """
+    try:
+        logger.info(f"📄 Proxying CSV annotation: {file.filename}")
+        logger.info(f"   conversation_id: {conversation_id}")
+        logger.info(f"   model: {model}")
+        
+        # Read file contents
+        contents = await file.read()
+        
+        # Forward to chat service with multipart form data
+        async with httpx.AsyncClient(timeout=1800.0) as client:  # 30 min timeout for large batches
+            # Build the multipart request
+            files = {"file": (file.filename, contents, "text/csv")}
+            params = {
+                "conversation_id": conversation_id,
+                "model": model,
+                "temperature": str(temperature)
+            }
+            
+            response = await client.post(
+                f"{CHAT_SERVICE_URL}/chat/annotate-csv",
+                params=params,
+                files=files
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                logger.info(f"✅ CSV annotation complete: {result.get('total', 0)} trials")
+                return result
+            else:
+                error_detail = response.text
+                logger.error(f"❌ CSV annotation failed: {error_detail}")
+                raise HTTPException(status_code=response.status_code, detail=error_detail)
+    
+    except HTTPException:
+        raise
+    except httpx.TimeoutException:
+        logger.error("CSV annotation timed out")
+        raise HTTPException(status_code=504, detail="CSV annotation timed out - try with fewer NCT IDs")
+    except Exception as e:
+        logger.error(f"Error in CSV annotation proxy: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # ============================================================================
 # Legacy Chat Endpoint (for backward compatibility)
 # ============================================================================
