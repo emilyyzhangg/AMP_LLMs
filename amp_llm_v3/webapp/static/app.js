@@ -2171,6 +2171,9 @@ const app = {
         const fileName = file.name;
         
         console.log(`📤 Uploading CSV for annotation: ${fileName}`);
+        console.log(`   Conversation ID: ${this.currentConversationId}`);
+        console.log(`   Model: ${this.currentModel}`);
+        console.log(`   API Base: ${this.API_BASE}`);
         
         // Hide upload UI and show processing message
         document.getElementById('csv-upload-container').style.display = 'none';
@@ -2200,14 +2203,19 @@ const app = {
                 temperature: '0.15'
             });
             
+            const url = `${this.API_BASE}/chat/annotate-csv?${params}`;
+            console.log(`📤 Sending CSV to: ${url}`);
+            
             // Send to Chat Service CSV endpoint (which forwards to Runner)
-            const response = await fetch(`${this.API_BASE}/chat/annotate-csv?${params}`, {
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.apiKey}`
                 },
                 body: formData
             });
+            
+            console.log(`📥 Response status: ${response.status}`);
             
             const endTime = Date.now();
             const duration = ((endTime - startTime) / 1000).toFixed(1);
@@ -2232,8 +2240,11 @@ const app = {
                     }
                 }
                 
-                // Use the download URL from response (already includes full path)
-                const downloadUrl = data.download_url;
+                // Use the download URL from response - make it absolute if relative
+                let downloadUrl = data.download_url;
+                if (downloadUrl.startsWith('/')) {
+                    downloadUrl = `${this.API_BASE}${downloadUrl}`;
+                }
                 
                 const resultMessage = `✅ CSV Annotation Complete\n\n` +
                     `═══════════════════════════════════════════\n` +
@@ -2299,11 +2310,18 @@ const app = {
             document.getElementById(processingId)?.remove();
             
             console.error('❌ CSV upload error:', error);
+            console.error('   Error name:', error.name);
+            console.error('   Error message:', error.message);
             
             this.addMessage('chat-container', 'error', 
                 `❌ Connection Error\n\n` +
-                `${error.message}\n\n` +
-                `Cannot connect to Chat Service.\n\n` +
+                `Error: ${error.message}\n\n` +
+                `This usually means:\n` +
+                `• The Chat Service (port 9001) is not running\n` +
+                `• There's a network/CORS issue\n\n` +
+                `Debug info:\n` +
+                `• API Base: ${this.API_BASE}\n` +
+                `• Conversation ID: ${this.currentConversationId}\n\n` +
                 `Make sure all services are running:\n` +
                 `  ./start_all_services.sh`);
             

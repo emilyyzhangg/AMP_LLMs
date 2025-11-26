@@ -628,6 +628,16 @@ async def annotate_csv_proxy(
             if response.status_code == 200:
                 result = response.json()
                 logger.info(f"✅ CSV annotation complete: {result.get('total', 0)} trials")
+                
+                # Fix download URL to go through this proxy instead of direct to runner
+                if 'download_url' in result:
+                    # Replace localhost:9003 with relative path
+                    original_url = result['download_url']
+                    # Extract just the filename from the URL
+                    if '/download-csv/' in original_url:
+                        filename = original_url.split('/download-csv/')[-1]
+                        result['download_url'] = f"/chat/download-csv/{filename}"
+                
                 return result
             else:
                 error_detail = response.text
@@ -641,6 +651,42 @@ async def annotate_csv_proxy(
         raise HTTPException(status_code=504, detail="CSV annotation timed out - try with fewer NCT IDs")
     except Exception as e:
         logger.error(f"Error in CSV annotation proxy: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+RUNNER_SERVICE_URL = "http://localhost:9003"
+
+@app.get("/chat/download-csv/{filename}")
+async def download_csv_proxy(filename: str):
+    """
+    Proxy CSV download requests to runner service.
+    This allows downloads to work through Cloudflare/external access.
+    """
+    try:
+        # Security: only allow .csv files, no path traversal
+        if not filename.endswith('.csv') or '/' in filename or '\\' in filename:
+            raise HTTPException(status_code=400, detail="Invalid filename")
+        
+        logger.info(f"📥 Proxying CSV download: {filename}")
+        
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            response = await client.get(f"{RUNNER_SERVICE_URL}/download-csv/{filename}")
+            
+            if response.status_code == 200:
+                return Response(
+                    content=response.content,
+                    media_type="text/csv",
+                    headers={
+                        "Content-Disposition": f"attachment; filename={filename}"
+                    }
+                )
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error downloading CSV: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
