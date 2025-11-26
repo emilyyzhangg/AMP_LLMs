@@ -2171,9 +2171,6 @@ const app = {
         const fileName = file.name;
         
         console.log(`📤 Uploading CSV for annotation: ${fileName}`);
-        console.log(`   Conversation ID: ${this.currentConversationId}`);
-        console.log(`   Model: ${this.currentModel}`);
-        console.log(`   API Base: ${this.API_BASE}`);
         
         // Hide upload UI and show processing message
         document.getElementById('csv-upload-container').style.display = 'none';
@@ -2181,22 +2178,13 @@ const app = {
         this.addMessage('chat-container', 'user', `📄 Upload CSV: ${fileName}`);
         
         const processingId = this.addMessage('chat-container', 'system', 
-            `🔄 Processing CSV: ${fileName}\n\n` +
-            `Steps:\n` +
-            `1. Extracting NCT IDs from CSV\n` +
-            `2. Fetching trial data for each ID\n` +
-            `3. Generating annotations with LLM\n` +
-            `4. Creating output CSV\n\n` +
-            `⏳ This may take several minutes for large files...`);
-        
-        const startTime = Date.now();
+            `🔄 Starting CSV annotation: ${fileName}\n\n` +
+            `⏳ Submitting job...`);
         
         try {
-            // Create form data
             const formData = new FormData();
             formData.append('file', file);
             
-            // Build URL with query parameters
             const params = new URLSearchParams({
                 conversation_id: this.currentConversationId,
                 model: this.currentModel,
@@ -2206,128 +2194,120 @@ const app = {
             const url = `${this.API_BASE}/chat/annotate-csv?${params}`;
             console.log(`📤 Sending CSV to: ${url}`);
             
-            // Send to Chat Service CSV endpoint (which forwards to Runner)
             const response = await fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${this.apiKey}`
-                },
+                headers: { 'Authorization': `Bearer ${this.apiKey}` },
                 body: formData
             });
             
-            console.log(`📥 Response status: ${response.status}`);
-            
-            const endTime = Date.now();
-            const duration = ((endTime - startTime) / 1000).toFixed(1);
-            
-            // Remove processing message
-            document.getElementById(processingId)?.remove();
-            
             if (response.ok) {
                 const data = await response.json();
+                console.log('✅ Job response:', data);
                 
-                console.log('✅ CSV annotation response:', data);
-                
-                // Build error summary if any
-                let errorSummary = '';
-                if (data.errors && data.errors.length > 0) {
-                    errorSummary = '\n\n⚠️ Errors:\n';
-                    data.errors.slice(0, 5).forEach(err => {
-                        errorSummary += `  • ${err.nct_id}: ${err.error}\n`;
-                    });
-                    if (data.errors.length > 5) {
-                        errorSummary += `  ... and ${data.errors.length - 5} more errors\n`;
-                    }
+                if (data.job_id) {
+                    // Async mode - poll for status
+                    this.updateProcessingMessage(processingId, 
+                        `🔄 Processing CSV: ${fileName}\n\nJob ID: ${data.job_id}\n\n⏳ Generating annotations...`);
+                    await this.pollCSVAnnotationStatus(data.job_id, processingId, fileName);
+                } else {
+                    // Sync response (fallback)
+                    document.getElementById(processingId)?.remove();
+                    this.handleCSVAnnotationResult(data, fileName);
                 }
-                
-                // Use the download URL from response - make it absolute if relative
-                let downloadUrl = data.download_url;
-                if (downloadUrl.startsWith('/')) {
-                    downloadUrl = `${this.API_BASE}${downloadUrl}`;
-                }
-                
-                const resultMessage = `✅ CSV Annotation Complete\n\n` +
-                    `═══════════════════════════════════════════\n` +
-                    `📄 Input File: ${fileName}\n` +
-                    `📊 Total NCT IDs: ${data.total}\n` +
-                    `✓ Successful: ${data.successful}\n` +
-                    `✗ Failed: ${data.failed}\n` +
-                    `⏱ Processing Time: ${data.total_time_seconds}s\n` +
-                    `═══════════════════════════════════════════\n\n` +
-                    `📥 Download your annotated CSV:\n` +
-                    `${downloadUrl}\n` +
-                    `${errorSummary}\n` +
-                    `═══════════════════════════════════════════\n\n` +
-                    `💡 The output CSV includes columns:\n` +
-                    `  • Study Title, Status, Summary, Conditions, Drug\n` +
-                    `  • Phase, Enrollment, Start/Completion Dates\n` +
-                    `  • Classification, Delivery Mode, Outcome\n` +
-                    `  • Reason for Failure, Peptide (with Evidence)\n` +
-                    `  • Sequence, Study ID\n\n` +
-                    `═══════════════════════════════════════════\n\n` +
-                    `💡 Next:\n` +
-                    `  • Click the download link above\n` +
-                    `  • Upload another CSV for more annotations\n` +
-                    `  • Type "exit" to select a different model`;
-                
-                this.addMessage('chat-container', 'assistant', resultMessage);
-                
-                // Add clickable download button
-                this.addDownloadButton(downloadUrl, data.csv_filename);
-                
-                // Show upload UI again
-                setTimeout(() => {
-                    this.clearCSVFile();
-                    document.getElementById('csv-upload-container').style.display = 'block';
-                }, 500);
-                
             } else {
                 const errorText = await response.text();
-                let errorData;
-                try {
-                    errorData = JSON.parse(errorText);
-                } catch {
-                    errorData = { detail: errorText };
-                }
-                
-                console.error('❌ CSV annotation failed:', errorData);
-                
-                this.addMessage('chat-container', 'error', 
-                    `❌ CSV Annotation Failed\n\n` +
-                    `Error: ${errorData.detail}\n\n` +
-                    `Possible Issues:\n` +
-                    `• No valid NCT IDs found in CSV\n` +
-                    `• Runner Service (port 9003) not running\n` +
-                    `• LLM Assistant (port 9004) not available\n\n` +
-                    `Make sure all services are running:\n` +
-                    `  ./start_all_services.sh`);
-                
-                // Show upload UI again
+                document.getElementById(processingId)?.remove();
+                this.addMessage('chat-container', 'error', `❌ CSV Annotation Failed\n\nError: ${errorText}`);
                 document.getElementById('csv-upload-container').style.display = 'block';
             }
-            
         } catch (error) {
             document.getElementById(processingId)?.remove();
-            
-            console.error('❌ CSV upload error:', error);
-            console.error('   Error name:', error.name);
-            console.error('   Error message:', error.message);
-            
-            this.addMessage('chat-container', 'error', 
-                `❌ Connection Error\n\n` +
-                `Error: ${error.message}\n\n` +
-                `This usually means:\n` +
-                `• The Chat Service (port 9001) is not running\n` +
-                `• There's a network/CORS issue\n\n` +
-                `Debug info:\n` +
-                `• API Base: ${this.API_BASE}\n` +
-                `• Conversation ID: ${this.currentConversationId}\n\n` +
-                `Make sure all services are running:\n` +
-                `  ./start_all_services.sh`);
-            
-            // Show upload UI again
+            this.addMessage('chat-container', 'error', `❌ Connection Error\n\n${error.message}`);
             document.getElementById('csv-upload-container').style.display = 'block';
         }
+    },
+    
+    updateProcessingMessage(messageId, newContent) {
+        const msgElement = document.getElementById(messageId);
+        if (msgElement) {
+            const contentDiv = msgElement.querySelector('.message-content');
+            if (contentDiv) contentDiv.textContent = newContent;
+        }
+    },
+    
+    async pollCSVAnnotationStatus(jobId, processingId, fileName) {
+        const pollInterval = 3000;
+        const maxPolls = 600;
+        let pollCount = 0;
+        
+        const poll = async () => {
+            try {
+                const response = await fetch(`${this.API_BASE}/chat/annotate-csv-status/${jobId}`, {
+                    headers: { 'Authorization': `Bearer ${this.apiKey}` }
+                });
+                
+                if (!response.ok) throw new Error(`Status check failed: ${response.status}`);
+                
+                const status = await response.json();
+                console.log(`📊 Job status:`, status);
+                
+                if (status.status === 'completed') {
+                    document.getElementById(processingId)?.remove();
+                    this.handleCSVAnnotationResult(status.result, fileName);
+                } else if (status.status === 'failed') {
+                    document.getElementById(processingId)?.remove();
+                    this.addMessage('chat-container', 'error', `❌ Annotation Failed\n\n${status.error || 'Unknown error'}`);
+                    document.getElementById('csv-upload-container').style.display = 'block';
+                } else {
+                    pollCount++;
+                    const elapsed = Math.round(pollCount * pollInterval / 1000);
+                    this.updateProcessingMessage(processingId, 
+                        `🔄 Processing: ${fileName}\n\nStatus: ${status.progress || 'Processing...'}\nElapsed: ${elapsed}s`);
+                    if (pollCount < maxPolls) setTimeout(poll, pollInterval);
+                }
+            } catch (error) {
+                pollCount++;
+                if (pollCount < maxPolls) setTimeout(poll, pollInterval);
+            }
+        };
+        
+        setTimeout(poll, pollInterval);
+    },
+    
+    handleCSVAnnotationResult(data, fileName) {
+        let errorSummary = '';
+        if (data.errors && data.errors.length > 0) {
+            errorSummary = '\n\n⚠️ Errors:\n';
+            data.errors.slice(0, 5).forEach(err => {
+                errorSummary += `  • ${err.nct_id}: ${err.error}\n`;
+            });
+        }
+        
+        let downloadUrl = data.download_url;
+        if (downloadUrl && downloadUrl.startsWith('/')) {
+            downloadUrl = `${this.API_BASE}${downloadUrl}`;
+        }
+        
+        const resultMessage = `✅ CSV Annotation Complete\n\n` +
+            `═══════════════════════════════════════════\n` +
+            `📄 Input File: ${fileName}\n` +
+            `📊 Total NCT IDs: ${data.total}\n` +
+            `✓ Successful: ${data.successful}\n` +
+            `✗ Failed: ${data.failed}\n` +
+            `⏱ Processing Time: ${data.total_time_seconds}s\n` +
+            `═══════════════════════════════════════════${errorSummary}\n\n` +
+            `💡 Click the download button below to get your CSV`;
+        
+        this.addMessage('chat-container', 'assistant', resultMessage);
+        
+        if (downloadUrl) {
+            this.addDownloadButton(downloadUrl, data.csv_filename || 'annotations.csv');
+        }
+        
+        setTimeout(() => {
+            this.clearCSVFile();
+            document.getElementById('csv-upload-container').style.display = 'block';
+        }, 500);
     },
     
     addDownloadButton(url, filename) {

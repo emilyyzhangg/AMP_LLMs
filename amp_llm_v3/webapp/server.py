@@ -594,25 +594,75 @@ async def delete_conversation(conversation_id: str):
 async def annotate_csv_proxy(
     conversation_id: str,
     model: str,
+    background_tasks: BackgroundTasks,
     temperature: float = 0.15,
     file: UploadFile = File(...)
 ):
     """
-    Proxy CSV annotation requests to chat service.
-    Forwards multipart form data for batch annotation of clinical trials.
+    Start async CSV annotation job. Returns immediately with job_id.
+    Poll /chat/annotate-csv-status/{job_id} for progress.
     """
+    import uuid
+    
     try:
-        logger.info(f"📄 Proxying CSV annotation: {file.filename}")
-        logger.info(f"   conversation_id: {conversation_id}")
-        logger.info(f"   model: {model}")
+        logger.info(f"📄 Starting async CSV annotation: {file.filename}")
+        
+        # Generate job ID
+        job_id = str(uuid.uuid4())
         
         # Read file contents
         contents = await file.read()
+        filename = file.filename
         
-        # Forward to chat service with multipart form data
-        async with httpx.AsyncClient(timeout=1800.0) as client:  # 30 min timeout for large batches
-            # Build the multipart request
-            files = {"file": (file.filename, contents, "text/csv")}
+        # Initialize job status
+        csv_annotation_jobs[job_id] = {
+            "status": "processing",
+            "filename": filename,
+            "conversation_id": conversation_id,
+            "model": model,
+            "started_at": datetime.now().isoformat(),
+            "progress": "Starting annotation...",
+            "result": None,
+            "error": None
+        }
+        
+        # Start background task
+        background_tasks.add_task(
+            process_csv_annotation,
+            job_id, contents, filename, conversation_id, model, temperature
+        )
+        
+        logger.info(f"✅ Job started: {job_id}")
+        
+        return {
+            "job_id": job_id,
+            "status": "processing",
+            "message": "CSV annotation started. Poll /chat/annotate-csv-status/{job_id} for progress."
+        }
+    
+    except Exception as e:
+        logger.error(f"Error starting CSV annotation: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Store for async jobs
+csv_annotation_jobs: Dict[str, Dict[str, Any]] = {}
+
+
+async def process_csv_annotation(
+    job_id: str,
+    contents: bytes,
+    filename: str,
+    conversation_id: str,
+    model: str,
+    temperature: float
+):
+    """Background task to process CSV annotation."""
+    try:
+        csv_annotation_jobs[job_id]["progress"] = "Sending to annotation service..."
+        
+        async with httpx.AsyncClient(timeout=1800.0) as client:
+            files = {"file": (filename, contents, "text/csv")}
             params = {
                 "conversation_id": conversation_id,
                 "model": model,
@@ -627,31 +677,65 @@ async def annotate_csv_proxy(
             
             if response.status_code == 200:
                 result = response.json()
-                logger.info(f"✅ CSV annotation complete: {result.get('total', 0)} trials")
                 
-                # Fix download URL to go through this proxy instead of direct to runner
+                # Fix download URL to use proxy
                 if 'download_url' in result:
-                    # Replace localhost:9003 with relative path
                     original_url = result['download_url']
-                    # Extract just the filename from the URL
                     if '/download-csv/' in original_url:
-                        filename = original_url.split('/download-csv/')[-1]
-                        result['download_url'] = f"/chat/download-csv/{filename}"
+                        csv_filename = original_url.split('/download-csv/')[-1]
+                        result['download_url'] = f"/chat/download-csv/{csv_filename}"
                 
-                return result
+                csv_annotation_jobs[job_id].update({
+                    "status": "completed",
+                    "progress": "Annotation complete!",
+                    "result": result,
+                    "completed_at": datetime.now().isoformat()
+                })
+                logger.info(f"✅ Job {job_id} completed: {result.get('total', 0)} trials")
             else:
-                error_detail = response.text
-                logger.error(f"❌ CSV annotation failed: {error_detail}")
-                raise HTTPException(status_code=response.status_code, detail=error_detail)
+                error_msg = response.text
+                csv_annotation_jobs[job_id].update({
+                    "status": "failed",
+                    "progress": "Annotation failed",
+                    "error": error_msg,
+                    "completed_at": datetime.now().isoformat()
+                })
+                logger.error(f"❌ Job {job_id} failed: {error_msg}")
     
-    except HTTPException:
-        raise
-    except httpx.TimeoutException:
-        logger.error("CSV annotation timed out")
-        raise HTTPException(status_code=504, detail="CSV annotation timed out - try with fewer NCT IDs")
     except Exception as e:
-        logger.error(f"Error in CSV annotation proxy: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+        csv_annotation_jobs[job_id].update({
+            "status": "failed",
+            "progress": "Annotation failed",
+            "error": str(e),
+            "completed_at": datetime.now().isoformat()
+        })
+        logger.error(f"❌ Job {job_id} error: {e}", exc_info=True)
+
+
+@app.get("/chat/annotate-csv-status/{job_id}")
+async def get_csv_annotation_status(job_id: str):
+    """Get status of async CSV annotation job."""
+    if job_id not in csv_annotation_jobs:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    job = csv_annotation_jobs[job_id]
+    
+    response = {
+        "job_id": job_id,
+        "status": job["status"],
+        "progress": job["progress"],
+        "filename": job["filename"],
+        "started_at": job["started_at"]
+    }
+    
+    if job["status"] == "completed":
+        response["result"] = job["result"]
+        response["completed_at"] = job.get("completed_at")
+    elif job["status"] == "failed":
+        response["error"] = job["error"]
+        response["completed_at"] = job.get("completed_at")
+    
+    return response
 
 
 RUNNER_SERVICE_URL = "http://localhost:9003"
