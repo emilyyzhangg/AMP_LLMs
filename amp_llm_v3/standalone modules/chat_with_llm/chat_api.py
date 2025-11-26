@@ -118,6 +118,22 @@ class AnnotationSummary(BaseModel):
     processing_time_seconds: float
 
 
+class CSVAnnotationResponse(BaseModel):
+    """Response for CSV batch annotation"""
+    conversation_id: str
+    message: ChatMessage
+    model: str
+    annotation_mode: bool = True
+    # CSV-specific fields
+    csv_filename: str
+    download_url: str
+    total: int
+    successful: int
+    failed: int
+    total_time_seconds: float
+    errors: List[dict] = []
+
+
 # ============================================================================
 # Helper Functions
 # ============================================================================
@@ -490,12 +506,18 @@ The output CSV includes columns:
             "content": response_content
         })
         
-        return ChatResponse(
+        return CSVAnnotationResponse(
             conversation_id=conversation_id,
             message=ChatMessage(role="assistant", content=response_content),
             model=model,
             annotation_mode=True,
-            processing_time_seconds=result['total_time_seconds']
+            csv_filename=result.get('csv_filename', 'annotations.csv'),
+            download_url=download_url,
+            total=result['total'],
+            successful=result['successful'],
+            failed=result['failed'],
+            total_time_seconds=result['total_time_seconds'],
+            errors=result.get('errors', [])
         )
         
     except HTTPException:

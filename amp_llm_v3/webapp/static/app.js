@@ -2192,12 +2192,20 @@ const app = {
             // Create form data
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('model', this.currentModel);
-            formData.append('temperature', '0.15');
             
-            // Send to Runner Service CSV endpoint
-            const response = await fetch(`http://localhost:9003/annotate-csv`, {
+            // Build URL with query parameters
+            const params = new URLSearchParams({
+                conversation_id: this.currentConversationId,
+                model: this.currentModel,
+                temperature: '0.15'
+            });
+            
+            // Send to Chat Service CSV endpoint (which forwards to Runner)
+            const response = await fetch(`${this.API_BASE}/chat/annotate-csv?${params}`, {
                 method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.apiKey}`
+                },
                 body: formData
             });
             
@@ -2224,8 +2232,8 @@ const app = {
                     }
                 }
                 
-                // Create download link
-                const downloadUrl = `http://localhost:9003${data.download_url}`;
+                // Use the download URL from response (already includes full path)
+                const downloadUrl = data.download_url;
                 
                 const resultMessage = `✅ CSV Annotation Complete\n\n` +
                     `═══════════════════════════════════════════\n` +
@@ -2295,7 +2303,7 @@ const app = {
             this.addMessage('chat-container', 'error', 
                 `❌ Connection Error\n\n` +
                 `${error.message}\n\n` +
-                `Cannot connect to Runner Service (port 9003).\n\n` +
+                `Cannot connect to Chat Service.\n\n` +
                 `Make sure all services are running:\n` +
                 `  ./start_all_services.sh`);
             
