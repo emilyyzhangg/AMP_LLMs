@@ -915,26 +915,13 @@ async def annotate_csv(
         
         try:
             # Get data (from file or fetch)
-            file_path, data = find_nct_file(nct_id)
-            
-            if file_path and data:
-                source = "file"
-            else:
-                # Fetch from NCT service
-                data = await fetch_nct_data(nct_id)
-                source = "fetched"
-                
-                if data:
-                    # Save for future use
-                    save_path = RESULTS_DIR / f"{nct_id}.json"
-                    with open(save_path, 'w') as f:
-                        json.dump(data, f, indent=2)
+            data, source, file_path, fetch_error = await get_or_fetch_nct_data(nct_id)
             
             if not data:
                 failed += 1
                 errors.append({
                     "nct_id": nct_id,
-                    "error": "Could not fetch trial data"
+                    "error": fetch_error or "Could not fetch trial data"
                 })
                 results.append(AnnotationResult(
                     nct_id=nct_id,
@@ -944,7 +931,7 @@ async def annotate_csv(
                     status="error",
                     source="none",
                     processing_time_seconds=0,
-                    error="Could not fetch trial data"
+                    error=fetch_error or "Could not fetch trial data"
                 ))
                 continue
             
