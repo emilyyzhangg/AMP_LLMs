@@ -3869,7 +3869,7 @@ body[data-theme="dark"] .annotation-mode-tab:hover {
 .csv-download-section.success-pulse {
     animation: csv-success-pulse 1s ease-out;
 }
-
+/* Progress Container */
 .csv-progress-container {
     background: var(--bg-secondary, #f8f9fa);
     border: 2px solid var(--border, #e0e6e8);
