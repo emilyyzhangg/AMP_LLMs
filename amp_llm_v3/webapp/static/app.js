@@ -2258,49 +2258,29 @@ const app = {
                 this.updateProgressBar(processingId, status, elapsed);
                 
                 if (status.status === 'completed') {
-                    // Mark progress as complete
                     this.completeProgressBar(processingId);
-                    
-                    // Short delay then show results
                     setTimeout(() => {
                         document.getElementById(processingId)?.remove();
                         this.handleCSVAnnotationResult(status.result, fileName);
                     }, 1000);
-                    
                 } else if (status.status === 'failed') {
-                    // Mark progress as failed
                     this.failProgressBar(processingId, status.error);
-                    
                     setTimeout(() => {
                         document.getElementById(processingId)?.remove();
                         this.addMessage('chat-container', 'error', `❌ Annotation Failed\n\n${status.error || 'Unknown error'}`);
                         document.getElementById('csv-upload-container').style.display = 'block';
                     }, 2000);
-                    
                 } else {
-                    // Still processing - continue polling
                     pollCount++;
-                    if (pollCount < maxPolls) {
-                        setTimeout(poll, pollInterval);
-                    } else {
-                        this.failProgressBar(processingId, 'Polling timeout - job may still be running');
-                    }
+                    if (pollCount < maxPolls) setTimeout(poll, pollInterval);
                 }
             } catch (error) {
                 console.warn(`Poll error (attempt ${pollCount}):`, error);
                 pollCount++;
-                
-                // Update progress bar to show connection issue
-                const elapsed = Math.round((Date.now() - startTime) / 1000);
-                this.updateProgressBarStatus(processingId, 'Reconnecting...', elapsed);
-                
-                if (pollCount < maxPolls) {
-                    setTimeout(poll, pollInterval);
-                }
+                if (pollCount < maxPolls) setTimeout(poll, pollInterval);
             }
         };
         
-        // Start polling after a short delay
         setTimeout(poll, pollInterval);
     },
 
@@ -2310,9 +2290,6 @@ const app = {
         
         const contentDiv = container.querySelector('.message-content');
         if (!contentDiv) return;
-        
-        // Store total for later updates
-        container.dataset.totalTrials = totalTrials || 0;
         
         contentDiv.innerHTML = `
             <div class="csv-progress-container" id="progress-${containerId}">
@@ -2328,13 +2305,11 @@ const app = {
                         <span>trials</span>
                     </div>
                 </div>
-                
                 <div class="csv-progress-bar-container">
                     <div class="csv-progress-bar" id="progress-bar-${containerId}" style="width: 0%">
                         <span class="csv-progress-percent" id="progress-percent-${containerId}">0%</span>
                     </div>
                 </div>
-                
                 <div class="csv-progress-info">
                     <div class="csv-progress-status">
                         <span class="status-icon">🔄</span>
@@ -2343,11 +2318,6 @@ const app = {
                     <div class="csv-progress-elapsed">
                         <span id="progress-elapsed-${containerId}">0:00</span>
                     </div>
-                </div>
-                
-                <div class="csv-progress-current-trial" id="progress-trial-${containerId}" style="display: none;">
-                    <span>📝 Currently processing:</span>
-                    <span class="nct-id" id="progress-nct-${containerId}">-</span>
                 </div>
             </div>
         `;
@@ -2358,63 +2328,22 @@ const app = {
         const total = status.total_trials || 0;
         const progress = status.progress || 'Processing...';
         
-        // Update total if we now have it
         const totalEl = document.getElementById(`progress-total-${containerId}`);
-        if (totalEl && total > 0) {
-            totalEl.textContent = total;
-        }
+        if (totalEl && total > 0) totalEl.textContent = total;
         
-        // Update current count
         const currentEl = document.getElementById(`progress-current-${containerId}`);
-        if (currentEl) {
-            currentEl.textContent = processed;
-        }
+        if (currentEl) currentEl.textContent = processed;
         
-        // Calculate percentage
         const percent = total > 0 ? Math.round((processed / total) * 100) : 0;
         
-        // Update progress bar width
         const barEl = document.getElementById(`progress-bar-${containerId}`);
-        if (barEl) {
-            barEl.style.width = `${percent}%`;
-        }
+        if (barEl) barEl.style.width = `${percent}%`;
         
-        // Update percentage text
         const percentEl = document.getElementById(`progress-percent-${containerId}`);
-        if (percentEl) {
-            percentEl.textContent = `${percent}%`;
-        }
+        if (percentEl) percentEl.textContent = `${percent}%`;
         
-        // Update status text
         const statusEl = document.getElementById(`progress-status-${containerId}`);
-        if (statusEl) {
-            statusEl.textContent = progress;
-        }
-        
-        // Update elapsed time
-        const elapsedEl = document.getElementById(`progress-elapsed-${containerId}`);
-        if (elapsedEl) {
-            const mins = Math.floor(elapsedSeconds / 60);
-            const secs = elapsedSeconds % 60;
-            elapsedEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-        
-        // Extract and show current NCT ID if in progress message
-        const nctMatch = progress.match(/(NCT\d{8})/i);
-        const trialContainer = document.getElementById(`progress-trial-${containerId}`);
-        const nctEl = document.getElementById(`progress-nct-${containerId}`);
-        
-        if (nctMatch && trialContainer && nctEl) {
-            trialContainer.style.display = 'flex';
-            nctEl.textContent = nctMatch[1].toUpperCase();
-        }
-    },
-
-    updateProgressBarStatus(containerId, statusText, elapsedSeconds) {
-        const statusEl = document.getElementById(`progress-status-${containerId}`);
-        if (statusEl) {
-            statusEl.textContent = statusText;
-        }
+        if (statusEl) statusEl.textContent = progress;
         
         const elapsedEl = document.getElementById(`progress-elapsed-${containerId}`);
         if (elapsedEl) {
@@ -2426,48 +2355,24 @@ const app = {
 
     completeProgressBar(containerId) {
         const progressContainer = document.getElementById(`progress-${containerId}`);
-        if (progressContainer) {
-            progressContainer.classList.add('completed');
-        }
+        if (progressContainer) progressContainer.classList.add('completed');
         
         const barEl = document.getElementById(`progress-bar-${containerId}`);
-        if (barEl) {
-            barEl.style.width = '100%';
-        }
+        if (barEl) barEl.style.width = '100%';
         
         const percentEl = document.getElementById(`progress-percent-${containerId}`);
-        if (percentEl) {
-            percentEl.textContent = '100%';
-        }
+        if (percentEl) percentEl.textContent = '100%';
         
         const statusEl = document.getElementById(`progress-status-${containerId}`);
-        if (statusEl) {
-            statusEl.textContent = 'Complete!';
-        }
-        
-        // Hide current trial indicator
-        const trialContainer = document.getElementById(`progress-trial-${containerId}`);
-        if (trialContainer) {
-            trialContainer.style.display = 'none';
-        }
+        if (statusEl) statusEl.textContent = 'Complete!';
     },
 
     failProgressBar(containerId, errorMessage) {
         const progressContainer = document.getElementById(`progress-${containerId}`);
-        if (progressContainer) {
-            progressContainer.classList.add('failed');
-        }
+        if (progressContainer) progressContainer.classList.add('failed');
         
         const statusEl = document.getElementById(`progress-status-${containerId}`);
-        if (statusEl) {
-            statusEl.textContent = errorMessage || 'Failed';
-        }
-        
-        // Hide current trial indicator
-        const trialContainer = document.getElementById(`progress-trial-${containerId}`);
-        if (trialContainer) {
-            trialContainer.style.display = 'none';
-        }
+        if (statusEl) statusEl.textContent = errorMessage || 'Failed';
     },
         
     handleCSVAnnotationResult(data, fileName) {
