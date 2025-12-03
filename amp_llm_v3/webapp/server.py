@@ -298,12 +298,13 @@ class FileContentResponse(BaseModel):
 class InitChatRequest(BaseModel):
     model: str
     conversation_id: Optional[str] = None
-
+    annotation_mode: bool = False  
 
 class ChatMessageRequest(BaseModel):
     conversation_id: str
     message: str
     temperature: float = 0.7
+    nct_ids: Optional[List[str]] = None  
 
 
 class ExtractRequest(BaseModel):
@@ -467,14 +468,14 @@ async def list_models():
         logger.error("Timeout connecting to chat service for /models")
         raise HTTPException(
             status_code=503,
-            detail="Chat service timeout - is it running on port 8001?"
+            detail="Chat service timeout - is it running on port 9001?"
         )
     except httpx.ConnectError:
         logger.error("Connection refused to chat service for /models")
         raise HTTPException(
             status_code=503,
-            detail="Cannot connect to chat service on port 8001. "
-                   "Start it with: cd 'standalone modules/chat_with_llm' && uvicorn chat_api:app --port 8001 --reload"
+            detail="Cannot connect to chat service on port 9001. "
+                   "Start it with: cd 'standalone modules/chat_with_llm' && uvicorn chat_api:app --port 9001 --reload"
         )
     except HTTPException:
         raise
@@ -586,6 +587,190 @@ async def delete_conversation(conversation_id: str):
     except HTTPException:
         raise
     except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/chat/annotate-csv")
+async def annotate_csv_proxy(
+    conversation_id: str,
+    model: str,
+    background_tasks: BackgroundTasks,
+    temperature: float = 0.15,
+    file: UploadFile = File(...)
+):
+    """
+    Start async CSV annotation job. Returns immediately with job_id.
+    Poll /chat/annotate-csv-status/{job_id} for progress.
+    """
+    import uuid
+    
+    try:
+        logger.info(f"📄 Starting async CSV annotation: {file.filename}")
+        
+        # Generate job ID
+        job_id = str(uuid.uuid4())
+        
+        # Read file contents
+        contents = await file.read()
+        filename = file.filename
+        
+        # Initialize job status
+        csv_annotation_jobs[job_id] = {
+            "status": "processing",
+            "filename": filename,
+            "conversation_id": conversation_id,
+            "model": model,
+            "started_at": datetime.now().isoformat(),
+            "progress": "Starting annotation...",
+            "result": None,
+            "error": None
+        }
+        
+        # Start background task
+        background_tasks.add_task(
+            process_csv_annotation,
+            job_id, contents, filename, conversation_id, model, temperature
+        )
+        
+        logger.info(f"✅ Job started: {job_id}")
+        
+        return {
+            "job_id": job_id,
+            "status": "processing",
+            "message": "CSV annotation started. Poll /chat/annotate-csv-status/{job_id} for progress."
+        }
+    
+    except Exception as e:
+        logger.error(f"Error starting CSV annotation: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Store for async jobs
+csv_annotation_jobs: Dict[str, Dict[str, Any]] = {}
+
+
+async def process_csv_annotation(
+    job_id: str,
+    contents: bytes,
+    filename: str,
+    conversation_id: str,
+    model: str,
+    temperature: float
+):
+    """Background task to process CSV annotation."""
+    try:
+        csv_annotation_jobs[job_id]["progress"] = "Sending to annotation service..."
+        
+        async with httpx.AsyncClient(timeout=1800.0) as client:
+            files = {"file": (filename, contents, "text/csv")}
+            params = {
+                "conversation_id": conversation_id,
+                "model": model,
+                "temperature": str(temperature)
+            }
+            
+            response = await client.post(
+                f"{CHAT_SERVICE_URL}/chat/annotate-csv",
+                params=params,
+                files=files
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                
+                # Fix download URL to use proxy
+                if 'download_url' in result:
+                    original_url = result['download_url']
+                    if '/download-csv/' in original_url:
+                        csv_filename = original_url.split('/download-csv/')[-1]
+                        result['download_url'] = f"/chat/download-csv/{csv_filename}"
+                
+                csv_annotation_jobs[job_id].update({
+                    "status": "completed",
+                    "progress": "Annotation complete!",
+                    "result": result,
+                    "completed_at": datetime.now().isoformat()
+                })
+                logger.info(f"✅ Job {job_id} completed: {result.get('total', 0)} trials")
+            else:
+                error_msg = response.text
+                csv_annotation_jobs[job_id].update({
+                    "status": "failed",
+                    "progress": "Annotation failed",
+                    "error": error_msg,
+                    "completed_at": datetime.now().isoformat()
+                })
+                logger.error(f"❌ Job {job_id} failed: {error_msg}")
+    
+    except Exception as e:
+        csv_annotation_jobs[job_id].update({
+            "status": "failed",
+            "progress": "Annotation failed",
+            "error": str(e),
+            "completed_at": datetime.now().isoformat()
+        })
+        logger.error(f"❌ Job {job_id} error: {e}", exc_info=True)
+
+
+@app.get("/chat/annotate-csv-status/{job_id}")
+async def get_csv_annotation_status(job_id: str):
+    """Get status of async CSV annotation job."""
+    if job_id not in csv_annotation_jobs:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    job = csv_annotation_jobs[job_id]
+    
+    response = {
+        "job_id": job_id,
+        "status": job["status"],
+        "progress": job["progress"],
+        "filename": job["filename"],
+        "started_at": job["started_at"]
+    }
+    
+    if job["status"] == "completed":
+        response["result"] = job["result"]
+        response["completed_at"] = job.get("completed_at")
+    elif job["status"] == "failed":
+        response["error"] = job["error"]
+        response["completed_at"] = job.get("completed_at")
+    
+    return response
+
+
+RUNNER_SERVICE_URL = "http://localhost:9003"
+
+@app.get("/chat/download-csv/{filename}")
+async def download_csv_proxy(filename: str):
+    """
+    Proxy CSV download requests to runner service.
+    This allows downloads to work through Cloudflare/external access.
+    """
+    try:
+        # Security: only allow .csv files, no path traversal
+        if not filename.endswith('.csv') or '/' in filename or '\\' in filename:
+            raise HTTPException(status_code=400, detail="Invalid filename")
+        
+        logger.info(f"📥 Proxying CSV download: {filename}")
+        
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            response = await client.get(f"{RUNNER_SERVICE_URL}/download-csv/{filename}")
+            
+            if response.status_code == 200:
+                return Response(
+                    content=response.content,
+                    media_type="text/csv",
+                    headers={
+                        "Content-Disposition": f"attachment; filename={filename}"
+                    }
+                )
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error downloading CSV: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

@@ -1,461 +1,207 @@
 #!/bin/bash
-# ============================================================================
-# Setup Automatic Service Restart on Git Pull
-# ============================================================================
 
-set -e
-
-PROJECT_DIR="$HOME/amp_llm_v3"
-USER_HOME="$HOME"
+# ============================================================================
+# Setup Auto-Restart for AMP LLM Services (4-Service Architecture)
+# ============================================================================
 
 echo "═══════════════════════════════════════════════════════"
-echo "Setting Up Auto-Restart on Git Pull"
+echo "AMP LLM Auto-Restart Setup (4-Service Architecture)"
 echo "═══════════════════════════════════════════════════════"
+echo ""
 
-# Get current username
-CURRENT_USER=$(whoami)
-echo "Current User: $CURRENT_USER"
+# Get the directory where the script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_DIR="$SCRIPT_DIR"
+
 echo "Project Directory: $PROJECT_DIR"
 echo ""
 
-# ============================================================================
-# Step 1: Create LaunchAgents for all services
-# ============================================================================
-
-echo "Step 1: Creating LaunchAgents for all services..."
-echo ""
+# Check if virtual environment exists
+if [ ! -d "$PROJECT_DIR/llm_env" ]; then
+    echo "❌ Virtual environment not found at $PROJECT_DIR/llm_env"
+    echo "Please create it first with: python3 -m venv llm_env"
+    exit 1
+fi
 
 # Create logs directory
 mkdir -p "$PROJECT_DIR/logs"
 echo "✅ Created logs directory"
 
-# --- Webapp LaunchAgent ---
-echo "Creating webapp LaunchAgent..."
-cat > "$HOME/Library/LaunchAgents/com.amplm.webapp.plist" <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.amplm.webapp</string>
-    
-    <key>ProgramArguments</key>
-    <array>
-        <string>/usr/bin/python3</string>
-        <string>-m</string>
-        <string>uvicorn</string>
-        <string>webapp.server:app</string>
-        <string>--host</string>
-        <string>0.0.0.0</string>
-        <string>--port</string>
-        <string>8000</string>
-        <string>--reload</string>
-    </array>
-    
-    <key>WorkingDirectory</key>
-    <string>$PROJECT_DIR</string>
-    
-    <key>EnvironmentVariables</key>
-    <dict>
-        <key>PATH</key>
-        <string>/usr/local/bin:/usr/bin:/bin</string>
-        <key>PYTHONPATH</key>
-        <string>$PROJECT_DIR</string>
-    </dict>
-    
-    <key>RunAtLoad</key>
-    <true/>
-    
-    <key>KeepAlive</key>
-    <true/>
-    
-    <key>StandardOutPath</key>
-    <string>$PROJECT_DIR/logs/webapp.log</string>
-    
-    <key>StandardErrorPath</key>
-    <string>$PROJECT_DIR/logs/webapp.error.log</string>
-</dict>
-</plist>
-EOF
-echo "✅ Created webapp LaunchAgent"
+# Update username in plist files
+USERNAME=$(whoami)
+echo "👤 Username: $USERNAME"
 
-# --- Chat Service LaunchAgent ---
-echo "Creating chat service LaunchAgent..."
-cat > "$HOME/Library/LaunchAgents/com.amplm.chat.plist" <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.amplm.chat</string>
-    
-    <key>ProgramArguments</key>
-    <array>
-        <string>/usr/bin/python3</string>
-        <string>-m</string>
-        <string>uvicorn</string>
-        <string>chat_api:app</string>
-        <string>--host</string>
-        <string>0.0.0.0</string>
-        <string>--port</string>
-        <string>8001</string>
-        <string>--reload</string>
-    </array>
-    
-    <key>WorkingDirectory</key>
-    <string>$PROJECT_DIR/standalone modules/chat_with_llm</string>
-    
-    <key>EnvironmentVariables</key>
-    <dict>
-        <key>PATH</key>
-        <string>/usr/local/bin:/usr/bin:/bin</string>
-        <key>PYTHONPATH</key>
-        <string>$PROJECT_DIR</string>
-    </dict>
-    
-    <key>RunAtLoad</key>
-    <true/>
-    
-    <key>KeepAlive</key>
-    <true/>
-    
-    <key>StandardOutPath</key>
-    <string>$PROJECT_DIR/logs/chat.log</string>
-    
-    <key>StandardErrorPath</key>
-    <string>$PROJECT_DIR/logs/chat.error.log</string>
-</dict>
-</plist>
-EOF
-echo "✅ Created chat service LaunchAgent"
+# Service definitions
+declare -A services=(
+    ["webapp"]="8000:webapp.server:app"
+    ["chat"]="9001:chat_api_with_annotation:app"
+    ["nct"]="9002:nct_api:app"
+    ["runner"]="9003:runner_service:app"
+)
 
-# --- NCT Service LaunchAgent ---
-echo "Creating NCT service LaunchAgent..."
+declare -A working_dirs=(
+    ["webapp"]="$PROJECT_DIR/webapp"
+    ["chat"]="$PROJECT_DIR/standalone modules/chat_with_llm"
+    ["nct"]="$PROJECT_DIR/standalone modules/nct_lookup"
+    ["runner"]="$PROJECT_DIR/standalone modules/runner"
+)
 
-# Read API keys from .env if it exists
-SERPAPI_KEY=""
-NCBI_API_KEY=""
-if [ -f "$PROJECT_DIR/standalone modules/nct_lookup/.env" ]; then
-    source "$PROJECT_DIR/standalone modules/nct_lookup/.env"
-fi
-
-cat > "$HOME/Library/LaunchAgents/com.amplm.nct.plist" <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.amplm.nct</string>
-    
-    <key>ProgramArguments</key>
-    <array>
-        <string>/usr/bin/python3</string>
-        <string>-m</string>
-        <string>uvicorn</string>
-        <string>nct_api:app</string>
-        <string>--host</string>
-        <string>0.0.0.0</string>
-        <string>--port</string>
-        <string>9002</string>
-        <string>--reload</string>
-    </array>
-    
-    <key>WorkingDirectory</key>
-    <string>$PROJECT_DIR/standalone modules/nct_lookup</string>
-    
-    <key>EnvironmentVariables</key>
-    <dict>
-        <key>PATH</key>
-        <string>/usr/local/bin:/usr/bin:/bin</string>
-        <key>PYTHONPATH</key>
-        <string>$PROJECT_DIR</string>
-        <key>SERPAPI_KEY</key>
-        <string>$SERPAPI_KEY</string>
-        <key>NCBI_API_KEY</key>
-        <string>$NCBI_API_KEY</string>
-    </dict>
-    
-    <key>RunAtLoad</key>
-    <true/>
-    
-    <key>KeepAlive</key>
-    <true/>
-    
-    <key>StandardOutPath</key>
-    <string>$PROJECT_DIR/logs/nct.log</string>
-    
-    <key>StandardErrorPath</key>
-    <string>$PROJECT_DIR/logs/nct.error.log</string>
-</dict>
-</plist>
-EOF
-echo "✅ Created NCT service LaunchAgent"
-
-# Set permissions
-chmod 644 "$HOME/Library/LaunchAgents/com.amplm."*.plist
-echo "✅ Set LaunchAgent permissions"
-
-# ============================================================================
-# Step 2: Install Git Hook
-# ============================================================================
+# LaunchAgents directory
+LAUNCH_AGENTS_DIR="$HOME/Library/LaunchAgents"
+mkdir -p "$LAUNCH_AGENTS_DIR"
 
 echo ""
-echo "Step 2: Installing Git post-merge hook..."
+echo "Creating LaunchAgent plists..."
+echo ""
 
-GIT_HOOKS_DIR="$PROJECT_DIR/.git/hooks"
-HOOK_FILE="$GIT_HOOKS_DIR/post-merge"
-
-# Create hooks directory if it doesn't exist
-mkdir -p "$GIT_HOOKS_DIR"
-
-# Create the post-merge hook
-cat > "$HOOK_FILE" <<'EOF'
-#!/bin/bash
-# ============================================================================
-# Git Post-Merge Hook - Auto-restart services after git pull
-# ============================================================================
-
-set -e
-
-PROJECT_DIR="$(git rev-parse --show-toplevel)"
-cd "$PROJECT_DIR"
-
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m'
+for service in "${!services[@]}"; do
+    IFS=':' read -r port module app <<< "${services[$service]}"
+    working_dir="${working_dirs[$service]}"
+    
+    PLIST_FILE="$LAUNCH_AGENTS_DIR/com.amplm.$service.plist"
+    
+    echo "Creating plist for $service service (port $port)..."
+    
+    cat > "$PLIST_FILE" << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.amplm.$service</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>$PROJECT_DIR/llm_env/bin/python</string>
+        <string>-m</string>
+        <string>uvicorn</string>
+        <string>$module:$app</string>
+        <string>--host</string>
+        <string>0.0.0.0</string>
+        <string>--port</string>
+        <string>$port</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>$working_dir</string>
+    
+    <key>StandardOutPath</key>
+    <string>$PROJECT_DIR/logs/${service}_service.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>$PROJECT_DIR/logs/${service}_service.error.log</string>
+    
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+        <key>Crashed</key>
+        <true/>
+    </dict>
+    
+    <key>ProcessType</key>
+    <string>Interactive</string>
+    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+        <key>PATH</key>
+        <string>$PROJECT_DIR/llm_env/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+    
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+</dict>
+</plist>
+EOF
+    
+    echo "  ✅ Created $PLIST_FILE"
+done
 
 echo ""
-echo "═══════════════════════════════════════════════════════"
-echo "Git Pull Detected - Checking for Service Restarts"
-echo "═══════════════════════════════════════════════════════"
+echo "Loading services..."
+echo ""
 
-# Function to check if files changed in a directory
-files_changed_in_dir() {
-    local dir=$1
-    git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep -q "^$dir/"
-}
-
-# Function to restart a service
-restart_service() {
-    local service_name=$1
-    local service_label=$2
+for service in "${!services[@]}"; do
+    echo "Loading $service service..."
     
-    echo ""
-    echo -e "${YELLOW}Restarting $service_name...${NC}"
+    # Unload if already loaded
+    launchctl unload "$LAUNCH_AGENTS_DIR/com.amplm.$service.plist" 2>/dev/null
     
-    if launchctl list | grep -q "$service_label"; then
-        launchctl stop "$service_label"
-        sleep 2
-        launchctl start "$service_label"
-        
-        sleep 3
-        if launchctl list | grep -q "$service_label"; then
-            echo -e "${GREEN}✅ $service_name restarted${NC}"
-        else
-            echo -e "${RED}❌ $service_name failed to restart${NC}"
-        fi
+    # Load the service
+    if launchctl load "$LAUNCH_AGENTS_DIR/com.amplm.$service.plist"; then
+        echo "  ✅ $service service loaded"
     else
-        echo -e "${YELLOW}⚠️  $service_name not running${NC}"
+        echo "  ❌ Failed to load $service service"
     fi
-}
-
-RESTART_NEEDED=false
-
-# Check webapp changes
-if files_changed_in_dir "webapp"; then
-    echo "📝 Changes detected in webapp/"
-    restart_service "Webapp" "com.amplm.webapp"
-    RESTART_NEEDED=true
-fi
-
-# Check chat service changes
-if files_changed_in_dir "standalone modules/chat_with_llm"; then
-    echo "📝 Changes detected in chat_with_llm/"
-    restart_service "Chat Service" "com.amplm.chat"
-    RESTART_NEEDED=true
-fi
-
-# Check NCT service changes
-if files_changed_in_dir "standalone modules/nct_lookup"; then
-    echo "📝 Changes detected in nct_lookup/"
-    restart_service "NCT Service" "com.amplm.nct"
-    RESTART_NEEDED=true
-fi
-
-# Check for Python/config file changes
-if git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep -qE '\.(py|json|env)$'; then
-    if [ "$RESTART_NEEDED" = false ]; then
-        echo "📝 Python/config changes detected, restarting all services..."
-        restart_service "Webapp" "com.amplm.webapp"
-        restart_service "Chat Service" "com.amplm.chat"
-        restart_service "NCT Service" "com.amplm.nct"
-        RESTART_NEEDED=true
-    fi
-fi
-
-if [ "$RESTART_NEEDED" = false ]; then
-    echo "✅ No service restarts needed"
-fi
+done
 
 echo ""
-echo "═══════════════════════════════════════════════════════"
-echo "Service Status:"
-echo "═══════════════════════════════════════════════════════"
-launchctl list | grep -E "com.amplm.(webapp|chat|nct)" || echo "No services running"
-echo "═══════════════════════════════════════════════════════"
-echo ""
-EOF
-
-# Make hook executable
-chmod +x "$HOOK_FILE"
-echo "✅ Installed git post-merge hook"
-
-# ============================================================================
-# Step 3: Load and Start Services
-# ============================================================================
-
-echo ""
-echo "Step 3: Loading and starting services..."
-
-# Unload existing services (ignore errors)
-launchctl unload "$HOME/Library/LaunchAgents/com.amplm.webapp.plist" 2>/dev/null || true
-launchctl unload "$HOME/Library/LaunchAgents/com.amplm.chat.plist" 2>/dev/null || true
-launchctl unload "$HOME/Library/LaunchAgents/com.amplm.nct.plist" 2>/dev/null || true
-
-sleep 2
-
-# Load services
-echo "Loading webapp..."
-launchctl load "$HOME/Library/LaunchAgents/com.amplm.webapp.plist"
-echo "✅ Webapp loaded"
-
-echo "Loading chat service..."
-launchctl load "$HOME/Library/LaunchAgents/com.amplm.chat.plist"
-echo "✅ Chat service loaded"
-
-echo "Loading NCT service..."
-launchctl load "$HOME/Library/LaunchAgents/com.amplm.nct.plist"
-echo "✅ NCT service loaded"
-
-sleep 3
-
-# Start services
-echo ""
-echo "Starting services..."
-launchctl start com.amplm.webapp
-launchctl start com.amplm.chat
-launchctl start com.amplm.nct
-
+echo "Waiting for services to start..."
 sleep 5
 
-# ============================================================================
-# Step 4: Verify Services
-# ============================================================================
-
 echo ""
 echo "═══════════════════════════════════════════════════════"
-echo "Service Status Check"
+echo "Service Status"
 echo "═══════════════════════════════════════════════════════"
+echo ""
+
+# Check service status
+for service in "${!services[@]}"; do
+    IFS=':' read -r port module app <<< "${services[$service]}"
+    
+    if launchctl list | grep -q "com.amplm.$service"; then
+        echo "✅ $service: Running (port $port)"
+    else
+        echo "❌ $service: Not running"
+    fi
+done
 
 echo ""
-echo "LaunchCtl Status:"
-launchctl list | grep -E "com.amplm.(webapp|chat|nct)" || echo "❌ No services found"
-
+echo "Checking ports..."
 echo ""
-echo "Port Status:"
-echo "Port 9000 (Webapp):"
-lsof -i :9000 | grep LISTEN || echo "  ❌ Not listening"
 
-echo "Port 9001 (Chat):"
-lsof -i :9001 | grep LISTEN || echo "  ❌ Not listening"
-
-echo "Port 9002 (NCT):"
-lsof -i :9002 | grep LISTEN || echo "  ❌ Not listening"
-
-echo ""
-echo "Health Checks:"
-echo "Webapp:"
-curl -s http://localhost:9000/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
-
-echo ""
-echo "Chat Service:"
-curl -s http://localhost:9001/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
-
-echo ""
-echo "NCT Service:"
-curl -s http://localhost:9002/health | python3 -m json.tool 2>/dev/null || echo "  ❌ Not responding"
-
-# ============================================================================
-# Summary
-# ============================================================================
+for service in "${!services[@]}"; do
+    IFS=':' read -r port module app <<< "${services[$service]}"
+    
+    if lsof -i :$port | grep -q LISTEN; then
+        echo "✅ Port $port ($service): Active"
+    else
+        echo "❌ Port $port ($service): Not listening"
+    fi
+done
 
 echo ""
 echo "═══════════════════════════════════════════════════════"
 echo "Setup Complete!"
 echo "═══════════════════════════════════════════════════════"
-
-cat <<EOF
-
-✅ All services configured for auto-restart on git pull!
-
-What This Does:
-───────────────
-When you run 'git pull', the post-merge hook will:
-1. Detect which files changed
-2. Automatically restart affected services
-3. Show you the status
-
-Services:
-─────────
-• Webapp    - http://localhost:9000
-• Chat      - http://localhost:9001  
-• NCT       - http://localhost:9002
-
-Test It:
-────────
-1. Make a change to any service file
-2. Commit and push from another machine (or create a test branch)
-3. Run: git pull
-4. Watch services auto-restart!
-
-View Logs:
-──────────
-tail -f $PROJECT_DIR/logs/webapp.log
-tail -f $PROJECT_DIR/logs/chat.log
-tail -f $PROJECT_DIR/logs/nct.log
-
-Manage Services:
-────────────────
-# Stop all
-launchctl stop com.amplm.webapp
-launchctl stop com.amplm.chat
-launchctl stop com.amplm.nct
-
-# Start all
-launchctl start com.amplm.webapp
-launchctl start com.amplm.chat
-launchctl start com.amplm.nct
-
-# Restart all
-launchctl stop com.amplm.webapp && launchctl start com.amplm.webapp
-launchctl stop com.amplm.chat && launchctl start com.amplm.chat
-launchctl stop com.amplm.nct && launchctl start com.amplm.nct
-
-# Check status
-launchctl list | grep com.amplm
-
-# View realtime logs
-tail -f $PROJECT_DIR/logs/*.log
-
-Disable Auto-Restart:
-─────────────────────
-rm $PROJECT_DIR/.git/hooks/post-merge
-
-Re-enable:
-──────────
-Run this script again
-
-═══════════════════════════════════════════════════════════
-EOF
+echo ""
+echo "Services are now configured to:"
+echo "  • Start automatically on login"
+echo "  • Restart automatically if they crash"
+echo "  • Run in the background"
+echo ""
+echo "Service Architecture:"
+echo "  Port 8000 - Webapp (Web Interface)"
+echo "  Port 9001 - Chat Service with Annotation"
+echo "  Port 9002 - NCT Lookup Service"
+echo "  Port 9003 - Runner Service (File Manager)"
+echo ""
+echo "Management commands:"
+echo "  Start service:   launchctl start com.amplm.[service]"
+echo "  Stop service:    launchctl stop com.amplm.[service]"
+echo "  Restart service: launchctl stop com.amplm.[service] && launchctl start com.amplm.[service]"
+echo "  View status:     launchctl list | grep amplm"
+echo "  Remove service:  launchctl unload ~/Library/LaunchAgents/com.amplm.[service].plist"
+echo ""
+echo "Service names: webapp, chat, nct, runner"
+echo ""
+echo "Logs are stored in: $PROJECT_DIR/logs/"
+echo "  View logs: tail -f $PROJECT_DIR/logs/[service]_service.log"
+echo ""
+echo "Access the web interface at: http://localhost:8000"
+echo ""

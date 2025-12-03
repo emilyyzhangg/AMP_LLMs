@@ -90,6 +90,11 @@
                         <div class="menu-item-title">NCT Lookup</div>
                         <div class="menu-item-desc">Search clinical trials by NCT number</div>
                     </div>
+                    <div class="menu-item" onclick="app.showMode('nct2step')">
+                        <div class="menu-item-icon">🔬</div>
+                        <div class="menu-item-title">NCT 2-Step Search</div>
+                        <div class="menu-item-desc">Advanced search with customizable fields</div>
+                    </div>
                     <div class="menu-item" onclick="app.showMode('research')">
                         <div class="menu-item-icon">📚</div>
                         <div class="menu-item-title">Research Assistant</div>
@@ -165,11 +170,123 @@
                         </button>
                     </div>
                     <div class="progress-text hidden" id="nct-progress"></div>
+                    
                 </div>
                 
                 <!-- NCT RESULTS WITH NEW ACTION BAR -->
                 <div class="nct-results" id="nct-results">
                     <!-- Action buttons will be dynamically inserted here at the top when results are displayed -->
+                </div>
+            </div>
+            
+            <!-- NCT 2-Step Mode - NEW! -->
+            <div id="nct2step-mode" class="mode-container">
+                <!-- Step 1 Input Area -->
+                <div class="nct2step-input-area" id="nct2step-step1-area">
+                    <h2 class="section-title">
+                        <span class="step-badge">Step 1</span>
+                        Core API Search
+                    </h2>
+                    <p class="section-desc">
+                        Search ClinicalTrials.gov, PubMed, PMC, and PMC BioC to gather comprehensive trial data.
+                    </p>
+                    
+                    <div class="nct-input-group">
+                        <label>Enter NCT Number:</label>
+                        <input 
+                            type="text" 
+                            id="nct2step-input" 
+                            placeholder="NCT03936426"
+                            onkeypress="if(event.key === 'Enter') app.executeStep1()"
+                        />
+                    </div>
+                    
+                    <div class="nct-buttons">
+                        <button class="nct-submit" onclick="app.executeStep1()">
+                            <span>🔍</span>
+                            <span>Search Core APIs</span>
+                        </button>
+                    </div>
+                    
+                    <div class="progress-text hidden" id="nct2step-step1-progress"></div>
+                </div>
+                
+                <!-- Step 1 Results Area (Hidden until Step 1 completes) -->
+                <div class="nct2step-results-area hidden" id="nct2step-step1-results">
+                    <div class="nct-new-search-btn">
+                        <button onclick="app.resetStep1()">
+                            <span>🔄</span>
+                            <span>New Search</span>
+                        </button>
+                    </div>
+                    
+                    <h2 class="section-title">
+                        <span class="step-badge step-complete">Step 1 ✓</span>
+                        Core API Results
+                    </h2>
+                    
+                    <div id="nct2step-step1-data"></div>
+                    
+                    <div class="step-divider"></div>
+                    
+                    <!-- Step 2 Configuration -->
+                    <div class="step2-config-area" id="nct2step-step2-config">
+                        <h2 class="section-title">
+                            <span class="step-badge">Step 2</span>
+                            Extended API Search
+                        </h2>
+                        <p class="section-desc">
+                            Select which extended APIs to search and which data fields to use from Step 1 results.
+                        </p>
+                        
+                        <!-- Extended API Selection -->
+                        <div class="api-selection-section">
+                            <h3 class="subsection-title">Select Extended APIs</h3>
+                            <div id="nct2step-extended-apis-container" class="api-checkboxes">
+                                <!-- Dynamically populated with extended APIs -->
+                            </div>
+                        </div>
+                        
+                        <!-- Field Selection (populated after API selection) -->
+                        <div class="field-selection-section hidden" id="nct2step-field-selection">
+                            <h3 class="subsection-title">Select Data Fields to Search</h3>
+                            <p class="subsection-desc">
+                                Choose which data from Step 1 to use in your searches. 
+                                Multiple values will create separate searches.
+                            </p>
+                            <div id="nct2step-field-checkboxes"></div>
+                        </div>
+                        
+                        <div class="nct-buttons">
+                            <button class="nct-submit" id="nct2step-execute-btn" onclick="app.executeStep2()" disabled>
+                                <span>🚀</span>
+                                <span>Run Extended Search</span>
+                            </button>
+                        </div>
+                        
+                        <div class="progress-text hidden" id="nct2step-step2-progress"></div>
+                    </div>
+                </div>
+                
+                <!-- Step 2 Results Area (Hidden until Step 2 completes) -->
+                <div class="nct2step-final-results hidden" id="nct2step-step2-results">
+                    <div class="nct-new-search-btn">
+                        <button onclick="app.resetStep1()">
+                            <span>🔄</span>
+                            <span>New Search</span>
+                        </button>
+                        <button onclick="app.downloadStep2Results()" class="nct-save">
+                            <span>📥</span>
+                            <span>Download Results</span>
+                        </button>
+                    </div>
+                    
+                    <h2 class="section-title">
+                        <span class="step-badge step-complete">Complete ✓</span>
+                        Final Results
+                    </h2>
+                    
+                    <div id="nct2step-final-data"></div>
                 </div>
             </div>
 

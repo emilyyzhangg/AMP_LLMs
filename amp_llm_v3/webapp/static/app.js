@@ -14,14 +14,24 @@ const app = {
     currentTheme: localStorage.getItem('amp_llm_theme') || 'green',
     currentConversationId: null,
     currentModel: null,
+    annotationModeSelected: false,  // Track annotation mode selection
     nctResults: null,
     selectedFile: null,
+    selectedCSVFile: null,  // Track selected CSV file for batch annotation
     files: [],
     availableModels: [],
     availableThemes: [],
 
     // Session-based chat storage (per model)
     sessionChats: {},
+
+    nct2step: {
+        currentNCT: null,
+        step1Results: null,
+        step2Results: null,
+        selectedAPIs: new Set(),
+        selectedFields: {}
+    },
 
     // API registry
     apiRegistry: null,
@@ -346,7 +356,7 @@ const app = {
         
         const titles = {
             'chat': { title: '💬 Chat with LLM', subtitle: 'Interactive conversation with AI models' },
-            'research': { title: '📚 Research Assistant', subtitle: 'RAG-powered trial analysis' },
+            'research': { title: '🔬 Research Assistant', subtitle: 'Automated clinical trial annotation' },
             'nct': { title: '🔍 NCT Lookup', subtitle: 'Search clinical trials' },
             'files': { title: '📁 File Manager', subtitle: 'Browse and manage trial data' }
         };
@@ -360,7 +370,7 @@ const app = {
         if (mode === 'chat') {
             this.initializeChatMode();
         } else if (mode === 'research') {
-            this.ensureChatInfoBar();
+            this.initializeResearchMode();  // ← ADD THIS LINE
         } else if (mode === 'files') {
             this.loadFiles();
         } else if (mode === 'nct') {
@@ -381,6 +391,9 @@ const app = {
                 this.currentConversationId = null;
                 this.currentModel = null;
                 
+                // Reset annotation mode selection for fresh start
+                this.annotationModeSelected = false;
+                
                 const container = document.getElementById('chat-container');
                 container.innerHTML = '';
                 
@@ -398,6 +411,737 @@ const app = {
             backButton.onclick = () => this.showMenu();
         }
     },
+    // ============================================================================
+    // STEP 1: Core API Search
+    // ============================================================================
+
+    async executeStep1() {
+        const input = document.getElementById('nct2step-input');
+        const nctId = input.value.trim().toUpperCase();
+        
+        if (!nctId) {
+            alert('Please enter an NCT number');
+            return;
+        }
+        
+        // Validate NCT format
+        if (!nctId.startsWith('NCT') || nctId.length !== 11) {
+            alert('Invalid NCT format. Expected: NCT followed by 8 digits (e.g., NCT03936426)');
+            return;
+        }
+        
+        this.nct2step.currentNCT = nctId;
+        
+        // Show progress
+        const progressDiv = document.getElementById('nct2step-step1-progress');
+        progressDiv.classList.remove('hidden');
+        progressDiv.classList.add('step-progress');
+        progressDiv.innerHTML = `
+            <span class="progress-spinner"></span>
+            <strong>Step 1 in progress...</strong> Searching core APIs (ClinicalTrials, PubMed, PMC, PMC BioC)
+        `;
+        
+        console.log('🔬 Starting Step 1 for:', nctId);
+        
+        try {
+            const response = await fetch(`${this.API_BASE}/api/nct-2step/step1/${nctId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-Key': this.apiKey
+                }
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || `HTTP ${response.status}`);
+            }
+            
+            const results = await response.json();
+            this.nct2step.step1Results = results;
+            
+            console.log('✅ Step 1 complete:', results);
+            
+            // Hide progress
+            progressDiv.classList.add('hidden');
+            
+            // Hide input area, show results
+            document.getElementById('nct2step-step1-area').classList.add('hidden');
+            document.getElementById('nct2step-step1-results').classList.remove('hidden');
+            
+            // Display Step 1 results
+            this.displayStep1Results(results);
+            
+            // Load extended APIs for Step 2
+            await this.loadExtendedAPIs();
+            
+        } catch (error) {
+            console.error('❌ Step 1 error:', error);
+            progressDiv.innerHTML = `
+                <span style="color: #dc3545;">❌ <strong>Step 1 failed:</strong> ${error.message}</span>
+            `;
+            
+            // Show error toast
+            this.showToast('Step 1 search failed: ' + error.message, 'error');
+        }
+    },
+
+    displayStep1Results(results) {
+        const container = document.getElementById('nct2step-step1-data');
+        
+        const metadata = results.metadata || {};
+        const coreAPIs = results.core_apis || {};
+        const summary = results.summary || {};
+        
+        let html = `
+            <!-- Trial Metadata -->
+            <div class="step1-result-card">
+                <div class="step1-result-header">
+                    <h3 class="step1-result-title">${results.nct_id}</h3>
+                    <span class="step1-result-badge">${summary.total_results || 0} Results</span>
+                </div>
+                
+                <div class="step1-metadata">
+                    <div class="metadata-item">
+                        <div class="metadata-label">Title</div>
+                        <div class="metadata-value">${metadata.title || 'N/A'}</div>
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">Status</div>
+                        <div class="metadata-value">${metadata.status || 'N/A'}</div>
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">Condition</div>
+                        <div class="metadata-value">${this.formatArrayOrString(metadata.condition)}</div>
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">Intervention</div>
+                        <div class="metadata-value">${this.formatArrayOrString(metadata.intervention)}</div>
+                    </div>
+                </div>
+                
+                <!-- API Results Summary -->
+                <div class="api-results-table">
+                    <h4 style="margin-bottom: 15px; color: #2C3E50;">Core API Results</h4>
+        `;
+        
+        // Display results from each core API
+        for (const [apiName, apiData] of Object.entries(coreAPIs)) {
+            if (!apiData.success) {
+                html += `
+                    <div class="api-results-row" style="background: #FFF3CD; border-left: 4px solid #FFC107;">
+                        <div class="api-name">${this.formatAPIName(apiName)}</div>
+                        <div class="api-searches-list" style="color: #856404;">
+                            ❌ Error: ${apiData.error || 'Unknown error'}
+                        </div>
+                        <div class="api-result-count" style="color: #856404;">0</div>
+                    </div>
+                `;
+                continue;
+            }
+            
+            const searches = apiData.searches || [];
+            const totalResults = apiData.total_results || 0;
+            
+            const searchSummary = searches.map(s => 
+                `${s.search_type}: ${s.results_count} results`
+            ).join('<br>');
+            
+            html += `
+                <div class="api-results-row">
+                    <div class="api-name">${this.formatAPIName(apiName)}</div>
+                    <div class="api-searches-list">
+                        ${searches.length} searches performed<br>
+                        <small>${searchSummary}</small>
+                    </div>
+                    <div class="api-result-count">${totalResults}</div>
+                </div>
+            `;
+        }
+        
+        html += `
+                </div>
+            </div>
+            
+            <!-- Summary Stats -->
+            <div class="summary-stats">
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.core_apis_searched?.length || 0}</div>
+                    <div class="summary-stat-label">APIs Searched</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.total_searches || 0}</div>
+                    <div class="summary-stat-label">Total Searches</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.total_results || 0}</div>
+                    <div class="summary-stat-label">Results Found</div>
+                </div>
+            </div>
+        `;
+        
+        container.innerHTML = html;
+    },
+
+    formatAPIName(apiName) {
+        const names = {
+            'clinicaltrials': 'ClinicalTrials.gov',
+            'pubmed': 'PubMed',
+            'pmc': 'PMC',
+            'pmc_bioc': 'PMC BioC'
+        };
+        return names[apiName] || apiName;
+    },
+
+    formatArrayOrString(value) {
+        if (!value) return 'N/A';
+        if (Array.isArray(value)) {
+            return value.join(', ') || 'N/A';
+        }
+        return value;
+    },
+
+    // ============================================================================
+    // STEP 2: Extended API Selection
+    // ============================================================================
+
+    async loadExtendedAPIs() {
+        console.log('📡 Loading extended APIs registry...');
+        
+        try {
+            const response = await fetch(`${this.API_BASE}/api/nct-2step/registry`, {
+                headers: { 'X-API-Key': this.apiKey }
+            });
+            
+            if (!response.ok) throw new Error('Failed to load API registry');
+            
+            const registry = await response.json();
+            const extendedAPIs = registry.extended || [];
+            
+            console.log('✅ Loaded', extendedAPIs.length, 'extended APIs');
+            
+            this.renderExtendedAPICheckboxes(extendedAPIs);
+            
+        } catch (error) {
+            console.error('❌ Error loading extended APIs:', error);
+            document.getElementById('nct2step-extended-apis-container').innerHTML = `
+                <div style="color: #dc3545; padding: 20px; text-align: center;">
+                    Failed to load extended APIs: ${error.message}
+                </div>
+            `;
+        }
+    },
+
+    renderExtendedAPICheckboxes(apis) {
+        const container = document.getElementById('nct2step-extended-apis-container');
+        
+        let html = '';
+        
+        for (const api of apis) {
+            const disabled = !api.available;
+            const disabledClass = disabled ? 'disabled' : '';
+            
+            html += `
+                <div class="api-checkbox-item ${disabledClass}" data-api-id="${api.id}">
+                    <input 
+                        type="checkbox" 
+                        id="ext-api-${api.id}" 
+                        value="${api.id}"
+                        ${disabled ? 'disabled' : ''}
+                        onchange="app.handleExtendedAPISelection('${api.id}', this.checked)"
+                    />
+                    <label class="api-checkbox-label" for="ext-api-${api.id}">
+                        <div class="api-checkbox-name">
+                            ${api.name}
+                            ${api.requires_key && !api.available ? 
+                                '<span class="api-status-badge unavailable">🔑 Key Required</span>' : 
+                                ''}
+                        </div>
+                        <div class="api-checkbox-desc">${api.description}</div>
+                    </label>
+                </div>
+            `;
+        }
+        
+        container.innerHTML = html;
+    },
+
+    handleExtendedAPISelection(apiId, checked) {
+        if (checked) {
+            this.nct2step.selectedAPIs.add(apiId);
+            document.querySelector(`[data-api-id="${apiId}"]`)?.classList.add('selected');
+        } else {
+            this.nct2step.selectedAPIs.delete(apiId);
+            document.querySelector(`[data-api-id="${apiId}"]`)?.classList.remove('selected');
+            // Remove field selections for this API
+            delete this.nct2step.selectedFields[apiId];
+        }
+        
+        console.log('Selected APIs:', Array.from(this.nct2step.selectedAPIs));
+        
+        // Show field selection if any API is selected
+        if (this.nct2step.selectedAPIs.size > 0) {
+            this.renderFieldSelection();
+            document.getElementById('nct2step-field-selection').classList.remove('hidden');
+        } else {
+            document.getElementById('nct2step-field-selection').classList.add('hidden');
+        }
+        
+        this.updateExecuteButton();
+    },
+    
+    /* ============================================================================
+    NCT 2-STEP WORKFLOW - PART 2 (Field Selection & Step 2 Execution)
+    ============================================================================ */
+
+    renderFieldSelection() {
+        const container = document.getElementById('nct2step-field-checkboxes');
+        const step1Results = this.nct2step.step1Results;
+        
+        if (!step1Results) {
+            container.innerHTML = '<p>No Step 1 results available</p>';
+            return;
+        }
+        
+        // Available fields to select from
+        const availableFields = this.extractAvailableFields(step1Results);
+        
+        let html = '';
+        
+        // Group fields by API
+        for (const apiId of this.nct2step.selectedAPIs) {
+            const apiName = this.getExtendedAPIName(apiId);
+            
+            html += `
+                <div class="field-checkbox-group">
+                    <div class="field-checkbox-group-title">${apiName}</div>
+                    <div class="field-checkbox-grid">
+            `;
+            
+            for (const field of availableFields) {
+                if (field.values.length === 0) continue;
+                
+                const fieldId = `field-${apiId}-${field.name}`;
+                const isChecked = this.nct2step.selectedFields[apiId]?.includes(field.name);
+                
+                html += `
+                    <div class="field-checkbox-item">
+                        <input 
+                            type="checkbox" 
+                            id="${fieldId}" 
+                            value="${field.name}"
+                            ${isChecked ? 'checked' : ''}
+                            onchange="app.handleFieldSelection('${apiId}', '${field.name}', this.checked)"
+                        />
+                        <label class="field-checkbox-label" for="${fieldId}">
+                            <div class="field-checkbox-name">${field.label}</div>
+                            <div class="field-checkbox-value">
+                                ${field.preview}
+                            </div>
+                            <div class="field-checkbox-count">
+                                ${field.values.length} value${field.values.length > 1 ? 's' : ''}
+                            </div>
+                        </label>
+                    </div>
+                `;
+            }
+            
+            html += `
+                    </div>
+                </div>
+            `;
+        }
+        
+        container.innerHTML = html;
+    },
+
+    extractAvailableFields(step1Results) {
+        const metadata = step1Results.metadata || {};
+        const coreAPIs = step1Results.core_apis || {};
+        
+        const fields = [];
+        
+        // Title
+        if (metadata.title) {
+            fields.push({
+                name: 'title',
+                label: 'Trial Title',
+                values: [metadata.title],
+                preview: metadata.title.substring(0, 60) + (metadata.title.length > 60 ? '...' : '')
+            });
+        }
+        
+        // NCT ID
+        fields.push({
+            name: 'nct_id',
+            label: 'NCT ID',
+            values: [step1Results.nct_id],
+            preview: step1Results.nct_id
+        });
+        
+        // Condition
+        const conditions = Array.isArray(metadata.condition) ? 
+            metadata.condition : 
+            (metadata.condition ? [metadata.condition] : []);
+        
+        if (conditions.length > 0) {
+            fields.push({
+                name: 'condition',
+                label: 'Condition(s)',
+                values: conditions,
+                preview: conditions.slice(0, 2).join(', ') + (conditions.length > 2 ? '...' : '')
+            });
+        }
+        
+        // Intervention
+        const interventions = Array.isArray(metadata.intervention) ? 
+            metadata.intervention : 
+            (metadata.intervention ? [metadata.intervention] : []);
+        
+        if (interventions.length > 0) {
+            fields.push({
+                name: 'intervention',
+                label: 'Intervention(s)',
+                values: interventions,
+                preview: interventions.slice(0, 2).join(', ') + (interventions.length > 2 ? '...' : '')
+            });
+        }
+        
+        // PMIDs from PubMed
+        const pubmedData = coreAPIs.pubmed?.data || {};
+        const pmids = pubmedData.pmids || [];
+        
+        if (pmids.length > 0) {
+            fields.push({
+                name: 'pmid',
+                label: 'PubMed IDs',
+                values: pmids,
+                preview: `${pmids.length} PMIDs found`
+            });
+        }
+        
+        return fields;
+    },
+
+    getExtendedAPIName(apiId) {
+        const names = {
+            'duckduckgo': 'DuckDuckGo',
+            'serpapi': 'Google Search (SERP API)',
+            'scholar': 'Google Scholar',
+            'openfda': 'OpenFDA'
+        };
+        return names[apiId] || apiId;
+    },
+
+    handleFieldSelection(apiId, fieldName, checked) {
+        if (!this.nct2step.selectedFields[apiId]) {
+            this.nct2step.selectedFields[apiId] = [];
+        }
+        
+        if (checked) {
+            if (!this.nct2step.selectedFields[apiId].includes(fieldName)) {
+                this.nct2step.selectedFields[apiId].push(fieldName);
+            }
+        } else {
+            this.nct2step.selectedFields[apiId] = this.nct2step.selectedFields[apiId]
+                .filter(f => f !== fieldName);
+        }
+        
+        console.log('Selected fields:', this.nct2step.selectedFields);
+        
+        this.updateExecuteButton();
+    },
+
+    updateExecuteButton() {
+        const button = document.getElementById('nct2step-execute-btn');
+        
+        // Check if at least one API has at least one field selected
+        const hasSelections = Array.from(this.nct2step.selectedAPIs).some(apiId => {
+            const fields = this.nct2step.selectedFields[apiId] || [];
+            return fields.length > 0;
+        });
+        
+        button.disabled = !hasSelections;
+        
+        if (hasSelections) {
+            button.style.opacity = '1';
+            button.style.cursor = 'pointer';
+        } else {
+            button.style.opacity = '0.5';
+            button.style.cursor = 'not-allowed';
+        }
+    },
+
+    // ============================================================================
+    // STEP 2: Execute Extended Search
+    // ============================================================================
+
+    async executeStep2() {
+        const nctId = this.nct2step.currentNCT;
+        
+        if (!nctId || !this.nct2step.step1Results) {
+            alert('Please complete Step 1 first');
+            return;
+        }
+        
+        // Prepare request
+        const selectedAPIs = Array.from(this.nct2step.selectedAPIs);
+        const fieldSelections = {};
+        
+        for (const apiId of selectedAPIs) {
+            const fields = this.nct2step.selectedFields[apiId] || [];
+            if (fields.length > 0) {
+                fieldSelections[apiId] = fields;
+            }
+        }
+        
+        if (Object.keys(fieldSelections).length === 0) {
+            alert('Please select at least one field to search');
+            return;
+        }
+        
+        console.log('🚀 Starting Step 2');
+        console.log('APIs:', selectedAPIs);
+        console.log('Fields:', fieldSelections);
+        
+        // Show progress
+        const progressDiv = document.getElementById('nct2step-step2-progress');
+        progressDiv.classList.remove('hidden');
+        progressDiv.classList.add('step-progress');
+        progressDiv.innerHTML = `
+            <span class="progress-spinner"></span>
+            <strong>Step 2 in progress...</strong> Searching extended APIs with selected fields
+        `;
+        
+        try {
+            const response = await fetch(`${this.API_BASE}/api/nct-2step/step2/${nctId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-Key': this.apiKey
+                },
+                body: JSON.stringify({
+                    selected_apis: selectedAPIs,
+                    field_selections: fieldSelections
+                })
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || `HTTP ${response.status}`);
+            }
+            
+            const results = await response.json();
+            this.nct2step.step2Results = results;
+            
+            console.log('✅ Step 2 complete:', results);
+            
+            // Hide progress
+            progressDiv.classList.add('hidden');
+            
+            // Hide step 2 config, show final results
+            document.getElementById('nct2step-step1-results').classList.add('hidden');
+            document.getElementById('nct2step-step2-results').classList.remove('hidden');
+            
+            // Display Step 2 results
+            this.displayStep2Results(results);
+            
+            this.showToast('Step 2 complete!', 'success');
+            
+        } catch (error) {
+            console.error('❌ Step 2 error:', error);
+            progressDiv.innerHTML = `
+                <span style="color: #dc3545;">❌ <strong>Step 2 failed:</strong> ${error.message}</span>
+            `;
+            
+            this.showToast('Step 2 search failed: ' + error.message, 'error');
+        }
+    },
+
+    displayStep2Results(results) {
+        const container = document.getElementById('nct2step-final-data');
+        
+        const extendedAPIs = results.extended_apis || {};
+        const summary = results.summary || {};
+        
+        let html = `
+            <!-- Summary Stats -->
+            <div class="summary-stats">
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.extended_apis_searched?.length || 0}</div>
+                    <div class="summary-stat-label">APIs Searched</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.total_searches || 0}</div>
+                    <div class="summary-stat-label">Total Searches</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.successful_searches || 0}</div>
+                    <div class="summary-stat-label">Successful Searches</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-number">${summary.total_results || 0}</div>
+                    <div class="summary-stat-label">Results Found</div>
+                </div>
+            </div>
+        `;
+        
+        // Display results from each extended API
+        for (const [apiName, apiData] of Object.entries(extendedAPIs)) {
+            if (!apiData.success) {
+                html += `
+                    <div class="step2-result-card" style="border-color: #FFC107;">
+                        <div class="step2-api-header">
+                            <h3 class="step2-api-title">${this.getExtendedAPIName(apiName)}</h3>
+                            <span class="step1-result-badge" style="background: #FFF3CD; color: #856404;">Error</span>
+                        </div>
+                        <p style="color: #856404;">❌ ${apiData.error || 'Unknown error'}</p>
+                    </div>
+                `;
+                continue;
+            }
+            
+            const searches = apiData.searches || [];
+            const data = apiData.data || {};
+            const results_list = data.results || [];
+            
+            html += `
+                <div class="step2-result-card">
+                    <div class="step2-api-header">
+                        <h3 class="step2-api-title">${this.getExtendedAPIName(apiName)}</h3>
+                        <span class="step1-result-badge">${data.total_found || 0} Results</span>
+                    </div>
+                    
+                    <h4 style="margin-bottom: 15px; color: #34495E;">Searches Performed</h4>
+            `;
+            
+            // Display each search
+            for (const search of searches) {
+                const statusClass = search.status === 'success' ? 'success' : 'error';
+                
+                html += `
+                    <div class="step2-search-record">
+                        <div class="search-record-header">
+                            <span class="search-record-number">Search ${search.search_number}</span>
+                            <span class="search-record-status ${statusClass}">
+                                ${search.status === 'success' ? '✓ Success' : '✗ Failed'}
+                            </span>
+                        </div>
+                        <div class="search-record-query">
+                            <strong>Query:</strong> ${search.query}
+                        </div>
+                        <div class="search-record-results">
+                            <strong>Fields used:</strong> ${this.formatFieldsUsed(search.fields_used)}
+                            ${search.status === 'success' ? 
+                                `<br><strong>Results:</strong> ${search.results_count}` :
+                                `<br><strong>Error:</strong> ${search.error}`
+                            }
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Display actual results
+            if (results_list.length > 0) {
+                html += `
+                    <h4 style="margin: 25px 0 15px 0; color: #34495E;">Results (${results_list.length})</h4>
+                `;
+                
+                for (const result of results_list.slice(0, 20)) {  // Show first 20
+                    html += `
+                        <div class="result-item">
+                            <div class="result-item-title">${result.title || 'No title'}</div>
+                            ${result.url ? 
+                                `<a href="${result.url}" target="_blank" class="result-item-url">${result.url}</a>` : 
+                                ''
+                            }
+                            ${result.snippet ? 
+                                `<div class="result-item-snippet">${result.snippet}</div>` : 
+                                ''
+                            }
+                        </div>
+                    `;
+                }
+                
+                if (results_list.length > 20) {
+                    html += `
+                        <p style="text-align: center; color: #7F8C8D; margin-top: 15px;">
+                            ... and ${results_list.length - 20} more results
+                        </p>
+                    `;
+                }
+            }
+            
+            html += `</div>`;
+        }
+        
+        container.innerHTML = html;
+    },
+
+    formatFieldsUsed(fields) {
+        return Object.entries(fields)
+            .map(([key, value]) => `${key}="${value}"`)
+            .join(', ');
+    },
+
+    // ============================================================================
+    // Reset & Utility Functions
+    // ============================================================================
+
+    resetStep1() {
+        // Reset state
+        this.nct2step.currentNCT = null;
+        this.nct2step.step1Results = null;
+        this.nct2step.step2Results = null;
+        this.nct2step.selectedAPIs.clear();
+        this.nct2step.selectedFields = {};
+        
+        // Clear input
+        document.getElementById('nct2step-input').value = '';
+        
+        // Hide all result areas, show input
+        document.getElementById('nct2step-step1-area').classList.remove('hidden');
+        document.getElementById('nct2step-step1-results').classList.add('hidden');
+        document.getElementById('nct2step-step2-results').classList.add('hidden');
+        
+        // Clear progress
+        document.getElementById('nct2step-step1-progress').classList.add('hidden');
+        document.getElementById('nct2step-step2-progress').classList.add('hidden');
+    },
+
+    async downloadStep2Results() {
+        const results = {
+            step1: this.nct2step.step1Results,
+            step2: this.nct2step.step2Results
+        };
+        
+        const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `nct_2step_${this.nct2step.currentNCT}_${Date.now()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showToast('Results downloaded', 'success');
+    },
+
+    showToast(message, type = 'success') {
+        // Implement toast notification
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type} toast-show`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.remove('toast-show');
+            toast.classList.add('toast-hide');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    },
+
 
     // =========================================================================
     // Chat Mode
@@ -410,6 +1154,9 @@ const app = {
         container.innerHTML = '';
         
         this.removeInfoBar();
+        
+        // Reset annotation mode selection
+        this.annotationModeSelected = false;
         
         const input = document.getElementById('chat-input');
         input.disabled = true;
@@ -461,8 +1208,8 @@ const app = {
                     `To fix:\n` +
                     `1. Restart chat service:\n` +
                     `   cd "standalone modules/chat_with_llm"\n` +
-                    `   uvicorn chat_api:app --port 8001 --reload\n\n` +
-                    `2. Check: curl http://localhost:8001/models\n\n` +
+                    `   uvicorn chat_api:app --port 9001 --reload\n\n` +
+                    `2. Check: curl http://localhost:9001/models\n\n` +
                     `Error: ${errorText.substring(0, 200)}`);
             }
         } catch (error) {
@@ -472,11 +1219,11 @@ const app = {
             this.addMessage('chat-container', 'error', 
                 '❌ Connection Error\n\n' +
                 'Cannot connect to the chat service.\n\n' +
-                'The chat service must be running on port 8001.\n\n' +
+                'The chat service must be running on port 9001.\n\n' +
                 'To start it:\n' +
                 '1. Open terminal\n' +
                 '2. cd amp_llm_v3/standalone\\ modules/chat_with_llm\n' +
-                '3. uvicorn chat_api:app --port 8001 --reload\n\n' +
+                '3. uvicorn chat_api:app --port 9001 --reload\n\n' +
                 'Then refresh this page.\n\n' +
                 `Error: ${error.message}`);
         }
@@ -575,11 +1322,91 @@ const app = {
     showModelSelection() {
         console.log('📦 Showing model selection');
         console.log('📊 Available models:', this.availableModels);
+        console.log('📊 Current mode:', this.currentMode);
+        console.log('📊 annotationModeSelected:', this.annotationModeSelected);
         
         const container = document.getElementById('chat-container');
         
+        // STEP 1: Show annotation mode selection first (only for chat mode)
+        if (this.currentMode === 'chat' && !this.annotationModeSelected) {
+            console.log('✅ Showing annotation mode selection screen');
+            this.addMessage('chat-container', 'system', 
+                '🤖 Welcome to Chat Mode!\n\n' +
+                'Please choose your chat type:');
+            
+            const annotationSelectionDiv = document.createElement('div');
+            annotationSelectionDiv.className = 'model-selection';
+            annotationSelectionDiv.id = 'annotation-mode-selection';
+            
+            // Regular chat button
+            const regularButton = document.createElement('button');
+            regularButton.className = 'model-button';
+            regularButton.type = 'button';
+            regularButton.innerHTML = `
+                <span style="font-size: 1.2em;">💬</span>
+                <span style="flex: 1; text-align: left; margin-left: 10px;">
+                    <strong>Regular Chat</strong><br>
+                    <small style="color: #666;">Conversational AI chat</small>
+                </span>
+                <span style="color: #666; font-size: 0.9em;">→</span>
+            `;
+            regularButton.onclick = () => {
+                console.log('✅ Regular chat mode selected');
+                this.annotationModeSelected = false;
+                document.getElementById('annotation-mode-selection')?.remove();
+                this.showModelSelectionStep2();
+            };
+            
+            // Annotation mode button
+            const annotationButton = document.createElement('button');
+            annotationButton.className = 'model-button';
+            annotationButton.type = 'button';
+            annotationButton.innerHTML = `
+                <span style="font-size: 1.2em;">🔬</span>
+                <span style="flex: 1; text-align: left; margin-left: 10px;">
+                    <strong>Annotation Mode</strong><br>
+                    <small style="color: #666;">Annotate clinical trials with NCT IDs</small>
+                </span>
+                <span style="color: #666; font-size: 0.9em;">→</span>
+            `;
+            annotationButton.onclick = () => {
+                console.log('✅ Annotation mode selected');
+                this.annotationModeSelected = true;
+                document.getElementById('annotation-mode-selection')?.remove();
+                this.showModelSelectionStep2();
+            };
+            
+            annotationSelectionDiv.appendChild(regularButton);
+            annotationSelectionDiv.appendChild(annotationButton);
+            container.appendChild(annotationSelectionDiv);
+            
+            requestAnimationFrame(() => {
+                container.scrollTop = container.scrollHeight;
+            });
+            
+            this.updateBackButton();
+            console.log('✅ Annotation mode selection displayed');
+            return;
+        }
+        
+        // If not chat mode or already selected, go directly to model selection
+        this.showModelSelectionStep2();
+    },
+    
+    showModelSelectionStep2() {
+        console.log('📦 Showing model selection (Step 2)');
+        
+        const container = document.getElementById('chat-container');
+        
+        let modeInfo = '';
+        if (this.currentMode === 'chat') {
+            modeInfo = this.annotationModeSelected ? 
+                '\n\n🔬 Mode: Clinical Trial Annotation' : 
+                '\n\n💬 Mode: Regular Chat';
+        }
+        
         this.addMessage('chat-container', 'system', 
-            '🤖 Welcome to Chat Mode!\n\nSelect a model to start your conversation:');
+            `Select a model to start:${modeInfo}`);
         
         const selectionDiv = document.createElement('div');
         selectionDiv.className = 'model-selection';
@@ -719,6 +1546,9 @@ const app = {
         
         delete this.sessionChats[this.currentModel];
         
+        // Clear CSV file selection
+        this.selectedCSVFile = null;
+        
         const container = document.getElementById('chat-container');
         container.innerHTML = '';
         
@@ -735,11 +1565,22 @@ const app = {
 
     async selectModel(modelName) {
         console.log('🎯 selectModel called with:', modelName);
+        console.log('📊 Current mode:', this.currentMode);
+        console.log('📊 annotationModeSelected:', this.annotationModeSelected);
+        
+        // Check if annotation mode is enabled (from stored selection)
+        let annotationMode = false;
+        if (this.currentMode === 'chat' && this.annotationModeSelected) {
+            annotationMode = true;
+            console.log('🔬 Annotation mode ENABLED:', annotationMode);
+        } else {
+            console.log('💬 Regular chat mode (annotationModeSelected=' + this.annotationModeSelected + ')');
+        }
         
         const hasSavedChat = this.sessionChats[modelName] && 
                             this.sessionChats[modelName].messages.length > 0;
         
-        if (hasSavedChat) {
+        if (hasSavedChat && !annotationMode) {
             console.log('📥 Restoring saved chat for', modelName);
             
             const modelSelection = document.getElementById('model-selection-container');
@@ -768,13 +1609,24 @@ const app = {
         const loadingId = this.addMessage('chat-container', 'system', `🔄 Initializing ${modelName}...`);
         
         try {
+            // DEBUG: Log exactly what we're sending
+            const requestBody = { 
+                model: modelName,
+                annotation_mode: annotationMode
+            };
+            console.log('📤 Sending /chat/init request:');
+            console.log('   URL:', `${this.API_BASE}/chat/init`);
+            console.log('   Body:', JSON.stringify(requestBody));
+            console.log('   annotation_mode value:', annotationMode);
+            console.log('   annotation_mode type:', typeof annotationMode);
+            
             const response = await fetch(`${this.API_BASE}/chat/init`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.apiKey}`
                 },
-                body: JSON.stringify({ model: modelName })
+                body: JSON.stringify(requestBody)
             });
             
             console.log('📥 Init response status:', response.status);
@@ -801,6 +1653,14 @@ const app = {
                 this.currentModel = modelName;
                 
                 console.log('✅ Model initialized:', data);
+                console.log('🔬 Annotation mode active:', annotationMode);
+                
+                // Store annotation mode in session
+                this.sessionChats[modelName] = {
+                    conversationId: this.currentConversationId,
+                    messages: [],
+                    annotationMode: annotationMode
+                };
                 
                 this.ensureChatInfoBar();
 
@@ -810,12 +1670,35 @@ const app = {
                     modelSelection.remove();
                 }
                 
-                this.addMessage('chat-container', 'system', 
-                    `✅ Connected to ${modelName}\n\n💡 Commands:\n• Type "exit" to select a different model\n• Type "main menu" to return to home\n• Click "Clear Chat" to reset conversation`);
+                let welcomeMsg = `✅ Connected to ${modelName}`;
+                if (annotationMode) {
+                    welcomeMsg += '\n\n🔬 Annotation Mode Active\n\n' +
+                                '📝 **Option 1: Enter NCT IDs manually**\n' +
+                                'Type NCT IDs (comma-separated) in the chat box.\n' +
+                                'Example: NCT12345678, NCT87654321\n\n' +
+                                '📄 **Option 2: Upload CSV file**\n' +
+                                'Click the "Upload CSV" button below to batch annotate.\n\n' +
+                                '💡 Commands:\n' +
+                                '• Type "exit" to select a different model\n' +
+                                '• Click "Clear Chat" to reset';
+                    
+                    // Show CSV upload UI after a small delay
+                    setTimeout(() => this.showCSVUploadUI(), 100);
+                } else {
+                    welcomeMsg += '\n\n💡 Commands:\n• Type "exit" to select a different model\n• Type "main menu" to return to home\n• Click "Clear Chat" to reset conversation';
+                }
+                
+                this.addMessage('chat-container', 'system', welcomeMsg);
                 
                 const input = document.getElementById('chat-input');
                 input.disabled = false;
-                input.placeholder = 'Type your message...';
+                
+                if (annotationMode) {
+                    input.placeholder = 'Enter NCT IDs (e.g., NCT12345678, NCT87654321)...';
+                } else {
+                    input.placeholder = 'Type your message...';
+                }
+                
                 input.focus();
                 
                 this.updateBackButton();
@@ -847,7 +1730,7 @@ const app = {
                 `❌ Connection Error\n\n` +
                 `Failed to communicate with the chat service.\n\n` +
                 `Error: ${error.message}\n\n` +
-                `Make sure the chat service is running on port 8001.`);
+                `Make sure the chat service is running on port 9001.`);
         }
     },
 
@@ -861,6 +1744,9 @@ const app = {
             
             this.currentConversationId = null;
             this.currentModel = null;
+            
+            // Reset annotation mode selection for fresh start
+            this.annotationModeSelected = false;
             
             const container = document.getElementById('chat-container');
             container.innerHTML = '';
@@ -887,76 +1773,664 @@ const app = {
             return;
         }
         
-        this.addMessage('chat-container', 'user', message);
+        // Check if annotation mode is active
+        const isAnnotationMode = this.sessionChats[this.currentModel]?.annotationMode || false;
         
-        const loadingId = this.addMessage('chat-container', 'system', '🤔 Thinking...');
+        if (isAnnotationMode) {
+            // ANNOTATION MODE - Parse NCT IDs and call annotation endpoint
+            console.log('🔬 Annotation mode: Processing NCT IDs');
+            
+            // Extract NCT IDs from message
+            const nctPattern = /NCT\d{8}/gi;
+            const nctIds = message.match(nctPattern);
+            
+            if (!nctIds || nctIds.length === 0) {
+                this.addMessage('chat-container', 'error', 
+                    '❌ No valid NCT IDs found\n\n' +
+                    'Please enter NCT IDs in the format: NCT12345678\n' +
+                    'You can enter multiple IDs separated by commas.\n\n' +
+                    'Example: NCT03936426, NCT04123456');
+                return;
+            }
+            
+            // Normalize NCT IDs to uppercase
+            const normalizedNctIds = nctIds.map(id => id.toUpperCase());
+            
+            console.log(`📝 Extracted ${normalizedNctIds.length} NCT IDs:`, normalizedNctIds);
+            
+            this.addMessage('chat-container', 'user', `Annotate: ${normalizedNctIds.join(', ')}`);
+            
+            // Call the annotation function (which uses the runner service)
+            await this.annotateTrials(normalizedNctIds);
+            
+        } else {
+            // REGULAR CHAT MODE
+            console.log('💬 Regular chat mode: Sending message');
+            
+            this.addMessage('chat-container', 'user', message);
+            
+            const loadingId = this.addMessage('chat-container', 'system', '🤔 Thinking...');
+            
+            try {
+                console.log('📤 Sending message to chat service');
+                
+                const response = await fetch(`${this.API_BASE}/chat/message`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        conversation_id: this.currentConversationId,
+                        message: message,
+                        temperature: 0.7
+                    })
+                });
+                
+                console.log('📥 Response status:', response.status);
+                
+                document.getElementById(loadingId)?.remove();
+                
+                if (response.ok) {
+                    let data;
+                    try {
+                        const responseText = await response.text();
+                        console.log('📄 Response (first 200 chars):', responseText.substring(0, 200));
+                        
+                        if (responseText.trim().startsWith('<')) {
+                            this.addMessage('chat-container', 'error', 
+                                `❌ Server returned HTML instead of JSON\n\n` +
+                                `Check console for details.`);
+                            console.error('Full response:', responseText);
+                            return;
+                        }
+                        
+                        data = JSON.parse(responseText);
+                    } catch (parseError) {
+                        this.addMessage('chat-container', 'error', 
+                            `❌ JSON Parse Error: ${parseError.message}\n\n` +
+                            `Check console for the full response.`);
+                        return;
+                    }
+                    
+                    if (data.message && data.message.content) {
+                        this.addMessage('chat-container', 'assistant', data.message.content);
+                        this.saveCurrentChat();
+                    } else {
+                        this.addMessage('chat-container', 'error', 
+                            `❌ Invalid response structure\n\n` +
+                            `Expected message.content but got: ${JSON.stringify(data).substring(0, 100)}`);
+                    }
+                } else {
+                    let errorMessage;
+                    try {
+                        const errorText = await response.text();
+                        const errorData = JSON.parse(errorText);
+                        errorMessage = errorData.detail || JSON.stringify(errorData);
+                    } catch (e) {
+                        errorMessage = `HTTP ${response.status}`;
+                    }
+                    this.addMessage('chat-container', 'error', `❌ Error: ${errorMessage}`);
+                }
+            } catch (error) {
+                document.getElementById(loadingId)?.remove();
+                this.addMessage('chat-container', 'error', `❌ Error: ${error.message}`);
+                console.error('Full error:', error);
+            }
+        }
+    },
+
+    // =========================================================================
+    // Annotation Mode - Trial Annotation
+    // =========================================================================
+
+    async annotateTrials(nctIds) {
+        console.log(`🔬 Starting annotation for ${nctIds.length} trial(s):`, nctIds);
+        console.log('📊 Current conversation ID:', this.currentConversationId);
+        console.log('📊 Current model:', this.currentModel);
+        
+        if (!this.currentConversationId) {
+            this.addMessage('chat-container', 'error', 
+                '❌ No active conversation!\n\n' +
+                'Please try:\n' +
+                '1. Reload the page\n' +
+                '2. Click "Chat with LLM" again\n' +
+                '3. Select annotation mode\n' +
+                '4. Select a model');
+            return;
+        }
+        
+        // Show processing message
+        const processingId = this.addMessage('chat-container', 'system', 
+            `🔄 Annotating ${nctIds.length} clinical trial(s)...\n\n` +
+            `Steps:\n` +
+            `1. Fetching trial data from Runner Service\n` +
+            `2. Processing JSON with annotation parser\n` +
+            `3. Generating annotations with LLM\n\n` +
+            `⏳ This may take 1-3 minutes...`);
+        
+        const startTime = Date.now();
         
         try {
-            console.log('📤 Sending message to chat service');
+            console.log('📤 Sending annotation request:');
+            console.log('   conversation_id:', this.currentConversationId);
+            console.log('   message:', nctIds.join(', '));
+            console.log('   nct_ids:', nctIds);
             
+            // Call chat service with NCT IDs
             const response = await fetch(`${this.API_BASE}/chat/message`, {
                 method: 'POST',
-                headers: {
+                headers: { 
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.apiKey}`
                 },
                 body: JSON.stringify({
                     conversation_id: this.currentConversationId,
-                    message: message,
-                    temperature: 0.7
+                    message: nctIds.join(', '),
+                    nct_ids: nctIds,  // Explicit NCT IDs list
+                    temperature: 0.15  // Lower temperature for consistent annotations
                 })
             });
             
-            console.log('📥 Response status:', response.status);
+            const endTime = Date.now();
+            const duration = ((endTime - startTime) / 1000).toFixed(1);
             
-            document.getElementById(loadingId)?.remove();
+            // Remove processing message
+            const processingElement = document.getElementById(processingId);
+            if (processingElement) {
+                processingElement.remove();
+            }
             
             if (response.ok) {
-                let data;
-                try {
-                    const responseText = await response.text();
-                    console.log('📄 Response (first 200 chars):', responseText.substring(0, 200));
-                    
-                    if (responseText.trim().startsWith('<')) {
-                        this.addMessage('chat-container', 'error', 
-                            `❌ Server returned HTML instead of JSON\n\n` +
-                            `Check console for details.`);
-                        console.error('Full response:', responseText);
-                        return;
-                    }
-                    
-                    data = JSON.parse(responseText);
-                } catch (parseError) {
-                    this.addMessage('chat-container', 'error', 
-                        `❌ JSON Parse Error: ${parseError.message}\n\n` +
-                        `Check console for the full response.`);
-                    return;
+                const data = await response.json();
+                
+                console.log('✅ Annotation response received:', data);
+                
+                // Display annotation results
+                let resultMessage = `✅ Annotation Complete\n\n` +
+                    `═══════════════════════════════════════════\n` +
+                    `Trials Annotated: ${data.nct_data_used ? data.nct_data_used.length : nctIds.length}\n` +
+                    `Model: ${data.model}\n` +
+                    `Processing Time: ${duration}s\n` +
+                    `═══════════════════════════════════════════\n\n`;
+                
+                // Add NCT IDs that were successfully processed
+                if (data.nct_data_used && data.nct_data_used.length > 0) {
+                    resultMessage += `NCT IDs Processed: ${data.nct_data_used.join(', ')}\n\n`;
                 }
                 
-                if (data.message && data.message.content) {
-                    this.addMessage('chat-container', 'assistant', data.message.content);
-                    this.saveCurrentChat();
+                // Add the annotation content
+                resultMessage += `${data.message.content}\n\n` +
+                    `═══════════════════════════════════════════\n\n` +
+                    `💡 Next:\n` +
+                    `  • Enter more NCT IDs to annotate\n` +
+                    `  • Type "exit" to select a different model\n` +
+                    `  • Click "Clear Chat" to reset`;
+                
+                this.addMessage('chat-container', 'assistant', resultMessage);
+                
+                // Store in session
+                if (!this.sessionChats[this.currentModel]) {
+                    this.sessionChats[this.currentModel] = {
+                        conversationId: this.currentConversationId,
+                        messages: [],
+                        annotationMode: true
+                    };
+                }
+                
+                this.sessionChats[this.currentModel].messages.push({
+                    role: 'user',
+                    content: `Annotate: ${nctIds.join(', ')}`
+                });
+                
+                this.sessionChats[this.currentModel].messages.push({
+                    role: 'assistant',
+                    content: data.message.content
+                });
+                
+            } else {
+                const errorText = await response.text();
+                let errorData;
+                try {
+                    errorData = JSON.parse(errorText);
+                } catch {
+                    errorData = { detail: errorText };
+                }
+                
+                console.error('❌ Annotation failed:', errorData);
+                
+                this.addMessage('chat-container', 'error', 
+                    `❌ Annotation Failed\n\n` +
+                    `Error: ${errorData.detail}\n\n` +
+                    `Possible Issues:\n` +
+                    `• Invalid NCT ID(s)\n` +
+                    `• Runner Service (port 9003) not running\n` +
+                    `• NCT Lookup (port 9002) not available\n` +
+                    `• Chat Service (port 9001) error\n` +
+                    `• Model ${this.currentModel} not responding\n\n` +
+                    `Troubleshooting:\n` +
+                    `1. Verify NCT IDs are correct (NCT + 8 digits)\n` +
+                    `2. Check services: ./services.sh status\n` +
+                    `3. View logs: ./services.sh logs chat\n` +
+                    `4. Try: ./services.sh restart`);
+            }
+            
+        } catch (error) {
+            // Remove processing message if still there
+            const processingElement = document.getElementById(processingId);
+            if (processingElement) {
+                processingElement.remove();
+            }
+            
+            console.error('❌ Annotation error:', error);
+            
+            this.addMessage('chat-container', 'error', 
+                `❌ Connection Error\n\n` +
+                `${error.message}\n\n` +
+                `Cannot connect to Chat Service (port 9001).\n\n` +
+                `Required Services:\n` +
+                `• Chat Service (9001) - Main annotation service\n` +
+                `• Runner Service (9003) - File manager\n` +
+                `• NCT Service (9002) - Data fetching\n\n` +
+                `Start all services:\n` +
+                `  ./services.sh start\n\n` +
+                `Check status:\n` +
+                `  ./services.sh status`);
+        }
+    },
+
+    // =========================================================================
+    // CSV Upload Functionality
+    // =========================================================================
+
+    showCSVUploadUI() {
+        // Remove any existing CSV upload UI
+        document.getElementById('csv-upload-container')?.remove();
+        
+        const container = document.getElementById('chat-container');
+        
+        const csvUploadDiv = document.createElement('div');
+        csvUploadDiv.id = 'csv-upload-container';
+        csvUploadDiv.className = 'csv-upload-container';
+        csvUploadDiv.innerHTML = `
+            <div class="csv-upload-icon">📄</div>
+            <div class="csv-upload-text">Upload CSV for Batch Annotation</div>
+            <div class="csv-upload-subtext">CSV can have NCT IDs in any column - they will be auto-detected</div>
+            
+            <input type="file" id="csv-file-input" class="csv-file-input" accept=".csv,.txt">
+            
+            <button type="button" class="csv-upload-btn" onclick="app.triggerCSVFileSelect()">
+                <span class="csv-upload-btn-icon">📤</span>
+                <span>Choose CSV File</span>
+            </button>
+            
+            <div id="csv-file-selected" class="csv-file-selected" style="display: none;">
+                <span id="csv-file-name" class="csv-file-name"></span>
+                <span id="csv-file-size" class="csv-file-size"></span>
+                <button type="button" class="csv-file-remove" onclick="app.clearCSVFile()">✕</button>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <button type="button" id="csv-submit-btn" class="submit-csv-btn" onclick="app.uploadCSVForAnnotation()" style="display: none;">
+                    <span>🔬</span>
+                    <span>Start Batch Annotation</span>
+                </button>
+            </div>
+        `;
+        
+        container.appendChild(csvUploadDiv);
+        
+        // Set up file input change handler
+        const fileInput = document.getElementById('csv-file-input');
+        fileInput.addEventListener('change', (e) => this.handleCSVFileSelect(e));
+        
+        // Set up drag and drop
+        csvUploadDiv.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            csvUploadDiv.classList.add('drag-over');
+        });
+        
+        csvUploadDiv.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            csvUploadDiv.classList.remove('drag-over');
+        });
+        
+        csvUploadDiv.addEventListener('drop', (e) => {
+            e.preventDefault();
+            csvUploadDiv.classList.remove('drag-over');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.name.endsWith('.csv') || file.name.endsWith('.txt')) {
+                    this.selectedCSVFile = file;
+                    this.showSelectedCSVFile(file);
                 } else {
-                    this.addMessage('chat-container', 'error', 
-                        `❌ Invalid response structure\n\n` +
-                        `Expected message.content but got: ${JSON.stringify(data).substring(0, 100)}`);
+                    this.addMessage('chat-container', 'error', '❌ Please upload a CSV or TXT file');
+                }
+            }
+        });
+        
+        // Scroll to show the upload UI
+        requestAnimationFrame(() => {
+            container.scrollTop = container.scrollHeight;
+        });
+    },
+    
+    triggerCSVFileSelect() {
+        document.getElementById('csv-file-input')?.click();
+    },
+    
+    handleCSVFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            this.selectedCSVFile = file;
+            this.showSelectedCSVFile(file);
+        }
+    },
+    
+    showSelectedCSVFile(file) {
+        const selectedDiv = document.getElementById('csv-file-selected');
+        const nameSpan = document.getElementById('csv-file-name');
+        const sizeSpan = document.getElementById('csv-file-size');
+        const submitBtn = document.getElementById('csv-submit-btn');
+        
+        if (selectedDiv && nameSpan && sizeSpan) {
+            nameSpan.textContent = file.name;
+            sizeSpan.textContent = `(${(file.size / 1024).toFixed(1)} KB)`;
+            selectedDiv.style.display = 'flex';
+            submitBtn.style.display = 'inline-flex';
+        }
+    },
+    
+    clearCSVFile() {
+        this.selectedCSVFile = null;
+        
+        const fileInput = document.getElementById('csv-file-input');
+        if (fileInput) fileInput.value = '';
+        
+        const selectedDiv = document.getElementById('csv-file-selected');
+        if (selectedDiv) selectedDiv.style.display = 'none';
+        
+        const submitBtn = document.getElementById('csv-submit-btn');
+        if (submitBtn) submitBtn.style.display = 'none';
+    },
+    
+    async uploadCSVForAnnotation() {
+        if (!this.selectedCSVFile) {
+            this.addMessage('chat-container', 'error', '❌ No CSV file selected');
+            return;
+        }
+        
+        if (!this.currentConversationId) {
+            this.addMessage('chat-container', 'error', '❌ No active conversation. Please select a model first.');
+            return;
+        }
+        
+        const file = this.selectedCSVFile;
+        const fileName = file.name;
+        
+        console.log(`📤 Uploading CSV for annotation: ${fileName}`);
+        
+        // Hide upload UI and show processing message
+        document.getElementById('csv-upload-container').style.display = 'none';
+        
+        this.addMessage('chat-container', 'user', `📄 Upload CSV: ${fileName}`);
+        
+        const processingId = this.addMessage('chat-container', 'system', 
+            `🔄 Starting CSV annotation: ${fileName}\n\n` +
+            `⏳ Submitting job...`);
+        
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            const params = new URLSearchParams({
+                conversation_id: this.currentConversationId,
+                model: this.currentModel,
+                temperature: '0.15'
+            });
+            
+            const url = `${this.API_BASE}/chat/annotate-csv?${params}`;
+            console.log(`📤 Sending CSV to: ${url}`);
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${this.apiKey}` },
+                body: formData
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ Job response:', data);
+                
+                if (data.job_id) {
+                    // Async mode - poll for status with progress bar
+                    await this.pollCSVAnnotationStatus(data.job_id, processingId, fileName, data.total || 0);
+                } else {
+                    // Sync response (fallback)
+                    document.getElementById(processingId)?.remove();
+                    this.handleCSVAnnotationResult(data, fileName);
                 }
             } else {
-                let errorMessage;
-                try {
-                    const errorText = await response.text();
-                    const errorData = JSON.parse(errorText);
-                    errorMessage = errorData.detail || JSON.stringify(errorData);
-                } catch (e) {
-                    errorMessage = `HTTP ${response.status}`;
-                }
-                this.addMessage('chat-container', 'error', `❌ Error: ${errorMessage}`);
+                const errorText = await response.text();
+                document.getElementById(processingId)?.remove();
+                this.addMessage('chat-container', 'error', `❌ CSV Annotation Failed\n\nError: ${errorText}`);
+                document.getElementById('csv-upload-container').style.display = 'block';
             }
         } catch (error) {
-            document.getElementById(loadingId)?.remove();
-            this.addMessage('chat-container', 'error', `❌ Error: ${error.message}`);
-            console.error('Full error:', error);
+            document.getElementById(processingId)?.remove();
+            this.addMessage('chat-container', 'error', `❌ Connection Error\n\n${error.message}`);
+            document.getElementById('csv-upload-container').style.display = 'block';
         }
+    },
+    
+    updateProcessingMessage(messageId, newContent) {
+        const msgElement = document.getElementById(messageId);
+        if (msgElement) {
+            const contentDiv = msgElement.querySelector('.message-content');
+            if (contentDiv) contentDiv.textContent = newContent;
+        }
+    },
+    
+    async pollCSVAnnotationStatus(jobId, processingId, fileName, totalTrials = 0) {
+        const pollInterval = 3000;
+        const maxPolls = 600;
+        let pollCount = 0;
+        const startTime = Date.now();
+        
+        // Create progress bar UI
+        this.createProgressBar(processingId, fileName, totalTrials);
+        
+        const poll = async () => {
+            try {
+                const response = await fetch(`${this.API_BASE}/chat/annotate-csv-status/${jobId}`, {
+                    headers: { 'Authorization': `Bearer ${this.apiKey}` }
+                });
+                
+                if (!response.ok) throw new Error(`Status check failed: ${response.status}`);
+                
+                const status = await response.json();
+                console.log(`📊 Job status:`, status);
+                
+                // Update progress bar
+                const elapsed = Math.round((Date.now() - startTime) / 1000);
+                this.updateProgressBar(processingId, status, elapsed);
+                
+                if (status.status === 'completed') {
+                    this.completeProgressBar(processingId);
+                    setTimeout(() => {
+                        document.getElementById(processingId)?.remove();
+                        this.handleCSVAnnotationResult(status.result, fileName);
+                    }, 1000);
+                } else if (status.status === 'failed') {
+                    this.failProgressBar(processingId, status.error);
+                    setTimeout(() => {
+                        document.getElementById(processingId)?.remove();
+                        this.addMessage('chat-container', 'error', `❌ Annotation Failed\n\n${status.error || 'Unknown error'}`);
+                        document.getElementById('csv-upload-container').style.display = 'block';
+                    }, 2000);
+                } else {
+                    pollCount++;
+                    if (pollCount < maxPolls) setTimeout(poll, pollInterval);
+                }
+            } catch (error) {
+                console.warn(`Poll error (attempt ${pollCount}):`, error);
+                pollCount++;
+                if (pollCount < maxPolls) setTimeout(poll, pollInterval);
+            }
+        };
+        
+        setTimeout(poll, pollInterval);
+    },
+
+    createProgressBar(containerId, fileName, totalTrials) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        const contentDiv = container.querySelector('.content');
+        if (!contentDiv) return;
+        
+        contentDiv.innerHTML = `
+            <div class="csv-progress-container" id="progress-${containerId}">
+                <div class="csv-progress-header">
+                    <div class="csv-progress-title">
+                        <span class="spinner"></span>
+                        Processing: ${this.escapeHtml(fileName)}
+                    </div>
+                    <div class="csv-progress-stats">
+                        <span class="current" id="progress-current-${containerId}">0</span>
+                        <span>/</span>
+                        <span class="total" id="progress-total-${containerId}">${totalTrials || '?'}</span>
+                        <span>trials</span>
+                    </div>
+                </div>
+                <div class="csv-progress-bar-container">
+                    <div class="csv-progress-bar" id="progress-bar-${containerId}" style="width: 0%">
+                        <span class="csv-progress-percent" id="progress-percent-${containerId}">0%</span>
+                    </div>
+                </div>
+                <div class="csv-progress-info">
+                    <div class="csv-progress-status">
+                        <span class="status-icon">🔄</span>
+                        <span id="progress-status-${containerId}">Initializing...</span>
+                    </div>
+                    <div class="csv-progress-elapsed">
+                        <span id="progress-elapsed-${containerId}">0:00</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    updateProgressBar(containerId, status, elapsedSeconds) {
+        const processed = status.processed_trials || 0;
+        const total = status.total_trials || 0;
+        const progress = status.progress || 'Processing...';
+        
+        const totalEl = document.getElementById(`progress-total-${containerId}`);
+        if (totalEl && total > 0) totalEl.textContent = total;
+        
+        const currentEl = document.getElementById(`progress-current-${containerId}`);
+        if (currentEl) currentEl.textContent = processed;
+        
+        const percent = total > 0 ? Math.round((processed / total) * 100) : 0;
+        
+        const barEl = document.getElementById(`progress-bar-${containerId}`);
+        if (barEl) barEl.style.width = `${percent}%`;
+        
+        const percentEl = document.getElementById(`progress-percent-${containerId}`);
+        if (percentEl) percentEl.textContent = `${percent}%`;
+        
+        const statusEl = document.getElementById(`progress-status-${containerId}`);
+        if (statusEl) statusEl.textContent = progress;
+        
+        const elapsedEl = document.getElementById(`progress-elapsed-${containerId}`);
+        if (elapsedEl) {
+            const mins = Math.floor(elapsedSeconds / 60);
+            const secs = elapsedSeconds % 60;
+            elapsedEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+    },
+
+    completeProgressBar(containerId) {
+        const progressContainer = document.getElementById(`progress-${containerId}`);
+        if (progressContainer) progressContainer.classList.add('completed');
+        
+        const barEl = document.getElementById(`progress-bar-${containerId}`);
+        if (barEl) barEl.style.width = '100%';
+        
+        const percentEl = document.getElementById(`progress-percent-${containerId}`);
+        if (percentEl) percentEl.textContent = '100%';
+        
+        const statusEl = document.getElementById(`progress-status-${containerId}`);
+        if (statusEl) statusEl.textContent = 'Complete!';
+    },
+
+    failProgressBar(containerId, errorMessage) {
+        const progressContainer = document.getElementById(`progress-${containerId}`);
+        if (progressContainer) progressContainer.classList.add('failed');
+        
+        const statusEl = document.getElementById(`progress-status-${containerId}`);
+        if (statusEl) statusEl.textContent = errorMessage || 'Failed';
+    },
+        
+    handleCSVAnnotationResult(data, fileName) {
+        let errorSummary = '';
+        if (data.errors && data.errors.length > 0) {
+            errorSummary = '\n\n⚠️ Errors:\n';
+            data.errors.slice(0, 5).forEach(err => {
+                errorSummary += `  • ${err.nct_id}: ${err.error}\n`;
+            });
+        }
+        
+        let downloadUrl = data.download_url;
+        if (downloadUrl && downloadUrl.startsWith('/')) {
+            downloadUrl = `${this.API_BASE}${downloadUrl}`;
+        }
+        
+        const resultMessage = `✅ CSV Annotation Complete\n\n` +
+            `═══════════════════════════════════════════\n` +
+            `📄 Input File: ${fileName}\n` +
+            `📊 Total NCT IDs: ${data.total}\n` +
+            `✓ Successful: ${data.successful}\n` +
+            `✗ Failed: ${data.failed}\n` +
+            `⏱ Processing Time: ${data.total_time_seconds}s\n` +
+            `═══════════════════════════════════════════${errorSummary}\n\n` +
+            `💡 Click the download button below to get your CSV`;
+        
+        this.addMessage('chat-container', 'assistant', resultMessage);
+        
+        if (downloadUrl) {
+            this.addDownloadButton(downloadUrl, data.csv_filename || 'annotations.csv');
+        }
+        
+        setTimeout(() => {
+            this.clearCSVFile();
+            document.getElementById('csv-upload-container').style.display = 'block';
+        }, 500);
+    },
+    
+    addDownloadButton(url, filename) {
+        const container = document.getElementById('chat-container');
+        
+        const downloadDiv = document.createElement('div');
+        downloadDiv.className = 'csv-download-section success-pulse';
+        downloadDiv.innerHTML = `
+            <div class="csv-download-icon">✅</div>
+            <div class="csv-download-title">Annotated CSV Ready!</div>
+            <div class="csv-download-info">${filename}</div>
+            <a href="${url}" download="${filename}" class="csv-download-btn" target="_blank">
+                <span class="csv-download-btn-icon">📥</span>
+                <span>Download CSV</span>
+            </a>
+        `;
+        
+        container.appendChild(downloadDiv);
+        
+        requestAnimationFrame(() => {
+            container.scrollTop = container.scrollHeight;
+        });
     },
 
     // =========================================================================
@@ -979,36 +2453,16 @@ const app = {
             
             if (!text) return;
             
-            this.addMessage('research-container', 'user', text);
             input.value = '';
             
-            const loadingId = this.addMessage('research-container', 'system', '🤔 Processing query...');
-            
-            try {
-                const response = await fetch(`${this.API_BASE}/research`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${this.apiKey}`
-                    },
-                    body: JSON.stringify({
-                        query: text,
-                        model: 'llama3.2',
-                        max_trials: 10
-                    })
-                });
-                
-                const data = await response.json();
-                
-                document.getElementById(loadingId)?.remove();
-                
-                this.addMessage('research-container', 'assistant', 
-                    `${data.answer}\n\n💡 Used ${data.trials_used} trial(s)`);
-                
-            } catch (error) {
-                document.getElementById(loadingId)?.remove();
-                this.addMessage('research-container', 'error', 'Error: ' + error.message);
+            // Check if model is selected
+            if (!this.currentModel) {
+                this.addMessage('research-container', 'error', 
+                    '❌ Please select a model first');
+                return;
             }
+            
+            await this.sendResearchMessage(text);
         }
     },
 
@@ -1668,53 +3122,160 @@ const app = {
             return;
         }
         
-        const filename = `nct_results_${Date.now()}.json`;
-        const content = JSON.stringify(this.nctResults.results, null, 2);
-        
-        const sizeKB = (content.length / 1024).toFixed(1);
-        const sizeMB = sizeKB > 1024 ? (sizeKB / 1024).toFixed(2) + ' MB' : sizeKB + ' KB';
+        const nctId = this.nctResults.summary.nct_id;
         
         try {
-            const response = await fetch(`${this.API_BASE}/files/save`, {
+            // Step 1: Check for duplicates
+            const checkResponse = await fetch(`${this.NCT_SERVICE_URL}/api/results/${nctId}/check-duplicate`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.apiKey}`
-                },
-                body: JSON.stringify({ filename, content })
+                    'Content-Type': 'application/json'
+                }
             });
             
-            if (response.ok) {
-                this.showToast(
-                    `✅ Results saved successfully!<br>` +
-                    `<small>📥 Downloaded: ${filename}<br>` +
-                    `💾 Saved to server: output/${filename}<br>` +
-                    `Size: ${sizeMB} | ${this.nctResults.results.length} trial(s)</small>`,
-                    'success',
-                    5000
-                );
-            } else {
-                throw new Error('Server save failed');
+            if (!checkResponse.ok) {
+                throw new Error('Failed to check for duplicates');
             }
+            
+            const duplicateInfo = await checkResponse.json();
+            
+            // Step 2: If file exists, prompt user
+            if (duplicateInfo.exists) {
+                this.showDuplicateDialog(nctId, duplicateInfo);
+            } else {
+                // No duplicate, proceed with save
+                await this.performSave(nctId, false);
+            }
+            
         } catch (error) {
-            console.error('Server save error:', error);
+            console.error('Save error:', error);
             this.showToast(
-                `⚠️ Partial save<br>` +
-                `<small>📥 Downloaded locally: ${filename}<br>` +
-                `❌ Server save failed: ${error.message}</small>`,
-                'warning',
+                `❌ Save failed: ${error.message}`,
+                'error',
                 5000
             );
         }
     },
 
+    // New function to show duplicate dialog
+    showDuplicateDialog(nctId, duplicateInfo) {
+        const existingFiles = duplicateInfo.existing_files.join(', ');
+        const suggestedFilename = duplicateInfo.suggested_filename;
+        
+        // Create modal dialog
+        const dialog = document.createElement('div');
+        dialog.className = 'duplicate-dialog-overlay';
+        dialog.innerHTML = `
+            <div class="duplicate-dialog">
+                <div class="duplicate-dialog-header">
+                    <h3>⚠️ File Already Exists</h3>
+                </div>
+                <div class="duplicate-dialog-content">
+                    <p>Files already exist for <strong>${nctId}</strong>:</p>
+                    <ul class="existing-files-list">
+                        ${duplicateInfo.existing_files.map(f => `<li>📄 ${f}</li>`).join('')}
+                    </ul>
+                    <p>What would you like to do?</p>
+                </div>
+                <div class="duplicate-dialog-actions">
+                    <button class="dialog-btn dialog-btn-primary" id="save-new-version">
+                        💾 Save as New Version
+                        <small>(${suggestedFilename})</small>
+                    </button>
+                    <button class="dialog-btn dialog-btn-warning" id="overwrite-existing">
+                        ⚠️ Overwrite Existing
+                        <small>(${nctId}.json)</small>
+                    </button>
+                    <button class="dialog-btn dialog-btn-secondary" id="cancel-save">
+                        ❌ Cancel
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(dialog);
+        
+        // Add event listeners
+        document.getElementById('save-new-version').addEventListener('click', async () => {
+            document.body.removeChild(dialog);
+            await this.performSave(nctId, false);
+        });
+        
+        document.getElementById('overwrite-existing').addEventListener('click', async () => {
+            document.body.removeChild(dialog);
+            await this.performSave(nctId, true);
+        });
+        
+        document.getElementById('cancel-save').addEventListener('click', () => {
+            document.body.removeChild(dialog);
+            this.showToast('💭 Save cancelled', 'info', 2000);
+        });
+        
+        // Close on overlay click
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) {
+                document.body.removeChild(dialog);
+                this.showToast('💭 Save cancelled', 'info', 2000);
+            }
+        });
+    },
+
+    // New function to perform the actual save
+    async performSave(nctId, overwrite = false) {
+        try {
+            const response = await fetch(`${this.NCT_SERVICE_URL}/api/results/${nctId}/save`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    overwrite: overwrite
+                })
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.detail || 'Save failed');
+            }
+            
+            const saveInfo = await response.json();
+            
+            // Show success message
+            const sizeFormatted = this.formatFileSize(saveInfo.size_bytes);
+            const action = saveInfo.overwritten ? 'Overwritten' : 
+                        saveInfo.was_duplicate ? 'Saved as new version' : 'Saved';
+            
+            this.showToast(
+                `✅ ${action} successfully!<br>` +
+                `<small>📄 File: ${saveInfo.filename}<br>` +
+                `💾 Size: ${sizeFormatted}<br>` +
+                `📍 Location: ${saveInfo.filepath}</small>`,
+                'success',
+                5000
+            );
+            
+            console.log('✅ Save successful:', saveInfo);
+            
+        } catch (error) {
+            console.error('Save error:', error);
+            this.showToast(
+                `❌ Save failed: ${error.message}`,
+                'error',
+                5000
+            );
+        }
+    },
+
+    // Updated downloadNCTResults with NCT ID-based naming
     downloadNCTResults() {
         if (!this.nctResults) {
             this.showToast('⚠️ No results to download', 'error');
             return;
         }
         
-        const filename = `nct_results_${Date.now()}.json`;
+        // Use NCT ID for filename
+        const nctId = this.nctResults.summary.nct_id;
+        const filename = `${nctId}.json`;
         const content = JSON.stringify(this.nctResults.results, null, 2);
         
         const blob = new Blob([content], { type: 'application/json' });
@@ -1729,15 +3290,24 @@ const app = {
         
         console.log(`✅ Downloaded ${filename} to local computer`);
         
-        const sizeKB = (content.length / 1024).toFixed(1);
-        const sizeMB = sizeKB > 1024 ? (sizeKB / 1024).toFixed(2) + ' MB' : sizeKB + ' KB';
+        const sizeFormatted = this.formatFileSize(content.length);
         
         this.showToast(
-            `📥 Downloaded: ${filename}<br><small>Size: ${sizeMB} | ${this.nctResults.results.length} trial(s)</small>`,
+            `📥 Downloaded: ${filename}<br><small>Size: ${sizeFormatted}</small>`,
             'success',
             4000
         );
     },
+
+    // Helper function for file size formatting
+    formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        const kb = bytes / 1024;
+        if (kb < 1024) return kb.toFixed(1) + ' KB';
+        const mb = kb / 1024;
+        return mb.toFixed(2) + ' MB';
+    },
+
 
     showSearchErrorSummary(errors, apiFailures = []) {
         if (!errors || errors.length === 0) return '';
@@ -2218,28 +3788,14 @@ const app = {
                     sourceCount++;
                 }
             });
-            
+
             html += `
                 <div class="result-card trial-card">
                     <div class="trial-header">
                         <div>
                             <h3>${nctId}</h3>
-                            <div class="trial-title-display">${this.escapeHtml(trialTitle)}</div>
                         </div>
                         <span class="source-count">${sourceCount} sources</span>
-                    </div>
-                    
-                    <div class="trial-summary-box">
-                        <div class="trial-summary-item">
-                            <strong>Status:</strong> 
-                            <span class="status-badge status-${trialStatus.toLowerCase().replace(/\s+/g, '-')}">${this.escapeHtml(trialStatus)}</span>
-                        </div>
-                        <div class="trial-summary-item">
-                            <strong>Condition:</strong> ${this.escapeHtml(trialCondition)}
-                        </div>
-                        <div class="trial-summary-item">
-                            <strong>Intervention:</strong> ${this.escapeHtml(trialIntervention)}
-                        </div>
                     </div>
             `;
             
@@ -2271,38 +3827,51 @@ const app = {
                             <strong>NCT Number:</strong> ${nctId}
                         </div>`;
                         
-                        if (data.description || data.brief_summary) {
-                            const abstract = data.description || data.brief_summary;
-                            const shortAbstract = abstract.substring(0, 300);
-                            const needsExpand = abstract.length > 300;
-                            
+                        if (trialTitle && trialCondition && trialIntervention && trialStatus) {
                             html += `<div class="data-field abstract-field">
-                                <strong>Abstract:</strong>
-                                <div class="abstract-text">
-                                    ${this.escapeHtml(shortAbstract)}${needsExpand ? '...' : ''}
-                                    ${needsExpand ? `
-                                        <span class="show-more-inline" onclick="app.toggleAbstract('abstract-${nctId}')">
-                                            <strong>Show More</strong>
-                                        </span>
-                                        <span id="abstract-${nctId}" class="expanded-text hidden">
-                                            ${this.escapeHtml(abstract.substring(300))}
-                                        </span>
-                                    ` : ''}
+                                <div class="trial-title-display">${this.escapeHtml(trialTitle)}</div>
+                                <div class="trial-summary-item">
+                                    <strong>Status:</strong> 
+                                    <span class="status-badge status-${trialStatus.toLowerCase().replace(/\s+/g, '-')}">${this.escapeHtml(trialStatus)}</span>
+                                </div>
+                                <div class="trial-summary-item">
+                                    <strong>Condition:</strong> ${this.escapeHtml(trialCondition)}
+                                </div>
+                                <div class="trial-summary-item">
+                                    <strong>Intervention:</strong> ${this.escapeHtml(trialIntervention)}
                                 </div>
                             </div>`;
                         }
                     
                     } else if (sourceName === 'pubmed') {
+                        // Display search strategy
                         if (data.search_strategy) {
                             html += `<div class="search-info">
                                 <span class="search-info-label">🔍 Search Strategy:</span>
                                 <span class="search-info-value">${this.escapeHtml(data.search_strategy)}</span>
                             </div>`;
                         }
+                        
+                        // Display exact search queries with full details
                         if (data.search_queries && data.search_queries.length > 0) {
                             html += `<div class="search-info">
-                                <span class="search-info-label">📝 Queries Used:</span>
-                                <span class="search-info-value">${data.search_queries.map(q => `"${this.escapeHtml(q)}"`).join(', ')}</span>
+                                <span class="search-info-label">📝 Search Queries Executed:</span>
+                                <div class="search-queries-list">
+                                    ${data.search_queries.map((q, idx) => `
+                                        <div class="search-query-item">
+                                            <span class="query-number">${idx + 1}.</span>
+                                            <code class="query-code">${this.escapeHtml(q)}</code>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>`;
+                        }
+                        
+                        // Display exact API query string if available
+                        if (data.query_string) {
+                            html += `<div class="search-info">
+                                <span class="search-info-label">🔗 Exact API Query:</span>
+                                <code class="api-query-string">${this.escapeHtml(data.queries_used)}</code>
                             </div>`;
                         }
                         
@@ -2310,39 +3879,64 @@ const app = {
                             <strong>Articles Found:</strong> ${resultCount}
                         </div>`;
                         
+                        // Display all PMIDs as a formatted list with links
                         if (data.pmids && data.pmids.length > 0) {
                             const uniqueId = `source-${nctId}-${sourceName}-${Date.now()}`;
-                            const visibleCount = 5;
-                            const visiblePMIDs = data.pmids.slice(0, visibleCount);
-                            const hiddenPMIDs = data.pmids.slice(visibleCount);
                             
-                            html += `<div class="data-field pmid-field">
-                                <strong>PMIDs:</strong> 
-                                <span class="id-list">
-                                    ${visiblePMIDs.join(', ')}
-                                    ${hiddenPMIDs.length > 0 ? `
-                                        <span class="show-more-inline" onclick="app.toggleExpandedList('${uniqueId}-pmids')">
-                                            <strong>(+${hiddenPMIDs.length} more)</strong>
-                                        </span>
-                                        <span id="${uniqueId}-pmids" class="expanded-list hidden">
-                                            , ${hiddenPMIDs.join(', ')}
-                                        </span>
-                                    ` : ''}
-                                </span>
+                            html += `<div class="data-field pmid-list-field">
+                                <strong>PMIDs (${data.pmids.length} total):</strong>
+                                <button class="toggle-list-btn" onclick="app.togglePMIDList('${uniqueId}-pmids')">
+                                    Show All
+                                </button>
+                                <div id="${uniqueId}-pmids" class="pmid-list-container hidden">
+                                    <div class="pmid-grid">
+                                        ${data.pmids.map(pmid => `
+                                            <a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            class="pmid-link">${pmid}</a>
+                                        `).join('')}
+                                    </div>
+                                </div>
                             </div>`;
                         }
-                    
                     } else if (sourceName === 'pmc') {
+                        // Display search strategy
                         if (data.search_strategy) {
                             html += `<div class="search-info">
                                 <span class="search-info-label">🔍 Search Strategy:</span>
                                 <span class="search-info-value">${this.escapeHtml(data.search_strategy)}</span>
                             </div>`;
                         }
+                        
+                        // Display exact search queries with full details
                         if (data.search_queries && data.search_queries.length > 0) {
                             html += `<div class="search-info">
-                                <span class="search-info-label">📝 Queries Used:</span>
-                                <span class="search-info-value">${data.search_queries.map(q => `"${this.escapeHtml(q)}"`).join(', ')}</span>
+                                <span class="search-info-label">📝 Search Queries Executed:</span>
+                                <div class="search-queries-list">
+                                    ${data.search_queries.map((q, idx) => `
+                                        <div class="search-query-item">
+                                            <span class="query-number">${idx + 1}.</span>
+                                            <code class="query-code">${this.escapeHtml(q)}</code>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>`;
+                        }
+                        
+                        // Display exact API query string if available
+                        if (data.query_string) {
+                            html += `<div class="search-info">
+                                <span class="search-info-label">🔗 Exact API Query:</span>
+                                <code class="api-query-string">${this.escapeHtml(data.query_string)}</code>
+                            </div>`;
+                        }
+                        
+                        // Display search parameters if available
+                        if (data.search_params) {
+                            html += `<div class="search-info">
+                                <span class="search-info-label">⚙️ Search Parameters:</span>
+                                <pre class="search-params-json">${JSON.stringify(data.search_params, null, 2)}</pre>
                             </div>`;
                         }
                         
@@ -2350,25 +3944,47 @@ const app = {
                             <strong>Articles Found:</strong> ${resultCount}
                         </div>`;
                         
-                        if (data.pmids && data.pmids.length > 0) {
+                        // Display PMCIDs as a formatted list with links
+                        if (data.pmcids && data.pmcids.length > 0) {
                             const uniqueId = `source-${nctId}-${sourceName}-${Date.now()}`;
-                            const visibleCount = 5;
-                            const visiblePMIDs = data.pmids.slice(0, visibleCount);
-                            const hiddenPMIDs = data.pmids.slice(visibleCount);
                             
-                            html += `<div class="data-field pmid-field">
-                                <strong>PMIDs:</strong> 
-                                <span class="id-list">
-                                    ${visiblePMIDs.join(', ')}
-                                    ${hiddenPMIDs.length > 0 ? `
-                                        <span class="show-more-inline" onclick="app.toggleExpandedList('${uniqueId}-pmids')">
-                                            <strong>(+${hiddenPMIDs.length} more)</strong>
-                                        </span>
-                                        <span id="${uniqueId}-pmids" class="expanded-list hidden">
-                                            , ${hiddenPMIDs.join(', ')}
-                                        </span>
-                                    ` : ''}
-                                </span>
+                            html += `<div class="data-field pmid-list-field">
+                                <strong>PMCIDs (${data.pmcids.length} total):</strong>
+                                <button class="toggle-list-btn" onclick="app.togglePMIDList('${uniqueId}-pmcids')">
+                                    Show All
+                                </button>
+                                <div id="${uniqueId}-pmcids" class="pmid-list-container hidden">
+                                    <div class="pmid-grid">
+                                        ${data.pmcids.map(pmcid => `
+                                            <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/${pmcid}/" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            class="pmid-link">${pmcid}</a>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>`;
+                        }
+                        
+                        // Also show PMIDs if available (PMC often returns both)
+                        if (data.pmids && data.pmids.length > 0) {
+                            const uniqueId = `source-${nctId}-${sourceName}-pmids-${Date.now()}`;
+                            
+                            html += `<div class="data-field pmid-list-field">
+                                <strong>PMIDs (${data.pmids.length} total):</strong>
+                                <button class="toggle-list-btn" onclick="app.togglePMIDList('${uniqueId}')">
+                                    Show All
+                                </button>
+                                <div id="${uniqueId}" class="pmid-list-container hidden">
+                                    <div class="pmid-grid">
+                                        ${data.pmids.map(pmid => `
+                                            <a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            class="pmid-link">${pmid}</a>
+                                        `).join('')}
+                                    </div>
+                                </div>
                             </div>`;
                         }
                     } else if (sourceName === 'pmc_bioc') {
@@ -2808,7 +4424,7 @@ const app = {
             
             case 'pmc_bioc':
                 return data.total_fetched || 0;
-            
+
             default:
                 if (data.results && Array.isArray(data.results)) {
                     return data.results.length;
@@ -2827,6 +4443,212 @@ const app = {
         
         api = this.apiRegistry.extended.find(a => a.id === sourceId);
         return api;
+    },
+
+    async handleResearchInput(input) {
+        input = input.trim();
+        
+        if (!input) return;
+        
+        // Command handling
+        if (input.toLowerCase() === 'exit') {
+            this.showMenu();
+            return;
+        }
+        
+        if (input.toLowerCase() === 'models') {
+            await this.selectModel('research');
+            return;
+        }
+        
+        if (!this.currentModel) {
+            this.addMessage('research-container', 'error', 
+                '⚠️  Please select a model first\n\n' +
+                'Type "models" to see available models');
+            return;
+        }
+        
+        // Parse NCT IDs (comma-separated)
+        const nctIds = input.split(',')
+            .map(id => id.trim().toUpperCase())
+            .filter(id => id.startsWith('NCT'));
+        
+        if (nctIds.length === 0) {
+            this.addMessage('research-container', 'error', 
+                '⚠️  Invalid NCT ID format\n\n' +
+                'Enter one or more NCT IDs:\n' +
+                '  Single: NCT12345678\n' +
+                '  Multiple: NCT12345678, NCT87654321, NCT11111111\n\n' +
+                'Commands:\n' +
+                '  models - Change model\n' +
+                '  exit - Return to menu');
+            return;
+        }
+        
+        // Initialize annotation conversation if needed
+        if (!this.currentConversationId) {
+            try {
+                const response = await fetch(`${this.API_BASE}/chat/init`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: this.currentModel,
+                        annotation_mode: true
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    this.currentConversationId = data.conversation_id;
+                    console.log('✅ Annotation conversation initialized:', this.currentConversationId);
+                } else {
+                    throw new Error('Failed to initialize annotation conversation');
+                }
+            } catch (error) {
+                this.addMessage('research-container', 'error', 
+                    `❌ Failed to initialize\n\n${error.message}\n\n` +
+                    `Ensure Chat Service (port 9001) is running.`);
+                return;
+            }
+        }
+        
+        // Show processing message
+        const processingId = this.addMessage('research-container', 'system', 
+            `🔬 Annotating ${nctIds.length} trial${nctIds.length > 1 ? 's' : ''}...\n\n` +
+            `NCT IDs: ${nctIds.join(', ')}\n\n` +
+            `Steps:\n` +
+            `1. Runner checks for existing JSON files\n` +
+            `2. Auto-fetches missing data (if needed)\n` +
+            `3. Generates annotations with LLM\n\n` +
+            `⏳ This may take 1-3 minutes...`);
+        
+        const startTime = Date.now();
+        
+        try {
+            const response = await fetch(`${this.API_BASE}/chat/message`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    conversation_id: this.currentConversationId,
+                    message: "Annotate trials",
+                    nct_ids: nctIds,
+                    temperature: 0.15
+                })
+            });
+            
+            const endTime = Date.now();
+            const duration = ((endTime - startTime) / 1000).toFixed(1);
+            
+            // Remove processing message
+            const processingElement = document.getElementById(processingId);
+            if (processingElement) {
+                processingElement.remove();
+            }
+            
+            if (response.ok) {
+                const data = await response.json();
+                
+                // Display annotation results
+                this.addMessage('research-container', 'assistant', 
+                    `✅ Annotation Complete\n\n` +
+                    `═══════════════════════════════════════════\n` +
+                    `Trials Annotated: ${nctIds.length}\n` +
+                    `Model: ${data.model}\n` +
+                    `Processing Time: ${duration}s\n` +
+                    `═══════════════════════════════════════════\n\n` +
+                    `${data.message.content}\n\n` +
+                    `═══════════════════════════════════════════\n\n` +
+                    `💡 Next:\n` +
+                    `  • Enter more NCT IDs to annotate\n` +
+                    `  • Type "models" to change model\n` +
+                    `  • Type "exit" to return to menu`);
+                
+                // Store in session
+                if (!this.sessionChats[this.currentModel]) {
+                    this.sessionChats[this.currentModel] = {
+                        conversationId: this.currentConversationId,
+                        messages: [],
+                        annotationMode: true
+                    };
+                }
+                
+                this.sessionChats[this.currentModel].messages.push({
+                    role: 'user',
+                    content: `Annotate: ${nctIds.join(', ')}`
+                });
+                
+                this.sessionChats[this.currentModel].messages.push({
+                    role: 'assistant',
+                    content: data.message.content
+                });
+                
+            } else {
+                const errorText = await response.text();
+                let errorData;
+                try {
+                    errorData = JSON.parse(errorText);
+                } catch {
+                    errorData = { detail: errorText };
+                }
+                
+                this.addMessage('research-container', 'error', 
+                    `❌ Annotation Failed\n\n` +
+                    `Error: ${errorData.detail}\n\n` +
+                    `Possible Issues:\n` +
+                    `• Invalid NCT ID(s)\n` +
+                    `• Runner Service (port 9003) not running\n` +
+                    `• NCT Lookup (port 9002) not available\n` +
+                    `• Chat Service (port 9001) error\n` +
+                    `• Model ${this.currentModel} not responding\n\n` +
+                    `Troubleshooting:\n` +
+                    `1. Verify NCT IDs are correct\n` +
+                    `2. Check services: ./services.sh status\n` +
+                    `3. View logs: ./services.sh logs all\n` +
+                    `4. Try: ./start_all_services.sh`);
+            }
+            
+        } catch (error) {
+            // Remove processing message if still there
+            const processingElement = document.getElementById(processingId);
+            if (processingElement) {
+                processingElement.remove();
+            }
+            
+            this.addMessage('research-container', 'error', 
+                `❌ Connection Error\n\n` +
+                `${error.message}\n\n` +
+                `Cannot connect to Chat Service (port 9001).\n\n` +
+                `Required Services:\n` +
+                `• Chat Service (9001) - Main annotation service\n` +
+                `• Runner Service (9003) - File manager\n` +
+                `• NCT Service (9002) - Data fetching\n\n` +
+                `Start all services:\n` +
+                `  cd ~/amp_llm_v3\n` +
+                `  ./start_all_services.sh\n\n` +
+                `Check status:\n` +
+                `  ./services.sh status`);
+            
+            console.error('❌ Annotation error:', error);
+        }
+    },
+    
+    countSources(sources) {
+        if (!sources) return 0;
+        
+        let count = 0;
+        
+        // Count core sources
+        if (sources.clinicaltrials || sources.clinical_trials) count++;
+        if (sources.pubmed) count++;
+        if (sources.pmc) count++;
+        if (sources.pmc_bioc) count++;
+        
+        // Count extended sources
+        if (sources.extended) {
+            count += Object.keys(sources.extended).length;
+        }
+        
+        return count;
     },
 
     showToast(message, type = 'success', duration = 3000) {
@@ -2877,6 +4699,21 @@ const app = {
             button.textContent = isHidden ? 
                 `... and ${count} more results` : 
                 `Show less`;
+        }
+    },
+
+    togglePMIDList(elementId) {
+        const element = document.getElementById(elementId);
+        const button = document.querySelector(`[onclick="app.togglePMIDList('${elementId}')"]`);
+        if (element && button) {
+            element.classList.toggle('hidden');
+            const isHidden = element.classList.contains('hidden');
+            button.textContent = isHidden ? 'Show All' : 'Hide';
+            
+            // Smooth scroll to button if showing
+            if (!isHidden) {
+                button.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         }
     },
 
