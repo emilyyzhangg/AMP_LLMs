@@ -10,6 +10,10 @@ Architecture:
 - This service (9001) -> Runner Service (9003) -> LLM Assistant (9004)
 - Runner fetches data from NCT Service (9002) if needed
 - LLM Assistant handles JSON parsing, prompt generation, and LLM calls
+
+UPDATED: Now uses async job processing for CSV annotations to avoid
+Cloudflare 524 timeout errors. CSV uploads return immediately with a
+job_id, and the frontend polls for status.
 """
 import logging
 import uuid
@@ -17,9 +21,16 @@ import httpx
 import time
 import io
 import csv
-from typing import Dict, List, Optional
-from fastapi import FastAPI, HTTPException, UploadFile, File
+import asyncio
+import re
+from datetime import datetime
+from typing import Dict, List, Optional, Any
+from dataclasses import dataclass, field
+from enum import Enum
+from pathlib import Path
+from fastapi import FastAPI, HTTPException, UploadFile, File, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 # Configuration
@@ -46,13 +57,107 @@ logger = logging.getLogger(__name__)
 
 
 # ============================================================================
+# Job Manager for Async CSV Processing
+# ============================================================================
+
+class JobStatus(str, Enum):
+    PENDING = "pending"
+    PROCESSING = "processing"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+@dataclass
+class AnnotationJob:
+    job_id: str
+    status: JobStatus = JobStatus.PENDING
+    progress: str = "Queued"
+    created_at: datetime = field(default_factory=datetime.now)
+    updated_at: datetime = field(default_factory=datetime.now)
+    total_trials: int = 0
+    processed_trials: int = 0
+    result: Optional[Dict[str, Any]] = None
+    error: Optional[str] = None
+    csv_filename: Optional[str] = None
+    original_filename: Optional[str] = None
+    model: str = ""
+
+
+class CSVJobManager:
+    """Manages background CSV annotation jobs to avoid Cloudflare timeouts."""
+    
+    def __init__(self):
+        self.jobs: Dict[str, AnnotationJob] = {}
+        self._cleanup_task: Optional[asyncio.Task] = None
+    
+    def start_cleanup_task(self):
+        """Start background task to clean up old jobs"""
+        if self._cleanup_task is None:
+            self._cleanup_task = asyncio.create_task(self._cleanup_old_jobs())
+    
+    async def _cleanup_old_jobs(self):
+        """Remove jobs older than 2 hours"""
+        while True:
+            await asyncio.sleep(300)  # Check every 5 minutes
+            now = datetime.now()
+            expired = [
+                job_id for job_id, job in self.jobs.items()
+                if (now - job.created_at).total_seconds() > 7200  # 2 hours
+            ]
+            for job_id in expired:
+                # Also clean up the output file
+                job = self.jobs[job_id]
+                if job.csv_filename:
+                    try:
+                        output_file = Path(f"output/annotations/{job.csv_filename}")
+                        if output_file.exists():
+                            output_file.unlink()
+                    except:
+                        pass
+                del self.jobs[job_id]
+                logger.info(f"🧹 Cleaned up expired job: {job_id}")
+    
+    def get_job_status(self, job_id: str) -> Dict[str, Any]:
+        """Get current status of a job"""
+        job = self.jobs.get(job_id)
+        
+        if not job:
+            return {
+                "status": "not_found",
+                "error": f"Job {job_id} not found"
+            }
+        
+        response = {
+            "job_id": job.job_id,
+            "status": job.status.value,
+            "progress": job.progress,
+            "total_trials": job.total_trials,
+            "processed_trials": job.processed_trials,
+            "created_at": job.created_at.isoformat(),
+            "updated_at": job.updated_at.isoformat(),
+            "model": job.model
+        }
+        
+        if job.status == JobStatus.COMPLETED and job.result:
+            response["result"] = job.result
+        elif job.status == JobStatus.FAILED:
+            response["error"] = job.error
+        
+        return response
+
+
+# Global job manager instance
+job_manager = CSVJobManager()
+
+
+# ============================================================================
 # Initialize FastAPI app
 # ============================================================================
 
 app = FastAPI(
     title="LLM Chat Service with Annotation",
     description="Chat and clinical trial annotation service using modular architecture",
-    version="3.1.0",
+    version="3.2.0",  # Bumped version for async CSV support
     docs_url="/docs",
     redoc_url="/redoc"
 )
@@ -65,6 +170,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Startup event to initialize job manager
+@app.on_event("startup")
+async def startup_event():
+    """Initialize background tasks on startup"""
+    job_manager.start_cleanup_task()
+    
+    # Ensure output directory exists
+    Path("output/annotations").mkdir(parents=True, exist_ok=True)
+    
+    logger.info("✅ CSV Job Manager initialized")
+    logger.info("✅ Output directory ready: output/annotations/")
 
 
 # ============================================================================
@@ -134,9 +252,157 @@ class CSVAnnotationResponse(BaseModel):
     errors: List[dict] = []
 
 
+class CSVJobStartResponse(BaseModel):
+    """Response when CSV job is started (async mode)"""
+    job_id: str
+    message: str
+    total: int
+    status: str
+
+
 # ============================================================================
 # Helper Functions
 # ============================================================================
+
+def extract_nct_ids_from_csv(csv_content: str) -> List[str]:
+    """
+    Extract NCT IDs from CSV content.
+    Looks for NCT IDs in any column using regex pattern.
+    """
+    nct_pattern = re.compile(r'NCT\d{8}', re.IGNORECASE)
+    nct_ids = set()
+    
+    try:
+        reader = csv.reader(io.StringIO(csv_content))
+        for row in reader:
+            for cell in row:
+                matches = nct_pattern.findall(str(cell))
+                for match in matches:
+                    nct_ids.add(match.upper())
+    except Exception as e:
+        logger.error(f"Error parsing CSV: {e}")
+    
+    return list(nct_ids)
+
+
+async def process_csv_job(
+    job_id: str,
+    csv_content: bytes,
+    original_filename: str,
+    model: str,
+    temperature: float,
+    conversation_id: str
+):
+    """
+    Background task to process CSV annotation.
+    Updates job status as it progresses.
+    """
+    job = job_manager.jobs.get(job_id)
+    if not job:
+        return
+    
+    job.status = JobStatus.PROCESSING
+    job.progress = "Parsing CSV..."
+    job.updated_at = datetime.now()
+    
+    start_time = time.time()
+    
+    try:
+        # Forward to runner service
+        logger.info(f"📤 Job {job_id}: Forwarding CSV to Runner Service")
+        job.progress = "Sending to annotation service..."
+        job.updated_at = datetime.now()
+        
+        async with httpx.AsyncClient(timeout=3600.0) as client:  # 1 hour timeout
+            # Check runner health first
+            try:
+                health = await client.get(f"{RUNNER_SERVICE_URL}/health", timeout=5.0)
+                if health.status_code != 200:
+                    raise Exception("Runner service not available")
+            except httpx.ConnectError:
+                raise Exception(f"Cannot connect to Runner Service at {RUNNER_SERVICE_URL}")
+            
+            job.progress = "Runner service connected, processing..."
+            job.updated_at = datetime.now()
+            
+            # Send file to runner's CSV endpoint
+            files = {"file": (original_filename, csv_content, "text/csv")}
+            data = {"model": model, "temperature": str(temperature)}
+            
+            response = await client.post(
+                f"{RUNNER_SERVICE_URL}/annotate-csv",
+                files=files,
+                data=data
+            )
+            
+            if response.status_code != 200:
+                error_text = response.text
+                raise Exception(f"Runner service error: {error_text}")
+            
+            result = response.json()
+        
+        # Job completed successfully
+        end_time = time.time()
+        duration = end_time - start_time
+        
+        # Build download URL
+        download_url = result.get('download_url', '')
+        if download_url:
+            # Make it a full URL for the frontend
+            download_url = f"{RUNNER_SERVICE_URL}{download_url}"
+        
+        job.status = JobStatus.COMPLETED
+        job.progress = "Completed"
+        job.processed_trials = result.get('total', 0)
+        job.csv_filename = result.get('csv_filename', f'annotations_{job_id}.csv')
+        job.result = {
+            "total": result.get('total', 0),
+            "successful": result.get('successful', 0),
+            "failed": result.get('failed', 0),
+            "total_time_seconds": round(duration, 1),
+            "errors": result.get('errors', []),
+            "download_url": download_url,
+            "csv_filename": job.csv_filename,
+            "model": model
+        }
+        job.updated_at = datetime.now()
+        
+        # Update conversation with result
+        if conversation_id in conversations:
+            conv = conversations[conversation_id]
+            
+            error_summary = ""
+            if result.get("errors"):
+                error_lines = [f"  - {e['nct_id']}: {e['error']}" for e in result["errors"][:5]]
+                if len(result["errors"]) > 5:
+                    error_lines.append(f"  ... and {len(result['errors']) - 5} more errors")
+                error_summary = f"\n\nErrors:\n" + "\n".join(error_lines)
+            
+            response_content = f"""✅ CSV Annotation Complete
+═══════════════════════════════════════════
+📄 Input File: {original_filename}
+📊 Total NCT IDs: {result['total']}
+✓ Successful: {result['successful']}
+✗ Failed: {result['failed']}
+⏱ Processing Time: {duration:.1f}s
+═══════════════════════════════════════════
+{error_summary}
+📥 Your annotated CSV is ready for download."""
+            
+            conv["messages"].append({
+                "role": "assistant",
+                "content": response_content
+            })
+        
+        logger.info(f"✅ Job {job_id} completed: {result.get('successful', 0)} success, {result.get('failed', 0)} errors")
+        
+    except Exception as e:
+        logger.error(f"❌ Job {job_id} failed: {e}", exc_info=True)
+        job.status = JobStatus.FAILED
+        job.error = str(e)
+        job.progress = "Failed"
+        job.updated_at = datetime.now()
+
 
 async def annotate_trials_via_runner(
     nct_ids: List[str], 
@@ -394,16 +660,22 @@ Total Time: {summary.processing_time_seconds:.1f}s
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ============================================================================
+# CSV Annotation Routes (ASYNC - fixes Cloudflare 524 timeout)
+# ============================================================================
+
 @app.post("/chat/annotate-csv")
 async def annotate_csv(
-    conversation_id: str,
-    model: str,
-    temperature: float = 0.15,
+    conversation_id: str = Query(...),
+    model: str = Query(...),
+    temperature: float = Query(0.15),
     file: UploadFile = File(...)
 ):
     """
     Upload a CSV file with NCT IDs and generate annotations.
-    Returns a link to download the annotated CSV file.
+    
+    NOW ASYNC: Returns immediately with a job_id.
+    Frontend should poll /chat/annotate-csv-status/{job_id} for progress.
     
     The input CSV can have NCT IDs in any column - they will be automatically detected.
     """
@@ -414,111 +686,66 @@ async def annotate_csv(
         # Read file contents
         contents = await file.read()
         
-        logger.info(f"📄 Forwarding CSV to Runner Service: {file.filename}")
+        # Parse to count NCT IDs
+        try:
+            text_content = contents.decode('utf-8')
+            nct_ids = extract_nct_ids_from_csv(text_content)
+        except UnicodeDecodeError:
+            raise HTTPException(
+                status_code=400,
+                detail="Could not decode CSV file. Ensure it's UTF-8 encoded."
+            )
+        
+        if not nct_ids:
+            raise HTTPException(
+                status_code=400,
+                detail="No NCT IDs found in CSV file. NCT IDs should be in format NCT########"
+            )
+        
+        logger.info(f"📄 Received CSV for annotation: {file.filename} ({len(nct_ids)} NCT IDs)")
         
         conv = conversations[conversation_id]
         
         # Add user message
-        user_message = f"Annotate trials from CSV: {file.filename}"
+        user_message = f"Annotate trials from CSV: {file.filename} ({len(nct_ids)} trials)"
         conv["messages"].append({
             "role": "user",
             "content": user_message
         })
         
-        # Forward to runner service's CSV endpoint
-        async with httpx.AsyncClient(timeout=1800.0) as client:  # 30 min timeout
-            try:
-                # Check runner health
-                health = await client.get(f"{RUNNER_SERVICE_URL}/health", timeout=5.0)
-                if health.status_code != 200:
-                    raise HTTPException(
-                        status_code=503,
-                        detail="Runner service not available"
-                    )
-            except httpx.ConnectError:
-                raise HTTPException(
-                    status_code=503,
-                    detail=f"Cannot connect to Runner Service at {RUNNER_SERVICE_URL}"
-                )
-            
-            # Send file to runner's CSV endpoint
-            files = {"file": (file.filename, contents, "text/csv")}
-            data = {"model": model, "temperature": str(temperature)}
-            
-            response = await client.post(
-                f"{RUNNER_SERVICE_URL}/annotate-csv",
-                files=files,
-                data=data
-            )
-            
-            if response.status_code != 200:
-                error_text = response.text
-                raise HTTPException(
-                    status_code=response.status_code,
-                    detail=f"Runner service error: {error_text}"
-                )
-            
-            result = response.json()
-        
-        # Format response with download link
-        download_url = f"{RUNNER_SERVICE_URL}{result['download_url']}"
-        
-        # Build error summary if any
-        error_summary = ""
-        if result.get("errors"):
-            error_lines = [f"  - {e['nct_id']}: {e['error']}" for e in result["errors"][:5]]
-            if len(result["errors"]) > 5:
-                error_lines.append(f"  ... and {len(result['errors']) - 5} more errors")
-            error_summary = f"\n\nErrors:\n" + "\n".join(error_lines)
-        
-        response_content = f"""✅ CSV Annotation Complete
-═══════════════════════════════════════════
-📄 Input File: {file.filename}
-📊 Total NCT IDs: {result['total']}
-✓ Successful: {result['successful']}
-✗ Failed: {result['failed']}
-⏱ Processing Time: {result['total_time_seconds']:.1f}s
-═══════════════════════════════════════════
-
-📥 Download annotated CSV:
-{download_url}
-
-The output CSV includes columns:
-• Study Title, Status, Summary, Conditions, Drug
-• Phase, Enrollment, Start/Completion Dates  
-• Classification (AMP/Other) with Evidence
-• Delivery Mode with Evidence
-• Outcome with Evidence
-• Reason for Failure with Evidence
-• Peptide (True/False) with Evidence
-• Sequence, Study ID{error_summary}
-
-═══════════════════════════════════════════
-💡 Next Steps:
-  • Click the download link above to get your annotated CSV
-  • Upload another CSV to annotate more trials
-  • Type "exit" to leave annotation mode
-═══════════════════════════════════════════"""
-        
-        # Add assistant message
-        conv["messages"].append({
-            "role": "assistant",
-            "content": response_content
-        })
-        
-        return CSVAnnotationResponse(
-            conversation_id=conversation_id,
-            message=ChatMessage(role="assistant", content=response_content),
-            model=model,
-            annotation_mode=True,
-            csv_filename=result.get('csv_filename', 'annotations.csv'),
-            download_url=download_url,
-            total=result['total'],
-            successful=result['successful'],
-            failed=result['failed'],
-            total_time_seconds=result['total_time_seconds'],
-            errors=result.get('errors', [])
+        # Create job
+        job_id = str(uuid.uuid4())
+        job = AnnotationJob(
+            job_id=job_id,
+            status=JobStatus.PENDING,
+            total_trials=len(nct_ids),
+            progress=f"Starting annotation of {len(nct_ids)} trials...",
+            original_filename=file.filename,
+            model=model
         )
+        job_manager.jobs[job_id] = job
+        
+        # Start background processing
+        asyncio.create_task(
+            process_csv_job(
+                job_id=job_id,
+                csv_content=contents,
+                original_filename=file.filename,
+                model=model,
+                temperature=temperature,
+                conversation_id=conversation_id
+            )
+        )
+        
+        logger.info(f"📋 Created job {job_id} for {len(nct_ids)} NCT IDs")
+        
+        # Return immediately with job_id
+        return {
+            "job_id": job_id,
+            "message": f"Job started for {len(nct_ids)} NCT IDs from {file.filename}",
+            "total": len(nct_ids),
+            "status": "processing"
+        }
         
     except HTTPException:
         raise
@@ -526,6 +753,82 @@ The output CSV includes columns:
         logger.error(f"❌ CSV processing error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@app.get("/chat/annotate-csv-status/{job_id}")
+async def get_csv_annotation_status(job_id: str):
+    """
+    Get status of a CSV annotation job.
+    
+    Poll this endpoint to check job progress.
+    
+    Returns:
+        - status: pending/processing/completed/failed
+        - progress: Human-readable progress message
+        - result: Full results when completed (includes download_url)
+    """
+    status = job_manager.get_job_status(job_id)
+    
+    if status["status"] == "not_found":
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+    
+    return status
+
+
+@app.get("/chat/download/{job_id}")
+async def download_annotation_results(job_id: str):
+    """
+    Download the annotated CSV for a completed job.
+    
+    Note: This proxies to the Runner Service's download endpoint.
+    """
+    status = job_manager.get_job_status(job_id)
+    
+    if status["status"] == "not_found":
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+    
+    if status["status"] != "completed":
+        raise HTTPException(
+            status_code=400,
+            detail=f"Job not completed. Current status: {status['status']}"
+        )
+    
+    # Get download URL from result
+    result = status.get("result", {})
+    download_url = result.get("download_url", "")
+    
+    if not download_url:
+        raise HTTPException(status_code=404, detail="Download URL not available")
+    
+    # Proxy the download from runner service
+    try:
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            response = await client.get(download_url)
+            
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail="Failed to fetch file from runner service"
+                )
+            
+            # Return the file content
+            from fastapi.responses import Response
+            return Response(
+                content=response.content,
+                media_type="text/csv",
+                headers={
+                    "Content-Disposition": f"attachment; filename={result.get('csv_filename', 'annotations.csv')}"
+                }
+            )
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail="Cannot connect to Runner Service for download"
+        )
+
+
+# ============================================================================
+# Other Chat Routes
+# ============================================================================
 
 @app.get("/chat/conversations/{conversation_id}")
 async def get_conversation(conversation_id: str):
@@ -570,15 +873,18 @@ async def root():
     """Root endpoint"""
     return {
         "service": "LLM Chat Service with Annotation",
-        "version": "3.1.0",
+        "version": "3.2.0",
         "status": "running",
         "architecture": "modular",
         "features": {
             "chat": "enabled",
-            "annotation": "enabled (via Runner Service)"
+            "annotation": "enabled (via Runner Service)",
+            "async_csv": "enabled (no more Cloudflare 524 timeouts!)"
         },
         "endpoints": {
             "chat": "/chat/*",
+            "csv_annotation": "/chat/annotate-csv (async)",
+            "csv_status": "/chat/annotate-csv-status/{job_id}",
             "docs": "/docs"
         },
         "dependencies": {
@@ -621,10 +927,14 @@ async def health():
     except:
         pass
     
+    # Count active jobs
+    active_jobs = len([j for j in job_manager.jobs.values() 
+                       if j.status in [JobStatus.PENDING, JobStatus.PROCESSING]])
+    
     return {
         "status": "healthy",
         "service": config.SERVICE_NAME,
-        "version": "3.1.0",
+        "version": "3.2.0",
         "ollama": {
             "url": config.OLLAMA_BASE_URL,
             "connected": ollama_connected,
@@ -635,7 +945,9 @@ async def health():
             "connected": runner_connected,
             "features": runner_features
         },
-        "active_conversations": len(conversations)
+        "active_conversations": len(conversations),
+        "active_csv_jobs": active_jobs,
+        "total_csv_jobs": len(job_manager.jobs)
     }
 
 
@@ -674,5 +986,9 @@ if __name__ == "__main__":
     print("  - LLM Assistant (9004) - JSON parsing & prompt generation")
     print("  - NCT Service (9002) - Clinical trials data")
     print("  - Ollama (11434) - LLM inference")
+    print("=" * 80)
+    print("\n✨ NEW: Async CSV processing enabled!")
+    print("   CSV uploads now return immediately with a job_id.")
+    print("   No more Cloudflare 524 timeout errors!")
     print("=" * 80)
     uvicorn.run(app, host="0.0.0.0", port=9001, reload=True)
