@@ -345,23 +345,28 @@ async def process_csv_job(
         end_time = time.time()
         duration = end_time - start_time
         
-        # Build download URL
-        download_url = result.get('download_url', '')
-        if download_url:
-            # Make it a full URL for the frontend
-            download_url = f"{RUNNER_SERVICE_URL}{download_url}"
+        # Store the runner service URL for proxying (internal use only)
+        runner_download_url = result.get('download_url', '')
+        if runner_download_url and not runner_download_url.startswith('http'):
+            runner_download_url = f"{RUNNER_SERVICE_URL}{runner_download_url}"
         
         job.status = JobStatus.COMPLETED
         job.progress = "Completed"
         job.processed_trials = result.get('total', 0)
         job.csv_filename = result.get('csv_filename', f'annotations_{job_id}.csv')
+        
+        # IMPORTANT: Return a RELATIVE URL that goes through this service (chat_api)
+        # This ensures it works through Cloudflare instead of trying to hit localhost
+        public_download_url = f"/chat/download/{job_id}"
+        
         job.result = {
             "total": result.get('total', 0),
             "successful": result.get('successful', 0),
             "failed": result.get('failed', 0),
             "total_time_seconds": round(duration, 1),
             "errors": result.get('errors', []),
-            "download_url": download_url,
+            "download_url": public_download_url,  # Relative URL for frontend
+            "_runner_download_url": runner_download_url,  # Internal use for proxying
             "csv_filename": job.csv_filename,
             "model": model
         }
@@ -779,7 +784,7 @@ async def download_annotation_results(job_id: str):
     """
     Download the annotated CSV for a completed job.
     
-    Note: This proxies to the Runner Service's download endpoint.
+    Proxies the download from the Runner Service so it works through Cloudflare.
     """
     status = job_manager.get_job_status(job_id)
     
@@ -792,17 +797,20 @@ async def download_annotation_results(job_id: str):
             detail=f"Job not completed. Current status: {status['status']}"
         )
     
-    # Get download URL from result
+    # Get the internal runner service URL (not exposed to frontend)
     result = status.get("result", {})
-    download_url = result.get("download_url", "")
+    runner_url = result.get("_runner_download_url", "")
+    csv_filename = result.get("csv_filename", "annotations.csv")
     
-    if not download_url:
+    if not runner_url:
         raise HTTPException(status_code=404, detail="Download URL not available")
     
     # Proxy the download from runner service
+    logger.info(f"📥 Proxying download for job {job_id} from {runner_url}")
+    
     try:
         async with httpx.AsyncClient(timeout=60.0) as client:
-            response = await client.get(download_url)
+            response = await client.get(runner_url)
             
             if response.status_code != 200:
                 raise HTTPException(
@@ -816,7 +824,7 @@ async def download_annotation_results(job_id: str):
                 content=response.content,
                 media_type="text/csv",
                 headers={
-                    "Content-Disposition": f"attachment; filename={result.get('csv_filename', 'annotations.csv')}"
+                    "Content-Disposition": f"attachment; filename={csv_filename}"
                 }
             )
     except httpx.ConnectError:
