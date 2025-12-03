@@ -373,16 +373,27 @@ async def process_csv_job(
                         if trial_results:
                             result = trial_results[0]
                             result["processing_time"] = round(time.time() - trial_start, 1)
+                            
+                            # Detect success: has annotation and no error
+                            has_annotation = bool(result.get("annotation"))
+                            has_error = bool(result.get("error"))
+                            status_success = result.get("status") in ["success", "completed", "done", True]
+                            
+                            # Mark as success if has annotation OR status indicates success, AND no error
+                            is_success = (has_annotation or status_success) and not has_error
+                            
+                            # Normalize the status field
+                            result["_success"] = is_success
                             results.append(result)
                             
-                            if result.get("status") == "success":
+                            if is_success:
                                 logger.info(f"✅ Job {job_id}: {nct_id} completed successfully")
                             else:
                                 errors.append({
                                     "nct_id": nct_id,
-                                    "error": result.get("error", "Unknown error")
+                                    "error": result.get("error", "No annotation generated")
                                 })
-                                logger.warning(f"⚠️ Job {job_id}: {nct_id} failed: {result.get('error')}")
+                                logger.warning(f"⚠️ Job {job_id}: {nct_id} failed: {result.get('error', 'No annotation')}")
                         else:
                             errors.append({
                                 "nct_id": nct_id,
@@ -426,7 +437,7 @@ async def process_csv_job(
         # Calculate final stats
         end_time = time.time()
         duration = end_time - start_time
-        successful = len([r for r in results if r.get("status") == "success"])
+        successful = len([r for r in results if r.get("_success", False)])
         failed = len(errors)
         
         job.status = JobStatus.COMPLETED
@@ -450,6 +461,7 @@ async def process_csv_job(
         job.updated_at = datetime.now()
         
         logger.info(f"✅ Job {job_id} completed: {successful} success, {failed} errors in {duration:.1f}s")
+        logger.info(f"📊 Job {job_id} result object: total={job.result['total']}, successful={job.result['successful']}, failed={job.result['failed']}, time={job.result['total_time_seconds']}")
         
         # Update conversation
         if conversation_id in conversations:
