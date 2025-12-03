@@ -3869,3 +3869,262 @@ body[data-theme="dark"] .annotation-mode-tab:hover {
 .csv-download-section.success-pulse {
     animation: csv-success-pulse 1s ease-out;
 }
+
+.csv-progress-container {
+    background: var(--bg-secondary, #f8f9fa);
+    border: 2px solid var(--border, #e0e6e8);
+    border-radius: 12px;
+    padding: 20px 25px;
+    margin: 15px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.csv-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.csv-progress-title {
+    font-size: 1em;
+    font-weight: 600;
+    color: var(--text-primary, #333);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.csv-progress-title .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--accent, #1BEB49);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.csv-progress-stats {
+    font-size: 0.9em;
+    color: var(--text-secondary, #666);
+    font-weight: 500;
+}
+
+.csv-progress-stats .current {
+    color: var(--accent, #1BEB49);
+    font-weight: 700;
+}
+
+.csv-progress-stats .total {
+    color: var(--text-primary, #333);
+    font-weight: 600;
+}
+
+/* Progress Bar Track */
+.csv-progress-bar-container {
+    background: var(--bg-tertiary, #e9ecef);
+    border-radius: 10px;
+    height: 24px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Progress Bar Fill */
+.csv-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent, #1BEB49) 0%, var(--accent-light, #4AE371) 100%);
+    border-radius: 10px;
+    transition: width 0.5s ease-out;
+    position: relative;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+}
+
+/* Animated stripes on progress bar */
+.csv-progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.15) 75%,
+        transparent 75%
+    );
+    background-size: 30px 30px;
+    animation: progress-stripes 1s linear infinite;
+    border-radius: 10px;
+}
+
+@keyframes progress-stripes {
+    0% { background-position: 30px 0; }
+    100% { background-position: 0 0; }
+}
+
+/* Percentage text inside bar */
+.csv-progress-percent {
+    font-size: 0.8em;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+/* Progress Info Row */
+.csv-progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    font-size: 0.85em;
+}
+
+.csv-progress-status {
+    color: var(--text-secondary, #666);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.csv-progress-status .status-icon {
+    font-size: 1.1em;
+}
+
+.csv-progress-elapsed {
+    color: var(--text-tertiary, #999);
+    font-family: 'Courier New', monospace;
+}
+
+/* Trial Counter Badge */
+.csv-progress-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-elevated, white);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    border: 1px solid var(--border-subtle, #e0e0e0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.csv-progress-counter .icon {
+    font-size: 1em;
+}
+
+/* Current trial being processed */
+.csv-progress-current-trial {
+    background: rgba(27, 235, 73, 0.1);
+    border: 1px solid rgba(27, 235, 73, 0.3);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    font-size: 0.85em;
+    color: var(--text-primary, #333);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.csv-progress-current-trial .nct-id {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: var(--accent, #1BEB49);
+}
+
+/* Dark Theme */
+body[data-theme="dark"] .csv-progress-container {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body[data-theme="dark"] .csv-progress-bar-container {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body[data-theme="dark"] .csv-progress-counter {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body[data-theme="dark"] .csv-progress-current-trial {
+    background: rgba(27, 235, 73, 0.15);
+    border-color: rgba(27, 235, 73, 0.3);
+}
+
+/* Completed State */
+.csv-progress-container.completed .csv-progress-bar {
+    background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+}
+
+.csv-progress-container.completed .csv-progress-bar::before {
+    animation: none;
+    background: none;
+}
+
+.csv-progress-container.completed .csv-progress-title .spinner {
+    display: none;
+}
+
+.csv-progress-container.completed .csv-progress-title::before {
+    content: '✅';
+    margin-right: 4px;
+}
+
+/* Failed State */
+.csv-progress-container.failed .csv-progress-bar {
+    background: linear-gradient(90deg, #dc3545 0%, #c82333 100%);
+}
+
+.csv-progress-container.failed .csv-progress-bar::before {
+    animation: none;
+    background: none;
+}
+
+.csv-progress-container.failed .csv-progress-title .spinner {
+    display: none;
+}
+
+.csv-progress-container.failed .csv-progress-title::before {
+    content: '❌';
+    margin-right: 4px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .csv-progress-container {
+        padding: 15px;
+    }
+    
+    .csv-progress-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .csv-progress-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .csv-progress-bar-container {
+        height: 20px;
+    }
+}

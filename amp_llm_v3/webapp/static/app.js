@@ -2205,10 +2205,8 @@ const app = {
                 console.log('✅ Job response:', data);
                 
                 if (data.job_id) {
-                    // Async mode - poll for status
-                    this.updateProcessingMessage(processingId, 
-                        `🔄 Processing CSV: ${fileName}\n\nJob ID: ${data.job_id}\n\n⏳ Generating annotations...`);
-                    await this.pollCSVAnnotationStatus(data.job_id, processingId, fileName);
+                    // Async mode - poll for status with progress bar
+                    await this.pollCSVAnnotationStatus(data.job_id, processingId, fileName, data.total || 0);
                 } else {
                     // Sync response (fallback)
                     document.getElementById(processingId)?.remove();
@@ -2235,10 +2233,14 @@ const app = {
         }
     },
     
-    async pollCSVAnnotationStatus(jobId, processingId, fileName) {
+    async pollCSVAnnotationStatus(jobId, processingId, fileName, totalTrials = 0) {
         const pollInterval = 3000;
         const maxPolls = 600;
         let pollCount = 0;
+        const startTime = Date.now();
+        
+        // Create progress bar UI
+        this.createProgressBar(processingId, fileName, totalTrials);
         
         const poll = async () => {
             try {
@@ -2251,29 +2253,223 @@ const app = {
                 const status = await response.json();
                 console.log(`📊 Job status:`, status);
                 
+                // Update progress bar
+                const elapsed = Math.round((Date.now() - startTime) / 1000);
+                this.updateProgressBar(processingId, status, elapsed);
+                
                 if (status.status === 'completed') {
-                    document.getElementById(processingId)?.remove();
-                    this.handleCSVAnnotationResult(status.result, fileName);
+                    // Mark progress as complete
+                    this.completeProgressBar(processingId);
+                    
+                    // Short delay then show results
+                    setTimeout(() => {
+                        document.getElementById(processingId)?.remove();
+                        this.handleCSVAnnotationResult(status.result, fileName);
+                    }, 1000);
+                    
                 } else if (status.status === 'failed') {
-                    document.getElementById(processingId)?.remove();
-                    this.addMessage('chat-container', 'error', `❌ Annotation Failed\n\n${status.error || 'Unknown error'}`);
-                    document.getElementById('csv-upload-container').style.display = 'block';
+                    // Mark progress as failed
+                    this.failProgressBar(processingId, status.error);
+                    
+                    setTimeout(() => {
+                        document.getElementById(processingId)?.remove();
+                        this.addMessage('chat-container', 'error', `❌ Annotation Failed\n\n${status.error || 'Unknown error'}`);
+                        document.getElementById('csv-upload-container').style.display = 'block';
+                    }, 2000);
+                    
                 } else {
+                    // Still processing - continue polling
                     pollCount++;
-                    const elapsed = Math.round(pollCount * pollInterval / 1000);
-                    this.updateProcessingMessage(processingId, 
-                        `🔄 Processing: ${fileName}\n\nStatus: ${status.progress || 'Processing...'}\nElapsed: ${elapsed}s`);
-                    if (pollCount < maxPolls) setTimeout(poll, pollInterval);
+                    if (pollCount < maxPolls) {
+                        setTimeout(poll, pollInterval);
+                    } else {
+                        this.failProgressBar(processingId, 'Polling timeout - job may still be running');
+                    }
                 }
             } catch (error) {
+                console.warn(`Poll error (attempt ${pollCount}):`, error);
                 pollCount++;
-                if (pollCount < maxPolls) setTimeout(poll, pollInterval);
+                
+                // Update progress bar to show connection issue
+                const elapsed = Math.round((Date.now() - startTime) / 1000);
+                this.updateProgressBarStatus(processingId, 'Reconnecting...', elapsed);
+                
+                if (pollCount < maxPolls) {
+                    setTimeout(poll, pollInterval);
+                }
             }
         };
         
+        // Start polling after a short delay
         setTimeout(poll, pollInterval);
     },
-    
+
+    createProgressBar(containerId, fileName, totalTrials) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        const contentDiv = container.querySelector('.message-content');
+        if (!contentDiv) return;
+        
+        // Store total for later updates
+        container.dataset.totalTrials = totalTrials || 0;
+        
+        contentDiv.innerHTML = `
+            <div class="csv-progress-container" id="progress-${containerId}">
+                <div class="csv-progress-header">
+                    <div class="csv-progress-title">
+                        <span class="spinner"></span>
+                        Processing: ${this.escapeHtml(fileName)}
+                    </div>
+                    <div class="csv-progress-stats">
+                        <span class="current" id="progress-current-${containerId}">0</span>
+                        <span>/</span>
+                        <span class="total" id="progress-total-${containerId}">${totalTrials || '?'}</span>
+                        <span>trials</span>
+                    </div>
+                </div>
+                
+                <div class="csv-progress-bar-container">
+                    <div class="csv-progress-bar" id="progress-bar-${containerId}" style="width: 0%">
+                        <span class="csv-progress-percent" id="progress-percent-${containerId}">0%</span>
+                    </div>
+                </div>
+                
+                <div class="csv-progress-info">
+                    <div class="csv-progress-status">
+                        <span class="status-icon">🔄</span>
+                        <span id="progress-status-${containerId}">Initializing...</span>
+                    </div>
+                    <div class="csv-progress-elapsed">
+                        <span id="progress-elapsed-${containerId}">0:00</span>
+                    </div>
+                </div>
+                
+                <div class="csv-progress-current-trial" id="progress-trial-${containerId}" style="display: none;">
+                    <span>📝 Currently processing:</span>
+                    <span class="nct-id" id="progress-nct-${containerId}">-</span>
+                </div>
+            </div>
+        `;
+    },
+
+    updateProgressBar(containerId, status, elapsedSeconds) {
+        const processed = status.processed_trials || 0;
+        const total = status.total_trials || 0;
+        const progress = status.progress || 'Processing...';
+        
+        // Update total if we now have it
+        const totalEl = document.getElementById(`progress-total-${containerId}`);
+        if (totalEl && total > 0) {
+            totalEl.textContent = total;
+        }
+        
+        // Update current count
+        const currentEl = document.getElementById(`progress-current-${containerId}`);
+        if (currentEl) {
+            currentEl.textContent = processed;
+        }
+        
+        // Calculate percentage
+        const percent = total > 0 ? Math.round((processed / total) * 100) : 0;
+        
+        // Update progress bar width
+        const barEl = document.getElementById(`progress-bar-${containerId}`);
+        if (barEl) {
+            barEl.style.width = `${percent}%`;
+        }
+        
+        // Update percentage text
+        const percentEl = document.getElementById(`progress-percent-${containerId}`);
+        if (percentEl) {
+            percentEl.textContent = `${percent}%`;
+        }
+        
+        // Update status text
+        const statusEl = document.getElementById(`progress-status-${containerId}`);
+        if (statusEl) {
+            statusEl.textContent = progress;
+        }
+        
+        // Update elapsed time
+        const elapsedEl = document.getElementById(`progress-elapsed-${containerId}`);
+        if (elapsedEl) {
+            const mins = Math.floor(elapsedSeconds / 60);
+            const secs = elapsedSeconds % 60;
+            elapsedEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Extract and show current NCT ID if in progress message
+        const nctMatch = progress.match(/(NCT\d{8})/i);
+        const trialContainer = document.getElementById(`progress-trial-${containerId}`);
+        const nctEl = document.getElementById(`progress-nct-${containerId}`);
+        
+        if (nctMatch && trialContainer && nctEl) {
+            trialContainer.style.display = 'flex';
+            nctEl.textContent = nctMatch[1].toUpperCase();
+        }
+    },
+
+    updateProgressBarStatus(containerId, statusText, elapsedSeconds) {
+        const statusEl = document.getElementById(`progress-status-${containerId}`);
+        if (statusEl) {
+            statusEl.textContent = statusText;
+        }
+        
+        const elapsedEl = document.getElementById(`progress-elapsed-${containerId}`);
+        if (elapsedEl) {
+            const mins = Math.floor(elapsedSeconds / 60);
+            const secs = elapsedSeconds % 60;
+            elapsedEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+    },
+
+    completeProgressBar(containerId) {
+        const progressContainer = document.getElementById(`progress-${containerId}`);
+        if (progressContainer) {
+            progressContainer.classList.add('completed');
+        }
+        
+        const barEl = document.getElementById(`progress-bar-${containerId}`);
+        if (barEl) {
+            barEl.style.width = '100%';
+        }
+        
+        const percentEl = document.getElementById(`progress-percent-${containerId}`);
+        if (percentEl) {
+            percentEl.textContent = '100%';
+        }
+        
+        const statusEl = document.getElementById(`progress-status-${containerId}`);
+        if (statusEl) {
+            statusEl.textContent = 'Complete!';
+        }
+        
+        // Hide current trial indicator
+        const trialContainer = document.getElementById(`progress-trial-${containerId}`);
+        if (trialContainer) {
+            trialContainer.style.display = 'none';
+        }
+    },
+
+    failProgressBar(containerId, errorMessage) {
+        const progressContainer = document.getElementById(`progress-${containerId}`);
+        if (progressContainer) {
+            progressContainer.classList.add('failed');
+        }
+        
+        const statusEl = document.getElementById(`progress-status-${containerId}`);
+        if (statusEl) {
+            statusEl.textContent = errorMessage || 'Failed';
+        }
+        
+        // Hide current trial indicator
+        const trialContainer = document.getElementById(`progress-trial-${containerId}`);
+        if (trialContainer) {
+            trialContainer.style.display = 'none';
+        }
+    },
+        
     handleCSVAnnotationResult(data, fileName) {
         let errorSummary = '';
         if (data.errors && data.errors.length > 0) {

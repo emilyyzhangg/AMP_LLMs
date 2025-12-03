@@ -127,15 +127,26 @@ class CSVJobManager:
                 "error": f"Job {job_id} not found"
             }
         
+        # Calculate elapsed time
+        elapsed_seconds = (datetime.now() - job.created_at).total_seconds()
+        
+        # Calculate progress percentage
+        percent = 0
+        if job.total_trials > 0:
+            percent = round((job.processed_trials / job.total_trials) * 100)
+        
         response = {
             "job_id": job.job_id,
             "status": job.status.value,
             "progress": job.progress,
             "total_trials": job.total_trials,
             "processed_trials": job.processed_trials,
+            "percent_complete": percent,
+            "elapsed_seconds": round(elapsed_seconds),
             "created_at": job.created_at.isoformat(),
             "updated_at": job.updated_at.isoformat(),
-            "model": job.model
+            "model": job.model,
+            "original_filename": job.original_filename
         }
         
         if job.status == JobStatus.COMPLETED and job.result:
@@ -340,6 +351,9 @@ async def process_csv_job(
                 raise Exception(f"Runner service error: {error_text}")
             
             result = response.json()
+            
+            # Debug: Log what we got from runner service
+            logger.info(f"📊 Job {job_id}: Runner response keys: {list(result.keys())}")
         
         # Job completed successfully
         end_time = time.time()
@@ -352,24 +366,40 @@ async def process_csv_job(
         
         job.status = JobStatus.COMPLETED
         job.progress = "Completed"
-        job.processed_trials = result.get('total', 0)
-        job.csv_filename = result.get('csv_filename', f'annotations_{job_id}.csv')
+        
+        # Extract totals with fallbacks for different field names
+        total = result.get('total', result.get('total_count', result.get('count', job.total_trials)))
+        successful = result.get('successful', result.get('success', result.get('success_count', result.get('completed', 0))))
+        failed = result.get('failed', result.get('failure', result.get('error_count', result.get('errors_count', 0))))
+        
+        # If successful/failed still 0 but we have total, estimate from errors
+        errors_list = result.get('errors', [])
+        if successful == 0 and failed == 0 and total > 0:
+            failed = len(errors_list)
+            successful = total - failed
+        
+        processing_time = result.get('total_time_seconds', result.get('processing_time', result.get('duration', round(duration, 1))))
+        
+        job.processed_trials = total
+        job.csv_filename = result.get('csv_filename', result.get('filename', f'annotations_{job_id}.csv'))
         
         # IMPORTANT: Return a RELATIVE URL that goes through this service (chat_api)
         # This ensures it works through Cloudflare instead of trying to hit localhost
         public_download_url = f"/chat/download/{job_id}"
         
         job.result = {
-            "total": result.get('total', 0),
-            "successful": result.get('successful', 0),
-            "failed": result.get('failed', 0),
-            "total_time_seconds": round(duration, 1),
-            "errors": result.get('errors', []),
+            "total": total,
+            "successful": successful,
+            "failed": failed,
+            "total_time_seconds": round(processing_time, 1) if isinstance(processing_time, (int, float)) else processing_time,
+            "errors": errors_list,
             "download_url": public_download_url,  # Relative URL for frontend
             "_runner_download_url": runner_download_url,  # Internal use for proxying
             "csv_filename": job.csv_filename,
             "model": model
         }
+        
+        logger.info(f"📊 Job {job_id} result: total={total}, successful={successful}, failed={failed}")
         job.updated_at = datetime.now()
         
         # Update conversation with result
@@ -377,19 +407,19 @@ async def process_csv_job(
             conv = conversations[conversation_id]
             
             error_summary = ""
-            if result.get("errors"):
-                error_lines = [f"  - {e['nct_id']}: {e['error']}" for e in result["errors"][:5]]
-                if len(result["errors"]) > 5:
-                    error_lines.append(f"  ... and {len(result['errors']) - 5} more errors")
+            if errors_list:
+                error_lines = [f"  - {e.get('nct_id', 'unknown')}: {e.get('error', 'unknown error')}" for e in errors_list[:5]]
+                if len(errors_list) > 5:
+                    error_lines.append(f"  ... and {len(errors_list) - 5} more errors")
                 error_summary = f"\n\nErrors:\n" + "\n".join(error_lines)
             
             response_content = f"""✅ CSV Annotation Complete
 ═══════════════════════════════════════════
 📄 Input File: {original_filename}
-📊 Total NCT IDs: {result['total']}
-✓ Successful: {result['successful']}
-✗ Failed: {result['failed']}
-⏱ Processing Time: {duration:.1f}s
+📊 Total NCT IDs: {total}
+✓ Successful: {successful}
+✗ Failed: {failed}
+⏱ Processing Time: {job.result['total_time_seconds']}s
 ═══════════════════════════════════════════
 {error_summary}
 📥 Your annotated CSV is ready for download."""
