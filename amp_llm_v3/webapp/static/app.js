@@ -2288,7 +2288,7 @@ const app = {
         const container = document.getElementById(containerId);
         if (!container) return;
         
-        const contentDiv = container.querySelector('.message-content');
+        const contentDiv = container.querySelector('.content');
         if (!contentDiv) return;
         
         contentDiv.innerHTML = `
