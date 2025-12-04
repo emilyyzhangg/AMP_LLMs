@@ -86,6 +86,7 @@ class AnnotationJob:
     csv_filename: Optional[str] = None
     original_filename: Optional[str] = None
     model: str = ""
+    _task: Optional[asyncio.Task] = field(default=None, repr=False)  # Store task to prevent GC
 
 
 class CSVJobManager:
@@ -913,8 +914,8 @@ async def annotate_csv(
         )
         job_manager.jobs[job_id] = job
         
-        # Start background processing
-        asyncio.create_task(
+        # Start background processing - store task to prevent garbage collection
+        task = asyncio.create_task(
             process_csv_job(
                 job_id=job_id,
                 csv_content=contents,
@@ -924,6 +925,16 @@ async def annotate_csv(
                 conversation_id=conversation_id
             )
         )
+        job._task = task  # Keep reference to prevent GC
+        
+        # Add error handler to log any uncaught exceptions
+        def handle_task_error(t):
+            if t.cancelled():
+                logger.warning(f"⚠️ Job {job_id} was cancelled")
+            elif t.exception():
+                logger.error(f"❌ Job {job_id} raised exception: {t.exception()}")
+        
+        task.add_done_callback(handle_task_error)
         
         logger.info(f"📋 Created job {job_id} for {len(nct_ids)} NCT IDs")
         
@@ -1188,3 +1199,4 @@ if __name__ == "__main__":
     print("   No more Cloudflare 524 timeout errors!")
     print("=" * 80)
     uvicorn.run(app, host="0.0.0.0", port=9001, reload=True)
+    
