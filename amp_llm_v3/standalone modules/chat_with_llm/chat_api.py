@@ -23,6 +23,7 @@ import io
 import csv
 import asyncio
 import re
+import json
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
@@ -374,6 +375,9 @@ async def process_csv_job(
                             result = trial_results[0]
                             result["processing_time"] = round(time.time() - trial_start, 1)
                             
+                            # Log what we received from runner
+                            logger.info(f"📦 Job {job_id}: Runner returned keys for {nct_id}: {list(result.keys())}")
+                            
                             # Detect success: has annotation and no error
                             has_annotation = bool(result.get("annotation"))
                             has_error = bool(result.get("error"))
@@ -387,7 +391,7 @@ async def process_csv_job(
                             results.append(result)
                             
                             if is_success:
-                                logger.info(f"✅ Job {job_id}: {nct_id} completed successfully")
+                                logger.info(f"✅ Job {job_id}: {nct_id} completed successfully (annotation length: {len(str(result.get('annotation', '')))})")
                             else:
                                 errors.append({
                                     "nct_id": nct_id,
@@ -501,16 +505,24 @@ async def process_csv_job(
 async def generate_output_csv(output_path: Path, results: List[dict], errors: List[dict]):
     """Generate the annotated CSV output file."""
     
-    # Define columns for output
+    # Log what we're working with
+    if results:
+        logger.info(f"📝 CSV Generation: First result keys: {list(results[0].keys())}")
+        if "parsed_data" in results[0]:
+            logger.info(f"📝 Parsed data keys: {list(results[0]['parsed_data'].keys())}")
+    
+    # Define columns matching the parsed_data structure
     columns = [
-        "nct_id", "status", "study_title", "study_status", "conditions", 
-        "drug", "phase", "enrollment", "start_date", "completion_date",
-        "classification", "classification_evidence",
-        "delivery_mode", "delivery_mode_evidence", 
-        "outcome", "outcome_evidence",
-        "reason_for_failure", "reason_for_failure_evidence",
-        "peptide", "peptide_evidence",
-        "sequence", "processing_time", "error"
+        "nct_id", "status", 
+        "Study Title", "Study Status", "Brief Summary", "Conditions", 
+        "Interventions/Drug", "Phases", "Enrollment", "Start Date", "Completion Date",
+        "Classification", "Classification Evidence",
+        "Delivery Mode", "Delivery Mode Evidence", 
+        "Outcome", "Outcome Evidence",
+        "Reason for Failure", "Reason for Failure Evidence",
+        "Peptide", "Peptide Evidence",
+        "Sequence", "DRAMP Name", "Study IDs", "Comments",
+        "annotation", "source", "processing_time", "error"
     ]
     
     with open(output_path, 'w', newline='', encoding='utf-8') as f:
@@ -521,23 +533,34 @@ async def generate_output_csv(output_path: Path, results: List[dict], errors: Li
         for result in results:
             row = {
                 "nct_id": result.get("nct_id", ""),
-                "status": result.get("status", ""),
+                "status": "success" if result.get("_success") else result.get("status", ""),
                 "processing_time": result.get("processing_time", ""),
+                "source": result.get("source", ""),
                 "error": result.get("error", "")
             }
             
-            # Extract annotation fields if present
+            # Get the full annotation text
             annotation = result.get("annotation", "")
-            if isinstance(annotation, dict):
-                row.update(annotation)
-            elif isinstance(annotation, str):
-                # Try to parse annotation text into fields
-                row["annotation_text"] = annotation[:500]  # Truncate long text
+            if isinstance(annotation, str):
+                row["annotation"] = annotation
             
-            # Also check for direct fields from runner
-            for field in columns:
-                if field not in row and field in result:
-                    row[field] = result[field]
+            # Extract from parsed_data (this is where the structured fields are!)
+            parsed_data = result.get("parsed_data", {})
+            if parsed_data:
+                for key, value in parsed_data.items():
+                    # Map parsed_data keys to our columns
+                    if key in columns:
+                        row[key] = value
+                    # Handle slight variations in key names
+                    elif key == "NCT ID":
+                        row["nct_id"] = value
+                    elif key == "Interventions/Drug" or key == "Drug":
+                        row["Interventions/Drug"] = value
+                    elif key == "Phases" or key == "Phase":
+                        row["Phases"] = value
+                    # Store Evidence fields
+                    elif "Evidence" in key:
+                        row[key] = value
             
             writer.writerow(row)
         
@@ -548,6 +571,8 @@ async def generate_output_csv(output_path: Path, results: List[dict], errors: Li
                 "status": "error",
                 "error": error.get("error", "Unknown error")
             })
+    
+    logger.info(f"💾 CSV saved: {output_path} ({len(results)} results, {len(errors)} errors)")
 
 
 async def annotate_trials_via_runner(
