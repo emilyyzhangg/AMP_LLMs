@@ -20,7 +20,7 @@ class SearchConfig:
     serpapi_key: Optional[str] = None
     meilisearch_url: Optional[str] = "http://localhost:7700"
     meilisearch_key: Optional[str] = None
-    swirl_url: Optional[str] = "http://localhost:9000"
+    swirl_url: Optional[str] = "http://localhost:8000"
     semantic_scholar_key: Optional[str] = None
     
     # Search parameters

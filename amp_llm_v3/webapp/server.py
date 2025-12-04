@@ -468,14 +468,14 @@ async def list_models():
         logger.error("Timeout connecting to chat service for /models")
         raise HTTPException(
             status_code=503,
-            detail="Chat service timeout - is it running on port 9001?"
+            detail="Chat service timeout - is it running on port 8001?"
         )
     except httpx.ConnectError:
         logger.error("Connection refused to chat service for /models")
         raise HTTPException(
             status_code=503,
-            detail="Cannot connect to chat service on port 9001. "
-                   "Start it with: cd 'standalone modules/chat_with_llm' && uvicorn chat_api:app --port 9001 --reload"
+            detail="Cannot connect to chat service on port 8001. "
+                   "Start it with: cd 'standalone modules/chat_with_llm' && uvicorn chat_api:app --port 8001 --reload"
         )
     except HTTPException:
         raise
@@ -738,7 +738,7 @@ async def get_csv_annotation_status(job_id: str):
     return response
 
 
-RUNNER_SERVICE_URL = "http://localhost:9003"
+RUNNER_SERVICE_URL = "http://localhost:8003"
 
 @app.get("/chat/download-csv/{filename}")
 async def download_csv_proxy(filename: str):
@@ -828,7 +828,7 @@ async def nct_lookup(
     Fetch clinical trial data using standalone NCT API service.
     
     This proxies requests to the standalone NCT lookup service running
-    on port 9002, which provides comprehensive trial data from multiple sources.
+    on port 8002, which provides comprehensive trial data from multiple sources.
     """
     logger.info(f"NCT Lookup: {len(request.nct_ids)} trials")
     

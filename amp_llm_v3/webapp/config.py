@@ -25,9 +25,9 @@ class Settings(BaseSettings):
     ollama_port: int = 11434
     
     # Service Ports (read from environment)
-    main_server_port: int = int(os.getenv("MAIN_SERVER_PORT", "9000"))
-    chat_service_port: int = int(os.getenv("CHAT_SERVICE_PORT", "9001"))
-    nct_service_port: int = int(os.getenv("NCT_SERVICE_PORT", "9002"))
+    main_server_port: int = int(os.getenv("MAIN_SERVER_PORT", "8000"))
+    chat_service_port: int = int(os.getenv("CHAT_SERVICE_PORT", "8001"))
+    nct_service_port: int = int(os.getenv("NCT_SERVICE_PORT", "8002"))
     
     # Public domain
     public_domain: str = os.getenv("PUBLIC_DOMAIN", "localhost")

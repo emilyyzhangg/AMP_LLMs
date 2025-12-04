@@ -68,8 +68,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:9000",
-        "http://127.0.0.1:9000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
         "http://localhost:3000",  # if using separate frontend
         "*"  # For development only - restrict in production
     ],
@@ -880,7 +880,7 @@ if __name__ == "__main__":
     import os
     
     load_dotenv()
-    port = int(os.getenv("NCT_SERVICE_PORT", "9002"))
+    port = int(os.getenv("NCT_SERVICE_PORT", "8002"))
     
     logger.info(f"Starting NCT Lookup API on port {port}")
     uvicorn.run(app, host="0.0.0.0", port=port)

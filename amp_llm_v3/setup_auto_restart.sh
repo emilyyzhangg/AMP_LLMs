@@ -34,9 +34,9 @@ echo "👤 Username: $USERNAME"
 # Service definitions
 declare -A services=(
     ["webapp"]="8000:webapp.server:app"
-    ["chat"]="9001:chat_api_with_annotation:app"
-    ["nct"]="9002:nct_api:app"
-    ["runner"]="9003:runner_service:app"
+    ["chat"]="8001:chat_api_with_annotation:app"
+    ["nct"]="8002:nct_api:app"
+    ["runner"]="8003:runner_service:app"
 )
 
 declare -A working_dirs=(
@@ -187,9 +187,9 @@ echo "  • Run in the background"
 echo ""
 echo "Service Architecture:"
 echo "  Port 8000 - Webapp (Web Interface)"
-echo "  Port 9001 - Chat Service with Annotation"
-echo "  Port 9002 - NCT Lookup Service"
-echo "  Port 9003 - Runner Service (File Manager)"
+echo "  Port 8001 - Chat Service with Annotation"
+echo "  Port 8002 - NCT Lookup Service"
+echo "  Port 8003 - Runner Service (File Manager)"
 echo ""
 echo "Management commands:"
 echo "  Start service:   launchctl start com.amplm.[service]"

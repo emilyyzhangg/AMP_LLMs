@@ -171,8 +171,8 @@ async def fetch_nct_data(nct_id: str) -> Dict[str, Any]:
     # NCT Lookup service should be on port 8000 (main webapp backend)
     # We'll search for it on common ports
     nct_service_urls = [
-        "http://localhost:9000",  # Main webapp
-        "http://localhost:9002",  # Dedicated NCT service if exists
+        "http://localhost:8000",  # Main webapp
+        "http://localhost:8002",  # Dedicated NCT service if exists
     ]
     
     nct_service_url = None
@@ -322,7 +322,7 @@ async def send_to_llm(model: str, prompt: str, temperature: float) -> str:
     """
     Send prompt to LLM via chat service.
     """
-    chat_service_url = "http://localhost:9001"
+    chat_service_url = "http://localhost:8001"
     
     async with aiohttp.ClientSession() as session:
         # Initialize conversation
@@ -351,9 +351,9 @@ async def send_to_llm(model: str, prompt: str, temperature: float) -> str:
             logger.error(f"❌ Cannot connect to chat service: {e}")
             raise HTTPException(
                 status_code=503,
-                detail="Cannot connect to chat service on port 9001. "
+                detail="Cannot connect to chat service on port 8001. "
                        "Make sure it's running: cd 'standalone modules/chat_with_llm' && "
-                       "uvicorn chat_api:app --port 9001 --reload"
+                       "uvicorn chat_api:app --port 8001 --reload"
             )
         except Exception as e:
             logger.error(f"❌ Chat service error: {e}")
@@ -553,6 +553,6 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    print("🚀 Starting Research Assistant API on port 9001...")
+    print("🚀 Starting Research Assistant API on port 8001...")
     print("✨ Auto-fetch enabled: Will automatically fetch missing trial data")
-    uvicorn.run(app, host="0.0.0.0", port=9001, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8001, reload=True)
