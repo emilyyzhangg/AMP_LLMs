@@ -121,7 +121,7 @@ class CSVJobManager:
                     except:
                         pass
                 del self.jobs[job_id]
-                logger.info(f"🧹 Cleaned up expired job: {job_id}")
+                logger.info(f"🧹 Cleaned up expired job : {job_id}")
     
     def get_job_status(self, job_id: str) -> Dict[str, Any]:
         """Get current status of a job"""
@@ -1199,4 +1199,3 @@ if __name__ == "__main__":
     print("   No more Cloudflare 524 timeout errors!")
     print("=" * 80)
     uvicorn.run(app, host="0.0.0.0", port=9001, reload=True)
-    
