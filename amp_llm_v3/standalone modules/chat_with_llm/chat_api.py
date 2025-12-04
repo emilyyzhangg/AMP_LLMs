@@ -447,11 +447,7 @@ async def process_csv_job(
         successful = len([r for r in results if r.get("_success", False)])
         failed = len(errors)
         
-        job.status = JobStatus.COMPLETED
-        job.progress = "Completed"
-        job.csv_filename = csv_filename
-        
-        # Store result
+        # Store result FIRST (before changing status to avoid race condition)
         public_download_url = f"/chat/download/{job_id}"
         
         job.result = {
@@ -465,6 +461,11 @@ async def process_csv_job(
             "csv_filename": csv_filename,
             "model": model
         }
+        
+        # NOW set status to completed (after result is ready)
+        job.csv_filename = csv_filename
+        job.status = JobStatus.COMPLETED
+        job.progress = "Completed"
         job.updated_at = datetime.now()
         
         logger.info(f"✅ Job {job_id} completed: {successful} success, {failed} errors in {duration:.1f}s")
