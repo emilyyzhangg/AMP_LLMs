@@ -56,6 +56,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Output directory for generated CSVs (absolute path based on script location)
+SCRIPT_DIR = Path(__file__).parent.resolve()
+OUTPUT_DIR = SCRIPT_DIR / "output" / "annotations"
+
 
 # ============================================================================
 # Job Manager for Async CSV Processing
@@ -110,7 +114,7 @@ class CSVJobManager:
                 job = self.jobs[job_id]
                 if job.csv_filename:
                     try:
-                        output_file = Path(f"output/annotations/{job.csv_filename}")
+                        output_file = OUTPUT_DIR / job.csv_filename
                         if output_file.exists():
                             output_file.unlink()
                     except:
@@ -191,10 +195,10 @@ async def startup_event():
     job_manager.start_cleanup_task()
     
     # Ensure output directory exists
-    Path("output/annotations").mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     
     logger.info("✅ CSV Job Manager initialized")
-    logger.info("✅ Output directory ready: output/annotations/")
+    logger.info(f"✅ Output directory ready: {OUTPUT_DIR}")
 
 
 # ============================================================================
@@ -430,11 +434,10 @@ async def process_csv_job(
         job.updated_at = datetime.now()
         
         # Generate output CSV
-        output_dir = Path("output/annotations")
-        output_dir.mkdir(parents=True, exist_ok=True)
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
         
         csv_filename = f"annotations_{job_id}.csv"
-        output_path = output_dir / csv_filename
+        output_path = OUTPUT_DIR / csv_filename
         
         await generate_output_csv(output_path, results, errors, model)
         
@@ -979,23 +982,41 @@ async def download_annotation_results(job_id: str):
     # Get the local file path
     result = status.get("result", {})
     csv_filename = result.get("csv_filename", f"annotations_{job_id}.csv")
-    output_path = Path(result.get("_output_path", f"output/annotations/{csv_filename}"))
+    
+    # Try stored path first
+    stored_path = result.get("_output_path", "")
+    if stored_path:
+        output_path = Path(stored_path)
+        if output_path.exists():
+            logger.info(f"📥 Serving download for job {job_id}: {output_path}")
+            return FileResponse(
+                path=str(output_path),
+                media_type="text/csv",
+                filename=csv_filename,
+                headers={
+                    "Content-Disposition": f"attachment; filename=\"{csv_filename}\""
+                }
+            )
+    
+    # Fallback: try relative to script directory
+    output_path = OUTPUT_DIR / csv_filename
     
     if not output_path.exists():
-        # Fallback: try standard location
-        output_path = Path(f"output/annotations/{csv_filename}")
+        # Last resort: try current working directory
+        output_path = Path("output/annotations") / csv_filename
     
     if not output_path.exists():
-        raise HTTPException(status_code=404, detail="Output file not found")
+        logger.error(f"❌ File not found for job {job_id}. Tried: {stored_path}, {OUTPUT_DIR / csv_filename}")
+        raise HTTPException(status_code=404, detail=f"Output file not found: {csv_filename}")
     
     logger.info(f"📥 Serving download for job {job_id}: {output_path}")
     
     return FileResponse(
-        path=output_path,
+        path=str(output_path),
         media_type="text/csv",
         filename=csv_filename,
         headers={
-            "Content-Disposition": f"attachment; filename={csv_filename}"
+            "Content-Disposition": f"attachment; filename=\"{csv_filename}\""
         }
     )
 
