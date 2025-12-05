@@ -353,6 +353,9 @@ async def process_csv_job(
         job.progress = "Runner service connected, starting annotation..."
         job.updated_at = datetime.now()
         
+        # Track consecutive failures for model reset
+        consecutive_failures = 0
+        
         # Create a persistent client for all requests (reduced timeout to 120s)
         async with httpx.AsyncClient(timeout=120.0) as client:
             # Process each NCT ID individually
@@ -365,6 +368,7 @@ async def process_csv_job(
                 
                 trial_start = time.time()
                 max_retries = 3
+                result_saved = False
                 
                 for attempt in range(max_retries):
                     try:
@@ -387,13 +391,15 @@ async def process_csv_job(
                                 result = trial_results[0]
                                 result["processing_time"] = round(time.time() - trial_start, 1)
                                 
+                                # ALWAYS use the original nct_id, never trust LLM output
+                                result["nct_id"] = nct_id
+                                
                                 # Log what we received from runner
                                 logger.info(f"📦 Job {job_id}: Runner returned keys for {nct_id}: {list(result.keys())}")
                                 
                                 # Detect success: has annotation AND parsed_data with actual content
                                 has_annotation = bool(result.get("annotation"))
                                 has_error = bool(result.get("error"))
-                                status_success = result.get("status") in ["success", "completed", "done", True]
                                 
                                 # Check if parsed_data has actual useful content
                                 parsed_data = result.get("parsed_data", {})
@@ -412,28 +418,97 @@ async def process_csv_job(
                                 # Mark as success only if: has parsed_data, no error, and not garbage
                                 is_success = has_parsed_data and not has_error and not is_garbage
                                 
-                                # Normalize the status field
-                                result["_success"] = is_success
-                                results.append(result)
-                                
                                 if is_success:
+                                    result["_success"] = True
+                                    results.append(result)
+                                    result_saved = True
+                                    consecutive_failures = 0  # Reset failure counter
                                     logger.info(f"✅ Job {job_id}: {nct_id} completed successfully (annotation length: {len(annotation_text)}, parsed fields: {len(parsed_data)})")
+                                    break  # Success - exit retry loop
                                 else:
+                                    # Garbage or empty - retry if we have attempts left
                                     reason = "No annotation" if not has_annotation else \
                                              "Empty parsed_data" if not has_parsed_data else \
                                              "Garbage/hallucinated response" if is_garbage else \
                                              result.get("error", "Unknown error")
-                                    errors.append({
-                                        "nct_id": nct_id,
-                                        "error": reason
-                                    })
-                                    logger.warning(f"⚠️ Job {job_id}: {nct_id} failed: {reason}")
+                                    
+                                    if attempt < max_retries - 1:
+                                        logger.warning(f"⚠️ Job {job_id}: {nct_id} got bad response ({reason}), retrying ({attempt + 1}/{max_retries})...")
+                                        
+                                        # If garbage, try to reset the model
+                                        if is_garbage:
+                                            logger.info(f"🔄 Job {job_id}: Attempting model reset after garbage response...")
+                                            try:
+                                                # Send a tiny request with keep_alive=0 to unload, then reload
+                                                async with httpx.AsyncClient(timeout=30.0) as reset_client:
+                                                    await reset_client.post(
+                                                        "http://localhost:11434/api/generate",
+                                                        json={
+                                                            "model": model,
+                                                            "prompt": "test",
+                                                            "keep_alive": 0  # Unload after this
+                                                        }
+                                                    )
+                                                    await asyncio.sleep(2)
+                                                    # Reload by doing a fresh request
+                                                    await reset_client.post(
+                                                        "http://localhost:11434/api/generate",
+                                                        json={
+                                                            "model": model,
+                                                            "prompt": "Hello",
+                                                            "keep_alive": "5m"
+                                                        }
+                                                    )
+                                                logger.info(f"✅ Job {job_id}: Model reset complete")
+                                            except Exception as reset_err:
+                                                logger.warning(f"⚠️ Job {job_id}: Model reset failed: {reset_err}")
+                                        
+                                        await asyncio.sleep(3)  # Longer wait after garbage
+                                        continue
+                                    else:
+                                        # Last attempt failed - track consecutive failures
+                                        consecutive_failures += 1
+                                        
+                                        result["_success"] = False
+                                        results.append(result)
+                                        result_saved = True
+                                        errors.append({
+                                            "nct_id": nct_id,
+                                            "error": reason
+                                        })
+                                        logger.warning(f"⚠️ Job {job_id}: {nct_id} failed after {max_retries} attempts: {reason}")
+                                        
+                                        # If 3+ consecutive failures, do a hard model reset
+                                        if consecutive_failures >= 3:
+                                            logger.warning(f"🔄 Job {job_id}: {consecutive_failures} consecutive failures, doing hard model reset...")
+                                            try:
+                                                async with httpx.AsyncClient(timeout=60.0) as reset_client:
+                                                    # Unload model completely
+                                                    await reset_client.post(
+                                                        "http://localhost:11434/api/generate",
+                                                        json={"model": model, "prompt": "", "keep_alive": 0}
+                                                    )
+                                                    await asyncio.sleep(5)
+                                                    # Reload fresh
+                                                    await reset_client.post(
+                                                        "http://localhost:11434/api/generate",
+                                                        json={"model": model, "prompt": "Initialize", "keep_alive": "10m"}
+                                                    )
+                                                logger.info(f"✅ Job {job_id}: Hard model reset complete")
+                                                consecutive_failures = 0
+                                            except Exception as e:
+                                                logger.error(f"❌ Job {job_id}: Hard reset failed: {e}")
                             else:
+                                if attempt < max_retries - 1:
+                                    logger.warning(f"⚠️ Job {job_id}: {nct_id} no results, retrying ({attempt + 1}/{max_retries})...")
+                                    await asyncio.sleep(2)
+                                    continue
                                 errors.append({
                                     "nct_id": nct_id,
                                     "error": "No result returned from runner"
                                 })
-                            break  # Success - exit retry loop
+                                result_saved = True
+                            break  # Exit retry loop
                             
                         else:
                             error_text = response.text[:200]
@@ -632,12 +707,12 @@ async def generate_output_csv(output_path: Path, results: List[dict], errors: Li
             parsed_data = result.get("parsed_data", {})
             if parsed_data:
                 for key, value in parsed_data.items():
+                    # NEVER overwrite nct_id from LLM - it may hallucinate
+                    if key == "NCT ID" or key == "nct_id":
+                        continue  # Skip - use the original nct_id from result
                     # Map parsed_data keys to our columns
-                    if key in columns:
+                    elif key in columns:
                         row[key] = value
-                    # Handle slight variations in key names
-                    elif key == "NCT ID":
-                        row["nct_id"] = value
                     elif key == "Interventions/Drug" or key == "Drug":
                         row["Interventions/Drug"] = value
                     elif key == "Phases" or key == "Phase":
