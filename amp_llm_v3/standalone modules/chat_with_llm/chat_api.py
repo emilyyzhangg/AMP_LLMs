@@ -31,7 +31,7 @@ from enum import Enum
 from pathlib import Path
 from fastapi import FastAPI, HTTPException, UploadFile, File, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 
 # Configuration
@@ -121,7 +121,7 @@ class CSVJobManager:
                     except:
                         pass
                 del self.jobs[job_id]
-                logger.info(f"🧹 Cleaned up expired job : {job_id}")
+                logger.info(f"🧹 Cleaned up expired job: {job_id}")
     
     def get_job_status(self, job_id: str) -> Dict[str, Any]:
         """Get current status of a job"""
@@ -314,8 +314,11 @@ async def process_csv_job(
     Background task to process CSV annotation.
     Processes each trial individually and updates progress in real-time.
     """
+    logger.info(f"🚀 Job {job_id}: Background task STARTED")
+    
     job = job_manager.jobs.get(job_id)
     if not job:
+        logger.error(f"❌ Job {job_id}: Job not found in manager!")
         return
     
     job.status = JobStatus.PROCESSING
@@ -325,6 +328,7 @@ async def process_csv_job(
     start_time = time.time()
     results = []
     errors = []
+    last_heartbeat = time.time()
     
     try:
         # Parse NCT IDs from CSV
@@ -349,85 +353,143 @@ async def process_csv_job(
         job.progress = "Runner service connected, starting annotation..."
         job.updated_at = datetime.now()
         
-        # Process each NCT ID individually
-        for i, nct_id in enumerate(nct_ids):
-            job.processed_trials = i
-            job.progress = f"Processing {i + 1}/{len(nct_ids)}: {nct_id}"
-            job.updated_at = datetime.now()
-            
-            logger.info(f"📝 Job {job_id}: Processing {nct_id} ({i + 1}/{len(nct_ids)})")
-            
-            trial_start = time.time()
-            
-            try:
-                async with httpx.AsyncClient(timeout=600.0) as client:
-                    # Call batch-annotate with single NCT ID
-                    response = await client.post(
-                        f"{RUNNER_SERVICE_URL}/batch-annotate",
-                        json={
-                            "nct_ids": [nct_id],
-                            "model": model,
-                            "temperature": temperature,
-                            "fetch_if_missing": True
-                        }
-                    )
-                    
-                    if response.status_code == 200:
-                        data = response.json()
-                        trial_results = data.get("results", [])
+        # Create a persistent client for all requests (reduced timeout to 120s)
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            # Process each NCT ID individually
+            for i, nct_id in enumerate(nct_ids):
+                job.processed_trials = i
+                job.progress = f"Processing {i + 1}/{len(nct_ids)}: {nct_id}"
+                job.updated_at = datetime.now()
+                
+                logger.info(f"📝 Job {job_id}: Processing {nct_id} ({i + 1}/{len(nct_ids)})")
+                
+                trial_start = time.time()
+                max_retries = 3
+                
+                for attempt in range(max_retries):
+                    try:
+                        # Call batch-annotate with single NCT ID
+                        response = await client.post(
+                            f"{RUNNER_SERVICE_URL}/batch-annotate",
+                            json={
+                                "nct_ids": [nct_id],
+                                "model": model,
+                                "temperature": temperature,
+                                "fetch_if_missing": True
+                            }
+                        )
                         
-                        if trial_results:
-                            result = trial_results[0]
-                            result["processing_time"] = round(time.time() - trial_start, 1)
+                        if response.status_code == 200:
+                            data = response.json()
+                            trial_results = data.get("results", [])
                             
-                            # Log what we received from runner
-                            logger.info(f"📦 Job {job_id}: Runner returned keys for {nct_id}: {list(result.keys())}")
-                            
-                            # Detect success: has annotation and no error
-                            has_annotation = bool(result.get("annotation"))
-                            has_error = bool(result.get("error"))
-                            status_success = result.get("status") in ["success", "completed", "done", True]
-                            
-                            # Mark as success if has annotation OR status indicates success, AND no error
-                            is_success = (has_annotation or status_success) and not has_error
-                            
-                            # Normalize the status field
-                            result["_success"] = is_success
-                            results.append(result)
-                            
-                            if is_success:
-                                logger.info(f"✅ Job {job_id}: {nct_id} completed successfully (annotation length: {len(str(result.get('annotation', '')))})")
+                            if trial_results:
+                                result = trial_results[0]
+                                result["processing_time"] = round(time.time() - trial_start, 1)
+                                
+                                # Log what we received from runner
+                                logger.info(f"📦 Job {job_id}: Runner returned keys for {nct_id}: {list(result.keys())}")
+                                
+                                # Detect success: has annotation AND parsed_data with actual content
+                                has_annotation = bool(result.get("annotation"))
+                                has_error = bool(result.get("error"))
+                                status_success = result.get("status") in ["success", "completed", "done", True]
+                                
+                                # Check if parsed_data has actual useful content
+                                parsed_data = result.get("parsed_data", {})
+                                has_parsed_data = bool(parsed_data and len(parsed_data) > 3)  # Need at least a few fields
+                                
+                                # Also check for garbage responses (hallucinations)
+                                annotation_text = str(result.get("annotation", ""))
+                                is_garbage = (
+                                    "# Instruction" in annotation_text or
+                                    "# User:" in annotation_text or
+                                    "### Solution" in annotation_text or
+                                    len(annotation_text) < 100 or  # Too short
+                                    annotation_text.count("#") > 10  # Too many markdown headers (hallucination sign)
+                                )
+                                
+                                # Mark as success only if: has parsed_data, no error, and not garbage
+                                is_success = has_parsed_data and not has_error and not is_garbage
+                                
+                                # Normalize the status field
+                                result["_success"] = is_success
+                                results.append(result)
+                                
+                                if is_success:
+                                    logger.info(f"✅ Job {job_id}: {nct_id} completed successfully (annotation length: {len(annotation_text)}, parsed fields: {len(parsed_data)})")
+                                else:
+                                    reason = "No annotation" if not has_annotation else \
+                                             "Empty parsed_data" if not has_parsed_data else \
+                                             "Garbage/hallucinated response" if is_garbage else \
+                                             result.get("error", "Unknown error")
+                                    errors.append({
+                                        "nct_id": nct_id,
+                                        "error": reason
+                                    })
+                                    logger.warning(f"⚠️ Job {job_id}: {nct_id} failed: {reason}")
                             else:
                                 errors.append({
                                     "nct_id": nct_id,
-                                    "error": result.get("error", "No annotation generated")
+                                    "error": "No result returned from runner"
                                 })
-                                logger.warning(f"⚠️ Job {job_id}: {nct_id} failed: {result.get('error', 'No annotation')}")
+                            break  # Success - exit retry loop
+                            
                         else:
+                            error_text = response.text[:200]
+                            if attempt < max_retries - 1:
+                                logger.warning(f"⚠️ Job {job_id}: {nct_id} HTTP {response.status_code}, retrying ({attempt + 1}/{max_retries})...")
+                                await asyncio.sleep(2)  # Wait before retry
+                                continue
                             errors.append({
                                 "nct_id": nct_id,
-                                "error": "No result returned from runner"
+                                "error": f"HTTP {response.status_code}: {error_text}"
                             })
-                    else:
-                        error_text = response.text[:200]
+                            logger.error(f"❌ Job {job_id}: {nct_id} HTTP error: {response.status_code}")
+                            
+                    except httpx.TimeoutException:
+                        if attempt < max_retries - 1:
+                            logger.warning(f"⚠️ Job {job_id}: {nct_id} timed out, retrying ({attempt + 1}/{max_retries})...")
+                            await asyncio.sleep(2)
+                            continue
                         errors.append({
                             "nct_id": nct_id,
-                            "error": f"HTTP {response.status_code}: {error_text}"
+                            "error": "Request timed out after retries"
                         })
-                        logger.error(f"❌ Job {job_id}: {nct_id} HTTP error: {response.status_code}")
+                        logger.error(f"❌ Job {job_id}: {nct_id} timed out after {max_retries} attempts")
                         
-            except httpx.TimeoutException:
-                errors.append({
-                    "nct_id": nct_id,
-                    "error": "Request timed out"
-                })
-                logger.error(f"❌ Job {job_id}: {nct_id} timed out")
-            except Exception as e:
-                errors.append({
-                    "nct_id": nct_id,
-                    "error": str(e)
-                })
-                logger.error(f"❌ Job {job_id}: {nct_id} error: {e}")
+                    except httpx.ConnectError as e:
+                        if attempt < max_retries - 1:
+                            logger.warning(f"⚠️ Job {job_id}: {nct_id} connection error, retrying ({attempt + 1}/{max_retries})...")
+                            await asyncio.sleep(5)  # Longer wait for connection issues
+                            continue
+                        errors.append({
+                            "nct_id": nct_id,
+                            "error": f"Connection error: {str(e)}"
+                        })
+                        logger.error(f"❌ Job {job_id}: {nct_id} connection error after {max_retries} attempts: {e}")
+                        
+                    except Exception as e:
+                        logger.error(f"❌ Job {job_id}: {nct_id} unexpected error: {e}", exc_info=True)
+                        errors.append({
+                            "nct_id": nct_id,
+                            "error": str(e)
+                        })
+                        break  # Don't retry unexpected errors
+                
+                # Log progress every 10 trials
+                if (i + 1) % 10 == 0:
+                    elapsed = time.time() - start_time
+                    avg_time = elapsed / (i + 1)
+                    remaining = avg_time * (len(nct_ids) - i - 1)
+                    logger.info(f"📊 Job {job_id}: Progress {i + 1}/{len(nct_ids)} ({(i+1)/len(nct_ids)*100:.1f}%) - ETA: {remaining/60:.1f} min")
+                
+                # Heartbeat every 30 seconds
+                if time.time() - last_heartbeat > 30:
+                    logger.info(f"💓 Job {job_id}: Still alive - processed {i}/{len(nct_ids)} trials")
+                    last_heartbeat = time.time()
+        
+        logger.info(f"🏁 Job {job_id}: All trials processed, generating CSV...")
         
         # All trials processed
         job.processed_trials = len(nct_ids)
@@ -519,7 +581,7 @@ async def generate_output_csv(output_path: Path, results: List[dict], errors: Li
     # Count successes and failures
     successful_count = len([r for r in results if r.get("_success", False)])
     failed_count = len(errors)
-    total_count = successful_count + failed_count
+    total_count = len(results)  # Total processed (success + failure are in results)
     
     # Define columns matching the parsed_data structure
     columns = [
@@ -547,14 +609,18 @@ async def generate_output_csv(output_path: Path, results: List[dict], errors: Li
         writer = csv.DictWriter(f, fieldnames=columns, extrasaction='ignore')
         writer.writeheader()
         
-        # Write successful results
+        # Write only SUCCESSFUL results (ones with actual data)
         for result in results:
+            # Skip failed results - they'll be written in the errors section
+            if not result.get("_success", False):
+                continue
+                
             row = {
                 "nct_id": result.get("nct_id", ""),
-                "status": "success" if result.get("_success") else result.get("status", ""),
+                "status": "success",
                 "processing_time": result.get("processing_time", ""),
                 "source": result.get("source", ""),
-                "error": result.get("error", "")
+                "error": ""
             }
             
             # Get the full annotation text
@@ -970,7 +1036,15 @@ async def get_csv_annotation_status(job_id: str):
     if status["status"] == "not_found":
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
     
-    return status
+    # Return with no-cache headers to prevent Cloudflare caching
+    return JSONResponse(
+        content=status,
+        headers={
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+            "Expires": "0"
+        }
+    )
 
 
 @app.get("/chat/download/{job_id}")
