@@ -41,19 +41,13 @@ Enrollment: 124
 Start Date: 2025-06-18
 Completion Date: 2028-11
 Classification: AMP
-
-  Evidence: Study involves antimicrobial peptide for non-infection purposes
+    Evidence: Study involves antimicrobial peptide for non-infection purposes
 Delivery Mode: Oral
 Sequence: FVQWFSKFLGKIEPDVSQVQDPNDYEPF
-DRAMP Name: dnaJP1
-
-  Evidence: DRAMP database entry for dnaJP1
+    Evidence: DRAMP database entry for dnaJP1
 Study IDs: PMC:11855921
 Outcome: Recruiting
 Reason for Failure: N/A
-Subsequent Trial IDs: N/A
-
-  Evidence: N/A
 Peptide: True
 Comments: Early-phase trial investigating immunotherapy effects
 
@@ -108,7 +102,7 @@ Comments: Early-phase trial investigating immunotherapy effects
 Look for:
 - Keywords in title/summary: peptide, antimicrobial peptide, AMP
 - Intervention names matching known peptide drugs
-- DRAMP database matches
+- DRAMP or UniProt database matches
 - PubMed/PubMed Central/BioC/extended API search indicating peptide sequences
 
 **Classification logic:**
@@ -116,7 +110,7 @@ Look for:
 - If a peptide but not an antimicrobial peptide → Other
 - Confirm with evidence from multiple data sources (trial description, interventions, literature, databases). 
 - Look for explicit mentions of antimicrobial activity or immune-modulation.
-- Search PubMed/PubMed Central/BioC/extended API results for supporting evidence.
+- Search PubMed/PubMed Central/BioC/extended API results for supporting evidence suggesting that the peptide has antimicrobial activity.
 - Search DRAMP database for peptide classification. If the peptide is on DRAMP, classify as AMP.
 
 **Delivery Mode logic:**
@@ -127,13 +121,13 @@ Look for:
 - If not explicitly stated in clinicaltrials.gov lookup results, search PubMed/PubMed Central/BioC/extended API results for supporting evidence. 
 
 **Sequence logic:**
+- Look for evidence of amino acid sequences in the clinical trial description, UniProt/DRAMP database matches, or Pubmed/PubMed or BioC Central literature.
 - Sequences should be in standard one-letter amino acid code.
 - If sequences are amidated, include it as part of the sequence (e.g., KLLLKLLLKLLL-NH2).
 - If sequences contain non-standard amino acids, represent them with 'X' (e.g., ACDEFGHIKXLMNPQRSTVWY).
 - If sequences contain modifications, include them in parentheses (e.g., ACDEFGHIK(Me)LMNPQRSTVWY).
 - If sequences contain D-amino acids, denote them with lowercase letters (e.g., AcdEFGHIKLMNPQRSTVWY).
 - Look for explicit peptide sequences in trial description, interventions, or literature.
-- Search BioC annotations for peptide sequences.
 - If multiple sequences found because multiple drugs are being tested or a drug contains multiple peptide components, list all sequences separated with the pipe character '|'.
 - If no sequence found, write N/A.
 
@@ -154,6 +148,7 @@ Look for:
 - Unknown: Trial completed but no results available or status is unclear.
 
 **Reason for Failure logic:**
+- Only fill out this field if the Outcome is Withdrawn, Terminated, or Failed - completed trial. Do not fill out if Outcome is Positive, Active, or Unknown.
 - Business reasons: Trial ended due to funding, sponsorship, or strategic business decisions.
 - Ineffective for purpose: Trial ended due to lack of efficacy or failure to meet endpoints.
 - Toxic/unsafe: Trial ended due to safety concerns or adverse events.
@@ -215,70 +210,6 @@ PARAMETER stop "</s>"
 You MUST extract and output the following fields in EXACTLY this format.
 Use ONLY the valid values listed for each field. Do NOT add explanations within the field values.
 
-## REQUIRED OUTPUT FORMAT (copy this structure exactly):
-
-```
-NCT Number: [NCT ID]
-Study Title: [title from data]
-Study Status: [status from data]
-Brief Summary: [1-2 sentence summary]
-Conditions: [comma-separated list]
-Interventions/Drug: [comma-separated list]
-Phases: [phase from data]
-Enrollment: [number]
-Start Date: [date]
-Completion Date: [date]
-
-Classification: [AMP or Other]
-  Evidence: [brief reason]
-
-Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
-  Evidence: [brief reason]
-
-Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
-  Evidence: [brief reason]
-
-Reason for Failure: [Business reasons, Ineffective for purpose, Toxic/unsafe, Due to covid, Recruitment issues, or N/A]
-  Evidence: [brief reason]
-
-Peptide: [True or False]
-  Evidence: [brief reason]
-
-Sequence: [amino acid sequence or N/A]
-DRAMP Name: [name or N/A]
-Study IDs: [PMIDs or N/A]
-Comments: [any additional notes]
-```
-
-## VALID VALUES (use ONLY these exact values):
-
-**Classification:** AMP | Other
-**Delivery Mode:** Injection/Infusion | Topical | Oral | Other
-**Outcome:** Positive | Withdrawn | Terminated | Failed - completed trial | Active | Unknown
-**Reason for Failure:** Business reasons | Ineffective for purpose | Toxic/unsafe | Due to covid | Recruitment issues | N/A
-**Peptide:** True | False
-
-## CLASSIFICATION RULES:
-
-- **Classification = AMP**: The trial involves an antimicrobial peptide (peptide with antimicrobial activity through direct killing, growth inhibition, or immune-modulation)
-- **Classification = Other**: Not an antimicrobial peptide trial
-
-- **Delivery Mode**: Infer from intervention descriptions
-  - IV, intravenous, subcutaneous, intramuscular, infusion → Injection/Infusion
-  - cream, topical, dermal, skin, varnish, rinse, spray → Topical
-  - oral, tablet, capsule, by mouth → Oral
-  - Otherwise → Other
-
-- **Outcome**: Map from study status
-  - RECRUITING, NOT_YET_RECRUITING, ACTIVE_NOT_RECRUITING → Active
-  - WITHDRAWN → Withdrawn
-  - TERMINATED → Terminated
-  - COMPLETED with positive results → Positive
-  - COMPLETED with negative/no results → Failed - completed trial
-  - Otherwise → Unknown
-
-- **Peptide = True**: Trial tests a peptide drug (short amino acid chain, typically <200 amino acids)
-- **Peptide = False**: Non-peptide drug, antibody, large protein, or small molecule
 
 ---
 ## DATA TO ANALYZE:
@@ -307,6 +238,7 @@ Comments: [any additional notes]
         if bioc_data:
             sections.append("\n### BioC Annotated Data")
             sections.append(bioc_data)
+
         
         # Section 5: Extended API Data (if available)
         extended_data = self._format_extended_data(search_results)
@@ -540,7 +472,7 @@ Begin extraction:
         return "\n".join(lines)
     
     def _format_extended_data(self, results: Dict[str, Any]) -> str:
-        """Format extended API search data (DuckDuckGo, SERP, Scholar, OpenFDA)."""
+        """Format extended API search data (DuckDuckGo, SERP, Scholar, OpenFDA, UniProt)."""
         extended_source = results.get("sources", {}).get("extended", {})
         
         if not extended_source:
@@ -676,6 +608,86 @@ Begin extraction:
                     if len(warning_text) > 300:
                         warning_text = warning_text[:300] + "..."
                     lines.append(f"  Warnings: {warning_text}")
+                
+                lines.append("")
+            
+        # UniProt Protein Database
+        uniprot = extended_source.get("uniprot", {})
+        if uniprot.get("success"):
+            has_data = True
+            uniprot_data = uniprot.get("data", {})
+            uniprot_results = uniprot_data.get("results", [])
+            
+            lines.append("\n### UniProt Protein Database")
+            lines.append(f"**Total Results:** {len(uniprot_results)}")
+            lines.append(f"**Query:** {uniprot_data.get('query', 'N/A')}\n")
+            
+            for i, result in enumerate(uniprot_results[:5], 1):  # Limit to 5 entries
+                lines.append(f"**Protein {i}:**")
+                
+                # Primary accession
+                accession = result.get("primaryAccession", "")
+                if accession:
+                    lines.append(f"  Accession: {accession}")
+                
+                # Entry name (UniProt ID)
+                entry_name = result.get("uniProtkbId", "")
+                if entry_name:
+                    lines.append(f"  Entry Name: {entry_name}")
+                
+                # Protein name (recommended name)
+                protein_desc = result.get("proteinDescription", {})
+                rec_name = protein_desc.get("recommendedName", {})
+                full_name = rec_name.get("fullName", {}).get("value", "")
+                if full_name:
+                    lines.append(f"  Protein Name: {full_name}")
+                
+                # Gene names
+                genes = result.get("genes", [])
+                if genes:
+                    gene_names = []
+                    for gene in genes[:3]:  # Limit to 3 genes
+                        primary = gene.get("geneName", {}).get("value", "")
+                        if primary:
+                            gene_names.append(primary)
+                    if gene_names:
+                        lines.append(f"  Gene(s): {', '.join(gene_names)}")
+                
+                # Organism
+                organism = result.get("organism", {})
+                organism_name = organism.get("scientificName", "")
+                if organism_name:
+                    lines.append(f"  Organism: {organism_name}")
+                
+                # Sequence length
+                sequence = result.get("sequence", {})
+                seq_length = sequence.get("length")
+                if seq_length:
+                    lines.append(f"  Sequence Length: {seq_length} aa")
+                
+                # Function (from comments/annotations)
+                comments = result.get("comments", [])
+                for comment in comments:
+                    if comment.get("commentType") == "FUNCTION":
+                        func_texts = comment.get("texts", [])
+                        if func_texts:
+                            func_text = func_texts[0].get("value", "")
+                            if len(func_text) > 400:
+                                func_text = func_text[:400] + "..."
+                            lines.append(f"  Function: {func_text}")
+                        break
+                
+                # Subcellular location
+                for comment in comments:
+                    if comment.get("commentType") == "SUBCELLULAR LOCATION":
+                        locations = comment.get("subcellularLocations", [])
+                        if locations:
+                            loc_names = [loc.get("location", {}).get("value", "") 
+                                        for loc in locations[:3] if loc.get("location")]
+                            loc_names = [l for l in loc_names if l]
+                            if loc_names:
+                                lines.append(f"  Subcellular Location: {', '.join(loc_names)}")
+                        break
                 
                 lines.append("")
         
