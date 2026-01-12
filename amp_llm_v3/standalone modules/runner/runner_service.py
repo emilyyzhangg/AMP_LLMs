@@ -19,6 +19,7 @@ Service Dependencies:
 - LLM Assistant API (8004) - Handles annotation with JSON parsing
 """
 import logging
+import os
 import httpx
 import json
 import csv
@@ -68,8 +69,8 @@ app.add_middleware(
 # Configuration
 # ============================================================================
 
-NCT_SERVICE_URL = "http://localhost:8002"
-LLM_ASSISTANT_URL = "http://localhost:8004"
+NCT_SERVICE_URL = os.getenv("NCT_SERVICE_URL", "http://localhost:8002")
+LLM_ASSISTANT_URL = os.getenv("LLM_ASSISTANT_URL", "http://localhost:8004")
 RESULTS_DIR = Path(__file__).parent / "results"
 RESULTS_DIR.mkdir(exist_ok=True)
 CSV_OUTPUT_DIR = Path(__file__).parent / "csv_outputs"

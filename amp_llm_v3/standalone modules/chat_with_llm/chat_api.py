@@ -207,7 +207,7 @@ async def startup_event():
 # Configuration
 # ============================================================================
 
-RUNNER_SERVICE_URL = "http://localhost:8003"
+RUNNER_SERVICE_URL = os.getenv("RUNNER_SERVICE_URL", "http://localhost:8003")
 
 
 # ============================================================================
@@ -1346,7 +1346,7 @@ async def get_models():
 if __name__ == "__main__":
     import uvicorn
     print("=" * 80)
-    print("🚀 Starting LLM Chat Service with Annotation on port 9001...")
+    print("🚀 Starting LLM Chat Service with Annotation on port 8001...")
     print("=" * 80)
     print(f"🤖 Ollama: {config.OLLAMA_BASE_URL}")
     print(f"📁 Runner Service: {RUNNER_SERVICE_URL}")
