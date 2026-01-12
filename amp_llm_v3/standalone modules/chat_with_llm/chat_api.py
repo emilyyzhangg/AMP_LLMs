@@ -15,6 +15,7 @@ UPDATED: Now uses async job processing for CSV annotations to avoid
 Cloudflare 524 timeout errors. CSV uploads return immediately with a
 job_id, and the frontend polls for status.
 """
+import os
 import logging
 import uuid
 import httpx
