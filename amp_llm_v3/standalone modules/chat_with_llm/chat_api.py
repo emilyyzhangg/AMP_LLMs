@@ -411,7 +411,7 @@ async def process_csv_job(
                                 is_garbage = (
                                     "# Instruction" in annotation_text or
                                     "# User:" in annotation_text or
-                                    "### Solution" in annotation_text or
+                                    "### Solution" in annotation_text
                                 )
                                 
                                 # Mark as success only if: has parsed_data, no error, and not garbage
