@@ -412,8 +412,6 @@ async def process_csv_job(
                                     "# Instruction" in annotation_text or
                                     "# User:" in annotation_text or
                                     "### Solution" in annotation_text or
-                                    len(annotation_text) < 100 or  # Too short
-                                    annotation_text.count("#") > 10  # Too many markdown headers (hallucination sign)
                                 )
                                 
                                 # Mark as success only if: has parsed_data, no error, and not garbage
