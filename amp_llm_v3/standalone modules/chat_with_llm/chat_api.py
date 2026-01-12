@@ -1,5 +1,5 @@
 """
-LLM Chat Service with Annotation Support (Port 9001)
+LLM Chat Service with Annotation Support (Port 8001)
 ====================================================
 
 Chat service that operates in two modes:
@@ -7,8 +7,8 @@ Chat service that operates in two modes:
 2. Annotation mode - clinical trial annotation using modular services
 
 Architecture:
-- This service (9001) -> Runner Service (9003) -> LLM Assistant (9004)
-- Runner fetches data from NCT Service (9002) if needed
+- This service (8001) -> Runner Service (8003) -> LLM Assistant (8004)
+- Runner fetches data from NCT Service (8002) if needed
 - LLM Assistant handles JSON parsing, prompt generation, and LLM calls
 
 UPDATED: Now uses async job processing for CSV annotations to avoid
@@ -206,7 +206,7 @@ async def startup_event():
 # Configuration
 # ============================================================================
 
-RUNNER_SERVICE_URL = "http://localhost:9003"
+RUNNER_SERVICE_URL = "http://localhost:8003"
 
 
 # ============================================================================
@@ -1335,16 +1335,16 @@ if __name__ == "__main__":
     print("=" * 80)
     print(f"🤖 Ollama: {config.OLLAMA_BASE_URL}")
     print(f"📁 Runner Service: {RUNNER_SERVICE_URL}")
-    print(f"📚 Docs: http://localhost:9001/docs")
+    print(f"📚 Docs: http://localhost:8001/docs")
     print("=" * 80)
     print("\n📋 Service Dependencies:")
-    print("  - Runner Service (9003) - Data fetching & annotation orchestration")
-    print("  - LLM Assistant (9004) - JSON parsing & prompt generation")
-    print("  - NCT Service (9002) - Clinical trials data")
+    print("  - Runner Service (8003) - Data fetching & annotation orchestration")
+    print("  - LLM Assistant (8004) - JSON parsing & prompt generation")
+    print("  - NCT Service (8002) - Clinical trials data")
     print("  - Ollama (11434) - LLM inference")
     print("=" * 80)
     print("\n✨ NEW: Async CSV processing enabled!")
     print("   CSV uploads now return immediately with a job_id.")
     print("   No more Cloudflare 524 timeout errors!")
     print("=" * 80)
-    uvicorn.run(app, host="0.0.0.0", port=9001, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8001, reload=True)
