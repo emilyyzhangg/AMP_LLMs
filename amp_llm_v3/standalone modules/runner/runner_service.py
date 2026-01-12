@@ -1,5 +1,5 @@
 """
-Runner Service (Port 8003) - Enhanced with Annotation Support
+Runner Service (Port 9003) - Enhanced with Annotation Support
 ==============================================================
 
 File manager and data fetcher for NCT trial data with integrated annotation.
@@ -15,9 +15,10 @@ Endpoints:
 - GET /health - Health check with service dependencies
 
 Service Dependencies:
-- NCT Service (8002) - Fetches trial data from ClinicalTrials.gov
-- LLM Assistant API (8004) - Handles annotation with JSON parsing
+- NCT Service (9002) - Fetches trial data from ClinicalTrials.gov
+- LLM Assistant API (9003) - Handles annotation with JSON parsing
 """
+import os
 import logging
 import httpx
 import json
@@ -68,8 +69,8 @@ app.add_middleware(
 # Configuration
 # ============================================================================
 
-NCT_SERVICE_URL = "http://localhost:8002"
-LLM_ASSISTANT_URL = "http://localhost:8004"
+NCT_SERVICE_URL = os.getenv("NCT_SERVICE_URL", "http://localhost:9002")
+LLM_ASSISTANT_URL = os.getenv("CHAT_SERVICE_URL", "http://localhost:9003")
 RESULTS_DIR = Path(__file__).parent / "results"
 RESULTS_DIR.mkdir(exist_ok=True)
 CSV_OUTPUT_DIR = Path(__file__).parent / "csv_outputs"
@@ -220,7 +221,7 @@ def find_nct_file(nct_id: str) -> tuple[Optional[Path], Optional[dict]]:
 
 async def fetch_and_save_nct_data(nct_id: str) -> tuple[Optional[dict], Optional[str]]:
     """
-    Fetch NCT data from service (8002) and save to JSON file.
+    Fetch NCT data from service (9002) and save to JSON file.
     Returns (data, error_message) tuple.
     """
     nct_id = nct_id.strip().upper()
@@ -1059,12 +1060,12 @@ async def list_csv_files():
 if __name__ == "__main__":
     import uvicorn
     print("=" * 80)
-    print("🚀 Starting Runner Service (Enhanced) on port 8003...")
+    print("🚀 Starting Runner Service (Enhanced) on port 9003...")
     print("=" * 80)
     print(f"📡 NCT Service: {NCT_SERVICE_URL}")
     print(f"🤖 LLM Assistant: {LLM_ASSISTANT_URL}")
     print(f"📁 Results Directory: {RESULTS_DIR}")
-    print(f"📚 API Docs: http://localhost:8003/docs")
-    print(f"🔍 Health Check: http://localhost:8003/health")
+    print(f"📚 API Docs: http://localhost:9003/docs")
+    print(f"🔍 Health Check: http://localhost:9003/health")
     print("=" * 80)
-    uvicorn.run(app, host="0.0.0.0", port=8003, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=9003, reload=True)

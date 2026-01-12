@@ -2,6 +2,7 @@
 Research Assistant API Router
 Handles NCT annotation workflow with automatic data fetching
 """
+import os
 import logging
 import json
 import sys
@@ -12,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import aiohttp
 from assistant_config import config
+
 
 # Setup logging
 logging.basicConfig(
@@ -168,11 +170,11 @@ async def fetch_nct_data(nct_id: str) -> Dict[str, Any]:
     """
     logger.info(f"🌐 Auto-fetching data for {nct_id}")
     
-    # NCT Lookup service should be on port 8000 (main webapp backend)
+    # NCT Lookup service should be on port 9000 (main webapp backend)
     # We'll search for it on common ports
     nct_service_urls = [
-        "http://localhost:8000",  # Main webapp
-        "http://localhost:8002",  # Dedicated NCT service if exists
+        os.getenv("MAIN_SERVER_URL", f"http://localhost:{config.main_service_port}"),  # Main webapp backend
+        os.getenv("NCT_SERVICE_URL", f"http://localhost:{config.nct_service_port}"),
     ]
     
     nct_service_url = None
@@ -322,7 +324,7 @@ async def send_to_llm(model: str, prompt: str, temperature: float) -> str:
     """
     Send prompt to LLM via chat service.
     """
-    chat_service_url = "http://localhost:8001"
+    chat_service_url = os.getenv("CHAT_SERVICE_URL", f"http://localhost:{config.chat_service_port}")
     
     async with aiohttp.ClientSession() as session:
         # Initialize conversation

@@ -15,6 +15,7 @@ UPDATED: Now uses async job processing for CSV annotations to avoid
 Cloudflare 524 timeout errors. CSV uploads return immediately with a
 job_id, and the frontend polls for status.
 """
+import os
 import logging
 import uuid
 import httpx
@@ -206,7 +207,7 @@ async def startup_event():
 # Configuration
 # ============================================================================
 
-RUNNER_SERVICE_URL = "http://localhost:9003"
+RUNNER_SERVICE_URL = os.getenv("RUNNER_SERVICE_URL", f"http://localhost:{config.runner_service_port}")
 
 
 # ============================================================================

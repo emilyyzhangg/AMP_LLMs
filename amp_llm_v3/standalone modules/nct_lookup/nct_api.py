@@ -17,7 +17,7 @@ Installation:
     pip install fastapi uvicorn aiohttp requests python-dotenv beautifulsoup4
 
 Usage:
-    uvicorn nct_api:app --reload --port 8000
+    uvicorn nct_api:app --reload --port 9000
 
 API Endpoints:
     GET /api/registry - List all available APIs
@@ -68,8 +68,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:8000",
-        "http://127.0.0.1:8000",
+        "http://localhost:9000",
+        "http://127.0.0.1:9000",
         "http://localhost:3000",  # if using separate frontend
         "*"  # For development only - restrict in production
     ],

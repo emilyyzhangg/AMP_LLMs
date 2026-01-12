@@ -23,7 +23,7 @@ fi
 
 # Start API
 echo ""
-echo "Starting NCT Lookup API on port 8000..."
-echo "API Documentation: http://localhost:8000/docs"
+echo "Starting NCT Lookup API on port 9000..."
+echo "API Documentation: http://localhost:9000/docs"
 echo ""
-uvicorn nct_api:app --reload --port 8000
+uvicorn nct_api:app --reload --port 9000

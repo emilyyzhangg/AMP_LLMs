@@ -119,8 +119,8 @@ Fetching data for NCT04043065...
 ℹ️ No direct matches for NCT04043065 in EudraCT
 ❌ Meilisearch: Cannot connect to host localhost:7700 ssl:default [The remote computer refused the network connection]
 2025-10-10 05:57:00 - amp_llm.data.external_apis.api_clients - ERROR - Meilisearch error: Cannot connect to host localhost:7700 ssl:default [The remote computer refused the network connection]
-❌ Swirl: Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]
-2025-10-10 05:57:00 - amp_llm.data.external_apis.api_clients - ERROR - Swirl error: Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]    
+❌ Swirl: Cannot connect to host localhost:9000 ssl:default [The remote computer refused the network connection]
+2025-10-10 05:57:00 - amp_llm.data.external_apis.api_clients - ERROR - Swirl error: Cannot connect to host localhost:9000 ssl:default [The remote computer refused the network connection]    
 
 ============================================================
 ✅ Extended search complete

@@ -20,7 +20,7 @@ credentials-file: /Users/emilyzhang/.cloudflared/YOUR-TUNNEL-ID-HERE.json
 
 ingress:
   - hostname: llm.amphoraxe.ca
-    service: http://localhost:8000
+    service: http://localhost:9000
   - service: http_status:404
 # bash
 # 5. Route DNS
@@ -60,7 +60,7 @@ Save
 # Step 9: Run the Server
 Manual start:
 cd /path/to/amp_llm_v3
-python -m uvicorn webapp.server:app --host 0.0.0.0 --port 8000
+python -m uvicorn webapp.server:app --host 0.0.0.0 --port 9000
 
 Or create launch daemon ('LaunchAgent' because Mac likes to be different and special)
 vim ~/Library/LaunchAgents/com.amplm.webapp.plist:
@@ -79,7 +79,7 @@ vim ~/Library/LaunchAgents/com.amplm.webapp.plist:
         <string>--host</string>
         <string>0.0.0.0</string>
         <string>--port</string>
-        <string>8000</string>
+        <string>9000</string>
     </array>
     <key>WorkingDirectory</key>
     <string>/Users/emilyzhang/amp_llm_v3</string>

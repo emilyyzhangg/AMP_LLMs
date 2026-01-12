@@ -40,7 +40,7 @@ cat > ~/Library/LaunchAgents/com.amplm.webapp.plist <<EOF
         <string>--host</string>
         <string>0.0.0.0</string>
         <string>--port</string>
-        <string>8000</string>
+        <string>9000</string>
     </array>
     
     <key>WorkingDirectory</key>
@@ -192,7 +192,7 @@ echo "════════════════════════�
 echo ""
 echo "Testing local web server..."
 sleep 5  # Give services time to start
-curl -s http://localhost:8000/health | python3 -m json.tool || echo "⚠️  Web server not responding yet (may need a moment to start)"
+curl -s http://localhost:9000/health | python3 -m json.tool || echo "⚠️  Web server not responding yet (may need a moment to start)"
 
 echo ""
 echo "Testing external access..."
@@ -246,7 +246,7 @@ Load services (enable):
   launchctl load ~/Library/LaunchAgents/com.cloudflare.cloudflared.plist
 
 Test local endpoint:
-  curl http://localhost:8000/health
+  curl http://localhost:9000/health
 
 Test external endpoint:
   curl https://llm.amphoraxe.ca/health
@@ -262,8 +262,8 @@ If services don't start, check logs:
   tail -n 50 $PROJECT_DIR/logs/webapp.error.log
   tail -n 50 $PROJECT_DIR/logs/cloudflared.error.log
 
-If port 8000 is in use:
-  lsof -i :8000
+If port 9000 is in use:
+  lsof -i :9000
   kill <PID>
 
 Test Python environment:
@@ -273,7 +273,7 @@ Test Python environment:
 Manually test web server:
   cd $PROJECT_DIR
   source llm_env/bin/activate
-  python -m uvicorn webapp.server:app --host 0.0.0.0 --port 8000
+  python -m uvicorn webapp.server:app --host 0.0.0.0 --port 9000
 
 Manually test tunnel:
   cloudflared tunnel run amp-llm-tunnel
