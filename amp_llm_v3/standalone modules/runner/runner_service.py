@@ -70,7 +70,7 @@ app.add_middleware(
 # ============================================================================
 
 NCT_SERVICE_URL = os.getenv("NCT_SERVICE_URL", "http://localhost:9002")
-LLM_ASSISTANT_URL = os.getenv("CHAT_SERVICE_URL", "http://localhost:9003")
+LLM_ASSISTANT_URL = os.getenv("LLM_ASSISTANT_URL", "http://localhost:9004")
 RESULTS_DIR = Path(__file__).parent / "results"
 RESULTS_DIR.mkdir(exist_ok=True)
 CSV_OUTPUT_DIR = Path(__file__).parent / "csv_outputs"
