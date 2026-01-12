@@ -107,7 +107,7 @@ credentials-file: $CREDS_FILE
 
 ingress:
   - hostname: llm.amphoraxe.ca
-    service: http://localhost:8000
+    service: http://localhost:9000
   - service: http_status:404
 EOF
 
@@ -214,10 +214,10 @@ sleep 5
 
 echo ""
 echo "1. Local server:"
-if curl -s http://localhost:8000/health > /dev/null; then
-    echo "✅ localhost:8000 is responding"
+if curl -s http://localhost:9000/health > /dev/null; then
+    echo "✅ localhost:9000 is responding"
 else
-    echo "❌ localhost:8000 is NOT responding"
+    echo "❌ localhost:9000 is NOT responding"
     echo "   Start webapp service first:"
     echo "   launchctl start com.amplm.webapp"
 fi

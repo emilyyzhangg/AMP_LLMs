@@ -1,5 +1,5 @@
 """
-LLM Assistant API Service (Port 8004)
+LLM Assistant API Service (Port 9004)
 =====================================
 
 RESTful API for clinical trial annotation using:
@@ -58,7 +58,7 @@ class AssistantConfig:
     
     API_VERSION = "1.0.0"
     SERVICE_NAME = "LLM Assistant API"
-    SERVICE_PORT = 8004
+    SERVICE_PORT = 9004
     CORS_ORIGINS = ["*"]
     
     # Timeouts

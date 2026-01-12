@@ -24,15 +24,15 @@ pip install fastapi uvicorn aiohttp
 
 ```bash
 cd "standalone modules/chat_with_llm"
-uvicorn chat_api:app --host 0.0.0.0 --port 8001 --reload
+uvicorn chat_api:app --host 0.0.0.0 --port 9001 --reload
 ```
 
 ### API Documentation
 
 Once running, visit:
 
-- Swagger UI: http://localhost:8001/docs
-- ReDoc: http://localhost:8001/redoc
+- Swagger UI: http://localhost:9001/docs
+- ReDoc: http://localhost:9001/redoc
 
 ## API Endpoints
 
@@ -83,17 +83,17 @@ chat_with_llm/
 import httpx
 
 # List models
-response = httpx.get("http://localhost:8001/models")
+response = httpx.get("http://localhost:9001/models")
 models = response.json()
 
 # Initialize chat
-response = httpx.post("http://localhost:8001/chat/init", json={
+response = httpx.post("http://localhost:9001/chat/init", json={
     "model": "llama3.2"
 })
 conv_id = response.json()["conversation_id"]
 
 # Send message
-response = httpx.post("http://localhost:8001/chat/message", json={
+response = httpx.post("http://localhost:9001/chat/message", json={
     "conversation_id": conv_id,
     "message": "Hello!"
 })
@@ -103,7 +103,7 @@ print(response.json()["message"]["content"])
 ### WebSocket Client
 
 ```javascript
-const ws = new WebSocket("ws://localhost:8001/ws/chat");
+const ws = new WebSocket("ws://localhost:9001/ws/chat");
 
 // Initialize
 ws.send(

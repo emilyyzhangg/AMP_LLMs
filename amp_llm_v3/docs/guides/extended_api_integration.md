@@ -30,7 +30,7 @@ MEILISEARCH_URL=http://localhost:7700
 MEILISEARCH_KEY=your_meilisearch_key_here
 
 # Swirl (if using local instance)
-SWIRL_URL=http://localhost:8000
+SWIRL_URL=http://localhost:9000
 ```
 
 ## Supported APIs
@@ -130,7 +130,7 @@ git clone https://github.com/swirlai/swirl-search.git
 cd swirl-search
 
 # Follow Swirl installation instructions
-# Default runs on http://localhost:8000
+# Default runs on http://localhost:9000
 ```
 
 ## Using APIs with nct_lookup

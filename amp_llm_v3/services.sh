@@ -79,7 +79,7 @@ show_status() {
         if [ "$pid" != "-" ]; then
             echo "     PID: $pid"
         fi
-        echo "     Port 8001"
+        echo "     Port 9001"
         echo "     Endpoints: /chat/*"
     else
         echo -e "  ${RED}❌ Not running${NC}"
@@ -94,7 +94,7 @@ show_status() {
         if [ "$pid" != "-" ]; then
             echo "     PID: $pid"
         fi
-        echo "     Port: 8002"
+        echo "     Port: 9002"
     else
         echo -e "  ${RED}❌ Not running${NC}"
     fi
@@ -108,7 +108,7 @@ show_status() {
         if [ "$pid" != "-" ]; then
             echo "     PID: $pid"
         fi
-        echo "     Port: 8003"
+        echo "     Port: 9003"
         echo "     Function: File management and NCT data fetching"
     else
         echo -e "  ${RED}❌ Not running${NC}"
@@ -122,22 +122,22 @@ show_status() {
         echo -e "  ${RED}❌ Port 9000 (Webapp)${NC}"
     fi
     
-    if lsof -i :8001 | grep -q LISTEN; then
-        echo -e "  ${GREEN}✅ Port 8001 (Chat)${NC}"
+    if lsof -i :9001 | grep -q LISTEN; then
+        echo -e "  ${GREEN}✅ Port 9001 (Chat)${NC}"
     else
-        echo -e "  ${RED}❌ Port 8001 (Chat)${NC}"
+        echo -e "  ${RED}❌ Port 9001 (Chat)${NC}"
     fi
     
-    if lsof -i :8002 | grep -q LISTEN; then
-        echo -e "  ${GREEN}✅ Port 8002 (NCT Lookup)${NC}"
+    if lsof -i :9002 | grep -q LISTEN; then
+        echo -e "  ${GREEN}✅ Port 9002 (NCT Lookup)${NC}"
     else
-        echo -e "  ${RED}❌ Port 8002 (NCT Lookup)${NC}"
+        echo -e "  ${RED}❌ Port 9002 (NCT Lookup)${NC}"
     fi
     
-    if lsof -i :8003 | grep -q LISTEN; then
-        echo -e "  ${GREEN}✅ Port 8003 (Runner)${NC}"
+    if lsof -i :9003 | grep -q LISTEN; then
+        echo -e "  ${GREEN}✅ Port 9003 (Runner)${NC}"
     else
-        echo -e "  ${RED}❌ Port 8003 (Runner)${NC}"
+        echo -e "  ${RED}❌ Port 9003 (Runner)${NC}"
     fi
     
     echo ""

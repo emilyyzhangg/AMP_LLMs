@@ -207,7 +207,7 @@ async def startup_event():
 # Configuration
 # ============================================================================
 
-RUNNER_SERVICE_URL = os.getenv("RUNNER_SERVICE_URL", f"http://localhost:{config.runner_service_port}")
+RUNNER_SERVICE_URL = os.getenv("RUNNER_SERVICE_URL", f"http://localhost:9003")
 
 
 # ============================================================================
