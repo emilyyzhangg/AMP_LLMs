@@ -758,7 +758,7 @@ async def annotate_trials_via_runner(
                 health = await client.get(f"{RUNNER_SERVICE_URL}/health", timeout=5.0)
                 if health.status_code != 200:
                     return (
-                        "❌ Runner Service not available. Please ensure it's running on port 9003.",
+                        "❌ Runner Service not available. Please ensure it's running on port 8003.",
                         AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0)
                     )
             except httpx.ConnectError:
@@ -766,7 +766,7 @@ async def annotate_trials_via_runner(
                     f"❌ Cannot connect to Runner Service at {RUNNER_SERVICE_URL}.\n\n"
                     "Please start the service:\n"
                     "  cd standalone_modules/runner\n"
-                    "  uvicorn runner_service:app --port 9003 --reload",
+                    "  uvicorn runner_service:app --port 8003 --reload",
                     AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0)
                 )
             
