@@ -644,7 +644,16 @@ async def process_csv_job(
         job.progress = "Failed"
         job.updated_at = datetime.now()
 
-
+def clean_value(value):
+    """Strip markdown formatting from LLM output values."""
+    if not isinstance(value, str):
+        return value
+    # Remove leading ** or * 
+    value = value.lstrip('*').strip()
+    # Remove trailing **
+    value = value.rstrip('*').strip()
+    return value
+    
 async def generate_output_csv(output_path: Path, results: List[dict], errors: List[dict], model: str = "unknown"):
     """Generate the annotated CSV output file with model info header."""
     
@@ -708,6 +717,7 @@ async def generate_output_csv(output_path: Path, results: List[dict], errors: Li
             parsed_data = result.get("parsed_data", {})
             if parsed_data:
                 for key, value in parsed_data.items():
+                    value = clean_value(value)
                     # NEVER overwrite nct_id from LLM - it may hallucinate
                     if key == "NCT ID" or key == "nct_id":
                         continue  # Skip - use the original nct_id from result
