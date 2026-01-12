@@ -9,6 +9,7 @@ RESTful API for clinical trial annotation using:
 
 This service receives trial JSON data and returns structured annotations.
 """
+import os
 import logging
 import json
 import httpx
@@ -91,7 +92,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # ============================================================================
 # Pydantic Models

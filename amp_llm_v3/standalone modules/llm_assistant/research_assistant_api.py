@@ -324,7 +324,7 @@ async def send_to_llm(model: str, prompt: str, temperature: float) -> str:
     """
     Send prompt to LLM via chat service.
     """
-    chat_service_url = os.getenv("CHAT_SERVICE_URL", f"http://localhost:{config.chat_service_port}")
+    chat_service_url = os.getenv("CHAT_SERVICE_URL", "http://localhost:9001")
     
     async with aiohttp.ClientSession() as session:
         # Initialize conversation
