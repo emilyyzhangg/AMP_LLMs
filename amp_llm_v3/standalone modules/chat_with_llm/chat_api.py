@@ -729,7 +729,7 @@ async def generate_output_csv(output_path: Path, results: List[dict], errors: Li
                     elif key == "Study ID" or key == "Study IDs":
                         row["Study IDs"] = value
                     elif key == "Sequence Evidence":
-                        row["Sequence"] = value  # Map to existing column
+                        row["Sequence"] = value
                     # Store Evidence fields
                     elif "Evidence" in key:
                         row[key] = value
