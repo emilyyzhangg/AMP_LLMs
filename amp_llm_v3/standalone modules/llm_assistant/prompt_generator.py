@@ -271,6 +271,32 @@ PARAMETER stop "</s>"
 Analyze the following clinical trial data carefully. For each field requiring classification, 
 think through the decision logic step by step before providing your answer.
 
+## OUTPUT FORMAT
+NCT Number: [NCT ID]
+Study Title: [Full title]
+Study Status: [Status from ClinicalTrials.gov]
+Brief Summary: [Summary text]
+Conditions: [List of conditions]
+Interventions/Drug: [Drug names]
+Phases: [Trial phase]
+Enrollment: [Number]
+Start Date: [Date]
+Completion Date: [Date]
+
+Classification: [AMP or Other]
+  Evidence: [Quote or reasoning]
+Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
+  Evidence: [Quote or reasoning]
+Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
+  Evidence: [Quote or reasoning]
+Reason for Failure: [N/A or reason]
+  Evidence: [Quote or reasoning]
+Peptide: [True or False]
+  Evidence: [Quote or reasoning]
+Sequence: [Amino acid sequence or N/A]
+DRAMP Name: [Name or N/A]
+Study IDs: [PMIDs separated by |]
+Comments: [Any additional notes]
 ---
 # DATA SOURCES
 """)
