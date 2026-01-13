@@ -18,6 +18,8 @@ from typing import Dict, Any, List, Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+import re
+from typing import Dict, Set
 
 # Setup logging
 logging.basicConfig(
@@ -156,10 +158,10 @@ class ParsedTrialInfo(BaseModel):
 # Core Annotation Functions
 # ============================================================================
 
+
 class AnnotationResponseParser:
     """Parse LLM annotation responses into structured data."""
     
-    # Define the expected output columns
     CSV_COLUMNS = [
         'NCT ID', 'Study Title', 'Study Status', 'Brief Summary', 'Conditions',
         'Drug', 'Phase', 'Enrollment', 'Start Date', 'Completion Date',
@@ -169,30 +171,16 @@ class AnnotationResponseParser:
         'Reason for Failure', 'Reason for Failure Evidence',
         'Peptide', 'Peptide Evidence',
         'Sequence', 'Sequence Evidence',
-        'Study ID'
+        'Study ID', 'Comments'
     ]
     
-    # Field mappings from LLM output to CSV columns
-    FIELD_MAPPINGS = {
-        'NCT Number': 'NCT ID',
-        'Study Title': 'Study Title',
-        'Study Status': 'Study Status',
-        'Brief Summary': 'Brief Summary',
-        'Conditions': 'Conditions',
-        'Interventions/Drug': 'Drug',
-        'Phases': 'Phase',
-        'Enrollment': 'Enrollment',
-        'Start Date': 'Start Date',
-        'Completion Date': 'Completion Date',
-        'Classification': 'Classification',
-        'Delivery Mode': 'Delivery Mode',
-        'Outcome': 'Outcome',
-        'Reason for Failure': 'Reason for Failure',
-        'Peptide': 'Peptide',
-        'Sequence': 'Sequence',
-        'DRAMP Name': 'DRAMP Name',
-        'Study IDs': 'Study ID',
-        'Comments': 'Comments'
+    # Valid values for validation
+    VALID_VALUES = {
+        'Classification': {'AMP', 'Other'},
+        'Delivery Mode': {'Injection/Infusion', 'Topical', 'Oral', 'Other'},
+        'Outcome': {'Positive', 'Withdrawn', 'Terminated', 'Failed - completed trial', 'Active', 'Unknown'},
+        'Reason for Failure': {'Business reasons', 'Ineffective for purpose', 'Toxic/unsafe', 'Due to covid', 'Recruitment issues', 'N/A'},
+        'Peptide': {'True', 'False'}
     }
     
     @classmethod
@@ -200,12 +188,7 @@ class AnnotationResponseParser:
         """
         Parse LLM response text into structured dictionary.
         
-        Args:
-            llm_response: Raw text response from LLM
-            nct_id: NCT ID for fallback
-            
-        Returns:
-            Dictionary with CSV column keys
+        Handles both newline-separated and inline ** formatted output.
         """
         result = {col: '' for col in cls.CSV_COLUMNS}
         result['NCT ID'] = nct_id
@@ -213,148 +196,138 @@ class AnnotationResponseParser:
         if not llm_response:
             return result
         
-        lines = llm_response.strip().split('\n')
-        current_field = None
-        current_value = ''
-        evidence_buffer = {}
-        
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-            
-            # Check if this is an evidence line
-            if line.startswith('Evidence:'):
-                evidence = line.replace('Evidence:', '').strip()
-                if current_field:
-                    evidence_buffer[current_field] = evidence
-                continue
-            
-            # Check if this is a field line (contains a colon)
-            if ':' in line:
-                # Save previous field if exists
-                if current_field and current_value:
-                    cls._set_field(result, current_field, current_value.strip(), evidence_buffer)
-                
-                # Parse new field
-                parts = line.split(':', 1)
-                field_name = parts[0].strip()
-                field_value = parts[1].strip() if len(parts) > 1 else ''
-                
-                # Map to our column names
-                if field_name in cls.FIELD_MAPPINGS:
-                    current_field = field_name
-                    current_value = field_value
-                elif field_name.lower() == 'evidence':
-                    # This is evidence for the previous field
-                    if current_field:
-                        evidence_buffer[current_field] = field_value
-                    current_field = None
-                    current_value = ''
-                else:
-                    # Unknown field, might be continuation
-                    if current_field and current_value:
-                        current_value += ' ' + line
-            else:
-                # Continuation of previous value
-                if current_field and current_value:
-                    current_value += ' ' + line
-        
-        # Don't forget the last field
-        if current_field and current_value:
-            cls._set_field(result, current_field, current_value.strip(), evidence_buffer)
-        
-        return result
-    
-    @classmethod
-    def _set_field(cls, result: Dict, field_name: str, value: str, evidence_buffer: Dict):
-        """Set a field value in the result dictionary."""
-        csv_column = cls.FIELD_MAPPINGS.get(field_name)
-        if not csv_column:
-            return
-        
-        # Clean up the value
-        value = value.strip()
-        if value.lower() in ['n/a', 'not available', 'none', 'unknown']:
-            value = 'N/A'
-        
-        result[csv_column] = value
-        
-        # Check for evidence
-        evidence_column = f"{csv_column} Evidence"
-        if evidence_column in cls.CSV_COLUMNS:
-            evidence = evidence_buffer.get(field_name, '')
-            result[evidence_column] = evidence
-    
-    @classmethod
-    def parse_response_regex(cls, llm_response: str, nct_id: str) -> Dict[str, str]:
-        """
-        Alternative parser using regex patterns for more robust extraction.
-        
-        Args:
-            llm_response: Raw text response from LLM
-            nct_id: NCT ID for fallback
-            
-        Returns:
-            Dictionary with CSV column keys
-        """
-        import re
-        
-        result = {col: '' for col in cls.CSV_COLUMNS}
-        result['NCT ID'] = nct_id
-        
-        if not llm_response:
-            return result
+        # Normalize the response - convert ** format to newlines
+        normalized = cls._normalize_response(llm_response)
         
         # Define patterns for each field
         patterns = {
-            'Study Title': r'Study Title:\s*(.+?)(?=\n(?:Study Status|Brief Summary|$))',
-            'Study Status': r'Study Status:\s*(.+?)(?=\n|$)',
-            'Brief Summary': r'Brief Summary:\s*(.+?)(?=\nConditions:|$)',
-            'Conditions': r'Conditions:\s*(.+?)(?=\n(?:Interventions|Drug)|$)',
-            'Drug': r'(?:Interventions/Drug|Drug):\s*(.+?)(?=\nPhases?:|$)',
-            'Phase': r'Phases?:\s*(.+?)(?=\n|$)',
-            'Enrollment': r'Enrollment:\s*(.+?)(?=\n|$)',
-            'Start Date': r'Start Date:\s*(.+?)(?=\n|$)',
-            'Completion Date': r'Completion Date:\s*(.+?)(?=\n|$)',
-            'Classification': r'Classification:\s*(.+?)(?=\n\s*Evidence:|$)',
-            'Delivery Mode': r'Delivery Mode:\s*(.+?)(?=\n\s*Evidence:|$)',
-            'Outcome': r'Outcome:\s*(.+?)(?=\n\s*Evidence:|$)',
-            'Reason for Failure': r'Reason for Failure:\s*(.+?)(?=\n\s*Evidence:|$)',
-            'Peptide': r'Peptide:\s*(.+?)(?=\n\s*Evidence:|$)',
-            'Sequence': r'Sequence:\s*(.+?)(?=\n|$)',
-            'Study ID': r'Study IDs?:\s*(.+?)(?=\n|$)',
+            'Classification': r'Classification:\s*([^\n]+?)(?:\n|$)',
+            'Delivery Mode': r'Delivery Mode:\s*([^\n]+?)(?:\n|$)',
+            'Outcome': r'Outcome:\s*([^\n]+?)(?:\n|$)',
+            'Reason for Failure': r'Reason for Failure:\s*([^\n]+?)(?:\n|$)',
+            'Peptide': r'Peptide:\s*([^\n]+?)(?:\n|$)',
+            'Sequence': r'Sequence:\s*([^\n]+?)(?:\n|$)',
+            'Study ID': r'Study IDs?:\s*([^\n]+?)(?:\n|$)',
+            'Comments': r'Comments:\s*([^\n]+?)(?:\n|$)',
         }
         
         # Evidence patterns
         evidence_patterns = {
-            'Classification Evidence': r'Classification:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nDelivery|$)',
-            'Delivery Mode Evidence': r'Delivery Mode:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nOutcome|$)',
-            'Outcome Evidence': r'Outcome:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nReason|$)',
-            'Reason for Failure Evidence': r'Reason for Failure:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nPeptide|$)',
-            'Peptide Evidence': r'Peptide:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nSequence|$)',
-            'Sequence Evidence': r'Sequence:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nDRAMP|$)',
+            'Classification Evidence': r'Classification:[^\n]*\n\s*Evidence:\s*([^\n]+)',
+            'Delivery Mode Evidence': r'Delivery Mode:[^\n]*\n\s*Evidence:\s*([^\n]+)',
+            'Outcome Evidence': r'Outcome:[^\n]*\n\s*Evidence:\s*([^\n]+)',
+            'Reason for Failure Evidence': r'Reason for Failure:[^\n]*\n\s*Evidence:\s*([^\n]+)',
+            'Peptide Evidence': r'Peptide:[^\n]*\n\s*Evidence:\s*([^\n]+)',
+            'Sequence Evidence': r'Sequence:[^\n]*\n\s*Evidence:\s*([^\n]+)',
         }
         
         # Extract main fields
         for field, pattern in patterns.items():
-            match = re.search(pattern, llm_response, re.DOTALL | re.IGNORECASE)
+            match = re.search(pattern, normalized, re.IGNORECASE)
             if match:
                 value = match.group(1).strip()
-                value = re.sub(r'\s+', ' ', value)  # Normalize whitespace
-                if value.lower() in ['n/a', 'not available', 'none']:
+                value = re.sub(r'\s+', ' ', value)
+                value = value.rstrip('.')
+                
+                if value.lower() in ['n/a', 'not available', 'none', 'unknown', 'na']:
                     value = 'N/A'
+                
+                # Validate against valid values
+                if field in cls.VALID_VALUES:
+                    value = cls._match_valid_value(value, cls.VALID_VALUES[field])
+                
                 result[field] = value
         
         # Extract evidence fields
         for field, pattern in evidence_patterns.items():
-            match = re.search(pattern, llm_response, re.DOTALL | re.IGNORECASE)
+            match = re.search(pattern, normalized, re.IGNORECASE | re.DOTALL)
             if match:
                 value = match.group(1).strip()
                 value = re.sub(r'\s+', ' ', value)
                 result[field] = value
         
         return result
+    
+    @classmethod
+    def _normalize_response(cls, response: str) -> str:
+        """
+        Normalize LLM response to have consistent newline formatting.
+        
+        Converts: "AMP **Evidence:** reason **Delivery Mode:** ..."
+        To:       "AMP\n  Evidence: reason\nDelivery Mode: ..."
+        """
+        # First, handle the ** format by converting to newlines
+        # Pattern: **FieldName:** -> \nFieldName:
+        normalized = re.sub(r'\s*\*\*([^*]+):\*\*\s*', r'\n\1: ', response)
+        
+        # Also handle *Field:* format (single asterisks)
+        normalized = re.sub(r'\s*\*([^*]+):\*\s*', r'\n\1: ', normalized)
+        
+        # Handle case where Evidence comes right after value on same conceptual line
+        # "Classification: AMP\nEvidence:" -> "Classification: AMP\n  Evidence:"
+        normalized = re.sub(r'\n(Evidence:)', r'\n  \1', normalized)
+        
+        # Clean up multiple newlines
+        normalized = re.sub(r'\n{3,}', '\n\n', normalized)
+        
+        # Clean up leading/trailing whitespace on lines
+        lines = [line.strip() for line in normalized.split('\n')]
+        normalized = '\n'.join(lines)
+        
+        return normalized
+    
+    @classmethod
+    def _match_valid_value(cls, value: str, valid_set: Set[str]) -> str:
+        """Try to match a value to the closest valid value."""
+        # Exact match
+        if value in valid_set:
+            return value
+        
+        # Case-insensitive match
+        value_lower = value.lower()
+        for valid in valid_set:
+            if valid.lower() == value_lower:
+                return valid
+        
+        # Partial match
+        for valid in valid_set:
+            if valid.lower() in value_lower or value_lower in valid.lower():
+                return valid
+        
+        # Special handling for common variations
+        mappings = [
+            (['injection', 'infusion', 'iv', 'subcutaneous', 'intramuscular', 'intravenous'], 'Injection/Infusion'),
+            (['topical', 'cream', 'gel', 'ointment', 'skin', 'dermal'], 'Topical'),
+            (['oral', 'tablet', 'capsule', 'pill', 'mouth'], 'Oral'),
+            (['true', 'yes', 'peptide'], 'True'),
+            (['false', 'no', 'antibody', 'small molecule'], 'False'),
+            (['active', 'recruiting', 'ongoing'], 'Active'),
+            (['positive', 'success', 'effective', 'met endpoint'], 'Positive'),
+            (['failed', 'negative', 'ineffective', 'did not meet'], 'Failed - completed trial'),
+            (['withdrawn'], 'Withdrawn'),
+            (['terminated'], 'Terminated'),
+            (['unknown', 'unclear'], 'Unknown'),
+        ]
+        
+        for keywords, mapped_value in mappings:
+            if mapped_value in valid_set:
+                for keyword in keywords:
+                    if keyword in value_lower:
+                        return mapped_value
+        
+        return value
+    
+    @classmethod
+    def validate_response(cls, parsed_data: Dict[str, str]) -> bool:
+        """Check if we got valid annotations."""
+        required_fields = ['Classification', 'Delivery Mode', 'Outcome', 'Peptide']
+        
+        for field in required_fields:
+            value = parsed_data.get(field, '').strip()
+            if not value:
+                return False
+        
+        return True
 
 
 class TrialAnnotator:
