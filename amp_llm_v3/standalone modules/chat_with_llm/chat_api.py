@@ -933,6 +933,10 @@ async def send_message(request: ChatMessageRequest):
             csv_filename = f"annotations_{job_id}.csv"
             output_path = OUTPUT_DIR / csv_filename
             OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+            # Mark successful results so CSV generation includes them
+            for result in raw_results:
+                if result.get("status") == "success" and result.get("parsed_data"):
+                    result["_success"] = True
             await generate_output_csv(output_path, raw_results, [], conv["model"])
             download_url = f"/chat/download/{job_id}"
             # Store in job manager so download works
