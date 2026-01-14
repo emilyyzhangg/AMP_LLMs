@@ -985,7 +985,7 @@ async def annotate_trial(request: AnnotationRequest):
         logger.info(f"DEBUG: annotation preview = {annotation[:200] if annotation else 'EMPTY'}")
         
         # Parse the response into structured data
-        parsed_data = AnnotationResponseParser.parse_response_regex(annotation, trial.nct_id)
+        parsed_data = AnnotationResponseParser.parse_response(annotation, trial.nct_id)
         logger.info(f"📊 Parsed {len([v for v in parsed_data.values() if v])} fields from response")
         
         processing_time = time.time() - start_time
