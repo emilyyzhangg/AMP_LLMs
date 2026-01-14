@@ -49,6 +49,14 @@ except ImportError as e:
     logger.warning(f"⚠️ Could not load PromptGenerator: {e}")
     HAS_PROMPT_GEN = False
 
+try:
+    from openrouter_client import OpenRouterClient, get_openrouter_client
+    HAS_OPENROUTER = True
+    logger.info("✅ OpenRouterClient loaded")
+except ImportError as e:
+    logger.warning(f"⚠️ Could not load OpenRouterClient: {e}")
+    HAS_OPENROUTER = False
+
 
 # ============================================================================
 # Configuration
@@ -892,14 +900,71 @@ Now extract the data using the exact format above:
         return prompt
     
     async def call_llm(
-        self, 
-        model: str, 
-        prompt: str, 
+        self,
+        model: str,
+        prompt: str,
         temperature: float = 0.1
     ) -> str:
-        """Call Ollama LLM for annotation using chat endpoint."""
-        logger.info(f"🤖 Calling LLM: {model} (temp={temperature})")
+        """Call LLM for annotation - routes to OpenRouter for cloud models, Ollama for local."""
         
+        # Check if this is a cloud model request
+        cloud_models = ["nemotron", "nemotron-free", "nemotron-nano", "nvidia/nemotron"]
+        is_cloud_model = any(cloud in model.lower() for cloud in cloud_models)
+        
+        if is_cloud_model and HAS_OPENROUTER:
+            return await self._call_openrouter(model, prompt, temperature)
+        else:
+            return await self._call_ollama(model, prompt, temperature)
+    
+    async def _call_openrouter(
+        self,
+        model: str,
+        prompt: str,
+        temperature: float
+    ) -> str:
+        """Call OpenRouter API for cloud inference."""
+        logger.info(f"☁️ Calling OpenRouter: {model} (temp={temperature})")
+        
+        client = get_openrouter_client()
+        system_prompt = self.get_system_prompt()
+        
+        # Combine system prompt with user prompt for OpenRouter
+        full_prompt = f"{system_prompt}\n\n{prompt}"
+        
+        result = await client.generate(
+            prompt=full_prompt,
+            model=model,
+            temperature=temperature,
+            max_tokens=4096
+        )
+        
+        if "error" in result:
+            logger.error(f"❌ OpenRouter error: {result['error']}")
+            raise HTTPException(status_code=503, detail=f"OpenRouter error: {result['error']}")
+        
+        annotation = result.get("content", "")
+        
+        # Log any reasoning trace from Nemotron
+        if result.get("reasoning"):
+            logger.info(f"🧠 Nemotron reasoning: {len(result['reasoning'])} chars")
+        
+        # Validate response has required fields
+        required_fields = ["Classification:", "Delivery Mode:", "Outcome:", "Peptide:"]
+        missing = [f for f in required_fields if f not in annotation]
+        if missing:
+            logger.warning(f"⚠️ Response missing fields: {missing}")
+        
+        logger.info(f"✅ Received annotation ({len(annotation)} chars)")
+        return annotation
+    
+    async def _call_ollama(
+        self,
+        model: str,
+        prompt: str,
+        temperature: float
+    ) -> str:
+        """Call local Ollama for inference."""
+        logger.info(f"🤖 Calling Ollama: {model} (temp={temperature})")
         system_prompt = self.get_system_prompt()
         
         try:
@@ -922,7 +987,6 @@ Now extract the data using the exact format above:
                         }
                     }
                 )
-                
                 if response.status_code != 200:
                     error_text = response.text
                     logger.error(f"❌ LLM error: {response.status_code} - {error_text}")
