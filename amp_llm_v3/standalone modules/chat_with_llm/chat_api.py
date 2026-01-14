@@ -244,6 +244,8 @@ class ChatResponse(BaseModel):
     model: str
     annotation_mode: bool = False
     processing_time_seconds: Optional[float] = None
+    download_url: Optional[str] = None
+    csv_filename: Optional[str] = None
 
 
 class AnnotationSummary(BaseModel):
@@ -751,7 +753,7 @@ async def annotate_trials_via_runner(
     nct_ids: List[str], 
     model: str, 
     temperature: float
-) -> tuple[str, AnnotationSummary]:
+) -> tuple[str, AnnotationSummary, List[dict]]:
     """
     Annotate trials using the Runner Service's batch-annotate endpoint.
     
@@ -772,7 +774,8 @@ async def annotate_trials_via_runner(
                 if health.status_code != 200:
                     return (
                         "❌ Runner Service not available. Please ensure it's running on port 9003.",
-                        AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0)
+                        AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0),
+                        []
                     )
             except httpx.ConnectError:
                 return (
@@ -780,7 +783,8 @@ async def annotate_trials_via_runner(
                     "Please start the service:\n"
                     "  cd standalone_modules/runner\n"
                     "  uvicorn runner_service:app --port 9003 --reload",
-                    AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0)
+                    AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0),
+                    []
                 )
             
             # Send batch annotation request
@@ -801,7 +805,8 @@ async def annotate_trials_via_runner(
                 logger.error(f"❌ Runner Service error: {error_text}")
                 return (
                     f"❌ Annotation failed: {error_text[:500]}",
-                    AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0)
+                    AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0),
+                    []
                 )
             
             data = response.json()
@@ -846,19 +851,21 @@ async def annotate_trials_via_runner(
                 processing_time_seconds=total_time
             )
             
-            return formatted_output, summary
+            return formatted_output, summary, results
             
     except httpx.TimeoutException:
         logger.error("❌ Annotation request timed out")
         return (
             "❌ Annotation timed out. Try fewer trials or a faster model.",
-            AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0)
+            AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0),
+            []
         )
     except Exception as e:
         logger.error(f"❌ Annotation error: {e}", exc_info=True)
         return (
             f"❌ Annotation error: {str(e)}",
-            AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0)
+            AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0),
+            []
         )
 
 
@@ -900,7 +907,50 @@ async def send_message(request: ChatMessageRequest):
     start_time = time.time()
     
     # Annotation mode with NCT IDs
+    # Annotation mode with NCT IDs
     if conv.get("annotation_mode") and request.nct_ids:
+        logger.info(f"📝 Annotation request for {len(request.nct_ids)} trials")
+
+        # Add user message
+        user_message = f"Annotate trials: {', '.join(request.nct_ids)}"
+        conv["messages"].append({
+            "role": "user",
+            "content": user_message
+        })
+
+        # Call annotation via runner service
+        annotation_result, summary, raw_results = await annotate_trials_via_runner(
+            request.nct_ids,
+            conv["model"],
+            request.temperature
+        )
+        
+        # Generate CSV for download if we have results
+        download_url = None
+        csv_filename = None
+        if raw_results and summary.successful > 0:
+            job_id = str(uuid.uuid4())
+            csv_filename = f"annotations_{job_id}.csv"
+            output_path = OUTPUT_DIR / csv_filename
+            OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+            await generate_output_csv(output_path, raw_results, [], conv["model"])
+            download_url = f"/chat/download/{job_id}"
+            # Store in job manager so download works
+            job = AnnotationJob(
+                job_id=job_id,
+                status=JobStatus.COMPLETED,
+                total_trials=len(request.nct_ids),
+                processed_trials=len(request.nct_ids),
+                csv_filename=csv_filename,
+                model=conv["model"]
+            )
+            job.result = {
+                "csv_filename": csv_filename,
+                "_output_path": str(output_path)
+            }
+            job_manager.jobs[job_id] = job
+            logger.info(f"📄 Generated CSV for single annotation: {csv_filename}")
+
         logger.info(f"📝 Annotation request for {len(request.nct_ids)} trials")
         
         # Add user message
@@ -946,7 +996,9 @@ Total Time: {summary.processing_time_seconds:.1f}s
             message=ChatMessage(role="assistant", content=response_content),
             model=conv["model"],
             annotation_mode=True,
-            processing_time_seconds=round(processing_time, 2)
+            processing_time_seconds=round(processing_time, 2),
+            download_url=download_url,
+            csv_filename=csv_filename
         )
     
     # Normal chat mode
