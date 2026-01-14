@@ -8,6 +8,10 @@ RESTful API for clinical trial annotation using:
 - Ollama for LLM inference
 
 This service receives trial JSON data and returns structured annotations.
+
+UPDATED: Now extracts ClinicalTrials.gov metadata fields directly from trial data
+to populate: Study Title, Study Status, Brief Summary, Conditions, Drug, Phase,
+Enrollment, Start Date, Completion Date
 """
 import os
 import logging
@@ -59,7 +63,7 @@ class AssistantConfig:
     def OLLAMA_BASE_URL(self):
         return f"http://{self.OLLAMA_HOST}:{self.OLLAMA_PORT}"
     
-    API_VERSION = "1.0.1"
+    API_VERSION = "1.0.2"  # Updated version
     SERVICE_NAME = "LLM Assistant API"
     SERVICE_PORT = 9004
     CORS_ORIGINS = ["*"]
@@ -186,15 +190,149 @@ class AnnotationResponseParser:
     }
     
     @classmethod
-    def parse_response(cls, llm_response: str, nct_id: str) -> Dict[str, str]:
+    def _safe_get(cls, dictionary: Dict, *keys, default=None) -> Any:
+        """Safely navigate nested dictionary keys."""
+        current = dictionary
+        for key in keys:
+            if isinstance(current, dict) and key in current:
+                current = current[key]
+            else:
+                return default
+        return current if current is not None else default
+    
+    @classmethod
+    def _get_protocol_section(cls, trial_data: Dict) -> Dict:
+        """
+        Extract the protocol section from trial data.
+        Handles multiple possible data structures.
+        """
+        # Try multiple paths for the protocol section
+        paths = [
+            ('results', 'sources', 'clinical_trials', 'data', 'protocolSection'),
+            ('sources', 'clinical_trials', 'data', 'protocolSection'),
+            ('results', 'sources', 'clinicaltrials', 'data', 'protocolSection'),
+            ('sources', 'clinicaltrials', 'data', 'protocolSection'),
+            ('protocolSection',),
+        ]
+        
+        for path in paths:
+            protocol = cls._safe_get(trial_data, *path, default={})
+            if protocol:
+                return protocol
+        
+        return {}
+    
+    @classmethod
+    def extract_trial_metadata(cls, trial_data: Dict, nct_id: str) -> Dict[str, str]:
+        """
+        Extract ClinicalTrials.gov metadata fields directly from trial data.
+        
+        This extracts: Study Title, Study Status, Brief Summary, Conditions,
+        Drug (Interventions), Phase, Enrollment, Start Date, Completion Date
+        
+        Args:
+            trial_data: The raw trial data dictionary
+            nct_id: The NCT ID
+            
+        Returns:
+            Dictionary with metadata fields populated
+        """
+        metadata = {}
+        
+        # Get protocol section
+        protocol = cls._get_protocol_section(trial_data)
+        
+        # Also check for hasResults at different levels
+        has_results = cls._safe_get(trial_data, 'results', 'sources', 'clinical_trials', 'data', 'hasResults', default=False)
+        if not has_results:
+            has_results = cls._safe_get(trial_data, 'sources', 'clinical_trials', 'data', 'hasResults', default=False)
+        
+        # Identification Module
+        id_module = cls._safe_get(protocol, 'identificationModule', default={})
+        metadata['NCT ID'] = nct_id
+        
+        # Study Title - prefer official title, fall back to brief title
+        official_title = id_module.get('officialTitle', '')
+        brief_title = id_module.get('briefTitle', '')
+        metadata['Study Title'] = official_title or brief_title or ''
+        
+        # Status Module
+        status_module = cls._safe_get(protocol, 'statusModule', default={})
+        metadata['Study Status'] = status_module.get('overallStatus', '')
+        
+        # Dates
+        start_date_struct = status_module.get('startDateStruct', {})
+        completion_date_struct = status_module.get('completionDateStruct', {})
+        metadata['Start Date'] = start_date_struct.get('date', '')
+        metadata['Completion Date'] = completion_date_struct.get('date', '')
+        
+        # Description Module
+        desc_module = cls._safe_get(protocol, 'descriptionModule', default={})
+        brief_summary = desc_module.get('briefSummary', '')
+        # Truncate if too long for CSV
+        if len(brief_summary) > 500:
+            brief_summary = brief_summary[:497] + '...'
+        metadata['Brief Summary'] = brief_summary
+        
+        # Conditions Module
+        conditions_module = cls._safe_get(protocol, 'conditionsModule', default={})
+        conditions = conditions_module.get('conditions', [])
+        metadata['Conditions'] = ', '.join(conditions) if conditions else ''
+        
+        # Design Module
+        design_module = cls._safe_get(protocol, 'designModule', default={})
+        phases = design_module.get('phases', [])
+        metadata['Phase'] = ', '.join(phases) if phases else ''
+        
+        # Enrollment
+        enrollment_info = design_module.get('enrollmentInfo', {})
+        enrollment_count = enrollment_info.get('count', '')
+        metadata['Enrollment'] = str(enrollment_count) if enrollment_count else ''
+        
+        # Arms/Interventions Module - Drug/Intervention
+        arms_module = cls._safe_get(protocol, 'armsInterventionsModule', default={})
+        interventions = arms_module.get('interventions', [])
+        
+        # Format interventions as "Type: Name" for each
+        intervention_strs = []
+        for intv in interventions:
+            intv_type = intv.get('type', '')
+            intv_name = intv.get('name', '')
+            if intv_name:
+                if intv_type:
+                    intervention_strs.append(f"{intv_type}: {intv_name}")
+                else:
+                    intervention_strs.append(intv_name)
+        
+        metadata['Drug'] = ', '.join(intervention_strs) if intervention_strs else ''
+        
+        return metadata
+    
+    @classmethod
+    def parse_response(cls, llm_response: str, nct_id: str, trial_data: Optional[Dict] = None) -> Dict[str, str]:
         """
         Parse LLM response text into structured dictionary.
         
-        Handles both newline-separated and inline ** formatted output.
+        Now also extracts metadata fields directly from trial_data if provided.
+        
+        Args:
+            llm_response: The raw LLM response text
+            nct_id: The NCT ID
+            trial_data: Optional trial data dict to extract metadata from
+            
+        Returns:
+            Dictionary with all CSV columns populated
         """
         result = {col: '' for col in cls.CSV_COLUMNS}
         result['NCT ID'] = nct_id
         
+        # FIRST: Extract metadata directly from trial_data (more reliable than LLM)
+        if trial_data:
+            metadata = cls.extract_trial_metadata(trial_data, nct_id)
+            result.update(metadata)
+            logger.info(f"📋 Extracted metadata fields: {[k for k, v in metadata.items() if v]}")
+        
+        # THEN: Parse LLM response for annotation fields
         if not llm_response:
             return result
         
@@ -844,7 +982,8 @@ async def root():
         "status": "running",
         "features": {
             "json_parser": "available" if HAS_JSON_PARSER else "unavailable",
-            "prompt_generator": "available" if HAS_PROMPT_GEN else "unavailable"
+            "prompt_generator": "available" if HAS_PROMPT_GEN else "unavailable",
+            "metadata_extraction": "enabled"  # NEW: indicate metadata extraction is enabled
         },
         "endpoints": {
             "annotate": "POST /annotate",
@@ -956,7 +1095,7 @@ async def annotate_trial(request: AnnotationRequest):
     1. Parses trial data using json_parser
     2. Generates prompt using prompt_generator
     3. Calls LLM for annotation
-    4. Parses response into structured data
+    4. Parses response into structured data (now includes metadata from trial data!)
     5. Returns structured result
     """
     import time
@@ -985,8 +1124,16 @@ async def annotate_trial(request: AnnotationRequest):
         logger.info(f"DEBUG: annotation preview = {annotation[:200] if annotation else 'EMPTY'}")
         
         # Parse the response into structured data
-        parsed_data = AnnotationResponseParser.parse_response(annotation, trial.nct_id)
-        logger.info(f"📊 Parsed {len([v for v in parsed_data.values() if v])} fields from response")
+        # NOW PASSING trial.data to extract metadata fields directly!
+        parsed_data = AnnotationResponseParser.parse_response(
+            annotation, 
+            trial.nct_id,
+            trial_data=trial.data  # NEW: Pass trial data for metadata extraction
+        )
+        
+        # Log what fields were populated
+        populated_fields = [k for k, v in parsed_data.items() if v]
+        logger.info(f"📊 Parsed {len(populated_fields)} fields from response: {populated_fields}")
         
         processing_time = time.time() - start_time
         
@@ -1104,6 +1251,7 @@ if __name__ == "__main__":
     print(f"🤖 Ollama: {config.OLLAMA_BASE_URL}")
     print(f"📋 JSON Parser: {'Available' if HAS_JSON_PARSER else 'Not Available'}")
     print(f"📝 Prompt Generator: {'Available' if HAS_PROMPT_GEN else 'Not Available'}")
+    print(f"📊 Metadata Extraction: Enabled")
     print(f"📚 API Docs: http://localhost:{config.SERVICE_PORT}/docs")
     print(f"🔍 Health Check: http://localhost:{config.SERVICE_PORT}/health")
     print("=" * 80)
