@@ -755,62 +755,60 @@ Now extract the data using the exact format above:
         self, 
         model: str, 
         prompt: str, 
-        temperature: float = 0.15
+        temperature: float = 0.1
     ) -> str:
-        """
-        Call Ollama LLM for annotation.
-        
-        Args:
-            model: Model name
-            prompt: Annotation prompt
-            temperature: Sampling temperature
-            
-        Returns:
-            LLM response text
-        """
+        """Call Ollama LLM for annotation using chat endpoint."""
         logger.info(f"🤖 Calling LLM: {model} (temp={temperature})")
+        
+        system_prompt = self.get_system_prompt()
         
         try:
             async with httpx.AsyncClient(timeout=config.LLM_TIMEOUT) as client:
                 response = await client.post(
-                    f"{config.OLLAMA_BASE_URL}/api/generate",
+                    f"{config.OLLAMA_BASE_URL}/api/chat",
                     json={
                         "model": model,
-                        "prompt": prompt,
-                        "temperature": temperature,
-                        "top_p": config.DEFAULT_TOP_P,
-                        "top_k": config.DEFAULT_TOP_K,
-                        "stream": False
+                        "messages": [
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": prompt},
+                            {"role": "assistant", "content": "Classification:"}
+                        ],
+                        "stream": False,
+                        "options": {
+                            "temperature": temperature,
+                            "top_p": config.DEFAULT_TOP_P,
+                            "num_ctx": config.DEFAULT_NUM_CTX,
+                            "num_predict": config.DEFAULT_NUM_PREDICT,
+                            "stop": ["TRIAL DATA:", "---", "\n\n\n"]
+                        }
                     }
                 )
                 
                 if response.status_code != 200:
                     error_text = response.text
                     logger.error(f"❌ LLM error: {response.status_code} - {error_text}")
-                    raise HTTPException(
-                        status_code=503,
-                        detail=f"LLM error: {error_text}"
-                    )
+                    raise HTTPException(status_code=503, detail=f"LLM error: {error_text}")
                 
                 data = response.json()
-                annotation = data.get("response", "")
+                annotation = data.get("message", {}).get("content", "")
+                
+                # Prepend "Classification:" since we used it as prefill
+                if annotation and not annotation.strip().startswith("Classification"):
+                    annotation = "Classification:" + annotation
+                
+                # Just log warnings, don't reject
+                required_fields = ["Classification:", "Delivery Mode:", "Outcome:", "Peptide:"]
+                missing = [f for f in required_fields if f not in annotation]
+                if missing:
+                    logger.warning(f"⚠️ Response missing fields: {missing}")
                 
                 logger.info(f"✅ Received annotation ({len(annotation)} chars)")
                 return annotation
                 
         except httpx.ConnectError:
-            logger.error(f"❌ Cannot connect to Ollama at {config.OLLAMA_BASE_URL}")
-            raise HTTPException(
-                status_code=503,
-                detail=f"Cannot connect to Ollama at {config.OLLAMA_BASE_URL}"
-            )
+            raise HTTPException(status_code=503, detail=f"Cannot connect to Ollama")
         except httpx.TimeoutException:
-            logger.error("❌ LLM request timed out")
-            raise HTTPException(
-                status_code=504,
-                detail="LLM request timed out"
-            )
-
+            raise HTTPException(status_code=504, detail="LLM request timed out")
 
 # Global annotator instance
 annotator = TrialAnnotator()

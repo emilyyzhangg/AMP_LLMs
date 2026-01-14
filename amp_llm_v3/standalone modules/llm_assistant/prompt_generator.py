@@ -231,6 +231,7 @@ Comments: [any additional relevant observations]
 5. Do NOT wrap output in markdown code blocks
 6. Use ONLY the valid values specified for each field
 7. Base all decisions on evidence from the provided data
+8. DO NOT use ** or bold formatting. Put each field on its own line.
 
 Now analyze the clinical trial data and produce your annotation.\"\"\"
 
