@@ -59,7 +59,7 @@ class AssistantConfig:
     def OLLAMA_BASE_URL(self):
         return f"http://{self.OLLAMA_HOST}:{self.OLLAMA_PORT}"
     
-    API_VERSION = "1.0.0"
+    API_VERSION = "1.0.1"
     SERVICE_NAME = "LLM Assistant API"
     SERVICE_PORT = 9004
     CORS_ORIGINS = ["*"]
@@ -804,6 +804,26 @@ Now extract the data using the exact format above:
             raise HTTPException(status_code=503, detail=f"Cannot connect to Ollama")
         except httpx.TimeoutException:
             raise HTTPException(status_code=504, detail="LLM request timed out")
+        
+    def get_system_prompt(self) -> str:
+        """Get the system prompt for annotation."""
+        if self.prompt_generator and hasattr(self.prompt_generator, 'get_system_prompt'):
+            return self.prompt_generator.get_system_prompt()
+        return self._get_default_system_prompt()
+
+    def _get_default_system_prompt(self) -> str:
+        """Fallback system prompt."""
+        return """You are a clinical trial annotator. Output ONLY these fields:
+
+    Classification: [AMP or Other]
+    Delivery Mode: [Injection/Infusion or Topical or Oral or Other]
+    Outcome: [Positive or Withdrawn or Terminated or Failed - completed trial or Active or Unknown]
+    Reason for Failure: [N/A or Business reasons or Ineffective for purpose or Toxic/unsafe or Due to covid or Recruitment issues]
+    Peptide: [True or False]
+    Sequence: [amino acid sequence or N/A]
+    Study IDs: [PMIDs or N/A]
+
+    Do NOT echo the input data. Start with Classification:"""
 
 # Global annotator instance
 annotator = TrialAnnotator()
