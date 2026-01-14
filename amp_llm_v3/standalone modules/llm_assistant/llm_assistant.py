@@ -770,8 +770,7 @@ Now extract the data using the exact format above:
                         "model": model,
                         "messages": [
                             {"role": "system", "content": system_prompt},
-                            {"role": "user", "content": prompt},
-                            {"role": "assistant", "content": "Classification:"}
+                            {"role": "user", "content": prompt}
                         ],
                         "stream": False,
                         "options": {
@@ -791,10 +790,6 @@ Now extract the data using the exact format above:
                 
                 data = response.json()
                 annotation = data.get("message", {}).get("content", "")
-                
-                # Prepend "Classification:" since we used it as prefill
-                if annotation and not annotation.strip().startswith("Classification"):
-                    annotation = "Classification:" + annotation
                 
                 # Just log warnings, don't reject
                 required_fields = ["Classification:", "Delivery Mode:", "Outcome:", "Peptide:"]
