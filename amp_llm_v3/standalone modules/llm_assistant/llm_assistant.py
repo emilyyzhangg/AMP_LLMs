@@ -71,6 +71,8 @@ class AssistantConfig:
     DEFAULT_TEMPERATURE = 0.15
     DEFAULT_TOP_P = 0.9
     DEFAULT_TOP_K = 40
+    DEFAULT_NUM_CTX = 4096
+    DEFAULT_NUM_PREDICT = 600
 
 config = AssistantConfig()
 
