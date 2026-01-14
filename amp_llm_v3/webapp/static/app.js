@@ -1209,7 +1209,7 @@ const app = {
                     }
                 });
                 console.log('☁️ Added cloud models:', cloudModels.map(m => m.name));
-                
+
                 console.log('✅ Loaded models:', this.availableModels);
                 
                 document.getElementById(loadingId)?.remove();
@@ -1986,6 +1986,15 @@ const app = {
                 
                 this.addMessage('chat-container', 'assistant', resultMessage);
                 
+                // Add download button if CSV was generated
+                if (data.download_url) {
+                    let downloadUrl = data.download_url;
+                    if (downloadUrl.startsWith('/')) {
+                        downloadUrl = `${this.API_BASE}${downloadUrl}`;
+                    }
+                    this.addDownloadButton(downloadUrl, data.csv_filename || 'annotations.csv');
+                }
+
                 // Store in session
                 if (!this.sessionChats[this.currentModel]) {
                     this.sessionChats[this.currentModel] = {
