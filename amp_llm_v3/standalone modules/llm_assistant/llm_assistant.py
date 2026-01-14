@@ -57,6 +57,7 @@ except ImportError as e:
     logger.warning(f"⚠️ Could not load OpenRouterClient: {e}")
     HAS_OPENROUTER = False
 
+print(f"🔑 OPENROUTER_API_KEY: {'SET (' + os.getenv('OPENROUTER_API_KEY', '')[:15] + '...)' if os.getenv('OPENROUTER_API_KEY') else 'NOT SET'}")
 
 # ============================================================================
 # Configuration
