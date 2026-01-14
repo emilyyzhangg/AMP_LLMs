@@ -958,6 +958,9 @@ async def annotate_trial(request: AnnotationRequest):
             prompt,
             request.temperature
         )
+
+        logger.info(f"DEBUG: annotation length = {len(annotation)}")
+        logger.info(f"DEBUG: annotation preview = {annotation[:200] if annotation else 'EMPTY'}")
         
         # Parse the response into structured data
         parsed_data = AnnotationResponseParser.parse_response_regex(annotation, trial.nct_id)
