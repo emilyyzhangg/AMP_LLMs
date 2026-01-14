@@ -961,7 +961,7 @@ async def send_message(request: ChatMessageRequest):
         })
         
         # Call annotation via runner service
-        annotation_result, summary = await annotate_trials_via_runner(
+        annotation_result, summary, raw_results = await annotate_trials_via_runner(
             request.nct_ids,
             conv["model"],
             request.temperature
