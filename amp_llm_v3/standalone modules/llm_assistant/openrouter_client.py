@@ -6,6 +6,9 @@ Provides cloud-based LLM inference via OpenRouter API.
 Supports Nemotron and other models with tool calling capabilities.
 """
 
+from dotenv import load_dotenv
+load_dotenv()
+
 import os
 import httpx
 import logging
