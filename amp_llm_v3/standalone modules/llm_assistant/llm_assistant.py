@@ -54,15 +54,6 @@ except ImportError as e:
     logger.warning(f"⚠️ Could not load PromptGenerator: {e}")
     HAS_PROMPT_GEN = False
 
-try:
-    from openrouter_client import OpenRouterClient, get_openrouter_client
-    HAS_OPENROUTER = True
-    logger.info("✅ OpenRouterClient loaded")
-except ImportError as e:
-    logger.warning(f"⚠️ Could not load OpenRouterClient: {e}")
-    HAS_OPENROUTER = False
-
-print(f"🔑 OPENROUTER_API_KEY: {'SET (' + os.getenv('OPENROUTER_API_KEY', '')[:15] + '...)' if os.getenv('OPENROUTER_API_KEY') else 'NOT SET'}")
 
 # ============================================================================
 # Configuration
@@ -155,14 +146,15 @@ async def get_ollama_model_info(model_name: str) -> Dict[str, Any]:
         model_name: Name of the model
         
     Returns:
-        Dictionary with model details
+        Dictionary with model details including formatted version string
     """
     model_info = {
         "name": model_name,
         "details": {},
         "modified_at": None,
         "size": None,
-        "digest": None
+        "digest": None,
+        "version_string": model_name,  # Default to just the name
     }
     
     try:
@@ -190,11 +182,61 @@ async def get_ollama_model_info(model_name: str) -> Dict[str, Any]:
                         model_info["digest"] = m.get("digest")
                         model_info["modified_at"] = model_info["modified_at"] or m.get("modified_at")
                         break
+        
+        # Build the version string
+        model_info["version_string"] = format_model_version_string(model_name, model_info)
                         
     except Exception as e:
         logger.warning(f"Could not fetch model info for {model_name}: {e}")
     
     return model_info
+
+
+def format_model_version_string(model_name: str, model_info: Dict[str, Any]) -> str:
+    """
+    Format a human-readable model version string.
+    
+    Examples:
+        - "llama3:latest (8B, Q4_K_M) [a]"
+        - "llama3.2:latest (3B, Q4_0) [abc123]"
+        - "mistral:7b (7B, Q4_0) [def456]"
+    
+    Args:
+        model_name: The model name (e.g., "llama3:latest")
+        model_info: Dictionary with model details from Ollama
+        
+    Returns:
+        Formatted version string
+    """
+    parts = [model_name]
+    
+    details = model_info.get("details", {})
+    detail_parts = []
+    
+    # Add parameter size (e.g., "8B", "3B", "70B")
+    param_size = details.get("parameter_size", "")
+    if param_size:
+        detail_parts.append(param_size)
+    
+    # Add quantization level (e.g., "Q4_0", "Q4_K_M", "Q8_0")
+    quant = details.get("quantization_level", "")
+    if quant:
+        detail_parts.append(quant)
+    
+    if detail_parts:
+        parts.append(f"({', '.join(detail_parts)})")
+    
+    # Add short digest as version identifier
+    digest = model_info.get("digest", "")
+    if digest:
+        # Extract short hash from digest (e.g., "sha256:abc123..." -> "abc123")
+        if ":" in digest:
+            short_hash = digest.split(":")[-1][:7]
+        else:
+            short_hash = digest[:7]
+        parts.append(f"[{short_hash}]")
+    
+    return " ".join(parts)
 
 
 class AnnotationMetadata(BaseModel):
@@ -981,18 +1023,7 @@ Brief Summary: {brief_summary[:500] if brief_summary else 'Not available'}
                 prompt += f"- {source_name}: Available\n"
         
         prompt += """
-## REQUIRED OUTPUT FORMAT (use EXACTLY this structure):
-
-NCT Number: {nct_id}
-Study Title: {title}
-Study Status: {status}
-Brief Summary: [1-2 sentences]
-Conditions: {conditions}
-Interventions/Drug: {interventions}
-Phases: [from data or N/A]
-Enrollment: [number or N/A]
-Start Date: [date or N/A]
-Completion Date: [date or N/A]
+## REQUIRED OUTPUT FORMAT:
 
 Classification: [AMP or Other]
   Evidence: [brief reason]
@@ -1014,91 +1045,50 @@ DRAMP Name: [name or N/A]
 Study IDs: [PMIDs or N/A]
 Comments: [any notes]
 
-## VALID VALUES (use ONLY these):
-- Classification: AMP | Other
-- Delivery Mode: Injection/Infusion | Topical | Oral | Other  
-- Outcome: Positive | Withdrawn | Terminated | Failed - completed trial | Active | Unknown
-- Reason for Failure: Business reasons | Ineffective for purpose | Toxic/unsafe | Due to covid | Recruitment issues | N/A
-- Peptide: True | False
+## DECISION RULES - FOLLOW EXACTLY:
 
-## RULES:
-- AMP = antimicrobial peptide (has antimicrobial activity)
-- Status RECRUITING/ACTIVE → Outcome = Active
-- Status WITHDRAWN → Outcome = Withdrawn
-- Status TERMINATED → Outcome = Terminated  
-- Status COMPLETED → Outcome = Positive or Failed - completed trial
-- Peptide = True only if drug is a short peptide (<200 amino acids)
+### CLASSIFICATION (AMP vs Other):
+AMP = peptide that DIRECTLY KILLS microorganisms (bacteria, fungi, viruses)
+- AMP keywords: defensin, cathelicidin, LL-37, nisin, polymyxin, magainin, "antimicrobial", "antibacterial", "bactericidal"
+- Other = cancer drugs, metabolic drugs (GLP-1, insulin), immunomodulators, hormones, autoimmune treatments
+- IMPORTANT: Immunomodulators are NOT AMP (they boost immunity but don't directly kill pathogens)
+- IMPORTANT: "Wound healing" is NOT automatically AMP - only if the peptide kills bacteria
+- DEFAULT: If unsure whether it directly kills microbes → Other
 
-Now extract the data using the exact format above:
+### DELIVERY MODE:
+- Injection/Infusion: injection, IV, intravenous, SC, subcutaneous, IM, intramuscular, infusion
+- Topical: topical, cream, gel, ointment, wound, eye drops, nasal spray, mouthwash
+- Oral: oral, tablet, capsule, pill, by mouth
+- Other: inhalation, multiple routes, unclear
+- DEFAULT for peptides with no route stated → Injection/Infusion
+
+### OUTCOME (map status DIRECTLY):
+- RECRUITING, NOT_YET_RECRUITING, ACTIVE_NOT_RECRUITING, ENROLLING_BY_INVITATION → Active
+- WITHDRAWN → Withdrawn
+- TERMINATED → Terminated
+- COMPLETED + "met endpoint" / "effective" / "positive" → Positive
+- COMPLETED + "failed" / "no significant difference" / "ineffective" → Failed - completed trial
+- COMPLETED + no clear results → Unknown
+- SUSPENDED, other → Unknown
+- DEFAULT: If COMPLETED but unclear → Unknown
+
+### PEPTIDE:
+- True = short chain of amino acids (<200 aa), peptide drug
+- False = monoclonal antibody (-mab), full protein, small molecule, gene therapy
+
+Now extract the data:
 """
         return prompt
     
     async def call_llm(
-        self,
-        model: str,
-        prompt: str,
+        self, 
+        model: str, 
+        prompt: str, 
         temperature: float = 0.1
     ) -> str:
-        """Call LLM for annotation - routes to OpenRouter for cloud models, Ollama for local."""
+        """Call Ollama LLM for annotation using chat endpoint."""
+        logger.info(f"🤖 Calling LLM: {model} (temp={temperature})")
         
-        # Check if this is a cloud model request
-        cloud_models = ["nemotron", "nemotron-free", "nemotron-nano", "nvidia/nemotron"]
-        is_cloud_model = any(cloud in model.lower() for cloud in cloud_models)
-        
-        if is_cloud_model and HAS_OPENROUTER:
-            return await self._call_openrouter(model, prompt, temperature)
-        else:
-            return await self._call_ollama(model, prompt, temperature)
-    
-    async def _call_openrouter(
-        self,
-        model: str,
-        prompt: str,
-        temperature: float
-    ) -> str:
-        """Call OpenRouter API for cloud inference."""
-        logger.info(f"☁️ Calling OpenRouter: {model} (temp={temperature})")
-        
-        client = get_openrouter_client()
-        system_prompt = self.get_system_prompt()
-        
-        # Combine system prompt with user prompt for OpenRouter
-        full_prompt = f"{system_prompt}\n\n{prompt}"
-        
-        result = await client.generate(
-            prompt=full_prompt,
-            model=model,
-            temperature=temperature,
-            max_tokens=4096
-        )
-        
-        if "error" in result:
-            logger.error(f"❌ OpenRouter error: {result['error']}")
-            raise HTTPException(status_code=503, detail=f"OpenRouter error: {result['error']}")
-        
-        annotation = result.get("content", "")
-        
-        # Log any reasoning trace from Nemotron
-        if result.get("reasoning"):
-            logger.info(f"🧠 Nemotron reasoning: {len(result['reasoning'])} chars")
-        
-        # Validate response has required fields
-        required_fields = ["Classification:", "Delivery Mode:", "Outcome:", "Peptide:"]
-        missing = [f for f in required_fields if f not in annotation]
-        if missing:
-            logger.warning(f"⚠️ Response missing fields: {missing}")
-        
-        logger.info(f"✅ Received annotation ({len(annotation)} chars)")
-        return annotation
-    
-    async def _call_ollama(
-        self,
-        model: str,
-        prompt: str,
-        temperature: float
-    ) -> str:
-        """Call local Ollama for inference."""
-        logger.info(f"🤖 Calling Ollama: {model} (temp={temperature})")
         system_prompt = self.get_system_prompt()
         
         try:
@@ -1121,6 +1111,7 @@ Now extract the data using the exact format above:
                         }
                     }
                 )
+                
                 if response.status_code != 200:
                     error_text = response.text
                     logger.error(f"❌ LLM error: {response.status_code} - {error_text}")
@@ -1150,18 +1141,47 @@ Now extract the data using the exact format above:
         return self._get_default_system_prompt()
 
     def _get_default_system_prompt(self) -> str:
-        """Fallback system prompt."""
-        return """You are a clinical trial annotator. Output ONLY these fields:
+        """Fallback system prompt with improved decision rules."""
+        return """You are a clinical trial annotator. Follow these STRICT rules:
 
-    Classification: [AMP or Other]
-    Delivery Mode: [Injection/Infusion or Topical or Oral or Other]
-    Outcome: [Positive or Withdrawn or Terminated or Failed - completed trial or Active or Unknown]
-    Reason for Failure: [N/A or Business reasons or Ineffective for purpose or Toxic/unsafe or Due to covid or Recruitment issues]
-    Peptide: [True or False]
-    Sequence: [amino acid sequence or N/A]
-    Study IDs: [PMIDs or N/A]
+CLASSIFICATION (AMP vs Other):
+- AMP = peptide that DIRECTLY KILLS bacteria/fungi/viruses
+- AMP keywords: defensin, cathelicidin, LL-37, nisin, polymyxin, "antimicrobial", "antibacterial"
+- Other = cancer drugs, metabolic drugs, immunomodulators, hormones
+- Immunomodulators are NOT AMP (boost immunity ≠ kill pathogens)
+- DEFAULT if unsure → Other
 
-    Do NOT echo the input data. Start with Classification:"""
+DELIVERY MODE:
+- Injection/Infusion: injection, IV, SC, IM, infusion
+- Topical: topical, cream, gel, wound application
+- Oral: oral, tablet, capsule
+- DEFAULT for peptides → Injection/Infusion
+
+OUTCOME (map status directly):
+- RECRUITING/ACTIVE_NOT_RECRUITING → Active
+- WITHDRAWN → Withdrawn  
+- TERMINATED → Terminated
+- COMPLETED + positive results → Positive
+- COMPLETED + negative results → Failed - completed trial
+- COMPLETED + unclear → Unknown
+- DEFAULT if uncertain → Unknown
+
+Output format:
+Classification: [AMP or Other]
+  Evidence: [reason]
+Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
+  Evidence: [reason]
+Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
+  Evidence: [reason]
+Reason for Failure: [N/A or category]
+  Evidence: [reason]
+Peptide: [True or False]
+  Evidence: [reason]
+Sequence: [sequence or N/A]
+Study IDs: [PMIDs or N/A]
+Comments: [notes]
+
+Start your annotation:"""
 
 # Global annotator instance
 annotator = TrialAnnotator()
@@ -1192,6 +1212,9 @@ async def root():
             "generate_prompt": "POST /generate-prompt",
             "export_csv": "POST /export-csv",
             "csv_template": "GET /export-csv-template",
+            "csv_header": "POST /csv-header",
+            "csv_header_info": "GET /csv-header-info",
+            "model_version": "GET /model-version/{model_name}",
             "metadata": "GET /metadata",
             "health": "GET /health",
             "models": "GET /models"
@@ -1359,19 +1382,24 @@ async def annotate_trial(request: AnnotationRequest):
                 }
         
         # Build annotation metadata
+        model_details = model_info.get("details", {})
+        annotation_timestamp = datetime.utcnow().isoformat() + "Z"
+        git_commit = get_git_commit_id()
+        
         annotation_metadata = {
-            "git_commit_id": get_git_commit_id(),
+            "git_commit_id": git_commit,
             "git_commit_full": get_git_commit_full(),
             "llm_model": request.model,
+            "llm_model_version": model_info.get("version_string", request.model),  # Full version string
             "llm_model_details": {
-                "family": model_info.get("details", {}).get("family", ""),
-                "parameter_size": model_info.get("details", {}).get("parameter_size", ""),
-                "quantization_level": model_info.get("details", {}).get("quantization_level", ""),
-                "format": model_info.get("details", {}).get("format", ""),
+                "family": model_details.get("family", ""),
+                "parameter_size": model_details.get("parameter_size", ""),
+                "quantization_level": model_details.get("quantization_level", ""),
+                "format": model_details.get("format", ""),
                 "digest": model_info.get("digest", ""),
                 "modified_at": model_info.get("modified_at", ""),
             },
-            "annotation_timestamp": datetime.utcnow().isoformat() + "Z",
+            "annotation_timestamp": annotation_timestamp,
             "service_version": config.API_VERSION,
             "temperature": request.temperature,
         }
@@ -1495,6 +1523,50 @@ async def batch_annotate(request: BatchAnnotationRequest):
 # CSV Export Endpoint
 # ============================================================================
 
+def generate_csv_header_comment(
+    model_name: str,
+    total_trials: int,
+    successful: int,
+    failed: int,
+    git_commit: Optional[str] = None,
+    timestamp: Optional[str] = None,
+    model_version: Optional[str] = None
+) -> str:
+    """
+    Generate the CSV header comment string.
+    
+    This can be used by any CSV generator to create consistent headers.
+    
+    Args:
+        model_name: Name of the LLM model used
+        total_trials: Total number of trials processed
+        successful: Number of successful annotations
+        failed: Number of failed annotations
+        git_commit: Git commit ID (auto-detected if not provided)
+        timestamp: Timestamp string (auto-generated if not provided)
+        model_version: Full model version string (e.g., "llama3:latest (8B, Q4_0) [abc123]")
+        
+    Returns:
+        Multi-line comment string for CSV header
+    """
+    if git_commit is None:
+        git_commit = get_git_commit_id()
+    if timestamp is None:
+        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Use model_version if provided, otherwise just model_name
+    model_display = model_version if model_version else model_name
+    
+    lines = [
+        f"# Generated by AMP LLM Annotation System",
+        f"# Model: {model_display}",
+        f"# Git Commit: {git_commit}",
+        f"# Timestamp: {timestamp}",
+        f"# Total trials: {total_trials} (Successful: {successful}, Failed: {failed})",
+    ]
+    return "\n".join(lines)
+
+
 class CSVExportRequest(BaseModel):
     """Request model for CSV export."""
     results: List[AnnotationResult]
@@ -1529,26 +1601,46 @@ def generate_csv_with_metadata(
                 metadata = r.metadata
                 break
         
+        # Count successful/failed
+        successful = sum(1 for r in results if r.status == "success")
+        failed = len(results) - successful
+        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Get git commit and model info
+        git_commit = metadata.get('git_commit_id', get_git_commit_id()) if metadata else get_git_commit_id()
+        
+        # Use version_string if available, otherwise construct from model name and details
         if metadata:
-            output.write("# ============================================================\n")
-            output.write("# AMP LLM Clinical Trial Annotation Export\n")
-            output.write("# ============================================================\n")
-            output.write(f"# Export Timestamp: {datetime.utcnow().isoformat()}Z\n")
-            output.write(f"# Service Version: {metadata.get('service_version', 'unknown')}\n")
-            output.write(f"# Git Commit ID: {metadata.get('git_commit_id', 'unknown')}\n")
-            output.write(f"# Git Commit (Full): {metadata.get('git_commit_full', 'unknown')}\n")
-            output.write(f"# LLM Model: {metadata.get('llm_model', 'unknown')}\n")
-            
-            model_details = metadata.get('llm_model_details', {})
-            if model_details:
-                output.write(f"# LLM Model Family: {model_details.get('family', 'unknown')}\n")
-                output.write(f"# LLM Parameter Size: {model_details.get('parameter_size', 'unknown')}\n")
-                output.write(f"# LLM Quantization: {model_details.get('quantization_level', 'unknown')}\n")
-                output.write(f"# LLM Model Digest: {model_details.get('digest', 'unknown')}\n")
-            
-            output.write(f"# Temperature: {metadata.get('temperature', 'unknown')}\n")
-            output.write(f"# Total Records: {len(results)}\n")
-            output.write("# ============================================================\n")
+            model_version = metadata.get('llm_model_version', '')
+            if not model_version:
+                # Fall back to constructing it from available info
+                model_name = metadata.get('llm_model', 'unknown')
+                model_details = metadata.get('llm_model_details', {})
+                
+                # Build version string from parts
+                parts = [model_name]
+                detail_parts = []
+                if model_details.get('parameter_size'):
+                    detail_parts.append(model_details['parameter_size'])
+                if model_details.get('quantization_level'):
+                    detail_parts.append(model_details['quantization_level'])
+                if detail_parts:
+                    parts.append(f"({', '.join(detail_parts)})")
+                if model_details.get('digest'):
+                    digest = model_details['digest']
+                    short_hash = digest.split(":")[-1][:7] if ":" in digest else digest[:7]
+                    parts.append(f"[{short_hash}]")
+                
+                model_version = " ".join(parts)
+        else:
+            model_version = 'unknown'
+        
+        # Write header with model version string
+        output.write(f"# Generated by AMP LLM Annotation System\n")
+        output.write(f"# Model: {model_version}\n")
+        output.write(f"# Git Commit: {git_commit}\n")
+        output.write(f"# Timestamp: {timestamp}\n")
+        output.write(f"# Total trials: {len(results)} (Successful: {successful}, Failed: {failed})\n")
     
     # Write CSV data
     writer = csv.writer(output)
@@ -1606,22 +1698,13 @@ async def export_csv_template():
     """
     output = io.StringIO()
     
-    # Write example metadata header
-    output.write("# ============================================================\n")
-    output.write("# AMP LLM Clinical Trial Annotation Export\n")
-    output.write("# ============================================================\n")
-    output.write(f"# Export Timestamp: {datetime.utcnow().isoformat()}Z\n")
-    output.write(f"# Service Version: {config.API_VERSION}\n")
-    output.write(f"# Git Commit ID: {get_git_commit_id()}\n")
-    output.write(f"# Git Commit (Full): {get_git_commit_full()}\n")
-    output.write("# LLM Model: [model_name]\n")
-    output.write("# LLM Model Family: [family]\n")
-    output.write("# LLM Parameter Size: [size]\n")
-    output.write("# LLM Quantization: [quantization]\n")
-    output.write("# LLM Model Digest: [digest]\n")
-    output.write("# Temperature: [temperature]\n")
-    output.write("# Total Records: 0\n")
-    output.write("# ============================================================\n")
+    # Write example metadata header in the standard format
+    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    output.write(f"# Generated by AMP LLM Annotation System\n")
+    output.write(f"# Model: [model_name]\n")
+    output.write(f"# Git Commit: {get_git_commit_id()}\n")
+    output.write(f"# Timestamp: {timestamp}\n")
+    output.write(f"# Total trials: 0 (Successful: 0, Failed: 0)\n")
     
     # Write header row
     writer = csv.writer(output)
@@ -1661,6 +1744,116 @@ async def get_current_metadata():
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "available_models": models,
         "ollama_url": config.OLLAMA_BASE_URL,
+    }
+
+
+class CSVHeaderRequest(BaseModel):
+    """Request model for CSV header generation."""
+    model_name: str
+    total_trials: int
+    successful: int
+    failed: int
+    model_version: Optional[str] = None  # Full version string, if already known
+
+
+@app.post("/csv-header")
+async def get_csv_header(request: CSVHeaderRequest):
+    """
+    Generate CSV header comment lines with metadata.
+    
+    Use this to get the properly formatted header for CSV exports.
+    Returns both the multi-line format and individual fields.
+    
+    If model_version is not provided, it will fetch the model info from Ollama.
+    """
+    git_commit = get_git_commit_id()
+    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Get model version string
+    if request.model_version:
+        model_version = request.model_version
+    else:
+        # Fetch from Ollama
+        model_info = await get_ollama_model_info(request.model_name)
+        model_version = model_info.get("version_string", request.model_name)
+    
+    header_comment = generate_csv_header_comment(
+        model_name=request.model_name,
+        total_trials=request.total_trials,
+        successful=request.successful,
+        failed=request.failed,
+        git_commit=git_commit,
+        timestamp=timestamp,
+        model_version=model_version
+    )
+    
+    return {
+        "header_comment": header_comment,
+        "fields": {
+            "model_name": request.model_name,
+            "model_version": model_version,
+            "git_commit": git_commit,
+            "timestamp": timestamp,
+            "total_trials": request.total_trials,
+            "successful": request.successful,
+            "failed": request.failed,
+        }
+    }
+
+
+@app.get("/csv-header-info")
+async def get_csv_header_info(model_name: Optional[str] = None):
+    """
+    Get the current git commit, timestamp, and optionally model version for CSV headers.
+    
+    Args:
+        model_name: Optional model name to fetch version info for
+    
+    Returns metadata fields needed for CSV header generation.
+    """
+    result = {
+        "git_commit": get_git_commit_id(),
+        "git_commit_full": get_git_commit_full(),
+        "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+        "service_version": config.API_VERSION,
+    }
+    
+    # If model_name provided, fetch the version string
+    if model_name:
+        model_info = await get_ollama_model_info(model_name)
+        result["model_name"] = model_name
+        result["model_version"] = model_info.get("version_string", model_name)
+        result["model_details"] = {
+            "family": model_info.get("details", {}).get("family", ""),
+            "parameter_size": model_info.get("details", {}).get("parameter_size", ""),
+            "quantization_level": model_info.get("details", {}).get("quantization_level", ""),
+            "digest": model_info.get("digest", ""),
+        }
+    
+    return result
+
+
+@app.get("/model-version/{model_name}")
+async def get_model_version(model_name: str):
+    """
+    Get the full version string for a specific model.
+    
+    Returns model version in format: "llama3:latest (8B, Q4_K_M) [abc123]"
+    """
+    model_info = await get_ollama_model_info(model_name)
+    
+    return {
+        "model_name": model_name,
+        "version_string": model_info.get("version_string", model_name),
+        "details": {
+            "family": model_info.get("details", {}).get("family", ""),
+            "parameter_size": model_info.get("details", {}).get("parameter_size", ""),
+            "quantization_level": model_info.get("details", {}).get("quantization_level", ""),
+            "format": model_info.get("details", {}).get("format", ""),
+        },
+        "digest": model_info.get("digest", ""),
+        "size_bytes": model_info.get("size", ""),
+        "modified_at": model_info.get("modified_at", ""),
     }
 
 
