@@ -17,9 +17,14 @@ import os
 import logging
 import json
 import httpx
+import subprocess
+import csv
+import io
 from pathlib import Path
+from datetime import datetime
 from typing import Dict, Any, List, Optional
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import re
@@ -82,6 +87,130 @@ config = AssistantConfig()
 
 
 # ============================================================================
+# Metadata Utilities
+# ============================================================================
+
+def get_git_commit_id() -> str:
+    """
+    Get the current git commit ID.
+    
+    Returns:
+        Git commit hash (short form) or 'unknown' if not in a git repo
+    """
+    try:
+        # Try to get the git commit hash
+        result = subprocess.run(
+            ['git', 'rev-parse', '--short', 'HEAD'],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            cwd=os.path.dirname(os.path.abspath(__file__)) or '.'
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except (subprocess.TimeoutExpired, FileNotFoundError, Exception) as e:
+        logger.debug(f"Could not get git commit ID: {e}")
+    
+    # Try environment variable (useful in Docker/CI environments)
+    env_commit = os.environ.get('GIT_COMMIT_ID') or os.environ.get('GIT_SHA') or os.environ.get('COMMIT_SHA')
+    if env_commit:
+        return env_commit[:8]  # Short form
+    
+    return 'unknown'
+
+
+def get_git_commit_full() -> str:
+    """Get the full git commit ID."""
+    try:
+        result = subprocess.run(
+            ['git', 'rev-parse', 'HEAD'],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            cwd=os.path.dirname(os.path.abspath(__file__)) or '.'
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except Exception:
+        pass
+    
+    env_commit = os.environ.get('GIT_COMMIT_ID') or os.environ.get('GIT_SHA') or os.environ.get('COMMIT_SHA')
+    return env_commit or 'unknown'
+
+
+async def get_ollama_model_info(model_name: str) -> Dict[str, Any]:
+    """
+    Get detailed model information from Ollama.
+    
+    Args:
+        model_name: Name of the model
+        
+    Returns:
+        Dictionary with model details
+    """
+    model_info = {
+        "name": model_name,
+        "details": {},
+        "modified_at": None,
+        "size": None,
+        "digest": None
+    }
+    
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            # Get model info from Ollama
+            response = await client.post(
+                f"{config.OLLAMA_BASE_URL}/api/show",
+                json={"name": model_name}
+            )
+            if response.status_code == 200:
+                data = response.json()
+                model_info["details"] = data.get("details", {})
+                model_info["modified_at"] = data.get("modified_at")
+                model_info["modelfile"] = data.get("modelfile", "")[:500]  # Truncate
+                model_info["parameters"] = data.get("parameters", "")
+                model_info["template"] = data.get("template", "")[:200]  # Truncate
+                
+            # Also get from tags for size/digest
+            response = await client.get(f"{config.OLLAMA_BASE_URL}/api/tags")
+            if response.status_code == 200:
+                models = response.json().get("models", [])
+                for m in models:
+                    if m.get("name") == model_name or m.get("name", "").startswith(model_name):
+                        model_info["size"] = m.get("size")
+                        model_info["digest"] = m.get("digest")
+                        model_info["modified_at"] = model_info["modified_at"] or m.get("modified_at")
+                        break
+                        
+    except Exception as e:
+        logger.warning(f"Could not fetch model info for {model_name}: {e}")
+    
+    return model_info
+
+
+class AnnotationMetadata(BaseModel):
+    """Metadata about the annotation process."""
+    git_commit_id: str = ""
+    git_commit_full: str = ""
+    llm_model: str = ""
+    llm_model_details: Dict[str, Any] = {}
+    annotation_timestamp: str = ""
+    service_version: str = ""
+    
+    @classmethod
+    def create(cls, model_name: str, model_info: Optional[Dict] = None) -> "AnnotationMetadata":
+        """Create metadata instance with current values."""
+        return cls(
+            git_commit_id=get_git_commit_id(),
+            git_commit_full=get_git_commit_full(),
+            llm_model=model_name,
+            llm_model_details=model_info or {},
+            annotation_timestamp=datetime.utcnow().isoformat() + "Z",
+            service_version=config.API_VERSION
+        )
+
+
+# ============================================================================
 # Initialize FastAPI app
 # ============================================================================
 
@@ -138,6 +267,8 @@ class AnnotationResult(BaseModel):
     processing_time_seconds: float
     sources_summary: Dict[str, Any] = {}
     error: Optional[str] = None
+    # NEW: Metadata fields
+    metadata: Optional[Dict[str, Any]] = None  # Contains git commit, model info, etc.
 
 
 class BatchAnnotationResponse(BaseModel):
@@ -147,6 +278,8 @@ class BatchAnnotationResponse(BaseModel):
     successful: int
     failed: int
     total_time_seconds: float
+    # NEW: Batch-level metadata
+    metadata: Optional[Dict[str, Any]] = None  # Contains git commit, model info, timestamp
 
 
 class ParsedTrialInfo(BaseModel):
@@ -980,16 +1113,21 @@ async def root():
         "service": config.SERVICE_NAME,
         "version": config.API_VERSION,
         "status": "running",
+        "git_commit": get_git_commit_id(),
         "features": {
             "json_parser": "available" if HAS_JSON_PARSER else "unavailable",
             "prompt_generator": "available" if HAS_PROMPT_GEN else "unavailable",
-            "metadata_extraction": "enabled"  # NEW: indicate metadata extraction is enabled
+            "metadata_extraction": "enabled",
+            "csv_export_with_metadata": "enabled"
         },
         "endpoints": {
             "annotate": "POST /annotate",
             "batch_annotate": "POST /batch-annotate",
             "parse_trial": "POST /parse",
             "generate_prompt": "POST /generate-prompt",
+            "export_csv": "POST /export-csv",
+            "csv_template": "GET /export-csv-template",
+            "metadata": "GET /metadata",
             "health": "GET /health",
             "models": "GET /models"
         }
@@ -1096,7 +1234,7 @@ async def annotate_trial(request: AnnotationRequest):
     2. Generates prompt using prompt_generator
     3. Calls LLM for annotation
     4. Parses response into structured data (now includes metadata from trial data!)
-    5. Returns structured result
+    5. Returns structured result with metadata (git commit, model info)
     """
     import time
     start_time = time.time()
@@ -1105,6 +1243,9 @@ async def annotate_trial(request: AnnotationRequest):
     logger.info(f"🔬 Starting annotation for {trial.nct_id} with {request.model}")
     
     try:
+        # Get model info for metadata
+        model_info = await get_ollama_model_info(request.model)
+        
         # Generate prompt
         if request.use_extraction_prompt and HAS_PROMPT_GEN:
             prompt = annotator.generate_prompt(trial.data, trial.nct_id)
@@ -1152,6 +1293,24 @@ async def annotate_trial(request: AnnotationRequest):
                     "has_data": bool(src_data.get("data"))
                 }
         
+        # Build annotation metadata
+        annotation_metadata = {
+            "git_commit_id": get_git_commit_id(),
+            "git_commit_full": get_git_commit_full(),
+            "llm_model": request.model,
+            "llm_model_details": {
+                "family": model_info.get("details", {}).get("family", ""),
+                "parameter_size": model_info.get("details", {}).get("parameter_size", ""),
+                "quantization_level": model_info.get("details", {}).get("quantization_level", ""),
+                "format": model_info.get("details", {}).get("format", ""),
+                "digest": model_info.get("digest", ""),
+                "modified_at": model_info.get("modified_at", ""),
+            },
+            "annotation_timestamp": datetime.utcnow().isoformat() + "Z",
+            "service_version": config.API_VERSION,
+            "temperature": request.temperature,
+        }
+        
         return AnnotationResult(
             nct_id=trial.nct_id,
             annotation=annotation,
@@ -1159,7 +1318,8 @@ async def annotate_trial(request: AnnotationRequest):
             model=request.model,
             status="success",
             processing_time_seconds=round(processing_time, 2),
-            sources_summary=sources_summary
+            sources_summary=sources_summary,
+            metadata=annotation_metadata
         )
         
     except HTTPException:
@@ -1175,7 +1335,12 @@ async def annotate_trial(request: AnnotationRequest):
             model=request.model,
             status="error",
             processing_time_seconds=round(processing_time, 2),
-            error=str(e)
+            error=str(e),
+            metadata={
+                "git_commit_id": get_git_commit_id(),
+                "annotation_timestamp": datetime.utcnow().isoformat() + "Z",
+                "service_version": config.API_VERSION,
+            }
         )
 
 
@@ -1185,11 +1350,15 @@ async def batch_annotate(request: BatchAnnotationRequest):
     Annotate multiple clinical trials.
     
     Processes each trial sequentially and returns all results.
+    Includes batch-level metadata with git commit and model info.
     """
     import time
     start_time = time.time()
     
     logger.info(f"🔬 Starting batch annotation for {len(request.trials)} trials")
+    
+    # Get model info once for the batch
+    model_info = await get_ollama_model_info(request.model)
     
     results = []
     successful = 0
@@ -1229,13 +1398,205 @@ async def batch_annotate(request: BatchAnnotationRequest):
     
     logger.info(f"✅ Batch complete: {successful} successful, {failed} failed in {total_time:.1f}s")
     
+    # Build batch metadata
+    batch_metadata = {
+        "git_commit_id": get_git_commit_id(),
+        "git_commit_full": get_git_commit_full(),
+        "llm_model": request.model,
+        "llm_model_details": {
+            "family": model_info.get("details", {}).get("family", ""),
+            "parameter_size": model_info.get("details", {}).get("parameter_size", ""),
+            "quantization_level": model_info.get("details", {}).get("quantization_level", ""),
+            "format": model_info.get("details", {}).get("format", ""),
+            "digest": model_info.get("digest", ""),
+        },
+        "batch_start_timestamp": datetime.utcfromtimestamp(start_time).isoformat() + "Z",
+        "batch_end_timestamp": datetime.utcnow().isoformat() + "Z",
+        "service_version": config.API_VERSION,
+        "temperature": request.temperature,
+    }
+    
     return BatchAnnotationResponse(
         results=results,
         total=len(request.trials),
         successful=successful,
         failed=failed,
-        total_time_seconds=round(total_time, 2)
+        total_time_seconds=round(total_time, 2),
+        metadata=batch_metadata
     )
+
+
+# ============================================================================
+# CSV Export Endpoint
+# ============================================================================
+
+class CSVExportRequest(BaseModel):
+    """Request model for CSV export."""
+    results: List[AnnotationResult]
+    include_header_metadata: bool = True  # Include metadata as CSV comments
+
+
+def generate_csv_with_metadata(
+    results: List[AnnotationResult],
+    include_metadata: bool = True
+) -> str:
+    """
+    Generate CSV content with metadata header.
+    
+    The metadata is included as comment lines at the top of the CSV file
+    (lines starting with #).
+    
+    Args:
+        results: List of annotation results
+        include_metadata: Whether to include metadata header
+        
+    Returns:
+        CSV content as string
+    """
+    output = io.StringIO()
+    
+    # Collect metadata from results
+    if include_metadata and results:
+        # Get metadata from first successful result
+        metadata = None
+        for r in results:
+            if r.metadata:
+                metadata = r.metadata
+                break
+        
+        if metadata:
+            output.write("# ============================================================\n")
+            output.write("# AMP LLM Clinical Trial Annotation Export\n")
+            output.write("# ============================================================\n")
+            output.write(f"# Export Timestamp: {datetime.utcnow().isoformat()}Z\n")
+            output.write(f"# Service Version: {metadata.get('service_version', 'unknown')}\n")
+            output.write(f"# Git Commit ID: {metadata.get('git_commit_id', 'unknown')}\n")
+            output.write(f"# Git Commit (Full): {metadata.get('git_commit_full', 'unknown')}\n")
+            output.write(f"# LLM Model: {metadata.get('llm_model', 'unknown')}\n")
+            
+            model_details = metadata.get('llm_model_details', {})
+            if model_details:
+                output.write(f"# LLM Model Family: {model_details.get('family', 'unknown')}\n")
+                output.write(f"# LLM Parameter Size: {model_details.get('parameter_size', 'unknown')}\n")
+                output.write(f"# LLM Quantization: {model_details.get('quantization_level', 'unknown')}\n")
+                output.write(f"# LLM Model Digest: {model_details.get('digest', 'unknown')}\n")
+            
+            output.write(f"# Temperature: {metadata.get('temperature', 'unknown')}\n")
+            output.write(f"# Total Records: {len(results)}\n")
+            output.write("# ============================================================\n")
+    
+    # Write CSV data
+    writer = csv.writer(output)
+    
+    # Write header row
+    writer.writerow(AnnotationResponseParser.CSV_COLUMNS)
+    
+    # Write data rows
+    for result in results:
+        if result.parsed_data:
+            row = [result.parsed_data.get(col, '') for col in AnnotationResponseParser.CSV_COLUMNS]
+            writer.writerow(row)
+    
+    return output.getvalue()
+
+
+@app.post("/export-csv")
+async def export_csv(request: CSVExportRequest):
+    """
+    Export annotation results as CSV with metadata header.
+    
+    The CSV includes comment lines at the top with:
+    - Git commit ID
+    - LLM model version and details
+    - Export timestamp
+    - Service version
+    
+    Returns:
+        StreamingResponse with CSV content
+    """
+    csv_content = generate_csv_with_metadata(
+        request.results,
+        include_metadata=request.include_header_metadata
+    )
+    
+    # Generate filename with timestamp
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    filename = f"amp_llm_annotations_{timestamp}.csv"
+    
+    return StreamingResponse(
+        iter([csv_content]),
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}"
+        }
+    )
+
+
+@app.get("/export-csv-template")
+async def export_csv_template():
+    """
+    Get an empty CSV template with headers and example metadata.
+    
+    Useful for understanding the CSV format.
+    """
+    output = io.StringIO()
+    
+    # Write example metadata header
+    output.write("# ============================================================\n")
+    output.write("# AMP LLM Clinical Trial Annotation Export\n")
+    output.write("# ============================================================\n")
+    output.write(f"# Export Timestamp: {datetime.utcnow().isoformat()}Z\n")
+    output.write(f"# Service Version: {config.API_VERSION}\n")
+    output.write(f"# Git Commit ID: {get_git_commit_id()}\n")
+    output.write(f"# Git Commit (Full): {get_git_commit_full()}\n")
+    output.write("# LLM Model: [model_name]\n")
+    output.write("# LLM Model Family: [family]\n")
+    output.write("# LLM Parameter Size: [size]\n")
+    output.write("# LLM Quantization: [quantization]\n")
+    output.write("# LLM Model Digest: [digest]\n")
+    output.write("# Temperature: [temperature]\n")
+    output.write("# Total Records: 0\n")
+    output.write("# ============================================================\n")
+    
+    # Write header row
+    writer = csv.writer(output)
+    writer.writerow(AnnotationResponseParser.CSV_COLUMNS)
+    
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": "attachment; filename=amp_llm_template.csv"
+        }
+    )
+
+
+@app.get("/metadata")
+async def get_current_metadata():
+    """
+    Get current service metadata including git commit and available models.
+    
+    Useful for tracking which version generated annotations.
+    """
+    # Get available models
+    models = []
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{config.OLLAMA_BASE_URL}/api/tags")
+            if response.status_code == 200:
+                models = [m.get("name") for m in response.json().get("models", [])]
+    except Exception:
+        pass
+    
+    return {
+        "service": config.SERVICE_NAME,
+        "service_version": config.API_VERSION,
+        "git_commit_id": get_git_commit_id(),
+        "git_commit_full": get_git_commit_full(),
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "available_models": models,
+        "ollama_url": config.OLLAMA_BASE_URL,
+    }
 
 
 # ============================================================================
@@ -1245,15 +1606,25 @@ async def batch_annotate(request: BatchAnnotationRequest):
 if __name__ == "__main__":
     import uvicorn
     
+    # Get git info at startup
+    git_commit = get_git_commit_id()
+    git_commit_full = get_git_commit_full()
+    
     print("=" * 80)
-    print(f"🚀 Starting {config.SERVICE_NAME} on port {config.SERVICE_PORT}...")
+    print(f"🚀 Starting {config.SERVICE_NAME} v{config.API_VERSION}")
     print("=" * 80)
+    print(f"🔖 Git Commit: {git_commit}")
+    if git_commit_full != git_commit:
+        print(f"   Full SHA: {git_commit_full}")
     print(f"🤖 Ollama: {config.OLLAMA_BASE_URL}")
     print(f"📋 JSON Parser: {'Available' if HAS_JSON_PARSER else 'Not Available'}")
     print(f"📝 Prompt Generator: {'Available' if HAS_PROMPT_GEN else 'Not Available'}")
     print(f"📊 Metadata Extraction: Enabled")
+    print(f"📁 CSV Export with Metadata: Enabled")
+    print("-" * 80)
     print(f"📚 API Docs: http://localhost:{config.SERVICE_PORT}/docs")
     print(f"🔍 Health Check: http://localhost:{config.SERVICE_PORT}/health")
+    print(f"📋 Metadata: http://localhost:{config.SERVICE_PORT}/metadata")
     print("=" * 80)
     
     uvicorn.run(app, host="0.0.0.0", port=config.SERVICE_PORT, reload=True)
