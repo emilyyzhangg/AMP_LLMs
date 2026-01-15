@@ -1193,6 +1193,23 @@ const app = {
                 }
                 
                 this.availableModels = data.models;
+
+                // Add cloud models (OpenRouter)
+                const cloudModels = [
+                    { name: 'nemotron', cloud: true, label: '☁️ Nemotron (Cloud)' },
+                    { name: 'nemotron-free', cloud: true, label: '☁️ Nemotron Free (Cloud)' }
+                ];
+                cloudModels.forEach(cm => {
+                    // Check if not already in list
+                    const exists = this.availableModels.some(m => 
+                        (typeof m === 'string' ? m : m.name) === cm.name
+                    );
+                    if (!exists) {
+                        this.availableModels.push(cm.name);
+                    }
+                });
+                console.log('☁️ Added cloud models:', cloudModels.map(m => m.name));
+
                 console.log('✅ Loaded models:', this.availableModels);
                 
                 document.getElementById(loadingId)?.remove();
@@ -1969,6 +1986,15 @@ const app = {
                 
                 this.addMessage('chat-container', 'assistant', resultMessage);
                 
+                // Add download button if CSV was generated
+                if (data.download_url) {
+                    let downloadUrl = data.download_url;
+                    if (downloadUrl.startsWith('/')) {
+                        downloadUrl = `${this.API_BASE}${downloadUrl}`;
+                    }
+                    this.addDownloadButton(downloadUrl, data.csv_filename || 'annotations.csv');
+                }
+
                 // Store in session
                 if (!this.sessionChats[this.currentModel]) {
                     this.sessionChats[this.currentModel] = {
