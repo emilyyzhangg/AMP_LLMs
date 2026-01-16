@@ -64,7 +64,7 @@ SCRIPT_DIR = Path(__file__).parent.resolve()
 OUTPUT_DIR = SCRIPT_DIR / "output" / "annotations"
 
 # LLM Assistant URL for metadata fetching
-LLM_ASSISTANT_URL = os.getenv("LLM_ASSISTANT_URL", "http://localhost:9004")
+LLM_ASSISTANT_URL = os.getenv("LLM_ASSISTANT_URL", "http://localhost:8004")
 
 
 # ============================================================================
@@ -212,7 +212,7 @@ async def startup_event():
 # Configuration
 # ============================================================================
 
-RUNNER_SERVICE_URL = os.getenv("RUNNER_SERVICE_URL", "http://localhost:8003")
+RUNNER_SERVICE_URL = os.getenv("RUNNER_SERVICE_URL", f"http://localhost:8003")
 
 
 # ============================================================================
@@ -703,8 +703,28 @@ def clean_value(value):
     value = value.rstrip('*').strip()
     return value
     
-async def generate_output_csv(output_path: Path, results: List[dict], errors: List[dict], model: str = "unknown"):
-    """Generate the annotated CSV output file with model info header."""
+async def generate_output_csv(
+    output_path: Path, 
+    results: List[dict], 
+    errors: List[dict], 
+    model: str = "unknown",
+    git_commit: str = "unknown",
+    model_version: str = None
+):
+    """
+    Generate the annotated CSV output file with model info header.
+    
+    Args:
+        output_path: Path to write the CSV file
+        results: List of annotation results
+        errors: List of error records
+        model: Model name used for annotation
+        git_commit: Git commit ID of the LLM Assistant service
+        model_version: Full model version string (e.g., "llama3:latest (8B, Q4_K_M) [abc123]")
+    """
+    
+    # Use model_version if provided, otherwise fall back to model name
+    model_display = model_version if model_version else model
     
     # Log what we're working with
     if results:
@@ -781,7 +801,7 @@ async def generate_output_csv(output_path: Path, results: List[dict], errors: Li
                     elif key == "Study ID" or key == "Study IDs":
                         row["Study IDs"] = value
                     elif key == "Sequence Evidence":
-                        row["Sequence"] = value  # Map to existing column
+                        row["Sequence"] = value
                     # Store Evidence fields
                     elif "Evidence" in key:
                         row[key] = value
@@ -824,7 +844,8 @@ async def annotate_trials_via_runner(
                 if health.status_code != 200:
                     return (
                         "❌ Runner Service not available. Please ensure it's running on port 8003.",
-                        AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0)
+                        AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0),
+                        []
                     )
             except httpx.ConnectError:
                 return (
@@ -832,7 +853,8 @@ async def annotate_trials_via_runner(
                     "Please start the service:\n"
                     "  cd standalone_modules/runner\n"
                     "  uvicorn runner_service:app --port 8003 --reload",
-                    AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0)
+                    AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0),
+                    []
                 )
             
             # Send batch annotation request
@@ -1464,6 +1486,7 @@ if __name__ == "__main__":
     print("=" * 80)
     print(f"🤖 Ollama: {config.OLLAMA_BASE_URL}")
     print(f"📁 Runner Service: {RUNNER_SERVICE_URL}")
+    print(f"🔧 LLM Assistant: {LLM_ASSISTANT_URL}")
     print(f"📚 Docs: http://localhost:8001/docs")
     print("=" * 80)
     print("\n📋 Service Dependencies:")
