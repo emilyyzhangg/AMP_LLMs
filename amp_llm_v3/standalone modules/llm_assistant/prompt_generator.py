@@ -298,6 +298,7 @@ Sequence: [Amino acid sequence or N/A]
 DRAMP Name: [Name or N/A]
 Study IDs: [PMIDs separated by |]
 Comments: [Any additional notes]
+
 ---
 # DATA SOURCES
 """)
@@ -838,7 +839,3 @@ Your answer:
         """Save generated prompt to file."""
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(prompt, encoding="utf-8")
-
-
-# For backwards compatibility, create an alias
-PromptGenerator = ImprovedPromptGenerator
