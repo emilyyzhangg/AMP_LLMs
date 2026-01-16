@@ -1,5 +1,5 @@
 """
-LLM Assistant API Service (Port 8004)
+LLM Assistant API Service (Port 9004)
 =====================================
 
 RESTful API for clinical trial annotation using:
@@ -8,15 +8,27 @@ RESTful API for clinical trial annotation using:
 - Ollama for LLM inference
 
 This service receives trial JSON data and returns structured annotations.
+
+UPDATED: Now extracts ClinicalTrials.gov metadata fields directly from trial data
+to populate: Study Title, Study Status, Brief Summary, Conditions, Drug, Phase,
+Enrollment, Start Date, Completion Date
 """
+import os
 import logging
 import json
 import httpx
+import subprocess
+import csv
+import io
 from pathlib import Path
+from datetime import datetime
 from typing import Dict, Any, List, Optional
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+import re
+from typing import Dict, Set
 
 # Setup logging
 logging.basicConfig(
@@ -56,9 +68,9 @@ class AssistantConfig:
     def OLLAMA_BASE_URL(self):
         return f"http://{self.OLLAMA_HOST}:{self.OLLAMA_PORT}"
     
-    API_VERSION = "1.0.0"
+    API_VERSION = "1.0.2"  # Updated version
     SERVICE_NAME = "LLM Assistant API"
-    SERVICE_PORT = 8004
+    SERVICE_PORT = 9004
     CORS_ORIGINS = ["*"]
     
     # Timeouts
@@ -68,8 +80,185 @@ class AssistantConfig:
     DEFAULT_TEMPERATURE = 0.15
     DEFAULT_TOP_P = 0.9
     DEFAULT_TOP_K = 40
+    DEFAULT_NUM_CTX = 4096
+    DEFAULT_NUM_PREDICT = 600
 
 config = AssistantConfig()
+
+
+# ============================================================================
+# Metadata Utilities
+# ============================================================================
+
+def get_git_commit_id() -> str:
+    """
+    Get the current git commit ID.
+    
+    Returns:
+        Git commit hash (short form) or 'unknown' if not in a git repo
+    """
+    try:
+        # Try to get the git commit hash
+        result = subprocess.run(
+            ['git', 'rev-parse', '--short', 'HEAD'],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            cwd=os.path.dirname(os.path.abspath(__file__)) or '.'
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except (subprocess.TimeoutExpired, FileNotFoundError, Exception) as e:
+        logger.debug(f"Could not get git commit ID: {e}")
+    
+    # Try environment variable (useful in Docker/CI environments)
+    env_commit = os.environ.get('GIT_COMMIT_ID') or os.environ.get('GIT_SHA') or os.environ.get('COMMIT_SHA')
+    if env_commit:
+        return env_commit[:8]  # Short form
+    
+    return 'unknown'
+
+
+def get_git_commit_full() -> str:
+    """Get the full git commit ID."""
+    try:
+        result = subprocess.run(
+            ['git', 'rev-parse', 'HEAD'],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            cwd=os.path.dirname(os.path.abspath(__file__)) or '.'
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except Exception:
+        pass
+    
+    env_commit = os.environ.get('GIT_COMMIT_ID') or os.environ.get('GIT_SHA') or os.environ.get('COMMIT_SHA')
+    return env_commit or 'unknown'
+
+
+async def get_ollama_model_info(model_name: str) -> Dict[str, Any]:
+    """
+    Get detailed model information from Ollama.
+    
+    Args:
+        model_name: Name of the model
+        
+    Returns:
+        Dictionary with model details including formatted version string
+    """
+    model_info = {
+        "name": model_name,
+        "details": {},
+        "modified_at": None,
+        "size": None,
+        "digest": None,
+        "version_string": model_name,  # Default to just the name
+    }
+    
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            # Get model info from Ollama
+            response = await client.post(
+                f"{config.OLLAMA_BASE_URL}/api/show",
+                json={"name": model_name}
+            )
+            if response.status_code == 200:
+                data = response.json()
+                model_info["details"] = data.get("details", {})
+                model_info["modified_at"] = data.get("modified_at")
+                model_info["modelfile"] = data.get("modelfile", "")[:500]  # Truncate
+                model_info["parameters"] = data.get("parameters", "")
+                model_info["template"] = data.get("template", "")[:200]  # Truncate
+                
+            # Also get from tags for size/digest
+            response = await client.get(f"{config.OLLAMA_BASE_URL}/api/tags")
+            if response.status_code == 200:
+                models = response.json().get("models", [])
+                for m in models:
+                    if m.get("name") == model_name or m.get("name", "").startswith(model_name):
+                        model_info["size"] = m.get("size")
+                        model_info["digest"] = m.get("digest")
+                        model_info["modified_at"] = model_info["modified_at"] or m.get("modified_at")
+                        break
+        
+        # Build the version string
+        model_info["version_string"] = format_model_version_string(model_name, model_info)
+                        
+    except Exception as e:
+        logger.warning(f"Could not fetch model info for {model_name}: {e}")
+    
+    return model_info
+
+
+def format_model_version_string(model_name: str, model_info: Dict[str, Any]) -> str:
+    """
+    Format a human-readable model version string.
+    
+    Examples:
+        - "llama3:latest (8B, Q4_K_M) [a]"
+        - "llama3.2:latest (3B, Q4_0) [abc123]"
+        - "mistral:7b (7B, Q4_0) [def456]"
+    
+    Args:
+        model_name: The model name (e.g., "llama3:latest")
+        model_info: Dictionary with model details from Ollama
+        
+    Returns:
+        Formatted version string
+    """
+    parts = [model_name]
+    
+    details = model_info.get("details", {})
+    detail_parts = []
+    
+    # Add parameter size (e.g., "8B", "3B", "70B")
+    param_size = details.get("parameter_size", "")
+    if param_size:
+        detail_parts.append(param_size)
+    
+    # Add quantization level (e.g., "Q4_0", "Q4_K_M", "Q8_0")
+    quant = details.get("quantization_level", "")
+    if quant:
+        detail_parts.append(quant)
+    
+    if detail_parts:
+        parts.append(f"({', '.join(detail_parts)})")
+    
+    # Add short digest as version identifier
+    digest = model_info.get("digest", "")
+    if digest:
+        # Extract short hash from digest (e.g., "sha256:abc123..." -> "abc123")
+        if ":" in digest:
+            short_hash = digest.split(":")[-1][:7]
+        else:
+            short_hash = digest[:7]
+        parts.append(f"[{short_hash}]")
+    
+    return " ".join(parts)
+
+
+class AnnotationMetadata(BaseModel):
+    """Metadata about the annotation process."""
+    git_commit_id: str = ""
+    git_commit_full: str = ""
+    llm_model: str = ""
+    llm_model_details: Dict[str, Any] = {}
+    annotation_timestamp: str = ""
+    service_version: str = ""
+    
+    @classmethod
+    def create(cls, model_name: str, model_info: Optional[Dict] = None) -> "AnnotationMetadata":
+        """Create metadata instance with current values."""
+        return cls(
+            git_commit_id=get_git_commit_id(),
+            git_commit_full=get_git_commit_full(),
+            llm_model=model_name,
+            llm_model_details=model_info or {},
+            annotation_timestamp=datetime.utcnow().isoformat() + "Z",
+            service_version=config.API_VERSION
+        )
 
 
 # ============================================================================
@@ -91,7 +280,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # ============================================================================
 # Pydantic Models
@@ -130,6 +318,8 @@ class AnnotationResult(BaseModel):
     processing_time_seconds: float
     sources_summary: Dict[str, Any] = {}
     error: Optional[str] = None
+    # NEW: Metadata fields
+    metadata: Optional[Dict[str, Any]] = None  # Contains git commit, model info, etc.
 
 
 class BatchAnnotationResponse(BaseModel):
@@ -139,6 +329,8 @@ class BatchAnnotationResponse(BaseModel):
     successful: int
     failed: int
     total_time_seconds: float
+    # NEW: Batch-level metadata
+    metadata: Optional[Dict[str, Any]] = None  # Contains git commit, model info, timestamp
 
 
 class ParsedTrialInfo(BaseModel):
@@ -156,10 +348,10 @@ class ParsedTrialInfo(BaseModel):
 # Core Annotation Functions
 # ============================================================================
 
+
 class AnnotationResponseParser:
     """Parse LLM annotation responses into structured data."""
     
-    # Define the expected output columns
     CSV_COLUMNS = [
         'NCT ID', 'Study Title', 'Study Status', 'Brief Summary', 'Conditions',
         'Drug', 'Phase', 'Enrollment', 'Start Date', 'Completion Date',
@@ -169,192 +361,297 @@ class AnnotationResponseParser:
         'Reason for Failure', 'Reason for Failure Evidence',
         'Peptide', 'Peptide Evidence',
         'Sequence', 'Sequence Evidence',
-        'Study ID'
+        'Study ID', 'Comments'
     ]
     
-    # Field mappings from LLM output to CSV columns
-    FIELD_MAPPINGS = {
-        'NCT Number': 'NCT ID',
-        'Study Title': 'Study Title',
-        'Study Status': 'Study Status',
-        'Brief Summary': 'Brief Summary',
-        'Conditions': 'Conditions',
-        'Interventions/Drug': 'Drug',
-        'Phases': 'Phase',
-        'Enrollment': 'Enrollment',
-        'Start Date': 'Start Date',
-        'Completion Date': 'Completion Date',
-        'Classification': 'Classification',
-        'Delivery Mode': 'Delivery Mode',
-        'Outcome': 'Outcome',
-        'Reason for Failure': 'Reason for Failure',
-        'Peptide': 'Peptide',
-        'Sequence': 'Sequence',
-        'DRAMP Name': 'DRAMP Name',
-        'Study IDs': 'Study ID',
-        'Comments': 'Comments'
+    # Valid values for validation
+    VALID_VALUES = {
+        'Classification': {'AMP', 'Other'},
+        'Delivery Mode': {'Injection/Infusion', 'Topical', 'Oral', 'Other'},
+        'Outcome': {'Positive', 'Withdrawn', 'Terminated', 'Failed - completed trial', 'Active', 'Unknown'},
+        'Reason for Failure': {'Business reasons', 'Ineffective for purpose', 'Toxic/unsafe', 'Due to covid', 'Recruitment issues', 'N/A'},
+        'Peptide': {'True', 'False'}
     }
     
     @classmethod
-    def parse_response(cls, llm_response: str, nct_id: str) -> Dict[str, str]:
+    def _safe_get(cls, dictionary: Dict, *keys, default=None) -> Any:
+        """Safely navigate nested dictionary keys."""
+        current = dictionary
+        for key in keys:
+            if isinstance(current, dict) and key in current:
+                current = current[key]
+            else:
+                return default
+        return current if current is not None else default
+    
+    @classmethod
+    def _get_protocol_section(cls, trial_data: Dict) -> Dict:
+        """
+        Extract the protocol section from trial data.
+        Handles multiple possible data structures.
+        """
+        # Try multiple paths for the protocol section
+        paths = [
+            ('results', 'sources', 'clinical_trials', 'data', 'protocolSection'),
+            ('sources', 'clinical_trials', 'data', 'protocolSection'),
+            ('results', 'sources', 'clinicaltrials', 'data', 'protocolSection'),
+            ('sources', 'clinicaltrials', 'data', 'protocolSection'),
+            ('protocolSection',),
+        ]
+        
+        for path in paths:
+            protocol = cls._safe_get(trial_data, *path, default={})
+            if protocol:
+                return protocol
+        
+        return {}
+    
+    @classmethod
+    def extract_trial_metadata(cls, trial_data: Dict, nct_id: str) -> Dict[str, str]:
+        """
+        Extract ClinicalTrials.gov metadata fields directly from trial data.
+        
+        This extracts: Study Title, Study Status, Brief Summary, Conditions,
+        Drug (Interventions), Phase, Enrollment, Start Date, Completion Date
+        
+        Args:
+            trial_data: The raw trial data dictionary
+            nct_id: The NCT ID
+            
+        Returns:
+            Dictionary with metadata fields populated
+        """
+        metadata = {}
+        
+        # Get protocol section
+        protocol = cls._get_protocol_section(trial_data)
+        
+        # Also check for hasResults at different levels
+        has_results = cls._safe_get(trial_data, 'results', 'sources', 'clinical_trials', 'data', 'hasResults', default=False)
+        if not has_results:
+            has_results = cls._safe_get(trial_data, 'sources', 'clinical_trials', 'data', 'hasResults', default=False)
+        
+        # Identification Module
+        id_module = cls._safe_get(protocol, 'identificationModule', default={})
+        metadata['NCT ID'] = nct_id
+        
+        # Study Title - prefer official title, fall back to brief title
+        official_title = id_module.get('officialTitle', '')
+        brief_title = id_module.get('briefTitle', '')
+        metadata['Study Title'] = official_title or brief_title or ''
+        
+        # Status Module
+        status_module = cls._safe_get(protocol, 'statusModule', default={})
+        metadata['Study Status'] = status_module.get('overallStatus', '')
+        
+        # Dates
+        start_date_struct = status_module.get('startDateStruct', {})
+        completion_date_struct = status_module.get('completionDateStruct', {})
+        metadata['Start Date'] = start_date_struct.get('date', '')
+        metadata['Completion Date'] = completion_date_struct.get('date', '')
+        
+        # Description Module
+        desc_module = cls._safe_get(protocol, 'descriptionModule', default={})
+        brief_summary = desc_module.get('briefSummary', '')
+        # Truncate if too long for CSV
+        if len(brief_summary) > 500:
+            brief_summary = brief_summary[:497] + '...'
+        metadata['Brief Summary'] = brief_summary
+        
+        # Conditions Module
+        conditions_module = cls._safe_get(protocol, 'conditionsModule', default={})
+        conditions = conditions_module.get('conditions', [])
+        metadata['Conditions'] = ', '.join(conditions) if conditions else ''
+        
+        # Design Module
+        design_module = cls._safe_get(protocol, 'designModule', default={})
+        phases = design_module.get('phases', [])
+        metadata['Phase'] = ', '.join(phases) if phases else ''
+        
+        # Enrollment
+        enrollment_info = design_module.get('enrollmentInfo', {})
+        enrollment_count = enrollment_info.get('count', '')
+        metadata['Enrollment'] = str(enrollment_count) if enrollment_count else ''
+        
+        # Arms/Interventions Module - Drug/Intervention
+        arms_module = cls._safe_get(protocol, 'armsInterventionsModule', default={})
+        interventions = arms_module.get('interventions', [])
+        
+        # Format interventions as "Type: Name" for each
+        intervention_strs = []
+        for intv in interventions:
+            intv_type = intv.get('type', '')
+            intv_name = intv.get('name', '')
+            if intv_name:
+                if intv_type:
+                    intervention_strs.append(f"{intv_type}: {intv_name}")
+                else:
+                    intervention_strs.append(intv_name)
+        
+        metadata['Drug'] = ', '.join(intervention_strs) if intervention_strs else ''
+        
+        return metadata
+    
+    @classmethod
+    def parse_response(cls, llm_response: str, nct_id: str, trial_data: Optional[Dict] = None) -> Dict[str, str]:
         """
         Parse LLM response text into structured dictionary.
         
+        Now also extracts metadata fields directly from trial_data if provided.
+        
         Args:
-            llm_response: Raw text response from LLM
-            nct_id: NCT ID for fallback
+            llm_response: The raw LLM response text
+            nct_id: The NCT ID
+            trial_data: Optional trial data dict to extract metadata from
             
         Returns:
-            Dictionary with CSV column keys
+            Dictionary with all CSV columns populated
         """
         result = {col: '' for col in cls.CSV_COLUMNS}
         result['NCT ID'] = nct_id
         
+        # FIRST: Extract metadata directly from trial_data (more reliable than LLM)
+        if trial_data:
+            metadata = cls.extract_trial_metadata(trial_data, nct_id)
+            result.update(metadata)
+            logger.info(f"📋 Extracted metadata fields: {[k for k, v in metadata.items() if v]}")
+        
+        # THEN: Parse LLM response for annotation fields
         if not llm_response:
             return result
         
-        lines = llm_response.strip().split('\n')
-        current_field = None
-        current_value = ''
-        evidence_buffer = {}
-        
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-            
-            # Check if this is an evidence line
-            if line.startswith('Evidence:'):
-                evidence = line.replace('Evidence:', '').strip()
-                if current_field:
-                    evidence_buffer[current_field] = evidence
-                continue
-            
-            # Check if this is a field line (contains a colon)
-            if ':' in line:
-                # Save previous field if exists
-                if current_field and current_value:
-                    cls._set_field(result, current_field, current_value.strip(), evidence_buffer)
-                
-                # Parse new field
-                parts = line.split(':', 1)
-                field_name = parts[0].strip()
-                field_value = parts[1].strip() if len(parts) > 1 else ''
-                
-                # Map to our column names
-                if field_name in cls.FIELD_MAPPINGS:
-                    current_field = field_name
-                    current_value = field_value
-                elif field_name.lower() == 'evidence':
-                    # This is evidence for the previous field
-                    if current_field:
-                        evidence_buffer[current_field] = field_value
-                    current_field = None
-                    current_value = ''
-                else:
-                    # Unknown field, might be continuation
-                    if current_field and current_value:
-                        current_value += ' ' + line
-            else:
-                # Continuation of previous value
-                if current_field and current_value:
-                    current_value += ' ' + line
-        
-        # Don't forget the last field
-        if current_field and current_value:
-            cls._set_field(result, current_field, current_value.strip(), evidence_buffer)
-        
-        return result
-    
-    @classmethod
-    def _set_field(cls, result: Dict, field_name: str, value: str, evidence_buffer: Dict):
-        """Set a field value in the result dictionary."""
-        csv_column = cls.FIELD_MAPPINGS.get(field_name)
-        if not csv_column:
-            return
-        
-        # Clean up the value
-        value = value.strip()
-        if value.lower() in ['n/a', 'not available', 'none', 'unknown']:
-            value = 'N/A'
-        
-        result[csv_column] = value
-        
-        # Check for evidence
-        evidence_column = f"{csv_column} Evidence"
-        if evidence_column in cls.CSV_COLUMNS:
-            evidence = evidence_buffer.get(field_name, '')
-            result[evidence_column] = evidence
-    
-    @classmethod
-    def parse_response_regex(cls, llm_response: str, nct_id: str) -> Dict[str, str]:
-        """
-        Alternative parser using regex patterns for more robust extraction.
-        
-        Args:
-            llm_response: Raw text response from LLM
-            nct_id: NCT ID for fallback
-            
-        Returns:
-            Dictionary with CSV column keys
-        """
-        import re
-        
-        result = {col: '' for col in cls.CSV_COLUMNS}
-        result['NCT ID'] = nct_id
-        
-        if not llm_response:
-            return result
+        # Normalize the response - convert ** format to newlines
+        normalized = cls._normalize_response(llm_response)
         
         # Define patterns for each field
         patterns = {
-            'Study Title': r'Study Title:\s*(.+?)(?=\n(?:Study Status|Brief Summary|$))',
-            'Study Status': r'Study Status:\s*(.+?)(?=\n|$)',
-            'Brief Summary': r'Brief Summary:\s*(.+?)(?=\nConditions:|$)',
-            'Conditions': r'Conditions:\s*(.+?)(?=\n(?:Interventions|Drug)|$)',
-            'Drug': r'(?:Interventions/Drug|Drug):\s*(.+?)(?=\nPhases?:|$)',
-            'Phase': r'Phases?:\s*(.+?)(?=\n|$)',
-            'Enrollment': r'Enrollment:\s*(.+?)(?=\n|$)',
-            'Start Date': r'Start Date:\s*(.+?)(?=\n|$)',
-            'Completion Date': r'Completion Date:\s*(.+?)(?=\n|$)',
-            'Classification': r'Classification:\s*(.+?)(?=\n\s*Evidence:|$)',
-            'Delivery Mode': r'Delivery Mode:\s*(.+?)(?=\n\s*Evidence:|$)',
-            'Outcome': r'Outcome:\s*(.+?)(?=\n\s*Evidence:|$)',
-            'Reason for Failure': r'Reason for Failure:\s*(.+?)(?=\n\s*Evidence:|$)',
-            'Peptide': r'Peptide:\s*(.+?)(?=\n\s*Evidence:|$)',
-            'Sequence': r'Sequence:\s*(.+?)(?=\n|$)',
-            'Study ID': r'Study IDs?:\s*(.+?)(?=\n|$)',
+            'Classification': r'Classification:\s*([^\n]+?)(?:\n|$)',
+            'Delivery Mode': r'Delivery Mode:\s*([^\n]+?)(?:\n|$)',
+            'Outcome': r'Outcome:\s*([^\n]+?)(?:\n|$)',
+            'Reason for Failure': r'Reason for Failure:\s*([^\n]+?)(?:\n|$)',
+            'Peptide': r'Peptide:\s*([^\n]+?)(?:\n|$)',
+            'Sequence': r'Sequence:\s*([^\n]+?)(?:\n|$)',
+            'Study ID': r'Study IDs?:\s*([^\n]+?)(?:\n|$)',
+            'Comments': r'Comments:\s*([^\n]+?)(?:\n|$)',
         }
         
         # Evidence patterns
         evidence_patterns = {
-            'Classification Evidence': r'Classification:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nDelivery|$)',
-            'Delivery Mode Evidence': r'Delivery Mode:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nOutcome|$)',
-            'Outcome Evidence': r'Outcome:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nReason|$)',
-            'Reason for Failure Evidence': r'Reason for Failure:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nPeptide|$)',
-            'Peptide Evidence': r'Peptide:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nSequence|$)',
-            'Sequence Evidence': r'Sequence:\s*.+?\n\s*Evidence:\s*(.+?)(?=\n\n|\nDRAMP|$)',
+            'Classification Evidence': r'Classification:[^\n]*\n\s*Evidence:\s*([^\n]+)',
+            'Delivery Mode Evidence': r'Delivery Mode:[^\n]*\n\s*Evidence:\s*([^\n]+)',
+            'Outcome Evidence': r'Outcome:[^\n]*\n\s*Evidence:\s*([^\n]+)',
+            'Reason for Failure Evidence': r'Reason for Failure:[^\n]*\n\s*Evidence:\s*([^\n]+)',
+            'Peptide Evidence': r'Peptide:[^\n]*\n\s*Evidence:\s*([^\n]+)',
+            'Sequence Evidence': r'Sequence:[^\n]*\n\s*Evidence:\s*([^\n]+)',
         }
         
         # Extract main fields
         for field, pattern in patterns.items():
-            match = re.search(pattern, llm_response, re.DOTALL | re.IGNORECASE)
+            match = re.search(pattern, normalized, re.IGNORECASE)
             if match:
                 value = match.group(1).strip()
-                value = re.sub(r'\s+', ' ', value)  # Normalize whitespace
-                if value.lower() in ['n/a', 'not available', 'none']:
+                value = re.sub(r'\s+', ' ', value)
+                value = value.rstrip('.')
+                
+                if value.lower() in ['n/a', 'not available', 'none', 'unknown', 'na']:
                     value = 'N/A'
+                
+                # Validate against valid values
+                if field in cls.VALID_VALUES:
+                    value = cls._match_valid_value(value, cls.VALID_VALUES[field])
+                
                 result[field] = value
         
         # Extract evidence fields
         for field, pattern in evidence_patterns.items():
-            match = re.search(pattern, llm_response, re.DOTALL | re.IGNORECASE)
+            match = re.search(pattern, normalized, re.IGNORECASE | re.DOTALL)
             if match:
                 value = match.group(1).strip()
                 value = re.sub(r'\s+', ' ', value)
                 result[field] = value
         
         return result
+    
+    @classmethod
+    def _normalize_response(cls, response: str) -> str:
+        """
+        Normalize LLM response to have consistent newline formatting.
+        
+        Converts: "AMP **Evidence:** reason **Delivery Mode:** ..."
+        To:       "AMP\n  Evidence: reason\nDelivery Mode: ..."
+        """
+        # First, handle the ** format by converting to newlines
+        # Pattern: **FieldName:** -> \nFieldName:
+        normalized = re.sub(r'\s*\*\*([^*]+):\*\*\s*', r'\n\1: ', response)
+        
+        # Also handle *Field:* format (single asterisks)
+        normalized = re.sub(r'\s*\*([^*]+):\*\s*', r'\n\1: ', normalized)
+        
+        # Handle case where Evidence comes right after value on same conceptual line
+        # "Classification: AMP\nEvidence:" -> "Classification: AMP\n  Evidence:"
+        normalized = re.sub(r'\n(Evidence:)', r'\n  \1', normalized)
+        
+        # Clean up multiple newlines
+        normalized = re.sub(r'\n{3,}', '\n\n', normalized)
+        
+        # Clean up leading/trailing whitespace on lines
+        lines = [line.strip() for line in normalized.split('\n')]
+        normalized = '\n'.join(lines)
+        
+        return normalized
+    
+    @classmethod
+    def _match_valid_value(cls, value: str, valid_set: Set[str]) -> str:
+        """Try to match a value to the closest valid value."""
+        # Exact match
+        if value in valid_set:
+            return value
+        
+        # Case-insensitive match
+        value_lower = value.lower()
+        for valid in valid_set:
+            if valid.lower() == value_lower:
+                return valid
+        
+        # Partial match
+        for valid in valid_set:
+            if valid.lower() in value_lower or value_lower in valid.lower():
+                return valid
+        
+        # Special handling for common variations
+        mappings = [
+            (['injection', 'infusion', 'iv', 'subcutaneous', 'intramuscular', 'intravenous'], 'Injection/Infusion'),
+            (['topical', 'cream', 'gel', 'ointment', 'skin', 'dermal'], 'Topical'),
+            (['oral', 'tablet', 'capsule', 'pill', 'mouth'], 'Oral'),
+            (['true', 'yes', 'peptide'], 'True'),
+            (['false', 'no', 'antibody', 'small molecule'], 'False'),
+            (['active', 'recruiting', 'ongoing'], 'Active'),
+            (['positive', 'success', 'effective', 'met endpoint'], 'Positive'),
+            (['failed', 'negative', 'ineffective', 'did not meet'], 'Failed - completed trial'),
+            (['withdrawn'], 'Withdrawn'),
+            (['terminated'], 'Terminated'),
+            (['unknown', 'unclear'], 'Unknown'),
+        ]
+        
+        for keywords, mapped_value in mappings:
+            if mapped_value in valid_set:
+                for keyword in keywords:
+                    if keyword in value_lower:
+                        return mapped_value
+        
+        return value
+    
+    @classmethod
+    def validate_response(cls, parsed_data: Dict[str, str]) -> bool:
+        """Check if we got valid annotations."""
+        required_fields = ['Classification', 'Delivery Mode', 'Outcome', 'Peptide']
+        
+        for field in required_fields:
+            value = parsed_data.get(field, '').strip()
+            if not value:
+                return False
+        
+        return True
 
 
 class TrialAnnotator:
@@ -726,18 +1023,7 @@ Brief Summary: {brief_summary[:500] if brief_summary else 'Not available'}
                 prompt += f"- {source_name}: Available\n"
         
         prompt += """
-## REQUIRED OUTPUT FORMAT (use EXACTLY this structure):
-
-NCT Number: {nct_id}
-Study Title: {title}
-Study Status: {status}
-Brief Summary: [1-2 sentences]
-Conditions: {conditions}
-Interventions/Drug: {interventions}
-Phases: [from data or N/A]
-Enrollment: [number or N/A]
-Start Date: [date or N/A]
-Completion Date: [date or N/A]
+## REQUIRED OUTPUT FORMAT:
 
 Classification: [AMP or Other]
   Evidence: [brief reason]
@@ -759,22 +1045,38 @@ DRAMP Name: [name or N/A]
 Study IDs: [PMIDs or N/A]
 Comments: [any notes]
 
-## VALID VALUES (use ONLY these):
-- Classification: AMP | Other
-- Delivery Mode: Injection/Infusion | Topical | Oral | Other  
-- Outcome: Positive | Withdrawn | Terminated | Failed - completed trial | Active | Unknown
-- Reason for Failure: Business reasons | Ineffective for purpose | Toxic/unsafe | Due to covid | Recruitment issues | N/A
-- Peptide: True | False
+## DECISION RULES - FOLLOW EXACTLY:
 
-## RULES:
-- AMP = antimicrobial peptide (has antimicrobial activity)
-- Status RECRUITING/ACTIVE → Outcome = Active
-- Status WITHDRAWN → Outcome = Withdrawn
-- Status TERMINATED → Outcome = Terminated  
-- Status COMPLETED → Outcome = Positive or Failed - completed trial
-- Peptide = True only if drug is a short peptide (<200 amino acids)
+### CLASSIFICATION (AMP vs Other):
+AMP = peptide that DIRECTLY KILLS microorganisms (bacteria, fungi, viruses)
+- AMP keywords: defensin, cathelicidin, LL-37, nisin, polymyxin, magainin, "antimicrobial", "antibacterial", "bactericidal"
+- Other = cancer drugs, metabolic drugs (GLP-1, insulin), immunomodulators, hormones, autoimmune treatments
+- IMPORTANT: Immunomodulators are NOT AMP (they boost immunity but don't directly kill pathogens)
+- IMPORTANT: "Wound healing" is NOT automatically AMP - only if the peptide kills bacteria
+- DEFAULT: If unsure whether it directly kills microbes → Other
 
-Now extract the data using the exact format above:
+### DELIVERY MODE:
+- Injection/Infusion: injection, IV, intravenous, SC, subcutaneous, IM, intramuscular, infusion
+- Topical: topical, cream, gel, ointment, wound, eye drops, nasal spray, mouthwash
+- Oral: oral, tablet, capsule, pill, by mouth
+- Other: inhalation, multiple routes, unclear
+- DEFAULT for peptides with no route stated → Injection/Infusion
+
+### OUTCOME (map status DIRECTLY):
+- RECRUITING, NOT_YET_RECRUITING, ACTIVE_NOT_RECRUITING, ENROLLING_BY_INVITATION → Active
+- WITHDRAWN → Withdrawn
+- TERMINATED → Terminated
+- COMPLETED + "met endpoint" / "effective" / "positive" → Positive
+- COMPLETED + "failed" / "no significant difference" / "ineffective" → Failed - completed trial
+- COMPLETED + no clear results → Unknown
+- SUSPENDED, other → Unknown
+- DEFAULT: If COMPLETED but unclear → Unknown
+
+### PEPTIDE:
+- True = short chain of amino acids (<200 aa), peptide drug
+- False = monoclonal antibody (-mab), full protein, small molecule, gene therapy
+
+Now extract the data:
 """
         return prompt
     
@@ -782,62 +1084,104 @@ Now extract the data using the exact format above:
         self, 
         model: str, 
         prompt: str, 
-        temperature: float = 0.15
+        temperature: float = 0.1
     ) -> str:
-        """
-        Call Ollama LLM for annotation.
-        
-        Args:
-            model: Model name
-            prompt: Annotation prompt
-            temperature: Sampling temperature
-            
-        Returns:
-            LLM response text
-        """
+        """Call Ollama LLM for annotation using chat endpoint."""
         logger.info(f"🤖 Calling LLM: {model} (temp={temperature})")
+        
+        system_prompt = self.get_system_prompt()
         
         try:
             async with httpx.AsyncClient(timeout=config.LLM_TIMEOUT) as client:
                 response = await client.post(
-                    f"{config.OLLAMA_BASE_URL}/api/generate",
+                    f"{config.OLLAMA_BASE_URL}/api/chat",
                     json={
                         "model": model,
-                        "prompt": prompt,
-                        "temperature": temperature,
-                        "top_p": config.DEFAULT_TOP_P,
-                        "top_k": config.DEFAULT_TOP_K,
-                        "stream": False
+                        "messages": [
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": prompt}
+                        ],
+                        "stream": False,
+                        "options": {
+                            "temperature": temperature,
+                            "top_p": config.DEFAULT_TOP_P,
+                            "num_ctx": config.DEFAULT_NUM_CTX,
+                            "num_predict": config.DEFAULT_NUM_PREDICT,
+                            "stop": ["TRIAL DATA:", "---", "\n\n\n"]
+                        }
                     }
                 )
                 
                 if response.status_code != 200:
                     error_text = response.text
                     logger.error(f"❌ LLM error: {response.status_code} - {error_text}")
-                    raise HTTPException(
-                        status_code=503,
-                        detail=f"LLM error: {error_text}"
-                    )
+                    raise HTTPException(status_code=503, detail=f"LLM error: {error_text}")
                 
                 data = response.json()
-                annotation = data.get("response", "")
+                annotation = data.get("message", {}).get("content", "")
+                
+                # Just log warnings, don't reject
+                required_fields = ["Classification:", "Delivery Mode:", "Outcome:", "Peptide:"]
+                missing = [f for f in required_fields if f not in annotation]
+                if missing:
+                    logger.warning(f"⚠️ Response missing fields: {missing}")
                 
                 logger.info(f"✅ Received annotation ({len(annotation)} chars)")
                 return annotation
                 
         except httpx.ConnectError:
-            logger.error(f"❌ Cannot connect to Ollama at {config.OLLAMA_BASE_URL}")
-            raise HTTPException(
-                status_code=503,
-                detail=f"Cannot connect to Ollama at {config.OLLAMA_BASE_URL}"
-            )
+            raise HTTPException(status_code=503, detail=f"Cannot connect to Ollama")
         except httpx.TimeoutException:
-            logger.error("❌ LLM request timed out")
-            raise HTTPException(
-                status_code=504,
-                detail="LLM request timed out"
-            )
+            raise HTTPException(status_code=504, detail="LLM request timed out")
+        
+    def get_system_prompt(self) -> str:
+        """Get the system prompt for annotation."""
+        if self.prompt_generator and hasattr(self.prompt_generator, 'get_system_prompt'):
+            return self.prompt_generator.get_system_prompt()
+        return self._get_default_system_prompt()
 
+    def _get_default_system_prompt(self) -> str:
+        """Fallback system prompt with improved decision rules."""
+        return """You are a clinical trial annotator. Follow these STRICT rules:
+
+CLASSIFICATION (AMP vs Other):
+- AMP = peptide that DIRECTLY KILLS bacteria/fungi/viruses
+- AMP keywords: defensin, cathelicidin, LL-37, nisin, polymyxin, "antimicrobial", "antibacterial"
+- Other = cancer drugs, metabolic drugs, immunomodulators, hormones
+- Immunomodulators are NOT AMP (boost immunity ≠ kill pathogens)
+- DEFAULT if unsure → Other
+
+DELIVERY MODE:
+- Injection/Infusion: injection, IV, SC, IM, infusion
+- Topical: topical, cream, gel, wound application
+- Oral: oral, tablet, capsule
+- DEFAULT for peptides → Injection/Infusion
+
+OUTCOME (map status directly):
+- RECRUITING/ACTIVE_NOT_RECRUITING → Active
+- WITHDRAWN → Withdrawn  
+- TERMINATED → Terminated
+- COMPLETED + positive results → Positive
+- COMPLETED + negative results → Failed - completed trial
+- COMPLETED + unclear → Unknown
+- DEFAULT if uncertain → Unknown
+
+Output format:
+Classification: [AMP or Other]
+  Evidence: [reason]
+Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
+  Evidence: [reason]
+Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
+  Evidence: [reason]
+Reason for Failure: [N/A or category]
+  Evidence: [reason]
+Peptide: [True or False]
+  Evidence: [reason]
+Sequence: [sequence or N/A]
+Study IDs: [PMIDs or N/A]
+Comments: [notes]
+
+Start your annotation:"""
 
 # Global annotator instance
 annotator = TrialAnnotator()
@@ -854,15 +1198,24 @@ async def root():
         "service": config.SERVICE_NAME,
         "version": config.API_VERSION,
         "status": "running",
+        "git_commit": get_git_commit_id(),
         "features": {
             "json_parser": "available" if HAS_JSON_PARSER else "unavailable",
-            "prompt_generator": "available" if HAS_PROMPT_GEN else "unavailable"
+            "prompt_generator": "available" if HAS_PROMPT_GEN else "unavailable",
+            "metadata_extraction": "enabled",
+            "csv_export_with_metadata": "enabled"
         },
         "endpoints": {
             "annotate": "POST /annotate",
             "batch_annotate": "POST /batch-annotate",
             "parse_trial": "POST /parse",
             "generate_prompt": "POST /generate-prompt",
+            "export_csv": "POST /export-csv",
+            "csv_template": "GET /export-csv-template",
+            "csv_header": "POST /csv-header",
+            "csv_header_info": "GET /csv-header-info",
+            "model_version": "GET /model-version/{model_name}",
+            "metadata": "GET /metadata",
             "health": "GET /health",
             "models": "GET /models"
         }
@@ -968,8 +1321,8 @@ async def annotate_trial(request: AnnotationRequest):
     1. Parses trial data using json_parser
     2. Generates prompt using prompt_generator
     3. Calls LLM for annotation
-    4. Parses response into structured data
-    5. Returns structured result
+    4. Parses response into structured data (now includes metadata from trial data!)
+    5. Returns structured result with metadata (git commit, model info)
     """
     import time
     start_time = time.time()
@@ -978,6 +1331,9 @@ async def annotate_trial(request: AnnotationRequest):
     logger.info(f"🔬 Starting annotation for {trial.nct_id} with {request.model}")
     
     try:
+        # Get model info for metadata
+        model_info = await get_ollama_model_info(request.model)
+        
         # Generate prompt
         if request.use_extraction_prompt and HAS_PROMPT_GEN:
             prompt = annotator.generate_prompt(trial.data, trial.nct_id)
@@ -992,10 +1348,21 @@ async def annotate_trial(request: AnnotationRequest):
             prompt,
             request.temperature
         )
+
+        logger.info(f"DEBUG: annotation length = {len(annotation)}")
+        logger.info(f"DEBUG: annotation preview = {annotation[:200] if annotation else 'EMPTY'}")
         
         # Parse the response into structured data
-        parsed_data = AnnotationResponseParser.parse_response_regex(annotation, trial.nct_id)
-        logger.info(f"📊 Parsed {len([v for v in parsed_data.values() if v])} fields from response")
+        # NOW PASSING trial.data to extract metadata fields directly!
+        parsed_data = AnnotationResponseParser.parse_response(
+            annotation, 
+            trial.nct_id,
+            trial_data=trial.data  # NEW: Pass trial data for metadata extraction
+        )
+        
+        # Log what fields were populated
+        populated_fields = [k for k, v in parsed_data.items() if v]
+        logger.info(f"📊 Parsed {len(populated_fields)} fields from response: {populated_fields}")
         
         processing_time = time.time() - start_time
         
@@ -1014,6 +1381,29 @@ async def annotate_trial(request: AnnotationRequest):
                     "has_data": bool(src_data.get("data"))
                 }
         
+        # Build annotation metadata
+        model_details = model_info.get("details", {})
+        annotation_timestamp = datetime.utcnow().isoformat() + "Z"
+        git_commit = get_git_commit_id()
+        
+        annotation_metadata = {
+            "git_commit_id": git_commit,
+            "git_commit_full": get_git_commit_full(),
+            "llm_model": request.model,
+            "llm_model_version": model_info.get("version_string", request.model),  # Full version string
+            "llm_model_details": {
+                "family": model_details.get("family", ""),
+                "parameter_size": model_details.get("parameter_size", ""),
+                "quantization_level": model_details.get("quantization_level", ""),
+                "format": model_details.get("format", ""),
+                "digest": model_info.get("digest", ""),
+                "modified_at": model_info.get("modified_at", ""),
+            },
+            "annotation_timestamp": annotation_timestamp,
+            "service_version": config.API_VERSION,
+            "temperature": request.temperature,
+        }
+        
         return AnnotationResult(
             nct_id=trial.nct_id,
             annotation=annotation,
@@ -1021,7 +1411,8 @@ async def annotate_trial(request: AnnotationRequest):
             model=request.model,
             status="success",
             processing_time_seconds=round(processing_time, 2),
-            sources_summary=sources_summary
+            sources_summary=sources_summary,
+            metadata=annotation_metadata
         )
         
     except HTTPException:
@@ -1037,7 +1428,12 @@ async def annotate_trial(request: AnnotationRequest):
             model=request.model,
             status="error",
             processing_time_seconds=round(processing_time, 2),
-            error=str(e)
+            error=str(e),
+            metadata={
+                "git_commit_id": get_git_commit_id(),
+                "annotation_timestamp": datetime.utcnow().isoformat() + "Z",
+                "service_version": config.API_VERSION,
+            }
         )
 
 
@@ -1047,11 +1443,15 @@ async def batch_annotate(request: BatchAnnotationRequest):
     Annotate multiple clinical trials.
     
     Processes each trial sequentially and returns all results.
+    Includes batch-level metadata with git commit and model info.
     """
     import time
     start_time = time.time()
     
     logger.info(f"🔬 Starting batch annotation for {len(request.trials)} trials")
+    
+    # Get model info once for the batch
+    model_info = await get_ollama_model_info(request.model)
     
     results = []
     successful = 0
@@ -1091,13 +1491,370 @@ async def batch_annotate(request: BatchAnnotationRequest):
     
     logger.info(f"✅ Batch complete: {successful} successful, {failed} failed in {total_time:.1f}s")
     
+    # Build batch metadata
+    batch_metadata = {
+        "git_commit_id": get_git_commit_id(),
+        "git_commit_full": get_git_commit_full(),
+        "llm_model": request.model,
+        "llm_model_details": {
+            "family": model_info.get("details", {}).get("family", ""),
+            "parameter_size": model_info.get("details", {}).get("parameter_size", ""),
+            "quantization_level": model_info.get("details", {}).get("quantization_level", ""),
+            "format": model_info.get("details", {}).get("format", ""),
+            "digest": model_info.get("digest", ""),
+        },
+        "batch_start_timestamp": datetime.utcfromtimestamp(start_time).isoformat() + "Z",
+        "batch_end_timestamp": datetime.utcnow().isoformat() + "Z",
+        "service_version": config.API_VERSION,
+        "temperature": request.temperature,
+    }
+    
     return BatchAnnotationResponse(
         results=results,
         total=len(request.trials),
         successful=successful,
         failed=failed,
-        total_time_seconds=round(total_time, 2)
+        total_time_seconds=round(total_time, 2),
+        metadata=batch_metadata
     )
+
+
+# ============================================================================
+# CSV Export Endpoint
+# ============================================================================
+
+def generate_csv_header_comment(
+    model_name: str,
+    total_trials: int,
+    successful: int,
+    failed: int,
+    git_commit: Optional[str] = None,
+    timestamp: Optional[str] = None,
+    model_version: Optional[str] = None
+) -> str:
+    """
+    Generate the CSV header comment string.
+    
+    This can be used by any CSV generator to create consistent headers.
+    
+    Args:
+        model_name: Name of the LLM model used
+        total_trials: Total number of trials processed
+        successful: Number of successful annotations
+        failed: Number of failed annotations
+        git_commit: Git commit ID (auto-detected if not provided)
+        timestamp: Timestamp string (auto-generated if not provided)
+        model_version: Full model version string (e.g., "llama3:latest (8B, Q4_0) [abc123]")
+        
+    Returns:
+        Multi-line comment string for CSV header
+    """
+    if git_commit is None:
+        git_commit = get_git_commit_id()
+    if timestamp is None:
+        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Use model_version if provided, otherwise just model_name
+    model_display = model_version if model_version else model_name
+    
+    lines = [
+        f"# Generated by AMP LLM Annotation System",
+        f"# Model: {model_display}",
+        f"# Git Commit: {git_commit}",
+        f"# Timestamp: {timestamp}",
+        f"# Total trials: {total_trials} (Successful: {successful}, Failed: {failed})",
+    ]
+    return "\n".join(lines)
+
+
+class CSVExportRequest(BaseModel):
+    """Request model for CSV export."""
+    results: List[AnnotationResult]
+    include_header_metadata: bool = True  # Include metadata as CSV comments
+
+
+def generate_csv_with_metadata(
+    results: List[AnnotationResult],
+    include_metadata: bool = True
+) -> str:
+    """
+    Generate CSV content with metadata header.
+    
+    The metadata is included as comment lines at the top of the CSV file
+    (lines starting with #).
+    
+    Args:
+        results: List of annotation results
+        include_metadata: Whether to include metadata header
+        
+    Returns:
+        CSV content as string
+    """
+    output = io.StringIO()
+    
+    # Collect metadata from results
+    if include_metadata and results:
+        # Get metadata from first successful result
+        metadata = None
+        for r in results:
+            if r.metadata:
+                metadata = r.metadata
+                break
+        
+        # Count successful/failed
+        successful = sum(1 for r in results if r.status == "success")
+        failed = len(results) - successful
+        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Get git commit and model info
+        git_commit = metadata.get('git_commit_id', get_git_commit_id()) if metadata else get_git_commit_id()
+        
+        # Use version_string if available, otherwise construct from model name and details
+        if metadata:
+            model_version = metadata.get('llm_model_version', '')
+            if not model_version:
+                # Fall back to constructing it from available info
+                model_name = metadata.get('llm_model', 'unknown')
+                model_details = metadata.get('llm_model_details', {})
+                
+                # Build version string from parts
+                parts = [model_name]
+                detail_parts = []
+                if model_details.get('parameter_size'):
+                    detail_parts.append(model_details['parameter_size'])
+                if model_details.get('quantization_level'):
+                    detail_parts.append(model_details['quantization_level'])
+                if detail_parts:
+                    parts.append(f"({', '.join(detail_parts)})")
+                if model_details.get('digest'):
+                    digest = model_details['digest']
+                    short_hash = digest.split(":")[-1][:7] if ":" in digest else digest[:7]
+                    parts.append(f"[{short_hash}]")
+                
+                model_version = " ".join(parts)
+        else:
+            model_version = 'unknown'
+        
+        # Write header with model version string
+        output.write(f"# Generated by AMP LLM Annotation System\n")
+        output.write(f"# Model: {model_version}\n")
+        output.write(f"# Git Commit: {git_commit}\n")
+        output.write(f"# Timestamp: {timestamp}\n")
+        output.write(f"# Total trials: {len(results)} (Successful: {successful}, Failed: {failed})\n")
+    
+    # Write CSV data
+    writer = csv.writer(output)
+    
+    # Write header row
+    writer.writerow(AnnotationResponseParser.CSV_COLUMNS)
+    
+    # Write data rows
+    for result in results:
+        if result.parsed_data:
+            row = [result.parsed_data.get(col, '') for col in AnnotationResponseParser.CSV_COLUMNS]
+            writer.writerow(row)
+    
+    return output.getvalue()
+
+
+@app.post("/export-csv")
+async def export_csv(request: CSVExportRequest):
+    """
+    Export annotation results as CSV with metadata header.
+    
+    The CSV includes comment lines at the top with:
+    - Git commit ID
+    - LLM model version and details
+    - Export timestamp
+    - Service version
+    
+    Returns:
+        StreamingResponse with CSV content
+    """
+    csv_content = generate_csv_with_metadata(
+        request.results,
+        include_metadata=request.include_header_metadata
+    )
+    
+    # Generate filename with timestamp
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    filename = f"amp_llm_annotations_{timestamp}.csv"
+    
+    return StreamingResponse(
+        iter([csv_content]),
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}"
+        }
+    )
+
+
+@app.get("/export-csv-template")
+async def export_csv_template():
+    """
+    Get an empty CSV template with headers and example metadata.
+    
+    Useful for understanding the CSV format.
+    """
+    output = io.StringIO()
+    
+    # Write example metadata header in the standard format
+    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    output.write(f"# Generated by AMP LLM Annotation System\n")
+    output.write(f"# Model: [model_name]\n")
+    output.write(f"# Git Commit: {get_git_commit_id()}\n")
+    output.write(f"# Timestamp: {timestamp}\n")
+    output.write(f"# Total trials: 0 (Successful: 0, Failed: 0)\n")
+    
+    # Write header row
+    writer = csv.writer(output)
+    writer.writerow(AnnotationResponseParser.CSV_COLUMNS)
+    
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": "attachment; filename=amp_llm_template.csv"
+        }
+    )
+
+
+@app.get("/metadata")
+async def get_current_metadata():
+    """
+    Get current service metadata including git commit and available models.
+    
+    Useful for tracking which version generated annotations.
+    """
+    # Get available models
+    models = []
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{config.OLLAMA_BASE_URL}/api/tags")
+            if response.status_code == 200:
+                models = [m.get("name") for m in response.json().get("models", [])]
+    except Exception:
+        pass
+    
+    return {
+        "service": config.SERVICE_NAME,
+        "service_version": config.API_VERSION,
+        "git_commit_id": get_git_commit_id(),
+        "git_commit_full": get_git_commit_full(),
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "available_models": models,
+        "ollama_url": config.OLLAMA_BASE_URL,
+    }
+
+
+class CSVHeaderRequest(BaseModel):
+    """Request model for CSV header generation."""
+    model_name: str
+    total_trials: int
+    successful: int
+    failed: int
+    model_version: Optional[str] = None  # Full version string, if already known
+
+
+@app.post("/csv-header")
+async def get_csv_header(request: CSVHeaderRequest):
+    """
+    Generate CSV header comment lines with metadata.
+    
+    Use this to get the properly formatted header for CSV exports.
+    Returns both the multi-line format and individual fields.
+    
+    If model_version is not provided, it will fetch the model info from Ollama.
+    """
+    git_commit = get_git_commit_id()
+    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Get model version string
+    if request.model_version:
+        model_version = request.model_version
+    else:
+        # Fetch from Ollama
+        model_info = await get_ollama_model_info(request.model_name)
+        model_version = model_info.get("version_string", request.model_name)
+    
+    header_comment = generate_csv_header_comment(
+        model_name=request.model_name,
+        total_trials=request.total_trials,
+        successful=request.successful,
+        failed=request.failed,
+        git_commit=git_commit,
+        timestamp=timestamp,
+        model_version=model_version
+    )
+    
+    return {
+        "header_comment": header_comment,
+        "fields": {
+            "model_name": request.model_name,
+            "model_version": model_version,
+            "git_commit": git_commit,
+            "timestamp": timestamp,
+            "total_trials": request.total_trials,
+            "successful": request.successful,
+            "failed": request.failed,
+        }
+    }
+
+
+@app.get("/csv-header-info")
+async def get_csv_header_info(model_name: Optional[str] = None):
+    """
+    Get the current git commit, timestamp, and optionally model version for CSV headers.
+    
+    Args:
+        model_name: Optional model name to fetch version info for
+    
+    Returns metadata fields needed for CSV header generation.
+    """
+    result = {
+        "git_commit": get_git_commit_id(),
+        "git_commit_full": get_git_commit_full(),
+        "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+        "service_version": config.API_VERSION,
+    }
+    
+    # If model_name provided, fetch the version string
+    if model_name:
+        model_info = await get_ollama_model_info(model_name)
+        result["model_name"] = model_name
+        result["model_version"] = model_info.get("version_string", model_name)
+        result["model_details"] = {
+            "family": model_info.get("details", {}).get("family", ""),
+            "parameter_size": model_info.get("details", {}).get("parameter_size", ""),
+            "quantization_level": model_info.get("details", {}).get("quantization_level", ""),
+            "digest": model_info.get("digest", ""),
+        }
+    
+    return result
+
+
+@app.get("/model-version/{model_name}")
+async def get_model_version(model_name: str):
+    """
+    Get the full version string for a specific model.
+    
+    Returns model version in format: "llama3:latest (8B, Q4_K_M) [abc123]"
+    """
+    model_info = await get_ollama_model_info(model_name)
+    
+    return {
+        "model_name": model_name,
+        "version_string": model_info.get("version_string", model_name),
+        "details": {
+            "family": model_info.get("details", {}).get("family", ""),
+            "parameter_size": model_info.get("details", {}).get("parameter_size", ""),
+            "quantization_level": model_info.get("details", {}).get("quantization_level", ""),
+            "format": model_info.get("details", {}).get("format", ""),
+        },
+        "digest": model_info.get("digest", ""),
+        "size_bytes": model_info.get("size", ""),
+        "modified_at": model_info.get("modified_at", ""),
+    }
 
 
 # ============================================================================
@@ -1107,14 +1864,25 @@ async def batch_annotate(request: BatchAnnotationRequest):
 if __name__ == "__main__":
     import uvicorn
     
+    # Get git info at startup
+    git_commit = get_git_commit_id()
+    git_commit_full = get_git_commit_full()
+    
     print("=" * 80)
-    print(f"🚀 Starting {config.SERVICE_NAME} on port {config.SERVICE_PORT}...")
+    print(f"🚀 Starting {config.SERVICE_NAME} v{config.API_VERSION}")
     print("=" * 80)
+    print(f"🔖 Git Commit: {git_commit}")
+    if git_commit_full != git_commit:
+        print(f"   Full SHA: {git_commit_full}")
     print(f"🤖 Ollama: {config.OLLAMA_BASE_URL}")
     print(f"📋 JSON Parser: {'Available' if HAS_JSON_PARSER else 'Not Available'}")
     print(f"📝 Prompt Generator: {'Available' if HAS_PROMPT_GEN else 'Not Available'}")
+    print(f"📊 Metadata Extraction: Enabled")
+    print(f"📁 CSV Export with Metadata: Enabled")
+    print("-" * 80)
     print(f"📚 API Docs: http://localhost:{config.SERVICE_PORT}/docs")
     print(f"🔍 Health Check: http://localhost:{config.SERVICE_PORT}/health")
+    print(f"📋 Metadata: http://localhost:{config.SERVICE_PORT}/metadata")
     print("=" * 80)
     
     uvicorn.run(app, host="0.0.0.0", port=config.SERVICE_PORT, reload=True)

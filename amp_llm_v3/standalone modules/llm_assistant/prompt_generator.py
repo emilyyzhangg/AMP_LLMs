@@ -1,17 +1,28 @@
 """
-Prompt Generator for Clinical Trial Analysis
-============================================
+Improved Prompt Generator for Clinical Trial Analysis
+======================================================
 
-Generates LLM prompts from API search results for structured data extraction.
+Enhanced with:
+- Few-shot examples for each field
+- Chain-of-thought reasoning prompts
+- Clearer decision logic
+- Fixed sequence extraction
+- Better outcome determination
 """
 import json
 from typing import Dict, Any, List, Optional
 from pathlib import Path
 
 
-class PromptGenerator:
+class ImprovedPromptGenerator:
     """
-    Generate LLM prompts from clinical trial search results.
+    Generate enhanced LLM prompts from clinical trial search results.
+    
+    Key improvements:
+    - Few-shot examples embedded in system prompt
+    - Explicit chain-of-thought reasoning
+    - Clearer decision trees for each field
+    - Fixed UniProt sequence extraction
     """
     
     def __init__(self):
@@ -19,167 +30,218 @@ class PromptGenerator:
         self.modelfile_template = self._load_modelfile_template()
     
     def _load_modelfile_template(self) -> str:
-        """Load the Modelfile template."""
-        return """# Clinical Trial Research Assistant Modelfile Template
+        """Load the improved Modelfile template."""
+        return """# Improved Clinical Trial Research Assistant Modelfile Template
 
 FROM llama3.2
 
-SYSTEM \"\"\"You are a Clinical Trial Data Annotation Specialist. Extract structured information from clinical trial JSON data.
+SYSTEM \"\"\"You are a Clinical Trial Data Annotation Specialist with expertise in peptide therapeutics. Your task is to extract structured information from clinical trial data with HIGH ACCURACY.
 
-## OUTPUT FORMAT
+# REQUIRED OUTPUT FORMAT
 
-Format your response EXACTLY like this (use actual data, NOT placeholders):
+You MUST respond in EXACTLY this format with NO deviations:
 
-NCT Number: NCT07013110
-Study Title: An Artificial Intelligence-powered Approach to Precision Immunotherapy
-Study Status: RECRUITING
-Brief Summary: This clinical study is a multi-center, randomized study...
-Conditions: Rheumatoid Arthritis, Rheumatology
-Interventions/Drug: Biological: dnaJP1, Other: Hydroxychloroquine, Placebo
-Phases: PHASE2
-Enrollment: 124
-Start Date: 2025-06-18
-Completion Date: 2028-11
-Classification: AMP
-    Evidence: Study involves antimicrobial peptide for non-infection purposes
-Delivery Mode: Oral
-Sequence: FVQWFSKFLGKIEPDVSQVQDPNDYEPF
-    Evidence: DRAMP database entry for dnaJP1
-Study IDs: PMC:11855921
-Outcome: Recruiting
-Reason for Failure: N/A
-Peptide: True
-Comments: Early-phase trial investigating immunotherapy effects
+```
+NCT Number: [exact NCT ID from data]
+Study Title: [exact title from data]
+Study Status: [exact status from data]
+Brief Summary: [first 200 chars of summary]
+Conditions: [comma-separated conditions]
+Interventions/Drug: [type: name format]
+Phases: [exact phase from data]
+Enrollment: [number]
+Start Date: [YYYY-MM-DD or YYYY-MM]
+Completion Date: [YYYY-MM-DD or YYYY-MM]
 
-## CRITICAL RULES
+Classification: [AMP or Other]
+  Reasoning: [your step-by-step reasoning]
+  Evidence: [specific evidence from the data]
 
-1. Use ACTUAL data from the trial, NOT placeholder text like [title here] or [PHASE#]
-2. Do NOT wrap response in markdown code blocks (no ```)
-3. Write values directly without brackets [ ]
-4. For missing data, write exactly: N/A
-5. Use EXACT values from validation lists below
+Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
+  Reasoning: [your step-by-step reasoning]
+  Evidence: [specific evidence from the data]
 
-## VALID VALUES
-**Classification:**
-- AMP 
-- Other
+Sequence: [amino acid sequence in one-letter code, or N/A]
+  Evidence: [source of sequence or why N/A]
 
-**Delivery Mode:**
-- Injection/Infusion
-- Topical
-- Oral
-- Other
+Study IDs: [PMID:12345 or DOI:10.xxxx format, pipe-separated if multiple]
 
-**Outcome:**
-- Positive
-- Withdrawn
-- Terminated
-- Failed - completed trial
-- Active
-- Unknown
+Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
+  Reasoning: [your step-by-step reasoning]
+  Evidence: [specific evidence from the data]
 
-**Reason for Failure:**
-- Business reasons
-- Ineffective for purpose
-- Toxic/unsafe
-- Due to covid
-- Recruitment issues
+Reason for Failure: [only if Outcome is Withdrawn/Terminated/Failed, else N/A]
+  Evidence: [specific evidence if applicable]
 
-**Peptide:**
-- True
-- False
+Peptide: [True or False]
+  Reasoning: [your step-by-step reasoning]
+  Evidence: [specific evidence from the data]
 
-## EXTRACTION GUIDELINES
+Comments: [any additional relevant observations]
+```
 
-**Status to Outcome mapping:**
-- RECRUITING, NOT_YET_RECRUITING, ENROLLING_BY_INVITATION, ACTIVE_NOT_RECRUITING → Active
-- WITHDRAWN → Withdrawn
-- TERMINATED → Terminated
-- COMPLETED → Positive or Failed - completed trial (positive or failed classification based on API search results)
-- COMPLETED or Other statuses → Unknown. If trial is completed but no outcome results found, classify as Unknown.
+# DECISION LOGIC WITH EXAMPLES
 
-**Peptide detection:**
-Look for:
-- Keywords in title/summary: peptide, antimicrobial peptide, AMP
-- Intervention names matching known peptide drugs
-- DRAMP or UniProt database matches
-- PubMed/PubMed Central/BioC/extended API search indicating peptide sequences
+## 1. PEPTIDE DETERMINATION (True/False)
 
-**Classification logic:**
-- If antimicrobial peptide. (I.e. the peptide has antimicrobial activity (either through direct killing, growth inhibition, or immune-modulation) → AMP
-- If a peptide but not an antimicrobial peptide → Other
-- Confirm with evidence from multiple data sources (trial description, interventions, literature, databases). 
-- Look for explicit mentions of antimicrobial activity or immune-modulation.
-- Search PubMed/PubMed Central/BioC/extended API results for supporting evidence suggesting that the peptide has antimicrobial activity.
-- Search DRAMP database for peptide classification. If the peptide is on DRAMP, classify as AMP.
+**Definition**: A peptide is a short chain of amino acids (typically 2-100 amino acids). 
 
-**Delivery Mode logic:**
-- intravenous, subcutaneous, intramuscular, infusion, IV, injection → Injection/Infusion
-- topical, dermal, skin application, cream, varnish, rinse, wash, strip, spray, covering → Topical
-- oral, by mouth, tablet, capsule, pill, drink, food → Oral
-- Delivery mode can usually be inferred from NCT ID look up results.
-- If not explicitly stated in clinicaltrials.gov lookup results, search PubMed/PubMed Central/BioC/extended API results for supporting evidence. 
+**TRUE if**:
+- Drug name contains "peptide" or known peptide drug names
+- Intervention described as peptide-based therapeutic
+- Drug is on DRAMP (peptide database)
+- UniProt shows protein with <200 amino acids
+- Literature describes amino acid sequence
 
-**Sequence logic:**
-- Look for evidence of amino acid sequences in the clinical trial description, UniProt/DRAMP database matches, or Pubmed/PubMed or BioC Central literature.
-- Sequences should be in standard one-letter amino acid code.
-- If sequences are amidated, include it as part of the sequence (e.g., KLLLKLLLKLLL-NH2).
-- If sequences contain non-standard amino acids, represent them with 'X' (e.g., ACDEFGHIKXLMNPQRSTVWY).
-- If sequences contain modifications, include them in parentheses (e.g., ACDEFGHIK(Me)LMNPQRSTVWY).
-- If sequences contain D-amino acids, denote them with lowercase letters (e.g., AcdEFGHIKLMNPQRSTVWY).
-- Look for explicit peptide sequences in trial description, interventions, or literature.
-- If multiple sequences found because multiple drugs are being tested or a drug contains multiple peptide components, list all sequences separated with the pipe character '|'.
-- If no sequence found, write N/A.
+**FALSE if**:
+- Drug is a monoclonal antibody (mAb, -mab suffix)
+- Drug is a full-length protein (>200 aa)
+- Drug is a small molecule (non-amino acid based)
+- Drug is a vaccine without peptide epitopes
+- Drug is gene therapy or cell therapy
 
-**Study IDs logic:**
-- Look for peer-reviewed publications that show the results of the clinical trial. 
-- Look for references to PubMed articles in the clinical trial references section.
-- Refer to PubMed/PubMed Central/BioC/extended API search results for additional article matches.
-- Favour PMID of the study publication if available. 
-- If PMID is not available but the study is found with extended API search, use the DOI of the study. 
-- List all relevant PMIDs separated by the pipe character '|'.
+**Examples**:
+- "LL-37 derivative" → Peptide: True (known AMP)
+- "Nisin" → Peptide: True (known peptide antibiotic)
+- "Pembrolizumab" → Peptide: False (monoclonal antibody)
+- "Metformin" → Peptide: False (small molecule)
+- "Insulin glargine" → Peptide: True (51 aa hormone)
 
-**Outcome logic:**
-- Positive: Trial met primary endpoints with statistically significant results showing efficacy/safety.
-- Withdrawn: Trial was withdrawn before enrolling participants.
-- Terminated: Trial was ended early and did not complete as planned.
-- Failed - completed trial: Trial completed but did not meet primary endpoints or showed lack of efficacy/safety concerns.
-- Active: Trial is ongoing (recruiting or active but not yet recruiting).
-- Unknown: Trial completed but no results available or status is unclear.
+## 2. CLASSIFICATION (AMP vs Other)
 
-**Reason for Failure logic:**
-- Only fill out this field if the Outcome is Withdrawn, Terminated, or Failed - completed trial. Do not fill out if Outcome is Positive, Active, or Unknown.
-- Business reasons: Trial ended due to funding, sponsorship, or strategic business decisions.
-- Ineffective for purpose: Trial ended due to lack of efficacy or failure to meet endpoints.
-- Toxic/unsafe: Trial ended due to safety concerns or adverse events.
-- Due to covid: Trial ended or paused due to COVID-19 related issues.
-- Recruitment issues: Trial ended due to insufficient participant enrollment.
+**First check**: Is this a peptide? If Peptide=False, Classification should still be determined but will typically be "Other" for non-peptides.
 
-**Peptide logic:**
-- True if the trial tests a peptide drug or intervention.
-- False if the drug being tested is a non-peptide small molecule drug, antibody-based drug, a protein drug that has a complex tertiary structure, or a very long peptide that is >200 amino acids long. 
+**AMP (Antimicrobial Peptide) if**:
+- Peptide has direct antimicrobial activity (kills bacteria, fungi, viruses)
+- Peptide modulates immune response against pathogens
+- Peptide is listed in DRAMP database as antimicrobial
+- Literature describes antimicrobial mechanism
+- Drug targets infectious disease, wound healing with antimicrobial intent
 
-**DO NOT:**
-- Use placeholder text like [title here], [PHASE#], [condition1, condition2]
-- Wrap output in code blocks
-- Include brackets in actual data
-- Leave fields blank (use N/A instead)
+**Other if**:
+- Peptide for cancer (unless antimicrobial mechanism)
+- Peptide for metabolic disease
+- Peptide for autoimmune conditions (unless antimicrobial)
+- Peptide hormone replacement
+- Any non-peptide drug
 
-**DO:**
-- Extract actual values from the JSON
-- Write values directly without formatting
-- Use exact validation list values
-- Provide clear evidence for classifications
+**Examples**:
+- "LL-37 for wound healing" → Classification: AMP (antimicrobial peptide)
+- "Defensin analog for bacterial infection" → Classification: AMP
+- "GLP-1 analog for diabetes" → Classification: Other (metabolic peptide)
+- "Thymosin alpha-1 for cancer" → Classification: Other (immunomodulator, not antimicrobial)
+- "Nisin for bacterial infection" → Classification: AMP
 
-Now extract the clinical trial data following this exact format with actual data.\"\"\"
+## 3. DELIVERY MODE
 
-# Optimized parameters
-PARAMETER temperature 0.15
-PARAMETER top_p 0.9
-PARAMETER top_k 40
-PARAMETER repeat_penalty 1.2
-PARAMETER num_ctx 8192
-PARAMETER num_predict 2048
+**Decision Tree**:
+1. Check intervention descriptions for explicit route
+2. Check arm group descriptions
+3. Check trial title/summary
+4. Infer from intervention type if not stated
+
+**Injection/Infusion**:
+- Keywords: IV, intravenous, SC, subcutaneous, IM, intramuscular, injection, infusion, bolus, drip
+- Default for: Most biologicals, peptides without other indication
+
+**Topical**:
+- Keywords: topical, dermal, cream, ointment, gel, spray (skin), patch, varnish, rinse, mouthwash, eye drops, nasal spray, wound dressing
+- Context: Skin conditions, wound care, oral/dental, ophthalmic
+
+**Oral**:
+- Keywords: oral, tablet, capsule, pill, by mouth, PO, solution (drink), syrup
+- Note: Most peptides degrade orally - only choose if explicitly stated
+
+**Other**:
+- Inhalation, rectal, vaginal, implant, or unclear/multiple routes
+
+**Examples**:
+- "Subcutaneous injection once weekly" → Delivery Mode: Injection/Infusion
+- "Topical gel applied to wound site" → Delivery Mode: Topical
+- "Oral capsule twice daily" → Delivery Mode: Oral
+- "Intravitreal injection" → Delivery Mode: Injection/Infusion
+- "Inhaled formulation" → Delivery Mode: Other
+
+## 4. OUTCOME
+
+**Active**: Status is RECRUITING, NOT_YET_RECRUITING, ENROLLING_BY_INVITATION, ACTIVE_NOT_RECRUITING, or AVAILABLE
+→ Outcome: Active (trial still ongoing)
+
+**Withdrawn**: Status is WITHDRAWN
+→ Outcome: Withdrawn (never started enrollment)
+
+**Terminated**: Status is TERMINATED
+→ Outcome: Terminated (stopped early)
+
+**Completed** (requires analysis):
+- If hasResults=true AND primary endpoints met with statistical significance → Outcome: Positive
+- If hasResults=true AND primary endpoints NOT met OR safety issues → Outcome: Failed - completed trial
+- If hasResults=false OR no outcome data available → Outcome: Unknown
+
+**SUSPENDED, WITHHELD, NO_LONGER_AVAILABLE**: → Outcome: Unknown
+
+**Examples**:
+- Status: RECRUITING → Outcome: Active
+- Status: COMPLETED, hasResults: true, "met primary endpoint" → Outcome: Positive
+- Status: COMPLETED, hasResults: true, "failed to show efficacy" → Outcome: Failed - completed trial
+- Status: COMPLETED, hasResults: false → Outcome: Unknown
+- Status: TERMINATED, whyStopped: "lack of efficacy" → Outcome: Terminated
+
+## 5. REASON FOR FAILURE
+
+**Only complete if Outcome is**: Withdrawn, Terminated, or Failed - completed trial
+**Otherwise**: N/A
+
+**Categories**:
+- Business reasons: funding, sponsorship, company decision, strategic, acquisition
+- Ineffective for purpose: lack of efficacy, failed endpoints, no benefit
+- Toxic/unsafe: adverse events, safety concerns, toxicity
+- Due to covid: COVID-19 related delays or issues
+- Recruitment issues: enrollment problems, difficulty recruiting, low accrual
+
+**Use whyStopped field** when available. Otherwise infer from context.
+
+## 6. SEQUENCE EXTRACTION
+
+**Where to find sequences**:
+1. UniProt results - look for "sequence" field with actual amino acid letters
+2. DRAMP database entries - check for sequence information
+3. PubMed/PMC article abstracts - may contain sequences
+4. BioC annotations - may have sequence entities
+
+**Format rules**:
+- Use standard one-letter amino acid code: ACDEFGHIKLMNPQRSTVWY
+- Include modifications in parentheses: (Ac)KLRRR or KLRRR(NH2)
+- D-amino acids in lowercase: kLrRr
+- Multiple sequences separated by pipe: KLRRR|GWFKKR
+- If sequence not found in data: N/A
+
+**Example sequences**:
+- LL-37: LLGDFFRKSKEKIGKEFKRIVQRIKDFLRNLVPRTES
+- Nisin: ITSISLCTPGCKTGALMGCNMKTATCHCSIHVSK
+
+**IMPORTANT**: Only report sequences you actually find in the provided data. Do NOT guess or hallucinate sequences.
+
+# CRITICAL RULES
+
+1. ALWAYS follow the exact output format shown above
+2. ALWAYS include Reasoning for Classification, Delivery Mode, Outcome, and Peptide
+3. NEVER guess sequences - only report if found in data, otherwise N/A
+4. NEVER skip fields - use N/A for missing data
+5. Do NOT wrap output in markdown code blocks
+6. Use ONLY the valid values specified for each field
+7. Base all decisions on evidence from the provided data
+8. DO NOT use ** or bold formatting. Put each field on its own line.
+
+Now analyze the clinical trial data and produce your annotation.\"\"\"
+
+# Optimized parameters for accuracy
+PARAMETER temperature 0.1
+PARAMETER top_p 0.85
+PARAMETER top_k 30
+PARAMETER repeat_penalty 1.15
+PARAMETER num_ctx 16384
+PARAMETER num_predict 3000
 
 # Stop sequences
 PARAMETER stop "<|eot_id|>"
@@ -204,12 +266,11 @@ PARAMETER stop "</s>"
         """
         sections = []
         
-        # Add header with strict output format instructions
-        sections.append(f"# Clinical Trial Data Extraction: {nct_id}")
+        # Add header with clear task
+        sections.append(f"# CLINICAL TRIAL ANNOTATION TASK: {nct_id}")
         sections.append("""
-You MUST extract and output the following fields in EXACTLY this format.
-Use ONLY the valid values listed for each field. Do NOT add explanations within the field values.
-
+Analyze the following clinical trial data carefully. For each field requiring classification, 
+think through the decision logic step by step before providing your answer.
 
 ## OUTPUT FORMAT
 NCT Number: [NCT ID]
@@ -239,59 +300,65 @@ Study IDs: [PMIDs separated by |]
 Comments: [Any additional notes]
 
 ---
-## DATA TO ANALYZE:
+# DATA SOURCES
 """)
         
-        # Section 1: ClinicalTrials.gov Data
+        # Section 1: ClinicalTrials.gov Data (most authoritative)
         ct_data = self._format_clinical_trials_data(search_results)
         if ct_data:
-            sections.append("\n### ClinicalTrials.gov Data")
+            sections.append("\n## PRIMARY SOURCE: ClinicalTrials.gov")
             sections.append(ct_data)
         
-        # Section 2: PubMed Articles
-        pubmed_data = self._format_pubmed_data(search_results)
-        if pubmed_data:
-            sections.append("\n### PubMed Literature")
-            sections.append(pubmed_data)
+        # Section 2: UniProt Data (for sequence and protein info)
+        uniprot_data = self._format_uniprot_data(search_results)
+        if uniprot_data:
+            sections.append("\n## PROTEIN DATABASE: UniProt")
+            sections.append(uniprot_data)
         
-        # Section 3: PMC Full-Text Articles
-        pmc_data = self._format_pmc_data(search_results)
-        if pmc_data:
-            sections.append("\n### PubMed Central Articles")
-            sections.append(pmc_data)
-        
-        # Section 4: PMC BioC Data
-        bioc_data = self._format_bioc_data(search_results)
-        if bioc_data:
-            sections.append("\n### BioC Annotated Data")
-            sections.append(bioc_data)
-
-        
-        # Section 5: Extended API Data (if available)
+        # Section 3: DRAMP/Extended Data
         extended_data = self._format_extended_data(search_results)
         if extended_data:
-            sections.append("\n### Extended Web & Database Search")
+            sections.append("\n## EXTENDED SEARCH RESULTS")
             sections.append(extended_data)
+        
+        # Section 4: PubMed Articles
+        pubmed_data = self._format_pubmed_data(search_results)
+        if pubmed_data:
+            sections.append("\n## LITERATURE: PubMed")
+            sections.append(pubmed_data)
+        
+        # Section 5: PMC Full-Text Articles
+        pmc_data = self._format_pmc_data(search_results)
+        if pmc_data:
+            sections.append("\n## LITERATURE: PubMed Central")
+            sections.append(pmc_data)
+        
+        # Section 6: PMC BioC Data
+        bioc_data = self._format_bioc_data(search_results)
+        if bioc_data:
+            sections.append("\n## ANNOTATED DATA: BioC")
+            sections.append(bioc_data)
         
         # Add final instruction
         sections.append("""
 ---
-## EXTRACTION TASK
+# YOUR TASK
 
-Now extract the clinical trial data using the EXACT format shown above.
-- Use ONLY the valid values listed
-- Include evidence for each classification
-- Write N/A for missing information
-- Do NOT wrap output in code blocks
-- Do NOT add extra explanations outside the format
+Based on ALL the data provided above, complete the annotation following the EXACT format 
+specified in your instructions. Remember to:
 
-Begin extraction:
+1. Include step-by-step REASONING for Classification, Delivery Mode, Outcome, and Peptide
+2. Only report Sequence if you find actual amino acid sequences in the data
+3. Use evidence from the specific data sources when available
+4. If data is missing or unclear, state N/A with brief explanation
+
+Begin your annotation now:
 """)
         
         return "\n".join(sections)
     
     def _format_clinical_trials_data(self, results: Dict[str, Any]) -> str:
-        """Format ClinicalTrials.gov data."""
+        """Format ClinicalTrials.gov data with key fields highlighted."""
         ct_source = results.get("sources", {}).get("clinical_trials", {})
         
         if not ct_source.get("success"):
@@ -299,101 +366,322 @@ Begin extraction:
         
         ct_data = ct_source.get("data", {})
         protocol = ct_data.get("protocolSection", {})
+        has_results = ct_data.get("hasResults", False)
         
         lines = []
         
         # Identification
         ident = protocol.get("identificationModule", {})
         lines.append(f"**NCT ID:** {ident.get('nctId', 'N/A')}")
-        lines.append(f"**Title:** {ident.get('officialTitle') or ident.get('briefTitle', 'N/A')}")
+        lines.append(f"**Official Title:** {ident.get('officialTitle') or ident.get('briefTitle', 'N/A')}")
         lines.append(f"**Brief Title:** {ident.get('briefTitle', 'N/A')}")
         
-        # Status
+        # Status - CRITICAL for Outcome determination
         status_mod = protocol.get("statusModule", {})
+        lines.append(f"\n**[CRITICAL FOR OUTCOME]**")
         lines.append(f"**Overall Status:** {status_mod.get('overallStatus', 'N/A')}")
+        lines.append(f"**Has Results:** {has_results}")
+        why_stopped = status_mod.get('whyStopped', '')
+        if why_stopped:
+            lines.append(f"**Why Stopped:** {why_stopped}")
         lines.append(f"**Start Date:** {status_mod.get('startDateStruct', {}).get('date', 'N/A')}")
         lines.append(f"**Completion Date:** {status_mod.get('completionDateStruct', {}).get('date', 'N/A')}")
         
         # Description
         desc_mod = protocol.get("descriptionModule", {})
         brief_summary = desc_mod.get("briefSummary", "N/A")
-        if len(brief_summary) > 500:
-            brief_summary = brief_summary[:500] + "..."
-        lines.append(f"**Brief Summary:** {brief_summary}")
+        if len(brief_summary) > 800:
+            brief_summary = brief_summary[:800] + "..."
+        lines.append(f"\n**Brief Summary:** {brief_summary}")
+        
+        detailed_desc = desc_mod.get("detailedDescription", "")
+        if detailed_desc and len(detailed_desc) > 100:
+            if len(detailed_desc) > 600:
+                detailed_desc = detailed_desc[:600] + "..."
+            lines.append(f"\n**Detailed Description:** {detailed_desc}")
         
         # Conditions
         cond_mod = protocol.get("conditionsModule", {})
         conditions = cond_mod.get("conditions", [])
-        lines.append(f"**Conditions:** {', '.join(conditions) if conditions else 'N/A'}")
+        lines.append(f"\n**Conditions:** {', '.join(conditions) if conditions else 'N/A'}")
         
-        # Interventions
+        keywords = cond_mod.get("keywords", [])
+        if keywords:
+            lines.append(f"**Keywords:** {', '.join(keywords)}")
+        
+        # Interventions - CRITICAL for Peptide, Classification, Delivery Mode
         arms_int = protocol.get("armsInterventionsModule", {})
         interventions = arms_int.get("interventions", [])
         if interventions:
-            int_strings = []
-            for intv in interventions[:5]:  # Limit to 5
+            lines.append(f"\n**[CRITICAL FOR PEPTIDE/DELIVERY MODE]**")
+            lines.append("**Interventions:**")
+            for intv in interventions[:5]:
                 int_type = intv.get("type", "")
                 int_name = intv.get("name", "")
-                int_strings.append(f"{int_type}: {int_name}")
-            lines.append(f"**Interventions:** {', '.join(int_strings)}")
+                int_desc = intv.get("description", "")
+                lines.append(f"  - Type: {int_type}")
+                lines.append(f"    Name: {int_name}")
+                if int_desc:
+                    if len(int_desc) > 400:
+                        int_desc = int_desc[:400] + "..."
+                    lines.append(f"    Description: {int_desc}")
         else:
             lines.append("**Interventions:** N/A")
+        
+        # Arm Groups - may contain delivery mode info
+        arm_groups = arms_int.get("armGroups", [])
+        if arm_groups:
+            lines.append("\n**Arm Groups:**")
+            for arm in arm_groups[:4]:
+                label = arm.get("label", "")
+                arm_type = arm.get("type", "")
+                arm_desc = arm.get("description", "")
+                lines.append(f"  - {label} ({arm_type})")
+                if arm_desc:
+                    if len(arm_desc) > 300:
+                        arm_desc = arm_desc[:300] + "..."
+                    lines.append(f"    Description: {arm_desc}")
         
         # Design
         design_mod = protocol.get("designModule", {})
         phases = design_mod.get("phases", [])
-        lines.append(f"**Phases:** {', '.join(phases) if phases else 'N/A'}")
+        lines.append(f"\n**Phases:** {', '.join(phases) if phases else 'N/A'}")
         
         enrollment_info = design_mod.get("enrollmentInfo", {})
         lines.append(f"**Enrollment:** {enrollment_info.get('count', 'N/A')}")
+        
+        # Outcomes - helpful for outcome determination
+        outcomes_mod = protocol.get("outcomesModule", {})
+        primary_outcomes = outcomes_mod.get("primaryOutcomes", [])
+        if primary_outcomes:
+            lines.append("\n**Primary Outcomes:**")
+            for i, outcome in enumerate(primary_outcomes[:3], 1):
+                measure = outcome.get("measure", "")
+                lines.append(f"  {i}. {measure}")
         
         # References
         refs_mod = protocol.get("referencesModule", {})
         references = refs_mod.get("references", [])
         if references:
-            lines.append("\n**References:**")
+            lines.append("\n**References (for Study IDs):**")
             for i, ref in enumerate(references[:5], 1):
                 pmid = ref.get("pmid", "")
+                ref_type = ref.get("type", "")
                 citation = ref.get("citation", "")
                 if pmid:
-                    lines.append(f"  {i}. PMID: {pmid}")
-                if citation:
-                    lines.append(f"     {citation[:200]}...")
+                    lines.append(f"  {i}. PMID: {pmid} ({ref_type})")
+                elif citation:
+                    lines.append(f"  {i}. {citation[:150]}...")
+        
+        return "\n".join(lines)
+    
+    def _format_uniprot_data(self, results: Dict[str, Any]) -> str:
+        """
+        Format UniProt data with ACTUAL SEQUENCES extracted.
+        
+        This is critical for sequence annotation - the original code only
+        extracted sequence length, not the actual sequence!
+        """
+        extended_source = results.get("sources", {}).get("extended", {})
+        if not extended_source:
+            return ""
+        
+        uniprot = extended_source.get("uniprot", {})
+        if not uniprot.get("success"):
+            return ""
+        
+        uniprot_data = uniprot.get("data", {})
+        uniprot_results = uniprot_data.get("results", [])
+        
+        if not uniprot_results:
+            return ""
+        
+        lines = []
+        lines.append(f"**Total UniProt Results:** {len(uniprot_results)}")
+        lines.append(f"**Query:** {uniprot_data.get('query', 'N/A')}\n")
+        
+        for i, result in enumerate(uniprot_results[:5], 1):
+            lines.append(f"### Protein {i}")
+            
+            # Accession
+            accession = result.get("primaryAccession", "")
+            if accession:
+                lines.append(f"**Accession:** {accession}")
+            
+            # Entry name
+            entry_name = result.get("uniProtkbId", "")
+            if entry_name:
+                lines.append(f"**Entry Name:** {entry_name}")
+            
+            # Protein name
+            protein_desc = result.get("proteinDescription", {})
+            rec_name = protein_desc.get("recommendedName", {})
+            full_name = rec_name.get("fullName", {}).get("value", "")
+            if full_name:
+                lines.append(f"**Protein Name:** {full_name}")
+            
+            # Organism
+            organism = result.get("organism", {})
+            organism_name = organism.get("scientificName", "")
+            if organism_name:
+                lines.append(f"**Organism:** {organism_name}")
+            
+            # CRITICAL: Extract actual sequence, not just length!
+            sequence_info = result.get("sequence", {})
+            seq_length = sequence_info.get("length", 0)
+            seq_value = sequence_info.get("value", "")  # The actual amino acid sequence!
+            
+            if seq_value:
+                lines.append(f"\n**[SEQUENCE DATA - USE FOR ANNOTATION]**")
+                lines.append(f"**Sequence Length:** {seq_length} amino acids")
+                # Include full sequence if short enough, otherwise truncate with note
+                if len(seq_value) <= 200:
+                    lines.append(f"**Sequence:** {seq_value}")
+                else:
+                    lines.append(f"**Sequence (first 200 aa):** {seq_value[:200]}...")
+                    lines.append(f"**Note:** Full sequence is {seq_length} aa - this may indicate a protein rather than peptide if >100 aa")
+            elif seq_length:
+                lines.append(f"**Sequence Length:** {seq_length} aa (sequence not retrieved)")
+            
+            # Function
+            comments = result.get("comments", [])
+            for comment in comments:
+                if comment.get("commentType") == "FUNCTION":
+                    func_texts = comment.get("texts", [])
+                    if func_texts:
+                        func_text = func_texts[0].get("value", "")
+                        if len(func_text) > 400:
+                            func_text = func_text[:400] + "..."
+                        lines.append(f"**Function:** {func_text}")
+                    break
+            
+            # Keywords - may indicate antimicrobial activity
+            result_keywords = result.get("keywords", [])
+            if result_keywords:
+                keyword_values = [kw.get("name", "") for kw in result_keywords[:10]]
+                if keyword_values:
+                    lines.append(f"**Keywords:** {', '.join(keyword_values)}")
+            
+            lines.append("")
+        
+        return "\n".join(lines)
+    
+    def _format_extended_data(self, results: Dict[str, Any]) -> str:
+        """Format extended API search data (DuckDuckGo, SERP, Scholar, OpenFDA)."""
+        extended_source = results.get("sources", {}).get("extended", {})
+        
+        if not extended_source:
+            return ""
+        
+        lines = []
+        has_data = False
+        
+        # DuckDuckGo Web Search
+        ddg = extended_source.get("duckduckgo", {})
+        if ddg.get("success"):
+            has_data = True
+            ddg_data = ddg.get("data", {})
+            ddg_results = ddg_data.get("results", [])
+            
+            lines.append("### Web Search Results")
+            lines.append(f"**Query:** {ddg_data.get('query', 'N/A')}\n")
+            
+            for i, result in enumerate(ddg_results[:5], 1):
+                lines.append(f"**Result {i}:**")
+                lines.append(f"  Title: {result.get('title', 'N/A')}")
+                snippet = result.get('snippet', '')
+                if snippet:
+                    if len(snippet) > 300:
+                        snippet = snippet[:300] + "..."
+                    lines.append(f"  Snippet: {snippet}")
+                lines.append("")
+        
+        # OpenFDA Drug Database
+        openfda = extended_source.get("openfda", {})
+        if openfda.get("success"):
+            has_data = True
+            fda_data = openfda.get("data", {})
+            fda_results = fda_data.get("results", [])
+            
+            lines.append("\n### FDA Drug Database")
+            
+            for i, result in enumerate(fda_results[:3], 1):
+                lines.append(f"**Drug {i}:**")
+                
+                openfda_info = result.get("openfda", {})
+                
+                brand_names = openfda_info.get("brand_name", [])
+                if brand_names:
+                    lines.append(f"  Brand Name(s): {', '.join(brand_names[:3])}")
+                
+                generic_names = openfda_info.get("generic_name", [])
+                if generic_names:
+                    lines.append(f"  Generic Name(s): {', '.join(generic_names[:3])}")
+                
+                # Route - IMPORTANT for Delivery Mode
+                routes = openfda_info.get("route", [])
+                if routes:
+                    lines.append(f"  **Route of Administration:** {', '.join(routes[:3])}")
+                
+                # Product type
+                product_types = openfda_info.get("product_type", [])
+                if product_types:
+                    lines.append(f"  Product Type: {', '.join(product_types)}")
+                
+                lines.append("")
+        
+        # Google Scholar
+        scholar = extended_source.get("scholar", {})
+        if scholar.get("success"):
+            has_data = True
+            scholar_data = scholar.get("data", {})
+            scholar_results = scholar_data.get("results", [])
+            
+            lines.append("\n### Academic Literature (Google Scholar)")
+            
+            for i, result in enumerate(scholar_results[:3], 1):
+                lines.append(f"**Paper {i}:**")
+                lines.append(f"  Title: {result.get('title', 'N/A')}")
+                snippet = result.get('snippet', '')
+                if snippet:
+                    if len(snippet) > 300:
+                        snippet = snippet[:300] + "..."
+                    lines.append(f"  Snippet: {snippet}")
+                lines.append("")
+        
+        if not has_data:
+            return ""
         
         return "\n".join(lines)
     
     def _format_pubmed_data(self, results: Dict[str, Any]) -> str:
-        """Format PubMed data."""
+        """Format PubMed data with focus on relevant content."""
         pubmed_source = results.get("sources", {}).get("pubmed", {})
         
         if not pubmed_source.get("success"):
-            return "PubMed data not available."
+            return ""
         
         pubmed_data = pubmed_source.get("data", {})
         articles = pubmed_data.get("articles", [])
         
         if not articles:
-            return "No PubMed articles found."
+            return ""
         
         lines = []
         lines.append(f"**Total Articles Found:** {pubmed_data.get('total_found', 0)}")
         lines.append(f"**Search Strategy:** {pubmed_data.get('search_strategy', 'N/A')}\n")
         
-        for i, article in enumerate(articles[:5], 1):  # Limit to 5
+        for i, article in enumerate(articles[:4], 1):
             lines.append(f"### Article {i}")
             lines.append(f"**PMID:** {article.get('pmid', 'N/A')}")
             lines.append(f"**Title:** {article.get('title', 'N/A')}")
             lines.append(f"**Journal:** {article.get('journal', 'N/A')}")
             lines.append(f"**Year:** {article.get('year', 'N/A')}")
             
-            authors = article.get("authors", [])
-            if authors:
-                lines.append(f"**Authors:** {', '.join(authors[:3])}")
-            
             abstract = article.get("abstract", "")
             if abstract:
-                if len(abstract) > 500:
-                    abstract = abstract[:500] + "..."
+                if len(abstract) > 600:
+                    abstract = abstract[:600] + "..."
                 lines.append(f"**Abstract:** {abstract}")
             
             lines.append("")
@@ -405,25 +693,22 @@ Begin extraction:
         pmc_source = results.get("sources", {}).get("pmc", {})
         
         if not pmc_source.get("success"):
-            return "PMC data not available."
+            return ""
         
         pmc_data = pmc_source.get("data", {})
         articles = pmc_data.get("articles", [])
         
         if not articles:
-            return "No PMC articles found."
+            return ""
         
         lines = []
-        lines.append(f"**Total Articles Found:** {pmc_data.get('total_found', 0)}")
-        lines.append(f"**Search Strategy:** {pmc_data.get('search_strategy', 'N/A')}\n")
+        lines.append(f"**Total PMC Articles Found:** {pmc_data.get('total_found', 0)}\n")
         
-        for i, article in enumerate(articles[:5], 1):
+        for i, article in enumerate(articles[:3], 1):
             lines.append(f"### PMC Article {i}")
             lines.append(f"**PMCID:** {article.get('pmcid', 'N/A')}")
             lines.append(f"**PMID:** {article.get('pmid', 'N/A')}")
             lines.append(f"**Title:** {article.get('title', 'N/A')}")
-            lines.append(f"**Journal:** {article.get('journal', 'N/A')}")
-            lines.append(f"**Year:** {article.get('year', 'N/A')}")
             
             abstract = article.get("abstract", "")
             if abstract:
@@ -440,286 +725,55 @@ Begin extraction:
         bioc_source = results.get("sources", {}).get("pmc_bioc", {})
         
         if not bioc_source.get("success"):
-            return "BioC data not available."
+            return ""
         
         bioc_data = bioc_source.get("data", {})
         articles = bioc_data.get("articles", [])
         
         if not articles:
-            return "No BioC annotated articles found."
+            return ""
         
         lines = []
-        lines.append(f"**Total BioC Articles:** {bioc_data.get('total_fetched', 0)}/{bioc_data.get('total_found', 0)}")
-        lines.append(f"**Sources:** PubMed: {bioc_data.get('sources', {}).get('pubmed', 0)}, PMC: {bioc_data.get('sources', {}).get('pmc', 0)}\n")
+        lines.append(f"**Total BioC Articles:** {bioc_data.get('total_fetched', 0)}/{bioc_data.get('total_found', 0)}\n")
         
-        for i, article in enumerate(articles[:3], 1):  # Limit to 3 due to size
+        for i, article in enumerate(articles[:2], 1):
             lines.append(f"### BioC Article {i}")
             lines.append(f"**ID:** {article.get('pmid', 'N/A')}")
             
             bioc_content = article.get("bioc_data", {})
-            
-            # Extract collection info
-            collection = bioc_content.get("collection", {})
-            if collection:
-                lines.append(f"**Source:** {collection.get('source', 'N/A')}")
-            
-            # Extract document info
             documents = bioc_content.get("documents", [])
+            
             if documents:
                 doc = documents[0]
-                
-                # Get passages with annotations
                 passages = doc.get("passages", [])
+                
                 if passages:
                     lines.append("\n**Key Content:**")
                     
-                    for j, passage in enumerate(passages[:3], 1):
+                    for j, passage in enumerate(passages[:2], 1):
                         passage_type = passage.get("infons", {}).get("type", "text")
                         text = passage.get("text", "")
                         
-                        if text and len(text) > 300:
-                            text = text[:300] + "..."
+                        if text and len(text) > 400:
+                            text = text[:400] + "..."
                         
                         if text:
                             lines.append(f"\n*{passage_type.title()}:*")
                             lines.append(text)
                         
-                        # Show annotations if present
+                        # Show annotations - may contain sequence info
                         annotations = passage.get("annotations", [])
                         if annotations:
-                            lines.append("\n*Annotations:*")
-                            for ann in annotations[:5]:  # Limit to 5
+                            relevant_anns = []
+                            for ann in annotations[:5]:
                                 ann_type = ann.get("infons", {}).get("type", "")
                                 ann_text = ann.get("text", "")
                                 if ann_type and ann_text:
-                                    lines.append(f"  - {ann_type}: {ann_text}")
+                                    relevant_anns.append(f"{ann_type}: {ann_text}")
+                            if relevant_anns:
+                                lines.append(f"\n*Annotations:* {'; '.join(relevant_anns)}")
             
             lines.append("")
-        
-        return "\n".join(lines)
-    
-    def _format_extended_data(self, results: Dict[str, Any]) -> str:
-        """Format extended API search data (DuckDuckGo, SERP, Scholar, OpenFDA, UniProt)."""
-        extended_source = results.get("sources", {}).get("extended", {})
-        
-        if not extended_source:
-            return ""
-        
-        lines = []
-        has_data = False
-        
-        # DuckDuckGo Web Search
-        ddg = extended_source.get("duckduckgo", {})
-        if ddg.get("success"):
-            has_data = True
-            ddg_data = ddg.get("data", {})
-            ddg_results = ddg_data.get("results", [])
-            
-            lines.append("### DuckDuckGo Web Search")
-            lines.append(f"**Total Results:** {ddg_data.get('total_found', 0)}")
-            lines.append(f"**Query:** {ddg_data.get('query', 'N/A')}\n")
-            
-            for i, result in enumerate(ddg_results[:5], 1):
-                lines.append(f"**Result {i}:**")
-                lines.append(f"  Title: {result.get('title', 'N/A')}")
-                lines.append(f"  URL: {result.get('url', 'N/A')}")
-                snippet = result.get('snippet', '')
-                if snippet:
-                    if len(snippet) > 300:
-                        snippet = snippet[:300] + "..."
-                    lines.append(f"  Snippet: {snippet}")
-                lines.append("")
-        
-        # Google Search (SERP API)
-        serp = extended_source.get("serpapi", {})
-        if serp.get("success"):
-            has_data = True
-            serp_data = serp.get("data", {})
-            serp_results = serp_data.get("results", [])
-            
-            lines.append("\n### Google Search Results")
-            lines.append(f"**Total Results:** {serp_data.get('total_found', 0)}")
-            lines.append(f"**Query:** {serp_data.get('query', 'N/A')}\n")
-            
-            for i, result in enumerate(serp_results[:5], 1):
-                lines.append(f"**Result {i}:**")
-                lines.append(f"  Title: {result.get('title', 'N/A')}")
-                lines.append(f"  URL: {result.get('url', 'N/A')}")
-                snippet = result.get('snippet', '')
-                if snippet:
-                    if len(snippet) > 300:
-                        snippet = snippet[:300] + "..."
-                    lines.append(f"  Snippet: {snippet}")
-                lines.append("")
-        
-        # Google Scholar
-        scholar = extended_source.get("scholar", {})
-        if scholar.get("success"):
-            has_data = True
-            scholar_data = scholar.get("data", {})
-            scholar_results = scholar_data.get("results", [])
-            
-            lines.append("\n### Google Scholar Results")
-            lines.append(f"**Total Results:** {scholar_data.get('total_found', 0)}")
-            lines.append(f"**Query:** {scholar_data.get('query', 'N/A')}\n")
-            
-            for i, result in enumerate(scholar_results[:5], 1):
-                lines.append(f"**Result {i}:**")
-                lines.append(f"  Title: {result.get('title', 'N/A')}")
-                lines.append(f"  URL: {result.get('url', 'N/A')}")
-                
-                cited_by = result.get('cited_by')
-                if cited_by:
-                    lines.append(f"  Cited by: {cited_by}")
-                
-                snippet = result.get('snippet', '')
-                if snippet:
-                    if len(snippet) > 300:
-                        snippet = snippet[:300] + "..."
-                    lines.append(f"  Snippet: {snippet}")
-                lines.append("")
-        
-        # OpenFDA Drug Database
-        openfda = extended_source.get("openfda", {})
-        if openfda.get("success"):
-            has_data = True
-            fda_data = openfda.get("data", {})
-            fda_results = fda_data.get("results", [])
-            
-            lines.append("\n### OpenFDA Drug Database")
-            lines.append(f"**Total Results:** {fda_data.get('total_found', 0)}")
-            lines.append(f"**Query:** {fda_data.get('query', 'N/A')}\n")
-            
-            for i, result in enumerate(fda_results[:3], 1):  # Limit to 3 due to size
-                lines.append(f"**Drug {i}:**")
-                
-                # OpenFDA structure
-                openfda_info = result.get("openfda", {})
-                
-                # Brand and generic names
-                brand_names = openfda_info.get("brand_name", [])
-                if brand_names:
-                    lines.append(f"  Brand Name(s): {', '.join(brand_names[:3])}")
-                
-                generic_names = openfda_info.get("generic_name", [])
-                if generic_names:
-                    lines.append(f"  Generic Name(s): {', '.join(generic_names[:3])}")
-                
-                # Manufacturer
-                manufacturers = openfda_info.get("manufacturer_name", [])
-                if manufacturers:
-                    lines.append(f"  Manufacturer: {manufacturers[0]}")
-                
-                # Product type
-                product_types = openfda_info.get("product_type", [])
-                if product_types:
-                    lines.append(f"  Product Type: {', '.join(product_types)}")
-                
-                # Route
-                routes = openfda_info.get("route", [])
-                if routes:
-                    lines.append(f"  Route: {', '.join(routes[:3])}")
-                
-                # Indications (if available)
-                indications = result.get("indications_and_usage", [])
-                if indications and isinstance(indications, list) and len(indications) > 0:
-                    indication_text = indications[0]
-                    if len(indication_text) > 400:
-                        indication_text = indication_text[:400] + "..."
-                    lines.append(f"  Indications: {indication_text}")
-                
-                # Warnings (if available)
-                warnings = result.get("warnings", [])
-                if warnings and isinstance(warnings, list) and len(warnings) > 0:
-                    warning_text = warnings[0]
-                    if len(warning_text) > 300:
-                        warning_text = warning_text[:300] + "..."
-                    lines.append(f"  Warnings: {warning_text}")
-                
-                lines.append("")
-            
-        # UniProt Protein Database
-        uniprot = extended_source.get("uniprot", {})
-        if uniprot.get("success"):
-            has_data = True
-            uniprot_data = uniprot.get("data", {})
-            uniprot_results = uniprot_data.get("results", [])
-            
-            lines.append("\n### UniProt Protein Database")
-            lines.append(f"**Total Results:** {len(uniprot_results)}")
-            lines.append(f"**Query:** {uniprot_data.get('query', 'N/A')}\n")
-            
-            for i, result in enumerate(uniprot_results[:5], 1):  # Limit to 5 entries
-                lines.append(f"**Protein {i}:**")
-                
-                # Primary accession
-                accession = result.get("primaryAccession", "")
-                if accession:
-                    lines.append(f"  Accession: {accession}")
-                
-                # Entry name (UniProt ID)
-                entry_name = result.get("uniProtkbId", "")
-                if entry_name:
-                    lines.append(f"  Entry Name: {entry_name}")
-                
-                # Protein name (recommended name)
-                protein_desc = result.get("proteinDescription", {})
-                rec_name = protein_desc.get("recommendedName", {})
-                full_name = rec_name.get("fullName", {}).get("value", "")
-                if full_name:
-                    lines.append(f"  Protein Name: {full_name}")
-                
-                # Gene names
-                genes = result.get("genes", [])
-                if genes:
-                    gene_names = []
-                    for gene in genes[:3]:  # Limit to 3 genes
-                        primary = gene.get("geneName", {}).get("value", "")
-                        if primary:
-                            gene_names.append(primary)
-                    if gene_names:
-                        lines.append(f"  Gene(s): {', '.join(gene_names)}")
-                
-                # Organism
-                organism = result.get("organism", {})
-                organism_name = organism.get("scientificName", "")
-                if organism_name:
-                    lines.append(f"  Organism: {organism_name}")
-                
-                # Sequence length
-                sequence = result.get("sequence", {})
-                seq_length = sequence.get("length")
-                if seq_length:
-                    lines.append(f"  Sequence Length: {seq_length} aa")
-                
-                # Function (from comments/annotations)
-                comments = result.get("comments", [])
-                for comment in comments:
-                    if comment.get("commentType") == "FUNCTION":
-                        func_texts = comment.get("texts", [])
-                        if func_texts:
-                            func_text = func_texts[0].get("value", "")
-                            if len(func_text) > 400:
-                                func_text = func_text[:400] + "..."
-                            lines.append(f"  Function: {func_text}")
-                        break
-                
-                # Subcellular location
-                for comment in comments:
-                    if comment.get("commentType") == "SUBCELLULAR LOCATION":
-                        locations = comment.get("subcellularLocations", [])
-                        if locations:
-                            loc_names = [loc.get("location", {}).get("value", "") 
-                                        for loc in locations[:3] if loc.get("location")]
-                            loc_names = [l for l in loc_names if l]
-                            if loc_names:
-                                lines.append(f"  Subcellular Location: {', '.join(loc_names)}")
-                        break
-                
-                lines.append("")
-        
-        if not has_data:
-            return ""
         
         return "\n".join(lines)
     
@@ -728,28 +782,22 @@ Begin extraction:
         query: str,
         search_results: Dict[str, Any]
     ) -> str:
-        """
-        Generate RAG-style prompt for answering queries.
-        
-        Args:
-            query: User's question
-            search_results: Search results context
-            
-        Returns:
-            Formatted prompt for LLM
-        """
+        """Generate RAG-style prompt for answering queries."""
         sections = []
         
         sections.append("# Clinical Trial Research Query")
         sections.append(f"\n**User Question:** {query}\n")
-        
         sections.append("## Available Data\n")
         
-        # Add condensed data from all sources
         ct_data = self._format_clinical_trials_data(search_results)
         if ct_data:
             sections.append("### ClinicalTrials.gov")
             sections.append(ct_data)
+        
+        uniprot_data = self._format_uniprot_data(search_results)
+        if uniprot_data:
+            sections.append("\n### UniProt Protein Data")
+            sections.append(uniprot_data)
         
         pubmed_data = self._format_pubmed_data(search_results)
         if pubmed_data:
@@ -766,7 +814,6 @@ Begin extraction:
             sections.append("\n### BioC Annotations")
             sections.append(bioc_data)
         
-        # Add extended data if available
         extended_data = self._format_extended_data(search_results)
         if extended_data:
             sections.append("\n### Extended Search Results")

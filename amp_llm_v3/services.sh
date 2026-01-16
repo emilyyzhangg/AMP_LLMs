@@ -65,7 +65,7 @@ show_status() {
         if [ "$pid" != "-" ]; then
             echo "     PID: $pid"
         fi
-        echo "     Port: 8000"
+        echo "     Port: 9000"
     else
         echo -e "  ${RED}❌ Not running${NC}"
     fi
@@ -79,7 +79,7 @@ show_status() {
         if [ "$pid" != "-" ]; then
             echo "     PID: $pid"
         fi
-        echo "     Port 8001"
+        echo "     Port 9001"
         echo "     Endpoints: /chat/*"
     else
         echo -e "  ${RED}❌ Not running${NC}"
@@ -94,7 +94,7 @@ show_status() {
         if [ "$pid" != "-" ]; then
             echo "     PID: $pid"
         fi
-        echo "     Port: 8002"
+        echo "     Port: 9002"
     else
         echo -e "  ${RED}❌ Not running${NC}"
     fi
@@ -108,7 +108,7 @@ show_status() {
         if [ "$pid" != "-" ]; then
             echo "     PID: $pid"
         fi
-        echo "     Port: 8003"
+        echo "     Port: 9003"
         echo "     Function: File management and NCT data fetching"
     else
         echo -e "  ${RED}❌ Not running${NC}"
@@ -116,28 +116,28 @@ show_status() {
     
     echo ""
     echo "Port Status:"
-    if lsof -i :8000 | grep -q LISTEN; then
-        echo -e "  ${GREEN}✅ Port 8000 (Webapp)${NC}"
+    if lsof -i :9000 | grep -q LISTEN; then
+        echo -e "  ${GREEN}✅ Port 9000 (Webapp)${NC}"
     else
-        echo -e "  ${RED}❌ Port 8000 (Webapp)${NC}"
+        echo -e "  ${RED}❌ Port 9000 (Webapp)${NC}"
     fi
     
-    if lsof -i :8001 | grep -q LISTEN; then
-        echo -e "  ${GREEN}✅ Port 8001 (Chat)${NC}"
+    if lsof -i :9001 | grep -q LISTEN; then
+        echo -e "  ${GREEN}✅ Port 9001 (Chat)${NC}"
     else
-        echo -e "  ${RED}❌ Port 8001 (Chat)${NC}"
+        echo -e "  ${RED}❌ Port 9001 (Chat)${NC}"
     fi
     
-    if lsof -i :8002 | grep -q LISTEN; then
-        echo -e "  ${GREEN}✅ Port 8002 (NCT Lookup)${NC}"
+    if lsof -i :9002 | grep -q LISTEN; then
+        echo -e "  ${GREEN}✅ Port 9002 (NCT Lookup)${NC}"
     else
-        echo -e "  ${RED}❌ Port 8002 (NCT Lookup)${NC}"
+        echo -e "  ${RED}❌ Port 9002 (NCT Lookup)${NC}"
     fi
     
-    if lsof -i :8003 | grep -q LISTEN; then
-        echo -e "  ${GREEN}✅ Port 8003 (Runner)${NC}"
+    if lsof -i :9003 | grep -q LISTEN; then
+        echo -e "  ${GREEN}✅ Port 9003 (Runner)${NC}"
     else
-        echo -e "  ${RED}❌ Port 8003 (Runner)${NC}"
+        echo -e "  ${RED}❌ Port 9003 (Runner)${NC}"
     fi
     
     echo ""
@@ -157,10 +157,10 @@ if [ $# -eq 0 ]; then
     echo "  logs [service]     - Tail logs"
     echo ""
     echo "Services:"
-    echo "  webapp    - Web interface (port 8000)"
-    echo "  chat      - Chat service with annotation (port 8001)"
-    echo "  nct       - NCT lookup service (port 8002)"
-    echo "  runner    - Runner/file manager service (port 8003)"
+    echo "  webapp    - Web interface (port 9000)"
+    echo "  chat      - Chat service with annotation (port 9001)"
+    echo "  nct       - NCT lookup service (port 9002)"
+    echo "  runner    - Runner/file manager service (port 9003)"
     echo "  all       - All services"
     echo ""
     echo "Examples:"
@@ -255,28 +255,28 @@ case $COMMAND in
         echo "Health Checks:"
         
         # Webapp
-        if curl -sf http://localhost:8000/health > /dev/null 2>&1; then
+        if curl -sf http://localhost:9000/health > /dev/null 2>&1; then
             echo -e "  ${GREEN}✅ Webapp responding${NC}"
         else
             echo -e "  ${RED}❌ Webapp not responding${NC}"
         fi
         
         # Chat
-        if curl -sf http://localhost:8001/health > /dev/null 2>&1; then
+        if curl -sf http://localhost:9001/health > /dev/null 2>&1; then
             echo -e "  ${GREEN}✅ Chat service responding${NC}"
         else
             echo -e "  ${RED}❌ Chat service not responding${NC}"
         fi
         
         # NCT
-        if curl -sf http://localhost:8002/health > /dev/null 2>&1; then
+        if curl -sf http://localhost:9002/health > /dev/null 2>&1; then
             echo -e "  ${GREEN}✅ NCT service responding${NC}"
         else
             echo -e "  ${RED}❌ NCT service not responding${NC}"
         fi
         
         # Runner
-        if curl -sf http://localhost:8003/health > /dev/null 2>&1; then
+        if curl -sf http://localhost:9003/health > /dev/null 2>&1; then
             echo -e "  ${GREEN}✅ Runner service responding${NC}"
         else
             echo -e "  ${RED}❌ Runner service not responding${NC}"

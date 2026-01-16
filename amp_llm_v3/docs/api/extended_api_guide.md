@@ -27,14 +27,14 @@ services:
     container_name: swirl
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "9000:9000"
     volumes:
       - ./swirl_data:/data
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: python3 manage.py runserver 0.0.0.0:9000
 
 
 # Test
-curl http://localhost:8000/api/health
+curl http://localhost:9000/api/health
 
 
 
@@ -120,12 +120,12 @@ MEILISEARCH_KEY=your_master_key
 docker pull swirlai/swirl-search
 
 # Run
-docker run -p 8000:8000 swirlai/swirl-search
+docker run -p 9000:9000 swirlai/swirl-search
 ```
 
 **Configuration**:
 ```bash
-SWIRL_URL=http://localhost:8000
+SWIRL_URL=http://localhost:9000
 ```
 
 **Use Case**: Aggregate results from Google, PubMed, arXiv in one search

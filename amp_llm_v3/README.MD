@@ -571,7 +571,7 @@ MEILISEARCH_URL=http://localhost:7700
 MEILISEARCH_KEY=your_master_key
 
 # Swirl (if self-hosting)
-SWIRL_URL=http://localhost:8000
+SWIRL_URL=http://localhost:9000
 
 # Output Settings
 OUTPUT_DIR=output

@@ -1193,6 +1193,23 @@ const app = {
                 }
                 
                 this.availableModels = data.models;
+
+                // Add cloud models (OpenRouter)
+                const cloudModels = [
+                    { name: 'nemotron', cloud: true, label: '☁️ Nemotron (Cloud)' },
+                    { name: 'nemotron-free', cloud: true, label: '☁️ Nemotron Free (Cloud)' }
+                ];
+                cloudModels.forEach(cm => {
+                    // Check if not already in list
+                    const exists = this.availableModels.some(m => 
+                        (typeof m === 'string' ? m : m.name) === cm.name
+                    );
+                    if (!exists) {
+                        this.availableModels.push(cm.name);
+                    }
+                });
+                console.log('☁️ Added cloud models:', cloudModels.map(m => m.name));
+
                 console.log('✅ Loaded models:', this.availableModels);
                 
                 document.getElementById(loadingId)?.remove();
@@ -1208,8 +1225,8 @@ const app = {
                     `To fix:\n` +
                     `1. Restart chat service:\n` +
                     `   cd "standalone modules/chat_with_llm"\n` +
-                    `   uvicorn chat_api:app --port 8001 --reload\n\n` +
-                    `2. Check: curl http://localhost:8001/models\n\n` +
+                    `   uvicorn chat_api:app --port 9001 --reload\n\n` +
+                    `2. Check: curl http://localhost:9001/models\n\n` +
                     `Error: ${errorText.substring(0, 200)}`);
             }
         } catch (error) {
@@ -1219,11 +1236,11 @@ const app = {
             this.addMessage('chat-container', 'error', 
                 '❌ Connection Error\n\n' +
                 'Cannot connect to the chat service.\n\n' +
-                'The chat service must be running on port 8001.\n\n' +
+                'The chat service must be running on port 9001.\n\n' +
                 'To start it:\n' +
                 '1. Open terminal\n' +
                 '2. cd amp_llm_v3/standalone\\ modules/chat_with_llm\n' +
-                '3. uvicorn chat_api:app --port 8001 --reload\n\n' +
+                '3. uvicorn chat_api:app --port 9001 --reload\n\n' +
                 'Then refresh this page.\n\n' +
                 `Error: ${error.message}`);
         }
@@ -1730,7 +1747,7 @@ const app = {
                 `❌ Connection Error\n\n` +
                 `Failed to communicate with the chat service.\n\n` +
                 `Error: ${error.message}\n\n` +
-                `Make sure the chat service is running on port 8001.`);
+                `Make sure the chat service is running on port 9001.`);
         }
     },
 
@@ -1969,6 +1986,15 @@ const app = {
                 
                 this.addMessage('chat-container', 'assistant', resultMessage);
                 
+                // Add download button if CSV was generated
+                if (data.download_url) {
+                    let downloadUrl = data.download_url;
+                    if (downloadUrl.startsWith('/')) {
+                        downloadUrl = `${this.API_BASE}${downloadUrl}`;
+                    }
+                    this.addDownloadButton(downloadUrl, data.csv_filename || 'annotations.csv');
+                }
+
                 // Store in session
                 if (!this.sessionChats[this.currentModel]) {
                     this.sessionChats[this.currentModel] = {
@@ -2004,9 +2030,9 @@ const app = {
                     `Error: ${errorData.detail}\n\n` +
                     `Possible Issues:\n` +
                     `• Invalid NCT ID(s)\n` +
-                    `• Runner Service (port 8003) not running\n` +
-                    `• NCT Lookup (port 8002) not available\n` +
-                    `• Chat Service (port 8001) error\n` +
+                    `• Runner Service (port 9003) not running\n` +
+                    `• NCT Lookup (port 9002) not available\n` +
+                    `• Chat Service (port 9001) error\n` +
                     `• Model ${this.currentModel} not responding\n\n` +
                     `Troubleshooting:\n` +
                     `1. Verify NCT IDs are correct (NCT + 8 digits)\n` +
@@ -2027,11 +2053,11 @@ const app = {
             this.addMessage('chat-container', 'error', 
                 `❌ Connection Error\n\n` +
                 `${error.message}\n\n` +
-                `Cannot connect to Chat Service (port 8001).\n\n` +
+                `Cannot connect to Chat Service (port 9001).\n\n` +
                 `Required Services:\n` +
-                `• Chat Service (8001) - Main annotation service\n` +
-                `• Runner Service (8003) - File manager\n` +
-                `• NCT Service (8002) - Data fetching\n\n` +
+                `• Chat Service (9001) - Main annotation service\n` +
+                `• Runner Service (9003) - File manager\n` +
+                `• NCT Service (9002) - Data fetching\n\n` +
                 `Start all services:\n` +
                 `  ./services.sh start\n\n` +
                 `Check status:\n` +
@@ -4507,7 +4533,7 @@ const app = {
             } catch (error) {
                 this.addMessage('research-container', 'error', 
                     `❌ Failed to initialize\n\n${error.message}\n\n` +
-                    `Ensure Chat Service (port 8001) is running.`);
+                    `Ensure Chat Service (port 9001) is running.`);
                 return;
             }
         }
@@ -4596,9 +4622,9 @@ const app = {
                     `Error: ${errorData.detail}\n\n` +
                     `Possible Issues:\n` +
                     `• Invalid NCT ID(s)\n` +
-                    `• Runner Service (port 8003) not running\n` +
-                    `• NCT Lookup (port 8002) not available\n` +
-                    `• Chat Service (port 8001) error\n` +
+                    `• Runner Service (port 9003) not running\n` +
+                    `• NCT Lookup (port 9002) not available\n` +
+                    `• Chat Service (port 9001) error\n` +
                     `• Model ${this.currentModel} not responding\n\n` +
                     `Troubleshooting:\n` +
                     `1. Verify NCT IDs are correct\n` +
@@ -4617,11 +4643,11 @@ const app = {
             this.addMessage('research-container', 'error', 
                 `❌ Connection Error\n\n` +
                 `${error.message}\n\n` +
-                `Cannot connect to Chat Service (port 8001).\n\n` +
+                `Cannot connect to Chat Service (port 9001).\n\n` +
                 `Required Services:\n` +
-                `• Chat Service (8001) - Main annotation service\n` +
-                `• Runner Service (8003) - File manager\n` +
-                `• NCT Service (8002) - Data fetching\n\n` +
+                `• Chat Service (9001) - Main annotation service\n` +
+                `• Runner Service (9003) - File manager\n` +
+                `• NCT Service (9002) - Data fetching\n\n` +
                 `Start all services:\n` +
                 `  cd ~/amp_llm_v3\n` +
                 `  ./start_all_services.sh\n\n` +

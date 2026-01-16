@@ -15,7 +15,7 @@ from datetime import datetime
 class NCTAPITester:
     """Comprehensive API testing class."""
     
-    def __init__(self, base_url: str = "http://localhost:8000"):
+    def __init__(self, base_url: str = "http://localhost:9000"):
         self.base_url = base_url
         self.session = requests.Session()
         self.test_results = []
@@ -554,7 +554,7 @@ def main():
     import sys
     
     # Get base URL from command line or use default
-    base_url = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8000"
+    base_url = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:9000"
     
     tester = NCTAPITester(base_url)
     
@@ -563,7 +563,7 @@ def main():
     except requests.exceptions.ConnectionError:
         print("\n❌ ERROR: Cannot connect to API")
         print(f"   Make sure the API is running at: {base_url}")
-        print("   Start with: uvicorn nct_api:app --reload --port 8000")
+        print("   Start with: uvicorn nct_api:app --reload --port 9000")
         sys.exit(1)
     except KeyboardInterrupt:
         print("\n\n⚠️  Tests interrupted by user")
