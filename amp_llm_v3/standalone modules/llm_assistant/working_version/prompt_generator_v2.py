@@ -8,8 +8,6 @@ Enhanced with:
 - Clearer decision logic
 - Fixed sequence extraction
 - Better outcome determination
-- IMPROVED: Enhanced Classification (AMP vs Other) logic with specific keywords
-- IMPROVED: Enhanced Outcome determination with result interpretation
 """
 import json
 from typing import Dict, Any, List, Optional
@@ -25,7 +23,6 @@ class ImprovedPromptGenerator:
     - Explicit chain-of-thought reasoning
     - Clearer decision trees for each field
     - Fixed UniProt sequence extraction
-    - Enhanced Classification and Outcome accuracy
     """
     
     def __init__(self):
@@ -110,121 +107,30 @@ Comments: [any additional relevant observations]
 - "Metformin" → Peptide: False (small molecule)
 - "Insulin glargine" → Peptide: True (51 aa hormone)
 
-## 2. CLASSIFICATION (AMP vs Other) - ENHANCED DECISION LOGIC
+## 2. CLASSIFICATION (AMP vs Other)
 
-**CRITICAL**: Classification determines if a peptide has ANTIMICROBIAL properties. Focus on the MECHANISM, not just the disease being treated.
+**First check**: Is this a peptide? If Peptide=False, Classification should still be determined but will typically be "Other" for non-peptides.
 
-### STEP 1: Check for AMP POSITIVE INDICATORS (any of these → likely AMP)
+**AMP (Antimicrobial Peptide) if**:
+- Peptide has direct antimicrobial activity (kills bacteria, fungi, viruses)
+- Peptide modulates immune response against pathogens
+- Peptide is listed in DRAMP database as antimicrobial
+- Literature describes antimicrobial mechanism
+- Drug targets infectious disease, wound healing with antimicrobial intent
 
-**Direct Antimicrobial Keywords** (in drug name, description, or mechanism):
-- "antimicrobial", "antibacterial", "antifungal", "antiviral", "antiparasitic"
-- "bactericidal", "bacteriostatic", "fungicidal", "virucidal"
-- "host defense peptide", "defensin", "cathelicidin", "magainin"
-- "membrane disruption", "membrane permeabilization", "pore-forming"
-- "kills bacteria", "kills fungi", "kills pathogens"
+**Other if**:
+- Peptide for cancer (unless antimicrobial mechanism)
+- Peptide for metabolic disease
+- Peptide for autoimmune conditions (unless antimicrobial)
+- Peptide hormone replacement
+- Any non-peptide drug
 
-**Known AMP Drug Classes**:
-- Polymyxins (colistin, polymyxin B)
-- Gramicidins
-- Lantibiotics (nisin, lacticin)
-- Defensins (alpha-defensin, beta-defensin, HD5, HD6, HNP-1)
-- Cathelicidins (LL-37, hCAP18)
-- Histatins
-- Dermcidin
-- Lactoferricin
-- Cecropins
-- Melittin analogs
-
-**AMP-Associated Conditions** (when peptide targets the INFECTION):
-- Bacterial infections (MRSA, C. difficile, P. aeruginosa, E. coli infections)
-- Diabetic foot ulcer with infection
-- Wound infections
-- Sepsis (when using antimicrobial peptide)
-- Periodontal disease (antimicrobial treatment)
-- Cystic fibrosis lung infections
-- Surgical site infections
-- Skin/soft tissue infections
-
-### STEP 2: Check for AMP NEGATIVE INDICATORS (these suggest "Other")
-
-**Non-Antimicrobial Mechanisms**:
-- "receptor agonist", "receptor antagonist", "hormone analog"
-- "enzyme inhibitor", "signal transduction", "cell signaling"
-- "anti-inflammatory" (without antimicrobial component)
-- "immunomodulator" (unless specifically antimicrobial)
-- "tumor targeting", "anti-cancer", "cytotoxic to cancer cells"
-- "metabolic regulator", "glucose control"
-
-**Non-AMP Drug Classes**:
-- GLP-1 agonists (semaglutide, liraglutide, exenatide)
-- Natriuretic peptides (nesiritide, ANP, BNP)
-- Vasopressin analogs (desmopressin, terlipressin)
-- Calcitonin and analogs
-- Somatostatin analogs (octreotide, lanreotide)
-- Growth hormone releasing peptides
-- Oxytocin
-- Thymosin (unless antimicrobial use)
-- Cancer peptide vaccines (unless antimicrobial)
-
-**Non-AMP Conditions** (when peptide is NOT targeting infection):
-- Diabetes (metabolic)
-- Obesity
-- Cancer (unless antimicrobial mechanism)
-- Cardiovascular disease (heart failure, hypertension)
-- Autoimmune disorders
-- Hormonal deficiencies
-- Neurological conditions
-
-### STEP 3: CLASSIFICATION DECISION TREE
-
-```
-Is it a peptide? 
-├── NO → Classification: Other
-└── YES → Does it have DIRECT antimicrobial activity?
-    ├── YES (kills/inhibits pathogens) → Classification: AMP
-    ├── NO (targets host cells/receptors) → Classification: Other
-    └── UNCLEAR → Check:
-        ├── Is condition an INFECTION? AND peptide mechanism is antimicrobial? → AMP
-        └── Is condition NOT an infection OR mechanism is metabolic/hormonal? → Other
-```
-
-### CLASSIFICATION EXAMPLES WITH REASONING
-
-**Example 1: AMP**
-- Drug: "LL-37 topical gel"
-- Condition: "Diabetic foot ulcer with infection"
-- Evidence: "LL-37 is a cathelicidin with broad-spectrum antimicrobial activity"
-- Reasoning: LL-37 is a known antimicrobial peptide, treating infection → Classification: AMP
-
-**Example 2: AMP**
-- Drug: "Polymyxin B"
-- Condition: "Gram-negative bacterial infection"
-- Evidence: "Polymyxin antibiotics disrupt bacterial cell membranes"
-- Reasoning: Direct antibacterial mechanism → Classification: AMP
-
-**Example 3: Other**
-- Drug: "Semaglutide"
-- Condition: "Type 2 diabetes"
-- Evidence: "GLP-1 receptor agonist for glucose control"
-- Reasoning: Metabolic peptide targeting glucose regulation, no antimicrobial activity → Classification: Other
-
-**Example 4: Other**
-- Drug: "Thymosin alpha-1"
-- Condition: "Hepatocellular carcinoma"
-- Evidence: "Immunomodulator for cancer treatment"
-- Reasoning: Immunomodulator for cancer (not antimicrobial), targets immune response not pathogens → Classification: Other
-
-**Example 5: Edge Case - AMP**
-- Drug: "Pexiganan (MSI-78)"
-- Condition: "Infected diabetic foot ulcer"
-- Evidence: "Synthetic magainin analog with antibacterial properties"
-- Reasoning: Though treating diabetic ulcer, mechanism is ANTIMICROBIAL → Classification: AMP
-
-**Example 6: Edge Case - Other**
-- Drug: "Cyclosporine"
-- Condition: "Preventing transplant rejection"
-- Evidence: "Immunosuppressant peptide"
-- Reasoning: Despite being a peptide, mechanism is immunosuppression not antimicrobial → Classification: Other
+**Examples**:
+- "LL-37 for wound healing" → Classification: AMP (antimicrobial peptide)
+- "Defensin analog for bacterial infection" → Classification: AMP
+- "GLP-1 analog for diabetes" → Classification: Other (metabolic peptide)
+- "Thymosin alpha-1 for cancer" → Classification: Other (immunomodulator, not antimicrobial)
+- "Nisin for bacterial infection" → Classification: AMP
 
 ## 3. DELIVERY MODE
 
@@ -256,95 +162,30 @@ Is it a peptide?
 - "Intravitreal injection" → Delivery Mode: Injection/Infusion
 - "Inhaled formulation" → Delivery Mode: Other
 
-## 4. OUTCOME - ENHANCED DECISION LOGIC
+## 4. OUTCOME
 
-**CRITICAL**: Outcome determination requires careful analysis of trial status AND available results.
+**Active**: Status is RECRUITING, NOT_YET_RECRUITING, ENROLLING_BY_INVITATION, ACTIVE_NOT_RECRUITING, or AVAILABLE
+→ Outcome: Active (trial still ongoing)
 
-### STEP 1: Map Status to Initial Outcome Category
+**Withdrawn**: Status is WITHDRAWN
+→ Outcome: Withdrawn (never started enrollment)
 
-| Trial Status | Initial Outcome |
-|-------------|-----------------|
-| RECRUITING | Active |
-| NOT_YET_RECRUITING | Active |
-| ENROLLING_BY_INVITATION | Active |
-| ACTIVE_NOT_RECRUITING | Active |
-| AVAILABLE | Active |
-| WITHDRAWN | Withdrawn |
-| TERMINATED | Terminated |
-| SUSPENDED | Unknown |
-| WITHHELD | Unknown |
-| NO_LONGER_AVAILABLE | Unknown |
-| COMPLETED | → Go to Step 2 |
-| UNKNOWN | Unknown |
+**Terminated**: Status is TERMINATED
+→ Outcome: Terminated (stopped early)
 
-### STEP 2: For COMPLETED Trials - Analyze Results
+**Completed** (requires analysis):
+- If hasResults=true AND primary endpoints met with statistical significance → Outcome: Positive
+- If hasResults=true AND primary endpoints NOT met OR safety issues → Outcome: Failed - completed trial
+- If hasResults=false OR no outcome data available → Outcome: Unknown
 
-**If hasResults = true**, look for these indicators:
+**SUSPENDED, WITHHELD, NO_LONGER_AVAILABLE**: → Outcome: Unknown
 
-**POSITIVE Outcome Indicators** (any of these → Positive):
-- "met primary endpoint", "achieved primary endpoint"
-- "statistically significant improvement", "significant efficacy"
-- "demonstrated superiority", "non-inferior" (for non-inferiority trials)
-- "FDA approved", "regulatory approval"
-- "primary objective achieved"
-- p-value < 0.05 for primary endpoint with positive effect
-- "effective", "efficacious" in conclusions
-
-**FAILED Outcome Indicators** (any of these → Failed - completed trial):
-- "did not meet primary endpoint", "failed to meet primary endpoint"
-- "no statistically significant difference", "not significant"
-- "failed to demonstrate efficacy", "lack of efficacy"
-- "primary endpoint not achieved"
-- p-value ≥ 0.05 for primary endpoint
-- "ineffective" in conclusions
-- "safety concerns led to stopping" (if completed but negative)
-
-**If hasResults = false**:
-- No results posted yet → Outcome: Unknown
-- Results expected but not available → Outcome: Unknown
-
-### STEP 3: For TERMINATED Trials - Check Reason
-
-Look for whyStopped field:
-- "lack of efficacy" → Terminated (Reason: Ineffective)
-- "safety", "adverse events", "toxicity" → Terminated (Reason: Toxic/unsafe)
-- "funding", "sponsor decision", "business" → Terminated (Reason: Business)
-- "enrollment", "recruitment" → Terminated (Reason: Recruitment issues)
-- "COVID" → Terminated (Reason: Due to covid)
-
-### OUTCOME EXAMPLES WITH REASONING
-
-**Example 1: Positive**
-- Status: COMPLETED
-- hasResults: true
-- Results text: "Primary endpoint met with p<0.001, showing 45% reduction in infection rate"
-- Reasoning: Completed with significant positive results → Outcome: Positive
-
-**Example 2: Failed - completed trial**
-- Status: COMPLETED
-- hasResults: true
-- Results text: "Study did not meet its primary endpoint (p=0.23)"
-- Reasoning: Completed but failed to show efficacy → Outcome: Failed - completed trial
-
-**Example 3: Unknown**
-- Status: COMPLETED
-- hasResults: false
-- Results text: N/A
-- Reasoning: Trial completed but no results available → Outcome: Unknown
-
-**Example 4: Terminated**
-- Status: TERMINATED
-- whyStopped: "Lack of efficacy at interim analysis"
-- Reasoning: Stopped early due to futility → Outcome: Terminated
-
-**Example 5: Active**
-- Status: RECRUITING
-- Reasoning: Trial still enrolling → Outcome: Active
-
-**Example 6: Withdrawn**
-- Status: WITHDRAWN
-- whyStopped: "Funding issues"
-- Reasoning: Never started enrollment → Outcome: Withdrawn
+**Examples**:
+- Status: RECRUITING → Outcome: Active
+- Status: COMPLETED, hasResults: true, "met primary endpoint" → Outcome: Positive
+- Status: COMPLETED, hasResults: true, "failed to show efficacy" → Outcome: Failed - completed trial
+- Status: COMPLETED, hasResults: false → Outcome: Unknown
+- Status: TERMINATED, whyStopped: "lack of efficacy" → Outcome: Terminated
 
 ## 5. REASON FOR FAILURE
 
@@ -391,8 +232,6 @@ Look for whyStopped field:
 6. Use ONLY the valid values specified for each field
 7. Base all decisions on evidence from the provided data
 8. DO NOT use ** or bold formatting. Put each field on its own line.
-9. For Classification: Focus on MECHANISM (does it kill pathogens?) not just the condition
-10. For Outcome: If COMPLETED, carefully check hasResults and result text
 
 Now analyze the clinical trial data and produce your annotation.\"\"\"
 
@@ -433,10 +272,6 @@ PARAMETER stop "</s>"
 Analyze the following clinical trial data carefully. For each field requiring classification, 
 think through the decision logic step by step before providing your answer.
 
-IMPORTANT REMINDERS:
-- For CLASSIFICATION: Focus on whether the peptide has ANTIMICROBIAL activity (kills/inhibits pathogens)
-- For OUTCOME: If status is COMPLETED, check hasResults and look for endpoint success/failure indicators
-
 ## OUTPUT FORMAT
 NCT Number: [NCT ID]
 Study Title: [Full title]
@@ -450,13 +285,11 @@ Start Date: [Date]
 Completion Date: [Date]
 
 Classification: [AMP or Other]
-  Reasoning: [Think step-by-step: Is it a peptide? Does it have antimicrobial mechanism?]
-  Evidence: [Quote specific evidence about antimicrobial activity or lack thereof]
+  Evidence: [Quote or reasoning]
 Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
   Evidence: [Quote or reasoning]
 Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
-  Reasoning: [Check status first, then if COMPLETED check hasResults and endpoint data]
-  Evidence: [Quote specific result data or status information]
+  Evidence: [Quote or reasoning]
 Reason for Failure: [N/A or reason]
   Evidence: [Quote or reasoning]
 Peptide: [True or False]
@@ -465,7 +298,6 @@ Sequence: [Amino acid sequence or N/A]
 DRAMP Name: [Name or N/A]
 Study IDs: [PMIDs separated by |]
 Comments: [Any additional notes]
-
 ---
 # DATA SOURCES
 """)
@@ -506,28 +338,14 @@ Comments: [Any additional notes]
             sections.append("\n## ANNOTATED DATA: BioC")
             sections.append(bioc_data)
         
-        # Add final instruction with enhanced guidance
+        # Add final instruction
         sections.append("""
 ---
 # YOUR TASK
 
 Based on ALL the data provided above, complete the annotation following the EXACT format 
-specified in your instructions. 
+specified in your instructions. Remember to:
 
-CLASSIFICATION CHECKLIST:
-□ Is the intervention a peptide?
-□ Does it have DIRECT antimicrobial activity (kills bacteria/fungi/viruses)?
-□ Look for keywords: antimicrobial, antibacterial, antifungal, bactericidal, defensin, cathelicidin
-□ If treating infection WITH antimicrobial mechanism → AMP
-□ If metabolic/hormonal/immunomodulator without antimicrobial activity → Other
-
-OUTCOME CHECKLIST (for COMPLETED trials):
-□ Check hasResults field (true/false)
-□ If hasResults=true, look for: "met primary endpoint", "significant", "efficacy demonstrated"
-□ If hasResults=true but "failed to meet", "not significant", "lack of efficacy" → Failed
-□ If hasResults=false → Unknown
-
-Remember to:
 1. Include step-by-step REASONING for Classification, Delivery Mode, Outcome, and Peptide
 2. Only report Sequence if you find actual amino acid sequences in the data
 3. Use evidence from the specific data sources when available
@@ -548,7 +366,6 @@ Begin your annotation now:
         ct_data = ct_source.get("data", {})
         protocol = ct_data.get("protocolSection", {})
         has_results = ct_data.get("hasResults", False)
-        results_section = ct_data.get("resultsSection", {})
         
         lines = []
         
@@ -560,7 +377,7 @@ Begin your annotation now:
         
         # Status - CRITICAL for Outcome determination
         status_mod = protocol.get("statusModule", {})
-        lines.append(f"\n**[CRITICAL FOR OUTCOME DETERMINATION]**")
+        lines.append(f"\n**[CRITICAL FOR OUTCOME]**")
         lines.append(f"**Overall Status:** {status_mod.get('overallStatus', 'N/A')}")
         lines.append(f"**Has Results:** {has_results}")
         why_stopped = status_mod.get('whyStopped', '')
@@ -568,44 +385,6 @@ Begin your annotation now:
             lines.append(f"**Why Stopped:** {why_stopped}")
         lines.append(f"**Start Date:** {status_mod.get('startDateStruct', {}).get('date', 'N/A')}")
         lines.append(f"**Completion Date:** {status_mod.get('completionDateStruct', {}).get('date', 'N/A')}")
-        
-        # If has results, extract key outcome information
-        if has_results and results_section:
-            lines.append(f"\n**[TRIAL RESULTS - USE FOR OUTCOME DETERMINATION]**")
-            
-            # Outcome measures
-            outcome_measures = results_section.get("outcomeMeasuresModule", {})
-            outcome_list = outcome_measures.get("outcomeMeasures", [])
-            
-            if outcome_list:
-                for i, om in enumerate(outcome_list[:3], 1):
-                    om_type = om.get("type", "")
-                    om_title = om.get("title", "")
-                    om_desc = om.get("description", "")
-                    
-                    lines.append(f"\n**Outcome Measure {i} ({om_type}):** {om_title}")
-                    if om_desc:
-                        lines.append(f"  Description: {om_desc[:300]}...")
-                    
-                    # Get the outcome groups and analyses
-                    analyses = om.get("analyses", [])
-                    if analyses:
-                        for analysis in analyses[:2]:
-                            stat_method = analysis.get("statisticalMethod", "")
-                            p_value = analysis.get("pValue", "")
-                            ci_pct = analysis.get("ciPctValue", "")
-                            
-                            if p_value:
-                                lines.append(f"  **P-value:** {p_value}")
-                            if stat_method:
-                                lines.append(f"  Statistical Method: {stat_method}")
-            
-            # Adverse events summary
-            adverse_events = results_section.get("adverseEventsModule", {})
-            if adverse_events:
-                serious_freq = adverse_events.get("seriousNumAffected", "")
-                if serious_freq:
-                    lines.append(f"\n**Serious Adverse Events:** {serious_freq} affected")
         
         # Description
         desc_mod = protocol.get("descriptionModule", {})
@@ -620,11 +399,10 @@ Begin your annotation now:
                 detailed_desc = detailed_desc[:600] + "..."
             lines.append(f"\n**Detailed Description:** {detailed_desc}")
         
-        # Conditions - important for classification context
+        # Conditions
         cond_mod = protocol.get("conditionsModule", {})
         conditions = cond_mod.get("conditions", [])
-        lines.append(f"\n**[IMPORTANT FOR CLASSIFICATION]**")
-        lines.append(f"**Conditions:** {', '.join(conditions) if conditions else 'N/A'}")
+        lines.append(f"\n**Conditions:** {', '.join(conditions) if conditions else 'N/A'}")
         
         keywords = cond_mod.get("keywords", [])
         if keywords:
@@ -634,7 +412,7 @@ Begin your annotation now:
         arms_int = protocol.get("armsInterventionsModule", {})
         interventions = arms_int.get("interventions", [])
         if interventions:
-            lines.append(f"\n**[CRITICAL FOR PEPTIDE/CLASSIFICATION/DELIVERY MODE]**")
+            lines.append(f"\n**[CRITICAL FOR PEPTIDE/DELIVERY MODE]**")
             lines.append("**Interventions:**")
             for intv in interventions[:5]:
                 int_type = intv.get("type", "")
@@ -646,14 +424,6 @@ Begin your annotation now:
                     if len(int_desc) > 400:
                         int_desc = int_desc[:400] + "..."
                     lines.append(f"    Description: {int_desc}")
-                    
-                    # Highlight antimicrobial keywords if present
-                    antimicrobial_keywords = ['antimicrobial', 'antibacterial', 'antifungal', 'antiviral', 
-                                             'bactericidal', 'fungicidal', 'defensin', 'cathelicidin',
-                                             'membrane disruption', 'host defense']
-                    found_keywords = [kw for kw in antimicrobial_keywords if kw.lower() in int_desc.lower()]
-                    if found_keywords:
-                        lines.append(f"    **[AMP INDICATORS FOUND: {', '.join(found_keywords)}]**")
         else:
             lines.append("**Interventions:** N/A")
         
@@ -683,7 +453,7 @@ Begin your annotation now:
         outcomes_mod = protocol.get("outcomesModule", {})
         primary_outcomes = outcomes_mod.get("primaryOutcomes", [])
         if primary_outcomes:
-            lines.append("\n**Primary Outcomes (for judging trial success):**")
+            lines.append("\n**Primary Outcomes:**")
             for i, outcome in enumerate(primary_outcomes[:3], 1):
                 measure = outcome.get("measure", "")
                 lines.append(f"  {i}. {measure}")
@@ -772,7 +542,7 @@ Begin your annotation now:
             elif seq_length:
                 lines.append(f"**Sequence Length:** {seq_length} aa (sequence not retrieved)")
             
-            # Function - important for classification
+            # Function
             comments = result.get("comments", [])
             for comment in comments:
                 if comment.get("commentType") == "FUNCTION":
@@ -782,10 +552,6 @@ Begin your annotation now:
                         if len(func_text) > 400:
                             func_text = func_text[:400] + "..."
                         lines.append(f"**Function:** {func_text}")
-                        
-                        # Highlight antimicrobial function
-                        if any(kw in func_text.lower() for kw in ['antimicrobial', 'antibacterial', 'antifungal', 'bactericidal']):
-                            lines.append(f"**[ANTIMICROBIAL FUNCTION DETECTED - supports AMP classification]**")
                     break
             
             # Keywords - may indicate antimicrobial activity
@@ -794,13 +560,6 @@ Begin your annotation now:
                 keyword_values = [kw.get("name", "") for kw in result_keywords[:10]]
                 if keyword_values:
                     lines.append(f"**Keywords:** {', '.join(keyword_values)}")
-                    
-                    # Check for antimicrobial keywords
-                    amp_keywords = [kw for kw in keyword_values if any(
-                        term in kw.lower() for term in ['antimicrobial', 'antibiotic', 'bacteriocin', 'defensin']
-                    )]
-                    if amp_keywords:
-                        lines.append(f"**[AMP-RELATED KEYWORDS: {', '.join(amp_keywords)}]**")
             
             lines.append("")
         
@@ -815,29 +574,6 @@ Begin your annotation now:
         
         lines = []
         has_data = False
-        
-        # DRAMP Database - critical for AMP identification
-        dramp = extended_source.get("dramp", {})
-        if dramp.get("success"):
-            has_data = True
-            dramp_data = dramp.get("data", {})
-            dramp_results = dramp_data.get("results", [])
-            
-            lines.append("### DRAMP Antimicrobial Peptide Database")
-            lines.append(f"**[DRAMP MATCH = STRONG AMP INDICATOR]**")
-            lines.append(f"**Query:** {dramp_data.get('query', 'N/A')}\n")
-            
-            for i, result in enumerate(dramp_results[:5], 1):
-                lines.append(f"**AMP {i}:**")
-                lines.append(f"  Name: {result.get('name', 'N/A')}")
-                lines.append(f"  DRAMP ID: {result.get('dramp_id', 'N/A')}")
-                activity = result.get('activity', '')
-                if activity:
-                    lines.append(f"  **Antimicrobial Activity:** {activity}")
-                sequence = result.get('sequence', '')
-                if sequence:
-                    lines.append(f"  **Sequence:** {sequence}")
-                lines.append("")
         
         # DuckDuckGo Web Search
         ddg = extended_source.get("duckduckgo", {})
@@ -890,11 +626,6 @@ Begin your annotation now:
                 product_types = openfda_info.get("product_type", [])
                 if product_types:
                     lines.append(f"  Product Type: {', '.join(product_types)}")
-                
-                # Pharmacologic class - helpful for classification
-                pharm_class = openfda_info.get("pharm_class_epc", [])
-                if pharm_class:
-                    lines.append(f"  Pharmacologic Class: {', '.join(pharm_class[:3])}")
                 
                 lines.append("")
         
@@ -951,13 +682,6 @@ Begin your annotation now:
                 if len(abstract) > 600:
                     abstract = abstract[:600] + "..."
                 lines.append(f"**Abstract:** {abstract}")
-                
-                # Check for antimicrobial content
-                antimicrobial_terms = ['antimicrobial', 'antibacterial', 'antifungal', 'bactericidal', 
-                                       'MIC', 'minimum inhibitory', 'kills bacteria']
-                found_terms = [term for term in antimicrobial_terms if term.lower() in abstract.lower()]
-                if found_terms:
-                    lines.append(f"**[ANTIMICROBIAL CONTENT: {', '.join(found_terms)}]**")
             
             lines.append("")
         
@@ -1116,5 +840,5 @@ Your answer:
         output_path.write_text(prompt, encoding="utf-8")
 
 
-# Backwards compatibility alias
+# For backwards compatibility, create an alias
 PromptGenerator = ImprovedPromptGenerator
