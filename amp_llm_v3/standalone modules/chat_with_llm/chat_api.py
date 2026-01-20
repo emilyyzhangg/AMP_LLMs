@@ -703,8 +703,18 @@ def clean_value(value):
     value = value.rstrip('*').strip()
     return value
     
-async def generate_output_csv(output_path: Path, results: List[dict], errors: List[dict], model: str = "unknown"):
+async def generate_output_csv(
+    output_path: Path, 
+    results: List[dict], 
+    errors: List[dict], 
+    model: str = "unknown",
+    git_commit: str = "unknown",
+    model_version: str = None
+):
     """Generate the annotated CSV output file with model info header."""
+    
+    # Use model_version if provided, otherwise fall back to model name
+    model_display = model_version if model_version else model
     
     # Log what we're working with
     if results:
