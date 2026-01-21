@@ -1,14 +1,14 @@
 """
-LLM Chat Service with Annotation Support (Port 8001)
-====================================================
+LLM Chat Service with Annotation Support
+========================================
 
 Chat service that operates in two modes:
 1. Normal chat mode - regular conversation with LLM
 2. Annotation mode - clinical trial annotation using modular services
 
 Architecture:
-- This service (8001) -> Runner Service (8003) -> LLM Assistant (8004)
-- Runner fetches data from NCT Service (8002) if needed
+- This service (CHAT_SERVICE_PORT) -> Runner Service (RUNNER_SERVICE_PORT) -> LLM Assistant (LLM_ASSISTANT_PORT)
+- Runner fetches data from NCT Service (NCT_SERVICE_PORT) if needed
 - LLM Assistant handles JSON parsing, prompt generation, and LLM calls
 
 UPDATED: Now uses async job processing for CSV annotations to avoid
@@ -16,8 +16,14 @@ Cloudflare 524 timeout errors. CSV uploads return immediately with a
 job_id, and the frontend polls for status.
 
 UPDATED: Now includes git commit and full model version in CSV headers.
+
+UPDATED: Now loads all port configuration from .env file.
 """
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 import logging
 import uuid
 import httpx
@@ -42,15 +48,29 @@ try:
     from assistant_config import config
 except ImportError:
     class ChatConfig:
-        OLLAMA_HOST = "localhost"
-        OLLAMA_PORT = 11434
+        OLLAMA_HOST = os.getenv("ollama_host", "localhost")
+        OLLAMA_PORT = int(os.getenv("ollama_port", "11434"))
         @property
         def OLLAMA_BASE_URL(self):
             return f"http://{self.OLLAMA_HOST}:{self.OLLAMA_PORT}"
-        API_VERSION = "3.0.0"
+        API_VERSION = "3.3.0"
         SERVICE_NAME = "LLM Chat Service"
         CORS_ORIGINS = ["*"]
     config = ChatConfig()
+
+# ============================================================================
+# Port Configuration from .env
+# ============================================================================
+
+# Service ports
+CHAT_SERVICE_PORT = int(os.getenv("CHAT_SERVICE_PORT", "9001"))
+NCT_SERVICE_PORT = int(os.getenv("NCT_SERVICE_PORT", "9002"))
+RUNNER_SERVICE_PORT = int(os.getenv("RUNNER_SERVICE_PORT", "9003"))
+LLM_ASSISTANT_PORT = int(os.getenv("LLM_ASSISTANT_PORT", "9004"))
+
+# Ollama configuration (also available via config object)
+OLLAMA_HOST = os.getenv("ollama_host", "localhost")
+OLLAMA_PORT = int(os.getenv("ollama_port", "11434"))
 
 # Setup logging
 logging.basicConfig(
@@ -64,7 +84,7 @@ SCRIPT_DIR = Path(__file__).parent.resolve()
 OUTPUT_DIR = SCRIPT_DIR / "output" / "annotations"
 
 # LLM Assistant URL for metadata fetching
-LLM_ASSISTANT_URL = os.getenv("LLM_ASSISTANT_URL", "http://localhost:9004")
+LLM_ASSISTANT_URL = os.getenv("LLM_ASSISTANT_URL", f"http://localhost:{LLM_ASSISTANT_PORT}")
 
 
 # ============================================================================
@@ -212,7 +232,7 @@ async def startup_event():
 # Configuration
 # ============================================================================
 
-RUNNER_SERVICE_URL = os.getenv("RUNNER_SERVICE_URL", "http://localhost:8003")
+RUNNER_SERVICE_URL = os.getenv("RUNNER_SERVICE_URL", f"http://localhost:{RUNNER_SERVICE_PORT}")
 
 
 # ============================================================================
@@ -482,7 +502,7 @@ async def process_csv_job(
                                                 # Send a tiny request with keep_alive=0 to unload, then reload
                                                 async with httpx.AsyncClient(timeout=30.0) as reset_client:
                                                     await reset_client.post(
-                                                        "http://localhost:11434/api/generate",
+                                                        f"{config.OLLAMA_BASE_URL}/api/generate",
                                                         json={
                                                             "model": model,
                                                             "prompt": "test",
@@ -492,7 +512,7 @@ async def process_csv_job(
                                                     await asyncio.sleep(2)
                                                     # Reload by doing a fresh request
                                                     await reset_client.post(
-                                                        "http://localhost:11434/api/generate",
+                                                        f"{config.OLLAMA_BASE_URL}/api/generate",
                                                         json={
                                                             "model": model,
                                                             "prompt": "Hello",
@@ -525,13 +545,13 @@ async def process_csv_job(
                                                 async with httpx.AsyncClient(timeout=60.0) as reset_client:
                                                     # Unload model completely
                                                     await reset_client.post(
-                                                        "http://localhost:11434/api/generate",
+                                                        f"{config.OLLAMA_BASE_URL}/api/generate",
                                                         json={"model": model, "prompt": "", "keep_alive": 0}
                                                     )
                                                     await asyncio.sleep(5)
                                                     # Reload fresh
                                                     await reset_client.post(
-                                                        "http://localhost:11434/api/generate",
+                                                        f"{config.OLLAMA_BASE_URL}/api/generate",
                                                         json={"model": model, "prompt": "Initialize", "keep_alive": "10m"}
                                                     )
                                                 logger.info(f"✅ Job {job_id}: Hard model reset complete")
@@ -1470,21 +1490,23 @@ async def get_models():
 if __name__ == "__main__":
     import uvicorn
     print("=" * 80)
-    print("🚀 Starting LLM Chat Service with Annotation on port 8001...")
+    print(f"🚀 Starting LLM Chat Service with Annotation on port {CHAT_SERVICE_PORT}...")
     print("=" * 80)
     print(f"🤖 Ollama: {config.OLLAMA_BASE_URL}")
     print(f"📁 Runner Service: {RUNNER_SERVICE_URL}")
-    print(f"📚 Docs: http://localhost:8001/docs")
+    print(f"🔬 LLM Assistant: {LLM_ASSISTANT_URL}")
+    print(f"📚 Docs: http://localhost:{CHAT_SERVICE_PORT}/docs")
     print("=" * 80)
-    print("\n📋 Service Dependencies:")
-    print("  - Runner Service (8003) - Data fetching & annotation orchestration")
-    print("  - LLM Assistant (8004) - JSON parsing & prompt generation")
-    print("  - NCT Service (8002) - Clinical trials data")
-    print("  - Ollama (11434) - LLM inference")
+    print("\n📋 Service Dependencies (from .env):")
+    print(f"  - Runner Service ({RUNNER_SERVICE_PORT}) - Data fetching & annotation orchestration")
+    print(f"  - LLM Assistant ({LLM_ASSISTANT_PORT}) - JSON parsing & prompt generation")
+    print(f"  - NCT Service ({NCT_SERVICE_PORT}) - Clinical trials data")
+    print(f"  - Ollama ({OLLAMA_PORT}) - LLM inference")
     print("=" * 80)
     print("\n✨ NEW: Async CSV processing enabled!")
     print("   CSV uploads now return immediately with a job_id.")
     print("   No more Cloudflare 524 timeout errors!")
     print("\n✨ NEW: CSV headers now include git commit and full model version!")
+    print("\n✨ NEW: All ports now loaded from .env file!")
     print("=" * 80)
-    uvicorn.run(app, host="0.0.0.0", port=8001, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=CHAT_SERVICE_PORT, reload=True)

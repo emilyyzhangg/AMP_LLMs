@@ -1,6 +1,6 @@
 """
-LLM Assistant API Service (Port 9004)
-=====================================
+LLM Assistant API Service
+=========================
 
 RESTful API for clinical trial annotation using:
 - json_parser.py for extracting annotation-relevant data
@@ -12,8 +12,28 @@ This service receives trial JSON data and returns structured annotations.
 UPDATED: Now extracts ClinicalTrials.gov metadata fields directly from trial data
 to populate: Study Title, Study Status, Brief Summary, Conditions, Drug, Phase,
 Enrollment, Start Date, Completion Date
+
+UPDATED: Now loads all port configuration from .env file.
 """
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+# Look in parent directories for webapp/.env
+current_dir = Path(__file__).parent
+for parent in [current_dir, current_dir.parent, current_dir.parent.parent]:
+    env_file = parent / "webapp" / ".env"
+    if env_file.exists():
+        load_dotenv(env_file)
+        break
+    env_file = parent / ".env"
+    if env_file.exists():
+        load_dotenv(env_file)
+        break
+else:
+    load_dotenv()  # Try default locations
+
 import logging
 import json
 import httpx
@@ -60,18 +80,26 @@ except ImportError as e:
 # ============================================================================
 
 class AssistantConfig:
-    """Configuration for the LLM Assistant"""
-    OLLAMA_HOST = "localhost"
-    OLLAMA_PORT = 11434
+    """Configuration for the LLM Assistant - loaded from .env"""
+    
+    # Ollama configuration
+    OLLAMA_HOST = os.getenv("ollama_host", "localhost")
+    OLLAMA_PORT = int(os.getenv("ollama_port", "11434"))
     
     @property
     def OLLAMA_BASE_URL(self):
         return f"http://{self.OLLAMA_HOST}:{self.OLLAMA_PORT}"
     
-    API_VERSION = "1.0.2"  # Updated version
+    # Service configuration
+    API_VERSION = "1.1.0"  # Updated version with .env support
     SERVICE_NAME = "LLM Assistant API"
-    SERVICE_PORT = 9004
+    SERVICE_PORT = int(os.getenv("LLM_ASSISTANT_PORT", "9004"))
     CORS_ORIGINS = ["*"]
+    
+    # Related service ports (for reference/health checks)
+    CHAT_SERVICE_PORT = int(os.getenv("CHAT_SERVICE_PORT", "9001"))
+    NCT_SERVICE_PORT = int(os.getenv("NCT_SERVICE_PORT", "9002"))
+    RUNNER_SERVICE_PORT = int(os.getenv("RUNNER_SERVICE_PORT", "9003"))
     
     # Timeouts
     LLM_TIMEOUT = 300  # 5 minutes for annotation
@@ -1883,6 +1911,10 @@ if __name__ == "__main__":
     print(f"📚 API Docs: http://localhost:{config.SERVICE_PORT}/docs")
     print(f"🔍 Health Check: http://localhost:{config.SERVICE_PORT}/health")
     print(f"📋 Metadata: http://localhost:{config.SERVICE_PORT}/metadata")
+    print("-" * 80)
+    print(f"✨ Port configuration loaded from .env")
+    print(f"   LLM Assistant: {config.SERVICE_PORT}")
+    print(f"   Ollama: {config.OLLAMA_PORT}")
     print("=" * 80)
     
     uvicorn.run(app, host="0.0.0.0", port=config.SERVICE_PORT, reload=True)
