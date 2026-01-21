@@ -17,7 +17,7 @@ Installation:
     pip install fastapi uvicorn aiohttp requests python-dotenv beautifulsoup4
 
 Usage:
-    uvicorn nct_api:app --reload --port 9000
+    python nct_api.py  # Uses NCT_SERVICE_PORT from .env
 
 API Endpoints:
     GET /api/registry - List all available APIs
@@ -26,7 +26,28 @@ API Endpoints:
     GET /api/results/{nct_id}
     POST /api/results/{nct_id}/check-duplicate - Check if file exists
     POST /api/results/{nct_id}/save - Save results with duplicate handling
+
+UPDATED: Now loads all port configuration from .env file.
 """
+
+from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+# Look in parent directories for webapp/.env
+current_dir = Path(__file__).parent
+for parent in [current_dir, current_dir.parent, current_dir.parent.parent]:
+    env_file = parent / "webapp" / ".env"
+    if env_file.exists():
+        load_dotenv(env_file)
+        break
+    env_file = parent / ".env"
+    if env_file.exists():
+        load_dotenv(env_file)
+        break
+else:
+    load_dotenv()  # Try default locations
 
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse, FileResponse
@@ -34,16 +55,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 from datetime import datetime
-from pathlib import Path
 import asyncio
 import json
 import logging
-import os
 import re
 
-# Load environment variables
-from dotenv import load_dotenv
-load_dotenv()
+# Port configuration from .env
+NCT_SERVICE_PORT = int(os.getenv("NCT_SERVICE_PORT", "9002"))
+MAIN_SERVER_PORT = int(os.getenv("MAIN_SERVER_PORT", "9000"))
 
 from nct_core import NCTSearchEngine
 from nct_models import SearchRequest, SearchResponse, SearchStatus, SearchSummary, SearchConfig
@@ -68,8 +87,9 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:9000",
-        "http://127.0.0.1:9000",
+        f"http://localhost:{NCT_SERVICE_PORT}",
+        f"http://127.0.0.1:{NCT_SERVICE_PORT}",
+        f"http://localhost:{MAIN_SERVER_PORT}",
         "http://localhost:3000",  # if using separate frontend
         "*"  # For development only - restrict in production
     ],
@@ -876,11 +896,15 @@ def _format_openfda_details(data: Dict[str, Any]) -> str:
 
 if __name__ == "__main__":
     import uvicorn
-    from dotenv import load_dotenv
-    import os
     
-    load_dotenv()
-    port = int(os.getenv("NCT_SERVICE_PORT", "9002"))
+    print("=" * 80)
+    print(f"🚀 Starting NCT Lookup API on port {NCT_SERVICE_PORT}...")
+    print("=" * 80)
+    print(f"📚 API Docs: http://localhost:{NCT_SERVICE_PORT}/docs")
+    print(f"🔍 Health Check: http://localhost:{NCT_SERVICE_PORT}/health")
+    print("-" * 80)
+    print(f"✨ Port configuration loaded from .env")
+    print(f"   NCT Service: {NCT_SERVICE_PORT}")
+    print("=" * 80)
     
-    logger.info(f"Starting NCT Lookup API on port {port}")
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run(app, host="0.0.0.0", port=NCT_SERVICE_PORT)

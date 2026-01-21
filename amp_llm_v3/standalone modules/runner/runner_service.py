@@ -1,6 +1,6 @@
 """
-Runner Service (Port 9003) - Enhanced with Annotation Support
-==============================================================
+Runner Service - Enhanced with Annotation Support
+=================================================
 
 File manager and data fetcher for NCT trial data with integrated annotation.
 
@@ -15,12 +15,31 @@ Endpoints:
 - GET /health - Health check with service dependencies
 
 Service Dependencies:
-- NCT Service (9002) - Fetches trial data from ClinicalTrials.gov
-- LLM Assistant API (9003) - Handles annotation with JSON parsing
+- NCT Service (NCT_SERVICE_PORT) - Fetches trial data from ClinicalTrials.gov
+- LLM Assistant API (LLM_ASSISTANT_PORT) - Handles annotation with JSON parsing
+
+UPDATED: Now loads all port configuration from .env file.
 """
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+# Look in parent directories for webapp/.env
+current_dir = Path(__file__).parent
+for parent in [current_dir, current_dir.parent, current_dir.parent.parent]:
+    env_file = parent / "webapp" / ".env"
+    if env_file.exists():
+        load_dotenv(env_file)
+        break
+    env_file = parent / ".env"
+    if env_file.exists():
+        load_dotenv(env_file)
+        break
+else:
+    load_dotenv()  # Try default locations
+
 import logging
-import os
 import httpx
 import json
 import csv
@@ -67,11 +86,19 @@ app.add_middleware(
 
 
 # ============================================================================
-# Configuration
+# Configuration - loaded from .env
 # ============================================================================
 
-NCT_SERVICE_URL = os.getenv("NCT_SERVICE_URL", "http://localhost:8002")
-LLM_ASSISTANT_URL = os.getenv("LLM_ASSISTANT_URL", "http://localhost:8004")
+# Service ports
+RUNNER_SERVICE_PORT = int(os.getenv("RUNNER_SERVICE_PORT", "9003"))
+NCT_SERVICE_PORT = int(os.getenv("NCT_SERVICE_PORT", "9002"))
+LLM_ASSISTANT_PORT = int(os.getenv("LLM_ASSISTANT_PORT", "9004"))
+
+# Service URLs (built from ports)
+NCT_SERVICE_URL = os.getenv("NCT_SERVICE_URL", f"http://localhost:{NCT_SERVICE_PORT}")
+LLM_ASSISTANT_URL = os.getenv("LLM_ASSISTANT_URL", f"http://localhost:{LLM_ASSISTANT_PORT}")
+
+# Directories
 RESULTS_DIR = Path(__file__).parent / "results"
 RESULTS_DIR.mkdir(exist_ok=True)
 CSV_OUTPUT_DIR = Path(__file__).parent / "csv_outputs"
@@ -1127,12 +1154,17 @@ async def list_csv_files():
 if __name__ == "__main__":
     import uvicorn
     print("=" * 80)
-    print("🚀 Starting Runner Service (Enhanced) on port 9003...")
+    print(f"🚀 Starting Runner Service (Enhanced) on port {RUNNER_SERVICE_PORT}...")
     print("=" * 80)
     print(f"📡 NCT Service: {NCT_SERVICE_URL}")
     print(f"🤖 LLM Assistant: {LLM_ASSISTANT_URL}")
     print(f"📁 Results Directory: {RESULTS_DIR}")
-    print(f"📚 API Docs: http://localhost:9003/docs")
-    print(f"🔍 Health Check: http://localhost:9003/health")
+    print(f"📚 API Docs: http://localhost:{RUNNER_SERVICE_PORT}/docs")
+    print(f"🔍 Health Check: http://localhost:{RUNNER_SERVICE_PORT}/health")
+    print("-" * 80)
+    print(f"✨ Port configuration loaded from .env")
+    print(f"   Runner Service: {RUNNER_SERVICE_PORT}")
+    print(f"   NCT Service: {NCT_SERVICE_PORT}")
+    print(f"   LLM Assistant: {LLM_ASSISTANT_PORT}")
     print("=" * 80)
-    uvicorn.run(app, host="0.0.0.0", port=9003, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=RUNNER_SERVICE_PORT, reload=True)
