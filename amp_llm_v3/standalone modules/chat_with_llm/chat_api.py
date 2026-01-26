@@ -811,7 +811,7 @@ async def generate_output_csv(
                     elif key == "Study ID" or key == "Study IDs":
                         row["Study IDs"] = value
                     elif key == "Sequence Evidence":
-                        row["Sequence"] = value  # Map to existing column
+                        row["Sequence"] = value
                     # Store Evidence fields
                     elif "Evidence" in key:
                         row[key] = value
@@ -854,7 +854,8 @@ async def annotate_trials_via_runner(
                 if health.status_code != 200:
                     return (
                         "❌ Runner Service not available. Please ensure it's running on port 8003.",
-                        AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0)
+                        AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0),
+                        []
                     )
             except httpx.ConnectError:
                 return (
@@ -862,7 +863,8 @@ async def annotate_trials_via_runner(
                     "Please start the service:\n"
                     "  cd standalone_modules/runner\n"
                     "  uvicorn runner_service:app --port 8003 --reload",
-                    AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0)
+                    AnnotationSummary(total=len(nct_ids), successful=0, failed=len(nct_ids), processing_time_seconds=0),
+                    []
                 )
             
             # Send batch annotation request
