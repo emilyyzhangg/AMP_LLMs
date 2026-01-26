@@ -302,16 +302,6 @@ EXACT MATCHES (case-insensitive):
 
 ### STEP 2: If NO explicit keywords found, use CONTEXT CLUES:
 
-**Default to Injection/Infusion if:**
-- Drug is a peptide or biological (peptides usually cannot be given orally)
-- Drug is an antibody or protein therapeutic
-- No route information is provided AND drug is a peptide
-
-**Default to Topical if:**
-- Condition is a skin disease (dermatitis, psoriasis, wound, ulcer)
-- Condition is eye disease (conjunctivitis, glaucoma)
-- Condition is dental/oral cavity disease
-
 **Default to Other if:**
 - Cannot determine route from any available information
 - Mixed or unclear routes
@@ -357,16 +347,6 @@ EXACT MATCHES (case-insensitive):
 - Text: "inhaled via nebulizer"
 - Keywords found: "inhaled", "nebulizer"
 - Answer: Other (inhalation route)
-
-**Example 9: Other**
-- Text: "subcutaneous implant releasing drug over 3 months"
-- Keywords found: "implant" (takes precedence)
-- Answer: Other (implant)
-
-**Example 10: Injection/Infusion (default)**
-- Text: "peptide therapeutic for diabetes" (no route specified)
-- Keywords found: none, but drug is a peptide
-- Answer: Injection/Infusion (default for peptides)
 
 **Example 11: Topical (context)**
 - Text: "treatment for chronic wound healing" (no explicit route)
@@ -666,7 +646,7 @@ think through the decision logic step by step before providing your answer.
 **DELIVERY MODE**: Search for these keywords IN ORDER:
 1. Injection words (injection, IV, SC, IM, infusion) → Injection/Infusion
 2. Topical words (topical, cream, gel, wound, eye drop) → Topical  
-3. Oral words (oral, tablet, capsule, pill) → Oral
+3. Oral words (oral, tablet, capsule, pill, drink, supplement) → Oral
 4. Other (inhaled, implant, unclear) → Other
 5. No keywords + peptide drug → Default to Injection/Infusion
 
@@ -915,11 +895,16 @@ Begin your annotation now:
                         'dermal': 'TOPICAL',
                         'eye drop': 'TOPICAL',
                         'ophthalmic': 'TOPICAL',
-                        'nasal': 'TOPICAL',
+                        'varnish': 'TOPICAL',
+                        'strip': 'TOPICAL',
                         'oral': 'ORAL',
                         'tablet': 'ORAL',
                         'capsule': 'ORAL',
+                        'drink': 'ORAL',
+                        'supplement': 'ORAL',
                         'inhaled': 'OTHER',
+                        'intranasal': 'OTHER',
+                        'intravitral': 'OTHER',
                         'inhalation': 'OTHER',
                         'implant': 'OTHER'
                     }
@@ -959,9 +944,9 @@ Begin your annotation now:
                     desc_lower = arm_desc.lower()
                     if any(kw in desc_lower for kw in ['injection', 'subcutaneous', 'intravenous', 'iv ', 'infusion']):
                         lines.append(f"    *** INJECTION/INFUSION route indicated ***")
-                    elif any(kw in desc_lower for kw in ['topical', 'cream', 'gel', 'wound', 'applied']):
+                    elif any(kw in desc_lower for kw in ['topical', 'cream', 'gel', 'applied', 'varnish', 'strip']):
                         lines.append(f"    *** TOPICAL route indicated ***")
-                    elif any(kw in desc_lower for kw in ['oral', 'tablet', 'capsule']):
+                    elif any(kw in desc_lower for kw in ['oral', 'tablet', 'capsule', 'drink', 'supplement']):
                         lines.append(f"    *** ORAL route indicated ***")
         
         # Design
@@ -1184,10 +1169,12 @@ Begin your annotation now:
                     route_lower = route_str.lower()
                     if any(r in route_lower for r in ['intravenous', 'subcutaneous', 'intramuscular', 'injection']):
                         lines.append(f"  → Indicates: Injection/Infusion")
-                    elif any(r in route_lower for r in ['topical', 'ophthalmic', 'nasal', 'dermal']):
+                    elif any(r in route_lower for r in ['topical', 'cream', 'gel', 'applied', 'varnish', 'strip']):
                         lines.append(f"  → Indicates: Topical")
-                    elif 'oral' in route_lower:
+                    elif any(r in route_lower for r in ['oral', 'tablet', 'capsule', 'drink', 'supplement']):
                         lines.append(f"  → Indicates: Oral")
+                    else:
+                        lines.append(f"  → Indicates: Other")
                 
                 # Product type
                 product_types = openfda_info.get("product_type", [])
