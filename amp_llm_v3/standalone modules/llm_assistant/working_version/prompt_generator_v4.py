@@ -3,7 +3,6 @@ Improved Prompt Generator for Clinical Trial Analysis
 ======================================================
 
 Enhanced with:
-- VERIFICATION-BASED PROMPTING: For each field, the LLM verifies each possible value
 - Few-shot examples for each field
 - Chain-of-thought reasoning prompts
 - Clearer decision logic
@@ -24,7 +23,6 @@ class ImprovedPromptGenerator:
     Generate enhanced LLM prompts from clinical trial search results.
     
     Key improvements:
-    - VERIFICATION-BASED: Each possible value is verified individually
     - Few-shot examples embedded in system prompt
     - Explicit chain-of-thought reasoning
     - Clearer decision trees for each field
@@ -38,14 +36,10 @@ class ImprovedPromptGenerator:
         self.modelfile_template = self._load_modelfile_template()
     
     def _load_modelfile_template(self) -> str:
-        """Load the improved Modelfile template with verification-based prompts."""
+        """Load the improved Modelfile template."""
         return """# Improved Clinical Trial Research Assistant Modelfile Template
 
-SYSTEM \"\"\"You are a Clinical Trial Data Annotation Specialist with expertise in peptide therapeutics. Your task is to extract structured information from clinical trial data with HIGH ACCURACY using VERIFICATION-BASED analysis.
-
-# VERIFICATION-BASED APPROACH
-
-For each classification field, you will verify whether each possible value is TRUE or FALSE based on the evidence. This ensures systematic evaluation of all options.
+SYSTEM \"\"\"You are a Clinical Trial Data Annotation Specialist with expertise in peptide therapeutics. Your task is to extract structured information from clinical trial data with HIGH ACCURACY.
 
 # REQUIRED OUTPUT FORMAT
 
@@ -63,144 +57,65 @@ Enrollment: [number]
 Start Date: [YYYY-MM-DD or YYYY-MM]
 Completion Date: [YYYY-MM-DD or YYYY-MM]
 
---- PEPTIDE VERIFICATION ---
-Statement: "This trial is testing a peptide therapeutic."
-  Verification: [TRUE or FALSE]
+Classification: [AMP or Other]
+  Reasoning: [your step-by-step reasoning]
   Evidence: [specific evidence from the data]
-  Reasoning: [step-by-step reasoning]
-Final Peptide Value: [True or False]
 
---- CLASSIFICATION VERIFICATION ---
-Statement 1: "This trial is testing an Antimicrobial Peptide (AMP) - a peptide that kills or inhibits pathogens."
-  Verification: [TRUE or FALSE]
+Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
+  Reasoning: [your step-by-step reasoning]
   Evidence: [specific evidence from the data]
-  Reasoning: [step-by-step reasoning]
-
-Statement 2: "This trial is testing a non-antimicrobial peptide or non-peptide therapeutic (Other)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific evidence from the data]
-  Reasoning: [step-by-step reasoning]
-
-Final Classification: [AMP or Other]
-
---- DELIVERY MODE VERIFICATION ---
-Statement 1: "This trial is testing a drug delivered via Injection or Infusion (IV, SC, IM, etc.)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific keywords/phrases found]
-  Reasoning: [step-by-step reasoning]
-
-Statement 2: "This trial is testing a drug delivered via Topical application (cream, gel, ointment, wound, eye drops, etc.)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific keywords/phrases found]
-  Reasoning: [step-by-step reasoning]
-
-Statement 3: "This trial is testing a drug delivered via Oral administration (tablet, capsule, by mouth, etc.)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific keywords/phrases found]
-  Reasoning: [step-by-step reasoning]
-
-Statement 4: "This trial is testing a drug delivered via Other routes (inhaled, implant, or unclear)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific keywords/phrases found]
-  Reasoning: [step-by-step reasoning]
-
-Final Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
-
---- OUTCOME VERIFICATION ---
-Statement 1: "This trial has a Positive outcome (completed successfully, met endpoints)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific evidence from the data]
-  Reasoning: [step-by-step reasoning]
-
-Statement 2: "This trial was Withdrawn (never started or enrolled patients)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific evidence from the data]
-  Reasoning: [step-by-step reasoning]
-
-Statement 3: "This trial was Terminated (stopped early before completion)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific evidence from the data]
-  Reasoning: [step-by-step reasoning]
-
-Statement 4: "This trial Failed (completed but did not meet endpoints)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific evidence from the data]
-  Reasoning: [step-by-step reasoning]
-
-Statement 5: "This trial is currently Active (recruiting or ongoing)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific evidence from the data]
-  Reasoning: [step-by-step reasoning]
-
-Statement 6: "This trial has an Unknown outcome (insufficient data to determine)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific evidence from the data]
-  Reasoning: [step-by-step reasoning]
-
-Final Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
-
---- REASON FOR FAILURE VERIFICATION ---
-(Only if Outcome is Withdrawn, Terminated, or Failed)
-
-Statement 1: "The trial failed due to Business reasons (funding, sponsor decision, strategic)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific evidence]
-
-Statement 2: "The trial failed because it was Ineffective for its purpose (lack of efficacy, failed endpoints)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific evidence]
-
-Statement 3: "The trial failed due to Toxicity/Safety issues (adverse events, safety concerns)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific evidence]
-
-Statement 4: "The trial failed due to COVID-19 related issues."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific evidence]
-
-Statement 5: "The trial failed due to Recruitment issues (enrollment problems, slow accrual)."
-  Verification: [TRUE or FALSE]
-  Evidence: [specific evidence]
-
-Final Reason for Failure: [Business reasons, Ineffective for purpose, Toxic/unsafe, Due to covid, Recruitment issues, or N/A]
 
 Sequence: [amino acid sequence in one-letter code, or N/A]
   Evidence: [source of sequence or why N/A]
 
 Study IDs: [PMID:12345 or DOI:10.xxxx format, pipe-separated if multiple]
 
+Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
+  Reasoning: [your step-by-step reasoning]
+  Evidence: [specific evidence from the data]
+
+Reason for Failure: [only if Outcome is Withdrawn/Terminated/Failed, else N/A]
+  Evidence: [specific evidence if applicable]
+
+Peptide: [True or False]
+  Reasoning: [your step-by-step reasoning]
+  Evidence: [specific evidence from the data]
+
 Comments: [any additional relevant observations]
 ```
 
-# VERIFICATION CRITERIA FOR EACH FIELD
+# DECISION LOGIC WITH EXAMPLES
 
-## 1. PEPTIDE VERIFICATION
+## 1. PEPTIDE DETERMINATION (True/False)
 
-**Verify TRUE if**:
+**Definition**: A peptide is a short chain of amino acids (typically 2-100 amino acids). 
+
+**TRUE if**:
 - Drug name contains "peptide" or known peptide drug names
 - Intervention described as peptide-based therapeutic
 - Drug is on DRAMP (peptide database)
 - UniProt shows protein with <200 amino acids
 - Literature describes amino acid sequence
 
-**Verify FALSE if**:
+**FALSE if**:
 - Drug is a monoclonal antibody (mAb, -mab suffix)
 - Drug is a full-length protein (>200 aa)
 - Drug is a small molecule (non-amino acid based)
 - Drug is a vaccine without peptide epitopes
 - Drug is gene therapy or cell therapy
 
-**Verification Examples**:
-- "LL-37 derivative" → Statement: "This trial is testing a peptide therapeutic." → Verification: TRUE (known AMP peptide)
-- "Pembrolizumab" → Statement: "This trial is testing a peptide therapeutic." → Verification: FALSE (monoclonal antibody, not a peptide)
-- "Insulin glargine" → Statement: "This trial is testing a peptide therapeutic." → Verification: TRUE (51 aa hormone)
+**Examples**:
+- "LL-37 derivative" → Peptide: True (known AMP)
+- "Nisin" → Peptide: True (known peptide antibiotic)
+- "Pembrolizumab" → Peptide: False (monoclonal antibody)
+- "Metformin" → Peptide: False (small molecule)
+- "Insulin glargine" → Peptide: True (51 aa hormone)
 
-
-## 2. CLASSIFICATION VERIFICATION (AMP vs Other)
+## 2. CLASSIFICATION (AMP vs Other) - ENHANCED DECISION LOGIC
 
 **CRITICAL**: Classification determines if a peptide has ANTIMICROBIAL properties. Focus on the MECHANISM, not just the disease being treated.
 
-### AMP Statement - Verify TRUE if ANY of these apply:
+### STEP 1: Check for AMP POSITIVE INDICATORS (any of these → likely AMP)
 
 **Direct Antimicrobial Keywords** (in drug name, description, or mechanism):
 - "antimicrobial", "antibacterial", "antifungal", "antiviral", "antiparasitic"
@@ -231,7 +146,7 @@ Comments: [any additional relevant observations]
 - Surgical site infections
 - Skin/soft tissue infections
 
-### Other Statement - Verify TRUE if:
+### STEP 2: Check for AMP NEGATIVE INDICATORS (these suggest "Other")
 
 **Non-Antimicrobial Mechanisms**:
 - "receptor agonist", "receptor antagonist", "hormone analog"
@@ -252,195 +167,382 @@ Comments: [any additional relevant observations]
 - Thymosin (unless antimicrobial use)
 - Cancer peptide vaccines (unless antimicrobial)
 
-### Classification Verification Examples
+**Non-AMP Conditions** (when peptide is NOT targeting infection):
+- Diabetes (metabolic)
+- Obesity
+- Cancer (unless antimicrobial mechanism)
+- Cardiovascular disease (heart failure, hypertension)
+- Autoimmune disorders
+- Hormonal deficiencies
+- Neurological conditions
 
-**Example 1:**
+### STEP 3: CLASSIFICATION DECISION TREE
+
+```
+Is it a peptide? 
+├── NO → Classification: Other
+└── YES → Does it have DIRECT antimicrobial activity?
+    ├── YES (kills/inhibits pathogens) → Classification: AMP
+    ├── NO (targets host cells/receptors) → Classification: Other
+    └── UNCLEAR → Check:
+        ├── Is condition an INFECTION? AND peptide mechanism is antimicrobial? → AMP
+        └── Is condition NOT an infection OR mechanism is metabolic/hormonal? → Other
+```
+
+### CLASSIFICATION EXAMPLES WITH REASONING
+
+**Example 1: AMP**
 - Drug: "LL-37 topical gel"
 - Condition: "Diabetic foot ulcer with infection"
-- Statement: "This trial is testing an AMP." → Verification: TRUE
-  - Evidence: "LL-37 is a cathelicidin with broad-spectrum antimicrobial activity"
-  - Reasoning: LL-37 is a known antimicrobial peptide, treating infection
-- Statement: "This trial is testing Other (non-AMP)." → Verification: FALSE
-- Final Classification: AMP
+- Evidence: "LL-37 is a cathelicidin with broad-spectrum antimicrobial activity"
+- Reasoning: LL-37 is a known antimicrobial peptide, treating infection → Classification: AMP
 
-**Example 2:**
+**Example 2: AMP**
+- Drug: "Polymyxin B"
+- Condition: "Gram-negative bacterial infection"
+- Evidence: "Polymyxin antibiotics disrupt bacterial cell membranes"
+- Reasoning: Direct antibacterial mechanism → Classification: AMP
+
+**Example 3: Other**
 - Drug: "Semaglutide"
 - Condition: "Type 2 diabetes"
-- Statement: "This trial is testing an AMP." → Verification: FALSE
-  - Evidence: "GLP-1 receptor agonist for glucose control"
-  - Reasoning: Metabolic peptide, no antimicrobial activity
-- Statement: "This trial is testing Other (non-AMP)." → Verification: TRUE
-- Final Classification: Other
+- Evidence: "GLP-1 receptor agonist for glucose control"
+- Reasoning: Metabolic peptide targeting glucose regulation, no antimicrobial activity → Classification: Other
+
+**Example 4: Other**
+- Drug: "Thymosin alpha-1"
+- Condition: "Hepatocellular carcinoma"
+- Evidence: "Immunomodulator for cancer treatment"
+- Reasoning: Immunomodulator for cancer (not antimicrobial), targets immune response not pathogens → Classification: Other
+
+**Example 5: Edge Case - AMP**
+- Drug: "Pexiganan (MSI-78)"
+- Condition: "Infected diabetic foot ulcer"
+- Evidence: "Synthetic magainin analog with antibacterial properties"
+- Reasoning: Though treating diabetic ulcer, mechanism is ANTIMICROBIAL → Classification: AMP
+
+**Example 6: Edge Case - Other**
+- Drug: "Cyclosporine"
+- Condition: "Preventing transplant rejection"
+- Evidence: "Immunosuppressant peptide"
+- Reasoning: Despite being a peptide, mechanism is immunosuppression not antimicrobial → Classification: Other
 
 
-## 3. DELIVERY MODE VERIFICATION
+## 3. DELIVERY MODE - EXPLICIT KEYWORD MATCHING
 
-For each delivery mode, verify if the evidence supports that route.
+**IMPORTANT**: Choose EXACTLY ONE of these four values: Injection/Infusion, Topical, Oral, or Other
 
-### Injection/Infusion - Verify TRUE if ANY of these keywords appear:
+### DECISION PROCESS (Follow in order):
+
+**STEP 1: Search for EXPLICIT route keywords in this priority order:**
+
+#### A) INJECTION/INFUSION - Choose this if ANY of these keywords appear:
 ```
-"injection", "injectable", "inject", "infusion", "infuse"
-"intravenous", "IV", "i.v.", "subcutaneous", "SC", "s.c.", "SQ", "subQ"
-"intramuscular", "IM", "i.m.", "intradermal", "ID", "i.d."
-"intraperitoneal", "IP", "i.p.", "intrathecal", "IT"
-"intravitreal", "IVT", "intraarticular", "IA"
-"intralesional", "IL", "bolus", "parenteral", "syringe", "needle", "drip"
+EXACT MATCHES (case-insensitive):
+- "injection", "injectable", "inject"
+- "infusion", "infuse"
+- "intravenous", "IV", "i.v."
+- "subcutaneous", "SC", "s.c.", "SQ", "subQ"
+- "intramuscular", "IM", "i.m."
+- "intradermal", "ID", "i.d."
+- "intraperitoneal", "IP", "i.p."
+- "intrathecal", "IT"
+- "intravitreal", "IVT"
+- "intraarticular", "IA"
+- "intralesional", "IL"
+- "bolus"
+- "parenteral"
+- "syringe", "needle"
+- "drip"
 ```
 
-### Topical - Verify TRUE if ANY of these keywords appear:
+#### B) TOPICAL - Choose this if ANY of these keywords appear (and no injection keywords):
 ```
-"topical", "topically", "cream", "ointment", "gel", "lotion"
-"dermal", "transdermal", "cutaneous", "skin", "applied to skin"
-"wound", "wound care", "wound dressing", "wound bed"
-"patch", "adhesive patch", "spray" (for skin), "foam" (dermatological)
-"eye drop", "eyedrop", "ophthalmic", "ocular"
-"ear drop", "otic", "nasal spray", "intranasal", "nasal"
-"mouthwash", "mouth rinse", "oral rinse", "buccal"
-"dental", "periodontal", "gingival", "varnish", "strip"
-"vaginal", "intravaginal", "rectal" (suppository), "enema"
+EXACT MATCHES (case-insensitive):
+- "topical", "topically"
+- "cream", "ointment", "gel", "lotion"
+- "dermal", "transdermal", "cutaneous"
+- "skin", "applied to skin", "applied to the skin"
+- "wound", "wound care", "wound dressing", "wound bed"
+- "patch", "adhesive patch"
+- "spray" (when for skin, NOT inhaled)
+- "foam" (dermatological)
+- "eye drop", "eyedrop", "ophthalmic", "ocular"
+- "ear drop", "otic"
+- "nasal spray", "intranasal", "nasal"
+- "mouthwash", "mouth rinse", "oral rinse", "buccal"
+- "dental", "periodontal", "gingival"
+- "vaginal", "intravaginal"
+- "rectal" (suppository for local effect)
+- "enema" (for local colonic effect)
 ```
 
-### Oral - Verify TRUE if ANY of these keywords appear:
+#### C) ORAL - Choose this if ANY of these keywords appear (and no injection/topical keywords):
 ```
-"oral", "orally", "by mouth", "per os", "PO", "p.o."
-"tablet", "tablets", "capsule", "capsules", "pill", "pills"
-"syrup", "elixir", "solution" (taken by mouth)
-"swallow", "swallowed", "enteric", "enteric-coated"
-"sublingual", "lozenge", "drink", "supplement"
+EXACT MATCHES (case-insensitive):
+- "oral", "orally", "by mouth", "per os", "PO", "p.o."
+- "tablet", "tablets"
+- "capsule", "capsules"
+- "pill", "pills"
+- "syrup", "elixir", "solution" (when taken by mouth)
+- "swallow", "swallowed"
+- "enteric", "enteric-coated"
+- "sublingual" (under tongue, absorbed systemically)
+- "lozenge"
 ```
 
-### Other - Verify TRUE if:
+#### D) OTHER - Choose this if:
 - Route is inhaled/pulmonary: "inhaled", "inhalation", "nebulized", "pulmonary"
 - Route is implant: "implant", "implanted", "depot"
 - Multiple different routes are used
 - Route cannot be determined from the data
+- Route is explicitly stated as something not in categories A-C
 
-### Delivery Mode Verification Examples
+### STEP 2: If NO explicit keywords found, use CONTEXT CLUES:
+
+**Default to Other if:**
+- Cannot determine route from any available information
+- Mixed or unclear routes
+
+### DELIVERY MODE EXAMPLES
+
+**Example 1: Injection/Infusion**
+- Text: "administered via subcutaneous injection once weekly"
+- Keywords found: "subcutaneous", "injection"
+- Answer: Injection/Infusion
+
+**Example 2: Injection/Infusion**
+- Text: "IV infusion over 30 minutes"
+- Keywords found: "IV", "infusion"
+- Answer: Injection/Infusion
+
+**Example 3: Topical**
+- Text: "applied topically to the wound site twice daily"
+- Keywords found: "topically", "wound"
+- Answer: Topical
+
+**Example 4: Topical**
+- Text: "ophthalmic solution, one drop in each eye"
+- Keywords found: "ophthalmic"
+- Answer: Topical
+
+**Example 5: Topical**
+- Text: "gel formulation for skin application"
+- Keywords found: "gel", "skin"
+- Answer: Topical
+
+**Example 6: Oral**
+- Text: "oral capsule taken twice daily with food"
+- Keywords found: "oral", "capsule"
+- Answer: Oral
+
+**Example 7: Oral**
+- Text: "tablet formulation, swallowed whole"
+- Keywords found: "tablet", "swallowed"
+- Answer: Oral
+
+**Example 8: Other**
+- Text: "inhaled via nebulizer"
+- Keywords found: "inhaled", "nebulizer"
+- Answer: Other (inhalation route)
+
+**Example 11: Topical (context)**
+- Text: "treatment for chronic wound healing" (no explicit route)
+- Keywords found: "wound"
+- Answer: Topical (wound care context)
+
+
+## 4. OUTCOME - EXPLICIT STATUS MAPPING
+
+**IMPORTANT**: Choose EXACTLY ONE of these values: Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown
+
+### DECISION PROCESS (Follow these steps in order):
+
+**STEP 1: Find the Overall Status field and map it:**
+
+```
+┌─────────────────────────────────┬────────────────────────────────────┐
+│ IF Overall Status IS:           │ THEN Outcome IS:                   │
+├─────────────────────────────────┼────────────────────────────────────┤
+│ RECRUITING                      │ Active                             │
+│ NOT_YET_RECRUITING              │ Active                             │
+│ ENROLLING_BY_INVITATION         │ Active                             │
+│ ACTIVE_NOT_RECRUITING           │ Active                             │
+│ AVAILABLE                       │ Active                             │
+├─────────────────────────────────┼────────────────────────────────────┤
+│ WITHDRAWN                       │ Withdrawn                          │
+├─────────────────────────────────┼────────────────────────────────────┤
+│ TERMINATED                      │ Terminated                         │
+├─────────────────────────────────┼────────────────────────────────────┤
+│ NO_LONGER_AVAILABLE             │ Unknown                            │
+│ UNKNOWN_STATUS                  │ Unknown                            │
+├─────────────────────────────────┼────────────────────────────────────┤
+│ COMPLETED                       │ → Go to STEP 2                     │
+└─────────────────────────────────┴────────────────────────────────────┘
+```
+
+**STEP 2: For COMPLETED trials only - Check hasResults:**
+
+```
+IF hasResults = false OR hasResults is not present:
+    → Outcome: Unknown
+    
+IF hasResults = true:
+    → Go to STEP 3
+```
+
+**STEP 3: For COMPLETED trials with hasResults=true - Analyze result text:**
+
+Search for these EXACT phrases (case-insensitive):
+
+```
+POSITIVE INDICATORS (any of these → Outcome: Positive):
+- "met primary endpoint"
+- "met the primary endpoint"
+- "achieved primary endpoint"
+- "primary endpoint was met"
+- "primary endpoint achieved"
+- "statistically significant"
+- "significant improvement"
+- "significant reduction"
+- "significant increase" (if increase is the goal)
+- "demonstrated efficacy"
+- "showed efficacy"
+- "effective"
+- "superior to placebo"
+- "non-inferior" (for non-inferiority trials)
+- "FDA approved"
+- "regulatory approval"
+- "p < 0.05" or "p<0.05" or "p = 0.0" (significant p-value)
+- "p < 0.01" or "p<0.01"
+- "p < 0.001" or "p<0.001"
+
+NEGATIVE INDICATORS (any of these → Outcome: Failed - completed trial):
+- "did not meet primary endpoint"
+- "failed to meet primary endpoint"
+- "primary endpoint was not met"
+- "primary endpoint not achieved"
+- "no significant difference"
+- "not statistically significant"
+- "failed to demonstrate"
+- "lack of efficacy"
+- "no efficacy"
+- "ineffective"
+- "not effective"
+- "negative results"
+- "did not show benefit"
+- "p > 0.05" or "p=0.05" or "p = 0." followed by number > 05
+- "ns" (not significant)
+- "terminated for futility" (even if status says COMPLETED)
+
+IF NEITHER positive nor negative indicators found:
+    → Outcome: Unknown
+```
+
+### OUTCOME EXAMPLES
+
+**Example 1: Active**
+- Status: RECRUITING
+- Reasoning: Status is RECRUITING → trial is ongoing
+- Answer: Active
+
+**Example 2: Active**
+- Status: ACTIVE_NOT_RECRUITING
+- Reasoning: Status indicates trial is active but not recruiting new patients
+- Answer: Active
+
+**Example 3: Withdrawn**
+- Status: WITHDRAWN
+- whyStopped: "Sponsor decision"
+- Reasoning: Status is WITHDRAWN → trial never enrolled patients
+- Answer: Withdrawn
+
+**Example 4: Terminated**
+- Status: TERMINATED
+- whyStopped: "Lack of efficacy at interim analysis"
+- Reasoning: Status is TERMINATED → trial stopped early
+- Answer: Terminated
+
+**Example 5: Positive**
+- Status: COMPLETED
+- hasResults: true
+- Results text: "The study met its primary endpoint with statistically significant improvement (p<0.001)"
+- Reasoning: COMPLETED + hasResults=true + "met primary endpoint" + "statistically significant"
+- Answer: Positive
+
+**Example 6: Failed - completed trial**
+- Status: COMPLETED
+- hasResults: true
+- Results text: "The study did not meet its primary endpoint (p=0.23)"
+- Reasoning: COMPLETED + hasResults=true + "did not meet primary endpoint"
+- Answer: Failed - completed trial
+
+**Example 7: Failed - completed trial**
+- Status: COMPLETED
+- hasResults: true
+- Results text: "No statistically significant difference between treatment and placebo groups"
+- Reasoning: COMPLETED + hasResults=true + "no statistically significant difference"
+- Answer: Failed - completed trial
+
+**Example 8: Unknown**
+- Status: COMPLETED
+- hasResults: false
+- Reasoning: COMPLETED but hasResults=false → no results to analyze
+- Answer: Unknown
+
+**Example 9: Unknown**
+- Status: COMPLETED
+- hasResults: true
+- Results text: "Study completed. Results pending publication."
+- Reasoning: COMPLETED + hasResults=true but no positive/negative indicators found
+- Answer: Unknown
+
+
+## 5. REASON FOR FAILURE
+
+**Only complete if Outcome is**: Withdrawn, Terminated, or Failed - completed trial
+**Otherwise**: Write exactly "N/A"
+
+**Categories (choose the best match):**
+- Business reasons: funding, sponsorship, company decision, strategic, acquisition, financial
+- Ineffective for purpose: lack of efficacy, failed endpoints, no benefit, futility
+- Toxic/unsafe: adverse events, safety concerns, toxicity, side effects
+- Due to covid: COVID-19, pandemic, coronavirus related
+- Recruitment issues: enrollment problems, difficulty recruiting, low accrual, slow enrollment
+
+**Look for whyStopped field first.** If not available, infer from context.
+
+### REASON FOR FAILURE EXAMPLES
 
 **Example 1:**
-- Text: "administered via subcutaneous injection once weekly"
-- Statement: "Drug delivered via Injection/Infusion." → Verification: TRUE
-  - Evidence: "subcutaneous", "injection"
-- Statement: "Drug delivered via Topical." → Verification: FALSE
-- Statement: "Drug delivered via Oral." → Verification: FALSE
-- Statement: "Drug delivered via Other." → Verification: FALSE
-- Final Delivery Mode: Injection/Infusion
+- Outcome: Terminated
+- whyStopped: "Lack of efficacy at interim analysis"
+- Answer: Ineffective for purpose
+- Evidence: "whyStopped states lack of efficacy"
 
 **Example 2:**
-- Text: "applied topically to the wound site twice daily"
-- Statement: "Drug delivered via Injection/Infusion." → Verification: FALSE
-- Statement: "Drug delivered via Topical." → Verification: TRUE
-  - Evidence: "topically", "wound"
-- Statement: "Drug delivered via Oral." → Verification: FALSE
-- Statement: "Drug delivered via Other." → Verification: FALSE
-- Final Delivery Mode: Topical
+- Outcome: Withdrawn
+- whyStopped: "Funding not available"
+- Answer: Business reasons
+- Evidence: "whyStopped indicates funding issues"
 
 **Example 3:**
-- Text: "oral capsule taken twice daily with food"
-- Statement: "Drug delivered via Injection/Infusion." → Verification: FALSE
-- Statement: "Drug delivered via Topical." → Verification: FALSE
-- Statement: "Drug delivered via Oral." → Verification: TRUE
-  - Evidence: "oral", "capsule"
-- Statement: "Drug delivered via Other." → Verification: FALSE
-- Final Delivery Mode: Oral
+- Outcome: Terminated
+- whyStopped: "Safety concerns - increased adverse events in treatment group"
+- Answer: Toxic/unsafe
+- Evidence: "whyStopped cites safety concerns and adverse events"
 
 **Example 4:**
-- Text: "inhaled via nebulizer"
-- Statement: "Drug delivered via Injection/Infusion." → Verification: FALSE
-- Statement: "Drug delivered via Topical." → Verification: FALSE
-- Statement: "Drug delivered via Oral." → Verification: FALSE
-- Statement: "Drug delivered via Other." → Verification: TRUE
-  - Evidence: "inhaled", "nebulizer" (inhalation route)
-- Final Delivery Mode: Other
+- Outcome: Failed - completed trial
+- Results: "Study completed but failed to meet primary endpoint"
+- whyStopped: N/A (trial completed)
+- Answer: Ineffective for purpose
+- Evidence: "Trial completed but did not demonstrate efficacy"
 
-
-## 4. OUTCOME VERIFICATION
-
-Verify each outcome possibility based on trial status and results.
-
-### Positive - Verify TRUE if:
-- Status is COMPLETED AND hasResults=true AND results indicate success
-- Look for: "met primary endpoint", "statistically significant", "demonstrated efficacy"
-- p-values < 0.05
-
-### Withdrawn - Verify TRUE if:
-- Status is exactly "WITHDRAWN"
-- Trial never enrolled patients or started
-
-### Terminated - Verify TRUE if:
-- Status is exactly "TERMINATED"
-- Trial stopped early before planned completion
-
-### Failed - completed trial - Verify TRUE if:
-- Status is COMPLETED AND hasResults=true AND results indicate failure
-- Look for: "did not meet primary endpoint", "no significant difference", "failed to demonstrate"
-- p-values > 0.05 or non-significant results
-
-### Active - Verify TRUE if:
-- Status is RECRUITING, NOT_YET_RECRUITING, ENROLLING_BY_INVITATION
-- Status is ACTIVE_NOT_RECRUITING, or AVAILABLE
-
-### Unknown - Verify TRUE if:
-- Status is COMPLETED but hasResults=false
-- Status is NO_LONGER_AVAILABLE or UNKNOWN_STATUS
-- Insufficient data to determine outcome
-
-### Outcome Verification Examples
-
-**Example 1:**
-- Status: RECRUITING
-- Statement: "This trial has a Positive outcome." → Verification: FALSE
-- Statement: "This trial was Withdrawn." → Verification: FALSE
-- Statement: "This trial was Terminated." → Verification: FALSE
-- Statement: "This trial Failed." → Verification: FALSE
-- Statement: "This trial is Active." → Verification: TRUE
-  - Evidence: Status is RECRUITING
-- Statement: "This trial has Unknown outcome." → Verification: FALSE
-- Final Outcome: Active
-
-**Example 2:**
-- Status: COMPLETED, hasResults: true
-- Results: "The study met its primary endpoint with statistically significant improvement (p<0.001)"
-- Statement: "This trial has a Positive outcome." → Verification: TRUE
-  - Evidence: "met primary endpoint", "statistically significant", "p<0.001"
-- Statement: "This trial was Withdrawn." → Verification: FALSE
-- Statement: "This trial was Terminated." → Verification: FALSE
-- Statement: "This trial Failed." → Verification: FALSE
-- Statement: "This trial is Active." → Verification: FALSE
-- Statement: "This trial has Unknown outcome." → Verification: FALSE
-- Final Outcome: Positive
-
-**Example 3:**
-- Status: COMPLETED, hasResults: true
-- Results: "The study did not meet its primary endpoint (p=0.23)"
-- Statement: "This trial has a Positive outcome." → Verification: FALSE
-- Statement: "This trial was Withdrawn." → Verification: FALSE
-- Statement: "This trial was Terminated." → Verification: FALSE
-- Statement: "This trial Failed." → Verification: TRUE
-  - Evidence: "did not meet primary endpoint", "p=0.23" (not significant)
-- Statement: "This trial is Active." → Verification: FALSE
-- Statement: "This trial has Unknown outcome." → Verification: FALSE
-- Final Outcome: Failed - completed trial
-
-
-## 5. REASON FOR FAILURE VERIFICATION
-
-Only verify if Outcome is Withdrawn, Terminated, or Failed.
-
-### Business reasons - Verify TRUE if:
-- whyStopped mentions: funding, sponsorship, company decision, strategic, acquisition, financial
-
-### Ineffective for purpose - Verify TRUE if:
-- whyStopped or results mention: lack of efficacy, failed endpoints, no benefit, futility
-
-### Toxic/unsafe - Verify TRUE if:
-- whyStopped mentions: adverse events, safety concerns, toxicity, side effects
-
-### Due to covid - Verify TRUE if:
-- whyStopped mentions: COVID-19, pandemic, coronavirus related
-
-### Recruitment issues - Verify TRUE if:
-- whyStopped mentions: enrollment problems, difficulty recruiting, low accrual, slow enrollment
+**Example 5:**
+- Outcome: Active
+- Answer: N/A
+- Evidence: "Trial is still active - Reason for Failure not applicable"
 
 
 ## 6. SEQUENCE EXTRACTION
@@ -458,23 +560,27 @@ Only verify if Outcome is Withdrawn, Terminated, or Failed.
 - Multiple sequences separated by pipe: KLRRR|GWFKKR
 - If sequence not found in data: N/A
 
-**IMPORTANT**: Only report sequences you actually find in the provided data. Do NOT guess or hallucinate sequences.
+**Example sequences**:
+- LL-37: LLGDFFRKSKEKIGKEFKRIVQRIKDFLRNLVPRTES
+- Nisin: ITSISLCTPGCKTGALMGCNMKTATCHCSIHVSK
 
+**IMPORTANT**: Only report sequences you actually find in the provided data. Do NOT guess or hallucinate sequences.
 
 # CRITICAL RULES
 
-1. ALWAYS verify EACH possible value for classification fields before making final decision
-2. ALWAYS follow the exact output format shown above
-3. ALWAYS include Verification, Evidence, and Reasoning for each statement
-4. For each field, exactly ONE statement should be TRUE (or zero for ambiguous cases)
-5. NEVER guess sequences - only report if found in data, otherwise N/A
-6. NEVER skip fields - use N/A for missing data
-7. Do NOT wrap output in markdown code blocks
-8. Use ONLY the valid values specified for each field
-9. Base all decisions on evidence from the provided data
-10. DO NOT use ** or bold formatting. Put each field on its own line.
+1. ALWAYS follow the exact output format shown above
+2. ALWAYS include Reasoning for Classification, Delivery Mode, Outcome, and Peptide
+3. NEVER guess sequences - only report if found in data, otherwise N/A
+4. NEVER skip fields - use N/A for missing data
+5. Do NOT wrap output in markdown code blocks
+6. Use ONLY the valid values specified for each field
+7. Base all decisions on evidence from the provided data
+8. DO NOT use ** or bold formatting. Put each field on its own line.
+9. For Classification: Focus on MECHANISM (does it kill pathogens?) not just the condition
+10. For Outcome: Follow the EXACT status mapping table, then check hasResults
+11. For Delivery Mode: Search for EXACT keywords first, then use context clues
 
-Now analyze the clinical trial data using verification-based analysis and produce your annotation.\"\"\"
+Now analyze the clinical trial data and produce your annotation.\"\"\"
 
 # Optimized parameters for accuracy
 PARAMETER temperature 0.1
@@ -482,7 +588,7 @@ PARAMETER top_p 0.85
 PARAMETER top_k 30
 PARAMETER repeat_penalty 1.15
 PARAMETER num_ctx 16384
-PARAMETER num_predict 4000
+PARAMETER num_predict 3000
 
 # Stop sequences
 PARAMETER stop "<|eot_id|>"
@@ -496,71 +602,52 @@ PARAMETER stop "</s>"
         nct_id: str
     ) -> str:
         """
-        Generate extraction prompt from search results using verification-based approach.
+        Generate extraction prompt from search results.
         
         Args:
             search_results: Complete search results from NCTSearchEngine
             nct_id: NCT number
             
         Returns:
-            Formatted prompt for LLM extraction with verification-based analysis
+            Formatted prompt for LLM extraction
         """
         sections = []
         
         # Add header with clear task
         sections.append(f"# CLINICAL TRIAL ANNOTATION TASK: {nct_id}")
         sections.append("""
-Analyze the following clinical trial data using VERIFICATION-BASED analysis.
-For each classification field, you must verify whether each possible value is TRUE or FALSE.
+Analyze the following clinical trial data carefully. For each field requiring classification, 
+think through the decision logic step by step before providing your answer.
 
-## VERIFICATION APPROACH
+## QUICK REFERENCE - VALID VALUES ONLY
 
-For each field, evaluate EVERY possible value:
-1. State the verification statement
-2. Determine if TRUE or FALSE based on evidence
-3. Provide specific evidence from the data
-4. Explain your reasoning
-5. Select the final value (the one verified as TRUE)
-
-## FIELDS REQUIRING VERIFICATION
-
-| Field | Possible Values to Verify |
-|-------|---------------------------|
-| Peptide | True, False |
+| Field | Valid Values |
+|-------|--------------|
 | Classification | AMP, Other |
 | Delivery Mode | Injection/Infusion, Topical, Oral, Other |
 | Outcome | Positive, Withdrawn, Terminated, Failed - completed trial, Active, Unknown |
-| Reason for Failure | Business reasons, Ineffective for purpose, Toxic/unsafe, Due to covid, Recruitment issues, N/A |
+| Peptide | True, False |
 
-## VERIFICATION STATEMENTS TO EVALUATE
+## KEY DECISION REMINDERS
 
-### PEPTIDE
-- "This trial is testing a peptide therapeutic." → Verify TRUE or FALSE
+**CLASSIFICATION**: Does the peptide KILL or INHIBIT pathogens (bacteria/fungi/viruses)?
+- YES → AMP
+- NO (metabolic/hormonal/immunomodulator) → Other
 
-### CLASSIFICATION
-- "This trial is testing an Antimicrobial Peptide (AMP) that kills or inhibits pathogens." → Verify TRUE or FALSE
-- "This trial is testing a non-antimicrobial peptide or non-peptide therapeutic (Other)." → Verify TRUE or FALSE
+**DELIVERY MODE**: Search for these keywords IN ORDER:
+1. Injection words (injection, IV, SC, IM, infusion) → Injection/Infusion
+2. Topical words (topical, cream, gel, wound, eye drop) → Topical  
+3. Oral words (oral, tablet, capsule, pill, drink, supplement) → Oral
+4. Other (inhaled, implant, unclear) → Other
+5. No keywords + peptide drug → Default to Injection/Infusion
 
-### DELIVERY MODE
-- "This trial is testing a drug delivered via Injection or Infusion." → Verify TRUE or FALSE
-- "This trial is testing a drug delivered via Topical application." → Verify TRUE or FALSE
-- "This trial is testing a drug delivered via Oral administration." → Verify TRUE or FALSE
-- "This trial is testing a drug delivered via Other routes (inhaled, implant, unclear)." → Verify TRUE or FALSE
-
-### OUTCOME
-- "This trial has a Positive outcome (completed, met endpoints)." → Verify TRUE or FALSE
-- "This trial was Withdrawn." → Verify TRUE or FALSE
-- "This trial was Terminated." → Verify TRUE or FALSE
-- "This trial Failed (completed but did not meet endpoints)." → Verify TRUE or FALSE
-- "This trial is currently Active." → Verify TRUE or FALSE
-- "This trial has an Unknown outcome." → Verify TRUE or FALSE
-
-### REASON FOR FAILURE (only if Withdrawn/Terminated/Failed)
-- "The trial failed due to Business reasons." → Verify TRUE or FALSE
-- "The trial failed because it was Ineffective." → Verify TRUE or FALSE
-- "The trial failed due to Toxicity/Safety." → Verify TRUE or FALSE
-- "The trial failed due to COVID-19." → Verify TRUE or FALSE
-- "The trial failed due to Recruitment issues." → Verify TRUE or FALSE
+**OUTCOME**: Follow the status mapping:
+- RECRUITING/ACTIVE_NOT_RECRUITING/etc → Active
+- WITHDRAWN → Withdrawn
+- TERMINATED → Terminated
+- COMPLETED + hasResults=false → Unknown
+- COMPLETED + hasResults=true + "met endpoint" → Positive
+- COMPLETED + hasResults=true + "failed"/"not significant" → Failed - completed trial
 
 ---
 # DATA SOURCES
@@ -602,16 +689,14 @@ For each field, evaluate EVERY possible value:
             sections.append("\n## ANNOTATED DATA: BioC")
             sections.append(bioc_data)
         
-        # Add final instruction with verification-based guidance
+        # Add final instruction with enhanced guidance
         sections.append("""
 ---
 # YOUR TASK
 
-Using VERIFICATION-BASED analysis, evaluate each possible value for the classification fields.
+Analyze the data above and produce your annotation in the EXACT format specified.
 
 ## REQUIRED OUTPUT FORMAT
-
-First, extract the basic trial information:
 
 NCT Number: [from data]
 Study Title: [from data]
@@ -624,120 +709,25 @@ Enrollment: [from data]
 Start Date: [from data]
 Completion Date: [from data]
 
-Then, for each classification field, verify ALL possible values:
+Classification: [AMP or Other]
+  Reasoning: [Is it a peptide? Does it kill pathogens?]
+  Evidence: [Quote from data]
+Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
+  Reasoning: [What route keywords did you find?]
+  Evidence: [Quote the exact words that indicate route]
+Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
+  Reasoning: [What is the status? If COMPLETED, what does hasResults say?]
+  Evidence: [Quote status and any result indicators]
+Reason for Failure: [Category or N/A]
+  Evidence: [Quote whyStopped or result text, or "Not applicable"]
+Peptide: [True or False]
+  Evidence: [Quote from data]
+Sequence: [Sequence or N/A]
+DRAMP Name: [Name or N/A]
+Study IDs: [PMIDs or N/A]
+Comments: [Any notes]
 
---- PEPTIDE VERIFICATION ---
-Statement: "This trial is testing a peptide therapeutic."
-  Verification: [TRUE or FALSE]
-  Evidence: [quote specific evidence]
-  Reasoning: [explain why TRUE or FALSE]
-Final Peptide Value: [True or False]
-
---- CLASSIFICATION VERIFICATION ---
-Statement 1: "This trial is testing an Antimicrobial Peptide (AMP)."
-  Verification: [TRUE or FALSE]
-  Evidence: [quote specific evidence]
-  Reasoning: [explain]
-
-Statement 2: "This trial is testing a non-AMP therapeutic (Other)."
-  Verification: [TRUE or FALSE]
-  Evidence: [quote specific evidence]
-  Reasoning: [explain]
-
-Final Classification: [AMP or Other]
-
---- DELIVERY MODE VERIFICATION ---
-Statement 1: "This drug is delivered via Injection/Infusion."
-  Verification: [TRUE or FALSE]
-  Evidence: [keywords found or not found]
-  Reasoning: [explain]
-
-Statement 2: "This drug is delivered via Topical application."
-  Verification: [TRUE or FALSE]
-  Evidence: [keywords found or not found]
-  Reasoning: [explain]
-
-Statement 3: "This drug is delivered via Oral administration."
-  Verification: [TRUE or FALSE]
-  Evidence: [keywords found or not found]
-  Reasoning: [explain]
-
-Statement 4: "This drug is delivered via Other routes."
-  Verification: [TRUE or FALSE]
-  Evidence: [keywords found or not found]
-  Reasoning: [explain]
-
-Final Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
-
---- OUTCOME VERIFICATION ---
-Statement 1: "This trial has a Positive outcome."
-  Verification: [TRUE or FALSE]
-  Evidence: [from status and results]
-  Reasoning: [explain]
-
-Statement 2: "This trial was Withdrawn."
-  Verification: [TRUE or FALSE]
-  Evidence: [from status]
-  Reasoning: [explain]
-
-Statement 3: "This trial was Terminated."
-  Verification: [TRUE or FALSE]
-  Evidence: [from status]
-  Reasoning: [explain]
-
-Statement 4: "This trial Failed (completed, didn't meet endpoints)."
-  Verification: [TRUE or FALSE]
-  Evidence: [from status and results]
-  Reasoning: [explain]
-
-Statement 5: "This trial is Active."
-  Verification: [TRUE or FALSE]
-  Evidence: [from status]
-  Reasoning: [explain]
-
-Statement 6: "This trial has Unknown outcome."
-  Verification: [TRUE or FALSE]
-  Evidence: [explain why unknown]
-  Reasoning: [explain]
-
-Final Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
-
---- REASON FOR FAILURE VERIFICATION ---
-(Complete only if Outcome is Withdrawn, Terminated, or Failed; otherwise write "N/A - Trial did not fail")
-
-Statement 1: "Failed due to Business reasons."
-  Verification: [TRUE or FALSE]
-  Evidence: [from whyStopped]
-
-Statement 2: "Failed because Ineffective."
-  Verification: [TRUE or FALSE]
-  Evidence: [from whyStopped or results]
-
-Statement 3: "Failed due to Toxicity/Safety."
-  Verification: [TRUE or FALSE]
-  Evidence: [from whyStopped]
-
-Statement 4: "Failed due to COVID-19."
-  Verification: [TRUE or FALSE]
-  Evidence: [from whyStopped]
-
-Statement 5: "Failed due to Recruitment issues."
-  Verification: [TRUE or FALSE]
-  Evidence: [from whyStopped]
-
-Final Reason for Failure: [Category or N/A]
-
---- ADDITIONAL FIELDS ---
-Sequence: [amino acid sequence or N/A]
-  Evidence: [source of sequence]
-
-DRAMP Name: [name or N/A]
-
-Study IDs: [PMID:xxxx or N/A]
-
-Comments: [additional observations]
-
-Begin your verification-based annotation now:
+Begin your annotation now:
 """)
         
         return "\n".join(sections)
@@ -767,7 +757,7 @@ Begin your verification-based annotation now:
         overall_status = status_mod.get('overallStatus', 'N/A')
         
         lines.append(f"\n╔══════════════════════════════════════════════════════════════╗")
-        lines.append(f"║ OUTCOME VERIFICATION DATA                                     ║")
+        lines.append(f"║ OUTCOME DETERMINATION DATA                                    ║")
         lines.append(f"╠══════════════════════════════════════════════════════════════╣")
         lines.append(f"║ Overall Status: {overall_status:<44} ║")
         lines.append(f"║ Has Results: {str(has_results):<47} ║")
@@ -786,7 +776,7 @@ Begin your verification-based annotation now:
         # If has results, extract key outcome information
         if has_results and results_section:
             lines.append(f"\n╔══════════════════════════════════════════════════════════════╗")
-            lines.append(f"║ TRIAL RESULTS (for Positive/Failed verification)            ║")
+            lines.append(f"║ TRIAL RESULTS (for Positive/Failed determination)            ║")
             lines.append(f"╚══════════════════════════════════════════════════════════════╝")
             
             # Outcome measures
@@ -865,7 +855,7 @@ Begin your verification-based annotation now:
         interventions = arms_int.get("interventions", [])
         if interventions:
             lines.append(f"\n╔══════════════════════════════════════════════════════════════╗")
-            lines.append(f"║ INTERVENTION DATA (for Peptide, Classification, Delivery)   ║")
+            lines.append(f"║ INTERVENTION DATA (for Classification, Delivery Mode, Peptide)║")
             lines.append(f"╚══════════════════════════════════════════════════════════════╝")
             
             for intv in interventions[:5]:
@@ -879,7 +869,7 @@ Begin your verification-based annotation now:
                         int_desc = int_desc[:500] + "..."
                     lines.append(f"  Description: {int_desc}")
                     
-                    # Highlight delivery route keywords for verification
+                    # Highlight delivery route keywords
                     route_keywords = {
                         'injection': 'INJECTION/INFUSION',
                         'subcutaneous': 'INJECTION/INFUSION', 
@@ -915,15 +905,15 @@ Begin your verification-based annotation now:
                         if keyword in desc_lower:
                             found_routes.append(f"{keyword}→{route}")
                     if found_routes:
-                        lines.append(f"  *** DELIVERY KEYWORDS FOR VERIFICATION: {', '.join(found_routes)} ***")
+                        lines.append(f"  *** DELIVERY ROUTE KEYWORDS FOUND: {', '.join(found_routes)} ***")
                     
-                    # Highlight antimicrobial keywords for AMP verification
+                    # Highlight antimicrobial keywords if present
                     antimicrobial_keywords = ['antimicrobial', 'antibacterial', 'antifungal', 'antiviral', 
                                              'bactericidal', 'fungicidal', 'defensin', 'cathelicidin',
                                              'membrane disruption', 'host defense', 'kills bacteria']
                     found_amp = [kw for kw in antimicrobial_keywords if kw.lower() in desc_lower]
                     if found_amp:
-                        lines.append(f"  *** AMP KEYWORDS FOR VERIFICATION: {', '.join(found_amp)} ***")
+                        lines.append(f"  *** AMP INDICATORS FOUND: {', '.join(found_amp)} ***")
         else:
             lines.append("**Interventions:** N/A")
         
@@ -944,11 +934,11 @@ Begin your verification-based annotation now:
                     # Check for route keywords in arm description too
                     desc_lower = arm_desc.lower()
                     if any(kw in desc_lower for kw in ['injection', 'subcutaneous', 'intravenous', 'iv ', 'infusion']):
-                        lines.append(f"    *** Supports Injection/Infusion verification ***")
+                        lines.append(f"    *** INJECTION/INFUSION route indicated ***")
                     elif any(kw in desc_lower for kw in ['topical', 'cream', 'gel', 'applied', 'varnish', 'strip']):
-                        lines.append(f"    *** Supports Topical verification ***")
+                        lines.append(f"    *** TOPICAL route indicated ***")
                     elif any(kw in desc_lower for kw in ['oral', 'tablet', 'capsule', 'drink', 'supplement']):
-                        lines.append(f"    *** Supports Oral verification ***")
+                        lines.append(f"    *** ORAL route indicated ***")
         
         # Design
         design_mod = protocol.get("designModule", {})
@@ -962,7 +952,7 @@ Begin your verification-based annotation now:
         outcomes_mod = protocol.get("outcomesModule", {})
         primary_outcomes = outcomes_mod.get("primaryOutcomes", [])
         if primary_outcomes:
-            lines.append("\n**Primary Outcomes (for success/failure verification):**")
+            lines.append("\n**Primary Outcomes (for judging trial success):**")
             for i, outcome in enumerate(primary_outcomes[:3], 1):
                 measure = outcome.get("measure", "")
                 lines.append(f"  {i}. {measure}")
@@ -1008,135 +998,195 @@ Begin your verification-based annotation now:
         lines.append(f"**Total UniProt Results:** {len(uniprot_results)}")
         lines.append(f"**Query:** {uniprot_data.get('query', 'N/A')}\n")
         
-        for i, entry in enumerate(uniprot_results[:3], 1):
-            # Extract key information
-            primary_acc = entry.get("primaryAccession", "N/A")
-            entry_type = entry.get("entryType", "N/A")
+        for i, result in enumerate(uniprot_results[:5], 1):
+            lines.append(f"### Protein {i}")
             
-            # Protein description
-            protein_desc = entry.get("proteinDescription", {})
+            # Accession
+            accession = result.get("primaryAccession", "")
+            if accession:
+                lines.append(f"**Accession:** {accession}")
+            
+            # Entry name
+            entry_name = result.get("uniProtkbId", "")
+            if entry_name:
+                lines.append(f"**Entry Name:** {entry_name}")
+            
+            # Protein name
+            protein_desc = result.get("proteinDescription", {})
             rec_name = protein_desc.get("recommendedName", {})
-            full_name = rec_name.get("fullName", {}).get("value", "N/A")
+            full_name = rec_name.get("fullName", {}).get("value", "")
+            if full_name:
+                lines.append(f"**Protein Name:** {full_name}")
             
             # Organism
-            organism = entry.get("organism", {})
-            org_name = organism.get("scientificName", "N/A")
+            organism = result.get("organism", {})
+            organism_name = organism.get("scientificName", "")
+            if organism_name:
+                lines.append(f"**Organism:** {organism_name}")
             
-            lines.append(f"### UniProt Entry {i}")
-            lines.append(f"**Accession:** {primary_acc}")
-            lines.append(f"**Entry Type:** {entry_type}")
-            lines.append(f"**Protein Name:** {full_name}")
-            lines.append(f"**Organism:** {org_name}")
-            
-            # SEQUENCE - THE CRITICAL PART!
-            sequence_info = entry.get("sequence", {})
-            actual_sequence = sequence_info.get("value", "")
+            # CRITICAL: Extract actual sequence, not just length!
+            sequence_info = result.get("sequence", {})
             seq_length = sequence_info.get("length", 0)
-            seq_mass = sequence_info.get("molWeight", 0)
+            seq_value = sequence_info.get("value", "")  # The actual amino acid sequence!
             
-            lines.append(f"\n**Sequence Length:** {seq_length} amino acids")
-            lines.append(f"**Molecular Weight:** {seq_mass} Da")
-            
-            # Highlight if it's a peptide (<200 aa)
-            if seq_length and seq_length < 200:
-                lines.append(f"*** PEPTIDE VERIFICATION: Length {seq_length} < 200 aa suggests TRUE ***")
-            
-            if actual_sequence:
-                # Show sequence for extraction
-                if len(actual_sequence) <= 100:
-                    lines.append(f"**ACTUAL SEQUENCE:** {actual_sequence}")
+            if seq_value:
+                lines.append(f"\n**[SEQUENCE DATA - USE FOR ANNOTATION]**")
+                lines.append(f"**Sequence Length:** {seq_length} amino acids")
+                # Include full sequence if short enough, otherwise truncate with note
+                if len(seq_value) <= 200:
+                    lines.append(f"**Sequence:** {seq_value}")
                 else:
-                    lines.append(f"**ACTUAL SEQUENCE (truncated):** {actual_sequence[:100]}...")
-                    lines.append(f"*Full sequence available - {seq_length} residues*")
+                    lines.append(f"**Sequence (first 200 aa):** {seq_value[:200]}...")
+                    lines.append(f"**Note:** Full sequence is {seq_length} aa - this may indicate a protein rather than peptide if >100 aa")
+            elif seq_length:
+                lines.append(f"**Sequence Length:** {seq_length} aa (sequence not retrieved)")
             
-            # Function - important for classification verification
-            comments = entry.get("comments", [])
+            # Function - important for classification
+            comments = result.get("comments", [])
             for comment in comments:
                 if comment.get("commentType") == "FUNCTION":
                     func_texts = comment.get("texts", [])
                     if func_texts:
-                        func_desc = func_texts[0].get("value", "")
-                        if func_desc:
-                            if len(func_desc) > 400:
-                                func_desc = func_desc[:400] + "..."
-                            lines.append(f"\n**Function:** {func_desc}")
-                            
-                            # Check for antimicrobial keywords for AMP verification
-                            func_lower = func_desc.lower()
-                            amp_indicators = ['antimicrobial', 'antibacterial', 'antifungal', 
-                                            'bactericidal', 'kills', 'membrane', 'defensin']
-                            found_amp = [kw for kw in amp_indicators if kw in func_lower]
-                            if found_amp:
-                                lines.append(f"*** AMP VERIFICATION KEYWORDS: {', '.join(found_amp)} ***")
+                        func_text = func_texts[0].get("value", "")
+                        if len(func_text) > 400:
+                            func_text = func_text[:400] + "..."
+                        lines.append(f"**Function:** {func_text}")
+                        
+                        # Highlight antimicrobial function
+                        if any(kw in func_text.lower() for kw in ['antimicrobial', 'antibacterial', 'antifungal', 'bactericidal']):
+                            lines.append(f"*** ANTIMICROBIAL FUNCTION DETECTED - supports AMP classification ***")
+                    break
             
-            # Keywords for peptide/AMP verification
-            kw_list = entry.get("keywords", [])
-            if kw_list:
-                keyword_values = [kw.get("name", "") for kw in kw_list[:10]]
-                lines.append(f"**Keywords:** {', '.join(keyword_values)}")
-                
-                # Check for relevant keywords
-                kw_string = ' '.join(keyword_values).lower()
-                if 'antimicrobial' in kw_string:
-                    lines.append("*** Keyword supports AMP verification: TRUE ***")
+            # Keywords - may indicate antimicrobial activity
+            result_keywords = result.get("keywords", [])
+            if result_keywords:
+                keyword_values = [kw.get("name", "") for kw in result_keywords[:10]]
+                if keyword_values:
+                    lines.append(f"**Keywords:** {', '.join(keyword_values)}")
+                    
+                    # Check for antimicrobial keywords
+                    amp_keywords = [kw for kw in keyword_values if any(
+                        term in kw.lower() for term in ['antimicrobial', 'antibiotic', 'bacteriocin', 'defensin']
+                    )]
+                    if amp_keywords:
+                        lines.append(f"*** AMP-RELATED KEYWORDS: {', '.join(amp_keywords)} ***")
             
             lines.append("")
         
         return "\n".join(lines)
     
     def _format_extended_data(self, results: Dict[str, Any]) -> str:
-        """Format extended search data (DRAMP, Google Scholar) with verification hints."""
+        """Format extended API search data (DuckDuckGo, SERP, Scholar, OpenFDA)."""
         extended_source = results.get("sources", {}).get("extended", {})
+        
         if not extended_source:
             return ""
         
         lines = []
         has_data = False
         
-        # DRAMP Database - important for peptide and AMP verification
+        # DRAMP Database - critical for AMP identification
         dramp = extended_source.get("dramp", {})
         if dramp.get("success"):
             has_data = True
             dramp_data = dramp.get("data", {})
             dramp_results = dramp_data.get("results", [])
             
-            lines.append("### DRAMP Database (Antimicrobial Peptide Database)")
-            lines.append(f"**Total Results:** {dramp_data.get('total', 0)}")
+            lines.append("### DRAMP Antimicrobial Peptide Database")
+            lines.append(f"*** DRAMP MATCH = STRONG AMP INDICATOR ***")
             lines.append(f"**Query:** {dramp_data.get('query', 'N/A')}\n")
             
-            if dramp_results:
-                lines.append("*** DRAMP HIT: Supports Peptide=TRUE and AMP verification ***")
-            
-            for i, result in enumerate(dramp_results[:3], 1):
-                lines.append(f"**Entry {i}:**")
-                lines.append(f"  DRAMP ID: {result.get('dramp_id', 'N/A')}")
+            for i, result in enumerate(dramp_results[:5], 1):
+                lines.append(f"**AMP {i}:**")
                 lines.append(f"  Name: {result.get('name', 'N/A')}")
-                
-                sequence = result.get("sequence", "")
-                if sequence:
-                    lines.append(f"  *** SEQUENCE FOUND: {sequence[:60]}{'...' if len(sequence) > 60 else ''} ***")
-                
-                activity = result.get("activity", "")
+                lines.append(f"  DRAMP ID: {result.get('dramp_id', 'N/A')}")
+                activity = result.get('activity', '')
                 if activity:
-                    lines.append(f"  Activity: {activity}")
-                    if any(term in activity.lower() for term in ['antibacterial', 'antifungal', 'antimicrobial']):
-                        lines.append(f"  *** Activity supports AMP verification: TRUE ***")
+                    lines.append(f"  **Antimicrobial Activity:** {activity}")
+                sequence = result.get('sequence', '')
+                if sequence:
+                    lines.append(f"  **Sequence:** {sequence}")
+                lines.append("")
+        
+        # DuckDuckGo Web Search
+        ddg = extended_source.get("duckduckgo", {})
+        if ddg.get("success"):
+            has_data = True
+            ddg_data = ddg.get("data", {})
+            ddg_results = ddg_data.get("results", [])
+            
+            lines.append("### Web Search Results")
+            lines.append(f"**Query:** {ddg_data.get('query', 'N/A')}\n")
+            
+            for i, result in enumerate(ddg_results[:5], 1):
+                lines.append(f"**Result {i}:**")
+                lines.append(f"  Title: {result.get('title', 'N/A')}")
+                snippet = result.get('snippet', '')
+                if snippet:
+                    if len(snippet) > 300:
+                        snippet = snippet[:300] + "..."
+                    lines.append(f"  Snippet: {snippet}")
+                lines.append("")
+        
+        # OpenFDA Drug Database
+        openfda = extended_source.get("openfda", {})
+        if openfda.get("success"):
+            has_data = True
+            fda_data = openfda.get("data", {})
+            fda_results = fda_data.get("results", [])
+            
+            lines.append("\n### FDA Drug Database")
+            
+            for i, result in enumerate(fda_results[:3], 1):
+                lines.append(f"**Drug {i}:**")
                 
-                source = result.get("source", "")
-                if source:
-                    lines.append(f"  Source: {source}")
+                openfda_info = result.get("openfda", {})
+                
+                brand_names = openfda_info.get("brand_name", [])
+                if brand_names:
+                    lines.append(f"  Brand Name(s): {', '.join(brand_names[:3])}")
+                
+                generic_names = openfda_info.get("generic_name", [])
+                if generic_names:
+                    lines.append(f"  Generic Name(s): {', '.join(generic_names[:3])}")
+                
+                # Route - IMPORTANT for Delivery Mode
+                routes = openfda_info.get("route", [])
+                if routes:
+                    route_str = ', '.join(routes[:3])
+                    lines.append(f"  *** ROUTE OF ADMINISTRATION: {route_str} ***")
+                    
+                    # Map FDA routes to our categories
+                    route_lower = route_str.lower()
+                    if any(r in route_lower for r in ['intravenous', 'subcutaneous', 'intramuscular', 'injection']):
+                        lines.append(f"  → Indicates: Injection/Infusion")
+                    elif any(r in route_lower for r in ['topical', 'cream', 'gel', 'applied', 'varnish', 'strip']):
+                        lines.append(f"  → Indicates: Topical")
+                    elif any(r in route_lower for r in ['oral', 'tablet', 'capsule', 'drink', 'supplement']):
+                        lines.append(f"  → Indicates: Oral")
+                    else:
+                        lines.append(f"  → Indicates: Other")
+                
+                # Product type
+                product_types = openfda_info.get("product_type", [])
+                if product_types:
+                    lines.append(f"  Product Type: {', '.join(product_types)}")
+                
+                # Pharmacologic class - helpful for classification
+                pharm_class = openfda_info.get("pharm_class_epc", [])
+                if pharm_class:
+                    lines.append(f"  Pharmacologic Class: {', '.join(pharm_class[:3])}")
                 
                 lines.append("")
         
-        # Google Scholar results
-        scholar = extended_source.get("google_scholar", {})
+        # Google Scholar
+        scholar = extended_source.get("scholar", {})
         if scholar.get("success"):
             has_data = True
-            scholar_results = scholar.get("data", {}).get("results", [])
+            scholar_data = scholar.get("data", {})
+            scholar_results = scholar_data.get("results", [])
             
-            if scholar_results:
-                lines.append("\n### Google Scholar Literature")
-                lines.append(f"**Results Found:** {len(scholar_results)}\n")
+            lines.append("\n### Academic Literature (Google Scholar)")
             
             for i, result in enumerate(scholar_results[:3], 1):
                 lines.append(f"**Paper {i}:**")
@@ -1146,12 +1196,6 @@ Begin your verification-based annotation now:
                     if len(snippet) > 300:
                         snippet = snippet[:300] + "..."
                     lines.append(f"  Snippet: {snippet}")
-                    
-                    # Check for verification keywords
-                    snippet_lower = snippet.lower()
-                    if any(term in snippet_lower for term in ['antimicrobial', 'antibacterial', 'antifungal']):
-                        lines.append(f"  *** Literature supports AMP verification ***")
-                
                 lines.append("")
         
         if not has_data:
@@ -1160,7 +1204,7 @@ Begin your verification-based annotation now:
         return "\n".join(lines)
     
     def _format_pubmed_data(self, results: Dict[str, Any]) -> str:
-        """Format PubMed data with focus on relevant content for verification."""
+        """Format PubMed data with focus on relevant content."""
         pubmed_source = results.get("sources", {}).get("pubmed", {})
         
         if not pubmed_source.get("success"):
@@ -1189,12 +1233,12 @@ Begin your verification-based annotation now:
                     abstract = abstract[:600] + "..."
                 lines.append(f"**Abstract:** {abstract}")
                 
-                # Check for antimicrobial content - verification support
+                # Check for antimicrobial content
                 antimicrobial_terms = ['antimicrobial', 'antibacterial', 'antifungal', 'bactericidal', 
                                        'MIC', 'minimum inhibitory', 'kills bacteria']
                 found_terms = [term for term in antimicrobial_terms if term.lower() in abstract.lower()]
                 if found_terms:
-                    lines.append(f"*** AMP VERIFICATION SUPPORT: {', '.join(found_terms)} ***")
+                    lines.append(f"*** ANTIMICROBIAL CONTENT: {', '.join(found_terms)} ***")
             
             lines.append("")
         
