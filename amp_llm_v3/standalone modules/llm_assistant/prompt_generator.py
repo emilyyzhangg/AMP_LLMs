@@ -134,7 +134,127 @@ ROUTE_KEYWORDS = {
     'implant': 'Other',
     'implanted': 'Other',
     'depot': 'Other',
+    # Additional injection-related terms often found in clinical trials
+    'administered intravenously': 'Injection/Infusion',
+    'administered subcutaneously': 'Injection/Infusion',
+    'administered intramuscularly': 'Injection/Infusion',
+    'given intravenously': 'Injection/Infusion',
+    'given subcutaneously': 'Injection/Infusion',
+    'given intramuscularly': 'Injection/Infusion',
+    'intravenously administered': 'Injection/Infusion',
+    'subcutaneously administered': 'Injection/Infusion',
+    'intramuscularly administered': 'Injection/Infusion',
+    'via injection': 'Injection/Infusion',
+    'via infusion': 'Injection/Infusion',
+    'injected': 'Injection/Infusion',
+    'infused': 'Injection/Infusion',
+    # Additional topical terms
+    'applied topically': 'Topical',
+    'topical application': 'Topical',
+    'skin application': 'Topical',
+    'applied to the skin': 'Topical',
+    'applied to skin': 'Topical',
+    'wound application': 'Topical',
+    'wound healing': 'Topical',
+    'dressing': 'Topical',
+    'spray': 'Topical',  # Usually topical unless "inhaled spray"
+    'foam': 'Topical',
+    'solution for skin': 'Topical',
+    # Additional oral terms
+    'taken orally': 'Oral',
+    'oral administration': 'Oral',
+    'oral dosing': 'Oral',
+    'oral dose': 'Oral',
+    'taken by mouth': 'Oral',
+    'orally administered': 'Oral',
+    'oral solution': 'Oral',
+    'oral suspension': 'Oral',
+    'chewable': 'Oral',
+    'granules': 'Oral',
+    'powder for oral': 'Oral',
 }
+
+# Outcome status mapping - maps ClinicalTrials.gov status to our outcome categories
+OUTCOME_STATUS_MAPPING = {
+    # Active statuses
+    'RECRUITING': 'Active',
+    'NOT_YET_RECRUITING': 'Active',
+    'ENROLLING_BY_INVITATION': 'Active',
+    'ACTIVE_NOT_RECRUITING': 'Active',
+    'AVAILABLE': 'Active',
+    'TEMPORARILY_NOT_AVAILABLE': 'Active',
+    # Withdrawn
+    'WITHDRAWN': 'Withdrawn',
+    # Terminated
+    'TERMINATED': 'Terminated',
+    # Unknown/Suspended
+    'SUSPENDED': 'Unknown',
+    'WITHHELD': 'Unknown',
+    'NO_LONGER_AVAILABLE': 'Unknown',
+    'UNKNOWN_STATUS': 'Unknown',
+    'UNKNOWN': 'Unknown',
+    # Completed requires further analysis
+    'COMPLETED': 'NEEDS_RESULTS_ANALYSIS',
+}
+
+# Keywords indicating positive trial outcome
+POSITIVE_OUTCOME_KEYWORDS = [
+    'met primary endpoint',
+    'met the primary endpoint',
+    'achieved primary endpoint',
+    'primary endpoint was met',
+    'primary endpoint achieved',
+    'statistically significant',
+    'significant improvement',
+    'significant reduction',
+    'significant increase',
+    'significant difference',
+    'demonstrated efficacy',
+    'showed efficacy',
+    'proven effective',
+    'effective treatment',
+    'superior to placebo',
+    'superior to control',
+    'non-inferior',
+    'noninferiority met',
+    'non-inferiority met',
+    'fda approved',
+    'regulatory approval',
+    'marketing authorization',
+    'positive results',
+    'favorable results',
+    'met its endpoint',
+    'endpoints were met',
+    'primary outcome achieved',
+]
+
+# Keywords indicating negative/failed trial outcome
+NEGATIVE_OUTCOME_KEYWORDS = [
+    'did not meet primary endpoint',
+    'failed to meet primary endpoint',
+    'primary endpoint was not met',
+    'primary endpoint not achieved',
+    'did not meet the primary endpoint',
+    'failed to meet the primary endpoint',
+    'no significant difference',
+    'not statistically significant',
+    'failed to demonstrate',
+    'lack of efficacy',
+    'no efficacy',
+    'ineffective',
+    'not effective',
+    'negative results',
+    'did not show benefit',
+    'no benefit',
+    'failed to show',
+    'terminated for futility',
+    'futility',
+    'did not achieve',
+    'unsuccessful',
+    'not superior',
+    'inferior to',
+    'no improvement',
+]
 
 # Antimicrobial keywords for AMP classification
 ANTIMICROBIAL_KEYWORDS = [
@@ -257,7 +377,11 @@ class ImprovedPromptGenerator:
             - field_recommendations: per-field recommendations for handling missing data
             - weights_used: the weights applied for scoring
         """
+        # Try both possible paths for sources
         sources = search_results.get("sources", {})
+        if not sources:
+            sources = search_results.get("results", {}).get("sources", {})
+
         available = []
         missing = []
         warnings = []
@@ -270,8 +394,10 @@ class ImprovedPromptGenerator:
             'pmc_bioc': sources.get("pmc_bioc", {}).get("success", False),
         }
 
-        # Check extended sources
+        # Check extended sources - try both paths
         extended = sources.get("extended", {})
+        if not extended:
+            extended = search_results.get("results", {}).get("sources", {}).get("extended", {})
         if extended:
             source_checks['uniprot'] = extended.get("uniprot", {}).get("success", False)
             source_checks['openfda'] = extended.get("openfda", {}).get("success", False)
@@ -1184,6 +1310,303 @@ Begin your verification:
                 return default
         return current if current is not None else default
 
+    def _compute_delivery_mode_suggestion(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Pre-compute delivery mode suggestion based on all available data sources.
+
+        Analyzes:
+        1. ClinicalTrials.gov intervention descriptions and arm descriptions
+        2. OpenFDA route data (if available)
+        3. Drug class and formulation information
+
+        Returns:
+            Dictionary with:
+            - suggested_mode: The suggested delivery mode
+            - confidence: 'high', 'medium', or 'low'
+            - evidence: List of evidence supporting the suggestion
+            - all_keywords_found: All route keywords found in the data
+        """
+        evidence = []
+        all_keywords_found = []
+        route_votes = {'Injection/Infusion': 0, 'Topical': 0, 'Oral': 0, 'Other': 0}
+
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        # 1. Check OpenFDA data first (most reliable for approved drugs)
+        extended_source = sources.get("extended", {})
+        if not extended_source:
+            extended_source = results.get("results", {}).get("sources", {}).get("extended", {})
+
+        openfda = extended_source.get("openfda", {})
+        if openfda.get("success"):
+            fda_data = openfda.get("data", {})
+            fda_results = fda_data.get("results", [])
+            for result in fda_results[:3]:
+                openfda_info = result.get("openfda", {})
+                routes = openfda_info.get("route", [])
+                for route in routes:
+                    route_lower = route.lower()
+                    evidence.append(f"OpenFDA route: {route}")
+                    if any(kw in route_lower for kw in ['injection', 'intravenous', 'subcutaneous', 'intramuscular', 'parenteral']):
+                        route_votes['Injection/Infusion'] += 3  # High weight for FDA data
+                        all_keywords_found.append(f"FDA:{route}→Injection/Infusion")
+                    elif any(kw in route_lower for kw in ['topical', 'cutaneous', 'dermal', 'ophthalmic', 'nasal']):
+                        route_votes['Topical'] += 3
+                        all_keywords_found.append(f"FDA:{route}→Topical")
+                    elif any(kw in route_lower for kw in ['oral', 'sublingual']):
+                        route_votes['Oral'] += 3
+                        all_keywords_found.append(f"FDA:{route}→Oral")
+                    else:
+                        route_votes['Other'] += 1
+                        all_keywords_found.append(f"FDA:{route}→Other")
+
+        # 2. Check ClinicalTrials.gov intervention data
+        ct_source = sources.get("clinical_trials", {})
+        if ct_source.get("success"):
+            ct_data = ct_source.get("data", {})
+            protocol = ct_data.get("protocolSection", {})
+
+            # Check intervention descriptions
+            arms_int = protocol.get("armsInterventionsModule", {})
+            interventions = arms_int.get("interventions", [])
+
+            all_text_to_search = []
+            for intv in interventions:
+                int_name = intv.get("name", "")
+                int_desc = intv.get("description", "")
+                all_text_to_search.append(int_name)
+                all_text_to_search.append(int_desc)
+
+            # Check arm group descriptions
+            arm_groups = arms_int.get("armGroups", [])
+            for arm in arm_groups:
+                arm_desc = arm.get("description", "")
+                all_text_to_search.append(arm_desc)
+
+            # Check brief summary and detailed description
+            desc_mod = protocol.get("descriptionModule", {})
+            all_text_to_search.append(desc_mod.get("briefSummary", ""))
+            all_text_to_search.append(desc_mod.get("detailedDescription", ""))
+
+            combined_text = " ".join(all_text_to_search).lower()
+
+            # Search for route keywords
+            for keyword, route in ROUTE_KEYWORDS.items():
+                # Use word boundary matching for short keywords
+                if len(keyword) <= 3:
+                    # For short keywords like 'iv', 'sc', 'im', check for word boundaries
+                    if re.search(r'\b' + re.escape(keyword) + r'\b', combined_text):
+                        route_votes[route] += 2
+                        all_keywords_found.append(f"CT:{keyword}→{route}")
+                        evidence.append(f"Found '{keyword}' in trial data")
+                else:
+                    if keyword in combined_text:
+                        route_votes[route] += 2
+                        all_keywords_found.append(f"CT:{keyword}→{route}")
+                        evidence.append(f"Found '{keyword}' in trial data")
+
+        # 3. Determine suggestion based on votes
+        max_votes = max(route_votes.values())
+        if max_votes == 0:
+            # No keywords found - check if it's a peptide/biological (default to injection)
+            suggested_mode = "Other"
+            confidence = "low"
+            evidence.append("No delivery route keywords found in any data source")
+        else:
+            # Find the route(s) with max votes
+            top_routes = [route for route, votes in route_votes.items() if votes == max_votes]
+
+            if len(top_routes) == 1:
+                suggested_mode = top_routes[0]
+                if max_votes >= 3:
+                    confidence = "high"
+                elif max_votes >= 2:
+                    confidence = "medium"
+                else:
+                    confidence = "low"
+            else:
+                # Tie - use priority order: Injection/Infusion > Topical > Oral > Other
+                priority_order = ['Injection/Infusion', 'Topical', 'Oral', 'Other']
+                for route in priority_order:
+                    if route in top_routes:
+                        suggested_mode = route
+                        break
+                confidence = "low"
+                evidence.append(f"Multiple routes detected with equal evidence: {', '.join(top_routes)}")
+
+        return {
+            'suggested_mode': suggested_mode,
+            'confidence': confidence,
+            'evidence': evidence[:5],  # Limit evidence to 5 items
+            'all_keywords_found': all_keywords_found,
+            'vote_breakdown': route_votes
+        }
+
+    def _compute_outcome_suggestion(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Pre-compute outcome suggestion based on trial status and results.
+
+        Analyzes:
+        1. Overall status field (primary determinant)
+        2. hasResults flag
+        3. Results section for positive/negative indicators
+        4. P-values in outcome analyses
+
+        Returns:
+            Dictionary with:
+            - suggested_outcome: The suggested outcome
+            - confidence: 'high', 'medium', or 'low'
+            - evidence: List of evidence supporting the suggestion
+            - status_info: Raw status information
+        """
+        evidence = []
+
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        ct_source = sources.get("clinical_trials", {})
+        if not ct_source.get("success"):
+            return {
+                'suggested_outcome': 'Unknown',
+                'confidence': 'low',
+                'evidence': ['No ClinicalTrials.gov data available'],
+                'status_info': {}
+            }
+
+        ct_data = ct_source.get("data", {})
+        protocol = ct_data.get("protocolSection", {})
+        status_mod = protocol.get("statusModule", {})
+
+        overall_status = status_mod.get('overallStatus', 'UNKNOWN').upper()
+        has_results = ct_data.get("hasResults", False)
+        why_stopped = status_mod.get('whyStopped', '')
+
+        status_info = {
+            'overall_status': overall_status,
+            'has_results': has_results,
+            'why_stopped': why_stopped
+        }
+
+        evidence.append(f"Overall Status: {overall_status}")
+        evidence.append(f"Has Results: {has_results}")
+        if why_stopped:
+            evidence.append(f"Why Stopped: {why_stopped[:100]}")
+
+        # Step 1: Map status to outcome using the mapping
+        mapped_outcome = OUTCOME_STATUS_MAPPING.get(overall_status, 'Unknown')
+
+        if mapped_outcome != 'NEEDS_RESULTS_ANALYSIS':
+            # Direct mapping from status
+            return {
+                'suggested_outcome': mapped_outcome,
+                'confidence': 'high',
+                'evidence': evidence,
+                'status_info': status_info
+            }
+
+        # Step 2: For COMPLETED trials, analyze results
+        if not has_results:
+            evidence.append("Trial COMPLETED but no results posted - cannot determine success/failure")
+            return {
+                'suggested_outcome': 'Unknown',
+                'confidence': 'medium',
+                'evidence': evidence,
+                'status_info': status_info
+            }
+
+        # Step 3: Analyze results section for positive/negative indicators
+        results_section = ct_data.get("resultsSection", {})
+
+        # Collect all text from results for keyword analysis
+        results_text_parts = []
+
+        # Check outcome measures
+        outcome_measures = results_section.get("outcomeMeasuresModule", {})
+        outcome_list = outcome_measures.get("outcomeMeasures", [])
+
+        positive_indicators = []
+        negative_indicators = []
+        p_values = []
+
+        for om in outcome_list:
+            om_title = om.get("title", "")
+            om_desc = om.get("description", "")
+            results_text_parts.extend([om_title, om_desc])
+
+            # Check analyses for p-values
+            analyses = om.get("analyses", [])
+            for analysis in analyses:
+                p_value_str = analysis.get("pValue", "")
+                if p_value_str:
+                    p_values.append(p_value_str)
+                    # Try to parse p-value
+                    try:
+                        # Handle various p-value formats
+                        p_clean = p_value_str.lower().replace('<', '').replace('>', '').replace('=', '').strip()
+                        if p_clean and p_clean[0].isdigit():
+                            p_val = float(p_clean.split()[0])
+                            if p_val < 0.05:
+                                positive_indicators.append(f"Significant p-value: {p_value_str}")
+                            else:
+                                negative_indicators.append(f"Non-significant p-value: {p_value_str}")
+                    except (ValueError, IndexError):
+                        pass
+
+        # Check more info module
+        more_info = results_section.get("moreInfoModule", {})
+        limitations = more_info.get("limitationsAndCaveats", {})
+        if limitations:
+            lim_desc = limitations.get("description", "")
+            results_text_parts.append(lim_desc)
+
+        # Combine all results text and search for keywords
+        combined_results_text = " ".join(results_text_parts).lower()
+
+        for keyword in POSITIVE_OUTCOME_KEYWORDS:
+            if keyword in combined_results_text:
+                positive_indicators.append(f"Found: '{keyword}'")
+
+        for keyword in NEGATIVE_OUTCOME_KEYWORDS:
+            if keyword in combined_results_text:
+                negative_indicators.append(f"Found: '{keyword}'")
+
+        # Determine outcome based on indicators
+        if positive_indicators and not negative_indicators:
+            suggested_outcome = 'Positive'
+            confidence = 'high' if len(positive_indicators) >= 2 else 'medium'
+            evidence.extend(positive_indicators[:3])
+        elif negative_indicators and not positive_indicators:
+            suggested_outcome = 'Failed - completed trial'
+            confidence = 'high' if len(negative_indicators) >= 2 else 'medium'
+            evidence.extend(negative_indicators[:3])
+        elif positive_indicators and negative_indicators:
+            # Mixed signals - need manual review
+            suggested_outcome = 'Unknown'
+            confidence = 'low'
+            evidence.append(f"Mixed signals: {len(positive_indicators)} positive, {len(negative_indicators)} negative indicators")
+            evidence.extend(positive_indicators[:2])
+            evidence.extend(negative_indicators[:2])
+        else:
+            # No clear indicators found
+            suggested_outcome = 'Unknown'
+            confidence = 'low'
+            evidence.append("No clear success/failure indicators found in results")
+
+        if p_values:
+            evidence.append(f"P-values found: {', '.join(p_values[:3])}")
+
+        return {
+            'suggested_outcome': suggested_outcome,
+            'confidence': confidence,
+            'evidence': evidence[:7],
+            'status_info': status_info
+        }
+
     def _sanitize_annotation(self, annotation: str) -> str:
         """
         Sanitize annotation text to prevent prompt injection.
@@ -1333,6 +1756,10 @@ Be thorough but concise. Focus on accuracy."""
 
             sections.append("")
 
+        # Pre-compute delivery mode and outcome suggestions
+        delivery_suggestion = self._compute_delivery_mode_suggestion(search_results)
+        outcome_suggestion = self._compute_outcome_suggestion(search_results)
+
         sections.append("""
 Analyze the following clinical trial data carefully. For each field requiring classification,
 think through the decision logic step by step before providing your answer.
@@ -1350,6 +1777,52 @@ the default/fallback values as specified below.
 | Reason for Failure | Business reasons, Ineffective for purpose, Toxic/unsafe, Due to covid, Recruitment issues, N/A | N/A |
 | Peptide | True, False | False |
 | Sequence | Amino acid sequence, N/A | N/A |
+""")
+
+        # Add pre-computed analysis section
+        sections.append("""
+## ════════════════════════════════════════════════════════════════════════
+## PRE-COMPUTED ANALYSIS (System Suggestions - Use as Strong Hints)
+## ════════════════════════════════════════════════════════════════════════
+""")
+
+        # Delivery Mode suggestion
+        dm_conf_symbol = "★★★" if delivery_suggestion['confidence'] == 'high' else ("★★" if delivery_suggestion['confidence'] == 'medium' else "★")
+        sections.append(f"""
+### DELIVERY MODE ANALYSIS
+**Suggested Value:** {delivery_suggestion['suggested_mode']}
+**Confidence:** {delivery_suggestion['confidence'].upper()} {dm_conf_symbol}
+**Evidence:**""")
+        for ev in delivery_suggestion['evidence']:
+            sections.append(f"  - {ev}")
+        if delivery_suggestion['all_keywords_found']:
+            sections.append(f"**Keywords Found:** {', '.join(delivery_suggestion['all_keywords_found'][:8])}")
+        sections.append(f"""
+**Vote Breakdown:** Injection/Infusion={delivery_suggestion['vote_breakdown']['Injection/Infusion']}, Topical={delivery_suggestion['vote_breakdown']['Topical']}, Oral={delivery_suggestion['vote_breakdown']['Oral']}, Other={delivery_suggestion['vote_breakdown']['Other']}
+
+⚠️ USE THIS SUGGESTION unless you find clear contradicting evidence in the data below.
+""")
+
+        # Outcome suggestion
+        oc_conf_symbol = "★★★" if outcome_suggestion['confidence'] == 'high' else ("★★" if outcome_suggestion['confidence'] == 'medium' else "★")
+        sections.append(f"""
+### OUTCOME ANALYSIS
+**Suggested Value:** {outcome_suggestion['suggested_outcome']}
+**Confidence:** {outcome_suggestion['confidence'].upper()} {oc_conf_symbol}
+**Status Info:**
+  - Overall Status: {outcome_suggestion['status_info'].get('overall_status', 'N/A')}
+  - Has Results: {outcome_suggestion['status_info'].get('has_results', 'N/A')}""")
+        if outcome_suggestion['status_info'].get('why_stopped'):
+            sections.append(f"  - Why Stopped: {outcome_suggestion['status_info']['why_stopped'][:100]}")
+        sections.append("**Evidence:**")
+        for ev in outcome_suggestion['evidence']:
+            sections.append(f"  - {ev}")
+        sections.append(f"""
+⚠️ USE THIS SUGGESTION unless you find clear contradicting evidence in the data below.
+""")
+
+        sections.append("""
+## ════════════════════════════════════════════════════════════════════════
 
 ## KEY DECISION REMINDERS
 
@@ -1358,22 +1831,11 @@ the default/fallback values as specified below.
 - NO (metabolic/hormonal/immunomodulator) → Other
 - INSUFFICIENT DATA → Other (with explanation)
 
-**DELIVERY MODE**: Search for these keywords IN ORDER:
-1. Injection words (injection, IV, SC, IM, infusion) → Injection/Infusion
-2. Topical words (topical, cream, gel, wound, eye drop) → Topical
-3. Oral words (oral, tablet, capsule, pill) → Oral
-4. Other (inhaled, implant, unclear) → Other
-5. No keywords + peptide drug → Default to Injection/Infusion
-6. NO DATA AVAILABLE → Other (with explanation)
+**DELIVERY MODE**: Use the PRE-COMPUTED SUGGESTION above unless contradicting evidence found.
+If you disagree with the suggestion, explain why in your reasoning.
 
-**OUTCOME**: Follow the status mapping:
-- RECRUITING/ACTIVE_NOT_RECRUITING/etc → Active
-- WITHDRAWN → Withdrawn
-- TERMINATED → Terminated
-- COMPLETED + hasResults=false → Unknown
-- COMPLETED + hasResults=true + "met endpoint" → Positive
-- COMPLETED + hasResults=true + "failed"/"not significant" → Failed - completed trial
-- STATUS FIELD MISSING → Unknown (with explanation)
+**OUTCOME**: Use the PRE-COMPUTED SUGGESTION above unless contradicting evidence found.
+If you disagree with the suggestion, explain why in your reasoning.
 
 ---
 # DATA SOURCES
@@ -1480,7 +1942,12 @@ Begin your annotation now:
         Returns:
             Formatted clinical trials data string
         """
-        ct_source = results.get("sources", {}).get("clinical_trials", {})
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        ct_source = sources.get("clinical_trials", {})
 
         if not ct_source.get("success"):
             logger.debug("Clinical trials source not available or unsuccessful")
@@ -1719,7 +2186,12 @@ Please proceed with other available data sources, but note reduced confidence.
             Formatted UniProt data string, or guidance message if unavailable
         """
         try:
-            extended_source = results.get("sources", {}).get("extended", {})
+            # Get sources - try both possible paths
+            sources = results.get("sources", {})
+            if not sources:
+                sources = results.get("results", {}).get("sources", {})
+
+            extended_source = sources.get("extended", {})
             if not extended_source:
                 logger.debug("No extended source data available for UniProt")
                 return self._get_uniprot_fallback_message("No extended search data")
@@ -1746,21 +2218,7 @@ Please proceed with other available data sources, but note reduced confidence.
         if not uniprot_results:
             return self._get_uniprot_fallback_message("No matching proteins found")
 
-    def _get_uniprot_fallback_message(self, reason: str) -> str:
-        """Return fallback guidance when UniProt data is unavailable."""
-        return f"""**UniProt Data: NOT AVAILABLE** ({reason})
-
-**IMPACT ON ANNOTATION:**
-- Sequence: Use 'N/A' - no protein sequence data available
-- Peptide: Determine from intervention name/description in clinical trials data
-  - Look for peptide indicators: "-tide" suffix, known peptide names, "peptide" in description
-  - Default to 'False' if unclear
-
-**GUIDANCE:**
-- Check DRAMP or other extended sources if available
-- Review intervention descriptions for peptide-related terminology
-"""
-        
+        # If we have results, format them
         lines = []
         lines.append(f"**Total UniProt Results:** {len(uniprot_results)}")
         lines.append(f"**Query:** {uniprot_data.get('query', 'N/A')}\n")
@@ -1838,7 +2296,22 @@ Please proceed with other available data sources, but note reduced confidence.
             lines.append("")
         
         return "\n".join(lines)
-    
+
+    def _get_uniprot_fallback_message(self, reason: str) -> str:
+        """Return fallback guidance when UniProt data is unavailable."""
+        return f"""**UniProt Data: NOT AVAILABLE** ({reason})
+
+**IMPACT ON ANNOTATION:**
+- Sequence: Use 'N/A' - no protein sequence data available
+- Peptide: Determine from intervention name/description in clinical trials data
+  - Look for peptide indicators: "-tide" suffix, known peptide names, "peptide" in description
+  - Default to 'False' if unclear
+
+**GUIDANCE:**
+- Check DRAMP or other extended sources if available
+- Review intervention descriptions for peptide-related terminology
+"""
+
     def _format_extended_data(self, results: Dict[str, Any]) -> str:
         """
         Format extended API search data (DRAMP, DuckDuckGo, OpenFDA, Scholar).
@@ -1846,7 +2319,12 @@ Please proceed with other available data sources, but note reduced confidence.
         Returns:
             Formatted extended data string, or guidance if unavailable
         """
-        extended_source = results.get("sources", {}).get("extended", {})
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        extended_source = sources.get("extended", {})
 
         if not extended_source:
             logger.debug("No extended source data available")
@@ -1982,7 +2460,12 @@ Extended databases (DRAMP, OpenFDA, web search, Google Scholar) were not queried
         Returns:
             Formatted PubMed data string, or guidance if unavailable
         """
-        pubmed_source = results.get("sources", {}).get("pubmed", {})
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        pubmed_source = sources.get("pubmed", {})
 
         if not pubmed_source.get("success"):
             logger.debug("PubMed source not available or unsuccessful")
@@ -2038,7 +2521,12 @@ This is common for newer or smaller trials. Proceed with other data sources.
         Returns:
             Formatted PMC data string, or empty string if unavailable
         """
-        pmc_source = results.get("sources", {}).get("pmc", {})
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        pmc_source = sources.get("pmc", {})
 
         if not pmc_source.get("success"):
             logger.debug("PMC source not available or unsuccessful")
@@ -2076,7 +2564,12 @@ This is common for newer or smaller trials. Proceed with other data sources.
         Returns:
             Formatted BioC data string, or empty string if unavailable
         """
-        bioc_source = results.get("sources", {}).get("pmc_bioc", {})
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        bioc_source = sources.get("pmc_bioc", {})
 
         if not bioc_source.get("success"):
             logger.debug("BioC source not available or unsuccessful")

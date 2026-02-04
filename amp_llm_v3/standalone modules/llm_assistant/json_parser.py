@@ -55,25 +55,33 @@ class ClinicalTrialAnnotationParser:
             'interventions': 0.05  # Lower because it's a list that may be empty
         },
         'delivery_mode': {
-            'nct_id': 0.05,
-            'brief_title': 0.10,
-            'brief_summary': 0.15,
-            'detailed_description': 0.10,
-            'interventions': 0.35,  # Most important for delivery mode
-            'arm_groups': 0.25
+            'nct_id': 0.03,
+            'brief_title': 0.07,
+            'brief_summary': 0.10,
+            'detailed_description': 0.08,
+            'interventions': 0.30,  # Most important for delivery mode
+            'arm_groups': 0.20,
+            'derived_intervention_info': 0.07,  # MeSH classifications can help
+            'openfda_routes': 0.15  # FDA route data is very reliable when available
         },
         'outcome': {
-            'nct_id': 0.05,
-            'brief_title': 0.05,
-            'overall_status': 0.35,  # Primary determinant
-            'status_verified_date': 0.05,
-            'why_stopped': 0.15,
-            'start_date': 0.05,
-            'completion_date': 0.10,
-            'primary_completion_date': 0.05,
-            'has_results': 0.10,
+            'nct_id': 0.02,
+            'brief_title': 0.03,
+            'overall_status': 0.25,  # Primary determinant
+            'status_verified_date': 0.02,
+            'why_stopped': 0.10,
+            'start_date': 0.02,
+            'completion_date': 0.05,
+            'primary_completion_date': 0.03,
+            'has_results': 0.08,
             'primary_outcomes': 0.03,
-            'secondary_outcomes': 0.02
+            'secondary_outcomes': 0.02,
+            # New results section fields
+            'results_outcome_measures': 0.15,  # Critical for completed trials
+            'results_p_values': 0.10,  # P-values help determine success/failure
+            'results_limitations': 0.03,
+            'results_adverse_events_summary': 0.04,
+            'participant_flow_info': 0.03
         },
         'failure_reason': {
             'nct_id': 0.05,
@@ -427,27 +435,31 @@ class ClinicalTrialAnnotationParser:
     def extract_delivery_mode_info(self, trial: Dict) -> Dict[str, Any]:
         """
         Extract information relevant for Delivery Mode.
-        
+
         Relevant factors:
         - Intervention types and descriptions
         - Administration routes mentioned in descriptions
         - Arm group descriptions
+        - DerivedSection MeSH classifications (interventionBrowseModule)
+        - OpenFDA route information (if available in extended sources)
         """
         protocol = self._get_protocol_section(trial)
-        
+
         id_module = self.safe_get(protocol, 'identificationModule', default={})
         desc_module = self.safe_get(protocol, 'descriptionModule', default={})
         arms_interventions = self.safe_get(protocol, 'armsInterventionsModule', default={})
-        
+
         info = {
             'nct_id': trial.get('nct_id', self.safe_get(id_module, 'nctId')),
             'brief_title': id_module.get('briefTitle', 'Not available'),
             'brief_summary': desc_module.get('briefSummary', 'Not available'),
             'detailed_description': desc_module.get('detailedDescription', 'Not available'),
             'interventions': [],
-            'arm_groups': []
+            'arm_groups': [],
+            'derived_intervention_info': [],
+            'openfda_routes': []
         }
-        
+
         # Extract detailed intervention information
         interventions = arms_interventions.get('interventions', [])
         for intervention in interventions:
@@ -456,7 +468,7 @@ class ClinicalTrialAnnotationParser:
                 'name': intervention.get('name', 'Not specified'),
                 'description': intervention.get('description', 'Not specified')
             })
-        
+
         # Extract arm group information for administration details
         arm_groups = arms_interventions.get('armGroups', [])
         for arm in arm_groups:
@@ -465,32 +477,78 @@ class ClinicalTrialAnnotationParser:
                 'type': arm.get('type', 'Not specified'),
                 'description': arm.get('description', 'Not specified')
             })
-        
+
+        # Extract derivedSection intervention data (MeSH classifications)
+        # Try multiple paths for derived section
+        derived = self.safe_get(trial, 'results', 'sources', 'clinical_trials', 'data', 'derivedSection', default={})
+        if not derived:
+            derived = self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'derivedSection', default={})
+        if not derived:
+            derived = self.safe_get(trial, 'derivedSection', default={})
+
+        if derived:
+            intervention_browse = derived.get('interventionBrowseModule', {})
+            meshes = intervention_browse.get('meshes', [])
+            for mesh in meshes:
+                info['derived_intervention_info'].append({
+                    'mesh_id': mesh.get('id', ''),
+                    'mesh_term': mesh.get('term', '')
+                })
+            # Also get ancestors which provide broader categories
+            ancestors = intervention_browse.get('ancestors', [])
+            for ancestor in ancestors[:5]:  # Limit to 5
+                info['derived_intervention_info'].append({
+                    'mesh_id': ancestor.get('id', ''),
+                    'mesh_term': ancestor.get('term', ''),
+                    'is_ancestor': True
+                })
+
+        # Extract OpenFDA route information if available
+        extended_sources = self.safe_get(trial, 'results', 'sources', 'extended', default={})
+        if not extended_sources:
+            extended_sources = self.safe_get(trial, 'sources', 'extended', default={})
+
+        openfda_data = extended_sources.get('openfda', {})
+        if openfda_data.get('success'):
+            fda_results = openfda_data.get('data', {}).get('results', [])
+            for result in fda_results[:3]:
+                openfda_info = result.get('openfda', {})
+                routes = openfda_info.get('route', [])
+                if routes:
+                    info['openfda_routes'].extend(routes)
+
         return info
     
     def extract_outcome_info(self, trial: Dict) -> Dict[str, Any]:
         """
         Extract information relevant for Outcome determination.
-        
+
         Relevant factors:
         - Overall status
         - Completion dates
         - Why stopped (if applicable)
         - Study results availability
         - Primary and secondary outcomes
+        - Results section data (p-values, analyses, conclusions)
+        - Participant flow (early termination info)
         """
         protocol = self._get_protocol_section(trial)
-        
+
         id_module = self.safe_get(protocol, 'identificationModule', default={})
         status_module = self.safe_get(protocol, 'statusModule', default={})
         outcomes_module = self.safe_get(protocol, 'outcomesModule', default={})
         conditions_module = self.safe_get(protocol, 'conditionsModule', default={})
-        
-        # Try multiple paths for has_results
-        has_results = self.safe_get(trial, 'results', 'sources', 'clinical_trials', 'data', 'hasResults', default=False)
-        if not has_results:
-            has_results = self.safe_get(trial, 'sources', 'clinical_trials', 'data', 'hasResults', default=False)
-        
+
+        # Try multiple paths for clinical trials data
+        ct_data = self.safe_get(trial, 'results', 'sources', 'clinical_trials', 'data', default={})
+        if not ct_data:
+            ct_data = self.safe_get(trial, 'sources', 'clinical_trials', 'data', default={})
+        if not ct_data:
+            ct_data = trial  # Trial itself might be the ct_data
+
+        has_results = ct_data.get('hasResults', False)
+        results_section = ct_data.get('resultsSection', {})
+
         info = {
             'nct_id': trial.get('nct_id', self.safe_get(id_module, 'nctId')),
             'brief_title': id_module.get('briefTitle', 'Not available'),
@@ -503,24 +561,109 @@ class ClinicalTrialAnnotationParser:
             'has_results': has_results,
             'primary_outcomes': [],
             'secondary_outcomes': [],
-            'conditions': conditions_module.get('conditions', [])
+            'conditions': conditions_module.get('conditions', []),
+            # New fields for results analysis
+            'results_outcome_measures': [],
+            'results_p_values': [],
+            'results_limitations': '',
+            'results_adverse_events_summary': {},
+            'participant_flow_info': {}
         }
-        
-        # Extract outcome measures
+
+        # Extract outcome measures from protocol
         for outcome in outcomes_module.get('primaryOutcomes', []):
             info['primary_outcomes'].append({
                 'measure': outcome.get('measure', 'Not specified'),
                 'description': outcome.get('description', 'Not specified'),
                 'timeFrame': outcome.get('timeFrame', 'Not specified')
             })
-        
+
         for outcome in outcomes_module.get('secondaryOutcomes', []):
             info['secondary_outcomes'].append({
                 'measure': outcome.get('measure', 'Not specified'),
                 'description': outcome.get('description', 'Not specified'),
                 'timeFrame': outcome.get('timeFrame', 'Not specified')
             })
-        
+
+        # Extract results section data if available
+        if has_results and results_section:
+            # Outcome measures with analyses
+            outcome_measures_module = results_section.get('outcomeMeasuresModule', {})
+            outcome_list = outcome_measures_module.get('outcomeMeasures', [])
+
+            for om in outcome_list[:5]:  # Limit to 5 outcome measures
+                om_info = {
+                    'type': om.get('type', ''),
+                    'title': om.get('title', ''),
+                    'description': om.get('description', '')[:500] if om.get('description') else '',
+                    'analyses': []
+                }
+
+                # Extract analyses with p-values
+                analyses = om.get('analyses', [])
+                for analysis in analyses[:3]:  # Limit to 3 analyses per measure
+                    analysis_info = {
+                        'statistical_method': analysis.get('statisticalMethod', ''),
+                        'p_value': analysis.get('pValue', ''),
+                        'p_value_comment': analysis.get('pValueComment', ''),
+                        'param_type': analysis.get('paramType', ''),
+                        'ci_pct_value': analysis.get('ciPctValue', ''),
+                        'ci_lower_limit': analysis.get('ciLowerLimit', ''),
+                        'ci_upper_limit': analysis.get('ciUpperLimit', ''),
+                        'estimate_comment': analysis.get('estimateComment', '')
+                    }
+                    om_info['analyses'].append(analysis_info)
+
+                    # Collect p-values for easy access
+                    if analysis.get('pValue'):
+                        info['results_p_values'].append(analysis.get('pValue'))
+
+                info['results_outcome_measures'].append(om_info)
+
+            # Extract limitations and caveats
+            more_info_module = results_section.get('moreInfoModule', {})
+            limitations = more_info_module.get('limitationsAndCaveats', {})
+            if limitations:
+                info['results_limitations'] = limitations.get('description', '')
+
+            # Extract adverse events summary
+            adverse_events_module = results_section.get('adverseEventsModule', {})
+            if adverse_events_module:
+                info['results_adverse_events_summary'] = {
+                    'serious_num_affected': adverse_events_module.get('seriousNumAffected', ''),
+                    'serious_num_at_risk': adverse_events_module.get('seriousNumAtRisk', ''),
+                    'other_num_affected': adverse_events_module.get('otherNumAffected', ''),
+                    'other_num_at_risk': adverse_events_module.get('otherNumAtRisk', ''),
+                    'frequency_threshold': adverse_events_module.get('frequencyThreshold', ''),
+                    'time_frame': adverse_events_module.get('timeFrame', '')
+                }
+
+            # Extract participant flow info (useful for understanding early termination)
+            participant_flow = results_section.get('participantFlowModule', {})
+            if participant_flow:
+                info['participant_flow_info'] = {
+                    'recruitment_details': participant_flow.get('recruitmentDetails', ''),
+                    'pre_assignment_details': participant_flow.get('preAssignmentDetails', '')
+                }
+
+                # Get flow groups to understand completion rates
+                groups = participant_flow.get('groups', [])
+                periods = participant_flow.get('periods', [])
+                if periods:
+                    for period in periods[:1]:  # Just first period
+                        milestones = period.get('milestones', [])
+                        for milestone in milestones:
+                            if milestone.get('type') == 'COMPLETED' or 'complet' in milestone.get('type', '').lower():
+                                info['participant_flow_info']['completion_milestone'] = {
+                                    'type': milestone.get('type', ''),
+                                    'achievements': milestone.get('achievements', [])
+                                }
+                            if milestone.get('type') == 'NOT_COMPLETED' or 'not complet' in milestone.get('type', '').lower():
+                                info['participant_flow_info']['not_completed_milestone'] = {
+                                    'type': milestone.get('type', ''),
+                                    'achievements': milestone.get('achievements', [])
+                                }
+
         return info
     
     def extract_failure_reason_info(self, trial: Dict) -> Dict[str, Any]:
