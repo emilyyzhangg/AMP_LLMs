@@ -43,6 +43,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 
+# Email notifications
+from email_utils import (
+    send_annotation_complete_email,
+    send_annotation_failed_email,
+    is_email_configured
+)
+
 # Configuration
 try:
     from assistant_config import config
@@ -112,6 +119,7 @@ class AnnotationJob:
     csv_filename: Optional[str] = None
     original_filename: Optional[str] = None
     model: str = ""
+    notification_email: Optional[str] = None  # Email to notify when job completes
     _task: Optional[asyncio.Task] = field(default=None, repr=False)  # Store task to prevent GC
 
 
@@ -680,7 +688,25 @@ async def process_csv_job(
         
         logger.info(f"✅ Job {job_id} completed: {successful} success, {failed} errors in {duration:.1f}s")
         logger.info(f"📊 Job {job_id} result object: total={job.result['total']}, successful={job.result['successful']}, failed={job.result['failed']}, time={job.result['total_time_seconds']}")
-        
+
+        # Send email notification if requested
+        if job.notification_email:
+            logger.info(f"📧 Sending completion email to {job.notification_email}")
+            email_sent = send_annotation_complete_email(
+                to_email=job.notification_email,
+                job_id=job_id,
+                original_filename=original_filename or "Unknown",
+                total_trials=len(nct_ids),
+                successful=successful,
+                failed=failed,
+                processing_time_seconds=duration,
+                model=model
+            )
+            if email_sent:
+                logger.info(f"📧 Email sent successfully to {job.notification_email}")
+            else:
+                logger.warning(f"📧 Failed to send email to {job.notification_email}")
+
         # Update conversation
         if conversation_id in conversations:
             conv = conversations[conversation_id]
@@ -714,6 +740,17 @@ async def process_csv_job(
         job.error = str(e)
         job.progress = "Failed"
         job.updated_at = datetime.now()
+
+        # Send failure email notification if requested
+        if job.notification_email:
+            logger.info(f"📧 Sending failure email to {job.notification_email}")
+            send_annotation_failed_email(
+                to_email=job.notification_email,
+                job_id=job_id,
+                original_filename=job.original_filename or "Unknown",
+                error_message=str(e)
+            )
+
 
 def clean_value(value):
     """Strip markdown formatting from LLM output values."""
@@ -1155,15 +1192,18 @@ async def annotate_csv(
     conversation_id: str = Query(...),
     model: str = Query(...),
     temperature: float = Query(0.15),
+    notification_email: Optional[str] = Query(None, description="Email to notify when job completes"),
     file: UploadFile = File(...)
 ):
     """
     Upload a CSV file with NCT IDs and generate annotations.
-    
+
     NOW ASYNC: Returns immediately with a job_id.
     Frontend should poll /chat/annotate-csv-status/{job_id} for progress.
-    
+
     The input CSV can have NCT IDs in any column - they will be automatically detected.
+
+    Optional: Provide notification_email to receive an email when the job completes.
     """
     if conversation_id not in conversations:
         raise HTTPException(status_code=404, detail="Conversation not found")
@@ -1207,9 +1247,13 @@ async def annotate_csv(
             total_trials=len(nct_ids),
             progress=f"Starting annotation of {len(nct_ids)} trials...",
             original_filename=file.filename,
-            model=model
+            model=model,
+            notification_email=notification_email
         )
         job_manager.jobs[job_id] = job
+
+        if notification_email:
+            logger.info(f"📧 Job {job_id} will notify {notification_email} on completion")
         
         # Start background processing - store task to prevent garbage collection
         task = asyncio.create_task(
@@ -1357,6 +1401,15 @@ async def delete_conversation(conversation_id: str):
         raise HTTPException(status_code=404, detail="Conversation not found")
     del conversations[conversation_id]
     return {"status": "deleted", "conversation_id": conversation_id}
+
+
+@app.get("/chat/email-config")
+async def get_email_config():
+    """Check if email notifications are configured."""
+    return {
+        "configured": is_email_configured(),
+        "from_address": os.getenv("SMTP_FROM", "luke@amphoraxe.ca") if is_email_configured() else None
+    }
 
 
 @app.get("/chat/models")

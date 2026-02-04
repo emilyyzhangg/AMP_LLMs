@@ -590,22 +590,118 @@ async def delete_conversation(conversation_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ============================================================================
+# Model Parameters & Email Config Proxy Endpoints
+# ============================================================================
+
+@app.get("/api/chat/model-parameters")
+async def get_model_parameters_proxy():
+    """Proxy model parameters request to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/chat/model-parameters")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Model parameters proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/chat/model-parameters")
+async def update_model_parameters_proxy(request: dict):
+    """Proxy model parameters update to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(
+                f"{CHAT_SERVICE_URL}/chat/model-parameters",
+                json=request
+            )
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Model parameters proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/chat/model-parameters/reset")
+async def reset_model_parameters_proxy():
+    """Proxy model parameters reset to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(f"{CHAT_SERVICE_URL}/chat/model-parameters/reset")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Model parameters proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/chat/model-parameters/preset/{preset_name}")
+async def apply_model_preset_proxy(preset_name: str):
+    """Proxy model preset application to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(f"{CHAT_SERVICE_URL}/chat/model-parameters/preset/{preset_name}")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Model preset proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/chat/email-config")
+async def get_email_config_proxy():
+    """Proxy email configuration check to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/chat/email-config")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Email config proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/chat/annotate-csv")
 async def annotate_csv_proxy(
     conversation_id: str,
     model: str,
     background_tasks: BackgroundTasks,
     temperature: float = 0.15,
+    notification_email: Optional[str] = None,
     file: UploadFile = File(...)
 ):
     """
     Start async CSV annotation job. Returns immediately with job_id.
     Poll /chat/annotate-csv-status/{job_id} for progress.
+    Optional: notification_email to receive email when job completes.
     """
     import uuid
-    
+
     try:
         logger.info(f"📄 Starting async CSV annotation: {file.filename}")
+        if notification_email:
+            logger.info(f"📧 Will notify {notification_email} on completion")
         
         # Generate job ID
         job_id = str(uuid.uuid4())
@@ -623,13 +719,14 @@ async def annotate_csv_proxy(
             "started_at": datetime.now().isoformat(),
             "progress": "Starting annotation...",
             "result": None,
-            "error": None
+            "error": None,
+            "notification_email": notification_email
         }
-        
+
         # Start background task
         background_tasks.add_task(
             process_csv_annotation,
-            job_id, contents, filename, conversation_id, model, temperature
+            job_id, contents, filename, conversation_id, model, temperature, notification_email
         )
         
         logger.info(f"✅ Job started: {job_id}")
@@ -655,12 +752,13 @@ async def process_csv_annotation(
     filename: str,
     conversation_id: str,
     model: str,
-    temperature: float
+    temperature: float,
+    notification_email: Optional[str] = None
 ):
     """Background task to process CSV annotation."""
     try:
         csv_annotation_jobs[job_id]["progress"] = "Sending to annotation service..."
-        
+
         async with httpx.AsyncClient(timeout=1800.0) as client:
             files = {"file": (filename, contents, "text/csv")}
             params = {
@@ -668,6 +766,9 @@ async def process_csv_annotation(
                 "model": model,
                 "temperature": str(temperature)
             }
+            # Add notification email if provided
+            if notification_email:
+                params["notification_email"] = notification_email
             
             response = await client.post(
                 f"{CHAT_SERVICE_URL}/chat/annotate-csv",
@@ -739,6 +840,46 @@ async def get_csv_annotation_status(job_id: str):
 
 
 RUNNER_SERVICE_URL = "http://localhost:9003"
+
+
+@app.get("/chat/download/{job_id}")
+async def download_job_csv_proxy(job_id: str):
+    """
+    Proxy CSV download by job ID to chat service.
+    This is used by email notification links.
+    """
+    try:
+        logger.info(f"📥 Proxying job CSV download: {job_id}")
+
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/chat/download/{job_id}")
+
+            if response.status_code == 200:
+                # Get filename from content-disposition header if available
+                content_disp = response.headers.get("content-disposition", "")
+                filename = f"annotations_{job_id}.csv"
+                if "filename=" in content_disp:
+                    import re
+                    match = re.search(r'filename="?([^";\s]+)"?', content_disp)
+                    if match:
+                        filename = match.group(1)
+
+                return Response(
+                    content=response.content,
+                    media_type="text/csv",
+                    headers={
+                        "Content-Disposition": f"attachment; filename={filename}"
+                    }
+                )
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error downloading job CSV: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/chat/download-csv/{filename}")
 async def download_csv_proxy(filename: str):

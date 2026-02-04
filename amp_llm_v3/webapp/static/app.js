@@ -16,6 +16,9 @@ const app = {
     currentModel: null,
     annotationModeSelected: false,  // Track annotation mode selection
     annotationOutputFormat: 'llm_optimized',  // 'json' or 'llm_optimized' - format for LLM input
+    annotationEmailNotify: false,  // Whether to send email notification on completion
+    annotationNotifyEmail: '',  // Email address for notification
+    emailConfigured: false,  // Whether email is configured on server
     modelParameters: null,  // Cached model parameters from API
     customModelParams: {},  // User-modified parameter values
     nctResults: null,
@@ -1578,6 +1581,21 @@ const app = {
         return null;
     },
 
+    async fetchEmailConfig() {
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/email-config`);
+            if (response.ok) {
+                const config = await response.json();
+                this.emailConfigured = config.configured;
+                console.log('📧 Email configured:', this.emailConfigured);
+                return config;
+            }
+        } catch (error) {
+            console.error('Failed to fetch email config:', error);
+        }
+        return { configured: false };
+    },
+
     async applyModelPreset(presetName) {
         try {
             const response = await fetch(`${this.API_BASE}/api/chat/model-parameters/preset/${presetName}`, {
@@ -1638,10 +1656,11 @@ const app = {
     async showModelParametersConfig() {
         console.log('⚙️ Showing model parameters configuration');
 
-        // Fetch parameters if not cached
-        if (!this.modelParameters) {
-            await this.fetchModelParameters();
-        }
+        // Fetch parameters and email config in parallel
+        const [paramsResult, emailResult] = await Promise.all([
+            this.modelParameters ? Promise.resolve(this.modelParameters) : this.fetchModelParameters(),
+            this.fetchEmailConfig()
+        ]);
 
         if (!this.modelParameters) {
             console.warn('Could not load model parameters, skipping to model selection');
@@ -1923,6 +1942,31 @@ const app = {
             `;
         }
 
+        // Email notification option (only show if email is configured)
+        if (this.emailConfigured) {
+            html += `
+                <div class="email-notification-section" style="margin-top: 20px; padding: 15px; background: var(--bg-primary, #0d0d1a); border-radius: 8px; border: 1px solid var(--border-color, #333);">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <input type="checkbox"
+                               id="email-notify-checkbox"
+                               style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary-color, #1BEB49);"
+                               ${this.annotationEmailNotify ? 'checked' : ''}>
+                        <label for="email-notify-checkbox" style="cursor: pointer; flex: 1;">
+                            <strong>📧 Email me when annotation completes</strong>
+                            <br><small style="color: #888;">Get notified even if you navigate away from this page</small>
+                        </label>
+                    </div>
+                    <div id="email-input-container" style="margin-top: 12px; display: ${this.annotationEmailNotify ? 'block' : 'none'};">
+                        <input type="email"
+                               id="notification-email-input"
+                               placeholder="your.email@example.com"
+                               value="${this.annotationNotifyEmail}"
+                               style="width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border-color, #333); background: var(--bg-secondary, #1a1a2e); color: var(--text-color, #e0e0e0); font-size: 14px;">
+                    </div>
+                </div>
+            `;
+        }
+
         // Action buttons
         html += `
             <div class="params-actions">
@@ -1985,8 +2029,31 @@ const app = {
             }
         });
 
+        // Email notification checkbox
+        document.getElementById('email-notify-checkbox')?.addEventListener('change', (e) => {
+            this.annotationEmailNotify = e.target.checked;
+            const emailInputContainer = document.getElementById('email-input-container');
+            if (emailInputContainer) {
+                emailInputContainer.style.display = this.annotationEmailNotify ? 'block' : 'none';
+            }
+            console.log('📧 Email notification:', this.annotationEmailNotify ? 'enabled' : 'disabled');
+        });
+
+        // Email input
+        document.getElementById('notification-email-input')?.addEventListener('input', (e) => {
+            this.annotationNotifyEmail = e.target.value;
+        });
+
         // Continue button
         document.getElementById('continue-to-model-btn')?.addEventListener('click', () => {
+            // Validate email if notification is enabled
+            if (this.annotationEmailNotify && this.annotationNotifyEmail) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(this.annotationNotifyEmail)) {
+                    alert('Please enter a valid email address for notifications.');
+                    return;
+                }
+            }
             document.getElementById('model-params-container')?.remove();
             this.showModelSelectionStep2();
         });
@@ -2210,7 +2277,7 @@ const app = {
                 if (annotationMode) {
                     welcomeMsg += '\n\n🔬 Annotation Mode Active\n\n' +
                                 '📝 **Option 1: Enter NCT IDs manually**\n' +
-                                'Type NCT IDs (comma-separated) in the chat box.\n' +
+                                'Type NCT IDs in the chat box (comma, space, or newline separated).\n' +
                                 'Example: NCT12345678, NCT87654321\n\n' +
                                 '📄 **Option 2: Upload CSV file**\n' +
                                 'Click the "Upload CSV" button below to batch annotate.\n\n' +
@@ -2230,7 +2297,7 @@ const app = {
                 input.disabled = false;
                 
                 if (annotationMode) {
-                    input.placeholder = 'Enter NCT IDs (e.g., NCT12345678, NCT87654321)...';
+                    input.placeholder = 'Enter NCT IDs (comma, space, or newline separated)...';
                 } else {
                     input.placeholder = 'Type your message...';
                 }
@@ -2321,11 +2388,14 @@ const app = {
             const nctIds = message.match(nctPattern);
             
             if (!nctIds || nctIds.length === 0) {
-                this.addMessage('chat-container', 'error', 
+                this.addMessage('chat-container', 'error',
                     '❌ No valid NCT IDs found\n\n' +
                     'Please enter NCT IDs in the format: NCT12345678\n' +
-                    'You can enter multiple IDs separated by commas.\n\n' +
-                    'Example: NCT03936426, NCT04123456');
+                    'You can enter multiple IDs separated by commas, spaces, or newlines.\n\n' +
+                    'Examples:\n' +
+                    '  • NCT03936426, NCT04123456\n' +
+                    '  • NCT03936426 NCT04123456\n' +
+                    '  • One per line');
                 return;
             }
             
@@ -2737,7 +2807,13 @@ const app = {
                 model: this.currentModel,
                 temperature: '0.15'
             });
-            
+
+            // Add email notification if enabled
+            if (this.annotationEmailNotify && this.annotationNotifyEmail) {
+                params.set('notification_email', this.annotationNotifyEmail);
+                console.log('📧 Email notification will be sent to:', this.annotationNotifyEmail);
+            }
+
             const url = `${this.API_BASE}/chat/annotate-csv?${params}`;
             console.log(`📤 Sending CSV to: ${url}`);
             
