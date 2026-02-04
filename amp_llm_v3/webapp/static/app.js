@@ -2506,8 +2506,7 @@ const app = {
             return;
         }
 
-        // Show user message
-        this.addMessage('chat-container', 'user', `Annotate: ${nctIds.join(', ')}`);
+        // Note: User message already shown by handleAnnotationInput()
 
         // Show processing message with progress bar
         const processingId = this.addMessage('chat-container', 'system',
