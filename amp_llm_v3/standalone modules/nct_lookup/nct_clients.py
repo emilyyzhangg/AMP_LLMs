@@ -4,6 +4,7 @@ NCT Database Clients
 
 Individual client implementations for each database.
 Enhanced with comprehensive error handling and improved search strategies.
+Now includes proper rate limiting to prevent hitting API limits.
 """
 
 import asyncio
@@ -14,76 +15,103 @@ from abc import ABC, abstractmethod
 import xml.etree.ElementTree as ET
 import logging
 
+from rate_limiter import rate_limited, RateLimitExceeded
+
 logger = logging.getLogger(__name__)
 
 
 class BaseClient(ABC):
     """Base class for all database clients."""
-    
+
+    # Override this in subclasses for per-client rate limiting
+    API_NAME = "default"
+
     def __init__(self, session: aiohttp.ClientSession, api_key: Optional[str] = None):
         self.session = session
         self.api_key = api_key
-        self.rate_limit_delay = 0.34  # NCBI recommends 3 requests/second
-    
+        self.rate_limit_delay = 0.34  # Legacy - kept for compatibility
+
     @abstractmethod
     async def fetch(self, identifier: str) -> Dict[str, Any]:
         """Fetch data by identifier."""
         pass
-    
+
     @abstractmethod
     async def search(self, query: str, **kwargs) -> Any:
         """Search database."""
         pass
-    
+
     async def _rate_limit(self):
-        """Enforce rate limiting."""
+        """Legacy rate limiting - now uses the rate_limited context manager."""
+        # This is kept for backwards compatibility with existing code
+        # New code should use: async with rate_limited(self.API_NAME):
         await asyncio.sleep(self.rate_limit_delay)
+
+    def rate_limited_call(self, timeout: float = 30.0):
+        """
+        Get a rate-limited context manager for this client.
+
+        Usage:
+            async with self.rate_limited_call():
+                response = await self.session.get(url)
+        """
+        return rate_limited(self.API_NAME, timeout)
 
 
 class ClinicalTrialsClient(BaseClient):
     """ClinicalTrials.gov API client."""
-    
+
+    API_NAME = "clinicaltrials"
     BASE_URL = "https://clinicaltrials.gov/api/v2/studies"
-    
+
     async def fetch(self, nct_id: str) -> Dict[str, Any]:
         """Fetch trial data by NCT ID."""
         url = f"{self.BASE_URL}/{nct_id}"
-        
+
         try:
-            async with self.session.get(url) as resp:
-                if resp.status == 200:
-                    data = await resp.json()
-                    logger.info(f"Fetched {nct_id} from ClinicalTrials.gov")
-                    return data
-                else:
-                    return {"error": f"HTTP {resp.status}"}
+            async with self.rate_limited_call():
+                async with self.session.get(url) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        logger.info(f"Fetched {nct_id} from ClinicalTrials.gov")
+                        return data
+                    else:
+                        return {"error": f"HTTP {resp.status}"}
+        except RateLimitExceeded as e:
+            logger.warning(f"Rate limit exceeded for ClinicalTrials: {e}")
+            return {"error": "Rate limit exceeded, please try again later"}
         except Exception as e:
             logger.error(f"ClinicalTrials fetch error: {e}")
             return {"error": str(e)}
-    
+
     async def search(self, query: str, **kwargs) -> Dict[str, Any]:
         """Search ClinicalTrials.gov."""
         params = {
             "query.term": query,
             "pageSize": kwargs.get("max_results", 10)
         }
-        
+
         try:
-            async with self.session.get(self.BASE_URL, params=params) as resp:
-                if resp.status == 200:
-                    data = await resp.json()
-                    return data
-                else:
-                    return {"error": f"HTTP {resp.status}"}
+            async with self.rate_limited_call():
+                async with self.session.get(self.BASE_URL, params=params) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        return data
+                    else:
+                        return {"error": f"HTTP {resp.status}"}
+        except RateLimitExceeded as e:
+            logger.warning(f"Rate limit exceeded for ClinicalTrials search: {e}")
+            return {"error": "Rate limit exceeded"}
         except Exception as e:
             return {"error": str(e)}
 
 
 class PubMedClient(BaseClient):
     """PubMed API client."""
-    
+
+    API_NAME = "pubmed"
     BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
-    
+
     async def search(self, query: str, **kwargs) -> List[str]:
         """Search PubMed, return PMIDs."""
         max_results = kwargs.get("max_results", 10)
@@ -94,23 +122,26 @@ class PubMedClient(BaseClient):
             "retmode": "json",
             "retmax": max_results
         }
-        
+
         if self.api_key:
             params["api_key"] = self.api_key
-        
+
         try:
-            await self._rate_limit()
-            async with self.session.get(url, params=params) as resp:
-                if resp.status == 200:
-                    data = await resp.json()
-                    pmids = data.get("esearchresult", {}).get("idlist", [])
-                    logger.info(f"PubMed search found {len(pmids)} results")
-                    return pmids
-                return []
+            async with self.rate_limited_call():
+                async with self.session.get(url, params=params) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        pmids = data.get("esearchresult", {}).get("idlist", [])
+                        logger.info(f"PubMed search found {len(pmids)} results")
+                        return pmids
+                    return []
+        except RateLimitExceeded as e:
+            logger.warning(f"Rate limit exceeded for PubMed search: {e}")
+            return []
         except Exception as e:
             logger.error(f"PubMed search error: {e}")
             return []
-    
+
     async def fetch(self, pmid: str) -> Dict[str, Any]:
         """Fetch article metadata by PMID."""
         url = f"{self.BASE_URL}/efetch.fcgi"
@@ -119,17 +150,20 @@ class PubMedClient(BaseClient):
             "id": pmid,
             "retmode": "xml"
         }
-        
+
         if self.api_key:
             params["api_key"] = self.api_key
-        
+
         try:
-            await self._rate_limit()
-            async with self.session.get(url, params=params) as resp:
-                if resp.status == 200:
-                    xml_content = await resp.text()
-                    return self._parse_xml(xml_content, pmid)
-                return {"error": f"HTTP {resp.status}"}
+            async with self.rate_limited_call():
+                async with self.session.get(url, params=params) as resp:
+                    if resp.status == 200:
+                        xml_content = await resp.text()
+                        return self._parse_xml(xml_content, pmid)
+                    return {"error": f"HTTP {resp.status}"}
+        except RateLimitExceeded as e:
+            logger.warning(f"Rate limit exceeded for PubMed fetch: {e}")
+            return {"error": "Rate limit exceeded"}
         except Exception as e:
             logger.error(f"PubMed fetch error: {e}")
             return {"error": str(e)}

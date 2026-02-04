@@ -57,8 +57,12 @@ app.add_middleware(
 # ============================================================================
 OUTPUT_DIR = Path("output")
 DATABASE_DIR = Path("ct_database")
+# Annotation CSVs from chat service (relative to amp_llm_v3/)
+ANNOTATIONS_DIR = Path("standalone modules/chat_with_llm/output/annotations")
+
 OUTPUT_DIR.mkdir(exist_ok=True)
 DATABASE_DIR.mkdir(exist_ok=True)
+ANNOTATIONS_DIR.mkdir(parents=True, exist_ok=True)
 
 static_dir = WEBAPP_DIR / "static"
 templates_dir = WEBAPP_DIR / "templates"
@@ -699,6 +703,23 @@ async def list_jobs_proxy():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/api/chat/resources")
+async def get_resources_proxy():
+    """Proxy resource status to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/chat/resources")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Resource status proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.delete("/api/chat/jobs/{job_id}")
 async def cancel_job_proxy(job_id: str):
     """Proxy job cancellation to chat service."""
@@ -1241,45 +1262,77 @@ async def nct_registry_proxy(api_key: str = Depends(verify_api_key)):
 
 @app.get("/files/list")
 async def list_files():
-    """List all JSON files in the output directory."""
+    """List all output files (JSON from output dir, CSV from annotations dir)."""
     try:
         files = []
+
+        # JSON files from output directory
         for file_path in OUTPUT_DIR.glob("*.json"):
             stat = file_path.stat()
             files.append({
                 "name": file_path.name,
                 "size": f"{stat.st_size / 1024:.1f} KB",
-                "modified": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
+                "modified": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S"),
+                "type": "json",
+                "source": "output"
             })
-        
+
+        # CSV files from annotations directory
+        if ANNOTATIONS_DIR.exists():
+            for file_path in ANNOTATIONS_DIR.glob("*.csv"):
+                stat = file_path.stat()
+                files.append({
+                    "name": file_path.name,
+                    "size": f"{stat.st_size / 1024:.1f} KB",
+                    "modified": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S"),
+                    "type": "csv",
+                    "source": "annotations"
+                })
+
         files.sort(key=lambda x: x["modified"], reverse=True)
         return FileListResponse(files=files)
-    
+
     except Exception as e:
         logger.error(f"Error listing files: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/files/content/{filename}")
-async def get_file_content(filename: str):
-    """Get the content of a specific file."""
+async def get_file_content(filename: str, source: str = "output"):
+    """Get the content of a specific file.
+
+    Args:
+        filename: Name of the file
+        source: 'output' for JSON files, 'annotations' for CSV files
+    """
     try:
         safe_filename = Path(filename).name
-        file_path = OUTPUT_DIR / safe_filename
-        
+
+        # Check in appropriate directory based on source
+        if source == "annotations":
+            file_path = ANNOTATIONS_DIR / safe_filename
+        else:
+            file_path = OUTPUT_DIR / safe_filename
+
+        # Fallback: check both directories if not found
+        if not file_path.exists():
+            alt_path = ANNOTATIONS_DIR / safe_filename if source == "output" else OUTPUT_DIR / safe_filename
+            if alt_path.exists():
+                file_path = alt_path
+
         if not file_path.exists():
             raise HTTPException(status_code=404, detail="File not found")
-        
+
         if not file_path.is_file():
             raise HTTPException(status_code=400, detail="Not a file")
-        
+
         content = file_path.read_text(encoding='utf-8')
-        
+
         return FileContentResponse(
             filename=safe_filename,
             content=content
         )
-    
+
     except HTTPException:
         raise
     except Exception as e:
@@ -1309,6 +1362,43 @@ async def save_file(request: FileSaveRequest):
     
     except Exception as e:
         logger.error(f"Error saving file: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/files/download/{filename}")
+async def download_file(filename: str, source: str = "output"):
+    """Download a file from output or annotations directory."""
+    try:
+        safe_filename = Path(filename).name
+
+        if source == "annotations":
+            file_path = ANNOTATIONS_DIR / safe_filename
+        else:
+            file_path = OUTPUT_DIR / safe_filename
+
+        # Fallback: check both directories
+        if not file_path.exists():
+            alt_path = ANNOTATIONS_DIR / safe_filename if source == "output" else OUTPUT_DIR / safe_filename
+            if alt_path.exists():
+                file_path = alt_path
+
+        if not file_path.exists():
+            raise HTTPException(status_code=404, detail="File not found")
+
+        # Determine media type
+        media_type = "text/csv" if safe_filename.endswith('.csv') else "application/json"
+
+        return FileResponse(
+            path=str(file_path),
+            media_type=media_type,
+            filename=safe_filename,
+            headers={"Content-Disposition": f"attachment; filename=\"{safe_filename}\""}
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error downloading file: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

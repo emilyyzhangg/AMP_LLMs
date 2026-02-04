@@ -4383,15 +4383,15 @@ const app = {
     async loadFiles() {
         const container = document.getElementById('files-container');
         container.innerHTML = '<div class="loading">Loading files...</div>';
-        
+
         try {
             const response = await fetch(`${this.API_BASE}/files/list`, {
                 headers: { 'Authorization': `Bearer ${this.apiKey}` }
             });
-            
+
             const data = await response.json();
             this.files = data.files || [];
-            
+
             if (this.files.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
@@ -4401,25 +4401,41 @@ const app = {
                 `;
                 return;
             }
-            
+
             let html = '<div class="files-grid">';
             this.files.forEach(file => {
+                const isCSV = file.type === 'csv' || file.name.endsWith('.csv');
+                const isAnnotation = file.source === 'annotations';
+                const icon = isCSV ? '📊' : '📄';
+                const typeLabel = isAnnotation ? '<span class="file-type-badge annotation">Annotation</span>' : '';
+
                 html += `
-                    <div class="file-card">
-                        <div class="file-card-icon">📄</div>
-                        <div class="file-card-name">${this.escapeHtml(file.name)}</div>
+                    <div class="file-card ${isAnnotation ? 'annotation-file' : ''}">
+                        <div class="file-card-icon">${icon}</div>
+                        <div class="file-card-name">${this.escapeHtml(file.name)}${typeLabel}</div>
                         <div class="file-card-meta">Size: ${file.size}</div>
                         <div class="file-card-meta">Modified: ${file.modified}</div>
-                        <button class="file-card-load" onclick="app.loadFileIntoChat('${this.escapeHtml(file.name)}')">
-                            Load into Chat
-                        </button>
+                        <div class="file-card-actions">
+                            ${isCSV ? `
+                                <button class="file-card-btn download" onclick="app.downloadFile('${this.escapeHtml(file.name)}', '${file.source || 'output'}')">
+                                    📥 Download
+                                </button>
+                                <button class="file-card-btn view" onclick="app.viewCSVFile('${this.escapeHtml(file.name)}', '${file.source || 'output'}')">
+                                    👁 View
+                                </button>
+                            ` : `
+                                <button class="file-card-btn load" onclick="app.loadFileIntoChat('${this.escapeHtml(file.name)}')">
+                                    📂 Load into Chat
+                                </button>
+                            `}
+                        </div>
                     </div>
                 `;
             });
             html += '</div>';
-            
+
             container.innerHTML = html;
-            
+
         } catch (error) {
             container.innerHTML = `
                 <div class="empty-state">
@@ -4428,6 +4444,109 @@ const app = {
                 </div>
             `;
         }
+    },
+
+    downloadFile(filename, source = 'output') {
+        const url = `${this.API_BASE}/files/download/${encodeURIComponent(filename)}?source=${source}`;
+        window.open(url, '_blank');
+    },
+
+    async viewCSVFile(filename, source = 'output') {
+        try {
+            const response = await fetch(
+                `${this.API_BASE}/files/content/${encodeURIComponent(filename)}?source=${source}`,
+                { headers: { 'Authorization': `Bearer ${this.apiKey}` } }
+            );
+
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const data = await response.json();
+
+            // Show in a modal or new view
+            this.showCSVViewer(filename, data.content);
+
+        } catch (error) {
+            alert('Error viewing file: ' + error.message);
+        }
+    },
+
+    showCSVViewer(filename, content) {
+        // Parse CSV and show in a table
+        const lines = content.split('\n');
+        const isMetadataLine = (line) => line.startsWith('#');
+
+        // Separate metadata and data
+        const metadata = [];
+        const dataLines = [];
+
+        for (const line of lines) {
+            if (isMetadataLine(line)) {
+                metadata.push(line.substring(1).trim()); // Remove # prefix
+            } else if (line.trim()) {
+                dataLines.push(line);
+            }
+        }
+
+        // Parse CSV data (simple parser)
+        const parseCSVLine = (line) => {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim());
+            return result;
+        };
+
+        const headers = dataLines.length > 0 ? parseCSVLine(dataLines[0]) : [];
+        const rows = dataLines.slice(1).map(parseCSVLine);
+
+        // Create modal content
+        let html = `
+            <div class="csv-viewer-modal">
+                <div class="csv-viewer-header">
+                    <h3>📊 ${this.escapeHtml(filename)}</h3>
+                    <button onclick="this.closest('.csv-viewer-modal').remove()">×</button>
+                </div>
+                ${metadata.length > 0 ? `
+                    <div class="csv-metadata">
+                        <details>
+                            <summary>📋 Metadata (${metadata.length} lines)</summary>
+                            <pre>${metadata.join('\n')}</pre>
+                        </details>
+                    </div>
+                ` : ''}
+                <div class="csv-table-container">
+                    <table class="csv-table">
+                        <thead>
+                            <tr>${headers.map(h => `<th>${this.escapeHtml(h)}</th>`).join('')}</tr>
+                        </thead>
+                        <tbody>
+                            ${rows.slice(0, 100).map(row => `
+                                <tr>${row.map(cell => `<td>${this.escapeHtml(cell.substring(0, 200))}${cell.length > 200 ? '...' : ''}</td>`).join('')}</tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    ${rows.length > 100 ? `<p class="csv-truncated">Showing first 100 of ${rows.length} rows</p>` : ''}
+                </div>
+            </div>
+        `;
+
+        // Add modal to page
+        const modal = document.createElement('div');
+        modal.className = 'csv-viewer-overlay';
+        modal.innerHTML = html;
+        modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+        document.body.appendChild(modal);
     },
 
     async loadFileIntoChat(filename) {

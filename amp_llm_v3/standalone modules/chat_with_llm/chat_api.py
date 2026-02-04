@@ -57,6 +57,9 @@ from email_utils import (
     is_email_configured
 )
 
+# Resource management
+from resource_manager import get_resource_manager, ResourceManager
+
 # Configuration
 try:
     from assistant_config import config
@@ -239,11 +242,16 @@ app.add_middleware(
 async def startup_event():
     """Initialize background tasks on startup"""
     job_manager.start_cleanup_task()
-    
+
+    # Initialize resource manager
+    resource_mgr = get_resource_manager()
+    resource_mgr.start_queue_processor()
+
     # Ensure output directory exists
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    
+
     logger.info("✅ CSV Job Manager initialized")
+    logger.info("✅ Resource Manager initialized")
     logger.info(f"✅ Output directory ready: {OUTPUT_DIR}")
 
 
@@ -432,21 +440,37 @@ async def process_csv_job(
     Processes each trial individually and updates progress in real-time.
     """
     logger.info(f"🚀 Job {job_id}: Background task STARTED")
-    
+
     job = job_manager.jobs.get(job_id)
     if not job:
         logger.error(f"❌ Job {job_id}: Job not found in manager!")
         return
-    
+
+    # Request resource slot (memory check + concurrency limit)
+    resource_mgr = get_resource_manager()
+    slot_result = await resource_mgr.request_llm_slot(
+        job_id=job_id,
+        metadata={"model": model, "type": "csv_annotation", "filename": original_filename}
+    )
+
+    if not slot_result.get("granted"):
+        # Job is queued - update status and wait
+        job.status = JobStatus.PENDING
+        job.progress = f"Queued (position {slot_result.get('queue_position', '?')}): {slot_result.get('reason', 'Waiting for resources')}"
+        job.updated_at = datetime.now()
+        logger.info(f"⏳ Job {job_id}: Queued - {slot_result.get('reason')}")
+        # The queue processor will restart this job when resources are available
+        return
+
     job.status = JobStatus.PROCESSING
     job.progress = "Parsing CSV..."
     job.updated_at = datetime.now()
-    
+
     start_time = time.time()
     results = []
     errors = []
     last_heartbeat = time.time()
-    
+
     try:
         # Parse NCT IDs from CSV
         text_content = csv_content.decode('utf-8')
@@ -733,12 +757,15 @@ async def process_csv_job(
             "model": model
         }
         
+        # Release resource slot
+        await resource_mgr.release_llm_slot(job_id)
+
         # NOW set status to completed (after result is ready)
         job.csv_filename = csv_filename
         job.status = JobStatus.COMPLETED
         job.progress = "Completed"
         job.updated_at = datetime.now()
-        
+
         logger.info(f"✅ Job {job_id} completed: {successful} success, {failed} errors in {duration:.1f}s")
         logger.info(f"📊 Job {job_id} result object: total={job.result['total']}, successful={job.result['successful']}, failed={job.result['failed']}, time={job.result['total_time_seconds']}")
 
@@ -789,6 +816,10 @@ async def process_csv_job(
         
     except Exception as e:
         logger.error(f"❌ Job {job_id} failed: {e}", exc_info=True)
+
+        # Release resource slot
+        await resource_mgr.release_llm_slot(job_id)
+
         job.status = JobStatus.FAILED
         job.error = str(e)
         job.progress = "Failed"
@@ -1315,6 +1346,21 @@ async def process_manual_annotation_job(
         logger.error(f"❌ Job {job_id} not found")
         return
 
+    # Request resource slot (memory check + concurrency limit)
+    resource_mgr = get_resource_manager()
+    slot_result = await resource_mgr.request_llm_slot(
+        job_id=job_id,
+        metadata={"model": model, "type": "manual_annotation", "nct_count": len(nct_ids)}
+    )
+
+    if not slot_result.get("granted"):
+        # Job is queued - update status and wait
+        job.status = JobStatus.PENDING
+        job.progress = f"Queued (position {slot_result.get('queue_position', '?')}): {slot_result.get('reason', 'Waiting for resources')}"
+        job.updated_at = datetime.now()
+        logger.info(f"⏳ Job {job_id}: Queued - {slot_result.get('reason')}")
+        return
+
     try:
         job.status = JobStatus.PROCESSING
         job.progress = f"Starting annotation of {len(nct_ids)} trial(s)..."
@@ -1438,6 +1484,9 @@ async def process_manual_annotation_job(
             "annotation_text": "\n".join(output_parts)
         }
 
+        # Release resource slot
+        await resource_mgr.release_llm_slot(job_id)
+
         job.status = JobStatus.COMPLETED
         job.progress = "Completed"
         job.processed_trials = len(nct_ids)
@@ -1479,6 +1528,10 @@ async def process_manual_annotation_job(
 
     except Exception as e:
         logger.error(f"❌ Job {job_id} failed: {e}", exc_info=True)
+
+        # Release resource slot
+        await resource_mgr.release_llm_slot(job_id)
+
         job.status = JobStatus.FAILED
         job.error = str(e)
         job.progress = "Failed"
@@ -1882,6 +1935,20 @@ async def get_email_config():
         "configured": is_email_configured(),
         "from_address": os.getenv("SMTP_FROM", "luke@amphoraxe.ca") if is_email_configured() else None
     }
+
+
+@app.get("/chat/resources")
+async def get_resource_status():
+    """
+    Get current resource status including memory and job queue.
+
+    Returns:
+    - Memory availability
+    - Running and queued job counts
+    - Queue details
+    """
+    resource_mgr = get_resource_manager()
+    return resource_mgr.get_queue_status()
 
 
 @app.get("/chat/models")
