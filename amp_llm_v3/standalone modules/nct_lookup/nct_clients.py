@@ -1828,11 +1828,13 @@ class UniProtClient(BaseClient):
     async def _search_proteins(self, query: str) -> List[Dict]:
         """Search UniProt for proteins matching query."""
         url = f"{self.BASE_URL}/uniprotkb/search"
-        
+
         params = {
             "query": query,
             "format": "json",
-            "size": 5  # Limit results per query
+            "size": 5,  # Limit results per query
+            # CRITICAL: Must explicitly request sequence field - not included by default
+            "fields": "accession,id,protein_name,gene_names,organism_name,sequence,cc_function,keyword"
         }
         
         try:
