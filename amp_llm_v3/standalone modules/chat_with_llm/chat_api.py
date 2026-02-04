@@ -2118,7 +2118,7 @@ async def get_models():
 # Model Parameters Proxy Endpoints (proxied to LLM Assistant)
 # ============================================================================
 
-@app.get("/api/chat/model-parameters")
+@app.get("/chat/model-parameters")
 async def get_model_parameters():
     """
     Get current model parameters with documentation.
@@ -2141,7 +2141,7 @@ async def get_model_parameters():
         )
 
 
-@app.post("/api/chat/model-parameters")
+@app.post("/chat/model-parameters")
 async def set_model_parameters(request: dict):
     """
     Update model parameters.
@@ -2167,7 +2167,7 @@ async def set_model_parameters(request: dict):
         )
 
 
-@app.post("/api/chat/model-parameters/reset")
+@app.post("/chat/model-parameters/reset")
 async def reset_model_parameters():
     """
     Reset model parameters to defaults.
@@ -2190,7 +2190,7 @@ async def reset_model_parameters():
         )
 
 
-@app.post("/api/chat/model-parameters/preset/{preset_name}")
+@app.post("/chat/model-parameters/preset/{preset_name}")
 async def apply_model_preset(preset_name: str):
     """
     Apply a parameter preset.
@@ -2215,7 +2215,7 @@ async def apply_model_preset(preset_name: str):
         )
 
 
-@app.get("/api/chat/model-parameters/presets")
+@app.get("/chat/model-parameters/presets")
 async def get_model_presets():
     """
     Get available parameter presets.
