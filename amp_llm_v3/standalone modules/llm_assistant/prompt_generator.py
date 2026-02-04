@@ -14,15 +14,141 @@ Enhanced with:
 - IMPROVED: Cross-LLM compatible prompts with explicit decision trees
 - NEW: Verification prompts for two-stage annotation pipeline
 """
-import json
-from typing import Dict, Any, List, Optional
+import logging
+import re
+from typing import Dict, Any, Optional
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
+
+
+# =============================================================================
+# CONSTANTS
+# =============================================================================
+
+# Truncation limits for different content types
+class TruncationLimits:
+    """Centralized truncation limits for consistent text handling."""
+    BRIEF_SUMMARY = 800
+    DETAILED_DESCRIPTION = 600
+    ABSTRACT = 600
+    PMC_ABSTRACT = 500
+    INTERVENTION_DESCRIPTION = 500
+    ARM_DESCRIPTION = 300
+    SNIPPET = 300
+    FUNCTION_TEXT = 400
+    BIOC_PASSAGE = 400
+    CITATION = 150
+
+
+# Shared route keyword mappings for delivery mode detection
+ROUTE_KEYWORDS = {
+    # Injection/Infusion indicators
+    'injection': 'Injection/Infusion',
+    'injectable': 'Injection/Infusion',
+    'inject': 'Injection/Infusion',
+    'infusion': 'Injection/Infusion',
+    'infuse': 'Injection/Infusion',
+    'intravenous': 'Injection/Infusion',
+    'iv ': 'Injection/Infusion',
+    'i.v.': 'Injection/Infusion',
+    'subcutaneous': 'Injection/Infusion',
+    'sc ': 'Injection/Infusion',
+    's.c.': 'Injection/Infusion',
+    'sq ': 'Injection/Infusion',
+    'subq': 'Injection/Infusion',
+    'intramuscular': 'Injection/Infusion',
+    'im ': 'Injection/Infusion',
+    'i.m.': 'Injection/Infusion',
+    'intradermal': 'Injection/Infusion',
+    'intraperitoneal': 'Injection/Infusion',
+    'intrathecal': 'Injection/Infusion',
+    'intravitreal': 'Injection/Infusion',
+    'intraarticular': 'Injection/Infusion',
+    'intralesional': 'Injection/Infusion',
+    'bolus': 'Injection/Infusion',
+    'parenteral': 'Injection/Infusion',
+    'syringe': 'Injection/Infusion',
+    'needle': 'Injection/Infusion',
+    'drip': 'Injection/Infusion',
+    # Topical indicators
+    'topical': 'Topical',
+    'topically': 'Topical',
+    'cream': 'Topical',
+    'ointment': 'Topical',
+    'gel': 'Topical',
+    'lotion': 'Topical',
+    'dermal': 'Topical',
+    'transdermal': 'Topical',
+    'cutaneous': 'Topical',
+    'wound': 'Topical',
+    'wound care': 'Topical',
+    'wound dressing': 'Topical',
+    'patch': 'Topical',
+    'eye drop': 'Topical',
+    'eyedrop': 'Topical',
+    'ophthalmic': 'Topical',
+    'ocular': 'Topical',
+    'ear drop': 'Topical',
+    'otic': 'Topical',
+    'nasal spray': 'Topical',
+    'intranasal': 'Topical',
+    'nasal': 'Topical',
+    'mouthwash': 'Topical',
+    'mouth rinse': 'Topical',
+    'oral rinse': 'Topical',
+    'buccal': 'Topical',
+    'dental': 'Topical',
+    'periodontal': 'Topical',
+    'gingival': 'Topical',
+    'vaginal': 'Topical',
+    'intravaginal': 'Topical',
+    'rectal': 'Topical',
+    'enema': 'Topical',
+    # Oral indicators
+    'oral': 'Oral',
+    'orally': 'Oral',
+    'by mouth': 'Oral',
+    'per os': 'Oral',
+    'po ': 'Oral',
+    'p.o.': 'Oral',
+    'tablet': 'Oral',
+    'tablets': 'Oral',
+    'capsule': 'Oral',
+    'capsules': 'Oral',
+    'pill': 'Oral',
+    'pills': 'Oral',
+    'syrup': 'Oral',
+    'elixir': 'Oral',
+    'swallow': 'Oral',
+    'swallowed': 'Oral',
+    'enteric': 'Oral',
+    'enteric-coated': 'Oral',
+    'sublingual': 'Oral',
+    'lozenge': 'Oral',
+    # Other indicators
+    'inhaled': 'Other',
+    'inhalation': 'Other',
+    'nebulized': 'Other',
+    'pulmonary': 'Other',
+    'implant': 'Other',
+    'implanted': 'Other',
+    'depot': 'Other',
+}
+
+# Antimicrobial keywords for AMP classification
+ANTIMICROBIAL_KEYWORDS = [
+    'antimicrobial', 'antibacterial', 'antifungal', 'antiviral',
+    'bactericidal', 'fungicidal', 'defensin', 'cathelicidin',
+    'membrane disruption', 'host defense', 'kills bacteria',
+    'bacteriostatic', 'virucidal', 'antiparasitic'
+]
 
 
 class ImprovedPromptGenerator:
     """
     Generate enhanced LLM prompts from clinical trial search results.
-    
+
     Key improvements:
     - Few-shot examples embedded in system prompt
     - Explicit chain-of-thought reasoning
@@ -32,16 +158,41 @@ class ImprovedPromptGenerator:
     - Cross-LLM compatible explicit instructions
     - NEW: Verification prompts for two-stage annotation
     """
-    
-    def __init__(self):
-        """Initialize prompt generator."""
-        self.modelfile_template = self._load_modelfile_template()
-    
-    def _load_modelfile_template(self) -> str:
-        """Load the improved Modelfile template."""
-        return """# Improved Clinical Trial Research Assistant Modelfile Template
 
-FROM llama3.2
+    def __init__(self, model_name: str = "llama3.2"):
+        """
+        Initialize prompt generator.
+
+        Args:
+            model_name: The model to use in the Modelfile template (default: llama3.2)
+        """
+        self.model_name = model_name
+
+    def get_modelfile_template(self, model_name: Optional[str] = None) -> str:
+        """
+        Get the Modelfile template with the specified model.
+
+        Args:
+            model_name: Override the default model name if provided
+
+        Returns:
+            The complete Modelfile template string
+        """
+        return self._load_modelfile_template(model_name or self.model_name)
+    
+    def _load_modelfile_template(self, model_name: str = "llama3.2") -> str:
+        """
+        Load the improved Modelfile template.
+
+        Args:
+            model_name: The model to use (e.g., llama3.2, mistral, etc.)
+
+        Returns:
+            The complete Modelfile template string
+        """
+        return f"""# Improved Clinical Trial Research Assistant Modelfile Template
+
+FROM {model_name}
 
 SYSTEM \"\"\"You are a Clinical Trial Data Annotation Specialist with expertise in peptide therapeutics. Your task is to extract structured information from clinical trial data with HIGH ACCURACY.
 
@@ -690,7 +841,9 @@ the annotation produced by {primary_model} for this clinical trial.
         # Section 1: Original Annotation to Review
         sections.append("## ORIGINAL ANNOTATION (to verify)")
         sections.append("```")
-        sections.append(original_annotation if original_annotation else "[No annotation provided]")
+        # Sanitize annotation to prevent prompt injection
+        sanitized_annotation = self._sanitize_annotation(original_annotation) if original_annotation else "[No annotation provided]"
+        sections.append(sanitized_annotation)
         sections.append("```")
         sections.append("")
         
@@ -711,7 +864,8 @@ the annotation produced by {primary_model} for this clinical trial.
         sections.append("")
         
         # Section 4: Verification Instructions
-        sections.append("""---
+        # Using f-string to avoid .format() issues with braces in the template
+        verification_instructions = f"""---
 ## YOUR TASK
 
 Review the annotation above and produce a VERIFICATION REPORT in this EXACT format:
@@ -760,8 +914,8 @@ Corrections Made: [number]
 
 ## FINAL VERIFIED ANNOTATION
 
-[Provide the complete corrected annotation in the standard format, 
-incorporating all your corrections. If no corrections needed, 
+[Provide the complete corrected annotation in the standard format,
+incorporating all your corrections. If no corrections needed,
 reproduce the original annotation.]
 
 Classification: [verified value]
@@ -780,7 +934,8 @@ Comments: [any additional notes about verification]
 ```
 
 Begin your verification:
-""".format(nct_id=nct_id))
+"""
+        sections.append(verification_instructions)
         
         return "\n".join(sections)
     
@@ -870,6 +1025,58 @@ Begin your verification:
             else:
                 return default
         return current if current is not None else default
+
+    def _sanitize_annotation(self, annotation: str) -> str:
+        """
+        Sanitize annotation text to prevent prompt injection.
+
+        Removes or escapes patterns that could break the prompt structure
+        or inject unintended instructions.
+
+        Args:
+            annotation: The raw annotation text
+
+        Returns:
+            Sanitized annotation text
+        """
+        if not annotation:
+            return ""
+
+        sanitized = annotation
+
+        # Remove triple backticks that could break code block formatting
+        sanitized = sanitized.replace("```", "'''")
+
+        # Remove patterns that look like instruction injection
+        injection_patterns = [
+            r'(?i)ignore\s+(previous|above|all)\s+instructions?',
+            r'(?i)disregard\s+(previous|above|all)',
+            r'(?i)new\s+instructions?:',
+            r'(?i)system\s*:',
+            r'(?i)assistant\s*:',
+            r'(?i)human\s*:',
+        ]
+
+        for pattern in injection_patterns:
+            sanitized = re.sub(pattern, '[REMOVED]', sanitized)
+
+        return sanitized
+
+    def _truncate_text(self, text: str, max_length: int, suffix: str = "...") -> str:
+        """
+        Truncate text to a maximum length with a suffix.
+
+        Args:
+            text: The text to truncate
+            max_length: Maximum allowed length
+            suffix: Suffix to add when truncating (default: "...")
+
+        Returns:
+            Truncated text with suffix if needed
+        """
+        if not text or len(text) <= max_length:
+            return text
+        return text[:max_length] + suffix
     
     def get_verification_system_prompt(self) -> str:
         """
@@ -1061,10 +1268,16 @@ Begin your annotation now:
         return "\n".join(sections)
     
     def _format_clinical_trials_data(self, results: Dict[str, Any]) -> str:
-        """Format ClinicalTrials.gov data with key fields highlighted."""
+        """
+        Format ClinicalTrials.gov data with key fields highlighted.
+
+        Returns:
+            Formatted clinical trials data string
+        """
         ct_source = results.get("sources", {}).get("clinical_trials", {})
-        
+
         if not ct_source.get("success"):
+            logger.debug("Clinical trials source not available or unsuccessful")
             return "Clinical trial data not available."
         
         ct_data = ct_source.get("data", {})
@@ -1127,9 +1340,9 @@ Begin your annotation now:
                         for analysis in analyses[:2]:
                             stat_method = analysis.get("statisticalMethod", "")
                             p_value = analysis.get("pValue", "")
-                            ci_pct = analysis.get("ciPctValue", "")
                             param_type = analysis.get("paramType", "")
-                            
+                            ci_pct = analysis.get("ciPctValue", "")
+
                             if p_value:
                                 # Highlight p-value for easy identification
                                 lines.append(f"  *** P-VALUE: {p_value} ***")
@@ -1137,11 +1350,12 @@ Begin your annotation now:
                                 lines.append(f"  Statistical Method: {stat_method}")
                             if param_type:
                                 lines.append(f"  Parameter: {param_type}")
+                            if ci_pct:
+                                lines.append(f"  Confidence Interval: {ci_pct}%")
             
             # Look for any text indicating success or failure
             more_info = results_section.get("moreInfoModule", {})
             if more_info:
-                certain_agree = more_info.get("certainAgreement", {})
                 limitations = more_info.get("limitationsAndCaveats", {})
                 if limitations:
                     lim_desc = limitations.get("description", "")
@@ -1153,20 +1367,23 @@ Begin your annotation now:
             if adverse_events:
                 serious_freq = adverse_events.get("seriousNumAffected", "")
                 other_freq = adverse_events.get("otherNumAffected", "")
-                if serious_freq:
-                    lines.append(f"\n**Serious Adverse Events:** {serious_freq} participants affected")
+                if serious_freq or other_freq:
+                    ae_parts = []
+                    if serious_freq:
+                        ae_parts.append(f"serious: {serious_freq}")
+                    if other_freq:
+                        ae_parts.append(f"other: {other_freq}")
+                    lines.append(f"\n**Adverse Events:** {', '.join(ae_parts)} participants affected")
         
         # Description
         desc_mod = protocol.get("descriptionModule", {})
         brief_summary = desc_mod.get("briefSummary", "N/A")
-        if len(brief_summary) > 800:
-            brief_summary = brief_summary[:800] + "..."
+        brief_summary = self._truncate_text(brief_summary, TruncationLimits.BRIEF_SUMMARY)
         lines.append(f"\n**Brief Summary:** {brief_summary}")
-        
+
         detailed_desc = desc_mod.get("detailedDescription", "")
         if detailed_desc and len(detailed_desc) > 100:
-            if len(detailed_desc) > 600:
-                detailed_desc = detailed_desc[:600] + "..."
+            detailed_desc = self._truncate_text(detailed_desc, TruncationLimits.DETAILED_DESCRIPTION)
             lines.append(f"\n**Detailed Description:** {detailed_desc}")
         
         # Conditions - important for classification context
@@ -1193,48 +1410,27 @@ Begin your annotation now:
                 lines.append(f"\n  Type: {int_type}")
                 lines.append(f"  Name: {int_name}")
                 if int_desc:
-                    if len(int_desc) > 500:
-                        int_desc = int_desc[:500] + "..."
+                    int_desc = self._truncate_text(int_desc, TruncationLimits.INTERVENTION_DESCRIPTION)
                     lines.append(f"  Description: {int_desc}")
-                    
-                    # Highlight delivery route keywords
-                    route_keywords = {
-                        'injection': 'INJECTION/INFUSION',
-                        'subcutaneous': 'INJECTION/INFUSION', 
-                        'intravenous': 'INJECTION/INFUSION',
-                        'iv ': 'INJECTION/INFUSION',
-                        'i.v.': 'INJECTION/INFUSION',
-                        'intramuscular': 'INJECTION/INFUSION',
-                        'infusion': 'INJECTION/INFUSION',
-                        'topical': 'TOPICAL',
-                        'cream': 'TOPICAL',
-                        'ointment': 'TOPICAL',
-                        'gel': 'TOPICAL',
-                        'wound': 'TOPICAL',
-                        'dermal': 'TOPICAL',
-                        'eye drop': 'TOPICAL',
-                        'ophthalmic': 'TOPICAL',
-                        'nasal': 'TOPICAL',
-                        'oral': 'ORAL',
-                        'tablet': 'ORAL',
-                        'capsule': 'ORAL',
-                        'inhaled': 'OTHER',
-                        'inhalation': 'OTHER',
-                        'implant': 'OTHER'
-                    }
+
+                    # Highlight delivery route keywords using shared constant
                     found_routes = []
                     desc_lower = int_desc.lower()
-                    for keyword, route in route_keywords.items():
+                    for keyword, route in ROUTE_KEYWORDS.items():
                         if keyword in desc_lower:
-                            found_routes.append(f"{keyword}→{route}")
+                            found_routes.append(f"{keyword}→{route.upper()}")
                     if found_routes:
-                        lines.append(f"  *** DELIVERY ROUTE KEYWORDS FOUND: {', '.join(found_routes)} ***")
-                    
-                    # Highlight antimicrobial keywords if present
-                    antimicrobial_keywords = ['antimicrobial', 'antibacterial', 'antifungal', 'antiviral', 
-                                             'bactericidal', 'fungicidal', 'defensin', 'cathelicidin',
-                                             'membrane disruption', 'host defense', 'kills bacteria']
-                    found_amp = [kw for kw in antimicrobial_keywords if kw.lower() in desc_lower]
+                        # Deduplicate routes while preserving order
+                        seen = set()
+                        unique_routes = []
+                        for r in found_routes:
+                            if r not in seen:
+                                seen.add(r)
+                                unique_routes.append(r)
+                        lines.append(f"  *** DELIVERY ROUTE KEYWORDS FOUND: {', '.join(unique_routes[:5])} ***")
+
+                    # Highlight antimicrobial keywords using shared constant
+                    found_amp = [kw for kw in ANTIMICROBIAL_KEYWORDS if kw.lower() in desc_lower]
                     if found_amp:
                         lines.append(f"  *** AMP INDICATORS FOUND: {', '.join(found_amp)} ***")
         else:
@@ -1250,18 +1446,18 @@ Begin your annotation now:
                 arm_desc = arm.get("description", "")
                 lines.append(f"  - {label} ({arm_type})")
                 if arm_desc:
-                    if len(arm_desc) > 300:
-                        arm_desc = arm_desc[:300] + "..."
+                    arm_desc = self._truncate_text(arm_desc, TruncationLimits.ARM_DESCRIPTION)
                     lines.append(f"    Description: {arm_desc}")
-                    
-                    # Check for route keywords in arm description too
+
+                    # Check for route keywords in arm description using shared constant
                     desc_lower = arm_desc.lower()
-                    if any(kw in desc_lower for kw in ['injection', 'subcutaneous', 'intravenous', 'iv ', 'infusion']):
-                        lines.append(f"    *** INJECTION/INFUSION route indicated ***")
-                    elif any(kw in desc_lower for kw in ['topical', 'cream', 'gel', 'wound', 'applied']):
-                        lines.append(f"    *** TOPICAL route indicated ***")
-                    elif any(kw in desc_lower for kw in ['oral', 'tablet', 'capsule']):
-                        lines.append(f"    *** ORAL route indicated ***")
+                    detected_route = None
+                    for keyword, route in ROUTE_KEYWORDS.items():
+                        if keyword in desc_lower:
+                            detected_route = route
+                            break  # Use first match (priority order in dict)
+                    if detected_route:
+                        lines.append(f"    *** {detected_route.upper()} route indicated ***")
         
         # Design
         design_mod = protocol.get("designModule", {})
@@ -1292,24 +1488,42 @@ Begin your annotation now:
                 if pmid:
                     lines.append(f"  {i}. PMID: {pmid} ({ref_type})")
                 elif citation:
-                    lines.append(f"  {i}. {citation[:150]}...")
+                    citation = self._truncate_text(citation, TruncationLimits.CITATION)
+                    lines.append(f"  {i}. {citation}")
         
         return "\n".join(lines)
     
     def _format_uniprot_data(self, results: Dict[str, Any]) -> str:
         """
         Format UniProt data with ACTUAL SEQUENCES extracted.
+
+        Returns:
+            Formatted UniProt data string, or empty string if unavailable
         """
-        extended_source = results.get("sources", {}).get("extended", {})
-        if not extended_source:
+        try:
+            extended_source = results.get("sources", {}).get("extended", {})
+            if not extended_source:
+                logger.debug("No extended source data available for UniProt")
+                return ""
+
+            uniprot = extended_source.get("uniprot", {})
+            if not isinstance(uniprot, dict):
+                logger.warning(f"Unexpected uniprot data type: {type(uniprot)}")
+                return ""
+
+            if not uniprot.get("success"):
+                logger.debug("UniProt query was not successful")
+                return ""
+
+            uniprot_data = uniprot.get("data", {})
+            if not isinstance(uniprot_data, dict):
+                logger.warning(f"Unexpected uniprot_data type: {type(uniprot_data)}")
+                return ""
+
+            uniprot_results = uniprot_data.get("results", [])
+        except Exception as e:
+            logger.error(f"Error extracting UniProt data: {e}")
             return ""
-        
-        uniprot = extended_source.get("uniprot", {})
-        if not uniprot.get("success"):
-            return ""
-        
-        uniprot_data = uniprot.get("data", {})
-        uniprot_results = uniprot_data.get("results", [])
         
         if not uniprot_results:
             return ""
@@ -1367,12 +1581,12 @@ Begin your annotation now:
                     func_texts = comment.get("texts", [])
                     if func_texts:
                         func_text = func_texts[0].get("value", "")
-                        if len(func_text) > 400:
-                            func_text = func_text[:400] + "..."
+                        func_text = self._truncate_text(func_text, TruncationLimits.FUNCTION_TEXT)
                         lines.append(f"**Function:** {func_text}")
-                        
-                        if any(kw in func_text.lower() for kw in ['antimicrobial', 'antibacterial', 'antifungal', 'bactericidal']):
-                            lines.append(f"*** ANTIMICROBIAL FUNCTION DETECTED - supports AMP classification ***")
+
+                        # Check for antimicrobial indicators using shared constant
+                        if any(kw in func_text.lower() for kw in ANTIMICROBIAL_KEYWORDS):
+                            lines.append("*** ANTIMICROBIAL FUNCTION DETECTED - supports AMP classification ***")
                     break
             
             # Keywords
@@ -1393,12 +1607,18 @@ Begin your annotation now:
         return "\n".join(lines)
     
     def _format_extended_data(self, results: Dict[str, Any]) -> str:
-        """Format extended API search data."""
+        """
+        Format extended API search data (DRAMP, DuckDuckGo, OpenFDA, Scholar).
+
+        Returns:
+            Formatted extended data string, or empty string if unavailable
+        """
         extended_source = results.get("sources", {}).get("extended", {})
-        
+
         if not extended_source:
+            logger.debug("No extended source data available")
             return ""
-        
+
         lines = []
         has_data = False
         
@@ -1440,8 +1660,7 @@ Begin your annotation now:
                 lines.append(f"  Title: {result.get('title', 'N/A')}")
                 snippet = result.get('snippet', '')
                 if snippet:
-                    if len(snippet) > 300:
-                        snippet = snippet[:300] + "..."
+                    snippet = self._truncate_text(snippet, TruncationLimits.SNIPPET)
                     lines.append(f"  Snippet: {snippet}")
                 lines.append("")
         
@@ -1504,8 +1723,7 @@ Begin your annotation now:
                 lines.append(f"  Title: {result.get('title', 'N/A')}")
                 snippet = result.get('snippet', '')
                 if snippet:
-                    if len(snippet) > 300:
-                        snippet = snippet[:300] + "..."
+                    snippet = self._truncate_text(snippet, TruncationLimits.SNIPPET)
                     lines.append(f"  Snippet: {snippet}")
                 lines.append("")
         
@@ -1515,118 +1733,137 @@ Begin your annotation now:
         return "\n".join(lines)
     
     def _format_pubmed_data(self, results: Dict[str, Any]) -> str:
-        """Format PubMed data."""
+        """
+        Format PubMed data.
+
+        Returns:
+            Formatted PubMed data string, or empty string if unavailable
+        """
         pubmed_source = results.get("sources", {}).get("pubmed", {})
-        
+
         if not pubmed_source.get("success"):
+            logger.debug("PubMed source not available or unsuccessful")
             return ""
-        
+
         pubmed_data = pubmed_source.get("data", {})
         articles = pubmed_data.get("articles", [])
-        
+
         if not articles:
+            logger.debug("No PubMed articles found")
             return ""
-        
+
         lines = []
         lines.append(f"**Total Articles Found:** {pubmed_data.get('total_found', 0)}")
         lines.append(f"**Search Strategy:** {pubmed_data.get('search_strategy', 'N/A')}\n")
-        
+
         for i, article in enumerate(articles[:4], 1):
             lines.append(f"### Article {i}")
             lines.append(f"**PMID:** {article.get('pmid', 'N/A')}")
             lines.append(f"**Title:** {article.get('title', 'N/A')}")
             lines.append(f"**Journal:** {article.get('journal', 'N/A')}")
             lines.append(f"**Year:** {article.get('year', 'N/A')}")
-            
+
             abstract = article.get("abstract", "")
             if abstract:
-                if len(abstract) > 600:
-                    abstract = abstract[:600] + "..."
+                abstract = self._truncate_text(abstract, TruncationLimits.ABSTRACT)
                 lines.append(f"**Abstract:** {abstract}")
-                
-                antimicrobial_terms = ['antimicrobial', 'antibacterial', 'antifungal', 'bactericidal', 
-                                       'MIC', 'minimum inhibitory', 'kills bacteria']
-                found_terms = [term for term in antimicrobial_terms if term.lower() in abstract.lower()]
+
+                # Check for antimicrobial content using shared constant
+                found_terms = [term for term in ANTIMICROBIAL_KEYWORDS if term.lower() in abstract.lower()]
+                # Also check for MIC which is specific to literature
+                if 'mic' in abstract.lower() or 'minimum inhibitory' in abstract.lower():
+                    found_terms.append('MIC/minimum inhibitory')
                 if found_terms:
                     lines.append(f"*** ANTIMICROBIAL CONTENT: {', '.join(found_terms)} ***")
-            
+
             lines.append("")
-        
+
         return "\n".join(lines)
     
     def _format_pmc_data(self, results: Dict[str, Any]) -> str:
-        """Format PMC data."""
+        """
+        Format PMC data.
+
+        Returns:
+            Formatted PMC data string, or empty string if unavailable
+        """
         pmc_source = results.get("sources", {}).get("pmc", {})
-        
+
         if not pmc_source.get("success"):
+            logger.debug("PMC source not available or unsuccessful")
             return ""
-        
+
         pmc_data = pmc_source.get("data", {})
         articles = pmc_data.get("articles", [])
-        
+
         if not articles:
+            logger.debug("No PMC articles found")
             return ""
-        
+
         lines = []
         lines.append(f"**Total PMC Articles Found:** {pmc_data.get('total_found', 0)}\n")
-        
+
         for i, article in enumerate(articles[:3], 1):
             lines.append(f"### PMC Article {i}")
             lines.append(f"**PMCID:** {article.get('pmcid', 'N/A')}")
             lines.append(f"**PMID:** {article.get('pmid', 'N/A')}")
             lines.append(f"**Title:** {article.get('title', 'N/A')}")
-            
+
             abstract = article.get("abstract", "")
             if abstract:
-                if len(abstract) > 500:
-                    abstract = abstract[:500] + "..."
+                abstract = self._truncate_text(abstract, TruncationLimits.PMC_ABSTRACT)
                 lines.append(f"**Abstract:** {abstract}")
-            
+
             lines.append("")
-        
+
         return "\n".join(lines)
     
     def _format_bioc_data(self, results: Dict[str, Any]) -> str:
-        """Format BioC data."""
+        """
+        Format BioC data.
+
+        Returns:
+            Formatted BioC data string, or empty string if unavailable
+        """
         bioc_source = results.get("sources", {}).get("pmc_bioc", {})
-        
+
         if not bioc_source.get("success"):
+            logger.debug("BioC source not available or unsuccessful")
             return ""
-        
+
         bioc_data = bioc_source.get("data", {})
         articles = bioc_data.get("articles", [])
-        
+
         if not articles:
+            logger.debug("No BioC articles found")
             return ""
-        
+
         lines = []
         lines.append(f"**Total BioC Articles:** {bioc_data.get('total_fetched', 0)}/{bioc_data.get('total_found', 0)}\n")
-        
+
         for i, article in enumerate(articles[:2], 1):
             lines.append(f"### BioC Article {i}")
             lines.append(f"**ID:** {article.get('pmid', 'N/A')}")
-            
+
             bioc_content = article.get("bioc_data", {})
             documents = bioc_content.get("documents", [])
-            
+
             if documents:
                 doc = documents[0]
                 passages = doc.get("passages", [])
-                
+
                 if passages:
                     lines.append("\n**Key Content:**")
-                    
-                    for j, passage in enumerate(passages[:2], 1):
+
+                    for passage in passages[:2]:
                         passage_type = passage.get("infons", {}).get("type", "text")
                         text = passage.get("text", "")
-                        
-                        if text and len(text) > 400:
-                            text = text[:400] + "..."
-                        
+
                         if text:
+                            text = self._truncate_text(text, TruncationLimits.BIOC_PASSAGE)
                             lines.append(f"\n*{passage_type.title()}:*")
                             lines.append(text)
-                        
+
                         annotations = passage.get("annotations", [])
                         if annotations:
                             relevant_anns = []
@@ -1637,9 +1874,9 @@ Begin your annotation now:
                                     relevant_anns.append(f"{ann_type}: {ann_text}")
                             if relevant_anns:
                                 lines.append(f"\n*Annotations:* {'; '.join(relevant_anns)}")
-            
+
             lines.append("")
-        
+
         return "\n".join(lines)
     
     def generate_rag_query_prompt(
