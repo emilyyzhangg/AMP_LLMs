@@ -737,6 +737,23 @@ async def cancel_job_proxy(job_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.delete("/api/chat/jobs/completed")
+async def clear_completed_jobs_proxy():
+    """Proxy clear completed jobs to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.delete(f"{CHAT_SERVICE_URL}/chat/jobs/completed")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Clear completed jobs proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/chat/annotate")
 async def annotate_manual_proxy(request: dict):
     """

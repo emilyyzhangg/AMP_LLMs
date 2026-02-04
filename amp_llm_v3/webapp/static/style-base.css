@@ -601,6 +601,38 @@ header p {
     border-color: #ef4444;
 }
 
+.btn-download {
+    padding: 6px 14px;
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-download:hover {
+    background: rgba(34, 197, 94, 0.3);
+    border-color: #22c55e;
+}
+
+.job-card.completed {
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.job-card.failed {
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.job-progress-fill.completed {
+    background: #22c55e;
+}
+
+.job-progress-fill.failed {
+    background: #ef4444;
+}
+
 .btn-secondary {
     padding: 10px 20px;
     background: var(--bg-primary, #0d0d1a);

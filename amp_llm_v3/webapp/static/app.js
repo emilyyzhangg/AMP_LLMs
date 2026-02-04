@@ -94,6 +94,15 @@ const app = {
         const jobsList = document.getElementById('jobs-list');
         if (!jobsList) return;
 
+        // Check if there are any completed/failed jobs
+        const hasCompletedJobs = jobs.some(j => j.status === 'completed' || j.status === 'failed');
+
+        // Show/hide clear button
+        const clearBtn = document.getElementById('clear-completed-btn');
+        if (clearBtn) {
+            clearBtn.classList.toggle('hidden', !hasCompletedJobs);
+        }
+
         if (jobs.length === 0) {
             jobsList.innerHTML = `
                 <div class="no-jobs">
@@ -107,13 +116,19 @@ const app = {
 
         jobsList.innerHTML = jobs.map(job => {
             const isActive = job.status === 'processing' || job.status === 'pending';
+            const isCompleted = job.status === 'completed';
+            const isFailed = job.status === 'failed';
             const elapsed = this.formatElapsedTime(job.elapsed_seconds);
 
+            // Status icon based on job state
+            const statusIcon = isCompleted ? '✅' : isFailed ? '❌' : isActive ? '⏳' : '📋';
+            const statusClass = isCompleted ? 'completed' : isFailed ? 'failed' : job.status;
+
             return `
-                <div class="job-card">
+                <div class="job-card ${statusClass}">
                     <div class="job-header">
-                        <span class="job-id">Job: ${job.job_id.substring(0, 8)}...</span>
-                        <span class="job-status ${job.status}">${job.status.toUpperCase()}</span>
+                        <span class="job-id">${statusIcon} Job: ${job.job_id.substring(0, 8)}...</span>
+                        <span class="job-status ${statusClass}">${job.status.toUpperCase()}</span>
                     </div>
 
                     <div class="job-details">
@@ -127,7 +142,7 @@ const app = {
 
                     ${job.total_trials > 0 ? `
                         <div class="job-progress-bar">
-                            <div class="job-progress-fill" style="width: ${job.percent_complete}%"></div>
+                            <div class="job-progress-fill ${statusClass}" style="width: ${job.percent_complete}%"></div>
                         </div>
                     ` : ''}
 
@@ -139,6 +154,14 @@ const app = {
                         <div class="job-actions">
                             <button class="btn-cancel" onclick="app.cancelJob('${job.job_id}')">
                                 🛑 Cancel Job
+                            </button>
+                        </div>
+                    ` : ''}
+
+                    ${isCompleted && job.csv_filename ? `
+                        <div class="job-actions">
+                            <button class="btn-download" onclick="window.open('${this.API_BASE}/api/chat/download/${job.job_id}', '_blank')">
+                                📥 Download CSV
                             </button>
                         </div>
                     ` : ''}
@@ -176,6 +199,26 @@ const app = {
         } catch (error) {
             console.error('Failed to cancel job:', error);
             alert(`Error cancelling job: ${error.message}`);
+        }
+    },
+
+    async clearCompletedJobs() {
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/jobs/completed`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Cleared completed jobs:', result);
+                await this.refreshJobs();
+            } else {
+                const error = await response.text();
+                alert(`Failed to clear jobs: ${error}`);
+            }
+        } catch (error) {
+            console.error('Failed to clear completed jobs:', error);
+            alert(`Error clearing jobs: ${error.message}`);
         }
     },
 

@@ -1907,6 +1907,32 @@ async def cancel_annotation_job(job_id: str):
     }
 
 
+@app.delete("/chat/jobs/completed")
+async def clear_completed_jobs():
+    """
+    Clear all completed and failed jobs from the jobs list.
+
+    This removes finished jobs from memory but does NOT delete output files.
+    """
+    completed_statuses = {JobStatus.COMPLETED, JobStatus.FAILED}
+
+    jobs_to_remove = [
+        job_id for job_id, job in job_manager.jobs.items()
+        if job.status in completed_statuses
+    ]
+
+    for job_id in jobs_to_remove:
+        del job_manager.jobs[job_id]
+
+    logger.info(f"🧹 Cleared {len(jobs_to_remove)} completed/failed jobs")
+
+    return {
+        "status": "cleared",
+        "cleared_count": len(jobs_to_remove),
+        "message": f"Cleared {len(jobs_to_remove)} completed jobs"
+    }
+
+
 # ============================================================================
 # Other Chat Routes
 # ============================================================================
