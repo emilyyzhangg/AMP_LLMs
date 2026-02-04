@@ -343,24 +343,29 @@ def extract_nct_ids_from_csv(csv_content: str) -> List[str]:
     return list(nct_ids)
 
 
-async def fetch_csv_metadata(model: str) -> Dict[str, str]:
+async def fetch_csv_metadata(model: str) -> Dict[str, Any]:
     """
-    Fetch CSV metadata (git commit, model version) from LLM Assistant.
-    
+    Fetch CSV metadata from LLM Assistant and NCT Service.
+
     Args:
         model: Model name to get version info for
-        
+
     Returns:
-        Dictionary with git_commit, model_version, and service_version
+        Dictionary with git_commit, model_version, service_version, enabled_apis, and model_parameters
     """
     metadata = {
         "git_commit": "unknown",
         "model_version": model,
-        "service_version": "unknown"
+        "service_version": "unknown",
+        "enabled_apis": [],
+        "available_apis": [],
+        "model_parameters": {},
+        "active_preset": None
     }
-    
-    try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
+
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        # Fetch LLM Assistant metadata
+        try:
             response = await client.get(
                 f"{LLM_ASSISTANT_URL}/csv-header-info",
                 params={"model_name": model}
@@ -370,10 +375,40 @@ async def fetch_csv_metadata(model: str) -> Dict[str, str]:
                 metadata["git_commit"] = data.get("git_commit", "unknown")
                 metadata["model_version"] = data.get("model_version", model)
                 metadata["service_version"] = data.get("service_version", "unknown")
-                logger.info(f"📋 Fetched metadata: git={metadata['git_commit']}, model={metadata['model_version']}")
-    except Exception as e:
-        logger.warning(f"Could not fetch CSV metadata from LLM Assistant: {e}")
-    
+                logger.info(f"📋 Fetched LLM metadata: git={metadata['git_commit']}, model={metadata['model_version']}")
+        except Exception as e:
+            logger.warning(f"Could not fetch CSV metadata from LLM Assistant: {e}")
+
+        # Fetch current model parameters from LLM Assistant
+        try:
+            response = await client.get(f"{LLM_ASSISTANT_URL}/model-parameters")
+            if response.status_code == 200:
+                params_data = response.json()
+                metadata["model_parameters"] = params_data.get("current", {})
+                metadata["active_preset"] = params_data.get("active_preset")
+                logger.info(f"📋 Fetched model params: preset={metadata['active_preset']}")
+        except Exception as e:
+            logger.warning(f"Could not fetch model parameters from LLM Assistant: {e}")
+
+        # Fetch NCT Service API registry
+        try:
+            nct_service_url = f"http://localhost:{NCT_SERVICE_PORT}"
+            response = await client.get(f"{nct_service_url}/api/registry")
+            if response.status_code == 200:
+                registry = response.json()
+                # Get default enabled APIs
+                metadata["enabled_apis"] = registry.get("metadata", {}).get("default_enabled", [])
+                # Get all available APIs (ones that have keys if needed)
+                all_apis = []
+                for category in ['core', 'extended']:
+                    for api in registry.get(category, []):
+                        if api.get('available', False):
+                            all_apis.append(api.get('id', api.get('name', 'unknown')))
+                metadata["available_apis"] = all_apis
+                logger.info(f"📋 Fetched NCT APIs: {len(metadata['enabled_apis'])} enabled, {len(metadata['available_apis'])} available")
+        except Exception as e:
+            logger.warning(f"Could not fetch API registry from NCT Service: {e}")
+
     return metadata
 
 
@@ -645,30 +680,37 @@ async def process_csv_job(
         job.progress = "Generating output CSV..."
         job.updated_at = datetime.now()
         
-        # Generate output CSV
-        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-        
-        csv_filename = f"annotations_{job_id}.csv"
-        output_path = OUTPUT_DIR / csv_filename
-        
-        # Fetch metadata from LLM Assistant (git commit, model version)
-        metadata = await fetch_csv_metadata(model)
-        
-        await generate_output_csv(
-            output_path, 
-            results, 
-            errors, 
-            model=model,
-            git_commit=metadata.get("git_commit", "unknown"),
-            model_version=metadata.get("model_version", model)
-        )
-        
-        # Calculate final stats
+        # Calculate stats before CSV generation
         end_time = time.time()
         duration = end_time - start_time
         successful = len([r for r in results if r.get("_success", False)])
         failed = len(errors)
-        
+
+        # Generate output CSV
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+        csv_filename = f"annotations_{job_id}.csv"
+        output_path = OUTPUT_DIR / csv_filename
+
+        # Fetch metadata from LLM Assistant and NCT Service
+        metadata = await fetch_csv_metadata(model)
+
+        await generate_output_csv(
+            output_path,
+            results,
+            errors,
+            model=model,
+            git_commit=metadata.get("git_commit", "unknown"),
+            model_version=metadata.get("model_version", model),
+            total_processing_time=duration,
+            temperature=temperature,
+            enabled_apis=metadata.get("enabled_apis", []),
+            available_apis=metadata.get("available_apis", []),
+            output_format=output_format if 'output_format' in dir() else None,
+            model_parameters=metadata.get("model_parameters", {}),
+            active_preset=metadata.get("active_preset")
+        )
+
         # Store result FIRST (before changing status to avoid race condition)
         public_download_url = f"/chat/download/{job_id}"
         
@@ -767,51 +809,96 @@ def clean_value(value):
     return value
     
 async def generate_output_csv(
-    output_path: Path, 
-    results: List[dict], 
-    errors: List[dict], 
+    output_path: Path,
+    results: List[dict],
+    errors: List[dict],
     model: str = "unknown",
     git_commit: str = "unknown",
-    model_version: str = None
+    model_version: str = None,
+    total_processing_time: float = None,
+    temperature: float = None,
+    enabled_apis: List[str] = None,
+    available_apis: List[str] = None,
+    output_format: str = None,
+    model_parameters: Dict[str, Any] = None,
+    active_preset: str = None
 ):
-    """Generate the annotated CSV output file with model info header."""
-    
+    """Generate the annotated CSV output file with comprehensive metadata header."""
+
     # Use model_version if provided, otherwise fall back to model name
     model_display = model_version if model_version else model
-    
+
     # Log what we're working with
     if results:
         logger.info(f"📝 CSV Generation: First result keys: {list(results[0].keys())}")
         if "parsed_data" in results[0]:
             logger.info(f"📝 Parsed data keys: {list(results[0]['parsed_data'].keys())}")
-    
+
     # Count successes and failures
     successful_count = len([r for r in results if r.get("_success", False)])
     failed_count = len(errors)
     total_count = len(results)  # Total processed (success + failure are in results)
-    
+
+    # Calculate per-trial processing times
+    trial_times = [r.get("processing_time_seconds", 0) for r in results if r.get("processing_time_seconds")]
+    avg_time_per_trial = sum(trial_times) / len(trial_times) if trial_times else 0
+
     # Define columns matching the parsed_data structure
     columns = [
-        "nct_id", "status", 
-        "Study Title", "Study Status", "Brief Summary", "Conditions", 
+        "nct_id", "status",
+        "Study Title", "Study Status", "Brief Summary", "Conditions",
         "Interventions/Drug", "Phases", "Enrollment", "Start Date", "Completion Date",
         "Classification", "Classification Evidence",
-        "Delivery Mode", "Delivery Mode Evidence", 
+        "Delivery Mode", "Delivery Mode Evidence",
         "Outcome", "Outcome Evidence",
         "Reason for Failure", "Reason for Failure Evidence",
         "Peptide", "Peptide Evidence",
         "Sequence", "DRAMP Name", "Study IDs", "Comments",
         "annotation", "source", "processing_time", "error"
     ]
-    
+
     with open(output_path, 'w', newline='', encoding='utf-8') as f:
-        # Write model info header with git commit and full model version
+        # Write comprehensive metadata header
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        f.write(f"# Generated by AMP LLM Annotation System\n")
-        f.write(f"# Model: {model_display}\n")
-        f.write(f"# Git Commit: {git_commit}\n")
+        f.write(f"# ═══════════════════════════════════════════════════════════════════\n")
+        f.write(f"# AMP LLM ANNOTATION RESULTS\n")
+        f.write(f"# ═══════════════════════════════════════════════════════════════════\n")
+        f.write(f"#\n")
+        f.write(f"# GENERATION INFO\n")
         f.write(f"# Timestamp: {timestamp}\n")
-        f.write(f"# Total trials: {total_count} (Successful: {successful_count}, Failed: {failed_count})\n")
+        f.write(f"# Git Commit: {git_commit}\n")
+        f.write(f"#\n")
+        f.write(f"# MODEL CONFIGURATION\n")
+        f.write(f"# Model: {model_display}\n")
+        if active_preset:
+            f.write(f"# Preset: {active_preset}\n")
+        if temperature is not None:
+            f.write(f"# Temperature: {temperature}\n")
+        # Write additional model parameters if provided
+        if model_parameters:
+            for param, value in model_parameters.items():
+                # Skip temperature since we already wrote it above
+                if param != "temperature" and value is not None:
+                    f.write(f"# {param}: {value}\n")
+        if output_format:
+            f.write(f"# Data Format: {output_format}\n")
+        f.write(f"#\n")
+        f.write(f"# PROCESSING STATISTICS\n")
+        f.write(f"# Total Trials: {total_count}\n")
+        f.write(f"# Successful: {successful_count}\n")
+        f.write(f"# Failed: {failed_count}\n")
+        if total_processing_time is not None:
+            f.write(f"# Total Processing Time: {total_processing_time:.1f}s\n")
+            if total_count > 0:
+                f.write(f"# Avg Time Per Trial: {total_processing_time / total_count:.1f}s\n")
+        f.write(f"#\n")
+        f.write(f"# DATA SOURCES (NCT Lookup APIs)\n")
+        if enabled_apis:
+            f.write(f"# Enabled APIs: {', '.join(enabled_apis)}\n")
+        if available_apis:
+            f.write(f"# Available APIs: {', '.join(available_apis)}\n")
+        f.write(f"#\n")
+        f.write(f"# ═══════════════════════════════════════════════════════════════════\n")
         f.write(f"#\n")
         
         writer = csv.DictWriter(f, fieldnames=columns, extrasaction='ignore')
@@ -1070,16 +1157,23 @@ async def send_message(request: ChatMessageRequest):
                 if result.get("status") == "success" and result.get("parsed_data"):
                     result["_success"] = True
             
-            # Fetch metadata from LLM Assistant
+            # Fetch metadata from LLM Assistant and NCT Service
             metadata = await fetch_csv_metadata(conv["model"])
-            
+
             await generate_output_csv(
-                output_path, 
-                raw_results, 
-                [], 
+                output_path,
+                raw_results,
+                [],
                 model=conv["model"],
                 git_commit=metadata.get("git_commit", "unknown"),
-                model_version=metadata.get("model_version", conv["model"])
+                model_version=metadata.get("model_version", conv["model"]),
+                total_processing_time=summary.processing_time_seconds,
+                temperature=request.temperature,
+                enabled_apis=metadata.get("enabled_apis", []),
+                available_apis=metadata.get("available_apis", []),
+                output_format=request.output_format,
+                model_parameters=metadata.get("model_parameters", {}),
+                active_preset=metadata.get("active_preset")
             )
             download_url = f"/chat/download/{job_id}"
             
@@ -1278,6 +1372,12 @@ async def process_manual_annotation_job(
                     job.progress = f"[{i + 1}/{len(nct_ids)}] ✗ {nct_id} error: {str(e)[:50]}"
                     logger.error(f"❌ Job {job_id}: {nct_id} error: {e}")
 
+        # Calculate stats before CSV generation
+        end_time = time.time()
+        duration = end_time - start_time
+        successful = len([r for r in results if r.get("_success", False)])
+        failed = len(errors)
+
         # Generate CSV output
         job.current_step = "generating_csv"
         job.current_nct = ""
@@ -1295,14 +1395,15 @@ async def process_manual_annotation_job(
             errors,
             model=model,
             git_commit=metadata.get("git_commit", "unknown"),
-            model_version=metadata.get("model_version", model)
+            model_version=metadata.get("model_version", model),
+            total_processing_time=duration,
+            temperature=temperature,
+            enabled_apis=metadata.get("enabled_apis", []),
+            available_apis=metadata.get("available_apis", []),
+            output_format=output_format,
+            model_parameters=metadata.get("model_parameters", {}),
+            active_preset=metadata.get("active_preset")
         )
-
-        # Calculate stats
-        end_time = time.time()
-        duration = end_time - start_time
-        successful = len([r for r in results if r.get("_success", False)])
-        failed = len(errors)
 
         # Build formatted annotation text
         output_parts = []
