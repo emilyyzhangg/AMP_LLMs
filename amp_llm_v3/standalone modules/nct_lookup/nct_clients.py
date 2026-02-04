@@ -1852,12 +1852,46 @@ class UniProtClient(BaseClient):
     
     def _format_protein(self, protein: Dict) -> Dict:
         """Format UniProt protein entry."""
+        # Extract sequence information - CRITICAL for annotation
+        sequence_info = protein.get("sequence", {})
+        sequence_value = sequence_info.get("value", "")
+        sequence_length = sequence_info.get("length", 0)
+
+        # Extract function comments for classification
+        function_text = ""
+        comments = protein.get("comments", [])
+        for comment in comments:
+            if comment.get("commentType") == "FUNCTION":
+                texts = comment.get("texts", [])
+                if texts:
+                    function_text = texts[0].get("value", "")
+                break
+
+        # Extract keywords
+        keywords = []
+        for kw in protein.get("keywords", []):
+            kw_name = kw.get("name", "")
+            if kw_name:
+                keywords.append(kw_name)
+
         return {
-            "accession": protein.get("primaryAccession"),
-            "name": protein.get("uniProtkbId"),
+            "primaryAccession": protein.get("primaryAccession"),
+            "accession": protein.get("primaryAccession"),  # Keep for backward compatibility
+            "uniProtkbId": protein.get("uniProtkbId"),
+            "name": protein.get("uniProtkbId"),  # Keep for backward compatibility
+            "proteinDescription": protein.get("proteinDescription", {}),
             "protein_name": protein.get("proteinDescription", {}).get("recommendedName", {}).get("fullName", {}).get("value"),
-            "organism": protein.get("organism", {}).get("scientificName"),
-            "gene": protein.get("genes", [{}])[0].get("geneName", {}).get("value") if protein.get("genes") else None
+            "organism": protein.get("organism", {}),
+            "gene": protein.get("genes", [{}])[0].get("geneName", {}).get("value") if protein.get("genes") else None,
+            # CRITICAL: Include sequence data for annotation
+            "sequence": {
+                "value": sequence_value,
+                "length": sequence_length
+            },
+            # Include function and keywords for classification
+            "comments": comments,
+            "keywords": protein.get("keywords", []),
+            "function": function_text
         }
     
     async def fetch(self, identifier: str) -> Dict[str, Any]:
