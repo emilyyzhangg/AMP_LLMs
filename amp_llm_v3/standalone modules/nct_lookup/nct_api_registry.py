@@ -80,39 +80,46 @@ class APIRegistry:
     ]
 
     # Extended APIs (optional, additional sources)
+    # FREE APIs are enabled by default, PAID APIs require API keys
     EXTENDED_APIS = [
+        # FREE APIs (no API key required)
+        APIDefinition(
+            id="europe_pmc",
+            name="Europe PMC",
+            description="Free biomedical literature from worldwide sources",
+            category="extended",
+            client_class="EuropePMCClient",
+            enabled_by_default=True
+        ),
+        APIDefinition(
+            id="semantic_scholar",
+            name="Semantic Scholar",
+            description="AI-powered academic paper search with citation analysis",
+            category="extended",
+            client_class="SemanticScholarClient",
+            enabled_by_default=True,
+            config={"env_var": "SEMANTIC_SCHOLAR_API_KEY"}  # Optional for higher rate limits
+        ),
+        APIDefinition(
+            id="crossref",
+            name="CrossRef",
+            description="DOI metadata and scholarly publication records",
+            category="extended",
+            client_class="CrossRefClient",
+            enabled_by_default=True
+        ),
         APIDefinition(
             id="duckduckgo",
             name="DuckDuckGo Search",
-            description="Web search for additional trial-related content",
+            description="Privacy-focused web search with relevance filtering",
             category="extended",
             client_class="DuckDuckGoClient",
             enabled_by_default=True
         ),
         APIDefinition(
-            id="serpapi",
-            name="Google Search (SERP API)",
-            description="Google search results for comprehensive web coverage",
-            category="extended",
-            requires_key=True,
-            client_class="SerpAPIClient",
-            enabled_by_default=False,
-            config={"env_var": "SERPAPI_KEY"}
-        ),
-        APIDefinition(
-            id="scholar",
-            name="Google Scholar",
-            description="Academic papers and citations",
-            category="extended",
-            requires_key=True,
-            client_class="GoogleScholarClient",
-            enabled_by_default=False,
-            config={"env_var": "SERPAPI_KEY"}
-        ),
-        APIDefinition(
             id="openfda",
             name="OpenFDA",
-            description="FDA drug labels and adverse events",
+            description="FDA drug labels and adverse events database",
             category="extended",
             client_class="OpenFDAClient",
             enabled_by_default=True
@@ -125,23 +132,27 @@ class APIRegistry:
             client_class="UniProtClient",
             enabled_by_default=True
         ),
-        # Example of how to add more APIs:
-        # APIDefinition(
-        #     id="eudract",
-        #     name="EU Clinical Trials Register",
-        #     description="European clinical trial database",
-        #     category="extended",
-        #     client_class="EudraCTClient",
-        #     enabled_by_default=True
-        # ),
-        # APIDefinition(
-        #     id="who_ictrp",
-        #     name="WHO ICTRP",
-        #     description="International Clinical Trials Registry Platform",
-        #     category="extended",
-        #     client_class="WHOICTRPClient",
-        #     enabled_by_default=True
-        # ),
+        # PAID APIs (require API keys)
+        APIDefinition(
+            id="serpapi",
+            name="Google Search (SERP API)",
+            description="Google search results - requires paid API key",
+            category="extended",
+            requires_key=True,
+            client_class="SerpAPIClient",
+            enabled_by_default=False,
+            config={"env_var": "SERPAPI_KEY"}
+        ),
+        APIDefinition(
+            id="scholar",
+            name="Google Scholar (SERP API)",
+            description="Academic papers via Google Scholar - requires paid API key",
+            category="extended",
+            requires_key=True,
+            client_class="GoogleScholarClient",
+            enabled_by_default=False,
+            config={"env_var": "SERPAPI_KEY"}
+        ),
     ]
 
     @classmethod

@@ -15,6 +15,9 @@ const app = {
     currentConversationId: null,
     currentModel: null,
     annotationModeSelected: false,  // Track annotation mode selection
+    annotationOutputFormat: 'llm_optimized',  // 'json' or 'llm_optimized' - format for LLM input
+    modelParameters: null,  // Cached model parameters from API
+    customModelParams: {},  // User-modified parameter values
     nctResults: null,
     selectedFile: null,
     selectedCSVFile: null,  // Track selected CSV file for batch annotation
@@ -1387,12 +1390,12 @@ const app = {
                 <span style="color: #666; font-size: 0.9em;">→</span>
             `;
             annotationButton.onclick = () => {
-                console.log('✅ Annotation mode selected');
+                console.log('✅ Annotation mode selected, showing format options');
                 this.annotationModeSelected = true;
                 document.getElementById('annotation-mode-selection')?.remove();
-                this.showModelSelectionStep2();
+                this.showOutputFormatSelection();
             };
-            
+
             annotationSelectionDiv.appendChild(regularButton);
             annotationSelectionDiv.appendChild(annotationButton);
             container.appendChild(annotationSelectionDiv);
@@ -1417,9 +1420,13 @@ const app = {
         
         let modeInfo = '';
         if (this.currentMode === 'chat') {
-            modeInfo = this.annotationModeSelected ? 
-                '\n\n🔬 Mode: Clinical Trial Annotation' : 
-                '\n\n💬 Mode: Regular Chat';
+            if (this.annotationModeSelected) {
+                const formatLabel = this.annotationOutputFormat === 'llm_optimized' ?
+                    '⚡ LLM-Optimized' : '📄 Full JSON';
+                modeInfo = `\n\n🔬 Mode: Clinical Trial Annotation\n📊 Data Format: ${formatLabel}`;
+            } else {
+                modeInfo = '\n\n💬 Mode: Regular Chat';
+            }
         }
         
         this.addMessage('chat-container', 'system', 
@@ -1486,6 +1493,518 @@ const app = {
         
         this.updateBackButton();
         console.log('✅ Model selection displayed');
+    },
+
+    showOutputFormatSelection() {
+        console.log('📦 Showing output format selection for annotation mode');
+
+        const container = document.getElementById('chat-container');
+
+        this.addMessage('chat-container', 'system',
+            '🔬 Annotation Mode Selected\n\n' +
+            'Choose the data format to feed to the LLM:\n\n' +
+            '• **LLM-Optimized**: Structured, condensed format with tool hints\n' +
+            '• **Full JSON**: Complete raw data from all sources');
+
+        const formatSelectionDiv = document.createElement('div');
+        formatSelectionDiv.className = 'model-selection';
+        formatSelectionDiv.id = 'format-selection';
+
+        // LLM-Optimized format button (recommended)
+        const llmOptButton = document.createElement('button');
+        llmOptButton.className = 'model-button';
+        llmOptButton.type = 'button';
+        llmOptButton.innerHTML = `
+            <span style="font-size: 1.2em;">⚡</span>
+            <span style="flex: 1; text-align: left; margin-left: 10px;">
+                <strong>LLM-Optimized (Recommended)</strong><br>
+                <small style="color: #666;">Condensed, structured format with action hints</small>
+            </span>
+            <span style="color: #666; font-size: 0.9em;">→</span>
+        `;
+        llmOptButton.onclick = () => {
+            console.log('✅ LLM-Optimized format selected');
+            this.annotationOutputFormat = 'llm_optimized';
+            document.getElementById('format-selection')?.remove();
+            this.showModelParametersConfig();  // Show parameters before model selection
+        };
+
+        // Full JSON format button
+        const jsonButton = document.createElement('button');
+        jsonButton.className = 'model-button';
+        jsonButton.type = 'button';
+        jsonButton.innerHTML = `
+            <span style="font-size: 1.2em;">📄</span>
+            <span style="flex: 1; text-align: left; margin-left: 10px;">
+                <strong>Full JSON</strong><br>
+                <small style="color: #666;">Complete raw data from all sources</small>
+            </span>
+            <span style="color: #666; font-size: 0.9em;">→</span>
+        `;
+        jsonButton.onclick = () => {
+            console.log('✅ Full JSON format selected');
+            this.annotationOutputFormat = 'json';
+            document.getElementById('format-selection')?.remove();
+            this.showModelParametersConfig();  // Show parameters before model selection
+        };
+
+        formatSelectionDiv.appendChild(llmOptButton);
+        formatSelectionDiv.appendChild(jsonButton);
+        container.appendChild(formatSelectionDiv);
+
+        requestAnimationFrame(() => {
+            container.scrollTop = container.scrollHeight;
+        });
+
+        this.updateBackButton();
+        console.log('✅ Output format selection displayed');
+    },
+
+    // =========================================================================
+    // Model Parameters Configuration
+    // =========================================================================
+
+    async fetchModelParameters() {
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/model-parameters`);
+            if (response.ok) {
+                this.modelParameters = await response.json();
+                console.log('✅ Loaded model parameters:', Object.keys(this.modelParameters.parameters));
+                return this.modelParameters;
+            }
+        } catch (error) {
+            console.error('Failed to fetch model parameters:', error);
+        }
+        return null;
+    },
+
+    async applyModelPreset(presetName) {
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/model-parameters/preset/${presetName}`, {
+                method: 'POST'
+            });
+            if (response.ok) {
+                const result = await response.json();
+                this.customModelParams = result.current;
+                console.log(`✅ Applied preset: ${presetName}`);
+                return result;
+            }
+        } catch (error) {
+            console.error('Failed to apply preset:', error);
+        }
+        return null;
+    },
+
+    async updateModelParameter(paramName, value) {
+        try {
+            const body = {};
+            body[paramName] = value;
+
+            const response = await fetch(`${this.API_BASE}/api/chat/model-parameters`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                this.customModelParams = result.current;
+                console.log(`✅ Updated ${paramName}:`, value);
+                return result;
+            }
+        } catch (error) {
+            console.error(`Failed to update ${paramName}:`, error);
+        }
+        return null;
+    },
+
+    async resetModelParameters() {
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/model-parameters/reset`, {
+                method: 'POST'
+            });
+            if (response.ok) {
+                const result = await response.json();
+                this.customModelParams = result.current;
+                console.log('✅ Reset parameters to defaults');
+                return result;
+            }
+        } catch (error) {
+            console.error('Failed to reset parameters:', error);
+        }
+        return null;
+    },
+
+    async showModelParametersConfig() {
+        console.log('⚙️ Showing model parameters configuration');
+
+        // Fetch parameters if not cached
+        if (!this.modelParameters) {
+            await this.fetchModelParameters();
+        }
+
+        if (!this.modelParameters) {
+            console.warn('Could not load model parameters, skipping to model selection');
+            this.showModelSelectionStep2();
+            return;
+        }
+
+        const container = document.getElementById('chat-container');
+
+        this.addMessage('chat-container', 'system',
+            '⚙️ **Model Parameters** (Optional)\n\n' +
+            'Adjust LLM generation parameters or use a preset.\n' +
+            'Hover over each parameter for detailed explanations.');
+
+        const configDiv = document.createElement('div');
+        configDiv.className = 'model-params-config';
+        configDiv.id = 'model-params-container';
+        configDiv.innerHTML = this.buildParameterControlsHTML();
+
+        container.appendChild(configDiv);
+
+        // Attach event listeners
+        this.attachParameterEventListeners();
+
+        requestAnimationFrame(() => {
+            container.scrollTop = container.scrollHeight;
+        });
+
+        this.updateBackButton();
+        console.log('✅ Model parameters configuration displayed');
+    },
+
+    buildParameterControlsHTML() {
+        const params = this.modelParameters.parameters;
+        const presets = this.modelParameters.presets;
+
+        let html = `
+            <style>
+                .model-params-config {
+                    background: var(--bg-secondary, #1a1a2e);
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin: 10px 0;
+                }
+                .params-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 15px;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                }
+                .params-title {
+                    font-size: 1.1em;
+                    font-weight: bold;
+                    color: var(--primary-color, #1BEB49);
+                }
+                .preset-buttons {
+                    display: flex;
+                    gap: 8px;
+                    flex-wrap: wrap;
+                }
+                .preset-btn {
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    border: 1px solid var(--border-color, #333);
+                    background: var(--bg-primary, #0d0d1a);
+                    color: var(--text-color, #e0e0e0);
+                    cursor: pointer;
+                    font-size: 0.85em;
+                    transition: all 0.2s;
+                }
+                .preset-btn:hover {
+                    background: var(--primary-color, #1BEB49);
+                    color: #000;
+                }
+                .param-group {
+                    margin-bottom: 18px;
+                    position: relative;
+                }
+                .param-label-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 6px;
+                }
+                .param-label {
+                    font-weight: 600;
+                    color: var(--text-color, #e0e0e0);
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+                .param-value-display {
+                    font-family: monospace;
+                    background: var(--bg-primary, #0d0d1a);
+                    padding: 2px 8px;
+                    border-radius: 4px;
+                    min-width: 60px;
+                    text-align: center;
+                }
+                .param-slider {
+                    width: 100%;
+                    height: 6px;
+                    border-radius: 3px;
+                    background: var(--bg-primary, #0d0d1a);
+                    -webkit-appearance: none;
+                    cursor: pointer;
+                }
+                .param-slider::-webkit-slider-thumb {
+                    -webkit-appearance: none;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                    background: var(--primary-color, #1BEB49);
+                    cursor: pointer;
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                }
+                .param-slider::-moz-range-thumb {
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                    background: var(--primary-color, #1BEB49);
+                    cursor: pointer;
+                    border: none;
+                }
+                .help-icon {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                    background: var(--secondary-color, #0E1F81);
+                    color: white;
+                    font-size: 11px;
+                    font-weight: bold;
+                    cursor: help;
+                    position: relative;
+                }
+                .tooltip {
+                    visibility: hidden;
+                    opacity: 0;
+                    position: absolute;
+                    bottom: 100%;
+                    left: 0;
+                    width: 350px;
+                    background: var(--bg-primary, #0d0d1a);
+                    border: 1px solid var(--border-color, #333);
+                    border-radius: 8px;
+                    padding: 12px;
+                    z-index: 1000;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+                    transition: opacity 0.2s, visibility 0.2s;
+                    margin-bottom: 8px;
+                }
+                .help-icon:hover .tooltip,
+                .param-group:hover .tooltip {
+                    visibility: visible;
+                    opacity: 1;
+                }
+                .tooltip-title {
+                    font-weight: bold;
+                    color: var(--primary-color, #1BEB49);
+                    margin-bottom: 8px;
+                    font-size: 0.95em;
+                }
+                .tooltip-desc {
+                    color: var(--text-color, #e0e0e0);
+                    font-size: 0.85em;
+                    line-height: 1.4;
+                    margin-bottom: 10px;
+                }
+                .tooltip-effects {
+                    background: rgba(0,0,0,0.3);
+                    border-radius: 6px;
+                    padding: 8px;
+                    margin-bottom: 8px;
+                }
+                .tooltip-effect {
+                    font-size: 0.8em;
+                    margin-bottom: 6px;
+                    padding-left: 8px;
+                    border-left: 2px solid var(--secondary-color, #0E1F81);
+                }
+                .tooltip-effect-label {
+                    font-weight: 600;
+                    color: var(--accent-color, #FFA400);
+                }
+                .tooltip-recommendation {
+                    font-size: 0.8em;
+                    color: var(--primary-color, #1BEB49);
+                    font-style: italic;
+                    padding-top: 6px;
+                    border-top: 1px solid var(--border-color, #333);
+                }
+                .params-actions {
+                    display: flex;
+                    gap: 10px;
+                    margin-top: 20px;
+                    padding-top: 15px;
+                    border-top: 1px solid var(--border-color, #333);
+                }
+                .params-action-btn {
+                    flex: 1;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    border: none;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.2s;
+                }
+                .params-action-btn.primary {
+                    background: var(--primary-color, #1BEB49);
+                    color: #000;
+                }
+                .params-action-btn.secondary {
+                    background: var(--bg-primary, #0d0d1a);
+                    color: var(--text-color, #e0e0e0);
+                    border: 1px solid var(--border-color, #333);
+                }
+                .params-action-btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                }
+            </style>
+
+            <div class="params-header">
+                <span class="params-title">⚙️ Generation Parameters</span>
+                <div class="preset-buttons">
+                    ${Object.entries(presets).map(([key, preset]) => `
+                        <button class="preset-btn" data-preset="${key}" title="${preset.description}">
+                            ${preset.name}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        // Build parameter sliders
+        for (const [paramName, param] of Object.entries(params)) {
+            const currentValue = this.customModelParams[paramName] ?? param.value;
+            const isInteger = paramName === 'top_k' || paramName === 'num_ctx' || paramName === 'num_predict';
+
+            html += `
+                <div class="param-group" data-param="${paramName}">
+                    <div class="tooltip">
+                        <div class="tooltip-title">${param.name}</div>
+                        <div class="tooltip-desc">${param.description}</div>
+                        <div class="tooltip-effects">
+                            <div class="tooltip-effect">
+                                <span class="tooltip-effect-label">📉 Low values:</span><br>
+                                ${param.effect_low}
+                            </div>
+                            <div class="tooltip-effect">
+                                <span class="tooltip-effect-label">📈 High values:</span><br>
+                                ${param.effect_high}
+                            </div>
+                        </div>
+                        <div class="tooltip-recommendation">💡 ${param.recommendation}</div>
+                    </div>
+                    <div class="param-label-row">
+                        <span class="param-label">
+                            ${param.name}
+                            <span class="help-icon">?</span>
+                        </span>
+                        <span class="param-value-display" id="value-${paramName}">${isInteger ? Math.round(currentValue) : currentValue.toFixed(2)}</span>
+                    </div>
+                    <input type="range"
+                           class="param-slider"
+                           id="slider-${paramName}"
+                           min="${param.min}"
+                           max="${param.max}"
+                           step="${param.step}"
+                           value="${currentValue}"
+                           data-param="${paramName}"
+                           data-is-integer="${isInteger}">
+                </div>
+            `;
+        }
+
+        // Action buttons
+        html += `
+            <div class="params-actions">
+                <button class="params-action-btn secondary" id="reset-params-btn">
+                    🔄 Reset to Defaults
+                </button>
+                <button class="params-action-btn primary" id="continue-to-model-btn">
+                    Continue to Model Selection →
+                </button>
+            </div>
+        `;
+
+        return html;
+    },
+
+    attachParameterEventListeners() {
+        // Preset buttons
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const presetName = btn.dataset.preset;
+                const result = await this.applyModelPreset(presetName);
+                if (result) {
+                    // Update all sliders to show new values
+                    this.updateParameterSliders(result.current);
+                }
+            });
+        });
+
+        // Parameter sliders
+        document.querySelectorAll('.param-slider').forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                const paramName = e.target.dataset.param;
+                const isInteger = e.target.dataset.isInteger === 'true';
+                let value = parseFloat(e.target.value);
+                if (isInteger) value = Math.round(value);
+
+                // Update display immediately
+                const display = document.getElementById(`value-${paramName}`);
+                if (display) {
+                    display.textContent = isInteger ? value : value.toFixed(2);
+                }
+            });
+
+            slider.addEventListener('change', async (e) => {
+                const paramName = e.target.dataset.param;
+                const isInteger = e.target.dataset.isInteger === 'true';
+                let value = parseFloat(e.target.value);
+                if (isInteger) value = Math.round(value);
+
+                // Send update to API
+                await this.updateModelParameter(paramName, value);
+            });
+        });
+
+        // Reset button
+        document.getElementById('reset-params-btn')?.addEventListener('click', async () => {
+            const result = await this.resetModelParameters();
+            if (result) {
+                this.updateParameterSliders(result.current);
+            }
+        });
+
+        // Continue button
+        document.getElementById('continue-to-model-btn')?.addEventListener('click', () => {
+            document.getElementById('model-params-container')?.remove();
+            this.showModelSelectionStep2();
+        });
+    },
+
+    updateParameterSliders(params) {
+        for (const [paramName, value] of Object.entries(params)) {
+            const slider = document.getElementById(`slider-${paramName}`);
+            const display = document.getElementById(`value-${paramName}`);
+
+            if (slider) {
+                slider.value = value;
+            }
+            if (display) {
+                const isInteger = paramName === 'top_k' || paramName === 'num_ctx' || paramName === 'num_predict';
+                display.textContent = isInteger ? Math.round(value) : value.toFixed(2);
+            }
+        }
     },
 
     saveCurrentChat() {
@@ -1934,10 +2453,11 @@ const app = {
             console.log('   message:', nctIds.join(', '));
             console.log('   nct_ids:', nctIds);
             
-            // Call chat service with NCT IDs
+            // Call chat service with NCT IDs and output format
+            console.log('📊 Output format:', this.annotationOutputFormat);
             const response = await fetch(`${this.API_BASE}/chat/message`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.apiKey}`
                 },
@@ -1945,6 +2465,7 @@ const app = {
                     conversation_id: this.currentConversationId,
                     message: nctIds.join(', '),
                     nct_ids: nctIds,  // Explicit NCT IDs list
+                    output_format: this.annotationOutputFormat,  // 'json' or 'llm_optimized'
                     temperature: 0.15  // Lower temperature for consistent annotations
                 })
             });

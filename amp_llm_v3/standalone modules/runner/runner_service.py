@@ -165,6 +165,7 @@ class BatchAnnotationRequest(BaseModel):
     model: str = "llama3.2"
     temperature: float = Field(default=0.15, ge=0.0, le=2.0)
     fetch_if_missing: bool = True
+    output_format: str = Field(default="llm_optimized", description="Data format for LLM: 'json' or 'llm_optimized'")
 
 
 class AnnotationResult(BaseModel):
@@ -384,6 +385,45 @@ async def get_or_fetch_nct_data(nct_id: str) -> tuple[Optional[dict], str, Optio
         return data, "fetched", str(file_path), None
     else:
         return None, "failed", None, error
+
+
+async def get_llm_optimized_data(nct_id: str) -> tuple[Optional[dict], str, Optional[str]]:
+    """
+    Get LLM-optimized format data from the NCT service.
+
+    This format is condensed and structured specifically for LLM consumption,
+    with tool hints for agentic workflows.
+
+    Returns (data, source, error) tuple.
+    """
+    nct_id = nct_id.strip().upper()
+    logger.info(f"📊 Fetching LLM-optimized data for {nct_id}")
+
+    # First ensure we have the base data
+    data, source, file_path, error = await get_or_fetch_nct_data(nct_id)
+
+    if not data:
+        return None, "failed", error
+
+    # Now fetch the LLM-optimized format
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            llm_url = f"{NCT_SERVICE_URL}/api/results/{nct_id}/llm"
+            logger.info(f"📤 GET {llm_url}")
+
+            response = await client.get(llm_url, timeout=15.0)
+
+            if response.status_code == 200:
+                llm_data = response.json()
+                logger.info(f"✅ Got LLM-optimized data for {nct_id}")
+                return llm_data, f"{source}_llm_optimized", None
+            else:
+                logger.warning(f"⚠️ LLM-optimized endpoint returned {response.status_code}, falling back to raw JSON")
+                return data, source, None
+
+    except Exception as e:
+        logger.warning(f"⚠️ Error fetching LLM-optimized data: {e}, falling back to raw JSON")
+        return data, source, None
 
 
 # ============================================================================
@@ -710,22 +750,31 @@ async def annotate(request: AnnotationRequest):
 async def batch_annotate(request: BatchAnnotationRequest):
     """
     Annotate multiple clinical trials.
+
+    The output_format parameter controls how data is sent to the LLM:
+    - 'json': Full raw JSON data from all sources
+    - 'llm_optimized': Condensed, structured format with tool hints
     """
-    logger.info(f"🔬 Batch annotation for {len(request.nct_ids)} trials with {request.model}")
-    
+    output_format = request.output_format or "llm_optimized"
+    logger.info(f"🔬 Batch annotation for {len(request.nct_ids)} trials with {request.model} (format: {output_format})")
+
     start_time = time.time()
     results = []
     successful = 0
     failed = 0
-    
+
     for nct_id in request.nct_ids:
         nct_id = nct_id.strip().upper()
         if not nct_id:
             continue
-        
+
         try:
-            # Get trial data
-            data, source, file_path, error = await get_or_fetch_nct_data(nct_id)
+            # Get trial data in the requested format
+            if output_format == "llm_optimized":
+                data, source, error = await get_llm_optimized_data(nct_id)
+                file_path = None  # LLM-optimized data is generated on-the-fly
+            else:
+                data, source, file_path, error = await get_or_fetch_nct_data(nct_id)
             
             if not data:
                 results.append(AnnotationResult(

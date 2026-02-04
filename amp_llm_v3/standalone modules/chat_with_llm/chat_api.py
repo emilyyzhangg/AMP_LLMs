@@ -256,6 +256,7 @@ class ChatMessageRequest(BaseModel):
     message: str
     temperature: float = Field(default=0.7, ge=0.0, le=2.0)
     nct_ids: Optional[List[str]] = None  # For annotation mode
+    output_format: str = Field(default="llm_optimized", description="Output format: 'json' or 'llm_optimized'")
 
 
 class ChatMessage(BaseModel):
@@ -441,7 +442,8 @@ async def process_csv_job(
                                 "nct_ids": [nct_id],
                                 "model": model,
                                 "temperature": temperature,
-                                "fetch_if_missing": True
+                                "fetch_if_missing": True,
+                                "output_format": "llm_optimized"  # Use optimized format for CSV batch
                             }
                         )
                         
@@ -830,21 +832,28 @@ async def generate_output_csv(
 
 
 async def annotate_trials_via_runner(
-    nct_ids: List[str], 
-    model: str, 
-    temperature: float
+    nct_ids: List[str],
+    model: str,
+    temperature: float,
+    output_format: str = "llm_optimized"
 ) -> tuple[str, AnnotationSummary, List[dict]]:
     """
     Annotate trials using the Runner Service's batch-annotate endpoint.
-    
+
     The Runner Service coordinates:
     1. Fetching trial data (from cache or NCT Service)
     2. Sending to LLM Assistant for annotation
-    
+
+    Args:
+        nct_ids: List of NCT IDs to annotate
+        model: LLM model to use
+        temperature: Temperature for LLM generation
+        output_format: 'json' or 'llm_optimized' - format of data sent to LLM
+
     Returns:
-        Tuple of (formatted_annotation_text, summary)
+        Tuple of (formatted_annotation_text, summary, raw_results)
     """
-    logger.info(f"🔬 Annotating {len(nct_ids)} trials with {model} via Runner Service")
+    logger.info(f"🔬 Annotating {len(nct_ids)} trials with {model} via Runner Service (format: {output_format})")
     
     try:
         async with httpx.AsyncClient(timeout=600.0) as client:  # 10 min timeout for batch
@@ -876,7 +885,8 @@ async def annotate_trials_via_runner(
                     "nct_ids": nct_ids,
                     "model": model,
                     "temperature": temperature,
-                    "fetch_if_missing": True
+                    "fetch_if_missing": True,
+                    "output_format": output_format  # 'json' or 'llm_optimized'
                 }
             )
             
@@ -1001,7 +1011,8 @@ async def send_message(request: ChatMessageRequest):
         annotation_result, summary, raw_results = await annotate_trials_via_runner(
             request.nct_ids,
             conv["model"],
-            request.temperature
+            request.temperature,
+            output_format=request.output_format
         )
         
         # Generate CSV for download if we have results
@@ -1482,6 +1493,130 @@ async def get_models():
         raise HTTPException(
             status_code=503,
             detail=f"Cannot connect to Ollama at {config.OLLAMA_BASE_URL}"
+        )
+
+
+# ============================================================================
+# Model Parameters Proxy Endpoints (proxied to LLM Assistant)
+# ============================================================================
+
+@app.get("/api/chat/model-parameters")
+async def get_model_parameters():
+    """
+    Get current model parameters with documentation.
+    Proxied to LLM Assistant service.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{LLM_ASSISTANT_URL}/model-parameters")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"LLM Assistant error: {response.text}"
+                )
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to LLM Assistant at {LLM_ASSISTANT_URL}"
+        )
+
+
+@app.post("/api/chat/model-parameters")
+async def set_model_parameters(request: dict):
+    """
+    Update model parameters.
+    Proxied to LLM Assistant service.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(
+                f"{LLM_ASSISTANT_URL}/model-parameters",
+                json=request
+            )
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"LLM Assistant error: {response.text}"
+                )
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to LLM Assistant at {LLM_ASSISTANT_URL}"
+        )
+
+
+@app.post("/api/chat/model-parameters/reset")
+async def reset_model_parameters():
+    """
+    Reset model parameters to defaults.
+    Proxied to LLM Assistant service.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(f"{LLM_ASSISTANT_URL}/model-parameters/reset")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"LLM Assistant error: {response.text}"
+                )
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to LLM Assistant at {LLM_ASSISTANT_URL}"
+        )
+
+
+@app.post("/api/chat/model-parameters/preset/{preset_name}")
+async def apply_model_preset(preset_name: str):
+    """
+    Apply a parameter preset.
+    Proxied to LLM Assistant service.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(
+                f"{LLM_ASSISTANT_URL}/model-parameters/preset/{preset_name}"
+            )
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"LLM Assistant error: {response.text}"
+                )
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to LLM Assistant at {LLM_ASSISTANT_URL}"
+        )
+
+
+@app.get("/api/chat/model-parameters/presets")
+async def get_model_presets():
+    """
+    Get available parameter presets.
+    Proxied to LLM Assistant service.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{LLM_ASSISTANT_URL}/model-parameters/presets")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"LLM Assistant error: {response.text}"
+                )
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to LLM Assistant at {LLM_ASSISTANT_URL}"
         )
 
 

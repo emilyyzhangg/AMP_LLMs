@@ -721,14 +721,17 @@ async def _execute_search(nct_id: str, request: SearchRequest):
         
         # Execute search
         results = await search_engine.search(nct_id, config, status)
-        
+
+        # Clean empty values from results before saving
+        cleaned_results = clean_empty_values(results)
+
         # Save results to temporary location (will be renamed on save)
         results_dir = Path("results")
         results_dir.mkdir(exist_ok=True)
-        
+
         output_file = results_dir / f"{nct_id}.json"
         with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
+            json.dump(cleaned_results, f, indent=2, ensure_ascii=False)
         
         # Update status
         status.status = "completed"
@@ -892,6 +895,552 @@ def _format_openfda_details(data: Dict[str, Any]) -> str:
         return "No FDA data found"
     
     return ", ".join(details)
+
+
+# ============================================================================
+# JSON Cleaning - Remove Empty/Null Values
+# ============================================================================
+
+def clean_empty_values(data: Any, preserve_false: bool = True) -> Any:
+    """
+    Recursively remove empty/null values from a data structure.
+
+    Args:
+        data: The data structure to clean (dict, list, or value)
+        preserve_false: If True, keep boolean False values (default: True)
+
+    Returns:
+        Cleaned data structure with empty values removed
+
+    Empty values removed:
+        - None
+        - Empty strings ("")
+        - Empty lists ([])
+        - Empty dicts ({})
+        - Strings that are just whitespace
+    """
+    if isinstance(data, dict):
+        cleaned = {}
+        for key, value in data.items():
+            cleaned_value = clean_empty_values(value, preserve_false)
+            # Keep the value if it's not empty
+            if not _is_empty(cleaned_value, preserve_false):
+                cleaned[key] = cleaned_value
+        return cleaned
+
+    elif isinstance(data, list):
+        cleaned = []
+        for item in data:
+            cleaned_item = clean_empty_values(item, preserve_false)
+            if not _is_empty(cleaned_item, preserve_false):
+                cleaned.append(cleaned_item)
+        return cleaned
+
+    else:
+        return data
+
+
+def _is_empty(value: Any, preserve_false: bool = True) -> bool:
+    """Check if a value should be considered empty."""
+    if value is None:
+        return True
+    if isinstance(value, bool):
+        return False if preserve_false else not value
+    if isinstance(value, str):
+        return len(value.strip()) == 0
+    if isinstance(value, (list, dict)):
+        return len(value) == 0
+    if isinstance(value, (int, float)):
+        return False  # Numbers are never empty (0 is valid)
+    return False
+
+
+# ============================================================================
+# LLM-Optimized Output Format
+# ============================================================================
+
+@app.get("/api/results/{nct_id}/llm")
+async def get_llm_optimized_results(nct_id: str, include_tools: bool = True):
+    """
+    Get search results in an LLM-optimized format.
+
+    This endpoint returns a structured, information-dense format designed for:
+    1. Minimal token usage while preserving key information
+    2. Clear structure for LLM parsing
+    3. Optional tool hints for agentic workflows
+
+    Args:
+        nct_id: NCT number
+        include_tools: Whether to include tool hints (default: True)
+
+    Returns:
+        LLM-optimized data structure
+    """
+    nct_id = nct_id.upper().strip()
+
+    results_file = Path(f"results/{nct_id}.json")
+    if not results_file.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Results not found for {nct_id}. Run a search first."
+        )
+
+    try:
+        with open(results_file, 'r', encoding='utf-8') as f:
+            raw_results = json.load(f)
+
+        # Clean empty values first
+        cleaned = clean_empty_values(raw_results)
+
+        # Transform to LLM-optimized format
+        llm_output = _transform_to_llm_format(cleaned, nct_id, include_tools)
+
+        return llm_output
+
+    except Exception as e:
+        logger.error(f"Error generating LLM output for {nct_id}: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error generating LLM output: {str(e)}"
+        )
+
+
+def _transform_to_llm_format(data: Dict[str, Any], nct_id: str, include_tools: bool) -> Dict[str, Any]:
+    """
+    Transform search results into an LLM-optimized format.
+
+    Design principles:
+    1. Front-load critical information (trial identity, status, key findings)
+    2. Group related data (all literature together, all regulatory together)
+    3. Flatten nested structures where possible
+    4. Include actionable tool hints for agentic workflows
+    """
+    metadata = data.get("metadata", {})
+    sources = data.get("sources", {})
+
+    # Build the LLM-optimized structure
+    output = {
+        "trial_summary": {
+            "nct_id": nct_id,
+            "title": metadata.get("title"),
+            "status": metadata.get("status"),
+            "condition": metadata.get("condition"),
+            "intervention": metadata.get("intervention"),
+            "abstract": _truncate(metadata.get("abstract", ""), 500)
+        },
+        "literature": _extract_literature(sources),
+        "regulatory": _extract_regulatory(sources),
+        "web_sources": _extract_web_sources(sources),
+        "statistics": _generate_stats(sources)
+    }
+
+    # Add tool hints for agentic workflows
+    if include_tools:
+        output["available_actions"] = _generate_tool_hints(output, nct_id)
+
+    # Clean any remaining empty values
+    output = clean_empty_values(output)
+
+    return output
+
+
+def _extract_literature(sources: Dict) -> Dict[str, Any]:
+    """Extract and consolidate literature findings."""
+    literature = {
+        "pubmed_articles": [],
+        "pmc_articles": [],
+        "europe_pmc": [],
+        "semantic_scholar": [],
+        "crossref": [],
+        "total_publications": 0
+    }
+
+    # PubMed
+    pubmed_data = sources.get("pubmed", {}).get("data", {})
+    if pubmed_data and pubmed_data.get("articles"):
+        for article in pubmed_data["articles"][:10]:
+            literature["pubmed_articles"].append({
+                "pmid": article.get("pmid"),
+                "title": article.get("title"),
+                "journal": article.get("journal"),
+                "year": article.get("year"),
+                "authors": article.get("authors", [])[:3]  # First 3 authors
+            })
+
+    # PMC
+    pmc_data = sources.get("pmc", {}).get("data", {})
+    if pmc_data and pmc_data.get("articles"):
+        for article in pmc_data["articles"][:10]:
+            literature["pmc_articles"].append({
+                "pmcid": article.get("pmcid"),
+                "title": article.get("title"),
+                "journal": article.get("journal"),
+                "doi": article.get("doi", [None])[0] if article.get("doi") else None
+            })
+
+    # Extended sources
+    extended = sources.get("extended", {})
+
+    # Europe PMC
+    epmc_data = extended.get("europe_pmc", {}).get("data", {})
+    if epmc_data and epmc_data.get("results"):
+        for result in epmc_data["results"][:5]:
+            literature["europe_pmc"].append({
+                "pmid": result.get("pmid"),
+                "title": result.get("title"),
+                "year": result.get("year"),
+                "citations": result.get("citation_count"),
+                "open_access": result.get("is_open_access")
+            })
+
+    # Semantic Scholar
+    ss_data = extended.get("semantic_scholar", {}).get("data", {})
+    if ss_data and ss_data.get("results"):
+        for result in ss_data["results"][:5]:
+            literature["semantic_scholar"].append({
+                "title": result.get("title"),
+                "year": result.get("year"),
+                "citations": result.get("citation_count"),
+                "influential_citations": result.get("influential_citations"),
+                "open_access_url": result.get("open_access_pdf")
+            })
+
+    # CrossRef
+    cr_data = extended.get("crossref", {}).get("data", {})
+    if cr_data and cr_data.get("results"):
+        for result in cr_data["results"][:5]:
+            literature["crossref"].append({
+                "doi": result.get("doi"),
+                "title": result.get("title"),
+                "year": result.get("year"),
+                "citations": result.get("citation_count"),
+                "type": result.get("type")
+            })
+
+    # Calculate total
+    literature["total_publications"] = (
+        len(literature["pubmed_articles"]) +
+        len(literature["pmc_articles"]) +
+        len(literature["europe_pmc"]) +
+        len(literature["semantic_scholar"]) +
+        len(literature["crossref"])
+    )
+
+    return literature
+
+
+def _extract_regulatory(sources: Dict) -> Dict[str, Any]:
+    """Extract regulatory and safety information."""
+    regulatory = {
+        "fda_data": {},
+        "clinical_trial_data": {}
+    }
+
+    # Clinical trial data
+    ct_data = sources.get("clinical_trials", {}).get("data", {})
+    if ct_data:
+        protocol = ct_data.get("protocolSection", {})
+
+        # Extract key regulatory info
+        regulatory["clinical_trial_data"] = {
+            "phase": _extract_phase(protocol),
+            "enrollment": _extract_enrollment(protocol),
+            "sponsor": _extract_sponsor(protocol),
+            "start_date": _extract_date(protocol, "startDateStruct"),
+            "completion_date": _extract_date(protocol, "completionDateStruct"),
+            "primary_outcomes": _extract_outcomes(protocol, "primaryOutcomes"),
+            "secondary_outcomes": _extract_outcomes(protocol, "secondaryOutcomes")
+        }
+
+    # OpenFDA data
+    extended = sources.get("extended", {})
+    fda_data = extended.get("openfda", {}).get("data", {})
+    if fda_data:
+        regulatory["fda_data"] = {
+            "drug_labels": len(fda_data.get("drug_labels", [])),
+            "adverse_events": len(fda_data.get("adverse_events", [])),
+            "enforcement_reports": len(fda_data.get("enforcement_reports", [])),
+            "label_details": fda_data.get("drug_labels", [])[:3],
+            "event_summary": fda_data.get("adverse_events", [])[:3]
+        }
+
+    return regulatory
+
+
+def _extract_web_sources(sources: Dict) -> List[Dict]:
+    """Extract web search results."""
+    web_results = []
+    extended = sources.get("extended", {})
+
+    # DuckDuckGo results
+    ddg_data = extended.get("duckduckgo", {}).get("data", {})
+    if ddg_data and ddg_data.get("results"):
+        for result in ddg_data["results"][:5]:
+            web_results.append({
+                "source": "duckduckgo",
+                "title": result.get("title"),
+                "url": result.get("url"),
+                "snippet": _truncate(result.get("snippet", ""), 200),
+                "relevance": result.get("relevance_score")
+            })
+
+    # SerpAPI results (if available)
+    serp_data = extended.get("serpapi", {}).get("data", {})
+    if serp_data and serp_data.get("results"):
+        for result in serp_data["results"][:5]:
+            web_results.append({
+                "source": "google",
+                "title": result.get("title"),
+                "url": result.get("url"),
+                "snippet": _truncate(result.get("snippet", ""), 200)
+            })
+
+    return web_results
+
+
+def _generate_stats(sources: Dict) -> Dict[str, Any]:
+    """Generate summary statistics."""
+    stats = {
+        "sources_searched": [],
+        "sources_with_results": [],
+        "total_items_found": 0
+    }
+
+    # Core sources
+    for source_name in ["clinical_trials", "pubmed", "pmc", "pmc_bioc"]:
+        source_data = sources.get(source_name, {})
+        if source_data.get("success"):
+            stats["sources_searched"].append(source_name)
+            count = _count_source_results(source_name, source_data.get("data", {}))
+            if count > 0:
+                stats["sources_with_results"].append(source_name)
+                stats["total_items_found"] += count
+
+    # Extended sources
+    extended = sources.get("extended", {})
+    for source_name, source_data in extended.items():
+        if source_data.get("success"):
+            stats["sources_searched"].append(source_name)
+            count = source_data.get("data", {}).get("total_found", 0)
+            if count > 0:
+                stats["sources_with_results"].append(source_name)
+                stats["total_items_found"] += count
+
+    return stats
+
+
+def _generate_tool_hints(output: Dict, nct_id: str) -> List[Dict]:
+    """
+    Generate tool hints for agentic LLM workflows.
+
+    These hints tell the LLM what actions it can take with the data.
+    """
+    hints = []
+
+    # Literature-related tools
+    lit = output.get("literature", {})
+    if lit.get("pubmed_articles"):
+        pmids = [a.get("pmid") for a in lit["pubmed_articles"] if a.get("pmid")]
+        if pmids:
+            hints.append({
+                "action": "fetch_full_text",
+                "description": "Retrieve full article text from PubMed Central",
+                "parameters": {"pmids": pmids[:5]},
+                "when_useful": "Need detailed methodology, results, or discussion from papers"
+            })
+
+    if lit.get("semantic_scholar"):
+        papers_with_pdf = [p for p in lit["semantic_scholar"] if p.get("open_access_url")]
+        if papers_with_pdf:
+            hints.append({
+                "action": "download_open_access",
+                "description": "Download open access PDFs for analysis",
+                "parameters": {"urls": [p["open_access_url"] for p in papers_with_pdf[:3]]},
+                "when_useful": "Need to analyze full paper content"
+            })
+
+    # Regulatory-related tools
+    reg = output.get("regulatory", {})
+    if reg.get("fda_data", {}).get("adverse_events", 0) > 0:
+        hints.append({
+            "action": "analyze_adverse_events",
+            "description": "Deep dive into FDA adverse event reports",
+            "parameters": {"nct_id": nct_id},
+            "when_useful": "Assessing safety profile or risk analysis"
+        })
+
+    # Trial-related tools
+    trial = output.get("trial_summary", {})
+    if trial.get("status") in ["RECRUITING", "NOT_YET_RECRUITING", "ENROLLING_BY_INVITATION"]:
+        hints.append({
+            "action": "get_enrollment_sites",
+            "description": "Retrieve list of clinical trial enrollment locations",
+            "parameters": {"nct_id": nct_id},
+            "when_useful": "Finding where patients can enroll"
+        })
+
+    # Citation analysis
+    if lit.get("total_publications", 0) > 5:
+        hints.append({
+            "action": "citation_network_analysis",
+            "description": "Analyze citation relationships between papers",
+            "parameters": {"nct_id": nct_id},
+            "when_useful": "Understanding research landscape and key papers"
+        })
+
+    # Always available actions
+    hints.append({
+        "action": "search_related_trials",
+        "description": "Find similar clinical trials",
+        "parameters": {
+            "condition": trial.get("condition"),
+            "intervention": trial.get("intervention")
+        },
+        "when_useful": "Comparing with other trials or finding alternatives"
+    })
+
+    hints.append({
+        "action": "generate_summary_report",
+        "description": "Create a structured report of all findings",
+        "parameters": {"nct_id": nct_id, "format": "markdown"},
+        "when_useful": "Need a comprehensive overview document"
+    })
+
+    return hints
+
+
+# Helper functions for LLM output
+def _truncate(text: str, max_length: int) -> str:
+    """Truncate text to max length, adding ellipsis if needed."""
+    if not text:
+        return ""
+    text = text.strip()
+    if len(text) <= max_length:
+        return text
+    return text[:max_length-3] + "..."
+
+
+def _extract_phase(protocol: Dict) -> str:
+    """Extract trial phase."""
+    try:
+        design = protocol.get("designModule", {})
+        phases = design.get("phases", [])
+        return ", ".join(phases) if phases else None
+    except:
+        return None
+
+
+def _extract_enrollment(protocol: Dict) -> int:
+    """Extract enrollment count."""
+    try:
+        design = protocol.get("designModule", {})
+        enrollment = design.get("enrollmentInfo", {})
+        return enrollment.get("count")
+    except:
+        return None
+
+
+def _extract_sponsor(protocol: Dict) -> str:
+    """Extract lead sponsor."""
+    try:
+        sponsor = protocol.get("sponsorCollaboratorsModule", {})
+        lead = sponsor.get("leadSponsor", {})
+        return lead.get("name")
+    except:
+        return None
+
+
+def _extract_date(protocol: Dict, date_field: str) -> str:
+    """Extract a date from protocol."""
+    try:
+        status = protocol.get("statusModule", {})
+        date_struct = status.get(date_field, {})
+        return date_struct.get("date")
+    except:
+        return None
+
+
+def _extract_outcomes(protocol: Dict, outcome_type: str) -> List[str]:
+    """Extract outcome measures."""
+    try:
+        outcomes_mod = protocol.get("outcomesModule", {})
+        outcomes = outcomes_mod.get(outcome_type, [])
+        return [o.get("measure") for o in outcomes[:3] if o.get("measure")]
+    except:
+        return []
+
+
+# ============================================================================
+# Updated save endpoint with cleaning
+# ============================================================================
+
+@app.post("/api/results/{nct_id}/save-clean", response_model=SaveResponse)
+async def save_clean_results(nct_id: str, request: SaveRequest):
+    """
+    Save search results with empty values removed.
+
+    This endpoint saves a cleaned version of the results JSON,
+    removing all null, empty string, empty list, and empty dict values.
+    """
+    nct_id = nct_id.upper().strip()
+    results_dir = Path("results")
+    results_dir.mkdir(exist_ok=True)
+
+    temp_results_file = results_dir / f"{nct_id}.json"
+    if not temp_results_file.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"No results found for {nct_id}. Please run a search first."
+        )
+
+    try:
+        with open(temp_results_file, 'r', encoding='utf-8') as f:
+            results = json.load(f)
+
+        # Clean empty values
+        cleaned_results = clean_empty_values(results)
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error loading results: {str(e)}"
+        )
+
+    # Determine target filename
+    if request.custom_filename:
+        target_filename = f"{request.custom_filename}.json"
+    elif request.overwrite:
+        target_filename = f"{nct_id}.json"
+    else:
+        target_filename = get_next_version_filename(nct_id, results_dir)
+
+    target_path = results_dir / target_filename
+    was_duplicate = target_path.exists()
+
+    try:
+        with open(target_path, 'w', encoding='utf-8') as f:
+            json.dump(cleaned_results, f, indent=2, ensure_ascii=False)
+
+        file_size = target_path.stat().st_size
+
+        logger.info(f"Saved cleaned results for {nct_id} to {target_filename}")
+
+        return SaveResponse(
+            success=True,
+            filename=target_filename,
+            filepath=str(target_path.absolute()),
+            message=f"Cleaned results saved to {target_filename}",
+            size_bytes=file_size,
+            was_duplicate=was_duplicate,
+            overwritten=request.overwrite and was_duplicate
+        )
+
+    except Exception as e:
+        logger.error(f"Error saving cleaned results for {nct_id}: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error saving results: {str(e)}"
+        )
 
 
 if __name__ == "__main__":

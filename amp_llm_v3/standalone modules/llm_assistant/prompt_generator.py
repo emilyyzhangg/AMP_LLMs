@@ -157,16 +157,174 @@ class ImprovedPromptGenerator:
     - Enhanced Classification and Outcome accuracy
     - Cross-LLM compatible explicit instructions
     - NEW: Verification prompts for two-stage annotation
+    - NEW: Robust error handling for missing/empty data
+    - NEW: Configurable quality score weights
     """
 
-    def __init__(self, model_name: str = "llama3.2"):
+    # Critical data sources for each annotation field
+    REQUIRED_SOURCES = {
+        'classification': ['clinical_trials', 'pubmed'],
+        'delivery_mode': ['clinical_trials'],
+        'outcome': ['clinical_trials'],
+        'failure_reason': ['clinical_trials'],
+        'peptide': ['clinical_trials', 'uniprot'],
+        'sequence': ['uniprot', 'extended']
+    }
+
+    # Default source weights for quality scoring
+    # See QUALITY_SCORES.md for detailed reasoning behind these values
+    DEFAULT_SOURCE_WEIGHTS = {
+        # Core sources - these provide the primary trial data
+        'clinical_trials': 0.40,  # Primary source: trial status, interventions, outcomes
+        'pubmed': 0.15,           # Published literature context and validation
+        'pmc': 0.10,              # Full-text articles for deeper context
+        'pmc_bioc': 0.05,         # Annotated data extraction (supplementary)
+
+        # Extended sources - provide additional context
+        'uniprot': 0.15,          # Critical for sequence and peptide determination
+        'openfda': 0.05,          # FDA drug info, delivery routes
+        'duckduckgo': 0.05,       # Web context (lower reliability)
+        'dramp': 0.05,            # AMP database (highly specific when available)
+
+        # Paid sources (may not always be available)
+        'serpapi': 0.00,          # Disabled by default (paid)
+        'scholar': 0.00,          # Disabled by default (paid)
+    }
+
+    def __init__(
+        self,
+        model_name: str = "llama3.2",
+        source_weights: Optional[Dict[str, float]] = None
+    ):
         """
-        Initialize prompt generator.
+        Initialize prompt generator with optional custom quality weights.
 
         Args:
             model_name: The model to use in the Modelfile template (default: llama3.2)
+            source_weights: Optional custom weights for source-level quality scoring.
+                           Keys are source names, values are weights (should sum to ~1.0).
+                           If None, uses DEFAULT_SOURCE_WEIGHTS.
         """
         self.model_name = model_name
+        self.source_weights = source_weights or self.DEFAULT_SOURCE_WEIGHTS.copy()
+
+    @classmethod
+    def get_default_weights(cls) -> Dict[str, float]:
+        """
+        Get the default source weights for quality scoring.
+
+        Returns:
+            Dictionary of default weights that can be modified and passed back.
+        """
+        return cls.DEFAULT_SOURCE_WEIGHTS.copy()
+
+    def set_source_weights(self, source_weights: Dict[str, float]) -> None:
+        """
+        Update the source weights used for quality scoring.
+
+        Args:
+            source_weights: New weights to use. Keys are source names, values are weights.
+        """
+        self.source_weights = source_weights
+
+    def reset_weights_to_default(self) -> None:
+        """Reset source weights to the default values."""
+        self.source_weights = self.DEFAULT_SOURCE_WEIGHTS.copy()
+
+    def get_current_weights(self) -> Dict[str, float]:
+        """
+        Get the current source weights being used.
+
+        Returns:
+            Dictionary of current weights.
+        """
+        return self.source_weights.copy()
+
+    def _check_data_availability(self, search_results: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Check which data sources are available and assess overall data quality.
+
+        Args:
+            search_results: Complete search results from NCTSearchEngine
+
+        Returns:
+            Dictionary with availability info:
+            - available_sources: list of sources with data
+            - missing_sources: list of sources without data
+            - quality_score: 0-1 score indicating weighted data completeness
+            - unweighted_score: simple ratio of available/checked sources
+            - warnings: list of warning messages
+            - field_recommendations: per-field recommendations for handling missing data
+            - weights_used: the weights applied for scoring
+        """
+        sources = search_results.get("sources", {})
+        available = []
+        missing = []
+        warnings = []
+
+        # Check core sources
+        source_checks = {
+            'clinical_trials': sources.get("clinical_trials", {}).get("success", False),
+            'pubmed': sources.get("pubmed", {}).get("success", False),
+            'pmc': sources.get("pmc", {}).get("success", False),
+            'pmc_bioc': sources.get("pmc_bioc", {}).get("success", False),
+        }
+
+        # Check extended sources
+        extended = sources.get("extended", {})
+        if extended:
+            source_checks['uniprot'] = extended.get("uniprot", {}).get("success", False)
+            source_checks['openfda'] = extended.get("openfda", {}).get("success", False)
+            source_checks['duckduckgo'] = extended.get("duckduckgo", {}).get("success", False)
+            source_checks['dramp'] = extended.get("dramp", {}).get("success", False)
+            source_checks['serpapi'] = extended.get("serpapi", {}).get("success", False)
+            source_checks['scholar'] = extended.get("scholar", {}).get("success", False)
+
+        for source, is_available in source_checks.items():
+            if is_available:
+                available.append(source)
+            else:
+                missing.append(source)
+
+        # Calculate weighted quality score using configurable weights
+        quality_score = sum(self.source_weights.get(s, 0) for s in available)
+
+        # Calculate unweighted score for comparison
+        unweighted_score = len(available) / len(source_checks) if source_checks else 0
+
+        # Generate warnings
+        if 'clinical_trials' not in available:
+            warnings.append("CRITICAL: No ClinicalTrials.gov data - all annotations may be unreliable")
+        if 'uniprot' not in available and 'dramp' not in available:
+            warnings.append("No protein database data - Sequence will be N/A, Peptide determination limited")
+
+        # Field-specific recommendations
+        field_recs = {}
+        for field, required in self.REQUIRED_SOURCES.items():
+            missing_required = [r for r in required if r not in available]
+            if missing_required:
+                if field == 'classification':
+                    field_recs[field] = "Limited data - default to 'Other' unless clear AMP indicators"
+                elif field == 'delivery_mode':
+                    field_recs[field] = "No intervention data - default to 'Other'"
+                elif field == 'outcome':
+                    field_recs[field] = "No status data - use 'Unknown'"
+                elif field == 'failure_reason':
+                    field_recs[field] = "No status data - use 'N/A'"
+                elif field == 'peptide':
+                    field_recs[field] = "Limited evidence - default to 'False' unless drug name indicates peptide"
+                elif field == 'sequence':
+                    field_recs[field] = "No sequence database data - use 'N/A'"
+
+        return {
+            'available_sources': available,
+            'missing_sources': missing,
+            'quality_score': quality_score,
+            'unweighted_score': unweighted_score,
+            'warnings': warnings,
+            'field_recommendations': field_recs,
+            'weights_used': self.source_weights.copy()
+        }
 
     def get_modelfile_template(self, model_name: Optional[str] = None) -> str:
         """
@@ -1138,43 +1296,75 @@ Be thorough but concise. Focus on accuracy."""
     ) -> str:
         """
         Generate extraction prompt from search results.
-        
+
         Args:
             search_results: Complete search results from NCTSearchEngine
             nct_id: NCT number
-            
+
         Returns:
             Formatted prompt for LLM extraction
         """
         sections = []
-        
+
+        # Check data availability first
+        data_check = self._check_data_availability(search_results)
+
         # Add header with clear task
         sections.append(f"# CLINICAL TRIAL ANNOTATION TASK: {nct_id}")
+
+        # Add data quality assessment if there are issues
+        if data_check['warnings'] or data_check['quality_score'] < 0.5:
+            sections.append("""
+## ⚠️ DATA QUALITY ASSESSMENT
+""")
+            sections.append(f"**Data Completeness:** {data_check['quality_score']:.0%}")
+            sections.append(f"**Available Sources:** {', '.join(data_check['available_sources']) or 'None'}")
+            sections.append(f"**Missing Sources:** {', '.join(data_check['missing_sources']) or 'None'}")
+
+            if data_check['warnings']:
+                sections.append("\n**WARNINGS:**")
+                for warning in data_check['warnings']:
+                    sections.append(f"  ! {warning}")
+
+            if data_check['field_recommendations']:
+                sections.append("\n**FIELD-SPECIFIC GUIDANCE FOR LIMITED DATA:**")
+                for field, rec in data_check['field_recommendations'].items():
+                    sections.append(f"  - {field}: {rec}")
+
+            sections.append("")
+
         sections.append("""
-Analyze the following clinical trial data carefully. For each field requiring classification, 
+Analyze the following clinical trial data carefully. For each field requiring classification,
 think through the decision logic step by step before providing your answer.
+
+**IMPORTANT:** If data is missing or insufficient for a field, explicitly state this and use
+the default/fallback values as specified below.
 
 ## QUICK REFERENCE - VALID VALUES ONLY
 
-| Field | Valid Values |
-|-------|--------------|
-| Classification | AMP, Other |
-| Delivery Mode | Injection/Infusion, Topical, Oral, Other |
-| Outcome | Positive, Withdrawn, Terminated, Failed - completed trial, Active, Unknown |
-| Peptide | True, False |
+| Field | Valid Values | Default if Insufficient Data |
+|-------|--------------|------------------------------|
+| Classification | AMP, Other | Other |
+| Delivery Mode | Injection/Infusion, Topical, Oral, Other | Other |
+| Outcome | Positive, Withdrawn, Terminated, Failed - completed trial, Active, Unknown | Unknown |
+| Reason for Failure | Business reasons, Ineffective for purpose, Toxic/unsafe, Due to covid, Recruitment issues, N/A | N/A |
+| Peptide | True, False | False |
+| Sequence | Amino acid sequence, N/A | N/A |
 
 ## KEY DECISION REMINDERS
 
 **CLASSIFICATION**: Does the peptide KILL or INHIBIT pathogens (bacteria/fungi/viruses)?
 - YES → AMP
 - NO (metabolic/hormonal/immunomodulator) → Other
+- INSUFFICIENT DATA → Other (with explanation)
 
 **DELIVERY MODE**: Search for these keywords IN ORDER:
 1. Injection words (injection, IV, SC, IM, infusion) → Injection/Infusion
-2. Topical words (topical, cream, gel, wound, eye drop) → Topical  
+2. Topical words (topical, cream, gel, wound, eye drop) → Topical
 3. Oral words (oral, tablet, capsule, pill) → Oral
 4. Other (inhaled, implant, unclear) → Other
 5. No keywords + peptide drug → Default to Injection/Infusion
+6. NO DATA AVAILABLE → Other (with explanation)
 
 **OUTCOME**: Follow the status mapping:
 - RECRUITING/ACTIVE_NOT_RECRUITING/etc → Active
@@ -1183,6 +1373,7 @@ think through the decision logic step by step before providing your answer.
 - COMPLETED + hasResults=false → Unknown
 - COMPLETED + hasResults=true + "met endpoint" → Positive
 - COMPLETED + hasResults=true + "failed"/"not significant" → Failed - completed trial
+- STATUS FIELD MISSING → Unknown (with explanation)
 
 ---
 # DATA SOURCES
@@ -1231,36 +1422,51 @@ think through the decision logic step by step before providing your answer.
 
 Analyze the data above and produce your annotation in the EXACT format specified.
 
+## HANDLING MISSING DATA
+
+When data is unavailable or insufficient for a field:
+1. **State the limitation explicitly** in your Reasoning
+2. **Use the appropriate fallback value** as specified in the table above
+3. **Explain your logic** for choosing the fallback
+
+Example for missing Outcome data:
+```
+Outcome: Unknown
+  Reasoning: Overall status field is not available in the data. Unable to determine trial outcome.
+  Evidence: No status data found in any source.
+```
+
 ## REQUIRED OUTPUT FORMAT
 
-NCT Number: [from data]
-Study Title: [from data]
-Study Status: [from data]
-Brief Summary: [from data]
-Conditions: [from data]
-Interventions/Drug: [from data]
-Phases: [from data]
-Enrollment: [from data]
-Start Date: [from data]
-Completion Date: [from data]
+NCT Number: [from data, or "Not found" if missing]
+Study Title: [from data, or "Not found" if missing]
+Study Status: [from data, or "Not available" if missing]
+Brief Summary: [from data, or "Not available" if missing]
+Conditions: [from data, or "Not available" if missing]
+Interventions/Drug: [from data, or "Not available" if missing]
+Phases: [from data, or "Not available" if missing]
+Enrollment: [from data, or "Not available" if missing]
+Start Date: [from data, or "Not available" if missing]
+Completion Date: [from data, or "Not available" if missing]
 
 Classification: [AMP or Other]
-  Reasoning: [Is it a peptide? Does it kill pathogens?]
-  Evidence: [Quote from data]
+  Reasoning: [Is it a peptide? Does it kill pathogens? OR: Why data is insufficient]
+  Evidence: [Quote from data, OR: "Insufficient data - see reasoning"]
 Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
-  Reasoning: [What route keywords did you find?]
-  Evidence: [Quote the exact words that indicate route]
+  Reasoning: [What route keywords did you find? OR: Why data is insufficient]
+  Evidence: [Quote the exact words, OR: "No route information found"]
 Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
-  Reasoning: [What is the status? If COMPLETED, what does hasResults say?]
-  Evidence: [Quote status and any result indicators]
+  Reasoning: [What is the status? OR: Why data is insufficient for determination]
+  Evidence: [Quote status, OR: "Status field not available"]
 Reason for Failure: [Category or N/A]
-  Evidence: [Quote whyStopped or result text, or "Not applicable"]
+  Evidence: [Quote whyStopped, OR: "Not applicable" / "No failure reason data"]
 Peptide: [True or False]
-  Evidence: [Quote from data]
+  Reasoning: [Evidence for peptide determination]
+  Evidence: [Quote from data, OR: "Insufficient data - defaulting to False"]
 Sequence: [Sequence or N/A]
 DRAMP Name: [Name or N/A]
 Study IDs: [PMIDs or N/A]
-Comments: [Any notes]
+Comments: [Any notes, including data quality observations]
 
 Begin your annotation now:
 """)
@@ -1278,7 +1484,19 @@ Begin your annotation now:
 
         if not ct_source.get("success"):
             logger.debug("Clinical trials source not available or unsuccessful")
-            return "Clinical trial data not available."
+            return """**ClinicalTrials.gov Data: NOT AVAILABLE**
+
+⚠️ CRITICAL: Primary data source is missing. This significantly impacts annotation reliability.
+
+**FALLBACK GUIDANCE:**
+- Classification: Use 'Other' unless other sources strongly indicate AMP
+- Delivery Mode: Use 'Other' - no intervention data available
+- Outcome: Use 'Unknown' - no status data available
+- Reason for Failure: Use 'N/A'
+- Peptide: Use 'False' unless drug name in other sources indicates peptide
+
+Please proceed with other available data sources, but note reduced confidence.
+"""
         
         ct_data = ct_source.get("data", {})
         protocol = ct_data.get("protocolSection", {})
@@ -1498,35 +1716,50 @@ Begin your annotation now:
         Format UniProt data with ACTUAL SEQUENCES extracted.
 
         Returns:
-            Formatted UniProt data string, or empty string if unavailable
+            Formatted UniProt data string, or guidance message if unavailable
         """
         try:
             extended_source = results.get("sources", {}).get("extended", {})
             if not extended_source:
                 logger.debug("No extended source data available for UniProt")
-                return ""
+                return self._get_uniprot_fallback_message("No extended search data")
 
             uniprot = extended_source.get("uniprot", {})
             if not isinstance(uniprot, dict):
                 logger.warning(f"Unexpected uniprot data type: {type(uniprot)}")
-                return ""
+                return self._get_uniprot_fallback_message("Invalid data format")
 
             if not uniprot.get("success"):
                 logger.debug("UniProt query was not successful")
-                return ""
+                return self._get_uniprot_fallback_message("Query unsuccessful")
 
             uniprot_data = uniprot.get("data", {})
             if not isinstance(uniprot_data, dict):
                 logger.warning(f"Unexpected uniprot_data type: {type(uniprot_data)}")
-                return ""
+                return self._get_uniprot_fallback_message("Invalid data format")
 
             uniprot_results = uniprot_data.get("results", [])
         except Exception as e:
             logger.error(f"Error extracting UniProt data: {e}")
-            return ""
-        
+            return self._get_uniprot_fallback_message(f"Error: {e}")
+
         if not uniprot_results:
-            return ""
+            return self._get_uniprot_fallback_message("No matching proteins found")
+
+    def _get_uniprot_fallback_message(self, reason: str) -> str:
+        """Return fallback guidance when UniProt data is unavailable."""
+        return f"""**UniProt Data: NOT AVAILABLE** ({reason})
+
+**IMPACT ON ANNOTATION:**
+- Sequence: Use 'N/A' - no protein sequence data available
+- Peptide: Determine from intervention name/description in clinical trials data
+  - Look for peptide indicators: "-tide" suffix, known peptide names, "peptide" in description
+  - Default to 'False' if unclear
+
+**GUIDANCE:**
+- Check DRAMP or other extended sources if available
+- Review intervention descriptions for peptide-related terminology
+"""
         
         lines = []
         lines.append(f"**Total UniProt Results:** {len(uniprot_results)}")
@@ -1611,13 +1844,23 @@ Begin your annotation now:
         Format extended API search data (DRAMP, DuckDuckGo, OpenFDA, Scholar).
 
         Returns:
-            Formatted extended data string, or empty string if unavailable
+            Formatted extended data string, or guidance if unavailable
         """
         extended_source = results.get("sources", {}).get("extended", {})
 
         if not extended_source:
             logger.debug("No extended source data available")
-            return ""
+            return """**Extended Search Data: NOT AVAILABLE**
+
+Extended databases (DRAMP, OpenFDA, web search, Google Scholar) were not queried or returned no data.
+
+**IMPACT:**
+- Sequence: May not have DRAMP peptide database matches
+- Classification: No additional antimicrobial peptide database confirmation
+- Delivery Mode: No FDA drug route information
+
+**GUIDANCE:** Proceed with ClinicalTrials.gov and literature data.
+"""
 
         lines = []
         has_data = False
@@ -1737,20 +1980,28 @@ Begin your annotation now:
         Format PubMed data.
 
         Returns:
-            Formatted PubMed data string, or empty string if unavailable
+            Formatted PubMed data string, or guidance if unavailable
         """
         pubmed_source = results.get("sources", {}).get("pubmed", {})
 
         if not pubmed_source.get("success"):
             logger.debug("PubMed source not available or unsuccessful")
-            return ""
+            return """**PubMed Literature: NOT AVAILABLE**
+
+**IMPACT:** No published literature context for this trial.
+**GUIDANCE:** Rely on ClinicalTrials.gov descriptions for classification evidence.
+"""
 
         pubmed_data = pubmed_source.get("data", {})
         articles = pubmed_data.get("articles", [])
 
         if not articles:
             logger.debug("No PubMed articles found")
-            return ""
+            return """**PubMed Literature: No articles found**
+
+**NOTE:** No published literature directly linked to this trial.
+This is common for newer or smaller trials. Proceed with other data sources.
+"""
 
         lines = []
         lines.append(f"**Total Articles Found:** {pubmed_data.get('total_found', 0)}")

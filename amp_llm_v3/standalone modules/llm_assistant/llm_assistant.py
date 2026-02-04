@@ -118,12 +118,62 @@ class AssistantConfig:
     DEFAULT_TOP_K = 40
     DEFAULT_NUM_CTX = 4096
     DEFAULT_NUM_PREDICT = 600
-    
+    DEFAULT_REPEAT_PENALTY = 1.1
+
     # Verification parameters (can be tuned separately)
     VERIFICATION_TEMPERATURE = float(os.getenv("VERIFICATION_TEMPERATURE", "0.1"))
     VERIFICATION_NUM_PREDICT = 800  # May need more tokens for corrections
 
 config = AssistantConfig()
+
+
+# Runtime model parameters (can be modified via API)
+class RuntimeModelParameters:
+    """Runtime-adjustable model parameters with defaults from config."""
+
+    def __init__(self):
+        self.reset_to_defaults()
+
+    def reset_to_defaults(self):
+        """Reset all parameters to their default values."""
+        self.temperature = config.DEFAULT_TEMPERATURE
+        self.top_p = config.DEFAULT_TOP_P
+        self.top_k = config.DEFAULT_TOP_K
+        self.num_ctx = config.DEFAULT_NUM_CTX
+        self.num_predict = config.DEFAULT_NUM_PREDICT
+        self.repeat_penalty = config.DEFAULT_REPEAT_PENALTY
+
+    def update(self, **kwargs):
+        """Update parameters from kwargs, ignoring None values."""
+        for key, value in kwargs.items():
+            if value is not None and hasattr(self, key):
+                setattr(self, key, value)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Return current parameters as dictionary."""
+        return {
+            "temperature": self.temperature,
+            "top_p": self.top_p,
+            "top_k": self.top_k,
+            "num_ctx": self.num_ctx,
+            "num_predict": self.num_predict,
+            "repeat_penalty": self.repeat_penalty,
+        }
+
+    def get_defaults(self) -> Dict[str, Any]:
+        """Return default parameter values."""
+        return {
+            "temperature": config.DEFAULT_TEMPERATURE,
+            "top_p": config.DEFAULT_TOP_P,
+            "top_k": config.DEFAULT_TOP_K,
+            "num_ctx": config.DEFAULT_NUM_CTX,
+            "num_predict": config.DEFAULT_NUM_PREDICT,
+            "repeat_penalty": config.DEFAULT_REPEAT_PENALTY,
+        }
+
+
+# Global runtime parameters instance
+runtime_params = RuntimeModelParameters()
 
 
 # ============================================================================
@@ -383,6 +433,55 @@ class ParsedTrialInfo(BaseModel):
     failure_reason_info: Dict[str, Any]
     peptide_info: Dict[str, Any]
     combined_text: str
+
+
+class QualityWeightsRequest(BaseModel):
+    """Request model for updating quality score weights."""
+    source_weights: Optional[Dict[str, float]] = Field(
+        default=None,
+        description="Weights for data source quality scoring (e.g., {'clinical_trials': 0.4, 'pubmed': 0.15})"
+    )
+    field_weights: Optional[Dict[str, Dict[str, float]]] = Field(
+        default=None,
+        description="Weights for field-level quality scoring (e.g., {'classification': {'brief_summary': 0.25}})"
+    )
+
+
+class QualityWeightsResponse(BaseModel):
+    """Response model for quality score weights."""
+    source_weights: Dict[str, float] = Field(description="Current source-level weights")
+    field_weights: Dict[str, Dict[str, float]] = Field(description="Current field-level weights")
+    documentation_url: str = Field(default="/quality-weights/docs", description="URL for weight documentation")
+
+
+class ModelParametersRequest(BaseModel):
+    """Request model for LLM generation parameters."""
+    temperature: Optional[float] = Field(default=None, ge=0.0, le=2.0)
+    top_p: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    top_k: Optional[int] = Field(default=None, ge=1, le=100)
+    num_ctx: Optional[int] = Field(default=None, ge=512, le=32768)
+    num_predict: Optional[int] = Field(default=None, ge=50, le=4000)
+    repeat_penalty: Optional[float] = Field(default=None, ge=1.0, le=2.0)
+
+
+class ModelParameterInfo(BaseModel):
+    """Information about a single model parameter."""
+    name: str
+    value: Any
+    default: Any
+    min: Optional[float] = None
+    max: Optional[float] = None
+    step: Optional[float] = None
+    description: str
+    effect_low: str
+    effect_high: str
+    recommendation: str
+
+
+class ModelParametersResponse(BaseModel):
+    """Response model for LLM generation parameters with documentation."""
+    parameters: Dict[str, ModelParameterInfo]
+    presets: Dict[str, Dict[str, Any]]
 
 
 # ============================================================================
@@ -1031,22 +1130,39 @@ Now extract the data:
         return prompt
     
     async def call_llm(
-        self, 
-        model: str, 
-        prompt: str, 
-        temperature: float = 0.1,
+        self,
+        model: str,
+        prompt: str,
+        temperature: float = None,
         system_prompt: Optional[str] = None,
-        timeout: float = None
+        timeout: float = None,
+        use_runtime_params: bool = True
     ) -> str:
         """Call Ollama LLM for annotation using chat endpoint."""
-        logger.info(f"🤖 Calling LLM: {model} (temp={temperature})")
-        
+        # Use runtime parameters if enabled, otherwise use provided/default values
+        if use_runtime_params:
+            actual_temp = temperature if temperature is not None else runtime_params.temperature
+            actual_top_p = runtime_params.top_p
+            actual_top_k = runtime_params.top_k
+            actual_num_ctx = runtime_params.num_ctx
+            actual_num_predict = runtime_params.num_predict
+            actual_repeat_penalty = runtime_params.repeat_penalty
+        else:
+            actual_temp = temperature if temperature is not None else config.DEFAULT_TEMPERATURE
+            actual_top_p = config.DEFAULT_TOP_P
+            actual_top_k = config.DEFAULT_TOP_K
+            actual_num_ctx = config.DEFAULT_NUM_CTX
+            actual_num_predict = config.DEFAULT_NUM_PREDICT
+            actual_repeat_penalty = config.DEFAULT_REPEAT_PENALTY
+
+        logger.info(f"🤖 Calling LLM: {model} (temp={actual_temp}, top_p={actual_top_p}, ctx={actual_num_ctx})")
+
         if system_prompt is None:
             system_prompt = self.get_system_prompt()
-        
+
         if timeout is None:
             timeout = config.LLM_TIMEOUT
-        
+
         try:
             async with httpx.AsyncClient(timeout=timeout) as client:
                 response = await client.post(
@@ -1059,10 +1175,12 @@ Now extract the data:
                         ],
                         "stream": False,
                         "options": {
-                            "temperature": temperature,
-                            "top_p": config.DEFAULT_TOP_P,
-                            "num_ctx": config.DEFAULT_NUM_CTX,
-                            "num_predict": config.DEFAULT_NUM_PREDICT,
+                            "temperature": actual_temp,
+                            "top_p": actual_top_p,
+                            "top_k": actual_top_k,
+                            "num_ctx": actual_num_ctx,
+                            "num_predict": actual_num_predict,
+                            "repeat_penalty": actual_repeat_penalty,
                             "stop": ["TRIAL DATA:", "---", "\n\n\n"]
                         }
                     }
@@ -1361,7 +1479,11 @@ async def root():
             "export_csv": "POST /export-csv",
             "health": "GET /health",
             "models": "GET /models",
-            "verification_config": "GET /verification-config"
+            "verification_config": "GET /verification-config",
+            "quality_weights": "GET/POST /quality-weights",
+            "quality_weights_defaults": "GET /quality-weights/defaults",
+            "quality_weights_reset": "POST /quality-weights/reset",
+            "quality_weights_docs": "GET /quality-weights/docs"
         }
     }
 
@@ -1414,13 +1536,13 @@ async def get_verification_config():
     # Check if verification model is available
     model_available = False
     model_info = {}
-    
+
     try:
         model_info = await get_ollama_model_info(config.VERIFICATION_MODEL)
         model_available = bool(model_info.get("digest"))
     except Exception:
         pass
-    
+
     return {
         "enabled": config.VERIFICATION_ENABLED,
         "model": config.VERIFICATION_MODEL,
@@ -1433,6 +1555,488 @@ async def get_verification_config():
             "VERIFICATION_ENABLED": "Enable/disable verification (default: true)",
             "VERIFICATION_TEMPERATURE": "Temperature for verification (default: 0.1)"
         }
+    }
+
+
+# ============================================================================
+# Quality Score Weight Configuration Endpoints
+# ============================================================================
+
+@app.get("/quality-weights", response_model=QualityWeightsResponse)
+async def get_quality_weights():
+    """
+    Get the current quality score weights.
+
+    Returns both source-level weights (for data availability scoring)
+    and field-level weights (for annotation field completeness scoring).
+    """
+    source_weights = {}
+    field_weights = {}
+
+    # Get source weights from PromptGenerator
+    if HAS_PROMPT_GEN and annotator.prompt_generator:
+        source_weights = annotator.prompt_generator.get_current_weights()
+    else:
+        source_weights = PromptGenerator.get_default_weights() if HAS_PROMPT_GEN else {}
+
+    # Get field weights from JSON Parser
+    if HAS_JSON_PARSER:
+        field_weights = ClinicalTrialAnnotationParser.get_default_weights()
+
+    return QualityWeightsResponse(
+        source_weights=source_weights,
+        field_weights=field_weights,
+        documentation_url="/quality-weights/docs"
+    )
+
+
+@app.get("/quality-weights/defaults")
+async def get_default_quality_weights():
+    """
+    Get the default quality score weights.
+
+    Use this to see the original default values before any modifications.
+    """
+    source_weights = {}
+    field_weights = {}
+
+    if HAS_PROMPT_GEN:
+        source_weights = PromptGenerator.get_default_weights()
+
+    if HAS_JSON_PARSER:
+        field_weights = ClinicalTrialAnnotationParser.get_default_weights()
+
+    return {
+        "source_weights": source_weights,
+        "field_weights": field_weights,
+        "description": "Default weights - use POST /quality-weights to modify"
+    }
+
+
+@app.post("/quality-weights", response_model=QualityWeightsResponse)
+async def set_quality_weights(request: QualityWeightsRequest):
+    """
+    Update quality score weights.
+
+    You can update source weights, field weights, or both.
+    Only the weights you provide will be updated.
+
+    Example request body:
+    ```json
+    {
+        "source_weights": {
+            "clinical_trials": 0.5,
+            "pubmed": 0.2,
+            "uniprot": 0.15
+        }
+    }
+    ```
+    """
+    # Update source weights if provided
+    if request.source_weights is not None and HAS_PROMPT_GEN and annotator.prompt_generator:
+        # Merge with existing weights
+        current = annotator.prompt_generator.get_current_weights()
+        current.update(request.source_weights)
+        annotator.prompt_generator.set_source_weights(current)
+        logger.info(f"Updated source weights: {list(request.source_weights.keys())}")
+
+    # Note: Field weights are currently per-instance in the parser
+    # For API-level changes, we'd need to store them globally or recreate parsers with new weights
+    if request.field_weights is not None:
+        logger.info(f"Field weights update requested for: {list(request.field_weights.keys())}")
+        # Field weights are applied when creating parser instances
+        # Store them in a module-level variable for new parser instances
+        global _custom_field_weights
+        _custom_field_weights = request.field_weights
+
+    return await get_quality_weights()
+
+
+@app.post("/quality-weights/reset")
+async def reset_quality_weights():
+    """
+    Reset all quality score weights to their default values.
+    """
+    if HAS_PROMPT_GEN and annotator.prompt_generator:
+        annotator.prompt_generator.reset_weights_to_default()
+        logger.info("Reset source weights to defaults")
+
+    # Reset field weights
+    global _custom_field_weights
+    _custom_field_weights = None
+    logger.info("Reset field weights to defaults")
+
+    return {
+        "status": "success",
+        "message": "Quality weights reset to defaults",
+        "current_weights": await get_quality_weights()
+    }
+
+
+@app.get("/quality-weights/docs")
+async def get_quality_weights_documentation():
+    """
+    Get detailed documentation about quality score weights.
+
+    Explains the reasoning behind default weights and how to adjust them.
+    """
+    return {
+        "title": "Quality Score Weights Documentation",
+        "overview": """
+Quality scores measure data completeness for clinical trial annotation.
+There are two types of weights:
+
+1. **Source Weights**: Measure which data sources are available
+2. **Field Weights**: Measure data completeness for each annotation field
+
+Higher weights = more important for quality assessment.
+""",
+        "source_weights": {
+            "description": "Weights for data source availability scoring",
+            "total_should_equal": "~1.0 (weights are summed for available sources)",
+            "weights": {
+                "clinical_trials": {
+                    "default": 0.40,
+                    "reasoning": "Primary source containing trial status, interventions, outcomes, and all core metadata. Most critical for accurate annotation."
+                },
+                "pubmed": {
+                    "default": 0.15,
+                    "reasoning": "Published literature provides context, validation, and additional evidence. Important for classification and peptide determination."
+                },
+                "uniprot": {
+                    "default": 0.15,
+                    "reasoning": "Critical for sequence data and peptide/protein identification. Required for Sequence field and helps with Peptide determination."
+                },
+                "pmc": {
+                    "default": 0.10,
+                    "reasoning": "Full-text articles provide deeper context than PubMed abstracts. Moderately important for evidence extraction."
+                },
+                "openfda": {
+                    "default": 0.05,
+                    "reasoning": "Provides FDA drug information including approved routes of administration. Helpful for Delivery Mode but not critical."
+                },
+                "duckduckgo": {
+                    "default": 0.05,
+                    "reasoning": "Web search provides supplementary context. Lower weight due to variable reliability."
+                },
+                "dramp": {
+                    "default": 0.05,
+                    "reasoning": "Antimicrobial peptide database. Highly specific when available - if a drug is in DRAMP, it's almost certainly an AMP."
+                },
+                "pmc_bioc": {
+                    "default": 0.05,
+                    "reasoning": "BioC-annotated data from PMC. Provides structured entity extraction but is supplementary."
+                },
+                "serpapi": {
+                    "default": 0.00,
+                    "reasoning": "Paid API - disabled by default. Enable if you have API key and want Google Search results."
+                },
+                "scholar": {
+                    "default": 0.00,
+                    "reasoning": "Paid API - disabled by default. Enable if you have API key and want Google Scholar results."
+                }
+            }
+        },
+        "field_weights": {
+            "description": "Weights for annotation field completeness",
+            "fields": {
+                "classification": {
+                    "key_fields": ["brief_summary", "conditions", "interventions", "brief_title", "keywords"],
+                    "reasoning": "Classification (AMP vs Other) depends on understanding the drug mechanism and target conditions."
+                },
+                "delivery_mode": {
+                    "key_fields": ["interventions", "arm_groups", "brief_summary"],
+                    "reasoning": "Delivery mode is primarily determined from intervention descriptions and arm group details."
+                },
+                "outcome": {
+                    "key_fields": ["overall_status", "why_stopped", "has_results", "completion_date"],
+                    "reasoning": "Outcome is directly determined from trial status fields. Status is the primary determinant."
+                },
+                "failure_reason": {
+                    "key_fields": ["why_stopped", "overall_status"],
+                    "reasoning": "Failure reason is almost entirely from the why_stopped field when present."
+                },
+                "peptide": {
+                    "key_fields": ["interventions", "brief_title", "keywords", "brief_summary"],
+                    "reasoning": "Peptide determination relies on drug name and description analysis."
+                }
+            }
+        },
+        "adjustment_guide": {
+            "when_to_increase_weight": [
+                "Source is highly reliable for your use case",
+                "Source provides unique information not available elsewhere",
+                "You have high-quality data from this source"
+            ],
+            "when_to_decrease_weight": [
+                "Source is unreliable or inconsistent",
+                "Source data is often incomplete",
+                "Source is less relevant for your annotation focus"
+            ],
+            "example_scenarios": [
+                {
+                    "scenario": "Focus on peptide therapeutics",
+                    "recommendation": "Increase uniprot and dramp weights, decrease openfda weight"
+                },
+                {
+                    "scenario": "Only using ClinicalTrials.gov data",
+                    "recommendation": "Set clinical_trials to 1.0, others to 0.0"
+                },
+                {
+                    "scenario": "Literature-heavy analysis",
+                    "recommendation": "Increase pubmed and pmc weights"
+                }
+            ]
+        },
+        "api_usage": {
+            "get_current": "GET /quality-weights",
+            "get_defaults": "GET /quality-weights/defaults",
+            "update": "POST /quality-weights with JSON body",
+            "reset": "POST /quality-weights/reset"
+        }
+    }
+
+
+# Module-level storage for custom field weights
+_custom_field_weights = None
+
+
+# ============================================================================
+# Model Parameters Configuration Endpoints
+# ============================================================================
+
+# Parameter documentation with detailed explanations
+MODEL_PARAMETER_DOCS = {
+    "temperature": {
+        "name": "Temperature",
+        "default": config.DEFAULT_TEMPERATURE,
+        "min": 0.0,
+        "max": 2.0,
+        "step": 0.05,
+        "description": "Controls randomness in the model's output. Affects how 'creative' or 'deterministic' responses are.",
+        "effect_low": "Lower values (0.0-0.3): More deterministic, focused, and consistent outputs. The model picks the most likely tokens. Best for factual extraction and structured data.",
+        "effect_high": "Higher values (0.7-2.0): More random and creative outputs. The model explores less likely tokens. Can introduce errors in structured tasks.",
+        "recommendation": "For clinical trial annotation, use 0.1-0.2 for consistent, accurate extraction. Only increase if outputs are too repetitive."
+    },
+    "top_p": {
+        "name": "Top P (Nucleus Sampling)",
+        "default": config.DEFAULT_TOP_P,
+        "min": 0.0,
+        "max": 1.0,
+        "step": 0.05,
+        "description": "Controls diversity by limiting token selection to a cumulative probability threshold. Also known as 'nucleus sampling'.",
+        "effect_low": "Lower values (0.1-0.5): Only considers the most probable tokens. Very focused but may miss nuanced answers.",
+        "effect_high": "Higher values (0.9-1.0): Considers a wider range of tokens. More diverse outputs but maintains some probability weighting.",
+        "recommendation": "Use 0.85-0.95 for annotation tasks. This balances diversity with accuracy. Works in conjunction with temperature."
+    },
+    "top_k": {
+        "name": "Top K",
+        "default": config.DEFAULT_TOP_K,
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "description": "Limits token selection to the K most likely tokens at each step. Hard cutoff unlike Top P's probability threshold.",
+        "effect_low": "Lower values (1-10): Very focused, only top few tokens considered. Can be too restrictive for complex reasoning.",
+        "effect_high": "Higher values (50-100): More tokens available for selection. Allows more varied responses but may introduce noise.",
+        "recommendation": "Use 30-50 for annotation. Too low (e.g., 5) may prevent correct answers; too high adds unnecessary randomness."
+    },
+    "num_ctx": {
+        "name": "Context Window",
+        "default": config.DEFAULT_NUM_CTX,
+        "min": 512,
+        "max": 32768,
+        "step": 512,
+        "description": "Maximum number of tokens the model can process as input (prompt + context). Larger = more data but slower and more memory.",
+        "effect_low": "Lower values (512-2048): Faster processing, less memory. May truncate long trial data, missing important information.",
+        "effect_high": "Higher values (8192-32768): Can process entire trial data with all sources. Slower and requires more GPU memory.",
+        "recommendation": "Use 4096-8192 for most trials. Increase to 16384 if you have many literature sources. Requires sufficient GPU VRAM."
+    },
+    "num_predict": {
+        "name": "Max Output Tokens",
+        "default": config.DEFAULT_NUM_PREDICT,
+        "min": 50,
+        "max": 4000,
+        "step": 50,
+        "description": "Maximum number of tokens the model can generate in its response. Controls output length.",
+        "effect_low": "Lower values (50-200): Very short responses. May cut off before completing all annotation fields.",
+        "effect_high": "Higher values (1000-4000): Allows detailed reasoning and complete annotations. Takes longer to generate.",
+        "recommendation": "Use 600-800 for standard annotation. Increase to 1000+ if you want detailed reasoning for each field."
+    },
+    "repeat_penalty": {
+        "name": "Repeat Penalty",
+        "default": config.DEFAULT_REPEAT_PENALTY,
+        "min": 1.0,
+        "max": 2.0,
+        "step": 0.05,
+        "description": "Penalizes the model for repeating tokens. Helps prevent repetitive or looping outputs.",
+        "effect_low": "Lower values (1.0-1.1): Minimal penalty. May result in repetitive phrases or stuck loops on some models.",
+        "effect_high": "Higher values (1.3-2.0): Strong penalty against repetition. May force unnatural word choices to avoid repeating.",
+        "recommendation": "Use 1.1-1.15 for annotation. Prevents loops without forcing awkward phrasing."
+    }
+}
+
+# Parameter presets for common use cases
+MODEL_PARAMETER_PRESETS = {
+    "default": {
+        "name": "Default (Balanced)",
+        "description": "Balanced settings for general annotation tasks",
+        "parameters": {
+            "temperature": 0.15,
+            "top_p": 0.9,
+            "top_k": 40,
+            "num_ctx": 4096,
+            "num_predict": 600,
+            "repeat_penalty": 1.1
+        }
+    },
+    "precise": {
+        "name": "Precise (Low Creativity)",
+        "description": "Maximum consistency for factual extraction. Use when accuracy is critical.",
+        "parameters": {
+            "temperature": 0.05,
+            "top_p": 0.8,
+            "top_k": 20,
+            "num_ctx": 4096,
+            "num_predict": 600,
+            "repeat_penalty": 1.15
+        }
+    },
+    "detailed": {
+        "name": "Detailed (More Reasoning)",
+        "description": "Longer outputs with more detailed reasoning. Use for complex cases.",
+        "parameters": {
+            "temperature": 0.2,
+            "top_p": 0.9,
+            "top_k": 40,
+            "num_ctx": 8192,
+            "num_predict": 1000,
+            "repeat_penalty": 1.1
+        }
+    },
+    "fast": {
+        "name": "Fast (Reduced Context)",
+        "description": "Faster processing with smaller context. Use for quick annotations.",
+        "parameters": {
+            "temperature": 0.1,
+            "top_p": 0.85,
+            "top_k": 30,
+            "num_ctx": 2048,
+            "num_predict": 400,
+            "repeat_penalty": 1.1
+        }
+    },
+    "large_context": {
+        "name": "Large Context (Full Data)",
+        "description": "Maximum context for trials with extensive literature. Requires more GPU memory.",
+        "parameters": {
+            "temperature": 0.15,
+            "top_p": 0.9,
+            "top_k": 40,
+            "num_ctx": 16384,
+            "num_predict": 800,
+            "repeat_penalty": 1.1
+        }
+    }
+}
+
+
+@app.get("/model-parameters", response_model=ModelParametersResponse)
+async def get_model_parameters():
+    """
+    Get current model parameters with detailed documentation.
+
+    Returns parameter values, ranges, descriptions, and recommended settings.
+    Ideal for building UI controls with tooltips.
+    """
+    current = runtime_params.to_dict()
+    defaults = runtime_params.get_defaults()
+
+    parameters = {}
+    for param_name, doc in MODEL_PARAMETER_DOCS.items():
+        parameters[param_name] = ModelParameterInfo(
+            name=doc["name"],
+            value=current.get(param_name),
+            default=defaults.get(param_name),
+            min=doc.get("min"),
+            max=doc.get("max"),
+            step=doc.get("step"),
+            description=doc["description"],
+            effect_low=doc["effect_low"],
+            effect_high=doc["effect_high"],
+            recommendation=doc["recommendation"]
+        )
+
+    return ModelParametersResponse(
+        parameters=parameters,
+        presets=MODEL_PARAMETER_PRESETS
+    )
+
+
+@app.post("/model-parameters")
+async def set_model_parameters(request: ModelParametersRequest):
+    """
+    Update model parameters.
+
+    Only the parameters you provide will be updated.
+    Use GET /model-parameters to see valid ranges.
+    """
+    updates = request.model_dump(exclude_none=True)
+
+    if updates:
+        runtime_params.update(**updates)
+        logger.info(f"Updated model parameters: {list(updates.keys())}")
+
+    return {
+        "status": "success",
+        "message": f"Updated {len(updates)} parameter(s)",
+        "current": runtime_params.to_dict()
+    }
+
+
+@app.post("/model-parameters/reset")
+async def reset_model_parameters():
+    """Reset all model parameters to default values."""
+    runtime_params.reset_to_defaults()
+    logger.info("Reset model parameters to defaults")
+
+    return {
+        "status": "success",
+        "message": "Model parameters reset to defaults",
+        "current": runtime_params.to_dict()
+    }
+
+
+@app.post("/model-parameters/preset/{preset_name}")
+async def apply_model_preset(preset_name: str):
+    """
+    Apply a predefined parameter preset.
+
+    Available presets: default, precise, detailed, fast, large_context
+    """
+    if preset_name not in MODEL_PARAMETER_PRESETS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown preset: {preset_name}. Available: {list(MODEL_PARAMETER_PRESETS.keys())}"
+        )
+
+    preset = MODEL_PARAMETER_PRESETS[preset_name]
+    runtime_params.update(**preset["parameters"])
+    logger.info(f"Applied preset: {preset_name}")
+
+    return {
+        "status": "success",
+        "preset": preset_name,
+        "preset_description": preset["description"],
+        "current": runtime_params.to_dict()
+    }
+
+
+@app.get("/model-parameters/presets")
+async def get_model_presets():
+    """Get all available parameter presets with descriptions."""
+    return {
+        "presets": MODEL_PARAMETER_PRESETS,
+        "current": runtime_params.to_dict()
     }
 
 
