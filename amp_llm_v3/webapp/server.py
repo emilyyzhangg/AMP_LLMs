@@ -682,6 +682,40 @@ async def get_email_config_proxy():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/api/chat/jobs")
+async def list_jobs_proxy():
+    """Proxy job listing to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/chat/jobs")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Job listing proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/api/chat/jobs/{job_id}")
+async def cancel_job_proxy(job_id: str):
+    """Proxy job cancellation to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.delete(f"{CHAT_SERVICE_URL}/chat/jobs/{job_id}")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Job cancel proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/chat/annotate")
 async def annotate_manual_proxy(request: dict):
     """

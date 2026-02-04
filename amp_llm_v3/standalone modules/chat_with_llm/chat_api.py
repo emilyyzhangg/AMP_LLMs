@@ -1762,6 +1762,98 @@ async def download_annotation_results(job_id: str):
     )
 
 
+@app.get("/chat/jobs")
+async def list_annotation_jobs():
+    """
+    List all annotation jobs (active and recent).
+
+    Returns job details including:
+    - job_id, status, progress
+    - model, total_trials, processed_trials
+    - notification_email (if set)
+    - created_at, elapsed time
+    """
+    jobs_list = []
+    now = datetime.now()
+
+    for job_id, job in job_manager.jobs.items():
+        elapsed_seconds = (now - job.created_at).total_seconds()
+
+        # Calculate progress percentage
+        percent = 0
+        if job.total_trials > 0:
+            percent = round((job.processed_trials / job.total_trials) * 100)
+
+        jobs_list.append({
+            "job_id": job.job_id,
+            "status": job.status.value,
+            "progress": job.progress,
+            "current_step": job.current_step,
+            "current_nct": job.current_nct,
+            "model": job.model,
+            "total_trials": job.total_trials,
+            "processed_trials": job.processed_trials,
+            "percent_complete": percent,
+            "original_filename": job.original_filename,
+            "notification_email": job.notification_email,
+            "created_at": job.created_at.isoformat(),
+            "elapsed_seconds": round(elapsed_seconds),
+            "has_result": job.result is not None
+        })
+
+    # Sort by created_at descending (newest first)
+    jobs_list.sort(key=lambda x: x["created_at"], reverse=True)
+
+    return {
+        "jobs": jobs_list,
+        "total": len(jobs_list),
+        "active": len([j for j in jobs_list if j["status"] in ("pending", "processing")])
+    }
+
+
+@app.delete("/chat/jobs/{job_id}")
+async def cancel_annotation_job(job_id: str):
+    """
+    Cancel a running annotation job.
+
+    This will:
+    1. Cancel the asyncio task if running
+    2. Mark the job as failed
+    3. Clean up any partial output
+    """
+    job = job_manager.jobs.get(job_id)
+
+    if not job:
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+
+    if job.status not in (JobStatus.PENDING, JobStatus.PROCESSING):
+        return {
+            "status": "already_finished",
+            "job_id": job_id,
+            "job_status": job.status.value,
+            "message": f"Job already {job.status.value}, cannot cancel"
+        }
+
+    # Cancel the asyncio task if it exists
+    if job._task and not job._task.done():
+        job._task.cancel()
+        logger.info(f"🛑 Cancelled task for job {job_id}")
+
+    # Update job status
+    job.status = JobStatus.FAILED
+    job.error = "Cancelled by user"
+    job.progress = "Cancelled"
+    job.updated_at = datetime.now()
+
+    logger.info(f"🛑 Job {job_id} cancelled by user")
+
+    return {
+        "status": "cancelled",
+        "job_id": job_id,
+        "message": "Job cancelled successfully"
+    }
+
+
 # ============================================================================
 # Other Chat Routes
 # ============================================================================

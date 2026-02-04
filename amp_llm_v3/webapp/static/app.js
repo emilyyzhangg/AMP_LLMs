@@ -31,6 +31,10 @@ const app = {
     // Session-based chat storage (per model)
     sessionChats: {},
 
+    // Jobs management
+    jobsPollingInterval: null,
+    jobsPanelOpen: false,
+
     nct2step: {
         currentNCT: null,
         step1Results: null,
@@ -42,6 +46,182 @@ const app = {
     // API registry
     apiRegistry: null,
     selectedAPIs: new Set(),
+
+    // =========================================================================
+    // Jobs Management
+    // =========================================================================
+
+    async showJobsPanel() {
+        this.jobsPanelOpen = true;
+        document.getElementById('jobs-modal')?.classList.remove('hidden');
+        await this.refreshJobs();
+    },
+
+    hideJobsPanel() {
+        this.jobsPanelOpen = false;
+        document.getElementById('jobs-modal')?.classList.add('hidden');
+    },
+
+    async refreshJobs() {
+        const jobsList = document.getElementById('jobs-list');
+        if (!jobsList) return;
+
+        jobsList.innerHTML = '<div class="loading">Loading jobs...</div>';
+
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/jobs`);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            this.renderJobsList(data.jobs || []);
+            this.updateJobsBadge(data.active || 0);
+
+        } catch (error) {
+            console.error('Failed to fetch jobs:', error);
+            jobsList.innerHTML = `
+                <div class="no-jobs">
+                    <div class="no-jobs-icon">⚠️</div>
+                    <p>Failed to load jobs</p>
+                    <p style="font-size: 12px;">${error.message}</p>
+                </div>
+            `;
+        }
+    },
+
+    renderJobsList(jobs) {
+        const jobsList = document.getElementById('jobs-list');
+        if (!jobsList) return;
+
+        if (jobs.length === 0) {
+            jobsList.innerHTML = `
+                <div class="no-jobs">
+                    <div class="no-jobs-icon">📋</div>
+                    <p>No annotation jobs</p>
+                    <p style="font-size: 12px;">Jobs will appear here when you start annotating</p>
+                </div>
+            `;
+            return;
+        }
+
+        jobsList.innerHTML = jobs.map(job => {
+            const isActive = job.status === 'processing' || job.status === 'pending';
+            const elapsed = this.formatElapsedTime(job.elapsed_seconds);
+
+            return `
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="job-id">Job: ${job.job_id.substring(0, 8)}...</span>
+                        <span class="job-status ${job.status}">${job.status.toUpperCase()}</span>
+                    </div>
+
+                    <div class="job-details">
+                        <div class="job-detail"><strong>Model:</strong> ${job.model || 'Unknown'}</div>
+                        <div class="job-detail"><strong>Trials:</strong> ${job.processed_trials}/${job.total_trials}</div>
+                        <div class="job-detail"><strong>Source:</strong> ${job.original_filename || 'Manual'}</div>
+                        <div class="job-detail"><strong>Elapsed:</strong> ${elapsed}</div>
+                        ${job.notification_email ? `<div class="job-detail"><strong>Email:</strong> ${job.notification_email}</div>` : ''}
+                        ${job.current_nct ? `<div class="job-detail"><strong>Current:</strong> ${job.current_nct}</div>` : ''}
+                    </div>
+
+                    ${job.total_trials > 0 ? `
+                        <div class="job-progress-bar">
+                            <div class="job-progress-fill" style="width: ${job.percent_complete}%"></div>
+                        </div>
+                    ` : ''}
+
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+                        ${job.progress || 'Queued'}
+                    </div>
+
+                    ${isActive ? `
+                        <div class="job-actions">
+                            <button class="btn-cancel" onclick="app.cancelJob('${job.job_id}')">
+                                🛑 Cancel Job
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+    },
+
+    formatElapsedTime(seconds) {
+        if (seconds < 60) return `${seconds}s`;
+        if (seconds < 3600) return `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
+        const hours = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        return `${hours}h ${mins}m`;
+    },
+
+    async cancelJob(jobId) {
+        if (!confirm(`Cancel job ${jobId.substring(0, 8)}...?\n\nThis will stop the annotation process.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/jobs/${jobId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Job cancelled:', result);
+                await this.refreshJobs();
+            } else {
+                const error = await response.text();
+                alert(`Failed to cancel job: ${error}`);
+            }
+        } catch (error) {
+            console.error('Failed to cancel job:', error);
+            alert(`Error cancelling job: ${error.message}`);
+        }
+    },
+
+    updateJobsBadge(activeCount) {
+        const badges = document.querySelectorAll('.jobs-badge');
+        badges.forEach(badge => {
+            if (activeCount > 0) {
+                badge.textContent = activeCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        });
+    },
+
+    startJobsPolling() {
+        // Poll for job updates every 10 seconds
+        if (this.jobsPollingInterval) {
+            clearInterval(this.jobsPollingInterval);
+        }
+
+        // Initial fetch
+        this.fetchJobCount();
+
+        this.jobsPollingInterval = setInterval(() => {
+            this.fetchJobCount();
+        }, 10000);
+    },
+
+    async fetchJobCount() {
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/jobs`);
+            if (response.ok) {
+                const data = await response.json();
+                this.updateJobsBadge(data.active || 0);
+
+                // If jobs panel is open, refresh the list
+                if (this.jobsPanelOpen) {
+                    this.renderJobsList(data.jobs || []);
+                }
+            }
+        } catch (error) {
+            // Silently fail - just for badge updates
+            console.debug('Jobs poll failed:', error);
+        }
+    },
 
     // =========================================================================
     // Initialization
@@ -318,6 +498,9 @@ const app = {
         document.getElementById('auth-section').classList.add('hidden');
         document.getElementById('main-app').classList.remove('hidden');
         this.showMenu();
+
+        // Start polling for job updates
+        this.startJobsPolling();
     },
 
     // =========================================================================
