@@ -5,12 +5,19 @@ Email notifications for annotation job completion.
 import os
 import smtplib
 import logging
+from pathlib import Path
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from typing import Optional
 from dotenv import load_dotenv
 
+# Load .env from current dir or parent directories (amp_llm_v3/.env)
 load_dotenv()
+# Also try to load from amp_llm_v3 root if not found
+_script_dir = Path(__file__).parent.resolve()
+_root_env = _script_dir.parent.parent / ".env"  # amp_llm_v3/.env
+if _root_env.exists():
+    load_dotenv(_root_env)
 
 logger = logging.getLogger(__name__)
 

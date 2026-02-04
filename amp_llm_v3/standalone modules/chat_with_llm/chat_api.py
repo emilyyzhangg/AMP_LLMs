@@ -20,10 +20,17 @@ UPDATED: Now includes git commit and full model version in CSV headers.
 UPDATED: Now loads all port configuration from .env file.
 """
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
+# First try current dir, then parent directories (amp_llm_v3/.env)
 load_dotenv()
+_script_dir = Path(__file__).parent.resolve()
+_root_env = _script_dir.parent.parent / ".env"  # amp_llm_v3/.env
+if _root_env.exists():
+    load_dotenv(_root_env)
+
 import logging
 import uuid
 import httpx
