@@ -2512,7 +2512,29 @@ const app = {
         // Show processing message with progress bar
         const processingId = this.addMessage('chat-container', 'system',
             `🔄 Starting annotation for ${nctIds.length} clinical trial(s)...\n\n` +
-            `⏳ Submitting job...`);
+            `⏳ Submitting job to server...`);
+
+        // Helper to update the processing message
+        const updateProcessingMsg = (msg) => {
+            const el = document.getElementById(processingId);
+            if (el) {
+                const contentEl = el.querySelector('.message-content');
+                if (contentEl) {
+                    contentEl.innerHTML = this.formatMessage(msg);
+                }
+            }
+        };
+
+        // Start a timer to show elapsed time during submission
+        const submitStartTime = Date.now();
+        const submitTimer = setInterval(() => {
+            const elapsed = Math.round((Date.now() - submitStartTime) / 1000);
+            updateProcessingMsg(
+                `🔄 Starting annotation for ${nctIds.length} clinical trial(s)...\n\n` +
+                `⏳ Connecting to annotation service... (${elapsed}s)\n\n` +
+                `_Waiting for server response..._`
+            );
+        }, 1000);
 
         try {
             console.log('📤 Sending async annotation request');
@@ -2532,21 +2554,34 @@ const app = {
                 console.log('📧 Email notification will be sent to:', this.annotationNotifyEmail);
             }
 
-            // Start async job
+            // Start async job with timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
             const response = await fetch(`${this.API_BASE}/chat/annotate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.apiKey}`
                 },
-                body: JSON.stringify(requestBody)
+                body: JSON.stringify(requestBody),
+                signal: controller.signal
             });
+
+            clearTimeout(timeoutId);
+            clearInterval(submitTimer);
 
             if (response.ok) {
                 const data = await response.json();
                 console.log('✅ Job started:', data);
 
                 if (data.job_id) {
+                    // Update message to show job started
+                    updateProcessingMsg(
+                        `🔄 **Annotation Job Started**\n\n` +
+                        `Job ID: \`${data.job_id.substring(0, 8)}...\`\n\n` +
+                        `⏳ Initializing processing pipeline...`
+                    );
                     // Poll for status with progress updates
                     await this.pollAnnotationStatus(data.job_id, processingId, nctIds.join(', '), nctIds.length);
                 } else {
@@ -2554,20 +2589,32 @@ const app = {
                     this.addMessage('chat-container', 'error', '❌ No job ID returned from server');
                 }
             } else {
+                clearInterval(submitTimer);
                 const errorText = await response.text();
                 document.getElementById(processingId)?.remove();
                 this.addMessage('chat-container', 'error', `❌ Failed to start annotation job\n\nError: ${errorText}`);
             }
 
         } catch (error) {
+            clearInterval(submitTimer);
             document.getElementById(processingId)?.remove();
             console.error('❌ Annotation error:', error);
 
-            this.addMessage('chat-container', 'error',
-                `❌ Connection Error\n\n` +
-                `${error.message}\n\n` +
-                `Cannot connect to Chat Service.\n\n` +
-                `Check services: ./services.sh status`);
+            if (error.name === 'AbortError') {
+                this.addMessage('chat-container', 'error',
+                    `❌ Request Timeout\n\n` +
+                    `The server took too long to respond.\n\n` +
+                    `This could mean:\n` +
+                    `• The annotation service is overloaded\n` +
+                    `• Network connectivity issues\n\n` +
+                    `Try again or check services: \`./services.sh status\``);
+            } else {
+                this.addMessage('chat-container', 'error',
+                    `❌ Connection Error\n\n` +
+                    `${error.message}\n\n` +
+                    `Cannot connect to Chat Service.\n\n` +
+                    `Check services: ./services.sh status`);
+            }
         }
     },
 
@@ -2576,6 +2623,8 @@ const app = {
         const startTime = Date.now();
         const maxPollTime = 30 * 60 * 1000; // 30 minutes max
         const pollInterval = 2000; // 2 seconds
+        let consecutiveErrors = 0;
+        const maxConsecutiveErrors = 5;
 
         while (true) {
             try {
@@ -2589,6 +2638,7 @@ const app = {
 
                 const status = await response.json();
                 console.log('📊 Job status:', status);
+                consecutiveErrors = 0; // Reset error count on success
 
                 // Update progress message
                 const elapsed = Math.round((Date.now() - startTime) / 1000);
@@ -2653,6 +2703,34 @@ const app = {
 
             } catch (error) {
                 console.error('Poll error:', error);
+                consecutiveErrors++;
+
+                // Update UI to show connection issue
+                const processingEl = document.getElementById(processingId);
+                if (processingEl) {
+                    const contentEl = processingEl.querySelector('.message-content');
+                    const elapsed = Math.round((Date.now() - startTime) / 1000);
+                    if (contentEl) {
+                        contentEl.innerHTML = this.formatMessage(
+                            `🔄 **Annotating ${totalTrials} trial(s)**\n\n` +
+                            `⚠️ **Connection issue** - retrying... (attempt ${consecutiveErrors}/${maxConsecutiveErrors})\n\n` +
+                            `**Elapsed:** ${elapsed}s\n\n` +
+                            `_The job continues in the background even if connection is lost._`
+                        );
+                    }
+                }
+
+                // Give up after too many consecutive errors
+                if (consecutiveErrors >= maxConsecutiveErrors) {
+                    document.getElementById(processingId)?.remove();
+                    this.addMessage('chat-container', 'error',
+                        `⚠️ Lost connection to server\n\n` +
+                        `Job ID: \`${jobId}\`\n\n` +
+                        `The job may still be running in the background.\n` +
+                        `${this.annotationEmailNotify ? '📧 You will receive an email when it completes.' : 'Refresh the page to check status.'}`);
+                    return;
+                }
+
                 await new Promise(resolve => setTimeout(resolve, pollInterval * 2));
             }
         }
