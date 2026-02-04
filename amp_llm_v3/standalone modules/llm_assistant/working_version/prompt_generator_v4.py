@@ -12,7 +12,6 @@ Enhanced with:
 - IMPROVED: Enhanced Outcome determination with result interpretation
 - IMPROVED: Robust Delivery Mode detection with exhaustive keyword matching
 - IMPROVED: Cross-LLM compatible prompts with explicit decision trees
-- NEW: Verification prompts for two-stage annotation pipeline
 """
 import json
 from typing import Dict, Any, List, Optional
@@ -30,7 +29,6 @@ class ImprovedPromptGenerator:
     - Fixed UniProt sequence extraction
     - Enhanced Classification and Outcome accuracy
     - Cross-LLM compatible explicit instructions
-    - NEW: Verification prompts for two-stage annotation
     """
     
     def __init__(self):
@@ -40,8 +38,6 @@ class ImprovedPromptGenerator:
     def _load_modelfile_template(self) -> str:
         """Load the improved Modelfile template."""
         return """# Improved Clinical Trial Research Assistant Modelfile Template
-
-FROM llama3.2
 
 SYSTEM \"\"\"You are a Clinical Trial Data Annotation Specialist with expertise in peptide therapeutics. Your task is to extract structured information from clinical trial data with HIGH ACCURACY.
 
@@ -304,16 +300,6 @@ EXACT MATCHES (case-insensitive):
 
 ### STEP 2: If NO explicit keywords found, use CONTEXT CLUES:
 
-**Default to Injection/Infusion if:**
-- Drug is a peptide or biological (peptides usually cannot be given orally)
-- Drug is an antibody or protein therapeutic
-- No route information is provided AND drug is a peptide
-
-**Default to Topical if:**
-- Condition is a skin disease (dermatitis, psoriasis, wound, ulcer)
-- Condition is eye disease (conjunctivitis, glaucoma)
-- Condition is dental/oral cavity disease
-
 **Default to Other if:**
 - Cannot determine route from any available information
 - Mixed or unclear routes
@@ -360,16 +346,6 @@ EXACT MATCHES (case-insensitive):
 - Keywords found: "inhaled", "nebulizer"
 - Answer: Other (inhalation route)
 
-**Example 9: Other**
-- Text: "subcutaneous implant releasing drug over 3 months"
-- Keywords found: "implant" (takes precedence)
-- Answer: Other (implant)
-
-**Example 10: Injection/Infusion (default)**
-- Text: "peptide therapeutic for diabetes" (no route specified)
-- Keywords found: none, but drug is a peptide
-- Answer: Injection/Infusion (default for peptides)
-
 **Example 11: Topical (context)**
 - Text: "treatment for chronic wound healing" (no explicit route)
 - Keywords found: "wound"
@@ -398,8 +374,6 @@ EXACT MATCHES (case-insensitive):
 ├─────────────────────────────────┼────────────────────────────────────┤
 │ TERMINATED                      │ Terminated                         │
 ├─────────────────────────────────┼────────────────────────────────────┤
-│ SUSPENDED                       │ Unknown                            │
-│ WITHHELD                        │ Unknown                            │
 │ NO_LONGER_AVAILABLE             │ Unknown                            │
 │ UNKNOWN_STATUS                  │ Unknown                            │
 ├─────────────────────────────────┼────────────────────────────────────┤
@@ -523,11 +497,6 @@ IF NEITHER positive nor negative indicators found:
 - Reasoning: COMPLETED + hasResults=true but no positive/negative indicators found
 - Answer: Unknown
 
-**Example 10: Unknown**
-- Status: SUSPENDED
-- Reasoning: SUSPENDED status → cannot determine outcome
-- Answer: Unknown
-
 
 ## 5. REASON FOR FAILURE
 
@@ -626,303 +595,6 @@ PARAMETER stop "<|eot_id|>"
 PARAMETER stop "<|end_of_text|>"
 PARAMETER stop "</s>"
 """
-
-    # ========================================================================
-    # VERIFICATION PROMPT GENERATION (NEW)
-    # ========================================================================
-    
-    def generate_verification_prompt(
-        self,
-        nct_id: str,
-        original_annotation: str,
-        parsed_data: Dict[str, str],
-        trial_data: Dict[str, Any],
-        primary_model: str
-    ) -> str:
-        """
-        Generate a verification prompt for the second-stage LLM.
-        
-        This prompt asks the verification LLM to:
-        1. Review the original annotation and reasoning
-        2. Cross-check against the trial data
-        3. Identify any errors or inconsistencies
-        4. Provide corrections where needed
-        
-        Args:
-            nct_id: NCT identifier
-            original_annotation: The full annotation text from the primary LLM
-            parsed_data: Structured data extracted from the annotation
-            trial_data: The original trial data used for annotation
-            primary_model: Name of the model that made the original annotation
-            
-        Returns:
-            Formatted verification prompt
-        """
-        sections = []
-        
-        # Header
-        sections.append(f"# ANNOTATION VERIFICATION TASK: {nct_id}")
-        sections.append(f"""
-You are a Clinical Trial Annotation Reviewer. Your task is to VERIFY and CORRECT
-the annotation produced by {primary_model} for this clinical trial.
-
-## YOUR ROLE
-
-1. Review the original annotation and its reasoning
-2. Cross-check each field against the provided trial data
-3. Identify any errors, inconsistencies, or misinterpretations
-4. Provide CORRECTIONS where the original annotation is wrong
-5. CONFIRM fields that are correctly annotated
-
-## VALID VALUES (for reference)
-
-| Field | Valid Values |
-|-------|--------------|
-| Classification | AMP, Other |
-| Delivery Mode | Injection/Infusion, Topical, Oral, Other |
-| Outcome | Positive, Withdrawn, Terminated, Failed - completed trial, Active, Unknown |
-| Reason for Failure | Business reasons, Ineffective for purpose, Toxic/unsafe, Due to covid, Recruitment issues, N/A |
-| Peptide | True, False |
-
----
-""")
-        
-        # Section 1: Original Annotation to Review
-        sections.append("## ORIGINAL ANNOTATION (to verify)")
-        sections.append("```")
-        sections.append(original_annotation if original_annotation else "[No annotation provided]")
-        sections.append("```")
-        sections.append("")
-        
-        # Section 2: Parsed Data Summary
-        sections.append("## PARSED ANNOTATION VALUES")
-        if parsed_data:
-            for key, value in parsed_data.items():
-                if value:  # Only show non-empty values
-                    sections.append(f"- **{key}**: {value}")
-        else:
-            sections.append("*No parsed data available*")
-        sections.append("")
-        
-        # Section 3: Key Trial Data for Verification
-        sections.append("## KEY TRIAL DATA (for cross-checking)")
-        trial_summary = self._extract_verification_data(trial_data, nct_id)
-        sections.append(trial_summary)
-        sections.append("")
-        
-        # Section 4: Verification Instructions
-        sections.append("""---
-## YOUR TASK
-
-Review the annotation above and produce a VERIFICATION REPORT in this EXACT format:
-
-```
-VERIFICATION REPORT FOR {nct_id}
-================================
-
-## FIELD-BY-FIELD REVIEW
-
-Classification: [CORRECT / INCORRECT]
-  Original: [value from annotation]
-  Verified: [your verified value - same if correct, corrected if wrong]
-  Reasoning: [why you agree or disagree with the original]
-
-Delivery Mode: [CORRECT / INCORRECT]
-  Original: [value from annotation]
-  Verified: [your verified value]
-  Reasoning: [why you agree or disagree]
-
-Outcome: [CORRECT / INCORRECT]
-  Original: [value from annotation]
-  Verified: [your verified value]
-  Reasoning: [why you agree or disagree]
-
-Reason for Failure: [CORRECT / INCORRECT / N/A]
-  Original: [value from annotation]
-  Verified: [your verified value]
-  Reasoning: [why you agree or disagree]
-
-Peptide: [CORRECT / INCORRECT]
-  Original: [value from annotation]
-  Verified: [your verified value]
-  Reasoning: [why you agree or disagree]
-
-Sequence: [CORRECT / INCORRECT / N/A]
-  Original: [value from annotation]
-  Verified: [your verified value]
-  Reasoning: [explanation]
-
-## SUMMARY
-
-Total Fields Reviewed: [number]
-Correct: [number]
-Corrections Made: [number]
-
-## FINAL VERIFIED ANNOTATION
-
-[Provide the complete corrected annotation in the standard format, 
-incorporating all your corrections. If no corrections needed, 
-reproduce the original annotation.]
-
-Classification: [verified value]
-  Evidence: [evidence]
-Delivery Mode: [verified value]
-  Evidence: [evidence]
-Outcome: [verified value]
-  Evidence: [evidence]
-Reason for Failure: [verified value or N/A]
-  Evidence: [evidence if applicable]
-Peptide: [verified value]
-  Evidence: [evidence]
-Sequence: [verified value or N/A]
-Study IDs: [verified value or N/A]
-Comments: [any additional notes about verification]
-```
-
-Begin your verification:
-""".format(nct_id=nct_id))
-        
-        return "\n".join(sections)
-    
-    def _extract_verification_data(self, trial_data: Dict[str, Any], nct_id: str) -> str:
-        """
-        Extract key data points from trial data for verification purposes.
-        More concise than the full extraction prompt.
-        """
-        lines = []
-        
-        # Try to get protocol section from various paths
-        protocol = self._get_protocol_section(trial_data)
-        
-        if not protocol:
-            lines.append(f"*Trial data structure not recognized for {nct_id}*")
-            lines.append(f"Raw data keys: {list(trial_data.keys())[:10]}")
-            return "\n".join(lines)
-        
-        # Identification
-        ident = protocol.get("identificationModule", {})
-        lines.append(f"**NCT ID:** {ident.get('nctId', nct_id)}")
-        lines.append(f"**Title:** {ident.get('briefTitle', 'N/A')}")
-        
-        # Status (critical for Outcome)
-        status_mod = protocol.get("statusModule", {})
-        lines.append(f"\n**Overall Status:** {status_mod.get('overallStatus', 'N/A')}")
-        why_stopped = status_mod.get('whyStopped', '')
-        if why_stopped:
-            lines.append(f"**Why Stopped:** {why_stopped}")
-        
-        # Check hasResults
-        has_results = self._safe_get(trial_data, 'results', 'sources', 'clinical_trials', 'data', 'hasResults', default=False)
-        if not has_results:
-            has_results = self._safe_get(trial_data, 'sources', 'clinical_trials', 'data', 'hasResults', default=False)
-        lines.append(f"**Has Results:** {has_results}")
-        
-        # Conditions
-        cond_mod = protocol.get("conditionsModule", {})
-        conditions = cond_mod.get("conditions", [])
-        if conditions:
-            lines.append(f"\n**Conditions:** {', '.join(conditions[:5])}")
-        
-        # Interventions (critical for Classification, Peptide, Delivery Mode)
-        arms_int = protocol.get("armsInterventionsModule", {})
-        interventions = arms_int.get("interventions", [])
-        if interventions:
-            lines.append(f"\n**Interventions:**")
-            for intv in interventions[:3]:
-                int_type = intv.get("type", "")
-                int_name = intv.get("name", "")
-                int_desc = intv.get("description", "")[:200] if intv.get("description") else ""
-                lines.append(f"  - {int_type}: {int_name}")
-                if int_desc:
-                    lines.append(f"    Description: {int_desc}...")
-        
-        # Description
-        desc_mod = protocol.get("descriptionModule", {})
-        brief_summary = desc_mod.get("briefSummary", "")
-        if brief_summary:
-            lines.append(f"\n**Brief Summary:** {brief_summary[:300]}...")
-        
-        return "\n".join(lines)
-    
-    def _get_protocol_section(self, trial_data: Dict[str, Any]) -> Dict:
-        """Get protocol section from trial data, handling different structures."""
-        paths = [
-            ('results', 'sources', 'clinical_trials', 'data', 'protocolSection'),
-            ('sources', 'clinical_trials', 'data', 'protocolSection'),
-            ('results', 'sources', 'clinicaltrials', 'data', 'protocolSection'),
-            ('sources', 'clinicaltrials', 'data', 'protocolSection'),
-            ('protocolSection',),
-        ]
-        
-        for path in paths:
-            protocol = self._safe_get(trial_data, *path, default={})
-            if protocol:
-                return protocol
-        
-        return {}
-    
-    def _safe_get(self, dictionary: Dict, *keys, default=None):
-        """Safely navigate nested dictionary keys."""
-        current = dictionary
-        for key in keys:
-            if isinstance(current, dict) and key in current:
-                current = current[key]
-            else:
-                return default
-        return current if current is not None else default
-    
-    def get_verification_system_prompt(self) -> str:
-        """
-        Get the system prompt for the verification LLM.
-        """
-        return """You are a Clinical Trial Annotation Reviewer with expertise in peptide therapeutics and clinical trial analysis.
-
-Your role is to VERIFY annotations made by another AI model. You must:
-
-1. CRITICALLY EVALUATE each annotation field against the provided trial data
-2. IDENTIFY errors in reasoning or classification
-3. CORRECT any mistakes you find
-4. CONFIRM correct annotations with brief justification
-
-## KEY VERIFICATION RULES
-
-### Classification (AMP vs Other)
-- AMP = peptide that DIRECTLY KILLS pathogens (bacteria, fungi, viruses)
-- Other = metabolic peptides, hormones, immunomodulators, cancer drugs
-- Common error: Classifying immunomodulators or wound-healing peptides as AMP when they don't have direct antimicrobial activity
-
-### Delivery Mode
-- Check for explicit route keywords in intervention descriptions
-- Injection/Infusion: injection, IV, SC, IM, infusion
-- Topical: topical, cream, gel, wound application, eye drops
-- Oral: oral, tablet, capsule
-- Common error: Defaulting to wrong route when keywords are present
-
-### Outcome
-- MUST match the Overall Status exactly for non-COMPLETED trials
-- RECRUITING/ACTIVE_NOT_RECRUITING → Active
-- WITHDRAWN → Withdrawn
-- TERMINATED → Terminated
-- COMPLETED requires checking hasResults and result indicators
-- Common error: Guessing outcome without checking status field
-
-### Peptide
-- True = short amino acid chain (<200 aa)
-- False = antibody (-mab), full protein, small molecule
-- Common error: Confusing antibodies with peptides
-
-## OUTPUT FORMAT
-
-Always provide:
-1. Field-by-field review with CORRECT/INCORRECT status
-2. Clear reasoning for each verification
-3. Final verified annotation with all corrections applied
-
-Be thorough but concise. Focus on accuracy."""
-
-    # ========================================================================
-    # ORIGINAL METHODS (preserved from original file)
-    # ========================================================================
     
     def generate_extraction_prompt(
         self,
@@ -965,7 +637,7 @@ think through the decision logic step by step before providing your answer.
 **DELIVERY MODE**: Search for these keywords IN ORDER:
 1. Injection words (injection, IV, SC, IM, infusion) → Injection/Infusion
 2. Topical words (topical, cream, gel, wound, eye drop) → Topical  
-3. Oral words (oral, tablet, capsule, pill) → Oral
+3. Oral words (oral, tablet, capsule, pill, drink, supplement) → Oral
 4. Other (inhaled, implant, unclear) → Other
 5. No keywords + peptide drug → Default to Injection/Infusion
 
@@ -1214,11 +886,16 @@ Begin your annotation now:
                         'dermal': 'TOPICAL',
                         'eye drop': 'TOPICAL',
                         'ophthalmic': 'TOPICAL',
-                        'nasal': 'TOPICAL',
+                        'varnish': 'TOPICAL',
+                        'strip': 'TOPICAL',
                         'oral': 'ORAL',
                         'tablet': 'ORAL',
                         'capsule': 'ORAL',
+                        'drink': 'ORAL',
+                        'supplement': 'ORAL',
                         'inhaled': 'OTHER',
+                        'intranasal': 'OTHER',
+                        'intravitral': 'OTHER',
                         'inhalation': 'OTHER',
                         'implant': 'OTHER'
                     }
@@ -1258,9 +935,9 @@ Begin your annotation now:
                     desc_lower = arm_desc.lower()
                     if any(kw in desc_lower for kw in ['injection', 'subcutaneous', 'intravenous', 'iv ', 'infusion']):
                         lines.append(f"    *** INJECTION/INFUSION route indicated ***")
-                    elif any(kw in desc_lower for kw in ['topical', 'cream', 'gel', 'wound', 'applied']):
+                    elif any(kw in desc_lower for kw in ['topical', 'cream', 'gel', 'applied', 'varnish', 'strip']):
                         lines.append(f"    *** TOPICAL route indicated ***")
-                    elif any(kw in desc_lower for kw in ['oral', 'tablet', 'capsule']):
+                    elif any(kw in desc_lower for kw in ['oral', 'tablet', 'capsule', 'drink', 'supplement']):
                         lines.append(f"    *** ORAL route indicated ***")
         
         # Design
@@ -1299,6 +976,9 @@ Begin your annotation now:
     def _format_uniprot_data(self, results: Dict[str, Any]) -> str:
         """
         Format UniProt data with ACTUAL SEQUENCES extracted.
+        
+        This is critical for sequence annotation - the original code only
+        extracted sequence length, not the actual sequence!
         """
         extended_source = results.get("sources", {}).get("extended", {})
         if not extended_source:
@@ -1347,11 +1027,12 @@ Begin your annotation now:
             # CRITICAL: Extract actual sequence, not just length!
             sequence_info = result.get("sequence", {})
             seq_length = sequence_info.get("length", 0)
-            seq_value = sequence_info.get("value", "")
+            seq_value = sequence_info.get("value", "")  # The actual amino acid sequence!
             
             if seq_value:
                 lines.append(f"\n**[SEQUENCE DATA - USE FOR ANNOTATION]**")
                 lines.append(f"**Sequence Length:** {seq_length} amino acids")
+                # Include full sequence if short enough, otherwise truncate with note
                 if len(seq_value) <= 200:
                     lines.append(f"**Sequence:** {seq_value}")
                 else:
@@ -1371,17 +1052,19 @@ Begin your annotation now:
                             func_text = func_text[:400] + "..."
                         lines.append(f"**Function:** {func_text}")
                         
+                        # Highlight antimicrobial function
                         if any(kw in func_text.lower() for kw in ['antimicrobial', 'antibacterial', 'antifungal', 'bactericidal']):
                             lines.append(f"*** ANTIMICROBIAL FUNCTION DETECTED - supports AMP classification ***")
                     break
             
-            # Keywords
+            # Keywords - may indicate antimicrobial activity
             result_keywords = result.get("keywords", [])
             if result_keywords:
                 keyword_values = [kw.get("name", "") for kw in result_keywords[:10]]
                 if keyword_values:
                     lines.append(f"**Keywords:** {', '.join(keyword_values)}")
                     
+                    # Check for antimicrobial keywords
                     amp_keywords = [kw for kw in keyword_values if any(
                         term in kw.lower() for term in ['antimicrobial', 'antibiotic', 'bacteriocin', 'defensin']
                     )]
@@ -1393,7 +1076,7 @@ Begin your annotation now:
         return "\n".join(lines)
     
     def _format_extended_data(self, results: Dict[str, Any]) -> str:
-        """Format extended API search data."""
+        """Format extended API search data (DuckDuckGo, SERP, Scholar, OpenFDA)."""
         extended_source = results.get("sources", {}).get("extended", {})
         
         if not extended_source:
@@ -1402,7 +1085,7 @@ Begin your annotation now:
         lines = []
         has_data = False
         
-        # DRAMP Database
+        # DRAMP Database - critical for AMP identification
         dramp = extended_source.get("dramp", {})
         if dramp.get("success"):
             has_data = True
@@ -1467,23 +1150,29 @@ Begin your annotation now:
                 if generic_names:
                     lines.append(f"  Generic Name(s): {', '.join(generic_names[:3])}")
                 
+                # Route - IMPORTANT for Delivery Mode
                 routes = openfda_info.get("route", [])
                 if routes:
                     route_str = ', '.join(routes[:3])
                     lines.append(f"  *** ROUTE OF ADMINISTRATION: {route_str} ***")
                     
+                    # Map FDA routes to our categories
                     route_lower = route_str.lower()
                     if any(r in route_lower for r in ['intravenous', 'subcutaneous', 'intramuscular', 'injection']):
                         lines.append(f"  → Indicates: Injection/Infusion")
-                    elif any(r in route_lower for r in ['topical', 'ophthalmic', 'nasal', 'dermal']):
+                    elif any(r in route_lower for r in ['topical', 'cream', 'gel', 'applied', 'varnish', 'strip']):
                         lines.append(f"  → Indicates: Topical")
-                    elif 'oral' in route_lower:
+                    elif any(r in route_lower for r in ['oral', 'tablet', 'capsule', 'drink', 'supplement']):
                         lines.append(f"  → Indicates: Oral")
+                    else:
+                        lines.append(f"  → Indicates: Other")
                 
+                # Product type
                 product_types = openfda_info.get("product_type", [])
                 if product_types:
                     lines.append(f"  Product Type: {', '.join(product_types)}")
                 
+                # Pharmacologic class - helpful for classification
                 pharm_class = openfda_info.get("pharm_class_epc", [])
                 if pharm_class:
                     lines.append(f"  Pharmacologic Class: {', '.join(pharm_class[:3])}")
@@ -1515,7 +1204,7 @@ Begin your annotation now:
         return "\n".join(lines)
     
     def _format_pubmed_data(self, results: Dict[str, Any]) -> str:
-        """Format PubMed data."""
+        """Format PubMed data with focus on relevant content."""
         pubmed_source = results.get("sources", {}).get("pubmed", {})
         
         if not pubmed_source.get("success"):
@@ -1544,6 +1233,7 @@ Begin your annotation now:
                     abstract = abstract[:600] + "..."
                 lines.append(f"**Abstract:** {abstract}")
                 
+                # Check for antimicrobial content
                 antimicrobial_terms = ['antimicrobial', 'antibacterial', 'antifungal', 'bactericidal', 
                                        'MIC', 'minimum inhibitory', 'kills bacteria']
                 found_terms = [term for term in antimicrobial_terms if term.lower() in abstract.lower()]
@@ -1587,7 +1277,7 @@ Begin your annotation now:
         return "\n".join(lines)
     
     def _format_bioc_data(self, results: Dict[str, Any]) -> str:
-        """Format BioC data."""
+        """Format BioC data with key annotations."""
         bioc_source = results.get("sources", {}).get("pmc_bioc", {})
         
         if not bioc_source.get("success"):
@@ -1627,6 +1317,7 @@ Begin your annotation now:
                             lines.append(f"\n*{passage_type.title()}:*")
                             lines.append(text)
                         
+                        # Show annotations - may contain sequence info
                         annotations = passage.get("annotations", [])
                         if annotations:
                             relevant_anns = []
