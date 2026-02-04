@@ -110,6 +110,8 @@ class AnnotationJob:
     job_id: str
     status: JobStatus = JobStatus.PENDING
     progress: str = "Queued"
+    current_step: str = ""  # Current processing step (e.g., "fetching", "parsing", "llm", "csv")
+    current_nct: str = ""   # Current NCT ID being processed
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
     total_trials: int = 0
@@ -179,6 +181,8 @@ class CSVJobManager:
             "job_id": job.job_id,
             "status": job.status.value,
             "progress": job.progress,
+            "current_step": job.current_step,
+            "current_nct": job.current_nct,
             "total_trials": job.total_trials,
             "processed_trials": job.processed_trials,
             "percent_complete": percent,
@@ -188,12 +192,12 @@ class CSVJobManager:
             "model": job.model,
             "original_filename": job.original_filename
         }
-        
+
         if job.status == JobStatus.COMPLETED and job.result:
             response["result"] = job.result
         elif job.status == JobStatus.FAILED:
             response["error"] = job.error
-        
+
         return response
 
 
@@ -1212,7 +1216,8 @@ async def process_manual_annotation_job(
 
     try:
         job.status = JobStatus.PROCESSING
-        job.progress = f"Annotating {len(nct_ids)} trial(s)..."
+        job.progress = f"Starting annotation of {len(nct_ids)} trial(s)..."
+        job.current_step = "initializing"
         job.updated_at = datetime.now()
 
         start_time = time.time()
@@ -1223,10 +1228,21 @@ async def process_manual_annotation_job(
         async with httpx.AsyncClient(timeout=300.0) as client:
             for i, nct_id in enumerate(nct_ids):
                 job.processed_trials = i
-                job.progress = f"Processing {nct_id} ({i + 1}/{len(nct_ids)})..."
+                job.current_nct = nct_id
                 job.updated_at = datetime.now()
 
+                # Step 1: Fetching data
+                job.current_step = "fetching"
+                job.progress = f"[{i + 1}/{len(nct_ids)}] Fetching data for {nct_id}..."
+                job.updated_at = datetime.now()
+                logger.info(f"📥 Job {job_id}: Fetching {nct_id}")
+
                 try:
+                    # Step 2: Processing (this call does fetch + parse + LLM internally)
+                    job.current_step = "processing"
+                    job.progress = f"[{i + 1}/{len(nct_ids)}] Processing {nct_id} (fetch → parse → LLM)..."
+                    job.updated_at = datetime.now()
+
                     response = await client.post(
                         f"{RUNNER_SERVICE_URL}/annotate",
                         json={
@@ -1243,19 +1259,28 @@ async def process_manual_annotation_job(
                         result = response.json()
                         result["_success"] = result.get("status") == "success"
                         results.append(result)
+
+                        # Update progress to show completion
+                        job.current_step = "completed"
+                        job.progress = f"[{i + 1}/{len(nct_ids)}] ✓ {nct_id} annotated successfully"
+                        job.updated_at = datetime.now()
                         logger.info(f"✅ Job {job_id}: {nct_id} annotated successfully")
                     else:
                         errors.append({
                             "nct_id": nct_id,
                             "error": f"HTTP {response.status_code}: {response.text[:200]}"
                         })
+                        job.progress = f"[{i + 1}/{len(nct_ids)}] ✗ {nct_id} failed"
                         logger.error(f"❌ Job {job_id}: {nct_id} failed with HTTP {response.status_code}")
 
                 except Exception as e:
                     errors.append({"nct_id": nct_id, "error": str(e)})
+                    job.progress = f"[{i + 1}/{len(nct_ids)}] ✗ {nct_id} error: {str(e)[:50]}"
                     logger.error(f"❌ Job {job_id}: {nct_id} error: {e}")
 
         # Generate CSV output
+        job.current_step = "generating_csv"
+        job.current_nct = ""
         job.progress = "Generating output CSV..."
         job.updated_at = datetime.now()
 

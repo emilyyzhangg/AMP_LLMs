@@ -2595,16 +2595,30 @@ const app = {
                 const percent = status.percent_complete || 0;
                 const progressBar = this.buildProgressBar(percent);
 
+                // Build step indicator
+                const stepLabels = {
+                    'initializing': '⏳ Initializing...',
+                    'fetching': '📥 Fetching trial data...',
+                    'processing': '⚙️ Processing (parse → prompt → LLM)...',
+                    'completed': '✅ Trial complete',
+                    'generating_csv': '📄 Generating CSV output...',
+                    '': '🔄 Processing...'
+                };
+                const currentStep = stepLabels[status.current_step] || stepLabels[''];
+                const currentNct = status.current_nct ? `\n**Current Trial:** ${status.current_nct}` : '';
+
                 const processingEl = document.getElementById(processingId);
                 if (processingEl) {
                     const contentEl = processingEl.querySelector('.message-content');
                     if (contentEl) {
                         contentEl.innerHTML = this.formatMessage(
-                            `🔄 Annotating: ${nctIdsStr}\n\n` +
-                            `${progressBar}\n` +
-                            `Progress: ${status.processed_trials || 0}/${totalTrials} (${percent}%)\n` +
-                            `Status: ${status.progress || 'Processing...'}\n` +
-                            `Elapsed: ${elapsed}s`
+                            `🔄 **Annotating ${totalTrials} trial(s)**\n\n` +
+                            `${progressBar}\n\n` +
+                            `**Progress:** ${status.processed_trials || 0} of ${totalTrials} complete (${percent}%)${currentNct}\n` +
+                            `**Step:** ${currentStep}\n` +
+                            `**Status:** ${status.progress || 'Processing...'}\n` +
+                            `**Elapsed:** ${elapsed}s\n\n` +
+                            `_You can close this window - the job will continue in the background._`
                         );
                     }
                 }
