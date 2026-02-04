@@ -682,6 +682,36 @@ async def get_email_config_proxy():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/chat/annotate")
+async def annotate_manual_proxy(request: dict):
+    """
+    Proxy manual NCT annotation requests to chat service.
+    This is the async version that returns immediately with a job_id.
+    """
+    try:
+        logger.info(f"📝 Proxying manual annotation request: {len(request.get('nct_ids', []))} NCT IDs")
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{CHAT_SERVICE_URL}/chat/annotate",
+                json=request,
+                headers={"Content-Type": "application/json"}
+            )
+
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Manual annotation proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/chat/annotate-csv")
 async def annotate_csv_proxy(
     conversation_id: str,

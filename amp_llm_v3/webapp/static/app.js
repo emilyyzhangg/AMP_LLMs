@@ -2491,12 +2491,12 @@ const app = {
     // =========================================================================
 
     async annotateTrials(nctIds) {
-        console.log(`🔬 Starting annotation for ${nctIds.length} trial(s):`, nctIds);
+        console.log(`🔬 Starting async annotation for ${nctIds.length} trial(s):`, nctIds);
         console.log('📊 Current conversation ID:', this.currentConversationId);
         console.log('📊 Current model:', this.currentModel);
-        
+
         if (!this.currentConversationId) {
-            this.addMessage('chat-container', 'error', 
+            this.addMessage('chat-container', 'error',
                 '❌ No active conversation!\n\n' +
                 'Please try:\n' +
                 '1. Reload the page\n' +
@@ -2505,155 +2505,204 @@ const app = {
                 '4. Select a model');
             return;
         }
-        
-        // Show processing message
-        const processingId = this.addMessage('chat-container', 'system', 
-            `🔄 Annotating ${nctIds.length} clinical trial(s)...\n\n` +
-            `Steps:\n` +
-            `1. Fetching trial data from Runner Service\n` +
-            `2. Processing JSON with annotation parser\n` +
-            `3. Generating annotations with LLM\n\n` +
-            `⏳ This may take 1-3 minutes...`);
-        
-        const startTime = Date.now();
-        
+
+        // Show user message
+        this.addMessage('chat-container', 'user', `Annotate: ${nctIds.join(', ')}`);
+
+        // Show processing message with progress bar
+        const processingId = this.addMessage('chat-container', 'system',
+            `🔄 Starting annotation for ${nctIds.length} clinical trial(s)...\n\n` +
+            `⏳ Submitting job...`);
+
         try {
-            console.log('📤 Sending annotation request:');
-            console.log('   conversation_id:', this.currentConversationId);
-            console.log('   message:', nctIds.join(', '));
-            console.log('   nct_ids:', nctIds);
-            
-            // Call chat service with NCT IDs and output format
+            console.log('📤 Sending async annotation request');
             console.log('📊 Output format:', this.annotationOutputFormat);
-            const response = await fetch(`${this.API_BASE}/chat/message`, {
+
+            // Build request body
+            const requestBody = {
+                conversation_id: this.currentConversationId,
+                nct_ids: nctIds,
+                output_format: this.annotationOutputFormat,
+                temperature: 0.15
+            };
+
+            // Add email notification if enabled
+            if (this.annotationEmailNotify && this.annotationNotifyEmail) {
+                requestBody.notification_email = this.annotationNotifyEmail;
+                console.log('📧 Email notification will be sent to:', this.annotationNotifyEmail);
+            }
+
+            // Start async job
+            const response = await fetch(`${this.API_BASE}/chat/annotate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.apiKey}`
                 },
-                body: JSON.stringify({
-                    conversation_id: this.currentConversationId,
-                    message: nctIds.join(', '),
-                    nct_ids: nctIds,  // Explicit NCT IDs list
-                    output_format: this.annotationOutputFormat,  // 'json' or 'llm_optimized'
-                    temperature: 0.15  // Lower temperature for consistent annotations
-                })
+                body: JSON.stringify(requestBody)
             });
-            
-            const endTime = Date.now();
-            const duration = ((endTime - startTime) / 1000).toFixed(1);
-            
-            // Remove processing message
-            const processingElement = document.getElementById(processingId);
-            if (processingElement) {
-                processingElement.remove();
-            }
-            
+
             if (response.ok) {
                 const data = await response.json();
-                
-                console.log('✅ Annotation response received:', data);
-                
-                // Display annotation results
-                let resultMessage = `✅ Annotation Complete\n\n` +
-                    `═══════════════════════════════════════════\n` +
-                    `Trials Annotated: ${data.nct_data_used ? data.nct_data_used.length : nctIds.length}\n` +
-                    `Model: ${data.model}\n` +
-                    `Processing Time: ${duration}s\n` +
-                    `═══════════════════════════════════════════\n\n`;
-                
-                // Add NCT IDs that were successfully processed
-                if (data.nct_data_used && data.nct_data_used.length > 0) {
-                    resultMessage += `NCT IDs Processed: ${data.nct_data_used.join(', ')}\n\n`;
-                }
-                
-                // Add the annotation content
-                resultMessage += `${data.message.content}\n\n` +
-                    `═══════════════════════════════════════════\n\n` +
-                    `💡 Next:\n` +
-                    `  • Enter more NCT IDs to annotate\n` +
-                    `  • Type "exit" to select a different model\n` +
-                    `  • Click "Clear Chat" to reset`;
-                
-                this.addMessage('chat-container', 'assistant', resultMessage);
-                
-                // Add download button if CSV was generated
-                if (data.download_url) {
-                    let downloadUrl = data.download_url;
-                    if (downloadUrl.startsWith('/')) {
-                        downloadUrl = `${this.API_BASE}${downloadUrl}`;
-                    }
-                    this.addDownloadButton(downloadUrl, data.csv_filename || 'annotations.csv');
-                }
+                console.log('✅ Job started:', data);
 
-                // Store in session
-                if (!this.sessionChats[this.currentModel]) {
-                    this.sessionChats[this.currentModel] = {
-                        conversationId: this.currentConversationId,
-                        messages: [],
-                        annotationMode: true
-                    };
+                if (data.job_id) {
+                    // Poll for status with progress updates
+                    await this.pollAnnotationStatus(data.job_id, processingId, nctIds.join(', '), nctIds.length);
+                } else {
+                    document.getElementById(processingId)?.remove();
+                    this.addMessage('chat-container', 'error', '❌ No job ID returned from server');
                 }
-                
-                this.sessionChats[this.currentModel].messages.push({
-                    role: 'user',
-                    content: `Annotate: ${nctIds.join(', ')}`
-                });
-                
-                this.sessionChats[this.currentModel].messages.push({
-                    role: 'assistant',
-                    content: data.message.content
-                });
-                
             } else {
                 const errorText = await response.text();
-                let errorData;
-                try {
-                    errorData = JSON.parse(errorText);
-                } catch {
-                    errorData = { detail: errorText };
-                }
-                
-                console.error('❌ Annotation failed:', errorData);
-                
-                this.addMessage('chat-container', 'error', 
-                    `❌ Annotation Failed\n\n` +
-                    `Error: ${errorData.detail}\n\n` +
-                    `Possible Issues:\n` +
-                    `• Invalid NCT ID(s)\n` +
-                    `• Runner Service (port 9003) not running\n` +
-                    `• NCT Lookup (port 9002) not available\n` +
-                    `• Chat Service (port 9001) error\n` +
-                    `• Model ${this.currentModel} not responding\n\n` +
-                    `Troubleshooting:\n` +
-                    `1. Verify NCT IDs are correct (NCT + 8 digits)\n` +
-                    `2. Check services: ./services.sh status\n` +
-                    `3. View logs: ./services.sh logs chat\n` +
-                    `4. Try: ./services.sh restart`);
+                document.getElementById(processingId)?.remove();
+                this.addMessage('chat-container', 'error', `❌ Failed to start annotation job\n\nError: ${errorText}`);
             }
-            
+
         } catch (error) {
-            // Remove processing message if still there
-            const processingElement = document.getElementById(processingId);
-            if (processingElement) {
-                processingElement.remove();
-            }
-            
+            document.getElementById(processingId)?.remove();
             console.error('❌ Annotation error:', error);
-            
-            this.addMessage('chat-container', 'error', 
+
+            this.addMessage('chat-container', 'error',
                 `❌ Connection Error\n\n` +
                 `${error.message}\n\n` +
-                `Cannot connect to Chat Service (port 9001).\n\n` +
-                `Required Services:\n` +
-                `• Chat Service (9001) - Main annotation service\n` +
-                `• Runner Service (9003) - File manager\n` +
-                `• NCT Service (9002) - Data fetching\n\n` +
-                `Start all services:\n` +
-                `  ./services.sh start\n\n` +
-                `Check status:\n` +
-                `  ./services.sh status`);
+                `Cannot connect to Chat Service.\n\n` +
+                `Check services: ./services.sh status`);
         }
+    },
+
+    async pollAnnotationStatus(jobId, processingId, nctIdsStr, totalTrials) {
+        console.log(`📊 Polling status for job ${jobId}`);
+        const startTime = Date.now();
+        const maxPollTime = 30 * 60 * 1000; // 30 minutes max
+        const pollInterval = 2000; // 2 seconds
+
+        while (true) {
+            try {
+                const response = await fetch(`${this.API_BASE}/chat/annotate-csv-status/${jobId}`, {
+                    headers: { 'Authorization': `Bearer ${this.apiKey}` }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Status check failed: ${response.status}`);
+                }
+
+                const status = await response.json();
+                console.log('📊 Job status:', status);
+
+                // Update progress message
+                const elapsed = Math.round((Date.now() - startTime) / 1000);
+                const percent = status.percent_complete || 0;
+                const progressBar = this.buildProgressBar(percent);
+
+                const processingEl = document.getElementById(processingId);
+                if (processingEl) {
+                    const contentEl = processingEl.querySelector('.message-content');
+                    if (contentEl) {
+                        contentEl.innerHTML = this.formatMessage(
+                            `🔄 Annotating: ${nctIdsStr}\n\n` +
+                            `${progressBar}\n` +
+                            `Progress: ${status.processed_trials || 0}/${totalTrials} (${percent}%)\n` +
+                            `Status: ${status.progress || 'Processing...'}\n` +
+                            `Elapsed: ${elapsed}s`
+                        );
+                    }
+                }
+
+                // Check completion states
+                if (status.status === 'completed') {
+                    document.getElementById(processingId)?.remove();
+                    this.handleAnnotationComplete(status, nctIdsStr, totalTrials);
+                    return;
+                }
+
+                if (status.status === 'failed') {
+                    document.getElementById(processingId)?.remove();
+                    this.addMessage('chat-container', 'error',
+                        `❌ Annotation Failed\n\nError: ${status.error || 'Unknown error'}`);
+                    return;
+                }
+
+                // Check timeout
+                if (Date.now() - startTime > maxPollTime) {
+                    document.getElementById(processingId)?.remove();
+                    this.addMessage('chat-container', 'error',
+                        `⚠️ Job is taking longer than expected.\n\n` +
+                        `Job ID: ${jobId}\n` +
+                        `The job is still running in the background.\n` +
+                        `${this.annotationEmailNotify ? '📧 You will receive an email when it completes.' : ''}`);
+                    return;
+                }
+
+                // Wait before next poll
+                await new Promise(resolve => setTimeout(resolve, pollInterval));
+
+            } catch (error) {
+                console.error('Poll error:', error);
+                await new Promise(resolve => setTimeout(resolve, pollInterval * 2));
+            }
+        }
+    },
+
+    handleAnnotationComplete(status, nctIdsStr, totalTrials) {
+        const result = status.result || {};
+        const successful = result.successful || 0;
+        const failed = result.failed || 0;
+        const duration = result.total_time_seconds || 0;
+
+        let resultMessage = `✅ Annotation Complete\n\n` +
+            `═══════════════════════════════════════════\n` +
+            `📊 Total NCT IDs: ${totalTrials}\n` +
+            `✓ Successful: ${successful}\n` +
+            `✗ Failed: ${failed}\n` +
+            `⏱ Processing Time: ${duration}s\n` +
+            `═══════════════════════════════════════════\n\n`;
+
+        // Add annotation text if available
+        if (result.annotation_text) {
+            resultMessage += result.annotation_text + '\n\n';
+        }
+
+        resultMessage += `💡 Next:\n` +
+            `  • Enter more NCT IDs to annotate\n` +
+            `  • Type "exit" to select a different model\n` +
+            `  • Click "Clear Chat" to reset`;
+
+        this.addMessage('chat-container', 'assistant', resultMessage);
+
+        // Add download button
+        if (result.download_url) {
+            let downloadUrl = result.download_url;
+            if (downloadUrl.startsWith('/')) {
+                downloadUrl = `${this.API_BASE}${downloadUrl}`;
+            }
+            this.addDownloadButton(downloadUrl, result.csv_filename || 'annotations.csv');
+        }
+
+        // Store in session
+        if (!this.sessionChats[this.currentModel]) {
+            this.sessionChats[this.currentModel] = {
+                conversationId: this.currentConversationId,
+                messages: [],
+                annotationMode: true
+            };
+        }
+
+        this.sessionChats[this.currentModel].messages.push({
+            role: 'user',
+            content: `Annotate: ${nctIdsStr}`
+        });
+
+        this.sessionChats[this.currentModel].messages.push({
+            role: 'assistant',
+            content: resultMessage
+        });
+    },
+
+    buildProgressBar(percent) {
+        const filled = Math.round(percent / 5);
+        const empty = 20 - filled;
+        return `[${'█'.repeat(filled)}${'░'.repeat(empty)}] ${percent}%`;
     },
 
     // =========================================================================

@@ -1184,8 +1184,255 @@ Total Time: {summary.processing_time_seconds:.1f}s
 
 
 # ============================================================================
-# CSV Annotation Routes (ASYNC - fixes Cloudflare 524 timeout)
+# Async Annotation Routes (fixes Cloudflare 524 timeout)
 # ============================================================================
+
+class ManualAnnotationRequest(BaseModel):
+    """Request for manual NCT ID annotation"""
+    conversation_id: str
+    nct_ids: List[str]
+    temperature: float = 0.15
+    output_format: str = "llm_optimized"
+    notification_email: Optional[str] = None
+
+
+async def process_manual_annotation_job(
+    job_id: str,
+    nct_ids: List[str],
+    model: str,
+    temperature: float,
+    output_format: str,
+    conversation_id: str
+):
+    """Background task to process manual NCT annotation."""
+    job = job_manager.jobs.get(job_id)
+    if not job:
+        logger.error(f"❌ Job {job_id} not found")
+        return
+
+    try:
+        job.status = JobStatus.PROCESSING
+        job.progress = f"Annotating {len(nct_ids)} trial(s)..."
+        job.updated_at = datetime.now()
+
+        start_time = time.time()
+        results = []
+        errors = []
+
+        # Process each NCT ID
+        async with httpx.AsyncClient(timeout=300.0) as client:
+            for i, nct_id in enumerate(nct_ids):
+                job.processed_trials = i
+                job.progress = f"Processing {nct_id} ({i + 1}/{len(nct_ids)})..."
+                job.updated_at = datetime.now()
+
+                try:
+                    response = await client.post(
+                        f"{RUNNER_SERVICE_URL}/annotate",
+                        json={
+                            "nct_id": nct_id,
+                            "model": model,
+                            "temperature": temperature,
+                            "fetch_if_missing": True,
+                            "output_format": output_format
+                        },
+                        timeout=180.0
+                    )
+
+                    if response.status_code == 200:
+                        result = response.json()
+                        result["_success"] = result.get("status") == "success"
+                        results.append(result)
+                        logger.info(f"✅ Job {job_id}: {nct_id} annotated successfully")
+                    else:
+                        errors.append({
+                            "nct_id": nct_id,
+                            "error": f"HTTP {response.status_code}: {response.text[:200]}"
+                        })
+                        logger.error(f"❌ Job {job_id}: {nct_id} failed with HTTP {response.status_code}")
+
+                except Exception as e:
+                    errors.append({"nct_id": nct_id, "error": str(e)})
+                    logger.error(f"❌ Job {job_id}: {nct_id} error: {e}")
+
+        # Generate CSV output
+        job.progress = "Generating output CSV..."
+        job.updated_at = datetime.now()
+
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        csv_filename = f"annotations_{job_id}.csv"
+        output_path = OUTPUT_DIR / csv_filename
+
+        metadata = await fetch_csv_metadata(model)
+        await generate_output_csv(
+            output_path,
+            results,
+            errors,
+            model=model,
+            git_commit=metadata.get("git_commit", "unknown"),
+            model_version=metadata.get("model_version", model)
+        )
+
+        # Calculate stats
+        end_time = time.time()
+        duration = end_time - start_time
+        successful = len([r for r in results if r.get("_success", False)])
+        failed = len(errors)
+
+        # Build formatted annotation text
+        output_parts = []
+        for result in results:
+            nct_id = result.get("nct_id")
+            annotation = result.get("annotation", "")
+            if result.get("_success"):
+                output_parts.append(f"\n{'='*60}")
+                output_parts.append(f"NCT ID: {nct_id}")
+                output_parts.append(f"{'='*60}\n")
+                output_parts.append(annotation)
+
+        # Store result
+        job.csv_filename = csv_filename
+        job.result = {
+            "total": len(nct_ids),
+            "successful": successful,
+            "failed": failed,
+            "total_time_seconds": round(duration, 1),
+            "errors": errors[:10],
+            "download_url": f"/chat/download/{job_id}",
+            "_output_path": str(output_path),
+            "csv_filename": csv_filename,
+            "model": model,
+            "annotation_text": "\n".join(output_parts)
+        }
+
+        job.status = JobStatus.COMPLETED
+        job.progress = "Completed"
+        job.processed_trials = len(nct_ids)
+        job.updated_at = datetime.now()
+
+        logger.info(f"✅ Job {job_id} completed: {successful} success, {failed} errors in {duration:.1f}s")
+
+        # Send email notification if requested
+        if job.notification_email:
+            logger.info(f"📧 Sending completion email to {job.notification_email}")
+            send_annotation_complete_email(
+                to_email=job.notification_email,
+                job_id=job_id,
+                original_filename=job.original_filename or f"{len(nct_ids)} NCT IDs",
+                total_trials=len(nct_ids),
+                successful=successful,
+                failed=failed,
+                processing_time_seconds=duration,
+                model=model
+            )
+
+        # Update conversation
+        if conversation_id in conversations:
+            conv = conversations[conversation_id]
+            response_content = f"""✅ Annotation Complete
+═══════════════════════════════════════════
+📊 Total NCT IDs: {len(nct_ids)}
+✓ Successful: {successful}
+✗ Failed: {failed}
+⏱ Processing Time: {round(duration, 1)}s
+═══════════════════════════════════════════
+
+📥 Your annotated CSV is ready for download."""
+
+            conv["messages"].append({
+                "role": "assistant",
+                "content": response_content
+            })
+
+    except Exception as e:
+        logger.error(f"❌ Job {job_id} failed: {e}", exc_info=True)
+        job.status = JobStatus.FAILED
+        job.error = str(e)
+        job.progress = "Failed"
+        job.updated_at = datetime.now()
+
+        if job.notification_email:
+            send_annotation_failed_email(
+                to_email=job.notification_email,
+                job_id=job_id,
+                original_filename=job.original_filename or "Manual annotation",
+                error_message=str(e)
+            )
+
+
+@app.post("/chat/annotate")
+async def annotate_manual(request: ManualAnnotationRequest):
+    """
+    Start async annotation for manually entered NCT IDs.
+
+    Returns immediately with a job_id.
+    Frontend should poll /chat/annotate-csv-status/{job_id} for progress.
+    """
+    if request.conversation_id not in conversations:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+
+    if not request.nct_ids:
+        raise HTTPException(status_code=400, detail="No NCT IDs provided")
+
+    conv = conversations[request.conversation_id]
+    model = conv.get("model", "unknown")
+
+    logger.info(f"📝 Starting async annotation for {len(request.nct_ids)} NCT IDs")
+
+    # Add user message
+    user_message = f"Annotate trials: {', '.join(request.nct_ids)}"
+    conv["messages"].append({
+        "role": "user",
+        "content": user_message
+    })
+
+    # Create job
+    job_id = str(uuid.uuid4())
+    job = AnnotationJob(
+        job_id=job_id,
+        status=JobStatus.PENDING,
+        total_trials=len(request.nct_ids),
+        progress=f"Starting annotation of {len(request.nct_ids)} trial(s)...",
+        original_filename=f"Manual: {', '.join(request.nct_ids[:3])}{'...' if len(request.nct_ids) > 3 else ''}",
+        model=model,
+        notification_email=request.notification_email
+    )
+    job_manager.jobs[job_id] = job
+
+    if request.notification_email:
+        logger.info(f"📧 Job {job_id} will notify {request.notification_email} on completion")
+
+    # Start background processing
+    task = asyncio.create_task(
+        process_manual_annotation_job(
+            job_id=job_id,
+            nct_ids=request.nct_ids,
+            model=model,
+            temperature=request.temperature,
+            output_format=request.output_format,
+            conversation_id=request.conversation_id
+        )
+    )
+    job._task = task
+
+    def handle_task_error(t):
+        if t.cancelled():
+            logger.warning(f"⚠️ Job {job_id} was cancelled")
+        elif t.exception():
+            logger.error(f"❌ Job {job_id} raised exception: {t.exception()}")
+
+    task.add_done_callback(handle_task_error)
+
+    logger.info(f"📋 Created manual annotation job {job_id} for {len(request.nct_ids)} NCT IDs")
+
+    return {
+        "job_id": job_id,
+        "message": f"Job started for {len(request.nct_ids)} NCT IDs",
+        "total": len(request.nct_ids),
+        "status": "processing",
+        "poll_url": f"/chat/annotate-csv-status/{job_id}"
+    }
+
 
 @app.post("/chat/annotate-csv")
 async def annotate_csv(
