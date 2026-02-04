@@ -1031,7 +1031,10 @@ def _transform_to_llm_format(data: Dict[str, Any], nct_id: str, include_tools: b
         "literature": _extract_literature(sources),
         "regulatory": _extract_regulatory(sources),
         "web_sources": _extract_web_sources(sources),
-        "statistics": _generate_stats(sources)
+        "statistics": _generate_stats(sources),
+        # Preserve original sources structure for prompt generator compatibility
+        "sources": sources,
+        "metadata": metadata
     }
 
     # Add tool hints for agentic workflows
