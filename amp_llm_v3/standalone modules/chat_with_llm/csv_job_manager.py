@@ -15,6 +15,18 @@ from enum import Enum
 logger = logging.getLogger(__name__)
 
 
+# =============================================================================
+# Configuration
+# =============================================================================
+
+# Job retention time in seconds (default: 3 hours)
+# Jobs older than this will be automatically cleaned up
+JOB_RETENTION_SECONDS = 3 * 60 * 60  # 3 hours
+
+# How often to check for expired jobs (in seconds)
+CLEANUP_INTERVAL_SECONDS = 300  # 5 minutes
+
+
 class JobStatus(str, Enum):
     PENDING = "pending"
     PROCESSING = "processing"
@@ -60,13 +72,13 @@ class CSVJobManager:
             self._cleanup_task = asyncio.create_task(self._cleanup_old_jobs())
     
     async def _cleanup_old_jobs(self):
-        """Remove jobs older than 1 hour"""
+        """Remove jobs older than JOB_RETENTION_SECONDS (default: 3 hours)"""
         while True:
-            await asyncio.sleep(300)  # Check every 5 minutes
+            await asyncio.sleep(CLEANUP_INTERVAL_SECONDS)
             now = datetime.now()
             expired = [
                 job_id for job_id, job in self.jobs.items()
-                if (now - job.created_at).total_seconds() > 3600
+                if (now - job.created_at).total_seconds() > JOB_RETENTION_SECONDS
             ]
             for job_id in expired:
                 del self.jobs[job_id]
