@@ -1,6 +1,2 @@
-# LaunchAgent service files and auto-update scripts
-amp_autoupdate.sh
-amp_autoupdate_dev.sh
-services/
+# LaunchAgent dev service files (tracked in services/ folder)
 dev_services/
-EOF

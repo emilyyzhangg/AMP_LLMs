@@ -37,15 +37,36 @@ if [ "$LOCAL_HASH" != "$REMOTE_HASH" ]; then
     git reset --hard origin/main >/dev/null 2>&1
 
     # ==========================================================================
-    # SELF-UPDATE: Copy this script from repo to AMP_Services
+    # UPDATE SERVICE FILES: Copy scripts and plists from repo
     # ==========================================================================
-    REPO_SCRIPT="$REPO_DIR/services/$SCRIPT_NAME"
-    if [ -f "$REPO_SCRIPT" ]; then
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔄 Self-updating autoupdate script..." >> "$LOG_FILE"
-        cp "$REPO_SCRIPT" "$SERVICES_DIR/$SCRIPT_NAME"
-        chmod +x "$SERVICES_DIR/$SCRIPT_NAME"
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Autoupdate script updated" >> "$LOG_FILE"
-    fi
+    REPO_SERVICES_DIR="$REPO_DIR/services"
+
+    # Ensure directories exist
+    mkdir -p "$SERVICES_DIR"
+
+    # Copy all shell scripts
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔄 Updating service scripts..." >> "$LOG_FILE"
+    for script in "$REPO_SERVICES_DIR"/*.sh; do
+        if [ -f "$script" ]; then
+            BASENAME=$(basename "$script")
+            cp "$script" "$SERVICES_DIR/$BASENAME"
+            chmod +x "$SERVICES_DIR/$BASENAME"
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Updated $BASENAME" >> "$LOG_FILE"
+        fi
+    done
+
+    # Copy all plist files (service definitions)
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔄 Updating service plists..." >> "$LOG_FILE"
+    for plist in "$REPO_SERVICES_DIR"/*.plist; do
+        if [ -f "$plist" ]; then
+            BASENAME=$(basename "$plist")
+            # Check if plist changed
+            if ! cmp -s "$plist" "$PLIST_DIR/$BASENAME" 2>/dev/null; then
+                cp "$plist" "$PLIST_DIR/$BASENAME"
+                echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Updated $BASENAME" >> "$LOG_FILE"
+            fi
+        fi
+    done
 
     # ==========================================================================
     # INSTALL PYTHON DEPENDENCIES
@@ -65,6 +86,44 @@ if [ "$LOCAL_HASH" != "$REMOTE_HASH" ]; then
     done
 
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Dependencies installed" >> "$LOG_FILE"
+
+    # ==========================================================================
+    # WAIT FOR ACTIVE JOBS TO COMPLETE
+    # ==========================================================================
+    WEBAPP_URL="http://localhost:8000"
+    MAX_WAIT=64800  # Maximum wait time in seconds (18 hours)
+    POLL_INTERVAL=10  # Check every 10 seconds
+    WAITED=0
+
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔍 Checking for active annotation jobs..." >> "$LOG_FILE"
+
+    while true; do
+        # Try to get job status from the webapp API
+        JOBS_RESPONSE=$(curl -s --max-time 5 "$WEBAPP_URL/api/chat/jobs" 2>/dev/null)
+
+        if [ -z "$JOBS_RESPONSE" ]; then
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️ Could not reach jobs API, proceeding with restart" >> "$LOG_FILE"
+            break
+        fi
+
+        # Extract active job count using python (more reliable JSON parsing)
+        ACTIVE_JOBS=$(echo "$JOBS_RESPONSE" | python3 -c "import sys, json; data = json.load(sys.stdin); print(data.get('active', 0))" 2>/dev/null)
+
+        if [ -z "$ACTIVE_JOBS" ] || [ "$ACTIVE_JOBS" = "0" ]; then
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ No active jobs, proceeding with restart" >> "$LOG_FILE"
+            break
+        fi
+
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⏳ $ACTIVE_JOBS active job(s) running, waiting... (${WAITED}s elapsed)" >> "$LOG_FILE"
+
+        sleep $POLL_INTERVAL
+        WAITED=$((WAITED + POLL_INTERVAL))
+
+        if [ $WAITED -ge $MAX_WAIT ]; then
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️ Max wait time reached ($MAX_WAIT seconds), proceeding with restart anyway" >> "$LOG_FILE"
+            break
+        fi
+    done
 
     # ==========================================================================
     # RESTART SERVICES
