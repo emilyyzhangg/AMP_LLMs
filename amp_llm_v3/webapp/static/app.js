@@ -460,11 +460,18 @@ const app = {
 
     applyTheme(themeId, animate = false) {
         const themeStylesheet = document.getElementById('theme-stylesheet');
-        
+
         const theme = this.availableThemes.find(t => t.id === themeId);
         const themeName = theme ? theme.name : themeId.charAt(0).toUpperCase() + themeId.slice(1);
-        
+
         themeStylesheet.href = `/static/theme-${themeId}.css`;
+
+        // Update favicon based on theme (pink for cherry-blossoms, regular for others)
+        const faviconPath = themeId === 'cherry-blossoms' ? '/static/pink_favicon.png' : '/static/favicon.png';
+        const faviconLink = document.querySelector('link[rel="icon"]');
+        const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+        if (faviconLink) faviconLink.href = faviconPath;
+        if (appleTouchIcon) appleTouchIcon.href = faviconPath;
         
         const themeNameElements = [
             document.getElementById('current-theme-name'),
