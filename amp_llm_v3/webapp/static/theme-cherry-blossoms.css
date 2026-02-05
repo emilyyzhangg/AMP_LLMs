@@ -247,6 +247,15 @@ header {
     background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
 }
 
+/* CHAT CONTAINER - Baby pink background with cat image */
+.chat-container {
+    background-color: #FFD6E0;
+}
+
+.chat-container::before {
+    background: rgba(255, 214, 224, 0.93);
+}
+
 /* LOADING */
 .spinner {
     border: 3px solid rgba(255, 143, 163, 0.2);
