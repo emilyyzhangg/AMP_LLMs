@@ -850,7 +850,7 @@ header p {
     inset: 0;
     background: rgba(46, 107, 43, 0.93); /* #2e6b2b with 93% opacity */
     pointer-events: none;
-    z-index: -1;
+    z-index: 0;
 }
 
 /* Chat message cat backgrounds - only for user and assistant messages, not system */

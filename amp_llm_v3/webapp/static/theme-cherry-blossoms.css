@@ -262,7 +262,7 @@ header {
     inset: 0;
     background: rgba(255, 228, 236, 0.90); /* #2e6b2b with 93% opacity */
     pointer-events: none;
-    z-index: -1;
+    z-index: 0;
 }
 
 /* GENERATION PARAMETERS MODAL - Earthy green tones */
