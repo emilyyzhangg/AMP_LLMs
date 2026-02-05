@@ -278,7 +278,7 @@ async def fetch_and_save_nct_data(nct_id: str) -> tuple[Optional[dict], Optional
             try:
                 response = await client.post(
                     search_url,
-                    json={"include_extended": False},
+                    json={"include_extended": True},  # Enable extended APIs including UniProt for sequence data
                     timeout=30.0
                 )
                 
