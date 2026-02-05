@@ -119,6 +119,7 @@ const app = {
             const isCompleted = job.status === 'completed';
             const isFailed = job.status === 'failed';
             const elapsed = this.formatElapsedTime(job.elapsed_seconds);
+            const startedAt = this.formatJobDateTime(job.created_at);
 
             // Status icon based on job state
             const statusIcon = isCompleted ? '✅' : isFailed ? '❌' : isActive ? '⏳' : '📋';
@@ -135,6 +136,7 @@ const app = {
                         <div class="job-detail"><strong>Model:</strong> ${job.model || 'Unknown'}</div>
                         <div class="job-detail"><strong>Trials:</strong> ${job.processed_trials}/${job.total_trials}</div>
                         <div class="job-detail"><strong>Source:</strong> ${job.original_filename || 'Manual'}</div>
+                        <div class="job-detail"><strong>Started:</strong> ${startedAt}</div>
                         <div class="job-detail"><strong>Elapsed:</strong> ${elapsed}</div>
                         ${job.notification_email ? `<div class="job-detail"><strong>Email:</strong> ${job.notification_email}</div>` : ''}
                         ${job.current_nct ? `<div class="job-detail"><strong>Current:</strong> ${job.current_nct}</div>` : ''}
@@ -150,21 +152,18 @@ const app = {
                         ${job.progress || 'Queued'}
                     </div>
 
-                    ${isActive ? `
-                        <div class="job-actions">
+                    <div class="job-actions">
+                        ${isActive ? `
                             <button class="btn-cancel" onclick="app.cancelJob('${job.job_id}')">
                                 🛑 Cancel Job
                             </button>
-                        </div>
-                    ` : ''}
-
-                    ${isCompleted && job.csv_filename ? `
-                        <div class="job-actions">
+                        ` : ''}
+                        ${isCompleted ? `
                             <button class="btn-download" onclick="window.open('${this.API_BASE}/api/chat/download/${job.job_id}', '_blank')">
                                 📥 Download CSV
                             </button>
-                        </div>
-                    ` : ''}
+                        ` : ''}
+                    </div>
                 </div>
             `;
         }).join('');
@@ -176,6 +175,19 @@ const app = {
         const hours = Math.floor(seconds / 3600);
         const mins = Math.floor((seconds % 3600) / 60);
         return `${hours}h ${mins}m`;
+    },
+
+    formatJobDateTime(isoString) {
+        if (!isoString) return 'Unknown';
+        const date = new Date(isoString);
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
     },
 
     async cancelJob(jobId) {
@@ -612,32 +624,58 @@ const app = {
 
     updateBackButton() {
         const backButton = document.querySelector('.back-button');
-        
+
         if (this.currentMode === 'chat' && this.currentConversationId) {
-            backButton.textContent = '← Back to Models';
-            backButton.onclick = () => {
-                if (this.currentModel) {
-                    this.saveCurrentChat();
-                }
-                
-                this.currentConversationId = null;
-                this.currentModel = null;
-                
-                // Reset annotation mode selection for fresh start
-                this.annotationModeSelected = false;
-                
-                const container = document.getElementById('chat-container');
-                container.innerHTML = '';
-                
-                this.removeInfoBar();
-                this.showModelSelection();
-                
-                const input = document.getElementById('chat-input');
-                input.disabled = true;
-                input.placeholder = 'Select a model to start chatting...';
-                
-                this.updateBackButton();
-            };
+            // In annotation mode, allow going back to settings/presets
+            if (this.annotationModeSelected) {
+                backButton.textContent = '← Back to Settings';
+                backButton.onclick = () => {
+                    if (this.currentModel) {
+                        this.saveCurrentChat();
+                    }
+
+                    this.currentConversationId = null;
+                    this.currentModel = null;
+                    // Keep annotationModeSelected true so we go back to parameters, not mode selection
+
+                    const container = document.getElementById('chat-container');
+                    container.innerHTML = '';
+
+                    this.removeInfoBar();
+                    this.showModelParametersConfig(); // Go back to parameters config
+
+                    const input = document.getElementById('chat-input');
+                    input.disabled = true;
+                    input.placeholder = 'Configure settings and select a model...';
+
+                    this.updateBackButton();
+                };
+            } else {
+                backButton.textContent = '← Back to Models';
+                backButton.onclick = () => {
+                    if (this.currentModel) {
+                        this.saveCurrentChat();
+                    }
+
+                    this.currentConversationId = null;
+                    this.currentModel = null;
+
+                    // Reset annotation mode selection for fresh start
+                    this.annotationModeSelected = false;
+
+                    const container = document.getElementById('chat-container');
+                    container.innerHTML = '';
+
+                    this.removeInfoBar();
+                    this.showModelSelection();
+
+                    const input = document.getElementById('chat-input');
+                    input.disabled = true;
+                    input.placeholder = 'Select a model to start chatting...';
+
+                    this.updateBackButton();
+                };
+            }
         } else {
             backButton.textContent = '← Back';
             backButton.onclick = () => this.showMenu();
@@ -1546,9 +1584,13 @@ const app = {
         
         const serviceLabel = this.currentMode === 'research' ? 'Research Assistant' : 'Chat with LLM';
         
-        const clearButton = this.currentConversationId ? 
+        const clearButton = this.currentConversationId ?
             `<button class="clear-chat-btn" onclick="app.clearCurrentChat()">🗑️ Clear Chat</button>` : '';
-        
+
+        // Settings button for annotation mode - allows changing presets
+        const settingsButton = (this.currentConversationId && this.annotationModeSelected) ?
+            `<button class="settings-btn" onclick="app.showModelParametersModal()">⚙️ Settings</button>` : '';
+
         infoBar.innerHTML = `
             <div class="chat-info-item">
                 <span class="chat-info-label">💬 Service:</span>
@@ -1562,10 +1604,133 @@ const app = {
                 <span class="chat-info-label">Status:</span>
                 <span class="chat-info-value ${statusClass}">${statusText}</span>
             </div>
+            ${settingsButton}
             ${clearButton}
         `;
-        
+
         console.log('✅ Info bar updated');
+    },
+
+    async showModelParametersModal() {
+        console.log('Opening model parameters modal');
+
+        // Fetch parameters if not already loaded
+        if (!this.modelParameters) {
+            await this.fetchModelParameters();
+        }
+
+        if (!this.modelParameters) {
+            alert('Could not load model parameters');
+            return;
+        }
+
+        // Create modal overlay
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'params-modal-overlay';
+        modalOverlay.id = 'params-modal-overlay';
+        modalOverlay.onclick = (e) => {
+            if (e.target === modalOverlay) this.hideModelParametersModal();
+        };
+
+        // Create modal content
+        const modalContent = document.createElement('div');
+        modalContent.className = 'params-modal-content';
+        modalContent.innerHTML = `
+            <div class="params-modal-header">
+                <h3>Model Parameters</h3>
+                <button class="params-modal-close" onclick="app.hideModelParametersModal()">&times;</button>
+            </div>
+            <div class="params-modal-body">
+                ${this.buildParameterControlsHTMLCompact()}
+            </div>
+        `;
+
+        modalOverlay.appendChild(modalContent);
+        document.body.appendChild(modalOverlay);
+
+        // Attach event listeners
+        this.attachParameterEventListenersModal();
+    },
+
+    hideModelParametersModal() {
+        const modal = document.getElementById('params-modal-overlay');
+        if (modal) modal.remove();
+    },
+
+    buildParameterControlsHTMLCompact() {
+        const params = this.modelParameters.parameters;
+        const presets = this.modelParameters.presets;
+
+        let html = `<div class="preset-buttons-modal">`;
+        for (const [key, preset] of Object.entries(presets)) {
+            html += `<button class="preset-btn-modal" data-preset="${key}" title="${preset.description}">${preset.name}</button>`;
+        }
+        html += `</div>`;
+
+        for (const [paramName, param] of Object.entries(params)) {
+            const currentValue = this.customModelParams?.[paramName] ?? param.value;
+            const isInteger = paramName === 'top_k' || paramName === 'num_ctx' || paramName === 'num_predict';
+            const displayValue = isInteger ? Math.round(currentValue) : currentValue.toFixed(2);
+
+            html += `
+                <div class="param-group-modal">
+                    <div class="param-label-row-modal">
+                        <span class="param-label-modal">${param.name}</span>
+                        <span class="param-value-modal" id="modal-value-${paramName}">${displayValue}</span>
+                    </div>
+                    <input type="range" class="param-slider-modal" id="modal-slider-${paramName}"
+                           min="${param.min}" max="${param.max}" step="${param.step}" value="${currentValue}"
+                           data-param="${paramName}" data-is-integer="${isInteger}">
+                </div>
+            `;
+        }
+
+        html += `<button class="params-apply-btn" onclick="app.hideModelParametersModal()">Apply & Close</button>`;
+
+        return html;
+    },
+
+    attachParameterEventListenersModal() {
+        // Preset buttons
+        document.querySelectorAll('.preset-btn-modal').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const presetName = btn.dataset.preset;
+                const result = await this.applyModelPreset(presetName);
+                if (result) {
+                    // Update modal sliders
+                    for (const [paramName, value] of Object.entries(result.current)) {
+                        const slider = document.getElementById(`modal-slider-${paramName}`);
+                        const display = document.getElementById(`modal-value-${paramName}`);
+                        if (slider) slider.value = value;
+                        if (display) {
+                            const isInteger = paramName === 'top_k' || paramName === 'num_ctx' || paramName === 'num_predict';
+                            display.textContent = isInteger ? Math.round(value) : value.toFixed(2);
+                        }
+                    }
+                }
+            });
+        });
+
+        // Sliders
+        document.querySelectorAll('.param-slider-modal').forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                const paramName = e.target.dataset.param;
+                const isInteger = e.target.dataset.isInteger === 'true';
+                let value = parseFloat(e.target.value);
+                if (isInteger) value = Math.round(value);
+
+                const display = document.getElementById(`modal-value-${paramName}`);
+                if (display) display.textContent = isInteger ? value : value.toFixed(2);
+            });
+
+            slider.addEventListener('change', async (e) => {
+                const paramName = e.target.dataset.param;
+                const isInteger = e.target.dataset.isInteger === 'true';
+                let value = parseFloat(e.target.value);
+                if (isInteger) value = Math.round(value);
+                await this.updateModelParameter(paramName, value);
+            });
+        });
     },
 
     showModelSelection() {

@@ -833,6 +833,176 @@ header p {
     background: #ffffff;
 }
 
+/* Favicon watermark for chat container */
+.chat-container {
+    position: relative;
+    background-color: #ffffff;
+    background-image: url('/static/favicon.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 400px auto; /* Fixed width, auto height to preserve aspect ratio */
+}
+
+/* Semi-transparent overlay to reduce favicon visibility */
+.chat-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.93);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Ensure all content appears above the overlay */
+.chat-container > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Placeholder for future message-specific backgrounds */
+.chat-message.custom-bg {
+    background-size: cover;
+    background-position: center;
+}
+
+/* ============================================================================
+   SETTINGS BUTTON & PARAMETERS MODAL
+   ============================================================================ */
+
+.settings-btn {
+    padding: 8px 16px;
+    background: rgba(0, 123, 255, 0.1);
+    color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85em;
+    margin-right: 8px;
+}
+
+.settings-btn:hover {
+    background: #007bff;
+    color: white;
+}
+
+.params-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.params-modal-content {
+    background: var(--bg-secondary, #f8f9fa);
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.params-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color, #e9ecef);
+}
+
+.params-modal-header h3 {
+    margin: 0;
+    font-size: 1.1em;
+}
+
+.params-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    line-height: 1;
+}
+
+.params-modal-close:hover {
+    color: #333;
+}
+
+.params-modal-body {
+    padding: 20px;
+}
+
+.preset-buttons-modal {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.preset-btn-modal {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color, #ddd);
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.preset-btn-modal:hover {
+    background: var(--primary-color, #007bff);
+    color: white;
+    border-color: var(--primary-color, #007bff);
+}
+
+.param-group-modal {
+    margin-bottom: 16px;
+}
+
+.param-label-row-modal {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 0.9em;
+}
+
+.param-label-modal {
+    font-weight: 500;
+}
+
+.param-value-modal {
+    color: #666;
+    font-family: monospace;
+}
+
+.param-slider-modal {
+    width: 100%;
+    cursor: pointer;
+}
+
+.params-apply-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary-color, #007bff);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: background 0.2s;
+}
+
+.params-apply-btn:hover {
+    background: #0056b3;
+}
+
 /* ============================================================================
    INPUT AREAS
    ============================================================================ */
