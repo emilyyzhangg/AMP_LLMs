@@ -2900,7 +2900,7 @@ const app = {
         // Note: User message already shown by handleAnnotationInput()
 
         // Show processing message with progress bar
-        const processingId = this.addMessage('chat-container', 'system',
+        const processingId = this.addMessage('chat-container', 'assistant',
             `🔄 Starting annotation for ${nctIds.length} clinical trial(s)...\n\n` +
             `⏳ Submitting job to server...`);
 
@@ -3325,7 +3325,7 @@ const app = {
         
         this.addMessage('chat-container', 'user', `📄 Upload CSV: ${fileName}`);
         
-        const processingId = this.addMessage('chat-container', 'system', 
+        const processingId = this.addMessage('chat-container', 'assistant',
             `🔄 Starting CSV annotation: ${fileName}\n\n` +
             `⏳ Submitting job...`);
         
