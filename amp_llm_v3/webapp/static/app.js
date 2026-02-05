@@ -4471,6 +4471,9 @@ const app = {
                                     📂 Load into Chat
                                 </button>
                             `}
+                            <button class="file-card-btn delete" onclick="app.deleteFile('${this.escapeHtml(file.name)}', '${file.source || 'output'}')">
+                                🗑️ Delete
+                            </button>
                         </div>
                     </div>
                 `;
@@ -4492,6 +4495,34 @@ const app = {
     downloadFile(filename, source = 'output') {
         const url = `${this.API_BASE}/files/download/${encodeURIComponent(filename)}?source=${source}`;
         window.open(url, '_blank');
+    },
+
+    async deleteFile(filename, source = 'output') {
+        if (!confirm(`Delete "${filename}"?\n\nThis action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `${this.API_BASE}/files/delete/${encodeURIComponent(filename)}?source=${source}`,
+                {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${this.apiKey}` }
+                }
+            );
+
+            if (response.ok) {
+                console.log(`✅ Deleted file: ${filename}`);
+                // Reload the file list
+                await this.loadFiles();
+            } else {
+                const error = await response.text();
+                alert(`Failed to delete file: ${error}`);
+            }
+        } catch (error) {
+            console.error('Failed to delete file:', error);
+            alert(`Error deleting file: ${error.message}`);
+        }
     },
 
     async viewCSVFile(filename, source = 'output') {

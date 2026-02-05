@@ -1419,6 +1419,39 @@ async def download_file(filename: str, source: str = "output"):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.delete("/files/delete/{filename}")
+async def delete_file(filename: str, source: str = "output"):
+    """Delete a file from output or annotations directory."""
+    try:
+        safe_filename = Path(filename).name
+
+        if source == "annotations":
+            file_path = ANNOTATIONS_DIR / safe_filename
+        else:
+            file_path = OUTPUT_DIR / safe_filename
+
+        # Fallback: check both directories
+        if not file_path.exists():
+            alt_path = ANNOTATIONS_DIR / safe_filename if source == "output" else OUTPUT_DIR / safe_filename
+            if alt_path.exists():
+                file_path = alt_path
+
+        if not file_path.exists():
+            raise HTTPException(status_code=404, detail="File not found")
+
+        # Delete the file
+        file_path.unlink()
+        logger.info(f"🗑️ Deleted file: {safe_filename}")
+
+        return {"status": "deleted", "filename": safe_filename}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting file: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/files/upload")
 async def upload_file(file: UploadFile = File(...)):
     """Upload a file to the output directory."""

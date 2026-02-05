@@ -1455,6 +1455,15 @@ header p {
     background: #16c43e;
 }
 
+.file-card-btn.delete {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.file-card-btn.delete:hover {
+    background: rgba(239, 68, 68, 0.3);
+}
+
 /* CSV Viewer Modal */
 .csv-viewer-overlay {
     position: fixed;
