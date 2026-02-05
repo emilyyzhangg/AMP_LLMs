@@ -249,12 +249,15 @@ header {
 
 /* CHAT CONTAINER - Baby pink background with pink cat image */
 .chat-container {
-    background-color: #FFD6E0;
-    background-image: url('/static/pink_favicon.png');
+    background-color: #FFD6E0 !important;
+    background-image: url('/static/pink_favicon.png') !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    background-size: 400px auto !important;
 }
 
 .chat-container::before {
-    background: rgba(255, 228, 236, 0.90);
+    background: rgba(255, 228, 236, 0.90) !important;
 }
 
 /* LOADING */
