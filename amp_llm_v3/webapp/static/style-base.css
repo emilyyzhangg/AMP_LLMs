@@ -860,22 +860,27 @@ header p {
     overflow: hidden;
 }
 
-/* Assistant messages - green cat looking right, on RIGHT side (exclude system messages) */
+/* Assistant messages - green cat looking right, scales with box size */
 .message:not(.user):not(.system) .content::after {
     content: '';
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
-    width: 100px;
+    width: min(40%, 250px); /* scales with box, max 250px */
     background-image: url('/static/cat_chat_blue_looking_right.png');
     background-size: contain;
     background-position: right center;
     background-repeat: no-repeat;
-    opacity: 0.5;
+    opacity: 0.35;
     pointer-events: none;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 40%);
-    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 40%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 50%);
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 50%);
+}
+
+/* Assistant message text more visible */
+.message:not(.user):not(.system) .content {
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
 }
 
 /* User messages - blue cat looking left, on LEFT side */
@@ -890,10 +895,10 @@ header p {
     background-size: contain;
     background-position: left center;
     background-repeat: no-repeat;
-    opacity: 0.5;
+    opacity: 0.35;
     pointer-events: none;
-    -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 40%);
-    mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 40%);
+    -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 50%);
+    mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 50%);
 }
 
 /* Placeholder for future message-specific backgrounds */
@@ -1139,7 +1144,8 @@ header p {
 
 .message.user .content {
     color: white;
-    background: rgba(14, 31, 129, 0.5) !important; /* 50% transparent for cat visibility */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); /* text more readable over cat */
+    background: rgba(14, 31, 129, 0.75) !important; /* 75% opaque for better text visibility */
 }
 
 .message.error .content {
