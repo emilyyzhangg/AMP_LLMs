@@ -251,12 +251,12 @@ header {
 .chat-container {
     background-color: #FFD6E0;
     background-image:
-        linear-gradient(rgba(255, 228, 236, 0.85), rgba(255, 228, 236, 0.85)),
+        linear-gradient(rgba(255, 214, 224, 0.88), rgba(255, 214, 224, 0.88)),
         url('/static/pink_favicon.png');
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 400px auto, 400px auto;
-    background-attachment: local;
+    background-repeat: no-repeat, no-repeat;
+    background-position: center center, center center;
+    background-size: cover, 400px auto;
+    background-attachment: local, local;
 }
 
 /* Hide the default overlay since we're using background layering */
