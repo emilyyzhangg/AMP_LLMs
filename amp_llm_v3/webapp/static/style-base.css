@@ -863,19 +863,19 @@ header p {
     overflow: hidden;
 }
 
-/* Assistant messages - green cat looking right, scales with box size */
+/* Assistant messages - green cat looking right, scales with box height */
 .message.assistant .content::after {
     content: '';
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
-    width: min(30%, 180px); /* scales with box, max 180px - reduced to not cover watermark */
+    width: min(50%, 300px); /* wider to allow height-based scaling */
     background-image: url('/static/cat_chat_blue_looking_right.png');
-    background-size: contain;
+    background-size: auto 100%; /* scale based on height */
     background-position: right center;
     background-repeat: no-repeat;
-    opacity: 0.18; /* reduced from 0.35 to prevent covering watermark */
+    opacity: 0.18;
     pointer-events: none;
     -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 30%);
     mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 30%);
@@ -888,19 +888,19 @@ header p {
 }
 
 
-/* User messages - blue cat looking left, scales with box size */
+/* User messages - blue cat looking left, scales with box height */
 .message.user .content::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
-    width: min(30%, 180px); /* scales with box, max 180px - reduced to not cover watermark */
+    width: min(50%, 300px); /* wider to allow height-based scaling */
     background-image: url('/static/cat_chat_blue_looking_left_rect.png');
-    background-size: contain;
+    background-size: auto 100%; /* scale based on height */
     background-position: left center;
     background-repeat: no-repeat;
-    opacity: 0.18; /* reduced from 0.35 to prevent covering watermark */
+    opacity: 0.18;
     pointer-events: none;
     -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 30%);
     mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 30%);
