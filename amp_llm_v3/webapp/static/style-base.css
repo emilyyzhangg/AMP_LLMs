@@ -865,8 +865,8 @@ header p {
     overflow: hidden;
 }
 
-/* Assistant/system messages - green cat looking right, on RIGHT side */
-.message:not(.user) .content::after {
+/* Assistant messages - green cat looking right, on RIGHT side (exclude system messages) */
+.message:not(.user):not(.system) .content::after {
     content: '';
     position: absolute;
     top: 0;
