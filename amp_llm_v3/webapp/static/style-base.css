@@ -881,8 +881,8 @@ header p {
     background-repeat: no-repeat;
     opacity: 0.35;
     pointer-events: none;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 50%);
-    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 50%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 30%);
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 30%);
 }
 
 
@@ -900,8 +900,8 @@ header p {
     background-repeat: no-repeat;
     opacity: 0.35;
     pointer-events: none;
-    -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 50%);
-    mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 50%);
+    -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 30%);
+    mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 30%);
 }
 
 /* Placeholder for future message-specific backgrounds */
@@ -1101,6 +1101,8 @@ header p {
     gap: 15px;
     margin-bottom: 25px;
     animation: fadeIn 0.3s ease-in;
+    width: fit-content;
+    max-width: 100%;
 }
 
 @keyframes fadeIn {
@@ -1116,6 +1118,7 @@ header p {
 
 .message.user {
     flex-direction: row-reverse;
+    margin-left: auto; /* align to right */
 }
 
 .avatar {
@@ -1156,10 +1159,29 @@ header p {
     border: 1px solid #f5c6cb;
 }
 
-/* System messages - solid background, no overflow */
+/* System messages - smaller bubble with centered cat background */
 .message.system .content {
-    background: #f8f9fa;
-    max-width: 100%;
+    background: #f8f9fa url('/static/cat_chat_blue_looking_right.png') no-repeat center center;
+    background-size: contain;
+    max-width: 50%;
+    min-height: 60px;
+    position: relative;
+}
+
+/* Overlay for system messages to make text readable */
+.message.system .content::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(248, 249, 250, 0.85);
+    border-radius: inherit;
+    z-index: 0;
+}
+
+/* Ensure system message text is above overlay */
+.message.system .content > * {
+    position: relative;
+    z-index: 1;
 }
 
 /* ============================================================================
