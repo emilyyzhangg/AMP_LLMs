@@ -153,7 +153,19 @@ header {
 }
 
 /* MESSAGES */
-.chat-container,
+.chat-container {
+    background-color: #2C3E50;
+    background-image: url('/static/favicon.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 400px auto;
+    background-attachment: fixed;
+}
+
+.chat-container::before {
+    background: rgba(44, 62, 80, 0.93) !important;
+}
+
 .research-container {
     background: #F8F9FA;
 }

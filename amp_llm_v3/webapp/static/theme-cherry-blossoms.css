@@ -256,7 +256,7 @@ header {
     background-repeat: no-repeat, no-repeat;
     background-position: center center, center center;
     background-size: cover, 400px auto;
-    background-attachment: local, local;
+    background-attachment: fixed, fixed;
 }
 
 /* Hide the default overlay since we're using background layering */
