@@ -247,17 +247,19 @@ header {
     background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
 }
 
-/* CHAT CONTAINER - Baby pink background with pink cat image */
+/* CHAT CONTAINER - Baby pink background with pink cat image and tint overlay */
 .chat-container {
     background-color: #FFD6E0;
-    background-image: url('/static/pink_favicon.png');
+    background-image:
+        linear-gradient(rgba(255, 228, 236, 0.85), rgba(255, 228, 236, 0.85)),
+        url('/static/pink_favicon.png');
     background-repeat: no-repeat;
     background-position: center center;
-    background-size: 400px auto;
+    background-size: 400px auto, 400px auto;
     background-attachment: local;
 }
 
-/* No overlay for cherry-blossom theme - just use the pink background */
+/* Hide the default overlay since we're using background layering */
 .chat-container::before {
     display: none !important;
 }
