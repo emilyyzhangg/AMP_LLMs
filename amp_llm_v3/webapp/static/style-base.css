@@ -836,7 +836,7 @@ header p {
 /* Favicon watermark for chat container */
 .chat-container {
     position: relative;
-    background-color: #ffffff;
+    background-color: #2e6b2b;
     background-image: url('/static/favicon.png');
     background-repeat: no-repeat;
     background-position: center center;
@@ -848,7 +848,7 @@ header p {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(255, 255, 255, 0.93);
+    background: rgba(46, 107, 43, 0.93); /* #2e6b2b with 93% opacity */
     pointer-events: none;
     z-index: 0;
 }
@@ -857,6 +857,50 @@ header p {
 .chat-container > * {
     position: relative;
     z-index: 1;
+}
+
+/* Chat message cat backgrounds */
+.message .content {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Assistant/system messages - green cat looking right, on RIGHT side */
+.message:not(.user) .content::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 80px;
+    background-image: url('/static/cat_chat_blue_looking_right.png');
+    background-size: auto 100%;
+    background-position: left center;
+    background-repeat: no-repeat;
+    opacity: 0.22;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,1) 100%);
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,1) 100%);
+    border-radius: inherit;
+}
+
+/* User messages - blue cat looking left, on LEFT side */
+.message.user .content::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 80px;
+    background-image: url('/static/cat_chat_blue_looking_left.png');
+    background-size: auto 100%;
+    background-position: right center;
+    background-repeat: no-repeat;
+    opacity: 0.22;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,1) 100%);
+    mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,1) 100%);
+    border-radius: inherit;
 }
 
 /* Placeholder for future message-specific backgrounds */
