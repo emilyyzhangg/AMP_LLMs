@@ -20,10 +20,17 @@ UPDATED: Now includes git commit and full model version in CSV headers.
 UPDATED: Now loads all port configuration from .env file.
 """
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
+# First try current dir, then parent directories (amp_llm_v3/.env)
 load_dotenv()
+_script_dir = Path(__file__).parent.resolve()
+_root_env = _script_dir.parent.parent / ".env"  # amp_llm_v3/.env
+if _root_env.exists():
+    load_dotenv(_root_env)
+
 import logging
 import uuid
 import httpx
@@ -42,6 +49,16 @@ from fastapi import FastAPI, HTTPException, UploadFile, File, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
+
+# Email notifications
+from email_utils import (
+    send_annotation_complete_email,
+    send_annotation_failed_email,
+    is_email_configured
+)
+
+# Resource management
+from resource_manager import get_resource_manager, ResourceManager
 
 # Configuration
 try:
@@ -103,6 +120,8 @@ class AnnotationJob:
     job_id: str
     status: JobStatus = JobStatus.PENDING
     progress: str = "Queued"
+    current_step: str = ""  # Current processing step (e.g., "fetching", "parsing", "llm", "csv")
+    current_nct: str = ""   # Current NCT ID being processed
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
     total_trials: int = 0
@@ -112,6 +131,7 @@ class AnnotationJob:
     csv_filename: Optional[str] = None
     original_filename: Optional[str] = None
     model: str = ""
+    notification_email: Optional[str] = None  # Email to notify when job completes
     _task: Optional[asyncio.Task] = field(default=None, repr=False)  # Store task to prevent GC
 
 
@@ -171,6 +191,8 @@ class CSVJobManager:
             "job_id": job.job_id,
             "status": job.status.value,
             "progress": job.progress,
+            "current_step": job.current_step,
+            "current_nct": job.current_nct,
             "total_trials": job.total_trials,
             "processed_trials": job.processed_trials,
             "percent_complete": percent,
@@ -180,12 +202,12 @@ class CSVJobManager:
             "model": job.model,
             "original_filename": job.original_filename
         }
-        
+
         if job.status == JobStatus.COMPLETED and job.result:
             response["result"] = job.result
         elif job.status == JobStatus.FAILED:
             response["error"] = job.error
-        
+
         return response
 
 
@@ -220,11 +242,16 @@ app.add_middleware(
 async def startup_event():
     """Initialize background tasks on startup"""
     job_manager.start_cleanup_task()
-    
+
+    # Initialize resource manager
+    resource_mgr = get_resource_manager()
+    resource_mgr.start_queue_processor()
+
     # Ensure output directory exists
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    
+
     logger.info("✅ CSV Job Manager initialized")
+    logger.info("✅ Resource Manager initialized")
     logger.info(f"✅ Output directory ready: {OUTPUT_DIR}")
 
 
@@ -256,6 +283,7 @@ class ChatMessageRequest(BaseModel):
     message: str
     temperature: float = Field(default=0.7, ge=0.0, le=2.0)
     nct_ids: Optional[List[str]] = None  # For annotation mode
+    output_format: str = Field(default="llm_optimized", description="Output format: 'json' or 'llm_optimized'")
 
 
 class ChatMessage(BaseModel):
@@ -330,24 +358,29 @@ def extract_nct_ids_from_csv(csv_content: str) -> List[str]:
     return list(nct_ids)
 
 
-async def fetch_csv_metadata(model: str) -> Dict[str, str]:
+async def fetch_csv_metadata(model: str) -> Dict[str, Any]:
     """
-    Fetch CSV metadata (git commit, model version) from LLM Assistant.
-    
+    Fetch CSV metadata from LLM Assistant and NCT Service.
+
     Args:
         model: Model name to get version info for
-        
+
     Returns:
-        Dictionary with git_commit, model_version, and service_version
+        Dictionary with git_commit, model_version, service_version, enabled_apis, and model_parameters
     """
     metadata = {
         "git_commit": "unknown",
         "model_version": model,
-        "service_version": "unknown"
+        "service_version": "unknown",
+        "enabled_apis": [],
+        "available_apis": [],
+        "model_parameters": {},
+        "active_preset": None
     }
-    
-    try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
+
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        # Fetch LLM Assistant metadata
+        try:
             response = await client.get(
                 f"{LLM_ASSISTANT_URL}/csv-header-info",
                 params={"model_name": model}
@@ -357,10 +390,40 @@ async def fetch_csv_metadata(model: str) -> Dict[str, str]:
                 metadata["git_commit"] = data.get("git_commit", "unknown")
                 metadata["model_version"] = data.get("model_version", model)
                 metadata["service_version"] = data.get("service_version", "unknown")
-                logger.info(f"📋 Fetched metadata: git={metadata['git_commit']}, model={metadata['model_version']}")
-    except Exception as e:
-        logger.warning(f"Could not fetch CSV metadata from LLM Assistant: {e}")
-    
+                logger.info(f"📋 Fetched LLM metadata: git={metadata['git_commit']}, model={metadata['model_version']}")
+        except Exception as e:
+            logger.warning(f"Could not fetch CSV metadata from LLM Assistant: {e}")
+
+        # Fetch current model parameters from LLM Assistant
+        try:
+            response = await client.get(f"{LLM_ASSISTANT_URL}/model-parameters")
+            if response.status_code == 200:
+                params_data = response.json()
+                metadata["model_parameters"] = params_data.get("current", {})
+                metadata["active_preset"] = params_data.get("active_preset")
+                logger.info(f"📋 Fetched model params: preset={metadata['active_preset']}")
+        except Exception as e:
+            logger.warning(f"Could not fetch model parameters from LLM Assistant: {e}")
+
+        # Fetch NCT Service API registry
+        try:
+            nct_service_url = f"http://localhost:{NCT_SERVICE_PORT}"
+            response = await client.get(f"{nct_service_url}/api/registry")
+            if response.status_code == 200:
+                registry = response.json()
+                # Get default enabled APIs
+                metadata["enabled_apis"] = registry.get("metadata", {}).get("default_enabled", [])
+                # Get all available APIs (ones that have keys if needed)
+                all_apis = []
+                for category in ['core', 'extended']:
+                    for api in registry.get(category, []):
+                        if api.get('available', False):
+                            all_apis.append(api.get('id', api.get('name', 'unknown')))
+                metadata["available_apis"] = all_apis
+                logger.info(f"📋 Fetched NCT APIs: {len(metadata['enabled_apis'])} enabled, {len(metadata['available_apis'])} available")
+        except Exception as e:
+            logger.warning(f"Could not fetch API registry from NCT Service: {e}")
+
     return metadata
 
 
@@ -377,21 +440,37 @@ async def process_csv_job(
     Processes each trial individually and updates progress in real-time.
     """
     logger.info(f"🚀 Job {job_id}: Background task STARTED")
-    
+
     job = job_manager.jobs.get(job_id)
     if not job:
         logger.error(f"❌ Job {job_id}: Job not found in manager!")
         return
-    
+
+    # Request resource slot (memory check + concurrency limit)
+    resource_mgr = get_resource_manager()
+    slot_result = await resource_mgr.request_llm_slot(
+        job_id=job_id,
+        metadata={"model": model, "type": "csv_annotation", "filename": original_filename}
+    )
+
+    if not slot_result.get("granted"):
+        # Job is queued - update status and wait
+        job.status = JobStatus.PENDING
+        job.progress = f"Queued (position {slot_result.get('queue_position', '?')}): {slot_result.get('reason', 'Waiting for resources')}"
+        job.updated_at = datetime.now()
+        logger.info(f"⏳ Job {job_id}: Queued - {slot_result.get('reason')}")
+        # The queue processor will restart this job when resources are available
+        return
+
     job.status = JobStatus.PROCESSING
     job.progress = "Parsing CSV..."
     job.updated_at = datetime.now()
-    
+
     start_time = time.time()
     results = []
     errors = []
     last_heartbeat = time.time()
-    
+
     try:
         # Parse NCT IDs from CSV
         text_content = csv_content.decode('utf-8')
@@ -441,7 +520,8 @@ async def process_csv_job(
                                 "nct_ids": [nct_id],
                                 "model": model,
                                 "temperature": temperature,
-                                "fetch_if_missing": True
+                                "fetch_if_missing": True,
+                                "output_format": "llm_optimized"  # Use optimized format for CSV batch
                             }
                         )
                         
@@ -631,30 +711,37 @@ async def process_csv_job(
         job.progress = "Generating output CSV..."
         job.updated_at = datetime.now()
         
-        # Generate output CSV
-        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-        
-        csv_filename = f"annotations_{job_id}.csv"
-        output_path = OUTPUT_DIR / csv_filename
-        
-        # Fetch metadata from LLM Assistant (git commit, model version)
-        metadata = await fetch_csv_metadata(model)
-        
-        await generate_output_csv(
-            output_path, 
-            results, 
-            errors, 
-            model=model,
-            git_commit=metadata.get("git_commit", "unknown"),
-            model_version=metadata.get("model_version", model)
-        )
-        
-        # Calculate final stats
+        # Calculate stats before CSV generation
         end_time = time.time()
         duration = end_time - start_time
         successful = len([r for r in results if r.get("_success", False)])
         failed = len(errors)
-        
+
+        # Generate output CSV
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+        csv_filename = f"annotations_{job_id}.csv"
+        output_path = OUTPUT_DIR / csv_filename
+
+        # Fetch metadata from LLM Assistant and NCT Service
+        metadata = await fetch_csv_metadata(model)
+
+        await generate_output_csv(
+            output_path,
+            results,
+            errors,
+            model=model,
+            git_commit=metadata.get("git_commit", "unknown"),
+            model_version=metadata.get("model_version", model),
+            total_processing_time=duration,
+            temperature=temperature,
+            enabled_apis=metadata.get("enabled_apis", []),
+            available_apis=metadata.get("available_apis", []),
+            output_format=output_format if 'output_format' in dir() else None,
+            model_parameters=metadata.get("model_parameters", {}),
+            active_preset=metadata.get("active_preset")
+        )
+
         # Store result FIRST (before changing status to avoid race condition)
         public_download_url = f"/chat/download/{job_id}"
         
@@ -670,15 +757,36 @@ async def process_csv_job(
             "model": model
         }
         
+        # Release resource slot
+        await resource_mgr.release_llm_slot(job_id)
+
         # NOW set status to completed (after result is ready)
         job.csv_filename = csv_filename
         job.status = JobStatus.COMPLETED
         job.progress = "Completed"
         job.updated_at = datetime.now()
-        
+
         logger.info(f"✅ Job {job_id} completed: {successful} success, {failed} errors in {duration:.1f}s")
         logger.info(f"📊 Job {job_id} result object: total={job.result['total']}, successful={job.result['successful']}, failed={job.result['failed']}, time={job.result['total_time_seconds']}")
-        
+
+        # Send email notification if requested
+        if job.notification_email:
+            logger.info(f"📧 Sending completion email to {job.notification_email}")
+            email_sent = send_annotation_complete_email(
+                to_email=job.notification_email,
+                job_id=job_id,
+                original_filename=original_filename or "Unknown",
+                total_trials=len(nct_ids),
+                successful=successful,
+                failed=failed,
+                processing_time_seconds=duration,
+                model=model
+            )
+            if email_sent:
+                logger.info(f"📧 Email sent successfully to {job.notification_email}")
+            else:
+                logger.warning(f"📧 Failed to send email to {job.notification_email}")
+
         # Update conversation
         if conversation_id in conversations:
             conv = conversations[conversation_id]
@@ -708,10 +816,25 @@ async def process_csv_job(
         
     except Exception as e:
         logger.error(f"❌ Job {job_id} failed: {e}", exc_info=True)
+
+        # Release resource slot
+        await resource_mgr.release_llm_slot(job_id)
+
         job.status = JobStatus.FAILED
         job.error = str(e)
         job.progress = "Failed"
         job.updated_at = datetime.now()
+
+        # Send failure email notification if requested
+        if job.notification_email:
+            logger.info(f"📧 Sending failure email to {job.notification_email}")
+            send_annotation_failed_email(
+                to_email=job.notification_email,
+                job_id=job_id,
+                original_filename=job.original_filename or "Unknown",
+                error_message=str(e)
+            )
+
 
 def clean_value(value):
     """Strip markdown formatting from LLM output values."""
@@ -724,51 +847,96 @@ def clean_value(value):
     return value
     
 async def generate_output_csv(
-    output_path: Path, 
-    results: List[dict], 
-    errors: List[dict], 
+    output_path: Path,
+    results: List[dict],
+    errors: List[dict],
     model: str = "unknown",
     git_commit: str = "unknown",
-    model_version: str = None
+    model_version: str = None,
+    total_processing_time: float = None,
+    temperature: float = None,
+    enabled_apis: List[str] = None,
+    available_apis: List[str] = None,
+    output_format: str = None,
+    model_parameters: Dict[str, Any] = None,
+    active_preset: str = None
 ):
-    """Generate the annotated CSV output file with model info header."""
-    
+    """Generate the annotated CSV output file with comprehensive metadata header."""
+
     # Use model_version if provided, otherwise fall back to model name
     model_display = model_version if model_version else model
-    
+
     # Log what we're working with
     if results:
         logger.info(f"📝 CSV Generation: First result keys: {list(results[0].keys())}")
         if "parsed_data" in results[0]:
             logger.info(f"📝 Parsed data keys: {list(results[0]['parsed_data'].keys())}")
-    
+
     # Count successes and failures
     successful_count = len([r for r in results if r.get("_success", False)])
     failed_count = len(errors)
     total_count = len(results)  # Total processed (success + failure are in results)
-    
+
+    # Calculate per-trial processing times
+    trial_times = [r.get("processing_time_seconds", 0) for r in results if r.get("processing_time_seconds")]
+    avg_time_per_trial = sum(trial_times) / len(trial_times) if trial_times else 0
+
     # Define columns matching the parsed_data structure
     columns = [
-        "nct_id", "status", 
-        "Study Title", "Study Status", "Brief Summary", "Conditions", 
+        "nct_id", "status",
+        "Study Title", "Study Status", "Brief Summary", "Conditions",
         "Interventions/Drug", "Phases", "Enrollment", "Start Date", "Completion Date",
         "Classification", "Classification Evidence",
-        "Delivery Mode", "Delivery Mode Evidence", 
+        "Delivery Mode", "Delivery Mode Evidence",
         "Outcome", "Outcome Evidence",
         "Reason for Failure", "Reason for Failure Evidence",
         "Peptide", "Peptide Evidence",
         "Sequence", "DRAMP Name", "Study IDs", "Comments",
         "annotation", "source", "processing_time", "error"
     ]
-    
+
     with open(output_path, 'w', newline='', encoding='utf-8') as f:
-        # Write model info header with git commit and full model version
+        # Write comprehensive metadata header
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        f.write(f"# Generated by AMP LLM Annotation System\n")
-        f.write(f"# Model: {model_display}\n")
-        f.write(f"# Git Commit: {git_commit}\n")
+        f.write(f"# ═══════════════════════════════════════════════════════════════════\n")
+        f.write(f"# AMP LLM ANNOTATION RESULTS\n")
+        f.write(f"# ═══════════════════════════════════════════════════════════════════\n")
+        f.write(f"#\n")
+        f.write(f"# GENERATION INFO\n")
         f.write(f"# Timestamp: {timestamp}\n")
-        f.write(f"# Total trials: {total_count} (Successful: {successful_count}, Failed: {failed_count})\n")
+        f.write(f"# Git Commit: {git_commit}\n")
+        f.write(f"#\n")
+        f.write(f"# MODEL CONFIGURATION\n")
+        f.write(f"# Model: {model_display}\n")
+        if active_preset:
+            f.write(f"# Preset: {active_preset}\n")
+        if temperature is not None:
+            f.write(f"# Temperature: {temperature}\n")
+        # Write additional model parameters if provided
+        if model_parameters:
+            for param, value in model_parameters.items():
+                # Skip temperature since we already wrote it above
+                if param != "temperature" and value is not None:
+                    f.write(f"# {param}: {value}\n")
+        if output_format:
+            f.write(f"# Data Format: {output_format}\n")
+        f.write(f"#\n")
+        f.write(f"# PROCESSING STATISTICS\n")
+        f.write(f"# Total Trials: {total_count}\n")
+        f.write(f"# Successful: {successful_count}\n")
+        f.write(f"# Failed: {failed_count}\n")
+        if total_processing_time is not None:
+            f.write(f"# Total Processing Time: {total_processing_time:.1f}s\n")
+            if total_count > 0:
+                f.write(f"# Avg Time Per Trial: {total_processing_time / total_count:.1f}s\n")
+        f.write(f"#\n")
+        f.write(f"# DATA SOURCES (NCT Lookup APIs)\n")
+        if enabled_apis:
+            f.write(f"# Enabled APIs: {', '.join(enabled_apis)}\n")
+        if available_apis:
+            f.write(f"# Available APIs: {', '.join(available_apis)}\n")
+        f.write(f"#\n")
+        f.write(f"# ═══════════════════════════════════════════════════════════════════\n")
         f.write(f"#\n")
         
         writer = csv.DictWriter(f, fieldnames=columns, extrasaction='ignore')
@@ -830,21 +998,28 @@ async def generate_output_csv(
 
 
 async def annotate_trials_via_runner(
-    nct_ids: List[str], 
-    model: str, 
-    temperature: float
+    nct_ids: List[str],
+    model: str,
+    temperature: float,
+    output_format: str = "llm_optimized"
 ) -> tuple[str, AnnotationSummary, List[dict]]:
     """
     Annotate trials using the Runner Service's batch-annotate endpoint.
-    
+
     The Runner Service coordinates:
     1. Fetching trial data (from cache or NCT Service)
     2. Sending to LLM Assistant for annotation
-    
+
+    Args:
+        nct_ids: List of NCT IDs to annotate
+        model: LLM model to use
+        temperature: Temperature for LLM generation
+        output_format: 'json' or 'llm_optimized' - format of data sent to LLM
+
     Returns:
-        Tuple of (formatted_annotation_text, summary)
+        Tuple of (formatted_annotation_text, summary, raw_results)
     """
-    logger.info(f"🔬 Annotating {len(nct_ids)} trials with {model} via Runner Service")
+    logger.info(f"🔬 Annotating {len(nct_ids)} trials with {model} via Runner Service (format: {output_format})")
     
     try:
         async with httpx.AsyncClient(timeout=600.0) as client:  # 10 min timeout for batch
@@ -876,7 +1051,8 @@ async def annotate_trials_via_runner(
                     "nct_ids": nct_ids,
                     "model": model,
                     "temperature": temperature,
-                    "fetch_if_missing": True
+                    "fetch_if_missing": True,
+                    "output_format": output_format  # 'json' or 'llm_optimized'
                 }
             )
             
@@ -1001,7 +1177,8 @@ async def send_message(request: ChatMessageRequest):
         annotation_result, summary, raw_results = await annotate_trials_via_runner(
             request.nct_ids,
             conv["model"],
-            request.temperature
+            request.temperature,
+            output_format=request.output_format
         )
         
         # Generate CSV for download if we have results
@@ -1018,16 +1195,23 @@ async def send_message(request: ChatMessageRequest):
                 if result.get("status") == "success" and result.get("parsed_data"):
                     result["_success"] = True
             
-            # Fetch metadata from LLM Assistant
+            # Fetch metadata from LLM Assistant and NCT Service
             metadata = await fetch_csv_metadata(conv["model"])
-            
+
             await generate_output_csv(
-                output_path, 
-                raw_results, 
-                [], 
+                output_path,
+                raw_results,
+                [],
                 model=conv["model"],
                 git_commit=metadata.get("git_commit", "unknown"),
-                model_version=metadata.get("model_version", conv["model"])
+                model_version=metadata.get("model_version", conv["model"]),
+                total_processing_time=summary.processing_time_seconds,
+                temperature=request.temperature,
+                enabled_apis=metadata.get("enabled_apis", []),
+                available_apis=metadata.get("available_apis", []),
+                output_format=request.output_format,
+                model_parameters=metadata.get("model_parameters", {}),
+                active_preset=metadata.get("active_preset")
             )
             download_url = f"/chat/download/{job_id}"
             
@@ -1136,23 +1320,323 @@ Total Time: {summary.processing_time_seconds:.1f}s
 
 
 # ============================================================================
-# CSV Annotation Routes (ASYNC - fixes Cloudflare 524 timeout)
+# Async Annotation Routes (fixes Cloudflare 524 timeout)
 # ============================================================================
+
+class ManualAnnotationRequest(BaseModel):
+    """Request for manual NCT ID annotation"""
+    conversation_id: str
+    nct_ids: List[str]
+    temperature: float = 0.15
+    output_format: str = "llm_optimized"
+    notification_email: Optional[str] = None
+
+
+async def process_manual_annotation_job(
+    job_id: str,
+    nct_ids: List[str],
+    model: str,
+    temperature: float,
+    output_format: str,
+    conversation_id: str
+):
+    """Background task to process manual NCT annotation."""
+    job = job_manager.jobs.get(job_id)
+    if not job:
+        logger.error(f"❌ Job {job_id} not found")
+        return
+
+    # Request resource slot (memory check + concurrency limit)
+    resource_mgr = get_resource_manager()
+    slot_result = await resource_mgr.request_llm_slot(
+        job_id=job_id,
+        metadata={"model": model, "type": "manual_annotation", "nct_count": len(nct_ids)}
+    )
+
+    if not slot_result.get("granted"):
+        # Job is queued - update status and wait
+        job.status = JobStatus.PENDING
+        job.progress = f"Queued (position {slot_result.get('queue_position', '?')}): {slot_result.get('reason', 'Waiting for resources')}"
+        job.updated_at = datetime.now()
+        logger.info(f"⏳ Job {job_id}: Queued - {slot_result.get('reason')}")
+        return
+
+    try:
+        job.status = JobStatus.PROCESSING
+        job.progress = f"Starting annotation of {len(nct_ids)} trial(s)..."
+        job.current_step = "initializing"
+        job.updated_at = datetime.now()
+
+        start_time = time.time()
+        results = []
+        errors = []
+
+        # Process each NCT ID
+        async with httpx.AsyncClient(timeout=300.0) as client:
+            for i, nct_id in enumerate(nct_ids):
+                job.processed_trials = i
+                job.current_nct = nct_id
+                job.updated_at = datetime.now()
+
+                # Step 1: Fetching data
+                job.current_step = "fetching"
+                job.progress = f"[{i + 1}/{len(nct_ids)}] Fetching data for {nct_id}..."
+                job.updated_at = datetime.now()
+                logger.info(f"📥 Job {job_id}: Fetching {nct_id}")
+
+                try:
+                    # Step 2: Processing (this call does fetch + parse + LLM internally)
+                    job.current_step = "processing"
+                    job.progress = f"[{i + 1}/{len(nct_ids)}] Processing {nct_id} (fetch → parse → LLM)..."
+                    job.updated_at = datetime.now()
+
+                    response = await client.post(
+                        f"{RUNNER_SERVICE_URL}/annotate",
+                        json={
+                            "nct_id": nct_id,
+                            "model": model,
+                            "temperature": temperature,
+                            "fetch_if_missing": True,
+                            "output_format": output_format
+                        },
+                        timeout=180.0
+                    )
+
+                    if response.status_code == 200:
+                        result = response.json()
+                        result["_success"] = result.get("status") == "success"
+                        results.append(result)
+
+                        # Update progress to show completion
+                        job.current_step = "completed"
+                        job.progress = f"[{i + 1}/{len(nct_ids)}] ✓ {nct_id} annotated successfully"
+                        job.updated_at = datetime.now()
+                        logger.info(f"✅ Job {job_id}: {nct_id} annotated successfully")
+                    else:
+                        errors.append({
+                            "nct_id": nct_id,
+                            "error": f"HTTP {response.status_code}: {response.text[:200]}"
+                        })
+                        job.progress = f"[{i + 1}/{len(nct_ids)}] ✗ {nct_id} failed"
+                        logger.error(f"❌ Job {job_id}: {nct_id} failed with HTTP {response.status_code}")
+
+                except Exception as e:
+                    errors.append({"nct_id": nct_id, "error": str(e)})
+                    job.progress = f"[{i + 1}/{len(nct_ids)}] ✗ {nct_id} error: {str(e)[:50]}"
+                    logger.error(f"❌ Job {job_id}: {nct_id} error: {e}")
+
+        # Calculate stats before CSV generation
+        end_time = time.time()
+        duration = end_time - start_time
+        successful = len([r for r in results if r.get("_success", False)])
+        failed = len(errors)
+
+        # Generate CSV output
+        job.current_step = "generating_csv"
+        job.current_nct = ""
+        job.progress = "Generating output CSV..."
+        job.updated_at = datetime.now()
+
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        csv_filename = f"annotations_{job_id}.csv"
+        output_path = OUTPUT_DIR / csv_filename
+
+        metadata = await fetch_csv_metadata(model)
+        await generate_output_csv(
+            output_path,
+            results,
+            errors,
+            model=model,
+            git_commit=metadata.get("git_commit", "unknown"),
+            model_version=metadata.get("model_version", model),
+            total_processing_time=duration,
+            temperature=temperature,
+            enabled_apis=metadata.get("enabled_apis", []),
+            available_apis=metadata.get("available_apis", []),
+            output_format=output_format,
+            model_parameters=metadata.get("model_parameters", {}),
+            active_preset=metadata.get("active_preset")
+        )
+
+        # Build formatted annotation text
+        output_parts = []
+        for result in results:
+            nct_id = result.get("nct_id")
+            annotation = result.get("annotation", "")
+            if result.get("_success"):
+                output_parts.append(f"\n{'='*60}")
+                output_parts.append(f"NCT ID: {nct_id}")
+                output_parts.append(f"{'='*60}\n")
+                output_parts.append(annotation)
+
+        # Store result
+        job.csv_filename = csv_filename
+        job.result = {
+            "total": len(nct_ids),
+            "successful": successful,
+            "failed": failed,
+            "total_time_seconds": round(duration, 1),
+            "errors": errors[:10],
+            "download_url": f"/chat/download/{job_id}",
+            "_output_path": str(output_path),
+            "csv_filename": csv_filename,
+            "model": model,
+            "annotation_text": "\n".join(output_parts)
+        }
+
+        # Release resource slot
+        await resource_mgr.release_llm_slot(job_id)
+
+        job.status = JobStatus.COMPLETED
+        job.progress = "Completed"
+        job.processed_trials = len(nct_ids)
+        job.updated_at = datetime.now()
+
+        logger.info(f"✅ Job {job_id} completed: {successful} success, {failed} errors in {duration:.1f}s")
+
+        # Send email notification if requested
+        if job.notification_email:
+            logger.info(f"📧 Sending completion email to {job.notification_email}")
+            send_annotation_complete_email(
+                to_email=job.notification_email,
+                job_id=job_id,
+                original_filename=job.original_filename or f"{len(nct_ids)} NCT IDs",
+                total_trials=len(nct_ids),
+                successful=successful,
+                failed=failed,
+                processing_time_seconds=duration,
+                model=model
+            )
+
+        # Update conversation
+        if conversation_id in conversations:
+            conv = conversations[conversation_id]
+            response_content = f"""✅ Annotation Complete
+═══════════════════════════════════════════
+📊 Total NCT IDs: {len(nct_ids)}
+✓ Successful: {successful}
+✗ Failed: {failed}
+⏱ Processing Time: {round(duration, 1)}s
+═══════════════════════════════════════════
+
+📥 Your annotated CSV is ready for download."""
+
+            conv["messages"].append({
+                "role": "assistant",
+                "content": response_content
+            })
+
+    except Exception as e:
+        logger.error(f"❌ Job {job_id} failed: {e}", exc_info=True)
+
+        # Release resource slot
+        await resource_mgr.release_llm_slot(job_id)
+
+        job.status = JobStatus.FAILED
+        job.error = str(e)
+        job.progress = "Failed"
+        job.updated_at = datetime.now()
+
+        if job.notification_email:
+            send_annotation_failed_email(
+                to_email=job.notification_email,
+                job_id=job_id,
+                original_filename=job.original_filename or "Manual annotation",
+                error_message=str(e)
+            )
+
+
+@app.post("/chat/annotate")
+async def annotate_manual(request: ManualAnnotationRequest):
+    """
+    Start async annotation for manually entered NCT IDs.
+
+    Returns immediately with a job_id.
+    Frontend should poll /chat/annotate-csv-status/{job_id} for progress.
+    """
+    if request.conversation_id not in conversations:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+
+    if not request.nct_ids:
+        raise HTTPException(status_code=400, detail="No NCT IDs provided")
+
+    conv = conversations[request.conversation_id]
+    model = conv.get("model", "unknown")
+
+    logger.info(f"📝 Starting async annotation for {len(request.nct_ids)} NCT IDs")
+
+    # Add user message
+    user_message = f"Annotate trials: {', '.join(request.nct_ids)}"
+    conv["messages"].append({
+        "role": "user",
+        "content": user_message
+    })
+
+    # Create job
+    job_id = str(uuid.uuid4())
+    job = AnnotationJob(
+        job_id=job_id,
+        status=JobStatus.PENDING,
+        total_trials=len(request.nct_ids),
+        progress=f"Starting annotation of {len(request.nct_ids)} trial(s)...",
+        original_filename=f"Manual: {', '.join(request.nct_ids[:3])}{'...' if len(request.nct_ids) > 3 else ''}",
+        model=model,
+        notification_email=request.notification_email
+    )
+    job_manager.jobs[job_id] = job
+
+    if request.notification_email:
+        logger.info(f"📧 Job {job_id} will notify {request.notification_email} on completion")
+
+    # Start background processing
+    task = asyncio.create_task(
+        process_manual_annotation_job(
+            job_id=job_id,
+            nct_ids=request.nct_ids,
+            model=model,
+            temperature=request.temperature,
+            output_format=request.output_format,
+            conversation_id=request.conversation_id
+        )
+    )
+    job._task = task
+
+    def handle_task_error(t):
+        if t.cancelled():
+            logger.warning(f"⚠️ Job {job_id} was cancelled")
+        elif t.exception():
+            logger.error(f"❌ Job {job_id} raised exception: {t.exception()}")
+
+    task.add_done_callback(handle_task_error)
+
+    logger.info(f"📋 Created manual annotation job {job_id} for {len(request.nct_ids)} NCT IDs")
+
+    return {
+        "job_id": job_id,
+        "message": f"Job started for {len(request.nct_ids)} NCT IDs",
+        "total": len(request.nct_ids),
+        "status": "processing",
+        "poll_url": f"/chat/annotate-csv-status/{job_id}"
+    }
+
 
 @app.post("/chat/annotate-csv")
 async def annotate_csv(
     conversation_id: str = Query(...),
     model: str = Query(...),
     temperature: float = Query(0.15),
+    notification_email: Optional[str] = Query(None, description="Email to notify when job completes"),
     file: UploadFile = File(...)
 ):
     """
     Upload a CSV file with NCT IDs and generate annotations.
-    
+
     NOW ASYNC: Returns immediately with a job_id.
     Frontend should poll /chat/annotate-csv-status/{job_id} for progress.
-    
+
     The input CSV can have NCT IDs in any column - they will be automatically detected.
+
+    Optional: Provide notification_email to receive an email when the job completes.
     """
     if conversation_id not in conversations:
         raise HTTPException(status_code=404, detail="Conversation not found")
@@ -1196,9 +1680,13 @@ async def annotate_csv(
             total_trials=len(nct_ids),
             progress=f"Starting annotation of {len(nct_ids)} trials...",
             original_filename=file.filename,
-            model=model
+            model=model,
+            notification_email=notification_email
         )
         job_manager.jobs[job_id] = job
+
+        if notification_email:
+            logger.info(f"📧 Job {job_id} will notify {notification_email} on completion")
         
         # Start background processing - store task to prevent garbage collection
         task = asyncio.create_task(
@@ -1327,6 +1815,124 @@ async def download_annotation_results(job_id: str):
     )
 
 
+@app.get("/chat/jobs")
+async def list_annotation_jobs():
+    """
+    List all annotation jobs (active and recent).
+
+    Returns job details including:
+    - job_id, status, progress
+    - model, total_trials, processed_trials
+    - notification_email (if set)
+    - created_at, elapsed time
+    """
+    jobs_list = []
+    now = datetime.now()
+
+    for job_id, job in job_manager.jobs.items():
+        elapsed_seconds = (now - job.created_at).total_seconds()
+
+        # Calculate progress percentage
+        percent = 0
+        if job.total_trials > 0:
+            percent = round((job.processed_trials / job.total_trials) * 100)
+
+        jobs_list.append({
+            "job_id": job.job_id,
+            "status": job.status.value,
+            "progress": job.progress,
+            "current_step": job.current_step,
+            "current_nct": job.current_nct,
+            "model": job.model,
+            "total_trials": job.total_trials,
+            "processed_trials": job.processed_trials,
+            "percent_complete": percent,
+            "original_filename": job.original_filename,
+            "notification_email": job.notification_email,
+            "created_at": job.created_at.isoformat(),
+            "elapsed_seconds": round(elapsed_seconds),
+            "has_result": job.result is not None
+        })
+
+    # Sort by created_at descending (newest first)
+    jobs_list.sort(key=lambda x: x["created_at"], reverse=True)
+
+    return {
+        "jobs": jobs_list,
+        "total": len(jobs_list),
+        "active": len([j for j in jobs_list if j["status"] in ("pending", "processing")])
+    }
+
+
+@app.delete("/chat/jobs/{job_id}")
+async def cancel_annotation_job(job_id: str):
+    """
+    Cancel a running annotation job.
+
+    This will:
+    1. Cancel the asyncio task if running
+    2. Mark the job as failed
+    3. Clean up any partial output
+    """
+    job = job_manager.jobs.get(job_id)
+
+    if not job:
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+
+    if job.status not in (JobStatus.PENDING, JobStatus.PROCESSING):
+        return {
+            "status": "already_finished",
+            "job_id": job_id,
+            "job_status": job.status.value,
+            "message": f"Job already {job.status.value}, cannot cancel"
+        }
+
+    # Cancel the asyncio task if it exists
+    if job._task and not job._task.done():
+        job._task.cancel()
+        logger.info(f"🛑 Cancelled task for job {job_id}")
+
+    # Update job status
+    job.status = JobStatus.FAILED
+    job.error = "Cancelled by user"
+    job.progress = "Cancelled"
+    job.updated_at = datetime.now()
+
+    logger.info(f"🛑 Job {job_id} cancelled by user")
+
+    return {
+        "status": "cancelled",
+        "job_id": job_id,
+        "message": "Job cancelled successfully"
+    }
+
+
+@app.delete("/chat/jobs/completed")
+async def clear_completed_jobs():
+    """
+    Clear all completed and failed jobs from the jobs list.
+
+    This removes finished jobs from memory but does NOT delete output files.
+    """
+    completed_statuses = {JobStatus.COMPLETED, JobStatus.FAILED}
+
+    jobs_to_remove = [
+        job_id for job_id, job in job_manager.jobs.items()
+        if job.status in completed_statuses
+    ]
+
+    for job_id in jobs_to_remove:
+        del job_manager.jobs[job_id]
+
+    logger.info(f"🧹 Cleared {len(jobs_to_remove)} completed/failed jobs")
+
+    return {
+        "status": "cleared",
+        "cleared_count": len(jobs_to_remove),
+        "message": f"Cleared {len(jobs_to_remove)} completed jobs"
+    }
+
+
 # ============================================================================
 # Other Chat Routes
 # ============================================================================
@@ -1346,6 +1952,29 @@ async def delete_conversation(conversation_id: str):
         raise HTTPException(status_code=404, detail="Conversation not found")
     del conversations[conversation_id]
     return {"status": "deleted", "conversation_id": conversation_id}
+
+
+@app.get("/chat/email-config")
+async def get_email_config():
+    """Check if email notifications are configured."""
+    return {
+        "configured": is_email_configured(),
+        "from_address": os.getenv("SMTP_FROM", "luke@amphoraxe.ca") if is_email_configured() else None
+    }
+
+
+@app.get("/chat/resources")
+async def get_resource_status():
+    """
+    Get current resource status including memory and job queue.
+
+    Returns:
+    - Memory availability
+    - Running and queued job counts
+    - Queue details
+    """
+    resource_mgr = get_resource_manager()
+    return resource_mgr.get_queue_status()
 
 
 @app.get("/chat/models")
@@ -1482,6 +2111,130 @@ async def get_models():
         raise HTTPException(
             status_code=503,
             detail=f"Cannot connect to Ollama at {config.OLLAMA_BASE_URL}"
+        )
+
+
+# ============================================================================
+# Model Parameters Proxy Endpoints (proxied to LLM Assistant)
+# ============================================================================
+
+@app.get("/chat/model-parameters")
+async def get_model_parameters():
+    """
+    Get current model parameters with documentation.
+    Proxied to LLM Assistant service.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{LLM_ASSISTANT_URL}/model-parameters")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"LLM Assistant error: {response.text}"
+                )
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to LLM Assistant at {LLM_ASSISTANT_URL}"
+        )
+
+
+@app.post("/chat/model-parameters")
+async def set_model_parameters(request: dict):
+    """
+    Update model parameters.
+    Proxied to LLM Assistant service.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(
+                f"{LLM_ASSISTANT_URL}/model-parameters",
+                json=request
+            )
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"LLM Assistant error: {response.text}"
+                )
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to LLM Assistant at {LLM_ASSISTANT_URL}"
+        )
+
+
+@app.post("/chat/model-parameters/reset")
+async def reset_model_parameters():
+    """
+    Reset model parameters to defaults.
+    Proxied to LLM Assistant service.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(f"{LLM_ASSISTANT_URL}/model-parameters/reset")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"LLM Assistant error: {response.text}"
+                )
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to LLM Assistant at {LLM_ASSISTANT_URL}"
+        )
+
+
+@app.post("/chat/model-parameters/preset/{preset_name}")
+async def apply_model_preset(preset_name: str):
+    """
+    Apply a parameter preset.
+    Proxied to LLM Assistant service.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(
+                f"{LLM_ASSISTANT_URL}/model-parameters/preset/{preset_name}"
+            )
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"LLM Assistant error: {response.text}"
+                )
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to LLM Assistant at {LLM_ASSISTANT_URL}"
+        )
+
+
+@app.get("/chat/model-parameters/presets")
+async def get_model_presets():
+    """
+    Get available parameter presets.
+    Proxied to LLM Assistant service.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{LLM_ASSISTANT_URL}/model-parameters/presets")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"LLM Assistant error: {response.text}"
+                )
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Cannot connect to LLM Assistant at {LLM_ASSISTANT_URL}"
         )
 
 

@@ -4,6 +4,7 @@ NCT Database Clients
 
 Individual client implementations for each database.
 Enhanced with comprehensive error handling and improved search strategies.
+Now includes proper rate limiting to prevent hitting API limits.
 """
 
 import asyncio
@@ -14,76 +15,103 @@ from abc import ABC, abstractmethod
 import xml.etree.ElementTree as ET
 import logging
 
+from rate_limiter import rate_limited, RateLimitExceeded
+
 logger = logging.getLogger(__name__)
 
 
 class BaseClient(ABC):
     """Base class for all database clients."""
-    
+
+    # Override this in subclasses for per-client rate limiting
+    API_NAME = "default"
+
     def __init__(self, session: aiohttp.ClientSession, api_key: Optional[str] = None):
         self.session = session
         self.api_key = api_key
-        self.rate_limit_delay = 0.34  # NCBI recommends 3 requests/second
-    
+        self.rate_limit_delay = 0.34  # Legacy - kept for compatibility
+
     @abstractmethod
     async def fetch(self, identifier: str) -> Dict[str, Any]:
         """Fetch data by identifier."""
         pass
-    
+
     @abstractmethod
     async def search(self, query: str, **kwargs) -> Any:
         """Search database."""
         pass
-    
+
     async def _rate_limit(self):
-        """Enforce rate limiting."""
+        """Legacy rate limiting - now uses the rate_limited context manager."""
+        # This is kept for backwards compatibility with existing code
+        # New code should use: async with rate_limited(self.API_NAME):
         await asyncio.sleep(self.rate_limit_delay)
+
+    def rate_limited_call(self, timeout: float = 30.0):
+        """
+        Get a rate-limited context manager for this client.
+
+        Usage:
+            async with self.rate_limited_call():
+                response = await self.session.get(url)
+        """
+        return rate_limited(self.API_NAME, timeout)
 
 
 class ClinicalTrialsClient(BaseClient):
     """ClinicalTrials.gov API client."""
-    
+
+    API_NAME = "clinicaltrials"
     BASE_URL = "https://clinicaltrials.gov/api/v2/studies"
-    
+
     async def fetch(self, nct_id: str) -> Dict[str, Any]:
         """Fetch trial data by NCT ID."""
         url = f"{self.BASE_URL}/{nct_id}"
-        
+
         try:
-            async with self.session.get(url) as resp:
-                if resp.status == 200:
-                    data = await resp.json()
-                    logger.info(f"Fetched {nct_id} from ClinicalTrials.gov")
-                    return data
-                else:
-                    return {"error": f"HTTP {resp.status}"}
+            async with self.rate_limited_call():
+                async with self.session.get(url) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        logger.info(f"Fetched {nct_id} from ClinicalTrials.gov")
+                        return data
+                    else:
+                        return {"error": f"HTTP {resp.status}"}
+        except RateLimitExceeded as e:
+            logger.warning(f"Rate limit exceeded for ClinicalTrials: {e}")
+            return {"error": "Rate limit exceeded, please try again later"}
         except Exception as e:
             logger.error(f"ClinicalTrials fetch error: {e}")
             return {"error": str(e)}
-    
+
     async def search(self, query: str, **kwargs) -> Dict[str, Any]:
         """Search ClinicalTrials.gov."""
         params = {
             "query.term": query,
             "pageSize": kwargs.get("max_results", 10)
         }
-        
+
         try:
-            async with self.session.get(self.BASE_URL, params=params) as resp:
-                if resp.status == 200:
-                    data = await resp.json()
-                    return data
-                else:
-                    return {"error": f"HTTP {resp.status}"}
+            async with self.rate_limited_call():
+                async with self.session.get(self.BASE_URL, params=params) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        return data
+                    else:
+                        return {"error": f"HTTP {resp.status}"}
+        except RateLimitExceeded as e:
+            logger.warning(f"Rate limit exceeded for ClinicalTrials search: {e}")
+            return {"error": "Rate limit exceeded"}
         except Exception as e:
             return {"error": str(e)}
 
 
 class PubMedClient(BaseClient):
     """PubMed API client."""
-    
+
+    API_NAME = "pubmed"
     BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
-    
+
     async def search(self, query: str, **kwargs) -> List[str]:
         """Search PubMed, return PMIDs."""
         max_results = kwargs.get("max_results", 10)
@@ -94,23 +122,26 @@ class PubMedClient(BaseClient):
             "retmode": "json",
             "retmax": max_results
         }
-        
+
         if self.api_key:
             params["api_key"] = self.api_key
-        
+
         try:
-            await self._rate_limit()
-            async with self.session.get(url, params=params) as resp:
-                if resp.status == 200:
-                    data = await resp.json()
-                    pmids = data.get("esearchresult", {}).get("idlist", [])
-                    logger.info(f"PubMed search found {len(pmids)} results")
-                    return pmids
-                return []
+            async with self.rate_limited_call():
+                async with self.session.get(url, params=params) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        pmids = data.get("esearchresult", {}).get("idlist", [])
+                        logger.info(f"PubMed search found {len(pmids)} results")
+                        return pmids
+                    return []
+        except RateLimitExceeded as e:
+            logger.warning(f"Rate limit exceeded for PubMed search: {e}")
+            return []
         except Exception as e:
             logger.error(f"PubMed search error: {e}")
             return []
-    
+
     async def fetch(self, pmid: str) -> Dict[str, Any]:
         """Fetch article metadata by PMID."""
         url = f"{self.BASE_URL}/efetch.fcgi"
@@ -119,17 +150,20 @@ class PubMedClient(BaseClient):
             "id": pmid,
             "retmode": "xml"
         }
-        
+
         if self.api_key:
             params["api_key"] = self.api_key
-        
+
         try:
-            await self._rate_limit()
-            async with self.session.get(url, params=params) as resp:
-                if resp.status == 200:
-                    xml_content = await resp.text()
-                    return self._parse_xml(xml_content, pmid)
-                return {"error": f"HTTP {resp.status}"}
+            async with self.rate_limited_call():
+                async with self.session.get(url, params=params) as resp:
+                    if resp.status == 200:
+                        xml_content = await resp.text()
+                        return self._parse_xml(xml_content, pmid)
+                    return {"error": f"HTTP {resp.status}"}
+        except RateLimitExceeded as e:
+            logger.warning(f"Rate limit exceeded for PubMed fetch: {e}")
+            return {"error": "Rate limit exceeded"}
         except Exception as e:
             logger.error(f"PubMed fetch error: {e}")
             return {"error": str(e)}
@@ -485,55 +519,558 @@ class PMCBioClient(BaseClient):
         return results
 
 
-class DuckDuckGoClient(BaseClient):
-    """DuckDuckGo search client."""
-    
+class EuropePMCClient(BaseClient):
+    """
+    Europe PMC API client - Free biomedical literature database.
+    Provides access to worldwide biomedical and life sciences literature.
+    """
+
+    BASE_URL = "https://www.ebi.ac.uk/europepmc/webservices/rest"
+
     async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Search DuckDuckGo using trial data.
-        
+        Search Europe PMC using NCT ID and trial data.
+
         Args:
             nct_id: NCT trial identifier
             trial_data: Full clinical trial data
-            
+
         Returns:
             Dict with search results
         """
-        # Extract search parameters from trial data
+        title = self._extract_title(trial_data)
+
+        results = {
+            "query": nct_id,
+            "results": [],
+            "total_found": 0,
+            "search_strategies": []
+        }
+
+        # Strategy 1: Search by NCT ID (most specific)
+        nct_results = await self._search_query(f'"{nct_id}"', max_results=10)
+        if nct_results:
+            results["results"].extend(nct_results)
+            results["search_strategies"].append({"type": "nct_id", "count": len(nct_results)})
+
+        # Strategy 2: Search by title keywords if NCT search yields few results
+        if len(results["results"]) < 5 and title:
+            # Use first 6 significant words from title
+            title_words = [w for w in title.split() if len(w) > 3][:6]
+            title_query = " AND ".join(title_words)
+
+            title_results = await self._search_query(title_query, max_results=10)
+            # Filter to avoid duplicates
+            existing_ids = {r.get("pmid") or r.get("pmcid") for r in results["results"]}
+            for r in title_results:
+                if (r.get("pmid") or r.get("pmcid")) not in existing_ids:
+                    results["results"].append(r)
+
+            results["search_strategies"].append({"type": "title", "count": len(title_results)})
+
+        results["total_found"] = len(results["results"])
+        logger.info(f"Europe PMC found {results['total_found']} results for {nct_id}")
+
+        return results
+
+    async def _search_query(self, query: str, max_results: int = 10) -> List[Dict]:
+        """Execute a Europe PMC search query."""
+        url = f"{self.BASE_URL}/search"
+        params = {
+            "query": query,
+            "format": "json",
+            "pageSize": max_results,
+            "resultType": "core"  # Get full metadata
+        }
+
+        try:
+            async with self.session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    result_list = data.get("resultList", {}).get("result", [])
+
+                    return [self._format_result(r) for r in result_list]
+                else:
+                    logger.debug(f"Europe PMC search returned {resp.status}")
+                    return []
+        except Exception as e:
+            logger.debug(f"Europe PMC search error: {e}")
+            return []
+
+    def _format_result(self, result: Dict) -> Dict:
+        """Format Europe PMC search result."""
+        return {
+            "pmid": result.get("pmid"),
+            "pmcid": result.get("pmcid"),
+            "doi": result.get("doi"),
+            "title": result.get("title"),
+            "authors": result.get("authorString"),
+            "journal": result.get("journalTitle"),
+            "year": result.get("pubYear"),
+            "abstract": result.get("abstractText", "")[:500] if result.get("abstractText") else None,
+            "citation_count": result.get("citedByCount"),
+            "is_open_access": result.get("isOpenAccess") == "Y",
+            "source": "europe_pmc"
+        }
+
+    def _extract_title(self, trial_data: Dict[str, Any]) -> str:
+        """Extract trial title."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            ident = protocol.get("identificationModule", {})
+            return ident.get("officialTitle") or ident.get("briefTitle") or ""
+        except:
+            return ""
+
+    async def fetch(self, identifier: str) -> Dict[str, Any]:
+        """Fetch article by PMID or PMCID."""
+        url = f"{self.BASE_URL}/search"
+
+        # Determine ID type
+        if identifier.startswith("PMC"):
+            query = f"PMCID:{identifier}"
+        else:
+            query = f"EXT_ID:{identifier}"
+
+        params = {"query": query, "format": "json", "resultType": "core"}
+
+        try:
+            async with self.session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    results = data.get("resultList", {}).get("result", [])
+                    if results:
+                        return self._format_result(results[0])
+                return {"error": "Not found"}
+        except Exception as e:
+            return {"error": str(e)}
+
+
+class SemanticScholarClient(BaseClient):
+    """
+    Semantic Scholar API client - Free academic paper search.
+    100 requests per 5 minutes without API key.
+    """
+
+    BASE_URL = "https://api.semanticscholar.org/graph/v1"
+
+    def __init__(self, session: aiohttp.ClientSession, api_key: Optional[str] = None):
+        super().__init__(session, api_key)
+        self.rate_limit_delay = 0.5  # Be conservative with rate limiting
+
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search Semantic Scholar for papers related to the clinical trial.
+
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+
+        Returns:
+            Dict with search results including citation data
+        """
         title = self._extract_title(trial_data)
         condition = self._extract_condition(trial_data)
-        
+        intervention = self._extract_intervention(trial_data)
+
+        results = {
+            "query": nct_id,
+            "results": [],
+            "total_found": 0,
+            "search_strategies": []
+        }
+
+        # Strategy 1: Search by NCT ID
+        nct_results = await self._search_papers(nct_id, limit=10)
+        if nct_results:
+            results["results"].extend(nct_results)
+            results["search_strategies"].append({"type": "nct_id", "count": len(nct_results)})
+
+        # Strategy 2: Search by condition + intervention if we have them
+        if len(results["results"]) < 5 and condition and intervention:
+            combo_query = f"{condition} {intervention}"
+            combo_results = await self._search_papers(combo_query, limit=10)
+
+            existing_ids = {r.get("paperId") for r in results["results"] if r.get("paperId")}
+            for r in combo_results:
+                if r.get("paperId") not in existing_ids:
+                    results["results"].append(r)
+
+            results["search_strategies"].append({"type": "condition_intervention", "count": len(combo_results)})
+
+        # Strategy 3: Search by title keywords
+        if len(results["results"]) < 5 and title:
+            title_words = [w for w in title.split() if len(w) > 4][:5]
+            title_query = " ".join(title_words)
+            title_results = await self._search_papers(title_query, limit=10)
+
+            existing_ids = {r.get("paperId") for r in results["results"] if r.get("paperId")}
+            for r in title_results:
+                if r.get("paperId") not in existing_ids:
+                    results["results"].append(r)
+
+            results["search_strategies"].append({"type": "title", "count": len(title_results)})
+
+        results["total_found"] = len(results["results"])
+        logger.info(f"Semantic Scholar found {results['total_found']} results for {nct_id}")
+
+        return results
+
+    async def _search_papers(self, query: str, limit: int = 10) -> List[Dict]:
+        """Execute Semantic Scholar paper search."""
+        url = f"{self.BASE_URL}/paper/search"
+        params = {
+            "query": query,
+            "limit": limit,
+            "fields": "paperId,title,authors,year,venue,citationCount,influentialCitationCount,abstract,url,openAccessPdf"
+        }
+
+        headers = {}
+        if self.api_key:
+            headers["x-api-key"] = self.api_key
+
+        try:
+            await self._rate_limit()
+            async with self.session.get(url, params=params, headers=headers, timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    papers = data.get("data", [])
+                    return [self._format_paper(p) for p in papers]
+                elif resp.status == 429:
+                    logger.warning("Semantic Scholar rate limit hit")
+                    return []
+                else:
+                    logger.debug(f"Semantic Scholar search returned {resp.status}")
+                    return []
+        except Exception as e:
+            logger.debug(f"Semantic Scholar search error: {e}")
+            return []
+
+    def _format_paper(self, paper: Dict) -> Dict:
+        """Format Semantic Scholar paper result."""
+        authors = paper.get("authors", [])
+        author_names = [a.get("name") for a in authors if a.get("name")][:5]
+
+        return {
+            "paperId": paper.get("paperId"),
+            "title": paper.get("title"),
+            "authors": author_names,
+            "year": paper.get("year"),
+            "venue": paper.get("venue"),
+            "citation_count": paper.get("citationCount"),
+            "influential_citations": paper.get("influentialCitationCount"),
+            "abstract": paper.get("abstract", "")[:500] if paper.get("abstract") else None,
+            "url": paper.get("url"),
+            "open_access_pdf": paper.get("openAccessPdf", {}).get("url") if paper.get("openAccessPdf") else None,
+            "source": "semantic_scholar"
+        }
+
+    def _extract_title(self, trial_data: Dict[str, Any]) -> str:
+        """Extract trial title."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            ident = protocol.get("identificationModule", {})
+            return ident.get("officialTitle") or ident.get("briefTitle") or ""
+        except:
+            return ""
+
+    def _extract_condition(self, trial_data: Dict[str, Any]) -> str:
+        """Extract primary condition."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            cond_mod = protocol.get("conditionsModule", {})
+            conditions = cond_mod.get("conditions", [])
+            if conditions and isinstance(conditions, list):
+                return conditions[0].strip()
+            return ""
+        except:
+            return ""
+
+    def _extract_intervention(self, trial_data: Dict[str, Any]) -> str:
+        """Extract primary intervention."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            arms = protocol.get("armsInterventionsModule", {})
+            interventions = arms.get("interventions", [])
+            if interventions and isinstance(interventions, list):
+                return interventions[0].get("name", "").strip()
+            return ""
+        except:
+            return ""
+
+    async def fetch(self, paper_id: str) -> Dict[str, Any]:
+        """Fetch paper by Semantic Scholar paper ID."""
+        url = f"{self.BASE_URL}/paper/{paper_id}"
+        params = {
+            "fields": "paperId,title,authors,year,venue,citationCount,influentialCitationCount,abstract,url,openAccessPdf,references,citations"
+        }
+
+        headers = {}
+        if self.api_key:
+            headers["x-api-key"] = self.api_key
+
+        try:
+            await self._rate_limit()
+            async with self.session.get(url, params=params, headers=headers, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    return self._format_paper(data)
+                return {"error": f"HTTP {resp.status}"}
+        except Exception as e:
+            return {"error": str(e)}
+
+
+class CrossRefClient(BaseClient):
+    """
+    CrossRef API client - Free DOI lookup and scholarly metadata.
+    No API key required, but polite pool is available with email.
+    """
+
+    BASE_URL = "https://api.crossref.org"
+
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search CrossRef for publications related to the clinical trial.
+
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+
+        Returns:
+            Dict with search results including DOI information
+        """
+        title = self._extract_title(trial_data)
+
+        results = {
+            "query": nct_id,
+            "results": [],
+            "total_found": 0,
+            "search_strategies": []
+        }
+
+        # Strategy 1: Search by NCT ID
+        nct_results = await self._search_works(nct_id, rows=10)
+        if nct_results:
+            results["results"].extend(nct_results)
+            results["search_strategies"].append({"type": "nct_id", "count": len(nct_results)})
+
+        # Strategy 2: Search by title if NCT search yields few results
+        if len(results["results"]) < 5 and title:
+            # Use first part of title
+            title_query = " ".join(title.split()[:8])
+            title_results = await self._search_works(title_query, rows=10)
+
+            existing_dois = {r.get("doi") for r in results["results"] if r.get("doi")}
+            for r in title_results:
+                if r.get("doi") not in existing_dois:
+                    results["results"].append(r)
+
+            results["search_strategies"].append({"type": "title", "count": len(title_results)})
+
+        results["total_found"] = len(results["results"])
+        logger.info(f"CrossRef found {results['total_found']} results for {nct_id}")
+
+        return results
+
+    async def _search_works(self, query: str, rows: int = 10) -> List[Dict]:
+        """Execute CrossRef works search."""
+        url = f"{self.BASE_URL}/works"
+        params = {
+            "query": query,
+            "rows": rows,
+            "select": "DOI,title,author,published-print,published-online,container-title,abstract,is-referenced-by-count,type,URL"
+        }
+
+        headers = {
+            "User-Agent": "NCTLookup/1.0 (mailto:support@amphoraxe.com)"  # Polite pool
+        }
+
+        try:
+            await asyncio.sleep(0.2)  # Rate limiting
+            async with self.session.get(url, params=params, headers=headers, timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    items = data.get("message", {}).get("items", [])
+                    return [self._format_work(w) for w in items]
+                else:
+                    logger.debug(f"CrossRef search returned {resp.status}")
+                    return []
+        except Exception as e:
+            logger.debug(f"CrossRef search error: {e}")
+            return []
+
+    def _format_work(self, work: Dict) -> Dict:
+        """Format CrossRef work result."""
+        # Extract authors
+        authors = work.get("author", [])
+        author_names = []
+        for a in authors[:5]:
+            name = f"{a.get('family', '')}, {a.get('given', '')}".strip(", ")
+            if name:
+                author_names.append(name)
+
+        # Extract publication date
+        pub_date = work.get("published-print") or work.get("published-online") or {}
+        date_parts = pub_date.get("date-parts", [[]])[0]
+        year = date_parts[0] if date_parts else None
+
+        # Extract title
+        titles = work.get("title", [])
+        title = titles[0] if titles else None
+
+        # Extract journal
+        containers = work.get("container-title", [])
+        journal = containers[0] if containers else None
+
+        return {
+            "doi": work.get("DOI"),
+            "title": title,
+            "authors": author_names,
+            "journal": journal,
+            "year": year,
+            "citation_count": work.get("is-referenced-by-count"),
+            "type": work.get("type"),
+            "url": work.get("URL"),
+            "abstract": work.get("abstract", "")[:500] if work.get("abstract") else None,
+            "source": "crossref"
+        }
+
+    def _extract_title(self, trial_data: Dict[str, Any]) -> str:
+        """Extract trial title."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            ident = protocol.get("identificationModule", {})
+            return ident.get("officialTitle") or ident.get("briefTitle") or ""
+        except:
+            return ""
+
+    async def fetch(self, doi: str) -> Dict[str, Any]:
+        """Fetch work by DOI."""
+        # Clean DOI
+        doi = doi.replace("https://doi.org/", "").replace("http://doi.org/", "")
+        url = f"{self.BASE_URL}/works/{doi}"
+
+        headers = {
+            "User-Agent": "NCTLookup/1.0 (mailto:support@amphoraxe.com)"
+        }
+
+        try:
+            async with self.session.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    work = data.get("message", {})
+                    return self._format_work(work)
+                return {"error": f"HTTP {resp.status}"}
+        except Exception as e:
+            return {"error": str(e)}
+
+
+class DuckDuckGoClient(BaseClient):
+    """
+    Improved DuckDuckGo search client with relevance filtering.
+    Uses targeted queries and filters out irrelevant results.
+    """
+
+    # Domains that typically have relevant clinical trial content
+    RELEVANT_DOMAINS = [
+        'clinicaltrials.gov', 'pubmed.ncbi.nlm.nih.gov', 'ncbi.nlm.nih.gov',
+        'nature.com', 'nejm.org', 'thelancet.com', 'bmj.com', 'jamanetwork.com',
+        'sciencedirect.com', 'springer.com', 'wiley.com', 'nih.gov',
+        'fda.gov', 'ema.europa.eu', 'who.int', 'cochranelibrary.com',
+        'medrxiv.org', 'biorxiv.org', 'researchgate.net', 'semanticscholar.org',
+        'europepmc.org', 'scholar.google.com', 'plos.org', 'frontiersin.org'
+    ]
+
+    # Keywords that indicate irrelevant results
+    IRRELEVANT_KEYWORDS = [
+        'shopping', 'buy', 'price', 'amazon', 'ebay', 'alibaba',
+        'facebook', 'twitter', 'instagram', 'tiktok', 'youtube',
+        'recipe', 'dating', 'casino', 'betting', 'lottery'
+    ]
+
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search DuckDuckGo with improved relevance filtering.
+
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+
+        Returns:
+            Dict with filtered search results
+        """
+        title = self._extract_title(trial_data)
+        condition = self._extract_condition(trial_data)
+        intervention = self._extract_intervention(trial_data)
+
+        results = {
+            "query": nct_id,
+            "results": [],
+            "total_found": 0,
+            "filtered_out": 0,
+            "search_strategies": []
+        }
+
         try:
             from duckduckgo_search import DDGS
-            
-            # Build query
-            query_parts = [nct_id]
-            if title:
-                query_parts.append(" ".join(title.split()[:10]))
-            if condition:
-                query_parts.append(condition)
-            
-            query = " ".join(query_parts)
-            
-            # Run search in executor (blocking operation)
-            loop = asyncio.get_event_loop()
-            results = await loop.run_in_executor(
-                None,
-                self._search_sync,
-                query
-            )
-            
-            logger.info(f"DuckDuckGo found {len(results)} results for '{query}'")
-            
-            return {
-                "query": query,
-                "results": results,
-                "total_found": len(results)
-            }
-            
+
+            # Strategy 1: Exact NCT ID search (most specific)
+            query1 = f'"{nct_id}" clinical trial'
+            raw_results1 = await self._execute_search(query1)
+            filtered1 = self._filter_results(raw_results1, nct_id)
+            results["results"].extend(filtered1)
+            results["search_strategies"].append({
+                "type": "nct_id_exact",
+                "query": query1,
+                "raw": len(raw_results1),
+                "filtered": len(filtered1)
+            })
+
+            # Strategy 2: Search with condition + intervention (if we have few results)
+            if len(results["results"]) < 5 and condition and intervention:
+                query2 = f'{nct_id} {condition} {intervention}'
+                raw_results2 = await self._execute_search(query2)
+                filtered2 = self._filter_results(raw_results2, nct_id)
+
+                existing_urls = {r.get("url") for r in results["results"]}
+                for r in filtered2:
+                    if r.get("url") not in existing_urls:
+                        results["results"].append(r)
+
+                results["search_strategies"].append({
+                    "type": "condition_intervention",
+                    "query": query2,
+                    "raw": len(raw_results2),
+                    "added": len([r for r in filtered2 if r.get("url") not in existing_urls])
+                })
+
+            # Strategy 3: Search by title keywords (if still few results)
+            if len(results["results"]) < 5 and title:
+                title_words = [w for w in title.split() if len(w) > 4][:5]
+                query3 = f'{nct_id} {" ".join(title_words)}'
+                raw_results3 = await self._execute_search(query3)
+                filtered3 = self._filter_results(raw_results3, nct_id)
+
+                existing_urls = {r.get("url") for r in results["results"]}
+                for r in filtered3:
+                    if r.get("url") not in existing_urls:
+                        results["results"].append(r)
+
+                results["search_strategies"].append({
+                    "type": "title_keywords",
+                    "query": query3,
+                    "raw": len(raw_results3),
+                    "added": len([r for r in filtered3 if r.get("url") not in existing_urls])
+                })
+
+            results["total_found"] = len(results["results"])
+            logger.info(f"DuckDuckGo found {results['total_found']} relevant results for {nct_id}")
+
+            return results
+
         except ImportError:
             return {
-                "error": "duckduckgo-search library not installed",
+                "error": "duckduckgo-search library not installed. Run: pip install duckduckgo-search",
                 "query": nct_id,
                 "results": [],
                 "total_found": 0
@@ -546,7 +1083,101 @@ class DuckDuckGoClient(BaseClient):
                 "results": [],
                 "total_found": 0
             }
-    
+
+    async def _execute_search(self, query: str, max_results: int = 15) -> List[Dict]:
+        """Execute DuckDuckGo search with rate limiting."""
+        from duckduckgo_search import DDGS
+
+        try:
+            loop = asyncio.get_event_loop()
+            results = await loop.run_in_executor(
+                None,
+                lambda: self._search_sync(query, max_results)
+            )
+            return results
+        except Exception as e:
+            logger.debug(f"DuckDuckGo search error for '{query}': {e}")
+            return []
+
+    def _search_sync(self, query: str, max_results: int) -> List[Dict]:
+        """Synchronous search helper with region set to US."""
+        from duckduckgo_search import DDGS
+
+        results = []
+        try:
+            with DDGS() as ddgs:
+                # Set region to US to avoid non-English results
+                search_results = ddgs.text(
+                    query,
+                    region='us-en',  # Force US English results
+                    max_results=max_results
+                )
+                for result in search_results:
+                    results.append({
+                        'title': result.get('title', ''),
+                        'url': result.get('href', ''),
+                        'snippet': result.get('body', '')
+                    })
+        except Exception as e:
+            logger.debug(f"DuckDuckGo sync search error: {e}")
+
+        return results
+
+    def _filter_results(self, results: List[Dict], nct_id: str) -> List[Dict]:
+        """
+        Filter search results for relevance.
+
+        Criteria:
+        1. Prefer results from known medical/research domains
+        2. Remove results with irrelevant keywords
+        3. Prioritize results that mention the NCT ID
+        4. Remove non-English looking content
+        """
+        filtered = []
+        nct_lower = nct_id.lower()
+
+        for result in results:
+            url = result.get('url', '').lower()
+            title = result.get('title', '').lower()
+            snippet = result.get('snippet', '').lower()
+
+            # Skip if URL contains irrelevant keywords
+            if any(kw in url for kw in self.IRRELEVANT_KEYWORDS):
+                continue
+
+            # Skip if title/snippet contains too many non-ASCII characters (likely non-English)
+            title_ascii_ratio = sum(1 for c in result.get('title', '') if ord(c) < 128) / max(len(result.get('title', '')), 1)
+            if title_ascii_ratio < 0.7:
+                continue
+
+            # Calculate relevance score
+            score = 0
+
+            # Bonus for mentioning NCT ID
+            if nct_lower in title or nct_lower in snippet:
+                score += 10
+
+            # Bonus for relevant domains
+            if any(domain in url for domain in self.RELEVANT_DOMAINS):
+                score += 5
+
+            # Bonus for medical/research keywords
+            medical_keywords = ['clinical', 'trial', 'study', 'research', 'patient', 'treatment', 'therapy', 'drug', 'efficacy', 'safety']
+            for kw in medical_keywords:
+                if kw in title or kw in snippet:
+                    score += 1
+
+            # Only include results with minimum relevance
+            if score >= 3:
+                result['relevance_score'] = score
+                result['source'] = 'duckduckgo'
+                filtered.append(result)
+
+        # Sort by relevance score
+        filtered.sort(key=lambda x: x.get('relevance_score', 0), reverse=True)
+
+        return filtered[:10]  # Return top 10 most relevant
+
     def _extract_title(self, trial_data: Dict[str, Any]) -> str:
         """Extract trial title."""
         try:
@@ -555,7 +1186,7 @@ class DuckDuckGoClient(BaseClient):
             return ident.get("officialTitle") or ident.get("briefTitle") or ""
         except:
             return ""
-    
+
     def _extract_condition(self, trial_data: Dict[str, Any]) -> str:
         """Extract primary condition."""
         try:
@@ -567,31 +1198,27 @@ class DuckDuckGoClient(BaseClient):
             return ""
         except:
             return ""
-    
-    def _search_sync(self, query: str) -> List[Dict]:
-        """Synchronous search helper."""
-        from duckduckgo_search import DDGS
-        
-        results = []
-        with DDGS() as ddgs:
-            search_results = ddgs.text(query, max_results=10)
-            for result in search_results:
-                results.append({
-                    'title': result.get('title', ''),
-                    'url': result.get('href', ''),
-                    'snippet': result.get('body', '')
-                })
-        
-        return results
-    
+
+    def _extract_intervention(self, trial_data: Dict[str, Any]) -> str:
+        """Extract primary intervention."""
+        try:
+            protocol = trial_data.get("protocolSection", {})
+            arms = protocol.get("armsInterventionsModule", {})
+            interventions = arms.get("interventions", [])
+            if interventions and isinstance(interventions, list):
+                return interventions[0].get("name", "").strip()
+            return ""
+        except:
+            return ""
+
     async def fetch(self, identifier: str) -> Dict[str, Any]:
         """Not implemented for DuckDuckGo."""
-        return {"error": "Fetch not supported"}
+        return {"error": "Fetch not supported for DuckDuckGo"}
 
 
 class SerpAPIClient(BaseClient):
     """SERP API (Google Search) client with proper error handling."""
-    
+
     BASE_URL = "https://serpapi.com/search"
     
     async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -1201,11 +1828,13 @@ class UniProtClient(BaseClient):
     async def _search_proteins(self, query: str) -> List[Dict]:
         """Search UniProt for proteins matching query."""
         url = f"{self.BASE_URL}/uniprotkb/search"
-        
+
         params = {
             "query": query,
             "format": "json",
-            "size": 5  # Limit results per query
+            "size": 5,  # Limit results per query
+            # CRITICAL: Must explicitly request sequence field - not included by default
+            "fields": "accession,id,protein_name,gene_names,organism_name,sequence,cc_function,keyword"
         }
         
         try:
@@ -1225,12 +1854,46 @@ class UniProtClient(BaseClient):
     
     def _format_protein(self, protein: Dict) -> Dict:
         """Format UniProt protein entry."""
+        # Extract sequence information - CRITICAL for annotation
+        sequence_info = protein.get("sequence", {})
+        sequence_value = sequence_info.get("value", "")
+        sequence_length = sequence_info.get("length", 0)
+
+        # Extract function comments for classification
+        function_text = ""
+        comments = protein.get("comments", [])
+        for comment in comments:
+            if comment.get("commentType") == "FUNCTION":
+                texts = comment.get("texts", [])
+                if texts:
+                    function_text = texts[0].get("value", "")
+                break
+
+        # Extract keywords
+        keywords = []
+        for kw in protein.get("keywords", []):
+            kw_name = kw.get("name", "")
+            if kw_name:
+                keywords.append(kw_name)
+
         return {
-            "accession": protein.get("primaryAccession"),
-            "name": protein.get("uniProtkbId"),
+            "primaryAccession": protein.get("primaryAccession"),
+            "accession": protein.get("primaryAccession"),  # Keep for backward compatibility
+            "uniProtkbId": protein.get("uniProtkbId"),
+            "name": protein.get("uniProtkbId"),  # Keep for backward compatibility
+            "proteinDescription": protein.get("proteinDescription", {}),
             "protein_name": protein.get("proteinDescription", {}).get("recommendedName", {}).get("fullName", {}).get("value"),
-            "organism": protein.get("organism", {}).get("scientificName"),
-            "gene": protein.get("genes", [{}])[0].get("geneName", {}).get("value") if protein.get("genes") else None
+            "organism": protein.get("organism", {}),
+            "gene": protein.get("genes", [{}])[0].get("geneName", {}).get("value") if protein.get("genes") else None,
+            # CRITICAL: Include sequence data for annotation
+            "sequence": {
+                "value": sequence_value,
+                "length": sequence_length
+            },
+            # Include function and keywords for classification
+            "comments": comments,
+            "keywords": protein.get("keywords", []),
+            "function": function_text
         }
     
     async def fetch(self, identifier: str) -> Dict[str, Any]:

@@ -14,15 +14,261 @@ Enhanced with:
 - IMPROVED: Cross-LLM compatible prompts with explicit decision trees
 - NEW: Verification prompts for two-stage annotation pipeline
 """
-import json
-from typing import Dict, Any, List, Optional
+import logging
+import re
+from typing import Dict, Any, Optional
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
+
+
+# =============================================================================
+# CONSTANTS
+# =============================================================================
+
+# Truncation limits for different content types
+class TruncationLimits:
+    """Centralized truncation limits for consistent text handling."""
+    BRIEF_SUMMARY = 800
+    DETAILED_DESCRIPTION = 600
+    ABSTRACT = 600
+    PMC_ABSTRACT = 500
+    INTERVENTION_DESCRIPTION = 500
+    ARM_DESCRIPTION = 300
+    SNIPPET = 300
+    FUNCTION_TEXT = 400
+    BIOC_PASSAGE = 400
+    CITATION = 150
+
+
+# Shared route keyword mappings for delivery mode detection
+ROUTE_KEYWORDS = {
+    # Injection/Infusion indicators
+    'injection': 'Injection/Infusion',
+    'injectable': 'Injection/Infusion',
+    'inject': 'Injection/Infusion',
+    'infusion': 'Injection/Infusion',
+    'infuse': 'Injection/Infusion',
+    'intravenous': 'Injection/Infusion',
+    'iv ': 'Injection/Infusion',
+    'i.v.': 'Injection/Infusion',
+    'subcutaneous': 'Injection/Infusion',
+    'sc ': 'Injection/Infusion',
+    's.c.': 'Injection/Infusion',
+    'sq ': 'Injection/Infusion',
+    'subq': 'Injection/Infusion',
+    'intramuscular': 'Injection/Infusion',
+    'im ': 'Injection/Infusion',
+    'i.m.': 'Injection/Infusion',
+    'intradermal': 'Injection/Infusion',
+    'intraperitoneal': 'Injection/Infusion',
+    'intrathecal': 'Injection/Infusion',
+    'intravitreal': 'Injection/Infusion',
+    'intraarticular': 'Injection/Infusion',
+    'intralesional': 'Injection/Infusion',
+    'bolus': 'Injection/Infusion',
+    'parenteral': 'Injection/Infusion',
+    'syringe': 'Injection/Infusion',
+    'needle': 'Injection/Infusion',
+    'drip': 'Injection/Infusion',
+    # Topical indicators
+    'topical': 'Topical',
+    'topically': 'Topical',
+    'cream': 'Topical',
+    'ointment': 'Topical',
+    'gel': 'Topical',
+    'lotion': 'Topical',
+    'dermal': 'Topical',
+    'transdermal': 'Topical',
+    'cutaneous': 'Topical',
+    'wound': 'Topical',
+    'wound care': 'Topical',
+    'wound dressing': 'Topical',
+    'patch': 'Topical',
+    'eye drop': 'Topical',
+    'eyedrop': 'Topical',
+    'ophthalmic': 'Topical',
+    'ocular': 'Topical',
+    'ear drop': 'Topical',
+    'otic': 'Topical',
+    'nasal spray': 'Topical',
+    'intranasal': 'Topical',
+    'nasal': 'Topical',
+    'mouthwash': 'Topical',
+    'mouth rinse': 'Topical',
+    'oral rinse': 'Topical',
+    'buccal': 'Topical',
+    'dental': 'Topical',
+    'periodontal': 'Topical',
+    'gingival': 'Topical',
+    'vaginal': 'Topical',
+    'intravaginal': 'Topical',
+    'rectal': 'Topical',
+    'enema': 'Topical',
+    # Oral indicators
+    'oral': 'Oral',
+    'orally': 'Oral',
+    'by mouth': 'Oral',
+    'per os': 'Oral',
+    'po ': 'Oral',
+    'p.o.': 'Oral',
+    'tablet': 'Oral',
+    'tablets': 'Oral',
+    'capsule': 'Oral',
+    'capsules': 'Oral',
+    'pill': 'Oral',
+    'pills': 'Oral',
+    'syrup': 'Oral',
+    'elixir': 'Oral',
+    'swallow': 'Oral',
+    'swallowed': 'Oral',
+    'enteric': 'Oral',
+    'enteric-coated': 'Oral',
+    'sublingual': 'Oral',
+    'lozenge': 'Oral',
+    # Other indicators
+    'inhaled': 'Other',
+    'inhalation': 'Other',
+    'nebulized': 'Other',
+    'pulmonary': 'Other',
+    'implant': 'Other',
+    'implanted': 'Other',
+    'depot': 'Other',
+    # Additional injection-related terms often found in clinical trials
+    'administered intravenously': 'Injection/Infusion',
+    'administered subcutaneously': 'Injection/Infusion',
+    'administered intramuscularly': 'Injection/Infusion',
+    'given intravenously': 'Injection/Infusion',
+    'given subcutaneously': 'Injection/Infusion',
+    'given intramuscularly': 'Injection/Infusion',
+    'intravenously administered': 'Injection/Infusion',
+    'subcutaneously administered': 'Injection/Infusion',
+    'intramuscularly administered': 'Injection/Infusion',
+    'via injection': 'Injection/Infusion',
+    'via infusion': 'Injection/Infusion',
+    'injected': 'Injection/Infusion',
+    'infused': 'Injection/Infusion',
+    # Additional topical terms
+    'applied topically': 'Topical',
+    'topical application': 'Topical',
+    'skin application': 'Topical',
+    'applied to the skin': 'Topical',
+    'applied to skin': 'Topical',
+    'wound application': 'Topical',
+    'wound healing': 'Topical',
+    'dressing': 'Topical',
+    'spray': 'Topical',  # Usually topical unless "inhaled spray"
+    'foam': 'Topical',
+    'solution for skin': 'Topical',
+    # Additional oral terms
+    'taken orally': 'Oral',
+    'oral administration': 'Oral',
+    'oral dosing': 'Oral',
+    'oral dose': 'Oral',
+    'taken by mouth': 'Oral',
+    'orally administered': 'Oral',
+    'oral solution': 'Oral',
+    'oral suspension': 'Oral',
+    'chewable': 'Oral',
+    'granules': 'Oral',
+    'powder for oral': 'Oral',
+}
+
+# Outcome status mapping - maps ClinicalTrials.gov status to our outcome categories
+OUTCOME_STATUS_MAPPING = {
+    # Active statuses
+    'RECRUITING': 'Active',
+    'NOT_YET_RECRUITING': 'Active',
+    'ENROLLING_BY_INVITATION': 'Active',
+    'ACTIVE_NOT_RECRUITING': 'Active',
+    'AVAILABLE': 'Active',
+    'TEMPORARILY_NOT_AVAILABLE': 'Active',
+    # Withdrawn
+    'WITHDRAWN': 'Withdrawn',
+    # Terminated
+    'TERMINATED': 'Terminated',
+    # Unknown/Suspended
+    'SUSPENDED': 'Unknown',
+    'WITHHELD': 'Unknown',
+    'NO_LONGER_AVAILABLE': 'Unknown',
+    'UNKNOWN_STATUS': 'Unknown',
+    'UNKNOWN': 'Unknown',
+    # Completed requires further analysis
+    'COMPLETED': 'NEEDS_RESULTS_ANALYSIS',
+}
+
+# Keywords indicating positive trial outcome
+POSITIVE_OUTCOME_KEYWORDS = [
+    'met primary endpoint',
+    'met the primary endpoint',
+    'achieved primary endpoint',
+    'primary endpoint was met',
+    'primary endpoint achieved',
+    'statistically significant',
+    'significant improvement',
+    'significant reduction',
+    'significant increase',
+    'significant difference',
+    'demonstrated efficacy',
+    'showed efficacy',
+    'proven effective',
+    'effective treatment',
+    'superior to placebo',
+    'superior to control',
+    'non-inferior',
+    'noninferiority met',
+    'non-inferiority met',
+    'fda approved',
+    'regulatory approval',
+    'marketing authorization',
+    'positive results',
+    'favorable results',
+    'met its endpoint',
+    'endpoints were met',
+    'primary outcome achieved',
+]
+
+# Keywords indicating negative/failed trial outcome
+NEGATIVE_OUTCOME_KEYWORDS = [
+    'did not meet primary endpoint',
+    'failed to meet primary endpoint',
+    'primary endpoint was not met',
+    'primary endpoint not achieved',
+    'did not meet the primary endpoint',
+    'failed to meet the primary endpoint',
+    'no significant difference',
+    'not statistically significant',
+    'failed to demonstrate',
+    'lack of efficacy',
+    'no efficacy',
+    'ineffective',
+    'not effective',
+    'negative results',
+    'did not show benefit',
+    'no benefit',
+    'failed to show',
+    'terminated for futility',
+    'futility',
+    'did not achieve',
+    'unsuccessful',
+    'not superior',
+    'inferior to',
+    'no improvement',
+]
+
+# Antimicrobial keywords for AMP classification
+ANTIMICROBIAL_KEYWORDS = [
+    'antimicrobial', 'antibacterial', 'antifungal', 'antiviral',
+    'bactericidal', 'fungicidal', 'defensin', 'cathelicidin',
+    'membrane disruption', 'host defense', 'kills bacteria',
+    'bacteriostatic', 'virucidal', 'antiparasitic'
+]
 
 
 class ImprovedPromptGenerator:
     """
     Generate enhanced LLM prompts from clinical trial search results.
-    
+
     Key improvements:
     - Few-shot examples embedded in system prompt
     - Explicit chain-of-thought reasoning
@@ -31,17 +277,206 @@ class ImprovedPromptGenerator:
     - Enhanced Classification and Outcome accuracy
     - Cross-LLM compatible explicit instructions
     - NEW: Verification prompts for two-stage annotation
+    - NEW: Robust error handling for missing/empty data
+    - NEW: Configurable quality score weights
     """
-    
-    def __init__(self):
-        """Initialize prompt generator."""
-        self.modelfile_template = self._load_modelfile_template()
-    
-    def _load_modelfile_template(self) -> str:
-        """Load the improved Modelfile template."""
-        return """# Improved Clinical Trial Research Assistant Modelfile Template
 
-FROM llama3.2
+    # Critical data sources for each annotation field
+    REQUIRED_SOURCES = {
+        'classification': ['clinical_trials', 'pubmed'],
+        'delivery_mode': ['clinical_trials'],
+        'outcome': ['clinical_trials'],
+        'failure_reason': ['clinical_trials'],
+        'peptide': ['clinical_trials', 'uniprot'],
+        'sequence': ['uniprot', 'extended']
+    }
+
+    # Default source weights for quality scoring
+    # See QUALITY_SCORES.md for detailed reasoning behind these values
+    DEFAULT_SOURCE_WEIGHTS = {
+        # Core sources - these provide the primary trial data
+        'clinical_trials': 0.40,  # Primary source: trial status, interventions, outcomes
+        'pubmed': 0.15,           # Published literature context and validation
+        'pmc': 0.10,              # Full-text articles for deeper context
+        'pmc_bioc': 0.05,         # Annotated data extraction (supplementary)
+
+        # Extended sources - provide additional context
+        'uniprot': 0.15,          # Critical for sequence and peptide determination
+        'openfda': 0.05,          # FDA drug info, delivery routes
+        'duckduckgo': 0.05,       # Web context (lower reliability)
+        'dramp': 0.05,            # AMP database (highly specific when available)
+
+        # Paid sources (may not always be available)
+        'serpapi': 0.00,          # Disabled by default (paid)
+        'scholar': 0.00,          # Disabled by default (paid)
+    }
+
+    def __init__(
+        self,
+        model_name: str = "llama3.2",
+        source_weights: Optional[Dict[str, float]] = None
+    ):
+        """
+        Initialize prompt generator with optional custom quality weights.
+
+        Args:
+            model_name: The model to use in the Modelfile template (default: llama3.2)
+            source_weights: Optional custom weights for source-level quality scoring.
+                           Keys are source names, values are weights (should sum to ~1.0).
+                           If None, uses DEFAULT_SOURCE_WEIGHTS.
+        """
+        self.model_name = model_name
+        self.source_weights = source_weights or self.DEFAULT_SOURCE_WEIGHTS.copy()
+
+    @classmethod
+    def get_default_weights(cls) -> Dict[str, float]:
+        """
+        Get the default source weights for quality scoring.
+
+        Returns:
+            Dictionary of default weights that can be modified and passed back.
+        """
+        return cls.DEFAULT_SOURCE_WEIGHTS.copy()
+
+    def set_source_weights(self, source_weights: Dict[str, float]) -> None:
+        """
+        Update the source weights used for quality scoring.
+
+        Args:
+            source_weights: New weights to use. Keys are source names, values are weights.
+        """
+        self.source_weights = source_weights
+
+    def reset_weights_to_default(self) -> None:
+        """Reset source weights to the default values."""
+        self.source_weights = self.DEFAULT_SOURCE_WEIGHTS.copy()
+
+    def get_current_weights(self) -> Dict[str, float]:
+        """
+        Get the current source weights being used.
+
+        Returns:
+            Dictionary of current weights.
+        """
+        return self.source_weights.copy()
+
+    def _check_data_availability(self, search_results: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Check which data sources are available and assess overall data quality.
+
+        Args:
+            search_results: Complete search results from NCTSearchEngine
+
+        Returns:
+            Dictionary with availability info:
+            - available_sources: list of sources with data
+            - missing_sources: list of sources without data
+            - quality_score: 0-1 score indicating weighted data completeness
+            - unweighted_score: simple ratio of available/checked sources
+            - warnings: list of warning messages
+            - field_recommendations: per-field recommendations for handling missing data
+            - weights_used: the weights applied for scoring
+        """
+        # Try both possible paths for sources
+        sources = search_results.get("sources", {})
+        if not sources:
+            sources = search_results.get("results", {}).get("sources", {})
+
+        available = []
+        missing = []
+        warnings = []
+
+        # Check core sources
+        source_checks = {
+            'clinical_trials': sources.get("clinical_trials", {}).get("success", False),
+            'pubmed': sources.get("pubmed", {}).get("success", False),
+            'pmc': sources.get("pmc", {}).get("success", False),
+            'pmc_bioc': sources.get("pmc_bioc", {}).get("success", False),
+        }
+
+        # Check extended sources - try both paths
+        extended = sources.get("extended", {})
+        if not extended:
+            extended = search_results.get("results", {}).get("sources", {}).get("extended", {})
+        if extended:
+            source_checks['uniprot'] = extended.get("uniprot", {}).get("success", False)
+            source_checks['openfda'] = extended.get("openfda", {}).get("success", False)
+            source_checks['duckduckgo'] = extended.get("duckduckgo", {}).get("success", False)
+            source_checks['dramp'] = extended.get("dramp", {}).get("success", False)
+            source_checks['serpapi'] = extended.get("serpapi", {}).get("success", False)
+            source_checks['scholar'] = extended.get("scholar", {}).get("success", False)
+
+        for source, is_available in source_checks.items():
+            if is_available:
+                available.append(source)
+            else:
+                missing.append(source)
+
+        # Calculate weighted quality score using configurable weights
+        quality_score = sum(self.source_weights.get(s, 0) for s in available)
+
+        # Calculate unweighted score for comparison
+        unweighted_score = len(available) / len(source_checks) if source_checks else 0
+
+        # Generate warnings
+        if 'clinical_trials' not in available:
+            warnings.append("CRITICAL: No ClinicalTrials.gov data - all annotations may be unreliable")
+        if 'uniprot' not in available and 'dramp' not in available:
+            warnings.append("No protein database data - Sequence will be N/A, Peptide determination limited")
+
+        # Field-specific recommendations
+        field_recs = {}
+        for field, required in self.REQUIRED_SOURCES.items():
+            missing_required = [r for r in required if r not in available]
+            if missing_required:
+                if field == 'classification':
+                    field_recs[field] = "Limited data - default to 'Other' unless clear AMP indicators"
+                elif field == 'delivery_mode':
+                    field_recs[field] = "No intervention data - default to 'Other'"
+                elif field == 'outcome':
+                    field_recs[field] = "No status data - use 'Unknown'"
+                elif field == 'failure_reason':
+                    field_recs[field] = "No status data - use 'N/A'"
+                elif field == 'peptide':
+                    field_recs[field] = "Limited evidence - default to 'False' unless drug name indicates peptide"
+                elif field == 'sequence':
+                    field_recs[field] = "No sequence database data - use 'N/A'"
+
+        return {
+            'available_sources': available,
+            'missing_sources': missing,
+            'quality_score': quality_score,
+            'unweighted_score': unweighted_score,
+            'warnings': warnings,
+            'field_recommendations': field_recs,
+            'weights_used': self.source_weights.copy()
+        }
+
+    def get_modelfile_template(self, model_name: Optional[str] = None) -> str:
+        """
+        Get the Modelfile template with the specified model.
+
+        Args:
+            model_name: Override the default model name if provided
+
+        Returns:
+            The complete Modelfile template string
+        """
+        return self._load_modelfile_template(model_name or self.model_name)
+    
+    def _load_modelfile_template(self, model_name: str = "llama3.2") -> str:
+        """
+        Load the improved Modelfile template.
+
+        Args:
+            model_name: The model to use (e.g., llama3.2, mistral, etc.)
+
+        Returns:
+            The complete Modelfile template string
+        """
+        return f"""# Improved Clinical Trial Research Assistant Modelfile Template
+
+FROM {model_name}
 
 SYSTEM \"\"\"You are a Clinical Trial Data Annotation Specialist with expertise in peptide therapeutics. Your task is to extract structured information from clinical trial data with HIGH ACCURACY.
 
@@ -690,7 +1125,9 @@ the annotation produced by {primary_model} for this clinical trial.
         # Section 1: Original Annotation to Review
         sections.append("## ORIGINAL ANNOTATION (to verify)")
         sections.append("```")
-        sections.append(original_annotation if original_annotation else "[No annotation provided]")
+        # Sanitize annotation to prevent prompt injection
+        sanitized_annotation = self._sanitize_annotation(original_annotation) if original_annotation else "[No annotation provided]"
+        sections.append(sanitized_annotation)
         sections.append("```")
         sections.append("")
         
@@ -711,7 +1148,8 @@ the annotation produced by {primary_model} for this clinical trial.
         sections.append("")
         
         # Section 4: Verification Instructions
-        sections.append("""---
+        # Using f-string to avoid .format() issues with braces in the template
+        verification_instructions = f"""---
 ## YOUR TASK
 
 Review the annotation above and produce a VERIFICATION REPORT in this EXACT format:
@@ -760,8 +1198,8 @@ Corrections Made: [number]
 
 ## FINAL VERIFIED ANNOTATION
 
-[Provide the complete corrected annotation in the standard format, 
-incorporating all your corrections. If no corrections needed, 
+[Provide the complete corrected annotation in the standard format,
+incorporating all your corrections. If no corrections needed,
 reproduce the original annotation.]
 
 Classification: [verified value]
@@ -780,7 +1218,8 @@ Comments: [any additional notes about verification]
 ```
 
 Begin your verification:
-""".format(nct_id=nct_id))
+"""
+        sections.append(verification_instructions)
         
         return "\n".join(sections)
     
@@ -870,6 +1309,355 @@ Begin your verification:
             else:
                 return default
         return current if current is not None else default
+
+    def _compute_delivery_mode_suggestion(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Pre-compute delivery mode suggestion based on all available data sources.
+
+        Analyzes:
+        1. ClinicalTrials.gov intervention descriptions and arm descriptions
+        2. OpenFDA route data (if available)
+        3. Drug class and formulation information
+
+        Returns:
+            Dictionary with:
+            - suggested_mode: The suggested delivery mode
+            - confidence: 'high', 'medium', or 'low'
+            - evidence: List of evidence supporting the suggestion
+            - all_keywords_found: All route keywords found in the data
+        """
+        evidence = []
+        all_keywords_found = []
+        route_votes = {'Injection/Infusion': 0, 'Topical': 0, 'Oral': 0, 'Other': 0}
+
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        # 1. Check OpenFDA data first (most reliable for approved drugs)
+        extended_source = sources.get("extended", {})
+        if not extended_source:
+            extended_source = results.get("results", {}).get("sources", {}).get("extended", {})
+
+        openfda = extended_source.get("openfda", {})
+        if openfda.get("success"):
+            fda_data = openfda.get("data", {})
+            fda_results = fda_data.get("results", [])
+            for result in fda_results[:3]:
+                openfda_info = result.get("openfda", {})
+                routes = openfda_info.get("route", [])
+                for route in routes:
+                    route_lower = route.lower()
+                    evidence.append(f"OpenFDA route: {route}")
+                    if any(kw in route_lower for kw in ['injection', 'intravenous', 'subcutaneous', 'intramuscular', 'parenteral']):
+                        route_votes['Injection/Infusion'] += 3  # High weight for FDA data
+                        all_keywords_found.append(f"FDA:{route}→Injection/Infusion")
+                    elif any(kw in route_lower for kw in ['topical', 'cutaneous', 'dermal', 'ophthalmic', 'nasal']):
+                        route_votes['Topical'] += 3
+                        all_keywords_found.append(f"FDA:{route}→Topical")
+                    elif any(kw in route_lower for kw in ['oral', 'sublingual']):
+                        route_votes['Oral'] += 3
+                        all_keywords_found.append(f"FDA:{route}→Oral")
+                    else:
+                        route_votes['Other'] += 1
+                        all_keywords_found.append(f"FDA:{route}→Other")
+
+        # 2. Check ClinicalTrials.gov intervention data
+        ct_source = sources.get("clinical_trials", {})
+        if ct_source.get("success"):
+            ct_data = ct_source.get("data", {})
+            protocol = ct_data.get("protocolSection", {})
+
+            # Check intervention descriptions
+            arms_int = protocol.get("armsInterventionsModule", {})
+            interventions = arms_int.get("interventions", [])
+
+            all_text_to_search = []
+            for intv in interventions:
+                int_name = intv.get("name", "")
+                int_desc = intv.get("description", "")
+                all_text_to_search.append(int_name)
+                all_text_to_search.append(int_desc)
+
+            # Check arm group descriptions
+            arm_groups = arms_int.get("armGroups", [])
+            for arm in arm_groups:
+                arm_desc = arm.get("description", "")
+                all_text_to_search.append(arm_desc)
+
+            # Check brief summary and detailed description
+            desc_mod = protocol.get("descriptionModule", {})
+            all_text_to_search.append(desc_mod.get("briefSummary", ""))
+            all_text_to_search.append(desc_mod.get("detailedDescription", ""))
+
+            combined_text = " ".join(all_text_to_search).lower()
+
+            # Search for route keywords
+            for keyword, route in ROUTE_KEYWORDS.items():
+                # Use word boundary matching for short keywords
+                if len(keyword) <= 3:
+                    # For short keywords like 'iv', 'sc', 'im', check for word boundaries
+                    if re.search(r'\b' + re.escape(keyword) + r'\b', combined_text):
+                        route_votes[route] += 2
+                        all_keywords_found.append(f"CT:{keyword}→{route}")
+                        evidence.append(f"Found '{keyword}' in trial data")
+                else:
+                    if keyword in combined_text:
+                        route_votes[route] += 2
+                        all_keywords_found.append(f"CT:{keyword}→{route}")
+                        evidence.append(f"Found '{keyword}' in trial data")
+
+        # 3. Determine suggestion based on votes
+        max_votes = max(route_votes.values())
+        if max_votes == 0:
+            # No keywords found - check if it's a peptide/biological (default to injection)
+            suggested_mode = "Other"
+            confidence = "low"
+            evidence.append("No delivery route keywords found in any data source")
+        else:
+            # Find the route(s) with max votes
+            top_routes = [route for route, votes in route_votes.items() if votes == max_votes]
+
+            if len(top_routes) == 1:
+                suggested_mode = top_routes[0]
+                if max_votes >= 3:
+                    confidence = "high"
+                elif max_votes >= 2:
+                    confidence = "medium"
+                else:
+                    confidence = "low"
+            else:
+                # Tie - use priority order: Injection/Infusion > Topical > Oral > Other
+                priority_order = ['Injection/Infusion', 'Topical', 'Oral', 'Other']
+                for route in priority_order:
+                    if route in top_routes:
+                        suggested_mode = route
+                        break
+                confidence = "low"
+                evidence.append(f"Multiple routes detected with equal evidence: {', '.join(top_routes)}")
+
+        return {
+            'suggested_mode': suggested_mode,
+            'confidence': confidence,
+            'evidence': evidence[:5],  # Limit evidence to 5 items
+            'all_keywords_found': all_keywords_found,
+            'vote_breakdown': route_votes
+        }
+
+    def _compute_outcome_suggestion(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Pre-compute outcome suggestion based on trial status and results.
+
+        Analyzes:
+        1. Overall status field (primary determinant)
+        2. hasResults flag
+        3. Results section for positive/negative indicators
+        4. P-values in outcome analyses
+
+        Returns:
+            Dictionary with:
+            - suggested_outcome: The suggested outcome
+            - confidence: 'high', 'medium', or 'low'
+            - evidence: List of evidence supporting the suggestion
+            - status_info: Raw status information
+        """
+        evidence = []
+
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        ct_source = sources.get("clinical_trials", {})
+        if not ct_source.get("success"):
+            return {
+                'suggested_outcome': 'Unknown',
+                'confidence': 'low',
+                'evidence': ['No ClinicalTrials.gov data available'],
+                'status_info': {}
+            }
+
+        ct_data = ct_source.get("data", {})
+        protocol = ct_data.get("protocolSection", {})
+        status_mod = protocol.get("statusModule", {})
+
+        overall_status = status_mod.get('overallStatus', 'UNKNOWN').upper()
+        has_results = ct_data.get("hasResults", False)
+        why_stopped = status_mod.get('whyStopped', '')
+
+        status_info = {
+            'overall_status': overall_status,
+            'has_results': has_results,
+            'why_stopped': why_stopped
+        }
+
+        evidence.append(f"Overall Status: {overall_status}")
+        evidence.append(f"Has Results: {has_results}")
+        if why_stopped:
+            evidence.append(f"Why Stopped: {why_stopped[:100]}")
+
+        # Step 1: Map status to outcome using the mapping
+        mapped_outcome = OUTCOME_STATUS_MAPPING.get(overall_status, 'Unknown')
+
+        if mapped_outcome != 'NEEDS_RESULTS_ANALYSIS':
+            # Direct mapping from status
+            return {
+                'suggested_outcome': mapped_outcome,
+                'confidence': 'high',
+                'evidence': evidence,
+                'status_info': status_info
+            }
+
+        # Step 2: For COMPLETED trials, analyze results
+        if not has_results:
+            evidence.append("Trial COMPLETED but no results posted - cannot determine success/failure")
+            return {
+                'suggested_outcome': 'Unknown',
+                'confidence': 'medium',
+                'evidence': evidence,
+                'status_info': status_info
+            }
+
+        # Step 3: Analyze results section for positive/negative indicators
+        results_section = ct_data.get("resultsSection", {})
+
+        # Collect all text from results for keyword analysis
+        results_text_parts = []
+
+        # Check outcome measures
+        outcome_measures = results_section.get("outcomeMeasuresModule", {})
+        outcome_list = outcome_measures.get("outcomeMeasures", [])
+
+        positive_indicators = []
+        negative_indicators = []
+        p_values = []
+
+        for om in outcome_list:
+            om_title = om.get("title", "")
+            om_desc = om.get("description", "")
+            results_text_parts.extend([om_title, om_desc])
+
+            # Check analyses for p-values
+            analyses = om.get("analyses", [])
+            for analysis in analyses:
+                p_value_str = analysis.get("pValue", "")
+                if p_value_str:
+                    p_values.append(p_value_str)
+                    # Try to parse p-value
+                    try:
+                        # Handle various p-value formats
+                        p_clean = p_value_str.lower().replace('<', '').replace('>', '').replace('=', '').strip()
+                        if p_clean and p_clean[0].isdigit():
+                            p_val = float(p_clean.split()[0])
+                            if p_val < 0.05:
+                                positive_indicators.append(f"Significant p-value: {p_value_str}")
+                            else:
+                                negative_indicators.append(f"Non-significant p-value: {p_value_str}")
+                    except (ValueError, IndexError):
+                        pass
+
+        # Check more info module
+        more_info = results_section.get("moreInfoModule", {})
+        limitations = more_info.get("limitationsAndCaveats", {})
+        if limitations:
+            lim_desc = limitations.get("description", "")
+            results_text_parts.append(lim_desc)
+
+        # Combine all results text and search for keywords
+        combined_results_text = " ".join(results_text_parts).lower()
+
+        for keyword in POSITIVE_OUTCOME_KEYWORDS:
+            if keyword in combined_results_text:
+                positive_indicators.append(f"Found: '{keyword}'")
+
+        for keyword in NEGATIVE_OUTCOME_KEYWORDS:
+            if keyword in combined_results_text:
+                negative_indicators.append(f"Found: '{keyword}'")
+
+        # Determine outcome based on indicators
+        if positive_indicators and not negative_indicators:
+            suggested_outcome = 'Positive'
+            confidence = 'high' if len(positive_indicators) >= 2 else 'medium'
+            evidence.extend(positive_indicators[:3])
+        elif negative_indicators and not positive_indicators:
+            suggested_outcome = 'Failed - completed trial'
+            confidence = 'high' if len(negative_indicators) >= 2 else 'medium'
+            evidence.extend(negative_indicators[:3])
+        elif positive_indicators and negative_indicators:
+            # Mixed signals - need manual review
+            suggested_outcome = 'Unknown'
+            confidence = 'low'
+            evidence.append(f"Mixed signals: {len(positive_indicators)} positive, {len(negative_indicators)} negative indicators")
+            evidence.extend(positive_indicators[:2])
+            evidence.extend(negative_indicators[:2])
+        else:
+            # No clear indicators found
+            suggested_outcome = 'Unknown'
+            confidence = 'low'
+            evidence.append("No clear success/failure indicators found in results")
+
+        if p_values:
+            evidence.append(f"P-values found: {', '.join(p_values[:3])}")
+
+        return {
+            'suggested_outcome': suggested_outcome,
+            'confidence': confidence,
+            'evidence': evidence[:7],
+            'status_info': status_info
+        }
+
+    def _sanitize_annotation(self, annotation: str) -> str:
+        """
+        Sanitize annotation text to prevent prompt injection.
+
+        Removes or escapes patterns that could break the prompt structure
+        or inject unintended instructions.
+
+        Args:
+            annotation: The raw annotation text
+
+        Returns:
+            Sanitized annotation text
+        """
+        if not annotation:
+            return ""
+
+        sanitized = annotation
+
+        # Remove triple backticks that could break code block formatting
+        sanitized = sanitized.replace("```", "'''")
+
+        # Remove patterns that look like instruction injection
+        injection_patterns = [
+            r'(?i)ignore\s+(previous|above|all)\s+instructions?',
+            r'(?i)disregard\s+(previous|above|all)',
+            r'(?i)new\s+instructions?:',
+            r'(?i)system\s*:',
+            r'(?i)assistant\s*:',
+            r'(?i)human\s*:',
+        ]
+
+        for pattern in injection_patterns:
+            sanitized = re.sub(pattern, '[REMOVED]', sanitized)
+
+        return sanitized
+
+    def _truncate_text(self, text: str, max_length: int, suffix: str = "...") -> str:
+        """
+        Truncate text to a maximum length with a suffix.
+
+        Args:
+            text: The text to truncate
+            max_length: Maximum allowed length
+            suffix: Suffix to add when truncating (default: "...")
+
+        Returns:
+            Truncated text with suffix if needed
+        """
+        if not text or len(text) <= max_length:
+            return text
+        return text[:max_length] + suffix
     
     def get_verification_system_prompt(self) -> str:
         """
@@ -931,51 +1719,123 @@ Be thorough but concise. Focus on accuracy."""
     ) -> str:
         """
         Generate extraction prompt from search results.
-        
+
         Args:
             search_results: Complete search results from NCTSearchEngine
             nct_id: NCT number
-            
+
         Returns:
             Formatted prompt for LLM extraction
         """
         sections = []
-        
+
+        # Check data availability first
+        data_check = self._check_data_availability(search_results)
+
         # Add header with clear task
         sections.append(f"# CLINICAL TRIAL ANNOTATION TASK: {nct_id}")
+
+        # Add data quality assessment if there are issues
+        if data_check['warnings'] or data_check['quality_score'] < 0.5:
+            sections.append("""
+## ⚠️ DATA QUALITY ASSESSMENT
+""")
+            sections.append(f"**Data Completeness:** {data_check['quality_score']:.0%}")
+            sections.append(f"**Available Sources:** {', '.join(data_check['available_sources']) or 'None'}")
+            sections.append(f"**Missing Sources:** {', '.join(data_check['missing_sources']) or 'None'}")
+
+            if data_check['warnings']:
+                sections.append("\n**WARNINGS:**")
+                for warning in data_check['warnings']:
+                    sections.append(f"  ! {warning}")
+
+            if data_check['field_recommendations']:
+                sections.append("\n**FIELD-SPECIFIC GUIDANCE FOR LIMITED DATA:**")
+                for field, rec in data_check['field_recommendations'].items():
+                    sections.append(f"  - {field}: {rec}")
+
+            sections.append("")
+
+        # Pre-compute delivery mode and outcome suggestions
+        delivery_suggestion = self._compute_delivery_mode_suggestion(search_results)
+        outcome_suggestion = self._compute_outcome_suggestion(search_results)
+
         sections.append("""
-Analyze the following clinical trial data carefully. For each field requiring classification, 
+Analyze the following clinical trial data carefully. For each field requiring classification,
 think through the decision logic step by step before providing your answer.
+
+**IMPORTANT:** If data is missing or insufficient for a field, explicitly state this and use
+the default/fallback values as specified below.
 
 ## QUICK REFERENCE - VALID VALUES ONLY
 
-| Field | Valid Values |
-|-------|--------------|
-| Classification | AMP, Other |
-| Delivery Mode | Injection/Infusion, Topical, Oral, Other |
-| Outcome | Positive, Withdrawn, Terminated, Failed - completed trial, Active, Unknown |
-| Peptide | True, False |
+| Field | Valid Values | Default if Insufficient Data |
+|-------|--------------|------------------------------|
+| Classification | AMP, Other | Other |
+| Delivery Mode | Injection/Infusion, Topical, Oral, Other | Other |
+| Outcome | Positive, Withdrawn, Terminated, Failed - completed trial, Active, Unknown | Unknown |
+| Reason for Failure | Business reasons, Ineffective for purpose, Toxic/unsafe, Due to covid, Recruitment issues, N/A | N/A |
+| Peptide | True, False | False |
+| Sequence | Amino acid sequence, N/A | N/A |
+""")
+
+        # Add pre-computed analysis section
+        sections.append("""
+## ════════════════════════════════════════════════════════════════════════
+## PRE-COMPUTED ANALYSIS (System Suggestions - Use as Strong Hints)
+## ════════════════════════════════════════════════════════════════════════
+""")
+
+        # Delivery Mode suggestion
+        dm_conf_symbol = "★★★" if delivery_suggestion['confidence'] == 'high' else ("★★" if delivery_suggestion['confidence'] == 'medium' else "★")
+        sections.append(f"""
+### DELIVERY MODE ANALYSIS
+**Suggested Value:** {delivery_suggestion['suggested_mode']}
+**Confidence:** {delivery_suggestion['confidence'].upper()} {dm_conf_symbol}
+**Evidence:**""")
+        for ev in delivery_suggestion['evidence']:
+            sections.append(f"  - {ev}")
+        if delivery_suggestion['all_keywords_found']:
+            sections.append(f"**Keywords Found:** {', '.join(delivery_suggestion['all_keywords_found'][:8])}")
+        sections.append(f"""
+**Vote Breakdown:** Injection/Infusion={delivery_suggestion['vote_breakdown']['Injection/Infusion']}, Topical={delivery_suggestion['vote_breakdown']['Topical']}, Oral={delivery_suggestion['vote_breakdown']['Oral']}, Other={delivery_suggestion['vote_breakdown']['Other']}
+
+⚠️ USE THIS SUGGESTION unless you find clear contradicting evidence in the data below.
+""")
+
+        # Outcome suggestion
+        oc_conf_symbol = "★★★" if outcome_suggestion['confidence'] == 'high' else ("★★" if outcome_suggestion['confidence'] == 'medium' else "★")
+        sections.append(f"""
+### OUTCOME ANALYSIS
+**Suggested Value:** {outcome_suggestion['suggested_outcome']}
+**Confidence:** {outcome_suggestion['confidence'].upper()} {oc_conf_symbol}
+**Status Info:**
+  - Overall Status: {outcome_suggestion['status_info'].get('overall_status', 'N/A')}
+  - Has Results: {outcome_suggestion['status_info'].get('has_results', 'N/A')}""")
+        if outcome_suggestion['status_info'].get('why_stopped'):
+            sections.append(f"  - Why Stopped: {outcome_suggestion['status_info']['why_stopped'][:100]}")
+        sections.append("**Evidence:**")
+        for ev in outcome_suggestion['evidence']:
+            sections.append(f"  - {ev}")
+        sections.append(f"""
+⚠️ USE THIS SUGGESTION unless you find clear contradicting evidence in the data below.
+""")
+
+        sections.append("""
+## ════════════════════════════════════════════════════════════════════════
 
 ## KEY DECISION REMINDERS
 
 **CLASSIFICATION**: Does the peptide KILL or INHIBIT pathogens (bacteria/fungi/viruses)?
 - YES → AMP
 - NO (metabolic/hormonal/immunomodulator) → Other
+- INSUFFICIENT DATA → Other (with explanation)
 
-**DELIVERY MODE**: Search for these keywords IN ORDER:
-1. Injection words (injection, IV, SC, IM, infusion) → Injection/Infusion
-2. Topical words (topical, cream, gel, wound, eye drop) → Topical  
-3. Oral words (oral, tablet, capsule, pill) → Oral
-4. Other (inhaled, implant, unclear) → Other
-5. No keywords + peptide drug → Default to Injection/Infusion
+**DELIVERY MODE**: Use the PRE-COMPUTED SUGGESTION above unless contradicting evidence found.
+If you disagree with the suggestion, explain why in your reasoning.
 
-**OUTCOME**: Follow the status mapping:
-- RECRUITING/ACTIVE_NOT_RECRUITING/etc → Active
-- WITHDRAWN → Withdrawn
-- TERMINATED → Terminated
-- COMPLETED + hasResults=false → Unknown
-- COMPLETED + hasResults=true + "met endpoint" → Positive
-- COMPLETED + hasResults=true + "failed"/"not significant" → Failed - completed trial
+**OUTCOME**: Use the PRE-COMPUTED SUGGESTION above unless contradicting evidence found.
+If you disagree with the suggestion, explain why in your reasoning.
 
 ---
 # DATA SOURCES
@@ -1024,36 +1884,51 @@ think through the decision logic step by step before providing your answer.
 
 Analyze the data above and produce your annotation in the EXACT format specified.
 
+## HANDLING MISSING DATA
+
+When data is unavailable or insufficient for a field:
+1. **State the limitation explicitly** in your Reasoning
+2. **Use the appropriate fallback value** as specified in the table above
+3. **Explain your logic** for choosing the fallback
+
+Example for missing Outcome data:
+```
+Outcome: Unknown
+  Reasoning: Overall status field is not available in the data. Unable to determine trial outcome.
+  Evidence: No status data found in any source.
+```
+
 ## REQUIRED OUTPUT FORMAT
 
-NCT Number: [from data]
-Study Title: [from data]
-Study Status: [from data]
-Brief Summary: [from data]
-Conditions: [from data]
-Interventions/Drug: [from data]
-Phases: [from data]
-Enrollment: [from data]
-Start Date: [from data]
-Completion Date: [from data]
+NCT Number: [from data, or "Not found" if missing]
+Study Title: [from data, or "Not found" if missing]
+Study Status: [from data, or "Not available" if missing]
+Brief Summary: [from data, or "Not available" if missing]
+Conditions: [from data, or "Not available" if missing]
+Interventions/Drug: [from data, or "Not available" if missing]
+Phases: [from data, or "Not available" if missing]
+Enrollment: [from data, or "Not available" if missing]
+Start Date: [from data, or "Not available" if missing]
+Completion Date: [from data, or "Not available" if missing]
 
 Classification: [AMP or Other]
-  Reasoning: [Is it a peptide? Does it kill pathogens?]
-  Evidence: [Quote from data]
+  Reasoning: [Is it a peptide? Does it kill pathogens? OR: Why data is insufficient]
+  Evidence: [Quote from data, OR: "Insufficient data - see reasoning"]
 Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
-  Reasoning: [What route keywords did you find?]
-  Evidence: [Quote the exact words that indicate route]
+  Reasoning: [What route keywords did you find? OR: Why data is insufficient]
+  Evidence: [Quote the exact words, OR: "No route information found"]
 Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Active, or Unknown]
-  Reasoning: [What is the status? If COMPLETED, what does hasResults say?]
-  Evidence: [Quote status and any result indicators]
+  Reasoning: [What is the status? OR: Why data is insufficient for determination]
+  Evidence: [Quote status, OR: "Status field not available"]
 Reason for Failure: [Category or N/A]
-  Evidence: [Quote whyStopped or result text, or "Not applicable"]
+  Evidence: [Quote whyStopped, OR: "Not applicable" / "No failure reason data"]
 Peptide: [True or False]
-  Evidence: [Quote from data]
+  Reasoning: [Evidence for peptide determination]
+  Evidence: [Quote from data, OR: "Insufficient data - defaulting to False"]
 Sequence: [Sequence or N/A]
 DRAMP Name: [Name or N/A]
 Study IDs: [PMIDs or N/A]
-Comments: [Any notes]
+Comments: [Any notes, including data quality observations]
 
 Begin your annotation now:
 """)
@@ -1061,11 +1936,34 @@ Begin your annotation now:
         return "\n".join(sections)
     
     def _format_clinical_trials_data(self, results: Dict[str, Any]) -> str:
-        """Format ClinicalTrials.gov data with key fields highlighted."""
-        ct_source = results.get("sources", {}).get("clinical_trials", {})
-        
+        """
+        Format ClinicalTrials.gov data with key fields highlighted.
+
+        Returns:
+            Formatted clinical trials data string
+        """
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        ct_source = sources.get("clinical_trials", {})
+
         if not ct_source.get("success"):
-            return "Clinical trial data not available."
+            logger.debug("Clinical trials source not available or unsuccessful")
+            return """**ClinicalTrials.gov Data: NOT AVAILABLE**
+
+⚠️ CRITICAL: Primary data source is missing. This significantly impacts annotation reliability.
+
+**FALLBACK GUIDANCE:**
+- Classification: Use 'Other' unless other sources strongly indicate AMP
+- Delivery Mode: Use 'Other' - no intervention data available
+- Outcome: Use 'Unknown' - no status data available
+- Reason for Failure: Use 'N/A'
+- Peptide: Use 'False' unless drug name in other sources indicates peptide
+
+Please proceed with other available data sources, but note reduced confidence.
+"""
         
         ct_data = ct_source.get("data", {})
         protocol = ct_data.get("protocolSection", {})
@@ -1127,9 +2025,9 @@ Begin your annotation now:
                         for analysis in analyses[:2]:
                             stat_method = analysis.get("statisticalMethod", "")
                             p_value = analysis.get("pValue", "")
-                            ci_pct = analysis.get("ciPctValue", "")
                             param_type = analysis.get("paramType", "")
-                            
+                            ci_pct = analysis.get("ciPctValue", "")
+
                             if p_value:
                                 # Highlight p-value for easy identification
                                 lines.append(f"  *** P-VALUE: {p_value} ***")
@@ -1137,11 +2035,12 @@ Begin your annotation now:
                                 lines.append(f"  Statistical Method: {stat_method}")
                             if param_type:
                                 lines.append(f"  Parameter: {param_type}")
+                            if ci_pct:
+                                lines.append(f"  Confidence Interval: {ci_pct}%")
             
             # Look for any text indicating success or failure
             more_info = results_section.get("moreInfoModule", {})
             if more_info:
-                certain_agree = more_info.get("certainAgreement", {})
                 limitations = more_info.get("limitationsAndCaveats", {})
                 if limitations:
                     lim_desc = limitations.get("description", "")
@@ -1153,20 +2052,23 @@ Begin your annotation now:
             if adverse_events:
                 serious_freq = adverse_events.get("seriousNumAffected", "")
                 other_freq = adverse_events.get("otherNumAffected", "")
-                if serious_freq:
-                    lines.append(f"\n**Serious Adverse Events:** {serious_freq} participants affected")
+                if serious_freq or other_freq:
+                    ae_parts = []
+                    if serious_freq:
+                        ae_parts.append(f"serious: {serious_freq}")
+                    if other_freq:
+                        ae_parts.append(f"other: {other_freq}")
+                    lines.append(f"\n**Adverse Events:** {', '.join(ae_parts)} participants affected")
         
         # Description
         desc_mod = protocol.get("descriptionModule", {})
         brief_summary = desc_mod.get("briefSummary", "N/A")
-        if len(brief_summary) > 800:
-            brief_summary = brief_summary[:800] + "..."
+        brief_summary = self._truncate_text(brief_summary, TruncationLimits.BRIEF_SUMMARY)
         lines.append(f"\n**Brief Summary:** {brief_summary}")
-        
+
         detailed_desc = desc_mod.get("detailedDescription", "")
         if detailed_desc and len(detailed_desc) > 100:
-            if len(detailed_desc) > 600:
-                detailed_desc = detailed_desc[:600] + "..."
+            detailed_desc = self._truncate_text(detailed_desc, TruncationLimits.DETAILED_DESCRIPTION)
             lines.append(f"\n**Detailed Description:** {detailed_desc}")
         
         # Conditions - important for classification context
@@ -1193,48 +2095,27 @@ Begin your annotation now:
                 lines.append(f"\n  Type: {int_type}")
                 lines.append(f"  Name: {int_name}")
                 if int_desc:
-                    if len(int_desc) > 500:
-                        int_desc = int_desc[:500] + "..."
+                    int_desc = self._truncate_text(int_desc, TruncationLimits.INTERVENTION_DESCRIPTION)
                     lines.append(f"  Description: {int_desc}")
-                    
-                    # Highlight delivery route keywords
-                    route_keywords = {
-                        'injection': 'INJECTION/INFUSION',
-                        'subcutaneous': 'INJECTION/INFUSION', 
-                        'intravenous': 'INJECTION/INFUSION',
-                        'iv ': 'INJECTION/INFUSION',
-                        'i.v.': 'INJECTION/INFUSION',
-                        'intramuscular': 'INJECTION/INFUSION',
-                        'infusion': 'INJECTION/INFUSION',
-                        'topical': 'TOPICAL',
-                        'cream': 'TOPICAL',
-                        'ointment': 'TOPICAL',
-                        'gel': 'TOPICAL',
-                        'wound': 'TOPICAL',
-                        'dermal': 'TOPICAL',
-                        'eye drop': 'TOPICAL',
-                        'ophthalmic': 'TOPICAL',
-                        'nasal': 'TOPICAL',
-                        'oral': 'ORAL',
-                        'tablet': 'ORAL',
-                        'capsule': 'ORAL',
-                        'inhaled': 'OTHER',
-                        'inhalation': 'OTHER',
-                        'implant': 'OTHER'
-                    }
+
+                    # Highlight delivery route keywords using shared constant
                     found_routes = []
                     desc_lower = int_desc.lower()
-                    for keyword, route in route_keywords.items():
+                    for keyword, route in ROUTE_KEYWORDS.items():
                         if keyword in desc_lower:
-                            found_routes.append(f"{keyword}→{route}")
+                            found_routes.append(f"{keyword}→{route.upper()}")
                     if found_routes:
-                        lines.append(f"  *** DELIVERY ROUTE KEYWORDS FOUND: {', '.join(found_routes)} ***")
-                    
-                    # Highlight antimicrobial keywords if present
-                    antimicrobial_keywords = ['antimicrobial', 'antibacterial', 'antifungal', 'antiviral', 
-                                             'bactericidal', 'fungicidal', 'defensin', 'cathelicidin',
-                                             'membrane disruption', 'host defense', 'kills bacteria']
-                    found_amp = [kw for kw in antimicrobial_keywords if kw.lower() in desc_lower]
+                        # Deduplicate routes while preserving order
+                        seen = set()
+                        unique_routes = []
+                        for r in found_routes:
+                            if r not in seen:
+                                seen.add(r)
+                                unique_routes.append(r)
+                        lines.append(f"  *** DELIVERY ROUTE KEYWORDS FOUND: {', '.join(unique_routes[:5])} ***")
+
+                    # Highlight antimicrobial keywords using shared constant
+                    found_amp = [kw for kw in ANTIMICROBIAL_KEYWORDS if kw.lower() in desc_lower]
                     if found_amp:
                         lines.append(f"  *** AMP INDICATORS FOUND: {', '.join(found_amp)} ***")
         else:
@@ -1250,18 +2131,18 @@ Begin your annotation now:
                 arm_desc = arm.get("description", "")
                 lines.append(f"  - {label} ({arm_type})")
                 if arm_desc:
-                    if len(arm_desc) > 300:
-                        arm_desc = arm_desc[:300] + "..."
+                    arm_desc = self._truncate_text(arm_desc, TruncationLimits.ARM_DESCRIPTION)
                     lines.append(f"    Description: {arm_desc}")
-                    
-                    # Check for route keywords in arm description too
+
+                    # Check for route keywords in arm description using shared constant
                     desc_lower = arm_desc.lower()
-                    if any(kw in desc_lower for kw in ['injection', 'subcutaneous', 'intravenous', 'iv ', 'infusion']):
-                        lines.append(f"    *** INJECTION/INFUSION route indicated ***")
-                    elif any(kw in desc_lower for kw in ['topical', 'cream', 'gel', 'wound', 'applied']):
-                        lines.append(f"    *** TOPICAL route indicated ***")
-                    elif any(kw in desc_lower for kw in ['oral', 'tablet', 'capsule']):
-                        lines.append(f"    *** ORAL route indicated ***")
+                    detected_route = None
+                    for keyword, route in ROUTE_KEYWORDS.items():
+                        if keyword in desc_lower:
+                            detected_route = route
+                            break  # Use first match (priority order in dict)
+                    if detected_route:
+                        lines.append(f"    *** {detected_route.upper()} route indicated ***")
         
         # Design
         design_mod = protocol.get("designModule", {})
@@ -1292,28 +2173,52 @@ Begin your annotation now:
                 if pmid:
                     lines.append(f"  {i}. PMID: {pmid} ({ref_type})")
                 elif citation:
-                    lines.append(f"  {i}. {citation[:150]}...")
+                    citation = self._truncate_text(citation, TruncationLimits.CITATION)
+                    lines.append(f"  {i}. {citation}")
         
         return "\n".join(lines)
     
     def _format_uniprot_data(self, results: Dict[str, Any]) -> str:
         """
         Format UniProt data with ACTUAL SEQUENCES extracted.
+
+        Returns:
+            Formatted UniProt data string, or guidance message if unavailable
         """
-        extended_source = results.get("sources", {}).get("extended", {})
-        if not extended_source:
-            return ""
-        
-        uniprot = extended_source.get("uniprot", {})
-        if not uniprot.get("success"):
-            return ""
-        
-        uniprot_data = uniprot.get("data", {})
-        uniprot_results = uniprot_data.get("results", [])
-        
+        try:
+            # Get sources - try both possible paths
+            sources = results.get("sources", {})
+            if not sources:
+                sources = results.get("results", {}).get("sources", {})
+
+            extended_source = sources.get("extended", {})
+            if not extended_source:
+                logger.debug("No extended source data available for UniProt")
+                return self._get_uniprot_fallback_message("No extended search data")
+
+            uniprot = extended_source.get("uniprot", {})
+            if not isinstance(uniprot, dict):
+                logger.warning(f"Unexpected uniprot data type: {type(uniprot)}")
+                return self._get_uniprot_fallback_message("Invalid data format")
+
+            if not uniprot.get("success"):
+                logger.debug("UniProt query was not successful")
+                return self._get_uniprot_fallback_message("Query unsuccessful")
+
+            uniprot_data = uniprot.get("data", {})
+            if not isinstance(uniprot_data, dict):
+                logger.warning(f"Unexpected uniprot_data type: {type(uniprot_data)}")
+                return self._get_uniprot_fallback_message("Invalid data format")
+
+            uniprot_results = uniprot_data.get("results", [])
+        except Exception as e:
+            logger.error(f"Error extracting UniProt data: {e}")
+            return self._get_uniprot_fallback_message(f"Error: {e}")
+
         if not uniprot_results:
-            return ""
-        
+            return self._get_uniprot_fallback_message("No matching proteins found")
+
+        # If we have results, format them
         lines = []
         lines.append(f"**Total UniProt Results:** {len(uniprot_results)}")
         lines.append(f"**Query:** {uniprot_data.get('query', 'N/A')}\n")
@@ -1367,12 +2272,12 @@ Begin your annotation now:
                     func_texts = comment.get("texts", [])
                     if func_texts:
                         func_text = func_texts[0].get("value", "")
-                        if len(func_text) > 400:
-                            func_text = func_text[:400] + "..."
+                        func_text = self._truncate_text(func_text, TruncationLimits.FUNCTION_TEXT)
                         lines.append(f"**Function:** {func_text}")
-                        
-                        if any(kw in func_text.lower() for kw in ['antimicrobial', 'antibacterial', 'antifungal', 'bactericidal']):
-                            lines.append(f"*** ANTIMICROBIAL FUNCTION DETECTED - supports AMP classification ***")
+
+                        # Check for antimicrobial indicators using shared constant
+                        if any(kw in func_text.lower() for kw in ANTIMICROBIAL_KEYWORDS):
+                            lines.append("*** ANTIMICROBIAL FUNCTION DETECTED - supports AMP classification ***")
                     break
             
             # Keywords
@@ -1391,14 +2296,50 @@ Begin your annotation now:
             lines.append("")
         
         return "\n".join(lines)
-    
+
+    def _get_uniprot_fallback_message(self, reason: str) -> str:
+        """Return fallback guidance when UniProt data is unavailable."""
+        return f"""**UniProt Data: NOT AVAILABLE** ({reason})
+
+**IMPACT ON ANNOTATION:**
+- Sequence: Use 'N/A' - no protein sequence data available
+- Peptide: Determine from intervention name/description in clinical trials data
+  - Look for peptide indicators: "-tide" suffix, known peptide names, "peptide" in description
+  - Default to 'False' if unclear
+
+**GUIDANCE:**
+- Check DRAMP or other extended sources if available
+- Review intervention descriptions for peptide-related terminology
+"""
+
     def _format_extended_data(self, results: Dict[str, Any]) -> str:
-        """Format extended API search data."""
-        extended_source = results.get("sources", {}).get("extended", {})
-        
+        """
+        Format extended API search data (DRAMP, DuckDuckGo, OpenFDA, Scholar).
+
+        Returns:
+            Formatted extended data string, or guidance if unavailable
+        """
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        extended_source = sources.get("extended", {})
+
         if not extended_source:
-            return ""
-        
+            logger.debug("No extended source data available")
+            return """**Extended Search Data: NOT AVAILABLE**
+
+Extended databases (DRAMP, OpenFDA, web search, Google Scholar) were not queried or returned no data.
+
+**IMPACT:**
+- Sequence: May not have DRAMP peptide database matches
+- Classification: No additional antimicrobial peptide database confirmation
+- Delivery Mode: No FDA drug route information
+
+**GUIDANCE:** Proceed with ClinicalTrials.gov and literature data.
+"""
+
         lines = []
         has_data = False
         
@@ -1440,8 +2381,7 @@ Begin your annotation now:
                 lines.append(f"  Title: {result.get('title', 'N/A')}")
                 snippet = result.get('snippet', '')
                 if snippet:
-                    if len(snippet) > 300:
-                        snippet = snippet[:300] + "..."
+                    snippet = self._truncate_text(snippet, TruncationLimits.SNIPPET)
                     lines.append(f"  Snippet: {snippet}")
                 lines.append("")
         
@@ -1504,8 +2444,7 @@ Begin your annotation now:
                 lines.append(f"  Title: {result.get('title', 'N/A')}")
                 snippet = result.get('snippet', '')
                 if snippet:
-                    if len(snippet) > 300:
-                        snippet = snippet[:300] + "..."
+                    snippet = self._truncate_text(snippet, TruncationLimits.SNIPPET)
                     lines.append(f"  Snippet: {snippet}")
                 lines.append("")
         
@@ -1515,118 +2454,160 @@ Begin your annotation now:
         return "\n".join(lines)
     
     def _format_pubmed_data(self, results: Dict[str, Any]) -> str:
-        """Format PubMed data."""
-        pubmed_source = results.get("sources", {}).get("pubmed", {})
-        
+        """
+        Format PubMed data.
+
+        Returns:
+            Formatted PubMed data string, or guidance if unavailable
+        """
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        pubmed_source = sources.get("pubmed", {})
+
         if not pubmed_source.get("success"):
-            return ""
-        
+            logger.debug("PubMed source not available or unsuccessful")
+            return """**PubMed Literature: NOT AVAILABLE**
+
+**IMPACT:** No published literature context for this trial.
+**GUIDANCE:** Rely on ClinicalTrials.gov descriptions for classification evidence.
+"""
+
         pubmed_data = pubmed_source.get("data", {})
         articles = pubmed_data.get("articles", [])
-        
+
         if not articles:
-            return ""
-        
+            logger.debug("No PubMed articles found")
+            return """**PubMed Literature: No articles found**
+
+**NOTE:** No published literature directly linked to this trial.
+This is common for newer or smaller trials. Proceed with other data sources.
+"""
+
         lines = []
         lines.append(f"**Total Articles Found:** {pubmed_data.get('total_found', 0)}")
         lines.append(f"**Search Strategy:** {pubmed_data.get('search_strategy', 'N/A')}\n")
-        
+
         for i, article in enumerate(articles[:4], 1):
             lines.append(f"### Article {i}")
             lines.append(f"**PMID:** {article.get('pmid', 'N/A')}")
             lines.append(f"**Title:** {article.get('title', 'N/A')}")
             lines.append(f"**Journal:** {article.get('journal', 'N/A')}")
             lines.append(f"**Year:** {article.get('year', 'N/A')}")
-            
+
             abstract = article.get("abstract", "")
             if abstract:
-                if len(abstract) > 600:
-                    abstract = abstract[:600] + "..."
+                abstract = self._truncate_text(abstract, TruncationLimits.ABSTRACT)
                 lines.append(f"**Abstract:** {abstract}")
-                
-                antimicrobial_terms = ['antimicrobial', 'antibacterial', 'antifungal', 'bactericidal', 
-                                       'MIC', 'minimum inhibitory', 'kills bacteria']
-                found_terms = [term for term in antimicrobial_terms if term.lower() in abstract.lower()]
+
+                # Check for antimicrobial content using shared constant
+                found_terms = [term for term in ANTIMICROBIAL_KEYWORDS if term.lower() in abstract.lower()]
+                # Also check for MIC which is specific to literature
+                if 'mic' in abstract.lower() or 'minimum inhibitory' in abstract.lower():
+                    found_terms.append('MIC/minimum inhibitory')
                 if found_terms:
                     lines.append(f"*** ANTIMICROBIAL CONTENT: {', '.join(found_terms)} ***")
-            
+
             lines.append("")
-        
+
         return "\n".join(lines)
     
     def _format_pmc_data(self, results: Dict[str, Any]) -> str:
-        """Format PMC data."""
-        pmc_source = results.get("sources", {}).get("pmc", {})
-        
+        """
+        Format PMC data.
+
+        Returns:
+            Formatted PMC data string, or empty string if unavailable
+        """
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        pmc_source = sources.get("pmc", {})
+
         if not pmc_source.get("success"):
+            logger.debug("PMC source not available or unsuccessful")
             return ""
-        
+
         pmc_data = pmc_source.get("data", {})
         articles = pmc_data.get("articles", [])
-        
+
         if not articles:
+            logger.debug("No PMC articles found")
             return ""
-        
+
         lines = []
         lines.append(f"**Total PMC Articles Found:** {pmc_data.get('total_found', 0)}\n")
-        
+
         for i, article in enumerate(articles[:3], 1):
             lines.append(f"### PMC Article {i}")
             lines.append(f"**PMCID:** {article.get('pmcid', 'N/A')}")
             lines.append(f"**PMID:** {article.get('pmid', 'N/A')}")
             lines.append(f"**Title:** {article.get('title', 'N/A')}")
-            
+
             abstract = article.get("abstract", "")
             if abstract:
-                if len(abstract) > 500:
-                    abstract = abstract[:500] + "..."
+                abstract = self._truncate_text(abstract, TruncationLimits.PMC_ABSTRACT)
                 lines.append(f"**Abstract:** {abstract}")
-            
+
             lines.append("")
-        
+
         return "\n".join(lines)
     
     def _format_bioc_data(self, results: Dict[str, Any]) -> str:
-        """Format BioC data."""
-        bioc_source = results.get("sources", {}).get("pmc_bioc", {})
-        
+        """
+        Format BioC data.
+
+        Returns:
+            Formatted BioC data string, or empty string if unavailable
+        """
+        # Get sources - try both possible paths
+        sources = results.get("sources", {})
+        if not sources:
+            sources = results.get("results", {}).get("sources", {})
+
+        bioc_source = sources.get("pmc_bioc", {})
+
         if not bioc_source.get("success"):
+            logger.debug("BioC source not available or unsuccessful")
             return ""
-        
+
         bioc_data = bioc_source.get("data", {})
         articles = bioc_data.get("articles", [])
-        
+
         if not articles:
+            logger.debug("No BioC articles found")
             return ""
-        
+
         lines = []
         lines.append(f"**Total BioC Articles:** {bioc_data.get('total_fetched', 0)}/{bioc_data.get('total_found', 0)}\n")
-        
+
         for i, article in enumerate(articles[:2], 1):
             lines.append(f"### BioC Article {i}")
             lines.append(f"**ID:** {article.get('pmid', 'N/A')}")
-            
+
             bioc_content = article.get("bioc_data", {})
             documents = bioc_content.get("documents", [])
-            
+
             if documents:
                 doc = documents[0]
                 passages = doc.get("passages", [])
-                
+
                 if passages:
                     lines.append("\n**Key Content:**")
-                    
-                    for j, passage in enumerate(passages[:2], 1):
+
+                    for passage in passages[:2]:
                         passage_type = passage.get("infons", {}).get("type", "text")
                         text = passage.get("text", "")
-                        
-                        if text and len(text) > 400:
-                            text = text[:400] + "..."
-                        
+
                         if text:
+                            text = self._truncate_text(text, TruncationLimits.BIOC_PASSAGE)
                             lines.append(f"\n*{passage_type.title()}:*")
                             lines.append(text)
-                        
+
                         annotations = passage.get("annotations", [])
                         if annotations:
                             relevant_anns = []
@@ -1637,9 +2618,9 @@ Begin your annotation now:
                                     relevant_anns.append(f"{ann_type}: {ann_text}")
                             if relevant_anns:
                                 lines.append(f"\n*Annotations:* {'; '.join(relevant_anns)}")
-            
+
             lines.append("")
-        
+
         return "\n".join(lines)
     
     def generate_rag_query_prompt(

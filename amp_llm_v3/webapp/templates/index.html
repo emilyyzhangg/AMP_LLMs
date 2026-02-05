@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMP LLM - Clinical Trial Research Assistant</title>
-    
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <link rel="apple-touch-icon" href="/static/favicon.png">
+
     <!-- Base styles -->
     <link rel="stylesheet" href="/static/style-base.css">
     
@@ -40,6 +44,11 @@
                 </div>
                 
                 <div class="landing-header-right">
+                    <button class="jobs-button" onclick="app.showJobsPanel()" title="View annotation jobs">
+                        <span>📋</span>
+                        <span>Jobs</span>
+                        <span class="jobs-badge hidden" id="jobs-badge-1">0</span>
+                    </button>
                     <div class="theme-switcher">
                         <button class="theme-button" onclick="app.toggleThemeDropdown()">
                             <span>🎨</span>
@@ -63,6 +72,11 @@
                     </div>
                 </div>
                 <div class="header-right">
+                    <button class="jobs-button" onclick="app.showJobsPanel()" title="View annotation jobs">
+                        <span>📋</span>
+                        <span>Jobs</span>
+                        <span class="jobs-badge hidden" id="jobs-badge-2">0</span>
+                    </button>
                     <div class="theme-switcher">
                         <button class="theme-button" onclick="app.toggleThemeDropdown()">
                             <span>🎨</span>
@@ -306,6 +320,25 @@
                 <div class="files-container" id="files-container">
                     <div class="loading">Loading files...</div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jobs Panel Modal -->
+    <div id="jobs-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="app.hideJobsPanel()"></div>
+        <div class="modal-content jobs-panel">
+            <div class="modal-header">
+                <h2>📋 Annotation Jobs</h2>
+                <button class="modal-close" onclick="app.hideJobsPanel()">×</button>
+            </div>
+            <div class="modal-body" id="jobs-list">
+                <div class="loading">Loading jobs...</div>
+            </div>
+            <div class="modal-footer">
+                <button id="clear-completed-btn" class="btn-secondary hidden" onclick="app.clearCompletedJobs()">🧹 Clear Completed</button>
+                <button class="btn-secondary" onclick="app.refreshJobs()">🔄 Refresh</button>
+                <button class="btn-secondary" onclick="app.hideJobsPanel()">Close</button>
             </div>
         </div>
     </div>

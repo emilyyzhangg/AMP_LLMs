@@ -247,6 +247,162 @@ header {
     background: linear-gradient(135deg, #6BC98C 0%, #5AB67C 100%);
 }
 
+/* CHAT CONTAINER - Baby pink background with pink cat image and tint overlay */
+.chat-container {
+    background-color: #FFD6E0;
+    background-image:
+        linear-gradient(rgba(255, 214, 224, 0.88), rgba(255, 214, 224, 0.88)),
+        url('/static/pink_favicon.png');
+    background-repeat: no-repeat, no-repeat;
+    background-position: center center, center center;
+    background-size: cover, 400px auto;
+    background-attachment: local, local;
+}
+
+/* Hide the default overlay since we're using background layering */
+.chat-container::before {
+    display: none !important;
+}
+
+/* Ensure all chat content is visible */
+.chat-container > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* GENERATION PARAMETERS PANEL - Earthy green tones (overrides inline styles from app.js) */
+.model-params-config {
+    background: linear-gradient(135deg, #F1F8E9 0%, #DCEDC8 100%) !important;
+    border: 2px solid #8BC34A !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* EMAIL NOTIFICATION SECTION - Pink tones for cherry-blossom */
+.email-notification-section {
+    background: linear-gradient(135deg, #FFF0F3 0%, #FFE4EC 100%) !important;
+    border: 1px solid #FFB7C5 !important;
+}
+
+.email-notification-section input[type="checkbox"] {
+    accent-color: #FF8FA3 !important;
+}
+
+.email-notification-section input[type="email"] {
+    background: #FFF5F7 !important;
+    border: 1px solid #FFB7C5 !important;
+    color: #8B4A5E !important;
+}
+
+.email-notification-section input[type="email"]::placeholder {
+    color: #D4A5B0 !important;
+}
+
+.email-notification-section label {
+    color: #8B4A5E !important;
+}
+
+.email-notification-section small {
+    color: #B8768A !important;
+}
+
+.params-title {
+    color: #33691E !important;
+}
+
+.preset-btn {
+    background: white !important;
+    border: 1px solid #AED581 !important;
+    color: #558B2F !important;
+}
+
+.preset-btn:hover {
+    background: linear-gradient(135deg, #8BC34A 0%, #7CB342 100%) !important;
+    color: white !important;
+    border-color: #7CB342 !important;
+}
+
+.param-group {
+    background: rgba(255, 255, 255, 0.6) !important;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    border: 1px solid #C5E1A5 !important;
+}
+
+.param-label {
+    color: #33691E !important;
+}
+
+.param-value-display {
+    background: rgba(139, 195, 74, 0.2) !important;
+    color: #33691E !important;
+}
+
+.param-slider {
+    background: #C5E1A5 !important;
+}
+
+.param-slider::-webkit-slider-thumb {
+    background: #7CB342 !important;
+}
+
+.param-slider::-moz-range-thumb {
+    background: #7CB342 !important;
+}
+
+.help-icon {
+    background: #558B2F !important;
+}
+
+.tooltip {
+    background: #F1F8E9 !important;
+    border: 1px solid #8BC34A !important;
+}
+
+.tooltip-title {
+    color: #33691E !important;
+}
+
+.tooltip-desc {
+    color: #558B2F !important;
+}
+
+.tooltip-effects {
+    background: rgba(139, 195, 74, 0.15) !important;
+}
+
+.tooltip-effect {
+    border-left-color: #7CB342 !important;
+}
+
+.tooltip-effect-label {
+    color: #558B2F !important;
+}
+
+.tooltip-recommendation {
+    color: #33691E !important;
+    border-top-color: #C5E1A5 !important;
+}
+
+.params-actions {
+    border-top-color: #C5E1A5 !important;
+}
+
+.params-action-btn.primary {
+    background: linear-gradient(135deg, #8BC34A 0%, #7CB342 100%) !important;
+    color: white !important;
+}
+
+.params-action-btn.secondary {
+    background: white !important;
+    color: #558B2F !important;
+    border: 1px solid #AED581 !important;
+}
+
+.params-action-btn:hover {
+    box-shadow: 0 4px 12px rgba(139, 195, 74, 0.4) !important;
+}
+
 /* LOADING */
 .spinner {
     border: 3px solid rgba(255, 143, 163, 0.2);

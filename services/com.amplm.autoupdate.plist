@@ -4,21 +4,16 @@
 <dict>
     <key>Label</key>
     <string>com.amplm.autoupdate</string>
-
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/amphoraxe/Developer/AMP_LLMs_main/amp_autoupdate.sh</string>
+        <string>/Users/amphoraxe/AMP_Services/amp_autoupdate.sh</string>
     </array>
-
     <key>StartInterval</key>
-    <integer>30</integer> <!-- every 0.5 minute -->
-
+    <integer>30</integer>
     <key>RunAtLoad</key>
     <true/>
-
     <key>StandardOutPath</key>
     <string>/tmp/amp_autoupdate.log</string>
-
     <key>StandardErrorPath</key>
     <string>/tmp/amp_autoupdate.err</string>
 </dict>

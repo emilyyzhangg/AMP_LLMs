@@ -18,6 +18,9 @@ from nct_clients import (
     PMCBioClient,
     PubMedClient,
     PMCClient,
+    EuropePMCClient,
+    SemanticScholarClient,
+    CrossRefClient,
     DuckDuckGoClient,
     SerpAPIClient,
     GoogleScholarClient,
@@ -59,13 +62,18 @@ class NCTSearchEngine:
         self.clients['pubmed'] = PubMedClient(self.session, api_key=self.ncbi_key)
         self.clients['pmc'] = PMCClient(self.session, api_key=self.ncbi_key)
         self.clients['pmc_bioc'] = PMCBioClient(self.session, api_key=self.ncbi_key)
-        
-        # Initialize extended clients
+
+        # Initialize extended clients (FREE APIs)
+        self.clients['europe_pmc'] = EuropePMCClient(self.session)
+        self.clients['semantic_scholar'] = SemanticScholarClient(self.session, api_key=os.getenv('SEMANTIC_SCHOLAR_API_KEY'))
+        self.clients['crossref'] = CrossRefClient(self.session)
         self.clients['duckduckgo'] = DuckDuckGoClient(self.session)
-        self.clients['serpapi'] = SerpAPIClient(self.session, api_key=self.serpapi_key)
-        self.clients['scholar'] = GoogleScholarClient(self.session, api_key=self.serpapi_key)
         self.clients['openfda'] = OpenFDAClient(self.session)
         self.clients['uniprot'] = UniProtClient(self.session)
+
+        # Initialize PAID clients (require API keys)
+        self.clients['serpapi'] = SerpAPIClient(self.session, api_key=self.serpapi_key)
+        self.clients['scholar'] = GoogleScholarClient(self.session, api_key=self.serpapi_key)
         
         logger.info("Search engine initialized with all clients")
     
@@ -537,7 +545,8 @@ class NCTSearchEngine:
         if config.enabled_databases:
             databases = config.enabled_databases
         else:
-            databases = ["duckduckgo", "serpapi", "scholar", "openfda", "uniprot"]
+            # Default: all FREE extended APIs (excludes serpapi and scholar which require paid keys)
+            databases = ["europe_pmc", "semantic_scholar", "crossref", "duckduckgo", "openfda", "uniprot"]
         
         # Filter to available clients
         databases = [db for db in databases if db in self.clients]

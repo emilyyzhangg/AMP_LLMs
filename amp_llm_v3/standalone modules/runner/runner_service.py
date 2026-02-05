@@ -165,6 +165,7 @@ class BatchAnnotationRequest(BaseModel):
     model: str = "llama3.2"
     temperature: float = Field(default=0.15, ge=0.0, le=2.0)
     fetch_if_missing: bool = True
+    output_format: str = Field(default="llm_optimized", description="Data format for LLM: 'json' or 'llm_optimized'")
 
 
 class AnnotationResult(BaseModel):
@@ -277,7 +278,7 @@ async def fetch_and_save_nct_data(nct_id: str) -> tuple[Optional[dict], Optional
             try:
                 response = await client.post(
                     search_url,
-                    json={"include_extended": False},
+                    json={"include_extended": True},  # Enable extended APIs including UniProt for sequence data
                     timeout=30.0
                 )
                 
@@ -357,33 +358,99 @@ async def fetch_and_save_nct_data(nct_id: str) -> tuple[Optional[dict], Optional
         return None, f"Unexpected error: {str(e)}"
 
 
+def _has_extended_data(data: dict) -> bool:
+    """Check if the data has extended API results (including UniProt for sequences)."""
+    sources = data.get("sources", {})
+    if not sources:
+        sources = data.get("results", {}).get("sources", {})
+
+    extended = sources.get("extended", {})
+    if not extended:
+        return False
+
+    # Check if UniProt data exists and has results
+    uniprot = extended.get("uniprot", {})
+    if not uniprot or not uniprot.get("success"):
+        return False
+
+    return True
+
+
 async def get_or_fetch_nct_data(nct_id: str) -> tuple[Optional[dict], str, Optional[str], Optional[str]]:
     """
     Get NCT data - from file if exists, otherwise fetch and save.
     Returns (data, source, file_path, error) where source is "file" or "fetched"
+
+    Note: If cached data exists but lacks extended API data (UniProt for sequences),
+    it will be re-fetched to ensure sequence data is available.
     """
     nct_id = nct_id.strip().upper()
-    
+
     logger.info(f"{'='*60}")
     logger.info(f"Processing request for {nct_id}")
     logger.info(f"{'='*60}")
-    
+
     # Try to find existing file
     file_path, data = find_nct_file(nct_id)
-    
+
     if data:
-        logger.info(f"✅ Using cached data from file")
-        return data, "file", str(file_path) if file_path else None, None
-    
-    # Not found - fetch and save
-    logger.info(f"📥 No cached file found, fetching from NCT service...")
+        # Check if the cached data has extended API results (UniProt for sequences)
+        if _has_extended_data(data):
+            logger.info(f"✅ Using cached data from file (has extended/UniProt data)")
+            return data, "file", str(file_path) if file_path else None, None
+        else:
+            logger.info(f"⚠️ Cached file missing extended API data (UniProt), re-fetching...")
+
+    # Not found or missing extended data - fetch and save
+    if not data:
+        logger.info(f"📥 No cached file found, fetching from NCT service...")
+
     data, error = await fetch_and_save_nct_data(nct_id)
-    
+
     if data:
         file_path = RESULTS_DIR / f"{nct_id}.json"
         return data, "fetched", str(file_path), None
     else:
         return None, "failed", None, error
+
+
+async def get_llm_optimized_data(nct_id: str) -> tuple[Optional[dict], str, Optional[str]]:
+    """
+    Get LLM-optimized format data from the NCT service.
+
+    This format is condensed and structured specifically for LLM consumption,
+    with tool hints for agentic workflows.
+
+    Returns (data, source, error) tuple.
+    """
+    nct_id = nct_id.strip().upper()
+    logger.info(f"📊 Fetching LLM-optimized data for {nct_id}")
+
+    # First ensure we have the base data
+    data, source, file_path, error = await get_or_fetch_nct_data(nct_id)
+
+    if not data:
+        return None, "failed", error
+
+    # Now fetch the LLM-optimized format
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            llm_url = f"{NCT_SERVICE_URL}/api/results/{nct_id}/llm"
+            logger.info(f"📤 GET {llm_url}")
+
+            response = await client.get(llm_url, timeout=15.0)
+
+            if response.status_code == 200:
+                llm_data = response.json()
+                logger.info(f"✅ Got LLM-optimized data for {nct_id}")
+                return llm_data, f"{source}_llm_optimized", None
+            else:
+                logger.warning(f"⚠️ LLM-optimized endpoint returned {response.status_code}, falling back to raw JSON")
+                return data, source, None
+
+    except Exception as e:
+        logger.warning(f"⚠️ Error fetching LLM-optimized data: {e}, falling back to raw JSON")
+        return data, source, None
 
 
 # ============================================================================
@@ -710,22 +777,31 @@ async def annotate(request: AnnotationRequest):
 async def batch_annotate(request: BatchAnnotationRequest):
     """
     Annotate multiple clinical trials.
+
+    The output_format parameter controls how data is sent to the LLM:
+    - 'json': Full raw JSON data from all sources
+    - 'llm_optimized': Condensed, structured format with tool hints
     """
-    logger.info(f"🔬 Batch annotation for {len(request.nct_ids)} trials with {request.model}")
-    
+    output_format = request.output_format or "llm_optimized"
+    logger.info(f"🔬 Batch annotation for {len(request.nct_ids)} trials with {request.model} (format: {output_format})")
+
     start_time = time.time()
     results = []
     successful = 0
     failed = 0
-    
+
     for nct_id in request.nct_ids:
         nct_id = nct_id.strip().upper()
         if not nct_id:
             continue
-        
+
         try:
-            # Get trial data
-            data, source, file_path, error = await get_or_fetch_nct_data(nct_id)
+            # Get trial data in the requested format
+            if output_format == "llm_optimized":
+                data, source, error = await get_llm_optimized_data(nct_id)
+                file_path = None  # LLM-optimized data is generated on-the-fly
+            else:
+                data, source, file_path, error = await get_or_fetch_nct_data(nct_id)
             
             if not data:
                 results.append(AnnotationResult(

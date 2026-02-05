@@ -15,6 +15,12 @@ const app = {
     currentConversationId: null,
     currentModel: null,
     annotationModeSelected: false,  // Track annotation mode selection
+    annotationOutputFormat: 'llm_optimized',  // 'json' or 'llm_optimized' - format for LLM input
+    annotationEmailNotify: false,  // Whether to send email notification on completion
+    annotationNotifyEmail: '',  // Email address for notification
+    emailConfigured: false,  // Whether email is configured on server
+    modelParameters: null,  // Cached model parameters from API
+    customModelParams: {},  // User-modified parameter values
     nctResults: null,
     selectedFile: null,
     selectedCSVFile: null,  // Track selected CSV file for batch annotation
@@ -24,6 +30,10 @@ const app = {
 
     // Session-based chat storage (per model)
     sessionChats: {},
+
+    // Jobs management
+    jobsPollingInterval: null,
+    jobsPanelOpen: false,
 
     nct2step: {
         currentNCT: null,
@@ -36,6 +46,237 @@ const app = {
     // API registry
     apiRegistry: null,
     selectedAPIs: new Set(),
+
+    // =========================================================================
+    // Jobs Management
+    // =========================================================================
+
+    async showJobsPanel() {
+        this.jobsPanelOpen = true;
+        document.getElementById('jobs-modal')?.classList.remove('hidden');
+        await this.refreshJobs();
+    },
+
+    hideJobsPanel() {
+        this.jobsPanelOpen = false;
+        document.getElementById('jobs-modal')?.classList.add('hidden');
+    },
+
+    async refreshJobs() {
+        const jobsList = document.getElementById('jobs-list');
+        if (!jobsList) return;
+
+        jobsList.innerHTML = '<div class="loading">Loading jobs...</div>';
+
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/jobs`);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            this.renderJobsList(data.jobs || []);
+            this.updateJobsBadge(data.active || 0);
+
+        } catch (error) {
+            console.error('Failed to fetch jobs:', error);
+            jobsList.innerHTML = `
+                <div class="no-jobs">
+                    <div class="no-jobs-icon">⚠️</div>
+                    <p>Failed to load jobs</p>
+                    <p style="font-size: 12px;">${error.message}</p>
+                </div>
+            `;
+        }
+    },
+
+    renderJobsList(jobs) {
+        const jobsList = document.getElementById('jobs-list');
+        if (!jobsList) return;
+
+        // Check if there are any completed/failed jobs
+        const hasCompletedJobs = jobs.some(j => j.status === 'completed' || j.status === 'failed');
+
+        // Show/hide clear button
+        const clearBtn = document.getElementById('clear-completed-btn');
+        if (clearBtn) {
+            clearBtn.classList.toggle('hidden', !hasCompletedJobs);
+        }
+
+        if (jobs.length === 0) {
+            jobsList.innerHTML = `
+                <div class="no-jobs">
+                    <div class="no-jobs-icon">📋</div>
+                    <p>No annotation jobs</p>
+                    <p style="font-size: 12px;">Jobs will appear here when you start annotating</p>
+                </div>
+            `;
+            return;
+        }
+
+        jobsList.innerHTML = jobs.map(job => {
+            const isActive = job.status === 'processing' || job.status === 'pending';
+            const isCompleted = job.status === 'completed';
+            const isFailed = job.status === 'failed';
+            const elapsed = this.formatElapsedTime(job.elapsed_seconds);
+            const startedAt = this.formatJobDateTime(job.created_at);
+
+            // Status icon based on job state
+            const statusIcon = isCompleted ? '✅' : isFailed ? '❌' : isActive ? '⏳' : '📋';
+            const statusClass = isCompleted ? 'completed' : isFailed ? 'failed' : job.status;
+
+            return `
+                <div class="job-card ${statusClass}">
+                    <div class="job-header">
+                        <span class="job-id">${statusIcon} Job: ${job.job_id.substring(0, 8)}...</span>
+                        <span class="job-status ${statusClass}">${job.status.toUpperCase()}</span>
+                    </div>
+
+                    <div class="job-details">
+                        <div class="job-detail"><strong>Model:</strong> ${job.model || 'Unknown'}</div>
+                        <div class="job-detail"><strong>Trials:</strong> ${job.processed_trials}/${job.total_trials}</div>
+                        <div class="job-detail"><strong>Source:</strong> ${job.original_filename || 'Manual'}</div>
+                        <div class="job-detail"><strong>Started:</strong> ${startedAt}</div>
+                        <div class="job-detail"><strong>Elapsed:</strong> ${elapsed}</div>
+                        ${job.notification_email ? `<div class="job-detail"><strong>Email:</strong> ${job.notification_email}</div>` : ''}
+                        ${job.current_nct ? `<div class="job-detail"><strong>Current:</strong> ${job.current_nct}</div>` : ''}
+                    </div>
+
+                    ${job.total_trials > 0 ? `
+                        <div class="job-progress-bar">
+                            <div class="job-progress-fill ${statusClass}" style="width: ${job.percent_complete}%"></div>
+                        </div>
+                    ` : ''}
+
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+                        ${job.progress || 'Queued'}
+                    </div>
+
+                    <div class="job-actions">
+                        ${isActive ? `
+                            <button class="btn-cancel" onclick="app.cancelJob('${job.job_id}')">
+                                🛑 Cancel Job
+                            </button>
+                        ` : ''}
+                        ${isCompleted ? `
+                            <button class="btn-download" onclick="window.open('${this.API_BASE}/api/chat/download/${job.job_id}', '_blank')">
+                                📥 Download CSV
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    },
+
+    formatElapsedTime(seconds) {
+        if (seconds < 60) return `${seconds}s`;
+        if (seconds < 3600) return `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
+        const hours = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        return `${hours}h ${mins}m`;
+    },
+
+    formatJobDateTime(isoString) {
+        if (!isoString) return 'Unknown';
+        const date = new Date(isoString);
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+    },
+
+    async cancelJob(jobId) {
+        if (!confirm(`Cancel job ${jobId.substring(0, 8)}...?\n\nThis will stop the annotation process.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/jobs/${jobId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Job cancelled:', result);
+                await this.refreshJobs();
+            } else {
+                const error = await response.text();
+                alert(`Failed to cancel job: ${error}`);
+            }
+        } catch (error) {
+            console.error('Failed to cancel job:', error);
+            alert(`Error cancelling job: ${error.message}`);
+        }
+    },
+
+    async clearCompletedJobs() {
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/jobs/completed`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Cleared completed jobs:', result);
+                await this.refreshJobs();
+            } else {
+                const error = await response.text();
+                alert(`Failed to clear jobs: ${error}`);
+            }
+        } catch (error) {
+            console.error('Failed to clear completed jobs:', error);
+            alert(`Error clearing jobs: ${error.message}`);
+        }
+    },
+
+    updateJobsBadge(activeCount) {
+        const badges = document.querySelectorAll('.jobs-badge');
+        badges.forEach(badge => {
+            if (activeCount > 0) {
+                badge.textContent = activeCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        });
+    },
+
+    startJobsPolling() {
+        // Poll for job updates every 10 seconds
+        if (this.jobsPollingInterval) {
+            clearInterval(this.jobsPollingInterval);
+        }
+
+        // Initial fetch
+        this.fetchJobCount();
+
+        this.jobsPollingInterval = setInterval(() => {
+            this.fetchJobCount();
+        }, 10000);
+    },
+
+    async fetchJobCount() {
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/jobs`);
+            if (response.ok) {
+                const data = await response.json();
+                this.updateJobsBadge(data.active || 0);
+
+                // If jobs panel is open, refresh the list
+                if (this.jobsPanelOpen) {
+                    this.renderJobsList(data.jobs || []);
+                }
+            }
+        } catch (error) {
+            // Silently fail - just for badge updates
+            console.debug('Jobs poll failed:', error);
+        }
+    },
 
     // =========================================================================
     // Initialization
@@ -312,6 +553,9 @@ const app = {
         document.getElementById('auth-section').classList.add('hidden');
         document.getElementById('main-app').classList.remove('hidden');
         this.showMenu();
+
+        // Start polling for job updates
+        this.startJobsPolling();
     },
 
     // =========================================================================
@@ -380,32 +624,58 @@ const app = {
 
     updateBackButton() {
         const backButton = document.querySelector('.back-button');
-        
+
         if (this.currentMode === 'chat' && this.currentConversationId) {
-            backButton.textContent = '← Back to Models';
-            backButton.onclick = () => {
-                if (this.currentModel) {
-                    this.saveCurrentChat();
-                }
-                
-                this.currentConversationId = null;
-                this.currentModel = null;
-                
-                // Reset annotation mode selection for fresh start
-                this.annotationModeSelected = false;
-                
-                const container = document.getElementById('chat-container');
-                container.innerHTML = '';
-                
-                this.removeInfoBar();
-                this.showModelSelection();
-                
-                const input = document.getElementById('chat-input');
-                input.disabled = true;
-                input.placeholder = 'Select a model to start chatting...';
-                
-                this.updateBackButton();
-            };
+            // In annotation mode, allow going back to settings/presets
+            if (this.annotationModeSelected) {
+                backButton.textContent = '← Back to Settings';
+                backButton.onclick = () => {
+                    if (this.currentModel) {
+                        this.saveCurrentChat();
+                    }
+
+                    this.currentConversationId = null;
+                    this.currentModel = null;
+                    // Keep annotationModeSelected true so we go back to parameters, not mode selection
+
+                    const container = document.getElementById('chat-container');
+                    container.innerHTML = '';
+
+                    this.removeInfoBar();
+                    this.showModelParametersConfig(); // Go back to parameters config
+
+                    const input = document.getElementById('chat-input');
+                    input.disabled = true;
+                    input.placeholder = 'Configure settings and select a model...';
+
+                    this.updateBackButton();
+                };
+            } else {
+                backButton.textContent = '← Back to Models';
+                backButton.onclick = () => {
+                    if (this.currentModel) {
+                        this.saveCurrentChat();
+                    }
+
+                    this.currentConversationId = null;
+                    this.currentModel = null;
+
+                    // Reset annotation mode selection for fresh start
+                    this.annotationModeSelected = false;
+
+                    const container = document.getElementById('chat-container');
+                    container.innerHTML = '';
+
+                    this.removeInfoBar();
+                    this.showModelSelection();
+
+                    const input = document.getElementById('chat-input');
+                    input.disabled = true;
+                    input.placeholder = 'Select a model to start chatting...';
+
+                    this.updateBackButton();
+                };
+            }
         } else {
             backButton.textContent = '← Back';
             backButton.onclick = () => this.showMenu();
@@ -1314,9 +1584,13 @@ const app = {
         
         const serviceLabel = this.currentMode === 'research' ? 'Research Assistant' : 'Chat with LLM';
         
-        const clearButton = this.currentConversationId ? 
+        const clearButton = this.currentConversationId ?
             `<button class="clear-chat-btn" onclick="app.clearCurrentChat()">🗑️ Clear Chat</button>` : '';
-        
+
+        // Settings button for annotation mode - allows changing presets
+        const settingsButton = (this.currentConversationId && this.annotationModeSelected) ?
+            `<button class="settings-btn" onclick="app.showModelParametersModal()">⚙️ Settings</button>` : '';
+
         infoBar.innerHTML = `
             <div class="chat-info-item">
                 <span class="chat-info-label">💬 Service:</span>
@@ -1330,10 +1604,133 @@ const app = {
                 <span class="chat-info-label">Status:</span>
                 <span class="chat-info-value ${statusClass}">${statusText}</span>
             </div>
+            ${settingsButton}
             ${clearButton}
         `;
-        
+
         console.log('✅ Info bar updated');
+    },
+
+    async showModelParametersModal() {
+        console.log('Opening model parameters modal');
+
+        // Fetch parameters if not already loaded
+        if (!this.modelParameters) {
+            await this.fetchModelParameters();
+        }
+
+        if (!this.modelParameters) {
+            alert('Could not load model parameters');
+            return;
+        }
+
+        // Create modal overlay
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'params-modal-overlay';
+        modalOverlay.id = 'params-modal-overlay';
+        modalOverlay.onclick = (e) => {
+            if (e.target === modalOverlay) this.hideModelParametersModal();
+        };
+
+        // Create modal content
+        const modalContent = document.createElement('div');
+        modalContent.className = 'params-modal-content';
+        modalContent.innerHTML = `
+            <div class="params-modal-header">
+                <h3>Model Parameters</h3>
+                <button class="params-modal-close" onclick="app.hideModelParametersModal()">&times;</button>
+            </div>
+            <div class="params-modal-body">
+                ${this.buildParameterControlsHTMLCompact()}
+            </div>
+        `;
+
+        modalOverlay.appendChild(modalContent);
+        document.body.appendChild(modalOverlay);
+
+        // Attach event listeners
+        this.attachParameterEventListenersModal();
+    },
+
+    hideModelParametersModal() {
+        const modal = document.getElementById('params-modal-overlay');
+        if (modal) modal.remove();
+    },
+
+    buildParameterControlsHTMLCompact() {
+        const params = this.modelParameters.parameters;
+        const presets = this.modelParameters.presets;
+
+        let html = `<div class="preset-buttons-modal">`;
+        for (const [key, preset] of Object.entries(presets)) {
+            html += `<button class="preset-btn-modal" data-preset="${key}" title="${preset.description}">${preset.name}</button>`;
+        }
+        html += `</div>`;
+
+        for (const [paramName, param] of Object.entries(params)) {
+            const currentValue = this.customModelParams?.[paramName] ?? param.value;
+            const isInteger = paramName === 'top_k' || paramName === 'num_ctx' || paramName === 'num_predict';
+            const displayValue = isInteger ? Math.round(currentValue) : currentValue.toFixed(2);
+
+            html += `
+                <div class="param-group-modal">
+                    <div class="param-label-row-modal">
+                        <span class="param-label-modal">${param.name}</span>
+                        <span class="param-value-modal" id="modal-value-${paramName}">${displayValue}</span>
+                    </div>
+                    <input type="range" class="param-slider-modal" id="modal-slider-${paramName}"
+                           min="${param.min}" max="${param.max}" step="${param.step}" value="${currentValue}"
+                           data-param="${paramName}" data-is-integer="${isInteger}">
+                </div>
+            `;
+        }
+
+        html += `<button class="params-apply-btn" onclick="app.hideModelParametersModal()">Apply & Close</button>`;
+
+        return html;
+    },
+
+    attachParameterEventListenersModal() {
+        // Preset buttons
+        document.querySelectorAll('.preset-btn-modal').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const presetName = btn.dataset.preset;
+                const result = await this.applyModelPreset(presetName);
+                if (result) {
+                    // Update modal sliders
+                    for (const [paramName, value] of Object.entries(result.current)) {
+                        const slider = document.getElementById(`modal-slider-${paramName}`);
+                        const display = document.getElementById(`modal-value-${paramName}`);
+                        if (slider) slider.value = value;
+                        if (display) {
+                            const isInteger = paramName === 'top_k' || paramName === 'num_ctx' || paramName === 'num_predict';
+                            display.textContent = isInteger ? Math.round(value) : value.toFixed(2);
+                        }
+                    }
+                }
+            });
+        });
+
+        // Sliders
+        document.querySelectorAll('.param-slider-modal').forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                const paramName = e.target.dataset.param;
+                const isInteger = e.target.dataset.isInteger === 'true';
+                let value = parseFloat(e.target.value);
+                if (isInteger) value = Math.round(value);
+
+                const display = document.getElementById(`modal-value-${paramName}`);
+                if (display) display.textContent = isInteger ? value : value.toFixed(2);
+            });
+
+            slider.addEventListener('change', async (e) => {
+                const paramName = e.target.dataset.param;
+                const isInteger = e.target.dataset.isInteger === 'true';
+                let value = parseFloat(e.target.value);
+                if (isInteger) value = Math.round(value);
+                await this.updateModelParameter(paramName, value);
+            });
+        });
     },
 
     showModelSelection() {
@@ -1387,12 +1784,12 @@ const app = {
                 <span style="color: #666; font-size: 0.9em;">→</span>
             `;
             annotationButton.onclick = () => {
-                console.log('✅ Annotation mode selected');
+                console.log('✅ Annotation mode selected, showing format options');
                 this.annotationModeSelected = true;
                 document.getElementById('annotation-mode-selection')?.remove();
-                this.showModelSelectionStep2();
+                this.showOutputFormatSelection();
             };
-            
+
             annotationSelectionDiv.appendChild(regularButton);
             annotationSelectionDiv.appendChild(annotationButton);
             container.appendChild(annotationSelectionDiv);
@@ -1417,9 +1814,13 @@ const app = {
         
         let modeInfo = '';
         if (this.currentMode === 'chat') {
-            modeInfo = this.annotationModeSelected ? 
-                '\n\n🔬 Mode: Clinical Trial Annotation' : 
-                '\n\n💬 Mode: Regular Chat';
+            if (this.annotationModeSelected) {
+                const formatLabel = this.annotationOutputFormat === 'llm_optimized' ?
+                    '⚡ LLM-Optimized' : '📄 Full JSON';
+                modeInfo = `\n\n🔬 Mode: Clinical Trial Annotation\n📊 Data Format: ${formatLabel}`;
+            } else {
+                modeInfo = '\n\n💬 Mode: Regular Chat';
+            }
         }
         
         this.addMessage('chat-container', 'system', 
@@ -1486,6 +1887,582 @@ const app = {
         
         this.updateBackButton();
         console.log('✅ Model selection displayed');
+    },
+
+    showOutputFormatSelection() {
+        console.log('📦 Showing output format selection for annotation mode');
+
+        const container = document.getElementById('chat-container');
+
+        this.addMessage('chat-container', 'system',
+            '🔬 Annotation Mode Selected\n\n' +
+            'Choose the data format to feed to the LLM:\n\n' +
+            '• **LLM-Optimized**: Structured, condensed format with tool hints\n' +
+            '• **Full JSON**: Complete raw data from all sources');
+
+        const formatSelectionDiv = document.createElement('div');
+        formatSelectionDiv.className = 'model-selection';
+        formatSelectionDiv.id = 'format-selection';
+
+        // LLM-Optimized format button (recommended)
+        const llmOptButton = document.createElement('button');
+        llmOptButton.className = 'model-button';
+        llmOptButton.type = 'button';
+        llmOptButton.innerHTML = `
+            <span style="font-size: 1.2em;">⚡</span>
+            <span style="flex: 1; text-align: left; margin-left: 10px;">
+                <strong>LLM-Optimized (Recommended)</strong><br>
+                <small style="color: #666;">Condensed, structured format with action hints</small>
+            </span>
+            <span style="color: #666; font-size: 0.9em;">→</span>
+        `;
+        llmOptButton.onclick = () => {
+            console.log('✅ LLM-Optimized format selected');
+            this.annotationOutputFormat = 'llm_optimized';
+            document.getElementById('format-selection')?.remove();
+            this.showModelParametersConfig();  // Show parameters before model selection
+        };
+
+        // Full JSON format button
+        const jsonButton = document.createElement('button');
+        jsonButton.className = 'model-button';
+        jsonButton.type = 'button';
+        jsonButton.innerHTML = `
+            <span style="font-size: 1.2em;">📄</span>
+            <span style="flex: 1; text-align: left; margin-left: 10px;">
+                <strong>Full JSON</strong><br>
+                <small style="color: #666;">Complete raw data from all sources</small>
+            </span>
+            <span style="color: #666; font-size: 0.9em;">→</span>
+        `;
+        jsonButton.onclick = () => {
+            console.log('✅ Full JSON format selected');
+            this.annotationOutputFormat = 'json';
+            document.getElementById('format-selection')?.remove();
+            this.showModelParametersConfig();  // Show parameters before model selection
+        };
+
+        formatSelectionDiv.appendChild(llmOptButton);
+        formatSelectionDiv.appendChild(jsonButton);
+        container.appendChild(formatSelectionDiv);
+
+        requestAnimationFrame(() => {
+            container.scrollTop = container.scrollHeight;
+        });
+
+        this.updateBackButton();
+        console.log('✅ Output format selection displayed');
+    },
+
+    // =========================================================================
+    // Model Parameters Configuration
+    // =========================================================================
+
+    async fetchModelParameters() {
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/model-parameters`);
+            if (response.ok) {
+                this.modelParameters = await response.json();
+                console.log('✅ Loaded model parameters:', Object.keys(this.modelParameters.parameters));
+                return this.modelParameters;
+            }
+        } catch (error) {
+            console.error('Failed to fetch model parameters:', error);
+        }
+        return null;
+    },
+
+    async fetchEmailConfig() {
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/email-config`);
+            if (response.ok) {
+                const config = await response.json();
+                this.emailConfigured = config.configured;
+                console.log('📧 Email configured:', this.emailConfigured);
+                return config;
+            }
+        } catch (error) {
+            console.error('Failed to fetch email config:', error);
+        }
+        return { configured: false };
+    },
+
+    async applyModelPreset(presetName) {
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/model-parameters/preset/${presetName}`, {
+                method: 'POST'
+            });
+            if (response.ok) {
+                const result = await response.json();
+                this.customModelParams = result.current;
+                console.log(`✅ Applied preset: ${presetName}`);
+                return result;
+            }
+        } catch (error) {
+            console.error('Failed to apply preset:', error);
+        }
+        return null;
+    },
+
+    async updateModelParameter(paramName, value) {
+        try {
+            const body = {};
+            body[paramName] = value;
+
+            const response = await fetch(`${this.API_BASE}/api/chat/model-parameters`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                this.customModelParams = result.current;
+                console.log(`✅ Updated ${paramName}:`, value);
+                return result;
+            }
+        } catch (error) {
+            console.error(`Failed to update ${paramName}:`, error);
+        }
+        return null;
+    },
+
+    async resetModelParameters() {
+        try {
+            const response = await fetch(`${this.API_BASE}/api/chat/model-parameters/reset`, {
+                method: 'POST'
+            });
+            if (response.ok) {
+                const result = await response.json();
+                this.customModelParams = result.current;
+                console.log('✅ Reset parameters to defaults');
+                return result;
+            }
+        } catch (error) {
+            console.error('Failed to reset parameters:', error);
+        }
+        return null;
+    },
+
+    async showModelParametersConfig() {
+        console.log('⚙️ Showing model parameters configuration');
+
+        // Fetch parameters and email config in parallel
+        const [paramsResult, emailResult] = await Promise.all([
+            this.modelParameters ? Promise.resolve(this.modelParameters) : this.fetchModelParameters(),
+            this.fetchEmailConfig()
+        ]);
+
+        if (!this.modelParameters) {
+            console.warn('Could not load model parameters, skipping to model selection');
+            this.showModelSelectionStep2();
+            return;
+        }
+
+        const container = document.getElementById('chat-container');
+
+        this.addMessage('chat-container', 'system',
+            '⚙️ **Model Parameters** (Optional)\n\n' +
+            'Adjust LLM generation parameters or use a preset.\n' +
+            'Hover over each parameter for detailed explanations.');
+
+        const configDiv = document.createElement('div');
+        configDiv.className = 'model-params-config';
+        configDiv.id = 'model-params-container';
+        configDiv.innerHTML = this.buildParameterControlsHTML();
+
+        container.appendChild(configDiv);
+
+        // Attach event listeners
+        this.attachParameterEventListeners();
+
+        requestAnimationFrame(() => {
+            container.scrollTop = container.scrollHeight;
+        });
+
+        this.updateBackButton();
+        console.log('✅ Model parameters configuration displayed');
+    },
+
+    buildParameterControlsHTML() {
+        const params = this.modelParameters.parameters;
+        const presets = this.modelParameters.presets;
+
+        let html = `
+            <style>
+                .model-params-config {
+                    background: var(--bg-secondary, #1a1a2e);
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin: 10px 0;
+                }
+                .params-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 15px;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                }
+                .params-title {
+                    font-size: 1.1em;
+                    font-weight: bold;
+                    color: var(--primary-color, #1BEB49);
+                }
+                .preset-buttons {
+                    display: flex;
+                    gap: 8px;
+                    flex-wrap: wrap;
+                }
+                .preset-btn {
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    border: 1px solid var(--border-color, #333);
+                    background: var(--bg-primary, #0d0d1a);
+                    color: var(--text-color, #e0e0e0);
+                    cursor: pointer;
+                    font-size: 0.85em;
+                    transition: all 0.2s;
+                }
+                .preset-btn:hover {
+                    background: var(--primary-color, #1BEB49);
+                    color: #000;
+                }
+                .param-group {
+                    margin-bottom: 18px;
+                    position: relative;
+                }
+                .param-label-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 6px;
+                }
+                .param-label {
+                    font-weight: 600;
+                    color: var(--text-color, #e0e0e0);
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+                .param-value-display {
+                    font-family: monospace;
+                    background: var(--bg-primary, #0d0d1a);
+                    padding: 2px 8px;
+                    border-radius: 4px;
+                    min-width: 60px;
+                    text-align: center;
+                }
+                .param-slider {
+                    width: 100%;
+                    height: 6px;
+                    border-radius: 3px;
+                    background: var(--bg-primary, #0d0d1a);
+                    -webkit-appearance: none;
+                    cursor: pointer;
+                }
+                .param-slider::-webkit-slider-thumb {
+                    -webkit-appearance: none;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                    background: var(--primary-color, #1BEB49);
+                    cursor: pointer;
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                }
+                .param-slider::-moz-range-thumb {
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                    background: var(--primary-color, #1BEB49);
+                    cursor: pointer;
+                    border: none;
+                }
+                .help-icon {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                    background: var(--secondary-color, #0E1F81);
+                    color: white;
+                    font-size: 11px;
+                    font-weight: bold;
+                    cursor: help;
+                    position: relative;
+                }
+                .tooltip {
+                    visibility: hidden;
+                    opacity: 0;
+                    position: absolute;
+                    bottom: 100%;
+                    left: 0;
+                    width: 350px;
+                    background: var(--bg-primary, #0d0d1a);
+                    border: 1px solid var(--border-color, #333);
+                    border-radius: 8px;
+                    padding: 12px;
+                    z-index: 1000;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+                    transition: opacity 0.2s, visibility 0.2s;
+                    margin-bottom: 8px;
+                }
+                .help-icon:hover .tooltip,
+                .param-group:hover .tooltip {
+                    visibility: visible;
+                    opacity: 1;
+                }
+                .tooltip-title {
+                    font-weight: bold;
+                    color: var(--primary-color, #1BEB49);
+                    margin-bottom: 8px;
+                    font-size: 0.95em;
+                }
+                .tooltip-desc {
+                    color: var(--text-color, #e0e0e0);
+                    font-size: 0.85em;
+                    line-height: 1.4;
+                    margin-bottom: 10px;
+                }
+                .tooltip-effects {
+                    background: rgba(0,0,0,0.3);
+                    border-radius: 6px;
+                    padding: 8px;
+                    margin-bottom: 8px;
+                }
+                .tooltip-effect {
+                    font-size: 0.8em;
+                    margin-bottom: 6px;
+                    padding-left: 8px;
+                    border-left: 2px solid var(--secondary-color, #0E1F81);
+                }
+                .tooltip-effect-label {
+                    font-weight: 600;
+                    color: var(--accent-color, #FFA400);
+                }
+                .tooltip-recommendation {
+                    font-size: 0.8em;
+                    color: var(--primary-color, #1BEB49);
+                    font-style: italic;
+                    padding-top: 6px;
+                    border-top: 1px solid var(--border-color, #333);
+                }
+                .params-actions {
+                    display: flex;
+                    gap: 10px;
+                    margin-top: 20px;
+                    padding-top: 15px;
+                    border-top: 1px solid var(--border-color, #333);
+                }
+                .params-action-btn {
+                    flex: 1;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    border: none;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.2s;
+                }
+                .params-action-btn.primary {
+                    background: var(--primary-color, #1BEB49);
+                    color: #000;
+                }
+                .params-action-btn.secondary {
+                    background: var(--bg-primary, #0d0d1a);
+                    color: var(--text-color, #e0e0e0);
+                    border: 1px solid var(--border-color, #333);
+                }
+                .params-action-btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                }
+            </style>
+
+            <div class="params-header">
+                <span class="params-title">⚙️ Generation Parameters</span>
+                <div class="preset-buttons">
+                    ${Object.entries(presets).map(([key, preset]) => `
+                        <button class="preset-btn" data-preset="${key}" title="${preset.description}">
+                            ${preset.name}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        // Build parameter sliders
+        for (const [paramName, param] of Object.entries(params)) {
+            const currentValue = this.customModelParams[paramName] ?? param.value;
+            const isInteger = paramName === 'top_k' || paramName === 'num_ctx' || paramName === 'num_predict';
+
+            html += `
+                <div class="param-group" data-param="${paramName}">
+                    <div class="tooltip">
+                        <div class="tooltip-title">${param.name}</div>
+                        <div class="tooltip-desc">${param.description}</div>
+                        <div class="tooltip-effects">
+                            <div class="tooltip-effect">
+                                <span class="tooltip-effect-label">📉 Low values:</span><br>
+                                ${param.effect_low}
+                            </div>
+                            <div class="tooltip-effect">
+                                <span class="tooltip-effect-label">📈 High values:</span><br>
+                                ${param.effect_high}
+                            </div>
+                        </div>
+                        <div class="tooltip-recommendation">💡 ${param.recommendation}</div>
+                    </div>
+                    <div class="param-label-row">
+                        <span class="param-label">
+                            ${param.name}
+                            <span class="help-icon">?</span>
+                        </span>
+                        <span class="param-value-display" id="value-${paramName}">${isInteger ? Math.round(currentValue) : currentValue.toFixed(2)}</span>
+                    </div>
+                    <input type="range"
+                           class="param-slider"
+                           id="slider-${paramName}"
+                           min="${param.min}"
+                           max="${param.max}"
+                           step="${param.step}"
+                           value="${currentValue}"
+                           data-param="${paramName}"
+                           data-is-integer="${isInteger}">
+                </div>
+            `;
+        }
+
+        // Email notification option (only show if email is configured)
+        if (this.emailConfigured) {
+            html += `
+                <div class="email-notification-section" style="margin-top: 20px; padding: 15px; background: var(--bg-primary, #0d0d1a); border-radius: 8px; border: 1px solid var(--border-color, #333);">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <input type="checkbox"
+                               id="email-notify-checkbox"
+                               style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary-color, #1BEB49);"
+                               ${this.annotationEmailNotify ? 'checked' : ''}>
+                        <label for="email-notify-checkbox" style="cursor: pointer; flex: 1;">
+                            <strong>📧 Email me when annotation completes</strong>
+                            <br><small style="color: #888;">Get notified even if you navigate away from this page</small>
+                        </label>
+                    </div>
+                    <div id="email-input-container" style="margin-top: 12px; display: ${this.annotationEmailNotify ? 'block' : 'none'};">
+                        <input type="email"
+                               id="notification-email-input"
+                               placeholder="your.email@example.com"
+                               value="${this.annotationNotifyEmail}"
+                               style="width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border-color, #333); background: var(--bg-secondary, #1a1a2e); color: var(--text-color, #e0e0e0); font-size: 14px;">
+                    </div>
+                </div>
+            `;
+        }
+
+        // Action buttons
+        html += `
+            <div class="params-actions">
+                <button class="params-action-btn secondary" id="reset-params-btn">
+                    🔄 Reset to Defaults
+                </button>
+                <button class="params-action-btn primary" id="continue-to-model-btn">
+                    Continue to Model Selection →
+                </button>
+            </div>
+        `;
+
+        return html;
+    },
+
+    attachParameterEventListeners() {
+        // Preset buttons
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const presetName = btn.dataset.preset;
+                const result = await this.applyModelPreset(presetName);
+                if (result) {
+                    // Update all sliders to show new values
+                    this.updateParameterSliders(result.current);
+                }
+            });
+        });
+
+        // Parameter sliders
+        document.querySelectorAll('.param-slider').forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                const paramName = e.target.dataset.param;
+                const isInteger = e.target.dataset.isInteger === 'true';
+                let value = parseFloat(e.target.value);
+                if (isInteger) value = Math.round(value);
+
+                // Update display immediately
+                const display = document.getElementById(`value-${paramName}`);
+                if (display) {
+                    display.textContent = isInteger ? value : value.toFixed(2);
+                }
+            });
+
+            slider.addEventListener('change', async (e) => {
+                const paramName = e.target.dataset.param;
+                const isInteger = e.target.dataset.isInteger === 'true';
+                let value = parseFloat(e.target.value);
+                if (isInteger) value = Math.round(value);
+
+                // Send update to API
+                await this.updateModelParameter(paramName, value);
+            });
+        });
+
+        // Reset button
+        document.getElementById('reset-params-btn')?.addEventListener('click', async () => {
+            const result = await this.resetModelParameters();
+            if (result) {
+                this.updateParameterSliders(result.current);
+            }
+        });
+
+        // Email notification checkbox
+        document.getElementById('email-notify-checkbox')?.addEventListener('change', (e) => {
+            this.annotationEmailNotify = e.target.checked;
+            const emailInputContainer = document.getElementById('email-input-container');
+            if (emailInputContainer) {
+                emailInputContainer.style.display = this.annotationEmailNotify ? 'block' : 'none';
+            }
+            console.log('📧 Email notification:', this.annotationEmailNotify ? 'enabled' : 'disabled');
+        });
+
+        // Email input
+        document.getElementById('notification-email-input')?.addEventListener('input', (e) => {
+            this.annotationNotifyEmail = e.target.value;
+        });
+
+        // Continue button
+        document.getElementById('continue-to-model-btn')?.addEventListener('click', () => {
+            // Validate email if notification is enabled
+            if (this.annotationEmailNotify && this.annotationNotifyEmail) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(this.annotationNotifyEmail)) {
+                    alert('Please enter a valid email address for notifications.');
+                    return;
+                }
+            }
+            document.getElementById('model-params-container')?.remove();
+            this.showModelSelectionStep2();
+        });
+    },
+
+    updateParameterSliders(params) {
+        for (const [paramName, value] of Object.entries(params)) {
+            const slider = document.getElementById(`slider-${paramName}`);
+            const display = document.getElementById(`value-${paramName}`);
+
+            if (slider) {
+                slider.value = value;
+            }
+            if (display) {
+                const isInteger = paramName === 'top_k' || paramName === 'num_ctx' || paramName === 'num_predict';
+                display.textContent = isInteger ? Math.round(value) : value.toFixed(2);
+            }
+        }
     },
 
     saveCurrentChat() {
@@ -1691,7 +2668,7 @@ const app = {
                 if (annotationMode) {
                     welcomeMsg += '\n\n🔬 Annotation Mode Active\n\n' +
                                 '📝 **Option 1: Enter NCT IDs manually**\n' +
-                                'Type NCT IDs (comma-separated) in the chat box.\n' +
+                                'Type NCT IDs in the chat box (comma, space, or newline separated).\n' +
                                 'Example: NCT12345678, NCT87654321\n\n' +
                                 '📄 **Option 2: Upload CSV file**\n' +
                                 'Click the "Upload CSV" button below to batch annotate.\n\n' +
@@ -1711,7 +2688,7 @@ const app = {
                 input.disabled = false;
                 
                 if (annotationMode) {
-                    input.placeholder = 'Enter NCT IDs (e.g., NCT12345678, NCT87654321)...';
+                    input.placeholder = 'Enter NCT IDs (comma, space, or newline separated)...';
                 } else {
                     input.placeholder = 'Type your message...';
                 }
@@ -1802,11 +2779,14 @@ const app = {
             const nctIds = message.match(nctPattern);
             
             if (!nctIds || nctIds.length === 0) {
-                this.addMessage('chat-container', 'error', 
+                this.addMessage('chat-container', 'error',
                     '❌ No valid NCT IDs found\n\n' +
                     'Please enter NCT IDs in the format: NCT12345678\n' +
-                    'You can enter multiple IDs separated by commas.\n\n' +
-                    'Example: NCT03936426, NCT04123456');
+                    'You can enter multiple IDs separated by commas, spaces, or newlines.\n\n' +
+                    'Examples:\n' +
+                    '  • NCT03936426, NCT04123456\n' +
+                    '  • NCT03936426 NCT04123456\n' +
+                    '  • One per line');
                 return;
             }
             
@@ -1826,7 +2806,7 @@ const app = {
             
             this.addMessage('chat-container', 'user', message);
             
-            const loadingId = this.addMessage('chat-container', 'system', '🤔 Thinking...');
+            const loadingId = this.addMessage('chat-container', 'assistant', '🤔 Thinking...');
             
             try {
                 console.log('📤 Sending message to chat service');
@@ -1902,12 +2882,12 @@ const app = {
     // =========================================================================
 
     async annotateTrials(nctIds) {
-        console.log(`🔬 Starting annotation for ${nctIds.length} trial(s):`, nctIds);
+        console.log(`🔬 Starting async annotation for ${nctIds.length} trial(s):`, nctIds);
         console.log('📊 Current conversation ID:', this.currentConversationId);
         console.log('📊 Current model:', this.currentModel);
-        
+
         if (!this.currentConversationId) {
-            this.addMessage('chat-container', 'error', 
+            this.addMessage('chat-container', 'error',
                 '❌ No active conversation!\n\n' +
                 'Please try:\n' +
                 '1. Reload the page\n' +
@@ -1916,153 +2896,295 @@ const app = {
                 '4. Select a model');
             return;
         }
-        
-        // Show processing message
-        const processingId = this.addMessage('chat-container', 'system', 
-            `🔄 Annotating ${nctIds.length} clinical trial(s)...\n\n` +
-            `Steps:\n` +
-            `1. Fetching trial data from Runner Service\n` +
-            `2. Processing JSON with annotation parser\n` +
-            `3. Generating annotations with LLM\n\n` +
-            `⏳ This may take 1-3 minutes...`);
-        
-        const startTime = Date.now();
-        
+
+        // Note: User message already shown by handleAnnotationInput()
+
+        // Show processing message with progress bar
+        const processingId = this.addMessage('chat-container', 'assistant',
+            `🔄 Starting annotation for ${nctIds.length} clinical trial(s)...\n\n` +
+            `⏳ Submitting job to server...`);
+
+        // Helper to update the processing message
+        const updateProcessingMsg = (msg) => {
+            const el = document.getElementById(processingId);
+            if (el) {
+                const contentEl = el.querySelector('.message-content');
+                if (contentEl) {
+                    contentEl.innerHTML = this.formatMessage(msg);
+                }
+            }
+        };
+
+        // Start a timer to show elapsed time during submission
+        const submitStartTime = Date.now();
+        const submitTimer = setInterval(() => {
+            const elapsed = Math.round((Date.now() - submitStartTime) / 1000);
+            updateProcessingMsg(
+                `🔄 Starting annotation for ${nctIds.length} clinical trial(s)...\n\n` +
+                `⏳ Connecting to annotation service... (${elapsed}s)\n\n` +
+                `_Waiting for server response..._`
+            );
+        }, 1000);
+
         try {
-            console.log('📤 Sending annotation request:');
-            console.log('   conversation_id:', this.currentConversationId);
-            console.log('   message:', nctIds.join(', '));
-            console.log('   nct_ids:', nctIds);
-            
-            // Call chat service with NCT IDs
-            const response = await fetch(`${this.API_BASE}/chat/message`, {
+            console.log('📤 Sending async annotation request');
+            console.log('📊 Output format:', this.annotationOutputFormat);
+
+            // Build request body
+            const requestBody = {
+                conversation_id: this.currentConversationId,
+                nct_ids: nctIds,
+                output_format: this.annotationOutputFormat,
+                temperature: 0.15
+            };
+
+            // Add email notification if enabled
+            if (this.annotationEmailNotify && this.annotationNotifyEmail) {
+                requestBody.notification_email = this.annotationNotifyEmail;
+                console.log('📧 Email notification will be sent to:', this.annotationNotifyEmail);
+            }
+
+            // Start async job with timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+            const response = await fetch(`${this.API_BASE}/chat/annotate`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.apiKey}`
                 },
-                body: JSON.stringify({
-                    conversation_id: this.currentConversationId,
-                    message: nctIds.join(', '),
-                    nct_ids: nctIds,  // Explicit NCT IDs list
-                    temperature: 0.15  // Lower temperature for consistent annotations
-                })
+                body: JSON.stringify(requestBody),
+                signal: controller.signal
             });
-            
-            const endTime = Date.now();
-            const duration = ((endTime - startTime) / 1000).toFixed(1);
-            
-            // Remove processing message
-            const processingElement = document.getElementById(processingId);
-            if (processingElement) {
-                processingElement.remove();
-            }
-            
+
+            clearTimeout(timeoutId);
+            clearInterval(submitTimer);
+
             if (response.ok) {
                 const data = await response.json();
-                
-                console.log('✅ Annotation response received:', data);
-                
-                // Display annotation results
-                let resultMessage = `✅ Annotation Complete\n\n` +
-                    `═══════════════════════════════════════════\n` +
-                    `Trials Annotated: ${data.nct_data_used ? data.nct_data_used.length : nctIds.length}\n` +
-                    `Model: ${data.model}\n` +
-                    `Processing Time: ${duration}s\n` +
-                    `═══════════════════════════════════════════\n\n`;
-                
-                // Add NCT IDs that were successfully processed
-                if (data.nct_data_used && data.nct_data_used.length > 0) {
-                    resultMessage += `NCT IDs Processed: ${data.nct_data_used.join(', ')}\n\n`;
+                console.log('✅ Job started:', data);
+
+                if (data.job_id) {
+                    // Update message to show job started
+                    updateProcessingMsg(
+                        `🔄 **Annotation Job Started**\n\n` +
+                        `Job ID: \`${data.job_id.substring(0, 8)}...\`\n\n` +
+                        `⏳ Initializing processing pipeline...`
+                    );
+                    // Poll for status with progress updates
+                    await this.pollAnnotationStatus(data.job_id, processingId, nctIds.join(', '), nctIds.length);
+                } else {
+                    document.getElementById(processingId)?.remove();
+                    this.addMessage('chat-container', 'error', '❌ No job ID returned from server');
                 }
-                
-                // Add the annotation content
-                resultMessage += `${data.message.content}\n\n` +
-                    `═══════════════════════════════════════════\n\n` +
-                    `💡 Next:\n` +
-                    `  • Enter more NCT IDs to annotate\n` +
-                    `  • Type "exit" to select a different model\n` +
-                    `  • Click "Clear Chat" to reset`;
-                
-                this.addMessage('chat-container', 'assistant', resultMessage);
-                
-                // Add download button if CSV was generated
-                if (data.download_url) {
-                    let downloadUrl = data.download_url;
-                    if (downloadUrl.startsWith('/')) {
-                        downloadUrl = `${this.API_BASE}${downloadUrl}`;
-                    }
-                    this.addDownloadButton(downloadUrl, data.csv_filename || 'annotations.csv');
+            } else {
+                clearInterval(submitTimer);
+                const errorText = await response.text();
+                document.getElementById(processingId)?.remove();
+                this.addMessage('chat-container', 'error', `❌ Failed to start annotation job\n\nError: ${errorText}`);
+            }
+
+        } catch (error) {
+            clearInterval(submitTimer);
+            document.getElementById(processingId)?.remove();
+            console.error('❌ Annotation error:', error);
+
+            if (error.name === 'AbortError') {
+                this.addMessage('chat-container', 'error',
+                    `❌ Request Timeout\n\n` +
+                    `The server took too long to respond.\n\n` +
+                    `This could mean:\n` +
+                    `• The annotation service is overloaded\n` +
+                    `• Network connectivity issues\n\n` +
+                    `Try again or check services: \`./services.sh status\``);
+            } else {
+                this.addMessage('chat-container', 'error',
+                    `❌ Connection Error\n\n` +
+                    `${error.message}\n\n` +
+                    `Cannot connect to Chat Service.\n\n` +
+                    `Check services: ./services.sh status`);
+            }
+        }
+    },
+
+    async pollAnnotationStatus(jobId, processingId, nctIdsStr, totalTrials) {
+        console.log(`📊 Polling status for job ${jobId}`);
+        const startTime = Date.now();
+        const maxPollTime = 30 * 60 * 1000; // 30 minutes max
+        const pollInterval = 2000; // 2 seconds
+        let consecutiveErrors = 0;
+        const maxConsecutiveErrors = 5;
+
+        while (true) {
+            try {
+                const response = await fetch(`${this.API_BASE}/chat/annotate-csv-status/${jobId}`, {
+                    headers: { 'Authorization': `Bearer ${this.apiKey}` }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Status check failed: ${response.status}`);
                 }
 
-                // Store in session
-                if (!this.sessionChats[this.currentModel]) {
-                    this.sessionChats[this.currentModel] = {
-                        conversationId: this.currentConversationId,
-                        messages: [],
-                        annotationMode: true
-                    };
+                const status = await response.json();
+                console.log('📊 Job status:', status);
+                consecutiveErrors = 0; // Reset error count on success
+
+                // Update progress message
+                const elapsed = Math.round((Date.now() - startTime) / 1000);
+                const percent = status.percent_complete || 0;
+                const progressBar = this.buildProgressBar(percent);
+
+                // Build step indicator
+                const stepLabels = {
+                    'initializing': '⏳ Initializing...',
+                    'fetching': '📥 Fetching trial data...',
+                    'processing': '⚙️ Processing (parse → prompt → LLM)...',
+                    'completed': '✅ Trial complete',
+                    'generating_csv': '📄 Generating CSV output...',
+                    '': '🔄 Processing...'
+                };
+                const currentStep = stepLabels[status.current_step] || stepLabels[''];
+                const currentNct = status.current_nct ? `\n**Current Trial:** ${status.current_nct}` : '';
+
+                const processingEl = document.getElementById(processingId);
+                if (processingEl) {
+                    const contentEl = processingEl.querySelector('.message-content');
+                    if (contentEl) {
+                        contentEl.innerHTML = this.formatMessage(
+                            `🔄 **Annotating ${totalTrials} trial(s)**\n\n` +
+                            `${progressBar}\n\n` +
+                            `**Progress:** ${status.processed_trials || 0} of ${totalTrials} complete (${percent}%)${currentNct}\n` +
+                            `**Step:** ${currentStep}\n` +
+                            `**Status:** ${status.progress || 'Processing...'}\n` +
+                            `**Elapsed:** ${elapsed}s\n\n` +
+                            `_You can close this window - the job will continue in the background._`
+                        );
+                    }
                 }
-                
-                this.sessionChats[this.currentModel].messages.push({
-                    role: 'user',
-                    content: `Annotate: ${nctIds.join(', ')}`
-                });
-                
-                this.sessionChats[this.currentModel].messages.push({
-                    role: 'assistant',
-                    content: data.message.content
-                });
-                
-            } else {
-                const errorText = await response.text();
-                let errorData;
-                try {
-                    errorData = JSON.parse(errorText);
-                } catch {
-                    errorData = { detail: errorText };
+
+                // Check completion states
+                if (status.status === 'completed') {
+                    document.getElementById(processingId)?.remove();
+                    this.handleAnnotationComplete(status, nctIdsStr, totalTrials);
+                    return;
                 }
-                
-                console.error('❌ Annotation failed:', errorData);
-                
-                this.addMessage('chat-container', 'error', 
-                    `❌ Annotation Failed\n\n` +
-                    `Error: ${errorData.detail}\n\n` +
-                    `Possible Issues:\n` +
-                    `• Invalid NCT ID(s)\n` +
-                    `• Runner Service (port 9003) not running\n` +
-                    `• NCT Lookup (port 9002) not available\n` +
-                    `• Chat Service (port 9001) error\n` +
-                    `• Model ${this.currentModel} not responding\n\n` +
-                    `Troubleshooting:\n` +
-                    `1. Verify NCT IDs are correct (NCT + 8 digits)\n` +
-                    `2. Check services: ./services.sh status\n` +
-                    `3. View logs: ./services.sh logs chat\n` +
-                    `4. Try: ./services.sh restart`);
+
+                if (status.status === 'failed') {
+                    document.getElementById(processingId)?.remove();
+                    this.addMessage('chat-container', 'error',
+                        `❌ Annotation Failed\n\nError: ${status.error || 'Unknown error'}`);
+                    return;
+                }
+
+                // Check timeout
+                if (Date.now() - startTime > maxPollTime) {
+                    document.getElementById(processingId)?.remove();
+                    this.addMessage('chat-container', 'error',
+                        `⚠️ Job is taking longer than expected.\n\n` +
+                        `Job ID: ${jobId}\n` +
+                        `The job is still running in the background.\n` +
+                        `${this.annotationEmailNotify ? '📧 You will receive an email when it completes.' : ''}`);
+                    return;
+                }
+
+                // Wait before next poll
+                await new Promise(resolve => setTimeout(resolve, pollInterval));
+
+            } catch (error) {
+                console.error('Poll error:', error);
+                consecutiveErrors++;
+
+                // Update UI to show connection issue
+                const processingEl = document.getElementById(processingId);
+                if (processingEl) {
+                    const contentEl = processingEl.querySelector('.message-content');
+                    const elapsed = Math.round((Date.now() - startTime) / 1000);
+                    if (contentEl) {
+                        contentEl.innerHTML = this.formatMessage(
+                            `🔄 **Annotating ${totalTrials} trial(s)**\n\n` +
+                            `⚠️ **Connection issue** - retrying... (attempt ${consecutiveErrors}/${maxConsecutiveErrors})\n\n` +
+                            `**Elapsed:** ${elapsed}s\n\n` +
+                            `_The job continues in the background even if connection is lost._`
+                        );
+                    }
+                }
+
+                // Give up after too many consecutive errors
+                if (consecutiveErrors >= maxConsecutiveErrors) {
+                    document.getElementById(processingId)?.remove();
+                    this.addMessage('chat-container', 'error',
+                        `⚠️ Lost connection to server\n\n` +
+                        `Job ID: \`${jobId}\`\n\n` +
+                        `The job may still be running in the background.\n` +
+                        `${this.annotationEmailNotify ? '📧 You will receive an email when it completes.' : 'Refresh the page to check status.'}`);
+                    return;
+                }
+
+                await new Promise(resolve => setTimeout(resolve, pollInterval * 2));
             }
-            
-        } catch (error) {
-            // Remove processing message if still there
-            const processingElement = document.getElementById(processingId);
-            if (processingElement) {
-                processingElement.remove();
-            }
-            
-            console.error('❌ Annotation error:', error);
-            
-            this.addMessage('chat-container', 'error', 
-                `❌ Connection Error\n\n` +
-                `${error.message}\n\n` +
-                `Cannot connect to Chat Service (port 9001).\n\n` +
-                `Required Services:\n` +
-                `• Chat Service (9001) - Main annotation service\n` +
-                `• Runner Service (9003) - File manager\n` +
-                `• NCT Service (9002) - Data fetching\n\n` +
-                `Start all services:\n` +
-                `  ./services.sh start\n\n` +
-                `Check status:\n` +
-                `  ./services.sh status`);
         }
+    },
+
+    handleAnnotationComplete(status, nctIdsStr, totalTrials) {
+        const result = status.result || {};
+        const successful = result.successful || 0;
+        const failed = result.failed || 0;
+        const duration = result.total_time_seconds || 0;
+
+        let resultMessage = `✅ Annotation Complete\n\n` +
+            `═══════════════════════════════════════════\n` +
+            `📊 Total NCT IDs: ${totalTrials}\n` +
+            `✓ Successful: ${successful}\n` +
+            `✗ Failed: ${failed}\n` +
+            `⏱ Processing Time: ${duration}s\n` +
+            `═══════════════════════════════════════════\n\n`;
+
+        // Add annotation text if available
+        if (result.annotation_text) {
+            resultMessage += result.annotation_text + '\n\n';
+        }
+
+        resultMessage += `💡 Next:\n` +
+            `  • Enter more NCT IDs to annotate\n` +
+            `  • Type "exit" to select a different model\n` +
+            `  • Click "Clear Chat" to reset`;
+
+        this.addMessage('chat-container', 'assistant', resultMessage);
+
+        // Add download button
+        if (result.download_url) {
+            let downloadUrl = result.download_url;
+            if (downloadUrl.startsWith('/')) {
+                downloadUrl = `${this.API_BASE}${downloadUrl}`;
+            }
+            this.addDownloadButton(downloadUrl, result.csv_filename || 'annotations.csv');
+        }
+
+        // Store in session
+        if (!this.sessionChats[this.currentModel]) {
+            this.sessionChats[this.currentModel] = {
+                conversationId: this.currentConversationId,
+                messages: [],
+                annotationMode: true
+            };
+        }
+
+        this.sessionChats[this.currentModel].messages.push({
+            role: 'user',
+            content: `Annotate: ${nctIdsStr}`
+        });
+
+        this.sessionChats[this.currentModel].messages.push({
+            role: 'assistant',
+            content: resultMessage
+        });
+    },
+
+    buildProgressBar(percent) {
+        const filled = Math.round(percent / 5);
+        const empty = 20 - filled;
+        return `[${'█'.repeat(filled)}${'░'.repeat(empty)}] ${percent}%`;
     },
 
     // =========================================================================
@@ -2203,7 +3325,7 @@ const app = {
         
         this.addMessage('chat-container', 'user', `📄 Upload CSV: ${fileName}`);
         
-        const processingId = this.addMessage('chat-container', 'system', 
+        const processingId = this.addMessage('chat-container', 'assistant',
             `🔄 Starting CSV annotation: ${fileName}\n\n` +
             `⏳ Submitting job...`);
         
@@ -2216,7 +3338,13 @@ const app = {
                 model: this.currentModel,
                 temperature: '0.15'
             });
-            
+
+            // Add email notification if enabled
+            if (this.annotationEmailNotify && this.annotationNotifyEmail) {
+                params.set('notification_email', this.annotationNotifyEmail);
+                console.log('📧 Email notification will be sent to:', this.annotationNotifyEmail);
+            }
+
             const url = `${this.API_BASE}/chat/annotate-csv?${params}`;
             console.log(`📤 Sending CSV to: ${url}`);
             
@@ -3463,15 +4591,15 @@ const app = {
     async loadFiles() {
         const container = document.getElementById('files-container');
         container.innerHTML = '<div class="loading">Loading files...</div>';
-        
+
         try {
             const response = await fetch(`${this.API_BASE}/files/list`, {
                 headers: { 'Authorization': `Bearer ${this.apiKey}` }
             });
-            
+
             const data = await response.json();
             this.files = data.files || [];
-            
+
             if (this.files.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
@@ -3481,25 +4609,44 @@ const app = {
                 `;
                 return;
             }
-            
+
             let html = '<div class="files-grid">';
             this.files.forEach(file => {
+                const isCSV = file.type === 'csv' || file.name.endsWith('.csv');
+                const isAnnotation = file.source === 'annotations';
+                const icon = isCSV ? '📊' : '📄';
+                const typeLabel = isAnnotation ? '<span class="file-type-badge annotation">Annotation</span>' : '';
+
                 html += `
-                    <div class="file-card">
-                        <div class="file-card-icon">📄</div>
-                        <div class="file-card-name">${this.escapeHtml(file.name)}</div>
+                    <div class="file-card ${isAnnotation ? 'annotation-file' : ''}">
+                        <div class="file-card-icon">${icon}</div>
+                        <div class="file-card-name">${this.escapeHtml(file.name)}${typeLabel}</div>
                         <div class="file-card-meta">Size: ${file.size}</div>
                         <div class="file-card-meta">Modified: ${file.modified}</div>
-                        <button class="file-card-load" onclick="app.loadFileIntoChat('${this.escapeHtml(file.name)}')">
-                            Load into Chat
-                        </button>
+                        <div class="file-card-actions">
+                            ${isCSV ? `
+                                <button class="file-card-btn download" onclick="app.downloadFile('${this.escapeHtml(file.name)}', '${file.source || 'output'}')">
+                                    📥 Download
+                                </button>
+                                <button class="file-card-btn view" onclick="app.viewCSVFile('${this.escapeHtml(file.name)}', '${file.source || 'output'}')">
+                                    👁 View
+                                </button>
+                            ` : `
+                                <button class="file-card-btn load" onclick="app.loadFileIntoChat('${this.escapeHtml(file.name)}')">
+                                    📂 Load into Chat
+                                </button>
+                            `}
+                            <button class="file-card-btn delete" onclick="app.deleteFile('${this.escapeHtml(file.name)}', '${file.source || 'output'}')">
+                                🗑️ Delete
+                            </button>
+                        </div>
                     </div>
                 `;
             });
             html += '</div>';
-            
+
             container.innerHTML = html;
-            
+
         } catch (error) {
             container.innerHTML = `
                 <div class="empty-state">
@@ -3508,6 +4655,137 @@ const app = {
                 </div>
             `;
         }
+    },
+
+    downloadFile(filename, source = 'output') {
+        const url = `${this.API_BASE}/files/download/${encodeURIComponent(filename)}?source=${source}`;
+        window.open(url, '_blank');
+    },
+
+    async deleteFile(filename, source = 'output') {
+        if (!confirm(`Delete "${filename}"?\n\nThis action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `${this.API_BASE}/files/delete/${encodeURIComponent(filename)}?source=${source}`,
+                {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${this.apiKey}` }
+                }
+            );
+
+            if (response.ok) {
+                console.log(`✅ Deleted file: ${filename}`);
+                // Reload the file list
+                await this.loadFiles();
+            } else {
+                const error = await response.text();
+                alert(`Failed to delete file: ${error}`);
+            }
+        } catch (error) {
+            console.error('Failed to delete file:', error);
+            alert(`Error deleting file: ${error.message}`);
+        }
+    },
+
+    async viewCSVFile(filename, source = 'output') {
+        try {
+            const response = await fetch(
+                `${this.API_BASE}/files/content/${encodeURIComponent(filename)}?source=${source}`,
+                { headers: { 'Authorization': `Bearer ${this.apiKey}` } }
+            );
+
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const data = await response.json();
+
+            // Show in a modal or new view
+            this.showCSVViewer(filename, data.content);
+
+        } catch (error) {
+            alert('Error viewing file: ' + error.message);
+        }
+    },
+
+    showCSVViewer(filename, content) {
+        // Parse CSV and show in a table
+        const lines = content.split('\n');
+        const isMetadataLine = (line) => line.startsWith('#');
+
+        // Separate metadata and data
+        const metadata = [];
+        const dataLines = [];
+
+        for (const line of lines) {
+            if (isMetadataLine(line)) {
+                metadata.push(line.substring(1).trim()); // Remove # prefix
+            } else if (line.trim()) {
+                dataLines.push(line);
+            }
+        }
+
+        // Parse CSV data (simple parser)
+        const parseCSVLine = (line) => {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim());
+            return result;
+        };
+
+        const headers = dataLines.length > 0 ? parseCSVLine(dataLines[0]) : [];
+        const rows = dataLines.slice(1).map(parseCSVLine);
+
+        // Create modal content
+        let html = `
+            <div class="csv-viewer-modal">
+                <div class="csv-viewer-header">
+                    <h3>📊 ${this.escapeHtml(filename)}</h3>
+                    <button onclick="this.closest('.csv-viewer-modal').remove()">×</button>
+                </div>
+                ${metadata.length > 0 ? `
+                    <div class="csv-metadata">
+                        <details>
+                            <summary>📋 Metadata (${metadata.length} lines)</summary>
+                            <pre>${metadata.join('\n')}</pre>
+                        </details>
+                    </div>
+                ` : ''}
+                <div class="csv-table-container">
+                    <table class="csv-table">
+                        <thead>
+                            <tr>${headers.map(h => `<th>${this.escapeHtml(h)}</th>`).join('')}</tr>
+                        </thead>
+                        <tbody>
+                            ${rows.slice(0, 100).map(row => `
+                                <tr>${row.map(cell => `<td>${this.escapeHtml(cell.substring(0, 200))}${cell.length > 200 ? '...' : ''}</td>`).join('')}</tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    ${rows.length > 100 ? `<p class="csv-truncated">Showing first 100 of ${rows.length} rows</p>` : ''}
+                </div>
+            </div>
+        `;
+
+        // Add modal to page
+        const modal = document.createElement('div');
+        modal.className = 'csv-viewer-overlay';
+        modal.innerHTML = html;
+        modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+        document.body.appendChild(modal);
     },
 
     async loadFileIntoChat(filename) {

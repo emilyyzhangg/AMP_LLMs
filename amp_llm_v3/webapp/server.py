@@ -57,8 +57,12 @@ app.add_middleware(
 # ============================================================================
 OUTPUT_DIR = Path("output")
 DATABASE_DIR = Path("ct_database")
+# Annotation CSVs from chat service (relative to amp_llm_v3/)
+ANNOTATIONS_DIR = Path("standalone modules/chat_with_llm/output/annotations")
+
 OUTPUT_DIR.mkdir(exist_ok=True)
 DATABASE_DIR.mkdir(exist_ok=True)
+ANNOTATIONS_DIR.mkdir(parents=True, exist_ok=True)
 
 static_dir = WEBAPP_DIR / "static"
 templates_dir = WEBAPP_DIR / "templates"
@@ -590,22 +594,216 @@ async def delete_conversation(conversation_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ============================================================================
+# Model Parameters & Email Config Proxy Endpoints
+# ============================================================================
+
+@app.get("/api/chat/model-parameters")
+async def get_model_parameters_proxy():
+    """Proxy model parameters request to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/chat/model-parameters")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Model parameters proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/chat/model-parameters")
+async def update_model_parameters_proxy(request: dict):
+    """Proxy model parameters update to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(
+                f"{CHAT_SERVICE_URL}/chat/model-parameters",
+                json=request
+            )
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Model parameters proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/chat/model-parameters/reset")
+async def reset_model_parameters_proxy():
+    """Proxy model parameters reset to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(f"{CHAT_SERVICE_URL}/chat/model-parameters/reset")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Model parameters proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/chat/model-parameters/preset/{preset_name}")
+async def apply_model_preset_proxy(preset_name: str):
+    """Proxy model preset application to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(f"{CHAT_SERVICE_URL}/chat/model-parameters/preset/{preset_name}")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Model preset proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/chat/email-config")
+async def get_email_config_proxy():
+    """Proxy email configuration check to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/chat/email-config")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Email config proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/chat/jobs")
+async def list_jobs_proxy():
+    """Proxy job listing to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/chat/jobs")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Job listing proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/chat/resources")
+async def get_resources_proxy():
+    """Proxy resource status to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/chat/resources")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Resource status proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/api/chat/jobs/{job_id}")
+async def cancel_job_proxy(job_id: str):
+    """Proxy job cancellation to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.delete(f"{CHAT_SERVICE_URL}/chat/jobs/{job_id}")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Job cancel proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/api/chat/jobs/completed")
+async def clear_completed_jobs_proxy():
+    """Proxy clear completed jobs to chat service."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.delete(f"{CHAT_SERVICE_URL}/chat/jobs/completed")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except Exception as e:
+        logger.error(f"Clear completed jobs proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/chat/annotate")
+async def annotate_manual_proxy(request: dict):
+    """
+    Proxy manual NCT annotation requests to chat service.
+    This is the async version that returns immediately with a job_id.
+    """
+    try:
+        logger.info(f"📝 Proxying manual annotation request: {len(request.get('nct_ids', []))} NCT IDs")
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{CHAT_SERVICE_URL}/chat/annotate",
+                json=request,
+                headers={"Content-Type": "application/json"}
+            )
+
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="Chat service not available")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Manual annotation proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/chat/annotate-csv")
 async def annotate_csv_proxy(
     conversation_id: str,
     model: str,
     background_tasks: BackgroundTasks,
     temperature: float = 0.15,
+    notification_email: Optional[str] = None,
     file: UploadFile = File(...)
 ):
     """
     Start async CSV annotation job. Returns immediately with job_id.
     Poll /chat/annotate-csv-status/{job_id} for progress.
+    Optional: notification_email to receive email when job completes.
     """
     import uuid
-    
+
     try:
         logger.info(f"📄 Starting async CSV annotation: {file.filename}")
+        if notification_email:
+            logger.info(f"📧 Will notify {notification_email} on completion")
         
         # Generate job ID
         job_id = str(uuid.uuid4())
@@ -623,13 +821,14 @@ async def annotate_csv_proxy(
             "started_at": datetime.now().isoformat(),
             "progress": "Starting annotation...",
             "result": None,
-            "error": None
+            "error": None,
+            "notification_email": notification_email
         }
-        
+
         # Start background task
         background_tasks.add_task(
             process_csv_annotation,
-            job_id, contents, filename, conversation_id, model, temperature
+            job_id, contents, filename, conversation_id, model, temperature, notification_email
         )
         
         logger.info(f"✅ Job started: {job_id}")
@@ -655,12 +854,13 @@ async def process_csv_annotation(
     filename: str,
     conversation_id: str,
     model: str,
-    temperature: float
+    temperature: float,
+    notification_email: Optional[str] = None
 ):
     """Background task to process CSV annotation."""
     try:
         csv_annotation_jobs[job_id]["progress"] = "Sending to annotation service..."
-        
+
         async with httpx.AsyncClient(timeout=1800.0) as client:
             files = {"file": (filename, contents, "text/csv")}
             params = {
@@ -668,6 +868,9 @@ async def process_csv_annotation(
                 "model": model,
                 "temperature": str(temperature)
             }
+            # Add notification email if provided
+            if notification_email:
+                params["notification_email"] = notification_email
             
             response = await client.post(
                 f"{CHAT_SERVICE_URL}/chat/annotate-csv",
@@ -739,6 +942,46 @@ async def get_csv_annotation_status(job_id: str):
 
 
 RUNNER_SERVICE_URL = "http://localhost:9003"
+
+
+@app.get("/chat/download/{job_id}")
+async def download_job_csv_proxy(job_id: str):
+    """
+    Proxy CSV download by job ID to chat service.
+    This is used by email notification links.
+    """
+    try:
+        logger.info(f"📥 Proxying job CSV download: {job_id}")
+
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            response = await client.get(f"{CHAT_SERVICE_URL}/chat/download/{job_id}")
+
+            if response.status_code == 200:
+                # Get filename from content-disposition header if available
+                content_disp = response.headers.get("content-disposition", "")
+                filename = f"annotations_{job_id}.csv"
+                if "filename=" in content_disp:
+                    import re
+                    match = re.search(r'filename="?([^";\s]+)"?', content_disp)
+                    if match:
+                        filename = match.group(1)
+
+                return Response(
+                    content=response.content,
+                    media_type="text/csv",
+                    headers={
+                        "Content-Disposition": f"attachment; filename={filename}"
+                    }
+                )
+            else:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error downloading job CSV: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/chat/download-csv/{filename}")
 async def download_csv_proxy(filename: str):
@@ -1036,45 +1279,77 @@ async def nct_registry_proxy(api_key: str = Depends(verify_api_key)):
 
 @app.get("/files/list")
 async def list_files():
-    """List all JSON files in the output directory."""
+    """List all output files (JSON from output dir, CSV from annotations dir)."""
     try:
         files = []
+
+        # JSON files from output directory
         for file_path in OUTPUT_DIR.glob("*.json"):
             stat = file_path.stat()
             files.append({
                 "name": file_path.name,
                 "size": f"{stat.st_size / 1024:.1f} KB",
-                "modified": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
+                "modified": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S"),
+                "type": "json",
+                "source": "output"
             })
-        
+
+        # CSV files from annotations directory
+        if ANNOTATIONS_DIR.exists():
+            for file_path in ANNOTATIONS_DIR.glob("*.csv"):
+                stat = file_path.stat()
+                files.append({
+                    "name": file_path.name,
+                    "size": f"{stat.st_size / 1024:.1f} KB",
+                    "modified": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S"),
+                    "type": "csv",
+                    "source": "annotations"
+                })
+
         files.sort(key=lambda x: x["modified"], reverse=True)
         return FileListResponse(files=files)
-    
+
     except Exception as e:
         logger.error(f"Error listing files: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/files/content/{filename}")
-async def get_file_content(filename: str):
-    """Get the content of a specific file."""
+async def get_file_content(filename: str, source: str = "output"):
+    """Get the content of a specific file.
+
+    Args:
+        filename: Name of the file
+        source: 'output' for JSON files, 'annotations' for CSV files
+    """
     try:
         safe_filename = Path(filename).name
-        file_path = OUTPUT_DIR / safe_filename
-        
+
+        # Check in appropriate directory based on source
+        if source == "annotations":
+            file_path = ANNOTATIONS_DIR / safe_filename
+        else:
+            file_path = OUTPUT_DIR / safe_filename
+
+        # Fallback: check both directories if not found
+        if not file_path.exists():
+            alt_path = ANNOTATIONS_DIR / safe_filename if source == "output" else OUTPUT_DIR / safe_filename
+            if alt_path.exists():
+                file_path = alt_path
+
         if not file_path.exists():
             raise HTTPException(status_code=404, detail="File not found")
-        
+
         if not file_path.is_file():
             raise HTTPException(status_code=400, detail="Not a file")
-        
+
         content = file_path.read_text(encoding='utf-8')
-        
+
         return FileContentResponse(
             filename=safe_filename,
             content=content
         )
-    
+
     except HTTPException:
         raise
     except Exception as e:
@@ -1104,6 +1379,76 @@ async def save_file(request: FileSaveRequest):
     
     except Exception as e:
         logger.error(f"Error saving file: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/files/download/{filename}")
+async def download_file(filename: str, source: str = "output"):
+    """Download a file from output or annotations directory."""
+    try:
+        safe_filename = Path(filename).name
+
+        if source == "annotations":
+            file_path = ANNOTATIONS_DIR / safe_filename
+        else:
+            file_path = OUTPUT_DIR / safe_filename
+
+        # Fallback: check both directories
+        if not file_path.exists():
+            alt_path = ANNOTATIONS_DIR / safe_filename if source == "output" else OUTPUT_DIR / safe_filename
+            if alt_path.exists():
+                file_path = alt_path
+
+        if not file_path.exists():
+            raise HTTPException(status_code=404, detail="File not found")
+
+        # Determine media type
+        media_type = "text/csv" if safe_filename.endswith('.csv') else "application/json"
+
+        return FileResponse(
+            path=str(file_path),
+            media_type=media_type,
+            filename=safe_filename,
+            headers={"Content-Disposition": f"attachment; filename=\"{safe_filename}\""}
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error downloading file: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/files/delete/{filename}")
+async def delete_file(filename: str, source: str = "output"):
+    """Delete a file from output or annotations directory."""
+    try:
+        safe_filename = Path(filename).name
+
+        if source == "annotations":
+            file_path = ANNOTATIONS_DIR / safe_filename
+        else:
+            file_path = OUTPUT_DIR / safe_filename
+
+        # Fallback: check both directories
+        if not file_path.exists():
+            alt_path = ANNOTATIONS_DIR / safe_filename if source == "output" else OUTPUT_DIR / safe_filename
+            if alt_path.exists():
+                file_path = alt_path
+
+        if not file_path.exists():
+            raise HTTPException(status_code=404, detail="File not found")
+
+        # Delete the file
+        file_path.unlink()
+        logger.info(f"🗑️ Deleted file: {safe_filename}")
+
+        return {"status": "deleted", "filename": safe_filename}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting file: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

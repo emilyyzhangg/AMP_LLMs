@@ -3,18 +3,18 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.amphoraxe.vc.autoupdate</string>
+    <string>com.amplm.autoupdate.dev</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/amphoraxe/AMP_Services/vc_autoupdate.sh</string>
+        <string>/Users/amphoraxe/AMP_Services/amp_autoupdate_dev.sh</string>
     </array>
     <key>StartInterval</key>
-    <integer>60</integer>
+    <integer>30</integer>
     <key>RunAtLoad</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>/tmp/vc_autoupdate_stdout.log</string>
+    <string>/tmp/amp_autoupdate_dev.log</string>
     <key>StandardErrorPath</key>
-    <string>/tmp/vc_autoupdate_stderr.log</string>
+    <string>/tmp/amp_autoupdate_dev.err</string>
 </dict>
 </plist>

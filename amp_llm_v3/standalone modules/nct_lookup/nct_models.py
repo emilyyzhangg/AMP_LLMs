@@ -16,7 +16,7 @@ class SearchRequest(BaseModel):
     
     include_extended: bool = Field(
         default=False,
-        description="Include extended databases (DuckDuckGo, SERP, Scholar, OpenFDA, UniProt)"
+        description="Include extended databases (Europe PMC, Semantic Scholar, CrossRef, DuckDuckGo, OpenFDA, UniProt, and paid APIs if configured)"
     )
     
     databases: Optional[List[str]] = Field(
@@ -29,8 +29,13 @@ class SearchRequest(BaseModel):
     def validate_databases(cls, v):
         """Validate database names."""
         if v is not None:
+            # All available extended databases (free + paid)
             valid_databases = [
-                'duckduckgo', 'serpapi', 'scholar', 'openfda', 'uniprot'
+                # Free APIs
+                'europe_pmc', 'semantic_scholar', 'crossref', 'duckduckgo',
+                'openfda', 'uniprot',
+                # Paid APIs (require API keys)
+                'serpapi', 'scholar'
             ]
             invalid = [db for db in v if db not in valid_databases]
             if invalid:
@@ -85,14 +90,22 @@ class SearchSummary(BaseModel):
                     "clinicaltrials",
                     "pubmed",
                     "pmc",
-                    "duckduckgo"
+                    "europe_pmc",
+                    "semantic_scholar",
+                    "crossref",
+                    "duckduckgo",
+                    "openfda"
                 ],
-                "total_results": 15,
+                "total_results": 25,
                 "results_by_database": {
                     "clinicaltrials": 1,
                     "pubmed": 5,
                     "pmc": 3,
-                    "duckduckgo": 6
+                    "europe_pmc": 4,
+                    "semantic_scholar": 5,
+                    "crossref": 3,
+                    "duckduckgo": 2,
+                    "openfda": 2
                 },
                 "search_timestamp": "2025-01-15T10:30:00"
             }
