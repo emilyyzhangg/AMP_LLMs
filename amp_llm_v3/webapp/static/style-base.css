@@ -841,6 +841,7 @@ header p {
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 400px auto; /* Fixed width, auto height to preserve aspect ratio */
+    background-attachment: fixed; /* Keep background centered when scrolling */
 }
 
 /* Semi-transparent overlay to reduce favicon visibility */
@@ -879,14 +880,14 @@ header p {
 }
 
 
-/* User messages - blue cat looking left, on LEFT side */
+/* User messages - blue cat looking left, scales with box size */
 .message.user .content::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
-    width: 100px;
+    width: min(40%, 250px); /* scales with box, max 250px */
     background-image: url('/static/cat_chat_blue_looking_left_rect.png');
     background-size: contain;
     background-position: left center;
