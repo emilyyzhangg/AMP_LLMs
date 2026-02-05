@@ -2806,7 +2806,7 @@ const app = {
             
             this.addMessage('chat-container', 'user', message);
             
-            const loadingId = this.addMessage('chat-container', 'assistant', '🤔 Thinking...');
+            const loadingId = this.addMessage('chat-container', 'system', '🤔 Thinking...');
             
             try {
                 console.log('📤 Sending message to chat service');
@@ -2900,7 +2900,7 @@ const app = {
         // Note: User message already shown by handleAnnotationInput()
 
         // Show processing message with progress bar
-        const processingId = this.addMessage('chat-container', 'assistant',
+        const processingId = this.addMessage('chat-container', 'system',
             `🔄 Starting annotation for ${nctIds.length} clinical trial(s)...\n\n` +
             `⏳ Submitting job to server...`);
 
