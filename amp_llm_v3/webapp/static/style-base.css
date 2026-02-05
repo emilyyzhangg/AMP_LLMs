@@ -850,13 +850,7 @@ header p {
     inset: 0;
     background: rgba(46, 107, 43, 0.93); /* #2e6b2b with 93% opacity */
     pointer-events: none;
-    z-index: 0;
-}
-
-/* Ensure all content appears above the overlay */
-.chat-container > * {
-    position: relative;
-    z-index: 1;
+    z-index: -1;
 }
 
 /* Chat message cat backgrounds - only for user and assistant messages, not system */
@@ -1154,6 +1148,12 @@ header p {
     border: 1px solid #f5c6cb;
 }
 
+/* System messages - solid background, no overflow */
+.message.system .content {
+    background: #f8f9fa;
+    max-width: 100%;
+}
+
 /* ============================================================================
    MODEL SELECTION
    ============================================================================ */
@@ -1162,6 +1162,8 @@ header p {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    position: relative;
+    z-index: 1;
     margin: 20px 0;
 }
 
