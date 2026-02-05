@@ -2813,7 +2813,7 @@ const app = {
             
             this.addMessage('chat-container', 'user', message);
             
-            const loadingId = this.addMessage('chat-container', 'system', '🤔 Thinking...');
+            const loadingId = this.addMessage('chat-container', 'assistant', '🤔 Thinking...');
             
             try {
                 console.log('📤 Sending message to chat service');
