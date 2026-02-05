@@ -257,15 +257,15 @@ header {
     background-attachment: local;
 }
 
+/* No overlay for cherry-blossom theme - just use the pink background */
 .chat-container::before {
-    content: '';
+    display: none !important;
+}
+
+/* Ensure all chat content is visible */
+.chat-container > * {
     position: relative;
-    display: block;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 228, 236, 0.90);
-    pointer-events: none;
-    z-index: 0;
+    z-index: 1;
 }
 
 /* GENERATION PARAMETERS PANEL - Earthy green tones (overrides inline styles from app.js) */
