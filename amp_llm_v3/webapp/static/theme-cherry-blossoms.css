@@ -249,15 +249,71 @@ header {
 
 /* CHAT CONTAINER - Baby pink background with pink cat image */
 .chat-container {
-    background-color: #FFD6E0 !important;
-    background-image: url('/static/pink_favicon.png') !important;
-    background-repeat: no-repeat !important;
-    background-position: center center !important;
-    background-size: 400px auto !important;
+    background-color: #FFD6E0;
+    background-image: url('/static/pink_favicon.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 400px auto;
 }
 
 .chat-container::before {
-    background: rgba(255, 228, 236, 0.90) !important;
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 228, 236, 0.90); /* #2e6b2b with 93% opacity */
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* GENERATION PARAMETERS MODAL - Earthy green tones */
+.params-modal-content {
+    background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+    border: 2px solid #81C784;
+}
+
+.params-modal-header {
+    background: linear-gradient(135deg, #66BB6A 0%, #4CAF50 100%);
+    border-bottom: 2px solid #43A047;
+    color: white;
+}
+
+.params-modal-header h3 {
+    color: white;
+}
+
+.params-modal-close {
+    color: white;
+}
+
+.params-modal-close:hover {
+    color: #E8F5E9;
+}
+
+.param-group-modal {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #A5D6A7;
+}
+
+.param-label-modal {
+    color: #2E7D32;
+}
+
+.param-value-modal {
+    color: #388E3C;
+}
+
+.param-slider-modal {
+    accent-color: #4CAF50;
+}
+
+.params-apply-btn {
+    background: linear-gradient(135deg, #66BB6A 0%, #4CAF50 100%);
+}
+
+.params-apply-btn:hover {
+    background: linear-gradient(135deg, #4CAF50 0%, #43A047 100%);
 }
 
 /* LOADING */
