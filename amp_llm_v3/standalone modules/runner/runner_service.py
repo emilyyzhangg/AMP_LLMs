@@ -358,28 +358,55 @@ async def fetch_and_save_nct_data(nct_id: str) -> tuple[Optional[dict], Optional
         return None, f"Unexpected error: {str(e)}"
 
 
+def _has_extended_data(data: dict) -> bool:
+    """Check if the data has extended API results (including UniProt for sequences)."""
+    sources = data.get("sources", {})
+    if not sources:
+        sources = data.get("results", {}).get("sources", {})
+
+    extended = sources.get("extended", {})
+    if not extended:
+        return False
+
+    # Check if UniProt data exists and has results
+    uniprot = extended.get("uniprot", {})
+    if not uniprot or not uniprot.get("success"):
+        return False
+
+    return True
+
+
 async def get_or_fetch_nct_data(nct_id: str) -> tuple[Optional[dict], str, Optional[str], Optional[str]]:
     """
     Get NCT data - from file if exists, otherwise fetch and save.
     Returns (data, source, file_path, error) where source is "file" or "fetched"
+
+    Note: If cached data exists but lacks extended API data (UniProt for sequences),
+    it will be re-fetched to ensure sequence data is available.
     """
     nct_id = nct_id.strip().upper()
-    
+
     logger.info(f"{'='*60}")
     logger.info(f"Processing request for {nct_id}")
     logger.info(f"{'='*60}")
-    
+
     # Try to find existing file
     file_path, data = find_nct_file(nct_id)
-    
+
     if data:
-        logger.info(f"✅ Using cached data from file")
-        return data, "file", str(file_path) if file_path else None, None
-    
-    # Not found - fetch and save
-    logger.info(f"📥 No cached file found, fetching from NCT service...")
+        # Check if the cached data has extended API results (UniProt for sequences)
+        if _has_extended_data(data):
+            logger.info(f"✅ Using cached data from file (has extended/UniProt data)")
+            return data, "file", str(file_path) if file_path else None, None
+        else:
+            logger.info(f"⚠️ Cached file missing extended API data (UniProt), re-fetching...")
+
+    # Not found or missing extended data - fetch and save
+    if not data:
+        logger.info(f"📥 No cached file found, fetching from NCT service...")
+
     data, error = await fetch_and_save_nct_data(nct_id)
-    
+
     if data:
         file_path = RESULTS_DIR / f"{nct_id}.json"
         return data, "fetched", str(file_path), None
