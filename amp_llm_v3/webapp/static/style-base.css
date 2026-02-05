@@ -853,15 +853,14 @@ header p {
     z-index: -1;
 }
 
-/* Chat message cat backgrounds - only for user and assistant messages, not system */
-.message.user .content,
-.message:not(.user):not(.system) .content {
+/* Chat message cat backgrounds - all messages */
+.message .content {
     position: relative;
     overflow: hidden;
 }
 
-/* Assistant messages - green cat looking right, scales with box size */
-.message:not(.user):not(.system) .content::after {
+/* Non-user messages (assistant & system) - green cat looking right, scales with box size */
+.message:not(.user) .content::after {
     content: '';
     position: absolute;
     top: 0;
