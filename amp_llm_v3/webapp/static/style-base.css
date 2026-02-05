@@ -833,28 +833,24 @@ header p {
     background: #ffffff;
 }
 
-/* Favicon watermark for chat container */
+/* Favicon watermark for chat container - layered background approach */
 .chat-container {
-    position: relative;
     background-color: #2e6b2b;
-    background-image: url('/static/favicon.png');
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 400px auto; /* Fixed width, auto height to preserve aspect ratio */
-    background-attachment: fixed; /* Keep background centered when scrolling */
+    background-image:
+        linear-gradient(rgba(46, 107, 43, 0.88), rgba(46, 107, 43, 0.88)),
+        url('/static/favicon.png');
+    background-repeat: no-repeat, no-repeat;
+    background-position: center center, center center;
+    background-size: cover, 400px auto;
+    background-attachment: fixed, fixed;
 }
 
-/* Semi-transparent overlay to reduce favicon visibility */
+/* Hide the pseudo-element overlay since we're using background layering */
 .chat-container::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(46, 107, 43, 0.88); /* #2e6b2b with 88% opacity - reduced for watermark visibility */
-    pointer-events: none;
-    z-index: 0;
+    display: none !important;
 }
 
-/* Ensure all content appears above the overlay */
+/* Ensure all chat content is visible */
 .chat-container > * {
     position: relative;
     z-index: 1;
