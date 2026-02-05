@@ -854,6 +854,12 @@ header p {
     z-index: 0;
 }
 
+/* Ensure all content appears above the overlay */
+.chat-container > * {
+    position: relative;
+    z-index: 1;
+}
+
 /* Chat message cat backgrounds - user and assistant only, not system */
 .message.user .content,
 .message:not(.user):not(.system) .content {
