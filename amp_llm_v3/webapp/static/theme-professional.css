@@ -163,7 +163,7 @@ header {
 }
 
 .chat-container::before {
-    background: rgba(44, 62, 80, 0.93) !important;
+    background: rgba(44, 62, 80, 0.88) !important; /* reduced for watermark visibility */
 }
 
 .research-container {

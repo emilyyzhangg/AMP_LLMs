@@ -849,7 +849,7 @@ header p {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(46, 107, 43, 0.93); /* #2e6b2b with 93% opacity */
+    background: rgba(46, 107, 43, 0.88); /* #2e6b2b with 88% opacity - reduced for watermark visibility */
     pointer-events: none;
     z-index: 0;
 }
@@ -862,27 +862,33 @@ header p {
 
 /* Chat message cat backgrounds - user and assistant only, not system */
 .message.user .content,
-.message:not(.user):not(.system) .content {
+.message.assistant .content {
     position: relative;
     overflow: hidden;
 }
 
 /* Assistant messages - green cat looking right, scales with box size */
-.message:not(.user):not(.system) .content::after {
+.message.assistant .content::after {
     content: '';
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
-    width: min(40%, 250px); /* scales with box, max 250px */
+    width: min(30%, 180px); /* scales with box, max 180px - reduced to not cover watermark */
     background-image: url('/static/cat_chat_blue_looking_right.png');
     background-size: contain;
     background-position: right center;
     background-repeat: no-repeat;
-    opacity: 0.35;
+    opacity: 0.18; /* reduced from 0.35 to prevent covering watermark */
     pointer-events: none;
     -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 30%);
     mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 30%);
+}
+
+/* Explicitly block cat overlays on system and info messages */
+.message.system .content::after,
+.message.info .content::after {
+    display: none !important;
 }
 
 
@@ -893,12 +899,12 @@ header p {
     top: 0;
     left: 0;
     bottom: 0;
-    width: min(40%, 250px); /* scales with box, max 250px */
+    width: min(30%, 180px); /* scales with box, max 180px - reduced to not cover watermark */
     background-image: url('/static/cat_chat_blue_looking_left_rect.png');
     background-size: contain;
     background-position: left center;
     background-repeat: no-repeat;
-    opacity: 0.35;
+    opacity: 0.18; /* reduced from 0.35 to prevent covering watermark */
     pointer-events: none;
     -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 30%);
     mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 30%);
