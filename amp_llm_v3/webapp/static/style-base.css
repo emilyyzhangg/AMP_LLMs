@@ -859,8 +859,9 @@ header p {
     z-index: 1;
 }
 
-/* Chat message cat backgrounds */
-.message .content {
+/* Chat message cat backgrounds - only for user and assistant messages, not system */
+.message.user .content,
+.message:not(.user):not(.system) .content {
     position: relative;
     overflow: hidden;
 }
@@ -877,7 +878,7 @@ header p {
     background-size: contain;
     background-position: right center;
     background-repeat: no-repeat;
-    opacity: 0.25;
+    opacity: 0.5;
     pointer-events: none;
     -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 40%);
     mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 40%);
@@ -895,7 +896,7 @@ header p {
     background-size: contain;
     background-position: left center;
     background-repeat: no-repeat;
-    opacity: 0.25;
+    opacity: 0.5;
     pointer-events: none;
     -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 40%);
     mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 40%);
@@ -1144,6 +1145,7 @@ header p {
 
 .message.user .content {
     color: white;
+    background: rgba(14, 31, 129, 0.5) !important; /* 50% transparent for cat visibility */
 }
 
 .message.error .content {
