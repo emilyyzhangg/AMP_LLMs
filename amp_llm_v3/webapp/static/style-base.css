@@ -1165,29 +1165,9 @@ header p {
     border: 1px solid #f5c6cb;
 }
 
-/* System messages - smaller bubble with centered cat background */
+/* System messages - plain text box without cat background */
 .message.system .content {
-    background: #f8f9fa url('/static/cat_chat_blue_looking_right.png') no-repeat center center;
-    background-size: contain;
-    max-width: 50%;
-    min-height: 60px;
-    position: relative;
-}
-
-/* Overlay for system messages to make text readable */
-.message.system .content::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(248, 249, 250, 0.85);
-    border-radius: inherit;
-    z-index: 0;
-}
-
-/* Ensure system message text is above overlay */
-.message.system .content > * {
-    position: relative;
-    z-index: 1;
+    background: #f8f9fa;
 }
 
 /* ============================================================================
