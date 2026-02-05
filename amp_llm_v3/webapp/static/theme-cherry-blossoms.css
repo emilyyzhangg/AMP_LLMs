@@ -254,13 +254,16 @@ header {
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 400px auto;
+    background-attachment: local;
 }
 
 .chat-container::before {
     content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(255, 228, 236, 0.90); /* #2e6b2b with 93% opacity */
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 228, 236, 0.90);
     pointer-events: none;
     z-index: 0;
 }
@@ -269,6 +272,36 @@ header {
 .model-params-config {
     background: linear-gradient(135deg, #F1F8E9 0%, #DCEDC8 100%) !important;
     border: 2px solid #8BC34A !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* EMAIL NOTIFICATION SECTION - Pink tones for cherry-blossom */
+.email-notification-section {
+    background: linear-gradient(135deg, #FFF0F3 0%, #FFE4EC 100%) !important;
+    border: 1px solid #FFB7C5 !important;
+}
+
+.email-notification-section input[type="checkbox"] {
+    accent-color: #FF8FA3 !important;
+}
+
+.email-notification-section input[type="email"] {
+    background: #FFF5F7 !important;
+    border: 1px solid #FFB7C5 !important;
+    color: #8B4A5E !important;
+}
+
+.email-notification-section input[type="email"]::placeholder {
+    color: #D4A5B0 !important;
+}
+
+.email-notification-section label {
+    color: #8B4A5E !important;
+}
+
+.email-notification-section small {
+    color: #B8768A !important;
 }
 
 .params-title {
