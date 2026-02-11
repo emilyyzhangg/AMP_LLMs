@@ -367,8 +367,8 @@ async def search_nct(
                 detail=f"Invalid database IDs: {invalid_ids}. Available: {available}"
             )
     
-    # Check if search already exists
-    if nct_id in search_status_db:
+    # Check if search already exists (unless force=True)
+    if not request.force and nct_id in search_status_db:
         existing = search_status_db[nct_id]
         if existing.status in ["running", "completed"]:
             return SearchResponse(
@@ -377,6 +377,16 @@ async def search_nct(
                 message=f"Search {'in progress' if existing.status == 'running' else 'already completed'}",
                 created_at=existing.created_at
             )
+
+    # If forcing, clear existing status and results
+    if request.force:
+        if nct_id in search_status_db:
+            del search_status_db[nct_id]
+        # Also delete cached results file
+        results_file = Path(f"results/{nct_id}.json")
+        if results_file.exists():
+            results_file.unlink()
+            logger.info(f"🗑️ Deleted cached results for {nct_id} (force=True)")
     
     # Create status entry
     status = SearchStatus(
