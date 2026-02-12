@@ -1176,16 +1176,16 @@ header p {
     gap: 12px;
     position: relative;
     z-index: 1;
-    margin: 20px auto;
-    width: 100%;
-    max-width: 600px;
+    margin: 20px auto !important;
+    width: 100% !important;
+    max-width: 800px !important;
 }
 
 /* Model parameters config panel */
 .model-params-config {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
+    width: 100% !important;
+    max-width: 800px !important;
+    margin: 10px auto !important;
 }
 
 .model-button {
