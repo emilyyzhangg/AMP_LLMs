@@ -363,7 +363,14 @@ async def fetch_and_save_nct_data(nct_id: str, force: bool = False) -> tuple[Opt
 
 
 def _has_extended_data(data: dict) -> bool:
-    """Check if the data has extended API results (including UniProt for sequences)."""
+    """
+    Check if the data has extended API results with actual UniProt sequence data.
+
+    This is stricter than just checking success=True - we verify that:
+    1. UniProt was queried successfully
+    2. It returned at least one result
+    3. At least one result has sequence data
+    """
     sources = data.get("sources", {})
     if not sources:
         sources = data.get("results", {}).get("sources", {})
@@ -372,9 +379,29 @@ def _has_extended_data(data: dict) -> bool:
     if not extended:
         return False
 
-    # Check if UniProt data exists and has results
+    # Check if UniProt data exists and was successful
     uniprot = extended.get("uniprot", {})
     if not uniprot or not uniprot.get("success"):
+        return False
+
+    # CRITICAL: Check if UniProt actually returned results with sequences
+    uniprot_data = uniprot.get("data", {})
+    results = uniprot_data.get("results", [])
+
+    if not results:
+        logger.debug("UniProt returned success but no results - will re-fetch")
+        return False
+
+    # Check if any result has actual sequence data
+    has_sequence = False
+    for result in results:
+        seq_info = result.get("sequence", {})
+        if seq_info.get("value"):
+            has_sequence = True
+            break
+
+    if not has_sequence:
+        logger.debug("UniProt results found but none have sequence data - will re-fetch")
         return False
 
     return True
