@@ -2149,16 +2149,22 @@ async def annotate_trial(request: AnnotationRequest):
         )
 
         logger.info(f"DEBUG: annotation length = {len(annotation)}")
-        
+
         # Parse the response
         parsed_data = AnnotationResponseParser.parse_response(
-            annotation, 
+            annotation,
             trial.nct_id,
             trial_data=trial.data
         )
-        
+
         populated_fields = [k for k, v in parsed_data.items() if v]
         logger.info(f"📊 Parsed {len(populated_fields)} fields from response")
+
+        # DEBUG: Log sequence-related fields specifically
+        seq_value = parsed_data.get('Sequence', '')
+        seq_evidence = parsed_data.get('Sequence Evidence', '')
+        logger.info(f"🧬 Sequence field: '{seq_value[:100]}...' (len={len(seq_value)})" if seq_value else "🧬 Sequence field: EMPTY")
+        logger.info(f"🧬 Sequence Evidence: '{seq_evidence[:100]}...'" if seq_evidence else "🧬 Sequence Evidence: EMPTY")
         
         # Stage 2: Verification (if enabled)
         verification_result = None

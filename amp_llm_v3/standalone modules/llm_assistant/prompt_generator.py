@@ -1852,6 +1852,9 @@ If you disagree with the suggestion, explain why in your reasoning.
         if uniprot_data:
             sections.append("\n## PROTEIN DATABASE: UniProt")
             sections.append(uniprot_data)
+            logger.info(f"🧬 UniProt data included in prompt ({len(uniprot_data)} chars)")
+        else:
+            logger.warning("🧬 NO UniProt data available for prompt")
         
         # Section 3: DRAMP/Extended Data
         extended_data = self._format_extended_data(search_results)
