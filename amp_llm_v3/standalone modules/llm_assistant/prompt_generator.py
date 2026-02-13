@@ -2260,11 +2260,7 @@ Please proceed with other available data sources, but note reduced confidence.
             if seq_value:
                 lines.append(f"\n**[SEQUENCE DATA - USE FOR ANNOTATION]**")
                 lines.append(f"**Sequence Length:** {seq_length} amino acids")
-                if len(seq_value) <= 200:
-                    lines.append(f"**Sequence:** {seq_value}")
-                else:
-                    lines.append(f"**Sequence (first 200 aa):** {seq_value[:200]}...")
-                    lines.append(f"**Note:** Full sequence is {seq_length} aa - this may indicate a protein rather than peptide if >100 aa")
+                lines.append(f"**Sequence:** {seq_value}")
             elif seq_length:
                 lines.append(f"**Sequence Length:** {seq_length} aa (sequence not retrieved)")
             
