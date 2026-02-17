@@ -8,10 +8,11 @@
 
 REPO_DIR="/Users/amphoraxe/Developer/AMP_LLMs_dev"
 LOG_FILE="/tmp/amp_autoupdate_dev.log"
-PLIST_DIR="$HOME/Library/LaunchAgents"
-SERVICES_DIR="$HOME/AMP_Services"
+PLIST_DIR="/Library/LaunchDaemons"
+SERVICES_DIR="/Users/amphoraxe/AMP_Services"
 SELF_SERVICE="com.amplm.autoupdate.dev"
 SCRIPT_NAME="amp_autoupdate_dev.sh"
+RUN_USER="amphoraxe"
 
 # Timestamp header for each run
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting AMP DEV auto-update check..." >> "$LOG_FILE"
@@ -21,20 +22,20 @@ cd "$REPO_DIR" || {
     exit 1
 }
 
-# Make sure we're on dev branch
-git checkout dev >/dev/null 2>&1
+# Make sure we're on dev branch (run as amphoraxe to avoid ownership issues)
+sudo -u "$RUN_USER" git checkout dev >/dev/null 2>&1
 
 # Fetch latest changes from dev branch
-git fetch origin dev >/dev/null 2>&1
+sudo -u "$RUN_USER" git fetch origin dev >/dev/null 2>&1
 
-LOCAL_HASH=$(git rev-parse HEAD)
-REMOTE_HASH=$(git rev-parse origin/dev)
+LOCAL_HASH=$(sudo -u "$RUN_USER" git rev-parse HEAD)
+REMOTE_HASH=$(sudo -u "$RUN_USER" git rev-parse origin/dev)
 
 if [ "$LOCAL_HASH" != "$REMOTE_HASH" ]; then
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔄 New commit detected on DEV! Pulling changes..." >> "$LOG_FILE"
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] Local: $LOCAL_HASH → Remote: $REMOTE_HASH" >> "$LOG_FILE"
 
-    git reset --hard origin/dev >/dev/null 2>&1
+    sudo -u "$RUN_USER" git reset --hard origin/dev >/dev/null 2>&1
 
     # ==========================================================================
     # UPDATE SERVICE FILES: Copy scripts and plists from repo
@@ -42,20 +43,21 @@ if [ "$LOCAL_HASH" != "$REMOTE_HASH" ]; then
     REPO_SERVICES_DIR="$REPO_DIR/services"
 
     # Ensure directories exist
-    mkdir -p "$SERVICES_DIR"
+    sudo -u "$RUN_USER" mkdir -p "$SERVICES_DIR"
 
-    # Copy all shell scripts
+    # Copy all shell scripts (owned by amphoraxe)
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔄 Updating service scripts..." >> "$LOG_FILE"
     for script in "$REPO_SERVICES_DIR"/*.sh; do
         if [ -f "$script" ]; then
             BASENAME=$(basename "$script")
             cp "$script" "$SERVICES_DIR/$BASENAME"
+            chown "$RUN_USER":staff "$SERVICES_DIR/$BASENAME"
             chmod +x "$SERVICES_DIR/$BASENAME"
             echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Updated $BASENAME" >> "$LOG_FILE"
         fi
     done
 
-    # Copy all plist files (service definitions)
+    # Copy all plist files to /Library/LaunchDaemons (owned by root)
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔄 Updating service plists..." >> "$LOG_FILE"
     for plist in "$REPO_SERVICES_DIR"/*.plist; do
         if [ -f "$plist" ]; then
@@ -63,6 +65,7 @@ if [ "$LOCAL_HASH" != "$REMOTE_HASH" ]; then
             # Check if plist changed
             if ! cmp -s "$plist" "$PLIST_DIR/$BASENAME" 2>/dev/null; then
                 cp "$plist" "$PLIST_DIR/$BASENAME"
+                chown root:wheel "$PLIST_DIR/$BASENAME"
                 echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Updated $BASENAME" >> "$LOG_FILE"
             fi
         fi
@@ -75,13 +78,13 @@ if [ "$LOCAL_HASH" != "$REMOTE_HASH" ]; then
 
     # Main requirements
     if [ -f "$REPO_DIR/amp_llm_v3/requirements.txt" ]; then
-        pip3 install -q -r "$REPO_DIR/amp_llm_v3/requirements.txt" >> "$LOG_FILE" 2>&1
+        sudo -u "$RUN_USER" pip3 install -q -r "$REPO_DIR/amp_llm_v3/requirements.txt" >> "$LOG_FILE" 2>&1
     fi
 
     # Standalone module requirements (if they exist)
     for req_file in "$REPO_DIR/amp_llm_v3/standalone modules"/**/requirements.txt; do
         if [ -f "$req_file" ]; then
-            pip3 install -q -r "$req_file" >> "$LOG_FILE" 2>&1
+            sudo -u "$RUN_USER" pip3 install -q -r "$req_file" >> "$LOG_FILE" 2>&1
         fi
     done
 
@@ -130,33 +133,37 @@ if [ "$LOCAL_HASH" != "$REMOTE_HASH" ]; then
     # ==========================================================================
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🧹 Restarting DEV services..." >> "$LOG_FILE"
 
-    # Discover all loaded com.amplm.*.dev services EXCEPT autoupdate.dev
-    SERVICES=$(launchctl list | grep "com\.amplm\." | grep "\.dev$" | grep -v "$SELF_SERVICE" | awk '{print $3}')
+    # Discover all dev service plists in /Library/LaunchDaemons EXCEPT autoupdate
+    SERVICES=""
+    for plist_file in "$PLIST_DIR"/com.amplm.*.dev.plist; do
+        if [ -f "$plist_file" ]; then
+            LABEL=$(basename "$plist_file" .plist)
+            if [ "$LABEL" != "$SELF_SERVICE" ]; then
+                SERVICES="$SERVICES $LABEL"
+            fi
+        fi
+    done
+    SERVICES=$(echo "$SERVICES" | xargs)  # trim whitespace
 
     if [ -z "$SERVICES" ]; then
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️ No com.amplm.*.dev services found running (excluding autoupdate)" >> "$LOG_FILE"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️ No com.amplm.*.dev plists found (excluding autoupdate)" >> "$LOG_FILE"
     else
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] Found dev services to restart: $SERVICES" >> "$LOG_FILE"
 
         # Unload all dev services (except autoupdate)
         for service in $SERVICES; do
             echo "[$(date '+%Y-%m-%d %H:%M:%S')] Unloading $service..." >> "$LOG_FILE"
-            PLIST_FILE="$PLIST_DIR/${service}.plist"
-            if [ -f "$PLIST_FILE" ]; then
-                launchctl unload "$PLIST_FILE" 2>/dev/null || true
-            else
-                echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️ Plist not found: $PLIST_FILE" >> "$LOG_FILE"
-            fi
+            launchctl bootout "system/$service" 2>/dev/null || true
         done
 
         sleep 2
 
         # Load all dev services
         for service in $SERVICES; do
-            echo "[$(date '+%Y-%m-%d %H:%M:%S')] Loading $service..." >> "$LOG_FILE"
             PLIST_FILE="$PLIST_DIR/${service}.plist"
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] Loading $service..." >> "$LOG_FILE"
             if [ -f "$PLIST_FILE" ]; then
-                launchctl load "$PLIST_FILE" 2>/dev/null || true
+                launchctl bootstrap system "$PLIST_FILE" 2>/dev/null || launchctl load "$PLIST_FILE" 2>/dev/null || true
             fi
         done
 
@@ -165,13 +172,11 @@ if [ "$LOCAL_HASH" != "$REMOTE_HASH" ]; then
         # Check final status
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] 📊 Final dev service status..." >> "$LOG_FILE"
         for service in $SERVICES; do
-            STATUS=$(launchctl list | grep "$service" | awk '{print $1}')
-            if [ -z "$STATUS" ] || [ "$STATUS" = "-" ]; then
-                echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🟡 $service loaded (ready to launch)" >> "$LOG_FILE"
-            elif [ "$STATUS" = "-15" ]; then
-                echo "[$(date '+%Y-%m-%d %H:%M:%S')] ❌ $service failed with status -15" >> "$LOG_FILE"
-            else
+            STATUS=$(launchctl print "system/$service" 2>/dev/null | grep "pid =" | awk '{print $3}')
+            if [ -n "$STATUS" ]; then
                 echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ $service running with PID: $STATUS" >> "$LOG_FILE"
+            else
+                echo "[$(date '+%Y-%m-%d %H:%M:%S')] ❌ $service not running" >> "$LOG_FILE"
             fi
         done
     fi
