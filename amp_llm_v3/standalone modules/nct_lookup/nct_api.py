@@ -370,13 +370,27 @@ async def search_nct(
     # Check if search already exists (unless force=True)
     if not request.force and nct_id in search_status_db:
         existing = search_status_db[nct_id]
-        if existing.status in ["running", "completed"]:
+        if existing.status == "running":
             return SearchResponse(
                 job_id=nct_id,
                 status=existing.status,
-                message=f"Search {'in progress' if existing.status == 'running' else 'already completed'}",
+                message="Search in progress",
                 created_at=existing.created_at
             )
+        elif existing.status == "completed":
+            # Verify results file actually exists before claiming completion
+            results_file = Path(f"results/{nct_id}.json")
+            if results_file.exists():
+                return SearchResponse(
+                    job_id=nct_id,
+                    status=existing.status,
+                    message="Search already completed",
+                    created_at=existing.created_at
+                )
+            else:
+                # Status says completed but file is missing — clear stale status and re-run
+                logger.warning(f"⚠️ {nct_id} marked completed but results file missing, re-running search")
+                del search_status_db[nct_id]
 
     # If forcing, clear existing status and results
     if request.force:
