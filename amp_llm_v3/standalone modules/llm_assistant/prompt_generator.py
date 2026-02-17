@@ -288,7 +288,7 @@ class ImprovedPromptGenerator:
         'outcome': ['clinical_trials'],
         'failure_reason': ['clinical_trials'],
         'peptide': ['clinical_trials', 'uniprot'],
-        'sequence': ['uniprot', 'extended']
+        'sequence': ['clinical_trials', 'uniprot', 'extended']
     }
 
     # Default source weights for quality scoring
@@ -505,6 +505,7 @@ Delivery Mode: [Injection/Infusion, Topical, Oral, or Other]
   Evidence: [specific evidence from the data]
 
 Sequence: [amino acid sequence in one-letter code, or N/A]
+  Reasoning: [your step-by-step reasoning]
   Evidence: [source of sequence or why N/A]
 
 Study IDs: [PMID:12345 or DOI:10.xxxx format, pipe-separated if multiple]
@@ -1213,6 +1214,7 @@ Reason for Failure: [verified value or N/A]
 Peptide: [verified value]
   Evidence: [evidence]
 Sequence: [verified value or N/A]
+  Evidence: [evidence]
 Study IDs: [verified value or N/A]
 Comments: [any additional notes about verification]
 ```
@@ -1699,6 +1701,10 @@ Your role is to VERIFY annotations made by another AI model. You must:
 - False = antibody (-mab), full protein, small molecule
 - Common error: Confusing antibodies with peptides
 
+### Sequence
+- formatted in standard amino acid code with modifications
+- Only report if found in data, otherwise N/A
+
 ## OUTPUT FORMAT
 
 Always provide:
@@ -1776,7 +1782,7 @@ the default/fallback values as specified below.
 | Outcome | Positive, Withdrawn, Terminated, Failed - completed trial, Active, Unknown | Unknown |
 | Reason for Failure | Business reasons, Ineffective for purpose, Toxic/unsafe, Due to covid, Recruitment issues, N/A | N/A |
 | Peptide | True, False | False |
-| Sequence | Amino acid sequence, N/A | N/A |
+| Sequence | Amino acid sequence | N/A |
 """)
 
         # Add pre-computed analysis section
@@ -2003,6 +2009,7 @@ Begin your annotation now:
 - Outcome: Use 'Unknown' - no status data available
 - Reason for Failure: Use 'N/A'
 - Peptide: Use 'False' unless drug name in other sources indicates peptide
+- Sequence: Use 'N/A' - no sequence data available
 
 Please proceed with other available data sources, but note reduced confidence.
 """
