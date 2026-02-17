@@ -833,6 +833,7 @@ class TrialAnnotator:
         parsed_info["outcome"] = self._extract_outcome_info(trial_data, protocol)
         parsed_info["failure_reason"] = self._extract_failure_reason_info(trial_data, protocol)
         parsed_info["peptide"] = self._extract_peptide_info(trial_data, protocol)
+        parsed_info['sequence'] = self._extract_sequence_info(trial_data, protocol)
         
         return parsed_info
     
@@ -1015,6 +1016,76 @@ class TrialAnnotator:
         
         return info
     
+    def _extract_sequence_info(self, trial_data: Dict, protocol: Dict) -> Dict:
+        """Extract sequence information from UniProt and DRAMP extended sources."""
+        id_module = self._safe_get(protocol, 'identificationModule', default={})
+        arms_module = self._safe_get(protocol, 'armsInterventionsModule', default={})
+
+        info = {
+            "nct_id": trial_data.get("nct_id"),
+            "brief_title": id_module.get("briefTitle", "Not available"),
+            "interventions": [],
+            "uniprot_sequences": [],
+            "dramp_sequences": []
+        }
+
+        for intervention in arms_module.get('interventions', []):
+            info['interventions'].append({
+                'type': intervention.get('type', 'Not specified'),
+                'name': intervention.get('name', 'Not specified'),
+                'description': intervention.get('description', 'Not specified')
+            })
+
+        sources = trial_data.get("sources", {})
+        if not sources and "results" in trial_data:
+            sources = trial_data.get("results", {}).get("sources", {})
+
+        extended = sources.get("extended", {})
+
+        # Extract UniProt sequences
+        uniprot = extended.get("uniprot", {})
+        if uniprot.get("success"):
+            uniprot_data = uniprot.get("data", {})
+            for protein in uniprot_data.get("results", []):
+                seq_info = protein.get("sequence", {})
+                seq_value = seq_info.get("value", "") if isinstance(seq_info, dict) else ""
+                if seq_value:
+                    protein_name = ""
+                    prot_desc = protein.get("proteinDescription", {})
+                    rec_name = prot_desc.get("recommendedName", {})
+                    if rec_name:
+                        full_name = rec_name.get("fullName", {})
+                        protein_name = full_name.get("value", "") if isinstance(full_name, dict) else str(full_name)
+                    if not protein_name:
+                        sub_names = prot_desc.get("submissionNames", [])
+                        if sub_names:
+                            full_name = sub_names[0].get("fullName", {})
+                            protein_name = full_name.get("value", "") if isinstance(full_name, dict) else str(full_name)
+
+                    info["uniprot_sequences"].append({
+                        "accession": protein.get("primaryAccession", "Unknown"),
+                        "name": protein_name or "Unknown",
+                        "organism": protein.get("organism", {}).get("scientificName", "Unknown"),
+                        "sequence": seq_value,
+                        "length": seq_info.get("length", len(seq_value))
+                    })
+
+        # Extract DRAMP sequences
+        dramp = extended.get("dramp", {})
+        if dramp.get("success"):
+            dramp_data = dramp.get("data", {})
+            for entry in dramp_data.get("results", []):
+                seq_value = entry.get("sequence", "")
+                if seq_value:
+                    info["dramp_sequences"].append({
+                        "dramp_id": entry.get("dramp_id", "Unknown"),
+                        "name": entry.get("name", "Unknown"),
+                        "sequence": seq_value,
+                        "length": len(seq_value)
+                    })
+
+        return info
+    
     def generate_prompt(self, trial_data: Dict[str, Any], nct_id: str) -> str:
         """Generate annotation prompt using the PromptGenerator."""
         if not self.prompt_generator:
@@ -1038,9 +1109,23 @@ class TrialAnnotator:
             "sources": sources,
             "metadata": metadata
         }
-        
+
         logger.info(f"Generating prompt with sources: {list(sources.keys())}")
-        
+
+        # Log extended/UniProt data availability for debugging sequence issues
+        extended = sources.get("extended", {})
+        if extended:
+            uniprot = extended.get("uniprot", {})
+            uniprot_success = uniprot.get("success", False)
+            uniprot_results = uniprot.get("data", {}).get("results", [])
+            has_seq = any(
+                r.get("sequence", {}).get("value") if isinstance(r.get("sequence"), dict) else False
+                for r in uniprot_results
+            )
+            logger.info(f"🧬 UniProt in sources: success={uniprot_success}, results={len(uniprot_results)}, has_sequence={has_seq}")
+        else:
+            logger.warning(f"🧬 No 'extended' key in sources (keys: {list(sources.keys())})")
+
         return self.prompt_generator.generate_extraction_prompt(search_results, nct_id)
     
     def _generate_basic_prompt(self, trial_data: Dict[str, Any], nct_id: str) -> str:
@@ -1121,7 +1206,8 @@ Peptide: [True or False]
   Evidence: [brief reason]
 
 Sequence: [amino acid sequence or N/A]
-DRAMP Name: [name or N/A]
+  Evidence: [brief reason]
+
 Study IDs: [PMIDs or N/A]
 Comments: [any notes]
 
@@ -1194,7 +1280,7 @@ Now extract the data:
                 data = response.json()
                 annotation = data.get("message", {}).get("content", "")
                 
-                required_fields = ["Classification:", "Delivery Mode:", "Outcome:", "Peptide:"]
+                required_fields = ["Classification:", "Delivery Mode:", "Outcome:", "Peptide:", "Sequence:"]
                 missing = [f for f in required_fields if f not in annotation]
                 if missing:
                     logger.warning(f"⚠️ Response missing fields: {missing}")
@@ -1369,6 +1455,11 @@ Peptide: [CORRECT/INCORRECT]
   Verified: [your value]
   Reasoning: [explanation]
 
+Sequence: [CORRECT/INCORRECT]
+  Original: {parsed_data.get('Sequence', 'N/A')}
+  Verified: [your value]
+  Reasoning: [explanation]
+
 ## FINAL VERIFIED ANNOTATION:
 
 Classification: [value]
@@ -1395,6 +1486,7 @@ Key rules:
 - Delivery Mode: Look for keywords - injection/IV/SC = Injection/Infusion, topical/cream/gel = Topical, oral/tablet = Oral
 - Outcome: Must match the Overall Status field from the trial
 - Peptide: True = amino acid chain <200aa, False = antibody/protein/small molecule
+- Sequence: If available, must be a valid amino acid sequence (e.g., "KLLKLLKLLKLLKLLK")
 
 Be thorough but concise. Focus on accuracy."""
         
@@ -1423,6 +1515,9 @@ OUTCOME:
 - TERMINATED → Terminated
 - COMPLETED + positive results → Positive
 - COMPLETED + negative results → Failed - completed trial
+
+SEQUENCE: 
+- If available, must be a valid amino acid sequence (e.g., "KLLKLLKLLKLLKLLK")
 
 Output format:
 Classification: [AMP or Other]
@@ -1759,7 +1854,12 @@ Higher weights = more important for quality assessment.
                 "peptide": {
                     "key_fields": ["interventions", "brief_title", "keywords", "brief_summary"],
                     "reasoning": "Peptide determination relies on drug name and description analysis."
-                }
+                },
+                "sequence": {                                                                                                                     
+                    "key_fields": ["uniprot_sequences", "dramp_sequences", "interventions", "brief_title"],                         
+                    "reasoning": "Sequence determination relies on UniProt and DRAMP protein sequence data matched to the trial's drug intervention."                                                                                                                 
+                } 
+
             }
         },
         "adjustment_guide": {

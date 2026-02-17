@@ -1852,9 +1852,20 @@ If you disagree with the suggestion, explain why in your reasoning.
         if uniprot_data:
             sections.append("\n## PROTEIN DATABASE: UniProt")
             sections.append(uniprot_data)
-            logger.info(f"🧬 UniProt data included in prompt ({len(uniprot_data)} chars)")
+            # Check if this is actual protein data or just a fallback message
+            if "NOT AVAILABLE" in uniprot_data:
+                logger.warning("🧬 UniProt data NOT AVAILABLE (fallback message in prompt)")
+            else:
+                logger.info(f"🧬 UniProt data included in prompt ({len(uniprot_data)} chars)")
         else:
             logger.warning("🧬 NO UniProt data available for prompt")
+
+        # Extract all sequences from sources for prominent injection near output instructions
+        extracted_sequences = self._extract_sequences_from_sources(search_results)
+        if extracted_sequences:
+            logger.info(f"🧬 Extracted {len(extracted_sequences)} sequence(s) for direct injection")
+        else:
+            logger.warning("🧬 No sequences could be extracted from any source")
         
         # Section 3: DRAMP/Extended Data
         extended_data = self._format_extended_data(search_results)
@@ -1881,12 +1892,39 @@ If you disagree with the suggestion, explain why in your reasoning.
             sections.append(bioc_data)
         
         # Add final instruction with enhanced guidance
-        sections.append("""
+        # Build the sequence reminder section with ALL available sequences
+        sequence_reminder = ""
+        if extracted_sequences:
+            seq_lines = []
+            seq_lines.append("## SEQUENCE DATA AVAILABLE - DO NOT OUTPUT N/A")
+            seq_lines.append("")
+            seq_lines.append(f"The following {len(extracted_sequences)} amino acid sequence(s) were found in protein databases.")
+            seq_lines.append("**Review all sequences below and select the one that best matches the trial's drug/intervention.**")
+            seq_lines.append("**Copy the chosen sequence exactly into the Sequence field, and cite its source in Evidence.**")
+            seq_lines.append("")
+            for i, seq_entry in enumerate(extracted_sequences, 1):
+                label = f"{seq_entry['source']} {seq_entry['accession']}" if seq_entry['accession'] else seq_entry['source']
+                seq_lines.append(f"**Candidate {i}: {label}**")
+                if seq_entry['name']:
+                    seq_lines.append(f"  Protein: {seq_entry['name']}")
+                if seq_entry['organism']:
+                    seq_lines.append(f"  Organism: {seq_entry['organism']}")
+                seq_lines.append(f"  Length: {seq_entry['length']} aa")
+                seq_lines.append(f"  Sequence: {seq_entry['sequence']}")
+                seq_lines.append("")
+            sequence_reminder = "\n".join(seq_lines)
+        else:
+            sequence_reminder = """## SEQUENCE DATA
+
+No amino acid sequence was found in the protein databases for this trial. Use N/A for the Sequence field.
+"""
+
+        sections.append(f"""
 ---
 # YOUR TASK
 
 Analyze the data above and produce your annotation in the EXACT format specified.
-
+{sequence_reminder}
 ## HANDLING MISSING DATA
 
 When data is unavailable or insufficient for a field:
@@ -1928,7 +1966,8 @@ Reason for Failure: [Category or N/A]
 Peptide: [True or False]
   Reasoning: [Evidence for peptide determination]
   Evidence: [Quote from data, OR: "Insufficient data - defaulting to False"]
-Sequence: [Sequence or N/A]
+Sequence: [amino acid sequence from UniProt/DRAMP data above, or N/A if not available]
+  Evidence: [Source of sequence (e.g., "UniProt accession P12345") or "No sequence data found"]
 DRAMP Name: [Name or N/A]
 Study IDs: [PMIDs or N/A]
 Comments: [Any notes, including data quality observations]
@@ -2295,6 +2334,79 @@ Please proceed with other available data sources, but note reduced confidence.
             lines.append("")
         
         return "\n".join(lines)
+
+    def _extract_sequences_from_sources(self, results: Dict[str, Any]) -> list:
+        """
+        Extract ALL available amino acid sequences from sources with protein context.
+
+        Checks UniProt and DRAMP data. Returns a list of dicts with keys:
+          - source: "UniProt" or "DRAMP"
+          - accession: protein accession/ID
+          - name: protein name
+          - organism: organism name
+          - sequence: amino acid sequence string
+          - length: sequence length
+
+        This is used to inject sequences prominently near the output instructions,
+        ensuring the LLM sees them even if the full UniProt section is truncated.
+        """
+        sequences = []
+        try:
+            sources = results.get("sources", {})
+            if not sources:
+                sources = results.get("results", {}).get("sources", {})
+
+            extended = sources.get("extended", {})
+            if not extended:
+                logger.debug("_extract_sequences: No extended sources found")
+                return []
+
+            # Collect from UniProt
+            uniprot = extended.get("uniprot", {})
+            if uniprot.get("success"):
+                uniprot_data = uniprot.get("data", {})
+                for protein in uniprot_data.get("results", []):
+                    seq_info = protein.get("sequence", {})
+                    seq_value = seq_info.get("value", "") if isinstance(seq_info, dict) else ""
+                    if seq_value:
+                        # Extract protein name from nested structure
+                        protein_name = protein.get("protein_name", "")
+                        if not protein_name:
+                            desc = protein.get("proteinDescription", {})
+                            rec = desc.get("recommendedName", {})
+                            protein_name = rec.get("fullName", {}).get("value", "") if isinstance(rec.get("fullName"), dict) else ""
+                        organism = protein.get("organism", {})
+                        org_name = organism.get("scientificName", "") if isinstance(organism, dict) else ""
+                        sequences.append({
+                            "source": "UniProt",
+                            "accession": protein.get("primaryAccession", protein.get("accession", "")),
+                            "name": protein_name,
+                            "organism": org_name,
+                            "sequence": seq_value,
+                            "length": seq_info.get("length", len(seq_value)),
+                        })
+
+            # Collect from DRAMP
+            dramp = extended.get("dramp", {})
+            if dramp.get("success"):
+                dramp_data = dramp.get("data", {})
+                for entry in dramp_data.get("results", []):
+                    seq_value = entry.get("sequence", "")
+                    if seq_value:
+                        sequences.append({
+                            "source": "DRAMP",
+                            "accession": entry.get("dramp_id", ""),
+                            "name": entry.get("name", ""),
+                            "organism": "",
+                            "sequence": seq_value,
+                            "length": len(seq_value),
+                        })
+
+        except Exception as e:
+            logger.error(f"_extract_sequences: Error extracting sequences: {e}")
+
+        logger.debug(f"_extract_sequences: Found {len(sequences)} sequences total")
+        return sequences
 
     def _get_uniprot_fallback_message(self, reason: str) -> str:
         """Return fallback guidance when UniProt data is unavailable."""

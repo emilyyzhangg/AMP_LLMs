@@ -9,6 +9,7 @@ Annotation fields:
 - Delivery Mode: Injection/Infusion, Topical, Oral, Other
 - Outcome: Positive, Withdrawn, Terminated, Failed - completed trial, Active, Unknown
 - Reason for Failure: Business reasons, Ineffective for purpose, Toxic/unsafe, Due to covid, Recruitment issues
+- Sequence: amino acid sequence of the peptide
 - Peptide: True or False
 
 Usage:
@@ -36,7 +37,8 @@ class ClinicalTrialAnnotationParser:
         'delivery_mode': ['interventions', 'arm_groups', 'brief_summary'],
         'outcome': ['overall_status', 'why_stopped', 'has_results'],
         'failure_reason': ['overall_status', 'why_stopped'],
-        'peptide': ['interventions', 'brief_title', 'keywords']
+        'peptide': ['interventions', 'brief_title', 'keywords'],
+        'sequence': ['uniprot_sequences', 'dramp_sequences', 'interventions']
     }
 
     # Default field weights for quality scoring
@@ -102,6 +104,15 @@ class ClinicalTrialAnnotationParser:
             'conditions': 0.10,
             'keywords': 0.15,
             'interventions': 0.25  # Drug name is key for peptide determination
+        },
+        'sequence': {
+            'nct_id': 0.02,
+            'brief_title': 0.05,
+            'interventions': 0.13,
+            'uniprot_sequences': 0.40,  # Primary source for sequence data
+            'dramp_sequences': 0.30,    # Secondary source for AMP sequences
+            'pubmed_pmids': 0.05,
+            'pmc_ids': 0.05
         }
     }
 
@@ -306,7 +317,8 @@ class ClinicalTrialAnnotationParser:
             'delivery_mode': self.extract_delivery_mode_info(trial),
             'outcome': self.extract_outcome_info(trial),
             'failure_reason': self.extract_failure_reason_info(trial),
-            'peptide': self.extract_peptide_info(trial)
+            'peptide': self.extract_peptide_info(trial),
+            'sequence': self.extract_sequence_info(trial)
         }
 
         summary = {
@@ -766,6 +778,108 @@ class ClinicalTrialAnnotationParser:
         
         return info
     
+    def extract_sequence_info(self, trial: Dict) -> Dict[str, Any]:
+        """
+        Extract sequence information from UniProt and DRAMP extended sources.
+
+        Relevant factors:
+        - UniProt protein sequences (accession, name, organism, sequence value)
+        - DRAMP antimicrobial peptide sequences
+        - Intervention names (to match drug to protein)
+        - PubMed/PMC references for additional context
+        """
+        protocol = self._get_protocol_section(trial)
+
+        id_module = self.safe_get(protocol, 'identificationModule', default={})
+        desc_module = self.safe_get(protocol, 'descriptionModule', default={})
+        arms_interventions = self.safe_get(protocol, 'armsInterventionsModule', default={})
+
+        info = {
+            'nct_id': trial.get('nct_id', self.safe_get(id_module, 'nctId')),
+            'brief_title': id_module.get('briefTitle', 'Not available'),
+            'interventions': [],
+            'uniprot_sequences': [],
+            'dramp_sequences': [],
+            'pubmed_pmids': [],
+            'pmc_ids': []
+        }
+
+        # Extract intervention names (helps LLM match drug to sequence)
+        interventions = arms_interventions.get('interventions', [])
+        for intervention in interventions:
+            info['interventions'].append({
+                'type': intervention.get('type', 'Not specified'),
+                'name': intervention.get('name', 'Not specified'),
+                'description': intervention.get('description', 'Not specified')
+            })
+
+        # Get extended sources
+        extended_sources = self.safe_get(trial, 'results', 'sources', 'extended', default={})
+        if not extended_sources:
+            extended_sources = self.safe_get(trial, 'sources', 'extended', default={})
+
+        # Extract UniProt sequences
+        uniprot = extended_sources.get('uniprot', {})
+        if uniprot.get('success'):
+            uniprot_data = uniprot.get('data', {})
+            for protein in uniprot_data.get('results', []):
+                seq_info = protein.get('sequence', {})
+                seq_value = seq_info.get('value', '') if isinstance(seq_info, dict) else ''
+                if seq_value:
+                    # Extract protein name
+                    protein_name = ''
+                    prot_desc = protein.get('proteinDescription', {})
+                    rec_name = prot_desc.get('recommendedName', {})
+                    if rec_name:
+                        full_name = rec_name.get('fullName', {})
+                        protein_name = full_name.get('value', '') if isinstance(full_name, dict) else str(full_name)
+                    if not protein_name:
+                        sub_names = prot_desc.get('submissionNames', [])
+                        if sub_names:
+                            full_name = sub_names[0].get('fullName', {})
+                            protein_name = full_name.get('value', '') if isinstance(full_name, dict) else str(full_name)
+
+                    info['uniprot_sequences'].append({
+                        'accession': protein.get('primaryAccession', 'Unknown'),
+                        'name': protein_name or 'Unknown',
+                        'organism': protein.get('organism', {}).get('scientificName', 'Unknown'),
+                        'sequence': seq_value,
+                        'length': seq_info.get('length', len(seq_value))
+                    })
+
+        # Extract DRAMP sequences
+        dramp = extended_sources.get('dramp', {})
+        if dramp.get('success'):
+            dramp_data = dramp.get('data', {})
+            for entry in dramp_data.get('results', []):
+                seq_value = entry.get('sequence', '')
+                if seq_value:
+                    info['dramp_sequences'].append({
+                        'dramp_id': entry.get('dramp_id', 'Unknown'),
+                        'name': entry.get('name', 'Unknown'),
+                        'sequence': seq_value,
+                        'length': len(seq_value)
+                    })
+
+        # Get supporting references
+        sources = trial.get('sources', {})
+        if not sources and 'results' in trial:
+            sources = trial.get('results', {}).get('sources', {})
+
+        pubmed_data = sources.get('pubmed', {})
+        if pubmed_data.get('success'):
+            pmids = pubmed_data.get('data', {}).get('pmids', [])
+            if pmids:
+                info['pubmed_pmids'] = pmids
+
+        pmc_data = sources.get('pmc', {})
+        if pmc_data.get('success'):
+            pmcids = pmc_data.get('data', {}).get('pmcids', [])
+            if pmcids:
+                info['pmc_ids'] = pmcids
+
+        return info
+
     def format_as_text(self, info_dict: Dict[str, Any], field_name: str, include_quality_warning: bool = True) -> str:
         """
         Format extracted information as human-readable text.
@@ -890,6 +1004,10 @@ class ClinicalTrialAnnotationParser:
             'peptide': self.format_as_text(
                 self.extract_peptide_info(trial),
                 'Peptide'
+            ),
+            'sequence': self.format_as_text(
+                self.extract_sequence_info(trial),
+                'Sequence'
             )
         }
         
@@ -961,12 +1079,17 @@ class ClinicalTrialAnnotationParser:
             "**Peptide:** True or False",
             "  - If insufficient data: use 'False' with reasoning",
             "",
+            "**Sequence:** Amino acid sequence of the peptide drug",
+            "  - Choose the sequence that best matches the trial's drug from available UniProt/DRAMP data",
+            "  - If multiple candidates exist, select the one most relevant to the intervention",
+            "  - If no sequence data available: use 'N/A'",
+            "",
             "=" * 80,
             "",
         ])
 
         # Add each annotation field's relevant information
-        for field_name in ['classification', 'delivery_mode', 'outcome', 'failure_reason', 'peptide']:
+        for field_name in ['classification', 'delivery_mode', 'outcome', 'failure_reason', 'peptide', 'sequence']:
             combined.append(annotation_texts[field_name])
             combined.append("")
 
@@ -992,7 +1115,8 @@ class ClinicalTrialAnnotationParser:
             'delivery_mode': self.extract_delivery_mode_info(trial),
             'outcome': self.extract_outcome_info(trial),
             'failure_reason': self.extract_failure_reason_info(trial),
-            'peptide': self.extract_peptide_info(trial)
+            'peptide': self.extract_peptide_info(trial),
+            'sequence': self.extract_sequence_info(trial)
         }
     
     def save_annotation_texts(self, output_dir: str = '.', trial_index: int = 0):
