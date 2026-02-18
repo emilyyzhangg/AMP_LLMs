@@ -833,68 +833,77 @@ header p {
     background: #ffffff;
 }
 
-/* Favicon watermark for chat container */
+/* Favicon watermark for chat container - layered background approach */
 .chat-container {
-    position: relative;
     background-color: #2e6b2b;
-    background-image: url('/static/favicon.png');
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 400px auto; /* Fixed width, auto height to preserve aspect ratio */
+    background-image:
+        linear-gradient(rgba(46, 107, 43, 0.88), rgba(46, 107, 43, 0.88)),
+        url('/static/favicon.png');
+    background-repeat: no-repeat, no-repeat;
+    background-position: center center, center center;
+    background-size: cover, 400px auto;
+    background-attachment: fixed, fixed;
 }
 
-/* Semi-transparent overlay to reduce favicon visibility */
+/* Hide the pseudo-element overlay since we're using background layering */
 .chat-container::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(46, 107, 43, 0.93); /* #2e6b2b with 93% opacity */
-    pointer-events: none;
-    z-index: 0;
+    display: none !important;
+}
+
+/* Ensure all chat content is visible */
+.chat-container > * {
+    position: relative;
+    z-index: 1;
 }
 
 /* Chat message cat backgrounds - user and assistant only, not system */
 .message.user .content,
-.message:not(.user):not(.system) .content {
+.message.assistant .content {
     position: relative;
     overflow: hidden;
 }
 
-/* Assistant messages - green cat looking right, scales with box size */
-.message:not(.user):not(.system) .content::after {
+/* Assistant messages - green cat looking right, scales with box height */
+.message.assistant .content::after {
     content: '';
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
-    width: min(40%, 250px); /* scales with box, max 250px */
+    width: min(50%, 300px); /* wider to allow height-based scaling */
     background-image: url('/static/cat_chat_blue_looking_right.png');
-    background-size: contain;
+    background-size: auto 100%; /* scale based on height */
     background-position: right center;
     background-repeat: no-repeat;
-    opacity: 0.35;
+    opacity: 0.18;
     pointer-events: none;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 50%);
-    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 50%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 30%);
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 30%);
+}
+
+/* Explicitly block cat overlays on system and info messages */
+.message.system .content::after,
+.message.info .content::after {
+    display: none !important;
 }
 
 
-/* User messages - blue cat looking left, on LEFT side */
+/* User messages - blue cat looking left, scales with box height */
 .message.user .content::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
-    width: 100px;
+    width: min(50%, 300px); /* wider to allow height-based scaling */
     background-image: url('/static/cat_chat_blue_looking_left_rect.png');
-    background-size: contain;
+    background-size: auto 100%; /* scale based on height */
     background-position: left center;
     background-repeat: no-repeat;
-    opacity: 0.35;
+    opacity: 0.18;
     pointer-events: none;
-    -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 50%);
-    mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 50%);
+    -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 30%);
+    mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,1) 30%);
 }
 
 /* Placeholder for future message-specific backgrounds */
@@ -1094,6 +1103,8 @@ header p {
     gap: 15px;
     margin-bottom: 25px;
     animation: fadeIn 0.3s ease-in;
+    width: fit-content;
+    max-width: 100%;
 }
 
 @keyframes fadeIn {
@@ -1109,6 +1120,7 @@ header p {
 
 .message.user {
     flex-direction: row-reverse;
+    margin-left: auto; /* align to right */
 }
 
 .avatar {
@@ -1149,10 +1161,9 @@ header p {
     border: 1px solid #f5c6cb;
 }
 
-/* System messages - solid background, no overflow */
+/* System messages - plain text box without cat background */
 .message.system .content {
     background: #f8f9fa;
-    max-width: 100%;
 }
 
 /* ============================================================================
@@ -1165,7 +1176,16 @@ header p {
     gap: 12px;
     position: relative;
     z-index: 1;
-    margin: 20px 0;
+    margin: 20px auto !important;
+    width: 100% !important;
+    max-width: 800px !important;
+}
+
+/* Model parameters config panel */
+.model-params-config {
+    width: 100% !important;
+    max-width: 800px !important;
+    margin: 10px auto !important;
 }
 
 .model-button {

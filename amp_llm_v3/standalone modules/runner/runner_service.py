@@ -248,13 +248,17 @@ def find_nct_file(nct_id: str) -> tuple[Optional[Path], Optional[dict]]:
     return None, None
 
 
-async def fetch_and_save_nct_data(nct_id: str) -> tuple[Optional[dict], Optional[str]]:
+async def fetch_and_save_nct_data(nct_id: str, force: bool = False) -> tuple[Optional[dict], Optional[str]]:
     """
     Fetch NCT data from service (9002) and save to JSON file.
     Returns (data, error_message) tuple.
+
+    Args:
+        nct_id: NCT identifier
+        force: If True, forces a new search even if cached results exist
     """
     nct_id = nct_id.strip().upper()
-    logger.info(f"📡 Fetching data for {nct_id} from NCT service at {NCT_SERVICE_URL}")
+    logger.info(f"📡 Fetching data for {nct_id} from NCT service at {NCT_SERVICE_URL} (force={force})")
     
     try:
         async with httpx.AsyncClient(timeout=90.0) as client:
@@ -278,7 +282,7 @@ async def fetch_and_save_nct_data(nct_id: str) -> tuple[Optional[dict], Optional
             try:
                 response = await client.post(
                     search_url,
-                    json={"include_extended": True},  # Enable extended APIs including UniProt for sequence data
+                    json={"include_extended": True, "force": force},  # Enable extended APIs including UniProt for sequence data
                     timeout=30.0
                 )
                 
@@ -359,7 +363,14 @@ async def fetch_and_save_nct_data(nct_id: str) -> tuple[Optional[dict], Optional
 
 
 def _has_extended_data(data: dict) -> bool:
-    """Check if the data has extended API results (including UniProt for sequences)."""
+    """
+    Check if the data has extended API results with actual UniProt sequence data.
+
+    This is stricter than just checking success=True - we verify that:
+    1. UniProt was queried successfully
+    2. It returned at least one result
+    3. At least one result has sequence data
+    """
     sources = data.get("sources", {})
     if not sources:
         sources = data.get("results", {}).get("sources", {})
@@ -368,9 +379,29 @@ def _has_extended_data(data: dict) -> bool:
     if not extended:
         return False
 
-    # Check if UniProt data exists and has results
+    # Check if UniProt data exists and was successful
     uniprot = extended.get("uniprot", {})
     if not uniprot or not uniprot.get("success"):
+        return False
+
+    # CRITICAL: Check if UniProt actually returned results with sequences
+    uniprot_data = uniprot.get("data", {})
+    results = uniprot_data.get("results", [])
+
+    if not results:
+        logger.debug("UniProt returned success but no results - will re-fetch")
+        return False
+
+    # Check if any result has actual sequence data
+    has_sequence = False
+    for result in results:
+        seq_info = result.get("sequence", {})
+        if seq_info.get("value"):
+            has_sequence = True
+            break
+
+    if not has_sequence:
+        logger.debug("UniProt results found but none have sequence data - will re-fetch")
         return False
 
     return True
@@ -393,19 +424,23 @@ async def get_or_fetch_nct_data(nct_id: str) -> tuple[Optional[dict], str, Optio
     # Try to find existing file
     file_path, data = find_nct_file(nct_id)
 
+    # Track if we need to force a refresh
+    force_refresh = False
+
     if data:
         # Check if the cached data has extended API results (UniProt for sequences)
         if _has_extended_data(data):
             logger.info(f"✅ Using cached data from file (has extended/UniProt data)")
             return data, "file", str(file_path) if file_path else None, None
         else:
-            logger.info(f"⚠️ Cached file missing extended API data (UniProt), re-fetching...")
+            logger.info(f"⚠️ Cached file missing extended API data (UniProt), re-fetching with force=True...")
+            force_refresh = True
 
     # Not found or missing extended data - fetch and save
     if not data:
         logger.info(f"📥 No cached file found, fetching from NCT service...")
 
-    data, error = await fetch_and_save_nct_data(nct_id)
+    data, error = await fetch_and_save_nct_data(nct_id, force=force_refresh)
 
     if data:
         file_path = RESULTS_DIR / f"{nct_id}.json"

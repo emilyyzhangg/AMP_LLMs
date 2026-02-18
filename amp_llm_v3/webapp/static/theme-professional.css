@@ -152,8 +152,22 @@ header {
     color: #5D6D7E;
 }
 
-/* MESSAGES */
-.chat-container,
+/* MESSAGES - layered background approach */
+.chat-container {
+    background-color: #2C3E50;
+    background-image:
+        linear-gradient(rgba(44, 62, 80, 0.80), rgba(44, 62, 80, 0.80)),
+        url('/static/favicon.png');
+    background-repeat: no-repeat, no-repeat;
+    background-position: center center, center center;
+    background-size: cover, 400px auto;
+    background-attachment: fixed, fixed;
+}
+
+.chat-container::before {
+    display: none !important;
+}
+
 .research-container {
     background: #F8F9FA;
 }

@@ -13,15 +13,20 @@ from enum import Enum
 
 class SearchRequest(BaseModel):
     """Request model for NCT search."""
-    
+
     include_extended: bool = Field(
         default=False,
         description="Include extended databases (Europe PMC, Semantic Scholar, CrossRef, DuckDuckGo, OpenFDA, UniProt, and paid APIs if configured)"
     )
-    
+
     databases: Optional[List[str]] = Field(
         default=None,
         description="Specific databases to search (if None, searches all available)"
+    )
+
+    force: bool = Field(
+        default=False,
+        description="Force a new search even if results already exist (bypasses cache)"
     )
     
     @field_validator('databases')

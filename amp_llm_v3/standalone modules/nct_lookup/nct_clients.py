@@ -1801,53 +1801,209 @@ class UniProtClient(BaseClient):
         
         return results
     
+    # Common noise words to filter out from intervention names
+    NOISE_WORDS = {
+        'vaccine', 'peptide', 'drug', 'therapy', 'treatment', 'injection',
+        'infusion', 'oral', 'iv', 'subcutaneous', 'intramuscular', 'placebo',
+        'dose', 'mg', 'mcg', 'ml', 'daily', 'weekly', 'monthly', 'phase',
+        'study', 'trial', 'arm', 'group', 'combination', 'plus', 'with',
+        'low', 'high', 'standard', 'experimental', 'control', 'active'
+    }
+
+    # Known drug-to-target mappings for common clinical trial drugs
+    DRUG_TARGET_MAP = {
+        'pembrolizumab': ['PD-1', 'PDCD1'],
+        'nivolumab': ['PD-1', 'PDCD1'],
+        'atezolizumab': ['PD-L1', 'CD274'],
+        'durvalumab': ['PD-L1', 'CD274'],
+        'ipilimumab': ['CTLA-4', 'CTLA4'],
+        'trastuzumab': ['HER2', 'ERBB2'],
+        'pertuzumab': ['HER2', 'ERBB2'],
+        'cetuximab': ['EGFR'],
+        'rituximab': ['CD20', 'MS4A1'],
+        'bevacizumab': ['VEGF', 'VEGFA'],
+        'adalimumab': ['TNF', 'TNFA'],
+        'infliximab': ['TNF', 'TNFA'],
+        'etanercept': ['TNF', 'TNFA'],
+    }
+
     def _extract_protein_terms(self, trial_data: Dict[str, Any]) -> List[str]:
-        """Extract potential protein/gene names from trial data."""
+        """
+        Extract potential protein/gene names from trial data.
+
+        Enhanced to:
+        1. Extract target proteins from conditions (e.g., HER2 from "HER2-positive Breast Cancer")
+        2. Map known drugs to their target proteins
+        3. Extract gene/protein identifiers from descriptions
+        4. Filter noise words for cleaner searches
+        """
         terms = []
-        
+        seen = set()  # Track seen terms to avoid duplicates
+
+        def add_term(term: str):
+            """Add term if not already seen."""
+            term = term.strip()
+            if term and term.lower() not in seen:
+                seen.add(term.lower())
+                terms.append(term)
+
         try:
             protocol = trial_data.get("protocolSection", {})
+
+            # 1. Extract from interventions (original behavior)
             arms_interventions = protocol.get("armsInterventionsModule", {})
             interventions = arms_interventions.get("interventions", [])
-            
+
             for intervention in interventions:
                 if isinstance(intervention, dict):
                     name = intervention.get("name", "").strip()
                     if name:
-                        terms.append(name)
-                    
+                        # Check if this is a known drug with target mapping
+                        name_lower = name.lower()
+                        for drug, targets in self.DRUG_TARGET_MAP.items():
+                            if drug in name_lower:
+                                for target in targets:
+                                    add_term(target)
+
+                        # Also add cleaned intervention name
+                        cleaned = self._clean_intervention_name(name)
+                        if cleaned:
+                            add_term(cleaned)
+
                     other_names = intervention.get("otherNames", [])
                     if isinstance(other_names, list):
-                        terms.extend([n.strip() for n in other_names if n.strip()])
-        
+                        for n in other_names:
+                            if n and n.strip():
+                                add_term(n.strip())
+
+            # 2. Extract protein/gene names from conditions
+            conditions_module = protocol.get("conditionsModule", {})
+            conditions = conditions_module.get("conditions", [])
+
+            for condition in conditions:
+                if isinstance(condition, str):
+                    # Look for protein/gene patterns in conditions
+                    extracted = self._extract_gene_names(condition)
+                    for gene in extracted:
+                        add_term(gene)
+
+            # 3. Extract from brief title and description
+            id_module = protocol.get("identificationModule", {})
+            brief_title = id_module.get("briefTitle", "")
+
+            desc_module = protocol.get("descriptionModule", {})
+            brief_summary = desc_module.get("briefSummary", "")
+
+            for text in [brief_title, brief_summary]:
+                if text:
+                    extracted = self._extract_gene_names(text)
+                    for gene in extracted:
+                        add_term(gene)
+
         except Exception as e:
             logger.warning(f"Error extracting protein terms: {e}")
-        
+
+        logger.debug(f"Extracted protein search terms: {terms[:10]}")
         return terms[:10]  # Limit to 10 terms
+
+    def _clean_intervention_name(self, name: str) -> str:
+        """Remove noise words from intervention name."""
+        words = name.split()
+        cleaned = [w for w in words if w.lower() not in self.NOISE_WORDS and len(w) > 2]
+        return ' '.join(cleaned) if cleaned else ''
+
+    def _extract_gene_names(self, text: str) -> List[str]:
+        """
+        Extract potential gene/protein names from text using patterns.
+
+        Looks for:
+        - All-caps words 2-10 chars (e.g., HER2, EGFR, BRCA1)
+        - Words with numbers suggesting gene names (e.g., TP53, BCL2)
+        - Known receptor patterns (e.g., PD-1, CTLA-4)
+        """
+        import re
+        genes = []
+
+        # Pattern 1: All caps 2-10 chars, may include numbers (HER2, BRCA1, TP53)
+        caps_pattern = r'\b([A-Z][A-Z0-9]{1,9})\b'
+        for match in re.findall(caps_pattern, text):
+            # Filter out common non-gene abbreviations
+            if match not in {'NCT', 'FDA', 'USA', 'AND', 'THE', 'FOR', 'WITH', 'NOT'}:
+                genes.append(match)
+
+        # Pattern 2: Receptor names with hyphen (PD-1, CTLA-4, HER-2)
+        receptor_pattern = r'\b([A-Z]{2,5}-[0-9A-Z]{1,3})\b'
+        for match in re.findall(receptor_pattern, text):
+            genes.append(match)
+
+        # Pattern 3: Known protein keywords followed by gene names
+        known_patterns = [
+            r'(?:anti-?|targeting\s+)([A-Z][A-Z0-9]{1,9})',
+            r'([A-Z][A-Z0-9]{1,9})[\s-]?(?:positive|negative|expressing)',
+            r'([A-Z][A-Z0-9]{1,9})[\s-]?(?:inhibitor|antibody|antagonist|agonist)',
+        ]
+        for pattern in known_patterns:
+            for match in re.findall(pattern, text, re.IGNORECASE):
+                if isinstance(match, str) and len(match) >= 2:
+                    genes.append(match.upper())
+
+        return list(set(genes))  # Deduplicate
     
     async def _search_proteins(self, query: str) -> List[Dict]:
-        """Search UniProt for proteins matching query."""
+        """
+        Search UniProt for proteins matching query.
+
+        Searches human proteins first (most relevant for clinical trials),
+        then falls back to broader search if no results.
+        """
         url = f"{self.BASE_URL}/uniprotkb/search"
 
+        # Try human proteins first (most relevant for clinical trials)
+        human_query = f"({query}) AND (organism_id:9606)"
+
         params = {
-            "query": query,
+            "query": human_query,
             "format": "json",
             "size": 5,  # Limit results per query
             # CRITICAL: Must explicitly request sequence field - not included by default
             "fields": "accession,id,protein_name,gene_names,organism_name,sequence,cc_function,keyword"
         }
-        
+
         try:
             async with self.session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=10)) as resp:
                 if resp.status == 200:
                     data = await resp.json()
                     results = data.get("results", [])
-                    
+
+                    if results:
+                        logger.debug(f"UniProt: Found {len(results)} human proteins for '{query}'")
+                        return [self._format_protein(p) for p in results]
+
+            # If no human results, try broader search (but still prefer reviewed entries)
+            broader_query = f"({query}) AND (reviewed:true)"
+            params["query"] = broader_query
+
+            async with self.session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    results = data.get("results", [])
+
+                    if results:
+                        logger.debug(f"UniProt: Found {len(results)} reviewed proteins for '{query}'")
+                        return [self._format_protein(p) for p in results]
+
+            # Final fallback: any results
+            params["query"] = query
+            async with self.session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    results = data.get("results", [])
+                    logger.debug(f"UniProt: Found {len(results)} proteins for '{query}' (broad search)")
                     return [self._format_protein(p) for p in results]
                 else:
                     logger.debug(f"UniProt search returned {resp.status} for '{query}'")
                     return []
-        
+
         except Exception as e:
             logger.debug(f"UniProt search error for '{query}': {e}")
             return []

@@ -891,7 +891,8 @@ async def generate_output_csv(
         "Outcome", "Outcome Evidence",
         "Reason for Failure", "Reason for Failure Evidence",
         "Peptide", "Peptide Evidence",
-        "Sequence", "DRAMP Name", "Study IDs", "Comments",
+        "Sequence", "Sequence Evidence",
+        "DRAMP Name", "Study IDs", "Comments",
         "annotation", "source", "processing_time", "error"
     ]
 
@@ -978,8 +979,6 @@ async def generate_output_csv(
                         row["Phases"] = value
                     elif key == "Study ID" or key == "Study IDs":
                         row["Study IDs"] = value
-                    elif key == "Sequence Evidence":
-                        row["Sequence"] = value
                     # Store Evidence fields
                     elif "Evidence" in key:
                         row[key] = value
