@@ -25,7 +25,11 @@ from nct_clients import (
     SerpAPIClient,
     GoogleScholarClient,
     OpenFDAClient,
-    UniProtClient
+    UniProtClient,
+    DBAASPClient,
+    ChEMBLClient,
+    RCSBPDBClient,
+    EBIProteinsClient
 )
 from nct_models import SearchConfig
 
@@ -70,6 +74,10 @@ class NCTSearchEngine:
         self.clients['duckduckgo'] = DuckDuckGoClient(self.session)
         self.clients['openfda'] = OpenFDAClient(self.session)
         self.clients['uniprot'] = UniProtClient(self.session)
+        self.clients['dbaasp'] = DBAASPClient(self.session)
+        self.clients['chembl'] = ChEMBLClient(self.session)
+        self.clients['rcsb_pdb'] = RCSBPDBClient(self.session)
+        self.clients['ebi_proteins'] = EBIProteinsClient(self.session)
 
         # Initialize PAID clients (require API keys)
         self.clients['serpapi'] = SerpAPIClient(self.session, api_key=self.serpapi_key)
@@ -546,7 +554,7 @@ class NCTSearchEngine:
             databases = config.enabled_databases
         else:
             # Default: all FREE extended APIs (excludes serpapi and scholar which require paid keys)
-            databases = ["europe_pmc", "semantic_scholar", "crossref", "duckduckgo", "openfda", "uniprot"]
+            databases = ["europe_pmc", "semantic_scholar", "crossref", "duckduckgo", "openfda", "uniprot", "dbaasp", "chembl", "rcsb_pdb", "ebi_proteins"]
         
         # Filter to available clients
         databases = [db for db in databases if db in self.clients]
