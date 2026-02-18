@@ -109,15 +109,15 @@ class AssistantConfig:
     VERIFICATION_ENABLED = os.getenv("VERIFICATION_ENABLED", "true").lower() == "true"
     
     # Timeouts
-    LLM_TIMEOUT = 300  # 5 minutes for annotation
-    VERIFICATION_TIMEOUT = 300  # 5 minutes for verification
+    LLM_TIMEOUT = 600  # 10 minutes for annotation
+    VERIFICATION_TIMEOUT = 600  # 10 minutes for verification
     
     # Default model parameters
     DEFAULT_TEMPERATURE = 0.15
     DEFAULT_TOP_P = 0.9
     DEFAULT_TOP_K = 40
-    DEFAULT_NUM_CTX = 4096
-    DEFAULT_NUM_PREDICT = 600
+    DEFAULT_NUM_CTX = 16384
+    DEFAULT_NUM_PREDICT = 1200
     DEFAULT_REPEAT_PENALTY = 1.1
 
     # Verification parameters (can be tuned separately)
