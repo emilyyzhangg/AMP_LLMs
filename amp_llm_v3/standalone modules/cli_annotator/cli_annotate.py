@@ -129,13 +129,24 @@ Examples:
 
   # With extended sources (PubMed, UniProt, etc.):
   python cli_annotate.py -i trials.csv -o results.csv -m llama3:latest -v nemotron:latest --extended-sources
+
+  # Validate a pre-annotated CSV:
+  python cli_annotate.py --validate results.csv -o validated.csv -v nemotron:latest
         """
     )
 
     parser.add_argument(
         "-i", "--input",
-        required=True,
-        help="Path to input CSV file containing NCT IDs"
+        required=False,
+        default=None,
+        help="Path to input CSV file containing NCT IDs (required unless --validate is used)"
+    )
+    parser.add_argument(
+        "--validate", "--validate-csv",
+        dest="validate",
+        default=None,
+        metavar="CSV_PATH",
+        help="Path to a pre-annotated CSV to validate. Runs verification on existing annotations instead of annotating from scratch."
     )
     parser.add_argument(
         "-o", "--output",
@@ -197,7 +208,13 @@ Examples:
         help="Enable debug logging"
     )
 
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    # --input is required unless --validate is used
+    if not args.validate and not args.input:
+        parser.error("the following arguments are required: -i/--input (unless --validate is used)")
+
+    return args
 
 
 # ============================================================================
@@ -229,6 +246,104 @@ def read_nct_ids_from_csv(csv_path: str) -> List[str]:
                         nct_ids.append(nct_id)
 
     return nct_ids
+
+
+# Annotation field names used for validation mode
+ANNOTATION_FIELDS = [
+    "Classification", "Classification Evidence",
+    "Delivery Mode", "Delivery Mode Evidence",
+    "Outcome", "Outcome Evidence",
+    "Reason for Failure", "Reason for Failure Evidence",
+    "Peptide", "Peptide Evidence",
+    "Sequence", "Sequence Evidence",
+]
+
+
+def read_annotated_csv(csv_path: str) -> List[Dict[str, Any]]:
+    """
+    Read a pre-annotated CSV and return a list of row dicts.
+
+    Each returned dict has:
+        - "nct_id": the NCT ID for the row
+        - "parsed_data": dict of all annotation fields from the CSV
+
+    Skips comment lines (lines starting with '#').
+    """
+    nct_pattern = re.compile(r'NCT\d{8}', re.IGNORECASE)
+    path = Path(csv_path)
+    if not path.exists():
+        raise FileNotFoundError(f"Annotated CSV not found: {csv_path}")
+
+    # Read file, filtering out comment lines
+    with open(path, 'r', encoding='utf-8') as f:
+        lines = [line for line in f if not line.startswith('#')]
+
+    reader = csv.DictReader(io.StringIO(''.join(lines)))
+    rows = []
+
+    for row in reader:
+        # Find the NCT ID — check "NCT ID" column first, then scan all cells
+        nct_id = None
+        if "NCT ID" in row and row["NCT ID"]:
+            match = nct_pattern.search(row["NCT ID"])
+            if match:
+                nct_id = match.group(0).upper()
+
+        if not nct_id:
+            for cell in row.values():
+                match = nct_pattern.search(str(cell or ""))
+                if match:
+                    nct_id = match.group(0).upper()
+                    break
+
+        if not nct_id:
+            logger.warning(f"  Skipping row with no NCT ID: {dict(row)}")
+            continue
+
+        # Extract annotation fields
+        parsed_data = {}
+        for field in ANNOTATION_FIELDS:
+            parsed_data[field] = row.get(field, "").strip()
+
+        # Also pull through metadata fields if present
+        for meta_field in ["Study Title", "Study Status", "Brief Summary",
+                           "Conditions", "Drug", "Phase", "Enrollment",
+                           "Start Date", "Completion Date", "Study IDs", "Comments"]:
+            if meta_field in row and row[meta_field]:
+                parsed_data[meta_field] = row[meta_field].strip()
+
+        rows.append({
+            "nct_id": nct_id,
+            "parsed_data": parsed_data,
+        })
+
+    return rows
+
+
+def reconstruct_annotation_text(parsed_data: Dict[str, str]) -> str:
+    """
+    Reconstruct a pseudo-annotation text from parsed CSV fields.
+
+    This creates the format expected by verify_annotation() from the structured
+    CSV column values.
+    """
+    field_pairs = [
+        ("Classification", "Classification Evidence"),
+        ("Delivery Mode", "Delivery Mode Evidence"),
+        ("Outcome", "Outcome Evidence"),
+        ("Reason for Failure", "Reason for Failure Evidence"),
+        ("Peptide", "Peptide Evidence"),
+        ("Sequence", "Sequence Evidence"),
+    ]
+
+    lines = []
+    for value_field, evidence_field in field_pairs:
+        value = parsed_data.get(value_field, "").strip()
+        evidence = parsed_data.get(evidence_field, "").strip()
+        lines.append(f"{value_field}: {value if value else 'N/A'}")
+        if evidence:
+            lines.append(f"  Evidence: {evidence}")
+    return "\n".join(lines)
 
 
 # ============================================================================
@@ -758,6 +873,171 @@ async def run_pipeline(args: argparse.Namespace):
 
 
 # ============================================================================
+# Validation Pipeline (--validate mode)
+# ============================================================================
+
+async def run_validation_pipeline(args: argparse.Namespace):
+    """Validation pipeline: verify a pre-annotated CSV using the verification LLM."""
+
+    # ---- Validate prerequisites ----
+    if not HAS_NCT_ENGINE:
+        print("ERROR: Could not import NCT search engine.")
+        print(f"  Ensure nct_core.py exists at: {NCT_LOOKUP_DIR}")
+        sys.exit(1)
+
+    if not HAS_LLM_ASSISTANT:
+        print("ERROR: Could not import LLM assistant modules.")
+        print(f"  Ensure llm_assistant.py exists at: {LLM_ASSISTANT_DIR}")
+        sys.exit(1)
+
+    # ---- Configure ollama connection ----
+    llm_config.OLLAMA_HOST = args.ollama_host
+    llm_config.OLLAMA_PORT = args.ollama_port
+    llm_config.LLM_TIMEOUT = args.timeout
+    llm_config.VERIFICATION_TIMEOUT = args.timeout
+
+    # Check ollama connectivity
+    if not await check_ollama_connection(args.ollama_host, args.ollama_port):
+        print(f"\nERROR: Cannot connect to ollama at {args.ollama_host}:{args.ollama_port}")
+        print("  Make sure ollama is running: ollama serve")
+        sys.exit(1)
+
+    # ---- Read pre-annotated CSV ----
+    print(f"\nReading pre-annotated CSV: {args.validate}")
+    annotated_rows = read_annotated_csv(args.validate)
+    if not annotated_rows:
+        print("ERROR: No valid rows found in annotated CSV.")
+        print("  Expected: CSV with NCT ID and annotation columns (Classification, Delivery Mode, etc.)")
+        sys.exit(1)
+    nct_ids = [r["nct_id"] for r in annotated_rows]
+    print(f"  Found {len(annotated_rows)} annotated rows: {', '.join(nct_ids[:5])}{'...' if len(nct_ids) > 5 else ''}")
+
+    # ---- Print configuration ----
+    verification_model = args.verification_model
+    # In validate mode we use --model as the "primary model" label for the CSV metadata
+    primary_model_label = args.model
+    print(f"\nValidation Configuration:")
+    print(f"  Mode:               Validate pre-annotated CSV")
+    print(f"  Verification model: {verification_model}")
+    print(f"  Ollama:             {args.ollama_host}:{args.ollama_port}")
+    print(f"  Temperature:        {args.verification_temperature}")
+    print(f"  Extended sources:   {'Yes' if args.extended_sources else 'No'}")
+    print(f"  Output:             {args.output}")
+    print()
+
+    # ---- Initialize search engine ----
+    search_engine = NCTSearchEngine()
+    await search_engine.initialize()
+
+    # ---- Initialize annotator ----
+    annotator = TrialAnnotator()
+
+    # ---- Process each row ----
+    results = []
+    total_start = time.time()
+
+    for i, row_data in enumerate(annotated_rows):
+        nct_id = row_data["nct_id"]
+        parsed_data = row_data["parsed_data"]
+        print(f"[{i+1}/{len(annotated_rows)}] Validating {nct_id}")
+        trial_start = time.time()
+
+        result = {
+            "nct_id": nct_id,
+            "parsed_data": parsed_data,
+        }
+
+        try:
+            # Step 1: Fetch trial data (needed for verification context)
+            trial_data = await fetch_trial_data(
+                nct_id, search_engine, use_extended=args.extended_sources
+            )
+
+            if trial_data.get("error"):
+                result["status"] = "error"
+                result["error"] = f"Data fetch failed: {trial_data['error']}"
+                results.append(result)
+                print(f"  ERROR: {result['error']}")
+                continue
+
+            # Step 2: Reconstruct annotation text from CSV fields
+            annotation_text = reconstruct_annotation_text(parsed_data)
+            result["annotation_text"] = annotation_text
+            result["annotation_time"] = 0.0  # No primary annotation step
+
+            # Step 3: Verify the existing annotation
+            verification = await verify_single_trial(
+                nct_id=nct_id,
+                original_annotation=annotation_text,
+                parsed_data=parsed_data,
+                trial_data=trial_data,
+                primary_model=primary_model_label,
+                verification_model=verification_model,
+                annotator=annotator,
+                temperature=args.verification_temperature
+            )
+
+            result["verification"] = verification
+            verif_time = time.time() - trial_start
+
+            if verification["status"] == "success":
+                result["verified_parsed_data"] = verification["verified_parsed_data"]
+                corrections = verification["corrections_made"]
+                print(f"  Verification: {corrections} correction(s) ({verif_time:.1f}s)")
+            else:
+                print(f"  Verification failed: {verification.get('error', 'unknown')}")
+
+            result["status"] = "success"
+
+        except Exception as e:
+            logger.error(f"  Error validating {nct_id}: {e}", exc_info=args.debug)
+            result["status"] = "error"
+            result["error"] = str(e)
+            print(f"  ERROR: {e}")
+
+        results.append(result)
+
+    total_time = time.time() - total_start
+
+    # ---- Close search engine ----
+    await search_engine.close()
+
+    # ---- Write output CSV ----
+    print(f"\nWriting validated output CSV...")
+    write_output_csv(
+        output_path=args.output,
+        results=results,
+        primary_model=primary_model_label,
+        verification_model=verification_model,
+        verify_enabled=True,
+        temperature=args.verification_temperature,
+        total_time=total_time,
+        use_extended=args.extended_sources
+    )
+
+    # ---- Print summary ----
+    successful = sum(1 for r in results if r.get("status") == "success")
+    failed = len(results) - successful
+    total_corrections = sum(
+        r.get("verification", {}).get("corrections_made", 0)
+        for r in results if r.get("status") == "success"
+    )
+
+    print(f"\n{'='*60}")
+    print(f"VALIDATION COMPLETE")
+    print(f"{'='*60}")
+    print(f"  Total trials:    {len(results)}")
+    print(f"  Successful:      {successful}")
+    print(f"  Failed:          {failed}")
+    print(f"  Corrections:     {total_corrections}")
+    print(f"  Total time:      {total_time:.1f}s")
+    if len(results) > 0:
+        print(f"  Avg per trial:   {total_time / len(results):.1f}s")
+    print(f"  Output file:     {args.output}")
+    print(f"{'='*60}")
+
+
+# ============================================================================
 # Entry Point
 # ============================================================================
 
@@ -767,7 +1047,10 @@ def main():
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    asyncio.run(run_pipeline(args))
+    if args.validate:
+        asyncio.run(run_validation_pipeline(args))
+    else:
+        asyncio.run(run_pipeline(args))
 
 
 if __name__ == "__main__":
