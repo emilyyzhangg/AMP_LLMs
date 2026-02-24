@@ -164,9 +164,9 @@ Examples:
         help="Verification model (default: nemotron:latest)"
     )
     parser.add_argument(
-        "--no-verify",
+        "--verify",
         action="store_true",
-        help="Skip the verification step"
+        help="Enable verification step with a second LLM"
     )
     parser.add_argument(
         "--ollama-host",
@@ -735,7 +735,7 @@ async def run_pipeline(args: argparse.Namespace):
     print(f"  Found {len(nct_ids)} NCT IDs: {', '.join(nct_ids[:5])}{'...' if len(nct_ids) > 5 else ''}")
 
     # ---- Print configuration ----
-    verify_enabled = not args.no_verify
+    verify_enabled = args.verify
     print(f"\nConfiguration:")
     print(f"  Primary model:      {args.model}")
     if verify_enabled:
