@@ -664,24 +664,29 @@ class AnnotationResponseParser:
     
     @classmethod
     def _normalize_response(cls, response: str) -> str:
-        """Normalize LLM response to have consistent newline formatting."""
-        # Strip markdown code block wrappers (gemma often wraps output in ```)
-        normalized = re.sub(r'^```[a-zA-Z]*\s*\n?', '', response)
+        """Normalize LLM response to handle diverse model formatting styles."""
+        # Strip HTML tags (gemma inserts <br>, <hr>, <p>, etc.)
+        normalized = re.sub(r'</?(?:br|hr|p|div|span)[^>]*/?>', ' ', response, flags=re.IGNORECASE)
+        # Strip markdown code block wrappers
+        normalized = re.sub(r'^```[a-zA-Z]*\s*\n?', '', normalized)
         normalized = re.sub(r'\n?```\s*$', '', normalized)
         # Strip all markdown emphasis markers (*, **, ***) wrapping text
-        # e.g. ***CLASSIFICATION*** → CLASSIFICATION, **Evidence** → Evidence
         normalized = re.sub(r'\*{1,3}([^*\n]+?)\*{1,3}', r'\1', normalized)
-        # Convert markdown headers like ## Classification: or ### Delivery Mode: to plain
+        # Strip leftover bold markers glued to colons: "Peptide:** True" → "Peptide: True"
+        normalized = re.sub(r':\*{1,3}\s*', ': ', normalized)
+        # Convert markdown headers to plain
         normalized = re.sub(r'^#{1,4}\s*', '', normalized, flags=re.MULTILINE)
-        # Normalize field-name spacing: "CLASSIFICATION :" or "Delivery Mode :" → "Classification:" etc.
-        normalized = re.sub(r'(Classification)\s*:', r'Classification:', normalized, flags=re.IGNORECASE)
-        normalized = re.sub(r'(Delivery\s*Mode)\s*:', r'Delivery Mode:', normalized, flags=re.IGNORECASE)
-        normalized = re.sub(r'(Outcome)\s*:', r'Outcome:', normalized, flags=re.IGNORECASE)
-        normalized = re.sub(r'(Reason\s*for\s*Failure)\s*:', r'Reason for Failure:', normalized, flags=re.IGNORECASE)
-        normalized = re.sub(r'(Peptide)\s*:', r'Peptide:', normalized, flags=re.IGNORECASE)
-        normalized = re.sub(r'(Sequence)\s*:', r'Sequence:', normalized, flags=re.IGNORECASE)
-        normalized = re.sub(r'(Evidence)\s*:', r'Evidence:', normalized, flags=re.IGNORECASE)
-        normalized = re.sub(r'(Reasoning)\s*:', r'Reasoning:', normalized, flags=re.IGNORECASE)
+        # Normalize known field names: accept colon, dash, en-dash, em-dash, or double-colon as separator
+        # and standardize to "FieldName:" format
+        _sep = r'\s*(?::+|[\-\u2013\u2014])\s*'  # matches :, ::, -, –, —
+        normalized = re.sub(r'Classification' + _sep, r'Classification: ', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'Delivery\s*Mode' + _sep, r'Delivery Mode: ', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'Outcome' + _sep, r'Outcome: ', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'Reason\s*[Ff]or\s*[Ff]ailure' + _sep, r'Reason for Failure: ', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'Peptide' + _sep, r'Peptide: ', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'(?<!\bAmino Acid )Sequence' + _sep, r'Sequence: ', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'Evidence' + _sep, r'Evidence: ', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'Reasoning' + _sep, r'Reasoning: ', normalized, flags=re.IGNORECASE)
         # Normalize Reasoning/Evidence indentation
         normalized = re.sub(r'\n(Evidence:)', r'\n  \1', normalized)
         normalized = re.sub(r'\n(Reasoning:)', r'\n  \1', normalized)
