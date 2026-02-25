@@ -664,9 +664,18 @@ class AnnotationResponseParser:
     @classmethod
     def _normalize_response(cls, response: str) -> str:
         """Normalize LLM response to have consistent newline formatting."""
-        normalized = re.sub(r'\s*\*\*([^*]+):\*\*\s*', r'\n\1: ', response)
+        # Strip markdown code block wrappers (gemma often wraps output in ```)
+        normalized = re.sub(r'^```[a-zA-Z]*\s*\n?', '', response)
+        normalized = re.sub(r'\n?```\s*$', '', normalized)
+        # Convert **Field:** or *Field:* bold/italic to plain Field:
+        normalized = re.sub(r'\s*\*\*([^*]+):\*\*\s*', r'\n\1: ', normalized)
         normalized = re.sub(r'\s*\*([^*]+):\*\s*', r'\n\1: ', normalized)
+        # Convert markdown headers like ## Classification: or ### Delivery Mode: to plain
+        normalized = re.sub(r'^#{1,4}\s*', '', normalized, flags=re.MULTILINE)
+        # Normalize Reasoning/Evidence indentation
         normalized = re.sub(r'\n(Evidence:)', r'\n  \1', normalized)
+        normalized = re.sub(r'\n(Reasoning:)', r'\n  \1', normalized)
+        # Collapse excess blank lines
         normalized = re.sub(r'\n{3,}', '\n\n', normalized)
         lines = [line.strip() for line in normalized.split('\n')]
         normalized = '\n'.join(lines)
@@ -1267,7 +1276,7 @@ Now extract the data:
                             "num_ctx": actual_num_ctx,
                             "num_predict": actual_num_predict,
                             "repeat_penalty": actual_repeat_penalty,
-                            "stop": ["TRIAL DATA:", "---", "\n\n\n"]
+                            "stop": ["TRIAL DATA:", "# CLINICAL TRIAL ANNOTATION TASK:"]
                         }
                     }
                 )
