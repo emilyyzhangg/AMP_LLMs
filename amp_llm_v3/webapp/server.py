@@ -240,9 +240,13 @@ async def list_available_themes():
 CHAT_SERVICE_URL = f"http://localhost:{settings.chat_service_port}"
 NCT_SERVICE_URL = f"http://localhost:{settings.nct_service_port}"
 
-# DEBUG - Remove after confirming
-logger.info(f"🔍 DEBUG: NCT_SERVICE_URL = {NCT_SERVICE_URL}")
-logger.info(f"🔍 DEBUG: settings.nct_service_port = {settings.nct_service_port}")
+# Cross-branch job visibility: detect current branch and compute the other branch's chat URL
+CURRENT_BRANCH = "main" if settings.chat_service_port < 9000 else "dev"
+OTHER_BRANCH = "dev" if CURRENT_BRANCH == "main" else "main"
+OTHER_CHAT_PORT = settings.chat_service_port + 1000 if CURRENT_BRANCH == "main" else settings.chat_service_port - 1000
+OTHER_CHAT_SERVICE_URL = f"http://localhost:{OTHER_CHAT_PORT}"
+
+logger.info(f"Branch: {CURRENT_BRANCH} (chat port {settings.chat_service_port}), other branch: {OTHER_BRANCH} (chat port {OTHER_CHAT_PORT})")
 
 # ============================================================================
 # Request/Response Models
@@ -688,19 +692,34 @@ async def get_email_config_proxy():
 
 @app.get("/api/chat/jobs")
 async def list_jobs_proxy():
-    """Proxy job listing to chat service."""
-    try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.get(f"{CHAT_SERVICE_URL}/chat/jobs")
-            if response.status_code == 200:
-                return response.json()
-            else:
-                raise HTTPException(status_code=response.status_code, detail=response.text)
-    except httpx.ConnectError:
-        raise HTTPException(status_code=503, detail="Chat service not available")
-    except Exception as e:
-        logger.error(f"Job listing proxy error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    """Fetch jobs from both main and dev chat services, tagged by branch."""
+    all_jobs = []
+    total = 0
+    active = 0
+
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        # Fetch from both branches concurrently
+        branches = [
+            (CURRENT_BRANCH, CHAT_SERVICE_URL),
+            (OTHER_BRANCH, OTHER_CHAT_SERVICE_URL),
+        ]
+        for branch_name, chat_url in branches:
+            try:
+                response = await client.get(f"{chat_url}/chat/jobs")
+                if response.status_code == 200:
+                    data = response.json()
+                    for job in data.get("jobs", []):
+                        job["branch"] = branch_name
+                    all_jobs.extend(data.get("jobs", []))
+                    total += data.get("total", 0)
+                    active += data.get("active", 0)
+            except Exception as e:
+                logger.debug(f"Could not fetch jobs from {branch_name} ({chat_url}): {e}")
+
+    # Sort by created_at descending (newest first)
+    all_jobs.sort(key=lambda j: j.get("created_at", ""), reverse=True)
+
+    return {"jobs": all_jobs, "total": total, "active": active}
 
 
 @app.get("/api/chat/resources")
@@ -721,17 +740,18 @@ async def get_resources_proxy():
 
 
 @app.delete("/api/chat/jobs/{job_id}")
-async def cancel_job_proxy(job_id: str):
-    """Proxy job cancellation to chat service."""
+async def cancel_job_proxy(job_id: str, branch: str = CURRENT_BRANCH):
+    """Proxy job cancellation to the correct branch's chat service."""
+    chat_url = CHAT_SERVICE_URL if branch == CURRENT_BRANCH else OTHER_CHAT_SERVICE_URL
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.delete(f"{CHAT_SERVICE_URL}/chat/jobs/{job_id}")
+            response = await client.delete(f"{chat_url}/chat/jobs/{job_id}")
             if response.status_code == 200:
                 return response.json()
             else:
                 raise HTTPException(status_code=response.status_code, detail=response.text)
     except httpx.ConnectError:
-        raise HTTPException(status_code=503, detail="Chat service not available")
+        raise HTTPException(status_code=503, detail=f"Chat service ({branch}) not available")
     except Exception as e:
         logger.error(f"Job cancel proxy error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -739,19 +759,18 @@ async def cancel_job_proxy(job_id: str):
 
 @app.delete("/api/chat/jobs/completed")
 async def clear_completed_jobs_proxy():
-    """Proxy clear completed jobs to chat service."""
-    try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.delete(f"{CHAT_SERVICE_URL}/chat/jobs/completed")
-            if response.status_code == 200:
-                return response.json()
-            else:
-                raise HTTPException(status_code=response.status_code, detail=response.text)
-    except httpx.ConnectError:
-        raise HTTPException(status_code=503, detail="Chat service not available")
-    except Exception as e:
-        logger.error(f"Clear completed jobs proxy error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    """Clear completed jobs from both branch chat services."""
+    total_cleared = 0
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        for branch_name, chat_url in [(CURRENT_BRANCH, CHAT_SERVICE_URL), (OTHER_BRANCH, OTHER_CHAT_SERVICE_URL)]:
+            try:
+                response = await client.delete(f"{chat_url}/chat/jobs/completed")
+                if response.status_code == 200:
+                    data = response.json()
+                    total_cleared += data.get("cleared_count", 0)
+            except Exception as e:
+                logger.debug(f"Could not clear completed jobs on {branch_name}: {e}")
+    return {"status": "cleared", "cleared_count": total_cleared, "message": f"Cleared {total_cleared} completed/failed jobs from both branches"}
 
 
 @app.post("/chat/annotate")
@@ -941,20 +960,21 @@ async def get_csv_annotation_status(job_id: str):
     return response
 
 
-RUNNER_SERVICE_URL = "http://localhost:9003"
+RUNNER_SERVICE_URL = f"http://localhost:{settings.runner_service_port}"
 
 
 @app.get("/chat/download/{job_id}")
-async def download_job_csv_proxy(job_id: str):
+async def download_job_csv_proxy(job_id: str, branch: str = CURRENT_BRANCH):
     """
-    Proxy CSV download by job ID to chat service.
-    This is used by email notification links.
+    Proxy CSV download by job ID to the correct branch's chat service.
+    This is used by email notification links and the jobs panel.
     """
+    chat_url = CHAT_SERVICE_URL if branch == CURRENT_BRANCH else OTHER_CHAT_SERVICE_URL
     try:
-        logger.info(f"📥 Proxying job CSV download: {job_id}")
+        logger.info(f"📥 Proxying job CSV download: {job_id} (branch: {branch})")
 
         async with httpx.AsyncClient(timeout=60.0) as client:
-            response = await client.get(f"{CHAT_SERVICE_URL}/chat/download/{job_id}")
+            response = await client.get(f"{chat_url}/chat/download/{job_id}")
 
             if response.status_code == 200:
                 # Get filename from content-disposition header if available
