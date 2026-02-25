@@ -120,16 +120,21 @@ const app = {
             const isFailed = job.status === 'failed';
             const elapsed = this.formatElapsedTime(job.elapsed_seconds);
             const startedAt = this.formatJobDateTime(job.created_at);
+            const branch = job.branch || 'unknown';
 
             // Status icon based on job state
             const statusIcon = isCompleted ? '✅' : isFailed ? '❌' : isActive ? '⏳' : '📋';
             const statusClass = isCompleted ? 'completed' : isFailed ? 'failed' : job.status;
+            const branchClass = branch === 'main' ? 'branch-main' : 'branch-dev';
 
             return `
                 <div class="job-card ${statusClass}">
                     <div class="job-header">
                         <span class="job-id">${statusIcon} Job: ${job.job_id.substring(0, 8)}...</span>
-                        <span class="job-status ${statusClass}">${job.status.toUpperCase()}</span>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="job-branch-tag ${branchClass}">${branch}</span>
+                            <span class="job-status ${statusClass}">${job.status.toUpperCase()}</span>
+                        </div>
                     </div>
 
                     <div class="job-details">
@@ -154,12 +159,12 @@ const app = {
 
                     <div class="job-actions">
                         ${isActive ? `
-                            <button class="btn-cancel" onclick="app.cancelJob('${job.job_id}')">
+                            <button class="btn-cancel" onclick="app.cancelJob('${job.job_id}', '${branch}')">
                                 🛑 Cancel Job
                             </button>
                         ` : ''}
                         ${isCompleted ? `
-                            <button class="btn-download" onclick="window.open('${this.API_BASE}/api/chat/download/${job.job_id}', '_blank')">
+                            <button class="btn-download" onclick="window.open('${this.API_BASE}/chat/download/${job.job_id}?branch=${branch}', '_blank')">
                                 📥 Download CSV
                             </button>
                         ` : ''}
@@ -190,13 +195,13 @@ const app = {
         });
     },
 
-    async cancelJob(jobId) {
-        if (!confirm(`Cancel job ${jobId.substring(0, 8)}...?\n\nThis will stop the annotation process.`)) {
+    async cancelJob(jobId, branch) {
+        if (!confirm(`Cancel job ${jobId.substring(0, 8)}... (${branch})?\n\nThis will stop the annotation process.`)) {
             return;
         }
 
         try {
-            const response = await fetch(`${this.API_BASE}/api/chat/jobs/${jobId}`, {
+            const response = await fetch(`${this.API_BASE}/api/chat/jobs/${jobId}?branch=${branch}`, {
                 method: 'DELETE'
             });
 
