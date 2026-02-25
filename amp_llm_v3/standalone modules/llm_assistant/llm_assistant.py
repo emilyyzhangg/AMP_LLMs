@@ -628,13 +628,14 @@ class AnnotationResponseParser:
             'Comments': r'Comments:\s*([^\n]+?)(?:\n|$)',
         }
         
+        # Evidence may be 1-3 lines after the field (Reasoning: line often in between)
         evidence_patterns = {
-            'Classification Evidence': r'Classification:[^\n]*\n\s*Evidence:\s*([^\n]+)',
-            'Delivery Mode Evidence': r'Delivery Mode:[^\n]*\n\s*Evidence:\s*([^\n]+)',
-            'Outcome Evidence': r'Outcome:[^\n]*\n\s*Evidence:\s*([^\n]+)',
-            'Reason for Failure Evidence': r'Reason for Failure:[^\n]*\n\s*Evidence:\s*([^\n]+)',
-            'Peptide Evidence': r'Peptide:[^\n]*\n\s*Evidence:\s*([^\n]+)',
-            'Sequence Evidence': r'Sequence:[^\n]*\n\s*Evidence:\s*([^\n]+)',
+            'Classification Evidence': r'Classification:[^\n]*\n(?:[^\n]*\n){0,2}\s*Evidence:\s*([^\n]+)',
+            'Delivery Mode Evidence': r'Delivery Mode:[^\n]*\n(?:[^\n]*\n){0,2}\s*Evidence:\s*([^\n]+)',
+            'Outcome Evidence': r'Outcome:[^\n]*\n(?:[^\n]*\n){0,2}\s*Evidence:\s*([^\n]+)',
+            'Reason for Failure Evidence': r'Reason for Failure:[^\n]*\n(?:[^\n]*\n){0,2}\s*Evidence:\s*([^\n]+)',
+            'Peptide Evidence': r'Peptide:[^\n]*\n(?:[^\n]*\n){0,2}\s*Evidence:\s*([^\n]+)',
+            'Sequence Evidence': r'Sequence:[^\n]*\n(?:[^\n]*\n){0,2}\s*Evidence:\s*([^\n]+)',
         }
         
         for field, pattern in patterns.items():
@@ -667,11 +668,20 @@ class AnnotationResponseParser:
         # Strip markdown code block wrappers (gemma often wraps output in ```)
         normalized = re.sub(r'^```[a-zA-Z]*\s*\n?', '', response)
         normalized = re.sub(r'\n?```\s*$', '', normalized)
-        # Convert **Field:** or *Field:* bold/italic to plain Field:
-        normalized = re.sub(r'\s*\*\*([^*]+):\*\*\s*', r'\n\1: ', normalized)
-        normalized = re.sub(r'\s*\*([^*]+):\*\s*', r'\n\1: ', normalized)
+        # Strip all markdown emphasis markers (*, **, ***) wrapping text
+        # e.g. ***CLASSIFICATION*** → CLASSIFICATION, **Evidence** → Evidence
+        normalized = re.sub(r'\*{1,3}([^*\n]+?)\*{1,3}', r'\1', normalized)
         # Convert markdown headers like ## Classification: or ### Delivery Mode: to plain
         normalized = re.sub(r'^#{1,4}\s*', '', normalized, flags=re.MULTILINE)
+        # Normalize field-name spacing: "CLASSIFICATION :" or "Delivery Mode :" → "Classification:" etc.
+        normalized = re.sub(r'(Classification)\s*:', r'Classification:', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'(Delivery\s*Mode)\s*:', r'Delivery Mode:', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'(Outcome)\s*:', r'Outcome:', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'(Reason\s*for\s*Failure)\s*:', r'Reason for Failure:', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'(Peptide)\s*:', r'Peptide:', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'(Sequence)\s*:', r'Sequence:', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'(Evidence)\s*:', r'Evidence:', normalized, flags=re.IGNORECASE)
+        normalized = re.sub(r'(Reasoning)\s*:', r'Reasoning:', normalized, flags=re.IGNORECASE)
         # Normalize Reasoning/Evidence indentation
         normalized = re.sub(r'\n(Evidence:)', r'\n  \1', normalized)
         normalized = re.sub(r'\n(Reasoning:)', r'\n  \1', normalized)
