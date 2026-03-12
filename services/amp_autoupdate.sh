@@ -7,7 +7,7 @@
 # Tracks last-deployed hash so local changes also trigger restarts.
 # =============================================================================
 
-REPO_DIR="/Users/amphoraxe/Developer/AMP_LLMs_main"
+REPO_DIR="/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca"
 LOG_FILE="/tmp/amp_autoupdate.log"
 LAST_DEPLOYED_FILE="/tmp/amp_last_deployed_hash"
 PLIST_DIR="/Library/LaunchDaemons"
@@ -148,7 +148,7 @@ if [ "$LOCAL_HASH" != "$LAST_DEPLOYED_HASH" ]; then
     fi
 
     # Run site verification (background, non-blocking)
-    /Users/amphoraxe/Developer/auth.amphoraxe.ca/verify/run.sh amp_llm
+    /Users/amphoraxe/Developer/amphoraxe/auth.amphoraxe.ca/verify/run.sh amp_llm
 
     echo "$LOCAL_HASH" > "$LAST_DEPLOYED_FILE"
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ MAIN update and restart complete." >> "$LOG_FILE"
