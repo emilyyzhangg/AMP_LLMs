@@ -147,6 +147,9 @@ if [ "$LOCAL_HASH" != "$LAST_DEPLOYED_HASH" ]; then
         done
     fi
 
+    # Run site verification (background, non-blocking)
+    /Users/amphoraxe/Developer/auth.amphoraxe.ca/verify/run.sh amp_llm
+
     echo "$LOCAL_HASH" > "$LAST_DEPLOYED_FILE"
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ MAIN update and restart complete." >> "$LOG_FILE"
 else
