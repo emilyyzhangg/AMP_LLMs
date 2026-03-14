@@ -193,19 +193,12 @@ class BaseResearchAgent(ABC):
     def _create_citation(self, database, identifier, field_path, excerpt) -> SourceCitation
 ```
 
-Research agents **import existing client classes** from the NCT Lookup module:
-```python
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "nct_lookup"))
-from nct_clients import ClinicalTrialsClient, OpenFDAClient, ...
-from rate_limiter import RateLimiter
-```
-
-No duplication of API client code.
+Research agents make **direct HTTP calls** to external APIs via `httpx`. Agent Annotate is fully independent — zero dependency on other AMP LLM microservices (NCT Lookup, Runner, etc.).
 
 ### 1.2 Clinical Protocol Agent
 
 **`agents/research/clinical_protocol.py`**
-- Sources: ClinicalTrialsClient + OpenFDAClient
+- Sources: ClinicalTrials.gov API v2 (direct) + OpenFDA
 - Fetches trial protocol data + drug safety signals
 - Extracts: briefTitle, briefSummary, conditions, interventions, overallStatus, whyStopped, phases, arms, eligibility
 - Returns citations pointing to specific JSON paths
@@ -289,22 +282,31 @@ Quality score: two-layer weighted system (source availability weight * field rel
 
 ### 2.3–2.7 Five Annotation Agents
 
-Each in `agents/annotation/`:
+Each in `agents/annotation/`. Values match the human annotation Excel data validation.
 
-| Agent | File | Field | Valid Values | Primary Research | Min Sources |
-|-------|------|-------|-------------|-----------------|-------------|
-| Classification | `classification.py` | classification | AMP, Other | clinical_protocol, peptide_identity | 2 |
-| Delivery Mode | `delivery_mode.py` | delivery_mode | Injection/Infusion, Topical, Oral, Other | clinical_protocol | 2 |
-| Outcome | `outcome.py` | outcome | Positive, Withdrawn, Terminated, Failed, Active, Unknown | clinical_protocol | 2 |
-| Failure Reason | `failure_reason.py` | reason_for_failure | Business, Ineffective, Toxic, COVID, Recruitment, N/A | clinical_protocol | 1 |
-| Peptide | `peptide.py` | peptide | True, False | peptide_identity, clinical_protocol | 2 |
+| Agent | File | Valid Values | Strategy |
+|-------|------|-------------|----------|
+| Classification | `classification.py` | AMP(infection), AMP(other), Other | Single-pass, two-step prompt (Is it AMP? If so, infection or other?) |
+| Delivery Mode | `delivery_mode.py` | 18 specific values (IV, IM, SC, Oral subtypes, Topical subtypes, etc.) | Single-pass with extensive fuzzy matching |
+| Outcome | `outcome.py` | Positive, Withdrawn, Terminated, Failed - completed trial, Recruiting, Unknown, Active not recruiting | **Two-pass investigative** (see below) |
+| Failure Reason | `failure_reason.py` | Business Reason, Ineffective for purpose, Toxic/Unsafe, Due to covid, Recruitment issues, or empty | **Two-pass investigative** (see below) |
+| Peptide | `peptide.py` | True, False | Single-pass |
 
-Each agent:
-1. Receives relevant research data
-2. Calls Ollama with a task-specific prompt (focused, not monolithic)
-3. Parses response, validates against valid_values
-4. Checks evidence threshold
-5. Returns FieldAnnotation with full citation chain
+**Single-pass agents** (Classification, Delivery Mode, Peptide):
+1. Receive relevant research data
+2. Call Ollama with a task-specific prompt
+3. Parse response, validate against valid_values
+4. Check evidence threshold
+5. Return FieldAnnotation with full citation chain
+
+**Two-pass investigative agents** (Outcome, Failure Reason):
+
+Designed from analysis of 617 human annotations that revealed ClinicalTrials.gov status is often stale/incomplete. 15 UNKNOWN-status trials had positive results in literature; 49/99 failure reasons came from COMPLETED trials where whyStopped was blank.
+
+Pass 1 — **Fact extraction**: Extract registry status, search ALL evidence for published results/adverse events/failure signals. Asks structured questions.
+Pass 2 — **Determination**: Given all extracted facts, make the decision. Published literature explicitly overrides registry status. "Unknown" and empty are last resorts, not defaults.
+
+Failure Reason agent has a **smart short-circuit**: if Pass 1 determines the trial did not fail, skips Pass 2 entirely (saves an Ollama call for ~80% of trials).
 
 ### 2.8 Ollama Client
 
@@ -647,19 +649,19 @@ Phase 5 (frontend) can be developed in parallel with Phases 1–4 since stub end
 
 ---
 
-## Existing Code to Reuse (Not Duplicate)
+## Patterns Referenced (Agent Annotate is fully independent)
 
-| What | Source Path | How |
-|------|-----------|-----|
-| 16 API clients | `nct_lookup/nct_clients.py` | Import directly via sys.path |
-| API registry | `nct_lookup/nct_api_registry.py` | Import APIDefinition |
-| Rate limiter | `nct_lookup/rate_limiter.py` | Import token bucket + semaphore |
-| .env loading | `nct_lookup/nct_config.py` | Same parent-search pattern |
-| Git commit tracking | `llm_assistant/llm_assistant.py:121-167` | Same subprocess pattern |
-| Ollama call format | `llm_assistant/llm_assistant.py:1123-1141` | Same messages API |
-| Auth client | `tasker.amphoraxe.ca/app/auth_client.py` | Copy to agent_annotate |
-| SPA serving | `tasker.amphoraxe.ca/app/main.py` | Same catch-all pattern |
-| React scaffold | `tasker.amphoraxe.ca/frontend/` | Same Vite + Router + Context pattern |
+Agent Annotate has **zero runtime dependencies** on other AMP LLM microservices. All research agents make direct HTTP calls to external APIs. The following patterns were referenced during development but no code is imported at runtime:
+
+| Pattern | Referenced From | How Used |
+|---------|----------------|----------|
+| .env loading | `nct_lookup/nct_config.py` | Same parent-search pattern in `app/config.py` |
+| Git commit tracking | `llm_assistant/llm_assistant.py` | Same subprocess pattern in `version_service.py` |
+| Ollama API format | `llm_assistant/llm_assistant.py` | Same `/api/generate` call in `ollama_client.py` |
+| Auth client | `tasker.amphoraxe.ca/app/auth_client.py` | Copied to `app/auth_client.py` |
+| SPA serving | `tasker.amphoraxe.ca/app/main.py` | Same catch-all pattern in `app/main.py` |
+| React scaffold | `tasker.amphoraxe.ca/frontend/` | Same Vite + Router pattern |
+| Human annotation validation | `docs/clinical_trials-with-sequences.xlsx` | All valid values match Excel data validation rules |
 
 ---
 
