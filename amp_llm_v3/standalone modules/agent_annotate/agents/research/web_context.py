@@ -1,0 +1,142 @@
+"""
+Web Context Research Agent.
+
+Searches DuckDuckGo, SerpAPI, and Google Scholar for broader context
+about clinical trials and their outcomes.
+"""
+
+from typing import Optional
+from datetime import datetime
+
+import httpx
+
+from agents.base import BaseResearchAgent
+from app.models.research import ResearchResult, SourceCitation
+from app.config import SERPAPI_KEY
+
+DDG_API_URL = "https://api.duckduckgo.com/"
+SERPAPI_URL = "https://serpapi.com/search"
+
+
+class WebContextAgent(BaseResearchAgent):
+    """Gathers broader web context about a clinical trial."""
+
+    agent_name = "web_context"
+    sources = ["duckduckgo", "serpapi", "scholar"]
+
+    async def research(self, nct_id: str, metadata: Optional[dict] = None) -> ResearchResult:
+        citations = []
+        raw_data = {}
+
+        # Build search query
+        query_parts = [nct_id]
+        if metadata:
+            if metadata.get("title"):
+                query_parts.append(metadata["title"][:80])
+            elif metadata.get("conditions"):
+                query_parts.extend(metadata["conditions"][:2])
+
+        search_query = " ".join(query_parts)
+
+        # 1. DuckDuckGo Instant Answer API
+        try:
+            async with httpx.AsyncClient(timeout=15) as client:
+                resp = await client.get(
+                    DDG_API_URL,
+                    params={"q": search_query, "format": "json", "no_html": 1},
+                )
+                if resp.status_code == 200:
+                    data = resp.json()
+                    raw_data["duckduckgo"] = data
+
+                    # Extract abstract / related topics
+                    abstract = data.get("Abstract", "")
+                    if abstract:
+                        citations.append(SourceCitation(
+                            source_name="duckduckgo",
+                            source_url=data.get("AbstractURL", ""),
+                            identifier=nct_id,
+                            title=data.get("Heading", "DuckDuckGo Result"),
+                            snippet=abstract[:500],
+                            quality_score=self.compute_quality_score("duckduckgo"),
+                            retrieved_at=datetime.utcnow().isoformat(),
+                        ))
+
+                    for topic in data.get("RelatedTopics", [])[:3]:
+                        if isinstance(topic, dict) and topic.get("Text"):
+                            citations.append(SourceCitation(
+                                source_name="duckduckgo",
+                                source_url=topic.get("FirstURL", ""),
+                                identifier=nct_id,
+                                title=topic.get("Text", "")[:100],
+                                snippet=topic.get("Text", "")[:300],
+                                quality_score=self.compute_quality_score("duckduckgo"),
+                                retrieved_at=datetime.utcnow().isoformat(),
+                            ))
+        except Exception as e:
+            raw_data["duckduckgo_error"] = str(e)
+
+        # 2. SerpAPI (if key is configured)
+        if SERPAPI_KEY:
+            try:
+                async with httpx.AsyncClient(timeout=20) as client:
+                    resp = await client.get(
+                        SERPAPI_URL,
+                        params={
+                            "q": search_query,
+                            "api_key": SERPAPI_KEY,
+                            "engine": "google",
+                            "num": 5,
+                        },
+                    )
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        raw_data["serpapi"] = data
+                        for result in data.get("organic_results", [])[:5]:
+                            citations.append(SourceCitation(
+                                source_name="serpapi",
+                                source_url=result.get("link", ""),
+                                identifier=nct_id,
+                                title=result.get("title", ""),
+                                snippet=result.get("snippet", "")[:300],
+                                quality_score=self.compute_quality_score("serpapi"),
+                                retrieved_at=datetime.utcnow().isoformat(),
+                            ))
+            except Exception as e:
+                raw_data["serpapi_error"] = str(e)
+
+        # 3. Google Scholar via SerpAPI (if key is configured)
+        if SERPAPI_KEY:
+            try:
+                async with httpx.AsyncClient(timeout=20) as client:
+                    resp = await client.get(
+                        SERPAPI_URL,
+                        params={
+                            "q": search_query,
+                            "api_key": SERPAPI_KEY,
+                            "engine": "google_scholar",
+                            "num": 3,
+                        },
+                    )
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        raw_data["scholar"] = data
+                        for result in data.get("organic_results", [])[:3]:
+                            citations.append(SourceCitation(
+                                source_name="scholar",
+                                source_url=result.get("link", ""),
+                                identifier=nct_id,
+                                title=result.get("title", ""),
+                                snippet=result.get("snippet", "")[:300],
+                                quality_score=self.compute_quality_score("scholar"),
+                                retrieved_at=datetime.utcnow().isoformat(),
+                            ))
+            except Exception as e:
+                raw_data["scholar_error"] = str(e)
+
+        return ResearchResult(
+            agent_name=self.agent_name,
+            nct_id=nct_id,
+            citations=citations,
+            raw_data=raw_data,
+        )
