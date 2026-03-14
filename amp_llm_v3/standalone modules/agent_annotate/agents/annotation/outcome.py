@@ -11,22 +11,31 @@ from agents.base import BaseAnnotationAgent
 from app.models.research import ResearchResult, SourceCitation
 from app.models.annotation import FieldAnnotation
 
-VALID_VALUES = ["Positive", "Withdrawn", "Terminated", "Failed-completed trial", "Active", "Unknown"]
+VALID_VALUES = [
+    "Positive",
+    "Withdrawn",
+    "Terminated",
+    "Failed - completed trial",
+    "Recruiting",
+    "Unknown",
+    "Active, not recruiting",
+]
 
 SYSTEM_PROMPT = """You are a clinical trial outcome assessment specialist.
 
 Your task: Determine the outcome of this clinical trial.
 
-Valid outcomes:
+You must choose EXACTLY ONE of these outcomes:
 - Positive: Trial completed and met its primary endpoint(s). Published results show efficacy/positive findings.
 - Withdrawn: Trial was withdrawn before enrollment or very early, often for administrative/funding reasons.
 - Terminated: Trial was stopped early due to safety concerns, futility, lack of enrollment, or sponsor decision.
-- Failed-completed trial: Trial completed enrollment and follow-up but FAILED to meet primary endpoint(s). Negative results.
-- Active: Trial is currently recruiting, enrolling, or ongoing. Not yet completed.
-- Unknown: Insufficient data to determine outcome. Status is ambiguous.
+- Failed - completed trial: Trial completed enrollment and follow-up but FAILED to meet primary endpoint(s). Negative results.
+- Recruiting: Trial is currently recruiting participants, or is not yet recruiting, or enrolling by invitation. Any pre-completion active status.
+- Unknown: Insufficient data to determine outcome. Status is ambiguous or completed with no available results.
+- Active, not recruiting: Trial is ongoing but no longer enrolling new participants.
 
 Key data points to evaluate:
-- overallStatus field: COMPLETED, TERMINATED, WITHDRAWN, RECRUITING, ACTIVE_NOT_RECRUITING, etc.
+- overallStatus field: COMPLETED, TERMINATED, WITHDRAWN, RECRUITING, ACTIVE_NOT_RECRUITING, NOT_YET_RECRUITING, ENROLLING_BY_INVITATION, etc.
 - whyStopped field: Reason for early termination
 - hasResults: Whether results have been posted
 - Published literature describing trial results
@@ -35,16 +44,17 @@ Key data points to evaluate:
 Decision logic:
 1. If overallStatus is WITHDRAWN -> Withdrawn
 2. If overallStatus is TERMINATED -> Terminated
-3. If overallStatus is RECRUITING, ACTIVE_NOT_RECRUITING, NOT_YET_RECRUITING, ENROLLING_BY_INVITATION -> Active
-4. If overallStatus is COMPLETED:
+3. If overallStatus is RECRUITING, NOT_YET_RECRUITING, ENROLLING_BY_INVITATION -> Recruiting
+4. If overallStatus is ACTIVE_NOT_RECRUITING -> Active, not recruiting
+5. If overallStatus is COMPLETED:
    a. Check published results: positive findings -> Positive
-   b. Check published results: negative/failed -> Failed-completed trial
+   b. Check published results: negative/failed -> Failed - completed trial
    c. No results available -> Unknown (do NOT guess)
-5. If unclear -> Unknown
+6. If unclear -> Unknown
 
 IMPORTANT: Format your response EXACTLY as:
 
-Outcome: [Positive, Withdrawn, Terminated, Failed-completed trial, Active, or Unknown]
+Outcome: [Positive, Withdrawn, Terminated, Failed - completed trial, Recruiting, Unknown, or Active, not recruiting]
 Evidence: [Cite the specific source and excerpt]
 Reasoning: [Brief explanation]"""
 
@@ -120,17 +130,29 @@ class OutcomeAgent(BaseAnnotationAgent):
     def _parse_value(self, text: str) -> str:
         match = re.search(r"Outcome:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)
         if match:
-            raw = match.group(1).strip().lower()
-            if "positive" in raw:
+            raw = match.group(1).strip()
+            lower = raw.lower()
+
+            # Exact match first (case-insensitive)
+            for valid in VALID_VALUES:
+                if valid.lower() == lower:
+                    return valid
+
+            # Fuzzy matching
+            if "positive" in lower:
                 return "Positive"
-            if "withdrawn" in raw:
+            if "withdrawn" in lower:
                 return "Withdrawn"
-            if "terminated" in raw:
+            if "terminated" in lower:
                 return "Terminated"
-            if "failed" in raw:
-                return "Failed-completed trial"
-            if "active" in raw:
-                return "Active"
+            if "failed" in lower or "negative" in lower:
+                return "Failed - completed trial"
+            if "active" in lower and "not recruiting" in lower:
+                return "Active, not recruiting"
+            if "recruiting" in lower or "enrolling" in lower or "not yet" in lower:
+                return "Recruiting"
+            if "active" in lower:
+                return "Active, not recruiting"
         return "Unknown"
 
     def _parse_reasoning(self, text: str) -> str:

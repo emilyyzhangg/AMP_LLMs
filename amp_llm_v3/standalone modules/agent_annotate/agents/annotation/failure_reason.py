@@ -11,40 +11,46 @@ from agents.base import BaseAnnotationAgent
 from app.models.research import ResearchResult, SourceCitation
 from app.models.annotation import FieldAnnotation
 
-VALID_VALUES = ["Business reasons", "Ineffective", "Toxic/unsafe", "COVID", "Recruitment issues", "N/A"]
+VALID_VALUES = ["Business Reason", "Ineffective for purpose", "Toxic/Unsafe", "Due to covid", "Recruitment issues"]
 
 SYSTEM_PROMPT = """You are a clinical trial failure analysis specialist.
 
 Your task: Determine the reason a clinical trial was terminated, withdrawn, or failed.
 
-Valid reasons:
-- Business reasons: Funding withdrawn, sponsor decision, company acquired/dissolved, strategic pivot, regulatory pathway changed, manufacturing issues
-- Ineffective: Trial failed to show efficacy, did not meet primary endpoints, futility analysis led to stopping
-- Toxic/unsafe: Safety concerns, unacceptable adverse events, toxicity findings, DSMB recommendation to stop for safety
-- COVID: Trial disrupted by COVID-19 pandemic (enrollment, site access, supply chain)
+IMPORTANT: This field only applies to trials with a negative outcome (Withdrawn, Terminated, or Failed - completed trial). If the trial outcome is Positive, Recruiting, Active, or Unknown, return an EMPTY value — do NOT provide a reason.
+
+Valid reasons (use these exact strings):
+- Business Reason: Funding withdrawn, sponsor decision, company acquired/dissolved, strategic pivot, regulatory pathway changed, manufacturing issues, administrative reasons
+- Ineffective for purpose: Trial failed to show efficacy, did not meet primary endpoints, futility analysis led to stopping
+- Toxic/Unsafe: Safety concerns, unacceptable adverse events, toxicity findings, DSMB recommendation to stop for safety
+- Due to covid: Trial disrupted by COVID-19 pandemic (enrollment, site access, supply chain)
 - Recruitment issues: Unable to recruit sufficient participants, slow enrollment, site closures unrelated to COVID
-- N/A: Trial is active, completed successfully, or the reason cannot be determined. Use this when the trial has a Positive or Active outcome.
 
 Key data:
 - whyStopped field from ClinicalTrials.gov is the primary indicator
-- overallStatus: if COMPLETED with positive results -> N/A
 - Published literature may explain failure reasons
 - Web sources may have press releases about termination
 
 Decision rules:
-1. If trial is Active or Positive outcome -> N/A
-2. If whyStopped mentions funding, business, sponsor -> Business reasons
-3. If whyStopped mentions efficacy, futility, endpoint -> Ineffective
-4. If whyStopped mentions safety, toxicity, adverse -> Toxic/unsafe
-5. If whyStopped mentions COVID, pandemic -> COVID
-6. If whyStopped mentions enrollment, recruitment -> Recruitment issues
-7. If no whyStopped and trial is terminated/withdrawn -> check literature, else N/A
+1. If trial outcome is Positive, Recruiting, Active, or Unknown -> leave EMPTY (no reason)
+2. If whyStopped mentions funding, business, sponsor, administrative -> Business Reason
+3. If whyStopped mentions efficacy, futility, endpoint, ineffective -> Ineffective for purpose
+4. If whyStopped mentions safety, toxicity, adverse events -> Toxic/Unsafe
+5. If whyStopped mentions COVID, pandemic, coronavirus -> Due to covid
+6. If whyStopped mentions enrollment, recruitment, accrual -> Recruitment issues
+7. If no whyStopped and trial is terminated/withdrawn -> check literature for the reason
 
 IMPORTANT: Format your response EXACTLY as:
 
-Reason for Failure: [Business reasons, Ineffective, Toxic/unsafe, COVID, Recruitment issues, or N/A]
+Reason for Failure: [Business Reason, Ineffective for purpose, Toxic/Unsafe, Due to covid, Recruitment issues, or EMPTY]
 Evidence: [Cite the specific source and excerpt]
-Reasoning: [Brief explanation]"""
+Reasoning: [Brief explanation]
+
+If not applicable (trial is active/positive/unknown), respond:
+
+Reason for Failure: EMPTY
+Evidence: Not applicable — trial outcome does not indicate failure.
+Reasoning: This field only applies to failed/terminated/withdrawn trials."""
 
 
 class FailureReasonAgent(BaseAnnotationAgent):
@@ -95,7 +101,7 @@ class FailureReasonAgent(BaseAnnotationAgent):
         except Exception as e:
             return FieldAnnotation(
                 field_name=self.field_name,
-                value="N/A",
+                value="",
                 confidence=0.0,
                 reasoning=f"LLM call failed: {e}",
                 evidence=[],
@@ -118,20 +124,30 @@ class FailureReasonAgent(BaseAnnotationAgent):
     def _parse_value(self, text: str) -> str:
         match = re.search(r"Reason for Failure:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)
         if match:
-            raw = match.group(1).strip().lower()
-            if "business" in raw or "funding" in raw or "sponsor" in raw:
-                return "Business reasons"
-            if "ineffective" in raw or "efficacy" in raw or "futility" in raw:
-                return "Ineffective"
-            if "toxic" in raw or "safety" in raw or "unsafe" in raw or "adverse" in raw:
-                return "Toxic/unsafe"
-            if "covid" in raw or "pandemic" in raw:
-                return "COVID"
-            if "recruit" in raw or "enrollment" in raw:
+            raw = match.group(1).strip()
+            lower = raw.lower()
+
+            # Empty / not applicable
+            if lower in ("empty", "n/a", "not applicable", "none", ""):
+                return ""
+
+            # Exact match first (case-insensitive)
+            for valid in VALID_VALUES:
+                if valid.lower() == lower:
+                    return valid
+
+            # Fuzzy matching
+            if "business" in lower or "funding" in lower or "sponsor" in lower or "administrative" in lower:
+                return "Business Reason"
+            if "ineffective" in lower or "efficacy" in lower or "futility" in lower or "endpoint" in lower:
+                return "Ineffective for purpose"
+            if "toxic" in lower or "safety" in lower or "unsafe" in lower or "adverse" in lower:
+                return "Toxic/Unsafe"
+            if "covid" in lower or "pandemic" in lower or "coronavirus" in lower:
+                return "Due to covid"
+            if "recruit" in lower or "enrollment" in lower or "accrual" in lower:
                 return "Recruitment issues"
-            if "n/a" in raw or "not applicable" in raw:
-                return "N/A"
-        return "N/A"
+        return ""
 
     def _parse_reasoning(self, text: str) -> str:
         match = re.search(r"Reasoning:\s*(.+?)(?:\n\n|$)", text, re.DOTALL)

@@ -17,23 +17,78 @@ logger = logging.getLogger("agent_annotate.verification.verifier")
 # Per-field prompts for blind verification (no knowledge of primary answer)
 FIELD_PROMPTS = {
     "classification": {
-        "instruction": "Classify this clinical trial as either AMP (antimicrobial peptide) or Other.",
-        "valid_values": ["AMP", "Other"],
-        "parse_pattern": r"Classification:\s*(AMP|Other)",
+        "instruction": (
+            "Classify this clinical trial into one of three categories:\n"
+            "- AMP(infection): Trial involves an antimicrobial peptide targeting infection/pathogens\n"
+            "- AMP(other): Trial involves an antimicrobial peptide but for non-infection purposes "
+            "(e.g., wound healing, immunomodulation, cancer)\n"
+            "- Other: Not an AMP trial"
+        ),
+        "valid_values": ["AMP(infection)", "AMP(other)", "Other"],
+        "parse_pattern": r"Classification:\s*(.+?)(?:\n|$)",
     },
     "delivery_mode": {
-        "instruction": "Determine the delivery mode: Injection/Infusion, Topical, Oral, or Other.",
-        "valid_values": ["Injection/Infusion", "Topical", "Oral", "Other"],
+        "instruction": (
+            "Determine the specific delivery mode. Choose exactly one:\n"
+            "Injection/Infusion - Intramuscular, Injection/Infusion - Other/Unspecified, "
+            "Injection/Infusion - Subcutaneous/Intradermal, IV, Intranasal, "
+            "Oral - Tablet, Oral - Capsule, Oral - Food, Oral - Drink, Oral - Unspecified, "
+            "Topical - Cream/Gel, Topical - Powder, Topical - Spray, Topical - Strip/Covering, "
+            "Topical - Wash, Topical - Unspecified, Other/Unspecified, Inhalation"
+        ),
+        "valid_values": [
+            "Injection/Infusion - Intramuscular",
+            "Injection/Infusion - Other/Unspecified",
+            "Injection/Infusion - Subcutaneous/Intradermal",
+            "IV",
+            "Intranasal",
+            "Oral - Tablet",
+            "Oral - Capsule",
+            "Oral - Food",
+            "Oral - Drink",
+            "Oral - Unspecified",
+            "Topical - Cream/Gel",
+            "Topical - Powder",
+            "Topical - Spray",
+            "Topical - Strip/Covering",
+            "Topical - Wash",
+            "Topical - Unspecified",
+            "Other/Unspecified",
+            "Inhalation",
+        ],
         "parse_pattern": r"Delivery Mode:\s*(.+?)(?:\n|$)",
     },
     "outcome": {
-        "instruction": "Determine the trial outcome: Positive, Withdrawn, Terminated, Failed-completed trial, Active, or Unknown.",
-        "valid_values": ["Positive", "Withdrawn", "Terminated", "Failed-completed trial", "Active", "Unknown"],
+        "instruction": (
+            "Determine the trial outcome. Choose exactly one:\n"
+            "Positive, Withdrawn, Terminated, Failed - completed trial, "
+            "Recruiting, Unknown, Active, not recruiting"
+        ),
+        "valid_values": [
+            "Positive",
+            "Withdrawn",
+            "Terminated",
+            "Failed - completed trial",
+            "Recruiting",
+            "Unknown",
+            "Active, not recruiting",
+        ],
         "parse_pattern": r"Outcome:\s*(.+?)(?:\n|$)",
     },
     "reason_for_failure": {
-        "instruction": "Determine the reason for failure: Business reasons, Ineffective, Toxic/unsafe, COVID, Recruitment issues, or N/A.",
-        "valid_values": ["Business reasons", "Ineffective", "Toxic/unsafe", "COVID", "Recruitment issues", "N/A"],
+        "instruction": (
+            "Determine the reason for failure/withdrawal/termination. Choose exactly one:\n"
+            "Business Reason, Ineffective for purpose, Toxic/Unsafe, Due to covid, Recruitment issues\n"
+            "If the trial is active, recruiting, positive, or unknown, return EMPTY."
+        ),
+        "valid_values": [
+            "Business Reason",
+            "Ineffective for purpose",
+            "Toxic/Unsafe",
+            "Due to covid",
+            "Recruitment issues",
+            "",
+        ],
         "parse_pattern": r"Reason for Failure:\s*(.+?)(?:\n|$)",
     },
     "peptide": {
@@ -141,16 +196,34 @@ class BlindVerifier:
         """Extract the field value from verifier response."""
         pattern = field_config["parse_pattern"]
         match = re.search(pattern, text, re.IGNORECASE)
-        if match:
-            raw = match.group(1).strip()
-            # Fuzzy match to valid values
-            for valid in field_config["valid_values"]:
-                if valid.lower() == raw.lower():
-                    return valid
-                if valid.lower() in raw.lower():
-                    return valid
-            return raw
-        return None
+        if not match:
+            return None
+
+        raw = match.group(1).strip()
+        lower = raw.lower()
+
+        # Handle EMPTY / N/A for failure reason
+        if lower in ("empty", "n/a", "not applicable", "none", ""):
+            if "" in field_config["valid_values"]:
+                return ""
+            return None
+
+        # Exact match first (case-insensitive)
+        for valid in field_config["valid_values"]:
+            if valid.lower() == lower:
+                return valid
+
+        # Substring containment match
+        for valid in field_config["valid_values"]:
+            if valid and valid.lower() in lower:
+                return valid
+
+        # Reverse containment (raw text is a substring of a valid value)
+        for valid in field_config["valid_values"]:
+            if valid and lower in valid.lower():
+                return valid
+
+        return raw
 
     def _parse_reasoning(self, text: str) -> str:
         match = re.search(r"Reasoning:\s*(.+?)(?:\n\n|$)", text, re.DOTALL)
