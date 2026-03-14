@@ -83,30 +83,37 @@ class PipelineOrchestrator:
 
     async def _run_pipeline_inner(self, job: AnnotationJob) -> None:
         """Inner pipeline logic, wrapped by run_pipeline error handler."""
+        import time as _time
+
         job_id = job.job_id
         job.status = "running"
         job.updated_at = datetime.utcnow()
         config = config_service.get()
 
         all_trial_results = []
+        pipeline_start = _time.monotonic()
+        trial_times: list[float] = []
 
         async with aiohttp.ClientSession(
             timeout=aiohttp.ClientTimeout(total=120, connect=30)
         ) as session:
 
             for i, nct_id in enumerate(job.nct_ids):
+                trial_start = _time.monotonic()
                 job.progress.current_nct_id = nct_id
                 logger.info(f"[{job_id}] Processing {nct_id} ({i+1}/{len(job.nct_ids)})")
 
                 try:
                     # --- Phase 1: Research (parallel) ---
                     job.progress.current_stage = "researching"
+                    job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
                     job.updated_at = datetime.utcnow()
 
                     research_data = await self._run_research(nct_id, session, config, job)
 
                     # --- Phase 2: Annotation (parallel with retry) ---
                     job.progress.current_stage = "annotating"
+                    job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
                     job.updated_at = datetime.utcnow()
 
                     annotations = await self._run_annotation(
@@ -115,6 +122,7 @@ class PipelineOrchestrator:
 
                     # --- Phase 3: Verification (sequential per field) ---
                     job.progress.current_stage = "verifying"
+                    job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
                     job.updated_at = datetime.utcnow()
 
                     verified = await self._run_verification(
@@ -139,6 +147,7 @@ class PipelineOrchestrator:
                         )
 
                     job.progress.completed_trials += 1
+                    self._update_timing(job, trial_start, pipeline_start, trial_times)
 
                 except Exception as e:
                     logger.error(f"[{job_id}] Error processing {nct_id}: {e}")
@@ -152,6 +161,7 @@ class PipelineOrchestrator:
                         "error": str(e),
                     })
                     job.progress.completed_trials += 1
+                    self._update_timing(job, trial_start, pipeline_start, trial_times)
 
         # --- Save results ---
         job.progress.current_stage = "saving"
@@ -319,6 +329,28 @@ class PipelineOrchestrator:
                     ))
 
         return annotations
+
+    @staticmethod
+    def _update_timing(
+        job: AnnotationJob,
+        trial_start: float,
+        pipeline_start: float,
+        trial_times: list[float],
+    ) -> None:
+        """Update elapsed/estimated timing on the job progress."""
+        import time as _time
+
+        trial_elapsed = _time.monotonic() - trial_start
+        trial_times.append(trial_elapsed)
+
+        total_elapsed = _time.monotonic() - pipeline_start
+        job.progress.elapsed_seconds = round(total_elapsed, 1)
+
+        avg = sum(trial_times) / len(trial_times)
+        job.progress.avg_seconds_per_trial = round(avg, 1)
+
+        remaining_trials = job.progress.total_trials - job.progress.completed_trials
+        job.progress.estimated_remaining_seconds = round(avg * remaining_trials, 1)
 
     def _queue_for_review(
         self,

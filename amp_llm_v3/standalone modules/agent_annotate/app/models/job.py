@@ -14,6 +14,9 @@ class JobProgress(BaseModel):
     current_nct_id: Optional[str] = None
     current_stage: str = "queued"  # queued | researching | annotating | verifying | done | error
     errors: list[str] = []
+    elapsed_seconds: float = 0.0           # Total wall time so far
+    avg_seconds_per_trial: float = 0.0     # Running average per completed trial
+    estimated_remaining_seconds: float = 0.0  # Estimated time left
 
 
 class AnnotationJob(BaseModel):

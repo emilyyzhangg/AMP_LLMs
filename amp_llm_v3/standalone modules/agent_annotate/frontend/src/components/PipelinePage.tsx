@@ -75,11 +75,14 @@ export default function PipelinePage() {
     return <div className="card text-muted">Loading pipeline status...</div>;
   }
 
-  const progress = status.progress;
-  const pct = progress.total_trials > 0
-    ? Math.round((progress.completed_trials / progress.total_trials) * 100)
-    : 0;
-  const currentPhase = phaseIndex(progress.current_stage || "");
+  const progress = status.progress as Record<string, unknown>;
+  const completed = (progress.completed_trials as number) || 0;
+  const total = (progress.total_trials as number) || 0;
+  const pct = (progress.percent as number) || 0;
+  const currentPhase = phaseIndex((progress.current_stage as string) || "");
+  const elapsed = (progress.elapsed_display as string) || "";
+  const remaining = (progress.estimated_remaining_display as string) || "";
+  const avgPerTrial = (progress.avg_per_trial_display as string) || "";
 
   return (
     <div>
@@ -123,25 +126,52 @@ export default function PipelinePage() {
           })}
         </div>
 
+        {/* Trial progress */}
         <div className="mb-1">
           <span className="text-sm text-muted">
-            {progress.completed_trials} / {progress.total_trials} trials
+            {completed} / {total} trials
             {progress.current_nct_id && ` \u2014 Processing ${progress.current_nct_id}`}
           </span>
         </div>
         <div className="progress-bar">
           <div className="progress-fill" style={{ width: `${pct}%` }} />
         </div>
-        <div className="text-sm text-muted mt-1">
-          Stage: {progress.current_stage || "initializing"}
+
+        {/* Timing info */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gap: "1rem",
+          marginTop: "0.75rem",
+          padding: "0.75rem",
+          background: "var(--bg-secondary)",
+          borderRadius: "var(--radius)",
+          fontSize: "0.85rem",
+        }}>
+          <div>
+            <div className="text-muted" style={{ fontSize: "0.75rem", marginBottom: "0.2rem" }}>Elapsed</div>
+            <div style={{ fontWeight: 600 }}>{elapsed || "0s"}</div>
+          </div>
+          <div>
+            <div className="text-muted" style={{ fontSize: "0.75rem", marginBottom: "0.2rem" }}>Est. Remaining</div>
+            <div style={{ fontWeight: 600 }}>{remaining || (completed === 0 ? "Calculating..." : "0s")}</div>
+          </div>
+          <div>
+            <div className="text-muted" style={{ fontSize: "0.75rem", marginBottom: "0.2rem" }}>Avg / Trial</div>
+            <div style={{ fontWeight: 600 }}>{avgPerTrial || (completed === 0 ? "\u2014" : "0s")}</div>
+          </div>
         </div>
 
-        {progress.errors.length > 0 && (
+        <div className="text-sm text-muted mt-1">
+          Stage: {(progress.current_stage as string) || "initializing"}
+        </div>
+
+        {((progress.errors as string[]) || []).length > 0 && (
           <div className="mt-2">
             <div className="text-sm" style={{ color: "var(--error)" }}>
-              Errors ({progress.errors.length}):
+              Errors ({(progress.errors as string[]).length}):
             </div>
-            {progress.errors.map((err, i) => (
+            {(progress.errors as string[]).map((err: string, i: number) => (
               <div key={i} className="text-sm text-muted">{err}</div>
             ))}
           </div>
