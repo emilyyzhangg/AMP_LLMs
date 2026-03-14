@@ -16,11 +16,13 @@ import aiohttp
 from app.models.job import AnnotationJob, JobSummary, JobProgress
 from app.models.research import ResearchResult
 from app.models.annotation import FieldAnnotation, TrialMetadata, AnnotationResult
+from app.models.verification import ConsensusResult, VerifiedAnnotation
 from app.services.config_service import config_service
 from app.services.output_service import save_json_output
 from app.services.version_service import get_version_stamp
 from agents.research import RESEARCH_AGENTS
 from agents.annotation import ANNOTATION_AGENTS
+from agents.verification import BlindVerifier, ConsensusChecker, ReconciliationAgent
 
 logger = logging.getLogger("agent_annotate.orchestrator")
 
@@ -97,39 +99,54 @@ class PipelineOrchestrator:
                         nct_id, research_data, config, job
                     )
 
+                    # --- Phase 3: Verification (sequential per field) ---
+                    job.progress.current_stage = "verifying"
+                    job.updated_at = datetime.utcnow()
+
+                    verified = await self._run_verification(
+                        nct_id, annotations, research_data, config
+                    )
+
                     # Build trial result
                     metadata = self._extract_metadata(nct_id, research_data)
-                    trial_result = AnnotationResult(
-                        metadata=metadata,
-                        annotations=annotations,
-                        research_used=[r.agent_name for r in research_data],
-                    )
-                    all_trial_results.append(trial_result)
+                    all_trial_results.append({
+                        "nct_id": nct_id,
+                        "metadata": metadata.model_dump(),
+                        "annotations": [a.model_dump() for a in annotations],
+                        "verification": verified.model_dump(),
+                        "research_used": [r.agent_name for r in research_data],
+                    })
 
                     job.progress.completed_trials += 1
 
                 except Exception as e:
                     logger.error(f"[{job_id}] Error processing {nct_id}: {e}")
-                    # Record the error but continue with remaining trials
                     metadata = TrialMetadata(nct_id=nct_id)
-                    trial_result = AnnotationResult(
-                        metadata=metadata,
-                        annotations=[],
-                        research_used=[],
-                    )
-                    all_trial_results.append(trial_result)
+                    all_trial_results.append({
+                        "nct_id": nct_id,
+                        "metadata": metadata.model_dump(),
+                        "annotations": [],
+                        "verification": None,
+                        "research_used": [],
+                        "error": str(e),
+                    })
                     job.progress.completed_trials += 1
 
         # --- Save results ---
         job.progress.current_stage = "saving"
         version = get_version_stamp()
+        flagged = sum(
+            1 for r in all_trial_results
+            if r.get("verification") and r["verification"].get("flagged_for_review")
+        )
         output = {
             "version": version,
             "config_snapshot": job.config_snapshot,
-            "trials": [r.model_dump() for r in all_trial_results],
+            "trials": all_trial_results,
             "total_trials": len(all_trial_results),
-            "successful": sum(1 for r in all_trial_results if r.annotations),
-            "failed": sum(1 for r in all_trial_results if not r.annotations),
+            "successful": sum(1 for r in all_trial_results if r.get("annotations")),
+            "failed": sum(1 for r in all_trial_results if not r.get("annotations")),
+            "manual_review": flagged,
         }
         save_json_output(job_id, output)
 
@@ -280,6 +297,99 @@ class PipelineOrchestrator:
                     ))
 
         return annotations
+
+    async def _run_verification(
+        self,
+        nct_id: str,
+        annotations: list[FieldAnnotation],
+        research_data: list[ResearchResult],
+        config,
+    ) -> VerifiedAnnotation:
+        """Run blind verification for each annotation field."""
+        verifier = BlindVerifier()
+        checker = ConsensusChecker()
+        reconciler = ReconciliationAgent()
+
+        # Get model configs
+        verifier_models = [
+            (key, m) for key, m in config.verification.models.items()
+            if m.role == "verifier"
+        ]
+        reconciler_model = None
+        for key, m in config.verification.models.items():
+            if m.role == "reconciler":
+                reconciler_model = m.name
+                break
+
+        threshold = config.verification.consensus_threshold
+        consensus_results = []
+        any_flagged = False
+        flag_reasons = []
+
+        for annotation in annotations:
+            field = annotation.field_name
+            primary_value = annotation.value
+            logger.info(f"  Verifying {field}: primary='{primary_value}'")
+
+            # Skip verification for low-confidence annotations already flagged
+            if annotation.confidence < 0.2 and "[Below threshold" in (annotation.reasoning or ""):
+                consensus_results.append(ConsensusResult(
+                    field_name=field,
+                    original_value=primary_value,
+                    final_value="",
+                    consensus_reached=False,
+                    agreement_ratio=0.0,
+                    opinions=[],
+                    flag_reason="insufficient_evidence",
+                ))
+                any_flagged = True
+                flag_reasons.append(f"{field}: insufficient evidence")
+                continue
+
+            # Run each verifier SEQUENTIALLY (one Ollama model at a time)
+            verifier_opinions = []
+            for model_key, model_cfg in verifier_models:
+                opinion = await verifier.verify(
+                    nct_id=nct_id,
+                    field_name=field,
+                    research_results=research_data,
+                    model_name=model_key,
+                    ollama_model=model_cfg.name,
+                )
+                verifier_opinions.append(opinion)
+
+            # Consensus check
+            consensus = checker.check(
+                field_name=field,
+                primary_value=primary_value,
+                primary_model="primary",
+                verifier_opinions=verifier_opinions,
+                threshold=threshold,
+            )
+
+            # If no consensus, try reconciliation
+            if not consensus.consensus_reached and reconciler_model:
+                logger.info(f"  {field}: Attempting reconciliation with {reconciler_model}")
+                consensus = await reconciler.reconcile(
+                    field_name=field,
+                    consensus_result=consensus,
+                    research_results=research_data,
+                    reconciler_model=reconciler_model,
+                )
+
+            if not consensus.consensus_reached:
+                any_flagged = True
+                flag_reasons.append(f"{field}: model disagreement")
+
+            consensus_results.append(consensus)
+
+        return VerifiedAnnotation(
+            nct_id=nct_id,
+            fields=consensus_results,
+            overall_consensus=not any_flagged,
+            flagged_for_review=any_flagged,
+            flag_reason="; ".join(flag_reasons) if flag_reasons else None,
+        )
 
     def _extract_metadata(
         self, nct_id: str, research_data: list[ResearchResult]
