@@ -1,9 +1,10 @@
 """
-CSV output generation for annotation results.
+CSV and JSON output generation for annotation results.
 """
 
 import csv
 import io
+import json
 from pathlib import Path
 from datetime import datetime
 
@@ -105,4 +106,14 @@ def save_csv(job_id: str, csv_content: str, label: str = "standard") -> Path:
     filename = f"{job_id}_{label}_{timestamp}.csv"
     path = RESULTS_DIR / filename
     path.write_text(csv_content)
+    return path
+
+
+def save_json_output(job_id: str, data: dict) -> Path:
+    """Save full JSON output to the results directory."""
+    json_dir = RESULTS_DIR / "json"
+    json_dir.mkdir(parents=True, exist_ok=True)
+    path = json_dir / f"{job_id}.json"
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2, default=str)
     return path

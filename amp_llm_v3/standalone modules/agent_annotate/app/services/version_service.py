@@ -36,3 +36,14 @@ def get_version_info() -> VersionInfo:
         git_commit_full=get_git_commit_full(),
         config_hash=config_service.get_hash(),
     )
+
+
+def get_version_stamp() -> dict:
+    """Return a dict suitable for embedding in JSON output."""
+    return {
+        "version": SEMANTIC_VERSION,
+        "git_commit": get_git_commit_short(),
+        "git_commit_full": get_git_commit_full(),
+        "config_hash": config_service.get_hash(),
+        "timestamp": __import__("datetime").datetime.utcnow().isoformat(),
+    }
