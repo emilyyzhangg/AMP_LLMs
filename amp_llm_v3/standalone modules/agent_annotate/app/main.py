@@ -6,12 +6,15 @@ import logging
 from contextlib import asynccontextmanager
 from logging.handlers import RotatingFileHandler
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.config import CORS_ORIGINS, FRONTEND_DIR, LOGS_DIR
+
+PATH_PREFIX = "/agent-annotate"
 from app.services.config_service import config_service
 
 from app.routers import health, jobs, status, results, review, settings
@@ -76,6 +79,17 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
+
+# Strip /agent-annotate prefix so the app works both at
+# localhost:9005/ (direct) and dev-llm.amphoraxe.ca/agent-annotate/ (via Cloudflare)
+class StripPrefixMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        path = request.scope["path"]
+        if path.startswith(PATH_PREFIX):
+            request.scope["path"] = path[len(PATH_PREFIX):] or "/"
+        return await call_next(request)
+
+app.add_middleware(StripPrefixMiddleware)
 
 # CORS
 app.add_middleware(

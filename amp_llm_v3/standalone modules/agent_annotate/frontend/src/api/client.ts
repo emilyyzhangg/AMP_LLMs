@@ -11,7 +11,13 @@ import type {
   ResultSummary,
 } from "../types";
 
-const BASE = "/api";
+// Auto-detect API base: when served under /agent-annotate via Cloudflare,
+// API calls must also go through /agent-annotate/api to hit this service.
+// When accessed directly at localhost:9005, just use /api.
+const PREFIX = window.location.pathname.startsWith("/agent-annotate")
+  ? "/agent-annotate"
+  : "";
+const BASE = `${PREFIX}/api`;
 
 async function request<T>(path: string, opts?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
