@@ -85,7 +85,7 @@ export default function SettingsPage() {
         <div className="card-title">Evidence Thresholds</div>
         {settings.evidence_thresholds && Object.entries(settings.evidence_thresholds).map(([field, thresh]: [string, any]) => (
           <div key={field} className="text-sm mb-1">
-            <strong>{field}</strong>: min {thresh.min_sources} sources, quality {">="} {thresh.min_quality_score}
+            <strong>{field}</strong>: min {thresh.min_sources} sources, quality {"\u2265"} {thresh.min_quality_score}
           </div>
         ))}
       </div>

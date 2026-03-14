@@ -18,16 +18,37 @@ export interface PipelineProgress {
   errors: string[];
 }
 
+export interface PipelineStatus {
+  job_id: string;
+  status: string;
+  progress: PipelineProgress;
+}
+
+export interface ModelOpinion {
+  model_name: string;
+  agrees: boolean;
+  suggested_value: string;
+  reasoning: string;
+  confidence: number;
+}
+
 export interface ReviewItem {
   job_id: string;
   nct_id: string;
   field_name: string;
   original_value: string;
   suggested_values: string[];
-  opinions: object[];
+  opinions: ModelOpinion[];
   status: string;
   reviewer_value: string | null;
   reviewer_note: string | null;
+}
+
+export interface ReviewStats {
+  total: number;
+  pending: number;
+  decided: number;
+  skipped: number;
 }
 
 export interface VersionInfo {
@@ -39,6 +60,28 @@ export interface VersionInfo {
 
 export interface HealthStatus {
   status: string;
-  ollama: string;
   version: VersionInfo;
+  ollama: boolean;
+}
+
+export interface ResultListItem {
+  job_id: string;
+  version: string;
+  git_commit: string;
+  timestamp: string;
+  total_trials: number;
+  successful: number;
+  failed: number;
+  manual_review: number;
+}
+
+export interface ResultSummary {
+  job_id: string;
+  total_trials: number;
+  successful: number;
+  failed: number;
+  manual_review: number;
+  version?: Record<string, string>;
+  status?: string;
+  completed_trials?: number;
 }

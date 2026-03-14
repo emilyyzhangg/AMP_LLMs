@@ -17,6 +17,7 @@ export default function App() {
           <Route path="/" element={<SubmitPage />} />
           <Route path="/pipeline/:jobId" element={<PipelinePage />} />
           <Route path="/review" element={<ReviewPage />} />
+          <Route path="/results" element={<ResultsPage />} />
           <Route path="/results/:jobId" element={<ResultsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/history" element={<HistoryPage />} />
