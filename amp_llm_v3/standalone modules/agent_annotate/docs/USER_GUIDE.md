@@ -108,7 +108,7 @@ Each annotation agent evaluates its available evidence against two criteria:
 | Classification | 2 | 0.50 | Core claim — must have multiple corroborating sources |
 | Delivery Mode | 2 | 0.50 | Usually well-documented in trial protocols |
 | Outcome | 2 | 0.50 | Status + at least one corroborating source |
-| Reason for Failure | 1 | 0.30 | Often only documented in one place (why_stopped field) |
+| Reason for Failure | 1 | 0.30 | Uses two-pass investigation; often requires published literature beyond whyStopped (49/99 human-annotated reasons came from trials where whyStopped was blank) |
 | Peptide | 2 | 0.50 | Critical for AMP research — requires protein database confirmation |
 
 ### How Quality Scores Are Calculated

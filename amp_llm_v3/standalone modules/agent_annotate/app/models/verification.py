@@ -25,6 +25,7 @@ class ConsensusResult(BaseModel):
     opinions: list[ModelOpinion] = []
     reconciler_used: bool = False
     reconciler_reasoning: Optional[str] = None
+    flag_reason: Optional[str] = None
 
 
 class VerifiedAnnotation(BaseModel):
