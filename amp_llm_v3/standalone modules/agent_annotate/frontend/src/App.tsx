@@ -1,0 +1,27 @@
+import { Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
+import AuthGate from "./components/AuthGate";
+import SubmitPage from "./components/SubmitPage";
+import PipelinePage from "./components/PipelinePage";
+import ReviewPage from "./components/ReviewPage";
+import ResultsPage from "./components/ResultsPage";
+import SettingsPage from "./components/SettingsPage";
+import HistoryPage from "./components/HistoryPage";
+
+export default function App() {
+  return (
+    <AuthGate>
+      <Header />
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<SubmitPage />} />
+          <Route path="/pipeline/:jobId" element={<PipelinePage />} />
+          <Route path="/review" element={<ReviewPage />} />
+          <Route path="/results/:jobId" element={<ResultsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/history" element={<HistoryPage />} />
+        </Routes>
+      </main>
+    </AuthGate>
+  );
+}
