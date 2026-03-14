@@ -1,12 +1,13 @@
 """
 Clinical Protocol Research Agent.
 
-Fetches structured trial data from ClinicalTrials.gov (via NCT lookup service)
-and OpenFDA.
+Fetches structured trial data directly from ClinicalTrials.gov API v2
+and drug safety data from OpenFDA.
 """
 
 import sys
 import os
+import logging
 from pathlib import Path
 from typing import Optional
 from datetime import datetime
@@ -15,12 +16,10 @@ import httpx
 
 from agents.base import BaseResearchAgent
 from app.models.research import ResearchResult, SourceCitation
-from app.config import NCT_SERVICE_URL
 
-# Add nct_lookup to path for direct imports if needed
-_NCT_LOOKUP_DIR = Path(__file__).resolve().parent.parent.parent.parent / "nct_lookup"
-if _NCT_LOOKUP_DIR.exists():
-    sys.path.insert(0, str(_NCT_LOOKUP_DIR))
+logger = logging.getLogger("agent_annotate.research.clinical_protocol")
+
+CT_GOV_API = "https://clinicaltrials.gov/api/v2/studies"
 
 
 class ClinicalProtocolAgent(BaseResearchAgent):
@@ -33,29 +32,36 @@ class ClinicalProtocolAgent(BaseResearchAgent):
         citations = []
         raw_data = {}
 
-        # 1. ClinicalTrials.gov via NCT lookup service
+        # 1. Fetch directly from ClinicalTrials.gov API v2
+        protocol = {}
         try:
             async with httpx.AsyncClient(timeout=30) as client:
-                resp = await client.get(f"{NCT_SERVICE_URL}/api/nct/{nct_id}")
+                resp = await client.get(f"{CT_GOV_API}/{nct_id}")
                 if resp.status_code == 200:
-                    data = resp.json()
-                    raw_data["clinicaltrials_gov"] = data
-                    citations.append(SourceCitation(
-                        source_name="clinicaltrials_gov",
-                        source_url=f"https://clinicaltrials.gov/study/{nct_id}",
-                        identifier=nct_id,
-                        title=data.get("brief_title", data.get("official_title", "")),
-                        snippet=self._build_ct_snippet(data),
-                        quality_score=self.compute_quality_score("clinicaltrials_gov"),
-                        retrieved_at=datetime.utcnow().isoformat(),
-                    ))
-        except Exception as e:
-            raw_data["clinicaltrials_gov_error"] = str(e)
+                    ct_data = resp.json()
+                    protocol = ct_data.get("protocolSection", {})
+                    raw_data["protocol_section"] = protocol
 
-        # 2. OpenFDA (drug/device lookups)
-        try:
-            interventions = metadata.get("interventions", []) if metadata else []
-            for intervention in interventions[:3]:  # Limit to 3 lookups
+                    # Extract structured citations from protocol
+                    citations.extend(self._extract_protocol_citations(nct_id, protocol))
+                    logger.info(f"  ClinicalTrials.gov: {len(citations)} citations for {nct_id}")
+                else:
+                    raw_data["clinicaltrials_error"] = f"HTTP {resp.status_code}"
+                    logger.warning(f"  ClinicalTrials.gov: HTTP {resp.status_code} for {nct_id}")
+        except Exception as e:
+            raw_data["clinicaltrials_error"] = str(e)
+            logger.error(f"  ClinicalTrials.gov fetch failed for {nct_id}: {e}")
+
+        # 2. OpenFDA drug safety lookup using intervention names
+        interventions = []
+        arms_mod = protocol.get("armsInterventionsModule", {})
+        for interv in arms_mod.get("interventions", []):
+            name = interv.get("name", "")
+            if name:
+                interventions.append(name)
+
+        for intervention in interventions[:3]:
+            try:
                 async with httpx.AsyncClient(timeout=15) as client:
                     resp = await client.get(
                         "https://api.fda.gov/drug/label.json",
@@ -66,17 +72,20 @@ class ClinicalProtocolAgent(BaseResearchAgent):
                         results = fda_data.get("results", [])
                         if results:
                             raw_data[f"openfda_{intervention}"] = results[0]
+                            route = ""
+                            if results[0].get("openfda", {}).get("route"):
+                                route = ", ".join(results[0]["openfda"]["route"])
                             citations.append(SourceCitation(
                                 source_name="openfda",
                                 source_url="https://api.fda.gov",
                                 identifier=intervention,
                                 title=f"FDA Label: {intervention}",
-                                snippet=results[0].get("description", [""])[0][:500] if results[0].get("description") else "",
+                                snippet=f"Route: {route}" if route else f"FDA label found for {intervention}",
                                 quality_score=self.compute_quality_score("openfda"),
                                 retrieved_at=datetime.utcnow().isoformat(),
                             ))
-        except Exception as e:
-            raw_data["openfda_error"] = str(e)
+            except Exception as e:
+                raw_data[f"openfda_{intervention}_error"] = str(e)
 
         return ResearchResult(
             agent_name=self.agent_name,
@@ -85,21 +94,88 @@ class ClinicalProtocolAgent(BaseResearchAgent):
             raw_data=raw_data,
         )
 
-    def _build_ct_snippet(self, data: dict) -> str:
-        """Build a concise snippet from ClinicalTrials.gov data."""
-        parts = []
-        if data.get("brief_title"):
-            parts.append(f"Title: {data['brief_title']}")
-        if data.get("overall_status"):
-            parts.append(f"Status: {data['overall_status']}")
-        if data.get("phase"):
-            parts.append(f"Phase: {data['phase']}")
-        if data.get("conditions"):
-            conds = data["conditions"] if isinstance(data["conditions"], list) else [data["conditions"]]
-            parts.append(f"Conditions: {', '.join(conds[:5])}")
-        if data.get("interventions"):
-            intv = data["interventions"] if isinstance(data["interventions"], list) else [data["interventions"]]
-            parts.append(f"Interventions: {', '.join(str(i) for i in intv[:5])}")
-        if data.get("brief_summary"):
-            parts.append(f"Summary: {data['brief_summary'][:300]}")
-        return " | ".join(parts)
+    def _extract_protocol_citations(self, nct_id: str, protocol: dict) -> list[SourceCitation]:
+        """Extract structured citations from ClinicalTrials.gov protocolSection."""
+        citations = []
+        base_url = f"https://clinicaltrials.gov/study/{nct_id}"
+        ident = protocol.get("identificationModule", {})
+        status_mod = protocol.get("statusModule", {})
+        desc = protocol.get("descriptionModule", {})
+        cond_mod = protocol.get("conditionsModule", {})
+        arms_mod = protocol.get("armsInterventionsModule", {})
+        design_mod = protocol.get("designModule", {})
+
+        title = ident.get("officialTitle") or ident.get("briefTitle", "")
+        if title:
+            citations.append(SourceCitation(
+                source_name="clinicaltrials_gov", identifier=nct_id,
+                source_url=base_url, title=title,
+                snippet=f"Title: {title}",
+                quality_score=self.compute_quality_score("clinicaltrials_gov"),
+                retrieved_at=datetime.utcnow().isoformat(),
+            ))
+
+        summary = desc.get("briefSummary", "")
+        if summary:
+            citations.append(SourceCitation(
+                source_name="clinicaltrials_gov", identifier=nct_id,
+                source_url=base_url, title="Brief Summary",
+                snippet=summary[:500],
+                quality_score=self.compute_quality_score("clinicaltrials_gov"),
+                retrieved_at=datetime.utcnow().isoformat(),
+            ))
+
+        overall_status = status_mod.get("overallStatus", "")
+        if overall_status:
+            why_stopped = status_mod.get("whyStopped", "")
+            snippet = f"Status: {overall_status}"
+            if why_stopped:
+                snippet += f" | Why stopped: {why_stopped}"
+            citations.append(SourceCitation(
+                source_name="clinicaltrials_gov", identifier=nct_id,
+                source_url=base_url, title="Study Status",
+                snippet=snippet,
+                quality_score=self.compute_quality_score("clinicaltrials_gov"),
+                retrieved_at=datetime.utcnow().isoformat(),
+            ))
+
+        conditions = cond_mod.get("conditions", [])
+        keywords = cond_mod.get("keywords", [])
+        if conditions or keywords:
+            snippet = f"Conditions: {', '.join(conditions)}"
+            if keywords:
+                snippet += f" | Keywords: {', '.join(keywords)}"
+            citations.append(SourceCitation(
+                source_name="clinicaltrials_gov", identifier=nct_id,
+                source_url=base_url, title="Conditions & Keywords",
+                snippet=snippet,
+                quality_score=self.compute_quality_score("clinicaltrials_gov"),
+                retrieved_at=datetime.utcnow().isoformat(),
+            ))
+
+        for interv in arms_mod.get("interventions", []):
+            name = interv.get("name", "")
+            itype = interv.get("type", "")
+            idesc = interv.get("description", "")
+            snippet = f"{itype}: {name}"
+            if idesc:
+                snippet += f" - {idesc[:300]}"
+            citations.append(SourceCitation(
+                source_name="clinicaltrials_gov", identifier=nct_id,
+                source_url=base_url, title=f"Intervention: {name}",
+                snippet=snippet,
+                quality_score=self.compute_quality_score("clinicaltrials_gov"),
+                retrieved_at=datetime.utcnow().isoformat(),
+            ))
+
+        phases = design_mod.get("phases", [])
+        if phases:
+            citations.append(SourceCitation(
+                source_name="clinicaltrials_gov", identifier=nct_id,
+                source_url=base_url, title="Phase",
+                snippet=f"Phase: {', '.join(phases)}",
+                quality_score=self.compute_quality_score("clinicaltrials_gov"),
+                retrieved_at=datetime.utcnow().isoformat(),
+            ))
+
+        return citations

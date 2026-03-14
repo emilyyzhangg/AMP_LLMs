@@ -95,7 +95,7 @@ class PipelineOrchestrator:
         ) as session:
 
             for i, nct_id in enumerate(job.nct_ids):
-                job.progress.current_trial = nct_id
+                job.progress.current_nct_id = nct_id
                 logger.info(f"[{job_id}] Processing {nct_id} ({i+1}/{len(job.nct_ids)})")
 
                 try:
@@ -174,7 +174,7 @@ class PipelineOrchestrator:
         job.results = all_trial_results
         job.status = "completed"
         job.progress.current_stage = "done"
-        job.progress.current_trial = None
+        job.progress.current_nct_id = None
         job.updated_at = datetime.utcnow()
         logger.info(f"[{job_id}] Pipeline completed: {len(all_trial_results)} trials")
 
