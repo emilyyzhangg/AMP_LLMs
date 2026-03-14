@@ -13,6 +13,7 @@ export default defineConfig({
       },
     },
   },
+  base: "./",
   build: {
     outDir: path.resolve(__dirname, "../app/static/spa"),
     emptyOutDir: true,
