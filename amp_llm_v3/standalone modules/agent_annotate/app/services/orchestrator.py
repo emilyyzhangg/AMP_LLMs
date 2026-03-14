@@ -23,6 +23,8 @@ from app.services.version_service import get_version_stamp
 from agents.research import RESEARCH_AGENTS
 from agents.annotation import ANNOTATION_AGENTS
 from agents.verification import BlindVerifier, ConsensusChecker, ReconciliationAgent
+from app.services.review_service import review_service
+from app.models.job import ReviewItem
 
 logger = logging.getLogger("agent_annotate.orchestrator")
 
@@ -109,13 +111,20 @@ class PipelineOrchestrator:
 
                     # Build trial result
                     metadata = self._extract_metadata(nct_id, research_data)
-                    all_trial_results.append({
+                    trial_output = {
                         "nct_id": nct_id,
                         "metadata": metadata.model_dump(),
                         "annotations": [a.model_dump() for a in annotations],
                         "verification": verified.model_dump(),
                         "research_used": [r.agent_name for r in research_data],
-                    })
+                    }
+                    all_trial_results.append(trial_output)
+
+                    # Queue flagged fields for manual review
+                    if verified.flagged_for_review:
+                        self._queue_for_review(
+                            job_id, nct_id, annotations, verified
+                        )
 
                     job.progress.completed_trials += 1
 
@@ -150,6 +159,7 @@ class PipelineOrchestrator:
         }
         save_json_output(job_id, output)
 
+        job.results = all_trial_results
         job.status = "completed"
         job.progress.current_stage = "done"
         job.progress.current_trial = None
@@ -297,6 +307,45 @@ class PipelineOrchestrator:
                     ))
 
         return annotations
+
+    def _queue_for_review(
+        self,
+        job_id: str,
+        nct_id: str,
+        annotations: list[FieldAnnotation],
+        verified: VerifiedAnnotation,
+    ) -> None:
+        """Add flagged fields to the manual review queue."""
+        ann_by_field = {a.field_name: a for a in annotations}
+
+        for consensus in verified.fields:
+            if consensus.consensus_reached:
+                continue
+
+            annotation = ann_by_field.get(consensus.field_name)
+            suggested = []
+            if annotation:
+                suggested.append(annotation.value)
+            for opinion in consensus.opinions:
+                if opinion.suggested_value and opinion.suggested_value not in suggested:
+                    suggested.append(opinion.suggested_value)
+
+            reason = "model_disagreement"
+            if consensus.flag_reason and "insufficient" in consensus.flag_reason:
+                reason = "insufficient_evidence"
+
+            item = ReviewItem(
+                job_id=job_id,
+                nct_id=nct_id,
+                field_name=consensus.field_name,
+                original_value=consensus.original_value,
+                suggested_values=suggested,
+                opinions=[o.model_dump() for o in consensus.opinions],
+            )
+            review_service.add(item)
+            logger.info(
+                f"  Queued for review: {nct_id}/{consensus.field_name} ({reason})"
+            )
 
     async def _run_verification(
         self,
