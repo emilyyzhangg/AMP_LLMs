@@ -72,6 +72,18 @@ class PipelineOrchestrator:
         if not job:
             return
 
+        try:
+            await self._run_pipeline_inner(job)
+        except Exception as e:
+            logger.exception(f"[{job_id}] Pipeline failed with unhandled error: {e}")
+            job.status = "failed"
+            job.error = str(e)
+            job.progress.current_stage = "error"
+            job.updated_at = datetime.utcnow()
+
+    async def _run_pipeline_inner(self, job: AnnotationJob) -> None:
+        """Inner pipeline logic, wrapped by run_pipeline error handler."""
+        job_id = job.job_id
         job.status = "running"
         job.updated_at = datetime.utcnow()
         config = config_service.get()
