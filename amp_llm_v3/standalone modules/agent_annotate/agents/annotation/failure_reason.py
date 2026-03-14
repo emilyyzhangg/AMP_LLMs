@@ -1,60 +1,104 @@
 """
-Failure Reason Annotation Agent.
+Failure Reason Annotation Agent (v2 — investigative).
 
-Determines why a trial failed, was terminated, or was withdrawn.
+Determines why a trial failed using a two-pass strategy:
+  Pass 1: Extract whyStopped, trial status, and search literature
+          for any discussion of failure, adverse events, or futility
+  Pass 2: Determine the specific reason with all evidence in hand
+
+Key insight from human annotation data:
+  - 49 out of 99 failure reasons came from COMPLETED/UNKNOWN/ACTIVE trials
+    where whyStopped is usually blank
+  - "Ineffective for purpose" often found only in published papers
+    describing negative results or failure to meet endpoints
+  - "Toxic/Unsafe" sometimes found only in adverse event publications
+  - "Business Reason" sometimes revealed in press releases or web sources
+  - Humans actively searched literature — the agent must do the same
 """
 
 import re
+import logging
 from typing import Optional
 
 from agents.base import BaseAnnotationAgent
 from app.models.research import ResearchResult, SourceCitation
 from app.models.annotation import FieldAnnotation
 
-VALID_VALUES = ["Business Reason", "Ineffective for purpose", "Toxic/Unsafe", "Due to covid", "Recruitment issues"]
+logger = logging.getLogger("agent_annotate.annotation.failure_reason")
 
-SYSTEM_PROMPT = """You are a clinical trial failure analysis specialist.
+VALID_VALUES = [
+    "Business Reason",
+    "Ineffective for purpose",
+    "Toxic/Unsafe",
+    "Due to covid",
+    "Recruitment issues",
+]
 
-Your task: Determine the reason a clinical trial was terminated, withdrawn, or failed.
+# Pass 1: Extract all facts about why the trial may have failed
+PASS1_PROMPT = """You are a clinical trial failure investigation specialist.
 
-IMPORTANT: This field only applies to trials with a negative outcome (Withdrawn, Terminated, or Failed - completed trial). If the trial outcome is Positive, Recruiting, Active, or Unknown, return an EMPTY value — do NOT provide a reason.
+Your task: Investigate ALL available evidence to determine whether this trial failed, and if so, WHY. Do not stop at the ClinicalTrials.gov whyStopped field — dig deeper.
 
-Valid reasons (use these exact strings):
-- Business Reason: Funding withdrawn, sponsor decision, company acquired/dissolved, strategic pivot, regulatory pathway changed, manufacturing issues, administrative reasons
-- Ineffective for purpose: Trial failed to show efficacy, did not meet primary endpoints, futility analysis led to stopping
-- Toxic/Unsafe: Safety concerns, unacceptable adverse events, toxicity findings, DSMB recommendation to stop for safety
-- Due to covid: Trial disrupted by COVID-19 pandemic (enrollment, site access, supply chain)
-- Recruitment issues: Unable to recruit sufficient participants, slow enrollment, site closures unrelated to COVID
+From the evidence below, extract:
 
-Key data:
-- whyStopped field from ClinicalTrials.gov is the primary indicator
-- Published literature may explain failure reasons
-- Web sources may have press releases about termination
+1. TRIAL STATUS: The overallStatus from ClinicalTrials.gov (COMPLETED, TERMINATED, WITHDRAWN, etc.)
 
-Decision rules:
-1. If trial outcome is Positive, Recruiting, Active, or Unknown -> leave EMPTY (no reason)
-2. If whyStopped mentions funding, business, sponsor, administrative -> Business Reason
-3. If whyStopped mentions efficacy, futility, endpoint, ineffective -> Ineffective for purpose
-4. If whyStopped mentions safety, toxicity, adverse events -> Toxic/Unsafe
-5. If whyStopped mentions COVID, pandemic, coronavirus -> Due to covid
-6. If whyStopped mentions enrollment, recruitment, accrual -> Recruitment issues
-7. If no whyStopped and trial is terminated/withdrawn -> check literature for the reason
+2. WHY STOPPED: The whyStopped field from ClinicalTrials.gov. If blank, say "Not provided".
+
+3. PUBLISHED FINDINGS: Search PubMed, PMC, and web evidence for ANY mention of:
+   - Trial results (positive OR negative)
+   - Whether primary endpoints were met or not
+   - Adverse events, toxicity, or safety concerns
+   - Reasons for discontinuation mentioned in papers
+   - Futility analyses
+   Quote relevant excerpts.
+
+4. OUTCOME SIGNALS: Does the evidence suggest the trial succeeded or failed?
+   - "met primary endpoint" / "significant improvement" = success
+   - "did not meet" / "no significant difference" / "failed to demonstrate" = failure
+   - "adverse events led to" / "safety concerns" / "toxicity" = safety issue
+   - "enrollment challenges" / "recruitment" = recruitment problem
+   - "sponsor decision" / "business" / "funding" / "strategic" = business reason
+   - "COVID" / "pandemic" = covid impact
+
+5. IS THIS A FAILURE? Based on all evidence, does this trial appear to have failed, been terminated for cause, or been withdrawn?
+
+Format your response EXACTLY as:
+Trial Status: [status]
+Why Stopped: [field value or "Not provided"]
+Published Findings: [summary of findings from literature]
+Outcome Signals: [what the evidence suggests]
+Is This A Failure: [Yes/No/Unclear]"""
+
+# Pass 2: Determine the specific reason
+PASS2_PROMPT = """You are a clinical trial failure classification specialist. You have investigated a trial and extracted the following facts:
+
+{pass1_output}
+
+Based on ALL the evidence above, determine the reason for failure.
+
+CRITICAL RULES:
+1. Published literature is MORE RELIABLE than the whyStopped field. A trial with whyStopped="Sponsor decision" might actually have failed due to toxicity if papers report adverse events.
+2. COMPLETED trials CAN have failure reasons — if published results show the trial didn't meet endpoints, the reason is "Ineffective for purpose".
+3. If the trial did NOT fail (positive results, still recruiting, etc.), return EMPTY.
+4. Look beyond surface labels — "sponsor decision" often masks the real reason.
+
+Choose EXACTLY ONE:
+- Business Reason: Funding withdrawn, sponsor decision (with no efficacy/safety cause), company dissolved, strategic pivot, regulatory changes, manufacturing issues
+- Ineffective for purpose: Published results show trial failed to meet primary endpoints, no significant difference found, futility analysis
+- Toxic/Unsafe: Safety concerns, adverse events, toxicity findings, DSMB stopped for safety, published adverse event reports
+- Due to covid: Trial specifically disrupted by COVID-19 pandemic
+- Recruitment issues: Slow enrollment, unable to recruit, site closures (not COVID-related)
+- EMPTY: Trial did not fail (positive, still active, or truly unknown)
 
 IMPORTANT: Format your response EXACTLY as:
-
 Reason for Failure: [Business Reason, Ineffective for purpose, Toxic/Unsafe, Due to covid, Recruitment issues, or EMPTY]
-Evidence: [Cite the specific source and excerpt]
-Reasoning: [Brief explanation]
-
-If not applicable (trial is active/positive/unknown), respond:
-
-Reason for Failure: EMPTY
-Evidence: Not applicable — trial outcome does not indicate failure.
-Reasoning: This field only applies to failed/terminated/withdrawn trials."""
+Evidence: [cite the specific source that reveals the reason]
+Reasoning: [explain your chain of thought, especially if the reason differs from whyStopped]"""
 
 
 class FailureReasonAgent(BaseAnnotationAgent):
-    """Determines reason for trial failure/termination."""
+    """Determines reason for trial failure using two-pass investigation."""
 
     field_name = "reason_for_failure"
 
@@ -72,10 +116,14 @@ class FailureReasonAgent(BaseAnnotationAgent):
 
         all_citations.sort(key=lambda x: x[1], reverse=True)
 
-        evidence_text = f"Trial: {nct_id}\n\n"
+        # Include more citations — failure reasons are often buried in details
+        evidence_text = f"Trial: {nct_id}\n\nAll available evidence:\n"
         cited_sources = []
-        for citation, weight in all_citations[:20]:
-            evidence_text += f"[{citation.source_name}] {citation.identifier or ''}: {citation.snippet}\n"
+        for citation, weight in all_citations[:30]:
+            evidence_text += (
+                f"[{citation.source_name}] {citation.identifier or ''}: "
+                f"{citation.snippet}\n"
+            )
             cited_sources.append(citation)
 
         from app.services.ollama_client import ollama_client
@@ -90,36 +138,122 @@ class FailureReasonAgent(BaseAnnotationAgent):
         if not primary_model:
             primary_model = "llama3.1:8b"
 
+        # --- PASS 1: Investigate ---
         try:
-            response = await ollama_client.generate(
+            logger.info(f"  failure_reason: Pass 1 — investigating {nct_id}")
+            pass1_response = await ollama_client.generate(
                 model=primary_model,
                 prompt=evidence_text,
-                system=SYSTEM_PROMPT,
+                system=PASS1_PROMPT,
                 temperature=config.ollama.temperature,
             )
-            raw_text = response.get("response", "")
+            pass1_output = pass1_response.get("response", "")
         except Exception as e:
             return FieldAnnotation(
                 field_name=self.field_name,
                 value="",
                 confidence=0.0,
-                reasoning=f"LLM call failed: {e}",
+                reasoning=f"Pass 1 LLM call failed: {e}",
                 evidence=[],
                 model_name=primary_model,
             )
 
-        value = self._parse_value(raw_text)
-        reasoning = self._parse_reasoning(raw_text)
+        # Quick check: if pass 1 says "not a failure", skip pass 2
+        if self._pass1_says_no_failure(pass1_output):
+            return FieldAnnotation(
+                field_name=self.field_name,
+                value="",
+                confidence=0.8,
+                reasoning=f"[Pass 1] No failure detected. {pass1_output[:300]}",
+                evidence=cited_sources[:10],
+                model_name=primary_model,
+            )
+
+        # --- PASS 2: Classify the reason ---
+        try:
+            logger.info(f"  failure_reason: Pass 2 — classifying reason for {nct_id}")
+            pass2_prompt = PASS2_PROMPT.format(pass1_output=pass1_output)
+            pass2_response = await ollama_client.generate(
+                model=primary_model,
+                prompt=pass2_prompt + "\n\nOriginal evidence:\n" + evidence_text,
+                temperature=config.ollama.temperature,
+            )
+            pass2_output = pass2_response.get("response", "")
+        except Exception as e:
+            value = self._infer_from_pass1(pass1_output)
+            return FieldAnnotation(
+                field_name=self.field_name,
+                value=value,
+                confidence=0.3,
+                reasoning=f"Pass 2 failed ({e}), inferred from pass 1: {pass1_output[:300]}",
+                evidence=cited_sources[:10],
+                model_name=primary_model,
+            )
+
+        value = self._parse_value(pass2_output)
+        reasoning = self._parse_reasoning(pass2_output)
+        full_reasoning = f"[Pass 1 investigation] {pass1_output[:500]}\n[Pass 2 classification] {reasoning}"
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
 
         return FieldAnnotation(
             field_name=self.field_name,
             value=value,
             confidence=quality,
-            reasoning=reasoning,
+            reasoning=full_reasoning,
             evidence=cited_sources[:10],
             model_name=primary_model,
         )
+
+    def _pass1_says_no_failure(self, pass1_text: str) -> bool:
+        """Check if Pass 1 clearly says this is not a failure."""
+        lower = pass1_text.lower()
+        match = re.search(r"is this a failure:\s*(.+?)(?:\n|$)", lower)
+        if match:
+            answer = match.group(1).strip()
+            if answer.startswith("no"):
+                return True
+        return False
+
+    def _infer_from_pass1(self, pass1_text: str) -> str:
+        """Fallback: infer reason from Pass 1 if Pass 2 fails."""
+        lower = pass1_text.lower()
+
+        # Check published findings for signals
+        findings_match = re.search(r"published findings?:\s*(.+?)(?:\n[A-Z]|\Z)", lower, re.DOTALL)
+        findings = findings_match.group(1) if findings_match else ""
+
+        signals_match = re.search(r"outcome signals?:\s*(.+?)(?:\n[A-Z]|\Z)", lower, re.DOTALL)
+        signals = signals_match.group(1) if signals_match else ""
+
+        combined = findings + " " + signals
+
+        if any(kw in combined for kw in ["toxicity", "adverse", "safety", "unsafe", "dsmb"]):
+            return "Toxic/Unsafe"
+        if any(kw in combined for kw in ["did not meet", "no significant", "failed to", "ineffective", "futility"]):
+            return "Ineffective for purpose"
+        if any(kw in combined for kw in ["covid", "pandemic"]):
+            return "Due to covid"
+        if any(kw in combined for kw in ["recruit", "enrollment", "accrual"]):
+            return "Recruitment issues"
+        if any(kw in combined for kw in ["sponsor", "funding", "business", "strategic"]):
+            return "Business Reason"
+
+        # Check whyStopped field
+        why_match = re.search(r"why stopped:\s*(.+?)(?:\n|$)", lower)
+        if why_match:
+            why = why_match.group(1).strip()
+            if why != "not provided" and why:
+                if any(kw in why for kw in ["toxic", "safety", "adverse"]):
+                    return "Toxic/Unsafe"
+                if any(kw in why for kw in ["efficacy", "futility", "endpoint"]):
+                    return "Ineffective for purpose"
+                if any(kw in why for kw in ["covid", "pandemic"]):
+                    return "Due to covid"
+                if any(kw in why for kw in ["recruit", "enrollment"]):
+                    return "Recruitment issues"
+                return "Business Reason"
+
+        return ""
 
     def _parse_value(self, text: str) -> str:
         match = re.search(r"Reason for Failure:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)
@@ -127,16 +261,13 @@ class FailureReasonAgent(BaseAnnotationAgent):
             raw = match.group(1).strip()
             lower = raw.lower()
 
-            # Empty / not applicable
             if lower in ("empty", "n/a", "not applicable", "none", ""):
                 return ""
 
-            # Exact match first (case-insensitive)
             for valid in VALID_VALUES:
                 if valid.lower() == lower:
                     return valid
 
-            # Fuzzy matching
             if "business" in lower or "funding" in lower or "sponsor" in lower or "administrative" in lower:
                 return "Business Reason"
             if "ineffective" in lower or "efficacy" in lower or "futility" in lower or "endpoint" in lower:
