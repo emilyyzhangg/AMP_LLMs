@@ -2,6 +2,11 @@
 
 Publication-grade clinical trial annotation powered by a network of specialized AI agents with blind multi-model verification.
 
+**Related documents:**
+- `METHODOLOGY.md` — Complete technical methodology for scientific publication (every agent, check, and verification step described in full)
+- `IMPLEMENTATION_PLAN.md` — Development phases and roadmap
+- `IMPROVEMENT_STRATEGY.md` — Accuracy improvement plan based on comparison with human annotations
+
 ---
 
 ## Table of Contents
@@ -277,8 +282,25 @@ All configuration lives in `config/default_config.yaml` and is editable through 
 ### Output Files
 
 - **JSON** (primary): Complete audit trail at `results/json/{job_id}.json` — includes all research findings, annotation reasoning (with Pass 1/Pass 2 outputs for investigative agents), verification opinions, and manual review decisions
-- **Standard CSV** (11 columns): NCT ID, Study Title, Study Status, Phase, Conditions, Interventions, Classification, Delivery Mode, Outcome, Reason for Failure, Peptide
-- **Full CSV** (47 columns): Standard columns + per-field evidence chains, verification status, confidence scores, verifier opinions, reconciler usage, manual review flags, version stamp, git commit
+- **Standard CSV** (16 columns): NCT ID, Study Title, Study Status, Phase, Conditions, Interventions, then for each of the 5 annotation fields: the value + an evidence column with PMIDs, URLs, and database identifiers
+- **Full CSV** (61 columns): Standard columns + per-field: confidence, evidence sources (database:identifier pairs), evidence URLs, reasoning chain, consensus status, final value, verifier opinions, reconciler usage, manual review flag + global: flagged_for_review, flag_reason, version, git_commit, config_hash, annotated_at
+
+### Evidence Citations in CSV
+
+Every annotation field includes a companion evidence column (e.g., `Classification Evidence`) containing deduplicated source identifiers:
+- PubMed articles: `PMID:36191080`
+- PMC full-text: `PMC:11773215`
+- ClinicalTrials.gov: `https://clinicaltrials.gov/study/NCT06729606`
+- UniProt entries: `uniprot:P01282`
+- Web sources: full URL
+
+The full CSV expands this with separate `{field}_evidence_sources` (database:identifier pairs) and `{field}_evidence_urls` columns, plus the model's `{field}_reasoning` chain-of-thought.
+
+### Recency Principle
+
+The agent queries live APIs at annotation time, so it always uses the latest available data. When multiple publications exist with conflicting conclusions, the most recent publication takes priority. This means:
+- A trial that was "Recruiting" when humans annotated it may now be "Completed" with published results → the agent correctly annotates the current status
+- Newer publications override older ones — if a 2024 paper found inconclusive results but a 2025 paper demonstrated efficacy, the outcome is "Positive"
 
 ### Annotation Field Values (matching human annotation Excel)
 
@@ -289,3 +311,46 @@ All configuration lives in `config/default_config.yaml` and is editable through 
 | Outcome | Positive, Withdrawn, Terminated, Failed - completed trial, Recruiting, Unknown, Active not recruiting |
 | Reason for Failure | Business Reason, Ineffective for purpose, Toxic/Unsafe, Due to covid, Recruitment issues (empty if not applicable) |
 | Peptide | True, False |
+
+---
+
+## 7. Known Limitations & Accuracy Notes
+
+Based on comparison of agent output against human annotations (Replicates 1 & 2 in `clinical_trials-with-sequences.xlsx`):
+
+### Classification: "AMP" Does Not Mean "Any Peptide"
+
+AMP stands for **Antimicrobial Peptide**. The classification categories are:
+- **AMP(infection)**: The intervention is an AMP AND targets infection
+- **AMP(other)**: The intervention is an AMP but targets something other than infection (wound healing, cancer, immunomodulation)
+- **Other**: Everything else — including peptides that are NOT antimicrobial (GLP-1 analogues, VIP, somatostatin analogues, GnRH analogues)
+
+**Common agent error**: Classifying all peptides as AMP(something). VIP/Aviptadil for headaches is a peptide but NOT an AMP → should be "Other". Semaglutide for diabetes is a peptide but NOT an AMP → should be "Other". Only peptides with antimicrobial activity or that target pathogens qualify as AMP.
+
+### Peptide: Nutritional Formulas vs Peptide Drugs
+
+The agent sometimes misclassifies nutritional products containing hydrolyzed peptides as peptide therapeutics. The distinction:
+- **True**: The active drug IS a peptide (colistin, semaglutide, VIP, StreptInCor vaccine)
+- **False**: The product CONTAINS peptides as food ingredients (Kate Farm Peptide 1.5, hydrolyzed protein formulas)
+
+Also note that large multi-subunit proteins and engineered protein scaffolds are NOT peptides, even if they contain peptide chains.
+
+### Delivery Mode: Injection Subtype Guessing
+
+Despite explicit instructions not to guess, the agent sometimes defaults to Intramuscular when the protocol just says "injection." If a specific subtype isn't explicitly stated in the trial protocol or FDA label, the correct answer is "Injection/Infusion - Other/Unspecified."
+
+### Cross-Field Consistency
+
+The agent currently annotates each field independently with no cross-validation. This can produce contradictions:
+- Outcome = "Positive" with Reason for Failure = "Ineffective for purpose" (impossible)
+- Peptide = "False" with Classification = "AMP(infection)" (impossible)
+
+A post-annotation consistency check is planned (see `docs/IMPROVEMENT_STRATEGY.md`).
+
+### Verification ≠ Correctness
+
+All verifiers agreeing does not guarantee correctness — small models can unanimously agree on a wrong answer. The multi-model verification catches *inconsistency* across model families, not factual errors shared across all models. Always review flagged items and spot-check verified items.
+
+### Fully Autonomous Design
+
+Agent Annotate is designed to operate without a human counterpart. Human annotations (in `docs/clinical_trials-with-sequences.xlsx`) were used during development to evaluate accuracy and refine prompts, but they are **never used at runtime**. All agent decisions are based solely on live data from external APIs (ClinicalTrials.gov, PubMed, UniProt, FDA, web sources). This means the agent always uses the latest available data and is not constrained by the point-in-time snapshot of any human dataset.

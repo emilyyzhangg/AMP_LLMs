@@ -550,6 +550,22 @@ header p {
     color: #ef4444;
 }
 
+.job-service-tag {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.service-annotate {
+    background: #7c3aed;
+    color: white;
+}
+.service-chat {
+    background: #6b7280;
+    color: white;
+}
+
 .job-branch-tag {
     padding: 3px 8px;
     border-radius: 10px;

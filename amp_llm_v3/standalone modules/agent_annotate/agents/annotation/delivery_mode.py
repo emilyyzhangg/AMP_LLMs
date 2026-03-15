@@ -73,6 +73,42 @@ Guidance for choosing:
 4. Nasal sprays are "Intranasal", not "Topical - Spray".
 5. If truly unclear, use the appropriate "Unspecified" subtype or "Other/Unspecified".
 
+CRITICAL RULES — DO NOT GUESS:
+6. NEVER guess the injection subtype. If the protocol says "injection" or "injectable" without explicitly specifying IM (intramuscular), SC/SQ (subcutaneous), or IV (intravenous), use "Injection/Infusion - Other/Unspecified". Do NOT default to Intramuscular.
+7. If an FDA drug label specifies a route (e.g., "SUBCUTANEOUS"), use that as the primary signal.
+8. Look for explicit terms: "intramuscular" or "IM" → Intramuscular. "subcutaneous", "SC", "sub-Q", "intradermal" → Subcutaneous/Intradermal. Do NOT infer from drug class or "likely" administration.
+
+Oral subtype rules:
+9. "Oral - Food": the intervention IS a food product (functional food, fortified food, yogurt).
+10. "Oral - Drink": the intervention is dissolved in liquid, a solution, nutritional formula, shake, or suspension to be consumed as a beverage. A nutritional formula or shake = Oral - Drink, NOT Oral - Food.
+11. When in doubt between Oral - Food and Oral - Drink, prefer Oral - Drink for liquid formulations.
+
+WORKED EXAMPLES:
+
+Protocol says "Aviptadil administered by IV infusion over 12 hours"
+→ Delivery Mode: IV
+Why: "IV infusion" is explicitly stated.
+
+Protocol says "apraglutide subcutaneous injection once weekly"
+→ Delivery Mode: Injection/Infusion - Subcutaneous/Intradermal
+Why: "subcutaneous" is explicitly stated.
+
+Protocol says "peptide vaccine injection" (no route specified)
+→ Delivery Mode: Injection/Infusion - Other/Unspecified
+Why: "injection" without IM/SC/IV = Other/Unspecified. DO NOT guess Intramuscular.
+
+FDA label says "for subcutaneous use", protocol says "injection"
+→ Delivery Mode: Injection/Infusion - Subcutaneous/Intradermal
+Why: FDA label specifying route overrides the generic "injection" in the protocol.
+
+Protocol says "Kate Farm Peptide 1.5 nutritional formula"
+→ Delivery Mode: Oral - Drink
+Why: Nutritional formula consumed as a beverage = Oral - Drink, NOT Oral - Food.
+
+Protocol says "colistin inhalation solution via nebulizer"
+→ Delivery Mode: Inhalation
+Why: "inhalation" and "nebulizer" explicitly stated.
+
 IMPORTANT: Format your response EXACTLY as:
 
 Delivery Mode: [one of the 18 values listed above, exactly as written]

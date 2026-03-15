@@ -13,39 +13,66 @@ from app.models.annotation import FieldAnnotation
 
 VALID_VALUES = ["AMP(infection)", "AMP(other)", "Other"]
 
-SYSTEM_PROMPT = """You are a clinical trial classification specialist focused on antimicrobial peptides (AMPs).
+SYSTEM_PROMPT = """You are a clinical trial classification specialist. AMP stands for Antimicrobial Peptide.
 
-Your task: Classify a clinical trial into one of exactly three categories.
+Your task: Classify a clinical trial into one of exactly three categories using the three-step decision tree below.
 
-Valid classifications:
-- AMP(infection): The trial involves an antimicrobial peptide and the primary purpose is targeting infection or pathogens (bacterial, fungal, viral). This includes trials where the AMP is used to treat, prevent, or manage infectious disease.
-- AMP(other): The trial involves an antimicrobial peptide but the primary purpose is NOT treating infection. Instead it targets other conditions such as wound healing, immunomodulation, cancer, inflammation, or other non-infection applications.
-- Other: The trial does NOT involve an antimicrobial peptide. The intervention is a small molecule drug, antibody, vaccine (unless peptide-based), gene therapy, device, or any non-AMP intervention.
+You will be told whether the intervention is a peptide (Peptide determination provided below).
 
-Step 1 — Is the intervention an AMP?
-Key indicators for AMP:
-- Intervention names containing: peptide, antimicrobial peptide, AMP, defensin, cathelicidin, LL-37, melittin, nisin, polymyxin, colistin, daptomycin, gramicidin, magainin, cecropin, protegrin, indolicidin, lactoferricin
-- UniProt/DRAMP matches for the intervention
-- Keywords mentioning antimicrobial peptide activity
-- Brief summary describing peptide-based antimicrobial therapy
+THREE-STEP DECISION TREE:
 
-If NOT an AMP -> classify as "Other".
+STEP 1 — Is the intervention a peptide?
+  Check the Peptide determination. If Peptide = False → STOP → answer "Other".
 
-Step 2 — If it IS an AMP, what is the primary purpose?
-- Treating/preventing infection or targeting pathogens -> AMP(infection)
-- Wound healing, immunomodulation, cancer, anti-inflammatory, or any non-infection purpose -> AMP(other)
+STEP 2 — Is this peptide an ANTIMICROBIAL peptide (AMP)?
+  AMPs are peptides that kill or inhibit microorganisms, OR peptide-based therapeutics designed to target pathogens.
+  - YES, it is an AMP: colistin, polymyxin B, daptomycin, nisin, defensins, LL-37, gramicidin, bacitracin, melittin, magainin, cecropin, vancomycin, tyrothricin
+  - YES, counts as AMP: peptide vaccines targeting pathogens (StreptInCor against S. pyogenes, peptide-based HIV vaccines)
+  - NO, NOT an AMP: GLP-1/GLP-2 analogues (semaglutide, liraglutide, apraglutide) — these are metabolic hormone peptides
+  - NO, NOT an AMP: VIP/Aviptadil — vasoactive intestinal peptide, a hormone, not antimicrobial
+  - NO, NOT an AMP: GnRH analogues (leuprolide, goserelin) — reproductive hormone peptides
+  - NO, NOT an AMP: Somatostatin analogues (octreotide, lanreotide) — growth hormone-inhibiting peptides
+  - NO, NOT an AMP: Peptides for cancer, diabetes, obesity, GvHD, headaches, GI motility that have no antimicrobial activity
+  If NOT an AMP → STOP → answer "Other".
 
-Key indicators for Other (not AMP):
-- Small molecule drugs (named with -ib, -mab suffixes that aren't peptides)
-- Monoclonal antibodies (large proteins, not peptides)
-- Vaccines, gene therapies, medical devices
-- No peptide-related terms in interventions or descriptions
+STEP 3 — Does this AMP target infection specifically?
+  - Infection, pathogens, antimicrobial resistance, bacterial/viral/fungal disease → "AMP(infection)"
+  - Non-infection uses of AMPs: wound healing, cancer immunotherapy, biofilm disruption (non-infectious) → "AMP(other)"
 
-IMPORTANT: You must cite the specific evidence for your decision. Format your response EXACTLY as:
+WORKED EXAMPLES:
+
+Colistin for urinary tract infection → AMP(infection)
+  Step 1: Peptide=True. Step 2: Colistin is a classic AMP. Step 3: UTI is an infection.
+
+LL-37 for diabetic wound healing → AMP(other)
+  Step 1: Peptide=True. Step 2: LL-37 is an AMP (cathelicidin). Step 3: Wound healing, not infection.
+
+StreptInCor vaccine against Streptococcus pyogenes → AMP(infection)
+  Step 1: Peptide=True. Step 2: Peptide vaccine targeting a pathogen = counts as AMP. Step 3: S. pyogenes = infection.
+
+VIP/Aviptadil for COVID-19 ARDS → Other
+  Step 1: Peptide=True. Step 2: VIP is a vasoactive hormone peptide, NOT an antimicrobial peptide. STOP → Other.
+
+Semaglutide for type 2 diabetes → Other
+  Step 1: Peptide=True. Step 2: GLP-1 analogue, NOT an AMP. STOP → Other.
+
+Apraglutide for GvHD → Other
+  Step 1: Peptide=True. Step 2: GLP-2 analogue, NOT an AMP. STOP → Other.
+
+Amoxicillin for bacterial pneumonia → Other
+  Step 1: Peptide=False (small molecule). STOP → Other.
+
+Pembrolizumab for melanoma → Other
+  Step 1: Peptide=False (monoclonal antibody). STOP → Other.
+
+Kate Farm Peptide 1.5 for gastroparesis → Other
+  Step 1: Peptide=False (nutritional formula). STOP → Other.
+
+IMPORTANT: Format your response EXACTLY as:
 
 Classification: [AMP(infection), AMP(other), or Other]
 Evidence: [Cite the specific source, identifier, and excerpt that supports your decision]
-Reasoning: [Brief chain-of-thought explanation]"""
+Reasoning: [Walk through Step 1 → Step 2 → Step 3]"""
 
 
 class ClassificationAgent(BaseAnnotationAgent):
@@ -70,7 +97,10 @@ class ClassificationAgent(BaseAnnotationAgent):
         all_citations.sort(key=lambda x: x[1], reverse=True)
 
         # Build evidence text for the LLM prompt
+        # Include peptide determination if available from metadata
+        peptide_value = metadata.get("peptide_result", "Unknown") if metadata else "Unknown"
         evidence_text = f"Trial: {nct_id}\n\n"
+        evidence_text += f"Peptide determination: {peptide_value}\n\n"
         cited_sources = []
         for citation, weight in all_citations[:20]:
             evidence_text += f"[{citation.source_name}] {citation.identifier or ''}: {citation.snippet}\n"
@@ -133,17 +163,15 @@ class ClassificationAgent(BaseAnnotationAgent):
                 return "AMP(infection)"
             if "amp(other)" in raw or "amp (other)" in raw:
                 return "AMP(other)"
-            if raw == "other":
+            if "other" in raw:
                 return "Other"
-            # Fallback: if they just said "AMP" without subtype, check context
-            if "amp" in raw and "other" not in raw:
-                # Check if infection-related context is present
-                lower_text = text.lower()
-                if any(kw in lower_text for kw in ["infection", "pathogen", "antibacterial", "antifungal", "antiviral", "antimicrobial resistance"]):
-                    return "AMP(infection)"
-                return "AMP(other)"
+            # If model just said "AMP" without subtype — default to "Other"
+            # because bare "AMP" is ambiguous and most peptides are NOT AMPs.
+            # This is safer than guessing a subtype.
+            if "amp" in raw:
+                return "Other"
             return "Other"
-        # Fallback: scan early text for AMP mentions
+        # Fallback: scan for explicit AMP(subtype) mentions
         lower_text = text.lower()
         if "amp(infection)" in lower_text or "amp (infection)" in lower_text:
             return "AMP(infection)"

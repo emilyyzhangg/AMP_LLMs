@@ -115,7 +115,10 @@ const app = {
         }
 
         jobsList.innerHTML = jobs.map(job => {
-            const isActive = job.status === 'processing' || job.status === 'pending';
+            const isAnnotate = job.service === 'annotate';
+            const isActive = isAnnotate
+                ? (job.status === 'queued' || job.status === 'running')
+                : (job.status === 'processing' || job.status === 'pending');
             const isCompleted = job.status === 'completed';
             const isFailed = job.status === 'failed';
             const elapsed = this.formatElapsedTime(job.elapsed_seconds);
@@ -127,44 +130,71 @@ const app = {
             const statusClass = isCompleted ? 'completed' : isFailed ? 'failed' : job.status;
             const branchClass = branch === 'main' ? 'branch-main' : 'branch-dev';
 
+            // Service badge
+            const serviceTag = isAnnotate
+                ? '<span class="job-service-tag service-annotate">AGENT</span>'
+                : '<span class="job-service-tag service-chat">CHAT</span>';
+
+            // Details differ by service type
+            const detailsHtml = isAnnotate ? `
+                <div class="job-details">
+                    <div class="job-detail"><strong>Trials:</strong> ${job.completed_trials || 0}/${job.total_trials || 0}</div>
+                    <div class="job-detail"><strong>Started:</strong> ${startedAt}</div>
+                </div>
+                ${job.total_trials > 0 ? `
+                    <div class="job-progress-bar">
+                        <div class="job-progress-fill ${statusClass}" style="width: ${job.total_trials > 0 ? Math.round((job.completed_trials / job.total_trials) * 100) : 0}%"></div>
+                    </div>
+                ` : ''}
+            ` : `
+                <div class="job-details">
+                    <div class="job-detail"><strong>Model:</strong> ${job.model || 'Unknown'}</div>
+                    <div class="job-detail"><strong>Trials:</strong> ${job.processed_trials}/${job.total_trials}</div>
+                    <div class="job-detail"><strong>Source:</strong> ${job.original_filename || 'Manual'}</div>
+                    <div class="job-detail"><strong>Started:</strong> ${startedAt}</div>
+                    <div class="job-detail"><strong>Elapsed:</strong> ${elapsed}</div>
+                    ${job.notification_email ? `<div class="job-detail"><strong>Email:</strong> ${job.notification_email}</div>` : ''}
+                    ${job.current_nct ? `<div class="job-detail"><strong>Current:</strong> ${job.current_nct}</div>` : ''}
+                </div>
+                ${job.total_trials > 0 ? `
+                    <div class="job-progress-bar">
+                        <div class="job-progress-fill ${statusClass}" style="width: ${job.percent_complete}%"></div>
+                    </div>
+                ` : ''}
+                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+                    ${job.progress || 'Queued'}
+                </div>
+            `;
+
+            // Cancel/download actions differ by service type
+            const cancelAction = isAnnotate
+                ? `app.cancelAnnotateJob('${job.job_id}', '${branch}')`
+                : `app.cancelJob('${job.job_id}', '${branch}')`;
+            const downloadUrl = isAnnotate
+                ? `${this.API_BASE}/api/annotate/results/${job.job_id}/csv?branch=${branch}`
+                : `${this.API_BASE}/chat/download/${job.job_id}?branch=${branch}`;
+
             return `
                 <div class="job-card ${statusClass}">
                     <div class="job-header">
                         <span class="job-id">${statusIcon} Job: ${job.job_id.substring(0, 8)}...</span>
                         <div style="display: flex; align-items: center; gap: 6px;">
+                            ${serviceTag}
                             <span class="job-branch-tag ${branchClass}">${branch}</span>
                             <span class="job-status ${statusClass}">${job.status.toUpperCase()}</span>
                         </div>
                     </div>
 
-                    <div class="job-details">
-                        <div class="job-detail"><strong>Model:</strong> ${job.model || 'Unknown'}</div>
-                        <div class="job-detail"><strong>Trials:</strong> ${job.processed_trials}/${job.total_trials}</div>
-                        <div class="job-detail"><strong>Source:</strong> ${job.original_filename || 'Manual'}</div>
-                        <div class="job-detail"><strong>Started:</strong> ${startedAt}</div>
-                        <div class="job-detail"><strong>Elapsed:</strong> ${elapsed}</div>
-                        ${job.notification_email ? `<div class="job-detail"><strong>Email:</strong> ${job.notification_email}</div>` : ''}
-                        ${job.current_nct ? `<div class="job-detail"><strong>Current:</strong> ${job.current_nct}</div>` : ''}
-                    </div>
-
-                    ${job.total_trials > 0 ? `
-                        <div class="job-progress-bar">
-                            <div class="job-progress-fill ${statusClass}" style="width: ${job.percent_complete}%"></div>
-                        </div>
-                    ` : ''}
-
-                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
-                        ${job.progress || 'Queued'}
-                    </div>
+                    ${detailsHtml}
 
                     <div class="job-actions">
                         ${isActive ? `
-                            <button class="btn-cancel" onclick="app.cancelJob('${job.job_id}', '${branch}')">
+                            <button class="btn-cancel" onclick="${cancelAction}">
                                 🛑 Cancel Job
                             </button>
                         ` : ''}
                         ${isCompleted ? `
-                            <button class="btn-download" onclick="window.open('${this.API_BASE}/chat/download/${job.job_id}?branch=${branch}', '_blank')">
+                            <button class="btn-download" onclick="window.open('${downloadUrl}', '_blank')">
                                 📥 Download CSV
                             </button>
                         ` : ''}
@@ -216,6 +246,30 @@ const app = {
         } catch (error) {
             console.error('Failed to cancel job:', error);
             alert(`Error cancelling job: ${error.message}`);
+        }
+    },
+
+    async cancelAnnotateJob(jobId, branch) {
+        if (!confirm(`Cancel agent-annotate job ${jobId.substring(0, 8)}... (${branch})?\n\nThis will stop the annotation process.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${this.API_BASE}/api/annotate/jobs/${jobId}/cancel?branch=${branch}`, {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Annotate job cancelled:', result);
+                await this.refreshJobs();
+            } else {
+                const error = await response.text();
+                alert(`Failed to cancel annotate job: ${error}`);
+            }
+        } catch (error) {
+            console.error('Failed to cancel annotate job:', error);
+            alert(`Error cancelling annotate job: ${error.message}`);
         }
     },
 

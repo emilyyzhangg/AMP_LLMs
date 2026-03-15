@@ -82,6 +82,7 @@ CRITICAL RULES:
 2. COMPLETED trials CAN have failure reasons — if published results show the trial didn't meet endpoints, the reason is "Ineffective for purpose".
 3. If the trial did NOT fail (positive results, still recruiting, etc.), return EMPTY.
 4. Look beyond surface labels — "sponsor decision" often masks the real reason.
+5. RECENCY: If multiple publications exist with conflicting findings, the most recent publication takes priority. Newer evidence supersedes older evidence.
 
 Choose EXACTLY ONE:
 - Business Reason: Funding withdrawn, sponsor decision (with no efficacy/safety cause), company dissolved, strategic pivot, regulatory changes, manufacturing issues

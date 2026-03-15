@@ -120,6 +120,9 @@ class PipelineOrchestrator:
                         nct_id, research_data, config, job
                     )
 
+                    # --- Cross-field consistency check ---
+                    self._enforce_consistency(annotations)
+
                     # --- Phase 3: Verification (sequential per field) ---
                     job.progress.current_stage = "verifying"
                     job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
@@ -249,12 +252,17 @@ class PipelineOrchestrator:
         config,
         job: AnnotationJob,
     ) -> list[FieldAnnotation]:
-        """Run annotation agents, with retry logic for insufficient evidence."""
+        """Run annotation agents, with retry logic for insufficient evidence.
+
+        Peptide runs first so its result can be passed to Classification.
+        """
         annotations = []
         agent_config = config.annotation_agents
         thresholds = config.evidence_thresholds
+        # Metadata dict that accumulates results for dependent agents
+        shared_metadata: dict = {}
 
-        async def annotate_field(field_name: str) -> FieldAnnotation:
+        async def annotate_field(field_name: str, metadata: Optional[dict] = None) -> FieldAnnotation:
             agent_cls = ANNOTATION_AGENTS.get(field_name)
             if not agent_cls:
                 return FieldAnnotation(
@@ -279,7 +287,7 @@ class PipelineOrchestrator:
             all_research = [r for r in research_data if not r.error]
 
             # First attempt with all available research
-            result = await agent.annotate(nct_id, all_research)
+            result = await agent.annotate(nct_id, all_research, metadata=metadata)
 
             # Check evidence threshold
             threshold = getattr(thresholds, field_name, None)
@@ -302,24 +310,41 @@ class PipelineOrchestrator:
 
             return result
 
+        # --- Step 1: Run peptide FIRST (classification depends on it) ---
+        try:
+            peptide_ann = await annotate_field("peptide")
+        except Exception as e:
+            peptide_ann = FieldAnnotation(
+                field_name="peptide",
+                value="Unknown",
+                reasoning=f"Agent error: {e}",
+            )
+        annotations.append(peptide_ann)
+        shared_metadata["peptide_result"] = peptide_ann.value
+
+        # --- Step 2: Run remaining agents (classification gets peptide result) ---
+        remaining_fields = [f for f in ANNOTATION_AGENTS if f != "peptide"]
+
         if config.orchestrator.parallel_annotation:
-            # Run all annotation agents in parallel
-            # Note: They share the Ollama lock, so actual LLM calls are sequential
-            tasks = [annotate_field(field) for field in ANNOTATION_AGENTS]
-            annotations = list(await asyncio.gather(*tasks, return_exceptions=True))
-            # Replace exceptions with error annotations
-            for i, ann in enumerate(annotations):
+            tasks = []
+            for field in remaining_fields:
+                meta = shared_metadata if field == "classification" else None
+                tasks.append(annotate_field(field, metadata=meta))
+            results = list(await asyncio.gather(*tasks, return_exceptions=True))
+            for i, ann in enumerate(results):
                 if isinstance(ann, Exception):
-                    field = list(ANNOTATION_AGENTS.keys())[i]
-                    annotations[i] = FieldAnnotation(
+                    field = remaining_fields[i]
+                    results[i] = FieldAnnotation(
                         field_name=field,
                         value="Unknown",
                         reasoning=f"Agent error: {ann}",
                     )
+            annotations.extend(results)
         else:
-            for field in ANNOTATION_AGENTS:
+            for field in remaining_fields:
                 try:
-                    ann = await annotate_field(field)
+                    meta = shared_metadata if field == "classification" else None
+                    ann = await annotate_field(field, metadata=meta)
                     annotations.append(ann)
                 except Exception as e:
                     annotations.append(FieldAnnotation(
@@ -329,6 +354,49 @@ class PipelineOrchestrator:
                     ))
 
         return annotations
+
+    @staticmethod
+    def _enforce_consistency(annotations: list[FieldAnnotation]) -> None:
+        """Enforce cross-field consistency rules after annotation, before verification.
+
+        Fixes contradictions that arise from fields being annotated independently:
+        - peptide=False → classification must be "Other"
+        - outcome is non-failure → reason_for_failure must be ""
+        """
+        ann_by_field = {a.field_name: a for a in annotations}
+        peptide = ann_by_field.get("peptide")
+        classification = ann_by_field.get("classification")
+        outcome = ann_by_field.get("outcome")
+        failure = ann_by_field.get("reason_for_failure")
+
+        # Rule 1: peptide=False → classification must be "Other"
+        if peptide and classification and peptide.value == "False":
+            if classification.value != "Other":
+                logger.info(
+                    f"  consistency: peptide=False, forcing classification "
+                    f"from '{classification.value}' to 'Other'"
+                )
+                classification.value = "Other"
+                classification.reasoning = (
+                    f"[Consistency override: peptide=False → Other] "
+                    + classification.reasoning
+                )
+
+        # Rule 2: non-failure outcome → clear reason_for_failure
+        non_failure_outcomes = {
+            "Positive", "Recruiting", "Active, not recruiting", "Unknown"
+        }
+        if outcome and failure and outcome.value in non_failure_outcomes:
+            if failure.value:
+                logger.info(
+                    f"  consistency: outcome='{outcome.value}', "
+                    f"clearing reason_for_failure from '{failure.value}'"
+                )
+                failure.value = ""
+                failure.reasoning = (
+                    f"[Consistency override: outcome='{outcome.value}' → "
+                    f"no failure reason] " + failure.reasoning
+                )
 
     @staticmethod
     def _update_timing(

@@ -15,24 +15,53 @@ VALID_VALUES = ["True", "False"]
 
 SYSTEM_PROMPT = """You are a peptide identification specialist for clinical trials.
 
-Your task: Determine whether the primary intervention in this clinical trial is a peptide (True or False).
+Your task: Determine whether the primary intervention in this clinical trial is a peptide THERAPEUTIC (True or False).
 
-A peptide is:
-- A chain of amino acids, typically 2-100 residues (though some therapeutic peptides are larger)
-- Includes: antimicrobial peptides, hormone analogues (GnRH, somatostatin, GLP-1), cyclic peptides, peptide vaccines, cell-penetrating peptides, peptide-drug conjugates
-- Includes known peptide drugs: colistin, daptomycin, polymyxin B, nisin, vancomycin (glycopeptide), gramicidin, bacitracin, tyrothricin, LL-37, defensins, melittin, magainin, cecropin, octreotide, leuprolide, goserelin, exenatide, liraglutide, semaglutide
+DEFINITION: A peptide therapeutic is a chain of amino acids (typically 2-100 residues, though some are larger) used AS THE ACTIVE DRUG.
 
-NOT a peptide:
-- Monoclonal antibodies (too large, different class — e.g., pembrolizumab, trastuzumab)
-- Small molecule drugs (e.g., amoxicillin, ciprofloxacin, metformin)
-- Gene therapies, cell therapies, medical devices
-- Whole proteins (e.g., interferons, erythropoietin) — unless specifically described as peptide fragments
+WORKED EXAMPLES — study these carefully before answering:
 
-Key evidence sources:
-- UniProt matches: if the intervention maps to a UniProt entry with "Antimicrobial" or peptide-related keywords -> True
-- DRAMP/DBAASP matches: if found in antimicrobial peptide databases -> True
-- Intervention description: look for "peptide", "amino acid", "sequence" terms
-- Drug class: look for classification as peptide therapeutic
+Example 1: Aviptadil (VIP analogue, 28 amino acids, IV infusion for COVID-19)
+→ Peptide: True
+Why: VIP/Aviptadil is a 28-amino-acid peptide hormone used as the active drug.
+
+Example 2: Kate Farm Peptide 1.5 (nutritional formula for gastroparesis)
+→ Peptide: False
+Why: "Peptide" in the product name refers to hydrolyzed protein for digestion. The peptides are food ingredients, NOT the active drug. This is a nutritional product.
+
+Example 3: Semaglutide (GLP-1 receptor agonist, 31 amino acids, for diabetes)
+→ Peptide: True
+Why: Semaglutide is a 31-amino-acid synthetic peptide hormone analogue.
+
+Example 4: Pembrolizumab (monoclonal antibody, ~150 kDa, for cancer)
+→ Peptide: False
+Why: Monoclonal antibodies are too large (~1300 amino acids) and are a different drug class from peptides.
+
+Example 5: StreptInCor (synthetic peptide vaccine, 55 amino acids, for S. pyogenes)
+→ Peptide: True
+Why: StreptInCor is a designed synthetic polypeptide vaccine — the active agent IS a peptide.
+
+Example 6: Colistin (cyclic lipopeptide antibiotic, for bacterial infections)
+→ Peptide: True
+Why: Colistin is a cyclic lipopeptide — a classic antimicrobial peptide drug.
+
+Example 7: Amoxicillin (small molecule antibiotic)
+→ Peptide: False
+Why: Small molecule drug, not a peptide chain.
+
+Example 8: Apraglutide (GLP-2 analogue, for GvHD)
+→ Peptide: True
+Why: GLP-2 analogues are synthetic peptide hormone therapeutics.
+
+Example 9: GSK3732394 (multi-subunit engineered protein, for HIV)
+→ Peptide: False
+Why: Large engineered multi-subunit protein scaffold — functionally closer to an antibody than a peptide.
+
+Example 10: Hydrolyzed whey protein formula (for infant nutrition)
+→ Peptide: False
+Why: Nutritional product. The protein is broken into peptides for easier digestion, but the peptides are food, not a drug.
+
+KEY RULE: The question is whether the ACTIVE DRUG is a peptide, not whether the formulation contains peptides. If the product name includes "peptide" but the product is a nutritional formula, shake, or tube feeding product → False.
 
 IMPORTANT: Format your response EXACTLY as:
 

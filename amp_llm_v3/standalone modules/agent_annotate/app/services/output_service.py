@@ -13,7 +13,7 @@ from app.services.version_service import get_version_stamp
 
 ANNOTATION_FIELDS = ["classification", "delivery_mode", "outcome", "reason_for_failure", "peptide"]
 
-# Standard CSV columns (matches existing AMP LLM annotation format)
+# Standard CSV columns (matches human annotation Excel + evidence links)
 STANDARD_COLUMNS = [
     "NCT ID",
     "Study Title",
@@ -22,15 +22,23 @@ STANDARD_COLUMNS = [
     "Conditions",
     "Interventions",
     "Classification",
+    "Classification Evidence",
     "Delivery Mode",
+    "Delivery Mode Evidence",
     "Outcome",
+    "Outcome Evidence",
     "Reason for Failure",
+    "Reason for Failure Evidence",
     "Peptide",
+    "Peptide Evidence",
 ]
 
 # Full CSV adds evidence, verification, and review metadata per field
 FULL_EXTRA_PER_FIELD = [
     "{field}_confidence",
+    "{field}_evidence_sources",
+    "{field}_evidence_urls",
+    "{field}_reasoning",
     "{field}_consensus",
     "{field}_final_value",
     "{field}_verifier_opinions",
@@ -91,7 +99,6 @@ def _extract_row(trial: dict, full: bool = False, version_info: dict = None) -> 
 
         # Use verification final_value if available, else annotation value
         final = ver.get("final_value") or ann.get("value", "")
-        row[field.replace("_", " ").title().replace(" ", " ")] = final
 
         # Map to standard column names
         col_map = {
@@ -101,10 +108,53 @@ def _extract_row(trial: dict, full: bool = False, version_info: dict = None) -> 
             "reason_for_failure": "Reason for Failure",
             "peptide": "Peptide",
         }
-        row[col_map.get(field, field)] = final
+        col_name = col_map.get(field, field)
+        row[col_name] = final
+
+        # Standard evidence column: deduplicated identifiers (PMIDs, URLs)
+        evidence = ann.get("evidence", [])
+        evidence_parts = []
+        for e in evidence:
+            src = e.get("source_name", "")
+            ident = e.get("identifier", "")
+            url = e.get("source_url", "")
+            if ident and ident.startswith("PMID:"):
+                evidence_parts.append(ident)
+            elif ident and ident.startswith("PMC:"):
+                evidence_parts.append(ident)
+            elif url:
+                evidence_parts.append(url)
+            elif ident:
+                evidence_parts.append(f"{src}:{ident}")
+        # Deduplicate while preserving order
+        seen = set()
+        unique_evidence = []
+        for ep in evidence_parts:
+            if ep not in seen:
+                seen.add(ep)
+                unique_evidence.append(ep)
+        row[f"{col_name} Evidence"] = "; ".join(unique_evidence)
 
         if full:
             row[f"{field}_confidence"] = ann.get("confidence", "")
+
+            # Evidence citations — concrete identifiers and URLs
+            evidence = ann.get("evidence", [])
+            seen_sources = []
+            seen_urls = []
+            for e in evidence:
+                src = e.get("source_name", "")
+                ident = e.get("identifier", "")
+                url = e.get("source_url", "")
+                label = f"{src}:{ident}" if ident else src
+                if label and label not in seen_sources:
+                    seen_sources.append(label)
+                if url and url not in seen_urls:
+                    seen_urls.append(url)
+            row[f"{field}_evidence_sources"] = "; ".join(seen_sources)
+            row[f"{field}_evidence_urls"] = "; ".join(seen_urls)
+            row[f"{field}_reasoning"] = ann.get("reasoning", "")[:1000]
+
             row[f"{field}_consensus"] = ver.get("consensus_reached", "")
             row[f"{field}_final_value"] = ver.get("final_value", "")
             opinions = ver.get("opinions", [])

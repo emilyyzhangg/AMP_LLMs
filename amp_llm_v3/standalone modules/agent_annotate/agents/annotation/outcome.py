@@ -65,27 +65,40 @@ Why Stopped: [reason or N/A]"""
 # Pass 2: Make the outcome determination with all facts in hand
 PASS2_PROMPT = """You are a clinical trial outcome assessment specialist. You have already extracted the facts about this trial. Now you must determine the outcome.
 
-CRITICAL RULES:
-1. Published literature OVERRIDES ClinicalTrials.gov status. A trial with UNKNOWN or TERMINATED status in the registry can still have a Positive outcome if published papers show efficacy.
-2. ClinicalTrials.gov status is often outdated. Do NOT default to "Unknown" just because the registry says UNKNOWN.
-3. Only use "Unknown" when you have EXHAUSTIVELY checked all evidence sources AND found NO published results AND the trial status is ambiguous.
-
 The facts you extracted:
 {pass1_output}
 
+CRITICAL RULES — Registry status is AUTHORITATIVE for Terminated/Withdrawn:
+1. If the registry says TERMINATED → the outcome is "Terminated". Period. Even if interim results were published, the trial was terminated. The REASON for termination belongs in the reason_for_failure field, not here.
+2. If the registry says WITHDRAWN → the outcome is "Withdrawn". Period.
+3. Published literature is ONLY used to distinguish between Positive / Failed / Unknown for COMPLETED trials.
+
 Based on these facts, choose EXACTLY ONE outcome:
-- Positive: Published results demonstrate efficacy or positive findings. This can apply even if the registry status is UNKNOWN, TERMINATED, or COMPLETED — what matters is whether published literature reports positive results.
-- Failed - completed trial: Trial completed but published results show it FAILED to meet endpoints. Negative results published.
-- Terminated: Trial was stopped early AND no positive published results exist. If it was terminated but published positive results anyway, choose Positive instead.
-- Withdrawn: Trial was withdrawn before meaningful enrollment.
-- Recruiting: Trial is actively recruiting (RECRUITING, NOT_YET_RECRUITING, ENROLLING_BY_INVITATION status) and no results exist yet.
-- Active, not recruiting: Trial is ongoing but no longer enrolling (ACTIVE_NOT_RECRUITING) and no results exist yet.
-- Unknown: You checked ALL available evidence (registry, publications, web) and genuinely cannot determine the outcome. This is a LAST RESORT, not a default.
+
+For TERMINATED registry status:
+- Terminated: Always use this when registry says TERMINATED, regardless of any interim or partial results.
+
+For WITHDRAWN registry status:
+- Withdrawn: Always use this when registry says WITHDRAWN.
+
+For COMPLETED registry status (use literature to determine which):
+- Positive: Published results demonstrate efficacy or positive findings for the primary endpoints.
+- Failed - completed trial: Published results show the trial FAILED to meet primary endpoints. Negative results.
+- Unknown: Trial completed but NO published results found after checking all sources.
+
+For active statuses:
+- Recruiting: Registry says RECRUITING, NOT_YET_RECRUITING, or ENROLLING_BY_INVITATION.
+- Active, not recruiting: Registry says ACTIVE_NOT_RECRUITING.
+
+For UNKNOWN/SUSPENDED/other registry status:
+- Check for published results: if positive findings published → Positive. If negative → Failed - completed trial. If no results → Unknown.
+
+RECENCY RULE: If multiple publications exist with conflicting conclusions, the MOST RECENT publication takes priority. Newer data supersedes older data.
 
 IMPORTANT: Format your response EXACTLY as:
 Outcome: [one of the 7 values above]
 Evidence: [cite the specific source that determined your decision]
-Reasoning: [explain your chain of thought, especially if overriding the registry status]"""
+Reasoning: [explain your chain of thought]"""
 
 
 class OutcomeAgent(BaseAnnotationAgent):

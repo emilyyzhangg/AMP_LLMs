@@ -1,0 +1,213 @@
+# Agent Annotate — Improvement Strategy
+
+Strategy to surpass human annotation accuracy by fixing agent errors, exploiting the agent's structural advantages, and addressing the gaps revealed by a quality audit of both agent output and human annotations.
+
+> **Last updated:** 2026-03-15
+
+> **IMPORTANT DESIGN PRINCIPLE:** Human annotations (`docs/clinical_trials-with-sequences.xlsx`) are used **only for development-time evaluation and prompt refinement** — measuring agent accuracy, identifying error patterns, and tuning prompts. Human annotations are **never used at runtime**. The agents must produce correct annotations independently, relying solely on live data from external APIs (ClinicalTrials.gov, PubMed, UniProt, etc.). The goal is to build agents that don't need a human counterpart.
+
+---
+
+## 1. Human Annotation Quality Audit
+
+Before trying to beat the humans, we need to know how reliable they are. Both replicates in `docs/clinical_trials-with-sequences.xlsx` (~1847 rows each, 4 annotators: Mercan, Maya, Anat, Ali) were audited.
+
+### 1.1 Coverage Gaps
+
+| Field | R1 Filled | R2 Filled | R1 Blank | R2 Blank |
+|-------|-----------|-----------|----------|----------|
+| Classification | 798 (43%) | 693 (37%) | 1,048 | 1,156 |
+| Delivery Mode | 806 (44%) | 628 (34%) | 1,040 | 1,221 |
+| Outcome | 617 (33%) | 472 (26%) | 1,229 | 1,377 |
+| Reason for Failure | 99 (5%) | 82 (4%) | 1,747 | 1,767 |
+| Peptide | 668 (36%) | 244 (13%) | 1,178 | 1,605 |
+
+**~50-65% of rows are unannotated in both replicates.** The agent can annotate 100% of submitted trials.
+
+### 1.2 Inter-Rater Agreement (where both replicates have a value)
+
+| Field | Both Filled | Agree | Disagree | Agreement Rate |
+|-------|-------------|-------|----------|----------------|
+| Classification | 620 | 568 | 52 | 91.6% |
+| Delivery Mode | 579 | 395 | 184 | **68.2%** |
+| Outcome | 372 | 207 | 165 | **55.6%** |
+| Reason for Failure | 46 | 42 | 4 | 91.3% |
+| Peptide | 62 | 30 | 32 | **48.4%** |
+
+**Outcome and Peptide are essentially unreliable** — humans can't agree with each other. This is the biggest opportunity for the agent to surpass humans.
+
+### 1.3 Systematic Human Errors
+
+- **R2 used invalid "Active" (30x)** instead of "Recruiting" or "Active, not recruiting"
+- **R2 never used "Recruiting"** (0 instances vs R1's 222) — entire category missing from one annotator's vocabulary
+- **R2 missing "Oral - Capsule"** entirely (0 vs R1's 17)
+- **Casing inconsistencies**: R2 uses "Oral - unspecified" / "Topical - unspecified" (lowercase)
+- **R1 Peptide? is over-broad**: 451 True vs R2's 56 True — one annotator classified far too many interventions as peptides
+- **21 missing failure reasons** where Outcome = Terminated/Withdrawn/Failed
+- **1 logical inconsistency**: NCT05265806 has Outcome=Recruiting + Reason=Toxic/Unsafe
+- **R1 used multi-value delivery modes** (24 rows with comma-separated values like "SC, IV, Oral") — not a valid format
+
+### 1.4 Key Disagreement Patterns
+
+**Outcome** (165 disagreements — biggest problem):
+- R1=Recruiting vs R2=Unknown: 27 cases
+- R1=Recruiting vs R2=Positive: 26 cases
+- R1=Unknown vs R2=Positive: 19 cases
+- R1=Failed vs R2=Positive: 12 cases
+
+These disagreements stem from annotators checking ClinicalTrials.gov at different times and with different willingness to search published literature. The agent, with its two-pass investigative strategy and systematic literature search, should resolve these definitively.
+
+**Peptide** (32 disagreements out of 62 overlap):
+- R1=True vs R2=False: 27 cases — R1 annotator has an overly broad definition of "peptide"
+
+---
+
+## 2. Agent Error Summary (10 agent-annotated trials)
+
+| NCT ID | Field | Agent | Human | Root Cause |
+|--------|-------|-------|-------|------------|
+| NCT06729606 | Peptide | False | True | Aviptadil IS VIP (28 AA) — listed in prompt but model ignored it |
+| NCT03987672 | Peptide | True | False (both) | Nutritional formula — prompt warns against this but model ignored |
+| NCT03984812 | Peptide | True | False (R1) | Multi-subunit protein, antibody-like |
+| NCT03998592 | Classification | AMP(other) | AMP(infection) (both) | S. pyogenes vaccine = infection target |
+| NCT03989817 | Classification | AMP(other) | Other (both) | VIP is NOT an AMP |
+| NCT03998592 | Delivery Mode | IM | Other/Unspecified (both) | Guessed IM — violates rules |
+| NCT05415410 | Delivery Mode | Other/Unspec | SC/ID | Missed FDA label signal |
+| NCT03984812 | Delivery Mode | Other/Unspec | SC/ID (both) | Missed SC from literature |
+| NCT03989817 | Failure Reason | Ineffective | empty (both) | Contradicts Positive outcome |
+| NCT04098562 | All fields | Invalid values | N/A | "AMP", "Topical", "Active", "N/A" |
+
+---
+
+## 3. Structural Advantages Over Humans
+
+The agent has inherent advantages that, once errors are fixed, should yield higher accuracy than human annotators:
+
+| Advantage | Impact |
+|-----------|--------|
+| **100% coverage** | Humans left 50-65% of rows blank. Agent annotates every submitted trial. |
+| **Recency** | Agent queries live APIs at annotation time — always gets the latest publications and status updates. Humans annotated at a fixed point and never revisited. |
+| **Consistency** | Agent applies the same rules every time. Humans have 48-68% agreement on peptide, delivery mode, and outcome. |
+| **Evidence trail** | Agent cites every source with PMIDs, URLs, and identifiers. Humans' "evidence link(s)" columns are mostly blank. |
+| **Multi-source verification** | Agent cross-checks ClinicalTrials.gov, PubMed, PMC, UniProt, DRAMP, FDA, web. Humans typically check 1-2 sources. |
+| **Two-pass investigation** | Outcome and failure reason agents dig into literature instead of stopping at registry status. |
+
+---
+
+## 4. Recency Principle
+
+**Latest information always wins.** If a trial was "Recruiting" when humans annotated it but has since completed with positive results, the correct annotation is "Positive" — not "Recruiting" or "Unknown."
+
+### Implementation
+
+The research agents already query live APIs, so recency is built in. To make it explicit:
+
+1. **Literature agent**: When searching PubMed/PMC, sort results by publication date descending. Prioritize the most recent publication in the evidence chain. If a 2025 paper reports positive results but a 2023 paper reported inconclusive results, the 2025 paper wins.
+
+2. **Outcome agent Pass 2 prompt**: Add explicit rule: "If multiple publications exist with conflicting conclusions, prefer the most recent publication. Newer data supersedes older data."
+
+3. **Evidence output**: Include `retrieved_at` timestamp in the CSV evidence columns so reviewers can see how current the data is.
+
+4. **Web context agent**: Search for press releases and regulatory decisions (FDA approvals, EMA opinions) that may post-date the published literature.
+
+---
+
+## 5. Citation Gap Fix (DONE)
+
+**Problem**: The full CSV had zero citation data — all evidence (PMIDs, URLs, database identifiers) captured in JSON was dropped during CSV generation.
+
+**Fix applied to `output_service.py`**:
+
+**Standard CSV** now includes per-field evidence columns:
+- `Classification Evidence`, `Delivery Mode Evidence`, `Outcome Evidence`, `Reason for Failure Evidence`, `Peptide Evidence`
+- Format: deduplicated identifiers — `PMID:36191080; https://clinicaltrials.gov/study/NCT06729606`
+
+**Full CSV** now includes per-field:
+- `{field}_evidence_sources` — database:identifier pairs (`clinicaltrials_gov:NCT06729606; pubmed:PMID:36191080`)
+- `{field}_evidence_urls` — deduplicated URLs
+- `{field}_reasoning` — the model's chain-of-thought (up to 1000 chars)
+
+---
+
+## 6. Improvement Plan
+
+### Phase A: Output Validation & Cross-Field Consistency
+
+**Priority: CRITICAL — prevents contradictory/invalid results immediately**
+
+1. **Hard validation in `_parse_value()`**: If parsed value is not in VALID_VALUES, return `None` → orchestrator treats as "requires manual review". Never guess.
+
+2. **Cross-field consistency in orchestrator** (`_check_consistency()`):
+   - peptide=False → force classification to "Other"
+   - outcome in {Positive, Recruiting, Active, Unknown} → force reason_for_failure to ""
+   - outcome in {Terminated, Withdrawn, Failed} + reason_for_failure="" → flag for review
+
+3. **Verifier value normalization** before consensus check:
+   - "Intravenous" → "IV"
+   - "Active" → "Active, not recruiting"
+   - "AMP" alone → flag as ambiguous
+
+### Phase B: Few-Shot Prompt Engineering
+
+**Priority: CRITICAL — addresses the core accuracy problem**
+
+1. **Peptide agent**: Add 8 worked examples with expected answers. Small models follow examples far better than rules.
+
+2. **Classification agent**: Rewrite as three-step decision tree:
+   - Step 1: Is intervention a peptide? No → "Other"
+   - Step 2: Is it an ANTIMICROBIAL peptide? No → "Other" (VIP, GLP-1, somatostatin = Not AMPs)
+   - Step 3: Does the AMP target infection? Yes → AMP(infection), No → AMP(other)
+
+3. **Delivery mode agent**: Add negative examples (what NOT to do). Add positive examples where FDA label specifies route.
+
+4. **Verifier prompt parity**: Give verifiers the SAME detailed prompts + examples as the primary annotator. Currently verifiers get condensed instructions, causing asymmetric accuracy.
+
+### Phase C: Recency-Aware Literature Search
+
+**Priority: HIGH — key advantage over humans**
+
+1. Sort PubMed/PMC results by date descending in the literature agent.
+2. Add recency rule to outcome/failure Pass 2 prompts: "newest publication wins."
+3. Add publication year to evidence output so reviewers can see data freshness.
+4. Web context agent: search for regulatory decisions and press releases.
+
+### Phase D: Peptide Cascade Protection
+
+**Priority: MEDIUM**
+
+1. If peptide flips during verification, re-run classification with the corrected value.
+2. Classification agent independently verifies questionable peptide results (intervention contains "nutritional", "formula", "shake").
+
+### Phase E: Selective Model Upgrade
+
+**Priority: LOW — requires more processing time**
+
+Use the 14B reconciler model as primary annotator for peptide and classification (highest error rate fields). Keep 8B for delivery_mode, outcome, reason_for_failure.
+
+---
+
+## 7. Accuracy Targets
+
+| Field | Human Agreement | Current Agent Error Rate | Target |
+|-------|-----------------|--------------------------|--------|
+| Classification | 91.6% | 25% (2/8) | <5% |
+| Delivery Mode | 68.2% | 37.5% (3/8) | <10% |
+| Outcome | 55.6% | ~12% (1/8 debatable) | <10% |
+| Reason for Failure | 91.3% | 12.5% (1/8 contradictory) | <5% |
+| Peptide | 48.4% | 37.5% (3/8) | <10% |
+
+After Phases A + B, the agent should exceed human inter-rater agreement on every field. The recency advantage (Phase C) makes the agent definitively better for outcome and failure reason — fields where humans only agreed 55.6% of the time because they checked at different times.
+
+---
+
+## 8. Measuring Improvement
+
+Human annotations are the **development-time benchmark only**. They inform prompt tuning and error analysis but are never fed to the agents at runtime.
+
+**Evaluation process:**
+1. Run the agent on the same 8 NCT IDs after each phase.
+2. Compare against human ground truth (use consensus where both replicates agree; where they disagree, independently verify using the agent's cited sources to determine the correct answer).
+3. Track per-field: accuracy, reconciliation rate, manual review rate, false disagreement rate.
+4. For recency wins: document cases where the agent found newer publications than what humans used — these are cases where the agent is *correct* and the human data is *stale*.
+
+**End state:** The agents operate fully autonomously — no human annotations in the loop. The human Excel is archived as a historical benchmark, not an ongoing dependency.
