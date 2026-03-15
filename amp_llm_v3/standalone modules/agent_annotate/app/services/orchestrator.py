@@ -350,6 +350,13 @@ class PipelineOrchestrator:
                     nct_id, annotations, research, config
                 )
 
+                # --- Peptide cascade re-verification ---
+                # If verification flipped peptide, re-run classification
+                # with the corrected value
+                annotations, verified = await self._peptide_cascade_check(
+                    nct_id, annotations, verified, research, config
+                )
+
                 # Build trial result
                 metadata = self._extract_metadata(nct_id, research)
                 trial_output = {
@@ -554,6 +561,137 @@ class PipelineOrchestrator:
                     ))
 
         return annotations
+
+    async def _peptide_cascade_check(
+        self,
+        nct_id: str,
+        annotations: list[FieldAnnotation],
+        verified: VerifiedAnnotation,
+        research_data: list[ResearchResult],
+        config,
+    ) -> tuple[list[FieldAnnotation], VerifiedAnnotation]:
+        """If verification changed the peptide value, re-run classification.
+
+        The peptide→classification dependency means a flipped peptide value
+        can invalidate the classification. This re-runs classification with
+        the corrected peptide value and re-verifies only that field.
+        """
+        ann_by_field = {a.field_name: a for a in annotations}
+        peptide_ann = ann_by_field.get("peptide")
+        classification_ann = ann_by_field.get("classification")
+
+        if not peptide_ann or not classification_ann:
+            return annotations, verified
+
+        # Find the peptide verification result
+        peptide_verified_value = None
+        for field_result in verified.fields:
+            if field_result.field_name == "peptide" and field_result.final_value:
+                peptide_verified_value = field_result.final_value
+                break
+
+        if not peptide_verified_value:
+            return annotations, verified
+
+        # Check if peptide was flipped by verification
+        original_peptide = peptide_ann.value
+        if peptide_verified_value == original_peptide:
+            return annotations, verified
+
+        logger.info(
+            f"  Peptide cascade: verification flipped peptide "
+            f"from '{original_peptide}' to '{peptide_verified_value}' — "
+            f"re-running classification for {nct_id}"
+        )
+
+        # Re-run classification with corrected peptide value
+        from agents.annotation import ANNOTATION_AGENTS
+        cls_agent_cls = ANNOTATION_AGENTS.get("classification")
+        if not cls_agent_cls:
+            return annotations, verified
+
+        cls_agent = cls_agent_cls()
+        new_metadata = {"peptide_result": peptide_verified_value}
+        all_research = [r for r in research_data if not r.error]
+
+        try:
+            new_classification = await cls_agent.annotate(
+                nct_id, all_research, metadata=new_metadata
+            )
+            # Replace classification in annotations list
+            for i, ann in enumerate(annotations):
+                if ann.field_name == "classification":
+                    new_classification.reasoning = (
+                        f"[Peptide cascade: re-classified after peptide "
+                        f"flipped {original_peptide}→{peptide_verified_value}] "
+                        + new_classification.reasoning
+                    )
+                    annotations[i] = new_classification
+                    break
+
+            # Re-enforce consistency with new classification
+            self._enforce_consistency(annotations)
+
+            # Re-verify classification only
+            verifier = BlindVerifier()
+            checker = ConsensusChecker()
+
+            verifier_models = [
+                (key, m) for key, m in config.verification.models.items()
+                if m.role == "verifier"
+            ]
+            threshold = config.verification.consensus_threshold
+
+            verifier_opinions = []
+            for model_key, model_cfg in verifier_models:
+                opinion = await verifier.verify(
+                    nct_id=nct_id,
+                    field_name="classification",
+                    research_results=research_data,
+                    model_name=model_key,
+                    ollama_model=model_cfg.name,
+                )
+                verifier_opinions.append(opinion)
+
+            new_consensus = checker.check(
+                field_name="classification",
+                primary_value=new_classification.value,
+                primary_model="primary",
+                verifier_opinions=verifier_opinions,
+                threshold=threshold,
+            )
+
+            # Replace classification in verified results
+            new_fields = []
+            for f in verified.fields:
+                if f.field_name == "classification":
+                    new_fields.append(new_consensus)
+                else:
+                    new_fields.append(f)
+
+            any_flagged = any(not f.consensus_reached for f in new_fields)
+            flag_reasons = [
+                f"{f.field_name}: {f.flag_reason or 'model disagreement'}"
+                for f in new_fields if not f.consensus_reached
+            ]
+
+            verified = VerifiedAnnotation(
+                nct_id=nct_id,
+                fields=new_fields,
+                overall_consensus=not any_flagged,
+                flagged_for_review=any_flagged,
+                flag_reason="; ".join(flag_reasons) if flag_reasons else None,
+            )
+
+            logger.info(
+                f"  Peptide cascade: re-classified as "
+                f"'{new_classification.value}' (was '{classification_ann.value}')"
+            )
+
+        except Exception as e:
+            logger.warning(f"  Peptide cascade re-classification failed: {e}")
+
+        return annotations, verified
 
     @staticmethod
     def _enforce_consistency(annotations: list[FieldAnnotation]) -> None:

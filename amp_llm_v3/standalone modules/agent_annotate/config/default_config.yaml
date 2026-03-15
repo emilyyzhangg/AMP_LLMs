@@ -83,6 +83,11 @@ orchestrator:
   max_retry_rounds: null
   parallel_research: true
   parallel_annotation: true
+  # Hardware profile: "mac_mini" (16GB, sequential Ollama, smaller models)
+  #                   "server"   (unlimited VRAM, parallel Ollama, largest models)
+  # Controls model selection for classification/peptide (high-accuracy fields)
+  # and concurrency settings. See METHODOLOGY.md Section 15.1 for full details.
+  hardware_profile: "mac_mini"
 
 ollama:
   host: localhost

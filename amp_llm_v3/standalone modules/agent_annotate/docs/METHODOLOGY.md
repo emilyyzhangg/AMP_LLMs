@@ -229,6 +229,23 @@ The primary annotator is llama3.1:8b by default (configurable). All LLM calls us
    The key criterion is that the peptide must have a known or plausible role in DEFENSE AGAINST PATHOGENS. Peptides that suppress immune responses (for autoimmunity), have purely metabolic/hormonal functions (GLP-1/GLP-2, GnRH, somatostatin analogues), or work via non-biological mechanisms (self-assembling peptides for mineralization) are NOT AMPs.
 3. Does the AMP target infection? If the therapeutic use targets infection, pathogens, antimicrobial resistance, or infectious disease → "AMP(infection)". If the AMP is used for non-infection purposes such as wound healing, cancer immunotherapy, or biofilm disruption → "AMP(other)".
 
+**Two-pass design rationale:** Single-pass classification with 8B models produced 25% concordance with human annotations because the model ignored the decision tree and pattern-matched surface features. The two-pass design forces structured fact extraction before classification, and uses a larger model (14B on Mac Mini, 72B on server) for both passes.
+
+**Pass 1 — Evidence Extraction:** The LLM extracts 5 factual fields from the evidence:
+1. Peptide Identity (molecular class, amino acid length)
+2. Database Matches (DRAMP, APD3, UniProt antimicrobial annotations — highlighted at the top of the evidence)
+3. Mechanism of Action (direct antimicrobial, immunostimulatory, anti-biofilm, or non-antimicrobial)
+4. Therapeutic Target (infection vs cancer vs autoimmune vs metabolic vs structural)
+5. Immune Direction (PROMOTE defense, SUPPRESS immunity, or immune-neutral)
+
+**Pass 2 — Decision Tree Application:** The extracted facts from Pass 1 are passed to a second prompt that applies the three-step decision tree. Pass 2 explicitly checks the database matches and immune direction fields to prevent misclassification.
+
+**Fallback:** If Pass 2 fails, a deterministic keyword-based fallback scans Pass 1 output for antimicrobial signals (DRAMP matches, "kills bacteria", etc.) and non-AMP signals ("metabolic hormone", "self-assembling", etc.).
+
+**DRAMP cross-check:** The evidence text highlights DRAMP (antimicrobial peptide database) matches and UniProt annotations at the top, before other evidence. A DRAMP hit is strong evidence for AMP classification; absence of any database match combined with no antimicrobial mechanism evidence strongly favors "Other".
+
+**Peptide cascade re-verification:** If the verification phase flips the peptide value (e.g., True → False), the classification is automatically re-run with the corrected peptide value, re-verified, and the consistency rules re-applied. This prevents stale classification values from persisting after a peptide correction.
+
 **Response parsing:** A regex extracts the `Classification:` line. Exact matching is attempted first against the three valid values. If the model outputs bare "AMP" without a subtype, the system defaults to "Other" rather than guessing a subtype.
 
 **Dependency:** Receives the peptide result from the orchestrator via a `metadata` dictionary containing `{"peptide_result": "True"}` or `{"peptide_result": "False"}`.
@@ -541,18 +558,50 @@ All configuration is stored in `config/default_config.yaml` and is frozen at job
 | `evidence_thresholds.{field}.min_quality` | 0.3-0.5 | Minimum average quality score per field |
 | `orchestrator.parallel_research` | true | Whether research agents run concurrently |
 | `orchestrator.parallel_annotation` | true | Whether annotation agents run concurrently (except peptide) |
+| `orchestrator.hardware_profile` | "mac_mini" | Hardware profile: "mac_mini" or "server" (see below) |
 | `ollama.temperature` | 0.10 | LLM temperature (low for deterministic output) |
 | `ollama.timeout` | 600 | Seconds before LLM call times out |
 
-### Default Model Assignments
+### Hardware Profiles
+
+The system supports two hardware profiles that control model selection for high-accuracy fields (classification, peptide) and concurrency settings:
+
+**Mac Mini M4 (16 GB) — `hardware_profile: "mac_mini"`**
+- One Ollama model at a time (asyncio.Lock)
+- Sequential model switching during verification
+- Classification uses qwen2.5:14b (upgraded from 8B — see rationale below)
+- All other fields use llama3.1:8b
+- Maximum batch size: 500 trials
+
+**Server (unlimited VRAM) — `hardware_profile: "server"`**
+- Multiple Ollama models can load simultaneously
+- Classification uses qwen2.5:72b for maximum accuracy
+- Verifiers can run in parallel (no sequential model switching needed)
+- No practical batch size limit
+
+**Why classification uses a larger model:** Testing on 8 trials showed that llama3.1:8b ignores explicit worked examples in the classification prompt. It pattern-matches surface features ("peptide" + "immune" → AMP) rather than following the multi-step decision tree. This produced 25% concordance with human annotations on classification. The 14B model (Mac Mini) and 72B model (server) follow the decision tree reliably.
+
+### Default Model Assignments (Mac Mini)
 
 | Role | Model | Size | Architecture |
 |------|-------|------|-------------|
 | Primary Annotator | llama3.1:8b | 4.9 GB | Meta LLaMA 3.1 |
+| Classification Annotator | qwen2.5:14b | 9.0 GB | Alibaba Qwen 2.5 (overrides primary for this field) |
 | Verifier 1 | gemma2:9b | 5.4 GB | Google Gemma 2 |
 | Verifier 2 | qwen2:latest | 4.4 GB | Alibaba Qwen 2 |
 | Verifier 3 | mistral:latest | 4.4 GB | Mistral AI |
 | Reconciler | qwen2.5:14b | 9.0 GB | Alibaba Qwen 2.5 |
+
+### Default Model Assignments (Server)
+
+| Role | Model | Size | Architecture |
+|------|-------|------|-------------|
+| Primary Annotator | llama3.1:8b | 4.9 GB | Meta LLaMA 3.1 |
+| Classification Annotator | qwen2.5:72b | 47 GB | Alibaba Qwen 2.5 (maximum accuracy) |
+| Verifier 1 | gemma2:9b | 5.4 GB | Google Gemma 2 |
+| Verifier 2 | qwen2:latest | 4.4 GB | Alibaba Qwen 2 |
+| Verifier 3 | mistral:latest | 4.4 GB | Mistral AI |
+| Reconciler | qwen2.5:72b | 47 GB | Alibaba Qwen 2.5 |
 
 ---
 
@@ -715,5 +764,6 @@ For disagreements between agent and human ground truth, the agent's cited source
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2026-03-15 | 0.3.0 | Classification agent redesigned as two-pass investigative agent (Pass 1: extract antimicrobial evidence, Pass 2: apply decision tree). Classification uses larger model (14B Mac Mini, 72B server) — 8B models ignore the multi-step decision tree. Hardware profiles added ("mac_mini" vs "server") for model selection. DRAMP database matches highlighted in classification evidence. Peptide cascade re-verification: if verification flips peptide value, classification is automatically re-run and re-verified. Deterministic fallback for classification Pass 2 failure. |
 | 2026-03-15 | 0.2.0 | Two-phase pipeline (parallel research, sequential annotation). Persistence and resumability with atomic writes. Literature agent expanded to 4 sources (PubMed with abstract fetching, PMC with summaries, Europe PMC, Semantic Scholar). Structured snippets for LLM clarity. PMID deduplication. Resilient HTTP with per-host rate limiting and retry. Resume endpoint. Multi-run consensus strategy documented. Human annotation review with updated inter-rater statistics. |
 | 2026-03-15 | 0.1.0 | Initial methodology document. Describes all agents, verification pipeline, cross-field consistency, evidence thresholds, quality scores, output formats, and hardware constraints. |

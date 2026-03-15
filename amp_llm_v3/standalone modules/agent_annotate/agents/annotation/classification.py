@@ -1,9 +1,16 @@
 """
-Classification Annotation Agent.
+Classification Annotation Agent — Two-Pass Investigative Design.
 
-Determines whether a clinical trial involves an Antimicrobial Peptide (AMP) and its purpose.
+Determines whether a clinical trial involves an Antimicrobial Peptide (AMP)
+and its purpose. Uses a two-pass approach:
+  Pass 1: Extract antimicrobial evidence (database hits, mechanism, target)
+  Pass 2: Apply the AMP decision tree to extracted facts
+
+Uses a larger model (14B on Mac Mini, 70B+ on server) because the 8B model
+has demonstrated inability to follow the multi-step decision tree reliably.
 """
 
+import logging
 import re
 from typing import Optional
 
@@ -11,109 +18,159 @@ from agents.base import BaseAnnotationAgent, FIELD_RELEVANCE
 from app.models.research import ResearchResult, SourceCitation
 from app.models.annotation import FieldAnnotation
 
+logger = logging.getLogger("agent_annotate.annotation.classification")
+
 VALID_VALUES = ["AMP(infection)", "AMP(other)", "Other"]
 
-SYSTEM_PROMPT = """You are a clinical trial classification specialist. AMP stands for Antimicrobial Peptide.
+# Hardware profile → model selection for classification
+# Classification uses a larger model because 8B ignores worked examples
+MODEL_OVERRIDES = {
+    "mac_mini": "qwen2.5:14b",
+    "server": "qwen2.5:72b",
+}
 
-Your task: Classify a clinical trial into one of exactly three categories using the three-step decision tree below.
+# --------------------------------------------------------------------------- #
+#  Pass 1: Extract antimicrobial evidence from research data
+# --------------------------------------------------------------------------- #
 
-You will be told whether the intervention is a peptide (Peptide determination provided below).
+PASS1_SYSTEM = """You are a biochemistry fact-extraction specialist. Your job is to extract ONLY factual evidence about whether a peptide has antimicrobial or host defense properties. Do NOT classify — just extract facts.
+
+For the clinical trial intervention below, answer these 5 questions using ONLY the provided evidence. If the evidence does not answer a question, write "No evidence found."
+
+1. PEPTIDE IDENTITY: What is the intervention? Is it confirmed as a peptide? What is its amino acid length or molecular class?
+
+2. DATABASE MATCHES: Was this peptide found in any antimicrobial peptide databases (DRAMP, APD3, UniProt with "antimicrobial" annotation)? List specific database hits.
+
+3. MECHANISM OF ACTION: What is the peptide's known or proposed mechanism? Specifically:
+   - Does it directly kill or inhibit microorganisms (bacteria, viruses, fungi)?
+   - Does it stimulate immune defense (recruit immune cells, enhance phagocytosis, activate dendritic cells)?
+   - Does it disrupt biofilms?
+   - Does it work via a non-antimicrobial mechanism (metabolic hormone, bone growth, vasodilation, immunosuppression, physical/chemical)?
+
+4. THERAPEUTIC TARGET: What disease or condition is the trial treating? Is it an infection, infectious disease, or pathogen-specific condition? Or is it cancer, autoimmune, metabolic, structural, or other?
+
+5. IMMUNE DIRECTION: Does this peptide PROMOTE immune defense (stimulate, recruit, activate) or SUPPRESS immune responses (tolerize, inhibit, dampen)? Or is it immune-neutral (metabolic/structural)?
+
+Format your response EXACTLY as:
+Peptide Identity: [answer]
+Database Matches: [answer]
+Mechanism: [answer]
+Therapeutic Target: [answer]
+Immune Direction: [answer]"""
+
+# --------------------------------------------------------------------------- #
+#  Pass 2: Apply AMP decision tree to extracted facts
+# --------------------------------------------------------------------------- #
+
+PASS2_SYSTEM = """You are a clinical trial classification specialist. AMP stands for Antimicrobial Peptide.
+
+You have been given EXTRACTED FACTS about a peptide intervention. Use ONLY these facts to classify the trial. Do NOT add information not present in the facts.
 
 THREE-STEP DECISION TREE:
 
 STEP 1 — Is the intervention a peptide?
   Check the Peptide determination. If Peptide = False → STOP → answer "Other".
 
-STEP 2 — Is this peptide an ANTIMICROBIAL PEPTIDE (AMP)?
+STEP 2 — Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?
 
-  AMPs (also called Host Defense Peptides) are peptides that participate in defense against pathogens through ANY of the following modes of action:
+  An AMP participates in defense against pathogens through ANY of these modes:
+  A) Direct antimicrobial: kills/inhibits microorganisms
+  B) Immunostimulatory: PROMOTES immune defense against pathogens
+  C) Anti-biofilm: disrupts microbial biofilms
+  D) Pathogen-targeting vaccine: induces immune responses against specific pathogens
 
-  MODE A — Direct antimicrobial activity:
-    Peptides that directly kill or inhibit bacteria, viruses, fungi, or parasites via membrane disruption, pore formation, or intracellular targeting.
-    Examples: colistin, polymyxin B, daptomycin, nisin, melittin, magainin, cecropin, gramicidin, bacitracin, vancomycin, tyrothricin, defensins (when used as direct antimicrobials)
+  CHECK THE EXTRACTED FACTS:
+  - Database Matches: If found in DRAMP or APD3 → strong evidence FOR AMP
+  - Mechanism: If direct antimicrobial or immunostimulatory against pathogens → AMP
+  - Immune Direction: If "PROMOTE" → supports AMP. If "SUPPRESS" → NOT an AMP. If "immune-neutral" → NOT an AMP.
 
-  MODE B — Immunostimulatory / host defense activity:
-    Peptides that PROMOTE immune defense against pathogens: recruiting neutrophils/macrophages, enhancing phagocytosis, activating dendritic cells, bridging innate and adaptive immunity, stimulating protective cytokine production.
-    Examples: LL-37/cathelicidin, defensins (alpha/beta), thymosin alpha-1 (when boosting immune defense), lactoferricin
-
-  MODE C — Anti-biofilm activity:
-    Peptides that disrupt or prevent microbial biofilm formation.
-    Examples: LL-37, DJK-5, IDR-1018
-
-  MODE D — Pathogen-targeting vaccines and immunogens:
-    Peptide-based vaccines that induce immune responses against specific pathogens.
-    Examples: StreptInCor (S. pyogenes), peptide-based HIV vaccines, malaria peptide vaccines
-
-  KEY CRITERION: The peptide must have a known or plausible role in DEFENSE AGAINST PATHOGENS — either by directly attacking them or by stimulating the immune system to fight them. The word "antimicrobial" is broad: it covers direct killing AND immune-mediated defense.
-
-  DEFINITELY NOT AMPs — these are peptides with NO antimicrobial or host defense role:
-  - GLP-1/GLP-2 analogues (semaglutide, liraglutide, tirzepatide, apraglutide) — metabolic hormones
-  - GnRH analogues (leuprolide, goserelin) — reproductive hormones
-  - Somatostatin analogues (octreotide, lanreotide) — growth hormone inhibitors
-  - VIP/Aviptadil — vasoactive intestinal peptide (vasodilation, NOT immune defense)
-  - C-type natriuretic peptides (vosoritide) — bone growth regulators
-  - Peptides for diabetes, obesity, bone disorders, GI motility, psychiatric conditions
-  - Peptides that SUPPRESS immune responses (e.g., for autoimmune diseases) — immunosuppression is the OPPOSITE of host defense
-  - Radiolabeled peptide conjugates where the peptide is a targeting vector and the therapeutic mechanism is radiation (e.g., 177Lu-DOTATATE)
-
-  BORDERLINE CASES — think carefully:
-  - A peptide derived from a bacterial protein used to SUPPRESS immune responses in autoimmunity → NOT an AMP (suppressing defense, not promoting it)
-  - A peptide that promotes wound healing WITHOUT any antimicrobial mechanism → NOT an AMP
-  - A peptide that promotes wound healing AND has antimicrobial or immune-boosting properties → IS an AMP
-  - Self-assembling peptides for dental remineralization → NOT an AMP (physical/chemical mechanism, not antimicrobial, even though caries are bacterial)
+  NOT AMPs (even if peptide=True):
+  - Metabolic hormones (GLP-1, GLP-2, GnRH, somatostatin, GIP)
+  - Vasodilators (VIP/Aviptadil)
+  - Bone growth regulators (vosoritide/CNP)
+  - Immunosuppressive peptides (suppress T-cells for autoimmune disease)
+  - Self-assembling/structural peptides (physical mechanism, not biological)
+  - Cancer neoantigen vaccines (target tumor cells, NOT pathogens)
+  - Radiolabeled peptide conjugates (peptide is targeting vector, not the drug)
 
   If NOT an AMP → STOP → answer "Other".
 
-STEP 3 — Does this AMP target infection specifically?
-  AMP(infection): The trial's therapeutic goal is treating or preventing infection, infectious disease, antimicrobial resistance, sepsis, or pathogen-specific conditions.
-  AMP(other): The AMP or AMP-derived peptide is used for a non-infection purpose: wound healing, cancer immunotherapy, anti-inflammatory, biofilm in non-infectious context.
+STEP 3 — Does this AMP target infection?
+  AMP(infection): Trial treats infection, infectious disease, AMR, sepsis, or pathogen-specific conditions.
+  AMP(other): AMP used for wound healing, cancer immunotherapy, anti-inflammatory, or non-infectious biofilm.
 
-WORKED EXAMPLES:
+CRITICAL RULES:
+- If Database Matches says "No evidence found" AND Mechanism shows no antimicrobial/immunostimulatory activity → almost certainly "Other"
+- If Immune Direction says "SUPPRESS" → always "Other" regardless of peptide origin
+- Cancer neoantigen vaccines target tumor antigens NOT pathogen antigens → "Other"
+- Collagen peptides, nutritional peptides, structural peptides → "Other"
 
-Colistin for urinary tract infection → AMP(infection)
-  Step 1: Peptide=True. Step 2: Colistin is a classic AMP (Mode A: direct antimicrobial). Step 3: UTI is an infection.
-
-LL-37 for diabetic wound healing → AMP(other)
-  Step 1: Peptide=True. Step 2: LL-37 is an AMP (cathelicidin, Modes A+B+C). Step 3: Wound healing is NOT treating an active infection.
-
-Thymosin alpha-1 for chronic hepatitis B → AMP(infection)
-  Step 1: Peptide=True. Step 2: Thymosin alpha-1 boosts immune defense (Mode B: immunostimulatory). Step 3: Hepatitis B is an infection.
-
-Defensin-based peptide for cancer immunotherapy → AMP(other)
-  Step 1: Peptide=True. Step 2: Defensin is an AMP (Modes A+B). Step 3: Cancer, not infection.
-
-StreptInCor vaccine against Streptococcus pyogenes → AMP(infection)
-  Step 1: Peptide=True. Step 2: Peptide vaccine targeting a pathogen (Mode D). Step 3: S. pyogenes = infection.
-
-Semaglutide for type 2 diabetes → Other
-  Step 1: Peptide=True. Step 2: GLP-1 analogue — metabolic hormone, NO antimicrobial or immune defense role. NOT an AMP. STOP.
-
-Tirzepatide for obesity/psychiatric conditions → Other
-  Step 1: Peptide=True. Step 2: GIP/GLP-1 dual agonist — metabolic hormone. NOT an AMP. STOP.
-
-dnaJP1 for rheumatoid arthritis → Other
-  Step 1: Peptide=True. Step 2: Although derived from bacterial HSP, it SUPPRESSES T-cell responses for autoimmunity. Immunosuppression is the OPPOSITE of host defense. NOT an AMP. STOP.
-
-Vosoritide (BMN 111) for achondroplasia → Other
-  Step 1: Peptide=True. Step 2: C-type natriuretic peptide analogue for bone growth. NOT an AMP. STOP.
-
-Pembrolizumab for melanoma → Other
-  Step 1: Peptide=False (monoclonal antibody). STOP.
-
-P11-4 self-assembling peptide for dental caries remineralization → Other
-  Step 1: Peptide=True. Step 2: P11-4 works by nucleating hydroxyapatite crystals — a physical/chemical mechanism. It does not kill bacteria or stimulate immune defense. NOT an AMP despite caries being bacterial. STOP.
-
-IMPORTANT: Format your response EXACTLY as:
-
+Format your response EXACTLY as:
 Classification: [AMP(infection), AMP(other), or Other]
-Evidence: [Cite the specific source, identifier, and excerpt that supports your decision]
-Reasoning: [Walk through Step 1 → Step 2 → Step 3]"""
+Reasoning: [Walk through Step 1 → 2 → 3 using the extracted facts]"""
+
+# --------------------------------------------------------------------------- #
+#  Deterministic fallback if Pass 2 fails
+# --------------------------------------------------------------------------- #
+
+def _fallback_classify(pass1_text: str, peptide_value: str) -> str:
+    """Keyword-based fallback if Pass 2 LLM call fails."""
+    if peptide_value == "False":
+        return "Other"
+
+    lower = pass1_text.lower()
+
+    # Strong AMP signals from database matches
+    has_dramp = "dramp" in lower and "no evidence" not in lower.split("database matches")[1][:100] if "database matches" in lower else False
+    has_antimicrobial_mechanism = any(kw in lower for kw in [
+        "kills bacteria", "inhibits bacteria", "membrane disruption",
+        "pore formation", "bactericidal", "bacteriostatic", "antimicrobial activity"
+    ])
+    has_immunostim = "promote" in lower and "immune" in lower
+    has_suppress = "suppress" in lower and "immune" in lower
+
+    # Immune suppression → always Other
+    if has_suppress:
+        return "Other"
+
+    # Strong NOT-AMP signals
+    not_amp_keywords = [
+        "metabolic hormone", "glp-1", "glp-2", "gnrh", "somatostatin",
+        "vasoactive", "bone growth", "natriuretic", "self-assembling",
+        "remineralization", "neoantigen", "radiolabeled", "nutritional",
+        "collagen", "immune-neutral",
+    ]
+    if any(kw in lower for kw in not_amp_keywords):
+        return "Other"
+
+    if has_dramp or has_antimicrobial_mechanism or has_immunostim:
+        # Check if infection target
+        infection_keywords = ["infection", "bacterial", "viral", "fungal",
+                              "sepsis", "antimicrobial resistance", "pathogen"]
+        if any(kw in lower for kw in infection_keywords):
+            return "AMP(infection)"
+        return "AMP(other)"
+
+    return "Other"
 
 
 class ClassificationAgent(BaseAnnotationAgent):
-    """Determines AMP vs Other classification."""
+    """Two-pass AMP classification with hardware-aware model selection."""
 
     field_name = "classification"
+
+    def _get_model(self, config) -> str:
+        """Select model based on hardware profile. Classification uses a
+        larger model because 8B models ignore the multi-step decision tree."""
+        profile = config.orchestrator.hardware_profile
+        override = MODEL_OVERRIDES.get(profile)
+        if override:
+            return override
+        # Fallback: use reconciler model (largest available)
+        for model_key, model_cfg in config.verification.models.items():
+            if model_cfg.role == "reconciler":
+                return model_cfg.name
+        return "qwen2.5:14b"
 
     async def annotate(
         self,
@@ -121,63 +178,105 @@ class ClassificationAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
-        # Gather all relevant citations from research
+        from app.services.ollama_client import ollama_client
+        from app.services.config_service import config_service
+
+        config = config_service.get()
+        model = self._get_model(config)
+
+        # Gather citations sorted by relevance
         all_citations = []
         for result in research_results:
             weight = self.relevance_weight(result.agent_name)
             for citation in result.citations:
                 all_citations.append((citation, weight))
-
-        # Sort by relevance weight descending
         all_citations.sort(key=lambda x: x[1], reverse=True)
 
-        # Build evidence text for the LLM prompt
-        # Include peptide determination if available from metadata
+        cited_sources = [c for c, _ in all_citations[:30]]
+
+        # Build evidence text with DRAMP/database signals highlighted
         peptide_value = metadata.get("peptide_result", "Unknown") if metadata else "Unknown"
-        evidence_text = f"Trial: {nct_id}\n\n"
+        evidence_text = f"Trial: {nct_id}\n"
         evidence_text += f"Peptide determination: {peptide_value}\n\n"
-        cited_sources = []
-        for citation, weight in all_citations[:20]:
+
+        # Highlight database matches at top of evidence
+        dramp_hits = []
+        uniprot_hits = []
+        for result in research_results:
+            if result.agent_name == "peptide_identity" and not result.error:
+                for citation in result.citations:
+                    if citation.source_name == "dramp":
+                        dramp_hits.append(citation)
+                    elif citation.source_name == "uniprot":
+                        uniprot_hits.append(citation)
+
+        if dramp_hits:
+            evidence_text += "DRAMP (Antimicrobial Peptide Database) MATCHES:\n"
+            for c in dramp_hits:
+                evidence_text += f"  {c.identifier}: {c.snippet}\n"
+            evidence_text += "\n"
+        if uniprot_hits:
+            evidence_text += "UniProt MATCHES:\n"
+            for c in uniprot_hits:
+                evidence_text += f"  {c.identifier}: {c.snippet}\n"
+            evidence_text += "\n"
+
+        evidence_text += "ALL EVIDENCE:\n"
+        for citation in cited_sources:
             evidence_text += f"[{citation.source_name}] {citation.identifier or ''}: {citation.snippet}\n"
-            cited_sources.append(citation)
 
-        # Call LLM
-        from app.services.ollama_client import ollama_client
-        from app.services.config_service import config_service
-
-        config = config_service.get()
-        primary_model = None
-        for model_key, model_cfg in config.verification.models.items():
-            if model_cfg.role == "annotator":
-                primary_model = model_cfg.name
-                break
-        if not primary_model:
-            primary_model = "llama3.1:8b"
-
+        # --- Pass 1: Extract antimicrobial evidence ---
+        logger.info(f"  classification: Pass 1 — extracting AMP evidence for {nct_id}")
         try:
-            response = await ollama_client.generate(
-                model=primary_model,
+            pass1_response = await ollama_client.generate(
+                model=model,
                 prompt=evidence_text,
-                system=SYSTEM_PROMPT,
+                system=PASS1_SYSTEM,
                 temperature=config.ollama.temperature,
             )
-            raw_text = response.get("response", "")
+            pass1_text = pass1_response.get("response", "")
         except Exception as e:
+            logger.error(f"  classification: Pass 1 failed: {e}")
             return FieldAnnotation(
                 field_name=self.field_name,
-                value="Unknown",
+                value="Other",
                 confidence=0.0,
-                reasoning=f"LLM call failed: {e}",
+                reasoning=f"Pass 1 LLM call failed: {e}",
                 evidence=[],
-                model_name=primary_model,
+                model_name=model,
             )
 
-        # Parse response
-        value = self._parse_value(raw_text)
-        reasoning = self._parse_reasoning(raw_text)
+        # --- Pass 2: Apply decision tree to extracted facts ---
+        logger.info(f"  classification: Pass 2 — applying decision tree for {nct_id}")
+        pass2_prompt = f"Trial: {nct_id}\n"
+        pass2_prompt += f"Peptide determination: {peptide_value}\n\n"
+        pass2_prompt += f"EXTRACTED FACTS FROM EVIDENCE:\n{pass1_text}\n"
 
-        # Compute quality score from citations
-        unique_sources = set(c.source_name for c in cited_sources)
+        try:
+            pass2_response = await ollama_client.generate(
+                model=model,
+                prompt=pass2_prompt,
+                system=PASS2_SYSTEM,
+                temperature=config.ollama.temperature,
+            )
+            pass2_text = pass2_response.get("response", "")
+        except Exception as e:
+            logger.warning(f"  classification: Pass 2 failed, using fallback: {e}")
+            value = _fallback_classify(pass1_text, peptide_value)
+            return FieldAnnotation(
+                field_name=self.field_name,
+                value=value,
+                confidence=0.3,
+                reasoning=f"[Pass 2 failed, fallback used] Pass 1: {pass1_text[:400]}",
+                evidence=cited_sources[:10],
+                model_name=model,
+            )
+
+        # Parse Pass 2 response
+        value = self._parse_value(pass2_text)
+        # Combine both passes in reasoning for audit trail
+        reasoning = f"[Pass 1 extraction] {pass1_text[:400]}\n[Pass 2 decision] {pass2_text[:400]}"
+
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
 
         return FieldAnnotation(
@@ -186,11 +285,10 @@ class ClassificationAgent(BaseAnnotationAgent):
             confidence=quality,
             reasoning=reasoning,
             evidence=cited_sources[:10],
-            model_name=primary_model,
+            model_name=model,
         )
 
     def _parse_value(self, text: str) -> str:
-        # Try to match the full classification line
         match = re.search(r"Classification:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)
         if match:
             raw = match.group(1).strip().lower()
@@ -200,22 +298,12 @@ class ClassificationAgent(BaseAnnotationAgent):
                 return "AMP(other)"
             if "other" in raw:
                 return "Other"
-            # If model just said "AMP" without subtype — default to "Other"
-            # because bare "AMP" is ambiguous and most peptides are NOT AMPs.
-            # This is safer than guessing a subtype.
             if "amp" in raw:
                 return "Other"
             return "Other"
-        # Fallback: scan for explicit AMP(subtype) mentions
         lower_text = text.lower()
         if "amp(infection)" in lower_text or "amp (infection)" in lower_text:
             return "AMP(infection)"
         if "amp(other)" in lower_text or "amp (other)" in lower_text:
             return "AMP(other)"
         return "Other"
-
-    def _parse_reasoning(self, text: str) -> str:
-        match = re.search(r"Reasoning:\s*(.+?)(?:\n\n|$)", text, re.DOTALL)
-        if match:
-            return match.group(1).strip()[:500]
-        return text[:500]
