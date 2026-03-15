@@ -2055,7 +2055,7 @@ class UniProtClient(BaseClient):
     async def fetch(self, identifier: str) -> Dict[str, Any]:
         """Fetch specific protein by accession."""
         url = f"{self.BASE_URL}/uniprotkb/{identifier}"
-        
+
         try:
             async with self.session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
                 if resp.status == 200:
@@ -2064,3 +2064,832 @@ class UniProtClient(BaseClient):
                     return {"error": f"HTTP {resp.status}"}
         except Exception as e:
             return {"error": str(e)}
+
+
+class DBAASPClient(BaseClient):
+    """
+    DBAASP (Database of Antimicrobial Activity and Structure of Peptides) client.
+
+    Searches 15,700+ antimicrobial peptides with activity data (MIC values),
+    sequences, structures, and target organism information.
+    Free API, no key required.
+    """
+
+    API_NAME = "dbaasp"
+    BASE_URL = "https://dbaasp.org/api/v1"
+
+    async def fetch(self, identifier: str) -> Dict[str, Any]:
+        """Fetch a specific peptide card by ID."""
+        params = {
+            "query": "peptide_card",
+            "peptide_id": identifier,
+            "format": "json"
+        }
+
+        try:
+            async with self.rate_limited_call():
+                async with self.session.get(self.BASE_URL, params=params,
+                                           timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                    if resp.status == 200:
+                        return await resp.json()
+                    else:
+                        return {"error": f"HTTP {resp.status}"}
+        except Exception as e:
+            return {"error": str(e)}
+
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search DBAASP for antimicrobial peptides related to trial interventions.
+
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+
+        Returns:
+            Dict with DBAASP search results
+        """
+        search_terms = self._extract_search_terms(trial_data)
+
+        if not search_terms:
+            logger.info(f"DBAASP: No peptide-related terms found for {nct_id}")
+            return {
+                "query": "No peptide identifiers found",
+                "results": [],
+                "total_found": 0,
+                "search_terms_used": []
+            }
+
+        logger.info(f"DBAASP: Searching with terms: {search_terms}")
+
+        results = {
+            "query": ", ".join(search_terms[:3]),
+            "results": [],
+            "total_found": 0,
+            "search_terms_used": search_terms
+        }
+
+        for term in search_terms[:5]:
+            peptides = await self._search_peptides(term)
+            results["results"].extend(peptides)
+
+        # Deduplicate by peptide ID
+        seen = set()
+        unique = []
+        for p in results["results"]:
+            pid = p.get("peptide_id")
+            if pid and pid not in seen:
+                seen.add(pid)
+                unique.append(p)
+
+        results["results"] = unique
+        results["total_found"] = len(unique)
+
+        logger.info(f"DBAASP: Found {results['total_found']} peptides for {nct_id}")
+        return results
+
+    async def _search_peptides(self, term: str) -> List[Dict]:
+        """Search DBAASP by peptide name."""
+        params = {
+            "query": "search",
+            "name": term,
+            "format": "json"
+        }
+
+        try:
+            async with self.rate_limited_call():
+                async with self.session.get(self.BASE_URL, params=params,
+                                           timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                    if resp.status == 200:
+                        text = await resp.text()
+                        if not text.strip():
+                            return []
+                        data = json.loads(text)
+                        if isinstance(data, list):
+                            return [self._format_peptide(p) for p in data[:10]]
+                        elif isinstance(data, dict) and "results" in data:
+                            return [self._format_peptide(p) for p in data["results"][:10]]
+                        return []
+                    else:
+                        logger.debug(f"DBAASP search returned {resp.status} for '{term}'")
+                        return []
+        except Exception as e:
+            logger.debug(f"DBAASP search error for '{term}': {e}")
+            return []
+
+    def _format_peptide(self, peptide: Dict) -> Dict:
+        """Format DBAASP peptide result."""
+        return {
+            "peptide_id": peptide.get("id") or peptide.get("peptideId"),
+            "name": peptide.get("name"),
+            "sequence": peptide.get("sequence"),
+            "length": peptide.get("length") or peptide.get("sequenceLength"),
+            "n_terminus": peptide.get("nTerminus"),
+            "c_terminus": peptide.get("cTerminus"),
+            "synthesis_type": peptide.get("synthesisType"),
+            "activity": peptide.get("activity") or peptide.get("targetActivities"),
+            "target_organisms": peptide.get("targetOrganisms") or peptide.get("targets"),
+            "source": "dbaasp"
+        }
+
+    def _extract_search_terms(self, trial_data: Dict[str, Any]) -> List[str]:
+        """Extract peptide-relevant search terms from trial data."""
+        terms = []
+        seen = set()
+
+        def add_term(t: str):
+            t = t.strip()
+            if t and t.lower() not in seen and len(t) > 2:
+                seen.add(t.lower())
+                terms.append(t)
+
+        try:
+            protocol = trial_data.get("protocolSection", {})
+
+            # From interventions
+            arms = protocol.get("armsInterventionsModule", {})
+            for intervention in arms.get("interventions", []):
+                if isinstance(intervention, dict):
+                    name = intervention.get("name", "").strip()
+                    if name:
+                        add_term(name)
+                    for other in intervention.get("otherNames", []):
+                        if other and other.strip():
+                            add_term(other.strip())
+
+            # From conditions
+            conditions = protocol.get("conditionsModule", {}).get("conditions", [])
+            for condition in conditions:
+                if isinstance(condition, str):
+                    add_term(condition)
+
+            # From keywords
+            keywords = protocol.get("conditionsModule", {}).get("keywords", [])
+            for kw in keywords:
+                if isinstance(kw, str):
+                    add_term(kw)
+
+        except Exception as e:
+            logger.warning(f"Error extracting DBAASP search terms: {e}")
+
+        return terms[:10]
+
+
+class ChEMBLClient(BaseClient):
+    """
+    ChEMBL API client for drug bioactivity and biotherapeutic data.
+
+    Searches curated medicinal chemistry data including:
+    - Molecules and biotherapeutics (peptide drugs with sequences)
+    - Bioactivity measurements (IC50, EC50, Ki)
+    - Drug mechanisms of action
+    - Clinical phase information
+    Free API, no key required.
+    """
+
+    API_NAME = "chembl"
+    BASE_URL = "https://www.ebi.ac.uk/chembl/api/data"
+
+    async def fetch(self, identifier: str) -> Dict[str, Any]:
+        """Fetch a specific molecule by ChEMBL ID."""
+        url = f"{self.BASE_URL}/molecule/{identifier}.json"
+
+        try:
+            async with self.rate_limited_call():
+                async with self.session.get(url, timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                    if resp.status == 200:
+                        return await resp.json()
+                    else:
+                        return {"error": f"HTTP {resp.status}"}
+        except Exception as e:
+            return {"error": str(e)}
+
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search ChEMBL for drug/molecule data related to trial interventions.
+
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+
+        Returns:
+            Dict with ChEMBL search results
+        """
+        search_terms = self._extract_drug_terms(trial_data)
+
+        if not search_terms:
+            logger.info(f"ChEMBL: No drug identifiers found for {nct_id}")
+            return {
+                "query": "No drug identifiers found",
+                "molecules": [],
+                "mechanisms": [],
+                "total_found": 0,
+                "search_terms_used": []
+            }
+
+        logger.info(f"ChEMBL: Searching with terms: {search_terms}")
+
+        results = {
+            "query": ", ".join(search_terms[:3]),
+            "molecules": [],
+            "mechanisms": [],
+            "total_found": 0,
+            "search_terms_used": search_terms
+        }
+
+        for term in search_terms[:5]:
+            # Search molecules (includes biotherapeutics/peptides)
+            molecules = await self._search_molecules(term)
+            results["molecules"].extend(molecules)
+
+            # Search mechanism of action
+            mechanisms = await self._search_mechanisms(term)
+            results["mechanisms"].extend(mechanisms)
+
+        # Deduplicate molecules by ChEMBL ID
+        seen = set()
+        unique_molecules = []
+        for m in results["molecules"]:
+            mid = m.get("molecule_chembl_id")
+            if mid and mid not in seen:
+                seen.add(mid)
+                unique_molecules.append(m)
+
+        results["molecules"] = unique_molecules
+        results["total_found"] = len(unique_molecules) + len(results["mechanisms"])
+
+        logger.info(f"ChEMBL: Found {results['total_found']} results for {nct_id}")
+        return results
+
+    async def _search_molecules(self, term: str) -> List[Dict]:
+        """Search ChEMBL molecules by name."""
+        url = f"{self.BASE_URL}/molecule/search.json"
+        params = {
+            "q": term,
+            "limit": 5
+        }
+
+        try:
+            async with self.rate_limited_call():
+                async with self.session.get(url, params=params,
+                                           timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        molecules = data.get("molecules", [])
+                        return [self._format_molecule(m) for m in molecules[:5]]
+                    else:
+                        logger.debug(f"ChEMBL molecule search returned {resp.status} for '{term}'")
+                        return []
+        except Exception as e:
+            logger.debug(f"ChEMBL molecule search error for '{term}': {e}")
+            return []
+
+    async def _search_mechanisms(self, term: str) -> List[Dict]:
+        """Search ChEMBL mechanism of action."""
+        url = f"{self.BASE_URL}/mechanism.json"
+        params = {
+            "search": term,
+            "limit": 5
+        }
+
+        try:
+            async with self.rate_limited_call():
+                async with self.session.get(url, params=params,
+                                           timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        mechanisms = data.get("mechanisms", [])
+                        return [self._format_mechanism(m) for m in mechanisms[:5]]
+                    else:
+                        logger.debug(f"ChEMBL mechanism search returned {resp.status} for '{term}'")
+                        return []
+        except Exception as e:
+            logger.debug(f"ChEMBL mechanism search error for '{term}': {e}")
+            return []
+
+    def _format_molecule(self, mol: Dict) -> Dict:
+        """Format ChEMBL molecule result."""
+        biotherapeutic = mol.get("biotherapeutic", {})
+
+        formatted = {
+            "molecule_chembl_id": mol.get("molecule_chembl_id"),
+            "pref_name": mol.get("pref_name"),
+            "molecule_type": mol.get("molecule_type"),
+            "max_phase": mol.get("max_phase"),
+            "first_approval": mol.get("first_approval"),
+            "oral": mol.get("oral"),
+            "parenteral": mol.get("parenteral"),
+            "topical": mol.get("topical"),
+            "indication_class": mol.get("indication_class"),
+            "source": "chembl"
+        }
+
+        # Include biotherapeutic data (peptide sequences via HELM notation)
+        if biotherapeutic:
+            formatted["biotherapeutic"] = {
+                "helm_notation": biotherapeutic.get("helm_notation"),
+                "description": biotherapeutic.get("description"),
+                "biocomponents": biotherapeutic.get("biocomponents", [])
+            }
+
+        return formatted
+
+    def _format_mechanism(self, mech: Dict) -> Dict:
+        """Format ChEMBL mechanism of action result."""
+        return {
+            "mechanism_of_action": mech.get("mechanism_of_action"),
+            "action_type": mech.get("action_type"),
+            "target_chembl_id": mech.get("target_chembl_id"),
+            "molecule_chembl_id": mech.get("molecule_chembl_id"),
+            "max_phase": mech.get("max_phase"),
+            "source": "chembl"
+        }
+
+    def _extract_drug_terms(self, trial_data: Dict[str, Any]) -> List[str]:
+        """Extract drug/molecule search terms from trial data."""
+        terms = []
+        seen = set()
+
+        def add_term(t: str):
+            t = t.strip()
+            if t and t.lower() not in seen and len(t) > 2:
+                seen.add(t.lower())
+                terms.append(t)
+
+        try:
+            protocol = trial_data.get("protocolSection", {})
+
+            arms = protocol.get("armsInterventionsModule", {})
+            for intervention in arms.get("interventions", []):
+                if isinstance(intervention, dict):
+                    name = intervention.get("name", "").strip()
+                    if name:
+                        add_term(name)
+                    for other in intervention.get("otherNames", []):
+                        if other and other.strip():
+                            add_term(other.strip())
+
+        except Exception as e:
+            logger.warning(f"Error extracting ChEMBL search terms: {e}")
+
+        return terms[:10]
+
+
+class RCSBPDBClient(BaseClient):
+    """
+    RCSB PDB (Protein Data Bank) client for 3D structure data.
+
+    Searches protein/peptide structures using text search and provides
+    structural metadata, entity descriptions, and sequence data.
+    Free API, no key required.
+    """
+
+    API_NAME = "rcsb_pdb"
+    SEARCH_URL = "https://search.rcsb.org/rcsbsearch/v2/query"
+    DATA_URL = "https://data.rcsb.org/rest/v1/core"
+
+    async def fetch(self, identifier: str) -> Dict[str, Any]:
+        """Fetch a specific PDB entry by ID."""
+        url = f"{self.DATA_URL}/entry/{identifier}"
+
+        try:
+            async with self.rate_limited_call():
+                async with self.session.get(url, timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                    if resp.status == 200:
+                        return await resp.json()
+                    else:
+                        return {"error": f"HTTP {resp.status}"}
+        except Exception as e:
+            return {"error": str(e)}
+
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search RCSB PDB for structures related to trial interventions.
+
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+
+        Returns:
+            Dict with PDB search results
+        """
+        search_terms = self._extract_structure_terms(trial_data)
+
+        if not search_terms:
+            logger.info(f"RCSB PDB: No structure-relevant terms found for {nct_id}")
+            return {
+                "query": "No structure identifiers found",
+                "results": [],
+                "total_found": 0,
+                "search_terms_used": []
+            }
+
+        logger.info(f"RCSB PDB: Searching with terms: {search_terms}")
+
+        results = {
+            "query": ", ".join(search_terms[:3]),
+            "results": [],
+            "total_found": 0,
+            "search_terms_used": search_terms
+        }
+
+        for term in search_terms[:3]:  # PDB searches can be slow, limit to 3
+            structures = await self._search_structures(term)
+            results["results"].extend(structures)
+
+        # Deduplicate by PDB ID
+        seen = set()
+        unique = []
+        for s in results["results"]:
+            sid = s.get("pdb_id")
+            if sid and sid not in seen:
+                seen.add(sid)
+                unique.append(s)
+
+        results["results"] = unique
+        results["total_found"] = len(unique)
+
+        logger.info(f"RCSB PDB: Found {results['total_found']} structures for {nct_id}")
+        return results
+
+    async def _search_structures(self, term: str) -> List[Dict]:
+        """Search PDB using full-text search API."""
+        query_body = {
+            "query": {
+                "type": "terminal",
+                "service": "full_text",
+                "parameters": {
+                    "value": term
+                }
+            },
+            "return_type": "entry",
+            "request_options": {
+                "paginate": {
+                    "start": 0,
+                    "rows": 5
+                },
+                "results_content_type": ["experimental"]
+            }
+        }
+
+        try:
+            async with self.rate_limited_call():
+                async with self.session.post(
+                    self.SEARCH_URL,
+                    json=query_body,
+                    timeout=aiohttp.ClientTimeout(total=15)
+                ) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        result_set = data.get("result_set", [])
+
+                        # Fetch entry details for top results
+                        structures = []
+                        for result in result_set[:5]:
+                            pdb_id = result.get("identifier")
+                            if pdb_id:
+                                detail = await self._fetch_entry_detail(pdb_id)
+                                if detail and "error" not in detail:
+                                    structures.append(detail)
+
+                        return structures
+                    elif resp.status == 204:
+                        # No results
+                        return []
+                    else:
+                        logger.debug(f"PDB search returned {resp.status} for '{term}'")
+                        return []
+        except Exception as e:
+            logger.debug(f"PDB search error for '{term}': {e}")
+            return []
+
+    async def _fetch_entry_detail(self, pdb_id: str) -> Optional[Dict]:
+        """Fetch entry details for a PDB ID."""
+        url = f"{self.DATA_URL}/entry/{pdb_id}"
+
+        try:
+            async with self.session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    return self._format_entry(data, pdb_id)
+                return None
+        except Exception as e:
+            logger.debug(f"PDB entry fetch error for {pdb_id}: {e}")
+            return None
+
+    def _format_entry(self, entry: Dict, pdb_id: str) -> Dict:
+        """Format PDB entry result."""
+        struct = entry.get("struct", {})
+        cell = entry.get("cell", {})
+        exptl = entry.get("exptl", [{}])
+        citation = entry.get("citation", [{}])
+
+        # Get primary citation
+        primary_citation = {}
+        for c in citation:
+            if c.get("id") == "primary":
+                primary_citation = c
+                break
+        if not primary_citation and citation:
+            primary_citation = citation[0]
+
+        return {
+            "pdb_id": pdb_id,
+            "title": struct.get("title"),
+            "method": exptl[0].get("method") if exptl else None,
+            "resolution": exptl[0].get("resolution") if exptl else None,
+            "keywords": struct.get("pdbx_descriptor"),
+            "citation_title": primary_citation.get("title"),
+            "citation_journal": primary_citation.get("journal_abbrev"),
+            "citation_year": primary_citation.get("year"),
+            "source": "rcsb_pdb"
+        }
+
+    def _extract_structure_terms(self, trial_data: Dict[str, Any]) -> List[str]:
+        """Extract terms relevant for structure searches."""
+        terms = []
+        seen = set()
+
+        def add_term(t: str):
+            t = t.strip()
+            if t and t.lower() not in seen and len(t) > 2:
+                seen.add(t.lower())
+                terms.append(t)
+
+        try:
+            protocol = trial_data.get("protocolSection", {})
+
+            # Intervention names are most relevant for PDB
+            arms = protocol.get("armsInterventionsModule", {})
+            for intervention in arms.get("interventions", []):
+                if isinstance(intervention, dict):
+                    name = intervention.get("name", "").strip()
+                    if name:
+                        add_term(name)
+
+            # Gene/protein names from conditions
+            conditions = protocol.get("conditionsModule", {}).get("conditions", [])
+            for condition in conditions:
+                if isinstance(condition, str):
+                    # Look for protein-like terms (uppercase, short)
+                    import re
+                    proteins = re.findall(r'\b([A-Z][A-Z0-9]{1,9})\b', condition)
+                    for p in proteins:
+                        if p not in {'NCT', 'FDA', 'USA', 'AND', 'THE', 'FOR', 'WITH'}:
+                            add_term(p)
+
+        except Exception as e:
+            logger.warning(f"Error extracting PDB search terms: {e}")
+
+        return terms[:5]
+
+
+class EBIProteinsClient(BaseClient):
+    """
+    EBI Proteins API client for integrated protein data.
+
+    Provides protein features, sequence annotations, clinical variants
+    (ClinVar, COSMIC), epitope data, and proteomics data.
+    Free API, no key required. 200 req/s limit.
+    """
+
+    API_NAME = "ebi_proteins"
+    BASE_URL = "https://www.ebi.ac.uk/proteins/api"
+
+    async def fetch(self, identifier: str) -> Dict[str, Any]:
+        """Fetch protein data by UniProt accession."""
+        url = f"{self.BASE_URL}/proteins/{identifier}"
+        headers = {"Accept": "application/json"}
+
+        try:
+            async with self.rate_limited_call():
+                async with self.session.get(url, headers=headers,
+                                           timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                    if resp.status == 200:
+                        return await resp.json()
+                    else:
+                        return {"error": f"HTTP {resp.status}"}
+        except Exception as e:
+            return {"error": str(e)}
+
+    async def search(self, nct_id: str, trial_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search EBI Proteins API for protein features and variants.
+
+        Args:
+            nct_id: NCT trial identifier
+            trial_data: Full clinical trial data
+
+        Returns:
+            Dict with protein feature and variant data
+        """
+        search_terms = self._extract_protein_terms(trial_data)
+
+        if not search_terms:
+            logger.info(f"EBI Proteins: No protein terms found for {nct_id}")
+            return {
+                "query": "No protein identifiers found",
+                "proteins": [],
+                "features": [],
+                "variants": [],
+                "total_found": 0,
+                "search_terms_used": []
+            }
+
+        logger.info(f"EBI Proteins: Searching with terms: {search_terms}")
+
+        results = {
+            "query": ", ".join(search_terms[:3]),
+            "proteins": [],
+            "features": [],
+            "variants": [],
+            "total_found": 0,
+            "search_terms_used": search_terms
+        }
+
+        for term in search_terms[:5]:
+            # Search proteins
+            proteins = await self._search_proteins(term)
+            results["proteins"].extend(proteins)
+
+            # For each protein found, try to get features and variants
+            for protein in proteins[:2]:
+                accession = protein.get("accession")
+                if accession:
+                    features = await self._fetch_features(accession)
+                    results["features"].extend(features)
+
+                    variants = await self._fetch_variants(accession)
+                    results["variants"].extend(variants)
+
+        results["total_found"] = (
+            len(results["proteins"]) +
+            len(results["features"]) +
+            len(results["variants"])
+        )
+
+        logger.info(f"EBI Proteins: Found {results['total_found']} results for {nct_id}")
+        return results
+
+    async def _search_proteins(self, term: str) -> List[Dict]:
+        """Search proteins by keyword."""
+        url = f"{self.BASE_URL}/proteins"
+        params = {
+            "offset": 0,
+            "size": 5,
+            "keyword": term
+        }
+        headers = {"Accept": "application/json"}
+
+        try:
+            async with self.rate_limited_call():
+                async with self.session.get(url, params=params, headers=headers,
+                                           timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        if isinstance(data, list):
+                            return [self._format_protein(p) for p in data[:5]]
+                        return []
+                    elif resp.status == 404:
+                        return []
+                    else:
+                        logger.debug(f"EBI Proteins search returned {resp.status} for '{term}'")
+                        return []
+        except Exception as e:
+            logger.debug(f"EBI Proteins search error for '{term}': {e}")
+            return []
+
+    async def _fetch_features(self, accession: str) -> List[Dict]:
+        """Fetch sequence features for a protein."""
+        url = f"{self.BASE_URL}/features/{accession}"
+        headers = {"Accept": "application/json"}
+
+        try:
+            async with self.rate_limited_call():
+                async with self.session.get(url, headers=headers,
+                                           timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        features = data.get("features", [])
+                        return [self._format_feature(f, accession) for f in features[:10]]
+                    return []
+        except Exception as e:
+            logger.debug(f"EBI Proteins features error for {accession}: {e}")
+            return []
+
+    async def _fetch_variants(self, accession: str) -> List[Dict]:
+        """Fetch variant data (ClinVar, COSMIC) for a protein."""
+        url = f"{self.BASE_URL}/variation/{accession}"
+        headers = {"Accept": "application/json"}
+
+        try:
+            async with self.rate_limited_call():
+                async with self.session.get(url, headers=headers,
+                                           timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        features = data.get("features", [])
+                        # Only return clinically significant variants
+                        clinical = [f for f in features if f.get("clinicalSignificances")]
+                        return [self._format_variant(v, accession) for v in clinical[:10]]
+                    return []
+        except Exception as e:
+            logger.debug(f"EBI Proteins variants error for {accession}: {e}")
+            return []
+
+    def _format_protein(self, protein: Dict) -> Dict:
+        """Format EBI protein result."""
+        # Extract protein name
+        protein_obj = protein.get("protein", {})
+        rec_name = protein_obj.get("recommendedName", {})
+        full_name = rec_name.get("fullName", {}).get("value") if rec_name else None
+
+        # Extract gene name
+        genes = protein.get("gene", [])
+        gene_name = genes[0].get("name", {}).get("value") if genes else None
+
+        # Extract organism
+        organism = protein.get("organism", {})
+        org_names = organism.get("names", [])
+        org_name = org_names[0].get("value") if org_names else None
+
+        # Extract sequence
+        sequence = protein.get("sequence", {})
+
+        return {
+            "accession": protein.get("accession"),
+            "protein_name": full_name,
+            "gene_name": gene_name,
+            "organism": org_name,
+            "sequence_length": sequence.get("length"),
+            "sequence": sequence.get("sequence"),
+            "keywords": [kw.get("value") for kw in protein.get("keyword", []) if kw.get("value")],
+            "source": "ebi_proteins"
+        }
+
+    def _format_feature(self, feature: Dict, accession: str) -> Dict:
+        """Format protein feature."""
+        return {
+            "accession": accession,
+            "type": feature.get("type"),
+            "category": feature.get("category"),
+            "description": feature.get("description"),
+            "begin": feature.get("begin"),
+            "end": feature.get("end"),
+            "source": "ebi_proteins"
+        }
+
+    def _format_variant(self, variant: Dict, accession: str) -> Dict:
+        """Format clinical variant."""
+        significances = variant.get("clinicalSignificances", [])
+
+        return {
+            "accession": accession,
+            "type": variant.get("type"),
+            "wild_type": variant.get("wildType"),
+            "alternative_sequence": variant.get("alternativeSequence"),
+            "begin": variant.get("begin"),
+            "end": variant.get("end"),
+            "clinical_significances": significances,
+            "description": variant.get("description"),
+            "source": "ebi_proteins"
+        }
+
+    def _extract_protein_terms(self, trial_data: Dict[str, Any]) -> List[str]:
+        """Extract protein-relevant search terms."""
+        terms = []
+        seen = set()
+
+        def add_term(t: str):
+            t = t.strip()
+            if t and t.lower() not in seen and len(t) > 2:
+                seen.add(t.lower())
+                terms.append(t)
+
+        try:
+            protocol = trial_data.get("protocolSection", {})
+
+            # From interventions
+            arms = protocol.get("armsInterventionsModule", {})
+            for intervention in arms.get("interventions", []):
+                if isinstance(intervention, dict):
+                    name = intervention.get("name", "").strip()
+                    if name:
+                        add_term(name)
+                    for other in intervention.get("otherNames", []):
+                        if other and other.strip():
+                            add_term(other.strip())
+
+            # Gene/protein names from conditions
+            conditions = protocol.get("conditionsModule", {}).get("conditions", [])
+            for condition in conditions:
+                if isinstance(condition, str):
+                    import re
+                    proteins = re.findall(r'\b([A-Z][A-Z0-9]{1,9})\b', condition)
+                    for p in proteins:
+                        if p not in {'NCT', 'FDA', 'USA', 'AND', 'THE', 'FOR', 'WITH'}:
+                            add_term(p)
+
+        except Exception as e:
+            logger.warning(f"Error extracting EBI Proteins search terms: {e}")
+
+        return terms[:10]

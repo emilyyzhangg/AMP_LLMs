@@ -132,6 +132,38 @@ class APIRegistry:
             client_class="UniProtClient",
             enabled_by_default=True
         ),
+        APIDefinition(
+            id="dbaasp",
+            name="DBAASP",
+            description="Antimicrobial peptide database with activity data, sequences, and structures",
+            category="extended",
+            client_class="DBAASPClient",
+            enabled_by_default=True
+        ),
+        APIDefinition(
+            id="chembl",
+            name="ChEMBL",
+            description="Drug bioactivity database with biotherapeutic peptide data and clinical phases",
+            category="extended",
+            client_class="ChEMBLClient",
+            enabled_by_default=True
+        ),
+        APIDefinition(
+            id="rcsb_pdb",
+            name="RCSB PDB",
+            description="Protein Data Bank - 3D structures of proteins, peptides, and drug targets",
+            category="extended",
+            client_class="RCSBPDBClient",
+            enabled_by_default=True
+        ),
+        APIDefinition(
+            id="ebi_proteins",
+            name="EBI Proteins API",
+            description="Integrated protein data with clinical variants, features, and proteomics",
+            category="extended",
+            client_class="EBIProteinsClient",
+            enabled_by_default=True
+        ),
         # PAID APIs (require API keys)
         APIDefinition(
             id="serpapi",

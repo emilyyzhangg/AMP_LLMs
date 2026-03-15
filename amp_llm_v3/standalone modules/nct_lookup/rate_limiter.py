@@ -48,6 +48,10 @@ API_RATE_LIMITS = {
     "crossref": {"rate": 10, "burst": 20},  # Polite pool is generous
     "openfda": {"rate": 5, "burst": 10},
     "duckduckgo": {"rate": 1, "burst": 2},  # Be conservative
+    "dbaasp": {"rate": 2, "burst": 5},       # No documented limit, be polite
+    "chembl": {"rate": 5, "burst": 10},       # EBI hosted, generous limits
+    "rcsb_pdb": {"rate": 2, "burst": 5},      # Soft rate limiting, backs off on 429
+    "ebi_proteins": {"rate": 5, "burst": 10}, # Documented 200 req/s but be conservative
     "default": {"rate": NCT_RATE_LIMIT_PER_SECOND, "burst": NCT_BURST_SIZE}
 }
 

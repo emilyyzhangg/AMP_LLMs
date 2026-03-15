@@ -1,0 +1,91 @@
+# Agent Annotate - Default Configuration
+# ========================================
+# This file defines the multi-model verification pipeline,
+# research agents, annotation fields, and orchestrator settings.
+
+verification:
+  num_verifiers: 3
+  require_consensus: true
+  consensus_threshold: 1.0
+
+  models:
+    primary:
+      name: "llama3.1:8b"
+      role: annotator
+    verifier_1:
+      name: "gemma2:9b"
+      role: verifier
+    verifier_2:
+      name: "qwen2:latest"
+      role: verifier
+    verifier_3:
+      name: "mistral:latest"
+      role: verifier
+    reconciliation:
+      name: "qwen2.5:14b"
+      role: reconciler
+
+evidence_thresholds:
+  classification:
+    min_sources: 2
+    min_quality: 0.5
+  delivery_mode:
+    min_sources: 2
+    min_quality: 0.5
+  outcome:
+    min_sources: 2
+    min_quality: 0.5
+  reason_for_failure:
+    min_sources: 1
+    min_quality: 0.3
+  peptide:
+    min_sources: 2
+    min_quality: 0.5
+
+research_agents:
+  clinical_protocol:
+    sources:
+      - clinicaltrials_gov
+      - openfda
+  literature:
+    sources:
+      - pubmed
+      - pmc
+      - pmc_bioc
+  peptide_identity:
+    sources:
+      - uniprot
+      - dramp
+  web_context:
+    sources:
+      - duckduckgo
+      - serpapi
+      - scholar
+
+annotation_agents:
+  classification:
+    primary_research: clinical_protocol
+    secondary_research: literature
+  delivery_mode:
+    primary_research: clinical_protocol
+    secondary_research: literature
+  outcome:
+    primary_research: clinical_protocol
+    secondary_research: web_context
+  reason_for_failure:
+    primary_research: web_context
+    secondary_research: literature
+  peptide:
+    primary_research: peptide_identity
+    secondary_research: literature
+
+orchestrator:
+  max_retry_rounds: null
+  parallel_research: true
+  parallel_annotation: true
+
+ollama:
+  host: localhost
+  port: 11434
+  timeout: 600
+  temperature: 0.10

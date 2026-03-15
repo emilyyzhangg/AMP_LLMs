@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.amplm.annotate</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>cd "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate" &amp;&amp; PYTHONPATH=. exec /Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/llm_env/bin/uvicorn app.main:app --host 0.0.0.0 --port 8005</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/llm_env/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+    <key>UserName</key>
+    <string>amphoraxe</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/logs/annotate.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/logs/annotate.error.log</string>
+</dict>
+</plist>

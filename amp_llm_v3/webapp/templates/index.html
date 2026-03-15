@@ -19,7 +19,7 @@
     
     <!-- Theme stylesheet (dynamically loaded) -->
     <link rel="stylesheet" id="theme-stylesheet" href="/static/theme-cherry-blossom.css">
-    <script defer src="https://analytics.amphoraxe.ca/script.js" data-website-id="8c530350-63a9-4e8c-a02a-13957ba8e4e3"></script>
+    <script defer src="https://analytics.amphoraxe.ca/script.js" data-website-id="5fb756c2-6b0f-4e61-aa9b-11995f314a22"></script>
 </head>
 <body>
     <div class="container">
@@ -124,6 +124,11 @@
                         <div class="menu-item-icon">📁</div>
                         <div class="menu-item-title">File Manager</div>
                         <div class="menu-item-desc">Browse, upload, and load trial data</div>
+                    </div>
+                    <div class="menu-item" onclick="window.location.href = location.hostname === 'localhost' ? 'http://localhost:9005/' : '/agent-annotate/'">
+                        <div class="menu-item-icon">🕵️</div>
+                        <div class="menu-item-title">Agent Annotate</div>
+                        <div class="menu-item-desc">Publication-grade annotation with AI agents</div>
                     </div>
                 </div>
             </div>
