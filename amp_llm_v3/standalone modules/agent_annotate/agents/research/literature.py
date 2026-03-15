@@ -1,120 +1,545 @@
 """
 Literature Research Agent.
 
-Searches PubMed, PMC, and PMC BioC for published research related to a clinical trial.
+Searches PubMed, PMC, Europe PMC, and Semantic Scholar for published
+research related to a clinical trial. Fetches actual abstracts for
+high-quality annotation context.
 """
 
+import asyncio
+import xml.etree.ElementTree as ET
 from typing import Optional
 from datetime import datetime
 
 import httpx
 
 from agents.base import BaseResearchAgent
+from agents.research.http_utils import resilient_get
 from app.models.research import ResearchResult, SourceCitation
 from app.config import PUBMED_API_KEY
 
+# NCBI E-utilities
 PUBMED_SEARCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 PUBMED_FETCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 PUBMED_SUMMARY_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
-PMC_OA_URL = "https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi"
+
+# Europe PMC (free, no API key, returns abstracts in JSON)
+EUROPE_PMC_URL = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+
+# Semantic Scholar (free, 100 req/5min without key)
+SEMANTIC_SCHOLAR_URL = "https://api.semanticscholar.org/graph/v1/paper/search"
 
 
 class LiteratureAgent(BaseResearchAgent):
     """Searches biomedical literature databases for trial-related publications."""
 
     agent_name = "literature"
-    sources = ["pubmed", "pmc", "pmc_bioc"]
+    sources = ["pubmed", "pmc", "europe_pmc", "semantic_scholar"]
 
     async def research(self, nct_id: str, metadata: Optional[dict] = None) -> ResearchResult:
-        citations = []
         raw_data = {}
 
-        # Build search query from NCT ID and metadata
-        query_parts = [nct_id]
-        if metadata:
-            if metadata.get("conditions"):
-                query_parts.extend(metadata["conditions"][:2])
-            if metadata.get("interventions"):
-                query_parts.extend(str(i) for i in metadata["interventions"][:2])
-        search_query = " OR ".join(query_parts)
+        async with httpx.AsyncClient(timeout=30) as client:
+            results = await asyncio.gather(
+                self._search_pubmed(nct_id, client),
+                self._search_pmc(nct_id, client),
+                self._search_europe_pmc(nct_id, client),
+                self._search_semantic_scholar(nct_id, client),
+                return_exceptions=True,
+            )
 
-        # 1. PubMed search
-        try:
-            params = {
-                "db": "pubmed",
-                "term": search_query,
-                "retmax": 5,
-                "retmode": "json",
-                "sort": "relevance",
-            }
-            if PUBMED_API_KEY:
-                params["api_key"] = PUBMED_API_KEY
+        all_citations = []
+        source_names = ["pubmed", "pmc", "europe_pmc", "semantic_scholar"]
+        for name, result in zip(source_names, results):
+            if isinstance(result, Exception):
+                raw_data[f"{name}_error"] = str(result)
+            else:
+                citations, data = result
+                all_citations.extend(citations)
+                raw_data.update(data)
 
-            async with httpx.AsyncClient(timeout=20) as client:
-                resp = await client.get(PUBMED_SEARCH_URL, params=params)
-                if resp.status_code == 200:
-                    search_data = resp.json()
-                    id_list = search_data.get("esearchresult", {}).get("idlist", [])
-                    raw_data["pubmed_ids"] = id_list
-
-                    # Fetch summaries for found PMIDs
-                    if id_list:
-                        summary_resp = await client.get(
-                            PUBMED_SUMMARY_URL,
-                            params={
-                                "db": "pubmed",
-                                "id": ",".join(id_list),
-                                "retmode": "json",
-                            },
-                        )
-                        if summary_resp.status_code == 200:
-                            summary_data = summary_resp.json()
-                            results = summary_data.get("result", {})
-                            for pmid in id_list:
-                                article = results.get(pmid, {})
-                                if isinstance(article, dict) and article.get("title"):
-                                    citations.append(SourceCitation(
-                                        source_name="pubmed",
-                                        source_url=f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/",
-                                        identifier=f"PMID:{pmid}",
-                                        title=article.get("title", ""),
-                                        snippet=article.get("sorttitle", "")[:300],
-                                        quality_score=self.compute_quality_score("pubmed"),
-                                        retrieved_at=datetime.utcnow().isoformat(),
-                                    ))
-        except Exception as e:
-            raw_data["pubmed_error"] = str(e)
-
-        # 2. PMC search (open access full text)
-        try:
-            async with httpx.AsyncClient(timeout=20) as client:
-                pmc_params = {
-                    "db": "pmc",
-                    "term": f"{nct_id}[Abstract]",
-                    "retmax": 3,
-                    "retmode": "json",
-                }
-                resp = await client.get(PUBMED_SEARCH_URL, params=pmc_params)
-                if resp.status_code == 200:
-                    pmc_data = resp.json()
-                    pmc_ids = pmc_data.get("esearchresult", {}).get("idlist", [])
-                    raw_data["pmc_ids"] = pmc_ids
-                    for pmc_id in pmc_ids:
-                        citations.append(SourceCitation(
-                            source_name="pmc",
-                            source_url=f"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC{pmc_id}/",
-                            identifier=f"PMC:{pmc_id}",
-                            title=f"PMC Article {pmc_id}",
-                            snippet="",
-                            quality_score=self.compute_quality_score("pmc", has_content=False),
-                            retrieved_at=datetime.utcnow().isoformat(),
-                        ))
-        except Exception as e:
-            raw_data["pmc_error"] = str(e)
+        all_citations = self._deduplicate_citations(all_citations)
 
         return ResearchResult(
             agent_name=self.agent_name,
             nct_id=nct_id,
-            citations=citations,
+            citations=all_citations,
             raw_data=raw_data,
         )
+
+    # ------------------------------------------------------------------ #
+    #  PubMed (with abstract fetching via efetch XML)
+    # ------------------------------------------------------------------ #
+
+    async def _search_pubmed(
+        self, nct_id: str, client: httpx.AsyncClient
+    ) -> tuple[list[SourceCitation], dict]:
+        """Search PubMed and fetch abstracts via efetch XML."""
+        citations: list[SourceCitation] = []
+        raw_data: dict = {}
+
+        params = {
+            "db": "pubmed",
+            "term": nct_id,
+            "retmax": 100,
+            "retmode": "json",
+            "sort": "relevance",
+        }
+        if PUBMED_API_KEY:
+            params["api_key"] = PUBMED_API_KEY
+
+        resp = await resilient_get(PUBMED_SEARCH_URL, client=client, params=params)
+        if resp.status_code != 200:
+            raw_data["pubmed_error"] = f"HTTP {resp.status_code}"
+            return citations, raw_data
+
+        search_data = resp.json()
+        id_list = search_data.get("esearchresult", {}).get("idlist", [])
+        raw_data["pubmed_ids"] = id_list
+        raw_data["pubmed_count"] = int(
+            search_data.get("esearchresult", {}).get("count", 0)
+        )
+
+        if not id_list:
+            return citations, raw_data
+
+        # Fetch full records with abstracts via efetch XML
+        fetch_params = {
+            "db": "pubmed",
+            "id": ",".join(id_list),
+            "rettype": "abstract",
+            "retmode": "xml",
+        }
+        if PUBMED_API_KEY:
+            fetch_params["api_key"] = PUBMED_API_KEY
+
+        fetch_resp = await resilient_get(
+            PUBMED_FETCH_URL, client=client, params=fetch_params, timeout=45
+        )
+
+        if fetch_resp.status_code == 200:
+            articles = self._parse_pubmed_xml(fetch_resp.text)
+            for pmid in id_list:
+                article = articles.get(pmid, {})
+                title = article.get("title", "")
+                abstract = article.get("abstract", "")
+                journal = article.get("journal", "")
+                year = article.get("year", "")
+                authors = article.get("authors", [])
+
+                snippet = self._build_snippet(
+                    title=title, authors=authors, journal=journal,
+                    year=year, abstract=abstract,
+                )
+                quality = self.compute_quality_score(
+                    "pubmed", has_content=bool(abstract)
+                )
+                citations.append(SourceCitation(
+                    source_name="pubmed",
+                    source_url=f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/",
+                    identifier=f"PMID:{pmid}",
+                    title=title or f"PubMed article {pmid}",
+                    snippet=snippet,
+                    quality_score=quality,
+                    retrieved_at=datetime.utcnow().isoformat(),
+                ))
+        else:
+            # Fallback to esummary if efetch fails
+            raw_data["pubmed_efetch_error"] = f"HTTP {fetch_resp.status_code}"
+            await self._pubmed_summary_fallback(
+                id_list, client, citations, raw_data
+            )
+
+        return citations, raw_data
+
+    async def _pubmed_summary_fallback(
+        self,
+        id_list: list[str],
+        client: httpx.AsyncClient,
+        citations: list[SourceCitation],
+        raw_data: dict,
+    ) -> None:
+        """Fallback to esummary if efetch XML fails."""
+        params = {
+            "db": "pubmed",
+            "id": ",".join(id_list),
+            "retmode": "json",
+        }
+        if PUBMED_API_KEY:
+            params["api_key"] = PUBMED_API_KEY
+
+        resp = await resilient_get(PUBMED_SUMMARY_URL, client=client, params=params)
+        if resp.status_code != 200:
+            return
+
+        results = resp.json().get("result", {})
+        for pmid in id_list:
+            article = results.get(pmid, {})
+            if not isinstance(article, dict) or not article.get("title"):
+                continue
+
+            title = article.get("title", "")
+            source = article.get("source", "")
+            pubdate = article.get("sortpubdate", "")[:4]
+            authors = [
+                a.get("name", "") for a in article.get("authors", [])[:5]
+            ]
+
+            snippet = self._build_snippet(
+                title=title, authors=authors, journal=source, year=pubdate,
+            )
+            citations.append(SourceCitation(
+                source_name="pubmed",
+                source_url=f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/",
+                identifier=f"PMID:{pmid}",
+                title=title,
+                snippet=snippet,
+                quality_score=self.compute_quality_score("pubmed", has_content=False),
+                retrieved_at=datetime.utcnow().isoformat(),
+            ))
+
+    # ------------------------------------------------------------------ #
+    #  PMC (open-access full text, with proper summaries)
+    # ------------------------------------------------------------------ #
+
+    async def _search_pmc(
+        self, nct_id: str, client: httpx.AsyncClient
+    ) -> tuple[list[SourceCitation], dict]:
+        """Search PMC for open-access full-text articles."""
+        citations: list[SourceCitation] = []
+        raw_data: dict = {}
+
+        params = {
+            "db": "pmc",
+            "term": nct_id,
+            "retmax": 50,
+            "retmode": "json",
+        }
+        if PUBMED_API_KEY:
+            params["api_key"] = PUBMED_API_KEY
+
+        resp = await resilient_get(PUBMED_SEARCH_URL, client=client, params=params)
+        if resp.status_code != 200:
+            raw_data["pmc_error"] = f"HTTP {resp.status_code}"
+            return citations, raw_data
+
+        pmc_data = resp.json()
+        pmc_ids = pmc_data.get("esearchresult", {}).get("idlist", [])
+        raw_data["pmc_ids"] = pmc_ids
+        raw_data["pmc_count"] = int(
+            pmc_data.get("esearchresult", {}).get("count", 0)
+        )
+
+        if not pmc_ids:
+            return citations, raw_data
+
+        # Fetch summaries for proper titles and metadata
+        summary_params = {
+            "db": "pmc",
+            "id": ",".join(pmc_ids),
+            "retmode": "json",
+        }
+        if PUBMED_API_KEY:
+            summary_params["api_key"] = PUBMED_API_KEY
+
+        summary_resp = await resilient_get(
+            PUBMED_SUMMARY_URL, client=client, params=summary_params
+        )
+        if summary_resp.status_code == 200:
+            results = summary_resp.json().get("result", {})
+            for pmc_id in pmc_ids:
+                article = results.get(pmc_id, {})
+                if not isinstance(article, dict):
+                    continue
+
+                title = article.get("title", f"PMC Article {pmc_id}")
+                source = article.get("source", "")
+                pubdate = article.get("sortpubdate", "")[:4]
+                authors = [
+                    a.get("name", "") for a in article.get("authors", [])[:5]
+                ]
+
+                snippet = self._build_snippet(
+                    title=title, authors=authors, journal=source, year=pubdate,
+                )
+                citations.append(SourceCitation(
+                    source_name="pmc",
+                    source_url=f"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC{pmc_id}/",
+                    identifier=f"PMC:{pmc_id}",
+                    title=title,
+                    snippet=snippet,
+                    quality_score=self.compute_quality_score("pmc"),
+                    retrieved_at=datetime.utcnow().isoformat(),
+                ))
+        else:
+            # Bare citations without summaries
+            for pmc_id in pmc_ids:
+                citations.append(SourceCitation(
+                    source_name="pmc",
+                    source_url=f"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC{pmc_id}/",
+                    identifier=f"PMC:{pmc_id}",
+                    title=f"PMC Article {pmc_id}",
+                    snippet="",
+                    quality_score=self.compute_quality_score("pmc", has_content=False),
+                    retrieved_at=datetime.utcnow().isoformat(),
+                ))
+
+        return citations, raw_data
+
+    # ------------------------------------------------------------------ #
+    #  Europe PMC (free JSON API with abstracts, no key needed)
+    # ------------------------------------------------------------------ #
+
+    async def _search_europe_pmc(
+        self, nct_id: str, client: httpx.AsyncClient
+    ) -> tuple[list[SourceCitation], dict]:
+        """Search Europe PMC for articles citing this NCT ID."""
+        citations: list[SourceCitation] = []
+        raw_data: dict = {}
+
+        resp = await resilient_get(
+            EUROPE_PMC_URL,
+            client=client,
+            params={
+                "query": nct_id,
+                "format": "json",
+                "pageSize": 50,
+                "resultType": "core",
+                "sort": "RELEVANCE",
+            },
+        )
+        if resp.status_code != 200:
+            raw_data["europe_pmc_error"] = f"HTTP {resp.status_code}"
+            return citations, raw_data
+
+        data = resp.json()
+        result_list = data.get("resultList", {}).get("result", [])
+        raw_data["europe_pmc_count"] = len(result_list)
+        raw_data["europe_pmc_total"] = data.get("hitCount", 0)
+
+        for article in result_list:
+            pmid = article.get("pmid", "")
+            pmcid = article.get("pmcid", "")
+            doi = article.get("doi", "")
+            title = article.get("title", "")
+            abstract = article.get("abstractText", "")
+            author_str = article.get("authorString", "")
+            journal = article.get("journalTitle", "")
+            year = str(article.get("pubYear", ""))
+
+            # Parse author string into list for consistent formatting
+            authors = [a.strip() for a in author_str.split(",")[:5]] if author_str else []
+
+            snippet = self._build_snippet(
+                title=title, authors=authors, journal=journal,
+                year=year, abstract=abstract,
+            )
+
+            # Determine identifier and URL
+            identifier = ""
+            url = ""
+            if pmid:
+                identifier = f"PMID:{pmid}"
+                url = f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/"
+            elif pmcid:
+                identifier = f"PMC:{pmcid}"
+                url = f"https://europepmc.org/article/PMC/{pmcid}"
+            elif doi:
+                identifier = f"DOI:{doi}"
+                url = f"https://doi.org/{doi}"
+
+            quality = self.compute_quality_score(
+                "europe_pmc", has_content=bool(abstract)
+            )
+            citations.append(SourceCitation(
+                source_name="europe_pmc",
+                source_url=url,
+                identifier=identifier,
+                title=title or "Europe PMC result",
+                snippet=snippet,
+                quality_score=quality,
+                retrieved_at=datetime.utcnow().isoformat(),
+            ))
+
+        return citations, raw_data
+
+    # ------------------------------------------------------------------ #
+    #  Semantic Scholar (free API, structured paper data)
+    # ------------------------------------------------------------------ #
+
+    async def _search_semantic_scholar(
+        self, nct_id: str, client: httpx.AsyncClient
+    ) -> tuple[list[SourceCitation], dict]:
+        """Search Semantic Scholar for papers mentioning this NCT ID."""
+        citations: list[SourceCitation] = []
+        raw_data: dict = {}
+
+        resp = await resilient_get(
+            SEMANTIC_SCHOLAR_URL,
+            client=client,
+            params={
+                "query": nct_id,
+                "limit": 20,
+                "fields": "title,abstract,year,venue,url,externalIds,citationCount",
+            },
+        )
+        if resp.status_code != 200:
+            raw_data["semantic_scholar_error"] = f"HTTP {resp.status_code}"
+            return citations, raw_data
+
+        data = resp.json()
+        papers = data.get("data", [])
+        raw_data["semantic_scholar_count"] = len(papers)
+        raw_data["semantic_scholar_total"] = data.get("total", 0)
+
+        for paper in papers:
+            title = paper.get("title", "")
+            abstract = paper.get("abstract", "")
+            year = str(paper.get("year", "")) if paper.get("year") else ""
+            venue = paper.get("venue", "")
+            url = paper.get("url", "")
+            ext_ids = paper.get("externalIds") or {}
+            citation_count = paper.get("citationCount", 0)
+
+            snippet_parts = []
+            if title:
+                snippet_parts.append(f"Title: {title}")
+            if venue or year:
+                snippet_parts.append(f"Venue: {venue} ({year})")
+            if citation_count:
+                snippet_parts.append(f"Cited by: {citation_count}")
+            if abstract:
+                snippet_parts.append(f"Abstract: {abstract[:500]}")
+            snippet = "\n".join(snippet_parts)
+
+            # Determine identifier
+            pmid = ext_ids.get("PubMed")
+            doi = ext_ids.get("DOI")
+            if pmid:
+                identifier = f"PMID:{pmid}"
+            elif doi:
+                identifier = f"DOI:{doi}"
+            else:
+                identifier = paper.get("paperId", "")
+
+            quality = self.compute_quality_score(
+                "semantic_scholar", has_content=bool(abstract)
+            )
+            citations.append(SourceCitation(
+                source_name="semantic_scholar",
+                source_url=url or "",
+                identifier=identifier,
+                title=title or "Semantic Scholar result",
+                snippet=snippet,
+                quality_score=quality,
+                retrieved_at=datetime.utcnow().isoformat(),
+            ))
+
+        return citations, raw_data
+
+    # ------------------------------------------------------------------ #
+    #  Helpers
+    # ------------------------------------------------------------------ #
+
+    @staticmethod
+    def _parse_pubmed_xml(xml_text: str) -> dict[str, dict]:
+        """Parse PubMed efetch XML to extract titles, abstracts, and metadata."""
+        articles: dict[str, dict] = {}
+        try:
+            root = ET.fromstring(xml_text)
+        except ET.ParseError:
+            return articles
+
+        for article_el in root.findall(".//PubmedArticle"):
+            pmid_el = article_el.find(".//MedlineCitation/PMID")
+            if pmid_el is None or not pmid_el.text:
+                continue
+            pmid = pmid_el.text
+
+            # Title (may contain inline markup)
+            title_el = article_el.find(".//ArticleTitle")
+            title = "".join(title_el.itertext()) if title_el is not None else ""
+
+            # Abstract (may have labeled sections: BACKGROUND, METHODS, etc.)
+            abstract_parts = []
+            for abs_el in article_el.findall(".//Abstract/AbstractText"):
+                label = abs_el.get("Label", "")
+                text = "".join(abs_el.itertext())
+                if label:
+                    abstract_parts.append(f"{label}: {text}")
+                else:
+                    abstract_parts.append(text)
+            abstract = " ".join(abstract_parts)
+
+            # Journal
+            journal_el = article_el.find(".//Journal/Title")
+            journal = journal_el.text if journal_el is not None else ""
+
+            # Year (with MedlineDate fallback)
+            year_el = article_el.find(".//PubDate/Year")
+            if year_el is None:
+                year_el = article_el.find(".//PubDate/MedlineDate")
+            year = ""
+            if year_el is not None and year_el.text:
+                year = year_el.text[:4]
+
+            # Authors (first 5)
+            authors = []
+            for author_el in article_el.findall(".//AuthorList/Author")[:5]:
+                last = author_el.findtext("LastName", "")
+                first = author_el.findtext("ForeName", "")
+                if last:
+                    authors.append(f"{last} {first}".strip())
+
+            articles[pmid] = {
+                "title": title,
+                "abstract": abstract,
+                "journal": journal,
+                "year": year,
+                "authors": authors,
+            }
+
+        return articles
+
+    @staticmethod
+    def _build_snippet(
+        title: str = "",
+        authors: list[str] | None = None,
+        journal: str = "",
+        year: str = "",
+        abstract: str = "",
+    ) -> str:
+        """Build a structured snippet with labeled fields for LLM clarity."""
+        parts = []
+        if title:
+            parts.append(f"Title: {title}")
+        if authors:
+            author_str = ", ".join(authors[:3])
+            if len(authors) > 3:
+                author_str += " et al."
+            parts.append(f"Authors: {author_str}")
+        if journal or year:
+            journal_part = journal or "Unknown journal"
+            year_part = f" ({year})" if year else ""
+            parts.append(f"Journal: {journal_part}{year_part}")
+        if abstract:
+            parts.append(f"Abstract: {abstract[:500]}")
+        return "\n".join(parts)
+
+    @staticmethod
+    def _deduplicate_citations(
+        citations: list[SourceCitation],
+    ) -> list[SourceCitation]:
+        """Remove duplicate citations by PMID, keeping the one with the best snippet."""
+        best_by_pmid: dict[str, SourceCitation] = {}
+        non_pmid: list[SourceCitation] = []
+
+        for c in citations:
+            if c.identifier and c.identifier.startswith("PMID:"):
+                pmid = c.identifier
+                if pmid not in best_by_pmid or len(c.snippet) > len(best_by_pmid[pmid].snippet):
+                    best_by_pmid[pmid] = c
+            else:
+                non_pmid.append(c)
+
+        return list(best_by_pmid.values()) + non_pmid

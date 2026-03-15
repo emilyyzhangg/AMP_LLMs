@@ -39,6 +39,11 @@ async def pipeline_status(job_id: str):
         if progress["total_trials"] > 0
         else 0
     )
+    progress["research_percent"] = (
+        round(progress["researched_trials"] / progress["total_trials"] * 100)
+        if progress["total_trials"] > 0
+        else 0
+    )
 
     return {
         "job_id": job.job_id,

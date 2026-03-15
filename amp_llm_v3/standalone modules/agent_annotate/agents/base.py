@@ -15,6 +15,8 @@ SOURCE_WEIGHTS = {
     "pubmed": 0.90,
     "pmc": 0.85,
     "pmc_bioc": 0.80,
+    "europe_pmc": 0.90,
+    "semantic_scholar": 0.80,
     "uniprot": 0.95,
     "dramp": 0.80,
     "duckduckgo": 0.40,
@@ -27,7 +29,7 @@ FIELD_RELEVANCE = {
     "classification": {
         "clinical_protocol": 0.95,
         "literature": 0.80,
-        "peptide_identity": 0.30,
+        "peptide_identity": 0.80,
         "web_context": 0.50,
     },
     "delivery_mode": {

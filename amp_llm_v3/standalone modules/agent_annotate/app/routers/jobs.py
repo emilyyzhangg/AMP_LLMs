@@ -11,7 +11,7 @@ import logging
 import re
 import httpx
 from fastapi import APIRouter, HTTPException, BackgroundTasks
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.config import AGENT_ANNOTATE_PORT
 from app.services.orchestrator import orchestrator
@@ -136,6 +136,74 @@ async def get_job(job_id: str):
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     return job
+
+
+class ResumeJobRequest(BaseModel):
+    force: bool = False
+
+
+@router.post("/{job_id}/resume")
+async def resume_job(job_id: str, req: ResumeJobRequest, background_tasks: BackgroundTasks):
+    """Resume a failed or cancelled annotation job from persisted state."""
+    # Check slot availability
+    if orchestrator.active_count() >= MAX_CONCURRENT_JOBS:
+        raise HTTPException(
+            status_code=429,
+            detail=f"An annotation job is already running on {_CURRENT_BRANCH}. Wait for it to complete or cancel it.",
+        )
+
+    # Cross-branch check
+    other_branch = "main" if _CURRENT_BRANCH == "dev" else "dev"
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.get(f"{_OTHER_ANNOTATE_URL}/api/jobs/active")
+            if resp.status_code == 200:
+                other_active = resp.json().get("active", 0)
+                if other_active > 0:
+                    raise HTTPException(
+                        status_code=429,
+                        detail=f"An annotation job is already running on {other_branch}.",
+                    )
+    except httpx.ConnectError:
+        pass
+    except HTTPException:
+        raise
+    except Exception:
+        pass
+
+    # Pre-check Ollama
+    ollama_ok = await ollama_client.health_check()
+    if not ollama_ok:
+        raise HTTPException(
+            status_code=503,
+            detail="Ollama is unreachable. Ensure Ollama is running at localhost:11434.",
+        )
+
+    try:
+        job = orchestrator.resume_job(job_id, force=req.force)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    background_tasks.add_task(orchestrator.run_pipeline, job.job_id)
+
+    # Get resume validation info for response
+    from app.services.persistence_service import PersistenceService
+    from app.services.version_service import get_git_commit_full
+    from app.config import RESULTS_DIR
+
+    persistence = PersistenceService(RESULTS_DIR)
+    validation = persistence.validate_resume(job_id, get_git_commit_full())
+
+    return {
+        "job_id": job.job_id,
+        "status": job.status,
+        "resumed": True,
+        "research_completed": validation.research_completed,
+        "research_total": validation.research_total,
+        "annotations_completed": validation.annotations_completed,
+        "commit_match": validation.commit_match,
+        "warnings": validation.warnings,
+    }
 
 
 @router.post("/{job_id}/cancel")

@@ -1,8 +1,12 @@
 """
 Pipeline orchestrator - manages annotation job lifecycle.
 
-Coordinates research agents (parallel), annotation agents (parallel with retry),
-and feeds results to the verification pipeline (Phase 3).
+Two-phase architecture:
+  Phase 1 (Research): All trials run fully parallel -> persisted to disk
+  Phase 2 (Annotate): Sequential per trial -> annotate + verify -> persisted to disk
+
+Persistence enables crash resilience, resume from where left off,
+and re-annotation without re-researching.
 """
 
 import asyncio
@@ -11,15 +15,15 @@ import uuid
 from datetime import datetime
 from typing import Optional
 
-import aiohttp
-
 from app.models.job import AnnotationJob, JobSummary, JobProgress
 from app.models.research import ResearchResult
 from app.models.annotation import FieldAnnotation, TrialMetadata, AnnotationResult
 from app.models.verification import ConsensusResult, VerifiedAnnotation
 from app.services.config_service import config_service
 from app.services.output_service import save_json_output
-from app.services.version_service import get_version_stamp
+from app.services.version_service import get_version_stamp, get_git_commit_full
+from app.services.persistence_service import PersistenceService
+from app.config import RESULTS_DIR
 from agents.research import RESEARCH_AGENTS
 from agents.annotation import ANNOTATION_AGENTS
 from agents.verification import BlindVerifier, ConsensusChecker, ReconciliationAgent
@@ -59,12 +63,50 @@ class PipelineOrchestrator:
                     created_at=job.created_at,
                     total_trials=job.progress.total_trials,
                     completed_trials=job.progress.completed_trials,
+                    researched_trials=job.progress.researched_trials,
                 )
             )
         return summaries
 
     def active_count(self) -> int:
         return sum(1 for j in self._jobs.values() if j.status in ("queued", "running"))
+
+    def resume_job(self, job_id: str, force: bool = False) -> AnnotationJob:
+        """Resume a failed or cancelled job from persisted state."""
+        persistence = PersistenceService(RESULTS_DIR)
+
+        if not persistence.research_exists(job_id):
+            raise ValueError(f"No research data found for job {job_id}")
+
+        current_commit = get_git_commit_full()
+        validation = persistence.validate_resume(job_id, current_commit)
+
+        if not validation.commit_match and not force:
+            raise ValueError(
+                f"Git commit mismatch. Research: {validation.original_commit[:8]}, "
+                f"Current: {validation.current_commit[:8]}. Use force=true to override."
+            )
+
+        original_job = self._jobs.get(job_id)
+        if original_job and original_job.status not in ("failed", "cancelled"):
+            raise ValueError(
+                f"Can only resume failed or cancelled jobs. "
+                f"Job {job_id} status is '{original_job.status}'."
+            )
+
+        meta = persistence.load_research_meta(job_id)
+        nct_ids = meta.get("nct_ids", [])
+
+        job = AnnotationJob(
+            job_id=job_id,
+            nct_ids=nct_ids,
+            config_snapshot=config_service.snapshot(),
+            progress=JobProgress(total_trials=len(nct_ids)),
+            resumed=True,
+            resumed_at=datetime.utcnow(),
+        )
+        self._jobs[job_id] = job
+        return job
 
     async def run_pipeline(self, job_id: str) -> None:
         """Execute the full annotation pipeline for a job."""
@@ -82,92 +124,65 @@ class PipelineOrchestrator:
             job.updated_at = datetime.utcnow()
 
     async def _run_pipeline_inner(self, job: AnnotationJob) -> None:
-        """Inner pipeline logic, wrapped by run_pipeline error handler."""
+        """Inner pipeline logic with two-phase architecture.
+
+        Phase 1: Research all trials in parallel (no Ollama dependency)
+        Phase 2: Annotate + verify each trial sequentially (Ollama-bottlenecked)
+        """
         import time as _time
 
         job_id = job.job_id
         job.status = "running"
         job.updated_at = datetime.utcnow()
         config = config_service.get()
-
-        all_trial_results = []
         pipeline_start = _time.monotonic()
-        trial_times: list[float] = []
 
-        async with aiohttp.ClientSession(
-            timeout=aiohttp.ClientTimeout(total=120, connect=30)
-        ) as session:
+        persistence = PersistenceService(RESULTS_DIR)
+        version_stamp = get_version_stamp()
 
-            for i, nct_id in enumerate(job.nct_ids):
-                trial_start = _time.monotonic()
-                job.progress.current_nct_id = nct_id
-                logger.info(f"[{job_id}] Processing {nct_id} ({i+1}/{len(job.nct_ids)})")
+        # Determine resume state
+        skip_research = set()
+        skip_annotations = set()
+        if job.resumed:
+            skip_research = persistence.get_completed_research(job_id)
+            skip_annotations = persistence.get_completed_annotations(job_id)
+            logger.info(
+                f"[{job_id}] Resuming: {len(skip_research)} research, "
+                f"{len(skip_annotations)} annotations already on disk"
+            )
 
-                try:
-                    # --- Phase 1: Research (parallel) ---
-                    job.progress.current_stage = "researching"
-                    job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
-                    job.updated_at = datetime.utcnow()
+        # --- Phase 1: Research (all trials, fully parallel) ---
+        if len(skip_research) < len(job.nct_ids):
+            persistence.init_research_dir(
+                job_id, job.nct_ids, version_stamp, job.config_snapshot
+            )
+            research_data = await self._run_phase1_research(
+                job, config, persistence, skip_research, pipeline_start
+            )
+        else:
+            research_data = {}
+            for nct_id in job.nct_ids:
+                loaded = persistence.load_research(job_id, nct_id)
+                research_data[nct_id] = loaded if loaded is not None else []
+            job.progress.researched_trials = len(job.nct_ids)
+            job.progress.current_stage = "research_complete"
+            logger.info(f"[{job_id}] All research loaded from disk")
 
-                    research_data = await self._run_research(nct_id, session, config, job)
+        if job.status == "cancelled":
+            return
 
-                    # --- Phase 2: Annotation (parallel with retry) ---
-                    job.progress.current_stage = "annotating"
-                    job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
-                    job.updated_at = datetime.utcnow()
+        # --- Phase 2: Annotation + Verification ---
+        persistence.init_annotations_dir(job_id)
+        all_trial_results = await self._run_phase2_annotate(
+            job, config, research_data, persistence, skip_annotations, pipeline_start
+        )
 
-                    annotations = await self._run_annotation(
-                        nct_id, research_data, config, job
-                    )
+        if job.status == "cancelled":
+            return
 
-                    # --- Cross-field consistency check ---
-                    self._enforce_consistency(annotations)
-
-                    # --- Phase 3: Verification (sequential per field) ---
-                    job.progress.current_stage = "verifying"
-                    job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
-                    job.updated_at = datetime.utcnow()
-
-                    verified = await self._run_verification(
-                        nct_id, annotations, research_data, config
-                    )
-
-                    # Build trial result
-                    metadata = self._extract_metadata(nct_id, research_data)
-                    trial_output = {
-                        "nct_id": nct_id,
-                        "metadata": metadata.model_dump(),
-                        "annotations": [a.model_dump() for a in annotations],
-                        "verification": verified.model_dump(),
-                        "research_used": [r.agent_name for r in research_data],
-                    }
-                    all_trial_results.append(trial_output)
-
-                    # Queue flagged fields for manual review
-                    if verified.flagged_for_review:
-                        self._queue_for_review(
-                            job_id, nct_id, annotations, verified
-                        )
-
-                    job.progress.completed_trials += 1
-                    self._update_timing(job, trial_start, pipeline_start, trial_times)
-
-                except Exception as e:
-                    logger.error(f"[{job_id}] Error processing {nct_id}: {e}")
-                    metadata = TrialMetadata(nct_id=nct_id)
-                    all_trial_results.append({
-                        "nct_id": nct_id,
-                        "metadata": metadata.model_dump(),
-                        "annotations": [],
-                        "verification": None,
-                        "research_used": [],
-                        "error": str(e),
-                    })
-                    job.progress.completed_trials += 1
-                    self._update_timing(job, trial_start, pipeline_start, trial_times)
-
-        # --- Save results ---
+        # --- Save final results ---
         job.progress.current_stage = "saving"
+        job.progress.current_phase = ""
         version = get_version_stamp()
         flagged = sum(
             1 for r in all_trial_results
@@ -182,19 +197,204 @@ class PipelineOrchestrator:
             "failed": sum(1 for r in all_trial_results if not r.get("annotations")),
             "manual_review": flagged,
         }
+        if job.resumed:
+            output["resumed"] = True
+            output["resumed_at"] = job.resumed_at.isoformat() if job.resumed_at else None
+
         save_json_output(job_id, output)
 
         job.results = all_trial_results
         job.status = "completed"
         job.progress.current_stage = "done"
         job.progress.current_nct_id = None
+        job.progress.current_phase = ""
+        job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
         job.updated_at = datetime.utcnow()
         logger.info(f"[{job_id}] Pipeline completed: {len(all_trial_results)} trials")
+
+    async def _run_phase1_research(
+        self,
+        job: AnnotationJob,
+        config,
+        persistence: PersistenceService,
+        skip_nct_ids: set[str],
+        pipeline_start: float,
+    ) -> dict[str, list[ResearchResult]]:
+        """Phase 1: Run research for all trials in parallel.
+
+        Research agents make external API calls (no Ollama) so all trials
+        can be researched concurrently, bounded by a semaphore.
+        """
+        import time as _time
+
+        job.progress.current_phase = "research"
+        job.progress.current_stage = "researching"
+        job.updated_at = datetime.utcnow()
+
+        research_data: dict[str, list[ResearchResult]] = {}
+        sem = asyncio.Semaphore(20)
+        progress_lock = asyncio.Lock()
+
+        # Load already-completed research from disk
+        for nct_id in skip_nct_ids:
+            loaded = persistence.load_research(job.job_id, nct_id)
+            research_data[nct_id] = loaded if loaded is not None else []
+            job.progress.researched_trials += 1
+
+        remaining = [nct for nct in job.nct_ids if nct not in skip_nct_ids]
+
+        async def research_one(nct_id: str) -> None:
+            if job.status == "cancelled":
+                return
+            async with sem:
+                if job.status == "cancelled":
+                    return
+                logger.info(f"[{job.job_id}] Researching {nct_id}")
+                try:
+                    results = await self._run_research(nct_id, config, job)
+                    persistence.save_research(job.job_id, nct_id, results)
+                    research_data[nct_id] = results
+                except Exception as e:
+                    logger.error(
+                        f"[{job.job_id}] Research failed for {nct_id}: {e}"
+                    )
+                    research_data[nct_id] = []
+                async with progress_lock:
+                    job.progress.researched_trials += 1
+                    job.progress.elapsed_seconds = round(
+                        _time.monotonic() - pipeline_start, 1
+                    )
+                    job.updated_at = datetime.utcnow()
+
+        if remaining:
+            logger.info(
+                f"[{job.job_id}] Phase 1: researching {len(remaining)} trials "
+                f"({len(skip_nct_ids)} cached)"
+            )
+            await asyncio.gather(
+                *(research_one(nct) for nct in remaining),
+                return_exceptions=True,
+            )
+
+        job.progress.current_stage = "research_complete"
+        job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
+        job.updated_at = datetime.utcnow()
+        logger.info(
+            f"[{job.job_id}] Phase 1 complete: {len(research_data)} trials researched"
+        )
+        return research_data
+
+    async def _run_phase2_annotate(
+        self,
+        job: AnnotationJob,
+        config,
+        research_data: dict[str, list[ResearchResult]],
+        persistence: PersistenceService,
+        skip_nct_ids: set[str],
+        pipeline_start: float,
+    ) -> list[dict]:
+        """Phase 2: Annotate and verify each trial sequentially.
+
+        Each trial goes through annotation -> consistency -> verification.
+        Ollama calls are serialized by the ollama_client lock.
+        """
+        import time as _time
+
+        job.progress.current_phase = "annotation"
+        all_trial_results = []
+        trial_times: list[float] = []
+
+        for i, nct_id in enumerate(job.nct_ids):
+            if job.status == "cancelled":
+                break
+
+            # Load cached annotation if already on disk (resume)
+            if nct_id in skip_nct_ids:
+                cached = persistence.load_annotation(job.job_id, nct_id)
+                if cached:
+                    all_trial_results.append(cached)
+                    job.progress.completed_trials += 1
+                    logger.info(
+                        f"[{job.job_id}] Loaded cached annotation for {nct_id}"
+                    )
+                    continue
+
+            trial_start = _time.monotonic()
+            job.progress.current_nct_id = nct_id
+            research = research_data.get(nct_id, [])
+            logger.info(
+                f"[{job.job_id}] Annotating {nct_id} ({i+1}/{len(job.nct_ids)})"
+            )
+
+            try:
+                # --- Annotation ---
+                job.progress.current_stage = "annotating"
+                job.progress.elapsed_seconds = round(
+                    _time.monotonic() - pipeline_start, 1
+                )
+                job.updated_at = datetime.utcnow()
+
+                annotations = await self._run_annotation(
+                    nct_id, research, config, job
+                )
+                self._enforce_consistency(annotations)
+
+                # --- Verification ---
+                job.progress.current_stage = "verifying"
+                job.progress.elapsed_seconds = round(
+                    _time.monotonic() - pipeline_start, 1
+                )
+                job.updated_at = datetime.utcnow()
+
+                verified = await self._run_verification(
+                    nct_id, annotations, research, config
+                )
+
+                # Build trial result
+                metadata = self._extract_metadata(nct_id, research)
+                trial_output = {
+                    "nct_id": nct_id,
+                    "metadata": metadata.model_dump(),
+                    "annotations": [a.model_dump() for a in annotations],
+                    "verification": verified.model_dump(),
+                    "research_used": [r.agent_name for r in research],
+                    "research_results": [r.model_dump() for r in research],
+                }
+                all_trial_results.append(trial_output)
+
+                # Persist annotation to disk
+                persistence.save_annotation(job.job_id, nct_id, trial_output)
+
+                # Queue flagged fields for manual review
+                if verified.flagged_for_review:
+                    self._queue_for_review(
+                        job.job_id, nct_id, annotations, verified
+                    )
+
+                job.progress.completed_trials += 1
+                self._update_timing(job, trial_start, pipeline_start, trial_times)
+
+            except Exception as e:
+                logger.error(f"[{job.job_id}] Error processing {nct_id}: {e}")
+                metadata = TrialMetadata(nct_id=nct_id)
+                trial_output = {
+                    "nct_id": nct_id,
+                    "metadata": metadata.model_dump(),
+                    "annotations": [],
+                    "verification": None,
+                    "research_used": [],
+                    "research_results": [r.model_dump() for r in research],
+                    "error": str(e),
+                }
+                all_trial_results.append(trial_output)
+                job.progress.completed_trials += 1
+                self._update_timing(job, trial_start, pipeline_start, trial_times)
+
+        return all_trial_results
 
     async def _run_research(
         self,
         nct_id: str,
-        session: aiohttp.ClientSession,
         config,
         job: AnnotationJob,
     ) -> list[ResearchResult]:
@@ -360,8 +560,8 @@ class PipelineOrchestrator:
         """Enforce cross-field consistency rules after annotation, before verification.
 
         Fixes contradictions that arise from fields being annotated independently:
-        - peptide=False → classification must be "Other"
-        - outcome is non-failure → reason_for_failure must be ""
+        - peptide=False -> classification must be "Other"
+        - outcome is non-failure -> reason_for_failure must be ""
         """
         ann_by_field = {a.field_name: a for a in annotations}
         peptide = ann_by_field.get("peptide")
@@ -369,7 +569,7 @@ class PipelineOrchestrator:
         outcome = ann_by_field.get("outcome")
         failure = ann_by_field.get("reason_for_failure")
 
-        # Rule 1: peptide=False → classification must be "Other"
+        # Rule 1: peptide=False -> classification must be "Other"
         if peptide and classification and peptide.value == "False":
             if classification.value != "Other":
                 logger.info(
@@ -378,11 +578,11 @@ class PipelineOrchestrator:
                 )
                 classification.value = "Other"
                 classification.reasoning = (
-                    f"[Consistency override: peptide=False → Other] "
+                    f"[Consistency override: peptide=False -> Other] "
                     + classification.reasoning
                 )
 
-        # Rule 2: non-failure outcome → clear reason_for_failure
+        # Rule 2: non-failure outcome -> clear reason_for_failure
         non_failure_outcomes = {
             "Positive", "Recruiting", "Active, not recruiting", "Unknown"
         }
@@ -394,7 +594,7 @@ class PipelineOrchestrator:
                 )
                 failure.value = ""
                 failure.reasoning = (
-                    f"[Consistency override: outcome='{outcome.value}' → "
+                    f"[Consistency override: outcome='{outcome.value}' -> "
                     f"no failure reason] " + failure.reasoning
                 )
 

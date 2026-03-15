@@ -15,6 +15,7 @@ from datetime import datetime
 import httpx
 
 from agents.base import BaseResearchAgent
+from agents.research.http_utils import resilient_get
 from app.models.research import ResearchResult, SourceCitation
 
 logger = logging.getLogger("agent_annotate.research.clinical_protocol")
@@ -32,11 +33,13 @@ class ClinicalProtocolAgent(BaseResearchAgent):
         citations = []
         raw_data = {}
 
-        # 1. Fetch directly from ClinicalTrials.gov API v2
-        protocol = {}
-        try:
-            async with httpx.AsyncClient(timeout=30) as client:
-                resp = await client.get(f"{CT_GOV_API}/{nct_id}")
+        async with httpx.AsyncClient(timeout=30) as client:
+            # 1. Fetch directly from ClinicalTrials.gov API v2
+            protocol = {}
+            try:
+                resp = await resilient_get(
+                    f"{CT_GOV_API}/{nct_id}", client=client
+                )
                 if resp.status_code == 200:
                     ct_data = resp.json()
                     protocol = ct_data.get("protocolSection", {})
@@ -48,24 +51,25 @@ class ClinicalProtocolAgent(BaseResearchAgent):
                 else:
                     raw_data["clinicaltrials_error"] = f"HTTP {resp.status_code}"
                     logger.warning(f"  ClinicalTrials.gov: HTTP {resp.status_code} for {nct_id}")
-        except Exception as e:
-            raw_data["clinicaltrials_error"] = str(e)
-            logger.error(f"  ClinicalTrials.gov fetch failed for {nct_id}: {e}")
+            except Exception as e:
+                raw_data["clinicaltrials_error"] = str(e)
+                logger.error(f"  ClinicalTrials.gov fetch failed for {nct_id}: {e}")
 
-        # 2. OpenFDA drug safety lookup using intervention names
-        interventions = []
-        arms_mod = protocol.get("armsInterventionsModule", {})
-        for interv in arms_mod.get("interventions", []):
-            name = interv.get("name", "")
-            if name:
-                interventions.append(name)
+            # 2. OpenFDA drug safety lookup using intervention names
+            interventions = []
+            arms_mod = protocol.get("armsInterventionsModule", {})
+            for interv in arms_mod.get("interventions", []):
+                name = interv.get("name", "")
+                if name:
+                    interventions.append(name)
 
-        for intervention in interventions[:3]:
-            try:
-                async with httpx.AsyncClient(timeout=15) as client:
-                    resp = await client.get(
+            for intervention in interventions[:3]:
+                try:
+                    resp = await resilient_get(
                         "https://api.fda.gov/drug/label.json",
+                        client=client,
                         params={"search": f'openfda.generic_name:"{intervention}"', "limit": 1},
+                        timeout=15,
                     )
                     if resp.status_code == 200:
                         fda_data = resp.json()
@@ -84,8 +88,8 @@ class ClinicalProtocolAgent(BaseResearchAgent):
                                 quality_score=self.compute_quality_score("openfda"),
                                 retrieved_at=datetime.utcnow().isoformat(),
                             ))
-            except Exception as e:
-                raw_data[f"openfda_{intervention}_error"] = str(e)
+                except Exception as e:
+                    raw_data[f"openfda_{intervention}_error"] = str(e)
 
         return ResearchResult(
             agent_name=self.agent_name,

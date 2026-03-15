@@ -17,6 +17,8 @@ class JobProgress(BaseModel):
     elapsed_seconds: float = 0.0           # Total wall time so far
     avg_seconds_per_trial: float = 0.0     # Running average per completed trial
     estimated_remaining_seconds: float = 0.0  # Estimated time left
+    researched_trials: int = 0             # Phase 1 counter
+    current_phase: str = ""                # "research" | "annotation" | ""
 
 
 class AnnotationJob(BaseModel):
@@ -30,6 +32,8 @@ class AnnotationJob(BaseModel):
     progress: JobProgress = Field(default_factory=JobProgress)
     results: list[dict] = []  # List of VerifiedAnnotation dicts
     error: Optional[str] = None
+    resumed: bool = False
+    resumed_at: Optional[datetime] = None
 
 
 class JobSummary(BaseModel):
@@ -39,6 +43,7 @@ class JobSummary(BaseModel):
     created_at: datetime
     total_trials: int = 0
     completed_trials: int = 0
+    researched_trials: int = 0
 
 
 class ReviewItem(BaseModel):
