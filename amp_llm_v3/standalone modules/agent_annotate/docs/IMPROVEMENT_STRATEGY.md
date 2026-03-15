@@ -200,14 +200,82 @@ After Phases A + B, the agent should exceed human inter-rater agreement on every
 
 ---
 
-## 8. Measuring Improvement
+## 8. Multi-Run Consensus (Agent Ensemble)
+
+**Priority: HIGH — directly reduces annotation noise**
+
+Running the same batch through the pipeline N times and taking majority vote per field. This is the agent equivalent of the human two-replicate design, but with N=3-5 replicates instead of 2.
+
+### Why It Works
+
+Human annotation review revealed that the biggest accuracy problems come from stochastic variation:
+- LLM temperature (0.10) is low but not zero — different runs can produce different answers
+- Borderline cases (is this peptide? is this AMP?) flip between runs
+- The two-pass agents (outcome, failure reason) are especially sensitive because Pass 1 extraction varies
+
+With N=3 runs, a field must be wrong in 2 out of 3 runs to produce an incorrect majority vote. This sharply reduces the error rate for borderline cases.
+
+### Implementation
+
+1. Submit the same NCT IDs as N separate jobs (or use a wrapper that runs N pipeline iterations)
+2. Collect all N annotation outputs for each trial
+3. For each field: majority vote across N runs → final answer
+4. Record stability score: fraction of runs agreeing with majority
+5. Fields with stability < 0.67 (no majority in 3 runs) → flag for manual review
+
+### What Unstable Fields Reveal
+
+Instability = the prompt allows the LLM to interpret the evidence differently on each run. Fixes:
+- Add more few-shot examples covering the ambiguous case
+- Tighten the decision criteria (e.g., stricter peptide definition)
+- Upgrade to larger model for that field (14B reconciler as primary)
+
+---
+
+## 9. Lessons from Human Annotation Patterns
+
+### Peptide Definition Ambiguity
+
+R1 annotators marked 451 trials (24%) as Peptide=True. R2 annotators marked 56 (3%). This 8:1 ratio is the largest systematic divergence in the dataset. Analysis of the R1 annotations shows they included:
+- Radiolabeled peptide conjugates (e.g., 177Lu-DOTATATE) — these use a peptide as a targeting vector but the therapeutic mechanism is radiation, not the peptide itself
+- Peptide receptor agonists/antagonists where the "peptide" label is ambiguous
+- Nutritional peptide formulas
+
+**Agent implication:** The agent should use the strict R2-aligned definition: the active drug must be a synthetic or natural peptide chain (2-100 amino acid residues) used for its direct therapeutic effect. Radiolabeled conjugates where the peptide serves as a targeting vector should be classified based on the primary mechanism of action.
+
+### Outcome Temporal Drift
+
+R1 used "Recruiting" 222 times; R2 used it 0 times. The two replicates were annotated at different dates. Trials that were recruiting when R1 annotated them had changed status by the time R2 annotated. R2 annotators then checked published literature and found results, leading to "Positive" or "Unknown" instead.
+
+**Agent implication:** The agent's live API queries already handle this. For evaluation, trials where the agent says "Positive" and humans said "Recruiting" are likely recency wins, not errors. These must be verified by checking the agent's cited publications.
+
+### Delivery Mode Specificity
+
+167 delivery mode disagreements on 579 overlap (29%). Common patterns:
+- Capsule vs Tablet (R1 and R2 disagree on form factor)
+- SC/ID vs Other/Unspecified (one annotator found the specific route, the other didn't)
+- Nasal spray classified as "Intranasal" by one, "Topical - Spray" by the other
+
+**Agent implication:** The agent should aggressively use FDA label data for route specification. If the FDA label says "SUBCUTANEOUS" and the trial protocol says only "injection", the FDA data should override. The current prompt rules already specify this, but the agent should also flag when it upgrades from "Other/Unspecified" to a specific route based on FDA evidence.
+
+---
+
+## 10. Measuring Improvement
 
 Human annotations are the **development-time benchmark only**. They inform prompt tuning and error analysis but are never fed to the agents at runtime.
 
+**Ground truth construction:**
+- Classification: 568 R1=R2 agreed pairs → high-confidence ground truth
+- Delivery Mode: 412 agreed pairs
+- Outcome: 207 agreed pairs
+- Reason for Failure: 42 agreed pairs
+- Where R1 and R2 disagree, independently verify using the agent's cited sources
+
 **Evaluation process:**
-1. Run the agent on the same 8 NCT IDs after each phase.
-2. Compare against human ground truth (use consensus where both replicates agree; where they disagree, independently verify using the agent's cited sources to determine the correct answer).
-3. Track per-field: accuracy, reconciliation rate, manual review rate, false disagreement rate.
-4. For recency wins: document cases where the agent found newer publications than what humans used — these are cases where the agent is *correct* and the human data is *stale*.
+1. Run the agent on a diverse set of NCTs after each improvement phase.
+2. Compare against ground truth (agreed pairs) and disputed pairs (where the agent resolves the dispute).
+3. Track per-field: accuracy, stability (multi-run agreement), reconciliation rate, manual review rate.
+4. For recency wins: document cases where the agent found newer publications than what humans used. These cases confirm the agent is correct, not the human benchmark.
+5. Multi-run consensus: compare N-run majority vote accuracy against single-run accuracy.
 
 **End state:** The agents operate fully autonomously — no human annotations in the loop. The human Excel is archived as a historical benchmark, not an ongoing dependency.

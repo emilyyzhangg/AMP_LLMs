@@ -24,7 +24,9 @@ A complete description of the multi-agent annotation pipeline used for publicati
 12. [Error Handling and Failure Modes](#12-error-handling-and-failure-modes)
 13. [Hardware Constraints and Sequencing](#13-hardware-constraints-and-sequencing)
 14. [Comparison with Human Annotation](#14-comparison-with-human-annotation)
-15. [Changelog](#15-changelog)
+15. [Persistence, Resumability, and HTTP Resilience](#15-persistence-resumability-and-http-resilience)
+16. [Multi-Run Consensus Strategy](#16-multi-run-consensus-strategy)
+17. [Changelog](#17-changelog)
 
 ---
 
@@ -62,7 +64,14 @@ Phase 6: MANUAL REVIEW QUEUE (if needed)
   Fields that cannot be resolved are flagged for human review.
 ```
 
-Trials are processed one at a time within a job. Within each trial, research agents run in parallel (Phase 1), but all LLM inference calls (Phases 2, 4, 5) run sequentially because the system operates on a 16 GB Apple M4 Mac Mini with a single Ollama instance that can load only one model at a time.
+The pipeline uses a two-phase architecture with intermediate persistence:
+
+```
+Phase 1 (Research):  ALL trials researched fully in parallel → each persisted to disk
+Phase 2 (Annotate):  Each trial annotated + verified sequentially → each persisted to disk
+```
+
+Phase 1 research is fully parallelized across trials (bounded by a concurrency semaphore of 20) because research agents make only external HTTP calls with no Ollama dependency. Phase 2 processes trials one at a time because the system operates on a 16 GB Apple M4 Mac Mini with a single Ollama instance that can load only one model at a time. All intermediate results are persisted per-trial to disk, enabling crash resilience and job resumability (see Section 15).
 
 ### Cross-Branch Job Gatekeeper
 
@@ -97,17 +106,29 @@ Each citation is stored as a `SourceCitation` object with the fields: `source_na
 
 ### 2.2 Literature Agent
 
-**Sources queried:**
-- PubMed (via NCBI eUtils API): `esearch.fcgi` to find articles, `esummary.fcgi` to retrieve metadata. Searches by NCT ID, trial title, conditions, and intervention names.
-- PubMed Central (PMC): Same eUtils endpoint with `db=pmc` for full-text articles.
-- PMC BioC: Structured entity extraction from full-text articles when available.
+**Sources queried (4, all in parallel):**
+- **PubMed** (via NCBI eUtils API): `esearch.fcgi` to find articles (retmax=100), `efetch.fcgi` to retrieve full records with abstracts as XML. Searches by NCT ID. If efetch fails, falls back to `esummary.fcgi` for metadata.
+- **PubMed Central (PMC)**: Same eUtils `esearch` endpoint with `db=pmc` (retmax=50), then `esummary` for proper titles and metadata.
+- **Europe PMC** (free, no API key): `europepmc.org/webservices/rest/search` with `resultType=core` (pageSize=50). Returns abstracts directly in JSON — the best single source for abstract text without XML parsing.
+- **Semantic Scholar** (free, 100 req/5min): `api.semanticscholar.org/graph/v1/paper/search` (limit=20). Returns structured paper data including abstracts, citation counts, and cross-referenced PMIDs/DOIs.
 
-**Search strategy:** The agent constructs multiple search queries combining the NCT ID, intervention names, and condition terms. It retrieves up to 5 PubMed articles and 3 PMC articles, prioritizing those with the NCT ID in their text.
+**Search strategy:** All four sources are queried in parallel within the agent using `asyncio.gather`. Each source searches by NCT ID. Results are deduplicated by PMID across all sources, keeping the citation with the longest snippet (typically the one with a full abstract).
+
+**Abstract fetching:** PubMed results include actual abstracts fetched via `efetch` XML parsing (`rettype=abstract&retmode=xml`). The XML parser extracts structured abstracts with labeled sections (BACKGROUND, METHODS, RESULTS, CONCLUSIONS) where available. Europe PMC and Semantic Scholar return abstracts directly in JSON.
+
+**Snippet format:** All citations use a structured, labeled format for LLM clarity:
+```
+Title: Effect of peptide X on wound healing
+Authors: Smith J, Jones K, Lee M et al.
+Journal: J Clinical Investigation (2023)
+Abstract: We conducted a phase 2 randomized controlled trial...
+```
 
 **Quality scores assigned:**
-- PubMed: 0.90 (peer-reviewed)
+- PubMed: 0.90 (peer-reviewed), 0.45 without abstract
 - PMC: 0.85 (full-text access)
-- PMC BioC: 0.80 (structured extraction, reduced quality due to parsing variability)
+- Europe PMC: 0.90 (peer-reviewed with abstracts), 0.45 without abstract
+- Semantic Scholar: 0.80 (structured data), 0.40 without abstract
 
 ### 2.3 Peptide Identity Agent
 
@@ -193,13 +214,19 @@ The primary annotator is llama3.1:8b by default (configurable). All LLM calls us
 
 **Agent:** `ClassificationAgent` (single-pass, receives peptide result)
 
-**Question answered:** If the intervention is a peptide, is it an antimicrobial peptide (AMP), and if so, does it target infection?
+**Question answered:** If the intervention is a peptide, is it an antimicrobial peptide (AMP) / host defense peptide, and if so, does it target infection?
 
-**Prompt design:** The system prompt implements a three-step decision tree with 9 worked examples. AMP stands for Antimicrobial Peptide — not all peptides are AMPs.
+**Prompt design:** The system prompt implements a three-step decision tree with 12 worked examples. AMP stands for Antimicrobial Peptide — not all peptides are AMPs.
 
 **Three-step decision tree:**
 1. Is the intervention a peptide? (Check the peptide determination passed via metadata.) If Peptide = False → "Other". Stop.
-2. Is the peptide an antimicrobial peptide? AMPs are defined as peptides that kill or inhibit microorganisms, or peptide-based therapeutics designed to target pathogens. Known AMPs include colistin, polymyxin B, daptomycin, nisin, defensins, LL-37, gramicidin, bacitracin, melittin, magainin, cecropin, and vancomycin. Peptide vaccines targeting pathogens (e.g., StreptInCor) also qualify. Critically, peptide hormone analogues (GLP-1/GLP-2, VIP, GnRH, somatostatin) are NOT AMPs — they are peptides used for metabolic, vascular, or hormonal purposes. If not an AMP → "Other". Stop.
+2. Is the peptide an antimicrobial peptide (AMP)? AMPs, also known as host defense peptides (HDPs), are peptides that participate in defense against pathogens through ANY of the following modes of action:
+   - **Mode A — Direct antimicrobial:** Peptides that directly kill or inhibit bacteria, viruses, fungi, or parasites via membrane disruption, pore formation, or intracellular targeting (colistin, polymyxin B, daptomycin, nisin, melittin, magainin, cecropin, defensins, gramicidin, bacitracin, vancomycin, tyrothricin).
+   - **Mode B — Immunostimulatory / host defense:** Peptides that PROMOTE immune defense against pathogens by recruiting neutrophils/macrophages, enhancing phagocytosis, activating dendritic cells, bridging innate and adaptive immunity, or stimulating protective cytokine production (LL-37/cathelicidin, defensins, thymosin alpha-1 when boosting immune defense, lactoferricin).
+   - **Mode C — Anti-biofilm:** Peptides that disrupt or prevent microbial biofilm formation (LL-37, DJK-5, IDR-1018).
+   - **Mode D — Pathogen-targeting vaccines/immunogens:** Peptide-based vaccines that induce immune responses against specific pathogens (StreptInCor, peptide-based HIV/malaria vaccines).
+
+   The key criterion is that the peptide must have a known or plausible role in DEFENSE AGAINST PATHOGENS. Peptides that suppress immune responses (for autoimmunity), have purely metabolic/hormonal functions (GLP-1/GLP-2, GnRH, somatostatin analogues), or work via non-biological mechanisms (self-assembling peptides for mineralization) are NOT AMPs.
 3. Does the AMP target infection? If the therapeutic use targets infection, pathogens, antimicrobial resistance, or infectious disease → "AMP(infection)". If the AMP is used for non-infection purposes such as wound healing, cancer immunotherapy, or biofilm disruption → "AMP(other)".
 
 **Response parsing:** A regex extracts the `Classification:` line. Exact matching is attempted first against the three valid values. If the model outputs bare "AMP" without a subtype, the system defaults to "Other" rather than guessing a subtype.
@@ -559,30 +586,134 @@ The system operates on a Mac Mini with an Apple M4 chip and 16 GB of unified mem
 
 ## 14. Comparison with Human Annotation
 
-The system was developed and evaluated against human annotations from two independent replicates (~1,847 trials each, 4 annotators). Human annotations are used exclusively for development-time evaluation and prompt refinement — they are never used at runtime.
+The system was developed and evaluated against human annotations from two independent replicates (~1,847 trials each, 4 annotators: Mercan, Maya, Anat, Ali). Human annotations are used exclusively for development-time evaluation and prompt refinement — they are never used at runtime.
 
 ### Human Inter-Rater Agreement
 
-| Field | Human Agreement Rate | Notes |
-|-------|---------------------|-------|
-| Classification | 91.6% | Moderate reliability |
-| Delivery Mode | 68.2% | Low reliability; casing inconsistencies, missing categories |
-| Outcome | 55.6% | Very low reliability; annotators disagreed on Positive vs Unknown vs Recruiting |
-| Reason for Failure | 91.3% | Moderate reliability; small sample (46 both-filled rows) |
-| Peptide | 48.4% | Very low reliability; one annotator had a much broader definition |
+| Field | R1 Filled | R2 Filled | Overlap | Agreement Rate | Notes |
+|-------|-----------|-----------|---------|----------------|-------|
+| Classification | 798 (43%) | 693 (37%) | 620 | 91.6% | Most disagreements: Other vs AMP(infection) |
+| Delivery Mode | 806 (43%) | 628 (33%) | 579 | 71.2% | Injection subtype confusion, casing, missing categories |
+| Outcome | 617 (33%) | 472 (25%) | 372 | 55.6% | R1 used "Recruiting" 222x; R2 used it 0x (used "Active" instead) |
+| Reason for Failure | 99 (5%) | 82 (4%) | 46 | 91.3% | Small overlap; most trials have no failure reason |
+| Peptide | 668 (36%) | 244 (13%) | 30 | 100% | Very small overlap; R1 marked 451 True vs R2's 56 |
+
+### Systematic Human Annotation Issues
+
+**Definition divergence:** R1 annotated 451 trials as Peptide=True (24% of all trials) while R2 annotated only 56 (3%). This 8:1 ratio indicates a fundamentally different interpretation of "peptide" between the annotator groups. R1 appears to have used a broader definition that included peptide-related compounds, radiolabeled peptides, and peptide formulations, while R2 restricted to therapeutic peptide drugs.
+
+**Missing categories:** R2 never used "Recruiting" as an outcome (0 instances vs R1's 222). R2 annotators mapped recruiting trials to "Active" (30x, an invalid value), "Positive", or "Unknown". R2 also omitted "Oral - Capsule" entirely (0 vs R1's 17).
+
+**Invalid values:** R2 used "Active" (30x) which is not a valid outcome value. R2 used lowercase variants "Oral - unspecified" and "Topical - unspecified". R1 used multi-value delivery modes with comma-separated values in 24 rows (e.g., "SC, IV, Oral").
+
+**Outcome disagreement patterns (165 disagreements):**
+- R1=Recruiting vs R2=Unknown: 27 cases — temporal: trial status changed between annotation sessions
+- R1=Recruiting vs R2=Positive: 26 cases — R2 checked published literature, R1 relied on registry
+- R1=Unknown vs R2=Positive: 19 cases — same temporal issue
+- R1=Failed vs R2=Positive: 12 cases — conflicting interpretation of published results
+
+### Prior Concordance Results
+
+Before the multi-agent pipeline, a Claude-based annotation system was evaluated at 852 trials:
+
+| Field | Claude (self-research) vs Human | Notes |
+|-------|-------------------------------|-------|
+| Classification | 91.1% | Matches human inter-rater reliability |
+| Delivery Mode | 100.0% | Exceeds human 71.2% agreement |
+| Outcome | 57.0% | Comparable to human 55.6% — both struggle with temporal drift |
+| Peptide | 79.3% | Between R1 (liberal) and R2 (strict) definitions |
+| Reason for Failure | 76.8% | Below human 91.3% on small overlap set |
 
 ### Agent Structural Advantages
 
-1. **100% coverage:** The agent annotates every submitted trial. Humans left 50-65% of rows blank.
-2. **Recency:** The agent queries live APIs at annotation time and uses the most current data available. Human annotations reflect a fixed point in time.
-3. **Consistency:** The agent applies identical decision rules to every trial. Human annotators varied in their interpretation of categories.
+1. **100% coverage:** The agent annotates every submitted trial. Humans left 57-87% of rows blank (worst: Reason for Failure at 95-96% blank).
+2. **Recency:** The agent queries live APIs at annotation time and uses the most current data available. Human annotations reflect a fixed point in time — the dominant source of outcome disagreements.
+3. **Consistency:** The agent applies identical decision rules to every trial. Human annotators had systematically different definitions (451 vs 56 peptide=True).
 4. **Full evidence trail:** Every annotation includes specific source identifiers (PMIDs, URLs, database accessions). Human annotators' evidence link columns were largely blank.
 5. **Systematic literature investigation:** The two-pass outcome and failure reason agents actively search published literature rather than relying on registry status alone.
+6. **Multi-source verification:** Agent cross-checks 6+ databases per trial (ClinicalTrials.gov, PubMed, PMC, Europe PMC, Semantic Scholar, UniProt, OpenFDA, DRAMP, web sources). Most human annotators checked 1-2 sources.
 
 ---
 
-## 15. Changelog
+## 15. Persistence, Resumability, and HTTP Resilience
+
+### Two-Phase Persistence
+
+The pipeline persists intermediate results to disk after each trial, enabling crash resilience and job resumability.
+
+**Storage layout:**
+```
+results/
+├── json/{job_id}.json              # Final output (unchanged)
+├── csv/{job_id}_*.csv              # CSV exports (unchanged)
+├── research/{job_id}/              # Persisted research per trial
+│   ├── _meta.json                  # {job_id, git_commit, config_hash, nct_ids}
+│   └── NCT00000001.json           # ResearchResult[] for this trial
+└── annotations/{job_id}/           # Persisted annotation results per trial
+    └── NCT00000001.json           # Full trial output dict
+```
+
+**Atomic writes:** All persistence writes go to `.tmp` first, then `os.rename()` to the final filename. This prevents corrupt partial files on crash. On resume, orphaned `.tmp` files are cleaned up and the corresponding trial is re-processed.
+
+**Resume endpoint:** `POST /api/jobs/{job_id}/resume` validates that the research on disk was produced by the same git commit and config hash. If the commit has changed, a `force=true` flag is required to override. Only failed or cancelled jobs can be resumed. The resume skips trials already persisted and re-processes the rest.
+
+### HTTP Resilience
+
+All research agents use a shared `resilient_get()` function (`agents/research/http_utils.py`) that provides:
+
+**Per-host rate limiting:** Shared `asyncio.Semaphore` instances prevent hammering individual APIs when many trials are researched in parallel:
+
+| Host | Concurrent Limit | Rationale |
+|------|-----------------|-----------|
+| eutils.ncbi.nlm.nih.gov | 3 (no key) / 8 (with key) | NCBI E-utilities rate limit |
+| api.semanticscholar.org | 3 | 100 req/5min free tier |
+| www.ebi.ac.uk | 10 | Europe PMC, generous |
+| clinicaltrials.gov | 8 | CT.gov v2, generous |
+| api.fda.gov | 4 | OpenFDA, 240/min |
+| rest.uniprot.org | 5 | UniProt, moderate |
+
+**Retry with exponential backoff:** On 429 (rate limited) or 5xx (server error), requests are retried up to 3 times with exponential backoff (1s, 2s, 4s). The `Retry-After` header is respected when present. Connection timeouts and read errors are also retried. The semaphore is released between retries so other requests to the same host can proceed.
+
+---
+
+## 16. Multi-Run Consensus Strategy
+
+### Rationale
+
+Running the same trial through the pipeline multiple times and taking majority vote reduces noise from LLM stochasticity. This is analogous to using multiple human replicates — the same principle that motivated the two-replicate design of the human annotation study.
+
+Analysis of human annotation data reveals that fields where humans disagreed most (Outcome 55.6%, Peptide with R1/R2 definition divergence) are precisely the fields most sensitive to stochastic variation. Multi-run consensus addresses this systematically.
+
+### Design
+
+For each batch of trials:
+1. Run the full pipeline N times (recommended: N=3 for throughput, N=5 for maximum accuracy).
+2. Each run produces independent research (Phase 1) and independent annotation/verification (Phase 2) with the same configuration but different LLM sampling.
+3. For each field on each trial, take the **majority vote** across all N runs.
+4. Fields where all N runs disagree (no majority) are flagged as low-confidence and queued for manual review.
+5. The **stability score** (fraction of runs that agree with the majority) is recorded per field. Fields with stability < 1.0 indicate prompt or evidence weaknesses.
+
+### What This Reveals
+
+- **Stable fields** (all N runs agree): The pipeline is confident and prompt engineering is adequate.
+- **Unstable fields** (N runs split): The evidence is ambiguous or the prompt allows multiple valid interpretations. These are candidates for prompt tuning, additional few-shot examples, or model upgrade.
+- **Comparison with human replicates:** If the agent's multi-run stability exceeds human inter-rater agreement, the agent is producing more consistent annotations than humans for that field.
+
+### Calibration Data
+
+High-confidence human annotations (where R1 and R2 agree) serve as ground truth for evaluation:
+- Classification: 568 agreed pairs
+- Delivery Mode: 412 agreed pairs
+- Outcome: 207 agreed pairs
+- Reason for Failure: 42 agreed pairs
+
+For disagreements between agent and human ground truth, the agent's cited sources are independently verified to determine whether the agent found newer/better evidence (a "recency win") or made an error.
+
+---
+
+## 17. Changelog
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2026-03-15 | 0.2.0 | Two-phase pipeline (parallel research, sequential annotation). Persistence and resumability with atomic writes. Literature agent expanded to 4 sources (PubMed with abstract fetching, PMC with summaries, Europe PMC, Semantic Scholar). Structured snippets for LLM clarity. PMID deduplication. Resilient HTTP with per-host rate limiting and retry. Resume endpoint. Multi-run consensus strategy documented. Human annotation review with updated inter-rater statistics. |
 | 2026-03-15 | 0.1.0 | Initial methodology document. Describes all agents, verification pipeline, cross-field consistency, evidence thresholds, quality scores, output formats, and hardware constraints. |

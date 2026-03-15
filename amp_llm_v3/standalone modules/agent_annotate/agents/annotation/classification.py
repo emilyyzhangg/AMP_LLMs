@@ -24,49 +24,84 @@ THREE-STEP DECISION TREE:
 STEP 1 — Is the intervention a peptide?
   Check the Peptide determination. If Peptide = False → STOP → answer "Other".
 
-STEP 2 — Is this peptide an ANTIMICROBIAL peptide (AMP)?
-  AMPs are peptides that kill or inhibit microorganisms, OR peptide-based therapeutics designed to target pathogens.
-  - YES, it is an AMP: colistin, polymyxin B, daptomycin, nisin, defensins, LL-37, gramicidin, bacitracin, melittin, magainin, cecropin, vancomycin, tyrothricin
-  - YES, counts as AMP: peptide vaccines targeting pathogens (StreptInCor against S. pyogenes, peptide-based HIV vaccines)
-  - NO, NOT an AMP: GLP-1/GLP-2 analogues (semaglutide, liraglutide, apraglutide) — these are metabolic hormone peptides
-  - NO, NOT an AMP: VIP/Aviptadil — vasoactive intestinal peptide, a hormone, not antimicrobial
-  - NO, NOT an AMP: GnRH analogues (leuprolide, goserelin) — reproductive hormone peptides
-  - NO, NOT an AMP: Somatostatin analogues (octreotide, lanreotide) — growth hormone-inhibiting peptides
-  - NO, NOT an AMP: Peptides for cancer, diabetes, obesity, GvHD, headaches, GI motility that have no antimicrobial activity
+STEP 2 — Is this peptide an ANTIMICROBIAL PEPTIDE (AMP)?
+
+  AMPs (also called Host Defense Peptides) are peptides that participate in defense against pathogens through ANY of the following modes of action:
+
+  MODE A — Direct antimicrobial activity:
+    Peptides that directly kill or inhibit bacteria, viruses, fungi, or parasites via membrane disruption, pore formation, or intracellular targeting.
+    Examples: colistin, polymyxin B, daptomycin, nisin, melittin, magainin, cecropin, gramicidin, bacitracin, vancomycin, tyrothricin, defensins (when used as direct antimicrobials)
+
+  MODE B — Immunostimulatory / host defense activity:
+    Peptides that PROMOTE immune defense against pathogens: recruiting neutrophils/macrophages, enhancing phagocytosis, activating dendritic cells, bridging innate and adaptive immunity, stimulating protective cytokine production.
+    Examples: LL-37/cathelicidin, defensins (alpha/beta), thymosin alpha-1 (when boosting immune defense), lactoferricin
+
+  MODE C — Anti-biofilm activity:
+    Peptides that disrupt or prevent microbial biofilm formation.
+    Examples: LL-37, DJK-5, IDR-1018
+
+  MODE D — Pathogen-targeting vaccines and immunogens:
+    Peptide-based vaccines that induce immune responses against specific pathogens.
+    Examples: StreptInCor (S. pyogenes), peptide-based HIV vaccines, malaria peptide vaccines
+
+  KEY CRITERION: The peptide must have a known or plausible role in DEFENSE AGAINST PATHOGENS — either by directly attacking them or by stimulating the immune system to fight them. The word "antimicrobial" is broad: it covers direct killing AND immune-mediated defense.
+
+  DEFINITELY NOT AMPs — these are peptides with NO antimicrobial or host defense role:
+  - GLP-1/GLP-2 analogues (semaglutide, liraglutide, tirzepatide, apraglutide) — metabolic hormones
+  - GnRH analogues (leuprolide, goserelin) — reproductive hormones
+  - Somatostatin analogues (octreotide, lanreotide) — growth hormone inhibitors
+  - VIP/Aviptadil — vasoactive intestinal peptide (vasodilation, NOT immune defense)
+  - C-type natriuretic peptides (vosoritide) — bone growth regulators
+  - Peptides for diabetes, obesity, bone disorders, GI motility, psychiatric conditions
+  - Peptides that SUPPRESS immune responses (e.g., for autoimmune diseases) — immunosuppression is the OPPOSITE of host defense
+  - Radiolabeled peptide conjugates where the peptide is a targeting vector and the therapeutic mechanism is radiation (e.g., 177Lu-DOTATATE)
+
+  BORDERLINE CASES — think carefully:
+  - A peptide derived from a bacterial protein used to SUPPRESS immune responses in autoimmunity → NOT an AMP (suppressing defense, not promoting it)
+  - A peptide that promotes wound healing WITHOUT any antimicrobial mechanism → NOT an AMP
+  - A peptide that promotes wound healing AND has antimicrobial or immune-boosting properties → IS an AMP
+  - Self-assembling peptides for dental remineralization → NOT an AMP (physical/chemical mechanism, not antimicrobial, even though caries are bacterial)
+
   If NOT an AMP → STOP → answer "Other".
 
 STEP 3 — Does this AMP target infection specifically?
-  - Infection, pathogens, antimicrobial resistance, bacterial/viral/fungal disease → "AMP(infection)"
-  - Non-infection uses of AMPs: wound healing, cancer immunotherapy, biofilm disruption (non-infectious) → "AMP(other)"
+  AMP(infection): The trial's therapeutic goal is treating or preventing infection, infectious disease, antimicrobial resistance, sepsis, or pathogen-specific conditions.
+  AMP(other): The AMP or AMP-derived peptide is used for a non-infection purpose: wound healing, cancer immunotherapy, anti-inflammatory, biofilm in non-infectious context.
 
 WORKED EXAMPLES:
 
 Colistin for urinary tract infection → AMP(infection)
-  Step 1: Peptide=True. Step 2: Colistin is a classic AMP. Step 3: UTI is an infection.
+  Step 1: Peptide=True. Step 2: Colistin is a classic AMP (Mode A: direct antimicrobial). Step 3: UTI is an infection.
 
 LL-37 for diabetic wound healing → AMP(other)
-  Step 1: Peptide=True. Step 2: LL-37 is an AMP (cathelicidin). Step 3: Wound healing, not infection.
+  Step 1: Peptide=True. Step 2: LL-37 is an AMP (cathelicidin, Modes A+B+C). Step 3: Wound healing is NOT treating an active infection.
+
+Thymosin alpha-1 for chronic hepatitis B → AMP(infection)
+  Step 1: Peptide=True. Step 2: Thymosin alpha-1 boosts immune defense (Mode B: immunostimulatory). Step 3: Hepatitis B is an infection.
+
+Defensin-based peptide for cancer immunotherapy → AMP(other)
+  Step 1: Peptide=True. Step 2: Defensin is an AMP (Modes A+B). Step 3: Cancer, not infection.
 
 StreptInCor vaccine against Streptococcus pyogenes → AMP(infection)
-  Step 1: Peptide=True. Step 2: Peptide vaccine targeting a pathogen = counts as AMP. Step 3: S. pyogenes = infection.
-
-VIP/Aviptadil for COVID-19 ARDS → Other
-  Step 1: Peptide=True. Step 2: VIP is a vasoactive hormone peptide, NOT an antimicrobial peptide. STOP → Other.
+  Step 1: Peptide=True. Step 2: Peptide vaccine targeting a pathogen (Mode D). Step 3: S. pyogenes = infection.
 
 Semaglutide for type 2 diabetes → Other
-  Step 1: Peptide=True. Step 2: GLP-1 analogue, NOT an AMP. STOP → Other.
+  Step 1: Peptide=True. Step 2: GLP-1 analogue — metabolic hormone, NO antimicrobial or immune defense role. NOT an AMP. STOP.
 
-Apraglutide for GvHD → Other
-  Step 1: Peptide=True. Step 2: GLP-2 analogue, NOT an AMP. STOP → Other.
+Tirzepatide for obesity/psychiatric conditions → Other
+  Step 1: Peptide=True. Step 2: GIP/GLP-1 dual agonist — metabolic hormone. NOT an AMP. STOP.
 
-Amoxicillin for bacterial pneumonia → Other
-  Step 1: Peptide=False (small molecule). STOP → Other.
+dnaJP1 for rheumatoid arthritis → Other
+  Step 1: Peptide=True. Step 2: Although derived from bacterial HSP, it SUPPRESSES T-cell responses for autoimmunity. Immunosuppression is the OPPOSITE of host defense. NOT an AMP. STOP.
+
+Vosoritide (BMN 111) for achondroplasia → Other
+  Step 1: Peptide=True. Step 2: C-type natriuretic peptide analogue for bone growth. NOT an AMP. STOP.
 
 Pembrolizumab for melanoma → Other
-  Step 1: Peptide=False (monoclonal antibody). STOP → Other.
+  Step 1: Peptide=False (monoclonal antibody). STOP.
 
-Kate Farm Peptide 1.5 for gastroparesis → Other
-  Step 1: Peptide=False (nutritional formula). STOP → Other.
+P11-4 self-assembling peptide for dental caries remineralization → Other
+  Step 1: Peptide=True. Step 2: P11-4 works by nucleating hydroxyapatite crystals — a physical/chemical mechanism. It does not kill bacteria or stimulate immune defense. NOT an AMP despite caries being bacterial. STOP.
 
 IMPORTANT: Format your response EXACTLY as:
 
