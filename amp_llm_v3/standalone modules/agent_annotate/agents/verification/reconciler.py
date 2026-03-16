@@ -4,10 +4,15 @@ Reconciliation Agent.
 Uses a larger model (qwen2.5:14b) to resolve disagreements between
 the primary annotator and verifiers. Sees ALL opinions and evidence,
 then makes a final determination or flags for manual review.
+
+
+When the reconciler defers to MANUAL_REVIEW, a majority-vote fallback
+populates final_value so the review queue has a pre-filled best guess.
 """
 
 import re
 import logging
+from collections import Counter
 
 from app.models.verification import ModelOpinion, ConsensusResult
 
@@ -71,8 +76,9 @@ class ReconciliationAgent:
             raw_text = response.get("response", "")
         except Exception as e:
             logger.error(f"Reconciler failed for {field_name}: {e}")
-            # Can't reconcile — flag for manual review
-            consensus_result.final_value = ""
+            # Can't reconcile — use majority vote as fallback
+            fallback = self._majority_vote(consensus_result)
+            consensus_result.final_value = fallback
             consensus_result.reconciler_used = True
             consensus_result.reconciler_reasoning = f"Reconciliation failed: {e}"
             consensus_result.flag_reason = "reconciler_error"
@@ -86,10 +92,15 @@ class ReconciliationAgent:
         consensus_result.reconciler_reasoning = reasoning
 
         if final_value == "MANUAL_REVIEW" or not final_value:
-            # Reconciler couldn't decide — manual review
-            consensus_result.final_value = ""
+            # Reconciler couldn't decide — use majority vote as fallback
+            fallback = self._majority_vote(consensus_result)
+            consensus_result.final_value = fallback
             consensus_result.consensus_reached = False
-            logger.warning(f"  {field_name}: Reconciler deferred to MANUAL_REVIEW")
+            consensus_result.flag_reason = "reconciler_deferred"
+            logger.warning(
+                f"  {field_name}: Reconciler deferred to MANUAL_REVIEW, "
+                f"majority-vote fallback='{fallback}'"
+            )
         else:
             # Reconciler made a decision
             consensus_result.final_value = final_value
@@ -135,6 +146,26 @@ class ReconciliationAgent:
         lines.append("Based on the evidence above, what is the correct answer?")
 
         return "\n".join(lines)
+
+    @staticmethod
+    def _majority_vote(consensus_result: ConsensusResult) -> str:
+        """Pick the most common value across primary + all verifiers.
+
+        Used as a best-guess fallback when the reconciler defers to
+        MANUAL_REVIEW or errors out. The review queue still gets a
+        pre-populated value the human can accept or override.
+        """
+        votes: list[str] = []
+        if consensus_result.original_value:
+            votes.append(consensus_result.original_value)
+        for opinion in consensus_result.opinions:
+            if opinion.suggested_value:
+                votes.append(opinion.suggested_value)
+        if not votes:
+            return ""
+        counter = Counter(votes)
+        winner, _ = counter.most_common(1)[0]
+        return winner
 
     def _parse_final_answer(self, text: str) -> str:
         match = re.search(r"Final Answer:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)

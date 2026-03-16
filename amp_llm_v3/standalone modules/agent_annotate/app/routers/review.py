@@ -10,6 +10,21 @@ from app.services.review_service import review_service
 
 router = APIRouter(prefix="/api/review", tags=["review"])
 
+# Valid values per field for dropdown selection in the review UI.
+from agents.annotation.classification import VALID_VALUES as _CLS_VALS
+from agents.annotation.peptide import VALID_VALUES as _PEP_VALS
+from agents.annotation.outcome import VALID_VALUES as _OUT_VALS
+from agents.annotation.delivery_mode import VALID_VALUES as _DM_VALS
+from agents.annotation.failure_reason import VALID_VALUES as _FR_VALS
+
+FIELD_VALID_VALUES: dict[str, list[str]] = {
+    "classification": _CLS_VALS,
+    "peptide": _PEP_VALS,
+    "outcome": _OUT_VALS,
+    "delivery_mode": _DM_VALS,
+    "reason_for_failure": _FR_VALS,
+}
+
 
 class ReviewDecision(BaseModel):
     action: str  # "approved" | "overridden" | "skipped" | "retry"
@@ -25,6 +40,18 @@ async def list_review_items(job_id: Optional[str] = None, status: str = "pending
     else:
         items = review_service.get_all(job_id=job_id)
     return {"items": [item.model_dump() for item in items], "total": len(items)}
+
+
+@router.get("/field-values")
+async def field_values():
+    """Valid values for each annotation field and verifier model mapping."""
+    from app.services.config_service import config_service
+    cfg = config_service.get()
+    model_map = {
+        key: {"name": m.name, "role": m.role}
+        for key, m in cfg.verification.models.items()
+    }
+    return {"fields": FIELD_VALID_VALUES, "model_map": model_map}
 
 
 @router.get("/stats")
