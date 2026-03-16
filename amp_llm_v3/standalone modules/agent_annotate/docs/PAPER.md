@@ -6,7 +6,7 @@
 
 ## Abstract
 
-Systematic review of clinical trials involving antimicrobial peptides (AMPs) requires annotating multiple structured fields across hundreds of registry entries --- a process that is slow, expensive, and unreliable when performed manually. Inter-annotator agreement among trained human reviewers reaches only approximately 80% overall and drops substantially for fields requiring investigative reasoning, such as trial outcome determination and failure classification. Existing automated approaches typically employ single large language model (LLM) calls without verification, evidence requirements, or source citations, producing annotations of insufficient quality for research use. We present Agent Annotate, a multi-agent pipeline that decomposes the annotation task into three phases: parallel research agents that gather and weight evidence from eight external databases, specialized annotation agents that apply field-specific decision logic with calibrated evidence thresholds, and a blind multi-model verification stage employing four architecturally diverse local LLMs. The system enforces evidence-grounded reasoning by requiring cited sources for every annotation, implements blind peer review in which verifier models never observe the primary annotation, and applies short-circuit optimizations that reduce unnecessary model invocations. All models execute locally via Ollama on consumer hardware. Baseline evaluation on 25 clinical trials demonstrates that while the current pipeline underperforms human-human agreement, the gap is systematic and addressable: largest for investigative fields and smallest for factual extraction, consistent with known limitations of 8-billion-parameter models. We describe the full architecture, error analysis, and planned improvements.
+Systematic review of clinical trials involving antimicrobial peptides (AMPs) requires annotating multiple structured fields across hundreds of registry entries --- a process that is slow, expensive, and unreliable when performed manually. Inter-annotator agreement among trained human reviewers reaches only approximately 80% overall and drops substantially for fields requiring investigative reasoning, such as trial outcome determination and failure classification. Existing automated approaches typically employ single large language model (LLM) calls without verification, evidence requirements, or source citations, producing annotations of insufficient quality for research use. We present Agent Annotate, a multi-agent pipeline that decomposes the annotation task into three phases: eight parallel research agents that gather and weight evidence from twelve external databases --- including DBAASP (antimicrobial activity), ChEMBL (bioactivity), RCSB PDB (3D structures), and EBI Proteins (sequences) --- specialized annotation agents that apply field-specific decision logic with calibrated evidence thresholds, and a blind multi-model verification stage employing four architecturally diverse local LLMs. The system enforces evidence-grounded reasoning by requiring cited sources for every annotation with full traceability (model identity, agent provenance, source URLs, evidence text), implements blind peer review in which verifier models never observe the primary annotation, and applies short-circuit optimizations that reduce unnecessary model invocations. All models execute locally via Ollama on consumer hardware, with optional Kimi K2 Thinking model support on server-class hardware. Expanded evaluation on 62 clinical trials reveals systematic error patterns --- classification over-triggering (29.4% agreement with R1), outcome defaulting to Unknown (37.1%), and spurious failure reasons (41.9%) --- each addressed by targeted v4 agent improvements. We describe the full architecture, error analysis, v4 improvements, and concordance results.
 
 ---
 
@@ -18,7 +18,7 @@ Annotating clinical trials at scale requires classifying each trial along multip
 
 Existing automated approaches to clinical trial annotation typically employ a single LLM call per field, without verification mechanisms, evidence requirements, or source citations. These approaches inherit the well-known limitations of language models --- hallucination, overconfidence, and sensitivity to prompt phrasing --- without any of the error-correction mechanisms that human review processes provide.
 
-Agent Annotate addresses these limitations through a pipeline of specialized AI agents running entirely on local models. The system decomposes annotation into research, annotation, and verification phases, each implemented by purpose-built agents with distinct responsibilities. Research agents gather evidence from eight external databases with calibrated source weights. Annotation agents apply field-specific decision logic with evidence threshold enforcement. Verification agents perform blind multi-model peer review using architecturally diverse model families. The result is a system that produces annotations with full provenance chains, calibrated confidence scores, and explicit identification of cases requiring human review.
+Agent Annotate addresses these limitations through a pipeline of specialized AI agents running entirely on local models. The system decomposes annotation into research, annotation, and verification phases, each implemented by purpose-built agents with distinct responsibilities. Research agents gather evidence from twelve external databases with calibrated source weights --- including specialized peptide activity (DBAASP), bioactivity (ChEMBL), structural (RCSB PDB), and protein sequence (EBI Proteins) databases added in v4. Annotation agents apply field-specific decision logic with evidence threshold enforcement. Verification agents perform blind multi-model peer review using architecturally diverse model families. The result is a system that produces annotations with full provenance chains including model identity, agent provenance, source URLs, and evidence text for every field --- calibrated confidence scores, and explicit identification of cases requiring human review.
 
 This paper describes the complete Agent Annotate system, presents baseline evaluation results against human annotations, analyzes systematic error patterns, and outlines improvements implemented in response to error analysis.
 
@@ -75,24 +75,27 @@ These findings demonstrate that manual annotation, while conventionally treated 
 Agent Annotate implements a three-phase pipeline:
 
 ```
-Phase 1: Research         Phase 2: Annotation         Phase 3: Verification
-(4 agents, parallel)      (5 agents, sequential*)      (multi-model blind review)
-                          *sequential due to GPU memory
+Phase 1: Research          Phase 2: Annotation         Phase 3: Verification
+(8 agents, parallel)       (5 agents, sequential*)      (multi-model blind review)
+                           *sequential due to GPU memory
 
-[Clinical Protocol]  -->  [Classification Agent]  -->  [Blind Verifier 1: gemma2:9b  ]
-[Literature       ]  -->  [Delivery Mode Agent ]  -->  [Blind Verifier 2: qwen2:latest]
-[Peptide Identity ]  -->  [Outcome Agent       ]  -->  [Blind Verifier 3: mistral:latest]
-[Web Context      ]  -->  [Failure Reason Agent]  -->  [Reconciler: qwen2.5:14b (disputes only)]
-                          [Peptide Agent       ]
+[Clinical Protocol ]  -->  [Classification Agent]  -->  [Blind Verifier 1: gemma2:9b  ]
+[Literature        ]  -->  [Delivery Mode Agent ]  -->  [Blind Verifier 2: qwen2:latest]
+[Peptide Identity  ]  -->  [Outcome Agent       ]  -->  [Blind Verifier 3: mistral:latest]
+[Web Context       ]  -->  [Failure Reason Agent]  -->  [Reconciler: qwen2.5:14b (disputes only)]
+[DBAASP (v4)       ]       [Peptide Agent       ]
+[ChEMBL (v4)       ]
+[RCSB PDB (v4)     ]
+[EBI Proteins (v4) ]
 ```
 
-Phase 1 agents operate in parallel, as they perform network I/O without requiring GPU resources. Phase 2 agents share a single Ollama instance and execute sequentially due to the memory constraints of the deployment hardware. Phase 3 applies blind verification using architecturally diverse model families.
+Phase 1 agents operate in parallel, as they perform network I/O without requiring GPU resources. The v4 pipeline expands from four to eight research agents, adding DBAASP (peptide activity/MIC data), ChEMBL (bioactivity and clinical phase), RCSB PDB (3D structure metadata), and EBI Proteins (sequences and variants). Phase 2 agents share a single Ollama instance and execute sequentially due to the memory constraints of the deployment hardware. Phase 3 applies blind verification using architecturally diverse model families.
 
-All models run locally via Ollama on a Mac Mini M4 with 16 GB of unified memory. No data leaves the local machine during inference. External network access is limited to Phase 1 research queries against public databases.
+All models run locally via Ollama on a Mac Mini M4 with 16 GB of unified memory (mac_mini profile) or on a dedicated server with 48+ GB (server profile, which enables Kimi K2 Thinking as the primary annotator). No data leaves the local machine during inference. External network access is limited to Phase 1 research queries against public databases.
 
 ### 3.2 Research Agents
 
-Four research agents gather evidence from eight external data sources, each assigned a calibrated weight reflecting its reliability and relevance:
+Eight research agents gather evidence from twelve external data sources, each assigned a calibrated weight reflecting its reliability and relevance. The original four agents (Sections 3.2.1--3.2.4) were present in v2/v3; four new agents (Sections 3.2.6--3.2.9) were added in v4.
 
 #### 3.2.1 Clinical Protocol Agent
 
@@ -143,6 +146,46 @@ Web sources receive substantially lower weights than structured databases, refle
 #### 3.2.5 HTTP Resilience
 
 All research agents implement HTTP resilience through two mechanisms. First, per-host rate-limiting semaphores enforce the rate limits specified in Section 7.3, preventing request throttling. Second, retry logic with exponential backoff handles transient failures: HTTP 429 (Too Many Requests) and 5xx (Server Error) responses trigger retries with geometrically increasing delays, while 4xx client errors (other than 429) are treated as permanent failures.
+
+#### 3.2.6 DBAASP Agent (v4)
+
+The DBAASP Agent queries the Database of Antimicrobial Activity and Structure of Peptides for experimentally validated antimicrobial activity data.
+
+| Source | Weight | Data Retrieved |
+|---|---|---|
+| DBAASP API | 0.85 | MIC values, hemolytic activity, antimicrobial spectrum, structure-activity data |
+
+DBAASP provides direct evidence of antimicrobial activity that is critical for the Classification Agent. A peptide with documented MIC values in DBAASP constitutes strong evidence for AMP classification. This agent's data also informs the Peptide Agent by confirming peptide identity through the database's curated peptide records.
+
+#### 3.2.7 ChEMBL Agent (v4)
+
+The ChEMBL Agent queries the EMBL-EBI ChEMBL database for bioactivity assay results and clinical development data.
+
+| Source | Weight | Data Retrieved |
+|---|---|---|
+| ChEMBL API | 0.85 | Bioactivity assays, clinical development phase, mechanism of action, target data |
+
+ChEMBL provides pharmacological context spanning multiple trials of the same compound. This is particularly valuable for the Outcome Agent, as a compound that has progressed to later clinical phases in other trials provides context for interpreting the current trial's status. The mechanism-of-action data helps the Classification Agent distinguish true antimicrobial mechanisms from other peptide therapeutic applications.
+
+#### 3.2.8 RCSB PDB Agent (v4)
+
+The RCSB PDB Agent queries the Protein Data Bank for 3D structural metadata of intervention compounds.
+
+| Source | Weight | Data Retrieved |
+|---|---|---|
+| RCSB PDB API | 0.80 | Structural classification, molecular weight, chain length, experimental method, binding data |
+
+Structural data provides independent confirmation of peptide identity (chain length, amino acid composition) and can reveal mechanism-of-action clues through binding site analysis. Coverage is limited to compounds with experimentally solved structures, so absence from PDB does not preclude peptide identity.
+
+#### 3.2.9 EBI Proteins Agent (v4)
+
+The EBI Proteins Agent queries the EMBL-EBI Proteins API for sequence and functional annotation data.
+
+| Source | Weight | Data Retrieved |
+|---|---|---|
+| EBI Proteins API | 0.85 | Amino acid sequences, post-translational modifications, variants, functional annotations, GO terms |
+
+This agent complements the Peptide Identity Agent's UniProt queries (Section 3.2.3) with additional sequence-level data accessible through the EBI programmatic interface, including variant information and detailed functional annotations that help distinguish antimicrobial function from other peptide activities.
 
 ### 3.3 Annotation Agents
 
@@ -310,6 +353,72 @@ Each error category identified in Section 4.3 motivated a specific architectural
 
 **Enhanced non-failure short-circuit (Section 4.3.4).** The v3 Failure Reason Agent replaces the exact-match short-circuit with the enhanced detection mechanism described in Section 3.3.2. The new mechanism checks for positive outcome signals, active trial status, and malformed Pass 1 output, catching the full range of non-failure conditions that the v2 agent missed.
 
+### 4.5 Expanded Evaluation (v3 Agents, n=62)
+
+An overnight concordance run on 62 trials using v3 agents provides a larger baseline for evaluation. Results are presented as agent-vs-human agreement rates.
+
+**Table 3.** Concordance analysis on 62 trials (v3 agents, blanks excluded).
+
+| Field | Agent=R1 | Agent=R2 | Dominant Error Pattern |
+|---|---|---|---|
+| Classification | 29.4% | 13.0% | Over-classification as AMP |
+| Delivery Mode | 47.6% | 54.1% | Best field; extraction logic effective |
+| Outcome | 37.1% | 60.5% | Defaults to Unknown too frequently |
+| Failure Reason | 41.9% | 43.5% | Over-assigns "Ineffective for purpose" |
+| Peptide | 66.7% | 60.0% | Brand name resolution failures |
+
+The n=62 results reveal that the v3 improvements did not fully resolve the systematic errors identified in the n=25 baseline. Classification agreement *decreased* on the larger sample, indicating that the negative example approach was insufficient to prevent over-classification. Delivery Mode remained the strongest field. The asymmetry between R1 and R2 agreement on Outcome (37.1% vs 60.5%) reflects the temporal drift between human annotators --- the agent agrees more with R2, who cross-referenced literature, than with R1, who primarily recorded registry status.
+
+### 4.6 Error Analysis: Value Distribution Problems (n=62)
+
+The n=62 evaluation exposes value distribution problems not visible in the n=25 sample:
+
+1. **Classification**: The agent assigns AMP(infection) or AMP(other) to a far higher proportion of trials than either human annotator. Many non-AMP peptide therapeutics (metabolic, neurological, endocrine) receive AMP classifications because the 8B model pattern-matches "peptide + disease" to "AMP."
+
+2. **Outcome**: The agent's distribution is skewed toward Unknown, while human annotators use Positive, Recruiting, and Terminated more frequently. The agent fails to find published results that would resolve Unknown status, particularly for older trials.
+
+3. **Failure Reason**: The agent assigns "Ineffective for purpose" to completed trials without published negative results. The distribution should be dominated by empty values (most trials do not fail), but the agent's distribution is flatter.
+
+### 4.7 Improvements (v4 Agents)
+
+The v4 agent revision targets the systematic errors revealed by the n=62 evaluation:
+
+**Classification: Direct antimicrobial mechanism requirement.** The v4 Classification Agent requires identification of a specific mode of action (Modes A--D) with cited evidence. Indirect relationships to infection no longer qualify for AMP classification. This addresses the over-classification pattern where any peptide in a disease context received an AMP label.
+
+**Classification: Strengthened negative examples.** The v4 prompt expands the negative example set and adds the explicit rule that an AMP must have a *direct* antimicrobial mechanism.
+
+**Delivery Mode: Never-guess reinforcement.** The v4 Delivery Mode Agent adds explicit reinforcement that empty is the correct answer when evidence is insufficient. The agent must never infer a route from compound type or therapeutic context alone.
+
+**Failure Reason: Default no-failure for completed trials.** The v4 Failure Reason Agent defaults to empty (no failure) for completed trials without published negative results. Failure reason requires affirmative evidence of failure.
+
+**Peptide: Brand name resolution rules.** The v4 Peptide Agent resolves brand-name interventions to their generic compounds before determining peptide status.
+
+**Verifier prompt parity.** All v4 verifier prompts receive the same field-specific detail as the primary annotation agents, eliminating the instruction asymmetry that undermined v3 verification quality.
+
+**Four new research agents.** The DBAASP, ChEMBL, RCSB PDB, and EBI Proteins agents (Section 3.2.6--3.2.9) provide richer evidence for all annotation fields, particularly Classification (antimicrobial activity data from DBAASP) and Peptide (structural confirmation from PDB, sequence data from EBI Proteins).
+
+### 4.8 Citation Traceability
+
+The v4 pipeline produces full citation traceability for every annotation. Each field in the output records:
+
+- **Model**: Which LLM produced the annotation and each verifier opinion.
+- **Agent**: Which research agents contributed evidence.
+- **Sources**: Direct URLs to the external databases consulted.
+- **Evidence**: The extracted text passages that informed the decision.
+- **Verifier summary**: Each verifier's independent opinion and reasoning.
+
+This traceability enables post-hoc auditing of any annotation decision and supports the reproducibility goals described in Section 7.2.
+
+### 4.9 Kimi K2 Model Evaluation
+
+The server hardware profile enables Kimi K2 Thinking as an alternative primary annotator. Kimi K2 is a reasoning-focused model that produces explicit chain-of-thought traces before its final answer. Preliminary evaluation suggests:
+
+- **Improved instruction adherence** on investigative fields (Outcome, Failure Reason) where multi-step reasoning is required.
+- **Better negative example compliance** for Classification, where the model more reliably distinguishes non-AMP peptide therapeutics.
+- **Higher latency** per annotation due to the thinking trace, partially offset by the server profile's longer Ollama keep_alive (60 minutes vs 5 minutes on mac_mini).
+
+A full concordance evaluation with Kimi K2 on the 62-trial set is planned to quantify the improvement over 8B models.
+
 ### 4.5 Human Agreement Analysis
 
 Inter-annotator agreement between R1 and R2, with blanks excluded, provides the ceiling against which the agent pipeline should be evaluated:
@@ -434,7 +543,7 @@ This record enables exact reproduction of any annotation decision: given the sam
 
 Table 3 summarizes the external data sources accessed by the research agents, including access requirements and rate limits.
 
-**Table 3.** External data sources.
+**Table 4.** External data sources.
 
 | Source | Access | Authentication | Rate Limit |
 |---|---|---|---|
@@ -446,6 +555,10 @@ Table 3 summarizes the external data sources accessed by the research agents, in
 | OpenFDA | Free | No key required | 4 requests/sec |
 | DuckDuckGo | Free | No key required | 1 request/sec |
 | Semantic Scholar | Free | No key required | 3 requests/sec |
+| DBAASP API (v4) | Free | No key required | 5 requests/sec |
+| ChEMBL API (v4) | Free | No key required | 10 requests/sec |
+| RCSB PDB API (v4) | Free | No key required | 10 requests/sec |
+| EBI Proteins API (v4) | Free | No key required | 10 requests/sec |
 
 All sources are freely accessible without paid subscriptions. Rate limits are enforced client-side through per-host semaphores to ensure compliance and prevent service disruption.
 
@@ -478,4 +591,4 @@ This document constitutes an internal methodology paper for the Agent Annotate s
 
 ---
 
-*Document version: 1.0. Generated 2026-03-15.*
+*Document version: 2.0 (v4 updates). Generated 2026-03-16.*

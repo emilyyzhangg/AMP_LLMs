@@ -6,9 +6,31 @@ Agent Annotate is a three-phase pipeline for annotating clinical trials involvin
 
 The three phases execute sequentially per trial:
 
-1. **Phase 1 -- Research.** Four parallel agents gather evidence from external data sources (registries, literature, protein databases, web search).
+1. **Phase 1 -- Research.** Eight parallel agents gather evidence from external data sources (registries, literature, protein databases, peptide activity databases, structure databases, web search).
 2. **Phase 2 -- Annotation.** Five agents each annotate one field, consuming the research dossier from Phase 1.
 3. **Phase 3 -- Verification.** Three blind verifiers independently review each annotation, followed by consensus checking and reconciliation for disputes.
+
+### 1.1 Output Traceability
+
+Every annotation in the output includes full citation traceability:
+
+- **Model identity**: Which LLM produced each annotation and each verification opinion.
+- **Agent provenance**: Which research agent contributed evidence for each field.
+- **Source URLs**: Direct links to the external data sources consulted (ClinicalTrials.gov, PubMed, UniProt, DBAASP, ChEMBL, RCSB PDB, EBI Proteins, etc.).
+- **Evidence text**: The extracted evidence passages that informed the annotation decision.
+- **Verifier summary**: Each verifier's independent opinion and reasoning chain.
+
+### 1.2 Operational Metadata
+
+Each annotation job records:
+
+- **Timestamps**: `started_at` and `finished_at` in Pacific time (America/Los_Angeles) throughout the system.
+- **Elapsed time**: Total wall-clock time for the job and average time per trial.
+- **Commit hash**: The exact git commit of the codebase used for the run, embedded in job metadata for reproducibility.
+
+### 1.3 Disk-Persisted Review Queue
+
+The review queue (trials flagged for manual review) is persisted to disk and survives service restarts. Previously, queued review items were lost on restart; the v4 implementation writes the queue to a JSON file that is reloaded on startup.
 
 
 ## 2. AMP Classification Framework
@@ -90,7 +112,7 @@ Boolean field (True/False) indicating whether the intervention is a peptide.
 
 ## 4. Phase 1 -- Research Agents
 
-Four research agents run in parallel, each querying different external sources. Every source carries a fixed quality weight reflecting its reliability for AMP clinical trial annotation.
+Eight research agents run in parallel, each querying different external sources. Every source carries a fixed quality weight reflecting its reliability for AMP clinical trial annotation. The v4 pipeline added four new specialized agents (Sections 4.5--4.8) to provide deeper peptide activity, bioactivity, structural, and protein sequence data.
 
 ### 4.1 Clinical Protocol Agent
 
@@ -130,6 +152,54 @@ Queries general web search for supplementary context (press releases, conference
 | SerpAPI | 0.50 |
 | Google Scholar | 0.70 |
 
+### 4.5 DBAASP Agent (v4)
+
+Queries the Database of Antimicrobial Activity and Structure of Peptides (DBAASP) for peptide activity data. This agent provides direct evidence of antimicrobial activity, which is critical for the classification decision.
+
+| Source | Weight |
+|---|---|
+| DBAASP API | 0.85 |
+
+**Data provided**: Minimum inhibitory concentration (MIC) values against specific organisms, hemolytic activity, antimicrobial spectrum, peptide structure-activity relationships. DBAASP is the most comprehensive public database of experimentally validated AMP activity data.
+
+**Role in pipeline**: Provides ground-truth antimicrobial activity data that directly informs the Classification Agent. A peptide with documented MIC values in DBAASP is strong evidence for AMP classification; absence from DBAASP does not rule out AMP status but lowers confidence.
+
+### 4.6 ChEMBL Agent (v4)
+
+Queries the ChEMBL database (EMBL-EBI) for bioactivity and clinical phase data on the trial intervention.
+
+| Source | Weight |
+|---|---|
+| ChEMBL API | 0.85 |
+
+**Data provided**: Bioactivity assay results, clinical development phase, mechanism of action, target information, compound properties. ChEMBL aggregates pharmacological data from medicinal chemistry literature.
+
+**Role in pipeline**: Provides clinical development context (which phase the compound has reached across all trials, not just the one being annotated) and mechanism-of-action data that helps distinguish true antimicrobial mechanisms from other peptide therapeutics. Also useful for the Outcome Agent, as ChEMBL captures development status across multiple trials of the same compound.
+
+### 4.7 RCSB PDB Agent (v4)
+
+Queries the RCSB Protein Data Bank for 3D structural metadata of the intervention compound.
+
+| Source | Weight |
+|---|---|
+| RCSB PDB API | 0.80 |
+
+**Data provided**: Structural classification, molecular weight, chain length, experimental method (X-ray, NMR, cryo-EM), organism source, ligand/binding information.
+
+**Role in pipeline**: Provides structural confirmation that a compound is a peptide (chain length, amino acid composition) and can reveal mechanism-of-action clues through binding site analysis. Particularly useful for the Peptide Agent and for resolving ambiguous cases where the compound name does not clearly indicate peptide identity.
+
+### 4.8 EBI Proteins Agent (v4)
+
+Queries the EBI Proteins API (UniProt programmatic access via EMBL-EBI) for protein/peptide sequence data and functional annotations.
+
+| Source | Weight |
+|---|---|
+| EBI Proteins API | 0.85 |
+
+**Data provided**: Amino acid sequences, post-translational modifications, variant information, functional annotations, subcellular localization, gene ontology terms.
+
+**Role in pipeline**: Complements UniProt (Section 4.3) with additional sequence and variant data accessible through the EBI programmatic interface. Provides sequence-level confirmation of peptide identity and functional annotations that help distinguish antimicrobial function from other peptide activities.
+
 
 ## 5. Phase 2 -- Annotation Agents
 
@@ -150,7 +220,7 @@ These agents make two sequential LLM calls: an investigative pass that extracts 
 - **Outcome Agent**
 - **Failure Reason Agent**
 
-### 5.3 Classification Agent (v3)
+### 5.3 Classification Agent (v4)
 
 Determines whether the trial involves an AMP and, if so, whether the context is infection-related.
 
@@ -165,7 +235,9 @@ The v3 prompt includes explicit negative examples to reduce over-classification:
 
 The governing rule: "Being a peptide does NOT make something an AMP. MOST peptide therapeutics are NOT AMPs." When in doubt, the agent classifies as "Other."
 
-### 5.4 Delivery Mode Agent (v3)
+**v4 improvement -- direct antimicrobial mechanism requirement**: The v4 prompt adds a stricter classification gate. To receive an AMP classification, the intervention must have a *direct* antimicrobial mechanism fitting one of the four modes (Section 2.2). Indirect relationships to infection (e.g., a peptide used in a wound context where infection is secondary) no longer automatically qualify as AMP(infection). The agent must identify which specific mode of action applies and cite evidence for it.
+
+### 5.4 Delivery Mode Agent (v4)
 
 Extracts the route of administration from trial data. Uses a priority-ordered extraction strategy:
 
@@ -176,6 +248,8 @@ Extracts the route of administration from trial data. Uses a priority-ordered ex
 5. Intervention name keywords (lowest priority)
 
 Includes a keyword mapping layer that normalizes abbreviations to canonical values (SC, IM, IV, PO, etc.).
+
+**v4 improvement -- never-guess reinforcement**: The v4 prompt adds explicit reinforcement that the agent must never guess a delivery mode. If the route of administration cannot be determined from the available evidence, the agent must return empty rather than inferring from the compound type or therapeutic context. This addresses cases where the v3 agent guessed "IM" for vaccines or "Oral" for peptides without cited evidence.
 
 ### 5.5 Outcome Agent (v3)
 
@@ -196,7 +270,7 @@ Includes a keyword mapping layer that normalizes abbreviations to canonical valu
 
 Critical rule: A "Completed" registry status alone does NOT indicate failure. "Failed - completed trial" requires cited evidence that the trial failed to meet its endpoints or was otherwise unsuccessful.
 
-### 5.6 Failure Reason Agent (v3)
+### 5.6 Failure Reason Agent (v4)
 
 **Pass 1:** Investigates all available evidence for failure signals -- adverse event reports, efficacy data, sponsor announcements, regulatory actions, COVID-related disruptions, enrollment data.
 
@@ -209,9 +283,13 @@ The agent includes an enhanced short-circuit mechanism for non-failures. Before 
 
 The short-circuit is not a simple string match for "No" -- it evaluates the full evidence context for positive signals. If positive signals are found, the agent returns an empty value (no failure reason).
 
-### 5.7 Peptide Agent
+**v4 improvement -- default no-failure for completed trials**: The v4 prompt changes the default behavior for trials that completed without explicit failure evidence. Previously, the agent would sometimes assign "Ineffective for purpose" to completed trials lacking published results. The v4 prompt instructs the agent that a completed trial with no published negative results should default to an empty failure reason (no failure), not "Ineffective for purpose." Failure reason requires affirmative evidence of failure, mirroring the Outcome Agent's rule that completion does not imply failure.
 
-Determines whether the trial intervention is a peptide (True/False). Consults the Peptide Identity research dossier (UniProt, DRAMP) as primary evidence.
+### 5.7 Peptide Agent (v4)
+
+Determines whether the trial intervention is a peptide (True/False). Consults the Peptide Identity research dossier (UniProt, DRAMP) as primary evidence, supplemented by RCSB PDB and EBI Proteins data from the new v4 research agents.
+
+**v4 improvement -- brand name rules**: The v4 prompt adds explicit handling for brand-name interventions. When the trial intervention is a brand name (e.g., "Solostar," "Ozempic"), the agent must resolve the brand name to its generic compound and determine peptide status based on the generic identity, not the brand name alone. The prompt includes examples of brand names that resolve to non-peptide compounds.
 
 
 ## 6. Phase 3 -- Verification Pipeline
@@ -225,6 +303,8 @@ Three verifier models independently review each annotation. The verifiers never 
 | Verifier 1 | gemma2:9b |
 | Verifier 2 | qwen2:latest |
 | Verifier 3 | mistral:latest |
+
+**v4 verifier prompt improvements**: The v4 verifier prompts now receive the same level of field-specific detail as the primary annotation agents, including negative examples, decision trees, and extraction hierarchies. In v3, verifiers received condensed instructions, creating an asymmetry where verifiers lacked the context to make accurate independent judgments. The v4 parity ensures that verifier disagreements reflect genuine evidence ambiguity rather than instruction gaps.
 
 ### 6.2 Consensus
 
@@ -278,9 +358,11 @@ Cohen's kappa is computed for each field to measure inter-annotator agreement be
 
 ## 9. Baseline Results
 
+### 9.1 v2 Baseline (n=25)
+
 These results are from the 25-trial concordance analysis using v2 agents (before the v3 improvements described in Sections 5.3--5.6). All percentages are with blank annotations excluded per the v2 protocol.
 
-### 9.1 Agreement Rates
+#### 9.1.1 Agreement Rates (v2, n=25)
 
 | Field | Agent vs R1 | Agent vs R2 | R1 vs R2 |
 |---|---|---|---|
@@ -292,47 +374,100 @@ These results are from the 25-trial concordance analysis using v2 agents (before
 
 Peptide only has Agent vs R2 because R1 had no peptide annotations in the concordance set.
 
-### 9.2 Interpretation
+#### 9.1.2 Interpretation (v2)
 
 Agent-human agreement is consistently lower than human-human agreement. However, the human-human agreement rates themselves reveal substantial disagreement (73--79% for most fields), indicating that "ground truth" is not straightforward even for trained annotators.
 
+### 9.2 v3 Concordance Results (n=62)
 
-## 10. Known Issues and v3 Fixes
+An expanded concordance analysis was run overnight using v3 agents on 62 trials. These results establish the pre-v4 baseline on a larger, more representative sample.
 
-### 10.1 Outcome Bias (v2)
+#### 9.2.1 Agreement Rates (v3, n=62)
+
+| Field | Agent vs R1 | Agent vs R2 | Notes |
+|---|---|---|---|
+| Classification | 29.4% | 13.0% | Agent over-classifies as AMP; many non-AMP peptides receive AMP labels |
+| Delivery Mode | 47.6% | 54.1% | Best-performing field; extraction logic works well for clear cases |
+| Outcome | 37.1% | 60.5% | Agent defaults to Unknown too frequently; misses published positive results |
+| Failure Reason | 41.9% | 43.5% | Agent over-assigns "Ineffective for purpose" to trials without failure evidence |
+| Peptide | 66.7% | 60.0% | Regression from v2 on this larger sample; brand name resolution issues |
+
+#### 9.2.2 Interpretation (v3, n=62)
+
+The n=62 results reveal several systematic problems that the v4 agent improvements (Sections 5.3--5.7) target directly:
+
+1. **Classification over-classification (29.4% / 13.0%)**: The agent assigns AMP classifications too aggressively. The v4 fix (Section 5.3) requires a direct antimicrobial mechanism and strengthens the default-to-Other behavior.
+
+2. **Delivery Mode is the strongest field (47.6% / 54.1%)**: The extraction hierarchy and keyword mapping work well. The v4 never-guess reinforcement (Section 5.4) should prevent the remaining errors where the agent guesses routes without evidence.
+
+3. **Outcome defaults to Unknown too much (37.1% / 60.5%)**: The asymmetry between R1 and R2 agreement reflects the Recruiting/Unknown divergence between human annotators. The agent agrees more with R2 (who checked literature) than R1 (who recorded registry status). The v4 improvements should help the agent find published results more reliably with the additional research agents.
+
+4. **Failure Reason over-assigns Ineffective (41.9% / 43.5%)**: The v4 default-no-failure fix (Section 5.6) directly addresses this by requiring affirmative failure evidence before assigning any failure reason.
+
+5. **Peptide brand name issues (66.7% / 60.0%)**: The v4 brand name rules (Section 5.7) address cases where the agent failed to resolve brand names to their generic compounds.
+
+
+## 10. Hardware Profiles and Model Configuration
+
+### 10.1 Hardware Profiles
+
+The pipeline supports two hardware profiles that configure model selection and Ollama behavior:
+
+| Profile | Hardware | Primary Annotator | Ollama keep_alive |
+|---|---|---|---|
+| `mac_mini` | Mac Mini M4, 16 GB | llama3.1:8b | 5 minutes |
+| `server` | Dedicated server, 48+ GB | Kimi K2 Thinking (via OpenRouter or local) | 60 minutes |
+
+The `mac_mini` profile uses shorter `keep_alive` (5 minutes) to free GPU memory sooner on constrained hardware. The `server` profile uses a longer `keep_alive` (60 minutes) to avoid repeated model loading on hardware with sufficient memory.
+
+### 10.2 Kimi K2 Thinking
+
+The `server` profile offers Kimi K2 Thinking as the primary annotation model. Kimi K2 is a reasoning-focused model that produces chain-of-thought traces before its final answer, making it better suited for investigative fields (Outcome, Failure Reason) where multi-step reasoning is required. Initial testing suggests improved instruction adherence compared to 8B models on classification and outcome tasks.
+
+### 10.3 Ollama keep_alive Optimization
+
+The `keep_alive` parameter controls how long Ollama retains a model in GPU memory after the last request. The v4 pipeline sets this per-profile:
+
+- **mac_mini (5m)**: Unloads models aggressively to prevent memory pressure on 16 GB unified memory, especially when multiple annotation and verification models must be loaded sequentially.
+- **server (60m)**: Keeps models loaded across the full annotation pipeline for a batch, avoiding the overhead of repeated model loading (which can take 10-30 seconds per load on larger models).
+
+
+## 11. Known Issues and v3/v4 Fixes
+
+### 11.1 Outcome Bias (v2)
 
 **Problem:** The v2 outcome agent labeled approximately 80% of trials as "Failed - completed trial," including trials that were still recruiting, had positive results, or had simply completed without published data.
 
 **Fix (v3):** Replaced the single-prompt approach with the calibrated two-pass decision tree described in Section 5.5. The decision tree enforces ordering (check recruiting/active first, check for positive results before considering failure) and requires cited evidence for a "Failed" label.
 
-### 10.2 Over-Classification as AMP (v2)
+### 11.2 Over-Classification as AMP (v2)
 
 **Problem:** The v2 classification agent over-classified peptide therapeutics as AMPs. Any peptide in a clinical trial tended to receive an AMP classification.
 
 **Fix (v3):** Added explicit negative examples and the governing rule that most peptide therapeutics are not AMPs (Section 5.3). Added a default-to-Other heuristic for ambiguous cases.
 
-### 10.3 Empty Delivery Modes (v2)
+### 11.3 Empty Delivery Modes (v2)
 
 **Problem:** The v2 delivery mode agent returned empty or overly generic values for many trials where the route was determinable from the registry data.
 
 **Fix (v3):** Implemented priority-ordered extraction with keyword mapping (Section 5.4). The agent now systematically searches multiple sections of the trial record before returning empty.
 
-### 10.4 Failure Reasons for Non-Failed Trials (v2)
+### 11.4 Failure Reasons for Non-Failed Trials (v2)
 
 **Problem:** The v2 failure reason agent sometimes assigned failure reasons to trials that had not actually failed (e.g., recruiting trials, trials with positive results).
 
 **Fix (v3):** Enhanced the short-circuit mechanism to check for positive signals before attempting failure classification (Section 5.6). The short-circuit now evaluates full evidence context rather than matching a single keyword.
 
-### 10.5 8B Model Limitations
+### 11.5 8B Model Limitations
 
 **Problem:** 8B-parameter models (the size used for most annotation and verification agents) tend to ignore worked examples provided in prompts. Even when the prompt includes detailed examples showing correct annotation behavior, the models frequently deviate from the demonstrated patterns.
 
 **Implication:** This is the strongest argument for using the 14B-parameter reconciler (qwen2.5:14b) as the primary annotator rather than the 8B models. The 14B model shows better instruction-following and example adherence. This tradeoff is under evaluation.
 
 
-## 11. Human Annotation Reliability
+## 12. Human Annotation Reliability
 
-### 11.1 Annotator Divergence
+### 12.1 Annotator Divergence
 
 The two independent human annotators (R1 = Emily, R2 = Anat) showed substantial disagreement on several fields, demonstrating that human annotations are not infallible ground truth.
 
@@ -342,33 +477,35 @@ Key divergences observed:
 - **Outcome field:** R1 used "Recruiting" 222 times. R2 used "Recruiting" 0 times. This suggests different interpretations of whether to record current registry status or inferred clinical outcome.
 - **Peptide coverage:** Only 30 trials in the full dataset had the Peptide field filled in by both annotators, severely limiting concordance analysis for that field.
 
-### 11.2 Practical Implication
+### 12.2 Practical Implication
 
 Human annotations serve as development-time benchmarks for calibrating and improving the pipeline. They are not treated as infallible ground truth. Where human annotators disagree, the agent's annotation is evaluated against both independently, and neither human annotator is presumed correct by default.
 
 
-## 12. Multi-Run Consensus
+## 13. Multi-Run Consensus
 
-### 12.1 Approach
+### 13.1 Approach
 
 LLM outputs are nondeterministic. Running the same batch of trials through the pipeline multiple times (recommended N=3) and taking a majority vote per field reduces the impact of stochastic variation on any single annotation.
 
-### 12.2 Implementation Status
+### 13.2 Implementation Status
 
 Multi-run consensus is planned but not yet implemented as an automated feature. It can currently be approximated by running the pipeline multiple times and comparing outputs manually.
 
-### 12.3 Expected Benefit
+### 13.3 Expected Benefit
 
 Fields where the pipeline is uncertain (low evidence quality, borderline classification) are most likely to vary across runs. Majority vote surfaces these cases: a field that receives different annotations across three runs is a natural candidate for manual review, while a field that is unanimous across runs has higher confidence.
 
 
-## 13. Source Weight Rationale
+## 14. Source Weight Rationale
 
 Source weights reflect two factors: data reliability and relevance to clinical trial annotation.
 
 - **ClinicalTrials.gov (0.95)** and **UniProt (0.95)** are authoritative primary sources with structured, curated data.
 - **PubMed (0.90)** and **PMC (0.85)** contain peer-reviewed literature but require interpretation (the model must extract relevant information from unstructured text).
+- **DBAASP (0.85)**, **ChEMBL (0.85)**, and **EBI Proteins (0.85)** are curated specialized databases providing peptide activity, bioactivity, and protein sequence data respectively.
 - **OpenFDA (0.85)** and **DRAMP (0.80)** are curated databases but with narrower coverage or less frequent updates.
+- **RCSB PDB (0.80)** provides experimentally determined structural data with high reliability but coverage limited to compounds with solved structures.
 - **PMC BioC (0.80)** is structured full-text but with potential parsing artifacts.
 - **Google Scholar (0.70)** captures preprints and non-indexed publications but with lower curation.
 - **SerpAPI (0.50)** and **DuckDuckGo (0.40)** are general web search -- useful for press releases and regulatory decisions, but noisy and unverified.
