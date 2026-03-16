@@ -19,15 +19,35 @@ _VALUE_ALIASES = {
     "injection/infusion - intravenous": "iv",
     "active": "active, not recruiting",
     "active not recruiting": "active, not recruiting",
+    "active_not_recruiting": "active, not recruiting",
     # Bare "AMP" is ambiguous — normalize to "other" (safer default)
     "amp": "other",
+    # Verifiers sometimes return statuses instead of failure reasons
+    "completed": "",
+    "none": "",
+    "n/a": "",
+    "not applicable": "",
+    "unknown": "",
 }
 
+# For reason_for_failure: any value starting with these is "no failure" (empty)
+_REASON_NO_FAILURE_PREFIXES = (
+    "completed", "unknown", "active", "recruiting", "not_yet", "n/a",
+)
 
-def _normalize(value: str) -> str:
+
+def _normalize(value: str, field_name: str = "") -> str:
     """Normalize a value for consensus comparison."""
-    lower = value.strip().lower()
-    return _VALUE_ALIASES.get(lower, lower)
+    lower = value.strip().lower().strip('"').strip("'").strip("*")
+    # Direct alias match
+    if lower in _VALUE_ALIASES:
+        return _VALUE_ALIASES[lower]
+    # For reason_for_failure: verbose explanations starting with status keywords → empty
+    if field_name == "reason_for_failure":
+        for prefix in _REASON_NO_FAILURE_PREFIXES:
+            if lower.startswith(prefix):
+                return ""
+    return lower
 
 
 class ConsensusChecker:
@@ -66,11 +86,11 @@ class ConsensusChecker:
             )
 
         # Count agreements using normalized values
-        primary_norm = _normalize(primary_value)
+        primary_norm = _normalize(primary_value, field_name)
         agreements = 0
         for opinion in verifier_opinions:
             if opinion.suggested_value is not None:
-                verifier_norm = _normalize(opinion.suggested_value)
+                verifier_norm = _normalize(opinion.suggested_value, field_name)
                 if verifier_norm == primary_norm:
                     opinion.agrees = True
                     agreements += 1

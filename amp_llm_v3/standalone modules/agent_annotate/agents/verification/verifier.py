@@ -297,18 +297,41 @@ class BlindVerifier:
         raw = match.group(1).strip()
         lower = raw.lower()
 
-        # Handle EMPTY / N/A for failure reason
-        if lower in ("empty", "n/a", "not applicable", "none", "no failure", "no reason", ""):
-            if "" in field_config["valid_values"]:
+        # Handle EMPTY / N/A / status-as-value for failure reason
+        # Verifiers frequently return trial STATUSES instead of failure reasons.
+        # All of these mean "no failure" → empty string.
+        _NO_FAILURE_INDICATORS = (
+            "empty", "n/a", "not applicable", "none", "no failure", "no reason",
+            "completed", "active_not_recruiting", "active, not recruiting",
+            "recruiting", "not_yet_recruiting", "not yet recruiting",
+            "unknown", "",
+        )
+        if "" in field_config.get("valid_values", []):
+            # This is the reason_for_failure field (empty is valid)
+            stripped = lower.strip('"').strip("'").strip("*").strip()
+            # Check direct match
+            if stripped in _NO_FAILURE_INDICATORS:
                 return ""
+            # Check if it starts with a status keyword (handles verbose explanations
+            # like "Unknown (as the trial has been completed)")
+            for indicator in ("completed", "unknown", "active", "recruiting", "not_yet", "n/a"):
+                if stripped.startswith(indicator):
+                    return ""
+
+        # Handle EMPTY for non-failure fields that don't have "" as valid
+        if lower in ("empty", "n/a", "not applicable", "none", ""):
             return None
 
         # Normalize common aliases before matching
         alias_map = {
             "intravenous": "IV",
             "active": "Active, not recruiting",
+            "active not recruiting": "Active, not recruiting",
+            "completed": None,  # Not a valid outcome — parser should try harder
         }
         if lower in alias_map:
+            if alias_map[lower] is None:
+                return None  # Force re-evaluation
             return alias_map[lower]
 
         # Exact match first (case-insensitive)
