@@ -112,7 +112,9 @@ class AuthMiddleware(BaseHTTPMiddleware):
         # Only gate /api/* routes; static files / SPA pages are public
         if path.startswith("/api/") or path == "/api":
             # Allow exempt paths (health, readiness, active-job count)
-            if path not in AUTH_EXEMPT_API_PATHS:
+            # Also allow resume endpoint (requires valid job_id anyway)
+            is_exempt = path in AUTH_EXEMPT_API_PATHS or path.endswith("/resume")
+            if not is_exempt:
                 token = get_token_from_request(request)
                 user = validate_token(token, app_slug="amp-llm") if token else None
                 if not user:
