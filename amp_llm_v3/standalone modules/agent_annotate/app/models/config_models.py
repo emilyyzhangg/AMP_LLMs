@@ -44,6 +44,7 @@ class OrchestratorConfig(BaseModel):
     max_retry_rounds: Optional[int] = None
     parallel_research: bool = True
     parallel_annotation: bool = True
+    hardware_profile: str = "mac_mini"  # "mac_mini" | "server"
 
 
 class OllamaConfig(BaseModel):

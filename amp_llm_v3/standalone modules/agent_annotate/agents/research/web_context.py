@@ -11,6 +11,7 @@ from datetime import datetime
 import httpx
 
 from agents.base import BaseResearchAgent
+from agents.research.http_utils import resilient_get
 from app.models.research import ResearchResult, SourceCitation
 from app.config import SERPAPI_KEY
 
@@ -38,12 +39,14 @@ class WebContextAgent(BaseResearchAgent):
 
         search_query = " ".join(query_parts)
 
-        # 1. DuckDuckGo Instant Answer API
-        try:
-            async with httpx.AsyncClient(timeout=15) as client:
-                resp = await client.get(
+        async with httpx.AsyncClient(timeout=20) as client:
+            # 1. DuckDuckGo Instant Answer API
+            try:
+                resp = await resilient_get(
                     DDG_API_URL,
+                    client=client,
                     params={"q": search_query, "format": "json", "no_html": 1},
+                    timeout=15,
                 )
                 if resp.status_code == 200:
                     data = resp.json()
@@ -73,15 +76,15 @@ class WebContextAgent(BaseResearchAgent):
                                 quality_score=self.compute_quality_score("duckduckgo"),
                                 retrieved_at=datetime.utcnow().isoformat(),
                             ))
-        except Exception as e:
-            raw_data["duckduckgo_error"] = str(e)
+            except Exception as e:
+                raw_data["duckduckgo_error"] = str(e)
 
-        # 2. SerpAPI (if key is configured)
-        if SERPAPI_KEY:
-            try:
-                async with httpx.AsyncClient(timeout=20) as client:
-                    resp = await client.get(
+            # 2. SerpAPI (if key is configured)
+            if SERPAPI_KEY:
+                try:
+                    resp = await resilient_get(
                         SERPAPI_URL,
+                        client=client,
                         params={
                             "q": search_query,
                             "api_key": SERPAPI_KEY,
@@ -102,15 +105,15 @@ class WebContextAgent(BaseResearchAgent):
                                 quality_score=self.compute_quality_score("serpapi"),
                                 retrieved_at=datetime.utcnow().isoformat(),
                             ))
-            except Exception as e:
-                raw_data["serpapi_error"] = str(e)
+                except Exception as e:
+                    raw_data["serpapi_error"] = str(e)
 
-        # 3. Google Scholar via SerpAPI (if key is configured)
-        if SERPAPI_KEY:
-            try:
-                async with httpx.AsyncClient(timeout=20) as client:
-                    resp = await client.get(
+            # 3. Google Scholar via SerpAPI (if key is configured)
+            if SERPAPI_KEY:
+                try:
+                    resp = await resilient_get(
                         SERPAPI_URL,
+                        client=client,
                         params={
                             "q": search_query,
                             "api_key": SERPAPI_KEY,
@@ -131,8 +134,8 @@ class WebContextAgent(BaseResearchAgent):
                                 quality_score=self.compute_quality_score("scholar"),
                                 retrieved_at=datetime.utcnow().isoformat(),
                             ))
-            except Exception as e:
-                raw_data["scholar_error"] = str(e)
+                except Exception as e:
+                    raw_data["scholar_error"] = str(e)
 
         return ResearchResult(
             agent_name=self.agent_name,

@@ -689,3 +689,51 @@ Agent Annotate has **zero runtime dependencies** on other AMP LLM microservices.
 | Reconciler | qwen2.5:14b | 9.0 GB | Largest model for dispute resolution |
 
 All sequential (one at a time) due to 16GB RAM.
+
+---
+
+## Phase 8: Accuracy Improvements — Surpassing Human Annotators
+
+**Goal:** Fix agent errors and exploit structural advantages to exceed human inter-rater agreement on every field.
+**Depends on:** Phases 0-7 (service must be running)
+**See:** `docs/IMPROVEMENT_STRATEGY.md` for full analysis with error tables and human quality audit.
+
+**Context:** Human annotators achieve only 48-92% inter-rater agreement depending on the field (Peptide: 48%, Outcome: 56%, Delivery Mode: 68%). ~50% of rows are unannotated. The agent's goal is not just to match humans but to surpass them through consistency, completeness, recency, and full evidence trails.
+
+### 8.1 CSV Citation Columns (DONE)
+
+Standard CSV now includes per-field evidence columns (`Classification Evidence`, etc.) with PMIDs, URLs, and database identifiers. Full CSV adds `{field}_evidence_sources`, `{field}_evidence_urls`, and `{field}_reasoning`. Previously zero citation data reached the CSV.
+
+### 8.2 Output Validation & Cross-Field Consistency
+
+Hard validation in `_parse_value()` — return `None` for unrecognizable values. Cross-field consistency in orchestrator:
+- peptide=False → classification="Other"
+- Positive outcome → empty failure reason
+- Failed outcome + empty failure reason → flag for review
+
+Verifier value normalization: "Intravenous"→"IV", "Active"→"Active, not recruiting", bare "AMP"→ambiguous.
+
+### 8.3 Few-Shot Prompt Engineering
+
+Replace instruction-heavy prompts with worked examples. 8B models follow examples far better than rules. Key additions:
+- Peptide: 8 examples (Aviptadil=True, Kate Farm=False, semaglutide=True, pembrolizumab=False)
+- Classification: Three-step tree (peptide? → AMP? → infection?) with examples. Fix: VIP/GLP-1/somatostatin are peptides but NOT AMPs → "Other"
+- Delivery mode: Negative examples. Verifier prompt parity with primary.
+
+### 8.4 Recency-Aware Literature Search
+
+Sort PubMed/PMC by date descending. Add rule: "newest publication wins" to outcome/failure Pass 2 prompts. Include publication year in evidence output. Search for regulatory decisions and press releases.
+
+### 8.5 Peptide Cascade Protection
+
+If peptide flips during verification, re-run classification. Classification agent independently sanity-checks peptide when intervention contains "nutritional"/"formula".
+
+### Phase 8 Targets
+
+| Field | Human Agreement | Target Agent Accuracy |
+|-------|-----------------|----------------------|
+| Classification | 91.6% | >95% |
+| Delivery Mode | 68.2% | >90% |
+| Outcome | 55.6% | >90% |
+| Reason for Failure | 91.3% | >95% |
+| Peptide | 48.4% | >90% |

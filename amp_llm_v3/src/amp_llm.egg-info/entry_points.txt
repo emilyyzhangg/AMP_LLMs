@@ -1,0 +1,2 @@
+[console_scripts]
+amp-llm = amp_llm.__main__:main

@@ -246,7 +246,14 @@ OTHER_BRANCH = "dev" if CURRENT_BRANCH == "main" else "main"
 OTHER_CHAT_PORT = settings.chat_service_port + 1000 if CURRENT_BRANCH == "main" else settings.chat_service_port - 1000
 OTHER_CHAT_SERVICE_URL = f"http://localhost:{OTHER_CHAT_PORT}"
 
+# Agent-annotate cross-branch visibility
+ANNOTATE_PORT = 8005 if CURRENT_BRANCH == "main" else 9005
+OTHER_ANNOTATE_PORT = 9005 if CURRENT_BRANCH == "main" else 8005
+ANNOTATE_SERVICE_URL = f"http://localhost:{ANNOTATE_PORT}"
+OTHER_ANNOTATE_SERVICE_URL = f"http://localhost:{OTHER_ANNOTATE_PORT}"
+
 logger.info(f"Branch: {CURRENT_BRANCH} (chat port {settings.chat_service_port}), other branch: {OTHER_BRANCH} (chat port {OTHER_CHAT_PORT})")
+logger.info(f"Agent-annotate: {ANNOTATE_PORT} (current), {OTHER_ANNOTATE_PORT} (other)")
 
 # ============================================================================
 # Request/Response Models
@@ -710,11 +717,39 @@ async def list_jobs_proxy():
                     data = response.json()
                     for job in data.get("jobs", []):
                         job["branch"] = branch_name
+                        job["service"] = "chat"
                     all_jobs.extend(data.get("jobs", []))
                     total += data.get("total", 0)
                     active += data.get("active", 0)
             except Exception as e:
                 logger.debug(f"Could not fetch jobs from {branch_name} ({chat_url}): {e}")
+
+        # Fetch agent-annotate jobs from both branches
+        annotate_branches = [
+            (CURRENT_BRANCH, ANNOTATE_SERVICE_URL),
+            (OTHER_BRANCH, OTHER_ANNOTATE_SERVICE_URL),
+        ]
+        for branch_name, annotate_url in annotate_branches:
+            try:
+                response = await client.get(f"{annotate_url}/api/jobs")
+                if response.status_code == 200:
+                    data = response.json()
+                    for job in data:  # agent-annotate returns a list directly
+                        normalized = {
+                            "job_id": job["job_id"],
+                            "status": job["status"],
+                            "created_at": job["created_at"],
+                            "branch": branch_name,
+                            "service": "annotate",
+                            "total_trials": job.get("total_trials", 0),
+                            "completed_trials": job.get("completed_trials", 0),
+                        }
+                        all_jobs.append(normalized)
+                        if job["status"] in ("queued", "running"):
+                            active += 1
+                        total += 1
+            except Exception as e:
+                logger.debug(f"Could not fetch annotate jobs from {branch_name}: {e}")
 
     # Sort by created_at descending (newest first)
     all_jobs.sort(key=lambda j: j.get("created_at", ""), reverse=True)
@@ -771,6 +806,80 @@ async def clear_completed_jobs_proxy():
             except Exception as e:
                 logger.debug(f"Could not clear completed jobs on {branch_name}: {e}")
     return {"status": "cleared", "cleared_count": total_cleared, "message": f"Cleared {total_cleared} completed/failed jobs from both branches"}
+
+
+# ============================================================================
+# Agent-Annotate Job Proxies
+# ============================================================================
+
+@app.get("/api/annotate/jobs/{job_id}")
+async def get_annotate_job_detail(job_id: str, branch: str = CURRENT_BRANCH):
+    """Proxy agent-annotate job detail to the correct branch's annotate service."""
+    url = ANNOTATE_SERVICE_URL if branch == CURRENT_BRANCH else OTHER_ANNOTATE_SERVICE_URL
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(f"{url}/api/jobs/{job_id}")
+            if resp.status_code == 200:
+                return resp.json()
+            else:
+                raise HTTPException(status_code=resp.status_code, detail=resp.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail=f"Agent-annotate service ({branch}) not available")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Annotate job detail proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/annotate/jobs/{job_id}/cancel")
+async def cancel_annotate_job(job_id: str, branch: str = CURRENT_BRANCH):
+    """Proxy agent-annotate job cancellation to the correct branch's annotate service."""
+    url = ANNOTATE_SERVICE_URL if branch == CURRENT_BRANCH else OTHER_ANNOTATE_SERVICE_URL
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(f"{url}/api/jobs/{job_id}/cancel")
+            if resp.status_code == 200:
+                return resp.json()
+            else:
+                raise HTTPException(status_code=resp.status_code, detail=resp.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail=f"Agent-annotate service ({branch}) not available")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Annotate job cancel proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/annotate/results/{job_id}/csv")
+async def download_annotate_csv(job_id: str, branch: str = CURRENT_BRANCH):
+    """Proxy agent-annotate CSV download to the correct branch's annotate service."""
+    url = ANNOTATE_SERVICE_URL if branch == CURRENT_BRANCH else OTHER_ANNOTATE_SERVICE_URL
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            resp = await client.get(f"{url}/api/results/{job_id}/csv")
+            if resp.status_code == 200:
+                content_disp = resp.headers.get("content-disposition", "")
+                filename = f"agent_annotate_{job_id}.csv"
+                if "filename=" in content_disp:
+                    match = re.search(r'filename="?([^";\s]+)"?', content_disp)
+                    if match:
+                        filename = match.group(1)
+                return Response(
+                    content=resp.content,
+                    media_type="text/csv",
+                    headers={"Content-Disposition": f"attachment; filename={filename}"}
+                )
+            else:
+                raise HTTPException(status_code=resp.status_code, detail=resp.text)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail=f"Agent-annotate service ({branch}) not available")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Annotate CSV download proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/chat/annotate")

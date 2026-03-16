@@ -15,26 +15,65 @@ from app.models.research import ResearchResult
 logger = logging.getLogger("agent_annotate.verification.verifier")
 
 # Per-field prompts for blind verification (no knowledge of primary answer)
+# These must match the quality and detail of the primary annotator prompts.
 FIELD_PROMPTS = {
     "classification": {
         "instruction": (
-            "Classify this clinical trial into one of three categories:\n"
-            "- AMP(infection): Trial involves an antimicrobial peptide targeting infection/pathogens\n"
-            "- AMP(other): Trial involves an antimicrobial peptide but for non-infection purposes "
-            "(e.g., wound healing, immunomodulation, cancer)\n"
-            "- Other: Not an AMP trial"
+            "Classify this clinical trial using a three-step decision tree. AMP = Antimicrobial Peptide.\n\n"
+            "STEP 1: Is the intervention a peptide? If not → 'Other'.\n"
+            "STEP 2: Is it an ANTIMICROBIAL peptide? The CORE TEST: does this peptide have a DIRECT "
+            "antimicrobial mechanism — killing, inhibiting, or disrupting pathogens? OR does it directly "
+            "stimulate immune DEFENSE against pathogens?\n"
+            "AMPs: colistin, defensins, LL-37, polymyxin, daptomycin, nisin — these directly kill microorganisms.\n"
+            "NOT AMPs (even if they are peptides):\n"
+            "- Neuropeptides/vasodilators: VIP/Aviptadil — vasodilation, NOT antimicrobial\n"
+            "- Vaccine peptides for autoimmune prevention: StreptInCor prevents autoimmune rheumatic heart "
+            "disease — it does NOT kill S. pyogenes bacteria, it modulates the immune system to prevent "
+            "the autoimmune sequel. This is 'Other'.\n"
+            "- Metabolic hormones: GLP-1/GLP-2 (semaglutide, apraglutide), GnRH, somatostatin\n"
+            "- Immunosuppressive peptides, bone growth regulators, structural peptides\n"
+            "If NOT an AMP → 'Other'.\n"
+            "STEP 3: Does this AMP target infection? Yes → 'AMP(infection)'. No (wound healing, cancer) → 'AMP(other)'.\n\n"
+            "KEY RULE: Being a peptide is NOT enough for AMP. Being related to a pathogen is NOT enough. "
+            "The peptide must have a DIRECT antimicrobial or pathogen-defense mechanism.\n\n"
+            "EXAMPLES:\n"
+            "- Colistin for UTI → AMP(infection)\n"
+            "- LL-37 for wound healing → AMP(other)\n"
+            "- VIP/Aviptadil for COVID ARDS → Other (neuropeptide vasodilator, NOT antimicrobial)\n"
+            "- Aviptadil for cluster headaches → Other (neuropeptide, NOT an AMP)\n"
+            "- Semaglutide for diabetes → Other (metabolic hormone, NOT an AMP)\n"
+            "- StreptInCor vaccine for rheumatic heart disease → Other (prevents autoimmune disease, does NOT kill bacteria)\n"
+            "- Amoxicillin → Other (small molecule, not peptide)\n"
+            "- Nisin for bacterial mastitis → AMP(infection)"
         ),
         "valid_values": ["AMP(infection)", "AMP(other)", "Other"],
         "parse_pattern": r"Classification:\s*(.+?)(?:\n|$)",
     },
     "delivery_mode": {
         "instruction": (
-            "Determine the specific delivery mode. Choose exactly one:\n"
+            "Determine the specific delivery mode. Choose EXACTLY ONE value from this list:\n"
             "Injection/Infusion - Intramuscular, Injection/Infusion - Other/Unspecified, "
             "Injection/Infusion - Subcutaneous/Intradermal, IV, Intranasal, "
             "Oral - Tablet, Oral - Capsule, Oral - Food, Oral - Drink, Oral - Unspecified, "
             "Topical - Cream/Gel, Topical - Powder, Topical - Spray, Topical - Strip/Covering, "
-            "Topical - Wash, Topical - Unspecified, Other/Unspecified, Inhalation"
+            "Topical - Wash, Topical - Unspecified, Other/Unspecified, Inhalation\n\n"
+            "CRITICAL — NEVER GUESS THE INJECTION ROUTE:\n"
+            "- If the protocol says 'injection' WITHOUT specifying IM, SC, or IV → 'Injection/Infusion - Other/Unspecified'\n"
+            "- If the protocol says 'administered by injection' without route → 'Injection/Infusion - Other/Unspecified'\n"
+            "- If the protocol says 'vaccine injection' without route → 'Injection/Infusion - Other/Unspecified'\n"
+            "- Do NOT guess Intramuscular or Subcutaneous based on drug class (e.g., 'vaccines are usually IM')\n"
+            "- Only use Intramuscular if the words 'intramuscular' or 'IM' appear explicitly\n"
+            "- Only use Subcutaneous if 'subcutaneous', 'SC', 'sub-Q', or 'intradermal' appear explicitly\n"
+            "- If an FDA drug label says 'SUBCUTANEOUS', that overrides a generic 'injection' in the protocol\n"
+            "- Nutritional formula/shake = Oral - Drink, NOT Oral - Food\n"
+            "- Intravenous/IV infusion = 'IV' (not Injection/Infusion - Other)\n"
+            "- Nasal spray = 'Intranasal' (not Topical - Spray)\n\n"
+            "EXAMPLES:\n"
+            "- 'IV infusion over 12 hours' → IV\n"
+            "- 'subcutaneous injection once weekly' → Injection/Infusion - Subcutaneous/Intradermal\n"
+            "- 'peptide vaccine injection' (no route) → Injection/Infusion - Other/Unspecified\n"
+            "- 'administered by injection once daily' → Injection/Infusion - Other/Unspecified\n"
+            "- 'nutritional formula' → Oral - Drink"
         ),
         "valid_values": [
             "Injection/Infusion - Intramuscular",
@@ -62,7 +101,23 @@ FIELD_PROMPTS = {
         "instruction": (
             "Determine the trial outcome. Choose exactly one:\n"
             "Positive, Withdrawn, Terminated, Failed - completed trial, "
-            "Recruiting, Unknown, Active, not recruiting"
+            "Recruiting, Unknown, Active, not recruiting\n\n"
+            "CRITICAL RULES:\n"
+            "- Registry says TERMINATED → 'Terminated', regardless of interim results.\n"
+            "- Registry says WITHDRAWN → 'Withdrawn'.\n"
+            "- Registry says COMPLETED → use published literature to decide:\n"
+            "  * Positive: published results show the trial met its primary endpoints\n"
+            "  * Failed - completed trial: published results show NEGATIVE outcomes (failed to meet endpoints)\n"
+            "  * Unknown: no publications found OR results not yet published\n"
+            "- IMPORTANT: COMPLETED status alone does NOT mean 'Failed - completed trial'. "
+            "COMPLETED is a registry STATUS, not an outcome. You MUST have PUBLISHED EVIDENCE of "
+            "negative results to choose 'Failed - completed trial'. Without such evidence, "
+            "a COMPLETED trial is 'Unknown' or 'Positive'.\n"
+            "- RECRUITING / NOT_YET_RECRUITING / ENROLLING_BY_INVITATION → 'Recruiting'.\n"
+            "- ACTIVE_NOT_RECRUITING → 'Active, not recruiting'.\n"
+            "- If multiple publications conflict, prefer the most recent one.\n"
+            "- Do NOT use 'Active' alone — use the full value 'Active, not recruiting'.\n"
+            "- 'COMPLETED' is NOT a valid outcome value. Translate it using the rules above."
         ),
         "valid_values": [
             "Positive",
@@ -77,9 +132,24 @@ FIELD_PROMPTS = {
     },
     "reason_for_failure": {
         "instruction": (
-            "Determine the reason for failure/withdrawal/termination. Choose exactly one:\n"
-            "Business Reason, Ineffective for purpose, Toxic/Unsafe, Due to covid, Recruitment issues\n"
-            "If the trial is active, recruiting, positive, or unknown, return EMPTY."
+            "Determine the reason for failure/withdrawal/termination.\n\n"
+            "VALID VALUES (choose EXACTLY one):\n"
+            "- Business Reason: funding, sponsor decision, company dissolved, strategic, manufacturing\n"
+            "- Ineffective for purpose: PUBLISHED results show trial failed to meet endpoints\n"
+            "- Toxic/Unsafe: safety concerns, adverse events, toxicity, DSMB stopped for safety\n"
+            "- Due to covid: trial disrupted by COVID-19 pandemic\n"
+            "- Recruitment issues: slow enrollment, unable to recruit\n"
+            "- EMPTY: no failure occurred, or no evidence of failure exists\n\n"
+            "CRITICAL RULES:\n"
+            "- 'COMPLETED' is a trial STATUS, NOT a failure reason. Never return 'COMPLETED' as the answer.\n"
+            "- If the trial is active, recruiting, positive, or truly unknown → return EMPTY.\n"
+            "- COMPLETED trials: ONLY assign a failure reason if there is PUBLISHED EVIDENCE of negative "
+            "outcomes (e.g., a paper saying 'failed to meet primary endpoint'). If a trial COMPLETED "
+            "but there are no published negative results, the answer is EMPTY.\n"
+            "- Do NOT assume failure from completion. COMPLETED + no negative publications = EMPTY.\n"
+            "- Published literature overrides whyStopped field.\n"
+            "- If multiple publications conflict, prefer the most recent one.\n"
+            "- Require POSITIVE evidence of failure. Absence of results ≠ failure."
         ),
         "valid_values": [
             "Business Reason",
@@ -92,7 +162,28 @@ FIELD_PROMPTS = {
         "parse_pattern": r"Reason for Failure:\s*(.+?)(?:\n|$)",
     },
     "peptide": {
-        "instruction": "Determine if the intervention is a peptide: True or False.",
+        "instruction": (
+            "Determine if the primary intervention is a peptide therapeutic: True or False.\n\n"
+            "EXAMPLES:\n"
+            "- Aviptadil (VIP, 28 amino acids) → True\n"
+            "- Semaglutide (GLP-1 analogue, 31 AA) → True\n"
+            "- Colistin (lipopeptide antibiotic) → True\n"
+            "- StreptInCor (synthetic peptide vaccine) → True\n"
+            "- Apraglutide (GLP-2 analogue) → True\n"
+            "- Pembrolizumab (monoclonal antibody) → False\n"
+            "- Amoxicillin (small molecule) → False\n"
+            "- Kate Farm Peptide 1.5 (nutritional formula) → False\n"
+            "- 'Peptide 1.5' tube feeding formula → False\n"
+            "- Peptamen (semi-elemental nutritional formula) → False\n"
+            "- Hydrolyzed protein formula (nutrition) → False\n"
+            "- Engineered multi-subunit protein (biologic scaffold) → False\n\n"
+            "CRITICAL RULES:\n"
+            "- Is the ACTIVE DRUG a peptide? If 'peptide' is in the product name but it's a "
+            "nutritional formula, dietary supplement, or food → False.\n"
+            "- Brand names containing 'peptide' do NOT make the product a peptide drug. "
+            "'Peptide 1.5', 'Peptamen', 'Kate Farms Peptide' are nutritional formulas → False.\n"
+            "- Nutritional formulas with hydrolyzed proteins are NOT peptide drugs."
+        ),
         "valid_values": ["True", "False"],
         "parse_pattern": r"Peptide:\s*(True|False)",
     },
@@ -193,7 +284,11 @@ class BlindVerifier:
         )
 
     def _parse_value(self, text: str, field_config: dict) -> Optional[str]:
-        """Extract the field value from verifier response."""
+        """Extract the field value from verifier response.
+
+        Returns None for unrecognizable values instead of passing through raw text.
+        This prevents invalid values from entering the consensus check.
+        """
         pattern = field_config["parse_pattern"]
         match = re.search(pattern, text, re.IGNORECASE)
         if not match:
@@ -203,10 +298,18 @@ class BlindVerifier:
         lower = raw.lower()
 
         # Handle EMPTY / N/A for failure reason
-        if lower in ("empty", "n/a", "not applicable", "none", ""):
+        if lower in ("empty", "n/a", "not applicable", "none", "no failure", "no reason", ""):
             if "" in field_config["valid_values"]:
                 return ""
             return None
+
+        # Normalize common aliases before matching
+        alias_map = {
+            "intravenous": "IV",
+            "active": "Active, not recruiting",
+        }
+        if lower in alias_map:
+            return alias_map[lower]
 
         # Exact match first (case-insensitive)
         for valid in field_config["valid_values"]:
@@ -223,7 +326,9 @@ class BlindVerifier:
             if valid and lower in valid.lower():
                 return valid
 
-        return raw
+        # If no match found, return None — do NOT pass through raw text
+        logger.warning(f"Verifier produced unrecognizable value: '{raw}' — returning None")
+        return None
 
     def _parse_reasoning(self, text: str) -> str:
         match = re.search(r"Reasoning:\s*(.+?)(?:\n\n|$)", text, re.DOTALL)

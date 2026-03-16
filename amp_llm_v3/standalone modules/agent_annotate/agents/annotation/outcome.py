@@ -1,21 +1,25 @@
 """
-Outcome Annotation Agent (v2 — investigative).
+Outcome Annotation Agent (v3 — investigative, calibrated).
 
 Determines trial outcome using a two-pass strategy:
-  Pass 1: Extract ClinicalTrials.gov status as a starting point
-  Pass 2: Investigate published literature to confirm, update, or override
+  Pass 1: Extract ClinicalTrials.gov status, phase, and published results
+  Pass 2: Determine outcome using calibrated decision tree
 
-This design addresses the common failure mode where agents see "UNKNOWN" or
-"COMPLETED" in ClinicalTrials.gov and stop investigating. Human annotators
-found that 15+ UNKNOWN-status trials actually had positive results in
-published literature, and 61 COMPLETED trials had no published results
-(correctly annotated as Unknown).
+v3 changes (from 25-trial baseline concordance analysis):
+  - Fixed "Failed" bias: agent was defaulting 80% of trials to "Failed - completed
+    trial" because it confused "COMPLETED" registry status with negative results.
+  - Added explicit rule: "Failed" requires EVIDENCE of failure (published negative
+    results, failure to meet endpoints). Merely completing is not failure.
+  - Added phase-awareness: Phase I trials that complete usually met their safety/
+    dosing objectives — lean Positive unless evidence says otherwise.
+  - Strengthened "Unknown" vs "Failed" distinction.
 
 Key insight from human annotation data:
   - ClinicalTrials.gov status is often STALE or INCOMPLETE
   - Published literature (PubMed, PMC) is the authoritative source for actual results
   - Even TERMINATED trials can have positive published results (5 cases in dataset)
   - UNKNOWN status requires active investigation, not a default "Unknown" answer
+  - COMPLETED Phase I/II trials are often positive — completing the trial IS the success
 """
 
 import re
@@ -55,9 +59,15 @@ From the evidence below, extract:
 
 5. WHY STOPPED: If terminated or withdrawn, what reason was given?
 
+6. TRIAL PHASE: The phase from ClinicalTrials.gov (PHASE1, PHASE2, PHASE3, PHASE4, EARLY_PHASE1, N/A). This is critical for interpreting outcome — Phase I success = safety/tolerability shown.
+
+7. RESULT VALENCE: Based on all evidence, were the results POSITIVE, NEGATIVE, MIXED, or NOT AVAILABLE? Pay special attention to: Were primary endpoints met? For Phase I, was the drug safe/tolerable? Did the drug progress to subsequent phases?
+
 Format your response EXACTLY as:
 Registry Status: [status from ClinicalTrials.gov]
+Trial Phase: [phase]
 Published Results: [summary of any published findings, or "None found"]
+Result Valence: [Positive/Negative/Mixed/Not available]
 Results Posted: [Yes/No/Unknown]
 Completion Date: [date or Unknown]
 Why Stopped: [reason or N/A]"""
@@ -65,27 +75,33 @@ Why Stopped: [reason or N/A]"""
 # Pass 2: Make the outcome determination with all facts in hand
 PASS2_PROMPT = """You are a clinical trial outcome assessment specialist. You have already extracted the facts about this trial. Now you must determine the outcome.
 
-CRITICAL RULES:
-1. Published literature OVERRIDES ClinicalTrials.gov status. A trial with UNKNOWN or TERMINATED status in the registry can still have a Positive outcome if published papers show efficacy.
-2. ClinicalTrials.gov status is often outdated. Do NOT default to "Unknown" just because the registry says UNKNOWN.
-3. Only use "Unknown" when you have EXHAUSTIVELY checked all evidence sources AND found NO published results AND the trial status is ambiguous.
-
 The facts you extracted:
 {pass1_output}
 
-Based on these facts, choose EXACTLY ONE outcome:
-- Positive: Published results demonstrate efficacy or positive findings. This can apply even if the registry status is UNKNOWN, TERMINATED, or COMPLETED — what matters is whether published literature reports positive results.
-- Failed - completed trial: Trial completed but published results show it FAILED to meet endpoints. Negative results published.
-- Terminated: Trial was stopped early AND no positive published results exist. If it was terminated but published positive results anyway, choose Positive instead.
-- Withdrawn: Trial was withdrawn before meaningful enrollment.
-- Recruiting: Trial is actively recruiting (RECRUITING, NOT_YET_RECRUITING, ENROLLING_BY_INVITATION status) and no results exist yet.
-- Active, not recruiting: Trial is ongoing but no longer enrolling (ACTIVE_NOT_RECRUITING) and no results exist yet.
-- Unknown: You checked ALL available evidence (registry, publications, web) and genuinely cannot determine the outcome. This is a LAST RESORT, not a default.
+DECISION TREE (follow in order):
+
+1. Is the trial RECRUITING, NOT_YET_RECRUITING, or ENROLLING_BY_INVITATION? -> "Recruiting"
+2. Is the trial ACTIVE_NOT_RECRUITING with no results yet? -> "Active, not recruiting"
+3. Was the trial WITHDRAWN before enrollment? -> "Withdrawn"
+4. Was the trial TERMINATED? -> "Terminated"
+   (The REASON for termination goes in reason_for_failure, not here.)
+5. For COMPLETED or UNKNOWN status, check published literature:
+   a. Published results show POSITIVE findings (met endpoints, efficacy shown, favorable safety) -> "Positive"
+   b. Published results show NEGATIVE findings (failed endpoints, no efficacy, futility) -> "Failed - completed trial"
+   c. NO published results found -> "Unknown"
+
+CRITICAL RULES:
+- "Failed - completed trial" REQUIRES EVIDENCE OF FAILURE. You MUST cite a specific publication showing negative results, failure to meet primary endpoints, or futility. If you cannot cite such evidence, the answer is NOT "Failed".
+- COMPLETED status alone does NOT mean failure. A trial that merely completed is "Unknown" if no results are published, NOT "Failed".
+- Phase I trials that complete with acceptable safety/tolerability are typically "Positive" — completing a safety trial IS success. Phase I success criteria = safety, tolerability, pharmacokinetics.
+- If the Result Valence you extracted says "Positive" or "Mixed" -> lean toward "Positive".
+- If the Result Valence says "Not available" -> the answer is "Unknown", NOT "Failed".
+- RECENCY: If multiple publications exist with conflicting conclusions, the MOST RECENT publication takes priority.
 
 IMPORTANT: Format your response EXACTLY as:
 Outcome: [one of the 7 values above]
 Evidence: [cite the specific source that determined your decision]
-Reasoning: [explain your chain of thought, especially if overriding the registry status]"""
+Reasoning: [explain your chain of thought]"""
 
 
 class OutcomeAgent(BaseAnnotationAgent):

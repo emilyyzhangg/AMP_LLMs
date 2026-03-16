@@ -2,7 +2,9 @@
 Async Ollama client for annotation and verification calls.
 
 Uses asyncio.Lock to ensure only one model is loaded at a time
-(16GB RAM constraint on M4 Mac Mini).
+(16GB RAM constraint on M4 Mac Mini). On server profiles with
+sufficient RAM, models are kept loaded via keep_alive to avoid
+reload overhead between annotations.
 """
 
 import asyncio
@@ -14,6 +16,12 @@ from app.config import OLLAMA_BASE_URL, OLLAMA_TIMEOUT
 
 logger = logging.getLogger("agent_annotate.ollama")
 
+# How long to keep models loaded in Ollama after use.
+# On Mac Mini (16GB): short keep-alive to free RAM for next model.
+# On Server (240GB+): long keep-alive to avoid reload churn.
+_KEEP_ALIVE_MAC = "5m"
+_KEEP_ALIVE_SERVER = "60m"
+
 
 class OllamaAnnotationClient:
     """Thread-safe async client for Ollama generate API."""
@@ -22,6 +30,16 @@ class OllamaAnnotationClient:
         self._lock = asyncio.Lock()
         self._base_url = OLLAMA_BASE_URL
         self._timeout = OLLAMA_TIMEOUT
+        self._keep_alive = _KEEP_ALIVE_MAC  # default, updated by set_hardware_profile
+
+    def set_hardware_profile(self, profile: str) -> None:
+        """Set keep_alive based on hardware profile."""
+        if profile == "server":
+            self._keep_alive = _KEEP_ALIVE_SERVER
+            logger.info("Ollama keep_alive set to %s (server profile)", self._keep_alive)
+        else:
+            self._keep_alive = _KEEP_ALIVE_MAC
+            logger.info("Ollama keep_alive set to %s (mac_mini profile)", self._keep_alive)
 
     async def generate(
         self,
@@ -35,6 +53,7 @@ class OllamaAnnotationClient:
             "model": model,
             "prompt": prompt,
             "stream": False,
+            "keep_alive": self._keep_alive,
             "options": {"temperature": temperature},
         }
         if system:

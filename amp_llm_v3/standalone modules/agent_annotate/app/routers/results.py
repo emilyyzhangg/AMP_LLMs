@@ -32,6 +32,7 @@ async def list_results():
             try:
                 data = json.loads(path.read_text())
                 version = data.get("version", {})
+                timing = data.get("timing", {})
                 results.append({
                     "job_id": path.stem,
                     "version": version.get("version", ""),
@@ -41,6 +42,7 @@ async def list_results():
                     "successful": data.get("successful", 0),
                     "failed": data.get("failed", 0),
                     "manual_review": data.get("manual_review", 0),
+                    "timing": timing,
                 })
             except Exception:
                 continue
@@ -62,6 +64,14 @@ async def get_results(job_id: str):
             "job_id": job.job_id,
             "version": get_version_info().model_dump(),
             "trials": job.results,
+            "timing": {
+                "started_at": job.started_at.isoformat() if job.started_at else None,
+                "finished_at": job.finished_at.isoformat() if job.finished_at else None,
+                "elapsed_seconds": job.progress.elapsed_seconds,
+                "avg_seconds_per_trial": job.progress.avg_seconds_per_trial,
+                "commit_hash": job.commit_hash,
+                "timezone": "America/Los_Angeles",
+            },
         }
     return data
 
@@ -82,7 +92,8 @@ async def export_csv(
         trials = data.get("trials", [])
 
     if format == "full":
-        csv_content = generate_full_csv(trials)
+        config_snapshot = data.get("config_snapshot", {}) if data else {}
+        csv_content = generate_full_csv(trials, config_snapshot=config_snapshot)
     else:
         csv_content = generate_standard_csv(trials)
 
@@ -107,6 +118,7 @@ async def results_summary(job_id: str):
             "failed": data.get("failed", 0),
             "manual_review": data.get("manual_review", 0),
             "version": data.get("version", {}),
+            "timing": data.get("timing", {}),
         }
 
     job = orchestrator.get_job(job_id)
@@ -122,4 +134,12 @@ async def results_summary(job_id: str):
         "total_trials": job.progress.total_trials,
         "completed_trials": job.progress.completed_trials,
         "manual_review": flagged,
+        "timing": {
+            "started_at": job.started_at.isoformat() if job.started_at else None,
+            "finished_at": job.finished_at.isoformat() if job.finished_at else None,
+            "elapsed_seconds": job.progress.elapsed_seconds,
+            "avg_seconds_per_trial": job.progress.avg_seconds_per_trial,
+            "commit_hash": job.commit_hash,
+            "timezone": "America/Los_Angeles",
+        },
     }

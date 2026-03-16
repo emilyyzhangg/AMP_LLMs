@@ -64,6 +64,15 @@ export interface HealthStatus {
   ollama: boolean;
 }
 
+export interface TimingInfo {
+  started_at: string | null;
+  finished_at: string | null;
+  elapsed_seconds: number;
+  avg_seconds_per_trial: number;
+  commit_hash: string;
+  timezone: string;
+}
+
 export interface ResultListItem {
   job_id: string;
   version: string;
@@ -73,6 +82,7 @@ export interface ResultListItem {
   successful: number;
   failed: number;
   manual_review: number;
+  timing?: TimingInfo;
 }
 
 export interface ResultSummary {
@@ -84,4 +94,5 @@ export interface ResultSummary {
   version?: Record<string, string>;
   status?: string;
   completed_trials?: number;
+  timing?: TimingInfo;
 }

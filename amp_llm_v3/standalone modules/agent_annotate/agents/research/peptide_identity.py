@@ -10,6 +10,7 @@ from datetime import datetime
 import httpx
 
 from agents.base import BaseResearchAgent
+from agents.research.http_utils import resilient_get
 from app.models.research import ResearchResult, SourceCitation
 
 UNIPROT_SEARCH_URL = "https://rest.uniprot.org/uniprotkb/search"
@@ -41,12 +42,13 @@ class PeptideIdentityAgent(BaseResearchAgent):
                 raw_data={"note": "No interventions to search"},
             )
 
-        # 1. UniProt search
-        for intervention in interventions[:3]:
-            try:
-                async with httpx.AsyncClient(timeout=20) as client:
-                    resp = await client.get(
+        async with httpx.AsyncClient(timeout=20) as client:
+            # 1. UniProt search
+            for intervention in interventions[:3]:
+                try:
+                    resp = await resilient_get(
                         UNIPROT_SEARCH_URL,
+                        client=client,
                         params={
                             "query": intervention,
                             "format": "json",
@@ -74,16 +76,17 @@ class PeptideIdentityAgent(BaseResearchAgent):
                                 quality_score=self.compute_quality_score("uniprot"),
                                 retrieved_at=datetime.utcnow().isoformat(),
                             ))
-            except Exception as e:
-                raw_data[f"uniprot_{intervention}_error"] = str(e)
+                except Exception as e:
+                    raw_data[f"uniprot_{intervention}_error"] = str(e)
 
-        # 2. DRAMP search (antimicrobial peptide database)
-        for intervention in interventions[:2]:
-            try:
-                async with httpx.AsyncClient(timeout=15) as client:
-                    resp = await client.get(
+            # 2. DRAMP search (antimicrobial peptide database)
+            for intervention in interventions[:2]:
+                try:
+                    resp = await resilient_get(
                         DRAMP_SEARCH_URL,
+                        client=client,
                         params={"keyword": intervention},
+                        timeout=15,
                     )
                     if resp.status_code == 200:
                         # DRAMP returns HTML; we note the search was attempted
@@ -97,8 +100,8 @@ class PeptideIdentityAgent(BaseResearchAgent):
                             quality_score=self.compute_quality_score("dramp", has_content=False),
                             retrieved_at=datetime.utcnow().isoformat(),
                         ))
-            except Exception as e:
-                raw_data[f"dramp_{intervention}_error"] = str(e)
+                except Exception as e:
+                    raw_data[f"dramp_{intervention}_error"] = str(e)
 
         return ResearchResult(
             agent_name=self.agent_name,

@@ -83,22 +83,35 @@ if [ "$LOCAL_HASH" != "$LAST_DEPLOYED_HASH" ]; then
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Dependencies installed" >> "$LOG_FILE"
 
     WEBAPP_URL="http://localhost:9000"
+    ANNOTATE_URL="http://localhost:9005"
     MAX_WAIT=64800
     POLL_INTERVAL=10
     WAITED=0
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔍 Checking for active annotation jobs..." >> "$LOG_FILE"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔍 Checking for active jobs (chat + agent-annotate)..." >> "$LOG_FILE"
     while true; do
+        TOTAL_ACTIVE=0
+
+        # Check chat LLM jobs
         JOBS_RESPONSE=$(curl -s --max-time 5 "$WEBAPP_URL/api/chat/jobs" 2>/dev/null)
-        if [ -z "$JOBS_RESPONSE" ]; then
-            echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️ Could not reach jobs API, proceeding with restart" >> "$LOG_FILE"
-            break
+        if [ -n "$JOBS_RESPONSE" ]; then
+            CHAT_ACTIVE=$(echo "$JOBS_RESPONSE" | python3 -c "import sys, json; data = json.load(sys.stdin); print(data.get('active', 0))" 2>/dev/null)
+            CHAT_ACTIVE=${CHAT_ACTIVE:-0}
+            TOTAL_ACTIVE=$((TOTAL_ACTIVE + CHAT_ACTIVE))
         fi
-        ACTIVE_JOBS=$(echo "$JOBS_RESPONSE" | python3 -c "import sys, json; data = json.load(sys.stdin); print(data.get('active', 0))" 2>/dev/null)
-        if [ -z "$ACTIVE_JOBS" ] || [ "$ACTIVE_JOBS" = "0" ]; then
+
+        # Check agent-annotate jobs
+        ANNOTATE_RESPONSE=$(curl -s --max-time 5 "$ANNOTATE_URL/api/jobs/active" 2>/dev/null)
+        if [ -n "$ANNOTATE_RESPONSE" ]; then
+            ANNOTATE_ACTIVE=$(echo "$ANNOTATE_RESPONSE" | python3 -c "import sys, json; data = json.load(sys.stdin); print(data.get('active', 0))" 2>/dev/null)
+            ANNOTATE_ACTIVE=${ANNOTATE_ACTIVE:-0}
+            TOTAL_ACTIVE=$((TOTAL_ACTIVE + ANNOTATE_ACTIVE))
+        fi
+
+        if [ "$TOTAL_ACTIVE" = "0" ]; then
             echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ No active jobs, proceeding with restart" >> "$LOG_FILE"
             break
         fi
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⏳ $ACTIVE_JOBS active job(s) running, waiting... (${WAITED}s elapsed)" >> "$LOG_FILE"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⏳ $TOTAL_ACTIVE active job(s) running (chat: ${CHAT_ACTIVE:-0}, annotate: ${ANNOTATE_ACTIVE:-0}), waiting... (${WAITED}s elapsed)" >> "$LOG_FILE"
         sleep $POLL_INTERVAL
         WAITED=$((WAITED + POLL_INTERVAL))
         if [ $WAITED -ge $MAX_WAIT ]; then

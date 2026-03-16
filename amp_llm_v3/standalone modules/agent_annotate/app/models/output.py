@@ -6,6 +6,8 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel, Field
 
+from app.models.job import now_pacific
+
 
 class VersionInfo(BaseModel):
     """Build / version metadata stamped on every output."""
@@ -17,7 +19,7 @@ class VersionInfo(BaseModel):
 
 class AuditEntry(BaseModel):
     """One step in the audit trail for a trial's annotation."""
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=now_pacific)
     stage: str  # "research" | "annotation" | "verification" | "review"
     agent_or_model: str
     action: str
@@ -28,7 +30,7 @@ class JobOutput(BaseModel):
     """Final output package for one job."""
     job_id: str
     version: VersionInfo
-    completed_at: datetime = Field(default_factory=datetime.utcnow)
+    completed_at: datetime = Field(default_factory=now_pacific)
     trials: list[dict] = []  # List of VerifiedAnnotation dicts
     audit_trail: list[AuditEntry] = []
 
