@@ -2,7 +2,7 @@
 
 Strategy to surpass human annotation accuracy by fixing agent errors, exploiting the agent's structural advantages, and addressing the gaps revealed by a quality audit of both agent output and human annotations.
 
-> **Last updated:** 2026-03-15
+> **Last updated:** 2026-03-16
 
 > **IMPORTANT DESIGN PRINCIPLE:** Human annotations (`docs/clinical_trials-with-sequences.xlsx`) are used **only for development-time evaluation and prompt refinement** — measuring agent accuracy, identifying error patterns, and tuning prompts. Human annotations are **never used at runtime**. The agents must produce correct annotations independently, relying solely on live data from external APIs (ClinicalTrials.gov, PubMed, UniProt, etc.). The goal is to build agents that don't need a human counterpart.
 
@@ -129,7 +129,74 @@ The research agents already query live APIs, so recency is built in. To make it 
 
 ---
 
-## 6. Improvement Plan
+## 6. v3 Concordance Results (n=62, Overnight Jobs)
+
+An overnight concordance run on 62 trials using v3 agents produced the following baseline results. These inform the v4 improvement priorities.
+
+### 6.1 Agreement Rates
+
+| Field | Agent vs R1 | Agent vs R2 | Dominant Error |
+|-------|-------------|-------------|----------------|
+| Classification | 29.4% | 13.0% | Agent over-classifies as AMP |
+| Delivery Mode | 47.6% | 54.1% | Best field (extraction logic works) |
+| Outcome | 37.1% | 60.5% | Agent defaults to Unknown too much |
+| Failure Reason | 41.9% | 43.5% | Agent over-assigns "Ineffective" |
+| Peptide | 66.7% | 60.0% | Brand name resolution failures |
+
+### 6.2 Key Findings
+
+- **Classification is the weakest field** at 29.4% / 13.0%. The v3 negative examples were insufficient; the 8B model still pattern-matches "peptide + disease" to AMP.
+- **Delivery Mode is the strongest field** at 47.6% / 54.1%. The priority-ordered extraction hierarchy works well for clear cases.
+- **Outcome R1 vs R2 asymmetry** (37.1% vs 60.5%): Agent agrees more with R2 (who checked literature) than R1 (who recorded registry status). This is a feature, not a bug -- the agent's literature search aligns with the annotator who did the same.
+- **Failure Reason over-assigns "Ineffective"** to completed trials without published negative results. The agent treats absence of positive results as evidence of failure.
+- **Peptide regression** from 88.0% (v2, n=25) to 66.7%/60.0% (v3, n=62): The larger sample exposed brand-name resolution issues not present in the initial 25 trials.
+
+---
+
+## 7. v4 Improvements Implemented (DONE)
+
+The following v4 changes have been implemented in response to the n=62 concordance results:
+
+### 7.1 Four New Research Agents (DONE)
+
+- **DBAASP Agent**: Queries peptide activity/MIC data. Provides direct antimicrobial activity evidence for the Classification Agent.
+- **ChEMBL Agent**: Queries bioactivity and clinical phase data. Provides mechanism-of-action and cross-trial development context.
+- **RCSB PDB Agent**: Queries 3D structure metadata. Provides structural confirmation of peptide identity.
+- **EBI Proteins Agent**: Queries sequences, variants, functional annotations. Complements UniProt with additional sequence-level data.
+
+### 7.2 Annotation Agent Improvements (DONE)
+
+- **Classification**: Added direct antimicrobial mechanism requirement. Must identify which mode of action (A-D) applies with cited evidence. Strengthened default-to-Other.
+- **Failure Reason**: Default no-failure for completed trials without published negative results. Failure reason requires affirmative evidence.
+- **Peptide**: Added brand name resolution rules. Agent must resolve brand names to generic compounds.
+- **Delivery Mode**: Added never-guess reinforcement. Empty is correct when evidence is insufficient.
+
+### 7.3 Verification/Verifier Improvements (DONE)
+
+- **Verifier prompt parity**: All verifiers now receive the same field-specific detail (negative examples, decision trees, extraction hierarchies) as the primary annotation agents.
+
+### 7.4 Output & Infrastructure Improvements (DONE)
+
+- **Citation traceability**: Every field records model identity, agent provenance, source URLs, evidence text, verifier summary.
+- **Disk-persisted review queue**: Review queue survives service restarts (written to JSON, reloaded on startup).
+- **Pacific timestamps**: All timestamps throughout the system use America/Los_Angeles.
+- **Commit hash in metadata**: Job metadata includes the exact git commit hash for reproducibility.
+- **Job timing metadata**: `started_at`, `finished_at`, `elapsed`, average time per trial.
+- **Kimi K2 Thinking**: Available as primary annotator on the server hardware profile.
+- **Ollama keep_alive optimization**: 5 minutes on mac_mini, 60 minutes on server profile.
+- **Hardware profiles**: `mac_mini` (16 GB, 8B models, 5m keep_alive) vs `server` (48+ GB, Kimi K2 option, 60m keep_alive).
+
+---
+
+## 8. Next Steps
+
+1. **Re-run n=62 concordance with v4 agents** and compare against the v3 baseline (Section 6). This is the primary validation of the v4 improvements.
+2. **Run Kimi K2 concordance** on the same 62 trials using the server profile to quantify improvement over 8B models.
+3. **Expand to full 614-trial evaluation** once v4 concordance shows improvement.
+
+---
+
+## 9. Improvement Plan (Original)
 
 ### Phase A: Output Validation & Cross-Field Consistency
 
@@ -186,7 +253,7 @@ Use the 14B reconciler model as primary annotator for peptide and classification
 
 ---
 
-## 7. Accuracy Targets
+## 10. Accuracy Targets
 
 | Field | Human Agreement | Current Agent Error Rate | Target |
 |-------|-----------------|--------------------------|--------|
@@ -200,7 +267,7 @@ After Phases A + B, the agent should exceed human inter-rater agreement on every
 
 ---
 
-## 8. Multi-Run Consensus (Agent Ensemble)
+## 11. Multi-Run Consensus (Agent Ensemble)
 
 **Priority: HIGH — directly reduces annotation noise**
 
@@ -232,7 +299,7 @@ Instability = the prompt allows the LLM to interpret the evidence differently on
 
 ---
 
-## 9. Lessons from Human Annotation Patterns
+## 12. Lessons from Human Annotation Patterns
 
 ### Peptide Definition Ambiguity
 
@@ -260,7 +327,7 @@ R1 used "Recruiting" 222 times; R2 used it 0 times. The two replicates were anno
 
 ---
 
-## 10. Measuring Improvement
+## 13. Measuring Improvement
 
 Human annotations are the **development-time benchmark only**. They inform prompt tuning and error analysis but are never fed to the agents at runtime.
 
