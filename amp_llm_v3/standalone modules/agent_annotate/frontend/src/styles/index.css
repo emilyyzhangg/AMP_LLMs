@@ -237,6 +237,317 @@ th {
   to { transform: translateX(0); opacity: 1; }
 }
 
+/* Summary cards row */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.summary-card-number {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.summary-card-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.25rem;
+}
+
+/* Confidence dots */
+.confidence-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.confidence-dot.high { background: var(--success); }
+.confidence-dot.medium { background: var(--warning); }
+.confidence-dot.low { background: var(--error); }
+
+/* Expandable row detail */
+.row-detail {
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border);
+  padding: 1rem 1.5rem;
+}
+
+.row-detail-section {
+  margin-bottom: 1rem;
+}
+
+.row-detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.row-detail-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+/* Filter bar */
+.filter-bar {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+.filter-bar input[type="text"],
+.filter-bar select {
+  width: auto;
+  min-width: 150px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+/* Clickable table rows */
+tr.clickable-row {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+tr.clickable-row:hover {
+  background: var(--bg-secondary);
+}
+
+/* Primary annotator section (review page) */
+.primary-annotator-section {
+  background: #1a2333;
+  border: 1px solid #2a3a5f;
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Batch toolbar */
+.batch-toolbar {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+/* Keyboard shortcut hint */
+.shortcut-hint {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-left: 4px;
+  opacity: 0.7;
+}
+
+/* Confirmation modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  max-width: 480px;
+  width: 90%;
+}
+
+.modal-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+/* Guidelines sidebar */
+.guidelines-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 380px;
+  height: 100vh;
+  background: var(--bg-card);
+  border-left: 1px solid var(--border);
+  padding: 1.5rem;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.guidelines-sidebar.closed {
+  transform: translateX(100%);
+}
+
+.guidelines-field {
+  margin-bottom: 1.25rem;
+}
+
+.guidelines-field-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.guidelines-value {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.82rem;
+}
+
+.guidelines-value-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.guidelines-value-def {
+  color: var(--text-secondary);
+}
+
+/* File upload area */
+.file-upload-area {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 1rem;
+}
+
+.file-upload-area:hover {
+  border-color: var(--accent);
+  background: rgba(124, 140, 255, 0.05);
+}
+
+.file-upload-area input[type="file"] {
+  display: none;
+}
+
+/* File preview */
+.file-preview {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.file-preview-invalid {
+  color: var(--error);
+  background: rgba(248, 113, 113, 0.1);
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 0.15rem;
+  font-size: 0.82rem;
+}
+
+.file-preview-valid {
+  color: var(--success);
+  display: inline-block;
+  margin: 0.15rem;
+  font-size: 0.82rem;
+}
+
+/* Settings sliders */
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.slider-container label {
+  min-width: 140px;
+  margin-bottom: 0;
+}
+
+.slider-container input[type="range"] {
+  flex: 1;
+  accent-color: var(--accent);
+}
+
+.slider-value {
+  min-width: 50px;
+  text-align: right;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Model role selector */
+.model-role-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.model-role-row label {
+  min-width: 120px;
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+.model-role-row select {
+  flex: 1;
+}
+
+/* Partial results mini table */
+.partial-results-table {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 0.75rem;
+}
+
+.partial-results-table table {
+  font-size: 0.82rem;
+}
+
 /* Utility */
 .mt-1 { margin-top: 0.5rem; }
 .mt-2 { margin-top: 1rem; }
@@ -245,6 +556,7 @@ th {
 .mb-2 { margin-bottom: 1rem; }
 .flex { display: flex; }
 .flex-between { display: flex; justify-content: space-between; align-items: center; }
+.flex-wrap { flex-wrap: wrap; }
 .gap-1 { gap: 0.5rem; }
 .gap-2 { gap: 1rem; }
 .text-muted { color: var(--text-secondary); }

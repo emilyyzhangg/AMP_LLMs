@@ -18,7 +18,7 @@ from app.auth_client import get_token_from_request, validate_token
 PATH_PREFIX = "/agent-annotate"
 from app.services.config_service import config_service
 
-from app.routers import health, jobs, status, results, review, settings
+from app.routers import health, jobs, status, results, review, settings, concordance
 
 # API paths that do NOT require authentication
 # (health/readiness used by auto-updater, active jobs used before restart)
@@ -117,6 +117,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 path in AUTH_EXEMPT_API_PATHS
                 or path.endswith("/resume")
                 or path.startswith("/api/status/pipeline/")
+                or path.startswith("/api/concordance/")
             )
             if not is_exempt:
                 token = get_token_from_request(request)
@@ -151,6 +152,7 @@ app.include_router(status.router)
 app.include_router(results.router)
 app.include_router(review.router)
 app.include_router(settings.router)
+app.include_router(concordance.router)
 
 # Serve frontend SPA (production build)
 if FRONTEND_DIR.exists():

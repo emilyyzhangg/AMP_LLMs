@@ -42,6 +42,9 @@ export interface ReviewItem {
   status: string;
   reviewer_value: string | null;
   reviewer_note: string | null;
+  primary_reasoning?: string;
+  primary_confidence?: number;
+  primary_model?: string;
 }
 
 export interface ReviewStats {
@@ -95,4 +98,60 @@ export interface ResultSummary {
   status?: string;
   completed_trials?: number;
   timing?: TimingInfo;
+}
+
+// Concordance types
+
+export interface ConcordanceField {
+  field_name: string;
+  n: number;
+  skipped: number;
+  agree_count: number;
+  agree_pct: number;
+  kappa: number;
+  interpretation: string;
+  confusion_matrix: Record<string, Record<string, number>>;
+  value_distribution: { agent: Record<string, number>; human: Record<string, number> };
+  disagreements: Array<{ nct_id: string; agent_value: string; human_value: string }>;
+}
+
+export interface JobConcordance {
+  job_id: string;
+  timestamp: string;
+  comparison: string; // "agent_vs_r1", "agent_vs_r2", "r1_vs_r2"
+  fields: ConcordanceField[];
+  overall_agree_pct: number;
+}
+
+export interface ComparisonField {
+  field_name: string;
+  kappa_a: number;
+  kappa_b: number;
+  delta: number;
+  improved: boolean;
+}
+
+export interface ComparisonResult {
+  job_id_a: string;
+  job_id_b: string;
+  fields: ComparisonField[];
+}
+
+export interface ConcordanceHistoryEntry {
+  job_id: string;
+  timestamp: string;
+  field_kappas: Record<string, number>;
+}
+
+// Partial results for pipeline view
+export interface PartialTrial {
+  nct_id: string;
+  status: string;
+}
+
+export interface PartialResults {
+  job_id: string;
+  trials: PartialTrial[];
+  completed: number;
+  total: number;
 }

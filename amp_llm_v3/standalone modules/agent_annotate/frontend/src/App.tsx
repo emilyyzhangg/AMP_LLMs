@@ -5,6 +5,7 @@ import SubmitPage from "./components/SubmitPage";
 import PipelinePage from "./components/PipelinePage";
 import ReviewPage from "./components/ReviewPage";
 import ResultsPage from "./components/ResultsPage";
+import ConcordancePage from "./components/ConcordancePage";
 import SettingsPage from "./components/SettingsPage";
 import HistoryPage from "./components/HistoryPage";
 
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/review" element={<ReviewPage />} />
           <Route path="/results" element={<ResultsPage />} />
           <Route path="/results/:jobId" element={<ResultsPage />} />
+          <Route path="/concordance" element={<ConcordancePage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/history" element={<HistoryPage />} />
         </Routes>

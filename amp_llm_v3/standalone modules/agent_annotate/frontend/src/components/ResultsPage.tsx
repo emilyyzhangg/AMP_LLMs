@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { listResults, getResults, getResultsSummary, getResultsCsvUrl } from "../api/client";
 import type { ResultListItem, ResultSummary, TimingInfo } from "../types";
@@ -22,6 +22,232 @@ function TimingBadge({ timing }: { timing?: TimingInfo }) {
   );
 }
 
+// --- Confidence dot component ---
+function ConfidenceDot({ confidence }: { confidence?: number }) {
+  if (confidence === undefined || confidence === null) return null;
+  let cls = "low";
+  if (confidence >= 0.8) cls = "high";
+  else if (confidence >= 0.4) cls = "medium";
+  return <span className={`confidence-dot ${cls}`} title={`Confidence: ${(confidence * 100).toFixed(0)}%`} />;
+}
+
+// --- Helper to extract field data from a trial ---
+interface FieldData {
+  final_value: string;
+  confidence?: number;
+  reasoning?: string;
+  model_name?: string;
+  evidence?: Array<{ source: string; snippet: string; url?: string }>;
+  verification_summary?: string;
+  verifier_agree_count?: number;
+  verifier_total?: number;
+  research_agents?: Array<{ agent_name: string; citations: number }>;
+}
+
+function extractFieldData(trial: Record<string, unknown>): Record<string, FieldData> {
+  const fields: Record<string, FieldData> = {};
+  const fieldList = (trial.fields as Record<string, unknown>[]) || [];
+  for (const f of fieldList) {
+    const name = f.field_name as string;
+    const evidence: Array<{ source: string; snippet: string; url?: string }> = [];
+    const evidenceRaw = (f.evidence as Record<string, unknown>[]) || [];
+    for (const e of evidenceRaw.slice(0, 3)) {
+      evidence.push({
+        source: (e.source as string) || (e.source_name as string) || "Unknown",
+        snippet: (e.snippet as string) || (e.text as string) || "",
+        url: e.url as string | undefined,
+      });
+    }
+
+    // Research agents from trial-level metadata
+    const researchAgents: Array<{ agent_name: string; citations: number }> = [];
+    const researchCoverage = (trial.research_coverage as Record<string, unknown>) || {};
+    for (const [agentName, agentData] of Object.entries(researchCoverage)) {
+      const data = agentData as Record<string, unknown>;
+      researchAgents.push({
+        agent_name: agentName,
+        citations: (data.citations_count as number) || 0,
+      });
+    }
+
+    // Verification info
+    const verification = (trial.verification as Record<string, unknown>) || {};
+    const fieldVerification = (verification.field_results as Record<string, unknown>)?.[name] as Record<string, unknown> | undefined;
+    let verifierAgreeCount = 0;
+    let verifierTotal = 0;
+    let verificationSummary = "";
+    if (fieldVerification) {
+      verifierAgreeCount = (fieldVerification.agree_count as number) || 0;
+      verifierTotal = (fieldVerification.total_verifiers as number) || 0;
+      verificationSummary = `${verifierAgreeCount}/${verifierTotal} agree`;
+    } else {
+      // Try top-level verification summary
+      const opinions = (verification.opinions as Record<string, unknown>[]) || [];
+      verifierTotal = opinions.length;
+      verifierAgreeCount = opinions.filter((o) => o.agrees).length;
+      if (verifierTotal > 0) {
+        verificationSummary = `${verifierAgreeCount}/${verifierTotal} agree`;
+      }
+    }
+
+    fields[name] = {
+      final_value: (f.final_value as string) || "",
+      confidence: f.confidence as number | undefined,
+      reasoning: (f.reasoning as string) || (f.primary_reasoning as string) || "",
+      model_name: (f.model_name as string) || (f.primary_model as string) || "",
+      evidence,
+      verification_summary: verificationSummary,
+      verifier_agree_count: verifierAgreeCount,
+      verifier_total: verifierTotal,
+      research_agents: researchAgents,
+    };
+  }
+  return fields;
+}
+
+// --- Summary cards ---
+function SummaryCards({ summary }: { summary: ResultSummary }) {
+  return (
+    <div className="summary-cards">
+      <div className="summary-card">
+        <div className="summary-card-number" style={{ color: "var(--text-primary)" }}>
+          {summary.total_trials}
+        </div>
+        <div className="summary-card-label">Total Trials</div>
+      </div>
+      <div className="summary-card">
+        <div className="summary-card-number" style={{ color: "var(--success)" }}>
+          {summary.successful}
+        </div>
+        <div className="summary-card-label">Successful</div>
+      </div>
+      <div className="summary-card">
+        <div className="summary-card-number" style={{ color: "var(--error)" }}>
+          {summary.failed}
+        </div>
+        <div className="summary-card-label">Failed</div>
+      </div>
+      <div className="summary-card">
+        <div className="summary-card-number" style={{ color: "var(--warning)" }}>
+          {summary.manual_review}
+        </div>
+        <div className="summary-card-label">Flagged for Review</div>
+      </div>
+    </div>
+  );
+}
+
+// --- Expanded row detail ---
+function RowDetail({ trial }: { trial: Record<string, unknown> }) {
+  const fieldData = extractFieldData(trial);
+  // Pick the first field that has reasoning for display
+  const fieldWithReasoning = Object.values(fieldData).find((f) => f.reasoning);
+  const anyField = Object.values(fieldData)[0];
+
+  return (
+    <div className="row-detail">
+      {/* Evidence section */}
+      {anyField?.evidence && anyField.evidence.length > 0 && (
+        <div className="row-detail-section">
+          <div className="row-detail-title">Evidence</div>
+          {anyField.evidence.map((e, i) => (
+            <div key={i} className="text-sm mb-1" style={{ paddingLeft: "0.5rem", borderLeft: "2px solid var(--border)" }}>
+              <strong>{e.source}</strong>
+              {e.snippet && <div className="text-muted" style={{ marginTop: "0.2rem" }}>{e.snippet}</div>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Reasoning section */}
+      {fieldWithReasoning?.reasoning && (
+        <div className="row-detail-section">
+          <div className="row-detail-title">Reasoning</div>
+          <div className="text-sm text-muted" style={{ whiteSpace: "pre-wrap" }}>
+            {fieldWithReasoning.model_name && (
+              <span style={{ color: "var(--accent)", marginRight: "0.5rem" }}>
+                [{fieldWithReasoning.model_name}]
+              </span>
+            )}
+            {fieldWithReasoning.reasoning}
+          </div>
+        </div>
+      )}
+
+      {/* Verification section */}
+      {anyField?.verification_summary && (
+        <div className="row-detail-section">
+          <div className="row-detail-title">Verification</div>
+          <div className="text-sm">
+            {Object.entries(fieldData).map(([fieldName, data]) => (
+              data.verification_summary ? (
+                <span key={fieldName} style={{ marginRight: "1.5rem" }}>
+                  <span className="text-muted">{fieldName}:</span>{" "}
+                  <strong style={{
+                    color: data.verifier_agree_count === data.verifier_total
+                      ? "var(--success)"
+                      : data.verifier_agree_count! >= 2
+                        ? "var(--warning)"
+                        : "var(--error)",
+                  }}>
+                    {data.verification_summary}
+                  </strong>
+                </span>
+              ) : null
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Research agents section */}
+      {anyField?.research_agents && anyField.research_agents.length > 0 && (
+        <div className="row-detail-section">
+          <div className="row-detail-title">Research</div>
+          <div className="text-sm flex gap-2 flex-wrap">
+            {anyField.research_agents.map((agent, i) => (
+              <span key={i} className="text-muted">
+                {agent.agent_name}: {agent.citations} citation{agent.citations !== 1 ? "s" : ""}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// --- Copy markdown summary ---
+function copyMarkdownSummary(summary: ResultSummary, trials: Record<string, unknown>[]) {
+  const lines = [
+    `## Job ${summary.job_id} Summary`,
+    "",
+    `| Metric | Count |`,
+    `|--------|-------|`,
+    `| Total Trials | ${summary.total_trials} |`,
+    `| Successful | ${summary.successful} |`,
+    `| Failed | ${summary.failed} |`,
+    `| Review | ${summary.manual_review} |`,
+    "",
+    `### Annotations`,
+    "",
+    `| NCT ID | Classification | Delivery Mode | Outcome | Failure Reason | Peptide | Status |`,
+    `|--------|---------------|---------------|---------|----------------|---------|--------|`,
+  ];
+
+  for (const trial of trials) {
+    const fields = extractFieldData(trial);
+    const flagged = (trial.verification as Record<string, unknown>)?.flagged_for_review;
+    lines.push(
+      `| ${trial.nct_id} | ${fields.classification?.final_value || "\u2014"} | ${fields.delivery_mode?.final_value || "\u2014"} | ${fields.outcome?.final_value || "\u2014"} | ${fields.reason_for_failure?.final_value || "\u2014"} | ${fields.peptide?.final_value || "\u2014"} | ${flagged ? "Review" : "OK"} |`
+    );
+  }
+
+  navigator.clipboard.writeText(lines.join("\n")).catch(() => {
+    // Fallback: do nothing on clipboard failure
+  });
+}
+
+// --- Results list (job listing view) ---
 function ResultsList() {
   const navigate = useNavigate();
   const [results, setResults] = useState<ResultListItem[]>([]);
@@ -89,12 +315,17 @@ function ResultsList() {
   );
 }
 
+// --- Result detail dashboard ---
 function ResultDetail({ jobId }: { jobId: string }) {
   const navigate = useNavigate();
   const [results, setResults] = useState<Record<string, unknown> | null>(null);
   const [summary, setSummary] = useState<ResultSummary | null>(null);
   const [error, setError] = useState("");
   const [showJson, setShowJson] = useState(false);
+  const [expandedRow, setExpandedRow] = useState<number | null>(null);
+  const [statusFilter, setStatusFilter] = useState<"all" | "ok" | "review">("all");
+  const [searchText, setSearchText] = useState("");
+  const [copiedMarkdown, setCopiedMarkdown] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -109,13 +340,40 @@ function ResultDetail({ jobId }: { jobId: string }) {
     })();
   }, [jobId]);
 
+  const trials = useMemo(() => {
+    return (results?.trials as Record<string, unknown>[]) || [];
+  }, [results]);
+
+  const filteredTrials = useMemo(() => {
+    return trials.filter((trial) => {
+      const nctId = (trial.nct_id as string) || "";
+      const flagged = !!(trial.verification as Record<string, unknown>)?.flagged_for_review;
+
+      // Status filter
+      if (statusFilter === "ok" && flagged) return false;
+      if (statusFilter === "review" && !flagged) return false;
+
+      // Text search on NCT ID
+      if (searchText && !nctId.toLowerCase().includes(searchText.toLowerCase())) return false;
+
+      return true;
+    });
+  }, [trials, statusFilter, searchText]);
+
   if (error) return <div className="card" style={{ color: "var(--error)" }}>{error}</div>;
   if (!results) return <div className="card text-muted">Loading results...</div>;
 
-  const trials = (results.trials as Record<string, unknown>[]) || [];
+  const handleCopyMarkdown = () => {
+    if (summary) {
+      copyMarkdownSummary(summary, trials);
+      setCopiedMarkdown(true);
+      setTimeout(() => setCopiedMarkdown(false), 2000);
+    }
+  };
 
   return (
     <div>
+      {/* Header */}
       <div className="flex-between mb-2">
         <div>
           <button className="btn btn-secondary" onClick={() => navigate("/results")} style={{ marginRight: "1rem" }}>
@@ -123,11 +381,6 @@ function ResultDetail({ jobId }: { jobId: string }) {
           </button>
           <strong style={{ fontSize: "1.1rem" }}>Results: {jobId}</strong>
         </div>
-        {summary && (
-          <div className="text-sm text-muted">
-            {summary.total_trials} trials | {summary.successful} OK | {summary.failed} failed | {summary.manual_review} review
-          </div>
-        )}
       </div>
 
       {results.version && (
@@ -152,7 +405,100 @@ function ResultDetail({ jobId }: { jobId: string }) {
         );
       })() : null}
 
-      {/* CSV download links */}
+      {/* Section 1: Summary cards */}
+      {summary && <SummaryCards summary={summary} />}
+
+      {/* Section 2: Filter bar */}
+      <div className="filter-bar">
+        <label style={{ marginBottom: 0, minWidth: "auto" }}>Status:</label>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value as "all" | "ok" | "review")}
+        >
+          <option value="all">All</option>
+          <option value="ok">OK</option>
+          <option value="review">Review</option>
+        </select>
+        <input
+          type="text"
+          placeholder="Search NCT ID..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <span className="text-sm text-muted" style={{ marginLeft: "auto" }}>
+          {filteredTrials.length} of {trials.length} trials
+        </span>
+      </div>
+
+      {/* Section 2: Enhanced annotation table */}
+      <div className="card">
+        {filteredTrials.length > 0 ? (
+          <table>
+            <thead>
+              <tr>
+                <th>NCT ID</th>
+                <th>Classification</th>
+                <th>Delivery Mode</th>
+                <th>Outcome</th>
+                <th>Failure Reason</th>
+                <th>Peptide</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+              {filteredTrials.map((trial: Record<string, unknown>, i: number) => {
+                const fieldData = extractFieldData(trial);
+                const flagged = !!(trial.verification as Record<string, unknown>)?.flagged_for_review;
+                const isExpanded = expandedRow === i;
+                const originalIndex = trials.indexOf(trial);
+
+                const renderCell = (fieldName: string) => {
+                  const data = fieldData[fieldName];
+                  if (!data || !data.final_value) return <td>{"\u2014"}</td>;
+                  return (
+                    <td>
+                      {data.final_value}
+                      <ConfidenceDot confidence={data.confidence} />
+                    </td>
+                  );
+                };
+
+                return (
+                  <tbody key={originalIndex}>
+                    <tr
+                      className="clickable-row"
+                      onClick={() => setExpandedRow(isExpanded ? null : i)}
+                    >
+                      <td><strong>{trial.nct_id as string}</strong></td>
+                      {renderCell("classification")}
+                      {renderCell("delivery_mode")}
+                      {renderCell("outcome")}
+                      {renderCell("reason_for_failure")}
+                      {renderCell("peptide")}
+                      <td>
+                        {flagged ? (
+                          <span className="badge badge-cancelled">Review</span>
+                        ) : (
+                          <span className="badge badge-completed">OK</span>
+                        )}
+                      </td>
+                    </tr>
+                    {isExpanded && (
+                      <tr>
+                        <td colSpan={7} style={{ padding: 0 }}>
+                          <RowDetail trial={trial} />
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                );
+              })}
+          </table>
+        ) : (
+          <div className="text-muted">No trial results match the current filters.</div>
+        )}
+      </div>
+
+      {/* Section 3: Export buttons */}
       <div className="flex gap-1 mb-2">
         <a
           className="btn btn-secondary"
@@ -168,6 +514,9 @@ function ResultDetail({ jobId }: { jobId: string }) {
         >
           Download CSV (Full)
         </a>
+        <button className="btn btn-secondary" onClick={handleCopyMarkdown}>
+          {copiedMarkdown ? "Copied!" : "Copy summary as markdown"}
+        </button>
         <button className="btn btn-secondary" onClick={() => setShowJson(!showJson)}>
           {showJson ? "Hide JSON" : "Show JSON"}
         </button>
@@ -189,51 +538,6 @@ function ResultDetail({ jobId }: { jobId: string }) {
           </pre>
         </div>
       )}
-
-      {/* Trials table */}
-      <div className="card">
-        {trials.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th>NCT ID</th>
-                <th>Classification</th>
-                <th>Delivery Mode</th>
-                <th>Outcome</th>
-                <th>Peptide</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {trials.map((trial: Record<string, unknown>, i: number) => {
-                const fields: Record<string, string> = {};
-                ((trial.fields as Record<string, unknown>[]) || []).forEach((f: Record<string, unknown>) => {
-                  fields[f.field_name as string] = f.final_value as string;
-                });
-                const flagged = (trial.verification as Record<string, unknown>)?.flagged_for_review;
-                return (
-                  <tr key={i}>
-                    <td>{trial.nct_id as string}</td>
-                    <td>{fields.classification || "\u2014"}</td>
-                    <td>{fields.delivery_mode || "\u2014"}</td>
-                    <td>{fields.outcome || "\u2014"}</td>
-                    <td>{fields.peptide || "\u2014"}</td>
-                    <td>
-                      {flagged ? (
-                        <span className="badge badge-cancelled">Review</span>
-                      ) : (
-                        <span className="badge badge-completed">OK</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        ) : (
-          <div className="text-muted">No trial results available.</div>
-        )}
-      </div>
     </div>
   );
 }

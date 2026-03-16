@@ -9,6 +9,10 @@ import type {
   ReviewStats,
   ResultListItem,
   ResultSummary,
+  JobConcordance,
+  ComparisonResult,
+  ConcordanceHistoryEntry,
+  PartialResults,
 } from "../types";
 
 // Auto-detect API base: when served under /agent-annotate via Cloudflare,
@@ -104,6 +108,19 @@ export const submitReview = (
     body: JSON.stringify(decision),
   });
 
+// Concordance
+export const getJobConcordance = (jobId: string) =>
+  request<{ agent_vs_r1: JobConcordance; agent_vs_r2: JobConcordance }>(`/concordance/job/${jobId}`);
+
+export const compareJobs = (jobIdA: string, jobIdB: string) =>
+  request<ComparisonResult>(`/concordance/compare/${jobIdA}/${jobIdB}`);
+
+export const getConcordanceHistory = () =>
+  request<{ history: ConcordanceHistoryEntry[] }>("/concordance/history");
+
+export const getHumanConcordance = () =>
+  request<JobConcordance>("/concordance/human");
+
 // Settings
 export const getSettings = () =>
   request<Record<string, unknown>>("/settings");
@@ -113,3 +130,13 @@ export const updateSettings = (overrides: Record<string, unknown>) =>
 
 export const reloadSettings = () =>
   request<Record<string, unknown>>("/settings/reload", { method: "POST" });
+
+// Partial results (for pipeline view)
+export const getPartialResults = async (jobId: string): Promise<PartialResults | null> => {
+  try {
+    return await request<PartialResults>(`/results/${jobId}/partial`);
+  } catch {
+    // Endpoint may not exist yet or job has no partial results
+    return null;
+  }
+};
