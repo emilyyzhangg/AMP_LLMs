@@ -206,13 +206,53 @@ class FailureReasonAgent(BaseAnnotationAgent):
         )
 
     def _pass1_says_no_failure(self, pass1_text: str) -> bool:
-        """Check if Pass 1 clearly says this is not a failure."""
+        """Check if Pass 1 clearly says this is not a failure.
+
+        v3: More robust detection — also catches positive signals,
+        recruiting/active trials, and malformed Pass 1 output.
+        Previously only matched exact "No" answer, missing cases where
+        Pass 1 didn't format correctly or said "Unclear" despite positive
+        evidence.
+        """
         lower = pass1_text.lower()
-        match = re.search(r"is this a failure:\s*(.+?)(?:\n|$)", lower)
+
+        # Check the explicit "Is This A Failure" field
+        match = re.search(r"is this a failure:?\s*(.+?)(?:\n|$)", lower)
         if match:
             answer = match.group(1).strip()
             if answer.startswith("no"):
                 return True
+
+        # Check for positive signals that override an "Unclear" answer
+        has_positive = any(kw in lower for kw in [
+            "met primary endpoint", "positive results", "efficacy demonstrated",
+            "well tolerated", "safe and effective", "progressed to phase",
+            "successful", "favorable",
+        ])
+        # Check for active/recruiting status
+        is_active = any(kw in lower for kw in [
+            "recruiting", "active_not_recruiting", "active, not recruiting",
+            "enrolling_by_invitation", "not_yet_recruiting",
+        ])
+        # Check for evidence of failure
+        has_failure = any(kw in lower for kw in [
+            "terminated", "withdrawn", "failed to meet", "did not meet",
+            "no significant difference", "futility", "adverse events led",
+            "safety concerns", "stopped early", "discontinued",
+        ])
+
+        # If clearly active/recruiting and no failure evidence → not a failure
+        status_match = re.search(r"trial status:?\s*(.+?)(?:\n|$)", lower)
+        if status_match:
+            status = status_match.group(1).strip()
+            if any(s in status for s in ["recruiting", "active", "enrolling"]):
+                if not has_failure:
+                    return True
+
+        # If positive signals and no failure evidence → not a failure
+        if has_positive and not has_failure:
+            return True
+
         return False
 
     def _infer_from_pass1(self, pass1_text: str) -> str:
