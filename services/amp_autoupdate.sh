@@ -162,6 +162,7 @@ if [ "$LOCAL_HASH" != "$LAST_DEPLOYED_HASH" ]; then
 
     # Run site verification (background, non-blocking)
     /Users/amphoraxe/Developer/amphoraxe/auth.amphoraxe.ca/verify/run.sh amp_llm
+    /Users/amphoraxe/Developer/amphoraxe/auth.amphoraxe.ca/verify/run.sh agent_annotate
 
     echo "$LOCAL_HASH" > "$LAST_DEPLOYED_FILE"
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ MAIN update and restart complete." >> "$LOG_FILE"

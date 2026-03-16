@@ -9,15 +9,24 @@ from logging.handlers import RotatingFileHandler
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.config import CORS_ORIGINS, FRONTEND_DIR, LOGS_DIR
+from app.auth_client import get_token_from_request, validate_token
 
 PATH_PREFIX = "/agent-annotate"
 from app.services.config_service import config_service
 
 from app.routers import health, jobs, status, results, review, settings
+
+# API paths that do NOT require authentication
+# (health/readiness used by auto-updater, active jobs used before restart)
+AUTH_EXEMPT_API_PATHS = {
+    "/api/health",
+    "/api/health/ready",
+    "/api/jobs/active",
+}
 
 
 def setup_logging():
@@ -89,6 +98,35 @@ class StripPrefixMiddleware(BaseHTTPMiddleware):
             request.scope["path"] = path[len(PATH_PREFIX):] or "/"
         return await call_next(request)
 
+
+class AuthMiddleware(BaseHTTPMiddleware):
+    """Require amp_auth cookie for all /api/* routes except health/readiness."""
+
+    async def dispatch(self, request: Request, call_next):
+        path = request.scope["path"]
+
+        # Let CORS preflight (OPTIONS) through
+        if request.method == "OPTIONS":
+            return await call_next(request)
+
+        # Only gate /api/* routes; static files / SPA pages are public
+        if path.startswith("/api/") or path == "/api":
+            # Allow exempt paths (health, readiness, active-job count)
+            if path not in AUTH_EXEMPT_API_PATHS:
+                token = get_token_from_request(request)
+                user = validate_token(token, app_slug="amp-llm") if token else None
+                if not user:
+                    return JSONResponse(
+                        status_code=401,
+                        content={"detail": "Not authenticated"},
+                    )
+                # Stash user on request state so handlers can use it if needed
+                request.state.user = user
+
+        return await call_next(request)
+
+
+app.add_middleware(AuthMiddleware)
 app.add_middleware(StripPrefixMiddleware)
 
 # CORS
