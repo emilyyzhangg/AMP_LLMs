@@ -15,13 +15,13 @@ import uuid
 from datetime import datetime
 from typing import Optional
 
-from app.models.job import AnnotationJob, JobSummary, JobProgress
+from app.models.job import AnnotationJob, JobSummary, JobProgress, now_pacific
 from app.models.research import ResearchResult
 from app.models.annotation import FieldAnnotation, TrialMetadata, AnnotationResult
 from app.models.verification import ConsensusResult, VerifiedAnnotation
 from app.services.config_service import config_service
 from app.services.output_service import save_json_output
-from app.services.version_service import get_version_stamp, get_git_commit_full
+from app.services.version_service import get_version_stamp, get_git_commit_full, get_git_commit_short
 from app.services.persistence_service import PersistenceService
 from app.config import RESULTS_DIR
 from agents.research import RESEARCH_AGENTS
@@ -46,6 +46,7 @@ class PipelineOrchestrator:
             nct_ids=nct_ids,
             config_snapshot=config_service.snapshot(),
             progress=JobProgress(total_trials=len(nct_ids)),
+            commit_hash=get_git_commit_short(),
         )
         self._jobs[job_id] = job
         return job
@@ -64,6 +65,11 @@ class PipelineOrchestrator:
                     total_trials=job.progress.total_trials,
                     completed_trials=job.progress.completed_trials,
                     researched_trials=job.progress.researched_trials,
+                    started_at=job.started_at,
+                    finished_at=job.finished_at,
+                    elapsed_seconds=job.progress.elapsed_seconds,
+                    avg_seconds_per_trial=job.progress.avg_seconds_per_trial,
+                    commit_hash=job.commit_hash,
                 )
             )
         return summaries
@@ -103,7 +109,8 @@ class PipelineOrchestrator:
             config_snapshot=config_service.snapshot(),
             progress=JobProgress(total_trials=len(nct_ids)),
             resumed=True,
-            resumed_at=datetime.utcnow(),
+            resumed_at=now_pacific(),
+            commit_hash=get_git_commit_short(),
         )
         self._jobs[job_id] = job
         return job
@@ -121,7 +128,8 @@ class PipelineOrchestrator:
             job.status = "failed"
             job.error = str(e)
             job.progress.current_stage = "error"
-            job.updated_at = datetime.utcnow()
+            job.finished_at = now_pacific()
+            job.updated_at = now_pacific()
 
     async def _run_pipeline_inner(self, job: AnnotationJob) -> None:
         """Inner pipeline logic with two-phase architecture.
@@ -133,8 +141,14 @@ class PipelineOrchestrator:
 
         job_id = job.job_id
         job.status = "running"
-        job.updated_at = datetime.utcnow()
+        job.started_at = now_pacific()
+        job.updated_at = now_pacific()
         config = config_service.get()
+
+        # Configure Ollama keep_alive based on hardware profile
+        from app.services.ollama_client import ollama_client
+        hw_profile = getattr(config.orchestrator, "hardware_profile", "mac_mini")
+        ollama_client.set_hardware_profile(hw_profile)
         pipeline_start = _time.monotonic()
 
         persistence = PersistenceService(RESULTS_DIR)
@@ -183,6 +197,11 @@ class PipelineOrchestrator:
         # --- Save final results ---
         job.progress.current_stage = "saving"
         job.progress.current_phase = ""
+        job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
+        if job.progress.completed_trials > 0:
+            job.progress.avg_seconds_per_trial = round(
+                job.progress.elapsed_seconds / job.progress.completed_trials, 1
+            )
         version = get_version_stamp()
         flagged = sum(
             1 for r in all_trial_results
@@ -196,6 +215,14 @@ class PipelineOrchestrator:
             "successful": sum(1 for r in all_trial_results if r.get("annotations")),
             "failed": sum(1 for r in all_trial_results if not r.get("annotations")),
             "manual_review": flagged,
+            "timing": {
+                "started_at": job.started_at.isoformat() if job.started_at else None,
+                "finished_at": now_pacific().isoformat(),
+                "elapsed_seconds": job.progress.elapsed_seconds,
+                "avg_seconds_per_trial": job.progress.avg_seconds_per_trial,
+                "commit_hash": job.commit_hash,
+                "timezone": "America/Los_Angeles",
+            },
         }
         if job.resumed:
             output["resumed"] = True
@@ -205,11 +232,11 @@ class PipelineOrchestrator:
 
         job.results = all_trial_results
         job.status = "completed"
+        job.finished_at = now_pacific()
         job.progress.current_stage = "done"
         job.progress.current_nct_id = None
         job.progress.current_phase = ""
-        job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
-        job.updated_at = datetime.utcnow()
+        job.updated_at = now_pacific()
         logger.info(f"[{job_id}] Pipeline completed: {len(all_trial_results)} trials")
 
     async def _run_phase1_research(
@@ -229,7 +256,7 @@ class PipelineOrchestrator:
 
         job.progress.current_phase = "research"
         job.progress.current_stage = "researching"
-        job.updated_at = datetime.utcnow()
+        job.updated_at = now_pacific()
 
         research_data: dict[str, list[ResearchResult]] = {}
         sem = asyncio.Semaphore(20)
@@ -264,7 +291,7 @@ class PipelineOrchestrator:
                     job.progress.elapsed_seconds = round(
                         _time.monotonic() - pipeline_start, 1
                     )
-                    job.updated_at = datetime.utcnow()
+                    job.updated_at = now_pacific()
 
         if remaining:
             logger.info(
@@ -278,7 +305,7 @@ class PipelineOrchestrator:
 
         job.progress.current_stage = "research_complete"
         job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
-        job.updated_at = datetime.utcnow()
+        job.updated_at = now_pacific()
         logger.info(
             f"[{job.job_id}] Phase 1 complete: {len(research_data)} trials researched"
         )
@@ -332,7 +359,7 @@ class PipelineOrchestrator:
                 job.progress.elapsed_seconds = round(
                     _time.monotonic() - pipeline_start, 1
                 )
-                job.updated_at = datetime.utcnow()
+                job.updated_at = now_pacific()
 
                 annotations = await self._run_annotation(
                     nct_id, research, config, job
@@ -344,7 +371,7 @@ class PipelineOrchestrator:
                 job.progress.elapsed_seconds = round(
                     _time.monotonic() - pipeline_start, 1
                 )
-                job.updated_at = datetime.utcnow()
+                job.updated_at = now_pacific()
 
                 verified = await self._run_verification(
                     nct_id, annotations, research, config
@@ -932,7 +959,7 @@ class PipelineOrchestrator:
         if not job or job.status not in ("queued", "running"):
             return False
         job.status = "cancelled"
-        job.updated_at = datetime.utcnow()
+        job.updated_at = now_pacific()
         return True
 
 

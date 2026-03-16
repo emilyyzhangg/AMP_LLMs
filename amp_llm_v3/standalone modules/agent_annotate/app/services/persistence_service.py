@@ -12,6 +12,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+from app.models.job import now_pacific
+
 from app.models.research import ResearchResult
 
 logger = logging.getLogger("agent_annotate.persistence")
@@ -44,7 +46,7 @@ class PersistenceService:
             "job_id": job_id,
             "git_commit_full": version_stamp.get("git_commit_full", "unknown"),
             "config_hash": version_stamp.get("config_hash", ""),
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": now_pacific().strftime("%Y-%m-%d %H:%M:%S PT"),
             "nct_ids": nct_ids,
             "total_trials": len(nct_ids),
             "config_snapshot": config_snapshot,
@@ -62,7 +64,7 @@ class PersistenceService:
         path = rdir / f"{nct_id}.json"
         data = {
             "nct_id": nct_id,
-            "completed_at": datetime.utcnow().isoformat(),
+            "completed_at": now_pacific().strftime("%Y-%m-%d %H:%M:%S PT"),
             "results": [r.model_dump() for r in results],
         }
         self._atomic_write(path, data)

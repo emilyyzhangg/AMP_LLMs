@@ -26,7 +26,8 @@ VALID_VALUES = ["AMP(infection)", "AMP(other)", "Other"]
 # Classification uses a larger model because 8B ignores worked examples
 MODEL_OVERRIDES = {
     "mac_mini": "qwen2.5:14b",
-    "server": "qwen2.5:72b",
+    "server": "kimi-k2-thinking",
+    "server_fallback": "qwen2.5:72b",
 }
 
 # --------------------------------------------------------------------------- #
@@ -39,7 +40,7 @@ For the clinical trial intervention below, answer these 5 questions using ONLY t
 
 1. PEPTIDE IDENTITY: What is the intervention? Is it confirmed as a peptide? What is its amino acid length or molecular class?
 
-2. DATABASE MATCHES: Was this peptide found in any antimicrobial peptide databases (DRAMP, APD3, UniProt with "antimicrobial" annotation)? List specific database hits.
+2. DATABASE MATCHES: Was this peptide found in any antimicrobial peptide databases (DRAMP, DBAASP, APD3, UniProt with "antimicrobial" annotation)? Also check ChEMBL for bioactivity data and mechanism of action, RCSB PDB for structural data, and EBI Proteins for domain annotations. List specific database hits.
 
 3. MECHANISM OF ACTION: What is the peptide's known or proposed mechanism? Specifically:
    - Does it directly kill or inhibit microorganisms (bacteria, viruses, fungi)?
@@ -73,9 +74,13 @@ STEP 1 — Is the intervention a peptide?
 
 STEP 2 — Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?
 
+  THE CORE TEST: Does this peptide have a DIRECT antimicrobial mechanism — meaning it
+  directly kills, inhibits, or disrupts bacteria, fungi, viruses, or other pathogens?
+  OR does it directly stimulate immune DEFENSE specifically against pathogens?
+
   An AMP participates in defense against pathogens through ANY of these modes:
-  A) Direct antimicrobial: kills/inhibits microorganisms
-  B) Immunostimulatory: PROMOTES immune defense against pathogens
+  A) Direct antimicrobial: kills/inhibits microorganisms (e.g., colistin disrupts bacterial membranes)
+  B) Immunostimulatory: PROMOTES immune defense against pathogens (e.g., LL-37 recruits immune cells)
   C) Anti-biofilm: disrupts microbial biofilms
   D) Pathogen-targeting vaccine: induces immune responses against specific pathogens
 
@@ -84,14 +89,23 @@ STEP 2 — Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)
   - Mechanism: If direct antimicrobial or immunostimulatory against pathogens → AMP
   - Immune Direction: If "PROMOTE" → supports AMP. If "SUPPRESS" → NOT an AMP. If "immune-neutral" → NOT an AMP.
 
-  NOT AMPs (even if peptide=True):
+  CRITICAL — NOT AMPs (even if peptide=True). Being a peptide is NOT enough:
+  - Neuropeptides and vasodilators: VIP (Vasoactive Intestinal Peptide), Aviptadil — these are
+    neuropeptides that cause vasodilation and immunosuppression, NOT antimicrobial action
+  - Vaccine peptides that target autoimmune disease (NOT pathogens): StreptInCor targets
+    S. pyogenes epitopes to PREVENT autoimmune rheumatic heart disease — it is a tolerogenic/
+    immunomodulatory vaccine, NOT an antimicrobial agent. It does not kill bacteria.
   - Metabolic hormones (GLP-1, GLP-2, GnRH, somatostatin, GIP)
-  - Vasodilators (VIP/Aviptadil)
   - Bone growth regulators (vosoritide/CNP)
   - Immunosuppressive peptides (suppress T-cells for autoimmune disease)
   - Self-assembling/structural peptides (physical mechanism, not biological)
   - Cancer neoantigen vaccines (target tumor cells, NOT pathogens)
   - Radiolabeled peptide conjugates (peptide is targeting vector, not the drug)
+
+  KEY DISTINCTION: A peptide that modulates the immune system is NOT automatically an AMP.
+  AMPs must have a PRO-DEFENSE, ANTI-PATHOGEN mechanism. Peptides that suppress immunity,
+  induce tolerance, cause vasodilation, or regulate metabolism are "Other" even if they
+  interact with immune cells.
 
   If NOT an AMP → STOP → answer "Other".
 
@@ -99,11 +113,36 @@ STEP 3 — Does this AMP target infection?
   AMP(infection): Trial treats infection, infectious disease, AMR, sepsis, or pathogen-specific conditions.
   AMP(other): AMP used for wound healing, cancer immunotherapy, anti-inflammatory, or non-infectious biofilm.
 
+WORKED EXAMPLES — study these before answering:
+
+Example A: Colistin for drug-resistant bacterial infection
+→ AMP(infection). Direct antimicrobial peptide treating infection.
+
+Example B: LL-37 for diabetic wound healing
+→ AMP(other). LL-37 is a confirmed AMP (in DRAMP, kills bacteria) but the trial targets wound healing, not infection.
+
+Example C: Aviptadil (VIP) for COVID-19 ARDS or cluster headaches
+→ Other. VIP/Aviptadil is a neuropeptide vasodilator. It does NOT kill pathogens. Even though it was
+  tested in COVID patients, its mechanism is vasodilation and anti-inflammation, NOT antimicrobial.
+
+Example D: StreptInCor vaccine for rheumatic heart disease prevention
+→ Other. StreptInCor is a synthetic peptide designed to induce immune tolerance to prevent autoimmune
+  rheumatic heart disease. It does NOT directly kill S. pyogenes bacteria. The goal is preventing
+  the autoimmune sequel, not treating the infection.
+
+Example E: Semaglutide for diabetes
+→ Other. GLP-1 analogue — metabolic hormone, not antimicrobial.
+
+Example F: Nisin for bacterial mastitis
+→ AMP(infection). Nisin is a confirmed AMP that directly kills bacteria, used to treat infection.
+
 CRITICAL RULES:
 - If Database Matches says "No evidence found" AND Mechanism shows no antimicrobial/immunostimulatory activity → almost certainly "Other"
 - If Immune Direction says "SUPPRESS" → always "Other" regardless of peptide origin
+- If the mechanism is vasodilation, immunosuppression, tolerance induction, or metabolic regulation → "Other"
 - Cancer neoantigen vaccines target tumor antigens NOT pathogen antigens → "Other"
 - Collagen peptides, nutritional peptides, structural peptides → "Other"
+- A peptide being RELATED to infection (e.g., tested in COVID patients, derived from a pathogen) does NOT make it an AMP unless its mechanism is directly antimicrobial
 
 Format your response EXACTLY as:
 Classification: [AMP(infection), AMP(other), or Other]
@@ -136,9 +175,11 @@ def _fallback_classify(pass1_text: str, peptide_value: str) -> str:
     # Strong NOT-AMP signals
     not_amp_keywords = [
         "metabolic hormone", "glp-1", "glp-2", "gnrh", "somatostatin",
-        "vasoactive", "bone growth", "natriuretic", "self-assembling",
+        "vasoactive", "vasodilat", "neuropeptide", "aviptadil",
+        "bone growth", "natriuretic", "self-assembling",
         "remineralization", "neoantigen", "radiolabeled", "nutritional",
-        "collagen", "immune-neutral",
+        "collagen", "immune-neutral", "tolerance", "tolerogenic",
+        "autoimmune", "rheumatic heart", "streptincor",
     ]
     if any(kw in lower for kw in not_amp_keywords):
         return "Other"

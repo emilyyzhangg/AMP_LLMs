@@ -61,7 +61,28 @@ Example 10: Hydrolyzed whey protein formula (for infant nutrition)
 → Peptide: False
 Why: Nutritional product. The protein is broken into peptides for easier digestion, but the peptides are food, not a drug.
 
-KEY RULE: The question is whether the ACTIVE DRUG is a peptide, not whether the formulation contains peptides. If the product name includes "peptide" but the product is a nutritional formula, shake, or tube feeding product → False.
+Example 11: "Peptide 1.5" (tube feeding formula for ICU patients)
+→ Peptide: False
+Why: "Peptide 1.5" is a BRAND NAME for a nutritional formula. The word "peptide" in the name refers to hydrolyzed protein for easier digestion. This is a dietary supplement, NOT a peptide drug.
+
+Example 12: Peptamen (semi-elemental nutritional formula)
+→ Peptide: False
+Why: Peptamen is a nutritional formula containing peptide-based protein for enteral feeding. Not a peptide drug.
+
+CRITICAL RULES:
+1. The question is whether the ACTIVE DRUG is a peptide, not whether the formulation contains peptides.
+2. Brand names containing the word "peptide" do NOT make the product a peptide drug. "Peptide 1.5", "Peptamen", "Kate Farms Peptide" are all nutritional formulas — answer False.
+3. Nutritional formulas and dietary supplements containing hydrolyzed proteins or peptide-based formulations are NOT peptide drugs. These are food/nutrition products where proteins are broken down into peptides for easier absorption.
+4. If the product is described as a "nutritional formula", "tube feeding", "enteral nutrition", "dietary supplement", "medical food", or "nutritional shake" → False, regardless of whether "peptide" appears in the name.
+
+EVIDENCE SOURCES: Look for peptide confirmation in these databases (provided in the evidence):
+- UniProt / EBI Proteins: protein entries with amino acid sequences
+- DRAMP / DBAASP: antimicrobial peptide database entries with activity data
+- ChEMBL: bioactivity data, molecule type, HELM sequences
+- RCSB PDB: 3D structure data confirming peptide nature
+- PubMed/PMC: published literature describing the intervention
+
+A confirmed entry in UniProt, DBAASP, DRAMP, ChEMBL (as peptide type), or PDB is strong evidence for True. Absence from these databases does NOT mean False — use other evidence.
 
 IMPORTANT: Format your response EXACTLY as:
 

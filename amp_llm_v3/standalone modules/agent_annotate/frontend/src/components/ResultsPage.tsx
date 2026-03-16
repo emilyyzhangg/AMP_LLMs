@@ -1,7 +1,26 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { listResults, getResults, getResultsSummary, getResultsCsvUrl } from "../api/client";
-import type { ResultListItem, ResultSummary } from "../types";
+import type { ResultListItem, ResultSummary, TimingInfo } from "../types";
+
+function formatElapsed(seconds: number): string {
+  if (seconds < 60) return `${seconds.toFixed(1)}s`;
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  if (mins < 60) return `${mins}m ${secs.toFixed(0)}s`;
+  const hrs = Math.floor(mins / 60);
+  const remainMins = mins % 60;
+  return `${hrs}h ${remainMins}m`;
+}
+
+function TimingBadge({ timing }: { timing?: TimingInfo }) {
+  if (!timing || !timing.elapsed_seconds) return null;
+  return (
+    <span className="text-sm text-muted" title={`${timing.avg_seconds_per_trial.toFixed(1)}s/trial | ${timing.timezone}`}>
+      {formatElapsed(timing.elapsed_seconds)}
+    </span>
+  );
+}
 
 function ResultsList() {
   const navigate = useNavigate();
@@ -38,6 +57,7 @@ function ResultsList() {
                 <th>Successful</th>
                 <th>Failed</th>
                 <th>Review</th>
+                <th>Duration</th>
                 <th>Version</th>
                 <th>Date</th>
               </tr>
@@ -54,9 +74,10 @@ function ResultsList() {
                   <td>{r.successful}</td>
                   <td>{r.failed}</td>
                   <td>{r.manual_review}</td>
+                  <td className="text-sm text-muted"><TimingBadge timing={r.timing} /></td>
                   <td className="text-sm text-muted">{r.version || "\u2014"}</td>
                   <td className="text-sm text-muted">
-                    {r.timestamp ? new Date(r.timestamp).toLocaleString() : "\u2014"}
+                    {r.timestamp || "\u2014"}
                   </td>
                 </tr>
               ))}
@@ -116,6 +137,20 @@ function ResultDetail({ jobId }: { jobId: string }) {
           | config: {(results.version as Record<string, string>).config_hash || "\u2014"}
         </div>
       )}
+
+      {/* Timing metadata */}
+      {(results.timing as TimingInfo | undefined)?.elapsed_seconds ? (() => {
+        const t = results.timing as TimingInfo;
+        return (
+          <div className="text-sm text-muted mb-2" style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap" }}>
+            {t.started_at && <span>Started: {t.started_at} PT</span>}
+            {t.finished_at && <span>Finished: {t.finished_at} PT</span>}
+            <span>Duration: {formatElapsed(t.elapsed_seconds)}</span>
+            <span>Avg/trial: {t.avg_seconds_per_trial.toFixed(1)}s</span>
+            {t.commit_hash && <span>Commit: {t.commit_hash}</span>}
+          </div>
+        );
+      })() : null}
 
       {/* CSV download links */}
       <div className="flex gap-1 mb-2">

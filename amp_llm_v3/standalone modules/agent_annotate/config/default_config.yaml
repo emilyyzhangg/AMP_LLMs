@@ -61,6 +61,18 @@ research_agents:
       - duckduckgo
       - serpapi
       - scholar
+  dbaasp:
+    sources:
+      - dbaasp
+  chembl:
+    sources:
+      - chembl
+  rcsb_pdb:
+    sources:
+      - rcsb_pdb
+  ebi_proteins:
+    sources:
+      - ebi_proteins
 
 annotation_agents:
   classification:
@@ -83,11 +95,23 @@ orchestrator:
   max_retry_rounds: null
   parallel_research: true
   parallel_annotation: true
-  # Hardware profile: "mac_mini" (16GB, sequential Ollama, smaller models)
-  #                   "server"   (unlimited VRAM, parallel Ollama, largest models)
+  # Hardware profile: "mac_mini" (16-24GB, sequential Ollama, smaller models)
+  #                   "server"   (240+ GB RAM, Kimi K2 for classification/reconciliation)
   # Controls model selection for classification/peptide (high-accuracy fields)
   # and concurrency settings. See METHODOLOGY.md Section 15.1 for full details.
+  # Server profile uses kimi-k2-thinking for classification (1T MoE, 32B active)
+  # and keeps models loaded between annotations to avoid reload overhead.
   hardware_profile: "mac_mini"
+
+  # Server model overrides (used when hardware_profile: "server")
+  server_models:
+    classification: "kimi-k2-thinking"
+    reconciler: "kimi-k2-thinking"
+    primary: "qwen2.5:14b"
+    verifiers:
+      - "qwen2.5:14b"
+      - "llama3.1:8b"
+      - "gemma2:9b"
 
 ollama:
   host: localhost

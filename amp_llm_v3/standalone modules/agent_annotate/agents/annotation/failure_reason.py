@@ -79,18 +79,20 @@ Based on ALL the evidence above, determine the reason for failure.
 
 CRITICAL RULES:
 1. Published literature is MORE RELIABLE than the whyStopped field. A trial with whyStopped="Sponsor decision" might actually have failed due to toxicity if papers report adverse events.
-2. COMPLETED trials CAN have failure reasons — if published results show the trial didn't meet endpoints, the reason is "Ineffective for purpose".
+2. COMPLETED trials CAN have failure reasons — BUT ONLY if there is PUBLISHED EVIDENCE of negative outcomes (e.g., paper says "failed to meet primary endpoint", "no significant difference"). Do NOT assume failure just because a trial completed.
 3. If the trial did NOT fail (positive results, still recruiting, etc.), return EMPTY.
 4. Look beyond surface labels — "sponsor decision" often masks the real reason.
 5. RECENCY: If multiple publications exist with conflicting findings, the most recent publication takes priority. Newer evidence supersedes older evidence.
+6. DEFAULT FOR COMPLETED TRIALS: If status is COMPLETED and there is NO published evidence of negative outcomes, the answer is EMPTY. You MUST have POSITIVE evidence of failure (a paper, a press release, a data report showing negative results) to assign a failure reason to a completed trial. Absence of published results ≠ failure.
+7. NEVER invent or assume a failure reason. If the evidence does not explicitly demonstrate failure, return EMPTY.
 
 Choose EXACTLY ONE:
 - Business Reason: Funding withdrawn, sponsor decision (with no efficacy/safety cause), company dissolved, strategic pivot, regulatory changes, manufacturing issues
-- Ineffective for purpose: Published results show trial failed to meet primary endpoints, no significant difference found, futility analysis
+- Ineffective for purpose: PUBLISHED results show trial FAILED to meet primary endpoints, no significant difference found, futility analysis. Requires EXPLICIT negative outcome data — not speculation.
 - Toxic/Unsafe: Safety concerns, adverse events, toxicity findings, DSMB stopped for safety, published adverse event reports
 - Due to covid: Trial specifically disrupted by COVID-19 pandemic
 - Recruitment issues: Slow enrollment, unable to recruit, site closures (not COVID-related)
-- EMPTY: Trial did not fail (positive, still active, or truly unknown)
+- EMPTY: Trial did not fail, OR no evidence of failure exists. This is the DEFAULT for COMPLETED trials without published negative results.
 
 IMPORTANT: Format your response EXACTLY as:
 Reason for Failure: [Business Reason, Ineffective for purpose, Toxic/Unsafe, Due to covid, Recruitment issues, or EMPTY]
@@ -208,6 +210,11 @@ class FailureReasonAgent(BaseAnnotationAgent):
     def _pass1_says_no_failure(self, pass1_text: str) -> bool:
         """Check if Pass 1 clearly says this is not a failure.
 
+        v4: Added COMPLETED-without-negative-evidence rule. If a trial
+        is COMPLETED and there is no published evidence of negative outcomes,
+        treat it as no failure. The agent must require POSITIVE evidence of
+        failure, not assume failure from completion.
+
         v3: More robust detection — also catches positive signals,
         recruiting/active trials, and malformed Pass 1 output.
         Previously only matched exact "No" answer, missing cases where
@@ -234,20 +241,29 @@ class FailureReasonAgent(BaseAnnotationAgent):
             "recruiting", "active_not_recruiting", "active, not recruiting",
             "enrolling_by_invitation", "not_yet_recruiting",
         ])
-        # Check for evidence of failure
+        # Check for PUBLISHED evidence of negative outcomes (required to call it a failure)
         has_failure = any(kw in lower for kw in [
             "terminated", "withdrawn", "failed to meet", "did not meet",
             "no significant difference", "futility", "adverse events led",
             "safety concerns", "stopped early", "discontinued",
+            "negative results", "did not demonstrate", "failed to demonstrate",
         ])
 
-        # If clearly active/recruiting and no failure evidence → not a failure
+        # Extract trial status
         status_match = re.search(r"trial status:?\s*(.+?)(?:\n|$)", lower)
-        if status_match:
-            status = status_match.group(1).strip()
-            if any(s in status for s in ["recruiting", "active", "enrolling"]):
-                if not has_failure:
-                    return True
+        status = status_match.group(1).strip() if status_match else ""
+
+        # If clearly active/recruiting and no failure evidence → not a failure
+        if any(s in status for s in ["recruiting", "active", "enrolling"]):
+            if not has_failure:
+                return True
+
+        # COMPLETED trials without published negative evidence → no failure
+        # This is the key rule: COMPLETED + no published negative results = no failure reason.
+        # The agent must find POSITIVE evidence of failure to assign a reason.
+        if "completed" in status or "complete" in status:
+            if not has_failure:
+                return True
 
         # If positive signals and no failure evidence → not a failure
         if has_positive and not has_failure:

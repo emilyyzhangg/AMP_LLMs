@@ -40,10 +40,14 @@ def get_version_info() -> VersionInfo:
 
 def get_version_stamp() -> dict:
     """Return a dict suitable for embedding in JSON output."""
+    from app.models.job import now_pacific
+    ts = now_pacific()
     return {
         "version": SEMANTIC_VERSION,
         "git_commit": get_git_commit_short(),
         "git_commit_full": get_git_commit_full(),
         "config_hash": config_service.get_hash(),
-        "timestamp": __import__("datetime").datetime.utcnow().isoformat(),
+        "timestamp": ts.strftime("%Y-%m-%d %H:%M:%S PT"),
+        "timestamp_iso": ts.isoformat(),
+        "timezone": "America/Los_Angeles",
     }
