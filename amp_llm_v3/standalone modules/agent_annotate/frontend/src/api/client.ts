@@ -87,6 +87,12 @@ export const getReviewItems = (jobId?: string, status?: string) => {
 export const getReviewStats = () =>
   request<ReviewStats>("/review/stats");
 
+export const getFieldValues = () =>
+  request<{
+    fields: Record<string, string[]>;
+    model_map: Record<string, { name: string; role: string }>;
+  }>("/review/field-values");
+
 export const submitReview = (
   jobId: string,
   nctId: string,
