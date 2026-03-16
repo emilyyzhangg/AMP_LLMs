@@ -386,6 +386,10 @@ class PipelineOrchestrator:
 
                 # Build trial result
                 metadata = self._extract_metadata(nct_id, research)
+
+                # Build research coverage metadata (Phase 1.5)
+                research_coverage = self._build_research_coverage(research)
+
                 trial_output = {
                     "nct_id": nct_id,
                     "metadata": metadata.model_dump(),
@@ -393,6 +397,7 @@ class PipelineOrchestrator:
                     "verification": verified.model_dump(),
                     "research_used": [r.agent_name for r in research],
                     "research_results": [r.model_dump() for r in research],
+                    "research_coverage": research_coverage,
                 }
                 all_trial_results.append(trial_output)
 
@@ -811,6 +816,13 @@ class PipelineOrchestrator:
             if consensus.flag_reason and "insufficient" in consensus.flag_reason:
                 reason = "insufficient_evidence"
 
+            # Extract primary annotator reasoning and confidence
+            primary_reasoning = ""
+            primary_confidence = 0.0
+            if annotation:
+                primary_reasoning = annotation.reasoning or ""
+                primary_confidence = annotation.confidence
+
             item = ReviewItem(
                 job_id=job_id,
                 nct_id=nct_id,
@@ -818,6 +830,8 @@ class PipelineOrchestrator:
                 original_value=consensus.original_value,
                 suggested_values=suggested,
                 opinions=[o.model_dump() for o in consensus.opinions],
+                primary_reasoning=primary_reasoning,
+                primary_confidence=primary_confidence,
             )
             review_service.add(item)
             logger.info(
@@ -916,6 +930,32 @@ class PipelineOrchestrator:
             flagged_for_review=any_flagged,
             flag_reason="; ".join(flag_reasons) if flag_reasons else None,
         )
+
+    @staticmethod
+    def _build_research_coverage(
+        research_data: list[ResearchResult],
+    ) -> dict[str, dict]:
+        """Build per-agent research coverage metadata for a trial.
+
+        Returns a dict mapping agent_name to:
+          {citations_count: int, has_data: bool, quality_avg: float}
+        """
+        coverage: dict[str, dict] = {}
+        for result in research_data:
+            citations = result.citations
+            citations_count = len(citations)
+            has_data = citations_count > 0 and not result.error
+            quality_avg = 0.0
+            if citations_count > 0:
+                quality_avg = round(
+                    sum(c.quality_score for c in citations) / citations_count, 3
+                )
+            coverage[result.agent_name] = {
+                "citations_count": citations_count,
+                "has_data": has_data,
+                "quality_avg": quality_avg,
+            }
+        return coverage
 
     def _extract_metadata(
         self, nct_id: str, research_data: list[ResearchResult]

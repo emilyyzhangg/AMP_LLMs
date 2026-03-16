@@ -93,9 +93,10 @@ async def export_csv(
 
     if format == "full":
         config_snapshot = data.get("config_snapshot", {}) if data else {}
-        csv_content = generate_full_csv(trials, config_snapshot=config_snapshot)
+        csv_content = generate_full_csv(trials, config_snapshot=config_snapshot,
+                                        job_id=job_id)
     else:
-        csv_content = generate_standard_csv(trials)
+        csv_content = generate_standard_csv(trials, job_id=job_id)
 
     path = save_csv(job_id, csv_content, label=format)
 
@@ -104,6 +105,57 @@ async def export_csv(
         media_type="text/csv",
         headers={"Content-Disposition": f"attachment; filename={path.name}"},
     )
+
+
+@router.get("/{job_id}/partial")
+async def get_partial_results(job_id: str):
+    """Return trials completed so far for a running (or any) job.
+
+    Reads directly from the persistence directory (results/annotations/{job_id}/*.json)
+    so it works even while the pipeline is still running. Returns the same format as
+    full results but with only completed trials and a count object.
+    """
+    annotations_dir = RESULTS_DIR / "annotations" / job_id
+    if not annotations_dir.exists():
+        raise HTTPException(status_code=404, detail="No annotation data found for this job")
+
+    # Load all completed trial JSONs from disk
+    completed_trials = []
+    for trial_path in sorted(annotations_dir.glob("*.json")):
+        if trial_path.name.endswith(".tmp"):
+            continue
+        try:
+            with open(trial_path, "r") as f:
+                trial_data = json.load(f)
+            completed_trials.append(trial_data)
+        except Exception:
+            continue
+
+    # Determine total trials from the job (in-memory) or research meta
+    total = len(completed_trials)
+    job = orchestrator.get_job(job_id)
+    if job:
+        total = job.progress.total_trials
+    else:
+        # Try research meta for the total count
+        research_meta_path = RESULTS_DIR / "research" / job_id / "_meta.json"
+        if research_meta_path.exists():
+            try:
+                with open(research_meta_path, "r") as f:
+                    meta = json.load(f)
+                total = meta.get("total_trials", len(completed_trials))
+            except Exception:
+                pass
+
+    return {
+        "job_id": job_id,
+        "count": {
+            "completed": len(completed_trials),
+            "total": total,
+        },
+        "trials": completed_trials,
+        "status": job.status if job else "unknown",
+    }
 
 
 @router.get("/{job_id}/summary")

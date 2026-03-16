@@ -17,6 +17,7 @@ from datetime import datetime
 from app.config import RESULTS_DIR
 from app.services.version_service import get_version_stamp
 from app.models.job import now_pacific
+from app.services.review_service import review_service
 
 ANNOTATION_FIELDS = ["classification", "delivery_mode", "outcome", "reason_for_failure", "peptide"]
 
@@ -75,6 +76,9 @@ FULL_EXTRA_PER_FIELD = [
     "{field}_verifier_opinions",
     "{field}_reconciler_used",
     "{field}_manual_review",
+    "{field}_review_status",
+    "{field}_reviewer_value",
+    "{field}_reviewer_note",
 ]
 
 FULL_EXTRA_GLOBAL = [
@@ -185,8 +189,22 @@ def _build_verifier_summary(ver: dict) -> str:
     return summary
 
 
+def _get_review_decisions(job_id: str) -> dict[str, "ReviewItem"]:
+    """Fetch all review decisions for a job, keyed by '{nct_id}:{field_name}'.
+
+    Re-reads from review_service each time (not cached) so exports always
+    reflect the latest review state.
+    """
+    decisions = {}
+    for item in review_service.get_all(job_id=job_id):
+        if item.status in ("approved", "overridden", "skipped"):
+            key = f"{item.nct_id}:{item.field_name}"
+            decisions[key] = item
+    return decisions
+
+
 def _extract_row(trial: dict, full: bool = False, version_info: dict = None,
-                 config_snapshot: dict = None) -> dict:
+                 config_snapshot: dict = None, review_decisions: dict = None) -> dict:
     """Extract a flat CSV row from a trial result dict.
 
     Args:
@@ -194,6 +212,7 @@ def _extract_row(trial: dict, full: bool = False, version_info: dict = None,
         full: If True, include all traceability and verification columns.
         version_info: Version stamp dict for full output.
         config_snapshot: Job config snapshot for resolving model names.
+        review_decisions: Dict of review decisions keyed by '{nct_id}:{field_name}'.
     """
     meta = trial.get("metadata", {})
     annotations = trial.get("annotations", [])
@@ -225,12 +244,29 @@ def _extract_row(trial: dict, full: bool = False, version_info: dict = None,
         "Interventions": ", ".join(meta.get("interventions", [])) if isinstance(meta.get("interventions"), list) else meta.get("interventions", ""),
     }
 
+    nct_id = trial.get("nct_id", meta.get("nct_id", ""))
+
     for field in ANNOTATION_FIELDS:
         ann = ann_by_field.get(field, {})
         ver = ver_by_field.get(field, {})
 
         # Use verification final_value if available, else annotation value
         final = ver.get("final_value") or ann.get("value", "")
+
+        # Apply review decisions: overridden -> use reviewer_value; approved -> keep original
+        review_status = ""
+        reviewer_value = ""
+        reviewer_note = ""
+        if review_decisions:
+            review_key = f"{nct_id}:{field}"
+            decision = review_decisions.get(review_key)
+            if decision:
+                review_status = decision.status
+                reviewer_value = decision.reviewer_value or ""
+                reviewer_note = decision.reviewer_note or ""
+                if decision.status == "overridden" and decision.reviewer_value:
+                    final = decision.reviewer_value
+                # approved: keep original value, just mark status
 
         # Map to standard column names
         col_map = {
@@ -313,6 +349,9 @@ def _extract_row(trial: dict, full: bool = False, version_info: dict = None,
             )
             row[f"{field}_reconciler_used"] = ver.get("reconciler_used", False)
             row[f"{field}_manual_review"] = not ver.get("consensus_reached", True)
+            row[f"{field}_review_status"] = review_status
+            row[f"{field}_reviewer_value"] = reviewer_value
+            row[f"{field}_reviewer_note"] = reviewer_note
 
     if full:
         row["flagged_for_review"] = verification.get("flagged_for_review", False)
@@ -326,26 +365,32 @@ def _extract_row(trial: dict, full: bool = False, version_info: dict = None,
     return row
 
 
-def generate_standard_csv(trials: list[dict]) -> str:
+def generate_standard_csv(trials: list[dict], job_id: str = None) -> str:
     output = io.StringIO()
     version = get_version_stamp()
     output.write(f"# Agent Annotate v{version['version']} | commit: {version['git_commit']} | {version['timestamp']}\n")
     writer = csv.DictWriter(output, fieldnames=STANDARD_COLUMNS, extrasaction="ignore")
     writer.writeheader()
+    # Dynamically read review state each time (not cached from completion)
+    review_decisions = _get_review_decisions(job_id) if job_id else {}
     for trial in trials:
-        writer.writerow(_extract_row(trial, full=False))
+        writer.writerow(_extract_row(trial, full=False, review_decisions=review_decisions))
     return output.getvalue()
 
 
-def generate_full_csv(trials: list[dict], config_snapshot: dict = None) -> str:
+def generate_full_csv(trials: list[dict], config_snapshot: dict = None,
+                      job_id: str = None) -> str:
     output = io.StringIO()
     version = get_version_stamp()
     output.write(f"# Agent Annotate v{version['version']} (Full) | commit: {version['git_commit']} | {version['timestamp']}\n")
     writer = csv.DictWriter(output, fieldnames=FULL_COLUMNS, extrasaction="ignore")
     writer.writeheader()
+    # Dynamically read review state each time (not cached from completion)
+    review_decisions = _get_review_decisions(job_id) if job_id else {}
     for trial in trials:
         writer.writerow(_extract_row(trial, full=True, version_info=version,
-                                     config_snapshot=config_snapshot))
+                                     config_snapshot=config_snapshot,
+                                     review_decisions=review_decisions))
     return output.getvalue()
 
 
@@ -359,11 +404,13 @@ def save_csv(job_id: str, csv_content: str, label: str = "standard") -> Path:
     return path
 
 
-def _enrich_trial_json(trial: dict, config_snapshot: dict = None) -> dict:
+def _enrich_trial_json(trial: dict, config_snapshot: dict = None,
+                       review_decisions: dict = None) -> dict:
     """Add structured traceability metadata to a trial dict for JSON output.
 
     Enriches each annotation in the trial with a 'traceability' block containing
-    the annotator model, agent, sources, evidence text, and verifier summary.
+    the annotator model, agent, sources, evidence text, verifier summary,
+    and review status/decisions.
     Does not modify the original dict; returns a new one.
     """
     enriched = dict(trial)
@@ -406,6 +453,22 @@ def _enrich_trial_json(trial: dict, config_snapshot: dict = None) -> dict:
                 "confidence": o.get("confidence", 0.0),
             })
 
+        # Look up review decision for this field
+        nct_id = trial.get("nct_id", "")
+        review_status = None
+        reviewer_value = None
+        reviewer_note = None
+        effective_final_value = ver.get("final_value", "")
+        if review_decisions:
+            review_key = f"{nct_id}:{field}"
+            decision = review_decisions.get(review_key)
+            if decision:
+                review_status = decision.status
+                reviewer_value = decision.reviewer_value
+                reviewer_note = decision.reviewer_note
+                if decision.status == "overridden" and decision.reviewer_value:
+                    effective_final_value = decision.reviewer_value
+
         ann["traceability"] = {
             "annotator_model": ann.get("model_name", ""),
             "agent": FIELD_TO_AGENT.get(field, field),
@@ -418,7 +481,10 @@ def _enrich_trial_json(trial: dict, config_snapshot: dict = None) -> dict:
             "reconciler_used": ver.get("reconciler_used", False),
             "reconciler_model": reconciler_model if ver.get("reconciler_used", False) else None,
             "reconciler_reasoning": ver.get("reconciler_reasoning", None),
-            "final_value": ver.get("final_value", ""),
+            "final_value": effective_final_value,
+            "review_status": review_status,
+            "reviewer_value": reviewer_value,
+            "reviewer_note": reviewer_note,
         }
         enriched_annotations.append(ann)
 
@@ -433,11 +499,15 @@ def save_json_output(job_id: str, data: dict) -> Path:
 
     config_snapshot = data.get("config_snapshot", {})
 
+    # Dynamically read review state each time (not cached from completion)
+    review_decisions = _get_review_decisions(job_id)
+
     # Enrich trials with traceability metadata
     enriched_data = dict(data)
     enriched_trials = []
     for trial in data.get("trials", []):
-        enriched_trials.append(_enrich_trial_json(trial, config_snapshot))
+        enriched_trials.append(_enrich_trial_json(trial, config_snapshot,
+                                                  review_decisions=review_decisions))
     enriched_data["trials"] = enriched_trials
 
     path = json_dir / f"{job_id}.json"
@@ -447,8 +517,36 @@ def save_json_output(job_id: str, data: dict) -> Path:
 
 
 def load_json_output(job_id: str) -> dict:
+    """Load JSON output and re-apply current review decisions dynamically.
+
+    Re-reads review state so exports always reflect the latest decisions,
+    not what was cached at job completion time.
+    """
     path = RESULTS_DIR / "json" / f"{job_id}.json"
     if not path.exists():
         return {}
     with open(path, "r") as f:
-        return json.load(f)
+        data = json.load(f)
+
+    # Re-apply review decisions to traceability blocks and final values
+    review_decisions = _get_review_decisions(job_id)
+    if review_decisions:
+        for trial in data.get("trials", []):
+            nct_id = trial.get("nct_id", "")
+            for ann in trial.get("annotations", []):
+                field = ann.get("field_name", "")
+                review_key = f"{nct_id}:{field}"
+                decision = review_decisions.get(review_key)
+                traceability = ann.get("traceability", {})
+                if decision:
+                    traceability["review_status"] = decision.status
+                    traceability["reviewer_value"] = decision.reviewer_value
+                    traceability["reviewer_note"] = decision.reviewer_note
+                    if decision.status == "overridden" and decision.reviewer_value:
+                        traceability["final_value"] = decision.reviewer_value
+                else:
+                    # Ensure review fields exist even if no decision
+                    traceability.setdefault("review_status", None)
+                    traceability.setdefault("reviewer_value", None)
+                    traceability.setdefault("reviewer_note", None)
+    return data

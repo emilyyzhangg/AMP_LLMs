@@ -81,3 +81,5 @@ class ReviewItem(BaseModel):
     status: str = "pending"  # pending | approved | overridden | skipped
     reviewer_value: Optional[str] = None
     reviewer_note: Optional[str] = None
+    primary_reasoning: str = ""
+    primary_confidence: float = 0.0

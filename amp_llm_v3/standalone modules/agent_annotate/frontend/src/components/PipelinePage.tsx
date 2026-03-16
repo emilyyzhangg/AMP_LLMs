@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getPipelineStatus, cancelJob } from "../api/client";
-import type { PipelineStatus } from "../types";
+import { getPipelineStatus, cancelJob, getPartialResults } from "../api/client";
+import type { PipelineStatus, PartialResults } from "../types";
 
 const PHASES = ["researching", "annotating", "verifying"] as const;
 
@@ -19,6 +19,8 @@ export default function PipelinePage() {
   const [status, setStatus] = useState<PipelineStatus | null>(null);
   const [error, setError] = useState("");
   const [cancelling, setCancelling] = useState(false);
+  const [partialResults, setPartialResults] = useState<PartialResults | null>(null);
+  const [partialError, setPartialError] = useState(false);
 
   useEffect(() => {
     if (!jobId) return;
@@ -42,13 +44,33 @@ export default function PipelinePage() {
       }
     };
 
+    const pollPartial = async () => {
+      if (partialError) return; // Stop trying if endpoint doesn't exist
+      try {
+        const data = await getPartialResults(jobId);
+        if (!active) return;
+        if (data) {
+          setPartialResults(data);
+        } else {
+          // null means endpoint not available
+          setPartialError(true);
+        }
+      } catch {
+        if (!active) return;
+        setPartialError(true);
+      }
+    };
+
     poll();
+    pollPartial();
     const interval = setInterval(poll, 2000);
+    const partialInterval = setInterval(pollPartial, 3000);
     return () => {
       active = false;
       clearInterval(interval);
+      clearInterval(partialInterval);
     };
-  }, [jobId, navigate]);
+  }, [jobId, navigate, partialError]);
 
   const handleCancel = async () => {
     if (!jobId || cancelling) return;
@@ -177,6 +199,53 @@ export default function PipelinePage() {
           </div>
         )}
       </div>
+
+      {/* Partial Results Section */}
+      {completed > 0 && !partialError && (
+        <div className="card">
+          <div className="card-title">
+            Partial Results
+            {partialResults && (
+              <span className="text-sm text-muted" style={{ fontWeight: 400, marginLeft: "0.75rem" }}>
+                {partialResults.trials.length} trial{partialResults.trials.length !== 1 ? "s" : ""} completed
+              </span>
+            )}
+          </div>
+
+          {partialResults && partialResults.trials.length > 0 ? (
+            <div className="partial-results-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>NCT ID</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {partialResults.trials.map((trial, i) => (
+                    <tr key={i}>
+                      <td>{trial.nct_id}</td>
+                      <td>
+                        {trial.status === "ok" || trial.status === "completed" ? (
+                          <span className="badge badge-completed">OK</span>
+                        ) : trial.status === "failed" ? (
+                          <span className="badge badge-failed">Failed</span>
+                        ) : trial.status === "review" ? (
+                          <span className="badge badge-cancelled">Review</span>
+                        ) : (
+                          <span className="badge badge-running">{trial.status}</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="text-sm text-muted">Waiting for partial results data...</div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
