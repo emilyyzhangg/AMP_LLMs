@@ -25,6 +25,7 @@ from amp_llm.llm.utils.session import OllamaSessionManager
 # Note: NCT lookup now uses standalone API service
 from webapp.config import settings
 from webapp.auth import verify_api_key
+from webapp.auth_client import get_token_from_request, validate_token
 
 # ============================================================================
 # CRITICAL FIX: Configure MIME types
@@ -51,6 +52,71 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ============================================================================
+# Auth middleware — protects all sensitive endpoints.
+# Accepts EITHER:
+#   1. amp_auth cookie (central auth service)
+#   2. Bearer API key (existing per-service auth)
+# Public paths: /, /app, /health, /static/*, /api/themes, /debug/files
+# ============================================================================
+from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi.responses import JSONResponse as _JSONResponse
+
+# Paths that should remain public (no auth required)
+_PUBLIC_PATH_PREFIXES = (
+    "/static/",
+    "/docs",
+    "/openapi.json",
+    "/redoc",
+)
+_PUBLIC_EXACT_PATHS = {
+    "/",
+    "/app",
+    "/health",
+    "/api/themes",
+}
+
+
+class LLMAuthMiddleware(BaseHTTPMiddleware):
+    """Require authentication for all sensitive API/data endpoints."""
+
+    async def dispatch(self, request, call_next):
+        path = request.scope["path"]
+
+        # Let CORS preflight (OPTIONS) through — handled by CORSMiddleware
+        if request.method == "OPTIONS":
+            return await call_next(request)
+
+        # Allow public paths
+        if path in _PUBLIC_EXACT_PATHS:
+            return await call_next(request)
+        for prefix in _PUBLIC_PATH_PREFIXES:
+            if path.startswith(prefix):
+                return await call_next(request)
+
+        # Try amp_auth cookie first
+        token = get_token_from_request(request)
+        if token:
+            user = validate_token(token, app_slug="amp-llm")
+            if user:
+                request.state.user = user
+                return await call_next(request)
+
+        # Fall back to API key auth (Bearer token checked against settings.api_keys)
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            api_key = auth_header[7:]
+            if api_key in settings.api_keys:
+                return await call_next(request)
+
+        return _JSONResponse(
+            status_code=401,
+            content={"detail": "Not authenticated"},
+        )
+
+
+app.add_middleware(LLMAuthMiddleware)
 
 # ============================================================================
 # Directory setup

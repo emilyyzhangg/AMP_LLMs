@@ -8,7 +8,7 @@
     <array>
         <string>/bin/bash</string>
         <string>-c</string>
-        <string>cd "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate" &amp;&amp; PYTHONPATH=. exec /Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/llm_env/bin/uvicorn app.main:app --host 0.0.0.0 --port 8005</string>
+        <string>cd "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate" &amp;&amp; PYTHONPATH=. exec /Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/llm_env/bin/uvicorn app.main:app --host 127.0.0.1 --port 8005</string>
     </array>
     <key>EnvironmentVariables</key>
     <dict>
