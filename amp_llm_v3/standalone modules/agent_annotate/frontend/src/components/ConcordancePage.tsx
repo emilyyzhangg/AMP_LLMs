@@ -107,19 +107,23 @@ function ConcordanceSummaryTable({
 function FieldDetail({ field }: { field: ConcordanceField }) {
   const [open, setOpen] = useState(false);
 
-  // Build bar-chart data from value distributions
+  // Build bar-chart data from value distributions (keys are dynamic: "Agent", "R1", "R2", etc.)
+  const distLabels = Object.keys(field.value_distribution);
   const distData = useMemo(() => {
-    const keys = new Set<string>();
-    Object.keys(field.value_distribution.agent).forEach((k) => keys.add(k));
-    Object.keys(field.value_distribution.human).forEach((k) => keys.add(k));
-    return Array.from(keys)
+    const allValues = new Set<string>();
+    for (const label of distLabels) {
+      Object.keys(field.value_distribution[label]).forEach((k) => allValues.add(k));
+    }
+    return Array.from(allValues)
       .sort()
-      .map((value) => ({
-        value,
-        Agent: field.value_distribution.agent[value] || 0,
-        Human: field.value_distribution.human[value] || 0,
-      }));
-  }, [field]);
+      .map((value) => {
+        const row: Record<string, string | number> = { value };
+        for (const label of distLabels) {
+          row[label] = field.value_distribution[label][value] || 0;
+        }
+        return row;
+      });
+  }, [field, distLabels]);
 
   // Build confusion-matrix rows/cols
   const cmRows = Object.keys(field.confusion_matrix).sort();
@@ -171,8 +175,9 @@ function FieldDetail({ field }: { field: ConcordanceField }) {
                 }}
               />
               <Legend wrapperStyle={{ color: "var(--text-secondary)", fontSize: 12 }} />
-              <Bar dataKey="Agent" fill="var(--accent)" radius={[3, 3, 0, 0]} />
-              <Bar dataKey="Human" fill="var(--success)" radius={[3, 3, 0, 0]} />
+              {distLabels.map((label, i) => (
+                <Bar key={label} dataKey={label} fill={i === 0 ? "var(--accent)" : "var(--success)"} radius={[3, 3, 0, 0]} />
+              ))}
             </BarChart>
           </ResponsiveContainer>
 
@@ -244,8 +249,8 @@ function FieldDetail({ field }: { field: ConcordanceField }) {
                     {field.disagreements.map((d, i) => (
                       <tr key={i}>
                         <td>{d.nct_id}</td>
-                        <td>{d.agent_value}</td>
-                        <td>{d.human_value}</td>
+                        <td>{d.value_a}</td>
+                        <td>{d.value_b}</td>
                       </tr>
                     ))}
                   </tbody>
