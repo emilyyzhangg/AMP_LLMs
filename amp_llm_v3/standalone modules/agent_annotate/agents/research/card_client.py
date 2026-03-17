@@ -10,6 +10,7 @@ a formal REST API. Both are free with no authentication.
 """
 
 import re
+import logging
 from typing import Optional
 from datetime import datetime
 
@@ -19,16 +20,43 @@ from agents.base import BaseResearchAgent
 from agents.research.http_utils import resilient_get
 from app.models.research import ResearchResult, SourceCitation
 
+logger = logging.getLogger("agent_annotate.research.card")
+
 CARD_BASE = "https://card.mcmaster.ca"
 CARD_LIVESEARCH_URL = f"{CARD_BASE}/livesearch"
-CARD_JSON_URL = f"{CARD_BASE}/load/json"
 
-# Regex to extract ontology IDs and names from livesearch HTML
+# Regex to extract ontology IDs and names from livesearch HTML.
+# The JSON response escapes forward slashes (e.g. ``https:\/\/``),
+# so we accept both ``/`` and ``\/`` in the URL.
 _LIVESEARCH_RE = re.compile(
-    r"<a\s+href=['\"]https?://card\.mcmaster\.ca/ontology/(\d+)['\"]>"
+    r"<a\s+href=['\"]"
+    r"https?:(?:\\?/){2}card\.mcmaster\.ca(?:\\?/)ontology(?:\\?/)(\d+)"
+    r"['\"]>"
     r"([^<]+)</a>",
     re.IGNORECASE,
 )
+
+
+def _extract_intervention_names(metadata: dict | None) -> list[str]:
+    """Extract plain-string intervention names from metadata.
+
+    Handles both list-of-dicts (``[{"name": "Nisin"}]``) and
+    list-of-strings (``["Nisin"]``) formats.
+    """
+    if not metadata:
+        return []
+    raw = metadata.get("interventions", [])
+    if not isinstance(raw, list):
+        return []
+    names: list[str] = []
+    for item in raw:
+        if isinstance(item, dict):
+            name = item.get("name") or item.get("intervention_name") or ""
+            if name:
+                names.append(str(name))
+        elif isinstance(item, str) and item:
+            names.append(item)
+    return names
 
 
 class CARDClient(BaseResearchAgent):
@@ -42,11 +70,7 @@ class CARDClient(BaseResearchAgent):
         raw_data: dict = {}
 
         # Extract intervention names to search for resistance-related terms
-        interventions: list[str] = []
-        if metadata:
-            interventions = metadata.get("interventions", [])
-            if isinstance(interventions, list):
-                interventions = [str(i) for i in interventions]
+        interventions = _extract_intervention_names(metadata)
 
         if not interventions:
             return ResearchResult(
@@ -56,29 +80,39 @@ class CARDClient(BaseResearchAgent):
                 raw_data={"note": "No interventions to search"},
             )
 
-        async with httpx.AsyncClient(timeout=15) as client:
-            # Load the full ARO JSON once (cached across interventions)
-            aro_index = await self._load_aro_index(client, raw_data)
-
+        async with httpx.AsyncClient(timeout=20) as client:
             for intervention in interventions[:3]:
                 try:
-                    # Step 1: livesearch to find matching ontology entries
+                    # livesearch to find matching ontology entries
                     matches = await self._livesearch(client, intervention, raw_data)
                     raw_data[f"card_{intervention}_matches"] = len(matches)
 
                     if not matches:
                         continue
 
-                    # Step 2: enrich each match with ARO index data
-                    for aro_id, aro_name in matches[:3]:
-                        entry = aro_index.get(aro_id, {})
-                        citation = self._build_citation(
-                            aro_id, aro_name, entry, intervention
-                        )
-                        if citation:
-                            citations.append(citation)
+                    # Build citations directly from livesearch results.
+                    # The old approach downloaded the full 3 MB ARO JSON
+                    # index and looked up each ID, but that frequently
+                    # timed out.  Livesearch gives us names and ARO IDs
+                    # which is enough for a useful citation.
+                    for aro_id, aro_name in matches[:5]:
+                        citations.append(SourceCitation(
+                            source_name="card",
+                            source_url=f"{CARD_BASE}/ontology/{aro_id}",
+                            identifier=f"ARO:{aro_id}",
+                            title=f"{aro_name} - CARD",
+                            snippet=(
+                                f"ARO term: {aro_name}\n"
+                                f"ARO ID: {aro_id}\n"
+                                f"Search term: {intervention}\n"
+                                f"Source: Comprehensive Antibiotic Resistance Database"
+                            ),
+                            quality_score=self.compute_quality_score("card"),
+                            retrieved_at=datetime.utcnow().isoformat(),
+                        ))
 
                 except Exception as e:
+                    logger.warning("CARD search failed for %s: %s", intervention, e)
                     raw_data[f"card_{intervention}_error"] = str(e)
 
         return ResearchResult(
@@ -101,7 +135,7 @@ class CARDClient(BaseResearchAgent):
                 client=client,
                 params={"query": query},
                 headers={
-                    "Accept": "application/json",
+                    "Accept": "application/json, text/html, */*",
                     "X-Requested-With": "XMLHttpRequest",
                 },
             )
@@ -109,165 +143,23 @@ class CARDClient(BaseResearchAgent):
                 raw_data[f"card_livesearch_{query}_status"] = resp.status_code
                 return []
 
+            body = resp.text.strip()
+            if not body:
+                return []
+
             data = resp.json()
+
+            # Response shape: {"error": false, "response": "<li>...HTML...</li>"}
             html_content = data.get("response", "")
             if not html_content:
                 return []
 
             # Parse ontology IDs and names from the HTML response
-            return _LIVESEARCH_RE.findall(html_content)
+            matches = _LIVESEARCH_RE.findall(html_content)
+            raw_data[f"card_livesearch_{query}_html_len"] = len(html_content)
+            return matches
 
         except Exception as e:
+            logger.warning("CARD livesearch failed for %s: %s", query, e)
             raw_data[f"card_livesearch_{query}_error"] = str(e)
             return []
-
-    async def _load_aro_index(
-        self,
-        client: httpx.AsyncClient,
-        raw_data: dict,
-    ) -> dict:
-        """Load the full ARO JSON index from CARD.
-
-        Returns a dict keyed by ontology ID (str) with entry metadata.
-        The response is large but cached by httpx within the session.
-        """
-        try:
-            resp = await resilient_get(
-                CARD_JSON_URL,
-                client=client,
-                headers={
-                    "Accept": "application/json",
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-            )
-            if resp.status_code != 200:
-                raw_data["card_aro_index_status"] = resp.status_code
-                return {}
-
-            data = resp.json()
-            if not isinstance(data, dict):
-                return {}
-
-            # The response has error=false and data={id: {...}, ...}
-            index = data.get("data", data)
-            raw_data["card_aro_index_size"] = len(index)
-            return index
-
-        except Exception as e:
-            raw_data["card_aro_index_error"] = str(e)
-            return {}
-
-    def _build_citation(
-        self,
-        aro_id: str,
-        aro_name: str,
-        entry: dict,
-        intervention: str,
-    ) -> Optional[SourceCitation]:
-        """Build a SourceCitation from an ARO entry."""
-        if not isinstance(entry, dict):
-            # Minimal citation from livesearch alone
-            return SourceCitation(
-                source_name="card",
-                source_url=f"{CARD_BASE}/ontology/{aro_id}",
-                identifier=f"ARO:{aro_id}",
-                title=f"{aro_name} - CARD",
-                snippet=f"ARO term: {aro_name}\nSearch term: {intervention}",
-                quality_score=self.compute_quality_score("card", has_content=False),
-                retrieved_at=datetime.utcnow().isoformat(),
-            )
-
-        accession = entry.get("accession", "")
-        name = entry.get("name", aro_name)
-        comment = entry.get("comment", "")
-        synonyms = entry.get("synonym", "")
-        short_names = entry.get("CARD_short_names", "")
-
-        # Extract key information from the comment field
-        # CARD comments often embed PMIDs, mechanism keywords, and organism names
-        resistance_info = self._parse_comment(comment)
-
-        snippet_parts = [f"ARO term: {name}"]
-        if accession:
-            snippet_parts.append(f"Accession: {accession}")
-        if short_names:
-            snippet_parts.append(f"Short names: {short_names}")
-        if synonyms:
-            syn_str = synonyms.strip() if isinstance(synonyms, str) else str(synonyms)
-            if syn_str:
-                snippet_parts.append(f"Synonyms: {syn_str[:150]}")
-        if resistance_info.get("mechanisms"):
-            snippet_parts.append(f"Resistance mechanisms: {', '.join(resistance_info['mechanisms'])}")
-        if resistance_info.get("antibiotics"):
-            snippet_parts.append(f"Associated antibiotics: {', '.join(resistance_info['antibiotics'])}")
-        if resistance_info.get("organisms"):
-            snippet_parts.append(f"Pathogen targets: {', '.join(resistance_info['organisms'])}")
-        if resistance_info.get("pmids"):
-            snippet_parts.append(f"References: {', '.join(resistance_info['pmids'][:5])}")
-
-        has_content = bool(name and (resistance_info.get("mechanisms") or comment))
-        return SourceCitation(
-            source_name="card",
-            source_url=f"{CARD_BASE}/ontology/{aro_id}",
-            identifier=accession or f"ARO:{aro_id}",
-            title=f"{name} - CARD",
-            snippet="\n".join(snippet_parts),
-            quality_score=self.compute_quality_score("card", has_content=has_content),
-            retrieved_at=datetime.utcnow().isoformat(),
-        )
-
-    @staticmethod
-    def _parse_comment(comment: str) -> dict:
-        """Extract structured info from CARD comment fields.
-
-        CARD comments are semi-structured text containing PMIDs, organism
-        names, antibiotic names, and mechanism keywords separated by spaces.
-        """
-        result: dict = {
-            "mechanisms": [],
-            "antibiotics": [],
-            "organisms": [],
-            "pmids": [],
-        }
-        if not comment:
-            return result
-
-        # Extract PMIDs
-        pmids = re.findall(r"PMID:\d+", comment)
-        result["pmids"] = pmids
-
-        # Common resistance mechanism keywords
-        mechanism_keywords = [
-            "efflux", "beta-lactamase", "target modification",
-            "target alteration", "target replacement", "target protection",
-            "antibiotic inactivation", "reduced permeability",
-            "major facilitator superfamily", "MFS", "ABC transporter",
-            "aminoglycoside modifying enzyme", "ribosomal protection",
-        ]
-        for kw in mechanism_keywords:
-            if kw.lower() in comment.lower():
-                result["mechanisms"].append(kw)
-
-        # Common antibiotic class keywords
-        antibiotic_keywords = [
-            "tetracycline", "vancomycin", "penicillin", "cephalosporin",
-            "carbapenem", "fluoroquinolone", "aminoglycoside", "macrolide",
-            "polymyxin", "colistin", "rifampin", "sulfonamide",
-            "trimethoprim", "linezolid", "daptomycin", "lipopeptide",
-        ]
-        for ab in antibiotic_keywords:
-            if ab.lower() in comment.lower():
-                result["antibiotics"].append(ab)
-
-        # Common pathogen genus names
-        organism_keywords = [
-            "Staphylococcus", "Enterococcus", "Escherichia",
-            "Klebsiella", "Pseudomonas", "Acinetobacter",
-            "Streptococcus", "Clostridioides", "Mycobacterium",
-            "Salmonella", "Campylobacter", "Neisseria",
-        ]
-        for org in organism_keywords:
-            if org in comment:
-                result["organisms"].append(org)
-
-        return result

@@ -25,6 +25,28 @@ logger = logging.getLogger("agent_annotate.research.intact")
 INTACT_INTERACTOR_URL = "https://www.ebi.ac.uk/intact/ws/interactor/findInteractor"
 
 
+def _extract_intervention_names(metadata: dict | None) -> list[str]:
+    """Extract plain-string intervention names from metadata.
+
+    Handles both list-of-dicts (``[{"name": "Nisin"}]``) and
+    list-of-strings (``["Nisin"]``) formats.
+    """
+    if not metadata:
+        return []
+    raw = metadata.get("interventions", [])
+    if not isinstance(raw, list):
+        return []
+    names: list[str] = []
+    for item in raw:
+        if isinstance(item, dict):
+            name = item.get("name") or item.get("intervention_name") or ""
+            if name:
+                names.append(str(name))
+        elif isinstance(item, str) and item:
+            names.append(item)
+    return names
+
+
 class IntActClient(BaseResearchAgent):
     """Queries IntAct for molecular interaction data."""
 
@@ -36,11 +58,7 @@ class IntActClient(BaseResearchAgent):
         raw_data = {}
 
         # Extract intervention names to search for interactors
-        interventions = []
-        if metadata:
-            interventions = metadata.get("interventions", [])
-            if isinstance(interventions, list):
-                interventions = [str(i) for i in interventions]
+        interventions = _extract_intervention_names(metadata)
 
         if not interventions:
             return ResearchResult(
