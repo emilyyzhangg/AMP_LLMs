@@ -72,31 +72,38 @@ These findings demonstrate that manual annotation, while conventionally treated 
 
 ### 3.1 System Architecture
 
-Agent Annotate implements a three-phase pipeline:
+Agent Annotate implements a three-phase pipeline. Critically, Phase 1 uses a two-step research architecture rather than running all agents simultaneously:
 
 ```
-Phase 1: Research           Phase 2: Annotation         Phase 3: Verification
-(15 agents, parallel)       (5 agents, sequential*)      (multi-model blind review)
-                            *sequential due to GPU memory
+Phase 1: Research (two-step)     Phase 2: Annotation         Phase 3: Verification
+                                 (5 agents, sequential*)      (multi-model blind review)
+                                 *sequential due to GPU memory
 
-[Clinical Protocol  ]  -->  [Classification Agent]  -->  [Blind Verifier 1: gemma2:9b  ]
-[Literature         ]  -->  [Delivery Mode Agent ]  -->  [Blind Verifier 2: qwen2:latest]
-[Peptide Identity   ]  -->  [Outcome Agent       ]  -->  [Blind Verifier 3: mistral:latest]
-[Web Context        ]  -->  [Failure Reason Agent]  -->  [Reconciler: qwen2.5:14b (disputes only)]
-[DBAASP (v4)        ]       [Peptide Agent       ]
-[ChEMBL (v4)        ]
-[RCSB PDB (v4)      ]
-[EBI Proteins (v4)  ]
-[APD (v5)           ]
-[dbAMP (v5)         ]
-[WHO ICTRP (v5)     ]
-[IUPHAR (v5)        ]
-[IntAct (v5)        ]
-[CARD (v5)          ]
-[PDBe (v5)          ]
+Step 1: Protocol-first
+[Clinical Protocol  ]
+   | extracts intervention names
+   | from armsInterventionsModule
+   v
+Step 2: Parallel with metadata
+[Literature         ]  ─┐
+[Peptide Identity   ]   │
+[Web Context        ]   │
+[DBAASP (v4)        ]   │
+[ChEMBL (v4)        ]   │
+[RCSB PDB (v4)      ]   ├──>  [Classification Agent]  -->  [Blind Verifier 1: gemma2:9b  ]
+[EBI Proteins (v4)  ]   │     [Delivery Mode Agent ]  -->  [Blind Verifier 2: qwen2:latest]
+[APD (v5)           ]   │     [Outcome Agent       ]  -->  [Blind Verifier 3: mistral:latest]
+[dbAMP (v5)         ]   │     [Failure Reason Agent]  -->  [Reconciler: qwen2.5:14b (disputes only)]
+[WHO ICTRP (v5)     ]   │     [Peptide Agent       ]
+[IUPHAR (v5)        ]   │
+[IntAct (v5)        ]   │
+[CARD (v5)          ]   │
+[PDBe (v5)          ]  ─┘
 ```
 
-Phase 1 agents operate in parallel, as they perform network I/O without requiring GPU resources. The v4 pipeline expanded from four to eight research agents, adding DBAASP, ChEMBL, RCSB PDB, and EBI Proteins. The v5 expansion added seven more agents (APD, dbAMP, WHO ICTRP, IUPHAR, IntAct, CARD, PDBe), bringing the total to 15 research agents querying 20+ free databases. SerpAPI was removed (paid service); all agents now use free APIs exclusively. Phase 2 agents share a single Ollama instance and execute sequentially due to the memory constraints of the deployment hardware. Phase 3 applies blind verification using architecturally diverse model families.
+Phase 1 executes in two steps. In Step 1, the Clinical Protocol Agent runs first, fetching the trial record from ClinicalTrials.gov and extracting intervention names (drug and peptide names) from the structured `protocol_section.armsInterventionsModule.interventions` field. In Step 2, the remaining 14 agents run in parallel, each receiving the extracted intervention names as metadata. This two-step design is essential because peptide and drug database agents (DBAASP, ChEMBL, CARD, IUPHAR, IntAct, PDBe) require compound names to query their databases --- without intervention names, these agents have nothing to search for and return zero citations. With intervention names available, DBAASP can search for a peptide like Nisin and return MIC data, CARD can search for Colistin and return resistance mechanism data, and so on across all database agents.
+
+The v4 pipeline expanded from four to eight research agents, adding DBAASP, ChEMBL, RCSB PDB, and EBI Proteins. The v5 expansion added seven more agents (APD, dbAMP, WHO ICTRP, IUPHAR, IntAct, CARD, PDBe), bringing the total to 15 research agents querying 20+ free databases. SerpAPI was removed (paid service); all agents now use free APIs exclusively. Phase 2 agents share a single Ollama instance and execute sequentially due to the memory constraints of the deployment hardware. Phase 3 applies blind verification using architecturally diverse model families.
 
 All models run locally via Ollama on a Mac Mini M4 with 16 GB of unified memory (mac_mini profile) or on a dedicated server with 48+ GB (server profile, which enables Kimi K2 Thinking as the primary annotator). No data leaves the local machine during inference. External network access is limited to Phase 1 research queries against public databases.
 
@@ -104,16 +111,18 @@ All models run locally via Ollama on a Mac Mini M4 with 16 GB of unified memory 
 
 Fifteen research agents gather evidence from 20+ free external data sources, each assigned a calibrated weight reflecting its reliability and relevance. The original four agents (Sections 3.2.1--3.2.4) were present in v2/v3; four agents (Sections 3.2.6--3.2.9) were added in v4; seven agents (Sections 3.2.10--3.2.16) were added in v5.
 
+As described in Section 3.1, the research phase uses a two-step architecture: the Clinical Protocol Agent runs first to extract intervention names, then the remaining 14 agents run in parallel using those names as search keys. This ordering is critical for database agents that cannot produce useful results without knowing the compound name.
+
 #### 3.2.1 Clinical Protocol Agent
 
-The Clinical Protocol Agent queries structured registry databases to retrieve trial metadata, intervention descriptions, arms, eligibility criteria, and status information.
+The Clinical Protocol Agent runs in Step 1 of the two-step research architecture (Section 3.1). It queries structured registry databases to retrieve trial metadata, intervention descriptions, arms, eligibility criteria, and status information. Critically, it extracts intervention names (drug and peptide names) from the `protocol_section.armsInterventionsModule.interventions` field of the ClinicalTrials.gov response. These extracted names are passed as shared metadata to all 14 agents in Step 2, enabling them to perform targeted database lookups by compound name.
 
 | Source | Weight | Data Retrieved |
 |---|---|---|
-| ClinicalTrials.gov API v2 | 0.95 | Protocol, status, interventions, arms, conditions, outcomes |
+| ClinicalTrials.gov API v2 | 0.95 | Protocol, status, interventions, arms, conditions, outcomes, **intervention names** |
 | OpenFDA | 0.85 | Drug labels, adverse events, approval status |
 
-ClinicalTrials.gov receives the highest weight among all sources due to its authoritative status as the primary trial registry. The API v2 endpoint provides structured JSON responses with comprehensive protocol metadata. OpenFDA supplements this with regulatory context, particularly useful for determining whether an intervention has received FDA approval or has documented safety signals.
+ClinicalTrials.gov receives the highest weight among all sources due to its authoritative status as the primary trial registry. The API v2 endpoint provides structured JSON responses with comprehensive protocol metadata, including the structured interventions module from which drug and peptide names are extracted for downstream agents. OpenFDA supplements this with regulatory context, particularly useful for determining whether an intervention has received FDA approval or has documented safety signals.
 
 #### 3.2.2 Literature Agent
 

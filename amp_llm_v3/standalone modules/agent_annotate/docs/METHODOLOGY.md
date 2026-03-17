@@ -112,7 +112,38 @@ Boolean field (True/False) indicating whether the intervention is a peptide.
 
 ## 4. Phase 1 -- Research Agents
 
-Fifteen research agents run in parallel, each querying different external sources. Every source carries a fixed quality weight reflecting its reliability for AMP clinical trial annotation. The v4 pipeline added four specialized agents (Sections 4.5--4.8) for peptide activity, bioactivity, structural, and protein sequence data. The v5 expansion added seven more agents (Sections 4.9--4.15) covering additional peptide databases, international trial registries, pharmacology, molecular interactions, antibiotic resistance, and structure quality. SerpAPI was removed (paid service); all 15 agents now use free APIs exclusively.
+Fifteen research agents query different external sources. Every source carries a fixed quality weight reflecting its reliability for AMP clinical trial annotation. The v4 pipeline added four specialized agents (Sections 4.5--4.8) for peptide activity, bioactivity, structural, and protein sequence data. The v5 expansion added seven more agents (Sections 4.9--4.15) covering additional peptide databases, international trial registries, pharmacology, molecular interactions, antibiotic resistance, and structure quality. SerpAPI was removed (paid service); all 15 agents now use free APIs exclusively.
+
+### 4.0 Two-Step Research Architecture
+
+Phase 1 executes in two steps rather than running all 15 agents simultaneously. This two-step design is critical because peptide/drug database agents (DBAASP, ChEMBL, CARD, IUPHAR, IntAct, PDBe, etc.) need to know the intervention name to query their databases. Without a name to search for, these agents return zero citations.
+
+**Step 1 -- Protocol-first metadata extraction.** The Clinical Protocol Agent (Section 4.1) runs first. It fetches the trial record from ClinicalTrials.gov and extracts intervention names (drug and peptide names) from the structured `protocol_section.armsInterventionsModule.interventions` field. It also queries OpenFDA for supplementary drug metadata. The extracted intervention names are stored as shared metadata for use in Step 2.
+
+**Step 2 -- Parallel database queries with intervention metadata.** The remaining 14 agents run in parallel, each receiving the intervention names extracted in Step 1. This enables database agents to perform targeted lookups: DBAASP searches by peptide name and returns MIC data (e.g., 5 hits for Nisin with minimum inhibitory concentration values), ChEMBL searches by compound name for bioactivity and clinical phase data, CARD searches by antibiotic name for resistance mechanisms (e.g., 5 hits for Colistin resistance data), IUPHAR searches by ligand name for pharmacological profiles, IntAct searches by protein name for molecular interactions, and PDBe searches by molecule name for structure quality metrics.
+
+**Data flow:**
+
+```
+Step 1:  ClinicalTrials.gov API
+              |
+              v
+         Extract intervention names from
+         protocol_section.armsInterventionsModule.interventions
+              |
+              v
+         Intervention metadata (e.g., "Nisin", "Colistin")
+              |
+Step 2:       v
+         [Literature      ] [Peptide Identity] [Web Context    ]
+         [DBAASP          ] [ChEMBL          ] [RCSB PDB       ]
+         [EBI Proteins    ] [APD             ] [dbAMP          ]
+         [WHO ICTRP       ] [IUPHAR          ] [IntAct         ]
+         [CARD            ] [PDBe            ]
+         (all 14 agents run in parallel with intervention names)
+```
+
+Previously, all 15 agents ran in parallel with no shared metadata, which meant database agents had only the NCT ID and trial title to work with -- insufficient for querying peptide/drug databases that require compound names as search keys.
 
 ### 4.1 Clinical Protocol Agent
 
