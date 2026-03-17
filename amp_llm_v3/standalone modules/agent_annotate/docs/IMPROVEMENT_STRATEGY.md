@@ -157,12 +157,14 @@ An overnight concordance run on 62 trials using v3 agents produced the following
 
 The following v4 changes have been implemented in response to the n=62 concordance results:
 
-### 7.1 Four New Research Agents (DONE)
+### 7.1 Four New Research Agents — v4 (DONE)
 
 - **DBAASP Agent**: Queries peptide activity/MIC data. Provides direct antimicrobial activity evidence for the Classification Agent.
 - **ChEMBL Agent**: Queries bioactivity and clinical phase data. Provides mechanism-of-action and cross-trial development context.
 - **RCSB PDB Agent**: Queries 3D structure metadata. Provides structural confirmation of peptide identity.
 - **EBI Proteins Agent**: Queries sequences, variants, functional annotations. Complements UniProt with additional sequence-level data.
+
+Note: Seven more agents were added in v5 (see Section 7.5), bringing the total to 15 research agents querying 20+ free databases.
 
 ### 7.2 Annotation Agent Improvements (DONE)
 
@@ -188,7 +190,23 @@ The following v4 changes have been implemented in response to the n=62 concordan
 
 ---
 
-## 7.5 v4.1: Verifier Value Normalization Fix (DONE)
+### 7.5 v5: Research Pipeline Expansion from 8 to 15 Agents (DONE)
+
+Expanded the research pipeline from 8 to 15 parallel agents querying 20+ free databases. Seven new agents added:
+
+- **APD Agent** (aps.unmc.edu): AMP database, HTML scraping, best-effort (server requires JS). Provides independent AMP classification source.
+- **dbAMP Agent** (yylab.jnu.edu.cn/dbAMP): 33K+ AMPs, HTML scraping, intermittent availability. Broad AMP reference complementing APD and DRAMP.
+- **WHO ICTRP Agent** (trialsearch.who.int): International trial registry, HTML parsing. Extends ClinicalTrials.gov coverage to 17+ national/regional registries.
+- **IUPHAR Guide to Pharmacology Agent** (guidetopharmacology.org): REST API, mechanism of action, drug targets, ligand classification. Authoritative pharmacological context for classification decisions.
+- **IntAct Agent** (ebi.ac.uk/intact): REST API, molecular interactions, UniProt cross-references. Reveals AMP mechanisms through interaction partner analysis.
+- **CARD Agent** (card.mcmaster.ca): AJAX endpoints, antibiotic resistance mechanisms, ARO terms. Provides resistance context for AMP clinical trials.
+- **PDBe Agent** (ebi.ac.uk/pdbe): Solr search + REST API, structure quality metrics (resolution, R-factor). Complements RCSB PDB with quality assessment data.
+
+SerpAPI was removed (paid service). All 15 agents now use free APIs exclusively.
+
+---
+
+## 7.6 v4.1: Verifier Value Normalization Fix (DONE)
 
 ### Problem
 
