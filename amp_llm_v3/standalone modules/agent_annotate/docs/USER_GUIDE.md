@@ -354,3 +354,63 @@ All verifiers agreeing does not guarantee correctness — small models can unani
 ### Fully Autonomous Design
 
 Agent Annotate is designed to operate without a human counterpart. Human annotations (in `docs/clinical_trials-with-sequences.xlsx`) were used during development to evaluate accuracy and refine prompts, but they are **never used at runtime**. All agent decisions are based solely on live data from external APIs (ClinicalTrials.gov, PubMed, UniProt, FDA, web sources). This means the agent always uses the latest available data and is not constrained by the point-in-time snapshot of any human dataset.
+
+---
+
+## 8. Maintenance Scripts
+
+### 8.1 retroactive_fix.py
+
+Applies expanded value normalization rules to completed annotation jobs. This script is used when normalization logic is updated (e.g., new verifier parsing patterns are discovered) and previously completed jobs need to be re-processed with the improved rules.
+
+**What it does:**
+1. Reads stored verifier opinions for each trial in the target job(s)
+2. Applies the current normalization rules (field-aware: different rules per field)
+3. Recalculates consensus based on normalized verifier values
+4. Updates job results: corrects field values, restores consensus where possible, unflags trials from manual review when false disagreements are eliminated
+5. Reports a summary of changes (fields corrected, consensus restored, trials unflagged)
+
+**Usage:**
+
+```bash
+# Preview changes without modifying any data
+python retroactive_fix.py --dry-run
+
+# Process all completed jobs
+python retroactive_fix.py
+
+# Process a specific job by ID
+python retroactive_fix.py --job <job_id>
+```
+
+**When to use:**
+- After updating normalization rules in the verification pipeline
+- After discovering new verifier output patterns that cause false disagreements
+- To recalculate concordance numbers after normalization improvements
+- As a one-time fix when deploying normalization updates to production
+
+**Safety:** The `--dry-run` flag is recommended before any production run. It reports exactly what would change without modifying stored data.
+
+### 8.2 concordance_test.py
+
+Runs concordance analysis for a single job against human annotations. Calculates per-field agreement rates, Cohen's kappa, and confusion matrices. Useful for validating that a specific job's annotations align with human benchmarks.
+
+**Usage:**
+
+```bash
+python concordance_test.py <job_id>
+```
+
+### 8.3 concordance_jobs.py
+
+Runs concordance analysis across multiple completed jobs to compare pipeline versions or track improvement over time. Produces aggregate statistics and per-job breakdowns.
+
+**Usage:**
+
+```bash
+# Analyze all completed jobs
+python concordance_jobs.py
+
+# Compare specific jobs
+python concordance_jobs.py --jobs <job_id_1> <job_id_2>
+```

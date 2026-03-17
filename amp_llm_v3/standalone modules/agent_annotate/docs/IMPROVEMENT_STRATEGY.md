@@ -188,6 +188,29 @@ The following v4 changes have been implemented in response to the n=62 concordan
 
 ---
 
+## 7.5 v4.1: Verifier Value Normalization Fix (DONE)
+
+### Problem
+
+Post-v4 analysis revealed that 66% of all review conflicts (68 out of 103) were concentrated in the `reason_for_failure` field. Approximately 57 of those were false disagreements caused by verifier models outputting trial status keywords (COMPLETED, Unknown, N/A, None, ACTIVE_NOT_RECRUITING) instead of the expected empty string. The verifiers correctly determined that no failure reason existed but expressed this using non-canonical values, causing the consensus algorithm to treat them as disagreements.
+
+### Fix
+
+Expanded the value normalization layer in the verification pipeline to catch status-as-value patterns. For `reason_for_failure`, all trial status keywords and common shorthand values (N/A, None, Unknown) are normalized to empty string before consensus checking. The normalization is field-aware: different rules apply per field (e.g., delivery mode normalizes route abbreviations, peptide normalizes boolean variants).
+
+### Impact
+
+Retroactive application across 11 completed jobs:
+- **74 individual field values corrected** (verifier opinions remapped to canonical values)
+- **12 consensus results restored** (fields now achieve unanimous agreement)
+- **12 trials unflagged** from manual review (false disagreements eliminated)
+
+### Maintenance Tool: retroactive_fix.py
+
+The `retroactive_fix.py` script applies the expanded normalization rules to completed jobs. It re-reads stored verifier opinions, normalizes values, recalculates consensus, and updates job results. Supports `--dry-run` for preview and `--job` for targeting specific jobs. See USER_GUIDE.md for full usage.
+
+---
+
 ## 8. Next Steps
 
 1. **Re-run n=62 concordance with v4 agents** and compare against the v3 baseline (Section 6). This is the primary validation of the v4 improvements.

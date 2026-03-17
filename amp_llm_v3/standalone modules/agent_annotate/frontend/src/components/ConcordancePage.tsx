@@ -4,14 +4,13 @@ import {
   LineChart, Line, CartesianGrid,
 } from "recharts";
 import {
-  listResults,
+  getConcordanceJobs,
   getJobConcordance,
   compareJobs,
   getConcordanceHistory,
   getHumanConcordance,
 } from "../api/client";
 import type {
-  ResultListItem,
   JobConcordance,
   ConcordanceField,
   ComparisonResult,
@@ -263,7 +262,7 @@ function FieldDetail({ field }: { field: ConcordanceField }) {
 // ── Tab 1: Agent vs Human ────────────────────────────────────────────
 
 function AgentVsHumanTab() {
-  const [jobs, setJobs] = useState<ResultListItem[]>([]);
+  const [jobs, setJobs] = useState<Array<{ job_id: string; timestamp: string; total_trials: number }>>([]);
   const [selectedJob, setSelectedJob] = useState("");
   const [concordance, setConcordance] = useState<{
     agent_vs_r1: JobConcordance;
@@ -276,8 +275,8 @@ function AgentVsHumanTab() {
   useEffect(() => {
     (async () => {
       try {
-        const data = await listResults();
-        setJobs(data.results || []);
+        const data = await getConcordanceJobs();
+        setJobs(data.jobs || []);
       } catch {
         console.error("Failed to load job list");
       }
@@ -359,7 +358,7 @@ function AgentVsHumanTab() {
 // ── Tab 2: Version Comparison ────────────────────────────────────────
 
 function VersionCompareTab() {
-  const [jobs, setJobs] = useState<ResultListItem[]>([]);
+  const [jobs, setJobs] = useState<Array<{ job_id: string; timestamp: string; total_trials: number }>>([]);
   const [jobA, setJobA] = useState("");
   const [jobB, setJobB] = useState("");
   const [result, setResult] = useState<ComparisonResult | null>(null);
@@ -369,8 +368,8 @@ function VersionCompareTab() {
   useEffect(() => {
     (async () => {
       try {
-        const data = await listResults();
-        setJobs(data.results || []);
+        const data = await getConcordanceJobs();
+        setJobs(data.jobs || []);
       } catch {
         console.error("Failed to load job list");
       }
