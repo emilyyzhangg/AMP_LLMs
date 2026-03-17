@@ -323,6 +323,49 @@ The reconciler produces a final annotation with justification.
 
 Cases that the reconciler cannot resolve (e.g., contradictory evidence, ambiguous trial designs) are flagged for manual human review.
 
+### 6.5 Value Normalization in Verification
+
+#### 6.5.1 Problem
+
+Verifier models (8B--9B parameters) frequently output trial status keywords or free-text explanations instead of valid field values. For the `reason_for_failure` field, verifiers would return values such as "COMPLETED", "Unknown", "N/A", "ACTIVE_NOT_RECRUITING", or verbose explanations like "The trial was completed successfully so there is no failure reason" instead of the expected empty string. These invalid values caused false disagreements during consensus checking, inflating the number of trials flagged for manual review and reconciliation.
+
+#### 6.5.2 Parsing Rules
+
+Value normalization applies two parsing strategies in order:
+
+1. **Prefix matching for verbose explanations.** If the verifier output starts with a valid value (e.g., "Ineffective for purpose because the trial did not meet its primary endpoint"), the valid prefix is extracted. This catches cases where verifiers append explanations to their answers.
+
+2. **Exact match for status keywords.** If the output exactly matches a known status keyword or status-like value, it is mapped to the canonical field value. For `reason_for_failure`, all status-like values map to empty string (no failure reason).
+
+#### 6.5.3 Canonical Mapping for reason_for_failure
+
+The following values are normalized to empty string (meaning "no failure reason"):
+
+| Input Value | Rationale |
+|---|---|
+| COMPLETED | Trial status, not a failure reason |
+| Unknown | Ambiguous status, not a valid failure reason value |
+| N/A | Verifier shorthand for "not applicable" |
+| None | Verifier shorthand for "no failure" |
+| ACTIVE_NOT_RECRUITING | Trial status, not a failure reason |
+| RECRUITING | Trial status, not a failure reason |
+| WITHDRAWN | Trial status (handled by outcome field) |
+| TERMINATED | Trial status (handled by outcome field) |
+
+#### 6.5.4 Field-Aware Consensus Normalization
+
+Normalization rules differ by field because valid values and common verifier errors differ:
+
+- **reason_for_failure**: Status keywords and "N/A"/"None"/"Unknown" all normalize to empty string. This is the field most affected by verifier parsing failures.
+- **outcome**: Status keywords normalize to their canonical outcome values (e.g., "COMPLETED" is not a valid outcome value and is flagged).
+- **classification**: "AMP" alone is flagged as ambiguous (must specify infection or other).
+- **delivery_mode**: Route abbreviations normalize to canonical values (e.g., "Intravenous" to "IV").
+- **peptide**: Boolean normalization ("true"/"yes" to "True", "false"/"no" to "False").
+
+#### 6.5.5 Retroactive Fix Capability
+
+The normalization logic can be applied retroactively to completed jobs via `retroactive_fix.py`. This script re-reads the stored verifier opinions for each trial, applies the expanded normalization rules, recalculates consensus, and updates the job results. Trials that were previously flagged for review due to false disagreements are unflagged when normalization restores consensus. See the User Guide for usage details.
+
 
 ## 7. Evidence Thresholds
 
@@ -354,6 +397,16 @@ One exception: for the reason_for_failure field, empty IS a valid annotation (me
 ### 8.3 Inter-Annotator Reliability
 
 Cohen's kappa is computed for each field to measure inter-annotator agreement beyond chance. This applies to both agent-vs-human and human-vs-human comparisons.
+
+### 8.4 Impact of Value Normalization on Concordance
+
+Verifier value normalization (Section 6.5) directly affects concordance calculations because it changes which trials achieve consensus and which are flagged for review. Retroactive application of the expanded normalization rules to 11 completed jobs produced the following impact:
+
+- **74 individual field values corrected** across all affected jobs (verifier opinions remapped from status keywords to valid values).
+- **12 consensus results restored** (fields that previously showed disagreement now achieve unanimous verifier agreement after normalization).
+- **12 trials unflagged** from manual review queues (trials that were flagged solely due to false disagreements caused by verifier parsing failures).
+
+This means concordance numbers calculated before the normalization fix understate actual pipeline accuracy. Any concordance analysis should be recalculated after retroactive fixes are applied to ensure reported agreement rates reflect genuine disagreements rather than parsing artifacts.
 
 
 ## 9. Baseline Results

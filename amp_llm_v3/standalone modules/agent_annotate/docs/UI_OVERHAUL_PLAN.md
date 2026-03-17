@@ -5,6 +5,24 @@
 
 ---
 
+## Status Overview
+
+### Completed
+- **Phase 7.1 (partial)**: Concordance Analysis Methodology documented in METHODOLOGY.md (Section 8), including blank handling protocol, value normalization rules, and inter-annotator reliability assessment.
+- **Phase 7.2 (partial)**: Error analysis expanded in PAPER.md (Sections 4.3--4.6.1) with value distribution problems, verifier parsing failure root cause analysis, and retroactive fix results.
+- **Phase 7.3 (partial)**: USER_GUIDE.md updated with maintenance scripts section (retroactive_fix.py, concordance_test.py, concordance_jobs.py).
+- **Verifier value normalization fix (v4.1)**: Field-aware normalization in verification pipeline. Retroactive fix capability via `retroactive_fix.py`. Documented in METHODOLOGY.md Section 6.5 and IMPROVEMENT_STRATEGY.md Section 7.5.
+
+### Pending
+- **Phase 1**: Data Foundation (Backend) -- Review/Export integration, concordance engine service, concordance API, primary annotator reasoning, research coverage metadata.
+- **Phase 2**: Concordance Dashboard (Frontend) -- New /concordance page with 4 tabs, chart library.
+- **Phase 3**: Results Page Overhaul -- Dashboard view, inline evidence preview.
+- **Phase 4**: Review Page Enhancement -- Primary annotator context, batch operations, keyboard shortcuts, guidelines reference, review impact preview.
+- **Phase 5**: Pipeline & Submit Improvements -- Partial results streaming, research coverage in pipeline view, submit page enhancements.
+- **Phase 6**: Settings & Configuration UI -- Model configuration, evidence threshold editor, consensus threshold slider.
+
+---
+
 ## Phase 1: Data Foundation (Backend)
 
 ### 1.1 Review → Export Integration

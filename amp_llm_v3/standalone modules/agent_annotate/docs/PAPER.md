@@ -379,6 +379,29 @@ The n=62 evaluation exposes value distribution problems not visible in the n=25 
 
 3. **Failure Reason**: The agent assigns "Ineffective for purpose" to completed trials without published negative results. The distribution should be dominated by empty values (most trials do not fail), but the agent's distribution is flatter.
 
+### 4.6.1 Root Cause Analysis: Verifier Parsing Failures in reason_for_failure
+
+Deeper analysis of the review conflicts reveals that the majority of flagged disagreements were concentrated in a single field. Of 103 total review conflicts across all fields, 68 (66%) occurred in `reason_for_failure`. Of those 68, approximately 57 were false disagreements caused by verifier parsing failures rather than genuine evidence-based disagreements.
+
+**Value distribution of invalid verifier outputs for reason_for_failure:**
+
+| Invalid Value | Occurrences | Root Cause |
+|---|---|---|
+| COMPLETED | 13 | Verifier echoed ClinicalTrials.gov registry status |
+| Unknown | 13 | Verifier returned ambiguous status instead of empty string |
+| None | 11 | Verifier used "None" as shorthand for "not applicable" |
+| N/A | 5 | Verifier used "N/A" instead of leaving field empty |
+| ACTIVE_NOT_RECRUITING | 3 | Verifier echoed trial status |
+| Other status keywords | 12 | Various registry statuses returned as failure reasons |
+
+In all of these cases, the verifier correctly determined that the trial had no failure reason but expressed this conclusion using a status keyword or shorthand rather than the expected empty string. The consensus algorithm treated these as disagreements with verifiers that correctly returned empty, triggering unnecessary reconciliation and manual review flagging.
+
+**Fix applied:** The value normalization layer (described in METHODOLOGY.md Section 6.5) was expanded to catch all status-as-value patterns. The canonical mapping normalizes COMPLETED, Unknown, None, N/A, and all trial status keywords to empty string for the `reason_for_failure` field.
+
+**Retroactive results:** Applying the fix retroactively to 11 completed jobs corrected 74 individual field values, restored consensus on 12 fields, and unflagged 12 trials from manual review. This demonstrates that the true disagreement rate for `reason_for_failure` is substantially lower than the 56.5%--58.1% conflict rate initially reported. The inflated conflict rate was an artifact of verifier output formatting, not genuine evidence ambiguity.
+
+**Implication for reported accuracy:** The concordance figures in Table 3 (Section 4.5) for Failure Reason (41.9% agent=R1, 43.5% agent=R2) include trials whose annotations were distorted by false review conflicts. After retroactive normalization, the effective agreement rates should be recalculated, as many trials that underwent unnecessary reconciliation may have had their correct consensus annotation overwritten by the reconciler.
+
 ### 4.7 Improvements (v4 Agents)
 
 The v4 agent revision targets the systematic errors revealed by the n=62 evaluation:

@@ -18,6 +18,13 @@ from app.services import concordance_service
 router = APIRouter(prefix="/api/concordance", tags=["concordance"])
 
 
+@router.get("/jobs")
+async def list_concordance_jobs():
+    """List all completed jobs available for concordance analysis."""
+    jobs = concordance_service._list_completed_jobs()
+    return {"jobs": jobs}
+
+
 @router.get("/job/{job_id}", response_model=FullJobConcordanceResponse)
 async def get_job_concordance(job_id: str):
     """Full concordance of a job against human R1, R2, and inter-rater R1 vs R2."""

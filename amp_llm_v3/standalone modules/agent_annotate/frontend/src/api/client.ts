@@ -109,6 +109,9 @@ export const submitReview = (
   });
 
 // Concordance
+export const getConcordanceJobs = () =>
+  request<{ jobs: Array<{ job_id: string; timestamp: string; total_trials: number }> }>("/concordance/jobs");
+
 export const getJobConcordance = (jobId: string) =>
   request<{ agent_vs_r1: JobConcordance; agent_vs_r2: JobConcordance }>(`/concordance/job/${jobId}`);
 
