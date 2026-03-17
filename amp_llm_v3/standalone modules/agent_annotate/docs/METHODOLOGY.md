@@ -37,25 +37,30 @@ The review queue (trials flagged for manual review) is persisted to disk and sur
 
 ### 2.1 Definition
 
-Antimicrobial peptides (AMPs), also called host defense peptides, are short peptides that contribute to pathogen defense. The pipeline classifies AMPs by four modes of action. A peptide therapeutic must fit at least one of these modes to be considered an AMP.
+Antimicrobial peptides (AMPs), also called host defense peptides, are short peptides that contribute to pathogen defense through DIRECT antimicrobial mechanisms. The pipeline classifies AMPs by three modes of action. A peptide therapeutic must fit at least one of these modes to be considered an AMP.
 
-### 2.2 Four Modes of Action
+### 2.2 Three Modes of Action (v2)
 
 **Mode A -- Direct Antimicrobial**
-Peptides that directly kill or inhibit pathogens through membrane disruption, pore formation, or intracellular targeting. Examples: colistin, polymyxin B, melittin.
+Peptides that directly kill or inhibit pathogens through membrane disruption, pore formation, or intracellular targeting. Examples: colistin, polymyxin B, melittin, daptomycin, nisin.
 
 **Mode B -- Immunostimulatory / Host Defense**
-Peptides that promote immune defense against pathogens (not suppress it). Examples: LL-37, defensins, thymosin alpha-1.
+Peptides that directly recruit innate immune cells to kill pathogens at infection sites. Examples: LL-37, defensins, cathelicidins.
 
 **Mode C -- Anti-Biofilm**
-Peptides that disrupt or prevent microbial biofilm formation. Examples: LL-37, DJK-5, IDR-1018.
+Peptides that directly disrupt microbial biofilms through biochemical interaction. Examples: LL-37, DJK-5, IDR-1018.
 
-**Mode D -- Pathogen-Targeting Vaccines / Immunogens**
-Peptide-based vaccines designed to elicit immune responses against specific pathogens. Examples: StreptInCor, peptide HIV vaccines.
+**Mode D was removed in v2.** Pathogen-targeting vaccine peptides (StreptInCor, HIV peptide vaccines) were previously classified as AMPs, but 70-trial concordance analysis showed this caused systematic over-classification. Vaccine peptides induce adaptive immune responses — the peptide itself does not directly kill pathogens. They are now classified as "Other."
 
-### 2.3 Key Distinction
+### 2.3 Key Distinctions
 
-Promoting defense against pathogens qualifies as AMP activity. Suppressing immunity does not. This distinction is critical for borderline cases -- an immunosuppressive peptide is classified as "Other" regardless of its peptide nature.
+1. **Direct antimicrobial mechanism required.** The peptide must physically kill, lyse, or disrupt pathogens through its own biochemical action — or directly recruit innate immune cells to kill pathogens. General immunomodulation, antibody induction, or receptor blocking does not qualify.
+
+2. **Treating infection ≠ AMP.** A peptide that treats an infectious disease through a non-antimicrobial mechanism (e.g., enfuvirtide blocks HIV viral fusion but does not kill the virus) is classified as "Other."
+
+3. **Promoting defense vs suppressing immunity.** An immunosuppressive peptide is "Other" regardless of its peptide nature. An immunostimulatory peptide is only an AMP if it specifically recruits innate defense against pathogens (Mode B), not if it merely promotes general immune activation.
+
+4. **Vaccine peptides are not AMPs.** Peptides designed to induce antibody responses against pathogens (HIV vaccines, influenza vaccines, etc.) are "Other" — the adaptive immune response they trigger is not a direct antimicrobial mechanism.
 
 
 ## 3. Annotation Fields
@@ -321,91 +326,107 @@ Queries the European Protein Data Bank (PDBe) at ebi.ac.uk/pdbe via Solr search 
 
 Five annotation agents each handle one field. They consume the combined research dossier from Phase 1. Agents fall into two categories by design.
 
-### 5.1 Single-Pass Agents
+### 5.1 Two-Pass Investigative Design (All Agents)
 
-These agents make one LLM call to produce their annotation.
+All five annotation agents use a two-pass investigative architecture. This universal design was adopted in v2 after 70-trial concordance analysis showed that single-pass prompts were insufficient for 8B models, which shortcut on surface-level keywords rather than following multi-step decision trees.
 
-- **Classification Agent**
-- **Delivery Mode Agent**
-- **Peptide Agent**
+- **Pass 1: Structured Fact Extraction** -- The first LLM call extracts factual claims from the evidence package without making a classification decision. Each agent's Pass 1 prompt is tailored to its field.
+- **Pass 2: Decision with Calibrated Rules** -- The second LLM call receives the Pass 1 output along with a decision tree that encodes field-specific logic.
 
-### 5.2 Two-Pass Investigative Agents
+**Design principle**: No lookup tables or hardcoded drug dictionaries. Agents must reason independently from evidence. This ensures generalization to novel peptides and trial designs.
 
-These agents make two sequential LLM calls: an investigative pass that extracts and organizes evidence, followed by a decision pass that uses the extracted evidence to produce the annotation.
+### 5.2 Classification Agent (v5)
 
-- **Outcome Agent**
-- **Failure Reason Agent**
+Uses a larger model (qwen2.5:14b on Mac Mini, kimi-k2-thinking on server) because 8B models ignore the multi-step decision tree.
 
-### 5.3 Classification Agent (v4)
+**Pass 1:** Extracts five antimicrobial evidence dimensions:
+- Peptide identity and molecular class
+- Database matches (DRAMP, APD3, UniProt, ChEMBL, RCSB PDB, EBI Proteins)
+- Mechanism of action (direct antimicrobial vs other)
+- Therapeutic target (infection vs non-infection)
+- Immune direction (promote defense vs suppress vs neutral)
 
-Determines whether the trial involves an AMP and, if so, whether the context is infection-related.
+**Pass 2:** Applies a three-step decision tree:
+1. Is the intervention a peptide? If not → Other.
+2. Does this peptide have a DIRECT antimicrobial mechanism — physically killing/lysing/disrupting pathogens or directly recruiting innate immune cells to kill pathogens? If not → Other.
+3. Does this AMP target infection? Yes → AMP(infection). No → AMP(other).
 
-The v3 prompt includes explicit negative examples to reduce over-classification:
+**v5 changes (from 70-trial concordance analysis):**
+- **AMP definition narrowed to three modes**: Mode D (pathogen-targeting vaccines) was removed. Vaccine peptides induce adaptive immunity; the peptide itself does not kill pathogens. Only Modes A (direct antimicrobial), B (immunostimulatory host defense), and C (anti-biofilm) remain.
+- **Explicit antiretroviral exclusions**: Enfuvirtide/T-20 (viral entry inhibitor, NOT antimicrobial), Peptide T/DAPTA (CCR5 receptor blocker), HIV peptide vaccines (antibody induction). These were the dominant over-classification pattern (30 of 36 classification disagreements).
+- **Mechanism-based decisive rule**: If the mechanism is viral entry inhibition, receptor blocking, vaccine/antibody induction, vasodilation, or metabolic regulation → Other, regardless of infectious disease context.
+- **Default to Other**: When in doubt, false AMP classification is worse than missing a true AMP.
 
-- **Peptide T** -- a neuropeptide, not an AMP
-- **dnaJP1** -- an immunosuppressant peptide, not an AMP
-- **GLP-1 analogues** (e.g., semaglutide) -- metabolic peptides, not AMPs
-- **GnRH analogues** -- endocrine peptides, not AMPs
-- **Radiolabeled peptides** -- diagnostic agents, not AMPs
-- **Structural peptides** -- collagen fragments, etc., not AMPs
+### 5.3 Delivery Mode Agent (v5)
 
-The governing rule: "Being a peptide does NOT make something an AMP. MOST peptide therapeutics are NOT AMPs." When in doubt, the agent classifies as "Other."
+**Pass 1:** Extracts route evidence from all sources with explicit priority ordering:
+1. FDA/drug label route (highest priority — "for subcutaneous use")
+2. Published literature route descriptions
+3. ClinicalTrials.gov protocol text (intervention description, arm groups)
+4. Database formulation data (ChEMBL, IUPHAR)
+5. Drug formulation keywords (tablet, capsule, solution, etc.)
 
-**v4 improvement -- direct antimicrobial mechanism requirement**: The v4 prompt adds a stricter classification gate. To receive an AMP classification, the intervention must have a *direct* antimicrobial mechanism fitting one of the four modes (Section 2.2). Indirect relationships to infection (e.g., a peptide used in a wound context where infection is secondary) no longer automatically qualify as AMP(infection). The agent must identify which specific mode of action applies and cite evidence for it.
+The prompt forces the model to search ALL sources before concluding, explicitly noting the most specific route found.
 
-### 5.4 Delivery Mode Agent (v4)
+**Pass 2:** Classifies using source hierarchy — FDA label overrides generic protocol text. If the FDA label says "subcutaneous" but the protocol says "injection," the answer is Subcutaneous/Intradermal.
 
-Extracts the route of administration from trial data. Uses a priority-ordered extraction strategy:
+**v5 changes**: Upgraded from single-pass to two-pass. The single-pass agent defaulted to "Injection/Infusion - Other/Unspecified" in 52% of injection cases because it only checked protocol text. The two-pass design forces active search across FDA labels, literature, and databases before classifying.
 
-1. Arms/Interventions section of the registry record (highest priority)
-2. Detailed Description field
-3. Published literature methods sections
-4. Drug label information
-5. Intervention name keywords (lowest priority)
+Never-guess rule preserved: if no source specifies IM, SC, or IV, the answer is Injection/Infusion - Other/Unspecified.
 
-Includes a keyword mapping layer that normalizes abbreviations to canonical values (SC, IM, IV, PO, etc.).
+### 5.4 Outcome Agent (v4)
 
-**v4 improvement -- never-guess reinforcement**: The v4 prompt adds explicit reinforcement that the agent must never guess a delivery mode. If the route of administration cannot be determined from the available evidence, the agent must return empty rather than inferring from the compound type or therapeutic context. This addresses cases where the v3 agent guessed "IM" for vaccines or "Oral" for peptides without cited evidence.
-
-### 5.5 Outcome Agent (v3)
-
-**Pass 1:** Extracts four evidence elements from the research dossier:
-- Registry status (e.g., Completed, Terminated, Recruiting)
+**Pass 1:** Extracts seven evidence elements:
+- Registry status (COMPLETED, TERMINATED, RECRUITING, etc.)
 - Trial phase
-- Published results (if any)
-- Result valence (positive, negative, mixed, absent)
+- Published results summary (with quotes)
+- Result valence (positive/negative/mixed/not available)
+- Results posted flag
+- Completion date
+- Why stopped
 
-**Pass 2:** Applies a calibrated decision tree to the extracted evidence, evaluated in strict order:
+**Pass 2:** Applies a calibrated decision tree with **completion heuristics** (added in v2 after concordance showed 15+ "Unknown" defaults for old completed trials that humans correctly marked "Positive"):
 
-1. Registry status is Recruiting or Active not recruiting --> annotate as Recruiting or Active not recruiting.
-2. Registry status is Withdrawn --> annotate as Withdrawn.
-3. Published positive results exist --> annotate as Positive. Phase I trials that complete with acceptable safety data are considered positive.
-4. Published negative results exist --> annotate as Failed - completed trial. This requires cited evidence of failure -- a paper, a press release, or a regulatory decision.
-5. Registry status is Terminated with no positive published results --> annotate as Terminated.
-6. No published results, ambiguous status --> annotate as Unknown.
+1. Recruiting/Active not recruiting → report current status.
+2. Withdrawn → Withdrawn.
+3. Published positive results → Positive. Phase I completion with acceptable safety → Positive.
+4. Published negative results → Failed - completed trial. Requires cited evidence of failure.
+5. Terminated → Terminated.
+6. For COMPLETED trials without published results, apply completion heuristics:
+   - H1: Phase I completion → Positive (safety trial completion IS success).
+   - H2: Results posted on ClinicalTrials.gov → lean Positive.
+   - H3: Trial completed >10 years ago, no negative evidence → lean Positive.
+   - H4: Only after exhausting H1-H3 → Unknown.
 
-Critical rule: A "Completed" registry status alone does NOT indicate failure. "Failed - completed trial" requires cited evidence that the trial failed to meet its endpoints or was otherwise unsuccessful.
+Critical rule: "Completed" registry status alone does NOT indicate failure. "Failed - completed trial" requires affirmative evidence of a negative result.
 
-### 5.6 Failure Reason Agent (v4)
+### 5.5 Failure Reason Agent (v5)
 
-**Pass 1:** Investigates all available evidence for failure signals -- adverse event reports, efficacy data, sponsor announcements, regulatory actions, COVID-related disruptions, enrollment data.
+**Deterministic pre-check gate (v2):** The orchestrator runs the Failure Reason Agent AFTER the Outcome Agent and passes the outcome result in metadata. Before any LLM call, the agent checks:
 
-**Pass 2:** Classifies the reason for failure, but only if Pass 1 identified actual failure signals.
+- If outcome is Positive, Recruiting, Active not recruiting, or Unknown → return empty immediately. No LLM call. This deterministic gate eliminated the dominant concordance error: the 8B model hallucinated "Ineffective for purpose" for 42 out of 62 non-failed trials.
 
-The agent includes an enhanced short-circuit mechanism for non-failures. Before classifying a failure reason, the agent checks for:
-- Positive outcome signals (published positive results, successful Phase I completion)
-- Active or recruiting status
-- Any indication the trial is ongoing or successful
+**Only Terminated and Failed outcomes proceed** to the two-pass LLM investigation:
 
-The short-circuit is not a simple string match for "No" -- it evaluates the full evidence context for positive signals. If positive signals are found, the agent returns an empty value (no failure reason).
+**Pass 1:** Investigates all evidence for failure signals — adverse event reports, efficacy data, sponsor announcements, regulatory actions, COVID disruptions, enrollment data.
 
-**v4 improvement -- default no-failure for completed trials**: The v4 prompt changes the default behavior for trials that completed without explicit failure evidence. Previously, the agent would sometimes assign "Ineffective for purpose" to completed trials lacking published results. The v4 prompt instructs the agent that a completed trial with no published negative results should default to an empty failure reason (no failure), not "Ineffective for purpose." Failure reason requires affirmative evidence of failure, mirroring the Outcome Agent's rule that completion does not imply failure.
+**Pass 2:** Classifies the failure mode, but only if Pass 1 identified actual failure signals. COMPLETED trials without published negative results default to empty (no failure).
 
-### 5.7 Peptide Agent (v4)
+### 5.6 Peptide Agent (v5)
 
-Determines whether the trial intervention is a peptide (True/False). Consults the Peptide Identity research dossier (UniProt, DRAMP) as primary evidence, supplemented by RCSB PDB and EBI Proteins data from the new v4 research agents.
+**Pass 1:** Extracts molecular facts:
+- Intervention name
+- Molecular class (peptide chain / antibody / small molecule / nutritional product / large multi-subunit protein)
+- Database confirmation (UniProt, DRAMP, DBAASP, ChEMBL entries)
+- Product description (drug vs nutritional formula vs dietary supplement)
+- Active ingredient role (active drug / food ingredient / targeting vector / brand name only)
 
-**v4 improvement -- brand name rules**: The v4 prompt adds explicit handling for brand-name interventions. When the trial intervention is a brand name (e.g., "Solostar," "Ozempic"), the agent must resolve the brand name to its generic compound and determine peptide status based on the generic identity, not the brand name alone. The prompt includes examples of brand names that resolve to non-peptide compounds.
+**Pass 2:** Applies a three-step decision tree:
+1. Is the molecular class a peptide? (Antibodies, small molecules, nutritional products → False)
+2. Is the peptide the active drug? (Food ingredients, brand name artifacts → False)
+3. Database/literature confirmation (DRAMP/UniProt/ChEMBL entry → True; no hits but clearly peptide → True)
+
+**v5 changes**: Upgraded from single-pass to two-pass. The single-pass agent over-identified peptides (Agent=True for non-peptide interventions) and under-identified (Agent=False for real peptides) because 8B models shortcut on whether "peptide" appeared in the trial text. The two-pass design forces molecular class determination before the True/False decision.
 
 
 ## 6. Phase 3 -- Verification Pipeline

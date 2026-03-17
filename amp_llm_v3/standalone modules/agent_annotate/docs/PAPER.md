@@ -276,47 +276,59 @@ PDBe complements the RCSB PDB Agent (Section 3.2.8) with structure quality metri
 
 Five annotation agents process the evidence gathered in Phase 1, each specialized for a single annotation field. These agents fall into two architectural categories based on the complexity of the decision required.
 
-#### 3.3.1 Single-Pass Agents
+#### 3.3.1 Two-Pass Investigative Design (All Agents)
 
-The Classification, Delivery Mode, and Peptide agents each perform a single LLM call with a field-specific system prompt and the full evidence package as user input.
+All five annotation agents employ a two-pass architecture. This universal design was adopted in v2 after concordance analysis showed that single-pass prompts were insufficient for 8B models, which tend to shortcut on surface-level keywords rather than following multi-step decision trees.
 
-**Classification Agent.** The system prompt encodes:
-- The four-mode AMP definition (Modes A through D) with representative examples for each mode.
-- Explicit negative examples: GLP-1 receptor agonists, neuropeptides (substance P, neuropeptide Y), immunosuppressants (dnaJP1, cyclosporine), and radiolabeled peptide tracers are enumerated as non-AMP.
-- A default-to-Other rule: when the evidence is insufficient to confidently assign AMP(infection) or AMP(other), the agent must classify the trial as Other. This conservative default reduces false-positive AMP classifications.
+**Pass 1: Structured Fact Extraction.** The first LLM call extracts factual claims from the evidence package without making a classification decision. Each agent's Pass 1 prompt is tailored to its field, asking specific factual questions whose answers feed the decision tree in Pass 2.
 
-**Delivery Mode Agent.** The system prompt encodes:
-- A priority-ordered extraction hierarchy: Arms/Interventions descriptions take precedence, followed by the trial Description field, then published literature, then drug label information, and finally the trial Name as a last resort.
-- A keyword mapping table for route abbreviations and synonyms (e.g., "IV" maps to Intravenous, "PO" maps to Oral, "topical cream/ointment/gel" maps to Topical).
+**Pass 2: Decision with Calibrated Rules.** The second LLM call receives the Pass 1 output along with a decision tree that encodes field-specific logic. By operating on its own structured extraction rather than raw evidence, the model is less likely to be distracted by irrelevant citations.
 
-**Peptide Agent.** The system prompt encodes the biochemical definition of a peptide (amino acid polymer, typically under 100 residues) and instructs the model to cross-reference the Peptide Identity Agent's findings from UniProt and DRAMP.
+**Design principle: no lookup tables.** The agents contain no hardcoded drug-name dictionaries or answer cheat sheets. Each agent must reason independently from the evidence gathered by the research agents. This ensures the system generalizes to novel peptides and trial designs rather than memorizing known answers.
 
-#### 3.3.2 Two-Pass Investigative Agents
+**Classification Agent.** Uses a larger model (qwen2.5:14b on Mac Mini, kimi-k2-thinking on server) because 8B models have demonstrated inability to follow the multi-step decision tree reliably.
 
-The Outcome and Failure Reason agents employ a two-pass architecture, reflecting the investigative complexity of these fields.
+- *Pass 1* extracts five antimicrobial evidence dimensions: peptide identity, database matches (DRAMP, APD3, UniProt, ChEMBL), mechanism of action, therapeutic target, and immune direction.
+- *Pass 2* applies a three-step decision tree: (1) Is the intervention a peptide? (2) Does this peptide have a DIRECT antimicrobial mechanism — physically killing, lysing, or disrupting pathogens, or directly recruiting innate immune cells to kill pathogens? (3) Does this AMP target infection?
+- The v2 prompt encodes explicit exclusions for the most common over-classification patterns: antiretrovirals (enfuvirtide, peptide T — viral entry inhibitors, not antimicrobial), vaccine peptides (induce adaptive immunity, the peptide itself does not kill pathogens), neuropeptides (VIP/aviptadil — vasodilators), metabolic hormones (GLP-1, GLP-2), and immunosuppressive peptides. The decisive rule: if the mechanism is viral entry inhibition, receptor blocking, vaccine/antibody induction, vasodilation, or metabolic regulation, the answer is Other.
+- The four-mode AMP definition was narrowed to three modes in v2: Mode D (pathogen-targeting vaccines) was removed because vaccine peptides do not directly kill pathogens — they work through adaptive immunity.
 
-**Pass 1: Structured Fact Extraction.** The first LLM call extracts factual claims from the evidence package without making a classification decision. The model is instructed to list: the registry status, any published results and their conclusions, any safety signals, the trial phase, enrollment figures, and the date of last update. This pass produces a structured intermediate representation.
+**Delivery Mode Agent.**
 
-**Pass 2: Decision with Calibrated Rules.** The second LLM call receives the Pass 1 output along with a decision tree that encodes field-specific logic.
+- *Pass 1* extracts route evidence from four source categories with explicit priority ordering: (1) FDA/drug label route (highest priority), (2) published literature route descriptions, (3) ClinicalTrials.gov protocol route, (4) database formulation data. The prompt forces the model to search all sources before concluding.
+- *Pass 2* classifies the route using the source hierarchy: FDA label overrides generic protocol text. If the FDA label says "subcutaneous" but the protocol says "injection," the answer is Subcutaneous/Intradermal, not Other/Unspecified.
+- The never-guess rule is preserved: if no source specifies IM, SC, or IV, the answer is Injection/Infusion - Other/Unspecified.
 
-The **Outcome Agent v3 decision tree** applies the following rules in priority order:
+**Peptide Agent.**
+
+- *Pass 1* extracts molecular facts: intervention name, molecular class (peptide chain vs antibody vs small molecule vs nutritional product), database confirmation (UniProt, DRAMP, ChEMBL entries), product description, and active ingredient role (active drug vs food ingredient vs targeting vector vs brand name).
+- *Pass 2* applies a three-step decision tree: (1) Is the molecular class a peptide? (2) Is the peptide the active drug (not a food ingredient or brand name artifact)? (3) Database/literature confirmation.
+
+**Outcome Agent.**
+
+- *Pass 1* extracts seven evidence elements: registry status, trial phase, published results summary, result valence (positive/negative/mixed/not available), results posted flag, completion date, and why stopped.
+- *Pass 2* applies a calibrated decision tree with **completion heuristics** for older trials (added in v2):
 
 1. If the trial is currently Recruiting or Active not recruiting, report the current status directly.
 2. If the trial has been Withdrawn, classify as Withdrawn.
-3. If published results demonstrate positive efficacy or if a Phase I trial completed its safety evaluation successfully, classify as Positive. Phase I safety completion is treated as a positive outcome because Phase I trials are designed to assess safety, not efficacy.
-4. If published results demonstrate negative efficacy (failure to meet primary endpoint, lack of superiority over comparator), classify as Failed - completed trial. This classification *requires* cited evidence of failure.
-5. If the trial was Terminated and no positive results are published, classify as Terminated.
-6. If the evidence is ambiguous or insufficient, classify as Unknown.
+3. If published results demonstrate positive efficacy, classify as Positive.
+4. If published results demonstrate negative efficacy, classify as Failed - completed trial. This *requires* cited evidence of failure.
+5. If the trial was Terminated, classify as Terminated.
+6. For COMPLETED trials without published results, apply completion heuristics:
+   - H1: Phase I trials that completed normally → Positive (safety completion IS success).
+   - H2: Results posted on ClinicalTrials.gov → lean Positive.
+   - H3: Old trial (pre-2010) completed normally with no negative evidence → lean Positive.
+   - H4: Only after exhausting H1-H3 → Unknown.
 
-A critical rule governs the distinction between completion and failure: a registry status of COMPLETED does *not* imply failure. Many trials complete successfully. The "Failed - completed trial" classification requires affirmative evidence of a negative result, not merely the absence of a positive one.
+A critical rule governs the distinction between completion and failure: a registry status of COMPLETED does *not* imply failure. The "Failed - completed trial" classification requires affirmative evidence of a negative result.
 
-The **Failure Reason Agent** implements a short-circuit mechanism before invoking the LLM. The enhanced non-failure detection checks three conditions:
+**Failure Reason Agent.**
 
-1. **Positive signal detection:** If the Outcome Agent classified the trial as Positive, Recruiting, or Active not recruiting, the Failure Reason is set to empty without an LLM call.
-2. **Active status detection:** If the registry status indicates the trial is ongoing, the Failure Reason is set to empty.
-3. **Malformed Pass 1 detection:** If the Pass 1 output from the Outcome Agent is structurally invalid or empty, the Failure Reason is set to empty rather than risking a hallucinated failure reason.
+The orchestrator runs the Failure Reason Agent *after* the Outcome Agent completes and passes the outcome result in metadata. The agent implements a deterministic pre-check gate:
 
-When the short-circuit does not fire, the Failure Reason Agent proceeds with its own two-pass architecture, extracting failure-related facts in Pass 1 and classifying the failure mode in Pass 2.
+1. **Outcome-based pre-check (v2):** If the Outcome Agent classified the trial as Positive, Recruiting, Active not recruiting, or Unknown, the Failure Reason is set to empty *without any LLM call*. This deterministic gate eliminates the dominant error pattern observed in concordance analysis, where the 8B model hallucinated "Ineffective for purpose" for 42 out of 62 non-failed trials.
+2. **Only Terminated and Failed outcomes proceed** to the two-pass LLM investigation.
+3. When the LLM is invoked, Pass 1 investigates all sources for failure signals, and Pass 2 classifies the failure mode. The "no failure" default for COMPLETED trials without published negative results is preserved.
 
 #### 3.3.3 Evidence Threshold Enforcement
 
