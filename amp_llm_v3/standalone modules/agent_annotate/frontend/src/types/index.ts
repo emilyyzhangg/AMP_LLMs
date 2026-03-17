@@ -111,14 +111,15 @@ export interface ConcordanceField {
   kappa: number;
   interpretation: string;
   confusion_matrix: Record<string, Record<string, number>>;
-  value_distribution: { agent: Record<string, number>; human: Record<string, number> };
-  disagreements: Array<{ nct_id: string; agent_value: string; human_value: string }>;
+  value_distribution: Record<string, Record<string, number>>;
+  disagreements: Array<{ nct_id: string; field: string; value_a: string; value_b: string }>;
 }
 
 export interface JobConcordance {
   job_id: string;
   timestamp: string;
-  comparison: string; // "agent_vs_r1", "agent_vs_r2", "r1_vs_r2"
+  comparison_label: string;
+  n_overlapping: number;
   fields: ConcordanceField[];
   overall_agree_pct: number;
 }

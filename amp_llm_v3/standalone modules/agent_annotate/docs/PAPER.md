@@ -6,7 +6,7 @@
 
 ## Abstract
 
-Systematic review of clinical trials involving antimicrobial peptides (AMPs) requires annotating multiple structured fields across hundreds of registry entries --- a process that is slow, expensive, and unreliable when performed manually. Inter-annotator agreement among trained human reviewers reaches only approximately 80% overall and drops substantially for fields requiring investigative reasoning, such as trial outcome determination and failure classification. Existing automated approaches typically employ single large language model (LLM) calls without verification, evidence requirements, or source citations, producing annotations of insufficient quality for research use. We present Agent Annotate, a multi-agent pipeline that decomposes the annotation task into three phases: eight parallel research agents that gather and weight evidence from twelve external databases --- including DBAASP (antimicrobial activity), ChEMBL (bioactivity), RCSB PDB (3D structures), and EBI Proteins (sequences) --- specialized annotation agents that apply field-specific decision logic with calibrated evidence thresholds, and a blind multi-model verification stage employing four architecturally diverse local LLMs. The system enforces evidence-grounded reasoning by requiring cited sources for every annotation with full traceability (model identity, agent provenance, source URLs, evidence text), implements blind peer review in which verifier models never observe the primary annotation, and applies short-circuit optimizations that reduce unnecessary model invocations. All models execute locally via Ollama on consumer hardware, with optional Kimi K2 Thinking model support on server-class hardware. Expanded evaluation on 62 clinical trials reveals systematic error patterns --- classification over-triggering (29.4% agreement with R1), outcome defaulting to Unknown (37.1%), and spurious failure reasons (41.9%) --- each addressed by targeted v4 agent improvements. We describe the full architecture, error analysis, v4 improvements, and concordance results.
+Systematic review of clinical trials involving antimicrobial peptides (AMPs) requires annotating multiple structured fields across hundreds of registry entries --- a process that is slow, expensive, and unreliable when performed manually. Inter-annotator agreement among trained human reviewers reaches only approximately 80% overall and drops substantially for fields requiring investigative reasoning, such as trial outcome determination and failure classification. Existing automated approaches typically employ single large language model (LLM) calls without verification, evidence requirements, or source citations, producing annotations of insufficient quality for research use. We present Agent Annotate, a multi-agent pipeline that decomposes the annotation task into three phases: fifteen parallel research agents that gather and weight evidence from 20+ free external databases --- including DBAASP (antimicrobial activity), ChEMBL (bioactivity), RCSB PDB (3D structures), EBI Proteins (sequences), APD (AMP database), dbAMP (peptide annotations), WHO ICTRP (international trials), IUPHAR (pharmacology), IntAct (molecular interactions), CARD (antibiotic resistance), and PDBe (structure quality) --- specialized annotation agents that apply field-specific decision logic with calibrated evidence thresholds, and a blind multi-model verification stage employing four architecturally diverse local LLMs. The system enforces evidence-grounded reasoning by requiring cited sources for every annotation with full traceability (model identity, agent provenance, source URLs, evidence text), implements blind peer review in which verifier models never observe the primary annotation, and applies short-circuit optimizations that reduce unnecessary model invocations. All models execute locally via Ollama on consumer hardware, with optional Kimi K2 Thinking model support on server-class hardware. Expanded evaluation on 62 clinical trials reveals systematic error patterns --- classification over-triggering (29.4% agreement with R1), outcome defaulting to Unknown (37.1%), and spurious failure reasons (41.9%) --- each addressed by targeted v4 agent improvements. We describe the full architecture, error analysis, v4 improvements, and concordance results.
 
 ---
 
@@ -18,7 +18,7 @@ Annotating clinical trials at scale requires classifying each trial along multip
 
 Existing automated approaches to clinical trial annotation typically employ a single LLM call per field, without verification mechanisms, evidence requirements, or source citations. These approaches inherit the well-known limitations of language models --- hallucination, overconfidence, and sensitivity to prompt phrasing --- without any of the error-correction mechanisms that human review processes provide.
 
-Agent Annotate addresses these limitations through a pipeline of specialized AI agents running entirely on local models. The system decomposes annotation into research, annotation, and verification phases, each implemented by purpose-built agents with distinct responsibilities. Research agents gather evidence from twelve external databases with calibrated source weights --- including specialized peptide activity (DBAASP), bioactivity (ChEMBL), structural (RCSB PDB), and protein sequence (EBI Proteins) databases added in v4. Annotation agents apply field-specific decision logic with evidence threshold enforcement. Verification agents perform blind multi-model peer review using architecturally diverse model families. The result is a system that produces annotations with full provenance chains including model identity, agent provenance, source URLs, and evidence text for every field --- calibrated confidence scores, and explicit identification of cases requiring human review.
+Agent Annotate addresses these limitations through a pipeline of specialized AI agents running entirely on local models. The system decomposes annotation into research, annotation, and verification phases, each implemented by purpose-built agents with distinct responsibilities. Research agents gather evidence from 20+ free external databases with calibrated source weights --- including specialized peptide activity (DBAASP), bioactivity (ChEMBL), structural (RCSB PDB), protein sequence (EBI Proteins), AMP classification (APD, dbAMP), international trial registries (WHO ICTRP), pharmacology (IUPHAR), molecular interactions (IntAct), antibiotic resistance (CARD), and structure quality (PDBe) databases. Annotation agents apply field-specific decision logic with evidence threshold enforcement. Verification agents perform blind multi-model peer review using architecturally diverse model families. The result is a system that produces annotations with full provenance chains including model identity, agent provenance, source URLs, and evidence text for every field --- calibrated confidence scores, and explicit identification of cases requiring human review.
 
 This paper describes the complete Agent Annotate system, presents baseline evaluation results against human annotations, analyzes systematic error patterns, and outlines improvements implemented in response to error analysis.
 
@@ -75,27 +75,34 @@ These findings demonstrate that manual annotation, while conventionally treated 
 Agent Annotate implements a three-phase pipeline:
 
 ```
-Phase 1: Research          Phase 2: Annotation         Phase 3: Verification
-(8 agents, parallel)       (5 agents, sequential*)      (multi-model blind review)
-                           *sequential due to GPU memory
+Phase 1: Research           Phase 2: Annotation         Phase 3: Verification
+(15 agents, parallel)       (5 agents, sequential*)      (multi-model blind review)
+                            *sequential due to GPU memory
 
-[Clinical Protocol ]  -->  [Classification Agent]  -->  [Blind Verifier 1: gemma2:9b  ]
-[Literature        ]  -->  [Delivery Mode Agent ]  -->  [Blind Verifier 2: qwen2:latest]
-[Peptide Identity  ]  -->  [Outcome Agent       ]  -->  [Blind Verifier 3: mistral:latest]
-[Web Context       ]  -->  [Failure Reason Agent]  -->  [Reconciler: qwen2.5:14b (disputes only)]
-[DBAASP (v4)       ]       [Peptide Agent       ]
-[ChEMBL (v4)       ]
-[RCSB PDB (v4)     ]
-[EBI Proteins (v4) ]
+[Clinical Protocol  ]  -->  [Classification Agent]  -->  [Blind Verifier 1: gemma2:9b  ]
+[Literature         ]  -->  [Delivery Mode Agent ]  -->  [Blind Verifier 2: qwen2:latest]
+[Peptide Identity   ]  -->  [Outcome Agent       ]  -->  [Blind Verifier 3: mistral:latest]
+[Web Context        ]  -->  [Failure Reason Agent]  -->  [Reconciler: qwen2.5:14b (disputes only)]
+[DBAASP (v4)        ]       [Peptide Agent       ]
+[ChEMBL (v4)        ]
+[RCSB PDB (v4)      ]
+[EBI Proteins (v4)  ]
+[APD (v5)           ]
+[dbAMP (v5)         ]
+[WHO ICTRP (v5)     ]
+[IUPHAR (v5)        ]
+[IntAct (v5)        ]
+[CARD (v5)          ]
+[PDBe (v5)          ]
 ```
 
-Phase 1 agents operate in parallel, as they perform network I/O without requiring GPU resources. The v4 pipeline expands from four to eight research agents, adding DBAASP (peptide activity/MIC data), ChEMBL (bioactivity and clinical phase), RCSB PDB (3D structure metadata), and EBI Proteins (sequences and variants). Phase 2 agents share a single Ollama instance and execute sequentially due to the memory constraints of the deployment hardware. Phase 3 applies blind verification using architecturally diverse model families.
+Phase 1 agents operate in parallel, as they perform network I/O without requiring GPU resources. The v4 pipeline expanded from four to eight research agents, adding DBAASP, ChEMBL, RCSB PDB, and EBI Proteins. The v5 expansion added seven more agents (APD, dbAMP, WHO ICTRP, IUPHAR, IntAct, CARD, PDBe), bringing the total to 15 research agents querying 20+ free databases. SerpAPI was removed (paid service); all agents now use free APIs exclusively. Phase 2 agents share a single Ollama instance and execute sequentially due to the memory constraints of the deployment hardware. Phase 3 applies blind verification using architecturally diverse model families.
 
 All models run locally via Ollama on a Mac Mini M4 with 16 GB of unified memory (mac_mini profile) or on a dedicated server with 48+ GB (server profile, which enables Kimi K2 Thinking as the primary annotator). No data leaves the local machine during inference. External network access is limited to Phase 1 research queries against public databases.
 
 ### 3.2 Research Agents
 
-Eight research agents gather evidence from twelve external data sources, each assigned a calibrated weight reflecting its reliability and relevance. The original four agents (Sections 3.2.1--3.2.4) were present in v2/v3; four new agents (Sections 3.2.6--3.2.9) were added in v4.
+Fifteen research agents gather evidence from 20+ free external data sources, each assigned a calibrated weight reflecting its reliability and relevance. The original four agents (Sections 3.2.1--3.2.4) were present in v2/v3; four agents (Sections 3.2.6--3.2.9) were added in v4; seven agents (Sections 3.2.10--3.2.16) were added in v5.
 
 #### 3.2.1 Clinical Protocol Agent
 
@@ -138,10 +145,9 @@ The Web Context Agent queries general web search engines and academic search ser
 | Source | Weight | Data Retrieved |
 |---|---|---|
 | DuckDuckGo | 0.40 | General web results, news articles |
-| SerpAPI | 0.50 | Structured search results, knowledge panels |
 | Google Scholar | 0.70 | Academic citations, related articles |
 
-Web sources receive substantially lower weights than structured databases, reflecting the higher noise and lower reliability of unstructured web content. Google Scholar receives the highest web weight due to its focus on academic content.
+Web sources receive substantially lower weights than structured databases, reflecting the higher noise and lower reliability of unstructured web content. Google Scholar receives the highest web weight due to its focus on academic content. Note: SerpAPI was removed as it requires a paid subscription; all research agents now use free APIs exclusively.
 
 #### 3.2.5 HTTP Resilience
 
@@ -186,6 +192,76 @@ The EBI Proteins Agent queries the EMBL-EBI Proteins API for sequence and functi
 | EBI Proteins API | 0.85 | Amino acid sequences, post-translational modifications, variants, functional annotations, GO terms |
 
 This agent complements the Peptide Identity Agent's UniProt queries (Section 3.2.3) with additional sequence-level data accessible through the EBI programmatic interface, including variant information and detailed functional annotations that help distinguish antimicrobial function from other peptide activities.
+
+#### 3.2.10 APD Agent (v5)
+
+The APD Agent queries the Antimicrobial Peptide Database (aps.unmc.edu) for curated AMP records via HTML scraping.
+
+| Source | Weight | Data Retrieved |
+|---|---|---|
+| APD (HTML scraping) | 0.80 | AMP classifications, activity annotations, peptide sequences, source organism |
+
+APD is one of the earliest and most widely cited AMP databases. Presence in APD is strong evidence for AMP status. The server requires JavaScript rendering for some pages, so data retrieval is best-effort.
+
+#### 3.2.11 dbAMP Agent (v5)
+
+The dbAMP Agent queries the dbAMP 3.0 database (yylab.jnu.edu.cn/dbAMP) for comprehensive AMP annotations via HTML scraping.
+
+| Source | Weight | Data Retrieved |
+|---|---|---|
+| dbAMP 3.0 (HTML scraping) | 0.80 | AMP sequences, functional annotations, antimicrobial activity, target organisms |
+
+dbAMP 3.0 contains over 33,000 AMP entries with experimentally validated annotations, providing broad coverage that increases the likelihood of finding data for less-studied peptides. Availability is intermittent; the agent handles connection failures gracefully.
+
+#### 3.2.12 WHO ICTRP Agent (v5)
+
+The WHO ICTRP Agent queries the International Clinical Trials Registry Platform (trialsearch.who.int) for international trial registry data via HTML parsing.
+
+| Source | Weight | Data Retrieved |
+|---|---|---|
+| WHO ICTRP (HTML parsing) | 0.85 | Trial registrations from 17+ international registries, status, interventions, conditions |
+
+ICTRP extends ClinicalTrials.gov coverage to international registries (EU Clinical Trials Register, ISRCTN, ANZCTR, ChiCTR, CTRI, etc.). Many AMP trials conducted outside the US may only be registered in non-US registries.
+
+#### 3.2.13 IUPHAR Guide to Pharmacology Agent (v5)
+
+The IUPHAR Agent queries the IUPHAR/BPS Guide to Pharmacology (guidetopharmacology.org) via its REST API for pharmacological data.
+
+| Source | Weight | Data Retrieved |
+|---|---|---|
+| IUPHAR Guide to Pharmacology (REST API) | 0.85 | Mechanism of action, drug targets, ligand classification, receptor-ligand interactions |
+
+IUPHAR provides authoritative pharmacological context that helps the Classification Agent distinguish direct antimicrobial mechanisms from immunomodulatory and other peptide therapeutic activities. Ligand classification data also informs the Peptide Agent.
+
+#### 3.2.14 IntAct Agent (v5)
+
+The IntAct Agent queries the IntAct molecular interaction database (ebi.ac.uk/intact) via its REST API for protein-protein and peptide-target interaction data.
+
+| Source | Weight | Data Retrieved |
+|---|---|---|
+| IntAct (REST API) | 0.75 | Molecular interactions, interaction types, detection methods, UniProt cross-references |
+
+Molecular interaction data can reveal AMP mechanisms of action. Interactions with membrane proteins or microbial targets support direct antimicrobial classification, while interactions with immune receptors support immunomodulatory classification.
+
+#### 3.2.15 CARD Agent (v5)
+
+The CARD Agent queries the Comprehensive Antibiotic Resistance Database (card.mcmaster.ca) via AJAX endpoints for resistance mechanism data.
+
+| Source | Weight | Data Retrieved |
+|---|---|---|
+| CARD (AJAX endpoints) | 0.80 | Resistance mechanisms, ARO terms, resistance gene annotations, drug class classifications |
+
+CARD provides antibiotic resistance context relevant to AMP clinical trials. ARO terms help classify the mechanism of action for peptide antibiotics, distinguishing membrane-targeting AMPs from those with intracellular targets.
+
+#### 3.2.16 PDBe Agent (v5)
+
+The PDBe Agent queries the European Protein Data Bank (ebi.ac.uk/pdbe) via Solr search and REST APIs for structure quality metrics.
+
+| Source | Weight | Data Retrieved |
+|---|---|---|
+| PDBe (Solr search + REST API) | 0.80 | Structure quality metrics (resolution, R-factor), experimental method details, deposition metadata |
+
+PDBe complements the RCSB PDB Agent (Section 3.2.8) with structure quality metrics. Resolution and R-factor data indicate the reliability of structural information, with higher-quality structures providing more trustworthy evidence for peptide identity and mechanism-of-action analysis.
 
 ### 3.3 Annotation Agents
 
@@ -418,7 +494,9 @@ The v4 agent revision targets the systematic errors revealed by the n=62 evaluat
 
 **Verifier prompt parity.** All v4 verifier prompts receive the same field-specific detail as the primary annotation agents, eliminating the instruction asymmetry that undermined v3 verification quality.
 
-**Four new research agents.** The DBAASP, ChEMBL, RCSB PDB, and EBI Proteins agents (Section 3.2.6--3.2.9) provide richer evidence for all annotation fields, particularly Classification (antimicrobial activity data from DBAASP) and Peptide (structural confirmation from PDB, sequence data from EBI Proteins).
+**Four new research agents (v4).** The DBAASP, ChEMBL, RCSB PDB, and EBI Proteins agents (Section 3.2.6--3.2.9) provide richer evidence for all annotation fields, particularly Classification (antimicrobial activity data from DBAASP) and Peptide (structural confirmation from PDB, sequence data from EBI Proteins).
+
+**Seven additional research agents (v5).** The APD, dbAMP, WHO ICTRP, IUPHAR, IntAct, CARD, and PDBe agents (Section 3.2.10--3.2.16) expand the research pipeline to 15 agents querying 20+ free databases. These additions provide independent AMP classification sources (APD, dbAMP), international trial registry coverage (WHO ICTRP), pharmacological mechanism-of-action data (IUPHAR), molecular interaction evidence (IntAct), antibiotic resistance context (CARD), and structure quality metrics (PDBe). SerpAPI was removed as it required a paid subscription.
 
 ### 4.8 Citation Traceability
 
@@ -524,7 +602,7 @@ Six directions for future development are planned:
 
 3. **14B primary annotator for high-error fields.** Deploying qwen2.5:14b as the primary annotator for Classification and Outcome --- the two fields with the largest agent-human gap --- while retaining 8B models for Peptide and Delivery Mode. This requires sequential field processing to manage memory but should improve instruction adherence on complex reasoning tasks.
 
-4. **Additional sequence databases.** Integrating NCBI Protein and the Antimicrobial Peptide Database (APD3) as additional sources for the Peptide Identity Agent. These databases provide complementary coverage: NCBI Protein offers comprehensive sequence data, while APD3 provides curated AMP-specific functional annotations including hemolytic activity and minimum inhibitory concentrations.
+4. **Additional sequence databases.** Integrating NCBI Protein as an additional source for the Peptide Identity Agent. Note: APD (aps.unmc.edu) and dbAMP 3.0 have been integrated as v5 research agents (Sections 3.2.10--3.2.11), along with WHO ICTRP, IUPHAR, IntAct, CARD, and PDBe (Sections 3.2.12--3.2.16).
 
 5. **Active learning from manual review.** When annotations are flagged for manual review and a human provides the correct answer, the system can use these corrections to identify systematic prompt weaknesses and guide prompt refinement. Over time, this creates a feedback loop that progressively reduces the manual review burden.
 
@@ -582,8 +660,15 @@ Table 3 summarizes the external data sources accessed by the research agents, in
 | ChEMBL API (v4) | Free | No key required | 10 requests/sec |
 | RCSB PDB API (v4) | Free | No key required | 10 requests/sec |
 | EBI Proteins API (v4) | Free | No key required | 10 requests/sec |
+| APD (v5) | Free | No key required | 2 requests/sec |
+| dbAMP 3.0 (v5) | Free | No key required | 2 requests/sec |
+| WHO ICTRP (v5) | Free | No key required | 2 requests/sec |
+| IUPHAR Guide to Pharmacology (v5) | Free | No key required | 10 requests/sec |
+| IntAct (v5) | Free | No key required | 10 requests/sec |
+| CARD (v5) | Free | No key required | 5 requests/sec |
+| PDBe (v5) | Free | No key required | 10 requests/sec |
 
-All sources are freely accessible without paid subscriptions. Rate limits are enforced client-side through per-host semaphores to ensure compliance and prevent service disruption.
+All sources are freely accessible without paid subscriptions. SerpAPI was removed as it required a paid API key. Rate limits are enforced client-side through per-host semaphores to ensure compliance and prevent service disruption.
 
 ---
 
@@ -614,4 +699,4 @@ This document constitutes an internal methodology paper for the Agent Annotate s
 
 ---
 
-*Document version: 2.0 (v4 updates). Generated 2026-03-16.*
+*Document version: 3.0 (v5 research pipeline expansion to 15 agents, 20+ free databases). Generated 2026-03-16.*

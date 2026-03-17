@@ -311,8 +311,8 @@ def _load_agent_annotations(job_id: str) -> dict[str, dict[str, str]]:
             continue
 
         entry: dict[str, str] = {}
-        verification = trial.get("verification", {})
-        fields_list = verification.get("fields", [])
+        verification = trial.get("verification") or {}
+        fields_list = verification.get("fields") or []
 
         for field_obj in fields_list:
             fname = field_obj.get("field_name", "")

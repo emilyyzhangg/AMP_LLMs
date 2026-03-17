@@ -6,7 +6,7 @@ Agent Annotate is a three-phase pipeline for annotating clinical trials involvin
 
 The three phases execute sequentially per trial:
 
-1. **Phase 1 -- Research.** Eight parallel agents gather evidence from external data sources (registries, literature, protein databases, peptide activity databases, structure databases, web search).
+1. **Phase 1 -- Research.** Fifteen parallel agents gather evidence from 20+ free external databases (registries, literature, protein databases, peptide activity databases, structure databases, pharmacology databases, interaction databases, resistance databases, international trial registries).
 2. **Phase 2 -- Annotation.** Five agents each annotate one field, consuming the research dossier from Phase 1.
 3. **Phase 3 -- Verification.** Three blind verifiers independently review each annotation, followed by consensus checking and reconciliation for disputes.
 
@@ -16,7 +16,7 @@ Every annotation in the output includes full citation traceability:
 
 - **Model identity**: Which LLM produced each annotation and each verification opinion.
 - **Agent provenance**: Which research agent contributed evidence for each field.
-- **Source URLs**: Direct links to the external data sources consulted (ClinicalTrials.gov, PubMed, UniProt, DBAASP, ChEMBL, RCSB PDB, EBI Proteins, etc.).
+- **Source URLs**: Direct links to the external data sources consulted (ClinicalTrials.gov, PubMed, UniProt, DBAASP, ChEMBL, RCSB PDB, EBI Proteins, APD, dbAMP, WHO ICTRP, IUPHAR, IntAct, CARD, PDBe, etc.).
 - **Evidence text**: The extracted evidence passages that informed the annotation decision.
 - **Verifier summary**: Each verifier's independent opinion and reasoning chain.
 
@@ -112,7 +112,7 @@ Boolean field (True/False) indicating whether the intervention is a peptide.
 
 ## 4. Phase 1 -- Research Agents
 
-Eight research agents run in parallel, each querying different external sources. Every source carries a fixed quality weight reflecting its reliability for AMP clinical trial annotation. The v4 pipeline added four new specialized agents (Sections 4.5--4.8) to provide deeper peptide activity, bioactivity, structural, and protein sequence data.
+Fifteen research agents run in parallel, each querying different external sources. Every source carries a fixed quality weight reflecting its reliability for AMP clinical trial annotation. The v4 pipeline added four specialized agents (Sections 4.5--4.8) for peptide activity, bioactivity, structural, and protein sequence data. The v5 expansion added seven more agents (Sections 4.9--4.15) covering additional peptide databases, international trial registries, pharmacology, molecular interactions, antibiotic resistance, and structure quality. SerpAPI was removed (paid service); all 15 agents now use free APIs exclusively.
 
 ### 4.1 Clinical Protocol Agent
 
@@ -149,8 +149,9 @@ Queries general web search for supplementary context (press releases, conference
 | Source | Weight |
 |---|---|
 | DuckDuckGo | 0.40 |
-| SerpAPI | 0.50 |
 | Google Scholar | 0.70 |
+
+Note: SerpAPI was removed from this agent as it requires a paid subscription. All research agents now use free APIs exclusively.
 
 ### 4.5 DBAASP Agent (v4)
 
@@ -199,6 +200,90 @@ Queries the EBI Proteins API (UniProt programmatic access via EMBL-EBI) for prot
 **Data provided**: Amino acid sequences, post-translational modifications, variant information, functional annotations, subcellular localization, gene ontology terms.
 
 **Role in pipeline**: Complements UniProt (Section 4.3) with additional sequence and variant data accessible through the EBI programmatic interface. Provides sequence-level confirmation of peptide identity and functional annotations that help distinguish antimicrobial function from other peptide activities.
+
+### 4.9 APD Agent (v5)
+
+Queries the Antimicrobial Peptide Database (APD) at aps.unmc.edu for curated AMP records.
+
+| Source | Weight |
+|---|---|
+| APD (HTML scraping) | 0.80 |
+
+**Data provided**: AMP classifications, activity annotations, peptide sequences, source organism data. APD is one of the earliest and most widely cited AMP databases, with curated records for natural and synthetic antimicrobial peptides.
+
+**Role in pipeline**: Provides an independent AMP classification source that complements DRAMP (Section 4.3) and DBAASP (Section 4.5). A peptide present in APD is strong evidence for AMP status. Note: the APD server requires JavaScript rendering for some pages, so data retrieval is best-effort via HTML scraping.
+
+### 4.10 dbAMP Agent (v5)
+
+Queries the dbAMP 3.0 database at yylab.jnu.edu.cn/dbAMP for comprehensive AMP annotations.
+
+| Source | Weight |
+|---|---|
+| dbAMP 3.0 (HTML scraping) | 0.80 |
+
+**Data provided**: AMP sequences, functional annotations, antimicrobial activity data, target organism information. dbAMP 3.0 contains over 33,000 AMP entries with experimentally validated annotations.
+
+**Role in pipeline**: Provides a large-scale AMP reference complementing APD and DRAMP. The database's breadth (33K+ entries) increases the likelihood of finding annotation data for less-studied peptides. Note: dbAMP availability is intermittent; the agent handles connection failures gracefully.
+
+### 4.11 WHO ICTRP Agent (v5)
+
+Queries the WHO International Clinical Trials Registry Platform (ICTRP) at trialsearch.who.int for international trial registry data.
+
+| Source | Weight |
+|---|---|
+| WHO ICTRP (HTML parsing) | 0.85 |
+
+**Data provided**: Trial registration data from international registries (EU Clinical Trials Register, ISRCTN, ANZCTR, ChiCTR, CTRI, etc.), trial status, intervention descriptions, conditions, sponsor information.
+
+**Role in pipeline**: Extends the Clinical Protocol Agent's ClinicalTrials.gov coverage to international registries. Many AMP trials are conducted outside the US and may only be registered in non-US registries. ICTRP aggregates data from 17+ national and regional registries, providing global trial coverage that ClinicalTrials.gov alone cannot offer.
+
+### 4.12 IUPHAR Guide to Pharmacology Agent (v5)
+
+Queries the IUPHAR/BPS Guide to Pharmacology at guidetopharmacology.org via its REST API for pharmacological data.
+
+| Source | Weight |
+|---|---|
+| IUPHAR Guide to Pharmacology (REST API) | 0.85 |
+
+**Data provided**: Mechanism of action, drug targets, ligand classification, receptor-ligand interactions, approved drug status, clinical indication data.
+
+**Role in pipeline**: Provides authoritative pharmacological context for AMP classification decisions. IUPHAR's curated mechanism-of-action data helps the Classification Agent distinguish direct antimicrobial mechanisms (Mode A) from immunomodulatory (Mode B) and other peptide therapeutic activities. The ligand classification data also informs the Peptide Agent by confirming whether an intervention is classified as a peptide ligand.
+
+### 4.13 IntAct Agent (v5)
+
+Queries the IntAct molecular interaction database at ebi.ac.uk/intact via its REST API for protein-protein and peptide-target interaction data.
+
+| Source | Weight |
+|---|---|
+| IntAct (REST API) | 0.75 |
+
+**Data provided**: Molecular interactions, interaction types, detection methods, UniProt cross-references, interaction partners, confidence scores.
+
+**Role in pipeline**: Provides molecular interaction data that can reveal an AMP's mechanism of action. Interactions with membrane proteins or microbial targets support direct antimicrobial classification, while interactions with immune receptors support immunomodulatory classification. UniProt cross-references enable linking interaction data back to the Peptide Identity Agent's findings.
+
+### 4.14 CARD Agent (v5)
+
+Queries the Comprehensive Antibiotic Resistance Database (CARD) at card.mcmaster.ca via AJAX endpoints for antibiotic resistance data.
+
+| Source | Weight |
+|---|---|
+| CARD (AJAX endpoints) | 0.80 |
+
+**Data provided**: Resistance mechanisms, Antibiotic Resistance Ontology (ARO) terms, resistance gene annotations, drug class classifications, resistance determinant data.
+
+**Role in pipeline**: Provides antibiotic resistance context relevant to AMP clinical trials. If a trial's target pathogen has documented resistance mechanisms in CARD, this informs the Classification Agent's assessment of the AMP's clinical relevance. CARD's ARO terms also help classify the mechanism of action for peptide antibiotics, distinguishing membrane-targeting AMPs from those with intracellular targets.
+
+### 4.15 PDBe Agent (v5)
+
+Queries the European Protein Data Bank (PDBe) at ebi.ac.uk/pdbe via Solr search and REST APIs for structure quality metrics.
+
+| Source | Weight |
+|---|---|
+| PDBe (Solr search + REST API) | 0.80 |
+
+**Data provided**: Structure quality metrics (resolution, R-factor, Ramachandran analysis), experimental method details, deposition metadata, cross-references to UniProt and other databases.
+
+**Role in pipeline**: Complements the RCSB PDB Agent (Section 4.7) with European PDB data and structure quality metrics. While RCSB PDB provides structural classification and molecular weight, PDBe adds resolution and R-factor data that indicate the reliability of structural information. Higher-quality structures provide more trustworthy evidence for peptide identity and mechanism-of-action analysis.
 
 
 ## 5. Phase 2 -- Annotation Agents
@@ -557,8 +642,13 @@ Source weights reflect two factors: data reliability and relevance to clinical t
 - **ClinicalTrials.gov (0.95)** and **UniProt (0.95)** are authoritative primary sources with structured, curated data.
 - **PubMed (0.90)** and **PMC (0.85)** contain peer-reviewed literature but require interpretation (the model must extract relevant information from unstructured text).
 - **DBAASP (0.85)**, **ChEMBL (0.85)**, and **EBI Proteins (0.85)** are curated specialized databases providing peptide activity, bioactivity, and protein sequence data respectively.
+- **WHO ICTRP (0.85)** and **IUPHAR Guide to Pharmacology (0.85)** are authoritative international sources for trial registry data and pharmacological annotations respectively.
 - **OpenFDA (0.85)** and **DRAMP (0.80)** are curated databases but with narrower coverage or less frequent updates.
+- **APD (0.80)**, **dbAMP 3.0 (0.80)**, **CARD (0.80)**, and **PDBe (0.80)** are specialized curated databases providing AMP classifications, antimicrobial peptide annotations, antibiotic resistance data, and structure quality metrics respectively.
 - **RCSB PDB (0.80)** provides experimentally determined structural data with high reliability but coverage limited to compounds with solved structures.
 - **PMC BioC (0.80)** is structured full-text but with potential parsing artifacts.
+- **IntAct (0.75)** provides molecular interaction data with lower weight reflecting the indirect nature of interaction evidence for AMP classification.
 - **Google Scholar (0.70)** captures preprints and non-indexed publications but with lower curation.
-- **SerpAPI (0.50)** and **DuckDuckGo (0.40)** are general web search -- useful for press releases and regulatory decisions, but noisy and unverified.
+- **DuckDuckGo (0.40)** is general web search -- useful for press releases and regulatory decisions, but noisy and unverified.
+
+Note: SerpAPI (previously 0.50) was removed as it requires a paid subscription. All 15 research agents now use free APIs exclusively.
