@@ -84,15 +84,44 @@ class IntActClient(BaseResearchAgent):
                         interactors = data.get("content", [])
                         total = data.get("totalElements", 0)
 
-                        raw_data[f"intact_{intervention}"] = {
-                            "total_elements": total,
-                            "interactors": interactors[:5],
-                        }
-
-                        for entry in interactors[:5]:
+                        # FILTER: Only keep interactors whose name or description
+                        # actually matches the searched intervention. The IntAct API
+                        # returns partial/fuzzy matches sorted by interaction count,
+                        # which means generic high-connectivity proteins (CFTR, MAPT,
+                        # HTT) appear for almost every search term. We require the
+                        # intervention name to appear in the interactor's name,
+                        # description, or aliases.
+                        intervention_lower = intervention.lower()
+                        filtered = []
+                        for entry in interactors:
                             if not isinstance(entry, dict):
                                 continue
+                            name = (entry.get("interactorName") or "").lower()
+                            desc = (entry.get("interactorDescription") or "").lower()
+                            aliases = " ".join(
+                                str(a) for a in entry.get("interactorAliases", [])
+                            ).lower() if entry.get("interactorAliases") else ""
+                            # Check if the intervention name appears in any field
+                            if (intervention_lower in name
+                                    or intervention_lower in desc
+                                    or intervention_lower in aliases
+                                    or name in intervention_lower):
+                                filtered.append(entry)
 
+                        raw_data[f"intact_{intervention}"] = {
+                            "total_elements": total,
+                            "filtered_to": len(filtered),
+                            "interactors": filtered[:3],
+                        }
+
+                        if not filtered:
+                            logger.info(
+                                "IntAct: %d results for '%s' but none matched intervention name — skipping noise",
+                                total, intervention,
+                            )
+                            continue
+
+                        for entry in filtered[:3]:
                             ac = entry.get("interactorAc", "")
                             name = entry.get("interactorName", "")
                             description = entry.get("interactorDescription", "")

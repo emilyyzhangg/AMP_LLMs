@@ -61,39 +61,84 @@ class PeptideIdentityAgent(BaseResearchAgent):
             )
 
         async with httpx.AsyncClient(timeout=20) as client:
-            # 1. UniProt search
+            # 1. UniProt search — use protein_name field + human organism filter
+            # to avoid returning scorpion/bacterial homologs for human drug queries.
+            # Try exact protein name first, then broader query as fallback.
             for intervention in interventions[:3]:
                 try:
+                    # Structured query: search protein name in human proteome first
+                    structured_query = f'(protein_name:"{intervention}") AND (organism_id:9606)'
                     resp = await resilient_get(
                         UNIPROT_SEARCH_URL,
                         client=client,
                         params={
-                            "query": intervention,
+                            "query": structured_query,
                             "format": "json",
                             "size": 3,
                         },
                         headers={"Accept": "application/json"},
                     )
+                    results = []
                     if resp.status_code == 200:
                         data = resp.json()
                         results = data.get("results", [])
-                        raw_data[f"uniprot_{intervention}"] = results[:3]
-                        for entry in results[:2]:
-                            accession = entry.get("primaryAccession", "")
-                            protein_name = ""
-                            if entry.get("proteinDescription", {}).get("recommendedName"):
-                                protein_name = entry["proteinDescription"]["recommendedName"].get("fullName", {}).get("value", "")
-                            organism = entry.get("organism", {}).get("scientificName", "")
 
-                            citations.append(SourceCitation(
-                                source_name="uniprot",
-                                source_url=f"https://www.uniprot.org/uniprotkb/{accession}",
-                                identifier=accession,
-                                title=protein_name or accession,
-                                snippet=f"Organism: {organism}. Protein: {protein_name}. Accession: {accession}",
-                                quality_score=self.compute_quality_score("uniprot"),
-                                retrieved_at=datetime.utcnow().isoformat(),
-                            ))
+                    # If no human results, try broader search (any organism)
+                    # but still use protein_name field, not free text
+                    if not results:
+                        broader_query = f'(protein_name:"{intervention}")'
+                        resp = await resilient_get(
+                            UNIPROT_SEARCH_URL,
+                            client=client,
+                            params={
+                                "query": broader_query,
+                                "format": "json",
+                                "size": 3,
+                            },
+                            headers={"Accept": "application/json"},
+                        )
+                        if resp.status_code == 200:
+                            data = resp.json()
+                            results = data.get("results", [])
+
+                    # Last resort: free text but only if structured searches failed
+                    if not results:
+                        resp = await resilient_get(
+                            UNIPROT_SEARCH_URL,
+                            client=client,
+                            params={
+                                "query": f"{intervention} AND (organism_id:9606)",
+                                "format": "json",
+                                "size": 2,
+                            },
+                            headers={"Accept": "application/json"},
+                        )
+                        if resp.status_code == 200:
+                            data = resp.json()
+                            results = data.get("results", [])
+
+                    raw_data[f"uniprot_{intervention}"] = results[:3]
+                    for entry in results[:2]:
+                        accession = entry.get("primaryAccession", "")
+                        protein_name = ""
+                        if entry.get("proteinDescription", {}).get("recommendedName"):
+                            protein_name = entry["proteinDescription"]["recommendedName"].get("fullName", {}).get("value", "")
+                        organism = entry.get("organism", {}).get("scientificName", "")
+                        length = entry.get("sequence", {}).get("length", "")
+
+                        snippet = f"Organism: {organism}. Protein: {protein_name}. Accession: {accession}"
+                        if length:
+                            snippet += f". Length: {length} aa"
+
+                        citations.append(SourceCitation(
+                            source_name="uniprot",
+                            source_url=f"https://www.uniprot.org/uniprotkb/{accession}",
+                            identifier=accession,
+                            title=protein_name or accession,
+                            snippet=snippet,
+                            quality_score=self.compute_quality_score("uniprot"),
+                            retrieved_at=datetime.utcnow().isoformat(),
+                        ))
                 except Exception as e:
                     raw_data[f"uniprot_{intervention}_error"] = str(e)
 
