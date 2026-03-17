@@ -210,24 +210,18 @@ def _fallback_classify(pass1_text: str, peptide_value: str) -> str:
     if has_suppress:
         return "Other"
 
-    # Strong NOT-AMP signals
+    # NOT-AMP mechanism signals (from Pass 1 extracted evidence, NOT drug names)
     not_amp_keywords = [
-        "metabolic hormone", "glp-1", "glp-2", "gnrh", "somatostatin",
-        "vasoactive", "vasodilat", "neuropeptide", "aviptadil",
-        "bone growth", "natriuretic", "self-assembling",
-        "remineralization", "neoantigen", "radiolabeled", "nutritional",
-        "collagen", "immune-neutral", "tolerance", "tolerogenic",
-        "autoimmune", "rheumatic heart", "streptincor",
-        # HIV/antiretroviral peptides — NOT AMPs
-        "enfuvirtide", "t-20", "fuzeon", "viral entry", "fusion inhibit",
-        "peptide t", "dapta", "ccr5", "gp120", "gp41", "hiv vaccine",
-        "hiv peptide", "antiretroviral",
-        # General vaccine peptides — NOT AMPs
-        "peptide vaccine", "vaccine peptide", "induce antibod",
-        "antibody response", "adaptive immun", "immunization",
-        # Other non-AMP mechanisms
-        "receptor block", "receptor agonist", "insulin", "oxytocin",
-        "substance p", "cgrp", "calcitonin gene",
+        # Non-antimicrobial mechanisms
+        "metabolic hormone", "vasodilat", "neuropeptide",
+        "bone growth", "self-assembling", "remineralization",
+        "neoantigen", "radiolabeled", "nutritional", "collagen",
+        "immune-neutral", "tolerance", "tolerogenic",
+        # Mechanism-based exclusions
+        "viral entry", "fusion inhibit", "receptor block",
+        "receptor agonist", "adaptive immun",
+        "induce antibod", "antibody response",
+        "immunosuppress", "autoimmune",
     ]
     if any(kw in lower for kw in not_amp_keywords):
         return "Other"

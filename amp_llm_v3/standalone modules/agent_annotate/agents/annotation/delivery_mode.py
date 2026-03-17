@@ -4,10 +4,13 @@ Delivery Mode Annotation Agent.
 Determines how the drug/intervention is administered.
 
 v2 changes (from 70-trial concordance analysis):
-  - Added KNOWN_DRUG_ROUTES dict: deterministic route lookup for common peptide drugs
-    that the 8B model frequently misclassifies. When a drug name matches, this overrides
-    the LLM response, eliminating "Injection/Infusion - Other/Unspecified" for well-known drugs.
-  - Enhanced prompt to prioritize FDA label routes over generic protocol text.
+  - Upgraded to two-pass design: Pass 1 extracts route evidence from all sources
+    (protocol text, FDA labels, drug databases, literature), Pass 2 applies
+    classification rules. This eliminates the "Injection/Infusion - Other/Unspecified"
+    default problem by forcing the model to actively search for route specifics
+    before classifying.
+  - Enhanced prompt to prioritize FDA label routes and database info over
+    generic protocol text.
 """
 
 import re
@@ -19,72 +22,6 @@ from app.models.research import ResearchResult, SourceCitation
 from app.models.annotation import FieldAnnotation
 
 logger = logging.getLogger("agent_annotate.annotation.delivery_mode")
-
-# Known drug → route mappings for common peptide therapeutics.
-# These are from FDA labels and WHO drug information.
-# Used as deterministic override when the LLM defaults to "Other/Unspecified".
-KNOWN_DRUG_ROUTES = {
-    # Subcutaneous peptides
-    "semaglutide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "liraglutide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "dulaglutide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "exenatide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "apraglutide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "teduglutide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "teriparatide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "abaloparatide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "vosoritide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "octreotide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "lanreotide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "pasireotide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "enfuvirtide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "insulin": "Injection/Infusion - Subcutaneous/Intradermal",
-    "insulin glargine": "Injection/Infusion - Subcutaneous/Intradermal",
-    "insulin degludec": "Injection/Infusion - Subcutaneous/Intradermal",
-    "insulin lispro": "Injection/Infusion - Subcutaneous/Intradermal",
-    "insulin aspart": "Injection/Infusion - Subcutaneous/Intradermal",
-    "pramlintide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "tirzepatide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "leuprolide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "goserelin": "Injection/Infusion - Subcutaneous/Intradermal",
-    "degarelix": "Injection/Infusion - Subcutaneous/Intradermal",
-    "cetrorelix": "Injection/Infusion - Subcutaneous/Intradermal",
-    "ganirelix": "Injection/Infusion - Subcutaneous/Intradermal",
-    "icatibant": "Injection/Infusion - Subcutaneous/Intradermal",
-    "peginesatide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "romiplostim": "Injection/Infusion - Subcutaneous/Intradermal",
-    "ziconotide": "Injection/Infusion - Other/Unspecified",  # intrathecal
-    # IV peptides
-    "daptomycin": "IV",
-    "colistin": "IV",
-    "polymyxin b": "IV",
-    "vancomycin": "IV",
-    "telavancin": "IV",
-    "dalbavancin": "IV",
-    "oritavancin": "IV",
-    "aviptadil": "IV",
-    "nesiritide": "IV",
-    "carfilzomib": "IV",
-    "bortezomib": "IV",
-    "oxytocin": "IV",
-    "vasopressin": "IV",
-    "desmopressin": "Intranasal",  # most common route
-    # IM peptides
-    "leuprolide depot": "Injection/Infusion - Intramuscular",
-    "triptorelin": "Injection/Infusion - Intramuscular",
-    # Oral peptides
-    "oral semaglutide": "Oral - Tablet",
-    "rybelsus": "Oral - Tablet",
-    "cyclosporine": "Oral - Capsule",
-    "desmopressin oral": "Oral - Tablet",
-    # Intranasal
-    "calcitonin": "Intranasal",
-    "nafarelin": "Intranasal",
-    # Inhalation
-    "colistimethate": "Inhalation",
-    "colistin inhalation": "Inhalation",
-    "tobramycin inhalation": "Inhalation",
-}
 
 VALID_VALUES = [
     "Injection/Infusion - Intramuscular",
@@ -107,103 +44,77 @@ VALID_VALUES = [
     "Inhalation",
 ]
 
-SYSTEM_PROMPT = """You are a clinical trial delivery mode specialist.
+# Pass 1: Extract ALL route evidence from every source
+PASS1_SYSTEM = """You are a clinical pharmacology route-of-administration extraction specialist.
 
-Your task: Determine the SPECIFIC route of administration for the primary intervention in this clinical trial.
+Your task: Search ALL available evidence to find how this drug is administered. Check EVERY source — do NOT stop at the first mention. Different sources may have different levels of specificity.
 
-You must choose EXACTLY ONE of these 18 delivery modes:
+Extract the following:
 
-Injection/Infusion routes:
-- Injection/Infusion - Intramuscular: Intramuscular (IM) injection
-- Injection/Infusion - Subcutaneous/Intradermal: Subcutaneous (SC) or intradermal injection
-- Injection/Infusion - Other/Unspecified: Any other injection/infusion route (intrathecal, intraperitoneal, etc.) or injection route not specified
-- IV: Intravenous administration (IV push, IV drip, IV infusion)
+1. PROTOCOL ROUTE: What does the ClinicalTrials.gov protocol say about route of administration? Look in intervention description, arm group descriptions, and detailed description. Quote the exact text.
 
-Intranasal:
-- Intranasal: Delivered through the nasal passage (nasal spray, nasal drops)
+2. FDA/DRUG LABEL ROUTE: Does any evidence mention an FDA-approved route, drug label route, or prescribing information route? (e.g., "for subcutaneous use", "administered intravenously"). FDA labels are MORE SPECIFIC and MORE RELIABLE than protocol text.
 
-Oral routes:
-- Oral - Tablet: Oral tablet form
-- Oral - Capsule: Oral capsule form
-- Oral - Food: Delivered mixed into or as a food product (e.g., yogurt, functional food)
-- Oral - Drink: Delivered as a drink or dissolved in liquid for drinking
-- Oral - Unspecified: Oral route but specific form not stated or unclear
+3. LITERATURE ROUTE: Do any PubMed/PMC publications describe how this drug is administered? Quote relevant excerpts.
 
-Topical routes:
-- Topical - Cream/Gel: Applied as cream, gel, ointment, or lotion
-- Topical - Powder: Applied as a powder to skin or wound
-- Topical - Spray: Topical spray applied to skin/wound (not nasal — use Intranasal for that)
-- Topical - Strip/Covering: Bandage, dressing, patch, or strip containing the intervention
-- Topical - Wash: Rinse, wash, mouthwash, or irrigation solution
-- Topical - Unspecified: Topical route but specific form not stated
+4. DATABASE ROUTE: Do ChEMBL, UniProt, DRAMP, or other database entries mention route or formulation information?
 
-Other:
-- Other/Unspecified: Route does not fit any category above or is not stated
-- Inhalation: Inhaled into the lungs (inhaler, nebulizer)
+5. DRUG FORMULATION: Is the drug described as a tablet, capsule, solution, suspension, cream, gel, powder, spray, patch, inhaler, or other formulation? The formulation strongly implies the route.
 
-Guidance for choosing:
-1. Look at the intervention description, arm group details, and drug labels for route information.
-2. Be as specific as possible — prefer subtypes (e.g., "Topical - Cream/Gel") over unspecified (e.g., "Topical - Unspecified").
-3. If the trial mentions IV or intravenous, use "IV" (not Injection/Infusion - Other/Unspecified).
-4. Nasal sprays are "Intranasal", not "Topical - Spray".
-5. If truly unclear, use the appropriate "Unspecified" subtype or "Other/Unspecified".
+6. SPECIFICITY LEVEL: Based on ALL sources above, what is the MOST SPECIFIC route you can determine?
+   - If ANY source says "subcutaneous" or "SC" → the route is subcutaneous
+   - If ANY source says "intramuscular" or "IM" → the route is intramuscular
+   - If ANY source says "intravenous" or "IV" → the route is IV
+   - If NONE specify beyond "injection" → route is unspecified injection
 
-CRITICAL RULES — DO NOT GUESS:
-6. NEVER guess the injection subtype. If the protocol says "injection" or "injectable" without explicitly specifying IM (intramuscular), SC/SQ (subcutaneous), or IV (intravenous), use "Injection/Infusion - Other/Unspecified". Do NOT default to Intramuscular or Subcutaneous.
-7. If an FDA drug label specifies a route (e.g., "SUBCUTANEOUS"), use that as the primary signal.
-8. Look for explicit terms: "intramuscular" or "IM" → Intramuscular. "subcutaneous", "SC", "sub-Q", "intradermal" → Subcutaneous/Intradermal. Do NOT infer from drug class or "likely" administration.
-9. "Injection" alone, "parenteral", or "administered by injection" WITHOUT a specific route = "Injection/Infusion - Other/Unspecified". NEVER assume IM, SC, or IV from context.
-10. Do NOT guess routes based on drug class. Even if "most vaccines are IM", if the protocol doesn't say IM, use "Injection/Infusion - Other/Unspecified".
-11. If the evidence says "injection" and the route is unclear, the answer is ALWAYS "Injection/Infusion - Other/Unspecified". Saying Intramuscular or Subcutaneous without explicit evidence is WRONG.
+Format your response EXACTLY as:
+Protocol Route: [quote or "not specified"]
+FDA/Label Route: [quote or "not found"]
+Literature Route: [quote or "not found"]
+Database Route: [info or "not found"]
+Drug Formulation: [formulation or "not specified"]
+Most Specific Route: [your determination]"""
 
-Oral subtype rules:
-12. "Oral - Food": the intervention IS a food product (functional food, fortified food, yogurt).
-13. "Oral - Drink": the intervention is dissolved in liquid, a solution, nutritional formula, shake, or suspension to be consumed as a beverage. A nutritional formula or shake = Oral - Drink, NOT Oral - Food.
-14. When in doubt between Oral - Food and Oral - Drink, prefer Oral - Drink for liquid formulations.
+# Pass 2: Classify into one of the 18 valid values
+PASS2_SYSTEM = """You are a delivery mode classification specialist. You have extracted route-of-administration evidence. Now classify it into EXACTLY ONE delivery mode.
 
-WORKED EXAMPLES:
+The route facts you extracted:
+{pass1_output}
 
-Protocol says "Aviptadil administered by IV infusion over 12 hours"
-→ Delivery Mode: IV
-Why: "IV infusion" is explicitly stated.
+VALID VALUES (choose exactly one):
 
-Protocol says "apraglutide subcutaneous injection once weekly"
-→ Delivery Mode: Injection/Infusion - Subcutaneous/Intradermal
-Why: "subcutaneous" is explicitly stated.
+Injection/Infusion:
+- IV: Intravenous (IV push, IV drip, IV infusion)
+- Injection/Infusion - Intramuscular: IM injection (ONLY if "intramuscular" or "IM" explicitly stated)
+- Injection/Infusion - Subcutaneous/Intradermal: SC, sub-Q, or intradermal (ONLY if explicitly stated)
+- Injection/Infusion - Other/Unspecified: Any other injection route OR injection without IM/SC/IV specified
 
-Protocol says "peptide vaccine injection" (no route specified)
-→ Delivery Mode: Injection/Infusion - Other/Unspecified
-Why: "injection" without IM/SC/IV = Other/Unspecified. DO NOT guess Intramuscular.
+Intranasal: Nasal spray, nasal drops (NOT topical spray)
+Inhalation: Inhaler, nebulizer, inhaled
 
-Protocol says "administered by injection once daily"
-→ Delivery Mode: Injection/Infusion - Other/Unspecified
-Why: Only "injection" is stated — no IM/SC/IV route given. Do NOT assume Subcutaneous.
+Oral:
+- Oral - Tablet, Oral - Capsule, Oral - Food, Oral - Drink, Oral - Unspecified
 
-Protocol says "vaccine administered via injection"
-→ Delivery Mode: Injection/Infusion - Other/Unspecified
-Why: Even though many vaccines are given IM, the protocol doesn't specify. Do NOT default to Intramuscular.
+Topical:
+- Topical - Cream/Gel, Topical - Powder, Topical - Spray, Topical - Strip/Covering, Topical - Wash, Topical - Unspecified
 
-FDA label says "for subcutaneous use", protocol says "injection"
-→ Delivery Mode: Injection/Infusion - Subcutaneous/Intradermal
-Why: FDA label specifying route overrides the generic "injection" in the protocol.
+Other/Unspecified: Does not fit any category above
 
-Protocol says "Kate Farm Peptide 1.5 nutritional formula"
-→ Delivery Mode: Oral - Drink
-Why: Nutritional formula consumed as a beverage = Oral - Drink, NOT Oral - Food.
+CLASSIFICATION RULES:
+1. USE THE MOST SPECIFIC SOURCE. FDA label > Literature > Protocol text > Database.
+2. If FDA/Label Route specifies "subcutaneous" but Protocol just says "injection" → use Subcutaneous/Intradermal.
+3. If Literature says "administered intravenously" but Protocol is vague → use IV.
+4. ONLY use "Injection/Infusion - Other/Unspecified" when NO source specifies IM, SC, or IV.
+5. Nutritional formula/shake = Oral - Drink. Nasal spray = Intranasal (not Topical - Spray).
 
-Protocol says "colistin inhalation solution via nebulizer"
-→ Delivery Mode: Inhalation
-Why: "inhalation" and "nebulizer" explicitly stated.
-
-IMPORTANT: Format your response EXACTLY as:
-
-Delivery Mode: [one of the 18 values listed above, exactly as written]
-Evidence: [Cite the specific source and excerpt]
-Reasoning: [Brief explanation]"""
+Format your response EXACTLY as:
+Delivery Mode: [one of the 18 valid values, exactly as written]
+Evidence: [cite which source determined the route]
+Reasoning: [brief explanation]"""
 
 
 class DeliveryModeAgent(BaseAnnotationAgent):
-    """Determines drug delivery mode."""
+    """Determines drug delivery mode using two-pass route investigation."""
 
     field_name = "delivery_mode"
 
@@ -239,38 +150,50 @@ class DeliveryModeAgent(BaseAnnotationAgent):
         if not primary_model:
             primary_model = "llama3.1:8b"
 
+        # --- Pass 1: Extract route evidence from all sources ---
         try:
-            response = await ollama_client.generate(
+            logger.info(f"  delivery_mode: Pass 1 — extracting route evidence for {nct_id}")
+            pass1_response = await ollama_client.generate(
                 model=primary_model,
                 prompt=evidence_text,
-                system=SYSTEM_PROMPT,
+                system=PASS1_SYSTEM,
                 temperature=config.ollama.temperature,
             )
-            raw_text = response.get("response", "")
+            pass1_text = pass1_response.get("response", "")
         except Exception as e:
             return FieldAnnotation(
                 field_name=self.field_name,
                 value="Other/Unspecified",
                 confidence=0.0,
-                reasoning=f"LLM call failed: {e}",
+                reasoning=f"Pass 1 LLM call failed: {e}",
                 evidence=[],
                 model_name=primary_model,
             )
 
-        value = self._parse_value(raw_text)
-        reasoning = self._parse_reasoning(raw_text)
+        # --- Pass 2: Classify route into valid value ---
+        try:
+            logger.info(f"  delivery_mode: Pass 2 — classifying route for {nct_id}")
+            pass2_prompt = PASS2_SYSTEM.format(pass1_output=pass1_text)
+            pass2_response = await ollama_client.generate(
+                model=primary_model,
+                prompt=pass2_prompt + "\n\nOriginal evidence:\n" + evidence_text,
+                temperature=config.ollama.temperature,
+            )
+            pass2_text = pass2_response.get("response", "")
+        except Exception as e:
+            # Fallback: infer from Pass 1
+            value = self._infer_from_pass1(pass1_text)
+            return FieldAnnotation(
+                field_name=self.field_name,
+                value=value,
+                confidence=0.3,
+                reasoning=f"Pass 2 failed ({e}), inferred from pass 1: {pass1_text[:300]}",
+                evidence=cited_sources[:10],
+                model_name=primary_model,
+            )
 
-        # If the LLM returned a generic "Other/Unspecified" or "Injection/Infusion - Other/Unspecified",
-        # try a deterministic drug-name lookup as a refinement step.
-        if value in ("Other/Unspecified", "Injection/Infusion - Other/Unspecified"):
-            drug_route = self._lookup_drug_route(evidence_text)
-            if drug_route:
-                logger.info(
-                    f"  delivery_mode: drug lookup override '{value}' → '{drug_route}' for {nct_id}"
-                )
-                value = drug_route
-                reasoning = f"[Drug route lookup override] {reasoning}"
-
+        value = self._parse_value(pass2_text)
+        reasoning = f"[Pass 1 route extraction] {pass1_text[:400]}\n[Pass 2 classification] {pass2_text[:300]}"
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
 
         return FieldAnnotation(
@@ -281,6 +204,34 @@ class DeliveryModeAgent(BaseAnnotationAgent):
             evidence=cited_sources[:10],
             model_name=primary_model,
         )
+
+    def _infer_from_pass1(self, pass1_text: str) -> str:
+        """Fallback: infer delivery mode from Pass 1 extraction if Pass 2 fails."""
+        lower = pass1_text.lower()
+
+        # Check for explicit route mentions across all sources
+        if any(kw in lower for kw in ["intravenous", " iv ", "iv infusion", "iv push"]):
+            return "IV"
+        if any(kw in lower for kw in ["subcutaneous", " sc ", "sub-q", "intradermal"]):
+            return "Injection/Infusion - Subcutaneous/Intradermal"
+        if any(kw in lower for kw in ["intramuscular", " im "]):
+            return "Injection/Infusion - Intramuscular"
+        if any(kw in lower for kw in ["intranasal", "nasal spray", "nasal drop"]):
+            return "Intranasal"
+        if any(kw in lower for kw in ["inhalation", "inhaler", "nebulizer", "inhaled"]):
+            return "Inhalation"
+        if any(kw in lower for kw in ["tablet"]):
+            return "Oral - Tablet"
+        if any(kw in lower for kw in ["capsule"]):
+            return "Oral - Capsule"
+        if any(kw in lower for kw in ["oral", "by mouth"]):
+            return "Oral - Unspecified"
+        if any(kw in lower for kw in ["injection", "infusion", "parenteral"]):
+            return "Injection/Infusion - Other/Unspecified"
+        if any(kw in lower for kw in ["cream", "gel", "ointment", "topical"]):
+            return "Topical - Cream/Gel"
+
+        return "Other/Unspecified"
 
     def _parse_value(self, text: str) -> str:
         match = re.search(r"Delivery Mode:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)
@@ -344,20 +295,6 @@ class DeliveryModeAgent(BaseAnnotationAgent):
             return "Topical - Unspecified"
 
         return "Other/Unspecified"
-
-    def _lookup_drug_route(self, evidence_text: str) -> Optional[str]:
-        """Check if any known drug names appear in the evidence and return the known route.
-
-        Matches drug names case-insensitively against the evidence text.
-        Longer drug names are checked first to avoid partial matches.
-        """
-        lower_evidence = evidence_text.lower()
-        # Sort by length descending so "insulin glargine" matches before "insulin"
-        sorted_drugs = sorted(KNOWN_DRUG_ROUTES.keys(), key=len, reverse=True)
-        for drug_name in sorted_drugs:
-            if drug_name in lower_evidence:
-                return KNOWN_DRUG_ROUTES[drug_name]
-        return None
 
     def _parse_reasoning(self, text: str) -> str:
         match = re.search(r"Reasoning:\s*(.+?)(?:\n\n|$)", text, re.DOTALL)
