@@ -370,16 +370,26 @@ class LiteratureAgent(BaseResearchAgent):
     async def _search_semantic_scholar(
         self, nct_id: str, client: httpx.AsyncClient
     ) -> tuple[list[SourceCitation], dict]:
-        """Search Semantic Scholar for papers mentioning this NCT ID."""
+        """Search Semantic Scholar for papers mentioning this NCT ID.
+
+        Semantic Scholar allows ~100 requests per 5 minutes (~0.33/sec)
+        without an API key.  We add a short delay before hitting it to
+        avoid 429s when many trials are processed concurrently (the
+        per-host semaphore in http_utils limits concurrency to 3, but
+        burst traffic can still trigger rate limits).
+        """
         citations: list[SourceCitation] = []
         raw_data: dict = {}
+
+        # Brief delay to stay under Semantic Scholar rate limits
+        await asyncio.sleep(1.0)
 
         resp = await resilient_get(
             SEMANTIC_SCHOLAR_URL,
             client=client,
             params={
                 "query": nct_id,
-                "limit": 20,
+                "limit": 10,
                 "fields": "title,abstract,year,venue,url,externalIds,citationCount",
             },
         )
