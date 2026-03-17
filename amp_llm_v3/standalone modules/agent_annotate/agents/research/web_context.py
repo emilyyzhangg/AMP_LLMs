@@ -3,8 +3,14 @@ Web Context Research Agent.
 
 Searches DuckDuckGo, SerpAPI, and Google Scholar for broader context
 about clinical trials and their outcomes.
+
+SerpAPI has rate limits (~100 searches/month on free tier, higher on paid).
+A global semaphore throttles concurrent SerpAPI calls to avoid 429 errors,
+and a delay between calls prevents burst-rate violations.
 """
 
+import asyncio
+import logging
 from typing import Optional
 from datetime import datetime
 
@@ -15,8 +21,15 @@ from agents.research.http_utils import resilient_get
 from app.models.research import ResearchResult, SourceCitation
 from app.config import SERPAPI_KEY
 
+logger = logging.getLogger("agent_annotate.research.web_context")
+
 DDG_API_URL = "https://api.duckduckgo.com/"
 SERPAPI_URL = "https://serpapi.com/search"
+
+# Global semaphore: max 2 concurrent SerpAPI requests across all trials
+_SERPAPI_SEMAPHORE = asyncio.Semaphore(2)
+# Delay between SerpAPI calls to avoid burst rate limits
+_SERPAPI_DELAY = 1.5  # seconds
 
 
 class WebContextAgent(BaseResearchAgent):
@@ -79,20 +92,25 @@ class WebContextAgent(BaseResearchAgent):
             except Exception as e:
                 raw_data["duckduckgo_error"] = str(e)
 
-            # 2. SerpAPI (if key is configured)
+            # 2. SerpAPI (if key is configured) — rate-limited
             if SERPAPI_KEY:
                 try:
-                    resp = await resilient_get(
-                        SERPAPI_URL,
-                        client=client,
-                        params={
-                            "q": search_query,
-                            "api_key": SERPAPI_KEY,
-                            "engine": "google",
-                            "num": 5,
-                        },
-                    )
-                    if resp.status_code == 200:
+                    async with _SERPAPI_SEMAPHORE:
+                        await asyncio.sleep(_SERPAPI_DELAY)
+                        resp = await resilient_get(
+                            SERPAPI_URL,
+                            client=client,
+                            params={
+                                "q": search_query,
+                                "api_key": SERPAPI_KEY,
+                                "engine": "google",
+                                "num": 5,
+                            },
+                        )
+                    if resp.status_code == 429:
+                        logger.warning(f"SerpAPI rate limited for {nct_id}")
+                        raw_data["serpapi_error"] = "Rate limited (429)"
+                    elif resp.status_code == 200:
                         data = resp.json()
                         raw_data["serpapi"] = data
                         for result in data.get("organic_results", [])[:5]:
@@ -108,19 +126,21 @@ class WebContextAgent(BaseResearchAgent):
                 except Exception as e:
                     raw_data["serpapi_error"] = str(e)
 
-            # 3. Google Scholar via SerpAPI (if key is configured)
+            # 3. Google Scholar via SerpAPI (if key is configured) — rate-limited
             if SERPAPI_KEY:
                 try:
-                    resp = await resilient_get(
-                        SERPAPI_URL,
-                        client=client,
-                        params={
-                            "q": search_query,
-                            "api_key": SERPAPI_KEY,
-                            "engine": "google_scholar",
-                            "num": 3,
-                        },
-                    )
+                    async with _SERPAPI_SEMAPHORE:
+                        await asyncio.sleep(_SERPAPI_DELAY)
+                        resp = await resilient_get(
+                            SERPAPI_URL,
+                            client=client,
+                            params={
+                                "q": search_query,
+                                "api_key": SERPAPI_KEY,
+                                "engine": "google_scholar",
+                                "num": 3,
+                            },
+                        )
                     if resp.status_code == 200:
                         data = resp.json()
                         raw_data["scholar"] = data
