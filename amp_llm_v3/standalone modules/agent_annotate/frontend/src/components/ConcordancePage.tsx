@@ -262,7 +262,7 @@ function FieldDetail({ field }: { field: ConcordanceField }) {
 // ── Tab 1: Agent vs Human ────────────────────────────────────────────
 
 function AgentVsHumanTab() {
-  const [jobs, setJobs] = useState<Array<{ job_id: string; timestamp: string; total_trials: number }>>([]);
+  const [jobs, setJobs] = useState<string[]>([]);
   const [selectedJob, setSelectedJob] = useState("");
   const [concordance, setConcordance] = useState<{
     agent_vs_r1: JobConcordance;
@@ -276,7 +276,7 @@ function AgentVsHumanTab() {
     (async () => {
       try {
         const data = await getConcordanceJobs();
-        setJobs(data.jobs || []);
+        setJobs(Array.isArray(data.jobs) ? data.jobs : []);
       } catch {
         console.error("Failed to load job list");
       }
@@ -317,8 +317,8 @@ function AgentVsHumanTab() {
         >
           <option value="">-- choose a job --</option>
           {jobs.map((j) => (
-            <option key={j.job_id} value={j.job_id}>
-              {j.job_id} ({j.total_trials} trials, {j.timestamp || "no date"})
+            <option key={j} value={j}>
+              {j}
             </option>
           ))}
         </select>
@@ -358,7 +358,7 @@ function AgentVsHumanTab() {
 // ── Tab 2: Version Comparison ────────────────────────────────────────
 
 function VersionCompareTab() {
-  const [jobs, setJobs] = useState<Array<{ job_id: string; timestamp: string; total_trials: number }>>([]);
+  const [jobs, setJobs] = useState<string[]>([]);
   const [jobA, setJobA] = useState("");
   const [jobB, setJobB] = useState("");
   const [result, setResult] = useState<ComparisonResult | null>(null);
@@ -369,7 +369,7 @@ function VersionCompareTab() {
     (async () => {
       try {
         const data = await getConcordanceJobs();
-        setJobs(data.jobs || []);
+        setJobs(Array.isArray(data.jobs) ? data.jobs : []);
       } catch {
         console.error("Failed to load job list");
       }
@@ -415,8 +415,8 @@ function VersionCompareTab() {
           <select id="job-a-select" value={jobA} onChange={(e) => setJobA(e.target.value)}>
             <option value="">-- select job A --</option>
             {jobs.map((j) => (
-              <option key={j.job_id} value={j.job_id}>
-                {j.job_id} ({j.timestamp || "no date"})
+              <option key={j} value={j}>
+                {j}
               </option>
             ))}
           </select>
@@ -426,8 +426,8 @@ function VersionCompareTab() {
           <select id="job-b-select" value={jobB} onChange={(e) => setJobB(e.target.value)}>
             <option value="">-- select job B --</option>
             {jobs.map((j) => (
-              <option key={j.job_id} value={j.job_id}>
-                {j.job_id} ({j.timestamp || "no date"})
+              <option key={j} value={j}>
+                {j}
               </option>
             ))}
           </select>
