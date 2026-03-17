@@ -437,16 +437,61 @@ class PipelineOrchestrator:
         config,
         job: AnnotationJob,
     ) -> list[ResearchResult]:
-        """Dispatch all research agents in parallel."""
+        """Dispatch all research agents in parallel.
+
+        Runs clinical_protocol first to extract intervention names,
+        then passes them as metadata to all other agents so they can
+        search peptide/drug databases by name.
+        """
+        results = []
+
+        # Step 1: Run clinical_protocol first to get intervention names
+        metadata = None
+        proto_config = config.research_agents.get("clinical_protocol")
+        if proto_config and "clinical_protocol" in RESEARCH_AGENTS:
+            proto_agent = RESEARCH_AGENTS["clinical_protocol"]()
+            try:
+                proto_result = await proto_agent.research(nct_id)
+                results.append(proto_result)
+                logger.info(f"  clinical_protocol: {len(proto_result.citations)} citations")
+
+                # Extract intervention names from raw protocol data
+                interventions = []
+                if proto_result.raw_data:
+                    proto_section = proto_result.raw_data.get(
+                        "protocol_section",
+                        proto_result.raw_data.get("protocolSection", {}),
+                    )
+                    arms_mod = proto_section.get("armsInterventionsModule", {})
+                    for interv in arms_mod.get("interventions", []):
+                        name = interv.get("name", "")
+                        if name:
+                            interventions.append({"name": name})
+                if interventions:
+                    metadata = {"interventions": interventions}
+                    logger.info(
+                        f"  Extracted interventions: "
+                        f"{[i['name'] for i in interventions]}"
+                    )
+            except Exception as e:
+                logger.warning(f"clinical_protocol failed: {e}")
+                results.append(ResearchResult(
+                    agent_name="clinical_protocol",
+                    nct_id=nct_id,
+                    error=str(e),
+                ))
+
+        # Step 2: Run all other agents in parallel with metadata
         tasks = {}
         for agent_name, agent_cls in RESEARCH_AGENTS.items():
+            if agent_name == "clinical_protocol":
+                continue  # already ran
             agent_config = config.research_agents.get(agent_name)
             if not agent_config:
                 continue
             agent = agent_cls()
-            tasks[agent_name] = agent.research(nct_id)
+            tasks[agent_name] = agent.research(nct_id, metadata=metadata)
 
-        results = []
         if config.orchestrator.parallel_research and len(tasks) > 1:
             # Run in parallel
             gathered = await asyncio.gather(

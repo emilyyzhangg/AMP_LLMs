@@ -229,6 +229,37 @@ The `retroactive_fix.py` script applies the expanded normalization rules to comp
 
 ---
 
+## 7.7 v5.1: Research Agent Bug Fixes — Intervention Name Extraction (DONE)
+
+### Problem
+
+Testing all 15 research agents against known peptides (Nisin, Colistin, Leuprolide) revealed that 12 of 15 agents returned 0 citations despite the peptides existing in their databases. Only clinical_protocol, literature, and WHO ICTRP produced results.
+
+Root cause: agents serialized intervention metadata dicts as strings (`"{'name': 'Nisin'}"`) instead of extracting the name field (`"Nisin"`). Every database search was querying for a Python dict literal.
+
+### Fixes
+
+- **All agents**: Added `_extract_intervention_names()` helper that handles both `[{"name": "X"}]` and `["X"]` formats
+- **DBAASP**: Fixed URL (`/peptides` not `/api/v2/peptides`), fixed query params (`name.value=X&name.comparator=like`)
+- **CARD**: Removed 3.2MB ARO index download that frequently timed out; livesearch alone is sufficient
+- **IUPHAR**: Added case-variant search (original + lowercase)
+- **Literature/Semantic Scholar**: Added 1s delay to prevent 429 rate limiting
+
+### Verification Results
+
+| Agent | Nisin (known AMP) | Colistin (known AMP) | Leuprolide (non-AMP) |
+|-------|:-:|:-:|:-:|
+| DBAASP | 5 citations | 4 citations | 0 (correct) |
+| CARD | 0 (correct, no resistance data) | 5 citations | 0 (correct) |
+| ChEMBL | 3 citations | 3 citations | 3 citations |
+| IUPHAR | 0 | 1 citation | 1 citation |
+| IntAct | 1 citation | 0 | 0 |
+| Peptide Identity | 2 citations | 2 citations | 2 citations |
+
+DBAASP now provides MIC/activity data that directly proves AMP status. CARD provides resistance mechanism data for known antimicrobials. These should significantly improve classification accuracy.
+
+---
+
 ## 8. Next Steps
 
 1. **Re-run n=62 concordance with v4 agents** and compare against the v3 baseline (Section 6). This is the primary validation of the v4 improvements.
