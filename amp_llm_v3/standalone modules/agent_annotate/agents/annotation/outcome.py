@@ -88,26 +88,68 @@ DECISION TREE (follow in order):
 5. For COMPLETED or UNKNOWN status, check published literature:
    a. Published results show POSITIVE findings (met endpoints, efficacy shown, favorable safety) -> "Positive"
    b. Published results show NEGATIVE findings (failed endpoints, no efficacy, futility) -> "Failed - completed trial"
-   c. NO published results found -> "Unknown"
+   c. NO published results found -> apply COMPLETION HEURISTICS below
+
+COMPLETION HEURISTICS (when no published results are found for COMPLETED trials):
+
+These rules help determine outcome for older trials (pre-2010) where publications may not be indexed:
+
+H1. PHASE I COMPLETION: Phase I/Early Phase I trials that completed normally (not terminated/withdrawn)
+    are typically "Positive". Phase I success = acceptable safety, tolerability, pharmacokinetics established.
+    Completing a Phase I trial IS the success criterion. → "Positive"
+
+H2. PHASE II/III COMPLETION WITH hasResults=Yes: If ClinicalTrials.gov indicates results were posted
+    (hasResults field), the trial produced data. Lean toward "Positive" unless evidence says otherwise.
+
+H3. LONG-COMPLETED TRIALS: If the trial completed more than 10 years ago and led to subsequent
+    later-phase trials of the same drug → the earlier trial was likely "Positive" (the drug advanced).
+
+H4. COMPLETED + RESULTS POSTED: If Results Posted = Yes but you couldn't find specific
+    result descriptions, lean "Positive" (the act of posting results for a completed trial
+    typically happens for trials with reportable outcomes).
+
+H5. DEFAULT: If truly no signals exist → "Unknown". But exhaust H1-H4 first.
 
 CRITICAL RULES:
 - "Failed - completed trial" REQUIRES EVIDENCE OF FAILURE. You MUST cite a specific publication showing negative results, failure to meet primary endpoints, or futility. If you cannot cite such evidence, the answer is NOT "Failed".
-- COMPLETED status alone does NOT mean failure. A trial that merely completed is "Unknown" if no results are published, NOT "Failed".
-- Phase I trials that complete with acceptable safety/tolerability are typically "Positive" — completing a safety trial IS success. Phase I success criteria = safety, tolerability, pharmacokinetics.
-- If the Result Valence you extracted says "Positive" or "Mixed" -> lean toward "Positive".
-- If the Result Valence says "Not available" -> the answer is "Unknown", NOT "Failed".
+- COMPLETED status alone does NOT mean failure.
+- Phase I trials that complete → "Positive" (completing a safety trial IS success).
+- Phase II trials that complete with results posted → lean "Positive".
+- If the Result Valence you extracted says "Positive" or "Mixed" -> "Positive".
+- If the Result Valence says "Not available" → apply Completion Heuristics. Do NOT immediately say "Unknown".
 - RECENCY: If multiple publications exist with conflicting conclusions, the MOST RECENT publication takes priority.
+- For very old trials (1990s-2000s) where PubMed coverage may be sparse: if the trial COMPLETED normally and no negative evidence exists, "Positive" is more likely than "Unknown". Thousands of trials complete successfully but never get PubMed-indexed result papers.
 
 IMPORTANT: Format your response EXACTLY as:
 Outcome: [one of the 7 values above]
 Evidence: [cite the specific source that determined your decision]
-Reasoning: [explain your chain of thought]"""
+Reasoning: [explain your chain of thought, noting which heuristic you applied if applicable]"""
+
+
+# Hardware profile → model selection for outcome
+# Outcome benefits from a larger model because the decision tree
+# requires nuanced interpretation of published results and status.
+OUTCOME_MODEL_OVERRIDES = {
+    "server": "qwen2.5:14b",
+}
 
 
 class OutcomeAgent(BaseAnnotationAgent):
     """Determines trial outcome using two-pass investigation."""
 
     field_name = "outcome"
+
+    def _get_model(self, config) -> str:
+        """Select model based on hardware profile."""
+        profile = config.orchestrator.hardware_profile
+        override = OUTCOME_MODEL_OVERRIDES.get(profile)
+        if override:
+            return override
+        # Default: use primary annotator model
+        for model_key, model_cfg in config.verification.models.items():
+            if model_cfg.role == "annotator":
+                return model_cfg.name
+        return "llama3.1:8b"
 
     async def annotate(
         self,
@@ -139,13 +181,7 @@ class OutcomeAgent(BaseAnnotationAgent):
         from app.services.config_service import config_service
 
         config = config_service.get()
-        primary_model = None
-        for model_key, model_cfg in config.verification.models.items():
-            if model_cfg.role == "annotator":
-                primary_model = model_cfg.name
-                break
-        if not primary_model:
-            primary_model = "llama3.1:8b"
+        primary_model = self._get_model(config)
 
         # --- PASS 1: Extract facts ---
         try:
@@ -207,11 +243,14 @@ class OutcomeAgent(BaseAnnotationAgent):
         )
 
     def _infer_from_pass1(self, pass1_text: str) -> str:
-        """Fallback: infer outcome from pass 1 extraction if pass 2 fails."""
+        """Fallback: infer outcome from pass 1 extraction if pass 2 fails.
+
+        Applies completion heuristics for older trials where publications
+        may not be found but the trial clearly completed normally.
+        """
         lower = pass1_text.lower()
 
         # Check for published results first (most important signal)
-        has_results = "published results:" in lower
         results_section = ""
         match = re.search(r"published results?:\s*(.+?)(?:\n[A-Z]|\Z)", lower, re.DOTALL)
         if match:
@@ -225,16 +264,36 @@ class OutcomeAgent(BaseAnnotationAgent):
 
         # Fall back to registry status
         status_match = re.search(r"registry status:\s*(\S+)", lower)
-        if status_match:
-            status = status_match.group(1).strip()
-            if "withdrawn" in status:
-                return "Withdrawn"
-            if "terminated" in status:
-                return "Terminated"
-            if "recruiting" in status and "not" not in status and "active" not in status:
-                return "Recruiting"
-            if "active_not_recruiting" in status:
-                return "Active, not recruiting"
+        status = status_match.group(1).strip() if status_match else ""
+
+        if "withdrawn" in status:
+            return "Withdrawn"
+        if "terminated" in status:
+            return "Terminated"
+        if "recruiting" in status and "not" not in status and "active" not in status:
+            return "Recruiting"
+        if "active_not_recruiting" in status:
+            return "Active, not recruiting"
+
+        # Completion heuristics for COMPLETED trials without publications
+        if "completed" in status or "complete" in status:
+            # H1: Phase I completion = Positive
+            phase_match = re.search(r"trial phase:\s*(.+?)(?:\n|$)", lower)
+            if phase_match:
+                phase = phase_match.group(1).strip()
+                if "phase1" in phase or "phase 1" in phase or "early_phase" in phase or "early phase" in phase:
+                    return "Positive"
+
+            # H2/H4: Results posted = lean Positive
+            if "results posted: yes" in lower or "hasresults: true" in lower:
+                return "Positive"
+
+            # H3: Check result valence from Pass 1
+            valence_match = re.search(r"result valence:\s*(.+?)(?:\n|$)", lower)
+            if valence_match:
+                valence = valence_match.group(1).strip()
+                if "positive" in valence or "mixed" in valence:
+                    return "Positive"
 
         return "Unknown"
 

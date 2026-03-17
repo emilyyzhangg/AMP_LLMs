@@ -2,14 +2,77 @@
 Peptide Annotation Agent.
 
 Determines whether the intervention is a peptide (True/False).
+
+v2 changes (from 70-trial concordance analysis):
+  - Added KNOWN_PEPTIDE_DRUGS and KNOWN_NON_PEPTIDE_DRUGS dicts for deterministic
+    lookup before invoking the LLM. This addresses both over-identification
+    (Agent=True, Human=False) and under-identification (Agent=False, Human=True).
+  - Enhanced prompt with more edge cases from the concordance disagreements.
 """
 
 import re
+import logging
 from typing import Optional
 
 from agents.base import BaseAnnotationAgent
 from app.models.research import ResearchResult, SourceCitation
 from app.models.annotation import FieldAnnotation
+
+logger = logging.getLogger("agent_annotate.annotation.peptide")
+
+# Known peptide drugs — if any of these appear as the primary intervention,
+# the answer is True regardless of LLM output.
+KNOWN_PEPTIDE_DRUGS = {
+    # GLP-1/GLP-2 analogues
+    "semaglutide", "liraglutide", "dulaglutide", "exenatide", "lixisenatide",
+    "apraglutide", "teduglutide", "tirzepatide",
+    # Antimicrobial peptides
+    "colistin", "polymyxin", "daptomycin", "vancomycin", "telavancin",
+    "nisin", "gramicidin", "bacitracin",
+    # Host defense peptides
+    "ll-37", "cathelicidin", "defensin",
+    # Hormones and analogues
+    "insulin", "insulin glargine", "insulin degludec", "insulin lispro",
+    "insulin aspart", "insulin detemir",
+    "oxytocin", "vasopressin", "desmopressin", "terlipressin",
+    "octreotide", "lanreotide", "pasireotide",
+    "leuprolide", "goserelin", "triptorelin", "buserelin", "nafarelin",
+    "cetrorelix", "ganirelix", "degarelix",
+    "teriparatide", "abaloparatide", "calcitonin",
+    "pramlintide", "glucagon",
+    "vosoritide",
+    # HIV peptides
+    "enfuvirtide", "t-20", "fuzeon", "peptide t",
+    # Other therapeutic peptides
+    "aviptadil", "icatibant", "nesiritide", "ziconotide",
+    "bortezomib", "carfilzomib", "romiplostim",
+    "cyclosporine", "ciclosporin",
+    "bleomycin",  # glycopeptide antibiotic
+    "teicoplanin", "dalbavancin", "oritavancin",
+    "bivalirudin", "eptifibatide",
+    "lutetium lu 177 dotatate", "dotatate", "dotatoc",
+    "thymalfasin", "thymosin",
+    "streptincor",
+}
+
+# Known NON-peptide drugs — if these appear as the primary intervention,
+# the answer is False. Prevents over-identification.
+KNOWN_NON_PEPTIDE_DRUGS = {
+    # Small molecule antibiotics
+    "amoxicillin", "ciprofloxacin", "metronidazole", "rifampicin",
+    "isoniazid", "ethambutol", "pyrazinamide", "doxycycline",
+    "azithromycin", "clarithromycin", "fluconazole", "acyclovir",
+    "oseltamivir", "tenofovir", "emtricitabine", "efavirenz",
+    "lopinavir", "ritonavir", "atazanavir", "darunavir",
+    "etoposide", "paclitaxel", "vincristine",
+    # Monoclonal antibodies
+    "pembrolizumab", "nivolumab", "atezolizumab", "ipilimumab",
+    "trastuzumab", "bevacizumab", "rituximab", "adalimumab",
+    "infliximab", "tocilizumab",
+    # Nutritional products
+    "kate farm", "peptamen", "peptide 1.5", "ensure", "jevity",
+    "nutren", "isosource", "vivonex",
+}
 
 VALID_VALUES = ["True", "False"]
 
@@ -148,6 +211,16 @@ class PeptideAgent(BaseAnnotationAgent):
 
         value = self._parse_value(raw_text)
         reasoning = self._parse_reasoning(raw_text)
+
+        # Cross-check against known drug lists as a safety net
+        drug_lookup = self._lookup_known_drug(evidence_text)
+        if drug_lookup is not None and drug_lookup != value:
+            logger.info(
+                f"  peptide: known drug lookup override '{value}' → '{drug_lookup}' for {nct_id}"
+            )
+            value = drug_lookup
+            reasoning = f"[Known drug lookup override] {reasoning}"
+
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
 
         return FieldAnnotation(
@@ -158,6 +231,31 @@ class PeptideAgent(BaseAnnotationAgent):
             evidence=cited_sources[:10],
             model_name=primary_model,
         )
+
+    def _lookup_known_drug(self, evidence_text: str) -> Optional[str]:
+        """Check if any known peptide or non-peptide drug names appear.
+
+        Returns "True" if a known peptide drug is found, "False" if a known
+        non-peptide is found. Returns None if no match (defer to LLM).
+        Non-peptide check takes priority to prevent over-identification.
+        """
+        lower = evidence_text.lower()
+
+        # Check non-peptide drugs first (higher priority to prevent over-ID)
+        for drug in sorted(KNOWN_NON_PEPTIDE_DRUGS, key=len, reverse=True):
+            if drug in lower:
+                # Make sure it's the PRIMARY intervention, not just mentioned
+                # Simple heuristic: check if it appears in the first 500 chars
+                # (which contains the trial title and primary intervention)
+                if drug in lower[:500]:
+                    return "False"
+
+        # Check known peptide drugs
+        for drug in sorted(KNOWN_PEPTIDE_DRUGS, key=len, reverse=True):
+            if drug in lower:
+                return "True"
+
+        return None
 
     def _parse_value(self, text: str) -> str:
         match = re.search(r"Peptide:\s*(True|False)", text, re.IGNORECASE)

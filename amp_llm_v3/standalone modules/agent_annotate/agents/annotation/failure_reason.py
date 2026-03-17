@@ -111,6 +111,25 @@ class FailureReasonAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
+        # --- PRE-CHECK: Skip if outcome is non-failure ---
+        # If the outcome agent already determined this trial didn't fail,
+        # don't bother running the LLM — return empty immediately.
+        # This prevents the dominant error pattern where the 8B model
+        # hallucinates "Ineffective for purpose" for non-failed trials.
+        outcome_result = metadata.get("outcome_result", "") if metadata else ""
+        if outcome_result in ("Positive", "Recruiting", "Active, not recruiting", "Unknown"):
+            logger.info(
+                f"  failure_reason: skipping — outcome='{outcome_result}' is non-failure"
+            )
+            return FieldAnnotation(
+                field_name=self.field_name,
+                value="",
+                confidence=0.9,
+                reasoning=f"[Pre-check skip] Outcome is '{outcome_result}' — no failure to explain.",
+                evidence=[],
+                model_name="deterministic",
+            )
+
         all_citations = []
         for result in research_results:
             weight = self.relevance_weight(result.agent_name)

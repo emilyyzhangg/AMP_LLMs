@@ -123,10 +123,12 @@ orchestrator:
   hardware_profile: "mac_mini"
 
   # Server model overrides (used when hardware_profile: "server")
+  # Server has 240+ GB RAM — can run much larger models
   server_models:
-    classification: "kimi-k2-thinking"
+    classification: "kimi-k2-thinking"  # 1T MoE, 32B active — best for decision trees
+    outcome: "qwen2.5:14b"             # Needs nuanced literature interpretation
     reconciler: "kimi-k2-thinking"
-    primary: "qwen2.5:14b"
+    primary: "qwen2.5:14b"             # All other agents use 14B on server
     verifiers:
       - "qwen2.5:14b"
       - "llama3.1:8b"

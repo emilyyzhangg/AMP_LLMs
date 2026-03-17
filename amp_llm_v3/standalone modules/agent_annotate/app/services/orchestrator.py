@@ -606,18 +606,19 @@ class PipelineOrchestrator:
         annotations.append(peptide_ann)
         shared_metadata["peptide_result"] = peptide_ann.value
 
-        # --- Step 2: Run remaining agents (classification gets peptide result) ---
-        remaining_fields = [f for f in ANNOTATION_AGENTS if f != "peptide"]
+        # --- Step 2: Run classification, delivery_mode, outcome (NOT failure_reason yet) ---
+        # failure_reason depends on outcome, so we run it after outcome completes.
+        step2_fields = [f for f in ANNOTATION_AGENTS if f not in ("peptide", "reason_for_failure")]
 
         if config.orchestrator.parallel_annotation:
             tasks = []
-            for field in remaining_fields:
+            for field in step2_fields:
                 meta = shared_metadata if field == "classification" else None
                 tasks.append(annotate_field(field, metadata=meta))
             results = list(await asyncio.gather(*tasks, return_exceptions=True))
             for i, ann in enumerate(results):
                 if isinstance(ann, Exception):
-                    field = remaining_fields[i]
+                    field = step2_fields[i]
                     results[i] = FieldAnnotation(
                         field_name=field,
                         value="Unknown",
@@ -625,7 +626,7 @@ class PipelineOrchestrator:
                     )
             annotations.extend(results)
         else:
-            for field in remaining_fields:
+            for field in step2_fields:
                 try:
                     meta = shared_metadata if field == "classification" else None
                     ann = await annotate_field(field, metadata=meta)
@@ -636,6 +637,20 @@ class PipelineOrchestrator:
                         value="Unknown",
                         reasoning=f"Agent error: {e}",
                     ))
+
+        # --- Step 3: Run failure_reason AFTER outcome (it needs the outcome result) ---
+        outcome_ann = next((a for a in annotations if a.field_name == "outcome"), None)
+        if outcome_ann:
+            shared_metadata["outcome_result"] = outcome_ann.value
+        try:
+            failure_ann = await annotate_field("reason_for_failure", metadata=shared_metadata)
+        except Exception as e:
+            failure_ann = FieldAnnotation(
+                field_name="reason_for_failure",
+                value="",
+                reasoning=f"Agent error: {e}",
+            )
+        annotations.append(failure_ann)
 
         return annotations
 

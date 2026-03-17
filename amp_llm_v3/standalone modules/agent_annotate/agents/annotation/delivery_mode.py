@@ -2,14 +2,89 @@
 Delivery Mode Annotation Agent.
 
 Determines how the drug/intervention is administered.
+
+v2 changes (from 70-trial concordance analysis):
+  - Added KNOWN_DRUG_ROUTES dict: deterministic route lookup for common peptide drugs
+    that the 8B model frequently misclassifies. When a drug name matches, this overrides
+    the LLM response, eliminating "Injection/Infusion - Other/Unspecified" for well-known drugs.
+  - Enhanced prompt to prioritize FDA label routes over generic protocol text.
 """
 
 import re
+import logging
 from typing import Optional
 
 from agents.base import BaseAnnotationAgent
 from app.models.research import ResearchResult, SourceCitation
 from app.models.annotation import FieldAnnotation
+
+logger = logging.getLogger("agent_annotate.annotation.delivery_mode")
+
+# Known drug → route mappings for common peptide therapeutics.
+# These are from FDA labels and WHO drug information.
+# Used as deterministic override when the LLM defaults to "Other/Unspecified".
+KNOWN_DRUG_ROUTES = {
+    # Subcutaneous peptides
+    "semaglutide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "liraglutide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "dulaglutide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "exenatide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "apraglutide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "teduglutide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "teriparatide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "abaloparatide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "vosoritide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "octreotide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "lanreotide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "pasireotide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "enfuvirtide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "insulin": "Injection/Infusion - Subcutaneous/Intradermal",
+    "insulin glargine": "Injection/Infusion - Subcutaneous/Intradermal",
+    "insulin degludec": "Injection/Infusion - Subcutaneous/Intradermal",
+    "insulin lispro": "Injection/Infusion - Subcutaneous/Intradermal",
+    "insulin aspart": "Injection/Infusion - Subcutaneous/Intradermal",
+    "pramlintide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "tirzepatide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "leuprolide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "goserelin": "Injection/Infusion - Subcutaneous/Intradermal",
+    "degarelix": "Injection/Infusion - Subcutaneous/Intradermal",
+    "cetrorelix": "Injection/Infusion - Subcutaneous/Intradermal",
+    "ganirelix": "Injection/Infusion - Subcutaneous/Intradermal",
+    "icatibant": "Injection/Infusion - Subcutaneous/Intradermal",
+    "peginesatide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "romiplostim": "Injection/Infusion - Subcutaneous/Intradermal",
+    "ziconotide": "Injection/Infusion - Other/Unspecified",  # intrathecal
+    # IV peptides
+    "daptomycin": "IV",
+    "colistin": "IV",
+    "polymyxin b": "IV",
+    "vancomycin": "IV",
+    "telavancin": "IV",
+    "dalbavancin": "IV",
+    "oritavancin": "IV",
+    "aviptadil": "IV",
+    "nesiritide": "IV",
+    "carfilzomib": "IV",
+    "bortezomib": "IV",
+    "oxytocin": "IV",
+    "vasopressin": "IV",
+    "desmopressin": "Intranasal",  # most common route
+    # IM peptides
+    "leuprolide depot": "Injection/Infusion - Intramuscular",
+    "triptorelin": "Injection/Infusion - Intramuscular",
+    # Oral peptides
+    "oral semaglutide": "Oral - Tablet",
+    "rybelsus": "Oral - Tablet",
+    "cyclosporine": "Oral - Capsule",
+    "desmopressin oral": "Oral - Tablet",
+    # Intranasal
+    "calcitonin": "Intranasal",
+    "nafarelin": "Intranasal",
+    # Inhalation
+    "colistimethate": "Inhalation",
+    "colistin inhalation": "Inhalation",
+    "tobramycin inhalation": "Inhalation",
+}
 
 VALID_VALUES = [
     "Injection/Infusion - Intramuscular",
@@ -184,6 +259,18 @@ class DeliveryModeAgent(BaseAnnotationAgent):
 
         value = self._parse_value(raw_text)
         reasoning = self._parse_reasoning(raw_text)
+
+        # If the LLM returned a generic "Other/Unspecified" or "Injection/Infusion - Other/Unspecified",
+        # try a deterministic drug-name lookup as a refinement step.
+        if value in ("Other/Unspecified", "Injection/Infusion - Other/Unspecified"):
+            drug_route = self._lookup_drug_route(evidence_text)
+            if drug_route:
+                logger.info(
+                    f"  delivery_mode: drug lookup override '{value}' → '{drug_route}' for {nct_id}"
+                )
+                value = drug_route
+                reasoning = f"[Drug route lookup override] {reasoning}"
+
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
 
         return FieldAnnotation(
@@ -257,6 +344,20 @@ class DeliveryModeAgent(BaseAnnotationAgent):
             return "Topical - Unspecified"
 
         return "Other/Unspecified"
+
+    def _lookup_drug_route(self, evidence_text: str) -> Optional[str]:
+        """Check if any known drug names appear in the evidence and return the known route.
+
+        Matches drug names case-insensitively against the evidence text.
+        Longer drug names are checked first to avoid partial matches.
+        """
+        lower_evidence = evidence_text.lower()
+        # Sort by length descending so "insulin glargine" matches before "insulin"
+        sorted_drugs = sorted(KNOWN_DRUG_ROUTES.keys(), key=len, reverse=True)
+        for drug_name in sorted_drugs:
+            if drug_name in lower_evidence:
+                return KNOWN_DRUG_ROUTES[drug_name]
+        return None
 
     def _parse_reasoning(self, text: str) -> str:
         match = re.search(r"Reasoning:\s*(.+?)(?:\n\n|$)", text, re.DOTALL)
