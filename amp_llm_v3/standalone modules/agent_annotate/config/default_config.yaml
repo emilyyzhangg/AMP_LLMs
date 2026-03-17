@@ -71,6 +71,27 @@ research_agents:
   ebi_proteins:
     sources:
       - ebi_proteins
+  apd:
+    sources:
+      - apd
+  dbamp:
+    sources:
+      - dbamp
+  who_ictrp:
+    sources:
+      - who_ictrp
+  iuphar:
+    sources:
+      - iuphar
+  intact:
+    sources:
+      - intact
+  card:
+    sources:
+      - card
+  pdbe:
+    sources:
+      - pdbe
 
 annotation_agents:
   classification:

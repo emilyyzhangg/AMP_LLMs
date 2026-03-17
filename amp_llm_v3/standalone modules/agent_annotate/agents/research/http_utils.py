@@ -44,6 +44,11 @@ _HOST_LIMITS = {
     "dbaasp.org": 5,
     "search.rcsb.org": 8,
     "data.rcsb.org": 8,
+    "aps.unmc.edu": 3,
+    "yylab.jnu.edu.cn": 3,
+    "trialsearch.who.int": 5,
+    "www.guidetopharmacology.org": 5,
+    "card.mcmaster.ca": 5,
 }
 _DEFAULT_CONCURRENCY = 10
 
