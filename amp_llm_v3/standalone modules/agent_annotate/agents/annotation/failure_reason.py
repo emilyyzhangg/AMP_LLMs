@@ -202,7 +202,7 @@ class FailureReasonAgent(BaseAnnotationAgent):
             )
             pass2_output = pass2_response.get("response", "")
         except Exception as e:
-            value = self._infer_from_pass1(pass1_output)
+            value = self._normalize_failure_value(self._infer_from_pass1(pass1_output))
             return FieldAnnotation(
                 field_name=self.field_name,
                 value=value,
@@ -213,6 +213,8 @@ class FailureReasonAgent(BaseAnnotationAgent):
             )
 
         value = self._parse_value(pass2_output)
+        # Normalize through canonical mapper in case LLM returned a variant
+        value = self._normalize_failure_value(value)
         reasoning = self._parse_reasoning(pass2_output)
         full_reasoning = f"[Pass 1 investigation] {pass1_output[:500]}\n[Pass 2 classification] {reasoning}"
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
@@ -335,25 +337,40 @@ class FailureReasonAgent(BaseAnnotationAgent):
         match = re.search(r"Reason for Failure:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)
         if match:
             raw = match.group(1).strip()
-            lower = raw.lower()
+            return self._normalize_failure_value(raw)
+        return ""
 
-            if lower in ("empty", "n/a", "not applicable", "none", ""):
-                return ""
+    @staticmethod
+    def _normalize_failure_value(raw: str) -> str:
+        """Normalize any failure reason string to a canonical value.
 
-            for valid in VALID_VALUES:
-                if valid.lower() == lower:
-                    return valid
+        v7: All output paths route through this method to prevent
+        non-canonical values (INEFFECTIVE_FOR_PURPOSE, INEFFECIVE_FOR_PURPOSE,
+        EMPTY) from reaching the output.
+        """
+        lower = raw.strip().lower()
 
-            if "business" in lower or "funding" in lower or "sponsor" in lower or "administrative" in lower:
-                return "Business Reason"
-            if "ineffective" in lower or "efficacy" in lower or "futility" in lower or "endpoint" in lower:
-                return "Ineffective for purpose"
-            if "toxic" in lower or "safety" in lower or "unsafe" in lower or "adverse" in lower:
-                return "Toxic/Unsafe"
-            if "covid" in lower or "pandemic" in lower or "coronavirus" in lower:
-                return "Due to covid"
-            if "recruit" in lower or "enrollment" in lower or "accrual" in lower:
-                return "Recruitment issues"
+        # Empty/no-failure indicators
+        if lower in ("empty", "n/a", "not applicable", "none", "",
+                      "no failure", "no reason", "completed", "unknown",
+                      "active", "recruiting", "positive"):
+            return ""
+
+        for valid in VALID_VALUES:
+            if valid.lower() == lower:
+                return valid
+
+        # Fuzzy matching — catches typos and uppercase sentinel values
+        if "business" in lower or "funding" in lower or "sponsor" in lower or "administrative" in lower:
+            return "Business Reason"
+        if "ineffect" in lower or "efficacy" in lower or "futility" in lower or "endpoint" in lower:
+            return "Ineffective for purpose"
+        if "toxic" in lower or "safety" in lower or "unsafe" in lower or "adverse" in lower:
+            return "Toxic/Unsafe"
+        if "covid" in lower or "pandemic" in lower or "coronavirus" in lower:
+            return "Due to covid"
+        if "recruit" in lower or "enrollment" in lower or "accrual" in lower:
+            return "Recruitment issues"
         return ""
 
     def _parse_reasoning(self, text: str) -> str:

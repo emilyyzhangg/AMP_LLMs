@@ -97,6 +97,10 @@ These rules help determine outcome for older trials (pre-2010) where publication
 H1. PHASE I COMPLETION: Phase I/Early Phase I trials that completed normally (not terminated/withdrawn)
     are typically "Positive". Phase I success = acceptable safety, tolerability, pharmacokinetics established.
     Completing a Phase I trial IS the success criterion. → "Positive"
+    BUT: H1 requires at least ONE corroborating signal: results posted on ClinicalTrials.gov,
+    a publication mentioning the trial (even without detailed results), or a subsequent later-phase trial.
+    If Phase I completed but ZERO publications were found and Results Posted = No/Unknown,
+    → "Unknown" (not enough evidence to confirm success). Do NOT apply H1 without corroboration.
 
 H2. PHASE II/III COMPLETION WITH hasResults=Yes: If ClinicalTrials.gov indicates results were posted
     (hasResults field), the trial produced data. Lean toward "Positive" unless evidence says otherwise.
@@ -277,15 +281,11 @@ class OutcomeAgent(BaseAnnotationAgent):
 
         # Completion heuristics for COMPLETED trials without publications
         if "completed" in status or "complete" in status:
-            # H1: Phase I completion = Positive
-            phase_match = re.search(r"trial phase:\s*(.+?)(?:\n|$)", lower)
-            if phase_match:
-                phase = phase_match.group(1).strip()
-                if "phase1" in phase or "phase 1" in phase or "early_phase" in phase or "early phase" in phase:
-                    return "Positive"
-
-            # H2/H4: Results posted = lean Positive
-            if "results posted: yes" in lower or "hasresults: true" in lower:
+            # H2/H4: Results posted = lean Positive (strongest signal)
+            has_results_posted = (
+                "results posted: yes" in lower or "hasresults: true" in lower
+            )
+            if has_results_posted:
                 return "Positive"
 
             # H3: Check result valence from Pass 1
@@ -294,6 +294,20 @@ class OutcomeAgent(BaseAnnotationAgent):
                 valence = valence_match.group(1).strip()
                 if "positive" in valence or "mixed" in valence:
                     return "Positive"
+
+            # H1: Phase I completion = Positive, BUT requires corroboration
+            # Without results posted or publications, Phase I completion
+            # alone is insufficient — return Unknown instead.
+            phase_match = re.search(r"trial phase:\s*(.+?)(?:\n|$)", lower)
+            if phase_match:
+                phase = phase_match.group(1).strip()
+                is_phase1 = (
+                    "phase1" in phase or "phase 1" in phase
+                    or "early_phase" in phase or "early phase" in phase
+                )
+                if is_phase1 and has_results_posted:
+                    return "Positive"
+                # Phase I without corroboration → Unknown (v7 calibration)
 
         return "Unknown"
 

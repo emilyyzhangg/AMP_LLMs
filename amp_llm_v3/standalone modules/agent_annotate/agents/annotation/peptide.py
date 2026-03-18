@@ -25,13 +25,15 @@ logger = logging.getLogger("agent_annotate.annotation.peptide")
 VALID_VALUES = ["True", "False"]
 
 # Pass 1: Extract molecular facts about the intervention
-PASS1_SYSTEM = """You are a biochemistry fact-extraction specialist. Your job is to extract ONLY factual information about whether the primary intervention is a peptide. Do NOT make a determination — just extract facts.
+PASS1_SYSTEM = """You are a biochemistry fact-extraction specialist. Your job is to extract ONLY factual information about whether ANY intervention in this trial is a peptide. Do NOT make a determination — just extract facts.
 
-For the clinical trial intervention below, answer these questions using ONLY the provided evidence. If the evidence does not answer a question, write "No evidence found."
+IMPORTANT: If this trial has MULTIPLE interventions (e.g., a peptide vaccine + a chemotherapy drug + an adjuvant), you MUST extract facts for EACH intervention separately. Do NOT focus on just one.
 
-1. INTERVENTION NAME: What is the primary drug/intervention being tested?
+For the clinical trial intervention(s) below, answer these questions using ONLY the provided evidence. If the evidence does not answer a question, write "No evidence found."
 
-2. MOLECULAR CLASS: What type of molecule is it? Options:
+1. INTERVENTION NAME: List ALL drugs/interventions being tested (not just the first one).
+
+2. MOLECULAR CLASS: For EACH intervention, what type of molecule is it? Options:
    - Short peptide chain (2-50 amino acids)
    - Longer polypeptide (50-100+ amino acids, but single chain)
    - Monoclonal antibody or antibody fragment (~150 kDa, multi-chain)
@@ -40,7 +42,7 @@ For the clinical trial intervention below, answer these questions using ONLY the
    - Large multi-subunit protein (engineered scaffold, fusion protein)
    - Unknown
 
-3. DATABASE CONFIRMATION: Was this intervention found in any peptide/protein databases?
+3. DATABASE CONFIRMATION: For EACH intervention, was it found in any peptide/protein databases?
    - UniProt: entry found? Amino acid length?
    - DRAMP/DBAASP: antimicrobial peptide database entry?
    - ChEMBL: molecule type? (peptide, small molecule, protein, antibody)
@@ -90,11 +92,14 @@ STEP 3 — Final confirmation
   - Conflicting evidence → weigh database entries > literature descriptions > product names
 
 CRITICAL RULES:
-- The question is whether the ACTIVE DRUG is a peptide, not whether the formulation contains peptides
+- The question is whether ANY active drug is a peptide, not whether the formulation contains peptides
 - Brand names containing "peptide" do NOT make the product a peptide drug
 - Nutritional formulas with hydrolyzed proteins are NOT peptide drugs
 - Monoclonal antibodies are NOT peptides (different drug class)
-- If a trial tests MULTIPLE drugs and only ONE is a peptide, answer True (peptide is among the interventions)
+- MULTI-DRUG TRIALS: If a trial tests MULTIPLE drugs and ANY ONE of them is a peptide, answer True.
+  You MUST evaluate ALL interventions listed in the extracted facts, not just the first one.
+  Example: a trial testing "decitabine (small molecule) + NY-ESO-1 peptide vaccine" → True
+  because the peptide vaccine is among the interventions.
 
 Format your response EXACTLY as:
 Peptide: [True or False]

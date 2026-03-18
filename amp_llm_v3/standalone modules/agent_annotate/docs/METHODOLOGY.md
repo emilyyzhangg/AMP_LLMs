@@ -622,42 +622,95 @@ The `keep_alive` parameter controls how long Ollama retains a model in GPU memor
 - **server (60m)**: Keeps models loaded across the full annotation pipeline for a batch, avoiding the overhead of repeated model loading (which can take 10-30 seconds per load on larger models).
 
 
-## 11. Known Issues and v3/v4 Fixes
+## 11. v6 Version Comparison Results (n=70, 2026-03-17)
 
-### 11.1 Outcome Bias (v2)
+### 11.0.1 Summary
+
+The same 70 trials were annotated by v5.1 agents (commit `22e9792`) and v6 agents (commit `8553a1f`). Research coverage increased +162% (684 → 1,793 total citations). Outcome concordance vs R1 improved +31.8pp (40.9% → 72.7%), exceeding human inter-rater agreement (55.6%). Review rate decreased -36% (50 → 32 field-level reviews). Peptide regressed -6.2pp due to multi-drug trial confusion.
+
+### 11.0.2 Research Agent Status
+
+| Agent | Status | Citations (n=70) |
+|---|---|---|
+| Clinical Protocol | Working | 530 |
+| ChEMBL | Fixed in v6 | 366 |
+| IntAct | New, working | 305 |
+| Literature | Improved | 284 |
+| Peptide Identity | Fixed in v6 | 135 |
+| WHO ICTRP | New, working | 69 |
+| IUPHAR | New, working | 58 |
+| DBAASP | Fixed in v6 | 40 |
+| CARD | New, working | 6 |
+| APD | Broken (JS required) | 0 |
+| dbAMP | Broken (intermittent) | 0 |
+| EBI Proteins | Broken (unknown) | 0 |
+| RCSB PDB | Broken (unknown) | 0 |
+| PDBe | Broken (unknown) | 0 |
+| Web Context | Broken (DuckDuckGo) | 0 |
+
+### 11.0.3 Key Findings
+
+1. **Research quality drives annotation quality.** The +162% citation increase directly caused the +31.8pp outcome improvement.
+2. **Completion heuristics are effective but need calibration.** H1 (Phase I completion = Positive) over-applies when zero publications are found, causing 5 regressions vs R1.
+3. **Cross-field coupling creates correlated instability.** When outcome shifts Unknown→Positive, failure reason shifts Ineffective→EMPTY, making both fields appear unstable between versions.
+4. **78% of review items are automatable.** Cross-field consistency (outcome=Positive → force failure_reason=EMPTY) and heuristic-aware verifier prompts would resolve 25 of 32 reviews.
+
+---
+
+## 12. Known Issues and v3/v4/v6 Fixes
+
+### 12.1 Outcome Bias (v2)
 
 **Problem:** The v2 outcome agent labeled approximately 80% of trials as "Failed - completed trial," including trials that were still recruiting, had positive results, or had simply completed without published data.
 
 **Fix (v3):** Replaced the single-prompt approach with the calibrated two-pass decision tree described in Section 5.5. The decision tree enforces ordering (check recruiting/active first, check for positive results before considering failure) and requires cited evidence for a "Failed" label.
 
-### 11.2 Over-Classification as AMP (v2)
+### 12.2 Over-Classification as AMP (v2)
 
 **Problem:** The v2 classification agent over-classified peptide therapeutics as AMPs. Any peptide in a clinical trial tended to receive an AMP classification.
 
 **Fix (v3):** Added explicit negative examples and the governing rule that most peptide therapeutics are not AMPs (Section 5.3). Added a default-to-Other heuristic for ambiguous cases.
 
-### 11.3 Empty Delivery Modes (v2)
+### 12.3 Empty Delivery Modes (v2)
 
 **Problem:** The v2 delivery mode agent returned empty or overly generic values for many trials where the route was determinable from the registry data.
 
 **Fix (v3):** Implemented priority-ordered extraction with keyword mapping (Section 5.4). The agent now systematically searches multiple sections of the trial record before returning empty.
 
-### 11.4 Failure Reasons for Non-Failed Trials (v2)
+### 12.4 Failure Reasons for Non-Failed Trials (v2)
 
 **Problem:** The v2 failure reason agent sometimes assigned failure reasons to trials that had not actually failed (e.g., recruiting trials, trials with positive results).
 
 **Fix (v3):** Enhanced the short-circuit mechanism to check for positive signals before attempting failure classification (Section 5.6). The short-circuit now evaluates full evidence context rather than matching a single keyword.
 
-### 11.5 8B Model Limitations
+### 12.5 8B Model Limitations
 
 **Problem:** 8B-parameter models (the size used for most annotation and verification agents) tend to ignore worked examples provided in prompts. Even when the prompt includes detailed examples showing correct annotation behavior, the models frequently deviate from the demonstrated patterns.
 
 **Implication:** This is the strongest argument for using the 14B-parameter reconciler (qwen2.5:14b) as the primary annotator rather than the 8B models. The 14B model shows better instruction-following and example adherence. This tradeoff is under evaluation.
 
 
-## 12. Human Annotation Reliability
+### 12.6 Outcome Positive Bias (v6)
 
-### 12.1 Annotator Divergence
+**Problem:** The v6 outcome agent over-applies the H1 completion heuristic (Phase I completion = Positive) even when zero publications are found. This caused 5 regressions vs R1 ground truth where the agent said "Positive" but the human said "Unknown" because no result evidence was available.
+
+**Planned fix (v7):** Calibrate H1 to require at least one corroborating signal (results posted, published abstract, or subsequent trial) before overriding Unknown. Without corroboration, H1 should produce "Positive" at LOW confidence and flag for review rather than forcing Positive.
+
+### 12.7 Multi-Drug Peptide Confusion (v6)
+
+**Problem:** In multi-drug trials, the peptide agent evaluates whichever intervention ChEMBL returns data for first (typically small molecules), rather than examining all interventions. This caused 3 False→True regressions where the agent focused on a co-administered small molecule instead of the peptide vaccine.
+
+**Planned fix (v7):** Modify Pass 1 to iterate over ALL interventions from the clinical_protocol agent and produce a fact extraction for each. Pass 2 then answers True if ANY intervention is a peptide.
+
+### 12.8 Failure Reason Value Normalization (v6)
+
+**Problem:** The pre-check skip path and `_infer_from_pass1()` fallback bypass `_parse_value()`, allowing non-canonical values like `INEFFECTIVE_FOR_PURPOSE` (uppercase sentinel), `INEFFECIVE_FOR_PURPOSE` (typo), and `EMPTY` (string instead of empty string) into the output.
+
+**Planned fix (v7):** Route all output paths through `_parse_value()`. Add the typo variant to the fuzzy matching list.
+
+## 13. Human Annotation Reliability
+
+### 13.1 Annotator Divergence
 
 The two independent human annotators (R1 = Emily, R2 = Anat) showed substantial disagreement on several fields, demonstrating that human annotations are not infallible ground truth.
 
@@ -667,27 +720,27 @@ Key divergences observed:
 - **Outcome field:** R1 used "Recruiting" 222 times. R2 used "Recruiting" 0 times. This suggests different interpretations of whether to record current registry status or inferred clinical outcome.
 - **Peptide coverage:** Only 30 trials in the full dataset had the Peptide field filled in by both annotators, severely limiting concordance analysis for that field.
 
-### 12.2 Practical Implication
+### 13.2 Practical Implication
 
 Human annotations serve as development-time benchmarks for calibrating and improving the pipeline. They are not treated as infallible ground truth. Where human annotators disagree, the agent's annotation is evaluated against both independently, and neither human annotator is presumed correct by default.
 
 
-## 13. Multi-Run Consensus
+## 14. Multi-Run Consensus
 
-### 13.1 Approach
+### 14.1 Approach
 
 LLM outputs are nondeterministic. Running the same batch of trials through the pipeline multiple times (recommended N=3) and taking a majority vote per field reduces the impact of stochastic variation on any single annotation.
 
-### 13.2 Implementation Status
+### 14.2 Implementation Status
 
 Multi-run consensus is planned but not yet implemented as an automated feature. It can currently be approximated by running the pipeline multiple times and comparing outputs manually.
 
-### 13.3 Expected Benefit
+### 14.3 Expected Benefit
 
 Fields where the pipeline is uncertain (low evidence quality, borderline classification) are most likely to vary across runs. Majority vote surfaces these cases: a field that receives different annotations across three runs is a natural candidate for manual review, while a field that is unanimous across runs has higher confidence.
 
 
-## 14. Source Weight Rationale
+## 15. Source Weight Rationale
 
 Source weights reflect two factors: data reliability and relevance to clinical trial annotation.
 

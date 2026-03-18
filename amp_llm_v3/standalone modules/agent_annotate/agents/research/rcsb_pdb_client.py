@@ -20,6 +20,28 @@ RCSB_SEARCH_URL = "https://search.rcsb.org/rcsbsearch/v2/query"
 RCSB_ENTRY_URL = "https://data.rcsb.org/rest/v1/core/entry"
 
 
+def _extract_intervention_names(metadata: dict | None) -> list[str]:
+    """Extract plain-string intervention names from metadata.
+
+    Handles both list-of-dicts (``[{"name": "Nisin"}]``) and
+    list-of-strings (``["Nisin"]``) formats.
+    """
+    if not metadata:
+        return []
+    raw = metadata.get("interventions", [])
+    if not isinstance(raw, list):
+        return []
+    names: list[str] = []
+    for item in raw:
+        if isinstance(item, dict):
+            name = item.get("name") or item.get("intervention_name") or ""
+            if name:
+                names.append(str(name))
+        elif isinstance(item, str) and item:
+            names.append(item)
+    return names
+
+
 class RCSBPDBClient(BaseResearchAgent):
     """Queries RCSB PDB for 3D structure metadata and citations."""
 
@@ -31,11 +53,7 @@ class RCSBPDBClient(BaseResearchAgent):
         raw_data = {}
 
         # Extract intervention names to search for structures
-        interventions = []
-        if metadata:
-            interventions = metadata.get("interventions", [])
-            if isinstance(interventions, list):
-                interventions = [str(i) for i in interventions]
+        interventions = _extract_intervention_names(metadata)
 
         if not interventions:
             return ResearchResult(
