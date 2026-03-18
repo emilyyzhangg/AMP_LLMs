@@ -86,12 +86,12 @@ function ConcordanceSummaryTable({
                 style={{
                   textAlign: "center",
                   fontWeight: 600,
-                  color: kappaColor(f.kappa),
-                  background: kappaBg(f.kappa),
+                  color: f.kappa != null ? kappaColor(f.kappa) : "var(--text-secondary)",
+                  background: f.kappa != null ? kappaBg(f.kappa) : "transparent",
                   borderRadius: "4px",
                 }}
               >
-                {f.kappa.toFixed(3)}
+                {f.kappa != null ? f.kappa.toFixed(3) : "N/A"}
               </td>
               <td className="text-sm text-muted">{f.interpretation}</td>
             </tr>
@@ -146,7 +146,7 @@ function FieldDetail({ field }: { field: ConcordanceField }) {
       >
         <span style={{ fontWeight: 500 }}>{field.field_name}</span>
         <span className="text-sm text-muted">
-          &kappa; = {field.kappa.toFixed(3)} &middot; {field.agree_pct.toFixed(1)}% agree
+          &kappa; = {field.kappa != null ? field.kappa.toFixed(3) : "N/A"} &middot; {field.agree_pct.toFixed(1)}% agree
           &middot; {open ? "Collapse" : "Expand"}
         </span>
       </button>
@@ -267,7 +267,7 @@ function FieldDetail({ field }: { field: ConcordanceField }) {
 // ── Tab 1: Agent vs Human ────────────────────────────────────────────
 
 function AgentVsHumanTab() {
-  const [jobs, setJobs] = useState<string[]>([]);
+  const [jobs, setJobs] = useState<Array<{job_id: string; timestamp: string; total_trials: number}>>([]);
   const [selectedJob, setSelectedJob] = useState("");
   const [concordance, setConcordance] = useState<{
     agent_vs_r1: JobConcordance;
@@ -322,8 +322,8 @@ function AgentVsHumanTab() {
         >
           <option value="">-- choose a job --</option>
           {jobs.map((j) => (
-            <option key={j} value={j}>
-              {j}
+            <option key={j.job_id} value={j.job_id}>
+              {j.job_id} ({j.total_trials} trials{j.timestamp ? `, ${j.timestamp}` : ""})
             </option>
           ))}
         </select>
@@ -363,7 +363,7 @@ function AgentVsHumanTab() {
 // ── Tab 2: Version Comparison ────────────────────────────────────────
 
 function VersionCompareTab() {
-  const [jobs, setJobs] = useState<string[]>([]);
+  const [jobs, setJobs] = useState<Array<{job_id: string; timestamp: string; total_trials: number}>>([]);
   const [jobA, setJobA] = useState("");
   const [jobB, setJobB] = useState("");
   const [result, setResult] = useState<ComparisonResult | null>(null);
@@ -407,8 +407,8 @@ function VersionCompareTab() {
     if (!result) return [];
     return result.fields.map((f) => ({
       field: f.field_name,
-      "Job A": f.kappa_a,
-      "Job B": f.kappa_b,
+      "Job A": f.kappa_a ?? 0,
+      "Job B": f.kappa_b ?? 0,
     }));
   }, [result]);
 
@@ -420,8 +420,8 @@ function VersionCompareTab() {
           <select id="job-a-select" value={jobA} onChange={(e) => setJobA(e.target.value)}>
             <option value="">-- select job A --</option>
             {jobs.map((j) => (
-              <option key={j} value={j}>
-                {j}
+              <option key={j.job_id} value={j.job_id}>
+                {j.job_id} ({j.total_trials} trials{j.timestamp ? `, ${j.timestamp}` : ""})
               </option>
             ))}
           </select>
@@ -431,8 +431,8 @@ function VersionCompareTab() {
           <select id="job-b-select" value={jobB} onChange={(e) => setJobB(e.target.value)}>
             <option value="">-- select job B --</option>
             {jobs.map((j) => (
-              <option key={j} value={j}>
-                {j}
+              <option key={j.job_id} value={j.job_id}>
+                {j.job_id} ({j.total_trials} trials{j.timestamp ? `, ${j.timestamp}` : ""})
               </option>
             ))}
           </select>
@@ -447,7 +447,7 @@ function VersionCompareTab() {
           {/* Summary counts */}
           {(() => {
             const improved = result.fields.filter((f) => f.improved).length;
-            const regressed = result.fields.filter((f) => !f.improved && f.delta < 0).length;
+            const regressed = result.fields.filter((f) => !f.improved && f.delta != null && f.delta < 0).length;
             const unchanged = result.fields.length - improved - regressed;
             return (
               <div className="card mb-2" style={{ display: "flex", gap: "2rem" }}>
@@ -483,38 +483,38 @@ function VersionCompareTab() {
                     <td
                       style={{
                         textAlign: "center",
-                        color: kappaColor(f.kappa_a),
-                        background: kappaBg(f.kappa_a),
+                        color: f.kappa_a != null ? kappaColor(f.kappa_a) : "var(--text-secondary)",
+                        background: f.kappa_a != null ? kappaBg(f.kappa_a) : "transparent",
                         borderRadius: "4px",
                         fontWeight: 600,
                       }}
                     >
-                      {f.kappa_a.toFixed(3)}
+                      {f.kappa_a != null ? f.kappa_a.toFixed(3) : "N/A"}
                     </td>
                     <td
                       style={{
                         textAlign: "center",
-                        color: kappaColor(f.kappa_b),
-                        background: kappaBg(f.kappa_b),
+                        color: f.kappa_b != null ? kappaColor(f.kappa_b) : "var(--text-secondary)",
+                        background: f.kappa_b != null ? kappaBg(f.kappa_b) : "transparent",
                         borderRadius: "4px",
                         fontWeight: 600,
                       }}
                     >
-                      {f.kappa_b.toFixed(3)}
+                      {f.kappa_b != null ? f.kappa_b.toFixed(3) : "N/A"}
                     </td>
                     <td
                       style={{
                         textAlign: "center",
                         fontWeight: 600,
-                        color: f.delta > 0 ? "var(--success)" : f.delta < 0 ? "var(--error)" : "var(--text-secondary)",
+                        color: f.delta != null && f.delta > 0 ? "var(--success)" : f.delta != null && f.delta < 0 ? "var(--error)" : "var(--text-secondary)",
                       }}
                     >
-                      {f.delta > 0 ? "+" : ""}{f.delta.toFixed(3)}
+                      {f.delta != null ? `${f.delta > 0 ? "+" : ""}${f.delta.toFixed(3)}` : "N/A"}
                     </td>
                     <td style={{ textAlign: "center", fontSize: "1.2rem" }}>
                       {f.improved ? (
                         <span style={{ color: "var(--success)" }} title="Improved">{"\u2191"}</span>
-                      ) : f.delta < 0 ? (
+                      ) : f.delta != null && f.delta < 0 ? (
                         <span style={{ color: "var(--error)" }} title="Regressed">{"\u2193"}</span>
                       ) : (
                         <span className="text-muted">{"\u2014"}</span>

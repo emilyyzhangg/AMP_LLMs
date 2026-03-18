@@ -108,7 +108,7 @@ export interface ConcordanceField {
   skipped: number;
   agree_count: number;
   agree_pct: number;
-  kappa: number;
+  kappa: number | null;
   interpretation: string;
   confusion_matrix: Record<string, Record<string, number>>;
   value_distribution: Record<string, Record<string, number>>;
@@ -126,9 +126,9 @@ export interface JobConcordance {
 
 export interface ComparisonField {
   field_name: string;
-  kappa_a: number;
-  kappa_b: number;
-  delta: number;
+  kappa_a: number | null;
+  kappa_b: number | null;
+  delta: number | null;
   improved: boolean;
 }
 

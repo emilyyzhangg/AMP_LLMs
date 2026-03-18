@@ -64,7 +64,7 @@ class JobConcordance(BaseModel):
 
 class ComparisonFieldDelta(BaseModel):
     """Per-field kappa comparison between two jobs."""
-    field: str
+    field_name: str
     kappa_a: Optional[float] = None
     kappa_b: Optional[float] = None
     delta: Optional[float] = Field(
@@ -78,7 +78,7 @@ class ComparisonResult(BaseModel):
     """Inter-version comparison: how two agent jobs differ."""
     job_id_a: str
     job_id_b: str
-    per_field: list[ComparisonFieldDelta] = Field(default_factory=list)
+    fields: list[ComparisonFieldDelta] = Field(default_factory=list)
     improved_count: int = 0
     regressed_count: int = 0
     unchanged_count: int = 0
