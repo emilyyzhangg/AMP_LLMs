@@ -405,8 +405,34 @@ def _compute_field_concordance(
             skipped += 1
             continue
 
-        # For reason_for_failure: blank is valid "no failure"
-        if not blank_means_skip:
+        # For reason_for_failure: outcome-aware blank handling (v3).
+        # A blank reason is only meaningful if the annotator actually engaged
+        # with the trial (i.e., filled in the outcome field). If both outcome
+        # AND reason are blank, the annotator skipped the trial entirely.
+        if field_name == "reason_for_failure":
+            outcome_a = data_a.get(nct, {}).get("outcome", "")
+            outcome_b = data_b.get(nct, {}).get("outcome", "")
+            _, outcome_a_blank = _normalise(outcome_a, "outcome")
+            _, outcome_b_blank = _normalise(outcome_b, "outcome")
+
+            # Both outcome and reason blank on BOTH sides → skip
+            if blank_a and outcome_a_blank and blank_b and outcome_b_blank:
+                skipped += 1
+                continue
+            # One side has blank outcome + blank reason → that side skipped
+            if blank_a and outcome_a_blank:
+                skipped += 1
+                continue
+            if blank_b and outcome_b_blank:
+                skipped += 1
+                continue
+
+            # Blanks that survive are legitimate "no failure" values
+            if blank_a:
+                norm_a = ""
+            if blank_b:
+                norm_b = ""
+        elif not blank_means_skip:
             if blank_a:
                 norm_a = ""
             if blank_b:
@@ -673,4 +699,4 @@ def concordance_history() -> ConcordanceHistory:
     # Sort by timestamp (None timestamps go first)
     entries.sort(key=lambda e: e.timestamp or "")
 
-    return ConcordanceHistory(entries=entries)
+    return ConcordanceHistory(history=entries)
