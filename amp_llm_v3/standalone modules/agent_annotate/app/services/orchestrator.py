@@ -1003,6 +1003,22 @@ class PipelineOrchestrator:
             primary_value = annotation.value
             logger.info(f"  Verifying {field}: primary='{primary_value}'")
 
+            # v9: Skip verification for deterministic pre-classifier results
+            if annotation.skip_verification:
+                logger.info(
+                    f"  {field}: SKIP verification (deterministic, "
+                    f"confidence={annotation.confidence})"
+                )
+                consensus_results.append(ConsensusResult(
+                    field_name=field,
+                    original_value=primary_value,
+                    final_value=primary_value,
+                    consensus_reached=True,
+                    agreement_ratio=1.0,
+                    opinions=[],
+                ))
+                continue
+
             # Skip verification for low-confidence annotations already flagged
             if annotation.confidence < 0.2 and "[Below threshold" in (annotation.reasoning or ""):
                 consensus_results.append(ConsensusResult(

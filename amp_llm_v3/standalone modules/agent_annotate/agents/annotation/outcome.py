@@ -42,6 +42,41 @@ VALID_VALUES = [
     "Active, not recruiting",
 ]
 
+# --------------------------------------------------------------------------- #
+#  Deterministic outcome mapping (v9)
+# --------------------------------------------------------------------------- #
+
+_DETERMINISTIC_STATUSES = {
+    "RECRUITING": "Recruiting",
+    "NOT_YET_RECRUITING": "Recruiting",
+    "ENROLLING_BY_INVITATION": "Recruiting",
+    "WITHDRAWN": "Withdrawn",
+    "ACTIVE_NOT_RECRUITING": "Active, not recruiting",
+    "SUSPENDED": "Unknown",
+    "TERMINATED": "Terminated",
+}
+
+
+def _deterministic_outcome(research_results: list) -> FieldAnnotation | None:
+    """Map clear-cut registry statuses deterministically. COMPLETED/UNKNOWN fall through to LLM."""
+    for result in research_results:
+        if result.error or result.agent_name != "clinical_protocol":
+            continue
+        if not result.raw_data:
+            continue
+        proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
+        status_mod = proto.get("statusModule", {})
+        overall_status = status_mod.get("overallStatus", "")
+        if overall_status in _DETERMINISTIC_STATUSES:
+            value = _DETERMINISTIC_STATUSES[overall_status]
+            logger.info(f"  outcome: deterministic → {value} (registry status: {overall_status})")
+            return FieldAnnotation(
+                field_name="outcome", value=value, confidence=0.95,
+                reasoning=f"[Deterministic v9] Registry status '{overall_status}' → '{value}'",
+                evidence=[], model_name="deterministic", skip_verification=True,
+            )
+    return None
+
 # Pass 1: Extract the registry status and what we know so far
 PASS1_PROMPT = """You are a clinical trial status extraction specialist.
 
@@ -117,12 +152,12 @@ H5. DEFAULT: If truly no signals exist → "Unknown". But exhaust H1-H4 first.
 CRITICAL RULES:
 - "Failed - completed trial" REQUIRES EVIDENCE OF FAILURE. You MUST cite a specific publication showing negative results, failure to meet primary endpoints, or futility. If you cannot cite such evidence, the answer is NOT "Failed".
 - COMPLETED status alone does NOT mean failure.
-- Phase I trials that complete → "Positive" (completing a safety trial IS success).
+- Phase I trials that complete with published safety/tolerability results → "Positive". Phase I completion alone without publications is "Unknown".
 - Phase II trials that complete with results posted → lean "Positive".
 - If the Result Valence you extracted says "Positive" or "Mixed" -> "Positive".
-- If the Result Valence says "Not available" → apply Completion Heuristics. Do NOT immediately say "Unknown".
+- If the Result Valence says "Not available" AND no publications found AND Results Posted = No/Unknown → "Unknown". Do NOT default to Positive.
 - RECENCY: If multiple publications exist with conflicting conclusions, the MOST RECENT publication takes priority.
-- For very old trials (1990s-2000s) where PubMed coverage may be sparse: if the trial COMPLETED normally and no negative evidence exists, "Positive" is more likely than "Unknown". Thousands of trials complete successfully but never get PubMed-indexed result papers.
+- COMPLETED + no published results + Results Posted = No/Unknown → "Unknown". Do NOT default to Positive.
 
 IMPORTANT: Format your response EXACTLY as:
 Outcome: [one of the 7 values above]
@@ -161,6 +196,11 @@ class OutcomeAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
+        # v9: Try deterministic status mapping first
+        det_result = _deterministic_outcome(research_results)
+        if det_result is not None:
+            return det_result
+
         from app.services.config_service import config_service
 
         config = config_service.get()

@@ -22,6 +22,143 @@ logger = logging.getLogger("agent_annotate.annotation.classification")
 
 VALID_VALUES = ["AMP(infection)", "AMP(other)", "Other"]
 
+# --------------------------------------------------------------------------- #
+#  Known AMP drugs — deterministic classification bypass (v9)
+# --------------------------------------------------------------------------- #
+
+_KNOWN_AMP_DRUGS = {
+    "colistin", "colistimethate", "polymyxin b", "polymyxin e",
+    "daptomycin", "nisin", "gramicidin", "tyrothricin", "bacitracin",
+    "vancomycin", "teicoplanin", "telavancin", "dalbavancin", "oritavancin",
+    "ramoplanin", "surotomycin", "friulimicin",
+    "ll-37", "ll37", "cathelicidin", "defensin", "hbd-1", "hbd-2", "hbd-3",
+    "hnp-1", "hnp-2", "hnp-3", "hd-5", "hd-6",
+    "thymosin alpha-1", "thymosin alpha 1", "thymalfasin", "zadaxin",
+    "melittin", "magainin", "cecropin", "lactoferricin", "lactoferrin",
+    "pexiganan", "msrdn-1", "omiganan", "iseganan",
+    "djk-5", "idr-1018",
+    "ic41", "ic43",
+}
+
+_INFECTION_KEYWORDS = {
+    "infection", "infectious", "bacterial", "viral", "fungal", "sepsis",
+    "septic", "pneumonia", "meningitis", "endocarditis", "bacteremia",
+    "urinary tract", "uti", "skin and soft tissue", "sssi", "absssi",
+    "peritonitis", "osteomyelitis", "wound infection", "surgical site",
+    "cystic fibrosis", "ventilator-associated", "hospital-acquired",
+    "nosocomial", "multidrug-resistant", "mdr", "xdr", "drug-resistant",
+    "mrsa", "vre", "esbl", "carbapenem-resistant", "clostridium difficile",
+    "c. difficile", "clostridioides", "pseudomonas", "acinetobacter",
+    "klebsiella", "tuberculosis", "tb", "malaria", "hiv", "hepatitis",
+    "herpes", "influenza", "covid", "sars-cov", "anthrax", "plague",
+    "cholera", "typhoid", "gonorrhea", "chlamydia", "mastitis",
+}
+
+_KNOWN_NON_AMP_DRUGS = {
+    "enfuvirtide", "t-20", "fuzeon", "ibalizumab", "maraviroc",
+    "semaglutide", "liraglutide", "exenatide", "dulaglutide", "tirzepatide",
+    "apraglutide", "teduglutide", "glepaglutide",
+    "insulin", "insulin glargine", "insulin lispro", "insulin aspart",
+    "insulin detemir", "insulin degludec",
+    "leuprolide", "leuprorelin", "goserelin", "triptorelin", "buserelin",
+    "nafarelin", "degarelix", "cetrorelix", "ganirelix",
+    "octreotide", "lanreotide", "pasireotide", "vapreotide",
+    "aviptadil", "vip", "vasoactive intestinal peptide",
+    "vosoritide", "cnp",
+    "calcitonin", "teriparatide", "abaloparatide",
+    "oxytocin", "vasopressin", "desmopressin", "terlipressin", "carbetocin",
+    "peptide t", "dapta",
+    "rada16", "p11-4", "curodont",
+    "lutetium lu 177 dotatate", "lutathera", "177lu-dotatate",
+    "gallium ga 68 dotatate", "68ga-dotatate",
+    "neoantigen", "personalized neoantigen",
+    "peptide 1.5", "peptamen", "kate farms peptide",
+    "vital peptide", "nutri peptide",
+}
+
+
+def _deterministic_classify(
+    nct_id: str,
+    research_results: list,
+    metadata: dict | None,
+) -> FieldAnnotation | None:
+    """Attempt deterministic classification before LLM passes.
+    Returns a FieldAnnotation with skip_verification=True if matched, or None."""
+    intervention_names: list[str] = []
+    conditions: list[str] = []
+    has_dramp = False
+    has_dbaasp = False
+    has_apd = False
+
+    for result in research_results:
+        if result.error:
+            continue
+        if result.agent_name == "clinical_protocol" and result.raw_data:
+            proto = result.raw_data.get(
+                "protocol_section",
+                result.raw_data.get("protocolSection", {}),
+            )
+            arms_mod = proto.get("armsInterventionsModule", {})
+            for interv in arms_mod.get("interventions", []):
+                name = interv.get("name", "")
+                if name:
+                    intervention_names.append(name.lower().strip())
+            cond_mod = proto.get("conditionsModule", {})
+            for cond in cond_mod.get("conditions", []):
+                conditions.append(cond.lower().strip())
+        if result.agent_name in ("peptide_identity", "dbaasp", "apd", "dbamp"):
+            for citation in result.citations:
+                src = citation.source_name.lower()
+                if "dramp" in src:
+                    has_dramp = True
+                if "dbaasp" in src:
+                    has_dbaasp = True
+                if "apd" in src:
+                    has_apd = True
+
+    if not intervention_names:
+        return None
+
+    for name in intervention_names:
+        for non_amp in _KNOWN_NON_AMP_DRUGS:
+            if non_amp in name or name in non_amp:
+                logger.info(f"  classification: deterministic → Other (known non-AMP: '{name}' matched '{non_amp}')")
+                return FieldAnnotation(
+                    field_name="classification", value="Other", confidence=0.95,
+                    reasoning=f"[Deterministic v9] Known non-AMP drug: '{name}' matched '{non_amp}'",
+                    evidence=[], model_name="deterministic", skip_verification=True,
+                )
+
+    for name in intervention_names:
+        for amp_drug in _KNOWN_AMP_DRUGS:
+            if amp_drug in name or name in amp_drug:
+                all_text = " ".join(conditions + intervention_names)
+                is_infection = any(kw in all_text for kw in _INFECTION_KEYWORDS)
+                value = "AMP(infection)" if is_infection else "AMP(other)"
+                logger.info(f"  classification: deterministic → {value} (known AMP: '{name}' matched '{amp_drug}')")
+                return FieldAnnotation(
+                    field_name="classification", value=value, confidence=0.95,
+                    reasoning=f"[Deterministic v9] Known AMP drug: '{name}' matched '{amp_drug}'. Infection context: {is_infection}",
+                    evidence=[], model_name="deterministic", skip_verification=True,
+                )
+
+    if has_dramp or has_dbaasp or has_apd:
+        all_text = " ".join(conditions + intervention_names)
+        is_infection = any(kw in all_text for kw in _INFECTION_KEYWORDS)
+        value = "AMP(infection)" if is_infection else "AMP(other)"
+        db_names = []
+        if has_dramp: db_names.append("DRAMP")
+        if has_dbaasp: db_names.append("DBAASP")
+        if has_apd: db_names.append("APD")
+        logger.info(f"  classification: deterministic → {value} (database hits: {', '.join(db_names)})")
+        return FieldAnnotation(
+            field_name="classification", value=value, confidence=0.95,
+            reasoning=f"[Deterministic v9] AMP database hits: {', '.join(db_names)}. Infection context: {is_infection}",
+            evidence=[], model_name="deterministic", skip_verification=True,
+        )
+
+    return None
+
 # Hardware profile → model selection for classification
 # Classification uses a larger model because 8B ignores worked examples
 MODEL_OVERRIDES = {
@@ -261,6 +398,11 @@ class ClassificationAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
+        # v9: Try deterministic classification first
+        det_result = _deterministic_classify(nct_id, research_results, metadata)
+        if det_result is not None:
+            return det_result
+
         from app.services.ollama_client import ollama_client
         from app.services.config_service import config_service
 

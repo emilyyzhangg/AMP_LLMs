@@ -113,6 +113,111 @@ Evidence: [cite which source determined the route]
 Reasoning: [brief explanation]"""
 
 
+# --------------------------------------------------------------------------- #
+#  OpenFDA route → delivery mode mapping (v9)
+# --------------------------------------------------------------------------- #
+
+_OPENFDA_ROUTE_MAP = {
+    "oral": "Oral - Unspecified", "intravenous": "IV",
+    "subcutaneous": "Injection/Infusion - Subcutaneous/Intradermal",
+    "intramuscular": "Injection/Infusion - Intramuscular",
+    "intradermal": "Injection/Infusion - Subcutaneous/Intradermal",
+    "topical": "Topical - Unspecified", "nasal": "Intranasal",
+    "intranasal": "Intranasal", "inhalation": "Inhalation",
+    "respiratory (inhalation)": "Inhalation", "ophthalmic": "Topical - Unspecified",
+    "transdermal": "Topical - Strip/Covering",
+    "intrathecal": "Injection/Infusion - Other/Unspecified",
+    "intraperitoneal": "Injection/Infusion - Other/Unspecified",
+}
+
+_PROTOCOL_ROUTE_KEYWORDS = {
+    "subcutaneous": "Injection/Infusion - Subcutaneous/Intradermal",
+    "sub-q": "Injection/Infusion - Subcutaneous/Intradermal",
+    "sc injection": "Injection/Infusion - Subcutaneous/Intradermal",
+    "intradermal": "Injection/Infusion - Subcutaneous/Intradermal",
+    "intramuscular": "Injection/Infusion - Intramuscular",
+    "im injection": "Injection/Infusion - Intramuscular",
+    "intravenous": "IV", "iv infusion": "IV", "iv push": "IV", "iv drip": "IV",
+    "oral tablet": "Oral - Tablet", "oral capsule": "Oral - Capsule",
+    "intranasal": "Intranasal", "nasal spray": "Intranasal",
+    "inhalation": "Inhalation", "nebulizer": "Inhalation", "nebuliser": "Inhalation",
+    "topical cream": "Topical - Cream/Gel", "topical gel": "Topical - Cream/Gel",
+    "mouthwash": "Topical - Wash", "mouth rinse": "Topical - Wash",
+}
+
+_DRUG_CLASS_ROUTES = {
+    "semaglutide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "liraglutide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "exenatide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "dulaglutide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "tirzepatide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "insulin": "Injection/Infusion - Subcutaneous/Intradermal",
+    "teriparatide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "abaloparatide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "apraglutide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "teduglutide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "enfuvirtide": "Injection/Infusion - Subcutaneous/Intradermal",
+    "colistin": "IV", "colistimethate": "IV", "daptomycin": "IV",
+    "vancomycin": "IV", "teicoplanin": "IV", "aviptadil": "IV",
+    "peptide t": "Intranasal", "dapta": "Intranasal",
+}
+
+
+def _extract_deterministic_route(research_results: list) -> FieldAnnotation | None:
+    """Extract delivery route deterministically from OpenFDA and protocol data."""
+    intervention_names: list[str] = []
+
+    for result in research_results:
+        if result.error or result.agent_name != "clinical_protocol":
+            continue
+        if result.raw_data:
+            proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
+            arms_mod = proto.get("armsInterventionsModule", {})
+            for interv in arms_mod.get("interventions", []):
+                name = interv.get("name", "")
+                if name:
+                    intervention_names.append(name.lower().strip())
+        for citation in result.citations:
+            if citation.source_name == "openfda":
+                snippet_lower = citation.snippet.lower()
+                for openfda_route, delivery_value in _OPENFDA_ROUTE_MAP.items():
+                    if f"route: {openfda_route}" in snippet_lower or f"route\": \"{openfda_route}" in snippet_lower:
+                        logger.info(f"  delivery_mode: deterministic → {delivery_value} (OpenFDA route: '{openfda_route}')")
+                        return FieldAnnotation(
+                            field_name="delivery_mode", value=delivery_value, confidence=0.95,
+                            reasoning=f"[Deterministic v9] OpenFDA route field: '{openfda_route}'",
+                            evidence=[citation], model_name="deterministic", skip_verification=True,
+                        )
+
+    for result in research_results:
+        if result.error or result.agent_name != "clinical_protocol":
+            continue
+        for citation in result.citations:
+            if citation.source_name != "clinicaltrials_gov":
+                continue
+            snippet_lower = citation.snippet.lower()
+            for keyword, delivery_value in _PROTOCOL_ROUTE_KEYWORDS.items():
+                if keyword in snippet_lower:
+                    logger.info(f"  delivery_mode: deterministic → {delivery_value} (protocol keyword: '{keyword}')")
+                    return FieldAnnotation(
+                        field_name="delivery_mode", value=delivery_value, confidence=0.95,
+                        reasoning=f"[Deterministic v9] Protocol keyword: '{keyword}'",
+                        evidence=[citation], model_name="deterministic", skip_verification=True,
+                    )
+
+    for name in intervention_names:
+        for drug_name, delivery_value in _DRUG_CLASS_ROUTES.items():
+            if drug_name in name or name in drug_name:
+                logger.info(f"  delivery_mode: drug-class default → {delivery_value} (drug: '{name}')")
+                return FieldAnnotation(
+                    field_name="delivery_mode", value=delivery_value, confidence=0.7,
+                    reasoning=f"[Deterministic v9] Drug-class default for '{name}' (matched '{drug_name}').",
+                    evidence=[], model_name="deterministic", skip_verification=False,
+                )
+
+    return None
+
+
 class DeliveryModeAgent(BaseAnnotationAgent):
     """Determines drug delivery mode using two-pass route investigation."""
 
@@ -124,6 +229,11 @@ class DeliveryModeAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
+        # v9: Try deterministic route extraction first
+        det_result = _extract_deterministic_route(research_results)
+        if det_result is not None:
+            return det_result
+
         from app.services.config_service import config_service
 
         _config = config_service.get()

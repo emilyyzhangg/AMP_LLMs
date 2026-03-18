@@ -6,7 +6,7 @@
 verification:
   num_verifiers: 3
   require_consensus: true
-  consensus_threshold: 1.0
+  consensus_threshold: 0.67
 
   models:
     primary:

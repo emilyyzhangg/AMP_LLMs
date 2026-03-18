@@ -96,14 +96,62 @@ CRITICAL RULES:
 - Brand names containing "peptide" do NOT make the product a peptide drug
 - Nutritional formulas with hydrolyzed proteins are NOT peptide drugs
 - Monoclonal antibodies are NOT peptides (different drug class)
-- MULTI-DRUG TRIALS: If a trial tests MULTIPLE drugs and ANY ONE of them is a peptide, answer True.
+- MULTI-DRUG TRIALS: If the PRIMARY study drug is a peptide → True. If a peptide is co-administered
+  as background therapy but the primary experimental drug is non-peptide → evaluate the primary drug.
   You MUST evaluate ALL interventions listed in the extracted facts, not just the first one.
   Example: a trial testing "decitabine (small molecule) + NY-ESO-1 peptide vaccine" → True
   because the peptide vaccine is among the interventions.
+- Heat shock protein-peptide complexes (HSPPC-96, Oncophage): the peptide is antigenic cargo, not the active mechanism → False
+- Autologous dexosomes/exosomes loaded with peptides: the vehicle is the drug, not the peptide cargo → False
 
 Format your response EXACTLY as:
 Peptide: [True or False]
 Reasoning: [Walk through Steps 1 → 2 → 3 using the extracted facts]"""
+
+
+# --------------------------------------------------------------------------- #
+#  Known non-peptide drugs (v9)
+# --------------------------------------------------------------------------- #
+
+_KNOWN_NON_PEPTIDE_DRUGS = {
+    "hsppc-96", "oncophage", "vitespen", "hsppc", "heat shock protein peptide complex",
+    "dexosome", "exosome", "autologous dexosome",
+    "amdoxovir", "tenofovir", "emtricitabine", "lamivudine", "zidovudine",
+    "abacavir", "stavudine", "didanosine", "entecavir", "sofosbuvir",
+    "pembrolizumab", "nivolumab", "atezolizumab", "durvalumab",
+    "ipilimumab", "trastuzumab", "bevacizumab", "rituximab",
+    "adalimumab", "infliximab", "cetuximab",
+    "gsk3732394",
+    "peptide 1.5", "peptamen", "kate farms peptide", "vital peptide",
+    "kate farm peptide", "nutri peptide",
+    "hydrolyzed whey", "hydrolyzed protein", "hydrolysed whey",
+}
+
+
+def _check_known_non_peptide(research_results: list) -> FieldAnnotation | None:
+    """Check if the intervention is a known non-peptide drug."""
+    intervention_names: list[str] = []
+    for result in research_results:
+        if result.error or result.agent_name != "clinical_protocol":
+            continue
+        if not result.raw_data:
+            continue
+        proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
+        arms_mod = proto.get("armsInterventionsModule", {})
+        for interv in arms_mod.get("interventions", []):
+            name = interv.get("name", "")
+            if name:
+                intervention_names.append(name.lower().strip())
+    for name in intervention_names:
+        for non_pep in _KNOWN_NON_PEPTIDE_DRUGS:
+            if non_pep in name or name in non_pep:
+                logger.info(f"  peptide: deterministic → False (known non-peptide: '{name}' matched '{non_pep}')")
+                return FieldAnnotation(
+                    field_name="peptide", value="False", confidence=0.95,
+                    reasoning=f"[Deterministic v9] Known non-peptide drug: '{name}' matched '{non_pep}'",
+                    evidence=[], model_name="deterministic", skip_verification=True,
+                )
+    return None
 
 
 class PeptideAgent(BaseAnnotationAgent):
@@ -117,6 +165,11 @@ class PeptideAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
+        # v9: Check known non-peptide drugs first
+        det_result = _check_known_non_peptide(research_results)
+        if det_result is not None:
+            return det_result
+
         from app.services.config_service import config_service
 
         config = config_service.get()

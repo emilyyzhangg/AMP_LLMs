@@ -85,6 +85,7 @@ CRITICAL RULES:
 5. RECENCY: If multiple publications exist with conflicting findings, the most recent publication takes priority. Newer evidence supersedes older evidence.
 6. DEFAULT FOR COMPLETED TRIALS: If status is COMPLETED and there is NO published evidence of negative outcomes, the answer is EMPTY. You MUST have POSITIVE evidence of failure (a paper, a press release, a data report showing negative results) to assign a failure reason to a completed trial. Absence of published results ≠ failure.
 7. NEVER invent or assume a failure reason. If the evidence does not explicitly demonstrate failure, return EMPTY.
+8. DEFAULT FOR SUSPENDED TRIALS: If status is SUSPENDED and there is NO published evidence explaining WHY it was suspended, the answer is EMPTY. Do NOT guess "Business Reason" for SUSPENDED trials without explicit evidence. SUSPENDED without published reasons = EMPTY.
 
 Choose EXACTLY ONE:
 - Business Reason: Funding withdrawn, sponsor decision (with no efficacy/safety cause), company dissolved, strategic pivot, regulatory changes, manufacturing issues
@@ -280,6 +281,11 @@ class FailureReasonAgent(BaseAnnotationAgent):
         # This is the key rule: COMPLETED + no published negative results = no failure reason.
         # The agent must find POSITIVE evidence of failure to assign a reason.
         if "completed" in status or "complete" in status:
+            if not has_failure:
+                return True
+
+        # v9: SUSPENDED without published failure evidence → no failure reason
+        if "suspended" in status:
             if not has_failure:
                 return True
 
