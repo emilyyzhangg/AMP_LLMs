@@ -34,7 +34,10 @@ class LiteratureAgent(BaseResearchAgent):
     """Searches biomedical literature databases for trial-related publications."""
 
     agent_name = "literature"
-    sources = ["pubmed", "pmc", "europe_pmc", "semantic_scholar"]
+    # v8: Removed Semantic Scholar — heavy rate limiting (429 on every
+    # batch, exhausts 3 retries). PubMed + PMC + Europe PMC provide
+    # sufficient literature coverage for clinical trial annotation.
+    sources = ["pubmed", "pmc", "europe_pmc"]
 
     async def research(self, nct_id: str, metadata: Optional[dict] = None) -> ResearchResult:
         raw_data = {}
@@ -44,12 +47,11 @@ class LiteratureAgent(BaseResearchAgent):
                 self._search_pubmed(nct_id, client),
                 self._search_pmc(nct_id, client),
                 self._search_europe_pmc(nct_id, client),
-                self._search_semantic_scholar(nct_id, client),
                 return_exceptions=True,
             )
 
         all_citations = []
-        source_names = ["pubmed", "pmc", "europe_pmc", "semantic_scholar"]
+        source_names = ["pubmed", "pmc", "europe_pmc"]
         for name, result in zip(source_names, results):
             if isinstance(result, Exception):
                 raw_data[f"{name}_error"] = str(result)

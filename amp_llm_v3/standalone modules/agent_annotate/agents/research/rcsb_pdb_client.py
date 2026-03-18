@@ -67,56 +67,23 @@ class RCSBPDBClient(BaseResearchAgent):
             for intervention in interventions[:3]:
                 try:
                     # Search RCSB using the full-text search API
-                    # Use text search with struct.title and entity names —
-                    # full_text search returns too many irrelevant hits for
-                    # drug names. The struct_keywords group targets title,
-                    # entity descriptions, and compound names.
+                    # RCSB v2 API uses "paginate" (not "pager") and does NOT
+                    # support "results_content_type" in request_options.
+                    # Simple full_text search is the most reliable approach.
                     search_query = {
                         "query": {
-                            "type": "group",
-                            "logical_operator": "or",
-                            "nodes": [
-                                {
-                                    "type": "terminal",
-                                    "service": "full_text",
-                                    "parameters": {
-                                        "value": f'"{intervention}"',
-                                    },
-                                },
-                                {
-                                    "type": "terminal",
-                                    "service": "text",
-                                    "parameters": {
-                                        "attribute": "struct.title",
-                                        "operator": "contains_words",
-                                        "value": intervention,
-                                    },
-                                },
-                                {
-                                    "type": "terminal",
-                                    "service": "text",
-                                    "parameters": {
-                                        "attribute": "rcsb_entity_source_organism.rcsb_gene_name.value",
-                                        "operator": "exact_match",
-                                        "value": intervention,
-                                    },
-                                },
-                            ],
+                            "type": "terminal",
+                            "service": "full_text",
+                            "parameters": {
+                                "value": intervention,
+                            },
                         },
                         "return_type": "entry",
                         "request_options": {
-                            "results_content_type": ["experimental"],
-                            "pager": {
+                            "paginate": {
                                 "start": 0,
                                 "rows": 5,
                             },
-                            "scoring_strategy": "combined",
-                            "sort": [
-                                {
-                                    "sort_by": "score",
-                                    "direction": "desc",
-                                }
-                            ],
                         },
                     }
 

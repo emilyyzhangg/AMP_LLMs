@@ -256,12 +256,9 @@ class BlindVerifier:
             "iuphar": "DRUG/PEPTIDE DATA",
             "dbaasp": "ANTIMICROBIAL DATA",
             "apd": "ANTIMICROBIAL DATA",
-            "dbamp": "ANTIMICROBIAL DATA",
-            "card": "ANTIMICROBIAL DATA",
             "rcsb_pdb": "STRUCTURAL DATA",
             "pdbe": "STRUCTURAL DATA",
             "ebi_proteins": "STRUCTURAL DATA",
-            "intact": "MOLECULAR INTERACTIONS",
             "duckduckgo": "WEB SOURCES",
         }
         sections: dict[str, list[str]] = {}
@@ -289,8 +286,7 @@ class BlindVerifier:
         evidence_parts = [f"Trial: {nct_id}\n"]
         for sec_name in [
             "TRIAL METADATA", "PUBLISHED RESULTS", "DRUG/PEPTIDE DATA",
-            "ANTIMICROBIAL DATA", "STRUCTURAL DATA",
-            "MOLECULAR INTERACTIONS", "WEB SOURCES",
+            "ANTIMICROBIAL DATA", "STRUCTURAL DATA", "WEB SOURCES",
         ]:
             if sec_name in sections:
                 evidence_parts.append(f"\n=== {sec_name} ===")

@@ -74,21 +74,15 @@ research_agents:
   apd:
     sources:
       - apd
-  dbamp:
-    sources:
-      - dbamp
+  # dbamp: REMOVED v8 — server (yylab.jnu.edu.cn) permanently unreachable
   who_ictrp:
     sources:
       - who_ictrp
   iuphar:
     sources:
       - iuphar
-  intact:
-    sources:
-      - intact
-  card:
-    sources:
-      - card
+  # intact: REMOVED v8 — 1/10 hit rate, mostly generic protein noise
+  # card: REMOVED v8 — 0/10 hit rate, only relevant for AMR-specific trials
   pdbe:
     sources:
       - pdbe
