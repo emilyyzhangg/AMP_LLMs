@@ -6,7 +6,7 @@ Agent Annotate is a three-phase pipeline for annotating clinical trials involvin
 
 The three phases execute sequentially per trial:
 
-1. **Phase 1 -- Research.** Fifteen parallel agents gather evidence from 20+ free external databases (registries, literature, protein databases, peptide activity databases, structure databases, pharmacology databases, interaction databases, resistance databases, international trial registries).
+1. **Phase 1 -- Research.** Twelve parallel agents gather evidence from 17+ free external databases (registries, literature, protein databases, peptide activity databases, structure databases, pharmacology databases, international trial registries).
 2. **Phase 2 -- Annotation.** Five agents each annotate one field, consuming the research dossier from Phase 1.
 3. **Phase 3 -- Verification.** Three blind verifiers independently review each annotation, followed by consensus checking and reconciliation for disputes.
 
@@ -37,25 +37,30 @@ The review queue (trials flagged for manual review) is persisted to disk and sur
 
 ### 2.1 Definition
 
-Antimicrobial peptides (AMPs), also called host defense peptides, are short peptides that contribute to pathogen defense. The pipeline classifies AMPs by four modes of action. A peptide therapeutic must fit at least one of these modes to be considered an AMP.
+Antimicrobial peptides (AMPs), also called host defense peptides, are short peptides that contribute to pathogen defense through DIRECT antimicrobial mechanisms. The pipeline classifies AMPs by three modes of action. A peptide therapeutic must fit at least one of these modes to be considered an AMP.
 
-### 2.2 Four Modes of Action
+### 2.2 Three Modes of Action (v2)
 
 **Mode A -- Direct Antimicrobial**
-Peptides that directly kill or inhibit pathogens through membrane disruption, pore formation, or intracellular targeting. Examples: colistin, polymyxin B, melittin.
+Peptides that directly kill or inhibit pathogens through membrane disruption, pore formation, or intracellular targeting. Examples: colistin, polymyxin B, melittin, daptomycin, nisin.
 
 **Mode B -- Immunostimulatory / Host Defense**
-Peptides that promote immune defense against pathogens (not suppress it). Examples: LL-37, defensins, thymosin alpha-1.
+Peptides that directly recruit innate immune cells to kill pathogens at infection sites. Examples: LL-37, defensins, cathelicidins.
 
 **Mode C -- Anti-Biofilm**
-Peptides that disrupt or prevent microbial biofilm formation. Examples: LL-37, DJK-5, IDR-1018.
+Peptides that directly disrupt microbial biofilms through biochemical interaction. Examples: LL-37, DJK-5, IDR-1018.
 
-**Mode D -- Pathogen-Targeting Vaccines / Immunogens**
-Peptide-based vaccines designed to elicit immune responses against specific pathogens. Examples: StreptInCor, peptide HIV vaccines.
+**Mode D was removed in v2.** Pathogen-targeting vaccine peptides (StreptInCor, HIV peptide vaccines) were previously classified as AMPs, but 70-trial concordance analysis showed this caused systematic over-classification. Vaccine peptides induce adaptive immune responses — the peptide itself does not directly kill pathogens. They are now classified as "Other."
 
-### 2.3 Key Distinction
+### 2.3 Key Distinctions
 
-Promoting defense against pathogens qualifies as AMP activity. Suppressing immunity does not. This distinction is critical for borderline cases -- an immunosuppressive peptide is classified as "Other" regardless of its peptide nature.
+1. **Direct antimicrobial mechanism required.** The peptide must physically kill, lyse, or disrupt pathogens through its own biochemical action — or directly recruit innate immune cells to kill pathogens. General immunomodulation, antibody induction, or receptor blocking does not qualify.
+
+2. **Treating infection ≠ AMP.** A peptide that treats an infectious disease through a non-antimicrobial mechanism (e.g., enfuvirtide blocks HIV viral fusion but does not kill the virus) is classified as "Other."
+
+3. **Promoting defense vs suppressing immunity.** An immunosuppressive peptide is "Other" regardless of its peptide nature. An immunostimulatory peptide is only an AMP if it specifically recruits innate defense against pathogens (Mode B), not if it merely promotes general immune activation.
+
+4. **Vaccine peptides are not AMPs.** Peptides designed to induce antibody responses against pathogens (HIV vaccines, influenza vaccines, etc.) are "Other" — the adaptive immune response they trigger is not a direct antimicrobial mechanism.
 
 
 ## 3. Annotation Fields
@@ -112,11 +117,11 @@ Boolean field (True/False) indicating whether the intervention is a peptide.
 
 ## 4. Phase 1 -- Research Agents
 
-Fifteen research agents query different external sources. Every source carries a fixed quality weight reflecting its reliability for AMP clinical trial annotation. The v4 pipeline added four specialized agents (Sections 4.5--4.8) for peptide activity, bioactivity, structural, and protein sequence data. The v5 expansion added seven more agents (Sections 4.9--4.15) covering additional peptide databases, international trial registries, pharmacology, molecular interactions, antibiotic resistance, and structure quality. SerpAPI was removed (paid service); all 15 agents now use free APIs exclusively.
+Twelve research agents query different external sources. Every source carries a fixed quality weight reflecting its reliability for AMP clinical trial annotation. The v4 pipeline added four specialized agents (Sections 4.5--4.8) for peptide activity, bioactivity, structural, and protein sequence data. The v5 expansion added seven more agents (Sections 4.9--4.15) covering additional peptide databases, international trial registries, pharmacology, molecular interactions, antibiotic resistance, and structure quality. SerpAPI was removed (paid service); all 12 agents now use free APIs exclusively.
 
 ### 4.0 Two-Step Research Architecture
 
-Phase 1 executes in two steps rather than running all 15 agents simultaneously. This two-step design is critical because peptide/drug database agents (DBAASP, ChEMBL, CARD, IUPHAR, IntAct, PDBe, etc.) need to know the intervention name to query their databases. Without a name to search for, these agents return zero citations.
+Phase 1 executes in two steps rather than running all 12 agents simultaneously. This two-step design is critical because peptide/drug database agents (DBAASP, ChEMBL, IUPHAR, PDBe, etc.) need to know the intervention name to query their databases. Without a name to search for, these agents return zero citations.
 
 **Step 1 -- Protocol-first metadata extraction.** The Clinical Protocol Agent (Section 4.1) runs first. It fetches the trial record from ClinicalTrials.gov and extracts intervention names (drug and peptide names) from the structured `protocol_section.armsInterventionsModule.interventions` field. It also queries OpenFDA for supplementary drug metadata. The extracted intervention names are stored as shared metadata for use in Step 2.
 
@@ -143,7 +148,7 @@ Step 2:       v
          (all 14 agents run in parallel with intervention names)
 ```
 
-Previously, all 15 agents ran in parallel with no shared metadata, which meant database agents had only the NCT ID and trial title to work with -- insufficient for querying peptide/drug databases that require compound names as search keys.
+Previously, all agents ran in parallel with no shared metadata, which meant database agents had only the NCT ID and trial title to work with -- insufficient for querying peptide/drug databases that require compound names as search keys.
 
 ### 4.1 Clinical Protocol Agent
 
@@ -321,91 +326,107 @@ Queries the European Protein Data Bank (PDBe) at ebi.ac.uk/pdbe via Solr search 
 
 Five annotation agents each handle one field. They consume the combined research dossier from Phase 1. Agents fall into two categories by design.
 
-### 5.1 Single-Pass Agents
+### 5.1 Two-Pass Investigative Design (All Agents)
 
-These agents make one LLM call to produce their annotation.
+All five annotation agents use a two-pass investigative architecture. This universal design was adopted in v2 after 70-trial concordance analysis showed that single-pass prompts were insufficient for 8B models, which shortcut on surface-level keywords rather than following multi-step decision trees.
 
-- **Classification Agent**
-- **Delivery Mode Agent**
-- **Peptide Agent**
+- **Pass 1: Structured Fact Extraction** -- The first LLM call extracts factual claims from the evidence package without making a classification decision. Each agent's Pass 1 prompt is tailored to its field.
+- **Pass 2: Decision with Calibrated Rules** -- The second LLM call receives the Pass 1 output along with a decision tree that encodes field-specific logic.
 
-### 5.2 Two-Pass Investigative Agents
+**Design principle**: No lookup tables or hardcoded drug dictionaries. Agents must reason independently from evidence. This ensures generalization to novel peptides and trial designs.
 
-These agents make two sequential LLM calls: an investigative pass that extracts and organizes evidence, followed by a decision pass that uses the extracted evidence to produce the annotation.
+### 5.2 Classification Agent (v5)
 
-- **Outcome Agent**
-- **Failure Reason Agent**
+Uses a larger model (qwen2.5:14b on Mac Mini, kimi-k2-thinking on server) because 8B models ignore the multi-step decision tree.
 
-### 5.3 Classification Agent (v4)
+**Pass 1:** Extracts five antimicrobial evidence dimensions:
+- Peptide identity and molecular class
+- Database matches (DRAMP, APD3, UniProt, ChEMBL, RCSB PDB, EBI Proteins)
+- Mechanism of action (direct antimicrobial vs other)
+- Therapeutic target (infection vs non-infection)
+- Immune direction (promote defense vs suppress vs neutral)
 
-Determines whether the trial involves an AMP and, if so, whether the context is infection-related.
+**Pass 2:** Applies a three-step decision tree:
+1. Is the intervention a peptide? If not → Other.
+2. Does this peptide have a DIRECT antimicrobial mechanism — physically killing/lysing/disrupting pathogens or directly recruiting innate immune cells to kill pathogens? If not → Other.
+3. Does this AMP target infection? Yes → AMP(infection). No → AMP(other).
 
-The v3 prompt includes explicit negative examples to reduce over-classification:
+**v5 changes (from 70-trial concordance analysis):**
+- **AMP definition narrowed to three modes**: Mode D (pathogen-targeting vaccines) was removed. Vaccine peptides induce adaptive immunity; the peptide itself does not kill pathogens. Only Modes A (direct antimicrobial), B (immunostimulatory host defense), and C (anti-biofilm) remain.
+- **Explicit antiretroviral exclusions**: Enfuvirtide/T-20 (viral entry inhibitor, NOT antimicrobial), Peptide T/DAPTA (CCR5 receptor blocker), HIV peptide vaccines (antibody induction). These were the dominant over-classification pattern (30 of 36 classification disagreements).
+- **Mechanism-based decisive rule**: If the mechanism is viral entry inhibition, receptor blocking, vaccine/antibody induction, vasodilation, or metabolic regulation → Other, regardless of infectious disease context.
+- **Default to Other**: When in doubt, false AMP classification is worse than missing a true AMP.
 
-- **Peptide T** -- a neuropeptide, not an AMP
-- **dnaJP1** -- an immunosuppressant peptide, not an AMP
-- **GLP-1 analogues** (e.g., semaglutide) -- metabolic peptides, not AMPs
-- **GnRH analogues** -- endocrine peptides, not AMPs
-- **Radiolabeled peptides** -- diagnostic agents, not AMPs
-- **Structural peptides** -- collagen fragments, etc., not AMPs
+### 5.3 Delivery Mode Agent (v5)
 
-The governing rule: "Being a peptide does NOT make something an AMP. MOST peptide therapeutics are NOT AMPs." When in doubt, the agent classifies as "Other."
+**Pass 1:** Extracts route evidence from all sources with explicit priority ordering:
+1. FDA/drug label route (highest priority — "for subcutaneous use")
+2. Published literature route descriptions
+3. ClinicalTrials.gov protocol text (intervention description, arm groups)
+4. Database formulation data (ChEMBL, IUPHAR)
+5. Drug formulation keywords (tablet, capsule, solution, etc.)
 
-**v4 improvement -- direct antimicrobial mechanism requirement**: The v4 prompt adds a stricter classification gate. To receive an AMP classification, the intervention must have a *direct* antimicrobial mechanism fitting one of the four modes (Section 2.2). Indirect relationships to infection (e.g., a peptide used in a wound context where infection is secondary) no longer automatically qualify as AMP(infection). The agent must identify which specific mode of action applies and cite evidence for it.
+The prompt forces the model to search ALL sources before concluding, explicitly noting the most specific route found.
 
-### 5.4 Delivery Mode Agent (v4)
+**Pass 2:** Classifies using source hierarchy — FDA label overrides generic protocol text. If the FDA label says "subcutaneous" but the protocol says "injection," the answer is Subcutaneous/Intradermal.
 
-Extracts the route of administration from trial data. Uses a priority-ordered extraction strategy:
+**v5 changes**: Upgraded from single-pass to two-pass. The single-pass agent defaulted to "Injection/Infusion - Other/Unspecified" in 52% of injection cases because it only checked protocol text. The two-pass design forces active search across FDA labels, literature, and databases before classifying.
 
-1. Arms/Interventions section of the registry record (highest priority)
-2. Detailed Description field
-3. Published literature methods sections
-4. Drug label information
-5. Intervention name keywords (lowest priority)
+Never-guess rule preserved: if no source specifies IM, SC, or IV, the answer is Injection/Infusion - Other/Unspecified.
 
-Includes a keyword mapping layer that normalizes abbreviations to canonical values (SC, IM, IV, PO, etc.).
+### 5.4 Outcome Agent (v4)
 
-**v4 improvement -- never-guess reinforcement**: The v4 prompt adds explicit reinforcement that the agent must never guess a delivery mode. If the route of administration cannot be determined from the available evidence, the agent must return empty rather than inferring from the compound type or therapeutic context. This addresses cases where the v3 agent guessed "IM" for vaccines or "Oral" for peptides without cited evidence.
-
-### 5.5 Outcome Agent (v3)
-
-**Pass 1:** Extracts four evidence elements from the research dossier:
-- Registry status (e.g., Completed, Terminated, Recruiting)
+**Pass 1:** Extracts seven evidence elements:
+- Registry status (COMPLETED, TERMINATED, RECRUITING, etc.)
 - Trial phase
-- Published results (if any)
-- Result valence (positive, negative, mixed, absent)
+- Published results summary (with quotes)
+- Result valence (positive/negative/mixed/not available)
+- Results posted flag
+- Completion date
+- Why stopped
 
-**Pass 2:** Applies a calibrated decision tree to the extracted evidence, evaluated in strict order:
+**Pass 2:** Applies a calibrated decision tree with **completion heuristics** (added in v2 after concordance showed 15+ "Unknown" defaults for old completed trials that humans correctly marked "Positive"):
 
-1. Registry status is Recruiting or Active not recruiting --> annotate as Recruiting or Active not recruiting.
-2. Registry status is Withdrawn --> annotate as Withdrawn.
-3. Published positive results exist --> annotate as Positive. Phase I trials that complete with acceptable safety data are considered positive.
-4. Published negative results exist --> annotate as Failed - completed trial. This requires cited evidence of failure -- a paper, a press release, or a regulatory decision.
-5. Registry status is Terminated with no positive published results --> annotate as Terminated.
-6. No published results, ambiguous status --> annotate as Unknown.
+1. Recruiting/Active not recruiting → report current status.
+2. Withdrawn → Withdrawn.
+3. Published positive results → Positive. Phase I completion with acceptable safety → Positive.
+4. Published negative results → Failed - completed trial. Requires cited evidence of failure.
+5. Terminated → Terminated.
+6. For COMPLETED trials without published results, apply completion heuristics:
+   - H1: Phase I completion → Positive (safety trial completion IS success).
+   - H2: Results posted on ClinicalTrials.gov → lean Positive.
+   - H3: Trial completed >10 years ago, no negative evidence → lean Positive.
+   - H4: Only after exhausting H1-H3 → Unknown.
 
-Critical rule: A "Completed" registry status alone does NOT indicate failure. "Failed - completed trial" requires cited evidence that the trial failed to meet its endpoints or was otherwise unsuccessful.
+Critical rule: "Completed" registry status alone does NOT indicate failure. "Failed - completed trial" requires affirmative evidence of a negative result.
 
-### 5.6 Failure Reason Agent (v4)
+### 5.5 Failure Reason Agent (v5)
 
-**Pass 1:** Investigates all available evidence for failure signals -- adverse event reports, efficacy data, sponsor announcements, regulatory actions, COVID-related disruptions, enrollment data.
+**Deterministic pre-check gate (v2):** The orchestrator runs the Failure Reason Agent AFTER the Outcome Agent and passes the outcome result in metadata. Before any LLM call, the agent checks:
 
-**Pass 2:** Classifies the reason for failure, but only if Pass 1 identified actual failure signals.
+- If outcome is Positive, Recruiting, Active not recruiting, or Unknown → return empty immediately. No LLM call. This deterministic gate eliminated the dominant concordance error: the 8B model hallucinated "Ineffective for purpose" for 42 out of 62 non-failed trials.
 
-The agent includes an enhanced short-circuit mechanism for non-failures. Before classifying a failure reason, the agent checks for:
-- Positive outcome signals (published positive results, successful Phase I completion)
-- Active or recruiting status
-- Any indication the trial is ongoing or successful
+**Only Terminated and Failed outcomes proceed** to the two-pass LLM investigation:
 
-The short-circuit is not a simple string match for "No" -- it evaluates the full evidence context for positive signals. If positive signals are found, the agent returns an empty value (no failure reason).
+**Pass 1:** Investigates all evidence for failure signals — adverse event reports, efficacy data, sponsor announcements, regulatory actions, COVID disruptions, enrollment data.
 
-**v4 improvement -- default no-failure for completed trials**: The v4 prompt changes the default behavior for trials that completed without explicit failure evidence. Previously, the agent would sometimes assign "Ineffective for purpose" to completed trials lacking published results. The v4 prompt instructs the agent that a completed trial with no published negative results should default to an empty failure reason (no failure), not "Ineffective for purpose." Failure reason requires affirmative evidence of failure, mirroring the Outcome Agent's rule that completion does not imply failure.
+**Pass 2:** Classifies the failure mode, but only if Pass 1 identified actual failure signals. COMPLETED trials without published negative results default to empty (no failure).
 
-### 5.7 Peptide Agent (v4)
+### 5.6 Peptide Agent (v5)
 
-Determines whether the trial intervention is a peptide (True/False). Consults the Peptide Identity research dossier (UniProt, DRAMP) as primary evidence, supplemented by RCSB PDB and EBI Proteins data from the new v4 research agents.
+**Pass 1:** Extracts molecular facts:
+- Intervention name
+- Molecular class (peptide chain / antibody / small molecule / nutritional product / large multi-subunit protein)
+- Database confirmation (UniProt, DRAMP, DBAASP, ChEMBL entries)
+- Product description (drug vs nutritional formula vs dietary supplement)
+- Active ingredient role (active drug / food ingredient / targeting vector / brand name only)
 
-**v4 improvement -- brand name rules**: The v4 prompt adds explicit handling for brand-name interventions. When the trial intervention is a brand name (e.g., "Solostar," "Ozempic"), the agent must resolve the brand name to its generic compound and determine peptide status based on the generic identity, not the brand name alone. The prompt includes examples of brand names that resolve to non-peptide compounds.
+**Pass 2:** Applies a three-step decision tree:
+1. Is the molecular class a peptide? (Antibodies, small molecules, nutritional products → False)
+2. Is the peptide the active drug? (Food ingredients, brand name artifacts → False)
+3. Database/literature confirmation (DRAMP/UniProt/ChEMBL entry → True; no hits but clearly peptide → True)
+
+**v5 changes**: Upgraded from single-pass to two-pass. The single-pass agent over-identified peptides (Agent=True for non-peptide interventions) and under-identified (Agent=False for real peptides) because 8B models shortcut on whether "peptide" appeared in the trial text. The two-pass design forces molecular class determination before the True/False decision.
 
 
 ## 6. Phase 3 -- Verification Pipeline
@@ -601,42 +622,129 @@ The `keep_alive` parameter controls how long Ollama retains a model in GPU memor
 - **server (60m)**: Keeps models loaded across the full annotation pipeline for a batch, avoiding the overhead of repeated model loading (which can take 10-30 seconds per load on larger models).
 
 
-## 11. Known Issues and v3/v4 Fixes
+## 11. v6 Version Comparison Results (n=70, 2026-03-17)
 
-### 11.1 Outcome Bias (v2)
+### 11.0.1 Summary
+
+The same 70 trials were annotated by v5.1 agents (commit `22e9792`) and v6 agents (commit `8553a1f`). Research coverage increased +162% (684 → 1,793 total citations). Outcome concordance vs R1 improved +31.8pp (40.9% → 72.7%), exceeding human inter-rater agreement (55.6%). Review rate decreased -36% (50 → 32 field-level reviews). Peptide regressed -6.2pp due to multi-drug trial confusion.
+
+### 11.0.2 Research Agent Status (v8, 2026-03-17)
+
+| Agent | Status | Citations (n=10 test) | Notes |
+|---|---|---|---|
+| Clinical Protocol | Core | 77 (10/10) | ClinicalTrials.gov + OpenFDA |
+| Literature | Core | 76 (7/10) | PubMed + PMC + Europe PMC. Semantic Scholar removed (429 rate limits) |
+| Web Context | Working | 46 (10/10) | DuckDuckGo HTML lite search (fixed v7) |
+| ChEMBL | Working | 42 (10/10) | Bioactivity, molecule types, mechanisms. Name-match filter added v8 |
+| PDBe | Working | 18 (4/10) | Crystal structures with resolution/quality metrics |
+| APD | Fixed v7 | 17 (10/10) | SSL verify disabled (cert chain broken). Returns AMP search results |
+| Peptide Identity | Working | 17 (5/10) | UniProt + DRAMP |
+| WHO ICTRP | Working | 10 (10/10) | International trial registry |
+| EBI Proteins | Intermittent | 8 (3/10) | 500 errors from ebi.ac.uk, works when available |
+| RCSB PDB | Fixed v8 | 6+ (varies) | v2 API uses "paginate" not "pager". Now returns real structures |
+| DBAASP | Niche | 5 (1/10) | Only hits for actual AMPs. Correct behavior |
+| IUPHAR | Working | 4 (4/10) | Pharmacology, FDA approval. Name-match filter added v8 |
+| **REMOVED: dbAMP** | Dead | 0 | Server (yylab.jnu.edu.cn) permanently unreachable |
+| **REMOVED: IntAct** | Noise | 0 | 1/10 hit rate, generic protein interactions (CFTR, MAPT, HTT) |
+| **REMOVED: CARD** | Irrelevant | 0 | 0/10 hit rate, only for AMR-specific trials |
+| **REMOVED: Semantic Scholar** | Rate limited | 0 | 429 on every batch, exhausts retries |
+| dbAMP | Broken (intermittent) | 0 |
+| EBI Proteins | Broken (unknown) | 0 |
+| RCSB PDB | Broken (unknown) | 0 |
+| PDBe | Broken (unknown) | 0 |
+| Web Context | Broken (DuckDuckGo) | 0 |
+
+### 11.0.3 Key Findings
+
+1. **Research quality drives annotation quality.** The +162% citation increase directly caused the +31.8pp outcome improvement.
+2. **Completion heuristics are effective but need calibration.** H1 (Phase I completion = Positive) over-applies when zero publications are found, causing 5 regressions vs R1.
+3. **Cross-field coupling creates correlated instability.** When outcome shifts Unknown→Positive, failure reason shifts Ineffective→EMPTY, making both fields appear unstable between versions.
+4. **78% of review items are automatable.** Cross-field consistency (outcome=Positive → force failure_reason=EMPTY) and heuristic-aware verifier prompts would resolve 25 of 32 reviews.
+
+### 11.0.4 v8 Changes: Structured Evidence, Agent Cleanup, Hardware-Aware Budgets (2026-03-17)
+
+**Agents removed (3 dead + 1 rate-limited source):**
+- **dbAMP** (yylab.jnu.edu.cn): Server permanently unreachable (ConnectError on every request).
+- **IntAct** (ebi.ac.uk/intact): 1/10 hit rate across test trials. Returned generic high-connectivity proteins (CFTR, MAPT, HTT) for almost every search — noise, not signal.
+- **CARD** (card.mcmaster.ca): 0/10 hit rate. Only relevant for antibiotic resistance mechanism trials, which are extremely rare in the AMP clinical trial dataset.
+- **Semantic Scholar**: Removed from literature agent. Heavy rate limiting (HTTP 429 on every batch, exhausting 3 retries per trial) made it unreliable. PubMed + PMC + Europe PMC provide sufficient literature coverage.
+
+**Pipeline now:** 12 agents querying 17+ free databases (down from 15/20+).
+
+**Structured evidence presentation (all agents + verifiers):**
+- Evidence organized into labeled sections: TRIAL METADATA, PUBLISHED RESULTS, DRUG/PEPTIDE DATA, ANTIMICROBIAL DATA, STRUCTURAL DATA, WEB SOURCES.
+- Noise filter strips: negative search results ("no exact match"), empty snippets (<15 chars), JSON artifacts.
+- Relevance filter drops database results that don't mention actual trial interventions. Prevents fuzzy text-search false positives (e.g., searching "Peptide T" in IUPHAR no longer returns "GLP-1" or "peptide YY").
+- Deduplication: citations with identical first 60 chars of snippet are skipped.
+- Snippet capping per hardware profile: mac_mini 250 chars, server 500 chars.
+
+**Hardware-profile-aware evidence budgets:**
+
+| Profile | Models | Max Citations | Snippet Cap | Typical Token Range |
+|---|---|---|---|---|
+| mac_mini (16 GB) | 8B primary, 9B verifiers | 20-30 | 250 chars | 300-900 tokens |
+| server (240+ GB) | 14B-70B primary, 14B verifiers | 35-50 | 500 chars | 500-1500 tokens |
+
+Section budgets scale with max_citations so the server profile gets proportionally more literature, drug data, and structural data per trial.
+
+**Source-level relevance filters** added to ChEMBL (name-match prevents fuzzy search returning random molecules) and IUPHAR (name-match prevents substring matches on different peptides). These complement the evidence builder's cross-cutting relevance filter.
+
+---
+
+## 12. Known Issues and v3/v4/v6 Fixes
+
+### 12.1 Outcome Bias (v2)
 
 **Problem:** The v2 outcome agent labeled approximately 80% of trials as "Failed - completed trial," including trials that were still recruiting, had positive results, or had simply completed without published data.
 
 **Fix (v3):** Replaced the single-prompt approach with the calibrated two-pass decision tree described in Section 5.5. The decision tree enforces ordering (check recruiting/active first, check for positive results before considering failure) and requires cited evidence for a "Failed" label.
 
-### 11.2 Over-Classification as AMP (v2)
+### 12.2 Over-Classification as AMP (v2)
 
 **Problem:** The v2 classification agent over-classified peptide therapeutics as AMPs. Any peptide in a clinical trial tended to receive an AMP classification.
 
 **Fix (v3):** Added explicit negative examples and the governing rule that most peptide therapeutics are not AMPs (Section 5.3). Added a default-to-Other heuristic for ambiguous cases.
 
-### 11.3 Empty Delivery Modes (v2)
+### 12.3 Empty Delivery Modes (v2)
 
 **Problem:** The v2 delivery mode agent returned empty or overly generic values for many trials where the route was determinable from the registry data.
 
 **Fix (v3):** Implemented priority-ordered extraction with keyword mapping (Section 5.4). The agent now systematically searches multiple sections of the trial record before returning empty.
 
-### 11.4 Failure Reasons for Non-Failed Trials (v2)
+### 12.4 Failure Reasons for Non-Failed Trials (v2)
 
 **Problem:** The v2 failure reason agent sometimes assigned failure reasons to trials that had not actually failed (e.g., recruiting trials, trials with positive results).
 
 **Fix (v3):** Enhanced the short-circuit mechanism to check for positive signals before attempting failure classification (Section 5.6). The short-circuit now evaluates full evidence context rather than matching a single keyword.
 
-### 11.5 8B Model Limitations
+### 12.5 8B Model Limitations
 
 **Problem:** 8B-parameter models (the size used for most annotation and verification agents) tend to ignore worked examples provided in prompts. Even when the prompt includes detailed examples showing correct annotation behavior, the models frequently deviate from the demonstrated patterns.
 
 **Implication:** This is the strongest argument for using the 14B-parameter reconciler (qwen2.5:14b) as the primary annotator rather than the 8B models. The 14B model shows better instruction-following and example adherence. This tradeoff is under evaluation.
 
 
-## 12. Human Annotation Reliability
+### 12.6 Outcome Positive Bias (v6)
 
-### 12.1 Annotator Divergence
+**Problem:** The v6 outcome agent over-applies the H1 completion heuristic (Phase I completion = Positive) even when zero publications are found. This caused 5 regressions vs R1 ground truth where the agent said "Positive" but the human said "Unknown" because no result evidence was available.
+
+**Planned fix (v7):** Calibrate H1 to require at least one corroborating signal (results posted, published abstract, or subsequent trial) before overriding Unknown. Without corroboration, H1 should produce "Positive" at LOW confidence and flag for review rather than forcing Positive.
+
+### 12.7 Multi-Drug Peptide Confusion (v6)
+
+**Problem:** In multi-drug trials, the peptide agent evaluates whichever intervention ChEMBL returns data for first (typically small molecules), rather than examining all interventions. This caused 3 False→True regressions where the agent focused on a co-administered small molecule instead of the peptide vaccine.
+
+**Planned fix (v7):** Modify Pass 1 to iterate over ALL interventions from the clinical_protocol agent and produce a fact extraction for each. Pass 2 then answers True if ANY intervention is a peptide.
+
+### 12.8 Failure Reason Value Normalization (v6)
+
+**Problem:** The pre-check skip path and `_infer_from_pass1()` fallback bypass `_parse_value()`, allowing non-canonical values like `INEFFECTIVE_FOR_PURPOSE` (uppercase sentinel), `INEFFECIVE_FOR_PURPOSE` (typo), and `EMPTY` (string instead of empty string) into the output.
+
+**Planned fix (v7):** Route all output paths through `_parse_value()`. Add the typo variant to the fuzzy matching list.
+
+## 13. Human Annotation Reliability
+
+### 13.1 Annotator Divergence
 
 The two independent human annotators (R1 = Emily, R2 = Anat) showed substantial disagreement on several fields, demonstrating that human annotations are not infallible ground truth.
 
@@ -646,27 +754,27 @@ Key divergences observed:
 - **Outcome field:** R1 used "Recruiting" 222 times. R2 used "Recruiting" 0 times. This suggests different interpretations of whether to record current registry status or inferred clinical outcome.
 - **Peptide coverage:** Only 30 trials in the full dataset had the Peptide field filled in by both annotators, severely limiting concordance analysis for that field.
 
-### 12.2 Practical Implication
+### 13.2 Practical Implication
 
 Human annotations serve as development-time benchmarks for calibrating and improving the pipeline. They are not treated as infallible ground truth. Where human annotators disagree, the agent's annotation is evaluated against both independently, and neither human annotator is presumed correct by default.
 
 
-## 13. Multi-Run Consensus
+## 14. Multi-Run Consensus
 
-### 13.1 Approach
+### 14.1 Approach
 
 LLM outputs are nondeterministic. Running the same batch of trials through the pipeline multiple times (recommended N=3) and taking a majority vote per field reduces the impact of stochastic variation on any single annotation.
 
-### 13.2 Implementation Status
+### 14.2 Implementation Status
 
 Multi-run consensus is planned but not yet implemented as an automated feature. It can currently be approximated by running the pipeline multiple times and comparing outputs manually.
 
-### 13.3 Expected Benefit
+### 14.3 Expected Benefit
 
 Fields where the pipeline is uncertain (low evidence quality, borderline classification) are most likely to vary across runs. Majority vote surfaces these cases: a field that receives different annotations across three runs is a natural candidate for manual review, while a field that is unanimous across runs has higher confidence.
 
 
-## 14. Source Weight Rationale
+## 15. Source Weight Rationale
 
 Source weights reflect two factors: data reliability and relevance to clinical trial annotation.
 
@@ -683,3 +791,23 @@ Source weights reflect two factors: data reliability and relevance to clinical t
 - **DuckDuckGo (0.40)** is general web search -- useful for press releases and regulatory decisions, but noisy and unverified.
 
 Note: SerpAPI (previously 0.50) was removed as it requires a paid subscription. All 15 research agents now use free APIs exclusively.
+
+### 15.6 v9.1 Optimization Pass
+
+Additional optimizations applied after the initial v9 implementation:
+
+1. **Failure reason verification skip**: The failure reason pre-check gate now sets `skip_verification=True` when returning empty for non-failure outcomes, saving 3 verifier calls per non-failure trial.
+
+2. **Withdrawn outcome skip**: "Withdrawn" added to the failure reason pre-check skip list. Withdrawn trials (withdrawn before enrollment) don't have failure reasons.
+
+3. **Reconciler value normalization**: The reconciler's output is now normalized through the same canonical mapping as verifier values, preventing non-canonical values from bypassing the normalization layer. Majority vote fallback also normalizes before counting.
+
+4. **OpenFDA raw_data route extraction**: The delivery mode deterministic checker now also inspects structured OpenFDA route data from `raw_data` (the full API response), not just citation snippet text patterns.
+
+5. **Server profile model selection**: All annotation agents (delivery_mode, peptide, failure_reason) now use qwen2.5:14b on the server hardware profile, matching classification and outcome. Previously these agents always used 8B regardless of hardware.
+
+6. **Peptide cascade shortcut**: When classification was produced by the deterministic pre-classifier (skip_verification=True), the peptide cascade re-verification is skipped entirely. Deterministic classification is based on drug name lookup, not peptide value, so a flipped peptide cannot change the result.
+
+7. **LLM call counter**: The Ollama client now tracks total and per-model LLM call counts, enabling measurement of the <15 calls/trial target.
+
+8. **Semantic Scholar dead code removed**: The unused `_search_semantic_scholar()` method was removed from the literature agent (disabled since v8).

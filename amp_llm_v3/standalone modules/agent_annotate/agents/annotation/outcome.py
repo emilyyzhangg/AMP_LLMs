@@ -42,6 +42,41 @@ VALID_VALUES = [
     "Active, not recruiting",
 ]
 
+# --------------------------------------------------------------------------- #
+#  Deterministic outcome mapping (v9)
+# --------------------------------------------------------------------------- #
+
+_DETERMINISTIC_STATUSES = {
+    "RECRUITING": "Recruiting",
+    "NOT_YET_RECRUITING": "Recruiting",
+    "ENROLLING_BY_INVITATION": "Recruiting",
+    "WITHDRAWN": "Withdrawn",
+    "ACTIVE_NOT_RECRUITING": "Active, not recruiting",
+    "SUSPENDED": "Unknown",
+    "TERMINATED": "Terminated",
+}
+
+
+def _deterministic_outcome(research_results: list) -> FieldAnnotation | None:
+    """Map clear-cut registry statuses deterministically. COMPLETED/UNKNOWN fall through to LLM."""
+    for result in research_results:
+        if result.error or result.agent_name != "clinical_protocol":
+            continue
+        if not result.raw_data:
+            continue
+        proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
+        status_mod = proto.get("statusModule", {})
+        overall_status = status_mod.get("overallStatus", "")
+        if overall_status in _DETERMINISTIC_STATUSES:
+            value = _DETERMINISTIC_STATUSES[overall_status]
+            logger.info(f"  outcome: deterministic → {value} (registry status: {overall_status})")
+            return FieldAnnotation(
+                field_name="outcome", value=value, confidence=0.95,
+                reasoning=f"[Deterministic v9] Registry status '{overall_status}' → '{value}'",
+                evidence=[], model_name="deterministic", skip_verification=True,
+            )
+    return None
+
 # Pass 1: Extract the registry status and what we know so far
 PASS1_PROMPT = """You are a clinical trial status extraction specialist.
 
@@ -88,20 +123,54 @@ DECISION TREE (follow in order):
 5. For COMPLETED or UNKNOWN status, check published literature:
    a. Published results show POSITIVE findings (met endpoints, efficacy shown, favorable safety) -> "Positive"
    b. Published results show NEGATIVE findings (failed endpoints, no efficacy, futility) -> "Failed - completed trial"
-   c. NO published results found -> "Unknown"
+   c. NO published results found -> apply COMPLETION HEURISTICS below
+
+COMPLETION HEURISTICS (when no published results are found for COMPLETED trials):
+
+These rules help determine outcome for older trials (pre-2010) where publications may not be indexed:
+
+H1. PHASE I COMPLETION: Phase I/Early Phase I trials that completed normally (not terminated/withdrawn)
+    are typically "Positive". Phase I success = acceptable safety, tolerability, pharmacokinetics established.
+    Completing a Phase I trial IS the success criterion. → "Positive"
+    BUT: H1 requires at least ONE corroborating signal: results posted on ClinicalTrials.gov,
+    a publication mentioning the trial (even without detailed results), or a subsequent later-phase trial.
+    If Phase I completed but ZERO publications were found and Results Posted = No/Unknown,
+    → "Unknown" (not enough evidence to confirm success). Do NOT apply H1 without corroboration.
+
+H2. PHASE II/III COMPLETION WITH hasResults=Yes: If ClinicalTrials.gov indicates results were posted
+    (hasResults field), the trial produced data. Lean toward "Positive" unless evidence says otherwise.
+
+H3. LONG-COMPLETED TRIALS: If the trial completed more than 10 years ago and led to subsequent
+    later-phase trials of the same drug → the earlier trial was likely "Positive" (the drug advanced).
+
+H4. COMPLETED + RESULTS POSTED: If Results Posted = Yes but you couldn't find specific
+    result descriptions, lean "Positive" (the act of posting results for a completed trial
+    typically happens for trials with reportable outcomes).
+
+H5. DEFAULT: If truly no signals exist → "Unknown". But exhaust H1-H4 first.
 
 CRITICAL RULES:
 - "Failed - completed trial" REQUIRES EVIDENCE OF FAILURE. You MUST cite a specific publication showing negative results, failure to meet primary endpoints, or futility. If you cannot cite such evidence, the answer is NOT "Failed".
-- COMPLETED status alone does NOT mean failure. A trial that merely completed is "Unknown" if no results are published, NOT "Failed".
-- Phase I trials that complete with acceptable safety/tolerability are typically "Positive" — completing a safety trial IS success. Phase I success criteria = safety, tolerability, pharmacokinetics.
-- If the Result Valence you extracted says "Positive" or "Mixed" -> lean toward "Positive".
-- If the Result Valence says "Not available" -> the answer is "Unknown", NOT "Failed".
+- COMPLETED status alone does NOT mean failure.
+- Phase I trials that complete with published safety/tolerability results → "Positive". Phase I completion alone without publications is "Unknown".
+- Phase II trials that complete with results posted → lean "Positive".
+- If the Result Valence you extracted says "Positive" or "Mixed" -> "Positive".
+- If the Result Valence says "Not available" AND no publications found AND Results Posted = No/Unknown → "Unknown". Do NOT default to Positive.
 - RECENCY: If multiple publications exist with conflicting conclusions, the MOST RECENT publication takes priority.
+- COMPLETED + no published results + Results Posted = No/Unknown → "Unknown". Do NOT default to Positive.
 
 IMPORTANT: Format your response EXACTLY as:
 Outcome: [one of the 7 values above]
 Evidence: [cite the specific source that determined your decision]
-Reasoning: [explain your chain of thought]"""
+Reasoning: [explain your chain of thought, noting which heuristic you applied if applicable]"""
+
+
+# Hardware profile → model selection for outcome
+# Outcome benefits from a larger model because the decision tree
+# requires nuanced interpretation of published results and status.
+OUTCOME_MODEL_OVERRIDES = {
+    "server": "qwen2.5:14b",
+}
 
 
 class OutcomeAgent(BaseAnnotationAgent):
@@ -109,43 +178,50 @@ class OutcomeAgent(BaseAnnotationAgent):
 
     field_name = "outcome"
 
+    def _get_model(self, config) -> str:
+        """Select model based on hardware profile."""
+        profile = config.orchestrator.hardware_profile
+        override = OUTCOME_MODEL_OVERRIDES.get(profile)
+        if override:
+            return override
+        # Default: use primary annotator model
+        for model_key, model_cfg in config.verification.models.items():
+            if model_cfg.role == "annotator":
+                return model_cfg.name
+        return "llama3.1:8b"
+
     async def annotate(
         self,
         nct_id: str,
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
-        # Gather all citations, prioritizing clinical_protocol and literature
-        all_citations = []
-        for result in research_results:
-            weight = self.relevance_weight(result.agent_name)
-            for citation in result.citations:
-                all_citations.append((citation, weight))
+        # v9: Try deterministic status mapping first
+        det_result = _deterministic_outcome(research_results)
+        if det_result is not None:
+            return det_result
 
-        all_citations.sort(key=lambda x: x[1], reverse=True)
+        from app.services.config_service import config_service
 
-        # Build evidence text — include MORE citations than other agents
-        # because outcome determination requires thorough investigation
-        evidence_text = f"Trial: {nct_id}\n\nAll available evidence:\n"
-        cited_sources = []
-        for citation, weight in all_citations[:30]:  # More than the usual 20
-            evidence_text += (
-                f"[{citation.source_name}] {citation.identifier or ''}: "
-                f"{citation.snippet}\n"
-            )
-            cited_sources.append(citation)
+        config = config_service.get()
+        # Server profile with larger models can digest more evidence
+        is_server = config.orchestrator.hardware_profile == "server"
+        max_cites = 50 if is_server else 30
+        max_snippet = 500 if is_server else 250
+
+        # Build structured evidence — sections help the LLM locate
+        # trial status, published results, and drug data efficiently
+        evidence_text, cited_sources = self.build_structured_evidence(
+            nct_id, research_results,
+            max_citations=max_cites,
+            max_snippet_chars=max_snippet,
+        )
 
         from app.services.ollama_client import ollama_client
         from app.services.config_service import config_service
 
         config = config_service.get()
-        primary_model = None
-        for model_key, model_cfg in config.verification.models.items():
-            if model_cfg.role == "annotator":
-                primary_model = model_cfg.name
-                break
-        if not primary_model:
-            primary_model = "llama3.1:8b"
+        primary_model = self._get_model(config)
 
         # --- PASS 1: Extract facts ---
         try:
@@ -207,11 +283,14 @@ class OutcomeAgent(BaseAnnotationAgent):
         )
 
     def _infer_from_pass1(self, pass1_text: str) -> str:
-        """Fallback: infer outcome from pass 1 extraction if pass 2 fails."""
+        """Fallback: infer outcome from pass 1 extraction if pass 2 fails.
+
+        Applies completion heuristics for older trials where publications
+        may not be found but the trial clearly completed normally.
+        """
         lower = pass1_text.lower()
 
         # Check for published results first (most important signal)
-        has_results = "published results:" in lower
         results_section = ""
         match = re.search(r"published results?:\s*(.+?)(?:\n[A-Z]|\Z)", lower, re.DOTALL)
         if match:
@@ -225,16 +304,46 @@ class OutcomeAgent(BaseAnnotationAgent):
 
         # Fall back to registry status
         status_match = re.search(r"registry status:\s*(\S+)", lower)
-        if status_match:
-            status = status_match.group(1).strip()
-            if "withdrawn" in status:
-                return "Withdrawn"
-            if "terminated" in status:
-                return "Terminated"
-            if "recruiting" in status and "not" not in status and "active" not in status:
-                return "Recruiting"
-            if "active_not_recruiting" in status:
-                return "Active, not recruiting"
+        status = status_match.group(1).strip() if status_match else ""
+
+        if "withdrawn" in status:
+            return "Withdrawn"
+        if "terminated" in status:
+            return "Terminated"
+        if "recruiting" in status and "not" not in status and "active" not in status:
+            return "Recruiting"
+        if "active_not_recruiting" in status:
+            return "Active, not recruiting"
+
+        # Completion heuristics for COMPLETED trials without publications
+        if "completed" in status or "complete" in status:
+            # H2/H4: Results posted = lean Positive (strongest signal)
+            has_results_posted = (
+                "results posted: yes" in lower or "hasresults: true" in lower
+            )
+            if has_results_posted:
+                return "Positive"
+
+            # H3: Check result valence from Pass 1
+            valence_match = re.search(r"result valence:\s*(.+?)(?:\n|$)", lower)
+            if valence_match:
+                valence = valence_match.group(1).strip()
+                if "positive" in valence or "mixed" in valence:
+                    return "Positive"
+
+            # H1: Phase I completion = Positive, BUT requires corroboration
+            # Without results posted or publications, Phase I completion
+            # alone is insufficient — return Unknown instead.
+            phase_match = re.search(r"trial phase:\s*(.+?)(?:\n|$)", lower)
+            if phase_match:
+                phase = phase_match.group(1).strip()
+                is_phase1 = (
+                    "phase1" in phase or "phase 1" in phase
+                    or "early_phase" in phase or "early phase" in phase
+                )
+                if is_phase1 and has_results_posted:
+                    return "Positive"
+                # Phase I without corroboration → Unknown (v7 calibration)
 
         return "Unknown"
 

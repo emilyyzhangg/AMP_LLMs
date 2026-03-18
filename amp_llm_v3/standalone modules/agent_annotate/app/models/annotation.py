@@ -15,6 +15,7 @@ class FieldAnnotation(BaseModel):
     reasoning: str = ""        # Chain-of-thought explanation
     evidence: list[SourceCitation] = []
     model_name: str = ""       # Which model produced this
+    skip_verification: bool = False  # v9: deterministic pre-classifiers set True to bypass blind verification
 
 
 class TrialMetadata(BaseModel):

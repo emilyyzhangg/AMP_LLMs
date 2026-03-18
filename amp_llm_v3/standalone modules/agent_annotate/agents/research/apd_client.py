@@ -27,6 +27,28 @@ APD_SEARCH_URL = "https://aps.unmc.edu/database/result"
 APD_BASE_URL = "https://aps.unmc.edu"
 
 
+def _extract_intervention_names(metadata: dict | None) -> list[str]:
+    """Extract plain-string intervention names from metadata.
+
+    Handles both list-of-dicts (``[{"name": "Nisin"}]``) and
+    list-of-strings (``["Nisin"]``) formats.
+    """
+    if not metadata:
+        return []
+    raw = metadata.get("interventions", [])
+    if not isinstance(raw, list):
+        return []
+    names: list[str] = []
+    for item in raw:
+        if isinstance(item, dict):
+            name = item.get("name") or item.get("intervention_name") or ""
+            if name:
+                names.append(str(name))
+        elif isinstance(item, str) and item:
+            names.append(item)
+    return names
+
+
 class APDClient(BaseResearchAgent):
     """Queries the Antimicrobial Peptide Database for peptide data."""
 
@@ -38,11 +60,7 @@ class APDClient(BaseResearchAgent):
         raw_data = {}
 
         # Extract intervention names to search for peptides
-        interventions = []
-        if metadata:
-            interventions = metadata.get("interventions", [])
-            if isinstance(interventions, list):
-                interventions = [str(i) for i in interventions]
+        interventions = _extract_intervention_names(metadata)
 
         if not interventions:
             return ResearchResult(
@@ -52,7 +70,7 @@ class APDClient(BaseResearchAgent):
                 raw_data={"note": "No interventions to search"},
             )
 
-        async with httpx.AsyncClient(timeout=15) as client:
+        async with httpx.AsyncClient(timeout=15, verify=False) as client:
             for intervention in interventions[:3]:
                 try:
                     # APD uses a POST form search; submit with the Name field
@@ -86,16 +104,9 @@ class APDClient(BaseResearchAgent):
                         # Check if results were found
                         if "No Results Found" in html:
                             raw_data[f"apd_{intervention}"] = {"searched": True, "found": False}
-                            # Still record that we searched
-                            citations.append(SourceCitation(
-                                source_name="apd",
-                                source_url=f"{APD_BASE_URL}/database",
-                                identifier=intervention,
-                                title=f"APD search: {intervention}",
-                                snippet=f"APD antimicrobial peptide database search for: {intervention} (no exact match)",
-                                quality_score=self.compute_quality_score("apd", has_content=False),
-                                retrieved_at=datetime.utcnow().isoformat(),
-                            ))
+                            # v8: Do NOT emit a citation for negative results —
+                            # "no exact match" wastes an LLM citation slot without
+                            # adding information. The raw_data records the search.
                             continue
 
                         # Try to extract peptide data from the HTML response

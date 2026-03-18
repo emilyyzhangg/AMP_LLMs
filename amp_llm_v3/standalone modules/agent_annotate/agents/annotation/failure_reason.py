@@ -85,6 +85,7 @@ CRITICAL RULES:
 5. RECENCY: If multiple publications exist with conflicting findings, the most recent publication takes priority. Newer evidence supersedes older evidence.
 6. DEFAULT FOR COMPLETED TRIALS: If status is COMPLETED and there is NO published evidence of negative outcomes, the answer is EMPTY. You MUST have POSITIVE evidence of failure (a paper, a press release, a data report showing negative results) to assign a failure reason to a completed trial. Absence of published results ≠ failure.
 7. NEVER invent or assume a failure reason. If the evidence does not explicitly demonstrate failure, return EMPTY.
+8. DEFAULT FOR SUSPENDED TRIALS: If status is SUSPENDED and there is NO published evidence explaining WHY it was suspended, the answer is EMPTY. Do NOT guess "Business Reason" for SUSPENDED trials without explicit evidence. SUSPENDED without published reasons = EMPTY.
 
 Choose EXACTLY ONE:
 - Business Reason: Funding withdrawn, sponsor decision (with no efficacy/safety cause), company dissolved, strategic pivot, regulatory changes, manufacturing issues
@@ -111,23 +112,40 @@ class FailureReasonAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
-        all_citations = []
-        for result in research_results:
-            weight = self.relevance_weight(result.agent_name)
-            for citation in result.citations:
-                all_citations.append((citation, weight))
-
-        all_citations.sort(key=lambda x: x[1], reverse=True)
-
-        # Include more citations — failure reasons are often buried in details
-        evidence_text = f"Trial: {nct_id}\n\nAll available evidence:\n"
-        cited_sources = []
-        for citation, weight in all_citations[:30]:
-            evidence_text += (
-                f"[{citation.source_name}] {citation.identifier or ''}: "
-                f"{citation.snippet}\n"
+        # --- PRE-CHECK: Skip if outcome is non-failure ---
+        # If the outcome agent already determined this trial didn't fail,
+        # don't bother running the LLM — return empty immediately.
+        # This prevents the dominant error pattern where the 8B model
+        # hallucinates "Ineffective for purpose" for non-failed trials.
+        outcome_result = metadata.get("outcome_result", "") if metadata else ""
+        if outcome_result in ("Positive", "Recruiting", "Active, not recruiting", "Unknown", "Withdrawn"):
+            logger.info(
+                f"  failure_reason: skipping — outcome='{outcome_result}' is non-failure"
             )
-            cited_sources.append(citation)
+            return FieldAnnotation(
+                field_name=self.field_name,
+                value="",
+                confidence=0.9,
+                reasoning=f"[Pre-check skip] Outcome is '{outcome_result}' — no failure to explain.",
+                evidence=[],
+                model_name="deterministic",
+                skip_verification=True,
+            )
+
+        from app.services.config_service import config_service
+
+        _config = config_service.get()
+        is_server = _config.orchestrator.hardware_profile == "server"
+        max_cites = 50 if is_server else 30
+        max_snippet = 500 if is_server else 250
+
+        # Build structured evidence — sections help the LLM locate
+        # termination reasons, published negative results, and safety data
+        evidence_text, cited_sources = self.build_structured_evidence(
+            nct_id, research_results,
+            max_citations=max_cites,
+            max_snippet_chars=max_snippet,
+        )
 
         from app.services.ollama_client import ollama_client
         from app.services.config_service import config_service
@@ -140,6 +158,10 @@ class FailureReasonAgent(BaseAnnotationAgent):
                 break
         if not primary_model:
             primary_model = "llama3.1:8b"
+
+        # v9.1: Server profile uses larger model for better accuracy
+        if config.orchestrator.hardware_profile == "server":
+            primary_model = "qwen2.5:14b"
 
         # --- PASS 1: Investigate ---
         try:
@@ -183,7 +205,7 @@ class FailureReasonAgent(BaseAnnotationAgent):
             )
             pass2_output = pass2_response.get("response", "")
         except Exception as e:
-            value = self._infer_from_pass1(pass1_output)
+            value = self._normalize_failure_value(self._infer_from_pass1(pass1_output))
             return FieldAnnotation(
                 field_name=self.field_name,
                 value=value,
@@ -194,6 +216,8 @@ class FailureReasonAgent(BaseAnnotationAgent):
             )
 
         value = self._parse_value(pass2_output)
+        # Normalize through canonical mapper in case LLM returned a variant
+        value = self._normalize_failure_value(value)
         reasoning = self._parse_reasoning(pass2_output)
         full_reasoning = f"[Pass 1 investigation] {pass1_output[:500]}\n[Pass 2 classification] {reasoning}"
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
@@ -265,6 +289,11 @@ class FailureReasonAgent(BaseAnnotationAgent):
             if not has_failure:
                 return True
 
+        # v9: SUSPENDED without published failure evidence → no failure reason
+        if "suspended" in status:
+            if not has_failure:
+                return True
+
         # If positive signals and no failure evidence → not a failure
         if has_positive and not has_failure:
             return True
@@ -316,25 +345,40 @@ class FailureReasonAgent(BaseAnnotationAgent):
         match = re.search(r"Reason for Failure:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)
         if match:
             raw = match.group(1).strip()
-            lower = raw.lower()
+            return self._normalize_failure_value(raw)
+        return ""
 
-            if lower in ("empty", "n/a", "not applicable", "none", ""):
-                return ""
+    @staticmethod
+    def _normalize_failure_value(raw: str) -> str:
+        """Normalize any failure reason string to a canonical value.
 
-            for valid in VALID_VALUES:
-                if valid.lower() == lower:
-                    return valid
+        v7: All output paths route through this method to prevent
+        non-canonical values (INEFFECTIVE_FOR_PURPOSE, INEFFECIVE_FOR_PURPOSE,
+        EMPTY) from reaching the output.
+        """
+        lower = raw.strip().lower()
 
-            if "business" in lower or "funding" in lower or "sponsor" in lower or "administrative" in lower:
-                return "Business Reason"
-            if "ineffective" in lower or "efficacy" in lower or "futility" in lower or "endpoint" in lower:
-                return "Ineffective for purpose"
-            if "toxic" in lower or "safety" in lower or "unsafe" in lower or "adverse" in lower:
-                return "Toxic/Unsafe"
-            if "covid" in lower or "pandemic" in lower or "coronavirus" in lower:
-                return "Due to covid"
-            if "recruit" in lower or "enrollment" in lower or "accrual" in lower:
-                return "Recruitment issues"
+        # Empty/no-failure indicators
+        if lower in ("empty", "n/a", "not applicable", "none", "",
+                      "no failure", "no reason", "completed", "unknown",
+                      "active", "recruiting", "positive"):
+            return ""
+
+        for valid in VALID_VALUES:
+            if valid.lower() == lower:
+                return valid
+
+        # Fuzzy matching — catches typos and uppercase sentinel values
+        if "business" in lower or "funding" in lower or "sponsor" in lower or "administrative" in lower:
+            return "Business Reason"
+        if "ineffect" in lower or "efficacy" in lower or "futility" in lower or "endpoint" in lower:
+            return "Ineffective for purpose"
+        if "toxic" in lower or "safety" in lower or "unsafe" in lower or "adverse" in lower:
+            return "Toxic/Unsafe"
+        if "covid" in lower or "pandemic" in lower or "coronavirus" in lower:
+            return "Due to covid"
+        if "recruit" in lower or "enrollment" in lower or "accrual" in lower:
+            return "Recruitment issues"
         return ""
 
     def _parse_reasoning(self, text: str) -> str:

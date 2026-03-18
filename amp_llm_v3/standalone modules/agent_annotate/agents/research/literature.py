@@ -26,15 +26,15 @@ PUBMED_SUMMARY_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcg
 # Europe PMC (free, no API key, returns abstracts in JSON)
 EUROPE_PMC_URL = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
 
-# Semantic Scholar (free, 100 req/5min without key)
-SEMANTIC_SCHOLAR_URL = "https://api.semanticscholar.org/graph/v1/paper/search"
-
 
 class LiteratureAgent(BaseResearchAgent):
     """Searches biomedical literature databases for trial-related publications."""
 
     agent_name = "literature"
-    sources = ["pubmed", "pmc", "europe_pmc", "semantic_scholar"]
+    # v8: Removed Semantic Scholar — heavy rate limiting (429 on every
+    # batch, exhausts 3 retries). PubMed + PMC + Europe PMC provide
+    # sufficient literature coverage for clinical trial annotation.
+    sources = ["pubmed", "pmc", "europe_pmc"]
 
     async def research(self, nct_id: str, metadata: Optional[dict] = None) -> ResearchResult:
         raw_data = {}
@@ -44,12 +44,14 @@ class LiteratureAgent(BaseResearchAgent):
                 self._search_pubmed(nct_id, client),
                 self._search_pmc(nct_id, client),
                 self._search_europe_pmc(nct_id, client),
-                self._search_semantic_scholar(nct_id, client),
                 return_exceptions=True,
             )
 
         all_citations = []
-        source_names = ["pubmed", "pmc", "europe_pmc", "semantic_scholar"]
+        source_names = ["pubmed", "pmc", "europe_pmc"]
+
+        # Check if any source returned results
+        any_results = False
         for name, result in zip(source_names, results):
             if isinstance(result, Exception):
                 raw_data[f"{name}_error"] = str(result)
@@ -57,6 +59,41 @@ class LiteratureAgent(BaseResearchAgent):
                 citations, data = result
                 all_citations.extend(citations)
                 raw_data.update(data)
+                if citations:
+                    any_results = True
+
+        # Fallback for old trials: if NCT ID search returned 0 results,
+        # try searching by intervention name + condition. Pre-2005 trials
+        # often have publications that don't reference the NCT ID.
+        if not any_results and metadata:
+            interventions = metadata.get("interventions", [])
+            title = metadata.get("title", "")
+            if interventions or title:
+                # Build a broad search term from the first intervention + title keywords
+                search_terms = []
+                for interv in interventions[:2]:
+                    name = interv.get("name", "") if isinstance(interv, dict) else str(interv)
+                    if name and len(name) > 3:
+                        search_terms.append(name)
+                if not search_terms and title:
+                    # Use first 3 significant words from title
+                    words = [w for w in title.split() if len(w) > 4][:3]
+                    search_terms = words
+
+                if search_terms:
+                    fallback_query = " ".join(search_terms)
+                    raw_data["pubmed_fallback_query"] = fallback_query
+                    async with httpx.AsyncClient(timeout=30) as client:
+                        try:
+                            fb_result = await self._search_pubmed_by_query(
+                                fallback_query, client, max_results=5
+                            )
+                            if not isinstance(fb_result, Exception):
+                                fb_citations, fb_data = fb_result
+                                all_citations.extend(fb_citations)
+                                raw_data.update(fb_data)
+                        except Exception:
+                            pass  # Fallback is best-effort
 
         all_citations = self._deduplicate_citations(all_citations)
 
@@ -149,6 +186,77 @@ class LiteratureAgent(BaseResearchAgent):
             await self._pubmed_summary_fallback(
                 id_list, client, citations, raw_data
             )
+
+        return citations, raw_data
+
+    async def _search_pubmed_by_query(
+        self, query: str, client: httpx.AsyncClient, max_results: int = 5
+    ) -> tuple[list[SourceCitation], dict]:
+        """Fallback PubMed search using free text instead of NCT ID.
+
+        v8: For old trials (pre-2005) where publications don't reference
+        the NCT ID, search by intervention name or title keywords.
+        """
+        citations: list[SourceCitation] = []
+        raw_data: dict = {}
+
+        params = {
+            "db": "pubmed",
+            "term": query,
+            "retmax": max_results,
+            "retmode": "json",
+            "sort": "relevance",
+        }
+        if PUBMED_API_KEY:
+            params["api_key"] = PUBMED_API_KEY
+
+        resp = await resilient_get(PUBMED_SEARCH_URL, client=client, params=params)
+        if resp.status_code != 200:
+            return citations, raw_data
+
+        search_data = resp.json()
+        id_list = search_data.get("esearchresult", {}).get("idlist", [])
+        raw_data["pubmed_fallback_ids"] = id_list
+
+        if not id_list:
+            return citations, raw_data
+
+        fetch_params = {
+            "db": "pubmed",
+            "id": ",".join(id_list),
+            "rettype": "abstract",
+            "retmode": "xml",
+        }
+        if PUBMED_API_KEY:
+            fetch_params["api_key"] = PUBMED_API_KEY
+
+        fetch_resp = await resilient_get(
+            PUBMED_FETCH_URL, client=client, params=fetch_params, timeout=30
+        )
+        if fetch_resp.status_code == 200:
+            articles = self._parse_pubmed_xml(fetch_resp.text)
+            for pmid in id_list:
+                article = articles.get(pmid, {})
+                title = article.get("title", "")
+                abstract = article.get("abstract", "")
+                journal = article.get("journal", "")
+                year = article.get("year", "")
+                authors = article.get("authors", [])
+                snippet = self._build_snippet(
+                    title=title, authors=authors, journal=journal,
+                    year=year, abstract=abstract,
+                )
+                citations.append(SourceCitation(
+                    source_name="pubmed",
+                    source_url=f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/",
+                    identifier=f"PMID:{pmid}",
+                    title=title or f"PubMed article {pmid}",
+                    snippet=snippet,
+                    quality_score=self.compute_quality_score(
+                        "pubmed", has_content=bool(abstract)
+                    ),
+                    retrieved_at=datetime.utcnow().isoformat(),
+                ))
 
         return citations, raw_data
 
@@ -364,90 +472,6 @@ class LiteratureAgent(BaseResearchAgent):
         return citations, raw_data
 
     # ------------------------------------------------------------------ #
-    #  Semantic Scholar (free API, structured paper data)
-    # ------------------------------------------------------------------ #
-
-    async def _search_semantic_scholar(
-        self, nct_id: str, client: httpx.AsyncClient
-    ) -> tuple[list[SourceCitation], dict]:
-        """Search Semantic Scholar for papers mentioning this NCT ID.
-
-        Semantic Scholar allows ~100 requests per 5 minutes (~0.33/sec)
-        without an API key.  We add a short delay before hitting it to
-        avoid 429s when many trials are processed concurrently (the
-        per-host semaphore in http_utils limits concurrency to 3, but
-        burst traffic can still trigger rate limits).
-        """
-        citations: list[SourceCitation] = []
-        raw_data: dict = {}
-
-        # Brief delay to stay under Semantic Scholar rate limits
-        await asyncio.sleep(1.0)
-
-        resp = await resilient_get(
-            SEMANTIC_SCHOLAR_URL,
-            client=client,
-            params={
-                "query": nct_id,
-                "limit": 10,
-                "fields": "title,abstract,year,venue,url,externalIds,citationCount",
-            },
-        )
-        if resp.status_code != 200:
-            raw_data["semantic_scholar_error"] = f"HTTP {resp.status_code}"
-            return citations, raw_data
-
-        data = resp.json()
-        papers = data.get("data", [])
-        raw_data["semantic_scholar_count"] = len(papers)
-        raw_data["semantic_scholar_total"] = data.get("total", 0)
-
-        for paper in papers:
-            title = paper.get("title", "")
-            abstract = paper.get("abstract", "")
-            year = str(paper.get("year", "")) if paper.get("year") else ""
-            venue = paper.get("venue", "")
-            url = paper.get("url", "")
-            ext_ids = paper.get("externalIds") or {}
-            citation_count = paper.get("citationCount", 0)
-
-            snippet_parts = []
-            if title:
-                snippet_parts.append(f"Title: {title}")
-            if venue or year:
-                snippet_parts.append(f"Venue: {venue} ({year})")
-            if citation_count:
-                snippet_parts.append(f"Cited by: {citation_count}")
-            if abstract:
-                snippet_parts.append(f"Abstract: {abstract[:500]}")
-            snippet = "\n".join(snippet_parts)
-
-            # Determine identifier
-            pmid = ext_ids.get("PubMed")
-            doi = ext_ids.get("DOI")
-            if pmid:
-                identifier = f"PMID:{pmid}"
-            elif doi:
-                identifier = f"DOI:{doi}"
-            else:
-                identifier = paper.get("paperId", "")
-
-            quality = self.compute_quality_score(
-                "semantic_scholar", has_content=bool(abstract)
-            )
-            citations.append(SourceCitation(
-                source_name="semantic_scholar",
-                source_url=url or "",
-                identifier=identifier,
-                title=title or "Semantic Scholar result",
-                snippet=snippet,
-                quality_score=quality,
-                retrieved_at=datetime.utcnow().isoformat(),
-            ))
-
-        return citations, raw_data
-
-    # ------------------------------------------------------------------ #
     #  Helpers
     # ------------------------------------------------------------------ #
 
@@ -533,7 +557,11 @@ class LiteratureAgent(BaseResearchAgent):
             year_part = f" ({year})" if year else ""
             parts.append(f"Journal: {journal_part}{year_part}")
         if abstract:
-            parts.append(f"Abstract: {abstract[:500]}")
+            # Cap abstract at 300 chars — the structured evidence builder
+            # will further truncate per hardware profile (250 mac_mini, 500 server).
+            # Storing a moderate snippet avoids bloating persisted research JSON
+            # while giving the server profile enough to work with.
+            parts.append(f"Abstract: {abstract[:300]}")
         return "\n".join(parts)
 
     @staticmethod

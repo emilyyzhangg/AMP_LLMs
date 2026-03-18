@@ -21,30 +21,34 @@ FIELD_PROMPTS = {
         "instruction": (
             "Classify this clinical trial using a three-step decision tree. AMP = Antimicrobial Peptide.\n\n"
             "STEP 1: Is the intervention a peptide? If not → 'Other'.\n"
-            "STEP 2: Is it an ANTIMICROBIAL peptide? The CORE TEST: does this peptide have a DIRECT "
-            "antimicrobial mechanism — killing, inhibiting, or disrupting pathogens? OR does it directly "
-            "stimulate immune DEFENSE against pathogens?\n"
-            "AMPs: colistin, defensins, LL-37, polymyxin, daptomycin, nisin — these directly kill microorganisms.\n"
+            "STEP 2: Is it an ANTIMICROBIAL peptide? The CORE TEST: does this peptide DIRECTLY KILL, "
+            "LYSE, or PHYSICALLY DISRUPT pathogens through its own biochemical action? Or does it "
+            "directly recruit innate immune cells to kill pathogens at infection sites (host defense peptides)?\n"
+            "AMPs: colistin, defensins, LL-37, polymyxin, daptomycin, nisin — these physically disrupt/kill microorganisms.\n"
             "NOT AMPs (even if they are peptides):\n"
+            "- HIV DRUGS: Enfuvirtide/T-20 (blocks viral fusion — entry inhibitor, NOT antimicrobial), "
+            "Peptide T/DAPTA (blocks CCR5 receptor), HIV peptide vaccines (induce antibodies, NOT direct killing)\n"
+            "- ALL VACCINE PEPTIDES: vaccines induce adaptive immunity — the peptide does NOT itself kill pathogens\n"
             "- Neuropeptides/vasodilators: VIP/Aviptadil — vasodilation, NOT antimicrobial\n"
-            "- Vaccine peptides for autoimmune prevention: StreptInCor prevents autoimmune rheumatic heart "
-            "disease — it does NOT kill S. pyogenes bacteria, it modulates the immune system to prevent "
-            "the autoimmune sequel. This is 'Other'.\n"
-            "- Metabolic hormones: GLP-1/GLP-2 (semaglutide, apraglutide), GnRH, somatostatin\n"
+            "- Metabolic hormones: GLP-1/GLP-2, GnRH, somatostatin, insulin, oxytocin\n"
             "- Immunosuppressive peptides, bone growth regulators, structural peptides\n"
+            "- Viral entry inhibitors, receptor blockers/agonists\n"
+            "DECISIVE RULE: If the peptide treats infection but works by blocking receptors, inducing "
+            "antibodies, or any mechanism OTHER than directly killing/disrupting pathogens → 'Other'.\n"
             "If NOT an AMP → 'Other'.\n"
             "STEP 3: Does this AMP target infection? Yes → 'AMP(infection)'. No (wound healing, cancer) → 'AMP(other)'.\n\n"
-            "KEY RULE: Being a peptide is NOT enough for AMP. Being related to a pathogen is NOT enough. "
-            "The peptide must have a DIRECT antimicrobial or pathogen-defense mechanism.\n\n"
             "EXAMPLES:\n"
-            "- Colistin for UTI → AMP(infection)\n"
-            "- LL-37 for wound healing → AMP(other)\n"
-            "- VIP/Aviptadil for COVID ARDS → Other (neuropeptide vasodilator, NOT antimicrobial)\n"
-            "- Aviptadil for cluster headaches → Other (neuropeptide, NOT an AMP)\n"
-            "- Semaglutide for diabetes → Other (metabolic hormone, NOT an AMP)\n"
-            "- StreptInCor vaccine for rheumatic heart disease → Other (prevents autoimmune disease, does NOT kill bacteria)\n"
-            "- Amoxicillin → Other (small molecule, not peptide)\n"
-            "- Nisin for bacterial mastitis → AMP(infection)"
+            "- Colistin for UTI → AMP(infection) (membrane disruption kills bacteria)\n"
+            "- LL-37 for wound healing → AMP(other) (directly kills bacteria, but trial is wound healing)\n"
+            "- Enfuvirtide for HIV → Other (fusion inhibitor, does NOT kill virus)\n"
+            "- HIV gp120 vaccine → Other (induces antibodies, peptide doesn't kill HIV)\n"
+            "- Peptide T for HIV cognitive impairment → Other (blocks CCR5, NOT antimicrobial)\n"
+            "- VIP/Aviptadil for COVID ARDS → Other (neuropeptide vasodilator)\n"
+            "- Semaglutide for diabetes → Other (metabolic hormone)\n"
+            "- Nisin for bacterial mastitis → AMP(infection) (pore formation kills bacteria)\n"
+            "- Daptomycin for MRSA → AMP(infection) (disrupts bacterial membranes)\n"
+            "- Influenza peptide vaccine → Other (vaccine, NOT direct killing)\n"
+            "When in doubt → 'Other'. False AMP is worse than missing a true AMP."
         ),
         "valid_values": ["AMP(infection)", "AMP(other)", "Other"],
         "parse_pattern": r"Classification:\s*(.+?)(?:\n|$)",
@@ -57,11 +61,9 @@ FIELD_PROMPTS = {
             "Oral - Tablet, Oral - Capsule, Oral - Food, Oral - Drink, Oral - Unspecified, "
             "Topical - Cream/Gel, Topical - Powder, Topical - Spray, Topical - Strip/Covering, "
             "Topical - Wash, Topical - Unspecified, Other/Unspecified, Inhalation\n\n"
-            "CRITICAL — NEVER GUESS THE INJECTION ROUTE:\n"
-            "- If the protocol says 'injection' WITHOUT specifying IM, SC, or IV → 'Injection/Infusion - Other/Unspecified'\n"
-            "- If the protocol says 'administered by injection' without route → 'Injection/Infusion - Other/Unspecified'\n"
-            "- If the protocol says 'vaccine injection' without route → 'Injection/Infusion - Other/Unspecified'\n"
-            "- Do NOT guess Intramuscular or Subcutaneous based on drug class (e.g., 'vaccines are usually IM')\n"
+            "ROUTE DETERMINATION RULES:\n"
+            "- PREFER specific routes when ANY source (FDA label, literature, protocol) names the route explicitly\n"
+            "- Use 'Injection/Infusion - Other/Unspecified' ONLY when no source provides specificity\n"
             "- Only use Intramuscular if the words 'intramuscular' or 'IM' appear explicitly\n"
             "- Only use Subcutaneous if 'subcutaneous', 'SC', 'sub-Q', or 'intradermal' appear explicitly\n"
             "- If an FDA drug label says 'SUBCUTANEOUS', that overrides a generic 'injection' in the protocol\n"
@@ -105,16 +107,27 @@ FIELD_PROMPTS = {
             "CRITICAL RULES:\n"
             "- Registry says TERMINATED → 'Terminated', regardless of interim results.\n"
             "- Registry says WITHDRAWN → 'Withdrawn'.\n"
+            "- RECRUITING / NOT_YET_RECRUITING / ENROLLING_BY_INVITATION → 'Recruiting'.\n"
+            "- ACTIVE_NOT_RECRUITING → 'Active, not recruiting'.\n"
             "- Registry says COMPLETED → use published literature to decide:\n"
             "  * Positive: published results show the trial met its primary endpoints\n"
             "  * Failed - completed trial: published results show NEGATIVE outcomes (failed to meet endpoints)\n"
-            "  * Unknown: no publications found OR results not yet published\n"
+            "  * If no publications found, apply COMPLETION HEURISTICS below.\n\n"
+            "COMPLETION HEURISTICS (when no published results found for COMPLETED trials):\n"
+            "H1. Phase I/Early Phase I that completed normally → 'Positive' (completing a safety trial IS success).\n"
+            "    BUT: H1 requires at least ONE corroborating signal: results posted, a related publication,\n"
+            "    or a subsequent later-phase trial. Phase I completion with ZERO publications and no results\n"
+            "    posted → 'Unknown', not 'Positive'.\n"
+            "H2. Results posted on ClinicalTrials.gov (hasResults=Yes) → lean 'Positive'.\n"
+            "H3. Old trial (pre-2010) completed normally, led to subsequent trials → 'Positive'.\n"
+            "H4. Completed + Results Posted but no specific result descriptions → lean 'Positive'.\n"
+            "H5. DEFAULT: Only use 'Unknown' after exhausting H1-H4.\n\n"
             "- IMPORTANT: COMPLETED status alone does NOT mean 'Failed - completed trial'. "
             "COMPLETED is a registry STATUS, not an outcome. You MUST have PUBLISHED EVIDENCE of "
-            "negative results to choose 'Failed - completed trial'. Without such evidence, "
-            "a COMPLETED trial is 'Unknown' or 'Positive'.\n"
-            "- RECRUITING / NOT_YET_RECRUITING / ENROLLING_BY_INVITATION → 'Recruiting'.\n"
-            "- ACTIVE_NOT_RECRUITING → 'Active, not recruiting'.\n"
+            "negative results to choose 'Failed - completed trial'.\n"
+            "- COMPLETED trials without published results or Results Posted=Yes → 'Unknown', NOT 'Positive'.\n"
+            "- You MUST have PUBLISHED EVIDENCE of positive results to choose 'Positive'.\n"
+            "- If NO publications, NO results posted, NO subsequent trials → 'Unknown'.\n"
             "- If multiple publications conflict, prefer the most recent one.\n"
             "- Do NOT use 'Active' alone — use the full value 'Active, not recruiting'.\n"
             "- 'COMPLETED' is NOT a valid outcome value. Translate it using the rules above."
@@ -182,7 +195,18 @@ FIELD_PROMPTS = {
             "nutritional formula, dietary supplement, or food → False.\n"
             "- Brand names containing 'peptide' do NOT make the product a peptide drug. "
             "'Peptide 1.5', 'Peptamen', 'Kate Farms Peptide' are nutritional formulas → False.\n"
-            "- Nutritional formulas with hydrolyzed proteins are NOT peptide drugs."
+            "- Nutritional formulas with hydrolyzed proteins are NOT peptide drugs.\n"
+            "- MULTI-DRUG TRIALS: evaluate the PRIMARY study drug. If a peptide is "
+            "co-administered as background therapy but the primary experimental drug is "
+            "non-peptide → False.\n"
+            "- Heat shock protein-peptide complexes: the peptide is antigenic cargo, "
+            "not the active mechanism → False.\n"
+            "- Autologous dexosomes/exosomes loaded with peptides: the vehicle is the "
+            "drug, not the peptide cargo → False.\n\n"
+            "ADDITIONAL EXAMPLES:\n"
+            "- HSPPC-96/Oncophage (heat shock protein-peptide complex) → False\n"
+            "- Autologous dexosomes loaded with peptides → False\n"
+            "- Amdoxovir + enfuvirtide (nucleoside + peptide combo, primary = amdoxovir) → False\n"
         ),
         "valid_values": ["True", "False"],
         "parse_pattern": r"Peptide:\s*(True|False)",
@@ -223,16 +247,63 @@ class BlindVerifier:
                 reasoning=f"Unknown field: {field_name}",
             )
 
-        # Build evidence from research (raw data only, no primary answer)
-        evidence_text = f"Trial: {nct_id}\n\nEvidence from research:\n"
+        # Build structured evidence from research (raw data only, no primary answer)
+        # Uses the same section-grouped format as the primary annotation agents
+        # so verifiers see the same organized evidence structure.
+        from agents.base import BaseAnnotationAgent, FIELD_RELEVANCE
+
+        # Build structured evidence using the shared builder
+        _SOURCE_TO_SECTION = {
+            "clinicaltrials_gov": "TRIAL METADATA",
+            "who_ictrp": "TRIAL METADATA",
+            "openfda": "TRIAL METADATA",
+            "pubmed": "PUBLISHED RESULTS",
+            "pmc": "PUBLISHED RESULTS",
+            "pmc_bioc": "PUBLISHED RESULTS",
+            "europe_pmc": "PUBLISHED RESULTS",
+            "semantic_scholar": "PUBLISHED RESULTS",
+            "chembl": "DRUG/PEPTIDE DATA",
+            "uniprot": "DRUG/PEPTIDE DATA",
+            "dramp": "DRUG/PEPTIDE DATA",
+            "iuphar": "DRUG/PEPTIDE DATA",
+            "dbaasp": "ANTIMICROBIAL DATA",
+            "apd": "ANTIMICROBIAL DATA",
+            "rcsb_pdb": "STRUCTURAL DATA",
+            "pdbe": "STRUCTURAL DATA",
+            "ebi_proteins": "STRUCTURAL DATA",
+            "duckduckgo": "WEB SOURCES",
+        }
+        sections: dict[str, list[str]] = {}
+        seen: set[str] = set()
+        total = 0
         for result in research_results:
             if result.error:
                 continue
-            for citation in result.citations[:10]:
-                evidence_text += (
-                    f"[{citation.source_name}] {citation.identifier or ''}: "
-                    f"{citation.snippet}\n"
+            for citation in result.citations[:8]:
+                if total >= 25:
+                    break
+                key = (citation.snippet or "")[:60].lower()
+                if key in seen:
+                    continue
+                seen.add(key)
+                section = _SOURCE_TO_SECTION.get(citation.source_name, "WEB SOURCES")
+                line = (
+                    f"[{citation.source_name}] "
+                    f"{citation.identifier or ''}: "
+                    f"{citation.snippet}"
                 )
+                sections.setdefault(section, []).append(line)
+                total += 1
+
+        evidence_parts = [f"Trial: {nct_id}\n"]
+        for sec_name in [
+            "TRIAL METADATA", "PUBLISHED RESULTS", "DRUG/PEPTIDE DATA",
+            "ANTIMICROBIAL DATA", "STRUCTURAL DATA", "WEB SOURCES",
+        ]:
+            if sec_name in sections:
+                evidence_parts.append(f"\n=== {sec_name} ===")
+                evidence_parts.extend(sections[sec_name])
+        evidence_text = "\n".join(evidence_parts)
 
         # Build field-specific label for the prompt
         field_labels = {

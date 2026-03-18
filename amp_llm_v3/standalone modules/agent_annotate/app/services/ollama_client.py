@@ -31,6 +31,8 @@ class OllamaAnnotationClient:
         self._base_url = OLLAMA_BASE_URL
         self._timeout = OLLAMA_TIMEOUT
         self._keep_alive = _KEEP_ALIVE_MAC  # default, updated by set_hardware_profile
+        self._call_count = 0
+        self._call_count_by_model: dict[str, int] = {}
 
     def set_hardware_profile(self, profile: str) -> None:
         """Set keep_alive based on hardware profile."""
@@ -58,6 +60,9 @@ class OllamaAnnotationClient:
         }
         if system:
             payload["system"] = system
+
+        self._call_count += 1
+        self._call_count_by_model[model] = self._call_count_by_model.get(model, 0) + 1
 
         async with self._lock:
             try:
@@ -111,6 +116,19 @@ class OllamaAnnotationClient:
                 return resp.status_code == 200
         except Exception:
             return False
+
+    def get_call_count(self) -> int:
+        """Total LLM calls since last reset."""
+        return self._call_count
+
+    def get_call_counts_by_model(self) -> dict[str, int]:
+        """LLM calls broken down by model name."""
+        return dict(self._call_count_by_model)
+
+    def reset_call_count(self):
+        """Reset call counters (call at start of each trial)."""
+        self._call_count = 0
+        self._call_count_by_model.clear()
 
 
 # Module-level singleton

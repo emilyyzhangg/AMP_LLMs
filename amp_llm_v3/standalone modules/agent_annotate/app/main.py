@@ -116,8 +116,10 @@ class AuthMiddleware(BaseHTTPMiddleware):
             is_exempt = (
                 path in AUTH_EXEMPT_API_PATHS
                 or path.endswith("/resume")
+                or path.endswith("/cancel")
                 or path.startswith("/api/status/pipeline/")
                 or path.startswith("/api/concordance/")
+                or (path == "/api/jobs" and request.method == "POST")
             )
             if not is_exempt:
                 token = get_token_from_request(request)

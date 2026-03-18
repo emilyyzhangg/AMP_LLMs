@@ -22,6 +22,143 @@ logger = logging.getLogger("agent_annotate.annotation.classification")
 
 VALID_VALUES = ["AMP(infection)", "AMP(other)", "Other"]
 
+# --------------------------------------------------------------------------- #
+#  Known AMP drugs — deterministic classification bypass (v9)
+# --------------------------------------------------------------------------- #
+
+_KNOWN_AMP_DRUGS = {
+    "colistin", "colistimethate", "polymyxin b", "polymyxin e",
+    "daptomycin", "nisin", "gramicidin", "tyrothricin", "bacitracin",
+    "vancomycin", "teicoplanin", "telavancin", "dalbavancin", "oritavancin",
+    "ramoplanin", "surotomycin", "friulimicin",
+    "ll-37", "ll37", "cathelicidin", "defensin", "hbd-1", "hbd-2", "hbd-3",
+    "hnp-1", "hnp-2", "hnp-3", "hd-5", "hd-6",
+    "thymosin alpha-1", "thymosin alpha 1", "thymalfasin", "zadaxin",
+    "melittin", "magainin", "cecropin", "lactoferricin", "lactoferrin",
+    "pexiganan", "msrdn-1", "omiganan", "iseganan",
+    "djk-5", "idr-1018",
+    "ic41", "ic43",
+}
+
+_INFECTION_KEYWORDS = {
+    "infection", "infectious", "bacterial", "viral", "fungal", "sepsis",
+    "septic", "pneumonia", "meningitis", "endocarditis", "bacteremia",
+    "urinary tract", "uti", "skin and soft tissue", "sssi", "absssi",
+    "peritonitis", "osteomyelitis", "wound infection", "surgical site",
+    "cystic fibrosis", "ventilator-associated", "hospital-acquired",
+    "nosocomial", "multidrug-resistant", "mdr", "xdr", "drug-resistant",
+    "mrsa", "vre", "esbl", "carbapenem-resistant", "clostridium difficile",
+    "c. difficile", "clostridioides", "pseudomonas", "acinetobacter",
+    "klebsiella", "tuberculosis", "tb", "malaria", "hiv", "hepatitis",
+    "herpes", "influenza", "covid", "sars-cov", "anthrax", "plague",
+    "cholera", "typhoid", "gonorrhea", "chlamydia", "mastitis",
+}
+
+_KNOWN_NON_AMP_DRUGS = {
+    "enfuvirtide", "t-20", "fuzeon", "ibalizumab", "maraviroc",
+    "semaglutide", "liraglutide", "exenatide", "dulaglutide", "tirzepatide",
+    "apraglutide", "teduglutide", "glepaglutide",
+    "insulin", "insulin glargine", "insulin lispro", "insulin aspart",
+    "insulin detemir", "insulin degludec",
+    "leuprolide", "leuprorelin", "goserelin", "triptorelin", "buserelin",
+    "nafarelin", "degarelix", "cetrorelix", "ganirelix",
+    "octreotide", "lanreotide", "pasireotide", "vapreotide",
+    "aviptadil", "vip", "vasoactive intestinal peptide",
+    "vosoritide", "cnp",
+    "calcitonin", "teriparatide", "abaloparatide",
+    "oxytocin", "vasopressin", "desmopressin", "terlipressin", "carbetocin",
+    "peptide t", "dapta",
+    "rada16", "p11-4", "curodont",
+    "lutetium lu 177 dotatate", "lutathera", "177lu-dotatate",
+    "gallium ga 68 dotatate", "68ga-dotatate",
+    "neoantigen", "personalized neoantigen",
+    "peptide 1.5", "peptamen", "kate farms peptide",
+    "vital peptide", "nutri peptide",
+}
+
+
+def _deterministic_classify(
+    nct_id: str,
+    research_results: list,
+    metadata: dict | None,
+) -> FieldAnnotation | None:
+    """Attempt deterministic classification before LLM passes.
+    Returns a FieldAnnotation with skip_verification=True if matched, or None."""
+    intervention_names: list[str] = []
+    conditions: list[str] = []
+    has_dramp = False
+    has_dbaasp = False
+    has_apd = False
+
+    for result in research_results:
+        if result.error:
+            continue
+        if result.agent_name == "clinical_protocol" and result.raw_data:
+            proto = result.raw_data.get(
+                "protocol_section",
+                result.raw_data.get("protocolSection", {}),
+            )
+            arms_mod = proto.get("armsInterventionsModule", {})
+            for interv in arms_mod.get("interventions", []):
+                name = interv.get("name", "")
+                if name:
+                    intervention_names.append(name.lower().strip())
+            cond_mod = proto.get("conditionsModule", {})
+            for cond in cond_mod.get("conditions", []):
+                conditions.append(cond.lower().strip())
+        if result.agent_name in ("peptide_identity", "dbaasp", "apd", "dbamp"):
+            for citation in result.citations:
+                src = citation.source_name.lower()
+                if "dramp" in src:
+                    has_dramp = True
+                if "dbaasp" in src:
+                    has_dbaasp = True
+                if "apd" in src:
+                    has_apd = True
+
+    if not intervention_names:
+        return None
+
+    for name in intervention_names:
+        for non_amp in _KNOWN_NON_AMP_DRUGS:
+            if non_amp in name or name in non_amp:
+                logger.info(f"  classification: deterministic → Other (known non-AMP: '{name}' matched '{non_amp}')")
+                return FieldAnnotation(
+                    field_name="classification", value="Other", confidence=0.95,
+                    reasoning=f"[Deterministic v9] Known non-AMP drug: '{name}' matched '{non_amp}'",
+                    evidence=[], model_name="deterministic", skip_verification=True,
+                )
+
+    for name in intervention_names:
+        for amp_drug in _KNOWN_AMP_DRUGS:
+            if amp_drug in name or name in amp_drug:
+                all_text = " ".join(conditions + intervention_names)
+                is_infection = any(kw in all_text for kw in _INFECTION_KEYWORDS)
+                value = "AMP(infection)" if is_infection else "AMP(other)"
+                logger.info(f"  classification: deterministic → {value} (known AMP: '{name}' matched '{amp_drug}')")
+                return FieldAnnotation(
+                    field_name="classification", value=value, confidence=0.95,
+                    reasoning=f"[Deterministic v9] Known AMP drug: '{name}' matched '{amp_drug}'. Infection context: {is_infection}",
+                    evidence=[], model_name="deterministic", skip_verification=True,
+                )
+
+    if has_dramp or has_dbaasp or has_apd:
+        all_text = " ".join(conditions + intervention_names)
+        is_infection = any(kw in all_text for kw in _INFECTION_KEYWORDS)
+        value = "AMP(infection)" if is_infection else "AMP(other)"
+        db_names = []
+        if has_dramp: db_names.append("DRAMP")
+        if has_dbaasp: db_names.append("DBAASP")
+        if has_apd: db_names.append("APD")
+        logger.info(f"  classification: deterministic → {value} (database hits: {', '.join(db_names)})")
+        return FieldAnnotation(
+            field_name="classification", value=value, confidence=0.95,
+            reasoning=f"[Deterministic v9] AMP database hits: {', '.join(db_names)}. Infection context: {is_infection}",
+            evidence=[], model_name="deterministic", skip_verification=True,
+        )
+
+    return None
+
 # Hardware profile → model selection for classification
 # Classification uses a larger model because 8B ignores worked examples
 MODEL_OVERRIDES = {
@@ -74,79 +211,117 @@ STEP 1 — Is the intervention a peptide?
 
 STEP 2 — Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?
 
-  THE CORE TEST: Does this peptide have a DIRECT antimicrobial mechanism — meaning it
-  directly kills, inhibits, or disrupts bacteria, fungi, viruses, or other pathogens?
-  OR does it directly stimulate immune DEFENSE specifically against pathogens?
+  THE CORE TEST: Does this peptide DIRECTLY kill, inhibit, or disrupt bacteria, fungi,
+  viruses, or other pathogens through its OWN biochemical action? Does it directly
+  stimulate immune DEFENSE specifically against pathogens through antimicrobial mechanisms
+  (membrane disruption, pore formation, pathogen lysis)?
 
-  An AMP participates in defense against pathogens through ANY of these modes:
-  A) Direct antimicrobial: kills/inhibits microorganisms (e.g., colistin disrupts bacterial membranes)
-  B) Immunostimulatory: PROMOTES immune defense against pathogens (e.g., LL-37 recruits immune cells)
-  C) Anti-biofilm: disrupts microbial biofilms
-  D) Pathogen-targeting vaccine: induces immune responses against specific pathogens
+  An AMP must have DIRECT antimicrobial activity through ONE of these specific modes:
+  A) Direct antimicrobial: physically kills/lyses microorganisms (e.g., colistin disrupts bacterial membranes, nisin forms pores)
+  B) Immunostimulatory HOST DEFENSE peptide: DIRECTLY recruits immune cells to kill pathogens at infection sites (e.g., LL-37, defensins, cathelicidins)
+  C) Anti-biofilm: DIRECTLY disrupts microbial biofilms through biochemical interaction
+
+  IMPORTANT: Mode D (pathogen-targeting vaccines) was REMOVED. Peptide vaccines that induce
+  antibodies against pathogens are NOT AMPs — they work through adaptive immunity, not through
+  direct antimicrobial action. A vaccine peptide does not itself kill pathogens.
 
   CHECK THE EXTRACTED FACTS:
-  - Database Matches: If found in DRAMP or APD3 → strong evidence FOR AMP
-  - Mechanism: If direct antimicrobial or immunostimulatory against pathogens → AMP
-  - Immune Direction: If "PROMOTE" → supports AMP. If "SUPPRESS" → NOT an AMP. If "immune-neutral" → NOT an AMP.
+  - Database Matches: DRAMP or APD3 hit → evidence FOR AMP, but not sufficient alone. The peptide
+    MUST also have a direct antimicrobial mechanism confirmed in the facts.
+  - Mechanism: ONLY "directly kills/inhibits microorganisms" or "directly recruits immune cells to
+    kill pathogens" qualifies. General "immunomodulation" does NOT qualify.
+  - Immune Direction: "PROMOTE" alone is NOT enough. Many peptides promote immune responses but
+    are NOT antimicrobial (e.g., cancer vaccines, adjuvants). The immune promotion must be
+    SPECIFICALLY directed at killing/clearing pathogens through innate defense mechanisms.
 
-  CRITICAL — NOT AMPs (even if peptide=True). Being a peptide is NOT enough:
-  - Neuropeptides and vasodilators: VIP (Vasoactive Intestinal Peptide), Aviptadil — these are
-    neuropeptides that cause vasodilation and immunosuppression, NOT antimicrobial action
-  - Vaccine peptides that target autoimmune disease (NOT pathogens): StreptInCor targets
-    S. pyogenes epitopes to PREVENT autoimmune rheumatic heart disease — it is a tolerogenic/
-    immunomodulatory vaccine, NOT an antimicrobial agent. It does not kill bacteria.
-  - Metabolic hormones (GLP-1, GLP-2, GnRH, somatostatin, GIP)
-  - Bone growth regulators (vosoritide/CNP)
-  - Immunosuppressive peptides (suppress T-cells for autoimmune disease)
-  - Self-assembling/structural peptides (physical mechanism, not biological)
-  - Cancer neoantigen vaccines (target tumor cells, NOT pathogens)
-  - Radiolabeled peptide conjugates (peptide is targeting vector, not the drug)
+  CRITICAL — NOT AMPs. The following are NEVER AMPs regardless of context:
 
-  KEY DISTINCTION: A peptide that modulates the immune system is NOT automatically an AMP.
-  AMPs must have a PRO-DEFENSE, ANTI-PATHOGEN mechanism. Peptides that suppress immunity,
-  induce tolerance, cause vasodilation, or regulate metabolism are "Other" even if they
-  interact with immune cells.
+  ANTIRETROVIRALS AND HIV DRUGS — these are the most common misclassification:
+  - Enfuvirtide (T-20/Fuzeon): blocks HIV viral FUSION with host cells. This is a VIRAL ENTRY
+    INHIBITOR, not an antimicrobial peptide. It does NOT kill HIV — it prevents cell entry.
+    Classification: Other.
+  - HIV peptide vaccines (gp120 peptides, gp41 peptides, HIV envelope peptides): these induce
+    antibody responses against HIV. They do NOT directly kill the virus. Classification: Other.
+  - Peptide T (DAPTA): binds CCR5 chemokine receptor, blocks HIV entry. It does NOT kill HIV
+    or any pathogen. Classification: Other.
+  - ANY peptide used in HIV/AIDS trials that works by blocking viral entry, inducing antibodies,
+    or modulating immune response → Other. HIV drugs are NOT AMPs unless they physically lyse
+    or disrupt viral particles (which is extremely rare).
+
+  VACCINE PEPTIDES — NOT AMPs even if targeting pathogens:
+  - Peptide vaccines (hepatitis, influenza, malaria, HPV, etc.): induce adaptive immune
+    responses. The peptide itself does NOT kill pathogens. Classification: Other.
+  - StreptInCor: prevents autoimmune rheumatic heart disease. Classification: Other.
+  - Cancer neoantigen vaccines: target tumor cells, NOT pathogens. Classification: Other.
+
+  OTHER NON-AMP PEPTIDES:
+  - Neuropeptides and vasodilators: VIP/Aviptadil, substance P, CGRP
+  - Metabolic hormones: GLP-1, GLP-2, GnRH, somatostatin, GIP, insulin, oxytocin
+  - Bone growth regulators: vosoritide/CNP
+  - Immunosuppressive peptides: suppress T-cells for autoimmune disease
+  - Self-assembling/structural peptides: physical mechanism, not biological
+  - Radiolabeled peptide conjugates: peptide is targeting vector, not the drug
+  - Collagen/nutritional peptides: structural/metabolic
+
+  DECISIVE RULE: If the peptide's mechanism is ANY of the following, it is "Other":
+  - Viral entry inhibition (blocks receptor binding, fusion inhibition)
+  - Vaccine/antibody induction (adaptive immune response)
+  - Vasodilation, immunosuppression, tolerance induction
+  - Metabolic regulation, hormone signaling
+  - Receptor blocking/agonism (unless the receptor is on a pathogen)
+  - General immunomodulation without direct pathogen killing
 
   If NOT an AMP → STOP → answer "Other".
 
 STEP 3 — Does this AMP target infection?
-  AMP(infection): Trial treats infection, infectious disease, AMR, sepsis, or pathogen-specific conditions.
+  AMP(infection): Trial treats active infection, infectious disease, AMR, sepsis, or pathogen-specific conditions.
   AMP(other): AMP used for wound healing, cancer immunotherapy, anti-inflammatory, or non-infectious biofilm.
 
 WORKED EXAMPLES — study these before answering:
 
 Example A: Colistin for drug-resistant bacterial infection
-→ AMP(infection). Direct antimicrobial peptide treating infection.
+→ AMP(infection). Direct antimicrobial peptide that disrupts bacterial membranes, treating infection.
 
 Example B: LL-37 for diabetic wound healing
-→ AMP(other). LL-37 is a confirmed AMP (in DRAMP, kills bacteria) but the trial targets wound healing, not infection.
+→ AMP(other). LL-37 is a confirmed AMP (in DRAMP, directly kills bacteria) but the trial targets wound healing, not infection.
 
-Example C: Aviptadil (VIP) for COVID-19 ARDS or cluster headaches
-→ Other. VIP/Aviptadil is a neuropeptide vasodilator. It does NOT kill pathogens. Even though it was
-  tested in COVID patients, its mechanism is vasodilation and anti-inflammation, NOT antimicrobial.
+Example C: Aviptadil (VIP) for COVID-19 ARDS
+→ Other. VIP/Aviptadil is a neuropeptide vasodilator. It does NOT kill pathogens. Testing in COVID patients does NOT make it an AMP.
 
-Example D: StreptInCor vaccine for rheumatic heart disease prevention
-→ Other. StreptInCor is a synthetic peptide designed to induce immune tolerance to prevent autoimmune
-  rheumatic heart disease. It does NOT directly kill S. pyogenes bacteria. The goal is preventing
-  the autoimmune sequel, not treating the infection.
+Example D: Enfuvirtide (T-20) for HIV
+→ Other. Enfuvirtide blocks HIV fusion with host cells — it is a VIRAL ENTRY INHIBITOR. It does NOT directly kill or lyse HIV. It is NOT an AMP.
 
-Example E: Semaglutide for diabetes
+Example E: HIV gp120 peptide vaccine
+→ Other. Induces antibodies against HIV envelope protein. The peptide itself does NOT kill HIV. Vaccines are NOT AMPs.
+
+Example F: Semaglutide for diabetes
 → Other. GLP-1 analogue — metabolic hormone, not antimicrobial.
 
-Example F: Nisin for bacterial mastitis
-→ AMP(infection). Nisin is a confirmed AMP that directly kills bacteria, used to treat infection.
+Example G: Nisin for bacterial mastitis
+→ AMP(infection). Nisin directly kills bacteria through membrane pore formation.
+
+Example H: Peptide T (DAPTA) for HIV-associated cognitive impairment
+→ Other. Peptide T blocks CCR5 receptor. It does NOT directly kill HIV or any pathogen. It is NOT an AMP.
+
+Example I: Daptomycin for MRSA bacteremia
+→ AMP(infection). Daptomycin is a lipopeptide that directly disrupts bacterial cell membranes.
+
+Example J: Influenza peptide vaccine
+→ Other. Induces immune response against influenza. The peptide does NOT directly kill the virus.
 
 CRITICAL RULES:
-- If Database Matches says "No evidence found" AND Mechanism shows no antimicrobial/immunostimulatory activity → almost certainly "Other"
-- If Immune Direction says "SUPPRESS" → always "Other" regardless of peptide origin
-- If the mechanism is vasodilation, immunosuppression, tolerance induction, or metabolic regulation → "Other"
-- Cancer neoantigen vaccines target tumor antigens NOT pathogen antigens → "Other"
-- Collagen peptides, nutritional peptides, structural peptides → "Other"
-- A peptide being RELATED to infection (e.g., tested in COVID patients, derived from a pathogen) does NOT make it an AMP unless its mechanism is directly antimicrobial
+- If Database Matches says "No evidence found" AND Mechanism shows no direct antimicrobial activity → "Other"
+- If Immune Direction says "SUPPRESS" → always "Other"
+- If mechanism is viral entry inhibition, receptor blocking, or vaccine/antibody induction → "Other"
+- A peptide being USED IN an infectious disease trial does NOT make it an AMP
+- A peptide being DERIVED FROM a pathogen does NOT make it an AMP
+- A peptide that TREATS infection but works by a non-antimicrobial mechanism (e.g., blocking viral entry) → "Other"
+- ONLY peptides that DIRECTLY KILL or PHYSICALLY DISRUPT pathogens qualify as AMPs
+- When in doubt, default to "Other" — false AMP classification is worse than missing a true AMP
 
 Format your response EXACTLY as:
 Classification: [AMP(infection), AMP(other), or Other]
-Reasoning: [Walk through Step 1 → 2 → 3 using the extracted facts]"""
+Reasoning: [Walk through Step 1 → 2 → 3 using the extracted facts. Explicitly state the mechanism and why it is/isn't direct antimicrobial action.]"""
 
 # --------------------------------------------------------------------------- #
 #  Deterministic fallback if Pass 2 fails
@@ -172,14 +347,18 @@ def _fallback_classify(pass1_text: str, peptide_value: str) -> str:
     if has_suppress:
         return "Other"
 
-    # Strong NOT-AMP signals
+    # NOT-AMP mechanism signals (from Pass 1 extracted evidence, NOT drug names)
     not_amp_keywords = [
-        "metabolic hormone", "glp-1", "glp-2", "gnrh", "somatostatin",
-        "vasoactive", "vasodilat", "neuropeptide", "aviptadil",
-        "bone growth", "natriuretic", "self-assembling",
-        "remineralization", "neoantigen", "radiolabeled", "nutritional",
-        "collagen", "immune-neutral", "tolerance", "tolerogenic",
-        "autoimmune", "rheumatic heart", "streptincor",
+        # Non-antimicrobial mechanisms
+        "metabolic hormone", "vasodilat", "neuropeptide",
+        "bone growth", "self-assembling", "remineralization",
+        "neoantigen", "radiolabeled", "nutritional", "collagen",
+        "immune-neutral", "tolerance", "tolerogenic",
+        # Mechanism-based exclusions
+        "viral entry", "fusion inhibit", "receptor block",
+        "receptor agonist", "adaptive immun",
+        "induce antibod", "antibody response",
+        "immunosuppress", "autoimmune",
     ]
     if any(kw in lower for kw in not_amp_keywords):
         return "Other"
@@ -219,28 +398,35 @@ class ClassificationAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
+        # v9: Try deterministic classification first
+        det_result = _deterministic_classify(nct_id, research_results, metadata)
+        if det_result is not None:
+            return det_result
+
         from app.services.ollama_client import ollama_client
         from app.services.config_service import config_service
 
         config = config_service.get()
         model = self._get_model(config)
 
-        # Gather citations sorted by relevance
-        all_citations = []
-        for result in research_results:
-            weight = self.relevance_weight(result.agent_name)
-            for citation in result.citations:
-                all_citations.append((citation, weight))
-        all_citations.sort(key=lambda x: x[1], reverse=True)
+        # Server profile with larger models can digest more evidence
+        is_server = config.orchestrator.hardware_profile == "server"
+        max_cites = 50 if is_server else 30
+        max_snippet = 500 if is_server else 250
 
-        cited_sources = [c for c, _ in all_citations[:30]]
+        # Build structured evidence with section grouping
+        structured_text, cited_sources = self.build_structured_evidence(
+            nct_id, research_results,
+            max_citations=max_cites,
+            max_snippet_chars=max_snippet,
+        )
 
-        # Build evidence text with DRAMP/database signals highlighted
+        # Prepend peptide determination and key database highlights
         peptide_value = metadata.get("peptide_result", "Unknown") if metadata else "Unknown"
-        evidence_text = f"Trial: {nct_id}\n"
-        evidence_text += f"Peptide determination: {peptide_value}\n\n"
+        header = f"Trial: {nct_id}\nPeptide determination: {peptide_value}\n"
 
-        # Highlight database matches at top of evidence
+        # Highlight DRAMP/UniProt matches above the structured sections
+        # so the LLM sees AMP-specific signals first
         dramp_hits = []
         uniprot_hits = []
         for result in research_results:
@@ -252,19 +438,15 @@ class ClassificationAgent(BaseAnnotationAgent):
                         uniprot_hits.append(citation)
 
         if dramp_hits:
-            evidence_text += "DRAMP (Antimicrobial Peptide Database) MATCHES:\n"
+            header += "\nDRAMP (Antimicrobial Peptide Database) MATCHES:\n"
             for c in dramp_hits:
-                evidence_text += f"  {c.identifier}: {c.snippet}\n"
-            evidence_text += "\n"
+                header += f"  {c.identifier}: {c.snippet}\n"
         if uniprot_hits:
-            evidence_text += "UniProt MATCHES:\n"
+            header += "\nUniProt MATCHES:\n"
             for c in uniprot_hits:
-                evidence_text += f"  {c.identifier}: {c.snippet}\n"
-            evidence_text += "\n"
+                header += f"  {c.identifier}: {c.snippet}\n"
 
-        evidence_text += "ALL EVIDENCE:\n"
-        for citation in cited_sources:
-            evidence_text += f"[{citation.source_name}] {citation.identifier or ''}: {citation.snippet}\n"
+        evidence_text = header + "\n" + structured_text
 
         # --- Pass 1: Extract antimicrobial evidence ---
         logger.info(f"  classification: Pass 1 — extracting AMP evidence for {nct_id}")

@@ -73,37 +73,45 @@ class DBAASPClient(BaseResearchAgent):
         async with httpx.AsyncClient(timeout=20) as client:
             for intervention in interventions[:3]:
                 try:
-                    # DBAASP uses name.value + name.comparator for substring search
-                    resp = await resilient_get(
-                        DBAASP_SEARCH_URL,
-                        client=client,
-                        params={
-                            "name.value": intervention,
-                            "name.comparator": "like",
-                            "offset": 0,
-                            "limit": 10,
-                        },
-                        headers={"Accept": "application/json"},
-                    )
-                    if resp.status_code != 200:
-                        raw_data[f"dbaasp_{intervention}_status"] = resp.status_code
+                    # Try EXACT match first (comparator=eq), fall back to substring (like)
+                    # only if exact match returns no results. This prevents "Peptide T"
+                    # from matching every peptide in the database via substring.
+                    peptides = []
+                    total = 0
+                    for comparator in ("eq", "like"):
+                        resp = await resilient_get(
+                            DBAASP_SEARCH_URL,
+                            client=client,
+                            params={
+                                "name.value": intervention,
+                                "name.comparator": comparator,
+                                "offset": 0,
+                                "limit": 5,
+                            },
+                            headers={"Accept": "application/json"},
+                        )
+                        if resp.status_code != 200:
+                            continue
+
+                        body = resp.text.strip()
+                        if not body:
+                            continue
+
+                        data = resp.json()
+                        peptides = data.get("data", []) if isinstance(data, dict) else []
+                        if isinstance(data, list):
+                            peptides = data
+                        if not isinstance(peptides, list):
+                            peptides = [peptides] if peptides else []
+                        total = data.get("totalCount", len(peptides)) if isinstance(data, dict) else len(peptides)
+
+                        if peptides:
+                            raw_data[f"dbaasp_{intervention}_match"] = comparator
+                            break  # Use exact match results if available
+
+                    if not peptides:
+                        raw_data[f"dbaasp_{intervention}"] = {"found": False}
                         continue
-
-                    # Guard against empty body (content-length: 0)
-                    body = resp.text.strip()
-                    if not body:
-                        raw_data[f"dbaasp_{intervention}"] = {"found": False, "note": "empty response"}
-                        continue
-
-                    data = resp.json()
-                    # Response shape: {"totalCount": N, "data": [...]}
-                    peptides = data.get("data", []) if isinstance(data, dict) else []
-                    if isinstance(data, list):
-                        peptides = data
-                    if not isinstance(peptides, list):
-                        peptides = [peptides] if peptides else []
-
-                    total = data.get("totalCount", len(peptides)) if isinstance(data, dict) else len(peptides)
                     raw_data[f"dbaasp_{intervention}"] = {
                         "total": total,
                         "entries": peptides[:5],

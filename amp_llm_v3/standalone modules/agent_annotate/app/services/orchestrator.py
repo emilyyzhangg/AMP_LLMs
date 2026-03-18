@@ -384,6 +384,11 @@ class PipelineOrchestrator:
                     nct_id, annotations, verified, research, config
                 )
 
+                # --- Post-verification consistency enforcement ---
+                # Cross-field rules on final verified values resolve
+                # ~25 of 32 review items automatically (v7)
+                self._enforce_post_verification_consistency(verified)
+
                 # Build trial result
                 metadata = self._extract_metadata(nct_id, research)
 
@@ -606,18 +611,19 @@ class PipelineOrchestrator:
         annotations.append(peptide_ann)
         shared_metadata["peptide_result"] = peptide_ann.value
 
-        # --- Step 2: Run remaining agents (classification gets peptide result) ---
-        remaining_fields = [f for f in ANNOTATION_AGENTS if f != "peptide"]
+        # --- Step 2: Run classification, delivery_mode, outcome (NOT failure_reason yet) ---
+        # failure_reason depends on outcome, so we run it after outcome completes.
+        step2_fields = [f for f in ANNOTATION_AGENTS if f not in ("peptide", "reason_for_failure")]
 
         if config.orchestrator.parallel_annotation:
             tasks = []
-            for field in remaining_fields:
+            for field in step2_fields:
                 meta = shared_metadata if field == "classification" else None
                 tasks.append(annotate_field(field, metadata=meta))
             results = list(await asyncio.gather(*tasks, return_exceptions=True))
             for i, ann in enumerate(results):
                 if isinstance(ann, Exception):
-                    field = remaining_fields[i]
+                    field = step2_fields[i]
                     results[i] = FieldAnnotation(
                         field_name=field,
                         value="Unknown",
@@ -625,7 +631,7 @@ class PipelineOrchestrator:
                     )
             annotations.extend(results)
         else:
-            for field in remaining_fields:
+            for field in step2_fields:
                 try:
                     meta = shared_metadata if field == "classification" else None
                     ann = await annotate_field(field, metadata=meta)
@@ -636,6 +642,20 @@ class PipelineOrchestrator:
                         value="Unknown",
                         reasoning=f"Agent error: {e}",
                     ))
+
+        # --- Step 3: Run failure_reason AFTER outcome (it needs the outcome result) ---
+        outcome_ann = next((a for a in annotations if a.field_name == "outcome"), None)
+        if outcome_ann:
+            shared_metadata["outcome_result"] = outcome_ann.value
+        try:
+            failure_ann = await annotate_field("reason_for_failure", metadata=shared_metadata)
+        except Exception as e:
+            failure_ann = FieldAnnotation(
+                field_name="reason_for_failure",
+                value="",
+                reasoning=f"Agent error: {e}",
+            )
+        annotations.append(failure_ann)
 
         return annotations
 
@@ -658,6 +678,16 @@ class PipelineOrchestrator:
         classification_ann = ann_by_field.get("classification")
 
         if not peptide_ann or not classification_ann:
+            return annotations, verified
+
+        # v9.1: If classification was deterministic, the cascade doesn't apply.
+        # Deterministic classification is based on drug name lookup, not peptide value,
+        # so a flipped peptide won't change the result.
+        if classification_ann.skip_verification:
+            logger.info(
+                f"  Peptide cascade: skipping — classification was deterministic "
+                f"('{classification_ann.value}')"
+            )
             return annotations, verified
 
         # Find the peptide verification result
@@ -814,6 +844,73 @@ class PipelineOrchestrator:
                 )
 
     @staticmethod
+    def _enforce_post_verification_consistency(verified: VerifiedAnnotation) -> None:
+        """Enforce cross-field consistency on FINAL verified values.
+
+        Runs AFTER verification to resolve review items that are
+        artifacts of cross-field coupling rather than genuine disagreements.
+
+        v7: Resolves ~25 of 32 review items automatically by enforcing:
+        - outcome ∈ {Positive, Recruiting, Active, Unknown} → failure_reason = ""
+        - peptide = False → classification = "Other"
+        """
+        field_map = {f.field_name: f for f in verified.fields}
+        outcome_f = field_map.get("outcome")
+        failure_f = field_map.get("reason_for_failure")
+        peptide_f = field_map.get("peptide")
+        classification_f = field_map.get("classification")
+
+        # Get effective values (final_value if set, else original_value)
+        def effective(f):
+            if f is None:
+                return None
+            return f.final_value if f.final_value else f.original_value
+
+        outcome_val = effective(outcome_f)
+        peptide_val = effective(peptide_f)
+
+        # Rule 1: non-failure outcome → force failure_reason empty
+        non_failure = {"Positive", "Recruiting", "Active, not recruiting", "Unknown"}
+        if outcome_val in non_failure and failure_f:
+            eff_failure = effective(failure_f)
+            if eff_failure and eff_failure.lower() not in ("", "empty"):
+                logger.info(
+                    f"  post-verification consistency: outcome='{outcome_val}', "
+                    f"forcing failure_reason from '{eff_failure}' to ''"
+                )
+                failure_f.final_value = ""
+                failure_f.consensus_reached = True
+                # Don't flag for review — the cross-field rule resolves it
+
+        # Rule 2: peptide=False → classification must be Other
+        if peptide_val == "False" and classification_f:
+            eff_class = effective(classification_f)
+            if eff_class and eff_class != "Other":
+                logger.info(
+                    f"  post-verification consistency: peptide=False, "
+                    f"forcing classification from '{eff_class}' to 'Other'"
+                )
+                classification_f.final_value = "Other"
+                classification_f.consensus_reached = True
+
+        # Update overall flags
+        all_consensus = all(f.consensus_reached for f in verified.fields)
+        if all_consensus:
+            verified.flagged_for_review = False
+            verified.flag_reason = ""
+        else:
+            # Recompute: only flag if there are still genuine disagreements
+            remaining = [
+                f.field_name for f in verified.fields if not f.consensus_reached
+            ]
+            if remaining:
+                verified.flagged_for_review = True
+                verified.flag_reason = f"Unresolved disagreements: {', '.join(remaining)}"
+            else:
+                verified.flagged_for_review = False
+                verified.flag_reason = ""
+
+    @staticmethod
     def _update_timing(
         job: AnnotationJob,
         trial_start: float,
@@ -915,6 +1012,22 @@ class PipelineOrchestrator:
             field = annotation.field_name
             primary_value = annotation.value
             logger.info(f"  Verifying {field}: primary='{primary_value}'")
+
+            # v9: Skip verification for deterministic pre-classifier results
+            if annotation.skip_verification:
+                logger.info(
+                    f"  {field}: SKIP verification (deterministic, "
+                    f"confidence={annotation.confidence})"
+                )
+                consensus_results.append(ConsensusResult(
+                    field_name=field,
+                    original_value=primary_value,
+                    final_value=primary_value,
+                    consensus_reached=True,
+                    agreement_ratio=1.0,
+                    opinions=[],
+                ))
+                continue
 
             # Skip verification for low-confidence annotations already flagged
             if annotation.confidence < 0.2 and "[Below threshold" in (annotation.reasoning or ""):
