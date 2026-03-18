@@ -381,6 +381,249 @@ def compute_concordance(agent_data, human_data):
 
 
 # ---------------------------------------------------------------------------
+# Concordance v3: Three-tier analysis
+# ---------------------------------------------------------------------------
+FAILURE_OUTCOMES = {"Terminated", "Withdrawn", "Failed - completed trial"}
+NON_FAILURE_OUTCOMES = {"Positive", "Recruiting", "Active, not recruiting", "Unknown"}
+
+
+def _is_reason_blank_v3(reason_raw, outcome_raw, field_name):
+    """Outcome-aware blank handling for reason_for_failure (v3).
+
+    Returns (normalised_value, treat_as_blank, skip_entirely).
+    - skip_entirely: both outcome and reason are blank → annotator didn't engage
+    - treat_as_blank: failure outcome + blank reason → missing data
+    - Otherwise: return normalised value (may be empty string for non-failure outcomes)
+    """
+    norm_reason, reason_blank = normalise(reason_raw, field_name)
+    norm_outcome, outcome_blank = normalise(outcome_raw, "outcome")
+
+    if outcome_blank and reason_blank:
+        # Annotator didn't engage with this trial at all
+        return ("", True, True)
+
+    if not reason_blank:
+        # Reason is filled — always use it
+        return (norm_reason, False, False)
+
+    # Reason is blank — check outcome to decide if legitimate
+    if norm_outcome in NON_FAILURE_OUTCOMES:
+        # Non-failure outcome + blank reason → legitimate "no failure"
+        return ("", False, False)
+
+    if norm_outcome in FAILURE_OUTCOMES:
+        # Failure outcome + blank reason → missing data
+        return ("", True, False)
+
+    # Fallback: unknown outcome value — treat as blank
+    return ("", True, False)
+
+
+def compute_concordance_v3(agent_data, human_data, common_ncts):
+    """
+    Three-tier concordance analysis for all fields.
+
+    Tier 1 (Strict): Both sides filled. Same as v2.
+    Tier 2 (Coverage-adjusted): At least one side filled. One-sided blank = disagree.
+    Tier 3 (Full population): All overlapping trials. Both-blank = agree.
+
+    Returns (v3_results, coverage_report).
+    """
+    v3_results = {}
+    coverage_report = {}
+
+    for field_name, field_def in FIELDS.items():
+        field_result = {}
+        is_reason = (field_name == "reason_for_failure")
+
+        # Build per-source data with v3 blank handling
+        trial_data = []
+        for nct in common_ncts:
+            agent_raw = agent_data[nct][field_name]
+            r1_raw = human_data[nct]["r1"].get(field_name)
+            r2_raw = human_data[nct]["r2"].get(field_name)
+
+            if is_reason:
+                # Outcome-aware blank handling for reason_for_failure
+                agent_outcome = agent_data[nct].get("outcome", "")
+                r1_outcome = human_data[nct]["r1"].get("outcome")
+                r2_outcome = human_data[nct]["r2"].get("outcome")
+
+                a_norm, a_blank, a_skip = _is_reason_blank_v3(agent_raw, agent_outcome, field_name)
+                r1_norm, r1_blank, r1_skip = _is_reason_blank_v3(r1_raw, r1_outcome, field_name)
+                r2_norm, r2_blank, r2_skip = _is_reason_blank_v3(r2_raw, r2_outcome, field_name)
+            else:
+                a_norm, a_blank = normalise(agent_raw, field_name)
+                r1_norm, r1_blank = normalise(r1_raw, field_name)
+                r2_norm, r2_blank = normalise(r2_raw, field_name)
+                a_skip = a_blank and field_def["blank_means_skip"]
+                r1_skip = r1_blank and field_def["blank_means_skip"]
+                r2_skip = r2_blank and field_def["blank_means_skip"]
+
+            trial_data.append({
+                "nct": nct,
+                "agent": (a_norm, a_blank, a_skip),
+                "r1": (r1_norm, r1_blank, r1_skip),
+                "r2": (r2_norm, r2_blank, r2_skip),
+            })
+
+        # Coverage stats
+        r1_filled = sum(1 for t in trial_data if not t["r1"][1])
+        r2_filled = sum(1 for t in trial_data if not t["r2"][1])
+        both_filled_r1r2 = sum(1 for t in trial_data if not t["r1"][1] and not t["r2"][1])
+        both_blank_r1r2 = sum(1 for t in trial_data if t["r1"][1] and t["r2"][1])
+        r1_only = sum(1 for t in trial_data if not t["r1"][1] and t["r2"][1])
+        r2_only = sum(1 for t in trial_data if t["r1"][1] and not t["r2"][1])
+
+        coverage_report[field_name] = {
+            "total": len(common_ncts),
+            "r1_filled": r1_filled,
+            "r2_filled": r2_filled,
+            "both_filled": both_filled_r1r2,
+            "both_blank": both_blank_r1r2,
+            "r1_only": r1_only,
+            "r2_only": r2_only,
+        }
+
+        for pair_name, key_a, key_b in [
+            ("Agent vs R1", "agent", "r1"),
+            ("Agent vs R2", "agent", "r2"),
+            ("R1 vs R2", "r1", "r2"),
+        ]:
+            both_filled_trials = []
+            both_blank_trials = []
+            a_only_trials = []
+            b_only_trials = []
+            both_skip_trials = []
+
+            for t in trial_data:
+                val_a, blank_a, skip_a = t[key_a]
+                val_b, blank_b, skip_b = t[key_b]
+
+                if skip_a and skip_b:
+                    both_skip_trials.append(t)
+                elif skip_a and not blank_b:
+                    b_only_trials.append(t)
+                elif skip_b and not blank_a:
+                    a_only_trials.append(t)
+                elif not blank_a and not blank_b:
+                    both_filled_trials.append(t)
+                elif blank_a and blank_b:
+                    both_blank_trials.append(t)
+                elif not blank_a and blank_b:
+                    a_only_trials.append(t)
+                elif blank_a and not blank_b:
+                    b_only_trials.append(t)
+                else:
+                    both_skip_trials.append(t)
+
+            # Count agreements among both-filled
+            bf_agree = sum(
+                1 for t in both_filled_trials
+                if t[key_a][0] == t[key_b][0]
+            )
+            bf_total = len(both_filled_trials)
+
+            # Tier 1: Strict (both filled only)
+            t1_n = bf_total
+            t1_agree = bf_agree
+            t1_pct = round(t1_agree / t1_n * 100, 1) if t1_n > 0 else None
+
+            # Tier 2: Coverage-adjusted (at least one filled)
+            t2_n = bf_total + len(a_only_trials) + len(b_only_trials)
+            t2_agree = bf_agree
+            t2_pct = round(t2_agree / t2_n * 100, 1) if t2_n > 0 else None
+
+            # Tier 3: Full population (all overlapping)
+            bb_agree = len(both_blank_trials)
+            t3_n = bf_total + len(both_blank_trials) + len(a_only_trials) + len(b_only_trials)
+            t3_agree = bf_agree + bb_agree
+            t3_pct = round(t3_agree / t3_n * 100, 1) if t3_n > 0 else None
+
+            field_result[pair_name] = {
+                "tier1": {"n": t1_n, "agreements": t1_agree, "pct": t1_pct},
+                "tier2": {"n": t2_n, "agreements": t2_agree, "pct": t2_pct},
+                "tier3": {"n": t3_n, "agreements": t3_agree, "pct": t3_pct},
+                "counts": {
+                    "both_filled": bf_total,
+                    "both_blank": len(both_blank_trials),
+                    "a_only": len(a_only_trials),
+                    "b_only": len(b_only_trials),
+                    "both_skip": len(both_skip_trials),
+                },
+            }
+
+        v3_results[field_name] = field_result
+
+    return v3_results, coverage_report
+
+
+def print_concordance_v3_table(v3_results):
+    """Print the three-tier concordance summary table."""
+    print("=" * 120)
+    print("CONCORDANCE SUMMARY (Three-Tier Analysis)")
+    print("=" * 120)
+    print(
+        f"{'Field':<22} {'Comparison':<15} "
+        f"{'Tier1(strict)':>14} {'Tier2(coverage)':>16} {'Tier3(full)':>12} "
+        f"{'N_strict':>9} {'N_coverage':>11} {'N_full':>7}"
+    )
+    print("-" * 120)
+
+    for field_name in FIELDS:
+        field_result = v3_results.get(field_name, {})
+        first = True
+        for pair_name in ["Agent vs R1", "Agent vs R2", "R1 vs R2"]:
+            pr = field_result.get(pair_name, {})
+            t1 = pr.get("tier1", {})
+            t2 = pr.get("tier2", {})
+            t3 = pr.get("tier3", {})
+
+            t1_str = f"{t1['pct']:.1f}%" if t1.get("pct") is not None else "N/A"
+            t2_str = f"{t2['pct']:.1f}%" if t2.get("pct") is not None else "N/A"
+            t3_str = f"{t3['pct']:.1f}%" if t3.get("pct") is not None else "N/A"
+
+            label = field_name if first else ""
+            print(
+                f"{label:<22} {pair_name:<15} "
+                f"{t1_str:>14} {t2_str:>16} {t3_str:>12} "
+                f"{t1.get('n', 0):>9} {t2.get('n', 0):>11} {t3.get('n', 0):>7}"
+            )
+            first = False
+        print("-" * 120)
+
+    print("=" * 120)
+
+
+def print_coverage_report(coverage_report, n_total):
+    """Print coverage report showing annotation completeness."""
+    print(f"\nCOVERAGE REPORT ({n_total}-trial batch)")
+    print("=" * 100)
+    print(
+        f"{'Field':<22} {'R1 filled':>10} {'R2 filled':>10} "
+        f"{'Both filled':>12} {'Both blank':>11} {'R1-only':>8} {'R2-only':>8}"
+    )
+    print("-" * 100)
+
+    for field_name in FIELDS:
+        cr = coverage_report.get(field_name, {})
+        total = cr.get("total", n_total)
+        r1f = cr.get("r1_filled", 0)
+        r2f = cr.get("r2_filled", 0)
+        bf = cr.get("both_filled", 0)
+        bb = cr.get("both_blank", 0)
+        r1o = cr.get("r1_only", 0)
+        r2o = cr.get("r2_only", 0)
+        print(
+            f"{field_name:<22} {r1f:>4}/{total:<5} {r2f:>4}/{total:<5} "
+            f"{bf:>5}/{total:<5}  {bb:>5}/{total:<5} "
+            f"{r1o:>3}/{total:<4} {r2o:>3}/{total:<4}"
+        )
+
+    print("=" * 100)
+
+
+# ---------------------------------------------------------------------------
 # Display
 # ---------------------------------------------------------------------------
 def kappa_interpretation(k):
@@ -560,8 +803,8 @@ def main():
     if not results:
         sys.exit(1)
 
-    # Print summary table
-    print("\nCONCORDANCE SUMMARY")
+    # Print summary table (v2 — kept for backward compatibility)
+    print("\nCONCORDANCE SUMMARY (v2 — Strict Only)")
     print_concordance_table(results)
 
     # Print kappa interpretation guide
@@ -569,6 +812,14 @@ def main():
     print("  < 0.00  Poor | 0.00-0.20  Slight | 0.21-0.40  Fair")
     print("  0.41-0.60  Moderate | 0.61-0.80  Substantial | 0.81-1.00  Almost Perfect")
     print()
+
+    # v3 three-tier analysis
+    v3_results, coverage_report = compute_concordance_v3(
+        agent_data, human_data, common_ncts
+    )
+    print()
+    print_concordance_v3_table(v3_results)
+    print_coverage_report(coverage_report, len(common_ncts))
 
     # Print per-trial matrix
     print_per_trial_matrix(results, common_ncts, agent_data, human_data)
@@ -620,6 +871,15 @@ def main():
                 "cohens_kappa": pr["cohens_kappa"],
                 "n_disagreements": len(pr["disagreements"]),
             }
+
+            # v3 three-tier results
+            v3_pr = v3_results.get(field_name, {}).get(pair_name, {})
+            field_json[pair_name]["tier1"] = v3_pr.get("tier1", {})
+            field_json[pair_name]["tier2"] = v3_pr.get("tier2", {})
+            field_json[pair_name]["tier3"] = v3_pr.get("tier3", {})
+            field_json[pair_name]["v3_counts"] = v3_pr.get("counts", {})
+
+        field_json["coverage"] = coverage_report.get(field_name, {})
         json_output["fields"][field_name] = field_json
 
     json_path = OUTPUT_DIR / "concordance_results.json"

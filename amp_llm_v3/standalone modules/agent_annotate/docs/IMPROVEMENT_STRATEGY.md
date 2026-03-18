@@ -635,3 +635,15 @@ Additional optimizations identified during architecture review:
 5. **Cascade shortcut** — Deterministic classifications skip the peptide cascade entirely, saving a classification re-run + 3 verifier calls when peptide gets flipped.
 
 6. **Dead code cleanup** — Removed ~80 lines of unused Semantic Scholar code from literature agent.
+
+### 14.9 Concordance v3 Methodology Fix
+
+Architecture review identified that the concordance methodology was producing misleading baselines:
+
+| Issue | Impact | Fix |
+|---|---|---|
+| Only both-filled trials counted | 50-65% of data invisible | Three-tier reporting |
+| Peptide R1=R2 based on 193/1843 trials | 10% sample, selection bias | Coverage-adjusted tier |
+| Failure reason 91.3% from blank-blank | Only 46 real comparisons | Outcome-aware blank handling |
+| One-sided blanks invisible | 473 R1-only peptide annotations ignored | Tier 2 counts as disagreement |
+| Agent evaluated on biased subset | Easier trials over-represented | Coverage reporting added |
