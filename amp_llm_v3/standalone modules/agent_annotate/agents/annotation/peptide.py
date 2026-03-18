@@ -117,19 +117,11 @@ class PeptideAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
-        all_citations = []
-        for result in research_results:
-            weight = self.relevance_weight(result.agent_name)
-            for citation in result.citations:
-                all_citations.append((citation, weight))
-
-        all_citations.sort(key=lambda x: x[1], reverse=True)
-
-        evidence_text = f"Trial: {nct_id}\n\n"
-        cited_sources = []
-        for citation, weight in all_citations[:20]:
-            evidence_text += f"[{citation.source_name}] {citation.identifier or ''}: {citation.snippet}\n"
-            cited_sources.append(citation)
+        # Build structured evidence — drug/peptide data and structural
+        # sections are most important for peptide determination
+        evidence_text, cited_sources = self.build_structured_evidence(
+            nct_id, research_results, max_citations=20
+        )
 
         from app.services.ollama_client import ollama_client
         from app.services.config_service import config_service

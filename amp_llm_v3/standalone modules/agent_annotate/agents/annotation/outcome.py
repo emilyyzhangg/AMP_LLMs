@@ -161,25 +161,11 @@ class OutcomeAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
-        # Gather all citations, prioritizing clinical_protocol and literature
-        all_citations = []
-        for result in research_results:
-            weight = self.relevance_weight(result.agent_name)
-            for citation in result.citations:
-                all_citations.append((citation, weight))
-
-        all_citations.sort(key=lambda x: x[1], reverse=True)
-
-        # Build evidence text — include MORE citations than other agents
-        # because outcome determination requires thorough investigation
-        evidence_text = f"Trial: {nct_id}\n\nAll available evidence:\n"
-        cited_sources = []
-        for citation, weight in all_citations[:30]:  # More than the usual 20
-            evidence_text += (
-                f"[{citation.source_name}] {citation.identifier or ''}: "
-                f"{citation.snippet}\n"
-            )
-            cited_sources.append(citation)
+        # Build structured evidence — sections help the LLM locate
+        # trial status, published results, and drug data efficiently
+        evidence_text, cited_sources = self.build_structured_evidence(
+            nct_id, research_results, max_citations=30
+        )
 
         from app.services.ollama_client import ollama_client
         from app.services.config_service import config_service

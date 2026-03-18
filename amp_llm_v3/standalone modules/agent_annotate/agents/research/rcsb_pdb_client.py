@@ -67,13 +67,41 @@ class RCSBPDBClient(BaseResearchAgent):
             for intervention in interventions[:3]:
                 try:
                     # Search RCSB using the full-text search API
+                    # Use text search with struct.title and entity names —
+                    # full_text search returns too many irrelevant hits for
+                    # drug names. The struct_keywords group targets title,
+                    # entity descriptions, and compound names.
                     search_query = {
                         "query": {
-                            "type": "terminal",
-                            "service": "full_text",
-                            "parameters": {
-                                "value": intervention,
-                            },
+                            "type": "group",
+                            "logical_operator": "or",
+                            "nodes": [
+                                {
+                                    "type": "terminal",
+                                    "service": "full_text",
+                                    "parameters": {
+                                        "value": f'"{intervention}"',
+                                    },
+                                },
+                                {
+                                    "type": "terminal",
+                                    "service": "text",
+                                    "parameters": {
+                                        "attribute": "struct.title",
+                                        "operator": "contains_words",
+                                        "value": intervention,
+                                    },
+                                },
+                                {
+                                    "type": "terminal",
+                                    "service": "text",
+                                    "parameters": {
+                                        "attribute": "rcsb_entity_source_organism.rcsb_gene_name.value",
+                                        "operator": "exact_match",
+                                        "value": intervention,
+                                    },
+                                },
+                            ],
                         },
                         "return_type": "entry",
                         "request_options": {

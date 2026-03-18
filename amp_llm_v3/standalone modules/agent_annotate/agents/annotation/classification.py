@@ -267,22 +267,17 @@ class ClassificationAgent(BaseAnnotationAgent):
         config = config_service.get()
         model = self._get_model(config)
 
-        # Gather citations sorted by relevance
-        all_citations = []
-        for result in research_results:
-            weight = self.relevance_weight(result.agent_name)
-            for citation in result.citations:
-                all_citations.append((citation, weight))
-        all_citations.sort(key=lambda x: x[1], reverse=True)
+        # Build structured evidence with section grouping
+        structured_text, cited_sources = self.build_structured_evidence(
+            nct_id, research_results, max_citations=30
+        )
 
-        cited_sources = [c for c, _ in all_citations[:30]]
-
-        # Build evidence text with DRAMP/database signals highlighted
+        # Prepend peptide determination and key database highlights
         peptide_value = metadata.get("peptide_result", "Unknown") if metadata else "Unknown"
-        evidence_text = f"Trial: {nct_id}\n"
-        evidence_text += f"Peptide determination: {peptide_value}\n\n"
+        header = f"Trial: {nct_id}\nPeptide determination: {peptide_value}\n"
 
-        # Highlight database matches at top of evidence
+        # Highlight DRAMP/UniProt matches above the structured sections
+        # so the LLM sees AMP-specific signals first
         dramp_hits = []
         uniprot_hits = []
         for result in research_results:
@@ -294,19 +289,15 @@ class ClassificationAgent(BaseAnnotationAgent):
                         uniprot_hits.append(citation)
 
         if dramp_hits:
-            evidence_text += "DRAMP (Antimicrobial Peptide Database) MATCHES:\n"
+            header += "\nDRAMP (Antimicrobial Peptide Database) MATCHES:\n"
             for c in dramp_hits:
-                evidence_text += f"  {c.identifier}: {c.snippet}\n"
-            evidence_text += "\n"
+                header += f"  {c.identifier}: {c.snippet}\n"
         if uniprot_hits:
-            evidence_text += "UniProt MATCHES:\n"
+            header += "\nUniProt MATCHES:\n"
             for c in uniprot_hits:
-                evidence_text += f"  {c.identifier}: {c.snippet}\n"
-            evidence_text += "\n"
+                header += f"  {c.identifier}: {c.snippet}\n"
 
-        evidence_text += "ALL EVIDENCE:\n"
-        for citation in cited_sources:
-            evidence_text += f"[{citation.source_name}] {citation.identifier or ''}: {citation.snippet}\n"
+        evidence_text = header + "\n" + structured_text
 
         # --- Pass 1: Extract antimicrobial evidence ---
         logger.info(f"  classification: Pass 1 — extracting AMP evidence for {nct_id}")

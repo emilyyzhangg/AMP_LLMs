@@ -70,7 +70,7 @@ class APDClient(BaseResearchAgent):
                 raw_data={"note": "No interventions to search"},
             )
 
-        async with httpx.AsyncClient(timeout=15) as client:
+        async with httpx.AsyncClient(timeout=15, verify=False) as client:
             for intervention in interventions[:3]:
                 try:
                     # APD uses a POST form search; submit with the Name field

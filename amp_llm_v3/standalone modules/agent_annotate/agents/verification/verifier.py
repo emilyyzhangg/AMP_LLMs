@@ -235,16 +235,67 @@ class BlindVerifier:
                 reasoning=f"Unknown field: {field_name}",
             )
 
-        # Build evidence from research (raw data only, no primary answer)
-        evidence_text = f"Trial: {nct_id}\n\nEvidence from research:\n"
+        # Build structured evidence from research (raw data only, no primary answer)
+        # Uses the same section-grouped format as the primary annotation agents
+        # so verifiers see the same organized evidence structure.
+        from agents.base import BaseAnnotationAgent, FIELD_RELEVANCE
+
+        # Build structured evidence using the shared builder
+        _SOURCE_TO_SECTION = {
+            "clinicaltrials_gov": "TRIAL METADATA",
+            "who_ictrp": "TRIAL METADATA",
+            "openfda": "TRIAL METADATA",
+            "pubmed": "PUBLISHED RESULTS",
+            "pmc": "PUBLISHED RESULTS",
+            "pmc_bioc": "PUBLISHED RESULTS",
+            "europe_pmc": "PUBLISHED RESULTS",
+            "semantic_scholar": "PUBLISHED RESULTS",
+            "chembl": "DRUG/PEPTIDE DATA",
+            "uniprot": "DRUG/PEPTIDE DATA",
+            "dramp": "DRUG/PEPTIDE DATA",
+            "iuphar": "DRUG/PEPTIDE DATA",
+            "dbaasp": "ANTIMICROBIAL DATA",
+            "apd": "ANTIMICROBIAL DATA",
+            "dbamp": "ANTIMICROBIAL DATA",
+            "card": "ANTIMICROBIAL DATA",
+            "rcsb_pdb": "STRUCTURAL DATA",
+            "pdbe": "STRUCTURAL DATA",
+            "ebi_proteins": "STRUCTURAL DATA",
+            "intact": "MOLECULAR INTERACTIONS",
+            "duckduckgo": "WEB SOURCES",
+        }
+        sections: dict[str, list[str]] = {}
+        seen: set[str] = set()
+        total = 0
         for result in research_results:
             if result.error:
                 continue
-            for citation in result.citations[:10]:
-                evidence_text += (
-                    f"[{citation.source_name}] {citation.identifier or ''}: "
-                    f"{citation.snippet}\n"
+            for citation in result.citations[:8]:
+                if total >= 25:
+                    break
+                key = (citation.snippet or "")[:60].lower()
+                if key in seen:
+                    continue
+                seen.add(key)
+                section = _SOURCE_TO_SECTION.get(citation.source_name, "WEB SOURCES")
+                line = (
+                    f"[{citation.source_name}] "
+                    f"{citation.identifier or ''}: "
+                    f"{citation.snippet}"
                 )
+                sections.setdefault(section, []).append(line)
+                total += 1
+
+        evidence_parts = [f"Trial: {nct_id}\n"]
+        for sec_name in [
+            "TRIAL METADATA", "PUBLISHED RESULTS", "DRUG/PEPTIDE DATA",
+            "ANTIMICROBIAL DATA", "STRUCTURAL DATA",
+            "MOLECULAR INTERACTIONS", "WEB SOURCES",
+        ]:
+            if sec_name in sections:
+                evidence_parts.append(f"\n=== {sec_name} ===")
+                evidence_parts.extend(sections[sec_name])
+        evidence_text = "\n".join(evidence_parts)
 
         # Build field-specific label for the prompt
         field_labels = {
