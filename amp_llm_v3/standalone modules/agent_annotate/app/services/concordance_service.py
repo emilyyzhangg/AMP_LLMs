@@ -616,7 +616,7 @@ def compare_jobs(job_id_a: str, job_id_b: str) -> ComparisonResult:
 
         per_field.append(
             ComparisonFieldDelta(
-                field=field_name,
+                field_name=field_name,
                 kappa_a=ka,
                 kappa_b=kb,
                 delta=delta,
@@ -627,7 +627,7 @@ def compare_jobs(job_id_a: str, job_id_b: str) -> ComparisonResult:
     return ComparisonResult(
         job_id_a=job_id_a,
         job_id_b=job_id_b,
-        per_field=per_field,
+        fields=per_field,
         improved_count=improved,
         regressed_count=regressed,
         unchanged_count=unchanged,

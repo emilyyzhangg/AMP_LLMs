@@ -21,7 +21,26 @@ router = APIRouter(prefix="/api/concordance", tags=["concordance"])
 @router.get("/jobs")
 async def list_concordance_jobs():
     """List all completed jobs available for concordance analysis."""
-    jobs = concordance_service._list_completed_jobs()
+    import json
+    from app.config import RESULTS_DIR
+
+    job_ids = concordance_service._list_completed_jobs()
+    jobs = []
+    for job_id in job_ids:
+        json_path = RESULTS_DIR / "json" / f"{job_id}.json"
+        total_trials = 0
+        timestamp = concordance_service._get_job_timestamp(job_id) or ""
+        try:
+            with open(json_path) as f:
+                data = json.load(f)
+            total_trials = data.get("total_trials", len(data.get("trials", [])))
+        except Exception:
+            pass
+        jobs.append({
+            "job_id": job_id,
+            "timestamp": timestamp,
+            "total_trials": total_trials,
+        })
     return {"jobs": jobs}
 
 
@@ -49,7 +68,7 @@ async def get_job_concordance(job_id: str):
 async def compare_jobs(job_id_a: str, job_id_b: str):
     """Inter-version comparison: field-by-field kappa delta between two agent jobs."""
     result = concordance_service.compare_jobs(job_id_a, job_id_b)
-    if not result.per_field:
+    if not result.fields:
         raise HTTPException(
             status_code=404,
             detail="One or both jobs not found",
