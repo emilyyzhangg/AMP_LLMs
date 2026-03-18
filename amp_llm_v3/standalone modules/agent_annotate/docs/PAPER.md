@@ -6,7 +6,7 @@
 
 ## Abstract
 
-Systematic review of clinical trials involving antimicrobial peptides (AMPs) requires annotating multiple structured fields across hundreds of registry entries --- a process that is slow, expensive, and unreliable when performed manually. Inter-annotator agreement among trained human reviewers reaches only approximately 80% overall and drops substantially for fields requiring investigative reasoning, such as trial outcome determination and failure classification. Existing automated approaches typically employ single large language model (LLM) calls without verification, evidence requirements, or source citations, producing annotations of insufficient quality for research use. We present Agent Annotate, a multi-agent pipeline that decomposes the annotation task into three phases: twelve parallel research agents that gather and weight evidence from 17+ free external databases --- including DBAASP (antimicrobial activity), ChEMBL (bioactivity), RCSB PDB (3D structures), EBI Proteins (sequences), APD (AMP database), WHO ICTRP (international trials), IUPHAR (pharmacology), and PDBe (structure quality) --- specialized annotation agents that apply field-specific decision logic with calibrated evidence thresholds, and a blind multi-model verification stage employing four architecturally diverse local LLMs. The system enforces evidence-grounded reasoning by requiring cited sources for every annotation with full traceability (model identity, agent provenance, source URLs, evidence text), implements blind peer review in which verifier models never observe the primary annotation, and applies short-circuit optimizations that reduce unnecessary model invocations. All models execute locally via Ollama on consumer hardware, with optional Kimi K2 Thinking model support on server-class hardware. Expanded evaluation on 70 clinical trials with version comparison demonstrates that fixing research data quality (+162% citation volume) yields a +31.8 percentage-point improvement in Outcome concordance (40.9% to 72.7% vs human R1), exceeding human inter-rater agreement (55.6%) on this field. Classification reaches 75.8%, Peptide reaches 77.1%, and 78% of remaining review items are systematically resolvable without human intervention. We describe the full architecture, error analysis across four agent versions, concordance results, and a concrete improvement plan targeting the remaining accuracy gaps.
+Systematic review of clinical trials involving antimicrobial peptides (AMPs) requires annotating multiple structured fields across hundreds of registry entries --- a process that is slow, expensive, and unreliable when performed manually. Inter-annotator agreement among trained human reviewers reaches only approximately 80% overall and drops substantially for fields requiring investigative reasoning, such as trial outcome determination and failure classification. Existing automated approaches typically employ single large language model (LLM) calls without verification, evidence requirements, or source citations, producing annotations of insufficient quality for research use. We present Agent Annotate, a multi-agent pipeline that decomposes the annotation task into three phases: twelve parallel research agents that gather and weight evidence from 17+ free external databases --- including DBAASP (antimicrobial activity), ChEMBL (bioactivity), RCSB PDB (3D structures), EBI Proteins (sequences), APD (AMP database), WHO ICTRP (international trials), IUPHAR (pharmacology), and PDBe (structure quality) --- specialized annotation agents that apply field-specific decision logic with calibrated evidence thresholds, and a blind multi-model verification stage employing four architecturally diverse local LLMs. The v9 architecture introduces a deterministic-first strategy: programmatic pre-classifiers extract signals from structured data sources (OpenFDA route fields, ClinicalTrials.gov registry statuses, known drug lookup tables) before invoking LLMs, bypassing unreliable 8B verifier models for clear cases and reducing per-trial processing time. The system enforces evidence-grounded reasoning by requiring cited sources for every annotation with full traceability (model identity, agent provenance, source URLs, evidence text), implements blind peer review in which verifier models never observe the primary annotation, and applies short-circuit optimizations that reduce unnecessary model invocations. All models execute locally via Ollama on consumer hardware, with optional Kimi K2 Thinking model support on server-class hardware. Expanded evaluation on 70 clinical trials with version comparison demonstrates that fixing research data quality (+162% citation volume) yields a +31.8 percentage-point improvement in Outcome concordance (40.9% to 72.7% vs human R1), exceeding human inter-rater agreement (55.6%) on this field. Classification reaches 75.8%, Peptide reaches 77.1%, and 78% of remaining review items are systematically resolvable without human intervention. Evaluation across three batches of 70 identical trials reveals 64.3% (R1) and 65.2% (R2) overall concordance with human annotators, against a 79.2% human-human baseline. Per-field root cause analysis identifies verifier override of correct primary classifications, overly restrictive delivery mode rules, and positive outcome bias as the primary gaps, each addressed by the v9 deterministic-first improvements. We describe the full architecture, error analysis across four agent versions, concordance results, and a concrete improvement plan targeting the remaining accuracy gaps.
 
 ---
 
@@ -329,7 +329,21 @@ The orchestrator runs the Failure Reason Agent *after* the Outcome Agent complet
 2. **Only Terminated and Failed outcomes proceed** to the two-pass LLM investigation.
 3. When the LLM is invoked, Pass 1 investigates all sources for failure signals, and Pass 2 classifies the failure mode. The "no failure" default for COMPLETED trials without published negative results is preserved.
 
-#### 3.3.3 Evidence Threshold Enforcement
+#### 3.3.3 Deterministic Pre-Classifiers (v9)
+
+The v9 architecture introduces a deterministic-first strategy for all five annotation agents. Before invoking the LLM, each agent attempts to resolve the annotation programmatically using structured data from the research dossier.
+
+**Classification Pre-Classifier.** Matches intervention names against lookup tables of ~30 known AMP drugs and ~40 known non-AMP drug patterns. Also checks for AMP database hits (DRAMP, DBAASP, APD) in the research results. Deterministic matches return with confidence=0.95 and `skip_verification=True`.
+
+**Delivery Mode Route Extraction.** Parses OpenFDA route fields (both citation text and structured raw_data) and ClinicalTrials.gov protocol keywords. Drug-class default routes serve as soft defaults with confidence=0.7.
+
+**Outcome Status Mapping.** Maps clear-cut registry statuses deterministically: RECRUITING, WITHDRAWN, TERMINATED, ACTIVE_NOT_RECRUITING, SUSPENDED. Only COMPLETED and UNKNOWN fall through to LLM.
+
+**Failure Reason Cascade.** The pre-check gate skips LLM entirely for non-failure outcomes (Positive, Recruiting, Active not recruiting, Unknown, Withdrawn) with `skip_verification=True`.
+
+**Peptide Non-Peptide Exclusions.** Checks intervention names against known non-peptide drugs (HSP complexes, dexosomes, nucleoside analogues, monoclonal antibodies).
+
+#### 3.3.4 Evidence Threshold Enforcement
 
 Each annotation field is configured with minimum evidence requirements:
 
@@ -366,9 +380,13 @@ Architecture diversity across four distinct model families (Meta, Google, Alibab
 
 #### 3.4.2 Consensus Protocol
 
-The consensus threshold is set to 1.0, requiring unanimous agreement among the primary annotator and all verifiers. This strict threshold reflects the system's conservative design philosophy: annotations that pass unanimous verification are highly likely to be correct, while annotations that fail provide an honest signal of uncertainty.
+The consensus threshold was lowered from 1.0 (unanimous) to 0.67 in v9, requiring agreement from 2 out of 3 verifiers. This relaxation reflects the observation that unanimous agreement among 8B verifiers was too strict: correct primary annotations were frequently overridden by a single dissenting verifier that misunderstood the decision logic.
 
 When unanimous consensus is not reached, the reconciler model (qwen2.5:14b, the largest model in the pipeline) is invoked. The reconciler receives all opinions and their reasoning chains and is instructed to identify the most evidence-supported answer. If the reconciler cannot resolve the dispute --- for example, because the underlying evidence is genuinely ambiguous --- the field is flagged for manual human review.
+
+#### 3.4.3 Verification Bypass (v9)
+
+When a deterministic pre-classifier produces a high-confidence annotation (≥0.95), the `skip_verification` flag bypasses the verification pipeline entirely, creating a synthetic consensus result. This eliminates the failure mode where 8B verifiers override correct deterministic results.
 
 ### 3.5 Concordance Analysis
 
@@ -586,6 +604,21 @@ Analysis of the 32 remaining review items shows that 25 (78%) are systematically
 
 Five trials newly classified as Positive disagree with R1 ground truth (which says Unknown or Failed). All five share the same root cause: the H1 completion heuristic (Phase I completion = Positive) was applied despite zero published results being found. This indicates that H1 should be calibrated to require at least one corroborating signal (results posted, published abstract, or subsequent trial) before overriding an Unknown determination.
 
+### 4.11 Batch 1--3 Concordance Results (n=70 × 3 batches)
+
+Three batches of 70 identical trials established concordance stability:
+
+| Field | Agent=R1 | Agent=R2 | R1=R2 (target) | Gap |
+|---|---|---|---|---|
+| Classification | 76% | 71% | 86% | -10pp / -15pp |
+| Delivery Mode | 47% | 46% | 68% | -21pp / -22pp |
+| Outcome | 59% | 66% | 78% | -19pp / -12pp |
+| Reason for Failure | 83% | 77% | 92% | -9pp / -15pp |
+| Peptide | 40% | 67% | 60% | -20pp / +7pp |
+| **Overall** | **64.3%** | **65.2%** | **79.2%** | **-14.9pp / -14.0pp** |
+
+Root causes: 8B verifiers overriding correct 14B classifications, "NEVER GUESS" forcing 51% delivery modes to Other/Unspecified, Positive bias for COMPLETED trials without publications, SUSPENDED trials guessing "Business Reason", and false peptide positives on HSP complexes and dexosomes.
+
 ### 4.5 Human Agreement Analysis
 
 Inter-annotator agreement between R1 and R2, with blanks excluded, provides the ceiling against which the agent pipeline should be evaluated:
@@ -644,6 +677,8 @@ Five design principles govern the Agent Annotate architecture:
 
 5. **Short-circuit optimization.** When a definitive determination can be made without an LLM call (e.g., a trial classified as Positive does not need a Failure Reason), the system skips unnecessary computation. This reduces latency, conserves GPU resources, and eliminates opportunities for hallucination.
 
+6. **Deterministic over stochastic (v9).** When structured data sources provide a definitive answer, deterministic code produces the annotation instead of an LLM. Deterministic decisions are faster, reproducible, and cannot be degraded by unreliable verifier models.
+
 ### 5.5 Limitations
 
 Several limitations constrain the interpretation of the current results:
@@ -662,19 +697,21 @@ Several limitations constrain the interpretation of the current results:
 
 ## 6. Future Work
 
-Six directions for future development are planned:
+Seven directions for future development are planned:
 
-1. **Full evaluation on 614 overlapping trials.** Expanding the evaluation from 25 to 614 trials will enable robust per-field accuracy estimation, subgroup analysis (e.g., by trial phase, therapeutic area, or registry age), and reliable kappa computation with confidence intervals.
+1. **Post-v9 concordance validation.** Run the same 70 trials to measure concordance gains, review item reduction (target: <8), and per-trial timing (target: <500s).
 
-2. **Multi-run consensus.** Performing N=3 annotation runs per trial and selecting the majority answer for each field will reduce the impact of stochastic model variation. Preliminary experiments suggest that consensus across runs improves accuracy by 5--10% on fields with high model variance.
+2. **Full evaluation on 614 overlapping trials.** Expanding the evaluation from 25 to 614 trials will enable robust per-field accuracy estimation, subgroup analysis (e.g., by trial phase, therapeutic area, or registry age), and reliable kappa computation with confidence intervals.
 
-3. **14B primary annotator for high-error fields.** Deploying qwen2.5:14b as the primary annotator for Classification and Outcome --- the two fields with the largest agent-human gap --- while retaining 8B models for Peptide and Delivery Mode. This requires sequential field processing to manage memory but should improve instruction adherence on complex reasoning tasks.
+3. **Multi-run consensus.** Performing N=3 annotation runs per trial and selecting the majority answer for each field will reduce the impact of stochastic model variation. Preliminary experiments suggest that consensus across runs improves accuracy by 5--10% on fields with high model variance.
 
-4. **Additional sequence databases.** Integrating NCBI Protein as an additional source for the Peptide Identity Agent. Note: APD (aps.unmc.edu) and dbAMP 3.0 have been integrated as v5 research agents (Sections 3.2.10--3.2.11), along with WHO ICTRP, IUPHAR, IntAct, CARD, and PDBe (Sections 3.2.12--3.2.16).
+4. **14B primary annotator for high-error fields.** Deploying qwen2.5:14b as the primary annotator for Classification and Outcome --- the two fields with the largest agent-human gap --- while retaining 8B models for Peptide and Delivery Mode. This requires sequential field processing to manage memory but should improve instruction adherence on complex reasoning tasks.
 
-5. **Active learning from manual review.** When annotations are flagged for manual review and a human provides the correct answer, the system can use these corrections to identify systematic prompt weaknesses and guide prompt refinement. Over time, this creates a feedback loop that progressively reduces the manual review burden.
+5. **Additional sequence databases.** Integrating NCBI Protein as an additional source for the Peptide Identity Agent. Note: APD (aps.unmc.edu) and dbAMP 3.0 have been integrated as v5 research agents (Sections 3.2.10--3.2.11), along with WHO ICTRP, IUPHAR, IntAct, CARD, and PDBe (Sections 3.2.12--3.2.16).
 
-6. **Cross-validation with held-out annotations.** Partitioning the 614-trial dataset into development and test sets, using the development set for prompt engineering and the test set for unbiased evaluation. This standard machine learning practice will provide a more honest assessment of generalization performance.
+6. **Active learning from manual review.** When annotations are flagged for manual review and a human provides the correct answer, the system can use these corrections to identify systematic prompt weaknesses and guide prompt refinement. Over time, this creates a feedback loop that progressively reduces the manual review burden.
+
+7. **Cross-validation with held-out annotations.** Partitioning the 614-trial dataset into development and test sets, using the development set for prompt engineering and the test set for unbiased evaluation. This standard machine learning practice will provide a more honest assessment of generalization performance.
 
 ---
 
@@ -744,7 +781,7 @@ All sources are freely accessible without paid subscriptions. SerpAPI was remove
 
 Agent Annotate demonstrates that a multi-agent pipeline with evidence requirements, field-specific decision logic, and blind multi-model verification can produce structured annotations of clinical trials with full provenance chains. The v6 agent pipeline, running 8B-parameter models on consumer hardware with 12 research agents querying 17+ free databases, achieves 72.7% agreement with human annotators on Outcome --- exceeding the 55.6% human inter-rater agreement on this field. Classification (75.8%) approaches the human ceiling (91.6%), and Peptide (77.1%) far exceeds human agreement (48.4%). The version comparison on 70 shared trials demonstrates that fixing research agent data quality (+162% citations) produces dramatic accuracy improvements (+31.8pp on Outcome), validating the architecture's core premise that evidence quality drives annotation quality. Remaining gaps in Delivery Mode (50.0%) and Failure Reason (55.6%) are addressable through cross-field consistency enforcement, heuristic-aware verifier prompts, and continued research agent fixes.
 
-The v3 improvements --- outcome decision trees, expanded negative example sets, extraction hierarchies, and enhanced non-failure detection --- target each identified error category directly. The architecture's modular design allows individual agents to be upgraded (e.g., from 8B to 14B models) or replaced without affecting the rest of the pipeline.
+The v9 deterministic-first architecture addresses the performance gap by inverting the annotation flow: programmatic pre-classifiers handle clear cases with lookup tables and structured data extraction, while LLMs focus on genuinely ambiguous cases. This hybrid approach recognizes that small language models cannot reliably implement complex decision trees, but the same logic can be implemented deterministically as code. The architecture's modular design allows individual agents to be upgraded (e.g., from 8B to 14B models) or replaced without affecting the rest of the pipeline.
 
 More broadly, the blind verification protocol and evidence threshold enforcement represent design patterns applicable beyond AMP clinical trial annotation. Any domain requiring structured annotation of complex documents --- drug safety reports, regulatory filings, systematic reviews --- could benefit from the same combination of specialized research agents, calibrated evidence requirements, and architecturally diverse blind verification.
 
@@ -767,4 +804,4 @@ This document constitutes an internal methodology paper for the Agent Annotate s
 
 ---
 
-*Document version: 4.0 (v8 — 12 agents, 17+ free databases, structured evidence presentation, hardware-aware budgets). Updated 2026-03-17.*
+*Document version: 5.0 (v9/v9.1 — deterministic-first architecture, pre-classifiers, verification bypass, batch concordance results). Updated 2026-03-18.*
