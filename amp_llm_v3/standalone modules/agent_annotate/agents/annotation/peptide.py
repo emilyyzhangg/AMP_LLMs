@@ -197,6 +197,10 @@ class PeptideAgent(BaseAnnotationAgent):
         if not primary_model:
             primary_model = "llama3.1:8b"
 
+        # v9.1: Server profile uses larger model for better accuracy
+        if config.orchestrator.hardware_profile == "server":
+            primary_model = "qwen2.5:14b"
+
         # --- Pass 1: Extract molecular facts ---
         try:
             logger.info(f"  peptide: Pass 1 — extracting molecular facts for {nct_id}")

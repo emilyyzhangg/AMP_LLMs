@@ -118,7 +118,7 @@ class FailureReasonAgent(BaseAnnotationAgent):
         # This prevents the dominant error pattern where the 8B model
         # hallucinates "Ineffective for purpose" for non-failed trials.
         outcome_result = metadata.get("outcome_result", "") if metadata else ""
-        if outcome_result in ("Positive", "Recruiting", "Active, not recruiting", "Unknown"):
+        if outcome_result in ("Positive", "Recruiting", "Active, not recruiting", "Unknown", "Withdrawn"):
             logger.info(
                 f"  failure_reason: skipping — outcome='{outcome_result}' is non-failure"
             )
@@ -129,6 +129,7 @@ class FailureReasonAgent(BaseAnnotationAgent):
                 reasoning=f"[Pre-check skip] Outcome is '{outcome_result}' — no failure to explain.",
                 evidence=[],
                 model_name="deterministic",
+                skip_verification=True,
             )
 
         from app.services.config_service import config_service
@@ -157,6 +158,10 @@ class FailureReasonAgent(BaseAnnotationAgent):
                 break
         if not primary_model:
             primary_model = "llama3.1:8b"
+
+        # v9.1: Server profile uses larger model for better accuracy
+        if config.orchestrator.hardware_profile == "server":
+            primary_model = "qwen2.5:14b"
 
         # --- PASS 1: Investigate ---
         try:

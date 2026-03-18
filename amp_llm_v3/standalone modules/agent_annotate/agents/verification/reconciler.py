@@ -15,6 +15,7 @@ import logging
 from collections import Counter
 
 from app.models.verification import ModelOpinion, ConsensusResult
+from agents.verification.consensus import _normalize
 
 logger = logging.getLogger("agent_annotate.verification.reconciler")
 
@@ -102,11 +103,24 @@ class ReconciliationAgent:
                 f"majority-vote fallback='{fallback}'"
             )
         else:
-            # Reconciler made a decision
-            consensus_result.final_value = final_value
+            # Reconciler made a decision — normalize to canonical value
+            normalized = _normalize(final_value, field_name)
+            # Map normalized back to canonical casing
+            from agents.verification.verifier import FIELD_PROMPTS
+            field_config = FIELD_PROMPTS.get(field_name, {})
+            valid_values = field_config.get("valid_values", [])
+            canonical = final_value  # default to raw
+            for vv in valid_values:
+                if vv.lower() == normalized:
+                    canonical = vv
+                    break
+            # Handle empty string for reason_for_failure
+            if normalized == "" and "" in valid_values:
+                canonical = ""
+            consensus_result.final_value = canonical
             consensus_result.consensus_reached = True
             logger.info(
-                f"  {field_name}: Reconciler resolved to '{final_value}'"
+                f"  {field_name}: Reconciler resolved to '{canonical}'"
             )
 
         return consensus_result
@@ -151,21 +165,30 @@ class ReconciliationAgent:
     def _majority_vote(consensus_result: ConsensusResult) -> str:
         """Pick the most common value across primary + all verifiers.
 
-        Used as a best-guess fallback when the reconciler defers to
-        MANUAL_REVIEW or errors out. The review queue still gets a
-        pre-populated value the human can accept or override.
+        Uses normalized values for counting to prevent format differences
+        (e.g., "IV" vs "Intravenous") from splitting the vote.
         """
-        votes: list[str] = []
+        from agents.verification.consensus import _normalize
+
+        raw_votes: list[str] = []
         if consensus_result.original_value:
-            votes.append(consensus_result.original_value)
+            raw_votes.append(consensus_result.original_value)
         for opinion in consensus_result.opinions:
             if opinion.suggested_value:
-                votes.append(opinion.suggested_value)
-        if not votes:
+                raw_votes.append(opinion.suggested_value)
+        if not raw_votes:
             return ""
-        counter = Counter(votes)
-        winner, _ = counter.most_common(1)[0]
-        return winner
+        # Normalize for counting, return the first raw value matching the winner
+        norm_to_raw: dict[str, str] = {}
+        norm_votes: list[str] = []
+        for rv in raw_votes:
+            nv = _normalize(rv, consensus_result.field_name)
+            norm_votes.append(nv)
+            if nv not in norm_to_raw:
+                norm_to_raw[nv] = rv
+        counter = Counter(norm_votes)
+        winner_norm, _ = counter.most_common(1)[0]
+        return norm_to_raw[winner_norm]
 
     def _parse_final_answer(self, text: str) -> str:
         match = re.search(r"Final Answer:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)

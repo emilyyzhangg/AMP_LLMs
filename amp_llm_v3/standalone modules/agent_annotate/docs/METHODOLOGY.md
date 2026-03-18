@@ -791,3 +791,23 @@ Source weights reflect two factors: data reliability and relevance to clinical t
 - **DuckDuckGo (0.40)** is general web search -- useful for press releases and regulatory decisions, but noisy and unverified.
 
 Note: SerpAPI (previously 0.50) was removed as it requires a paid subscription. All 15 research agents now use free APIs exclusively.
+
+### 15.6 v9.1 Optimization Pass
+
+Additional optimizations applied after the initial v9 implementation:
+
+1. **Failure reason verification skip**: The failure reason pre-check gate now sets `skip_verification=True` when returning empty for non-failure outcomes, saving 3 verifier calls per non-failure trial.
+
+2. **Withdrawn outcome skip**: "Withdrawn" added to the failure reason pre-check skip list. Withdrawn trials (withdrawn before enrollment) don't have failure reasons.
+
+3. **Reconciler value normalization**: The reconciler's output is now normalized through the same canonical mapping as verifier values, preventing non-canonical values from bypassing the normalization layer. Majority vote fallback also normalizes before counting.
+
+4. **OpenFDA raw_data route extraction**: The delivery mode deterministic checker now also inspects structured OpenFDA route data from `raw_data` (the full API response), not just citation snippet text patterns.
+
+5. **Server profile model selection**: All annotation agents (delivery_mode, peptide, failure_reason) now use qwen2.5:14b on the server hardware profile, matching classification and outcome. Previously these agents always used 8B regardless of hardware.
+
+6. **Peptide cascade shortcut**: When classification was produced by the deterministic pre-classifier (skip_verification=True), the peptide cascade re-verification is skipped entirely. Deterministic classification is based on drug name lookup, not peptide value, so a flipped peptide cannot change the result.
+
+7. **LLM call counter**: The Ollama client now tracks total and per-model LLM call counts, enabling measurement of the <15 calls/trial target.
+
+8. **Semantic Scholar dead code removed**: The unused `_search_semantic_scholar()` method was removed from the literature agent (disabled since v8).

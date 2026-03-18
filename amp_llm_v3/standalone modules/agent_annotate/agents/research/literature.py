@@ -26,9 +26,6 @@ PUBMED_SUMMARY_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcg
 # Europe PMC (free, no API key, returns abstracts in JSON)
 EUROPE_PMC_URL = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
 
-# Semantic Scholar (free, 100 req/5min without key)
-SEMANTIC_SCHOLAR_URL = "https://api.semanticscholar.org/graph/v1/paper/search"
-
 
 class LiteratureAgent(BaseResearchAgent):
     """Searches biomedical literature databases for trial-related publications."""
@@ -467,90 +464,6 @@ class LiteratureAgent(BaseResearchAgent):
                 source_url=url,
                 identifier=identifier,
                 title=title or "Europe PMC result",
-                snippet=snippet,
-                quality_score=quality,
-                retrieved_at=datetime.utcnow().isoformat(),
-            ))
-
-        return citations, raw_data
-
-    # ------------------------------------------------------------------ #
-    #  Semantic Scholar (free API, structured paper data)
-    # ------------------------------------------------------------------ #
-
-    async def _search_semantic_scholar(
-        self, nct_id: str, client: httpx.AsyncClient
-    ) -> tuple[list[SourceCitation], dict]:
-        """Search Semantic Scholar for papers mentioning this NCT ID.
-
-        Semantic Scholar allows ~100 requests per 5 minutes (~0.33/sec)
-        without an API key.  We add a short delay before hitting it to
-        avoid 429s when many trials are processed concurrently (the
-        per-host semaphore in http_utils limits concurrency to 3, but
-        burst traffic can still trigger rate limits).
-        """
-        citations: list[SourceCitation] = []
-        raw_data: dict = {}
-
-        # Brief delay to stay under Semantic Scholar rate limits
-        await asyncio.sleep(1.0)
-
-        resp = await resilient_get(
-            SEMANTIC_SCHOLAR_URL,
-            client=client,
-            params={
-                "query": nct_id,
-                "limit": 10,
-                "fields": "title,abstract,year,venue,url,externalIds,citationCount",
-            },
-        )
-        if resp.status_code != 200:
-            raw_data["semantic_scholar_error"] = f"HTTP {resp.status_code}"
-            return citations, raw_data
-
-        data = resp.json()
-        papers = data.get("data", [])
-        raw_data["semantic_scholar_count"] = len(papers)
-        raw_data["semantic_scholar_total"] = data.get("total", 0)
-
-        for paper in papers:
-            title = paper.get("title", "")
-            abstract = paper.get("abstract", "")
-            year = str(paper.get("year", "")) if paper.get("year") else ""
-            venue = paper.get("venue", "")
-            url = paper.get("url", "")
-            ext_ids = paper.get("externalIds") or {}
-            citation_count = paper.get("citationCount", 0)
-
-            snippet_parts = []
-            if title:
-                snippet_parts.append(f"Title: {title}")
-            if venue or year:
-                snippet_parts.append(f"Venue: {venue} ({year})")
-            if citation_count:
-                snippet_parts.append(f"Cited by: {citation_count}")
-            if abstract:
-                snippet_parts.append(f"Abstract: {abstract[:500]}")
-            snippet = "\n".join(snippet_parts)
-
-            # Determine identifier
-            pmid = ext_ids.get("PubMed")
-            doi = ext_ids.get("DOI")
-            if pmid:
-                identifier = f"PMID:{pmid}"
-            elif doi:
-                identifier = f"DOI:{doi}"
-            else:
-                identifier = paper.get("paperId", "")
-
-            quality = self.compute_quality_score(
-                "semantic_scholar", has_content=bool(abstract)
-            )
-            citations.append(SourceCitation(
-                source_name="semantic_scholar",
-                source_url=url or "",
-                identifier=identifier,
-                title=title or "Semantic Scholar result",
                 snippet=snippet,
                 quality_score=quality,
                 retrieved_at=datetime.utcnow().isoformat(),

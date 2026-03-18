@@ -680,6 +680,16 @@ class PipelineOrchestrator:
         if not peptide_ann or not classification_ann:
             return annotations, verified
 
+        # v9.1: If classification was deterministic, the cascade doesn't apply.
+        # Deterministic classification is based on drug name lookup, not peptide value,
+        # so a flipped peptide won't change the result.
+        if classification_ann.skip_verification:
+            logger.info(
+                f"  Peptide cascade: skipping — classification was deterministic "
+                f"('{classification_ann.value}')"
+            )
+            return annotations, verified
+
         # Find the peptide verification result
         peptide_verified_value = None
         for field_result in verified.fields:

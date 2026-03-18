@@ -189,6 +189,33 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
                             evidence=[citation], model_name="deterministic", skip_verification=True,
                         )
 
+        # Also check raw_data for structured OpenFDA route info
+        if result.raw_data:
+            openfda_results = result.raw_data.get("openfda_results", [])
+            if isinstance(openfda_results, list):
+                for fda_item in openfda_results:
+                    if isinstance(fda_item, dict):
+                        openfda_block = fda_item.get("openfda", {})
+                        routes = openfda_block.get("route", [])
+                        if isinstance(routes, list):
+                            for route_str in routes:
+                                route_lower = route_str.lower().strip()
+                                if route_lower in _OPENFDA_ROUTE_MAP:
+                                    delivery_value = _OPENFDA_ROUTE_MAP[route_lower]
+                                    logger.info(
+                                        f"  delivery_mode: deterministic → {delivery_value} "
+                                        f"(OpenFDA raw_data route: '{route_str}')"
+                                    )
+                                    return FieldAnnotation(
+                                        field_name="delivery_mode",
+                                        value=delivery_value,
+                                        confidence=0.95,
+                                        reasoning=f"[Deterministic v9] OpenFDA raw_data route: '{route_str}'",
+                                        evidence=[],
+                                        model_name="deterministic",
+                                        skip_verification=True,
+                                    )
+
     for result in research_results:
         if result.error or result.agent_name != "clinical_protocol":
             continue
@@ -260,6 +287,10 @@ class DeliveryModeAgent(BaseAnnotationAgent):
                 break
         if not primary_model:
             primary_model = "llama3.1:8b"
+
+        # v9.1: Server profile uses larger model for better accuracy
+        if config.orchestrator.hardware_profile == "server":
+            primary_model = "qwen2.5:14b"
 
         # --- Pass 1: Extract route evidence from all sources ---
         try:

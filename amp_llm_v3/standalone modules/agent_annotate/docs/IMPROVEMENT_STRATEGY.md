@@ -619,3 +619,19 @@ Human annotations are the **development-time benchmark only**. They inform promp
 5. Multi-run consensus: compare N-run majority vote accuracy against single-run accuracy.
 
 **End state:** The agents operate fully autonomously — no human annotations in the loop. The human Excel is archived as a historical benchmark, not an ongoing dependency.
+
+### 14.8 v9.1 Optimization Pass
+
+Additional optimizations identified during architecture review:
+
+1. **Failure reason skip_verification** — Pre-check gate returns now set `skip_verification=True`, saving 3 verifier calls (~45s) per non-failure trial. Combined with deterministic outcome, this cascades: deterministic outcome "Recruiting" → failure_reason pre-check skip → both fields skip verification entirely.
+
+2. **Withdrawn skip** — Added to failure_reason pre-check. Saves 2 LLM passes + 3 verifier calls for withdrawn trials.
+
+3. **Reconciler normalization** — Prevents reconciler from producing non-canonical values (e.g., "Intravenous" instead of "IV") that bypass consensus normalization.
+
+4. **Server profile parity** — All 5 annotation agents now use 14B on server profile. Previously 3 agents used 8B regardless of hardware.
+
+5. **Cascade shortcut** — Deterministic classifications skip the peptide cascade entirely, saving a classification re-run + 3 verifier calls when peptide gets flipped.
+
+6. **Dead code cleanup** — Removed ~80 lines of unused Semantic Scholar code from literature agent.
