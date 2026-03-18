@@ -124,10 +124,19 @@ class DeliveryModeAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
+        from app.services.config_service import config_service
+
+        _config = config_service.get()
+        is_server = _config.orchestrator.hardware_profile == "server"
+        max_cites = 35 if is_server else 20
+        max_snippet = 500 if is_server else 250
+
         # Build structured evidence — trial metadata and drug data
         # sections contain the route-of-administration information
         evidence_text, cited_sources = self.build_structured_evidence(
-            nct_id, research_results, max_citations=20
+            nct_id, research_results,
+            max_citations=max_cites,
+            max_snippet_chars=max_snippet,
         )
 
         from app.services.ollama_client import ollama_client

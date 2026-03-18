@@ -92,9 +92,29 @@ class IUPHARClient(BaseResearchAgent):
                     if not isinstance(ligands, list):
                         ligands = [ligands] if ligands else []
 
-                    raw_data[f"iuphar_{intervention}"] = ligands[:5]
+                    # Filter: only keep ligands whose name actually matches
+                    # the intervention. IUPHAR's name search is substring-based,
+                    # so "Peptide T" returns "peptide YY", "glucagon-like peptide 1", etc.
+                    intervention_lower = intervention.lower()
+                    filtered_ligands = [
+                        lig for lig in ligands
+                        if isinstance(lig, dict) and (
+                            intervention_lower in (lig.get("name") or "").lower()
+                            or (lig.get("name") or "").lower() in intervention_lower
+                            or intervention_lower in (lig.get("abbreviation") or "").lower()
+                            or intervention_lower in (lig.get("inn") or "").lower()
+                        )
+                    ]
 
-                    for ligand in ligands[:3]:
+                    raw_data[f"iuphar_{intervention}"] = filtered_ligands[:5]
+
+                    if not filtered_ligands and ligands:
+                        logger.info(
+                            "IUPHAR: %d results for '%s' but none matched name — skipping noise",
+                            len(ligands), intervention,
+                        )
+
+                    for ligand in filtered_ligands[:3]:
                         if not isinstance(ligand, dict):
                             continue
 

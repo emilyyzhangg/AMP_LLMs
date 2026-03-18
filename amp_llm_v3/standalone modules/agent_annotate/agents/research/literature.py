@@ -533,7 +533,11 @@ class LiteratureAgent(BaseResearchAgent):
             year_part = f" ({year})" if year else ""
             parts.append(f"Journal: {journal_part}{year_part}")
         if abstract:
-            parts.append(f"Abstract: {abstract[:500]}")
+            # Cap abstract at 300 chars — the structured evidence builder
+            # will further truncate per hardware profile (250 mac_mini, 500 server).
+            # Storing a moderate snippet avoids bloating persisted research JSON
+            # while giving the server profile enough to work with.
+            parts.append(f"Abstract: {abstract[:300]}")
         return "\n".join(parts)
 
     @staticmethod

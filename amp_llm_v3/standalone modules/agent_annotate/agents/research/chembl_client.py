@@ -68,7 +68,30 @@ class ChEMBLClient(BaseResearchAgent):
                     molecules = data.get("molecules", [])
                     raw_data[f"chembl_{intervention}_count"] = len(molecules)
 
-                    for mol in molecules[:3]:
+                    # Filter: only keep molecules whose name matches the intervention.
+                    # ChEMBL's q= parameter is a full-text search that returns fuzzy
+                    # matches. "Peptide T" returns botulinum toxin, random small molecules.
+                    intervention_lower = intervention.lower()
+                    relevant_mols = []
+                    for mol in molecules:
+                        if not isinstance(mol, dict):
+                            continue
+                        pref = (mol.get("pref_name") or "").lower()
+                        synonyms = " ".join(
+                            str(s.get("molecule_synonym", ""))
+                            for s in (mol.get("molecule_synonyms") or [])
+                        ).lower() if mol.get("molecule_synonyms") else ""
+                        combined = f"{pref} {synonyms}"
+                        if (intervention_lower in combined
+                                or pref in intervention_lower
+                                or any(word in combined for word in intervention_lower.split() if len(word) > 3)):
+                            relevant_mols.append(mol)
+
+                    # Fall back to top results if nothing matched (rare drug names)
+                    if not relevant_mols:
+                        relevant_mols = [m for m in molecules[:2] if isinstance(m, dict)]
+
+                    for mol in relevant_mols[:3]:
                         if not isinstance(mol, dict):
                             continue
 

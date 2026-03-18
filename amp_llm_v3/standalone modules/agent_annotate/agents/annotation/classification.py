@@ -267,9 +267,16 @@ class ClassificationAgent(BaseAnnotationAgent):
         config = config_service.get()
         model = self._get_model(config)
 
+        # Server profile with larger models can digest more evidence
+        is_server = config.orchestrator.hardware_profile == "server"
+        max_cites = 50 if is_server else 30
+        max_snippet = 500 if is_server else 250
+
         # Build structured evidence with section grouping
         structured_text, cited_sources = self.build_structured_evidence(
-            nct_id, research_results, max_citations=30
+            nct_id, research_results,
+            max_citations=max_cites,
+            max_snippet_chars=max_snippet,
         )
 
         # Prepend peptide determination and key database highlights

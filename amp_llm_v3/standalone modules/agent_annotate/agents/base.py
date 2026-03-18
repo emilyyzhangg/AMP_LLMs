@@ -168,6 +168,7 @@ class BaseAnnotationAgent(ABC):
         nct_id: str,
         research_results: list[ResearchResult],
         max_citations: int = 30,
+        max_snippet_chars: int = 250,
     ) -> tuple[str, list[SourceCitation]]:
         """Build structured, section-grouped evidence text for LLM consumption.
 
@@ -213,6 +214,40 @@ class BaseAnnotationAgent(ABC):
             "openfda": "TRIAL METADATA",
         }
 
+        # Extract intervention names for relevance filtering
+        _intervention_names: set[str] = set()
+        for result in research_results:
+            if result.agent_name == "clinical_protocol" and result.raw_data:
+                protocol = result.raw_data.get("protocol_section", {})
+                arms_mod = protocol.get("armsInterventionsModule", {})
+                for interv in arms_mod.get("interventions", []):
+                    name = interv.get("name", "")
+                    if name:
+                        _intervention_names.add(name.lower())
+
+        def _is_relevant_to_trial(citation: SourceCitation) -> bool:
+            """Check if a database result is actually about our intervention
+            rather than a fuzzy text-search false positive.
+
+            IntAct searching "Peptide T" returned CFTR, MAPT, HTT — generic
+            high-connectivity proteins with no relation to the trial. IUPHAR
+            searching "Peptide T" returned GLP-1, PYY — different peptides.
+            This filter catches those by checking if the citation mentions
+            any of the actual intervention names.
+            """
+            # Always keep trial metadata and published results — they're NCT-specific
+            section = _SOURCE_TO_SECTION.get(citation.source_name, "")
+            if section in ("TRIAL METADATA", "PUBLISHED RESULTS"):
+                return True
+            # For database results, check relevance
+            if not _intervention_names:
+                return True  # No names to filter against
+            snippet_lower = (citation.snippet or "").lower()
+            title_lower = (citation.title or "").lower()
+            ident_lower = (citation.identifier or "").lower()
+            combined = f"{snippet_lower} {title_lower} {ident_lower}"
+            return any(name in combined for name in _intervention_names)
+
         for result in research_results:
             weight = self.relevance_weight(result.agent_name)
             for citation in result.citations:
@@ -257,16 +292,17 @@ class BaseAnnotationAgent(ABC):
 
             return False
 
-        # Build text with section headers, budget-limited per section
-        # Allocate more budget to high-relevance sections
+        # Build text with section headers, budget-limited per section.
+        # Budgets scale with max_citations so server profile (50 cites)
+        # gets proportionally more per section than mac_mini (20-30).
         budget_per_section = {
-            "TRIAL METADATA": max_citations // 3,        # ~10
-            "PUBLISHED RESULTS": max_citations // 4,      # ~7
-            "DRUG/PEPTIDE DATA": max_citations // 5,      # ~6
-            "ANTIMICROBIAL DATA": max_citations // 6,     # ~5
-            "STRUCTURAL DATA": 3,
-            "MOLECULAR INTERACTIONS": 3,
-            "WEB SOURCES": 3,
+            "TRIAL METADATA": max(max_citations // 3, 6),
+            "PUBLISHED RESULTS": max(max_citations // 4, 5),
+            "DRUG/PEPTIDE DATA": max(max_citations // 5, 4),
+            "ANTIMICROBIAL DATA": max(max_citations // 6, 3),
+            "STRUCTURAL DATA": max(max_citations // 10, 2),
+            "MOLECULAR INTERACTIONS": max(max_citations // 10, 2),
+            "WEB SOURCES": max(max_citations // 10, 2),
         }
 
         lines = [f"Trial: {nct_id}\n"]
@@ -297,10 +333,16 @@ class BaseAnnotationAgent(ABC):
                     break
                 if _is_noise(citation) or _is_duplicate(citation):
                     continue
+                if not _is_relevant_to_trial(citation):
+                    continue
+                # Truncate long snippets to keep total evidence compact
+                snippet = citation.snippet or ""
+                if len(snippet) > max_snippet_chars:
+                    snippet = snippet[:max_snippet_chars].rsplit(" ", 1)[0] + "..."
                 line = (
                     f"[{citation.source_name}] "
                     f"{citation.identifier or ''}: "
-                    f"{citation.snippet}"
+                    f"{snippet}"
                 )
                 section_lines.append(line)
                 cited_sources.append(citation)

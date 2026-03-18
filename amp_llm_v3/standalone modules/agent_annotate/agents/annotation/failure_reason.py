@@ -130,10 +130,19 @@ class FailureReasonAgent(BaseAnnotationAgent):
                 model_name="deterministic",
             )
 
+        from app.services.config_service import config_service
+
+        _config = config_service.get()
+        is_server = _config.orchestrator.hardware_profile == "server"
+        max_cites = 50 if is_server else 30
+        max_snippet = 500 if is_server else 250
+
         # Build structured evidence — sections help the LLM locate
         # termination reasons, published negative results, and safety data
         evidence_text, cited_sources = self.build_structured_evidence(
-            nct_id, research_results, max_citations=30
+            nct_id, research_results,
+            max_citations=max_cites,
+            max_snippet_chars=max_snippet,
         )
 
         from app.services.ollama_client import ollama_client
