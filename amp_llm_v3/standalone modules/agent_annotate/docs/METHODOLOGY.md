@@ -6,7 +6,7 @@ Agent Annotate is a three-phase pipeline for annotating clinical trials involvin
 
 The three phases execute sequentially per trial:
 
-1. **Phase 1 -- Research.** Fifteen parallel agents gather evidence from 20+ free external databases (registries, literature, protein databases, peptide activity databases, structure databases, pharmacology databases, interaction databases, resistance databases, international trial registries).
+1. **Phase 1 -- Research.** Twelve parallel agents gather evidence from 17+ free external databases (registries, literature, protein databases, peptide activity databases, structure databases, pharmacology databases, international trial registries).
 2. **Phase 2 -- Annotation.** Five agents each annotate one field, consuming the research dossier from Phase 1.
 3. **Phase 3 -- Verification.** Three blind verifiers independently review each annotation, followed by consensus checking and reconciliation for disputes.
 
@@ -117,11 +117,11 @@ Boolean field (True/False) indicating whether the intervention is a peptide.
 
 ## 4. Phase 1 -- Research Agents
 
-Fifteen research agents query different external sources. Every source carries a fixed quality weight reflecting its reliability for AMP clinical trial annotation. The v4 pipeline added four specialized agents (Sections 4.5--4.8) for peptide activity, bioactivity, structural, and protein sequence data. The v5 expansion added seven more agents (Sections 4.9--4.15) covering additional peptide databases, international trial registries, pharmacology, molecular interactions, antibiotic resistance, and structure quality. SerpAPI was removed (paid service); all 15 agents now use free APIs exclusively.
+Twelve research agents query different external sources. Every source carries a fixed quality weight reflecting its reliability for AMP clinical trial annotation. The v4 pipeline added four specialized agents (Sections 4.5--4.8) for peptide activity, bioactivity, structural, and protein sequence data. The v5 expansion added seven more agents (Sections 4.9--4.15) covering additional peptide databases, international trial registries, pharmacology, molecular interactions, antibiotic resistance, and structure quality. SerpAPI was removed (paid service); all 12 agents now use free APIs exclusively.
 
 ### 4.0 Two-Step Research Architecture
 
-Phase 1 executes in two steps rather than running all 15 agents simultaneously. This two-step design is critical because peptide/drug database agents (DBAASP, ChEMBL, CARD, IUPHAR, IntAct, PDBe, etc.) need to know the intervention name to query their databases. Without a name to search for, these agents return zero citations.
+Phase 1 executes in two steps rather than running all 12 agents simultaneously. This two-step design is critical because peptide/drug database agents (DBAASP, ChEMBL, IUPHAR, PDBe, etc.) need to know the intervention name to query their databases. Without a name to search for, these agents return zero citations.
 
 **Step 1 -- Protocol-first metadata extraction.** The Clinical Protocol Agent (Section 4.1) runs first. It fetches the trial record from ClinicalTrials.gov and extracts intervention names (drug and peptide names) from the structured `protocol_section.armsInterventionsModule.interventions` field. It also queries OpenFDA for supplementary drug metadata. The extracted intervention names are stored as shared metadata for use in Step 2.
 
@@ -148,7 +148,7 @@ Step 2:       v
          (all 14 agents run in parallel with intervention names)
 ```
 
-Previously, all 15 agents ran in parallel with no shared metadata, which meant database agents had only the NCT ID and trial title to work with -- insufficient for querying peptide/drug databases that require compound names as search keys.
+Previously, all agents ran in parallel with no shared metadata, which meant database agents had only the NCT ID and trial title to work with -- insufficient for querying peptide/drug databases that require compound names as search keys.
 
 ### 4.1 Clinical Protocol Agent
 
@@ -628,20 +628,26 @@ The `keep_alive` parameter controls how long Ollama retains a model in GPU memor
 
 The same 70 trials were annotated by v5.1 agents (commit `22e9792`) and v6 agents (commit `8553a1f`). Research coverage increased +162% (684 → 1,793 total citations). Outcome concordance vs R1 improved +31.8pp (40.9% → 72.7%), exceeding human inter-rater agreement (55.6%). Review rate decreased -36% (50 → 32 field-level reviews). Peptide regressed -6.2pp due to multi-drug trial confusion.
 
-### 11.0.2 Research Agent Status
+### 11.0.2 Research Agent Status (v8, 2026-03-17)
 
-| Agent | Status | Citations (n=70) |
-|---|---|---|
-| Clinical Protocol | Working | 530 |
-| ChEMBL | Fixed in v6 | 366 |
-| IntAct | New, working | 305 |
-| Literature | Improved | 284 |
-| Peptide Identity | Fixed in v6 | 135 |
-| WHO ICTRP | New, working | 69 |
-| IUPHAR | New, working | 58 |
-| DBAASP | Fixed in v6 | 40 |
-| CARD | New, working | 6 |
-| APD | Broken (JS required) | 0 |
+| Agent | Status | Citations (n=10 test) | Notes |
+|---|---|---|---|
+| Clinical Protocol | Core | 77 (10/10) | ClinicalTrials.gov + OpenFDA |
+| Literature | Core | 76 (7/10) | PubMed + PMC + Europe PMC. Semantic Scholar removed (429 rate limits) |
+| Web Context | Working | 46 (10/10) | DuckDuckGo HTML lite search (fixed v7) |
+| ChEMBL | Working | 42 (10/10) | Bioactivity, molecule types, mechanisms. Name-match filter added v8 |
+| PDBe | Working | 18 (4/10) | Crystal structures with resolution/quality metrics |
+| APD | Fixed v7 | 17 (10/10) | SSL verify disabled (cert chain broken). Returns AMP search results |
+| Peptide Identity | Working | 17 (5/10) | UniProt + DRAMP |
+| WHO ICTRP | Working | 10 (10/10) | International trial registry |
+| EBI Proteins | Intermittent | 8 (3/10) | 500 errors from ebi.ac.uk, works when available |
+| RCSB PDB | Fixed v8 | 6+ (varies) | v2 API uses "paginate" not "pager". Now returns real structures |
+| DBAASP | Niche | 5 (1/10) | Only hits for actual AMPs. Correct behavior |
+| IUPHAR | Working | 4 (4/10) | Pharmacology, FDA approval. Name-match filter added v8 |
+| **REMOVED: dbAMP** | Dead | 0 | Server (yylab.jnu.edu.cn) permanently unreachable |
+| **REMOVED: IntAct** | Noise | 0 | 1/10 hit rate, generic protein interactions (CFTR, MAPT, HTT) |
+| **REMOVED: CARD** | Irrelevant | 0 | 0/10 hit rate, only for AMR-specific trials |
+| **REMOVED: Semantic Scholar** | Rate limited | 0 | 429 on every batch, exhausts retries |
 | dbAMP | Broken (intermittent) | 0 |
 | EBI Proteins | Broken (unknown) | 0 |
 | RCSB PDB | Broken (unknown) | 0 |
@@ -654,6 +660,34 @@ The same 70 trials were annotated by v5.1 agents (commit `22e9792`) and v6 agent
 2. **Completion heuristics are effective but need calibration.** H1 (Phase I completion = Positive) over-applies when zero publications are found, causing 5 regressions vs R1.
 3. **Cross-field coupling creates correlated instability.** When outcome shifts Unknown→Positive, failure reason shifts Ineffective→EMPTY, making both fields appear unstable between versions.
 4. **78% of review items are automatable.** Cross-field consistency (outcome=Positive → force failure_reason=EMPTY) and heuristic-aware verifier prompts would resolve 25 of 32 reviews.
+
+### 11.0.4 v8 Changes: Structured Evidence, Agent Cleanup, Hardware-Aware Budgets (2026-03-17)
+
+**Agents removed (3 dead + 1 rate-limited source):**
+- **dbAMP** (yylab.jnu.edu.cn): Server permanently unreachable (ConnectError on every request).
+- **IntAct** (ebi.ac.uk/intact): 1/10 hit rate across test trials. Returned generic high-connectivity proteins (CFTR, MAPT, HTT) for almost every search — noise, not signal.
+- **CARD** (card.mcmaster.ca): 0/10 hit rate. Only relevant for antibiotic resistance mechanism trials, which are extremely rare in the AMP clinical trial dataset.
+- **Semantic Scholar**: Removed from literature agent. Heavy rate limiting (HTTP 429 on every batch, exhausting 3 retries per trial) made it unreliable. PubMed + PMC + Europe PMC provide sufficient literature coverage.
+
+**Pipeline now:** 12 agents querying 17+ free databases (down from 15/20+).
+
+**Structured evidence presentation (all agents + verifiers):**
+- Evidence organized into labeled sections: TRIAL METADATA, PUBLISHED RESULTS, DRUG/PEPTIDE DATA, ANTIMICROBIAL DATA, STRUCTURAL DATA, WEB SOURCES.
+- Noise filter strips: negative search results ("no exact match"), empty snippets (<15 chars), JSON artifacts.
+- Relevance filter drops database results that don't mention actual trial interventions. Prevents fuzzy text-search false positives (e.g., searching "Peptide T" in IUPHAR no longer returns "GLP-1" or "peptide YY").
+- Deduplication: citations with identical first 60 chars of snippet are skipped.
+- Snippet capping per hardware profile: mac_mini 250 chars, server 500 chars.
+
+**Hardware-profile-aware evidence budgets:**
+
+| Profile | Models | Max Citations | Snippet Cap | Typical Token Range |
+|---|---|---|---|---|
+| mac_mini (16 GB) | 8B primary, 9B verifiers | 20-30 | 250 chars | 300-900 tokens |
+| server (240+ GB) | 14B-70B primary, 14B verifiers | 35-50 | 500 chars | 500-1500 tokens |
+
+Section budgets scale with max_citations so the server profile gets proportionally more literature, drug data, and structural data per trial.
+
+**Source-level relevance filters** added to ChEMBL (name-match prevents fuzzy search returning random molecules) and IUPHAR (name-match prevents substring matches on different peptides). These complement the evidence builder's cross-cutting relevance filter.
 
 ---
 

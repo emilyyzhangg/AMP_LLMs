@@ -10,6 +10,7 @@ which returns actual web search results, unlike the Instant Answer API
 and produces 0 results for clinical trial NCT IDs.
 """
 
+import asyncio
 import logging
 import re
 from html import unescape
@@ -112,6 +113,10 @@ class WebContextAgent(BaseResearchAgent):
             follow_redirects=True,
         ) as client:
             try:
+                # Small delay to avoid 202 rate limiting when many trials
+                # hit DuckDuckGo in parallel during Phase 1 research
+                await asyncio.sleep(1.0)
+
                 # DuckDuckGo HTML lite endpoint — returns actual web search results
                 resp = await client.post(
                     DDG_LITE_URL,

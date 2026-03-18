@@ -104,16 +104,9 @@ class APDClient(BaseResearchAgent):
                         # Check if results were found
                         if "No Results Found" in html:
                             raw_data[f"apd_{intervention}"] = {"searched": True, "found": False}
-                            # Still record that we searched
-                            citations.append(SourceCitation(
-                                source_name="apd",
-                                source_url=f"{APD_BASE_URL}/database",
-                                identifier=intervention,
-                                title=f"APD search: {intervention}",
-                                snippet=f"APD antimicrobial peptide database search for: {intervention} (no exact match)",
-                                quality_score=self.compute_quality_score("apd", has_content=False),
-                                retrieved_at=datetime.utcnow().isoformat(),
-                            ))
+                            # v8: Do NOT emit a citation for negative results —
+                            # "no exact match" wastes an LLM citation slot without
+                            # adding information. The raw_data records the search.
                             continue
 
                         # Try to extract peptide data from the HTML response

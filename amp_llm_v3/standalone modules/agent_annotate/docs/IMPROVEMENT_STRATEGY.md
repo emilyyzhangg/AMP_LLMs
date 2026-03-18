@@ -164,7 +164,7 @@ The following v4 changes have been implemented in response to the n=62 concordan
 - **RCSB PDB Agent**: Queries 3D structure metadata. Provides structural confirmation of peptide identity.
 - **EBI Proteins Agent**: Queries sequences, variants, functional annotations. Complements UniProt with additional sequence-level data.
 
-Note: Seven more agents were added in v5 (see Section 7.5), bringing the total to 15 research agents querying 20+ free databases.
+Note: Seven more agents were added in v5 (see Section 7.5). Three were later removed in v8 (dbAMP — server unreachable; IntAct — noise; CARD — irrelevant). Semantic Scholar was also removed from the literature agent (rate limiting). Active total: 12 agents querying 17+ free databases.
 
 ### 7.2 Annotation Agent Improvements (DONE)
 
@@ -192,7 +192,7 @@ Note: Seven more agents were added in v5 (see Section 7.5), bringing the total t
 
 ### 7.5 v5: Research Pipeline Expansion from 8 to 15 Agents (DONE)
 
-Expanded the research pipeline from 8 to 15 parallel agents querying 20+ free databases. Seven new agents added:
+Expanded the research pipeline from 8 to 15 parallel agents. Three were subsequently removed in v8 (see Section 7.8). Seven agents added in v5:
 
 - **APD Agent** (aps.unmc.edu): AMP database, HTML scraping, best-effort (server requires JS). Provides independent AMP classification source.
 - **dbAMP Agent** (yylab.jnu.edu.cn/dbAMP): 33K+ AMPs, HTML scraping, intermittent availability. Broad AMP reference complementing APD and DRAMP.
@@ -202,7 +202,7 @@ Expanded the research pipeline from 8 to 15 parallel agents querying 20+ free da
 - **CARD Agent** (card.mcmaster.ca): AJAX endpoints, antibiotic resistance mechanisms, ARO terms. Provides resistance context for AMP clinical trials.
 - **PDBe Agent** (ebi.ac.uk/pdbe): Solr search + REST API, structure quality metrics (resolution, R-factor). Complements RCSB PDB with quality assessment data.
 
-SerpAPI was removed (paid service). All 15 agents now use free APIs exclusively.
+SerpAPI was removed (paid service). All agents use free APIs exclusively.
 
 ---
 
@@ -418,25 +418,50 @@ When a trial has multiple interventions, the peptide agent should evaluate ALL o
 
 The pre-check skip path returns bare `""` but other paths return `"EMPTY"` or `"INEFFECTIVE_FOR_PURPOSE"`. Normalize all outputs through `_parse_value()` — including the pre-check skip and the `_infer_from_pass1()` fallback. Add `"INEFFECIVE_FOR_PURPOSE"` (typo) to the fuzzy matching list.
 
-### 9.6 Fix Broken Research Agents (Priority: MEDIUM)
+### 9.6 Fix Broken Research Agents (DONE — v7/v8)
 
-Six research agents produce 0 citations across all 70 trials. Investigate and fix:
-- **APD**: Requires JavaScript — may need headless browser or alternative endpoint
-- **dbAMP**: Intermittent availability — add retry logic and health check
-- **EBI Proteins**: Likely URL/params issue similar to the DBAASP fix
-- **RCSB PDB**: May need different search strategy (structure search vs text search)
-- **PDBe**: Same as RCSB PDB
-- **Web Context (DuckDuckGo)**: Rate limiting or API changes
+| Agent | v7 Status | v8 Status | Action Taken |
+|---|---|---|---|
+| APD | 0/10 | **10/10** | SSL verify disabled (cert chain broken) |
+| Web Context | 0/10 | **10/10** | Switched from DuckDuckGo Instant Answer to HTML lite search |
+| EBI Proteins | 0/10 | **3/10** | Intervention name extraction fixed. Intermittent 500s from ebi.ac.uk |
+| PDBe | 0/10 | **4/10** | Intervention name extraction fixed |
+| RCSB PDB | 0/10 | **Working** | v2 API format fixed ("paginate" not "pager") |
+| dbAMP | 0/10 | **REMOVED** | Server permanently unreachable |
+| IntAct | 1/10 | **REMOVED** | Low hit rate, generic protein noise |
+| CARD | 0/10 | **REMOVED** | 0% relevance to dataset |
+| Semantic Scholar | Rate limited | **REMOVED** | 429 on every batch from literature agent |
+
+### 9.7 Structured Evidence Presentation (DONE — v8)
+
+All annotation agents and blind verifiers now receive evidence organized into labeled sections rather than a flat weight-sorted dump:
+
+**Sections:** TRIAL METADATA → PUBLISHED RESULTS → DRUG/PEPTIDE DATA → ANTIMICROBIAL DATA → STRUCTURAL DATA → WEB SOURCES
+
+**Filters applied before evidence reaches LLM:**
+1. Noise filter: negative search results, empty snippets (<15 chars), JSON artifacts
+2. Relevance filter: database results must mention at least one actual trial intervention name
+3. Deduplication: identical first 60 chars of snippet skipped
+4. Snippet capping: 250 chars (mac_mini) or 500 chars (server)
+5. Source-level filters: ChEMBL and IUPHAR name-match prevents fuzzy search false positives
+
+**Impact:** NCT01697527 (92 raw citations) → 20 used on mac_mini (78% noise removal, ~873 tokens) vs 30 on server (~1500 tokens).
+
+### 9.8 Remaining Issues (Priority: LOW)
+
+- **APD negative confirmations**: APD returns "no exact match" for most searches — a negative result that wastes a citation slot. Consider filtering at source.
+- **DuckDuckGo 202 responses**: Rate limiting causes 0 citations on some trials. Add a 1-second inter-trial delay for the web_context agent.
+- **Literature 0 results for old trials**: NCT00000391, NCT00598312 return 0 PubMed/PMC results despite being completed trials. May need broader search terms (intervention name + condition) in addition to NCT ID.
+- **ChEMBL wasted API calls**: Fuzzy text search returns irrelevant molecules that get filtered downstream. Moving the name-match filter before the API call would save HTTP requests.
 
 ---
 
 ## 10. Next Steps
 
-1. **Implement v7 improvements** (Sections 9.1-9.5) and re-run the same 70 trials to validate.
-2. **Fix broken research agents** (Section 9.6) to bring all 15 agents online.
-3. **Run Kimi K2 concordance** on the same 70 trials using the server profile.
-4. **Expand to full 614-trial evaluation** once v7 shows improvement on the 70-trial set.
-5. **Implement automated multi-run consensus** (Section 11) as a built-in feature.
+1. **Re-run the same 70 trials with v8 agents** to validate structured evidence + agent cleanup impact on concordance.
+2. **Run Kimi K2 concordance** on the same 70 trials using the server profile.
+3. **Expand to full 614-trial evaluation** once v8 concordance is validated.
+4. **Implement automated multi-run consensus** (Section 13) as a built-in feature.
 
 ---
 

@@ -52,6 +52,9 @@ class LiteratureAgent(BaseResearchAgent):
 
         all_citations = []
         source_names = ["pubmed", "pmc", "europe_pmc"]
+
+        # Check if any source returned results
+        any_results = False
         for name, result in zip(source_names, results):
             if isinstance(result, Exception):
                 raw_data[f"{name}_error"] = str(result)
@@ -59,6 +62,41 @@ class LiteratureAgent(BaseResearchAgent):
                 citations, data = result
                 all_citations.extend(citations)
                 raw_data.update(data)
+                if citations:
+                    any_results = True
+
+        # Fallback for old trials: if NCT ID search returned 0 results,
+        # try searching by intervention name + condition. Pre-2005 trials
+        # often have publications that don't reference the NCT ID.
+        if not any_results and metadata:
+            interventions = metadata.get("interventions", [])
+            title = metadata.get("title", "")
+            if interventions or title:
+                # Build a broad search term from the first intervention + title keywords
+                search_terms = []
+                for interv in interventions[:2]:
+                    name = interv.get("name", "") if isinstance(interv, dict) else str(interv)
+                    if name and len(name) > 3:
+                        search_terms.append(name)
+                if not search_terms and title:
+                    # Use first 3 significant words from title
+                    words = [w for w in title.split() if len(w) > 4][:3]
+                    search_terms = words
+
+                if search_terms:
+                    fallback_query = " ".join(search_terms)
+                    raw_data["pubmed_fallback_query"] = fallback_query
+                    async with httpx.AsyncClient(timeout=30) as client:
+                        try:
+                            fb_result = await self._search_pubmed_by_query(
+                                fallback_query, client, max_results=5
+                            )
+                            if not isinstance(fb_result, Exception):
+                                fb_citations, fb_data = fb_result
+                                all_citations.extend(fb_citations)
+                                raw_data.update(fb_data)
+                        except Exception:
+                            pass  # Fallback is best-effort
 
         all_citations = self._deduplicate_citations(all_citations)
 
@@ -151,6 +189,77 @@ class LiteratureAgent(BaseResearchAgent):
             await self._pubmed_summary_fallback(
                 id_list, client, citations, raw_data
             )
+
+        return citations, raw_data
+
+    async def _search_pubmed_by_query(
+        self, query: str, client: httpx.AsyncClient, max_results: int = 5
+    ) -> tuple[list[SourceCitation], dict]:
+        """Fallback PubMed search using free text instead of NCT ID.
+
+        v8: For old trials (pre-2005) where publications don't reference
+        the NCT ID, search by intervention name or title keywords.
+        """
+        citations: list[SourceCitation] = []
+        raw_data: dict = {}
+
+        params = {
+            "db": "pubmed",
+            "term": query,
+            "retmax": max_results,
+            "retmode": "json",
+            "sort": "relevance",
+        }
+        if PUBMED_API_KEY:
+            params["api_key"] = PUBMED_API_KEY
+
+        resp = await resilient_get(PUBMED_SEARCH_URL, client=client, params=params)
+        if resp.status_code != 200:
+            return citations, raw_data
+
+        search_data = resp.json()
+        id_list = search_data.get("esearchresult", {}).get("idlist", [])
+        raw_data["pubmed_fallback_ids"] = id_list
+
+        if not id_list:
+            return citations, raw_data
+
+        fetch_params = {
+            "db": "pubmed",
+            "id": ",".join(id_list),
+            "rettype": "abstract",
+            "retmode": "xml",
+        }
+        if PUBMED_API_KEY:
+            fetch_params["api_key"] = PUBMED_API_KEY
+
+        fetch_resp = await resilient_get(
+            PUBMED_FETCH_URL, client=client, params=fetch_params, timeout=30
+        )
+        if fetch_resp.status_code == 200:
+            articles = self._parse_pubmed_xml(fetch_resp.text)
+            for pmid in id_list:
+                article = articles.get(pmid, {})
+                title = article.get("title", "")
+                abstract = article.get("abstract", "")
+                journal = article.get("journal", "")
+                year = article.get("year", "")
+                authors = article.get("authors", [])
+                snippet = self._build_snippet(
+                    title=title, authors=authors, journal=journal,
+                    year=year, abstract=abstract,
+                )
+                citations.append(SourceCitation(
+                    source_name="pubmed",
+                    source_url=f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/",
+                    identifier=f"PMID:{pmid}",
+                    title=title or f"PubMed article {pmid}",
+                    snippet=snippet,
+                    quality_score=self.compute_quality_score(
+                        "pubmed", has_content=bool(abstract)
+                    ),
+                    retrieved_at=datetime.utcnow().isoformat(),
+                ))
 
         return citations, raw_data
 
