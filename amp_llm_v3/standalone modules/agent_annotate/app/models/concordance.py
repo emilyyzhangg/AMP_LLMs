@@ -96,7 +96,7 @@ class ConcordanceHistoryEntry(BaseModel):
 
 class ConcordanceHistory(BaseModel):
     """Kappa trends across all completed jobs."""
-    entries: list[ConcordanceHistoryEntry] = Field(default_factory=list)
+    history: list[ConcordanceHistoryEntry] = Field(default_factory=list)
 
 
 class FullJobConcordanceResponse(BaseModel):
