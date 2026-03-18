@@ -545,6 +545,29 @@ Verifier value normalization (Section 6.5) directly affects concordance calculat
 
 This means concordance numbers calculated before the normalization fix understate actual pipeline accuracy. Any concordance analysis should be recalculated after retroactive fixes are applied to ensure reported agreement rates reflect genuine disagreements rather than parsing artifacts.
 
+### 8.5 Concordance v3 Protocol
+
+The v3 concordance protocol addresses three methodological issues identified in the v2 protocol:
+
+**Issue 1: Asymmetric coverage.** Human annotators left 50-65% of fields blank. The v2 protocol only evaluated trials where both sides had a value, creating a biased sample. Fields that annotators found easy (and filled in) showed higher agreement than the true population rate.
+
+**Issue 2: One-sided blanks.** When R1 annotated a field but R2 left it blank (or vice versa), this was invisible to concordance. For Peptide, R1 filled 473 trials that R2 left blank -- a massive asymmetry completely hidden from the v2 concordance numbers.
+
+**Issue 3: Failure reason inflation.** The v2 protocol treated blank reason_for_failure as a valid "empty" value, causing 1709 both-blank pairs to count as agreement. The 91.3% agreement rate was dominated by blank-blank pairs, with only 46 trials where both annotators gave an actual reason.
+
+**Three-tier reporting:**
+
+| Tier | Denominator | Blank handling | Measures |
+|---|---|---|---|
+| Tier 1 (Strict) | Both sides filled | Skip if either blank | Quality of committed annotations |
+| Tier 2 (Coverage) | At least one side filled | One-sided blank = disagree | Consistency of annotation effort |
+| Tier 3 (Full) | All overlapping trials | Blank-blank = agree, one-sided = disagree | Overall annotation consistency |
+
+**Failure reason special handling (v3):** Instead of treating all blank reason_for_failure values as "legitimately empty", the v3 protocol checks the corresponding outcome field:
+- Both outcome and reason blank -- skip (annotator didn't engage)
+- Non-failure outcome + blank reason -- legitimate empty (agreement if agent also empty)
+- Failure outcome + blank reason -- missing data (treated as blank/skip)
+
 
 ## 9. Baseline Results
 
