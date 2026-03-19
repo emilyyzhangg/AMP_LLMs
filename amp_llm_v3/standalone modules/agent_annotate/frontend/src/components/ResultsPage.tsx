@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { listResults, getResults, getResultsSummary, getResultsCsvUrl } from "../api/client";
-import type { ResultListItem, ResultSummary, TimingInfo } from "../types";
+import { listResults, getResults, getResultsSummary, getResultsCsvUrl, resumeJob, listJobs } from "../api/client";
+import type { ResultListItem, ResultSummary, TimingInfo, JobSummary } from "../types";
 
 function formatElapsed(seconds: number): string {
   if (seconds < 60) return `${seconds.toFixed(1)}s`;
@@ -251,13 +251,20 @@ function copyMarkdownSummary(summary: ResultSummary, trials: Record<string, unkn
 function ResultsList() {
   const navigate = useNavigate();
   const [results, setResults] = useState<ResultListItem[]>([]);
+  const [jobStatuses, setJobStatuses] = useState<Record<string, string>>({});
+  const [resumingJob, setResumingJob] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       try {
-        const data = await listResults();
+        const [data, jobs] = await Promise.all([listResults(), listJobs()]);
         setResults(data.results || []);
+        const statusMap: Record<string, string> = {};
+        for (const job of jobs) {
+          statusMap[job.job_id] = job.status;
+        }
+        setJobStatuses(statusMap);
       } catch (e) {
         console.error("Failed to load results", e);
       } finally {
@@ -265,6 +272,20 @@ function ResultsList() {
       }
     })();
   }, []);
+
+  const handleResume = async (e: React.MouseEvent, jobId: string) => {
+    e.stopPropagation();
+    setResumingJob(jobId);
+    try {
+      await resumeJob(jobId, true);
+      navigate(`/pipeline/${jobId}`);
+    } catch (err) {
+      console.error("Failed to resume job", err);
+      alert(`Failed to resume job: ${err instanceof Error ? err.message : "Unknown error"}`);
+    } finally {
+      setResumingJob(null);
+    }
+  };
 
   if (loading) return <div className="card text-muted">Loading results...</div>;
 
@@ -286,27 +307,50 @@ function ResultsList() {
                 <th>Duration</th>
                 <th>Version</th>
                 <th>Date</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {results.map((r) => (
-                <tr
-                  key={r.job_id}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => navigate(`/results/${r.job_id}`)}
-                >
-                  <td>{r.job_id}</td>
-                  <td>{r.total_trials}</td>
-                  <td>{r.successful}</td>
-                  <td>{r.failed}</td>
-                  <td>{r.manual_review}</td>
-                  <td className="text-sm text-muted"><TimingBadge timing={r.timing} /></td>
-                  <td className="text-sm text-muted">{r.version || "\u2014"}</td>
-                  <td className="text-sm text-muted">
-                    {r.timestamp || "\u2014"}
-                  </td>
-                </tr>
-              ))}
+              {results.map((r) => {
+                const status = jobStatuses[r.job_id];
+                const canResume = status === "cancelled" || status === "failed";
+                return (
+                  <tr
+                    key={r.job_id}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate(`/results/${r.job_id}`)}
+                  >
+                    <td>{r.job_id}</td>
+                    <td>{r.total_trials}</td>
+                    <td>{r.successful}</td>
+                    <td>{r.failed}</td>
+                    <td>{r.manual_review}</td>
+                    <td className="text-sm text-muted"><TimingBadge timing={r.timing} /></td>
+                    <td className="text-sm text-muted">{r.version || "\u2014"}</td>
+                    <td className="text-sm text-muted">
+                      {r.timestamp || "\u2014"}
+                    </td>
+                    <td>
+                      {canResume && (
+                        <button
+                          className="btn btn-secondary"
+                          style={{
+                            padding: "0.2rem 0.6rem",
+                            fontSize: "0.8rem",
+                            background: "var(--warning)",
+                            color: "var(--bg-primary)",
+                            border: "none",
+                          }}
+                          disabled={resumingJob === r.job_id}
+                          onClick={(e) => handleResume(e, r.job_id)}
+                        >
+                          {resumingJob === r.job_id ? "Resuming..." : "Resume"}
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -320,6 +364,8 @@ function ResultDetail({ jobId }: { jobId: string }) {
   const navigate = useNavigate();
   const [results, setResults] = useState<Record<string, unknown> | null>(null);
   const [summary, setSummary] = useState<ResultSummary | null>(null);
+  const [jobStatus, setJobStatus] = useState<string | null>(null);
+  const [resuming, setResuming] = useState(false);
   const [error, setError] = useState("");
   const [showJson, setShowJson] = useState(false);
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
@@ -330,15 +376,36 @@ function ResultDetail({ jobId }: { jobId: string }) {
   useEffect(() => {
     (async () => {
       try {
-        const [res, sum] = await Promise.all([getResults(jobId), getResultsSummary(jobId)]);
+        const [res, sum, jobs] = await Promise.all([
+          getResults(jobId),
+          getResultsSummary(jobId),
+          listJobs(),
+        ]);
         setResults(res);
         setSummary(sum);
+        const match = jobs.find((j: JobSummary) => j.job_id === jobId);
+        if (match) setJobStatus(match.status);
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Unknown error";
         setError(msg);
       }
     })();
   }, [jobId]);
+
+  const handleResume = async () => {
+    setResuming(true);
+    try {
+      await resumeJob(jobId, true);
+      navigate(`/pipeline/${jobId}`);
+    } catch (err) {
+      console.error("Failed to resume job", err);
+      alert(`Failed to resume job: ${err instanceof Error ? err.message : "Unknown error"}`);
+    } finally {
+      setResuming(false);
+    }
+  };
+
+  const canResume = jobStatus === "cancelled" || jobStatus === "failed";
 
   const trials = useMemo(() => {
     return (results?.trials as Record<string, unknown>[]) || [];
@@ -380,6 +447,23 @@ function ResultDetail({ jobId }: { jobId: string }) {
             &larr; All Results
           </button>
           <strong style={{ fontSize: "1.1rem" }}>Results: {jobId}</strong>
+          {canResume && (
+            <button
+              className="btn btn-secondary"
+              style={{
+                marginLeft: "1rem",
+                padding: "0.3rem 0.8rem",
+                background: "var(--warning)",
+                color: "var(--bg-primary)",
+                border: "none",
+                fontWeight: 600,
+              }}
+              disabled={resuming}
+              onClick={handleResume}
+            >
+              {resuming ? "Resuming..." : `Resume (${jobStatus})`}
+            </button>
+          )}
         </div>
       </div>
 

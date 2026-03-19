@@ -45,6 +45,8 @@ export interface ReviewItem {
   primary_reasoning?: string;
   primary_confidence?: number;
   primary_model?: string;
+  created_at?: string;
+  commit_hash?: string;
 }
 
 export interface ReviewStats {

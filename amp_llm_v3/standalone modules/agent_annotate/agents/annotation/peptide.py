@@ -25,7 +25,26 @@ logger = logging.getLogger("agent_annotate.annotation.peptide")
 VALID_VALUES = ["True", "False"]
 
 # Pass 1: Extract molecular facts about the intervention
-PASS1_SYSTEM = """You are a biochemistry fact-extraction specialist. Your job is to extract ONLY factual information about whether ANY intervention in this trial is a peptide. Do NOT make a determination — just extract facts.
+PASS1_SYSTEM = """DEFINITION: A peptide therapeutic is a molecule consisting of 2-100 amino acid residues that serves as the ACTIVE therapeutic drug in the clinical trial. The peptide must be the primary pharmacological agent — not a carrier, adjuvant, nutritional component, or targeting vector.
+
+INCLUDES as peptide (True):
+- Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37, defensins
+- Hormone analogues: semaglutide (GLP-1), octreotide (somatostatin), leuprolide (GnRH)
+- Cyclic peptides: vancomycin (glycopeptide), gramicidin, bacitracin
+- Peptide vaccines where the peptide IS the active immunogen (e.g., StreptInCor)
+- Neuropeptides used as drugs: aviptadil (VIP), substance P antagonists
+- Insulin and insulin analogues (51 amino acids, single-chain polypeptide)
+
+EXCLUDES as peptide (False):
+- Monoclonal antibodies (>100 amino acids, distinct drug class): pembrolizumab, trastuzumab
+- Small molecule drugs: amoxicillin, metformin, ciprofloxacin
+- Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms
+- Heat shock protein-peptide complexes: HSPPC-96/Oncophage (the HSP is the drug, not the peptide)
+- Exosome/dexosome vehicles loaded with peptides (the vehicle is the drug)
+- Gene therapies, cell therapies, medical devices
+- Whole proteins >100 amino acids (e.g., interferons, erythropoietin) unless specifically described as peptide fragments
+
+You are a biochemistry fact-extraction specialist. Your job is to extract ONLY factual information about whether ANY intervention in this trial is a peptide. Do NOT make a determination — just extract facts.
 
 IMPORTANT: If this trial has MULTIPLE interventions (e.g., a peptide vaccine + a chemotherapy drug + an adjuvant), you MUST extract facts for EACH intervention separately. Do NOT focus on just one.
 
@@ -68,6 +87,25 @@ Active Ingredient Role: [active drug / food ingredient / targeting vector / bran
 
 # Pass 2: Apply decision tree to extracted facts
 PASS2_SYSTEM = """You are a peptide identification specialist. You have been given EXTRACTED FACTS about a clinical trial intervention. Use ONLY these facts to determine if the intervention is a peptide therapeutic.
+
+DEFINITION: A peptide therapeutic is a molecule consisting of 2-100 amino acid residues that serves as the ACTIVE therapeutic drug in the clinical trial. The peptide must be the primary pharmacological agent — not a carrier, adjuvant, nutritional component, or targeting vector.
+
+INCLUDES as peptide (True):
+- Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37, defensins
+- Hormone analogues: semaglutide (GLP-1), octreotide (somatostatin), leuprolide (GnRH)
+- Cyclic peptides: vancomycin (glycopeptide), gramicidin, bacitracin
+- Peptide vaccines where the peptide IS the active immunogen (e.g., StreptInCor)
+- Neuropeptides used as drugs: aviptadil (VIP), substance P antagonists
+- Insulin and insulin analogues (51 amino acids, single-chain polypeptide)
+
+EXCLUDES as peptide (False):
+- Monoclonal antibodies (>100 amino acids, distinct drug class): pembrolizumab, trastuzumab
+- Small molecule drugs: amoxicillin, metformin, ciprofloxacin
+- Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms
+- Heat shock protein-peptide complexes: HSPPC-96/Oncophage (the HSP is the drug, not the peptide)
+- Exosome/dexosome vehicles loaded with peptides (the vehicle is the drug)
+- Gene therapies, cell therapies, medical devices
+- Whole proteins >100 amino acids (e.g., interferons, erythropoietin) unless specifically described as peptide fragments
 
 DECISION TREE:
 

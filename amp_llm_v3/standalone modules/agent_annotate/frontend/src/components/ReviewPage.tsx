@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { getReviewItems, getReviewStats, submitReview, getFieldValues } from "../api/client";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { getReviewItems, getReviewStats, submitReview, getFieldValues, getActiveJobCount } from "../api/client";
 import type { ReviewItem, ReviewStats, ModelOpinion } from "../types";
 
 // --- Annotation guidelines definitions ---
@@ -169,28 +169,72 @@ export default function ReviewPage() {
   const [guidelinesOpen, setGuidelinesOpen] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [batchFieldFilter, setBatchFieldFilter] = useState<string>("all");
+  const [isJobRunning, setIsJobRunning] = useState(false);
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const loadItems = async () => {
+  const selectedKeyRef = useRef<string | null>(null);
+
+  const loadItems = useCallback(async () => {
     try {
-      const [data, statsData, fv] = await Promise.all([
+      const [data, statsData, fv, activeData] = await Promise.all([
         getReviewItems(undefined, "pending"),
         getReviewStats(),
         getFieldValues(),
+        getActiveJobCount(),
       ]);
-      setItems(data.items || []);
+      const newItems = data.items || [];
+      setItems(newItems);
       setStats(statsData);
       setFieldValues(fv.fields || {});
       setModelMap(fv.model_map || {});
+      setIsJobRunning(activeData.active > 0);
+
+      // Preserve the selected item across refreshes by matching on key
+      if (selectedKeyRef.current) {
+        const match = newItems.find(
+          (i) => `${i.job_id}-${i.nct_id}-${i.field_name}` === selectedKeyRef.current
+        );
+        if (match) {
+          setSelected(match);
+        }
+      }
     } catch (e) {
       console.error("Failed to load review items", e);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadItems();
-  }, []);
+  }, [loadItems]);
+
+  // Poll every 10 seconds while a job is running
+  useEffect(() => {
+    if (isJobRunning) {
+      pollingRef.current = setInterval(() => {
+        loadItems();
+      }, 10000);
+    } else {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
+    }
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
+    };
+  }, [isJobRunning, loadItems]);
+
+  // Keep selectedKeyRef in sync with the selected item
+  useEffect(() => {
+    selectedKeyRef.current = selected
+      ? `${selected.job_id}-${selected.nct_id}-${selected.field_name}`
+      : null;
+  }, [selected]);
 
   const handleDecision = async (item: ReviewItem, action: string) => {
     try {
@@ -335,45 +379,101 @@ export default function ReviewPage() {
       <div>
         <div className="flex-between mb-2">
           <h2>Review Queue</h2>
-          {stats && (
-            <div className="text-sm text-muted">
-              {stats.pending} pending / {stats.total} total ({stats.decided} decided, {stats.skipped} skipped)
-            </div>
-          )}
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            {isJobRunning && (
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                padding: "0.25rem 0.75rem",
+                background: "rgba(124, 140, 255, 0.1)",
+                border: "1px solid var(--accent)",
+                borderRadius: "var(--radius)",
+                fontSize: "0.8rem",
+              }}>
+                <span style={{
+                  display: "inline-block",
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  background: "var(--success)",
+                  animation: "pulse 1.5s ease-in-out infinite",
+                }} />
+                Live &mdash; Job in progress, new items may appear
+              </div>
+            )}
+            {stats && (
+              <div className="text-sm text-muted">
+                {stats.pending} pending / {stats.total} total ({stats.decided} decided, {stats.skipped} skipped)
+              </div>
+            )}
+          </div>
         </div>
 
         {jobGroups.length === 0 ? (
           <div className="card text-muted">No items pending review.</div>
         ) : (
           <div>
-            {jobGroups.map((group) => (
-              <div
-                key={group.job_id}
-                className="card"
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  setSelectedJob(group.job_id);
-                  setSelected(null);
-                  setSelectedIndex(-1);
-                  setOverrideValue("");
-                  setNote("");
-                  setBatchFieldFilter("all");
-                }}
-              >
-                <div className="flex-between mb-1">
-                  <strong>Job {group.job_id}</strong>
-                  <span className="badge badge-running">
-                    {group.items.length} pending
-                  </span>
+            {jobGroups.map((group) => {
+              const firstItem = group.items[0];
+              const createdAt = firstItem?.created_at;
+              const commitHash = firstItem?.commit_hash;
+              const formattedDate = createdAt
+                ? new Date(createdAt).toLocaleString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                  })
+                : null;
+
+              return (
+                <div
+                  key={group.job_id}
+                  className="card"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setSelectedJob(group.job_id);
+                    setSelected(null);
+                    setSelectedIndex(-1);
+                    setOverrideValue("");
+                    setNote("");
+                    setBatchFieldFilter("all");
+                  }}
+                >
+                  <div className="flex-between mb-1">
+                    <strong>Job {group.job_id}</strong>
+                    <span className="badge badge-running">
+                      {group.items.length} pending
+                    </span>
+                  </div>
+                  <div className="text-sm text-muted">
+                    Fields: {[...new Set(group.items.map((i) => i.field_name))].join(", ")}
+                  </div>
+                  <div className="text-sm text-muted">
+                    Trials: {[...new Set(group.items.map((i) => i.nct_id))].length} unique
+                  </div>
+                  {(formattedDate || commitHash) && (
+                    <div className="text-sm text-muted" style={{ marginTop: "0.3rem" }}>
+                      {formattedDate && <span>{formattedDate}</span>}
+                      {formattedDate && commitHash && <span> &middot; </span>}
+                      {commitHash && (
+                        <code style={{
+                          fontSize: "0.75rem",
+                          background: "var(--bg-primary)",
+                          padding: "0.1rem 0.4rem",
+                          borderRadius: "3px",
+                        }}>
+                          {commitHash.slice(0, 7)}
+                        </code>
+                      )}
+                    </div>
+                  )}
                 </div>
-                <div className="text-sm text-muted">
-                  Fields: {[...new Set(group.items.map((i) => i.field_name))].join(", ")}
-                </div>
-                <div className="text-sm text-muted">
-                  Trials: {[...new Set(group.items.map((i) => i.nct_id))].length} unique
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -401,6 +501,28 @@ export default function ReviewPage() {
           <span className="text-sm text-muted">
             {currentJobItems.length} items pending
           </span>
+          {isJobRunning && (
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.4rem",
+              padding: "0.2rem 0.6rem",
+              background: "rgba(124, 140, 255, 0.1)",
+              border: "1px solid var(--accent)",
+              borderRadius: "var(--radius)",
+              fontSize: "0.75rem",
+            }}>
+              <span style={{
+                display: "inline-block",
+                width: "6px",
+                height: "6px",
+                borderRadius: "50%",
+                background: "var(--success)",
+                animation: "pulse 1.5s ease-in-out infinite",
+              }} />
+              Live
+            </div>
+          )}
         </div>
         <div className="flex gap-1">
           <button

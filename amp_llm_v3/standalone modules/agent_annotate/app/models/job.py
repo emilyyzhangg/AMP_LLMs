@@ -83,3 +83,5 @@ class ReviewItem(BaseModel):
     reviewer_note: Optional[str] = None
     primary_reasoning: str = ""
     primary_confidence: float = 0.0
+    created_at: Optional[str] = None
+    commit_hash: str = ""
