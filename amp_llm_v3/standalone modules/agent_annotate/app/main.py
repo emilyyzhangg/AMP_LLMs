@@ -96,6 +96,9 @@ class StripPrefixMiddleware(BaseHTTPMiddleware):
         path = request.scope["path"]
         if path.startswith(PATH_PREFIX):
             request.scope["path"] = path[len(PATH_PREFIX):] or "/"
+            request.state._behind_prefix = True
+        else:
+            request.state._behind_prefix = False
         return await call_next(request)
 
 
@@ -163,9 +166,28 @@ if FRONTEND_DIR.exists():
         app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
     @app.get("/{full_path:path}")
-    async def spa_catch_all(full_path: str):
-        """Serve index.html for all non-API routes (SPA routing)."""
+    async def spa_catch_all(request: Request, full_path: str):
+        """Serve index.html for all non-API routes (SPA routing).
+
+        Injects a <base> tag when served behind the /agent-annotate prefix
+        so that absolute asset paths (/assets/...) resolve correctly through
+        the Cloudflare tunnel.
+        """
         file_path = FRONTEND_DIR / full_path
         if file_path.exists() and file_path.is_file():
             return FileResponse(file_path)
-        return FileResponse(FRONTEND_DIR / "index.html")
+
+        # Check if the original request came through the /agent-annotate prefix
+        behind_prefix = getattr(request.state, "_behind_prefix", False)
+
+        index_html = (FRONTEND_DIR / "index.html").read_text()
+
+        if behind_prefix:
+            # Inject <base> tag so /assets/... resolves to /agent-annotate/assets/...
+            index_html = index_html.replace(
+                "<head>",
+                f'<head>\n    <base href="{PATH_PREFIX}/" />',
+            )
+
+        from fastapi.responses import HTMLResponse
+        return HTMLResponse(index_html)
