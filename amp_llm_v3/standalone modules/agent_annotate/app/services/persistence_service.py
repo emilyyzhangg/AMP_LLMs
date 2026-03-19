@@ -207,6 +207,30 @@ class PersistenceService:
             warnings=warnings,
         )
 
+    # --- Job state ---
+
+    def save_job_state(self, job_id: str, job_data: dict) -> None:
+        """Persist job state to disk. Called after each trial and status change."""
+        jobs_dir = self._results_dir / "jobs"
+        jobs_dir.mkdir(exist_ok=True)
+        path = jobs_dir / f"{job_id}.json"
+        with open(path, "w") as f:
+            json.dump(job_data, f, indent=2, default=str)
+
+    def load_all_job_states(self) -> dict[str, dict]:
+        """Load all persisted job states. Called on startup."""
+        jobs_dir = self._results_dir / "jobs"
+        if not jobs_dir.exists():
+            return {}
+        states = {}
+        for path in jobs_dir.glob("*.json"):
+            try:
+                with open(path) as f:
+                    states[path.stem] = json.load(f)
+            except Exception:
+                pass
+        return states
+
     # --- Internal helpers ---
 
     @staticmethod
