@@ -85,6 +85,11 @@ DELIVERY_MODE_ALIASES = {
     "injection": "Injection/Infusion - Other/Unspecified",
     "topical - unspecified": "Topical - Unspecified",
     "other/unspecified": "Other/Unspecified",
+    "sc": "Injection/Infusion - Subcutaneous/Intradermal",
+    "subcutaneous": "Injection/Infusion - Subcutaneous/Intradermal",
+    "intradermal": "Injection/Infusion - Subcutaneous/Intradermal",
+    "im": "Injection/Infusion - Intramuscular",
+    "intramuscular": "Injection/Infusion - Intramuscular",
 }
 
 OUTCOME_ALIASES = {
@@ -171,32 +176,19 @@ def normalise(value, field_name):
 
 
 # ---------------------------------------------------------------------------
-# Cohen's Kappa
+# Statistical functions (from shared stats module)
 # ---------------------------------------------------------------------------
-def cohens_kappa(labels_a, labels_b):
-    """
-    Compute Cohen's kappa for two lists of categorical labels.
-    Returns (kappa, po, pe).
-    """
-    assert len(labels_a) == len(labels_b), "Label lists must be same length"
-    n = len(labels_a)
-    if n == 0:
-        return (float("nan"), float("nan"), float("nan"))
+# Add project root to path so we can import app.services
+sys.path.insert(0, str(BASE_DIR))
 
-    all_labels = sorted(set(labels_a) | set(labels_b))
-
-    agreements = sum(1 for a, b in zip(labels_a, labels_b) if a == b)
-    po = agreements / n
-
-    count_a = Counter(labels_a)
-    count_b = Counter(labels_b)
-    pe = sum((count_a[label] / n) * (count_b[label] / n) for label in all_labels)
-
-    if pe == 1.0:
-        return (1.0 if po == 1.0 else 0.0, po, pe)
-
-    kappa = (po - pe) / (1.0 - pe)
-    return (kappa, po, pe)
+from app.services.concordance_stats import (
+    cohens_kappa,
+    kappa_confidence_interval,
+    gwets_ac1_with_ci,
+    prevalence_index,
+    bias_index,
+    landis_koch_interpretation as kappa_interpretation_stats,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -226,6 +218,32 @@ def load_excel_annotations(path):
 
     wb.close()
     return dict(data)
+
+
+def load_excel_row_to_nct(path):
+    """Load mapping of (sheet_name, data_row_number) -> nct_id.
+
+    data_row_number is 1-based (row 1 = first data row after header).
+    Returns: { sheet_name: { row_number: nct_id } }
+    """
+    wb = openpyxl.load_workbook(str(path), read_only=True, data_only=True)
+    mapping = {}
+
+    for sheet_name in ["Trials Replicate 1", "Trials Replicate 2"]:
+        ws = wb[sheet_name]
+        sheet_map = {}
+        data_row = 0
+        for row in ws.iter_rows(min_row=2, values_only=True):
+            data_row += 1
+            nct = row[0]
+            if nct is None:
+                continue
+            nct = str(nct).strip()
+            sheet_map[data_row] = nct
+        mapping[sheet_name] = sheet_map
+
+    wb.close()
+    return mapping
 
 
 def load_agent_annotations_from_json(json_paths):
@@ -395,11 +413,18 @@ def compute_concordance(agent_data, human_data):
             n = len(labels_a)
             if n > 0:
                 kappa, po, pe = cohens_kappa(labels_a, labels_b)
+                kappa_k, kappa_ci_lo, kappa_ci_hi = kappa_confidence_interval(labels_a, labels_b)
+                ac1, ac1_ci_lo, ac1_ci_hi = gwets_ac1_with_ci(labels_a, labels_b)
+                pi = prevalence_index(labels_a, labels_b)
+                bi = bias_index(labels_a, labels_b)
                 agreements = sum(
                     1 for a, b in zip(labels_a, labels_b) if a == b
                 )
             else:
                 kappa, po, pe = float("nan"), float("nan"), float("nan")
+                kappa_ci_lo, kappa_ci_hi = float("nan"), float("nan")
+                ac1, ac1_ci_lo, ac1_ci_hi = float("nan"), float("nan"), float("nan")
+                pi, bi = float("nan"), float("nan")
                 agreements = 0
 
             field_result[pair_name] = {
@@ -408,6 +433,11 @@ def compute_concordance(agent_data, human_data):
                 "agreements": agreements,
                 "raw_agreement_pct": round(po * 100, 1) if n > 0 else None,
                 "cohens_kappa": round(kappa, 4) if n > 0 else None,
+                "kappa_ci": (kappa_ci_lo, kappa_ci_hi) if n > 0 else None,
+                "ac1": ac1 if n > 0 else None,
+                "ac1_ci": (ac1_ci_lo, ac1_ci_hi) if n > 0 else None,
+                "prevalence_index": pi if n > 0 else None,
+                "bias_index": bi if n > 0 else None,
                 "pe": round(pe, 4) if n > 0 else None,
                 "disagreements": pair_disagreements,
             }
@@ -667,31 +697,21 @@ def print_coverage_report(coverage_report, n_total):
 # Display
 # ---------------------------------------------------------------------------
 def kappa_interpretation(k):
-    """Landis & Koch interpretation of kappa."""
-    if k is None or k != k:  # NaN check
+    """Landis & Koch interpretation of kappa (delegates to stats module)."""
+    if k is None:
         return "N/A"
-    if k < 0:
-        return "Poor"
-    elif k < 0.21:
-        return "Slight"
-    elif k < 0.41:
-        return "Fair"
-    elif k < 0.61:
-        return "Moderate"
-    elif k < 0.81:
-        return "Substantial"
-    else:
-        return "Almost Perfect"
+    return kappa_interpretation_stats(k)
 
 
 def print_concordance_table(results):
-    """Print a formatted concordance summary table."""
-    print("=" * 115)
+    """Print a formatted concordance summary table with CI, AC1, and interpretation."""
+    print("=" * 160)
     print(
         f"{'Field':<22} {'Comparison':<15} {'N':>5} {'Skip':>5} "
-        f"{'Agree':>6} {'Agree%':>8} {'Kappa':>8} {'Interpretation':<16}"
+        f"{'Agree':>6} {'Agree%':>8} {'Kappa':>8} {'95% CI':>16} "
+        f"{'AC1':>8} {'Interpretation':<16}"
     )
-    print("-" * 115)
+    print("-" * 160)
 
     for field_name in FIELDS:
         field_result = results.get(field_name, {})
@@ -703,20 +723,28 @@ def print_concordance_table(results):
             agreements = pr.get("agreements", 0)
             pct = pr.get("raw_agreement_pct")
             kappa = pr.get("cohens_kappa")
+            kappa_ci = pr.get("kappa_ci")
+            ac1 = pr.get("ac1")
 
             pct_str = f"{pct:.1f}%" if pct is not None else "N/A"
             kappa_str = f"{kappa:.4f}" if kappa is not None else "N/A"
+            if kappa_ci is not None:
+                ci_str = f"[{kappa_ci[0]:.4f}, {kappa_ci[1]:.4f}]"
+            else:
+                ci_str = "N/A"
+            ac1_str = f"{ac1:.4f}" if ac1 is not None else "N/A"
             interp = kappa_interpretation(kappa)
 
             label = field_name if first else ""
             print(
                 f"{label:<22} {pair_name:<15} {n:>5} {skipped:>5} "
-                f"{agreements:>6} {pct_str:>8} {kappa_str:>8} {interp:<16}"
+                f"{agreements:>6} {pct_str:>8} {kappa_str:>8} {ci_str:>16} "
+                f"{ac1_str:>8} {interp:<16}"
             )
             first = False
-        print("-" * 115)
+        print("-" * 160)
 
-    print("=" * 115)
+    print("=" * 160)
 
 
 def print_disagreements(all_disagreements):
@@ -840,6 +868,146 @@ def print_value_distribution(agent_data, human_data, common_ncts):
 
 
 # ---------------------------------------------------------------------------
+# Annotator workload attribution
+# ---------------------------------------------------------------------------
+# Row ranges are 1-based data rows (after header). Ranges are [start, end).
+WORKLOAD = {
+    "Trials Replicate 1": [
+        (1, 309, "Mercan"), (310, 617, "Maya"), (617, 822, "Anat"),
+        (823, 926, "Ali"), (926, 1186, "Emre"), (1187, 1417, "Iris"),
+        (1417, 1544, "Ali"), (1545, 1846, "Berke"),
+    ],
+    "Trials Replicate 2": [
+        (1, 461, "Emily"), (462, 480, "Anat"), (481, 922, "Emily"),
+        (923, 941, "Ali"), (941, 1383, "Emily"), (1384, 1405, "Iris"),
+    ],
+}
+
+
+def load_annotator_workload(row_to_nct):
+    """Map each (sheet_name, nct_id) to an annotator name based on row ranges.
+
+    Returns: { sheet_name: { nct_id: annotator_name } }
+    """
+    result = {}
+    for sheet_name, ranges in WORKLOAD.items():
+        sheet_map = row_to_nct.get(sheet_name, {})
+        nct_to_annotator = {}
+        for start, end, annotator in ranges:
+            for row_num in range(start, end + 1):
+                nct = sheet_map.get(row_num)
+                if nct:
+                    nct_to_annotator[nct] = annotator
+        result[sheet_name] = nct_to_annotator
+    return result
+
+
+def get_annotator_for_nct(annotator_map, nct, replicate):
+    """Get the annotator name for a given NCT and replicate.
+
+    replicate: 'r1' or 'r2'
+    """
+    sheet_name = "Trials Replicate 1" if replicate == "r1" else "Trials Replicate 2"
+    return annotator_map.get(sheet_name, {}).get(nct, "Unknown")
+
+
+def print_annotator_analysis(agent_data, human_data, common_ncts, annotator_map):
+    """Print per-annotator concordance statistics."""
+    import math
+
+    print(f"\n{'=' * 160}")
+    print("PER-ANNOTATOR CONCORDANCE ANALYSIS")
+    print(f"{'=' * 160}")
+
+    # Build annotator -> list of NCTs for each replicate
+    r1_by_annotator = defaultdict(list)
+    r2_by_annotator = defaultdict(list)
+
+    for nct in common_ncts:
+        r1_ann = get_annotator_for_nct(annotator_map, nct, "r1")
+        r2_ann = get_annotator_for_nct(annotator_map, nct, "r2")
+        r1_by_annotator[r1_ann].append(nct)
+        r2_by_annotator[r2_ann].append(nct)
+
+    # Summary: how many NCTs per annotator
+    print("\nAnnotator trial counts (overlapping with agent):")
+    print(f"  {'Annotator':<12} {'R1 trials':>10} {'R2 trials':>10} {'Total':>10}")
+    print(f"  {'-'*44}")
+    all_annotators = sorted(set(list(r1_by_annotator.keys()) + list(r2_by_annotator.keys())))
+    for ann in all_annotators:
+        r1_n = len(r1_by_annotator.get(ann, []))
+        r2_n = len(r2_by_annotator.get(ann, []))
+        print(f"  {ann:<12} {r1_n:>10} {r2_n:>10} {r1_n + r2_n:>10}")
+
+    # Per-annotator kappa (Agent vs annotator's subset)
+    print(f"\n{'Annotator':<12} {'Rep':<4} {'N_trials':>9} {'Field':<22} "
+          f"{'Kappa':>8} {'95% CI':>16} {'AC1':>8} {'Interpretation':<16}")
+    print("-" * 110)
+
+    for ann in all_annotators:
+        for rep_label, rep_key, nct_map in [
+            ("R1", "r1", r1_by_annotator),
+            ("R2", "r2", r2_by_annotator),
+        ]:
+            ncts = nct_map.get(ann, [])
+            if not ncts:
+                continue
+
+            first_ann = True
+            for field_name, field_def in FIELDS.items():
+                blank_means_skip = field_def["blank_means_skip"]
+                labels_a = []
+                labels_b = []
+
+                for nct in ncts:
+                    raw_agent = agent_data[nct].get(field_name, "")
+                    raw_human = human_data[nct][rep_key].get(field_name)
+
+                    norm_agent, blank_agent = normalise(raw_agent, field_name)
+                    norm_human, blank_human = normalise(raw_human, field_name)
+
+                    if blank_means_skip and (blank_agent or blank_human):
+                        continue
+
+                    if not blank_means_skip:
+                        if blank_agent:
+                            norm_agent = ""
+                        if blank_human:
+                            norm_human = ""
+
+                    labels_a.append(norm_agent)
+                    labels_b.append(norm_human)
+
+                n = len(labels_a)
+                if n > 0:
+                    k, _, _ = cohens_kappa(labels_a, labels_b)
+                    _, ci_lo, ci_hi = kappa_confidence_interval(labels_a, labels_b)
+                    ac1_val, _, _ = gwets_ac1_with_ci(labels_a, labels_b)
+                    interp = kappa_interpretation(k if not math.isnan(k) else None)
+                    k_str = f"{k:.4f}" if not math.isnan(k) else "N/A"
+                    ci_str = f"[{ci_lo:.4f}, {ci_hi:.4f}]" if not math.isnan(ci_lo) else "N/A"
+                    ac1_str = f"{ac1_val:.4f}" if not math.isnan(ac1_val) else "N/A"
+                else:
+                    k_str = "N/A"
+                    ci_str = "N/A"
+                    ac1_str = "N/A"
+                    interp = "N/A"
+
+                ann_label = ann if first_ann else ""
+                rep_show = rep_label if first_ann else ""
+                n_show = str(len(ncts)) if first_ann else ""
+                first_ann = False
+
+                print(
+                    f"{ann_label:<12} {rep_show:<4} {n_show:>9} {field_name:<22} "
+                    f"{k_str:>8} {ci_str:>16} {ac1_str:>8} {interp:<16}"
+                )
+            print("-" * 110)
+
+    print("=" * 160)
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 def main():
@@ -910,6 +1078,12 @@ def main():
     # Disagreements
     print_disagreements(all_disagreements)
 
+    # Per-annotator analysis
+    print("\nLoading row-to-NCT mapping for annotator attribution...")
+    row_to_nct = load_excel_row_to_nct(EXCEL_PATH)
+    annotator_map = load_annotator_workload(row_to_nct)
+    print_annotator_analysis(agent_data, human_data, common_ncts, annotator_map)
+
     # Raw values for manual inspection
     print(f"\n{'=' * 115}")
     print("RAW VALUE COMPARISON (for manual inspection)")
@@ -947,12 +1121,21 @@ def main():
         field_json = {}
         for pair_name in ["Agent vs R1", "Agent vs R2", "R1 vs R2"]:
             pr = results[field_name][pair_name]
+            kappa_ci = pr.get("kappa_ci")
+            ac1_ci = pr.get("ac1_ci")
             field_json[pair_name] = {
                 "n": pr["n"],
                 "skipped_blank": pr["skipped_blank"],
                 "agreements": pr["agreements"],
                 "raw_agreement_pct": pr["raw_agreement_pct"],
                 "cohens_kappa": pr["cohens_kappa"],
+                "kappa_ci_lower": kappa_ci[0] if kappa_ci else None,
+                "kappa_ci_upper": kappa_ci[1] if kappa_ci else None,
+                "ac1": pr.get("ac1"),
+                "ac1_ci_lower": ac1_ci[0] if ac1_ci else None,
+                "ac1_ci_upper": ac1_ci[1] if ac1_ci else None,
+                "prevalence_index": pr.get("prevalence_index"),
+                "bias_index": pr.get("bias_index"),
                 "n_disagreements": len(pr["disagreements"]),
             }
 
