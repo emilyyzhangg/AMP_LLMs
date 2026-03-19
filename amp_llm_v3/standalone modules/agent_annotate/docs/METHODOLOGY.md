@@ -567,17 +567,41 @@ Reason for failure has a lower threshold because it depends on the outcome deter
 
 Concordance analysis compares agent annotations against human annotations to evaluate system accuracy. Two independent human annotators (R1 and R2) annotated the same trial set.
 
-### 8.2 Blank Handling (v2 Protocol)
+### 8.2 Human Annotator Structure
+
+The human annotation dataset consists of two independent replication passes over the same 1,846 clinical trials:
+
+- **R1 ("Trials Replicate 1")**: Annotated by a team of 7 annotators — Mercan (rows 1-309), Maya (310-617), Anat (617-822), Ali (823-926, 1417-1544), Emre (926-1186), Iris (1187-1417), Berke (1545-1846). Each annotator was assigned a contiguous block of trials. The R1 sheet is therefore a composite of 7 annotators with potentially different working definitions and annotation thoroughness.
+
+- **R2 ("Trials Replicate 2")**: Annotated primarily by Emily (rows 1-461, 481-922, 941-1383), with smaller contributions from Anat (462-480), Ali (923-941), and Iris (1384-1405). R2 is predominantly a single-annotator pass, providing more internal consistency but reflecting one individual's interpretive biases.
+
+This structure means that R1 vs R2 concordance measures agreement between a multi-annotator composite and a largely single-annotator validation pass — not between two equivalent independent raters. The 8:1 Peptide ratio (R1=451 True vs R2=56 True) likely reflects inter-annotator variability within R1, not a single coherent disagreement between two replication passes.
+
+Annotator row assignments are derived from the "Tentative workload" sheet in the source Excel file, enabling per-annotator concordance analysis.
+
+### 8.3 Blank Handling (v2 Protocol)
 
 The v2 concordance protocol excludes blank or empty human annotations from concordance calculations. The rationale: a blank annotation means the annotator did not annotate the field, not that the annotator chose an empty value.
 
 One exception: for the reason_for_failure field, empty IS a valid annotation (meaning "no failure"). A reason_for_failure value is only treated as blank (excluded) when the corresponding outcome field was also blank -- indicating the annotator skipped both fields.
 
-### 8.3 Inter-Annotator Reliability
+### 8.4 Inter-Annotator Reliability
 
 Cohen's kappa is computed for each field to measure inter-annotator agreement beyond chance. This applies to both agent-vs-human and human-vs-human comparisons.
 
-### 8.4 Impact of Value Normalization on Concordance
+### 8.5 Statistical Methods
+
+**Cohen's kappa** (Cohen 1960) with 95% analytical confidence intervals (Fleiss, Cohen & Everitt 1969) is the primary agreement metric. However, kappa is known to be paradoxically low when category prevalence is extreme (the "prevalence paradox" — Feinstein & Cicchetti 1990). To address this:
+
+**Gwet's AC₁** (Gwet 2008) is reported alongside kappa for all comparisons. AC₁ uses a different chance-agreement estimator that is robust to skewed marginal distributions, providing a more stable estimate when one category dominates (e.g., >80% of trials classified as "Other").
+
+**Prevalence index** and **bias index** (Byrt, Bishop & Carlin 1993) are computed for each comparison to quantify the degree of marginal skew and systematic rater disagreement, respectively. When prevalence index > 0.5, Cohen's kappa is likely underestimating agreement, and AC₁ should be preferred.
+
+**Per-annotator analysis**: Pairwise kappa between the agent and each individual human annotator (identified via the workload mapping) enables detection of annotator-specific biases. This reveals whether the agent systematically agrees more with certain annotators than others — a signal of annotator interpretation variability rather than agent error.
+
+All confidence intervals use the large-sample normal approximation. With typical comparison sizes of n=35-62, these intervals should be interpreted with caution; bootstrap CIs may provide tighter estimates for future analyses with larger samples.
+
+### 8.6 Impact of Value Normalization on Concordance
 
 Verifier value normalization (Section 6.6) directly affects concordance calculations because it changes which trials achieve consensus and which are flagged for review. Retroactive application of the expanded normalization rules to 11 completed jobs produced the following impact:
 
@@ -587,7 +611,7 @@ Verifier value normalization (Section 6.6) directly affects concordance calculat
 
 This means concordance numbers calculated before the normalization fix understate actual pipeline accuracy. Any concordance analysis should be recalculated after retroactive fixes are applied to ensure reported agreement rates reflect genuine disagreements rather than parsing artifacts.
 
-### 8.5 Concordance v3 Protocol
+### 8.7 Concordance v3 Protocol
 
 The v3 concordance protocol addresses three methodological issues identified in the v2 protocol:
 
@@ -609,6 +633,16 @@ The v3 concordance protocol addresses three methodological issues identified in 
 - Both outcome and reason blank -- skip (annotator didn't engage)
 - Non-failure outcome + blank reason -- legitimate empty (agreement if agent also empty)
 - Failure outcome + blank reason -- missing data (treated as blank/skip)
+
+### 8.8 Concordance Limitations
+
+1. **R1 is a multi-annotator composite.** Cohen's kappa between R1 and R2 measures agreement between a 7-person team and a single annotator, not between two equivalent raters. Internal variability within R1 is not captured by the current analysis and may inflate apparent R1-R2 disagreement.
+
+2. **Missing data is not MCAR.** 43-65% of human annotations are blank across fields. Blanks are more likely for trials that are harder to annotate, introducing selection bias into the filled-only (Tier 1) concordance. The three-tier analysis (Section 8.7) partially mitigates this by reporting coverage-adjusted metrics.
+
+3. **Sample sizes limit kappa precision.** Per-field comparisons range from n=35 to n=62, yielding 95% CI widths of ±0.10 to ±0.15 for moderate kappa values. Conclusions about "Moderate" vs "Substantial" agreement should be treated as approximate.
+
+4. **Human baseline is a ceiling, not a floor.** The agent's concordance with R1 cannot meaningfully exceed R1's own reliability. When the agent achieves 72.7% outcome agreement with R1 vs R1-R2's 55.6%, this indicates the agent is more consistent with R1's interpretation — it does not prove the agent is more accurate than R2.
 
 
 ## 9. Baseline Results

@@ -648,6 +648,18 @@ Architecture review identified that the concordance methodology was producing mi
 | One-sided blanks invisible | 473 R1-only peptide annotations ignored | Tier 2 counts as disagreement |
 | Agent evaluated on biased subset | Easier trials over-represented | Coverage reporting added |
 
+### 15.4 Concordance Statistical Upgrades
+
+Added to address publication-readiness gaps identified in methodology review:
+
+1. **95% confidence intervals** on all Cohen's kappa values (Fleiss et al. 1969 analytical formula)
+2. **Gwet's AC₁** alongside kappa (Gwet 2008) — robust to prevalence paradox
+3. **Prevalence and bias indices** (Byrt et al. 1993) — quantify marginal skew and systematic rater disagreement
+4. **Per-annotator pairwise analysis** — agent vs each individual R1/R2 annotator using workload row assignments
+5. **Delivery mode normalization** — added SC, IM, subcutaneous, intramuscular, intradermal aliases
+6. **Service v3 fix** — one-sided blank outcome+reason no longer skips the trial entirely; treats blank side as "" and includes for comparison
+7. **R1/R2 composition documented** — R1 is a 7-annotator composite, R2 is primarily a single annotator, with workload row assignments for disaggregation
+
 ---
 
 ## 15. v10: Verification Architecture Overhaul

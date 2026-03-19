@@ -406,6 +406,8 @@ The concordance analysis methodology (v2) implements the following conventions t
 
 **Inter-annotator reliability.** Cohen's kappa is computed for each field to quantify agreement beyond chance. Kappa adjusts for the baseline agreement expected if both annotators assigned categories at random in proportion to their marginal distributions. Kappa values are interpreted on the standard scale: below 0 indicates less than chance agreement, 0.01--0.20 is slight, 0.21--0.40 is fair, 0.41--0.60 is moderate, 0.61--0.80 is substantial, and 0.81--1.00 is almost perfect agreement.
 
+**Annotator composition.** The human reference data consists of two replication passes: R1 (7 annotators assigned contiguous row blocks) and R2 (primarily a single annotator). Cohen's kappa with 95% analytical confidence intervals (Fleiss et al. 1969) is the primary metric, supplemented by Gwet's AC₁ (Gwet 2008) to control for the prevalence paradox, and per-annotator pairwise analysis to detect systematic interpretive differences within the R1 team. Prevalence and bias indices (Byrt et al. 1993) are reported for each comparison to contextualize kappa values.
+
 ### 3.6 Self-Learning: Experience-Driven Annotation Memory
 
 Agent Annotate implements a persistent self-learning layer (EDAM) that improves annotation accuracy across runs without model fine-tuning or human intervention. EDAM operates through three feedback loops: cross-run stability consensus, evidence-grounded self-review, and automated prompt optimization.
@@ -710,6 +712,8 @@ Several limitations constrain the interpretation of the current results:
 **No multi-run consensus.** The current pipeline performs a single annotation run per trial. Multi-run consensus (N=3 or N=5, majority vote) would reduce the impact of stochastic variation in model outputs but at a proportional increase in inference time.
 
 **Imperfect ground truth.** Human annotations exhibit 19.8% disagreement, meaning that even a perfect system would achieve at most 80.2% agreement with any single annotator. Evaluation against a consensus ground truth (where both annotators agree) would provide a cleaner signal but would exclude the 19.8% of cases that are, by definition, the most difficult.
+
+**Concordance caveats.** R1 is a composite of 7 annotators; internal R1 reliability is not independently measurable from the available data. Missing data (43-65% blank annotations) is likely not missing at random, as harder trials receive less annotation coverage. All kappa values should be interpreted alongside their 95% CIs and the corresponding AC₁, particularly for fields with extreme prevalence (e.g., Peptide, where >90% of trials are non-peptide).
 
 **No cross-validation.** The v3 improvements described in Section 4.4 were designed in response to errors observed on the same 25 trials used for evaluation. Performance on held-out trials may differ.
 

@@ -28,6 +28,34 @@ class ConcordanceResult(BaseModel):
         default=None,
         description="Cohen's kappa (-1 to 1). None if no data.",
     )
+    kappa_ci_lower: Optional[float] = Field(
+        default=None,
+        description="Lower bound of 95% CI for Cohen's kappa.",
+    )
+    kappa_ci_upper: Optional[float] = Field(
+        default=None,
+        description="Upper bound of 95% CI for Cohen's kappa.",
+    )
+    ac1: Optional[float] = Field(
+        default=None,
+        description="Gwet's AC1 — bias-corrected agreement coefficient.",
+    )
+    ac1_ci_lower: Optional[float] = Field(
+        default=None,
+        description="Lower bound of 95% CI for AC1.",
+    )
+    ac1_ci_upper: Optional[float] = Field(
+        default=None,
+        description="Upper bound of 95% CI for AC1.",
+    )
+    prevalence_idx: Optional[float] = Field(
+        default=None,
+        description="Prevalence index — high values suggest kappa may underestimate agreement.",
+    )
+    bias_idx: Optional[float] = Field(
+        default=None,
+        description="Bias index — measures systematic disagreement between raters.",
+    )
     interpretation: str = Field(
         description="Landis & Koch interpretation of kappa",
     )

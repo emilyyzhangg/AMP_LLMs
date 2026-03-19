@@ -18,6 +18,13 @@ from typing import Optional
 import openpyxl
 
 from app.config import RESULTS_DIR
+from app.services.concordance_stats import (
+    cohens_kappa as _cohens_kappa_impl,
+    kappa_confidence_interval,
+    gwets_ac1_with_ci,
+    prevalence_index,
+    bias_index,
+)
 from app.models.concordance import (
     ComparisonFieldDelta,
     ComparisonResult,
@@ -185,46 +192,24 @@ def _normalise(value: object, field_name: str) -> tuple[str, bool]:
 # Cohen's Kappa (from scratch, no sklearn)
 # ---------------------------------------------------------------------------
 def _cohens_kappa(labels_a: list[str], labels_b: list[str]) -> Optional[float]:
-    """Compute Cohen's kappa for two lists of categorical labels.
+    """Compute Cohen's kappa via shared stats module.
 
-    Returns kappa value, or None if computation is not possible (n=0 or pe=1).
+    Returns kappa value, or None if computation is not possible (n=0).
     """
-    n = len(labels_a)
-    if n == 0:
+    if len(labels_a) == 0:
         return None
-
-    all_labels = sorted(set(labels_a) | set(labels_b))
-
-    agreements = sum(1 for a, b in zip(labels_a, labels_b) if a == b)
-    po = agreements / n
-
-    count_a = Counter(labels_a)
-    count_b = Counter(labels_b)
-    pe = sum((count_a[lbl] / n) * (count_b[lbl] / n) for lbl in all_labels)
-
-    if pe == 1.0:
-        return 1.0 if po == 1.0 else 0.0
-
-    kappa = (po - pe) / (1.0 - pe)
+    kappa, po, pe = _cohens_kappa_impl(labels_a, labels_b)
+    if math.isnan(kappa):
+        return None
     return round(kappa, 4)
 
 
 def _kappa_interpretation(k: Optional[float]) -> str:
-    """Landis & Koch (1977) interpretation of kappa."""
-    if k is None or (isinstance(k, float) and math.isnan(k)):
+    """Landis & Koch (1977) interpretation of kappa (delegates to stats module)."""
+    from app.services.concordance_stats import landis_koch_interpretation
+    if k is None:
         return "N/A"
-    if k < 0:
-        return "Poor"
-    elif k < 0.21:
-        return "Slight"
-    elif k < 0.41:
-        return "Fair"
-    elif k < 0.61:
-        return "Moderate"
-    elif k < 0.81:
-        return "Substantial"
-    else:
-        return "Almost Perfect"
+    return landis_koch_interpretation(k)
 
 
 # ---------------------------------------------------------------------------
@@ -419,13 +404,12 @@ def _compute_field_concordance(
             if blank_a and outcome_a_blank and blank_b and outcome_b_blank:
                 skipped += 1
                 continue
-            # One side has blank outcome + blank reason → that side skipped
+            # One side blank outcome+reason → treat as "no failure" (empty string)
+            # but don't skip the trial — the other side has data
             if blank_a and outcome_a_blank:
-                skipped += 1
-                continue
+                norm_a = ""
             if blank_b and outcome_b_blank:
-                skipped += 1
-                continue
+                norm_b = ""
 
             # Blanks that survive are legitimate "no failure" values
             if blank_a:
@@ -463,10 +447,18 @@ def _compute_field_concordance(
         agree_count = sum(1 for a, b in zip(labels_a, labels_b) if a == b)
         agree_pct = round((agree_count / n) * 100, 1)
         kappa = _cohens_kappa(labels_a, labels_b)
+        _, kappa_ci_lo, kappa_ci_hi = kappa_confidence_interval(labels_a, labels_b)
+        ac1_val, ac1_ci_lo, ac1_ci_hi = gwets_ac1_with_ci(labels_a, labels_b)
+        pi_val = prevalence_index(labels_a, labels_b)
+        bi_val = bias_index(labels_a, labels_b)
     else:
         agree_count = 0
         agree_pct = 0.0
         kappa = None
+        kappa_ci_lo, kappa_ci_hi = None, None
+        ac1_val, ac1_ci_lo, ac1_ci_hi = None, None, None
+        pi_val = None
+        bi_val = None
 
     # Convert defaultdicts to regular dicts for serialisation
     confusion_dict = {k: dict(v) for k, v in confusion.items()}
@@ -482,6 +474,13 @@ def _compute_field_concordance(
         agree_count=agree_count,
         agree_pct=agree_pct,
         kappa=kappa,
+        kappa_ci_lower=kappa_ci_lo,
+        kappa_ci_upper=kappa_ci_hi,
+        ac1=ac1_val,
+        ac1_ci_lower=ac1_ci_lo,
+        ac1_ci_upper=ac1_ci_hi,
+        prevalence_idx=pi_val,
+        bias_idx=bi_val,
         interpretation=_kappa_interpretation(kappa),
         confusion_matrix=confusion_dict,
         value_distribution=distribution,
