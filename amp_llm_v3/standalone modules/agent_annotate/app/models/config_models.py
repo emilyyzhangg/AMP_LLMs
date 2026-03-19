@@ -45,6 +45,15 @@ class OrchestratorConfig(BaseModel):
     parallel_research: bool = True
     parallel_annotation: bool = True
     hardware_profile: str = "mac_mini"  # "mac_mini" | "server"
+    # The premium model used on server profile for high-accuracy tasks:
+    # classification, outcome, and reconciliation. Toggle between models here.
+    # Options: "kimi-k2-thinking" (default, 1T MoE 32B active, proven reasoning)
+    #          "minimax-m2.7" (2.3T MoE 100B active, strong task adherence, slower)
+    server_premium_model: str = "kimi-k2-thinking"
+    # Server verifier overrides — stronger models for verification on server hardware.
+    # List of 3 model names. If empty or not set, uses the default verifiers from
+    # verification.models. Auto-pulled if not available locally.
+    server_verifiers: list[str] = []
 
 
 class OllamaConfig(BaseModel):

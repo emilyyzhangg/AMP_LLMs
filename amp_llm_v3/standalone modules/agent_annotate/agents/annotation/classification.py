@@ -161,9 +161,9 @@ def _deterministic_classify(
 
 # Hardware profile → model selection for classification
 # Classification uses a larger model because 8B ignores worked examples
+# On server, uses the configurable server_premium_model (kimi-k2 or minimax-m2.7)
 MODEL_OVERRIDES = {
     "mac_mini": "qwen2.5:14b",
-    "server": "kimi-k2-thinking",
     "server_fallback": "qwen2.5:72b",
 }
 
@@ -383,6 +383,9 @@ class ClassificationAgent(BaseAnnotationAgent):
         """Select model based on hardware profile. Classification uses a
         larger model because 8B models ignore the multi-step decision tree."""
         profile = config.orchestrator.hardware_profile
+        if profile == "server":
+            # Use the configurable premium model (kimi-k2 or minimax-m2.7)
+            return getattr(config.orchestrator, "server_premium_model", "kimi-k2-thinking")
         override = MODEL_OVERRIDES.get(profile)
         if override:
             return override
@@ -447,6 +450,11 @@ class ClassificationAgent(BaseAnnotationAgent):
                 header += f"  {c.identifier}: {c.snippet}\n"
 
         evidence_text = header + "\n" + structured_text
+
+        # --- EDAM guidance injection ---
+        edam_guidance = await self.get_edam_guidance(nct_id, evidence_text)
+        if edam_guidance:
+            evidence_text = edam_guidance + "\n\n" + evidence_text
 
         # --- Pass 1: Extract antimicrobial evidence ---
         logger.info(f"  classification: Pass 1 — extracting AMP evidence for {nct_id}")

@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 # Load .env - check project root first, then webapp/.env for shared keys
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(_PROJECT_ROOT / ".env")
-# Also load webapp .env for shared API keys (SERPAPI_KEY, NCBI_API_KEY, etc.)
+# Also load webapp .env for shared API keys (NCBI_API_KEY, etc.)
 _WEBAPP_ENV = _PROJECT_ROOT.parent.parent / "webapp" / ".env"
 if _WEBAPP_ENV.exists():
     load_dotenv(_WEBAPP_ENV, override=False)
@@ -27,8 +27,8 @@ OLLAMA_TIMEOUT = int(os.getenv("OLLAMA_TIMEOUT", "600"))
 NCT_SERVICE_PORT = int(os.getenv("NCT_SERVICE_PORT", "9002"))
 NCT_SERVICE_URL = f"http://localhost:{NCT_SERVICE_PORT}"
 
-# --- External API keys (optional) ---
-SERPAPI_KEY = os.getenv("SERPAPI_KEY", "")
+# --- External API keys (optional, all free-tier) ---
+# NCBI E-utilities key (free registration at ncbi.nlm.nih.gov) — raises rate limit from 3/sec to 10/sec
 PUBMED_API_KEY = os.getenv("PUBMED_API_KEY", "")
 
 # --- CORS ---

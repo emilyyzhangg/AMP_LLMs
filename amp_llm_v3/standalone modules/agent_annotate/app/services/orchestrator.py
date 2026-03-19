@@ -326,6 +326,18 @@ class PipelineOrchestrator:
         self._persist_job(job)
         logger.info(f"[{job_id}] Pipeline completed: {len(all_trial_results)} trials")
 
+        # --- EDAM post-job hook: self-learning feedback loops ---
+        try:
+            from app.services.memory import edam_post_job_hook
+            edam_summary = await edam_post_job_hook(
+                job_id, all_trial_results, job.config_snapshot
+            )
+            if edam_summary.get("errors"):
+                logger.warning("[%s] EDAM completed with errors: %s",
+                               job_id, edam_summary["errors"])
+        except Exception as e:
+            logger.warning("[%s] EDAM post-job hook failed (non-fatal): %s", job_id, e)
+
     async def _run_phase1_research(
         self,
         job: AnnotationJob,
@@ -667,9 +679,10 @@ class PipelineOrchestrator:
             # First attempt with all available research
             result = await agent.annotate(nct_id, all_research, metadata=metadata)
 
-            # Check evidence threshold
+            # Check evidence threshold (skip for deterministic results that
+            # bypass LLM entirely — they have no evidence array by design)
             threshold = getattr(thresholds, field_name, None)
-            if threshold:
+            if threshold and not result.skip_verification:
                 unique_sources = set(c.source_name for c in result.evidence)
                 quality_avg = (
                     sum(c.quality_score for c in result.evidence) / max(len(result.evidence), 1)
@@ -1086,11 +1099,30 @@ class PipelineOrchestrator:
             (key, m) for key, m in config.verification.models.items()
             if m.role == "verifier"
         ]
+
+        # Server profile: override verifier models with stronger alternatives
+        server_verifiers = getattr(config.orchestrator, "server_verifiers", [])
+        if config.orchestrator.hardware_profile == "server" and server_verifiers:
+            from app.models.config_models import ModelConfig
+            upgraded = []
+            for i, (key, m) in enumerate(verifier_models):
+                if i < len(server_verifiers):
+                    upgraded.append((key, ModelConfig(name=server_verifiers[i], role="verifier")))
+                    logger.info(f"  Server verifier override: {key} → {server_verifiers[i]} (was {m.name})")
+                else:
+                    upgraded.append((key, m))
+            verifier_models = upgraded
+
         reconciler_model = None
         for key, m in config.verification.models.items():
             if m.role == "reconciler":
                 reconciler_model = m.name
                 break
+        # Server profile: use the premium model for reconciliation
+        if config.orchestrator.hardware_profile == "server":
+            reconciler_model = getattr(
+                config.orchestrator, "server_premium_model", reconciler_model
+            )
 
         threshold = config.verification.consensus_threshold
         consensus_results = []
@@ -1156,13 +1188,38 @@ class PipelineOrchestrator:
 
             # If no consensus, try reconciliation
             if not consensus.consensus_reached and reconciler_model:
-                logger.info(f"  {field}: Attempting reconciliation with {reconciler_model}")
-                consensus = await reconciler.reconcile(
-                    field_name=field,
-                    consensus_result=consensus,
-                    research_results=research_data,
-                    reconciler_model=reconciler_model,
+                # High-confidence primary protection: if primary has strong
+                # evidence (>0.85 confidence) and ALL verifiers are at baseline
+                # confidence (0.7), the primary likely found evidence the
+                # verifiers missed. Accept the primary answer directly.
+                verifier_max_conf = max(
+                    (o.confidence for o in consensus.opinions if not o.agrees),
+                    default=0.0,
                 )
+                if annotation.confidence > 0.85 and verifier_max_conf <= 0.7:
+                    logger.info(
+                        f"  {field}: HIGH-CONFIDENCE PRIMARY OVERRIDE "
+                        f"(primary={annotation.confidence:.2f}, "
+                        f"max_dissenting_verifier={verifier_max_conf:.2f}) "
+                        f"— accepting primary value '{primary_value}'"
+                    )
+                    consensus.final_value = primary_value
+                    consensus.consensus_reached = True
+                    consensus.reconciler_used = False
+                    consensus.reconciler_reasoning = (
+                        f"Primary override: confidence {annotation.confidence:.2f} "
+                        f"> threshold 0.85, dissenting verifiers at baseline "
+                        f"{verifier_max_conf:.2f}"
+                    )
+                else:
+                    logger.info(f"  {field}: Attempting reconciliation with {reconciler_model}")
+                    consensus = await reconciler.reconcile(
+                        field_name=field,
+                        consensus_result=consensus,
+                        research_results=research_data,
+                        reconciler_model=reconciler_model,
+                        primary_confidence=annotation.confidence,
+                    )
 
             if not consensus.consensus_reached:
                 any_flagged = True
@@ -1185,7 +1242,7 @@ class PipelineOrchestrator:
         """Build per-agent research coverage metadata for a trial.
 
         Returns a dict mapping agent_name to:
-          {citations_count: int, has_data: bool, quality_avg: float}
+          {citations_count, has_data, quality_avg, error, source_names}
         """
         coverage: dict[str, dict] = {}
         for result in research_data:
@@ -1197,10 +1254,14 @@ class PipelineOrchestrator:
                 quality_avg = round(
                     sum(c.quality_score for c in citations) / citations_count, 3
                 )
+            # Collect unique source names for this agent
+            source_names = sorted(set(c.source_name for c in citations)) if citations else []
             coverage[result.agent_name] = {
                 "citations_count": citations_count,
                 "has_data": has_data,
                 "quality_avg": quality_avg,
+                "error": result.error if result.error else None,
+                "source_names": source_names,
             }
         return coverage
 

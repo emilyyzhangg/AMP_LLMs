@@ -647,3 +647,74 @@ Architecture review identified that the concordance methodology was producing mi
 | Failure reason 91.3% from blank-blank | Only 46 real comparisons | Outcome-aware blank handling |
 | One-sided blanks invisible | 473 R1-only peptide annotations ignored | Tier 2 counts as disagreement |
 | Agent evaluated on biased subset | Easier trials over-represented | Coverage reporting added |
+
+---
+
+## 15. v10: Verification Architecture Overhaul
+
+### 15.1 Problem
+
+Analysis of job d2761eeb8102 (10 trials) and comparison across 6 prior jobs revealed systematic verification weaknesses:
+
+1. **Verifiers weaker than primary annotator.** Classification uses qwen2.5:14b because 8B models can't follow the decision tree, but verification used gemma2:9b, qwen2:latest (~7B), and mistral:latest (~7B). Weak verifiers produce low-quality disagreements.
+2. **Identical prompts.** All 3 verifiers saw the same prompt — zero cognitive diversity. If the prompt biases toward one answer, all three are biased identically.
+3. **Evidence starvation.** Verifiers had a hardcoded 25-citation cap while primary annotators got 30-50. False disagreements from missing evidence.
+4. **Hardcoded 0.7 confidence.** No signal about actual verifier certainty. The high-confidence primary override compared real primary confidence against an arbitrary constant.
+5. **Outcome instability.** NCT00004984 outcome flip-flopped across 6 jobs because low-confidence verifiers overrode high-confidence primaries.
+
+### 15.2 Fixes Implemented
+
+**A. Mac Mini verifier upgrades:**
+- gemma2:9b (kept), qwen2:latest → qwen2.5:7b, mistral:latest → phi4-mini:3.8b
+
+**B. Server verifier config:**
+- Configurable `server_verifiers` list: gemma2:27b, qwen2.5:32b, phi4:14b
+
+**C. Verification personas (3 cognitive lenses):**
+- Verifier 1 (Conservative): defaults to safest answer when evidence is ambiguous
+- Verifier 2 (Evidence-strict): only answers based on directly citable facts
+- Verifier 3 (Adversarial): challenges the most obvious interpretation
+
+**D. Evidence budget parity:**
+- Verifier citation cap raised from 25 to match primary (30 Mac Mini, 50 server)
+
+**E. Dynamic verifier confidence:**
+- Self-assessed High/Medium/Low → 0.9/0.7/0.4 (replaces hardcoded 0.7)
+
+**F. High-confidence primary override:**
+- Primary confidence > 0.85 AND all dissenting verifiers at baseline (≤ 0.7) → accept primary without reconciliation
+
+**G. Server premium model toggle:**
+- `server_premium_model` config: kimi-k2-thinking (default) or minimax-m2.7
+- Used for classification, outcome, and reconciliation on server hardware
+
+**H. Auto-pull missing models:**
+- `ensure_model()` checks Ollama model list and pulls from registry on first use
+
+**I. SerpAPI fully removed:**
+- Removed SERPAPI_KEY from config, rate limits from http_utils. Agent Annotate uses zero paid APIs.
+
+**J. Research coverage enhanced:**
+- Per-agent coverage now includes error status and source_names list
+
+**K. Deterministic confidence preserved:**
+- Evidence threshold check no longer caps confidence on deterministic results (skip_verification=True)
+
+### 15.3 EDAM Self-Learning System
+
+The v10 changes are complemented by EDAM (Experience-Driven Annotation Memory), a persistent self-learning layer that automatically improves accuracy across runs.
+
+**Learning signals used:**
+- Cross-run stability (consensus across independent runs = autonomous ground truth)
+- Human review decisions (highest weight, slowest decay)
+- Self-review corrections (premium model re-evaluates flagged items with evidence requirement)
+- Prompt optimization (A/B tested modifications targeting measured error patterns)
+
+**Key design decisions:**
+- Corrections require cited evidence — prevents ungrounded self-reinforcement
+- Version-gated decay — config changes don't destroy old knowledge, just demote it
+- Verifiers never see corrections — preserving blind verification integrity
+- Hard database limits with prioritized purging — prevents unbounded memory growth
+- All failures are non-fatal — EDAM never blocks the annotation pipeline
+
+See METHODOLOGY.md Section 16 for full technical details.

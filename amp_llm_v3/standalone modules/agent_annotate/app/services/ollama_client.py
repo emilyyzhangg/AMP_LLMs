@@ -33,6 +33,7 @@ class OllamaAnnotationClient:
         self._keep_alive = _KEEP_ALIVE_MAC  # default, updated by set_hardware_profile
         self._call_count = 0
         self._call_count_by_model: dict[str, int] = {}
+        self._verified_models: set[str] = set()  # models confirmed available
 
     def set_hardware_profile(self, profile: str) -> None:
         """Set keep_alive based on hardware profile."""
@@ -43,6 +44,68 @@ class OllamaAnnotationClient:
             self._keep_alive = _KEEP_ALIVE_MAC
             logger.info("Ollama keep_alive set to %s (mac_mini profile)", self._keep_alive)
 
+    async def ensure_model(self, model: str) -> None:
+        """Check if a model is available locally; pull it if not.
+
+        Caches successful checks so each model is only verified once per
+        process lifetime. Pull can take minutes for large models — this
+        is expected on first use.
+        """
+        if model in self._verified_models:
+            return
+
+        # Check if model exists
+        models = await self.list_models()
+        local_names = set()
+        for m in models:
+            name = m.get("name", "")
+            local_names.add(name)
+            # Also match without tag (e.g. "qwen2.5:14b" matches "qwen2.5:14b")
+            # and base name (e.g. "qwen2.5" matches "qwen2.5:latest")
+            if ":" in name:
+                local_names.add(name.split(":")[0])
+
+        # Check exact match or base name match
+        if model in local_names:
+            self._verified_models.add(model)
+            return
+
+        # Model not found — attempt to pull it
+        logger.warning(
+            "Model '%s' not found locally. Pulling from Ollama registry...", model
+        )
+        try:
+            async with httpx.AsyncClient(timeout=3600) as client:
+                # Ollama pull API streams progress — we consume it to completion
+                async with client.stream(
+                    "POST",
+                    f"{self._base_url}/api/pull",
+                    json={"name": model, "stream": True},
+                    timeout=3600,
+                ) as resp:
+                    resp.raise_for_status()
+                    last_status = ""
+                    async for line in resp.aiter_lines():
+                        if not line.strip():
+                            continue
+                        try:
+                            import json
+                            data = json.loads(line)
+                            status = data.get("status", "")
+                            if status != last_status:
+                                logger.info("  pull %s: %s", model, status)
+                                last_status = status
+                        except Exception:
+                            pass
+            logger.info("Successfully pulled model '%s'", model)
+            self._verified_models.add(model)
+        except Exception as e:
+            logger.error("Failed to pull model '%s': %s", model, e)
+            raise RuntimeError(
+                f"Model '{model}' not found and auto-pull failed: {e}. "
+                f"Try manually: ollama pull {model}"
+            )
+
     async def generate(
         self,
         model: str,
@@ -50,7 +113,13 @@ class OllamaAnnotationClient:
         temperature: float = 0.10,
         system: Optional[str] = None,
     ) -> dict:
-        """Send a generate request to Ollama and return the parsed response."""
+        """Send a generate request to Ollama and return the parsed response.
+
+        Auto-pulls the model if not available locally (first call only).
+        """
+        # Ensure model is available (cached after first check)
+        await self.ensure_model(model)
+
         payload: dict = {
             "model": model,
             "prompt": prompt,
@@ -89,6 +158,8 @@ class OllamaAnnotationClient:
                 )
             except httpx.HTTPStatusError as e:
                 if e.response.status_code == 404:
+                    # Model vanished after ensure_model — clear cache and retry once
+                    self._verified_models.discard(model)
                     logger.error("Model '%s' not found in Ollama", model)
                     raise RuntimeError(
                         f"Model '{model}' not found. Run: ollama pull {model}"

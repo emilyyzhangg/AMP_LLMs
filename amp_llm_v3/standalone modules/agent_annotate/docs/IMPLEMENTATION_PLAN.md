@@ -220,7 +220,7 @@ Research agents make **direct HTTP calls** to external APIs via `httpx`. Agent A
 ### 1.5 Web Context Agent
 
 **`agents/research/web_context.py`**
-- Sources: DuckDuckGoClient + SerpAPIClient + GoogleScholarClient
+- Sources: DuckDuckGoClient (free, no API key required)
 - Constructs queries from title + intervention + condition
 - Returns web results with URLs and excerpts
 - Marks reliability as supplementary
@@ -380,9 +380,9 @@ async def _run_verification(self, nct_id, annotations, research_data):
 
 **Default pipeline (5 sequential Ollama calls per field, 25 total per trial):**
 1. Primary (llama3.1:8b) annotates
-2. Verifier 1 (gemma2:9b) blind-verifies
-3. Verifier 2 (qwen2:latest) blind-verifies
-4. Verifier 3 (mistral:latest) blind-verifies
+2. Verifier 1 (gemma2:9b) blind-verifies — conservative persona
+3. Verifier 2 (qwen2.5:7b) blind-verifies — evidence-strict persona
+4. Verifier 3 (phi4-mini:3.8b) blind-verifies — adversarial persona
 5. Reconciler (qwen2.5:14b) only if disagreement
 
 ### Phase 3 Verification
@@ -683,9 +683,9 @@ Agent Annotate has **zero runtime dependencies** on other AMP LLM microservices.
 | Role | Model | Size | Purpose |
 |------|-------|------|---------|
 | Primary Annotator | llama3.1:8b | 4.9 GB | Best general reasoning |
-| Verifier 1 | gemma2:9b | 5.4 GB | Google architecture — different training |
-| Verifier 2 | qwen2:latest | 4.4 GB | Alibaba architecture — different corpus |
-| Verifier 3 | mistral:latest | 4.4 GB | Mistral architecture — different reasoning |
+| Verifier 1 | gemma2:9b | 5.4 GB | Google architecture — conservative persona |
+| Verifier 2 | qwen2.5:7b | 4.4 GB | Alibaba Qwen 2.5 — evidence-strict persona |
+| Verifier 3 | phi4-mini:3.8b | 2.2 GB | Microsoft Phi-4 Mini — adversarial persona |
 | Reconciler | qwen2.5:14b | 9.0 GB | Largest model for dispute resolution |
 
 All sequential (one at a time) due to 16GB RAM.

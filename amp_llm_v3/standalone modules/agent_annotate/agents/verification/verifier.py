@@ -3,6 +3,10 @@ Blind Verification Agent.
 
 Receives ONLY raw research data — never the primary annotator's answer.
 Independently annotates the field and returns its opinion.
+
+v10: Three verification personas (conservative, evidence-strict, adversarial)
+     for cognitive diversity. Dynamic confidence parsing. Hardware-aware
+     evidence budgets matching primary annotator limits.
 """
 
 import re
@@ -13,6 +17,54 @@ from app.models.verification import ModelOpinion
 from app.models.research import ResearchResult
 
 logger = logging.getLogger("agent_annotate.verification.verifier")
+
+# ---------------------------------------------------------------------------
+# Verification Personas — each verifier gets a different cognitive lens
+# so identical evidence doesn't produce identical reasoning patterns.
+# Keyed by verifier model_name (verifier_1, verifier_2, verifier_3).
+# ---------------------------------------------------------------------------
+VERIFIER_PERSONAS = {
+    "verifier_1": {
+        "name": "Conservative",
+        "prefix": (
+            "APPROACH: You are a conservative reviewer. When evidence is ambiguous "
+            "or insufficient, always choose the most cautious interpretation. "
+            "Absence of evidence is NOT evidence of a result. If you cannot find "
+            "direct published support for a claim, default to the safest answer "
+            "(e.g., 'Unknown' for outcome, 'Other' for classification, EMPTY for "
+            "failure reason). Do NOT assume positive outcomes from trial completion alone.\n\n"
+        ),
+    },
+    "verifier_2": {
+        "name": "Evidence-strict",
+        "prefix": (
+            "APPROACH: You are an evidence-strict reviewer. ONLY base your answer "
+            "on facts you can directly cite from the provided data. Do not infer, "
+            "assume, or extrapolate beyond what the evidence explicitly states. "
+            "For every claim in your answer, you must be able to point to a specific "
+            "citation. If no source directly states the answer, acknowledge the gap "
+            "and choose the value that requires the least assumption.\n\n"
+        ),
+    },
+    "verifier_3": {
+        "name": "Adversarial",
+        "prefix": (
+            "APPROACH: You are a critical reviewer playing devil's advocate. "
+            "Actively look for evidence that CONTRADICTS the most obvious or "
+            "intuitive interpretation. Consider alternative explanations. "
+            "Challenge assumptions — e.g., a completed trial doesn't mean positive, "
+            "a peptide in the name doesn't mean peptide drug, an injection route "
+            "in one source may be contradicted by another. If the obvious answer "
+            "holds up under scrutiny, confirm it. If not, explain what contradicts it.\n\n"
+        ),
+    },
+}
+
+# Fallback persona for any additional verifiers (verifier_4, etc.)
+_DEFAULT_PERSONA = {
+    "name": "Standard",
+    "prefix": "",
+}
 
 # Per-field prompts for blind verification (no knowledge of primary answer)
 # These must match the quality and detail of the primary annotator prompts.
@@ -213,18 +265,32 @@ FIELD_PROMPTS = {
     },
 }
 
+# Response template — includes persona prefix and confidence self-assessment
 SYSTEM_TEMPLATE = """You are an independent clinical trial data reviewer. You must evaluate the evidence below and provide your own assessment.
 
-{instruction}
+{persona_prefix}{instruction}
 
 Respond EXACTLY in this format:
 {field_label}: [your answer]
+Confidence: [High, Medium, or Low]
 Evidence: [cite the specific data you based your decision on]
 Reasoning: [brief explanation]"""
 
+# Confidence mapping from verifier self-assessment
+_CONFIDENCE_MAP = {
+    "high": 0.9,
+    "medium": 0.7,
+    "low": 0.4,
+}
+_DEFAULT_CONFIDENCE = 0.7
+
 
 class BlindVerifier:
-    """Performs blind verification — never sees the primary annotator's answer."""
+    """Performs blind verification — never sees the primary annotator's answer.
+
+    Each verifier gets a different cognitive persona (conservative, evidence-strict,
+    adversarial) to provide diverse perspectives on the same evidence.
+    """
 
     async def verify(
         self,
@@ -247,12 +313,14 @@ class BlindVerifier:
                 reasoning=f"Unknown field: {field_name}",
             )
 
-        # Build structured evidence from research (raw data only, no primary answer)
-        # Uses the same section-grouped format as the primary annotation agents
-        # so verifiers see the same organized evidence structure.
-        from agents.base import BaseAnnotationAgent, FIELD_RELEVANCE
+        from app.services.config_service import config_service
+        config = config_service.get()
 
-        # Build structured evidence using the shared builder
+        # --- Evidence budget matches primary annotator ---
+        is_server = config.orchestrator.hardware_profile == "server"
+        max_citations = 50 if is_server else 30
+
+        # Build structured evidence from research (raw data only, no primary answer)
         _SOURCE_TO_SECTION = {
             "clinicaltrials_gov": "TRIAL METADATA",
             "who_ictrp": "TRIAL METADATA",
@@ -280,7 +348,7 @@ class BlindVerifier:
             if result.error:
                 continue
             for citation in result.citations[:8]:
-                if total >= 25:
+                if total >= max_citations:
                     break
                 key = (citation.snippet or "")[:60].lower()
                 if key in seen:
@@ -305,6 +373,17 @@ class BlindVerifier:
                 evidence_parts.extend(sections[sec_name])
         evidence_text = "\n".join(evidence_parts)
 
+        # --- EDAM anomaly warnings (safe for verifiers — no answer leakage) ---
+        try:
+            from app.services.memory import memory_store
+            anomaly_warning = await memory_store.get_anomaly_warnings(
+                field_name, max_tokens=200
+            )
+            if anomaly_warning:
+                evidence_text = anomaly_warning + "\n\n" + evidence_text
+        except Exception:
+            pass  # EDAM failure is never fatal
+
         # Build field-specific label for the prompt
         field_labels = {
             "classification": "Classification",
@@ -315,14 +394,17 @@ class BlindVerifier:
         }
         field_label = field_labels.get(field_name, field_name)
 
+        # Select persona for this verifier
+        persona = VERIFIER_PERSONAS.get(model_name, _DEFAULT_PERSONA)
+        persona_prefix = persona["prefix"]
+
         system_prompt = SYSTEM_TEMPLATE.format(
+            persona_prefix=persona_prefix,
             instruction=field_config["instruction"],
             field_label=field_label,
         )
 
         from app.services.ollama_client import ollama_client
-        from app.services.config_service import config_service
-        config = config_service.get()
 
         try:
             response = await ollama_client.generate(
@@ -345,14 +427,28 @@ class BlindVerifier:
         # Parse the verifier's independent answer
         value = self._parse_value(raw_text, field_config)
         reasoning = self._parse_reasoning(raw_text)
+        confidence = self._parse_confidence(raw_text)
 
         return ModelOpinion(
             model_name=model_name,
             agrees=False,  # Will be set by consensus checker
             suggested_value=value,
             reasoning=reasoning,
-            confidence=0.7,  # Base confidence for successful verification
+            confidence=confidence,
         )
+
+    @staticmethod
+    def _parse_confidence(text: str) -> float:
+        """Extract confidence self-assessment from verifier response.
+
+        Looks for 'Confidence: High/Medium/Low' in the response.
+        Falls back to 0.7 (medium) if not found or unparseable.
+        """
+        match = re.search(r"Confidence:\s*(High|Medium|Low)", text, re.IGNORECASE)
+        if match:
+            level = match.group(1).strip().lower()
+            return _CONFIDENCE_MAP.get(level, _DEFAULT_CONFIDENCE)
+        return _DEFAULT_CONFIDENCE
 
     def _parse_value(self, text: str, field_config: dict) -> Optional[str]:
         """Extract the field value from verifier response.
