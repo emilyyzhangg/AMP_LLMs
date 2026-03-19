@@ -92,6 +92,7 @@ class ConcordanceHistoryEntry(BaseModel):
         default_factory=dict,
         description="Field name -> kappa value for agent vs R1",
     )
+    n_trials: int = Field(default=0, description="Number of trials in this job")
 
 
 class ConcordanceHistory(BaseModel):

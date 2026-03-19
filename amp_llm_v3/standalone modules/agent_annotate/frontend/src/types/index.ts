@@ -142,6 +142,7 @@ export interface ConcordanceHistoryEntry {
   job_id: string;
   timestamp: string;
   field_kappas: Record<string, number>;
+  n_trials: number;
 }
 
 // Partial results for pipeline view

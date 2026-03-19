@@ -688,11 +688,15 @@ def concordance_history() -> ConcordanceHistory:
             )
             field_kappas[field_name] = result.kappa
 
+        # Count trials in this job
+        n_trials = len(agent_data)
+
         entries.append(
             ConcordanceHistoryEntry(
                 job_id=job_id,
                 timestamp=timestamp,
                 field_kappas=field_kappas,
+                n_trials=n_trials,
             )
         )
 
