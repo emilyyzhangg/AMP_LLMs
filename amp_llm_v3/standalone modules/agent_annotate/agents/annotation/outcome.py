@@ -152,12 +152,16 @@ H5. DEFAULT: If truly no signals exist → "Unknown". But exhaust H1-H4 first.
 CRITICAL RULES:
 - "Failed - completed trial" REQUIRES EVIDENCE OF FAILURE. You MUST cite a specific publication showing negative results, failure to meet primary endpoints, or futility. If you cannot cite such evidence, the answer is NOT "Failed".
 - COMPLETED status alone does NOT mean failure.
-- Phase I trials that complete with published safety/tolerability results → "Positive". Phase I completion alone without publications is "Unknown".
+- Phase I trials that complete with published safety/tolerability results → "Positive".
+- Phase I completion alone (no publications, no results posted) → "Unknown".
+- BUT: Phase I completion WITH results posted on ClinicalTrials.gov → "Positive" (the act of posting results confirms the trial produced data).
 - Phase II trials that complete with results posted → lean "Positive".
 - If the Result Valence you extracted says "Positive" or "Mixed" -> "Positive".
-- If the Result Valence says "Not available" AND no publications found AND Results Posted = No/Unknown → "Unknown". Do NOT default to Positive.
+- If the Result Valence says "Not available" AND no publications found AND Results Posted = No/Unknown → "Unknown".
+- If the Result Valence says "Not available" BUT Results Posted = Yes → lean "Positive" (results were posted, indicating reportable outcomes).
 - RECENCY: If multiple publications exist with conflicting conclusions, the MOST RECENT publication takes priority.
-- COMPLETED + no published results + Results Posted = No/Unknown → "Unknown". Do NOT default to Positive.
+- COMPLETED + no published results + Results Posted = No/Unknown → "Unknown".
+- COMPLETED + Results Posted = Yes (even without findable publications) → lean "Positive".
 
 IMPORTANT: Format your response EXACTLY as:
 Outcome: [one of the 7 values above]
