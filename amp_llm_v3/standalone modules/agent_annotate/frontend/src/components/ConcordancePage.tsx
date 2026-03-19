@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer,
-  LineChart, Line, CartesianGrid,
+  ComposedChart, Line, CartesianGrid,
 } from "recharts";
 import {
   getConcordanceJobs,
@@ -71,6 +71,8 @@ function ConcordanceSummaryTable({
           <tr>
             <th>Field</th>
             <th>N</th>
+            <th>Skipped</th>
+            <th>Coverage</th>
             <th>Agree %</th>
             <th style={{ textAlign: "center" }}>&kappa;</th>
             <th>Interpretation</th>
@@ -81,6 +83,10 @@ function ConcordanceSummaryTable({
             <tr key={f.field_name}>
               <td style={{ fontWeight: 500 }}>{f.field_name}</td>
               <td>{f.n}</td>
+              <td className="text-sm text-muted">{f.skipped}</td>
+              <td className="text-sm text-muted">
+                {f.n + f.skipped > 0 ? `${((f.n / (f.n + f.skipped)) * 100).toFixed(0)}%` : "\u2014"}
+              </td>
               <td>{f.agree_pct.toFixed(1)}%</td>
               <td
                 style={{
@@ -104,7 +110,7 @@ function ConcordanceSummaryTable({
 
 // ── Expandable field detail ──────────────────────────────────────────
 
-function FieldDetail({ field }: { field: ConcordanceField }) {
+function FieldDetail({ field, labelA = "Agent", labelB = "Human" }: { field: ConcordanceField; labelA?: string; labelB?: string }) {
   const [open, setOpen] = useState(false);
 
   // Build bar-chart data from value distributions (keys are dynamic: "Agent", "R1", "R2", etc.)
@@ -189,7 +195,7 @@ function FieldDetail({ field }: { field: ConcordanceField }) {
                 <table style={{ fontSize: "0.8rem" }}>
                   <thead>
                     <tr>
-                      <th style={{ fontSize: "0.75rem" }}>Agent \ Human</th>
+                      <th style={{ fontSize: "0.75rem" }}>{labelA} \ {labelB}</th>
                       {cmCols.map((c) => (
                         <th key={c} style={{ textAlign: "center", fontSize: "0.75rem" }}>{c}</th>
                       ))}
@@ -241,8 +247,8 @@ function FieldDetail({ field }: { field: ConcordanceField }) {
                   <thead>
                     <tr>
                       <th>NCT ID</th>
-                      <th>Agent</th>
-                      <th>Human</th>
+                      <th>{labelA}</th>
+                      <th>{labelB}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -347,12 +353,12 @@ function AgentVsHumanTab() {
           {/* Per-field expandable details (use R1 data, which has the full matrices) */}
           <h3 style={{ margin: "1.5rem 0 0.75rem" }}>Field Details (Agent vs R1)</h3>
           {concordance.agent_vs_r1.fields.map((f) => (
-            <FieldDetail key={f.field_name} field={f} />
+            <FieldDetail key={f.field_name} field={f} labelA="Agent" labelB="R1" />
           ))}
 
           <h3 style={{ margin: "1.5rem 0 0.75rem" }}>Field Details (Agent vs R2)</h3>
           {concordance.agent_vs_r2.fields.map((f) => (
-            <FieldDetail key={f.field_name} field={f} />
+            <FieldDetail key={f.field_name} field={f} labelA="Agent" labelB="R2" />
           ))}
         </>
       )}
@@ -592,9 +598,18 @@ function HumanInterRaterTab() {
   return (
     <div>
       <div className="card mb-2" style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>
-        This shows how often human annotators agree with each other, providing a baseline for
-        interpreting agent performance. Fields where humans frequently disagree (low kappa) are
-        inherently harder to annotate, so lower agent agreement on those fields may be expected.
+        <p style={{ marginBottom: "0.5rem" }}>
+          <strong>R1 vs R2 human inter-rater agreement.</strong> Only trials where BOTH annotators
+          filled in a value are compared. The "Skipped" column shows how many trials had one or
+          both annotators leave the field blank.
+        </p>
+        <p style={{ marginBottom: "0.5rem" }}>
+          <strong>R1 annotators:</strong> Mercan (rows 1-309), Maya (310-617), Anat (617-822),
+          Ali (823-926, 1417-1544), Emre (926-1186), Iris (1187-1417), Berke (1545-1846)
+        </p>
+        <p>
+          <strong>R2 annotators:</strong> Emily (most rows), Anat (462-480), Ali (923-941), Iris (1384-1405)
+        </p>
       </div>
 
       <ConcordanceSummaryTable
@@ -603,7 +618,7 @@ function HumanInterRaterTab() {
       />
 
       {concordance.fields.map((f) => (
-        <FieldDetail key={f.field_name} field={f} />
+        <FieldDetail key={f.field_name} field={f} labelA="R1" labelB="R2" />
       ))}
     </div>
   );
@@ -640,7 +655,8 @@ function TrendsTab() {
   // Build line-chart data
   const chartData = useMemo(() => {
     return history.map((h) => ({
-      label: h.timestamp || h.job_id,
+      label: h.job_id.slice(0, 8),
+      n_trials: h.n_trials || 0,
       ...h.field_kappas,
     }));
   }, [history]);
@@ -653,7 +669,7 @@ function TrendsTab() {
     <div className="card">
       <div className="card-title">Kappa Trends Across Jobs</div>
       <ResponsiveContainer width="100%" height={360}>
-        <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+        <ComposedChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
           <XAxis
             dataKey="label"
@@ -664,12 +680,24 @@ function TrendsTab() {
             height={70}
           />
           <YAxis
+            yAxisId="left"
             domain={[-0.1, 1]}
             tick={{ fill: "var(--text-secondary)", fontSize: 12 }}
             label={{
               value: "Cohen's \u03BA",
               angle: -90,
               position: "insideLeft",
+              style: { fill: "var(--text-secondary)", fontSize: 12 },
+            }}
+          />
+          <YAxis
+            yAxisId="right"
+            orientation="right"
+            tick={{ fill: "var(--text-secondary)", fontSize: 12 }}
+            label={{
+              value: "Trials",
+              angle: 90,
+              position: "insideRight",
               style: { fill: "var(--text-secondary)", fontSize: 12 },
             }}
           />
@@ -683,9 +711,11 @@ function TrendsTab() {
             formatter={(value: number) => value.toFixed(3)}
           />
           <Legend wrapperStyle={{ color: "var(--text-secondary)", fontSize: 12 }} />
+          <Bar yAxisId="right" dataKey="n_trials" fill="rgba(255,255,255,0.1)" radius={[3, 3, 0, 0]} name="Trials" />
           {fieldNames.map((name) => (
             <Line
               key={name}
+              yAxisId="left"
               type="monotone"
               dataKey={name}
               stroke={fieldColor(name)}
@@ -694,7 +724,7 @@ function TrendsTab() {
               activeDot={{ r: 6 }}
             />
           ))}
-        </LineChart>
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   );
