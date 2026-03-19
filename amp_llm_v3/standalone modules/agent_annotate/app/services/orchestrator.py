@@ -154,6 +154,7 @@ class PipelineOrchestrator:
                     commit_hash=job.commit_hash,
                 )
             )
+        summaries.sort(key=lambda s: s.created_at or "", reverse=True)
         return summaries
 
     def active_count(self) -> int:

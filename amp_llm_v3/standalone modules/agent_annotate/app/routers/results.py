@@ -28,7 +28,7 @@ async def list_results():
     json_dir = RESULTS_DIR / "json"
     results = []
     if json_dir.exists():
-        for path in sorted(json_dir.glob("*.json"), reverse=True):
+        for path in json_dir.glob("*.json"):
             try:
                 data = json.loads(path.read_text())
                 version = data.get("version", {})
@@ -46,6 +46,9 @@ async def list_results():
                 })
             except Exception:
                 continue
+    # Sort by the timestamp embedded in the result JSON (latest first).
+    # This is more accurate than sorting by filename (random hex job IDs).
+    results.sort(key=lambda r: r.get("timestamp") or "", reverse=True)
     return {"results": results, "total": len(results)}
 
 

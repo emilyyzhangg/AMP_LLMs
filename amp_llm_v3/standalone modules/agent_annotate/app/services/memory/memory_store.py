@@ -20,14 +20,16 @@ from typing import Optional
 
 from app.config import RESULTS_DIR
 from app.services.memory.edam_config import (
-    MEMORY_BUDGET_TOKENS, CHARS_PER_TOKEN, BUDGET_ALLOCATION,
+    CHARS_PER_TOKEN, BUDGET_ALLOCATION,
     HUMAN_DECAY_RATE, HUMAN_FLOOR,
     SELF_REVIEW_DECAY_RATE, SELF_REVIEW_FLOOR,
     EXPERIENCE_DECAY_RATE, EXPERIENCE_FLOOR,
-    EMBEDDING_MODEL, EMBEDDING_DIM, EMBEDDING_MAX_TEXT,
+    DEFINITION_DECAY_RATE, DEFINITION_FLOOR,
+    EMBEDDING_MODEL, EMBEDDING_MAX_TEXT,
     SIMILARITY_MIN_THRESHOLD, SIMILARITY_TOP_K,
-    MAX_EXPERIENCES, MAX_CORRECTIONS, MAX_EMBEDDINGS,
     PURGE_BATCH_SIZE, ANOMALY_THRESHOLD, ANOMALY_MIN_TRIALS,
+    FIELD_CORRECTION_WEIGHTS,
+    get_profile,
 )
 
 logger = logging.getLogger("agent_annotate.edam.store")
@@ -150,21 +152,36 @@ def _cosine_similarity(a: list[float], b: list[float]) -> float:
 
 
 def compute_weight(experience_epoch: int, current_epoch: int,
-                   source: str = "experience") -> float:
+                   source: str = "experience",
+                   field_name: str = "",
+                   reflection: str = "") -> float:
     """
     Compute relevance weight based on epoch distance.
 
     Decay is exponential with a floor to prevent total amnesia.
     Human corrections decay slowest (they're evidence-grounded truth).
+    Definition-grounded corrections (e.g., peptide = 2-100 AA) decay
+    even slower because the scientific definition is config-independent.
     """
     epoch_distance = max(0, current_epoch - experience_epoch)
+
+    # Check if this is a definition-grounded correction (e.g., peptide)
+    if source in ("human_review", "self_review") and field_name and reflection:
+        field_config = FIELD_CORRECTION_WEIGHTS.get(field_name, {})
+        keywords = field_config.get("definition_keywords", [])
+        if keywords and any(kw.lower() in reflection.lower() for kw in keywords):
+            base = field_config.get("base_weight", 1.0)
+            return max(DEFINITION_FLOOR, base * (DEFINITION_DECAY_RATE ** epoch_distance))
 
     if source == "human_review":
         return max(HUMAN_FLOOR, 1.0 * (HUMAN_DECAY_RATE ** epoch_distance))
     elif source == "self_review":
         return max(SELF_REVIEW_FLOOR, 0.9 * (SELF_REVIEW_DECAY_RATE ** epoch_distance))
     else:
-        return max(EXPERIENCE_FLOOR, 1.0 * (EXPERIENCE_DECAY_RATE ** epoch_distance))
+        # Apply field-specific base weight if available
+        field_config = FIELD_CORRECTION_WEIGHTS.get(field_name, {})
+        base = field_config.get("base_weight", 1.0)
+        return max(EXPERIENCE_FLOOR, base * (EXPERIENCE_DECAY_RATE ** epoch_distance))
 
 
 class MemoryStore:
@@ -220,6 +237,11 @@ class MemoryStore:
 
     # --- Experience CRUD ---
 
+    def _get_limit(self, key: str, fallback: int = 10000) -> int:
+        """Get a hardware-aware limit from the current profile."""
+        profile = get_profile()
+        return profile.get(key, fallback)
+
     def store_experience(self, nct_id: str, field_name: str, job_id: str,
                          value: str, confidence: float, consensus_reached: bool,
                          evidence_summary: str, reasoning: str,
@@ -237,7 +259,7 @@ class MemoryStore:
         )
         self._conn.commit()
         row = self._conn.execute("SELECT last_insert_rowid()").fetchone()
-        self._enforce_limits("experiences", MAX_EXPERIENCES)
+        self._enforce_limits("experiences", self._get_limit("max_experiences", 10000))
         return row[0]
 
     def get_experiences(self, nct_id: str = None, field_name: str = None,
@@ -281,7 +303,7 @@ class MemoryStore:
         )
         self._conn.commit()
         row = self._conn.execute("SELECT last_insert_rowid()").fetchone()
-        self._enforce_limits("corrections", MAX_CORRECTIONS)
+        self._enforce_limits("corrections", self._get_limit("max_corrections", 5000))
         return row[0]
 
     def get_corrections(self, field_name: str = None,
@@ -328,7 +350,7 @@ class MemoryStore:
             (ref_table, ref_id, blob, _now_iso()),
         )
         self._conn.commit()
-        self._enforce_limits("embeddings", MAX_EMBEDDINGS)
+        self._enforce_limits("embeddings", self._get_limit("max_embeddings", 15000))
 
     async def search_similar(self, query_text: str, ref_table: str,
                              field_name: str = None, top_k: int = SIMILARITY_TOP_K,
@@ -522,7 +544,7 @@ class MemoryStore:
 
     async def build_guidance(self, nct_id: str, field_name: str,
                              evidence_text: str,
-                             max_tokens: int = MEMORY_BUDGET_TOKENS) -> str:
+                             max_tokens: int = 0) -> str:
         """Build the full EDAM guidance block for an annotation call.
 
         Respects token budget. Returns empty string if no relevant memories.
@@ -530,6 +552,10 @@ class MemoryStore:
         current_epoch = self.get_current_epoch()
         if current_epoch == 0:
             return ""  # cold start — no memories yet
+
+        # Use hardware-aware token budget
+        if max_tokens <= 0:
+            max_tokens = self._get_limit("memory_budget_tokens", 2000)
 
         parts = []
         budget_chars = max_tokens * CHARS_PER_TOKEN
@@ -541,7 +567,11 @@ class MemoryStore:
             corr_lines = []
             corr_used = 0
             for c in corrections:
-                weight = compute_weight(c["epoch"], current_epoch, c["source"])
+                weight = compute_weight(
+                    c["epoch"], current_epoch, c["source"],
+                    field_name=c.get("field_name", ""),
+                    reflection=c.get("reflection", ""),
+                )
                 if weight < 0.1:
                     continue
                 line = (
