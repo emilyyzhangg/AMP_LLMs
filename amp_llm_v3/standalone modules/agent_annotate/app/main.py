@@ -169,8 +169,9 @@ if FRONTEND_DIR.exists():
     async def spa_catch_all(request: Request, full_path: str):
         """Serve index.html for all non-API routes (SPA routing).
 
-        Detects Cloudflare-proxied requests (Host != localhost) and injects
-        a <base> tag so absolute asset paths resolve through the prefix.
+        When served through Cloudflare (non-localhost Host), rewrites absolute
+        asset paths (/assets/...) to include the prefix (/agent-annotate/assets/...).
+        Does NOT use <base> tag which breaks React Router and dynamic imports.
         """
         file_path = FRONTEND_DIR / full_path
         if file_path.exists() and file_path.is_file():
@@ -184,10 +185,9 @@ if FRONTEND_DIR.exists():
         is_proxied = host and not host.startswith("localhost") and not host.startswith("127.0.0.1")
 
         if is_proxied:
-            index_html = index_html.replace(
-                "<head>",
-                f'<head>\n    <base href="{PATH_PREFIX}/" />',
-            )
+            # Rewrite absolute asset paths to include the prefix
+            index_html = index_html.replace('src="/assets/', f'src="{PATH_PREFIX}/assets/')
+            index_html = index_html.replace('href="/assets/', f'href="{PATH_PREFIX}/assets/')
 
         from fastapi.responses import HTMLResponse
         return HTMLResponse(index_html)
