@@ -169,21 +169,21 @@ if FRONTEND_DIR.exists():
     async def spa_catch_all(request: Request, full_path: str):
         """Serve index.html for all non-API routes (SPA routing).
 
-        Injects a <base> tag when served behind the /agent-annotate prefix
-        so that absolute asset paths (/assets/...) resolve correctly through
-        the Cloudflare tunnel.
+        Detects Cloudflare-proxied requests (Host != localhost) and injects
+        a <base> tag so absolute asset paths resolve through the prefix.
         """
         file_path = FRONTEND_DIR / full_path
         if file_path.exists() and file_path.is_file():
             return FileResponse(file_path)
 
-        # Check if the original request came through the /agent-annotate prefix
-        behind_prefix = getattr(request.state, "_behind_prefix", False)
-
         index_html = (FRONTEND_DIR / "index.html").read_text()
 
-        if behind_prefix:
-            # Inject <base> tag so /assets/... resolves to /agent-annotate/assets/...
+        # If the request came through a non-localhost host, it's via
+        # Cloudflare tunnel and needs the /agent-annotate prefix for assets.
+        host = request.headers.get("host", "")
+        is_proxied = host and not host.startswith("localhost") and not host.startswith("127.0.0.1")
+
+        if is_proxied:
             index_html = index_html.replace(
                 "<head>",
                 f'<head>\n    <base href="{PATH_PREFIX}/" />',
