@@ -38,6 +38,88 @@ class PipelineOrchestrator:
 
     def __init__(self):
         self._jobs: dict[str, AnnotationJob] = {}
+        # Reload persisted job states from disk
+        self._reload_persisted_jobs()
+
+    def _reload_persisted_jobs(self) -> None:
+        """Reload job states from disk on startup.
+
+        Jobs that were 'running' when the service died are marked 'failed'
+        (they can be resumed). Completed/cancelled/failed jobs are loaded as-is.
+        """
+        persistence = PersistenceService(RESULTS_DIR)
+        states = persistence.load_all_job_states()
+
+        for job_id, state in states.items():
+            status = state.get("status", "unknown")
+            nct_ids = state.get("nct_ids", [])
+
+            # Reconstruct job object
+            progress = state.get("progress", {})
+            job = AnnotationJob(
+                job_id=job_id,
+                nct_ids=nct_ids,
+                config_snapshot=state.get("config_snapshot", {}),
+                progress=JobProgress(
+                    total_trials=progress.get("total_trials", len(nct_ids)),
+                    completed_trials=progress.get("completed_trials", 0),
+                    researched_trials=progress.get("researched_trials", 0),
+                    elapsed_seconds=progress.get("elapsed_seconds", 0),
+                    avg_seconds_per_trial=progress.get("avg_seconds_per_trial", 0),
+                    current_stage=progress.get("current_stage", ""),
+                ),
+                commit_hash=state.get("commit_hash", ""),
+            )
+
+            # Jobs that were running at crash time -> mark failed (resumable)
+            if status == "running":
+                job.status = "failed"
+                job.error = "Service restarted while job was running"
+                job.progress.current_stage = "interrupted"
+            else:
+                job.status = status
+
+            # Restore timestamps
+            for ts_field in ["created_at", "started_at", "finished_at"]:
+                ts_val = state.get(ts_field)
+                if ts_val:
+                    try:
+                        from datetime import datetime
+                        setattr(job, ts_field, datetime.fromisoformat(ts_val))
+                    except (ValueError, TypeError):
+                        pass
+
+            job.resumed = state.get("resumed", False)
+
+            self._jobs[job_id] = job
+
+        if states:
+            logger.info(f"Loaded {len(states)} persisted job states from disk")
+
+    def _persist_job(self, job: AnnotationJob, trial_times: list[float] | None = None) -> None:
+        """Write job state to disk for crash recovery."""
+        persistence = PersistenceService(RESULTS_DIR)
+        job_data = {
+            "job_id": job.job_id,
+            "nct_ids": job.nct_ids,
+            "status": job.status,
+            "created_at": job.created_at.isoformat() if job.created_at else None,
+            "started_at": job.started_at.isoformat() if job.started_at else None,
+            "finished_at": job.finished_at.isoformat() if job.finished_at else None,
+            "commit_hash": job.commit_hash,
+            "resumed": job.resumed,
+            "progress": {
+                "total_trials": job.progress.total_trials,
+                "completed_trials": job.progress.completed_trials,
+                "researched_trials": job.progress.researched_trials,
+                "elapsed_seconds": job.progress.elapsed_seconds,
+                "avg_seconds_per_trial": job.progress.avg_seconds_per_trial,
+                "current_stage": job.progress.current_stage,
+                "current_nct_id": job.progress.current_nct_id,
+            },
+            "trial_times": trial_times or [],
+        }
+        persistence.save_job_state(job.job_id, job_data)
 
     def create_job(self, nct_ids: list[str]) -> AnnotationJob:
         job_id = uuid.uuid4().hex[:12]
@@ -130,6 +212,7 @@ class PipelineOrchestrator:
             job.progress.current_stage = "error"
             job.finished_at = now_pacific()
             job.updated_at = now_pacific()
+            self._persist_job(job)
 
     async def _run_pipeline_inner(self, job: AnnotationJob) -> None:
         """Inner pipeline logic with two-phase architecture.
@@ -150,6 +233,9 @@ class PipelineOrchestrator:
         hw_profile = getattr(config.orchestrator, "hardware_profile", "mac_mini")
         ollama_client.set_hardware_profile(hw_profile)
         pipeline_start = _time.monotonic()
+        # If resumed, offset the start time backward to account for previous elapsed time
+        if job.resumed and job.progress.elapsed_seconds > 0:
+            pipeline_start -= job.progress.elapsed_seconds
 
         persistence = PersistenceService(RESULTS_DIR)
         version_stamp = get_version_stamp()
@@ -237,6 +323,7 @@ class PipelineOrchestrator:
         job.progress.current_nct_id = None
         job.progress.current_phase = ""
         job.updated_at = now_pacific()
+        self._persist_job(job)
         logger.info(f"[{job_id}] Pipeline completed: {len(all_trial_results)} trials")
 
     async def _run_phase1_research(
@@ -417,6 +504,7 @@ class PipelineOrchestrator:
 
                 job.progress.completed_trials += 1
                 self._update_timing(job, trial_start, pipeline_start, trial_times)
+                self._persist_job(job, trial_times)
 
             except Exception as e:
                 logger.error(f"[{job.job_id}] Error processing {nct_id}: {e}")
@@ -433,6 +521,7 @@ class PipelineOrchestrator:
                 all_trial_results.append(trial_output)
                 job.progress.completed_trials += 1
                 self._update_timing(job, trial_start, pipeline_start, trial_times)
+                self._persist_job(job, trial_times)
 
         return all_trial_results
 
@@ -1158,6 +1247,7 @@ class PipelineOrchestrator:
             return False
         job.status = "cancelled"
         job.updated_at = now_pacific()
+        self._persist_job(job)
         return True
 
 
