@@ -237,6 +237,11 @@ th {
   to { transform: translateX(0); opacity: 1; }
 }
 
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
 /* Summary cards row */
 .summary-cards {
   display: grid;

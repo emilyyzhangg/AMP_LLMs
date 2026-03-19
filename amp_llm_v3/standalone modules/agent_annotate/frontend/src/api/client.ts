@@ -59,6 +59,16 @@ export const getJob = (id: string) =>
 export const cancelJob = (id: string) =>
   request<{ success: boolean }>(`/jobs/${id}/cancel`, { method: "POST" });
 
+export const resumeJob = (id: string, force: boolean = false) =>
+  request<Record<string, unknown>>(`/jobs/${id}/resume`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ force }),
+  });
+
+export const getActiveJobCount = () =>
+  request<{ active: number }>("/jobs/active");
+
 // Status
 export const getPipelineStatus = (id: string) =>
   request<PipelineStatus>(`/status/pipeline/${id}`);
