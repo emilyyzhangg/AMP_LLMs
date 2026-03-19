@@ -25,12 +25,14 @@ You will see:
 1. The original evidence (research data)
 2. Each model's answer and reasoning
 3. The field being evaluated and its valid values
+4. The primary annotator's confidence score (0-1)
 
 Rules:
 - Base your decision ONLY on the evidence, not on which model said what
 - If the evidence genuinely supports multiple interpretations, choose the most conservative/supported answer
 - If the evidence is truly insufficient to determine the answer, respond with "MANUAL_REVIEW" as the value
 - Cite the specific evidence that supports your final decision
+- IMPORTANT: If the primary annotator has HIGH confidence (>0.85) and cites specific published evidence, and the verifiers only show baseline reasoning without citing contradicting evidence, the primary annotator's answer should be preferred. High-confidence primary annotations are backed by stronger evidence extraction.
 
 Respond EXACTLY in this format:
 Final Answer: [your answer OR "MANUAL_REVIEW"]
@@ -47,6 +49,7 @@ class ReconciliationAgent:
         consensus_result: ConsensusResult,
         research_results: list,
         reconciler_model: str,
+        primary_confidence: float = 0.0,
     ) -> ConsensusResult:
         """
         Attempt to resolve a disagreement between primary and verifiers.
@@ -61,7 +64,8 @@ class ReconciliationAgent:
             Updated ConsensusResult with reconciler's decision
         """
         # Build the reconciliation prompt with all opinions
-        prompt = self._build_prompt(field_name, consensus_result, research_results)
+        prompt = self._build_prompt(field_name, consensus_result, research_results,
+                                    primary_confidence=primary_confidence)
 
         from app.services.ollama_client import ollama_client
         from app.services.config_service import config_service
@@ -130,8 +134,12 @@ class ReconciliationAgent:
         field_name: str,
         consensus_result: ConsensusResult,
         research_results: list,
+        primary_confidence: float = 0.0,
     ) -> str:
-        lines = [f"FIELD: {field_name}", f"PRIMARY ANSWER: {consensus_result.original_value}", ""]
+        lines = [f"FIELD: {field_name}", f"PRIMARY ANSWER: {consensus_result.original_value}"]
+        if primary_confidence > 0:
+            lines.append(f"PRIMARY CONFIDENCE: {primary_confidence:.2f}")
+        lines.append("")
 
         # All model opinions
         lines.append("MODEL OPINIONS:")

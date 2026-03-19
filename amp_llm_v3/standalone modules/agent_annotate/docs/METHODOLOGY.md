@@ -438,10 +438,48 @@ Three verifier models independently review each annotation. The verifiers never 
 | Verifier | Model |
 |---|---|
 | Verifier 1 | gemma2:9b |
-| Verifier 2 | qwen2:latest |
-| Verifier 3 | mistral:latest |
+| Verifier 2 | qwen2.5:7b |
+| Verifier 3 | phi4-mini:3.8b |
 
 **v4 verifier prompt improvements**: The v4 verifier prompts now receive the same level of field-specific detail as the primary annotation agents, including negative examples, decision trees, and extraction hierarchies. In v3, verifiers received condensed instructions, creating an asymmetry where verifiers lacked the context to make accurate independent judgments. The v4 parity ensures that verifier disagreements reflect genuine evidence ambiguity rather than instruction gaps.
+
+#### 6.1.1 Verification Personas (v10)
+
+Each verifier receives a different cognitive persona prepended to its system prompt, ensuring diverse reasoning even with identical evidence:
+
+| Verifier | Persona | Approach |
+|---|---|---|
+| Verifier 1 | Conservative | Defaults to safest answer when evidence is ambiguous. Absence of evidence ≠ evidence of a result. |
+| Verifier 2 | Evidence-strict | Only answers based on directly citable facts. Acknowledges gaps explicitly. |
+| Verifier 3 | Adversarial | Actively challenges the obvious interpretation. Looks for contradicting evidence. |
+
+#### 6.1.2 Dynamic Verifier Confidence (v10)
+
+Verifier confidence is now parsed from the model's self-assessment rather than hardcoded. Each verifier response includes a `Confidence: [High/Medium/Low]` field, mapped to numeric scores:
+
+| Self-Assessment | Confidence Score |
+|---|---|
+| High | 0.9 |
+| Medium | 0.7 |
+| Low | 0.4 |
+
+This enables the high-confidence primary override (Section 6.4) to make smarter decisions — a verifier that says "Low confidence" will not block a high-confidence primary annotation.
+
+#### 6.1.3 Evidence Budget Parity (v10)
+
+Verifiers now receive the same citation budget as primary annotators (30 on Mac Mini, 50 on server), up from a hardcoded cap of 25. This eliminates false disagreements caused by verifiers missing evidence the primary annotator had access to.
+
+#### 6.1.4 Server Verifier Overrides (v10)
+
+On server hardware (240+ GB RAM), verifiers are upgraded to stronger models:
+
+| Slot | Mac Mini | Server |
+|---|---|---|
+| Verifier 1 (Conservative) | gemma2:9b | gemma2:27b |
+| Verifier 2 (Evidence-strict) | qwen2.5:7b | qwen2.5:32b |
+| Verifier 3 (Adversarial) | phi4-mini:3.8b | phi4:14b |
+
+Server verifiers are configurable via `server_verifiers` in the YAML config and auto-pulled from Ollama if not available locally.
 
 ### 6.2 Consensus
 
@@ -456,17 +494,21 @@ Disputed annotations are sent to a reconciler model (qwen2.5:14b) that receives:
 
 The reconciler produces a final annotation with justification.
 
-### 6.4 Manual Review Escalation
+### 6.4 High-Confidence Primary Override (v10)
+
+When the primary annotator has confidence > 0.85 and all dissenting verifiers are at baseline confidence (≤ 0.7), the primary answer is accepted without reconciliation. This prevents low-confidence verifier noise from overriding a high-confidence primary annotation, reducing unnecessary reconciliation calls.
+
+### 6.5 Manual Review Escalation
 
 Cases that the reconciler cannot resolve (e.g., contradictory evidence, ambiguous trial designs) are flagged for manual human review.
 
-### 6.5 Value Normalization in Verification
+### 6.6 Value Normalization in Verification
 
-#### 6.5.1 Problem
+#### 6.6.1 Problem
 
 Verifier models (8B--9B parameters) frequently output trial status keywords or free-text explanations instead of valid field values. For the `reason_for_failure` field, verifiers would return values such as "COMPLETED", "Unknown", "N/A", "ACTIVE_NOT_RECRUITING", or verbose explanations like "The trial was completed successfully so there is no failure reason" instead of the expected empty string. These invalid values caused false disagreements during consensus checking, inflating the number of trials flagged for manual review and reconciliation.
 
-#### 6.5.2 Parsing Rules
+#### 6.6.2 Parsing Rules
 
 Value normalization applies two parsing strategies in order:
 
@@ -474,7 +516,7 @@ Value normalization applies two parsing strategies in order:
 
 2. **Exact match for status keywords.** If the output exactly matches a known status keyword or status-like value, it is mapped to the canonical field value. For `reason_for_failure`, all status-like values map to empty string (no failure reason).
 
-#### 6.5.3 Canonical Mapping for reason_for_failure
+#### 6.6.3 Canonical Mapping for reason_for_failure
 
 The following values are normalized to empty string (meaning "no failure reason"):
 
@@ -489,7 +531,7 @@ The following values are normalized to empty string (meaning "no failure reason"
 | WITHDRAWN | Trial status (handled by outcome field) |
 | TERMINATED | Trial status (handled by outcome field) |
 
-#### 6.5.4 Field-Aware Consensus Normalization
+#### 6.6.4 Field-Aware Consensus Normalization
 
 Normalization rules differ by field because valid values and common verifier errors differ:
 
@@ -499,7 +541,7 @@ Normalization rules differ by field because valid values and common verifier err
 - **delivery_mode**: Route abbreviations normalize to canonical values (e.g., "Intravenous" to "IV").
 - **peptide**: Boolean normalization ("true"/"yes" to "True", "false"/"no" to "False").
 
-#### 6.5.5 Retroactive Fix Capability
+#### 6.6.5 Retroactive Fix Capability
 
 The normalization logic can be applied retroactively to completed jobs via `retroactive_fix.py`. This script re-reads the stored verifier opinions for each trial, applies the expanded normalization rules, recalculates consensus, and updates the job results. Trials that were previously flagged for review due to false disagreements are unflagged when normalization restores consensus. See the User Guide for usage details.
 
@@ -537,7 +579,7 @@ Cohen's kappa is computed for each field to measure inter-annotator agreement be
 
 ### 8.4 Impact of Value Normalization on Concordance
 
-Verifier value normalization (Section 6.5) directly affects concordance calculations because it changes which trials achieve consensus and which are flagged for review. Retroactive application of the expanded normalization rules to 11 completed jobs produced the following impact:
+Verifier value normalization (Section 6.6) directly affects concordance calculations because it changes which trials achieve consensus and which are flagged for review. Retroactive application of the expanded normalization rules to 11 completed jobs produced the following impact:
 
 - **74 individual field values corrected** across all affected jobs (verifier opinions remapped from status keywords to valid values).
 - **12 consensus results restored** (fields that previously showed disagreement now achieve unanimous verifier agreement after normalization).
@@ -643,6 +685,14 @@ The `keep_alive` parameter controls how long Ollama retains a model in GPU memor
 
 - **mac_mini (5m)**: Unloads models aggressively to prevent memory pressure on 16 GB unified memory, especially when multiple annotation and verification models must be loaded sequentially.
 - **server (60m)**: Keeps models loaded across the full annotation pipeline for a batch, avoiding the overhead of repeated model loading (which can take 10-30 seconds per load on larger models).
+
+### 10.4 Server Configuration Options (v10)
+
+The server hardware profile exposes additional YAML config toggles:
+
+- **`server_premium_model`**: Selects the primary annotation model on server hardware. Options are `kimi-k2-thinking` (default) or `minimax-m2.7`.
+- **`server_verifiers`**: Overrides the default Mac Mini verifier models with stronger server-grade models (see Section 6.1.4). Accepts a list of three Ollama model tags.
+- **`ensure_model()`**: An auto-pull utility that checks whether each configured Ollama model is available locally before a run starts. Missing models are pulled automatically, preventing mid-run failures when switching hardware profiles or upgrading model versions.
 
 
 ## 11. v6 Version Comparison Results (n=70, 2026-03-17)
@@ -834,3 +884,70 @@ Additional optimizations applied after the initial v9 implementation:
 7. **LLM call counter**: The Ollama client now tracks total and per-model LLM call counts, enabling measurement of the <15 calls/trial target.
 
 8. **Semantic Scholar dead code removed**: The unused `_search_semantic_scholar()` method was removed from the literature agent (disabled since v8).
+
+## 16. Self-Learning: Experience-Driven Annotation Memory (EDAM)
+
+### 16.1 Overview
+
+EDAM is a self-learning layer that improves annotation accuracy across runs without model fine-tuning. It uses three feedback loops operating on inference-time signals: cross-run stability consensus, evidence-grounded self-review, and automated prompt optimization. All learning persists to a SQLite database (`results/edam.db`) with Ollama embeddings for semantic retrieval.
+
+EDAM is designed for autonomous operation — it requires zero human intervention to improve. Human review decisions are the highest-quality learning signal when available, but the system converges on accuracy through its own consistency analysis when humans are absent.
+
+### 16.2 Three Feedback Loops
+
+**Loop 1 — Stability Tracking.** After every job, EDAM compares each (NCT, field) annotation against all prior runs. Fields that produce the same value across 3+ runs are graded "stable" and their annotations become trusted exemplars. Fields that flip between values are flagged as unstable. Evidence anchoring grades each stable annotation as strong (published PMID, high confidence, consensus reached), medium (registry data, moderate confidence), weak (heuristic inference only), or none (single run, no comparison). Stable annotations at "none" evidence grade are flagged as potential systematic bias rather than trusted exemplars.
+
+**Loop 2 — Correction Learning.** Two correction sources: (a) human review decisions (approve/override) stored with maximum weight, and (b) autonomous self-review using the premium model on flagged items. Self-review corrections require at least one concrete evidence citation (PMID, database identifier, or registry URL) — ungrounded self-corrections are rejected. Each correction generates a reflection explaining why the original annotation was wrong, which becomes retrievable guidance for future annotations via semantic embedding similarity search.
+
+**Loop 3 — Prompt Auto-Optimization.** Every 3rd job, EDAM analyzes per-field accuracy using corrections as ground truth. When a field's error rate exceeds 5%, the premium model proposes a minimal prompt modification targeting the most common error pattern. Variants are A/B tested: promoted after 20+ trials show ≥5% improvement, auto-discarded if accuracy drops by >5% after 10 trials. Prompt evolution is fully reversible.
+
+### 16.3 Version-Gated Memory with Epoch Decay
+
+Each configuration change (new model, new prompt, new thresholds) creates a new "epoch." Learning entries are tagged with their epoch and weighted by epoch distance from the current configuration:
+
+| Source | Decay Rate | Floor Weight | Rationale |
+|---|---|---|---|
+| Human corrections | 0.85^d | 0.30 | Evidence→answer mapping is config-independent |
+| Self-review corrections | 0.80^d | 0.10 | Model self-critique may have biases |
+| Raw experiences | 0.75^d | 0.05 | Model behavior is config-specific |
+
+Where d = epoch distance (current_epoch - entry_epoch). Human corrections never fully vanish because they represent ground truth about the evidence, not about model behavior.
+
+### 16.4 Token Budget and Memory Limits
+
+Each annotation LLM call receives a maximum of 2,000 tokens of EDAM guidance, allocated by priority:
+
+| Category | Budget Share | Content |
+|---|---|---|
+| Corrections | 50% (1,000 tokens) | Past mistakes and how to avoid them |
+| Stable exemplars | 25% (500 tokens) | Known-good few-shot examples |
+| Prompt guidance | 15% (300 tokens) | Active variant instructions |
+| Anomaly warnings | 10% (200 tokens) | Systematic bias alerts |
+
+Database hard limits: 10,000 experiences, 5,000 corrections. Oldest low-weight entries are purged when limits are reached. Human corrections are protected from automatic purging.
+
+### 16.5 Verifier Blindness Preservation
+
+Verifiers receive ONLY anomaly warnings (field-wide statistical alerts), never corrections or exemplars. Injecting corrections into verifier prompts would leak the "expected" answer and defeat the purpose of blind verification. Anomaly warnings are safe because they contain no trial-specific information — only field-level statistics ("85% of recent trials classified as 'Other'").
+
+### 16.6 Autonomous Learning Protocol
+
+The recommended learning cycle for autonomous operation (no human intervention required):
+
+| Phase | Runs | Dataset | Purpose |
+|---|---|---|---|
+| 1. Calibration | 3× | 10-NCT calibration set | Establish baseline stability |
+| 2. Compounding | 3× | Same 10 NCTs | EDAM guidance active, corrections accumulate |
+| 3. Transfer | 1× | Full 100+ NCT batch | Learning from calibration transfers to unseen trials |
+| 4. Convergence | 1× | 10-NCT calibration set | Measure improvement vs Phase 1 baseline |
+
+Phases 1-2 build the learning memory. Phase 3 tests generalization. Phase 4 measures the improvement delta. The cycle can be repeated indefinitely — each iteration adds more experiences, corrections, and prompt refinements.
+
+### 16.7 Safeguards Against Runaway Learning
+
+1. **Evidence-grounded corrections only.** Self-corrections must cite a specific source (PMID, database, registry). "I think it should be X" is never stored.
+2. **Anomaly detection.** If >80% of trials receive the same value for any field across recent epochs, a warning is injected into all annotation and verification prompts.
+3. **Prompt variants are reversible.** Every variant is A/B tested with measured accuracy. Regressions trigger automatic revert.
+4. **Human corrections override everything.** When a human reviews an annotation, their decision is stored at maximum weight and never purged.
+5. **Epoch boundaries prevent stale contamination.** Config changes demote old experiences rather than deleting them — the system re-learns under the new config with historical context.
+6. **Database size caps.** Hard limits on all tables prevent unbounded growth. Purge strategy removes oldest, lowest-weight entries first.

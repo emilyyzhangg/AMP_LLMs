@@ -40,7 +40,6 @@ _HOST_LIMITS = {
     "api.fda.gov": 4,
     "rest.uniprot.org": 5,
     "api.duckduckgo.com": 3,
-    "serpapi.com": 5,
     "dbaasp.org": 5,
     "search.rcsb.org": 8,
     "data.rcsb.org": 8,

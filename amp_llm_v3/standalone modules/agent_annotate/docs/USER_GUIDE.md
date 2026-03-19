@@ -50,7 +50,7 @@ Agent Annotate replaces the single-prompt annotation approach with a network of 
 - **Clinical Protocol Agent**: ClinicalTrials.gov + OpenFDA — trial design, interventions, status, safety
 - **Literature Agent**: PubMed + PMC + PMC BioC — published findings, full-text, entity extraction
 - **Peptide Identity Agent**: UniProt + DRAMP — peptide/protein identification, sequences
-- **Web Context Agent**: DuckDuckGo + SerpAPI + Scholar — supplementary context
+- **Web Context Agent**: DuckDuckGo — supplementary web context
 
 **Phase 2 — Annotation** (parallel): Five annotation agents each handle one field:
 - **Classification**: AMP(infection), AMP(other), or Other — distinguishes infection-targeting AMPs from other AMP applications
@@ -169,14 +169,11 @@ verification:
       ollama_model: "llama3.1:8b"
       role: "annotator"
     - name: "verifier_1"
-      ollama_model: "gemma2:9b"
-      role: "verifier"
+      ollama_model: "gemma2:9b"           # Conservative persona
     - name: "verifier_2"
-      ollama_model: "qwen2:latest"
-      role: "verifier"
+      ollama_model: "qwen2.5:7b"          # Evidence-strict persona
     - name: "verifier_3"
-      ollama_model: "mistral:latest"
-      role: "verifier"
+      ollama_model: "phi4-mini:3.8b"      # Adversarial persona
     - name: "reconciliation"
       ollama_model: "qwen2.5:14b"
       role: "reconciler"
@@ -191,6 +188,31 @@ verification:
 | **Journal publication** | 2-3 | Unanimous (1.0) | Maximum rigor |
 | **Internal review** | 1 | Unanimous (1.0) | Good balance |
 | **Exploratory screening** | 0 | N/A | Fastest, not for publication |
+
+### Verification Personas
+
+Each verifier applies a different cognitive approach to the same evidence:
+
+- **Verifier 1 (Conservative):** Defaults to safest answer when evidence is ambiguous. Absence of evidence is not evidence of a result.
+- **Verifier 2 (Evidence-strict):** Only answers based on directly citable facts. Acknowledges gaps explicitly.
+- **Verifier 3 (Adversarial):** Actively challenges the most obvious interpretation. Looks for contradicting evidence.
+
+### Dynamic Confidence
+
+Verifiers self-assess their confidence as High (0.9), Medium (0.7), or Low (0.4). This feeds into the consensus system — a low-confidence verifier disagreement carries less weight than a high-confidence one.
+
+### Server Hardware Upgrades
+
+On server hardware (240+ GB RAM), the system automatically upgrades to stronger models:
+
+| Role | Mac Mini | Server |
+|---|---|---|
+| Premium (classification, outcome, reconciler) | qwen2.5:14b | kimi-k2-thinking (configurable) |
+| Verifier 1 | gemma2:9b | gemma2:27b |
+| Verifier 2 | qwen2.5:7b | qwen2.5:32b |
+| Verifier 3 | phi4-mini:3.8b | phi4:14b |
+
+Toggle between `kimi-k2-thinking` and `minimax-m2.7` for the premium model via `server_premium_model` in the config. All models are auto-pulled from Ollama if not available locally.
 
 ---
 
@@ -224,7 +246,7 @@ Quality Score: [0.00-1.00]
 | UniProt | Accession | Protein name, keywords, family, function |
 | DBAASP/DRAMP | Entry ID | Peptide name, activity, sequence |
 | OpenFDA | Application number | Drug name, route, adverse events |
-| DuckDuckGo / SerpAPI | URL | Page title, relevant excerpt |
+| DuckDuckGo | URL | Page title, relevant excerpt |
 | Google Scholar | DOI or URL | Publication title, authors, year, excerpt |
 
 ---
@@ -414,3 +436,55 @@ python concordance_jobs.py
 # Compare specific jobs
 python concordance_jobs.py --jobs <job_id_1> <job_id_2>
 ```
+
+## 7. Self-Learning (EDAM)
+
+Agent Annotate includes a self-learning system called EDAM (Experience-Driven Annotation Memory) that improves accuracy across runs without human intervention.
+
+### How It Works
+
+After every job, EDAM:
+1. **Stores experiences** — every annotation outcome is recorded with its evidence and confidence
+2. **Computes stability** — compares the same trial across prior runs to identify stable vs flipping fields
+3. **Self-reviews flagged items** — the premium model re-evaluates items where verifiers disagreed, generating corrections with evidence citations
+4. **Optimizes prompts** — every 3rd job, analyzes error patterns and proposes prompt improvements
+
+Before each annotation, EDAM retrieves relevant guidance:
+- Past corrections for similar trials ("NCT00004984 was corrected from Positive to Failed")
+- Stable exemplars as few-shot examples ("Trials like this consistently get 'Other'")
+- Anomaly warnings ("85% of recent trials got the same value — check for bias")
+
+### Running the Learning Cycle
+
+```bash
+# Full automated cycle (3x calibration + 3x compounding + 1x full batch + 1x convergence)
+python scripts/edam_learning_cycle.py --wait-for RUNNING_JOB_ID
+
+# Custom: 5 calibration runs, then a 100-NCT batch
+python scripts/edam_learning_cycle.py --calibration-runs 5 --full-batch-file ncts_100.txt
+
+# Only calibration phases
+python scripts/edam_learning_cycle.py --phases 1,2
+```
+
+### Monitoring
+
+Check EDAM status via the database:
+```bash
+sqlite3 results/edam.db "SELECT field_name, COUNT(*), ROUND(AVG(stability_score),2) FROM stability_index GROUP BY field_name;"
+sqlite3 results/edam.db "SELECT source, COUNT(*) FROM corrections GROUP BY source;"
+sqlite3 results/edam.db "SELECT field_name, variant_name, status, accuracy_score FROM prompt_variants;"
+```
+
+### Configuration
+
+Key parameters in `app/services/memory/edam_config.py`:
+
+| Parameter | Default | Purpose |
+|---|---|---|
+| `MEMORY_BUDGET_TOKENS` | 2000 | Max guidance tokens per annotation call |
+| `SELF_REVIEW_ENABLED` | True | Toggle autonomous self-review |
+| `SELF_REVIEW_MAX_ITEMS` | 10 | Max flagged items to self-review per job |
+| `OPTIMIZATION_INTERVAL_JOBS` | 3 | Run prompt optimizer every Nth job |
+| `ANOMALY_THRESHOLD` | 0.80 | Flag if >80% of trials share same value |
+| `MAX_EXPERIENCES` | 10000 | Database size cap |

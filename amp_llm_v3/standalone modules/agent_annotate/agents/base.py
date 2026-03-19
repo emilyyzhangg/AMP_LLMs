@@ -143,6 +143,24 @@ class BaseAnnotationAgent(ABC):
         """How relevant a given research agent is to this annotation field."""
         return FIELD_RELEVANCE.get(self.field_name, {}).get(agent_name, 0.5)
 
+    async def get_edam_guidance(self, nct_id: str,
+                                evidence_text: str) -> str:
+        """Retrieve EDAM guidance block for this annotation call.
+
+        Returns a formatted guidance string to prepend to the LLM prompt,
+        or empty string if EDAM is unavailable or has no relevant memories.
+        EDAM failures are never fatal.
+        """
+        try:
+            from app.services.memory import memory_store
+            return await memory_store.build_guidance(
+                nct_id=nct_id,
+                field_name=self.field_name,
+                evidence_text=evidence_text,
+            )
+        except Exception:
+            return ""
+
     def build_structured_evidence(
         self,
         nct_id: str,

@@ -172,9 +172,8 @@ Reasoning: [explain your chain of thought, noting which heuristic you applied if
 # Hardware profile → model selection for outcome
 # Outcome benefits from a larger model because the decision tree
 # requires nuanced interpretation of published results and status.
-OUTCOME_MODEL_OVERRIDES = {
-    "server": "qwen2.5:14b",
-}
+# On server, uses the configurable server_premium_model (kimi-k2 or minimax-m2.7)
+# because outcome is the most unstable field across runs.
 
 
 class OutcomeAgent(BaseAnnotationAgent):
@@ -185,9 +184,9 @@ class OutcomeAgent(BaseAnnotationAgent):
     def _get_model(self, config) -> str:
         """Select model based on hardware profile."""
         profile = config.orchestrator.hardware_profile
-        override = OUTCOME_MODEL_OVERRIDES.get(profile)
-        if override:
-            return override
+        if profile == "server":
+            # Use the configurable premium model for outcome (most unstable field)
+            return getattr(config.orchestrator, "server_premium_model", "kimi-k2-thinking")
         # Default: use primary annotator model
         for model_key, model_cfg in config.verification.models.items():
             if model_cfg.role == "annotator":
@@ -220,6 +219,11 @@ class OutcomeAgent(BaseAnnotationAgent):
             max_citations=max_cites,
             max_snippet_chars=max_snippet,
         )
+
+        # --- EDAM guidance injection ---
+        edam_guidance = await self.get_edam_guidance(nct_id, evidence_text)
+        if edam_guidance:
+            evidence_text = edam_guidance + "\n\n" + evidence_text
 
         from app.services.ollama_client import ollama_client
         from app.services.config_service import config_service

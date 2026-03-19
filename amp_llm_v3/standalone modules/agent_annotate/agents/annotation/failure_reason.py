@@ -147,6 +147,11 @@ class FailureReasonAgent(BaseAnnotationAgent):
             max_snippet_chars=max_snippet,
         )
 
+        # --- EDAM guidance injection ---
+        edam_guidance = await self.get_edam_guidance(nct_id, evidence_text)
+        if edam_guidance:
+            evidence_text = edam_guidance + "\n\n" + evidence_text
+
         from app.services.ollama_client import ollama_client
         from app.services.config_service import config_service
 
