@@ -1,83 +1,101 @@
 # EDAM Learning Run Plan
 
-## Prerequisites
-- Job `a7cd7d71813b` (100-trial batch) was at 59/100 when service stopped
-- It can be resumed after v10 code deploys: `POST /api/jobs/a7cd7d71813b/resume?force=true`
-- Or start fresh — the research cache (Phase 1) is preserved on disk
+## Dataset
 
-## Option A: Resume the 100-trial job first, then run EDAM
+| Set | NCTs | Description |
+|---|---|---|
+| Human-annotated (at least 1 field filled) | **964** | Concordance target — agent must annotate to measure accuracy |
+| Both R1 and R2 annotated | 849 | Strongest concordance (both replicates available) |
+| Assigned but never annotated | 884 | Have metadata but zero annotation fields filled — agent-only |
+| Agent already annotated (pre-v10) | 114 | From prior runs, 104 overlap with human set |
+| **Remaining for Phase 1** | **~860** | 964 minus ~104 already done |
+
+The Excel has 1,848 NCT rows total, but only **964 have any actual annotation**. The other 884 have metadata (title, status, conditions) but all 5 annotation fields are blank — the human reviewers were assigned these trials but never completed them.
+
+## Goal
+
+1. **Phase 1**: Agent annotates all 964 human-annotated NCTs → full concordance measurement
+2. **Phase 2**: Measure concordance, identify gaps, EDAM learns from corrections
+3. **Phase 3**: Re-annotate with EDAM guidance → measured improvement
+4. **Phase 4**: Annotate the 884 unreviewed NCTs — agent-only, no human counterpart
+5. **Target**: Agent accuracy exceeds human inter-rater reliability (R1 vs R2 baseline)
+
+## Human Inter-Rater Baseline (the bar to beat)
+
+| Field | R1 vs R2 Agreement | Both-filled N | Notes |
+|---|---|---|---|
+| Classification | 91.6% | 620 | High agreement but kappa ≈ 0 (prevalence paradox) |
+| Delivery mode | 68.2% | 579 | Route specificity disagreements |
+| **Outcome** | **55.6%** | **372** | **Weakest field — agent can exceed this** |
+| Reason for failure | 91.3% | 46 | Small N, mostly blank-blank agreement |
+| **Peptide** | **48.4%** | **62** | **8:1 ratio (R1=451 True, R2=56 True) — definitional disagreement** |
+
+## Runtime Estimates
+
+| Hardware | Per trial | 964 trials | 5 batches × ~200 |
+|---|---|---|---|
+| Mac Mini | ~450s | ~120 hours (5.0 days) | ~24h per batch |
+| Server | ~350s | ~94 hours (3.9 days) | ~19h per batch |
+
+## Phase 1: Full Human-Set Annotation (964 NCTs)
+
 ```bash
-# 1. Service restarts automatically via autoupdater (pulls from main)
-# 2. Resume the interrupted job
-curl -X POST http://localhost:9005/api/jobs/a7cd7d71813b/resume?force=true
-
-# 3. Once complete, run the full EDAM learning cycle
 cd "standalone modules/agent_annotate"
-.venv/bin/python scripts/edam_learning_cycle.py --wait-for a7cd7d71813b
+
+# All 964 NCTs are in scripts/human_annotated_ncts.txt
+# Submit in 5 batches of ~200:
+.venv/bin/python -c "
+import httpx
+ncts = open('scripts/human_annotated_ncts.txt').read().strip().split('\n')
+batch_size = 200
+for i in range(0, len(ncts), batch_size):
+    batch = ncts[i:i+batch_size]
+    resp = httpx.post('http://localhost:9005/api/jobs',
+        json={'nct_ids': batch}, timeout=30)
+    print(f'Batch {i//batch_size + 1}: {resp.json().get(\"job_id\", \"error\")} ({len(batch)} NCTs)')
+"
 ```
 
-## Option B: Skip the old job, start fresh with EDAM
+**EDAM accumulates learning across batches:**
+- Batch 1: cold start, ~1,000 experiences stored, self-review on flagged items
+- Batch 2: EDAM guidance from batch 1 corrections, ~2,000 total experiences
+- Batch 3: prompt optimization fires (every 3rd job), first variant proposals
+- Batch 4-5: full EDAM guidance with corrections, exemplars, evolved prompts
+
+## Phase 2: Concordance Measurement
+
 ```bash
-cd "standalone modules/agent_annotate"
-.venv/bin/python scripts/edam_learning_cycle.py
+.venv/bin/python scripts/concordance_jobs.py
 ```
 
-## What the learning cycle does
+Produces: Agent vs R1, Agent vs R2, R1 vs R2, per-annotator breakdown (kappa + CI + AC₁).
 
-### Phase 1: Calibration (3 runs × 10 NCTs = ~2.5 hours)
-- Same 10 NCTs run 3 times independently
-- EDAM stores all experiences, computes first stability index
-- Self-review corrects flagged items after each run
-- **Result:** Baseline stability data for 50 (NCT, field) pairs
+**Decision point:** If agent concordance exceeds R1 vs R2 on outcome and peptide (the weakest human fields), proceed to Phase 3. If not, analyze error patterns and adjust.
 
-### Phase 2: Compounding (3 runs × 10 NCTs = ~2.5 hours)
-- Same 10 NCTs again, but now with EDAM guidance active
-- Corrections from Phase 1 appear in annotation prompts
-- Stability exemplars used as few-shot examples
-- First prompt optimization pass fires after run 6
-- **Result:** Measurable improvement in flagging rate and stability
+## Phase 3: Re-Annotate with Full EDAM Learning
 
-### Phase 3: Transfer (1 run × 10 NCTs = ~1.2 hours)
-- Default: same calibration set (provide --full-batch-file for 100+ NCTs)
-- Learning from Phases 1-2 transfers via EDAM guidance
-- **Result:** Tests whether learning generalizes
+Re-run all 964 NCTs. EDAM guidance from Phase 1 (corrections, exemplars, evolved prompts) now informs every annotation. Compare Phase 3 concordance vs Phase 1 — this is the paper's improvement metric.
 
-### Phase 4: Convergence (1 run × 10 NCTs = ~1.2 hours)
-- Re-run calibration set to measure improvement vs Phase 1
-- Compare stability scores, flagging rates, correction counts
-- **Result:** The paper's primary improvement metric
+## Phase 4: Annotate Beyond the Human Set (884 NCTs)
 
-## Total estimated time: ~7.5 hours (Mac Mini, sequential)
+The 884 NCTs that humans never annotated. The agent annotates these with EDAM guidance from 964 human-validated trials. No concordance measurement possible — these annotations stand on the agent's learned accuracy, with full citation traceability and confidence scores.
 
-## Calibration NCT set (10 trials)
-```
-NCT00004984    NCT00001827    NCT00002428    NCT01718834    NCT00000798
-NCT00000886    NCT00004358    NCT01652573    NCT00000391    NCT00000435
-```
+## Monitoring
 
-## Monitoring during runs
 ```bash
-# Check EDAM memory growth
-sqlite3 results/edam.db "SELECT * FROM config_epochs;"
-sqlite3 results/edam.db "SELECT field_name, COUNT(*), ROUND(AVG(stability_score),2) FROM stability_index GROUP BY field_name;"
+# EDAM stats
+sqlite3 results/edam.db "SELECT COUNT(*) as experiences FROM experiences;"
 sqlite3 results/edam.db "SELECT source, COUNT(*) FROM corrections GROUP BY source;"
+sqlite3 results/edam.db "SELECT field_name, ROUND(AVG(stability_score),2), COUNT(*) FROM stability_index GROUP BY field_name;"
 
-# Check job progress
-curl -s http://localhost:9005/api/jobs | python3 -m json.tool
+# Review flagged trials in real-time during running jobs
+# Pipeline view → click "Review" on flagged NCTs
 ```
 
-## After the cycle completes
-1. Compare Phase 1 vs Phase 4 stability scores
-2. Check EDAM database stats: `sqlite3 results/edam.db "SELECT * FROM prompt_variants;"`
-3. Run concordance against human annotations (if available)
-4. Consider running a larger batch (100+ NCTs) with `--full-batch-file`
+## Files
 
-## Expanding to larger batches
-```bash
-# Create a file with 100 NCT IDs
-# Then run:
-.venv/bin/python scripts/edam_learning_cycle.py \
-    --calibration-runs 5 \
-    --full-batch-file path/to/ncts_100.txt \
-    --phases 1,2,3,4
-```
+- `scripts/human_annotated_ncts.txt` — 964 NCTs with actual human annotations
+- `scripts/concordance_jobs.py` — Full concordance with per-annotator breakdown
+- `scripts/edam_learning_cycle.py` — Automated calibration cycle (for 10-NCT testing)
+- `scripts/stability_test.py` — 3x stability test
+- `results/edam.db` — Learning database (persists across all runs)
