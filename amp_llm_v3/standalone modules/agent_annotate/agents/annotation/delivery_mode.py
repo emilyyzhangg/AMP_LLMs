@@ -180,6 +180,10 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
         for citation in result.citations:
             if citation.source_name == "openfda":
                 snippet_lower = citation.snippet.lower()
+                # Verify OpenFDA label matches a trial intervention
+                if intervention_names and not any(iname in snippet_lower for iname in intervention_names):
+                    logger.debug(f"  delivery_mode: skipping OpenFDA route — label doesn't match interventions")
+                    continue
                 for openfda_route, delivery_value in _OPENFDA_ROUTE_MAP.items():
                     if f"route: {openfda_route}" in snippet_lower or f"route\": \"{openfda_route}" in snippet_lower:
                         logger.info(f"  delivery_mode: deterministic → {delivery_value} (OpenFDA route: '{openfda_route}')")
@@ -196,6 +200,12 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
                 for fda_item in openfda_results:
                     if isinstance(fda_item, dict):
                         openfda_block = fda_item.get("openfda", {})
+                        # Check if this FDA label matches a trial intervention
+                        fda_names = openfda_block.get("generic_name", []) + openfda_block.get("brand_name", [])
+                        fda_names_lower = [n.lower() for n in fda_names if isinstance(n, str)]
+                        if intervention_names and fda_names_lower:
+                            if not any(iname in fn or fn in iname for iname in intervention_names for fn in fda_names_lower):
+                                continue  # FDA label is for a different drug
                         routes = openfda_block.get("route", [])
                         if isinstance(routes, list):
                             for route_str in routes:
