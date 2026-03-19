@@ -86,7 +86,11 @@ def kappa_confidence_interval(
         for label in all_labels
     )
 
-    var_kappa = (pe + pe ** 2 - sum_term) / (n * (1.0 - pe) ** 2)
+    denom = n * (1.0 - pe) ** 2
+    if denom == 0:
+        # All labels identical — kappa is undefined or trivially 1.0
+        return (round(kappa, 4), round(kappa, 4), round(kappa, 4))
+    var_kappa = (pe + pe ** 2 - sum_term) / denom
     if var_kappa < 0:
         var_kappa = 0  # numerical floor
 

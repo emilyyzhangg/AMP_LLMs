@@ -229,6 +229,11 @@ FIELD_PROMPTS = {
     "peptide": {
         "instruction": (
             "Determine if the primary intervention is a peptide therapeutic: True or False.\n\n"
+            "DEFINITION: A peptide therapeutic is 2-100 amino acid residues serving as the ACTIVE drug. "
+            "Includes: AMPs, hormone analogues, cyclic peptides, peptide vaccines, insulin. "
+            "Excludes: monoclonal antibodies (>100 AA), small molecules, nutritional formulas "
+            "(\"Peptide 1.5\", Peptamen), HSP-peptide complexes (peptide is cargo), exosome vehicles, "
+            "whole proteins >100 AA.\n\n"
             "EXAMPLES:\n"
             "- Aviptadil (VIP, 28 amino acids) → True\n"
             "- Semaglutide (GLP-1 analogue, 31 AA) → True\n"

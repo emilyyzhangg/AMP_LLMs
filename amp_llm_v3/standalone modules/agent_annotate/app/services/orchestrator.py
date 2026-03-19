@@ -268,17 +268,11 @@ class PipelineOrchestrator:
             job.progress.current_stage = "research_complete"
             logger.info(f"[{job_id}] All research loaded from disk")
 
-        if job.status == "cancelled":
-            return
-
         # --- Phase 2: Annotation + Verification ---
         persistence.init_annotations_dir(job_id)
         all_trial_results = await self._run_phase2_annotate(
             job, config, research_data, persistence, skip_annotations, pipeline_start
         )
-
-        if job.status == "cancelled":
-            return
 
         # --- Save final results ---
         job.progress.current_stage = "saving"
@@ -295,6 +289,7 @@ class PipelineOrchestrator:
         )
         output = {
             "version": version,
+            "status": job.status,
             "config_snapshot": job.config_snapshot,
             "trials": all_trial_results,
             "total_trials": len(all_trial_results),
@@ -317,14 +312,18 @@ class PipelineOrchestrator:
         save_json_output(job_id, output)
 
         job.results = all_trial_results
-        job.status = "completed"
+        if job.status != "cancelled":
+            job.status = "completed"
         job.finished_at = now_pacific()
-        job.progress.current_stage = "done"
+        if job.status == "cancelled":
+            job.progress.current_stage = "cancelled"
+        else:
+            job.progress.current_stage = "done"
         job.progress.current_nct_id = None
         job.progress.current_phase = ""
         job.updated_at = now_pacific()
         self._persist_job(job)
-        logger.info(f"[{job_id}] Pipeline completed: {len(all_trial_results)} trials")
+        logger.info(f"[{job_id}] Pipeline {job.status}: {len(all_trial_results)} trials")
 
         # --- EDAM post-job hook: self-learning feedback loops ---
         try:
@@ -511,7 +510,9 @@ class PipelineOrchestrator:
                 # Queue flagged fields for manual review
                 if verified.flagged_for_review:
                     self._queue_for_review(
-                        job.job_id, nct_id, annotations, verified
+                        job.job_id, nct_id, annotations, verified,
+                        commit_hash=job.commit_hash,
+                        created_at=job.started_at.isoformat() if job.started_at else "",
                     )
 
                 job.progress.completed_trials += 1
@@ -1040,6 +1041,8 @@ class PipelineOrchestrator:
         nct_id: str,
         annotations: list[FieldAnnotation],
         verified: VerifiedAnnotation,
+        commit_hash: str = "",
+        created_at: str = "",
     ) -> None:
         """Add flagged fields to the manual review queue."""
         ann_by_field = {a.field_name: a for a in annotations}
@@ -1076,6 +1079,8 @@ class PipelineOrchestrator:
                 opinions=[o.model_dump() for o in consensus.opinions],
                 primary_reasoning=primary_reasoning,
                 primary_confidence=primary_confidence,
+                created_at=created_at,
+                commit_hash=commit_hash,
             )
             review_service.add(item)
             logger.info(

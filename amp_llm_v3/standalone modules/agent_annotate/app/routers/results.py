@@ -58,7 +58,7 @@ async def get_results(job_id: str):
         job = orchestrator.get_job(job_id)
         if not job:
             raise HTTPException(status_code=404, detail="Job not found")
-        if job.status != "completed":
+        if job.status not in ("completed", "cancelled", "failed"):
             raise HTTPException(status_code=400, detail=f"Job is {job.status}, not completed")
         return {
             "job_id": job.job_id,
@@ -124,10 +124,22 @@ async def get_partial_results(job_id: str):
     for trial_path in sorted(annotations_dir.glob("*.json")):
         if trial_path.name.endswith(".tmp"):
             continue
+        nct_id = trial_path.stem
         try:
             with open(trial_path, "r") as f:
                 trial_data = json.load(f)
-            completed_trials.append(trial_data)
+            # Compute per-trial status
+            verification = trial_data.get("verification") or {}
+            if trial_data.get("error"):
+                trial_status = "error"
+            elif verification.get("flagged_for_review"):
+                trial_status = "review"
+            else:
+                trial_status = "ok"
+            completed_trials.append({
+                "nct_id": trial_data.get("nct_id", nct_id),
+                "status": trial_status,
+            })
         except Exception:
             continue
 
