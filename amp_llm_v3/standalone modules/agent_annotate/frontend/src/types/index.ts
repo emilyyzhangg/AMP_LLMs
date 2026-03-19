@@ -156,6 +156,6 @@ export interface PartialTrial {
 export interface PartialResults {
   job_id: string;
   trials: PartialTrial[];
-  completed: number;
-  total: number;
+  count: { completed: number; total: number };
+  status: string;
 }

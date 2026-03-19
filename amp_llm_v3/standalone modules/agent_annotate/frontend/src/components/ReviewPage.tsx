@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { getReviewItems, getReviewStats, submitReview, getFieldValues, getActiveJobCount } from "../api/client";
 import type { ReviewItem, ReviewStats, ModelOpinion } from "../types";
 
@@ -159,7 +160,9 @@ export default function ReviewPage() {
   const [items, setItems] = useState<ReviewItem[]>([]);
   const [stats, setStats] = useState<ReviewStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedJob, setSelectedJob] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const urlJobId = searchParams.get("job_id");
+  const [selectedJob, setSelectedJob] = useState<string | null>(urlJobId);
   const [selected, setSelected] = useState<ReviewItem | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [overrideValue, setOverrideValue] = useState("");

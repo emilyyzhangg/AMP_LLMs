@@ -203,12 +203,20 @@ export default function PipelinePage() {
       {/* Partial Results Section */}
       {completed > 0 && !partialError && (
         <div className="card">
-          <div className="card-title">
-            Partial Results
-            {partialResults && (
-              <span className="text-sm text-muted" style={{ fontWeight: 400, marginLeft: "0.75rem" }}>
-                {partialResults.trials.length} trial{partialResults.trials.length !== 1 ? "s" : ""} completed
-              </span>
+          <div className="card-title flex-between">
+            <span>
+              Partial Results
+              {partialResults && (
+                <span className="text-sm text-muted" style={{ fontWeight: 400, marginLeft: "0.75rem" }}>
+                  {partialResults.count?.completed ?? partialResults.trials.length} / {partialResults.count?.total ?? "?"} trials
+                </span>
+              )}
+            </span>
+            {partialResults && partialResults.trials.some(t => t.status === "review") && (
+              <button className="btn btn-secondary" style={{ fontSize: "0.8rem", padding: "0.3rem 0.8rem" }}
+                onClick={() => navigate(`/review?job_id=${jobId}`)}>
+                Review Flagged
+              </button>
             )}
           </div>
 
@@ -219,6 +227,7 @@ export default function PipelinePage() {
                   <tr>
                     <th>NCT ID</th>
                     <th>Status</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -233,7 +242,15 @@ export default function PipelinePage() {
                         ) : trial.status === "review" ? (
                           <span className="badge badge-cancelled">Review</span>
                         ) : (
-                          <span className="badge badge-running">{trial.status}</span>
+                          <span className="badge badge-running">{trial.status || "-"}</span>
+                        )}
+                      </td>
+                      <td>
+                        {trial.status === "review" && (
+                          <button className="btn btn-secondary" style={{ fontSize: "0.75rem", padding: "0.2rem 0.5rem" }}
+                            onClick={() => navigate(`/review?job_id=${jobId}`)}>
+                            Review
+                          </button>
                         )}
                       </td>
                     </tr>
