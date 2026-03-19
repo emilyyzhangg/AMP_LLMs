@@ -295,6 +295,11 @@ export default function ReviewPage() {
   for (const [job_id, jobItems] of jobMap) {
     jobGroups.push({ job_id, items: jobItems });
   }
+  jobGroups.sort((a, b) => {
+    const dateA = a.items[0]?.created_at || "";
+    const dateB = b.items[0]?.created_at || "";
+    return dateB.localeCompare(dateA);
+  });
 
   const currentJobItems = selectedJob
     ? items.filter((i) => {

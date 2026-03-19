@@ -19,7 +19,7 @@ import logging
 from typing import Optional
 
 from app.services.memory.memory_store import MemoryStore
-from app.services.memory.edam_config import SELF_REVIEW_ENABLED, SELF_REVIEW_MAX_ITEMS
+from app.services.memory.edam_config import SELF_REVIEW_ENABLED, get_profile
 
 logger = logging.getLogger("agent_annotate.edam.corrections")
 
@@ -168,7 +168,8 @@ class CorrectionLearner:
         items_reviewed = 0
 
         for trial_result in flagged_results:
-            if items_reviewed >= SELF_REVIEW_MAX_ITEMS:
+            max_items = get_profile().get("self_review_max_items", 10)
+            if items_reviewed >= max_items:
                 break
 
             nct_id = trial_result.get("nct_id", "")

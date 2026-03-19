@@ -85,6 +85,7 @@ class ReviewService:
         items = [v for v in self._queue.values() if v.status == "pending"]
         if job_id:
             items = [i for i in items if i.job_id == job_id]
+        items.sort(key=lambda i: i.created_at or "", reverse=True)
         return items
 
     def get_all(self, job_id: Optional[str] = None) -> list[ReviewItem]:
@@ -92,6 +93,7 @@ class ReviewService:
         items = list(self._queue.values())
         if job_id:
             items = [i for i in items if i.job_id == job_id]
+        items.sort(key=lambda i: i.created_at or "", reverse=True)
         return items
 
     def decide(

@@ -162,12 +162,15 @@ class PromptOptimizer:
         from app.services.config_service import config_service
         config = config_service.get()
 
-        # Use reconciler model for prompt generation
-        model = "qwen2.5:14b"
-        for key, m in config.verification.models.items():
-            if m.role == "reconciler":
-                model = m.name
-                break
+        # Use the best available model for prompt generation
+        if config.orchestrator.hardware_profile == "server":
+            model = getattr(config.orchestrator, "server_premium_model", "qwen2.5:14b")
+        else:
+            model = "qwen2.5:14b"
+            for key, m in config.verification.models.items():
+                if m.role == "reconciler":
+                    model = m.name
+                    break
 
         try:
             response = await ollama_client.generate(
