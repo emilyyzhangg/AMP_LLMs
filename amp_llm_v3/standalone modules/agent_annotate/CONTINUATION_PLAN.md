@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-03-19 (post-batch A analysis)
-**Current state:** Batch A COMPLETE. Results analyzed. Ready for batch B.
+**Last updated:** 2026-03-19 (post-batch A+B, starting EDAM bootstrap)
+**Current state:** Batches A+B complete (50 unique NCTs). Now re-running batch A's 25 NCTs as job `5d207b30f11c` to bootstrap EDAM learning.
 
 ## What was done this session
 
@@ -34,7 +34,33 @@
 - Peptide: 68.2% vs R1 — improving but agent too strict on False
 - Delivery mode: 44% vs R1 — agent defaults to "Other/Unspecified" too often
 
-### Next: Submit batch B (next 25 richest NCTs)
+### Batch B: COMPLETE (job ae1ece9d4e0a)
+- **25/25 trials completed** in 2.8 hours (403s/trial avg)
+- **3/25 flagged** (12%) — NCT00977145 (peptide), NCT00995358 (delivery_mode), NCT04672083 (peptide)
+- **EDAM:** 250 total experiences, 0 corrections (no NCT overlap between A and B)
+- **Combined concordance (50 NCTs vs R1):** outcome 70.0% (κ=0.602), classification 92.0% (AC₁=0.917), peptide 73.3%, delivery_mode 46.9%
+
+### EDAM Bootstrap: Re-run batch A (job 5d207b30f11c, RUNNING)
+Re-running batch A's same 25 NCTs to give EDAM its first multi-run comparison data.
+This triggers:
+- Stability tracker: 2 data points per (NCT, field) → first real stability scores
+- Self-audit: scans evidence for delivery mode/peptide contradictions → first corrections
+- Self-review: premium model re-evaluates flagged items → corrections with citations
+
+### After EDAM bootstrap completes (~3 hours):
+
+**Step 1: Verify EDAM learned**
+```bash
+PROD="/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/results"
+sqlite3 "$PROD/edam.db" "SELECT nct_id, field_name, stability_score, total_runs FROM stability_index WHERE total_runs > 1 LIMIT 20;"
+sqlite3 "$PROD/edam.db" "SELECT source, COUNT(*) FROM corrections GROUP BY source;"
+```
+
+**Step 2: Compare concordance — did re-running with EDAM guidance improve?**
+Compare the re-run batch A concordance against the original batch A concordance.
+If EDAM corrections improved delivery mode or peptide → proceed to scale up.
+
+**Step 3: Scale up — remaining ~914 NCTs**
 ```bash
 # The fast_learning_batch_50.txt has 50 NCTs — batch A was the first 25
 # Extract NCTs 26-50:
