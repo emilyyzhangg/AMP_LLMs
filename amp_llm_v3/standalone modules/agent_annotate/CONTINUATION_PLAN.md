@@ -1,134 +1,114 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-03-19 (post-batch A+B, starting EDAM bootstrap)
-**Current state:** Batches A+B complete (50 unique NCTs). Now re-running batch A's 25 NCTs as job `5d207b30f11c` to bootstrap EDAM learning.
+**Last updated:** 2026-03-20
+**Current state:** Batch C running on prod (49ac8fdd9e90, 200 NCTs, ~32/200 complete). v10 agent fixes pushed to dev. Self-audit generates 0 corrections (root cause identified, fix designed).
 
-## What was done this session
+## What was done this session (2026-03-20)
 
-### Code changes (all committed to both dev and main):
-1. **v10 verification overhaul** — personas (conservative/evidence-strict/adversarial), dynamic confidence (High/Medium/Low), evidence budget parity, verifier upgrades (Mac Mini: gemma2:9b, qwen2.5:7b, phi4-mini:3.8b; Server: gemma2:27b, qwen2.5:32b, phi4:14b)
-2. **Server premium model toggle** — `server_premium_model` in YAML (kimi-k2-thinking default, minimax-m2.7 option), drives classification + outcome + reconciler
-3. **EDAM self-learning system** — 3 feedback loops (stability tracking, correction learning with self-review, prompt auto-optimization), SQLite + Ollama embeddings, hardware-aware profiles
-4. **Peptide definition injection** — scientific definition (2-100 AA active drug) in annotator + verifier prompts
-5. **Concordance statistical upgrades** — kappa CIs, Gwet's AC₁, prevalence/bias indices, per-annotator disaggregation
-6. **High-confidence primary override** — primary confidence > 0.85 + verifier baseline → skip reconciler
-7. **SerpAPI removed** — zero paid APIs in agent_annotate
-8. **UI fixes** — cancelled job results saved, pipeline NCT status (OK/Review/Failed), resume button, real-time review during running jobs, latest-first sorting everywhere
+### Analysis
+1. **Full concordance analysis** across batches A, B, C partial, and EDAM bootstrap
+2. **Identified EDAM bootstrap was NOT learning** — differences between batch A and re-run are stochastic LLM noise, not EDAM improvement (0 corrections in DB, no guidance active)
+3. **Root-caused self-audit 0 corrections** — citation snippets don't contain route keywords that the LLM finds in full evidence text. Self-audit can't see what the LLM saw.
+4. **Root-caused delivery_mode 45-50% concordance** — 8B model ignores Pass 1 evidence in Pass 2; deterministic path only searches clinicaltrials_gov citations; missing detailedDescription and armGroups
 
-### Batch files created:
-- `scripts/fast_learning_batch_25.txt` — 25 NCTs with 4-5 fields filled by BOTH R1 and R2
-- `scripts/fast_learning_batch_50.txt` — 50 richest NCTs (includes the 25 above)
-- `scripts/human_annotated_ncts.txt` — all 964 NCTs with actual human annotations
+### Code changes (pushed to dev, commit 143758ef)
+1. **delivery_mode v10** — expanded keywords (31 entries), broadened search to ALL citation sources, upgraded mac_mini model from 8B to 14B
+2. **clinical_protocol v10** — extracts detailedDescription and armGroups as citations
+3. **classification v10** — fixed _parse_value swallowing AMP classifications with non-standard separators
+
+### Plans updated
+- `LEARNING_RUN_PLAN.md` — corrected false assumptions about self-audit, added self-audit enhancement spec, revised phase plan
+- `CONTINUATION_PLAN.md` — this file
 
 ## What to do next
 
-### Batch A: COMPLETE (job c7e666682865)
-- **25/25 trials completed** in 3.0 hours (435s/trial avg)
-- **1/25 flagged** (4%) — NCT05361733 (peptide + delivery_mode)
-- **EDAM:** 125 experiences, 81 embeddings, 0 corrections (only 1 flagged trial), epoch 1
-- **Full analysis:** `results/batch_a_analysis.md`
+### Step 1: Validate v10 on dev (while batch C runs on prod)
 
-**Key results:**
-- **Outcome: κ=0.742 vs R1 (Substantial) — EXCEEDS human baseline of 55.6%**
-- Classification: AC₁=0.917 (kappa paradox — 92% "Other")
-- Peptide: 68.2% vs R1 — improving but agent too strict on False
-- Delivery mode: 44% vs R1 — agent defaults to "Other/Unspecified" too often
-
-### Batch B: COMPLETE (job ae1ece9d4e0a)
-- **25/25 trials completed** in 2.8 hours (403s/trial avg)
-- **3/25 flagged** (12%) — NCT00977145 (peptide), NCT00995358 (delivery_mode), NCT04672083 (peptide)
-- **EDAM:** 250 total experiences, 0 corrections (no NCT overlap between A and B)
-- **Combined concordance (50 NCTs vs R1):** outcome 70.0% (κ=0.602), classification 92.0% (AC₁=0.917), peptide 73.3%, delivery_mode 46.9%
-
-### EDAM Bootstrap: Re-run batch A (job 5d207b30f11c, RUNNING)
-Re-running batch A's same 25 NCTs to give EDAM its first multi-run comparison data.
-This triggers:
-- Stability tracker: 2 data points per (NCT, field) → first real stability scores
-- Self-audit: scans evidence for delivery mode/peptide contradictions → first corrections
-- Self-review: premium model re-evaluates flagged items → corrections with citations
-
-### After EDAM bootstrap completes (~3 hours):
-
-**Step 1: Verify EDAM learned**
+Test with known-failing NCTs from batch A:
 ```bash
-PROD="/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/results"
-sqlite3 "$PROD/edam.db" "SELECT nct_id, field_name, stability_score, total_runs FROM stability_index WHERE total_runs > 1 LIMIT 20;"
-sqlite3 "$PROD/edam.db" "SELECT source, COUNT(*) FROM corrections GROUP BY source;"
+# Delete cached research so clinical_protocol re-fetches with new citations
+DEV_RESEARCH="/Users/amphoraxe/Developer/amphoraxe/dev-llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/results/research"
+for nct in NCT02624518 NCT02646475 NCT02665377 NCT03597282 NCT03697551 NCT00000886 NCT05361733; do
+    rm -f "$DEV_RESEARCH/$nct.json"
+done
+
+# Submit test job
+NCTS='["NCT02624518","NCT02646475","NCT02665377","NCT03597282","NCT03697551","NCT00000886","NCT05361733"]'
+curl -X POST http://localhost:9005/api/jobs -H "Content-Type: application/json" -d "{\"nct_ids\": $NCTS}"
 ```
 
-**Step 2: Compare concordance — did re-running with EDAM guidance improve?**
-Compare the re-run batch A concordance against the original batch A concordance.
-If EDAM corrections improved delivery mode or peptide → proceed to scale up.
+Expected: delivery_mode concordance improves significantly (these 5 IV trials should now resolve via expanded keywords or 14B model).
 
-**Step 3: Scale up — remaining ~914 NCTs**
-```bash
-# The fast_learning_batch_50.txt has 50 NCTs — batch A was the first 25
-# Extract NCTs 26-50:
-tail -25 scripts/fast_learning_batch_50.txt > /tmp/batch_b.txt
-NCTS=$(cat /tmp/batch_b.txt | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip().split()))")
-curl -X POST http://localhost:8005/api/jobs \
-  -H "Content-Type: application/json" \
-  -d "{\"nct_ids\": $NCTS}"
+### Step 2: Fix self-audit (CRITICAL)
+
+**Without this fix, EDAM will never generate corrections.** See `LEARNING_RUN_PLAN.md` "Self-audit enhancement" section for the full spec.
+
+Summary: `self_audit.py._audit_delivery_mode()` must also search the agent's own Pass 1 reasoning (stored in `annotations[].reasoning`) for route keywords. Currently it only searches citation snippets, which miss most route evidence.
+
+Push to dev alongside the v10 validation.
+
+### Step 3: After batch C finishes (~23 hours from 2026-03-20 10:00)
+
+1. **Run concordance on full batch C** (200 NCTs vs human annotations)
+2. **Merge dev → main** (v10 + self-audit fix)
+3. **Delete cached research** for batch C's 200 NCTs:
+   ```bash
+   PROD_RESEARCH="/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/results/research"
+   # Get NCT list from job file
+   python3 -c "import json; d=json.load(open('results/jobs/49ac8fdd9e90.json')); [print(n) for n in d['nct_ids']]" > /tmp/batch_c_ncts.txt
+   for nct in $(cat /tmp/batch_c_ncts.txt); do rm -f "$PROD_RESEARCH/$nct.json"; done
+   ```
+4. **Re-run batch C's 200 NCTs with v10** — this generates EDAM corrections via:
+   - Stability tracker: compares v9 run vs v10 run for same NCTs
+   - Self-audit (enhanced): catches Pass 1 vs Pass 2 contradictions
+5. **Continue with remaining ~714 NCTs** in batches of 200
+
+### Step 4: Continue Phase 1 (remaining 714 NCTs)
+
+After the v10 re-run of batch C:
+```
+Batch D: ~200 NCTs  — first batch with real EDAM corrections from batch C comparison
+Batch E: ~200 NCTs  — compounding corrections
+Batch F: ~164 NCTs  — remaining NCTs
 ```
 
-### After batches A+B complete (50 NCTs, ~6 hours total):
+### Step 5: Full concordance + decision
 
-**Step 5: Measure concordance improvement**
-- Compare batch A (no EDAM guidance) vs batch B (EDAM guidance from A)
-- If kappa improved → proceed to larger batches
-- If not → check EDAM DB for corrections, verify self-review is working
+After all 964 annotated, run `scripts/concordance_jobs.py` across all jobs.
+Decision criteria in `LEARNING_RUN_PLAN.md` Phase 5.
 
-**Step 6: Submit remaining NCTs in larger batches**
-```bash
-# All 964 human-annotated NCTs minus the 50 already done:
-comm -23 scripts/human_annotated_ncts.txt scripts/fast_learning_batch_50.txt > /tmp/remaining.txt
-wc -l /tmp/remaining.txt  # Should be ~914
+## EDAM database state (2026-03-20)
 
-# Submit in batches of 200:
-python3 -c "
-import httpx, json
-ncts = open('/tmp/remaining.txt').read().strip().split('\n')
-batch_size = 200
-for i in range(0, len(ncts), batch_size):
-    batch = ncts[i:i+batch_size]
-    # Wait for previous batch to complete before submitting next
-    resp = httpx.post('http://localhost:8005/api/jobs',
-        json={'nct_ids': batch}, timeout=30)
-    print(f'Batch: {resp.json().get(\"job_id\", \"error\")} ({len(batch)} NCTs)')
-    break  # Submit one at a time, run next after it completes
-"
-```
-
-### After all 964 NCTs annotated (~5 days):
-
-**Step 7: Full concordance analysis**
-```bash
-.venv/bin/python scripts/concordance_jobs.py
-# Update JOB_FILES list to include all completed job JSONs
-```
-
-**Step 8: Decision — re-annotate or proceed?**
-- If agent concordance exceeds R1 vs R2 on outcome (55.6%) and peptide (48.4%) → proceed to Phase 4
-- If not → analyze error patterns, check EDAM corrections, potentially adjust prompts
-
-**Step 9: Annotate the 884 never-annotated NCTs (Phase 4)**
-```bash
-# These NCTs have metadata but no human annotations
-# Extract from Excel: rows with NCT ID but no filled annotation fields
-# Agent annotates with full EDAM guidance from 964 human-validated trials
-```
+| Table | Count | Notes |
+|---|---|---|
+| experiences | 375 | 25 NCTs × 5 fields × 3 jobs (A, B, A-repeat) |
+| corrections | **0** | Self-audit broken — see root cause above |
+| stability_index | 125 with >1 run | Only batch A NCTs (25×5), 15 unstable fields |
+| embeddings | 250 | |
+| prompt_variants | 0 | Optimization hasn't fired yet |
+| config_epochs | 1 | Single config version so far |
 
 ## Key file locations
-- **Prod results:** wherever the prod service writes (check prod plist for working directory)
-- **Dev results:** `standalone modules/agent_annotate/results/`
-- **EDAM database:** `results/edam.db` (one per environment)
-- **Batch files:** `scripts/fast_learning_batch_25.txt`, `scripts/fast_learning_batch_50.txt`, `scripts/human_annotated_ncts.txt`
-- **Learning plan:** `LEARNING_RUN_PLAN.md`
-- **This file:** `CONTINUATION_PLAN.md`
 
-## Important notes for the next Claude session
-- The autoupdater pulls from main every 30 seconds — all code changes must be pushed to main
-- EDAM is non-fatal: if it errors, the pipeline still runs normally
-- The `nomic-embed-text` model needs to be available in Ollama for EDAM embeddings (auto-pulled on first use)
-- Review flagged items in real-time at `http://localhost:8005/agent-annotate/review?job_id=c7e666682865`
-- The human annotation Excel is at `dev-llm.amphoraxe.ca/docs/clinical_trials-with-sequences.xlsx`
+| Path | Purpose |
+|---|---|
+| `results/edam.db` | EDAM learning database |
+| `results/jobs/49ac8fdd9e90.json` | Batch C job status (running) |
+| `results/annotations/{job_id}/{nct_id}.json` | Per-trial annotation results |
+| `results/research/{nct_id}.json` | Cached research data per trial |
+| `results/review_queue.json` | Flagged items for manual review |
+| `results/batch_a_analysis.md` | Batch A concordance analysis |
+| `scripts/human_annotated_ncts.txt` | All 964 NCTs with human annotations |
+| `scripts/fast_learning_batch_50.txt` | Batches A+B NCTs (50) |
+| `LEARNING_RUN_PLAN.md` | Overall EDAM strategy and concordance data |
+| `app/services/memory/self_audit.py` | Self-audit (needs enhancement) |
+
+## Important notes
+
+- Prod autoupdater pulls from `main` every 30s — do NOT merge dev → main while batch C is running
+- Dev autoupdater pulls from `dev` every 30s
+- v10 is on dev only (commit 143758ef). Prod still runs v9.
+- EDAM is non-fatal: if it errors, the pipeline runs normally
+- The `nomic-embed-text` model must be available in Ollama for EDAM embeddings
+- Human annotation Excel: `dev-llm.amphoraxe.ca/docs/clinical_trials-with-sequences.xlsx`
+- Research cache: deleting `results/research/{nct_id}.json` forces re-research on next run
