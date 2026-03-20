@@ -3,14 +3,14 @@ Delivery Mode Annotation Agent.
 
 Determines how the drug/intervention is administered.
 
-v2 changes (from 70-trial concordance analysis):
-  - Upgraded to two-pass design: Pass 1 extracts route evidence from all sources
-    (protocol text, FDA labels, drug databases, literature), Pass 2 applies
-    classification rules. This eliminates the "Injection/Infusion - Other/Unspecified"
-    default problem by forcing the model to actively search for route specifics
-    before classifying.
-  - Enhanced prompt to prioritize FDA label routes and database info over
-    generic protocol text.
+v10 changes:
+  - Expanded deterministic keyword search to ALL citation sources (not just
+    clinicaltrials_gov), catching routes in literature, arm descriptions, etc.
+  - Added keywords for IV/IM/SC abbreviations and administered/given phrases.
+  - Upgraded mac_mini model from 8B to 14B — 8B ignores Pass 1 evidence in
+    Pass 2, causing "Other/Unspecified" defaults when route info was found.
+  - clinical_protocol.py now extracts detailedDescription and armGroups as
+    citations, feeding more route info into the deterministic path.
 """
 
 import re
@@ -131,16 +131,35 @@ _OPENFDA_ROUTE_MAP = {
 }
 
 _PROTOCOL_ROUTE_KEYWORDS = {
+    # Specific route terms (highest priority — check these first)
     "subcutaneous": "Injection/Infusion - Subcutaneous/Intradermal",
     "sub-q": "Injection/Infusion - Subcutaneous/Intradermal",
     "sc injection": "Injection/Infusion - Subcutaneous/Intradermal",
+    "subcutaneous injection": "Injection/Infusion - Subcutaneous/Intradermal",
+    "subcutaneous infusion": "Injection/Infusion - Subcutaneous/Intradermal",
+    "given subcutaneously": "Injection/Infusion - Subcutaneous/Intradermal",
+    "administered subcutaneously": "Injection/Infusion - Subcutaneous/Intradermal",
     "intradermal": "Injection/Infusion - Subcutaneous/Intradermal",
     "intramuscular": "Injection/Infusion - Intramuscular",
     "im injection": "Injection/Infusion - Intramuscular",
-    "intravenous": "IV", "iv infusion": "IV", "iv push": "IV", "iv drip": "IV",
+    "intramuscular injection": "Injection/Infusion - Intramuscular",
+    "injected intramuscularly": "Injection/Infusion - Intramuscular",
+    "given intramuscularly": "Injection/Infusion - Intramuscular",
+    "administered intramuscularly": "Injection/Infusion - Intramuscular",
+    "intravenous": "IV",
+    "iv infusion": "IV", "iv push": "IV", "iv drip": "IV",
+    "intravenous infusion": "IV", "intravenous injection": "IV",
+    "administered intravenously": "IV", "given intravenously": "IV",
+    "infused intravenously": "IV",
+    # Abbreviations (space-padded to avoid false matches)
+    " iv ": "IV", " im ": "Injection/Infusion - Intramuscular",
+    " sc ": "Injection/Infusion - Subcutaneous/Intradermal",
+    # Oral
     "oral tablet": "Oral - Tablet", "oral capsule": "Oral - Capsule",
+    # Intranasal / Inhalation
     "intranasal": "Intranasal", "nasal spray": "Intranasal",
     "inhalation": "Inhalation", "nebulizer": "Inhalation", "nebuliser": "Inhalation",
+    # Topical
     "topical cream": "Topical - Cream/Gel", "topical gel": "Topical - Cream/Gel",
     "mouthwash": "Topical - Wash", "mouth rinse": "Topical - Wash",
 }
@@ -226,20 +245,24 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
                                         skip_verification=True,
                                     )
 
+    # v10: Search ALL citations from ALL agents for route keywords
     for result in research_results:
-        if result.error or result.agent_name != "clinical_protocol":
+        if result.error:
             continue
         for citation in result.citations:
-            if citation.source_name != "clinicaltrials_gov":
-                continue
             snippet_lower = citation.snippet.lower()
             for keyword, delivery_value in _PROTOCOL_ROUTE_KEYWORDS.items():
                 if keyword in snippet_lower:
-                    logger.info(f"  delivery_mode: deterministic → {delivery_value} (protocol keyword: '{keyword}')")
+                    # OpenFDA and clinicaltrials_gov structured data → high confidence, skip verification
+                    # Literature and other sources → moderate confidence, verify
+                    is_structured = citation.source_name in ("clinicaltrials_gov", "openfda")
+                    conf = 0.95 if is_structured else 0.85
+                    skip = is_structured
+                    logger.info(f"  delivery_mode: deterministic → {delivery_value} (keyword: '{keyword}' in {citation.source_name})")
                     return FieldAnnotation(
-                        field_name="delivery_mode", value=delivery_value, confidence=0.95,
-                        reasoning=f"[Deterministic v9] Protocol keyword: '{keyword}'",
-                        evidence=[citation], model_name="deterministic", skip_verification=True,
+                        field_name="delivery_mode", value=delivery_value, confidence=conf,
+                        reasoning=f"[Deterministic v10] Keyword '{keyword}' found in {citation.source_name}",
+                        evidence=[citation], model_name="deterministic", skip_verification=skip,
                     )
 
     for name in intervention_names:
@@ -295,17 +318,20 @@ class DeliveryModeAgent(BaseAnnotationAgent):
         from app.services.config_service import config_service
 
         config = config_service.get()
-        primary_model = None
-        for model_key, model_cfg in config.verification.models.items():
-            if model_cfg.role == "annotator":
-                primary_model = model_cfg.name
-                break
-        if not primary_model:
-            primary_model = "llama3.1:8b"
+        profile = config.orchestrator.hardware_profile
 
-        # v9.1: Server profile uses larger model for better accuracy
-        if config.orchestrator.hardware_profile == "server":
+        # v10: Use 14B on all profiles — 8B ignores Pass 1 evidence in Pass 2,
+        # causing "Other/Unspecified" defaults when route info was extracted.
+        if profile in ("mac_mini", "server"):
             primary_model = "qwen2.5:14b"
+        else:
+            primary_model = None
+            for model_key, model_cfg in config.verification.models.items():
+                if model_cfg.role == "annotator":
+                    primary_model = model_cfg.name
+                    break
+            if not primary_model:
+                primary_model = "qwen2.5:14b"
 
         # --- Pass 1: Extract route evidence from all sources ---
         try:

@@ -521,20 +521,23 @@ class ClassificationAgent(BaseAnnotationAgent):
 
     def _parse_value(self, text: str) -> str:
         match = re.search(r"Classification:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)
-        if match:
-            raw = match.group(1).strip().lower()
-            if "amp(infection)" in raw or "amp (infection)" in raw:
-                return "AMP(infection)"
-            if "amp(other)" in raw or "amp (other)" in raw:
-                return "AMP(other)"
-            if "other" in raw:
-                return "Other"
-            if "amp" in raw:
-                return "Other"
-            return "Other"
-        lower_text = text.lower()
-        if "amp(infection)" in lower_text or "amp (infection)" in lower_text:
+        raw = match.group(1).strip().lower() if match else text.lower()
+
+        # Check infection subtype with various separators
+        if any(pat in raw for pat in [
+            "amp(infection)", "amp (infection)", "amp-infection",
+            "amp - infection", "amp: infection",
+        ]):
             return "AMP(infection)"
-        if "amp(other)" in lower_text or "amp (other)" in lower_text:
+        # Check other subtype with various separators
+        if any(pat in raw for pat in [
+            "amp(other)", "amp (other)", "amp-other",
+            "amp - other", "amp: other",
+        ]):
+            return "AMP(other)"
+        # "amp" present but no recognized subtype — infer from context
+        if "amp" in raw and "other" not in raw.replace("amp", ""):
+            if "infection" in raw:
+                return "AMP(infection)"
             return "AMP(other)"
         return "Other"
