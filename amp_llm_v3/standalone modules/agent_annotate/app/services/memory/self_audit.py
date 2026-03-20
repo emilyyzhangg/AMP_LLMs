@@ -5,11 +5,15 @@ Runs post-annotation on every trial (not just flagged ones) and catches
 cases where the agent's output contradicts its own research evidence.
 No human annotations needed — the structured data IS the ground truth.
 
+Three audit sources (v10):
+1. Citation snippets: checks if citation text contains explicit keywords
+2. Raw data: checks structured OpenFDA/ClinicalTrials.gov data
+3. Agent reasoning: checks if the agent's own Pass 1 extraction found a
+   specific value that Pass 2 then ignored (internal contradiction)
+
 Two audit types:
-1. Delivery mode audit: checks if research contains explicit route keywords
-   (INTRAVENOUS, SUBCUTANEOUS, INTRAMUSCULAR, etc.) that the agent ignored.
-2. Peptide audit: checks if research contains amino acid counts or database
-   matches that contradict the agent's peptide=True/False decision.
+1. Delivery mode audit: checks for route keywords (INTRAVENOUS, etc.)
+2. Peptide audit: checks for amino acid counts / database matches
 
 Corrections from self-audit are stored with the concrete evidence citation
 and weighted as "self_review" (moderate decay, evidence-grounded).
@@ -141,9 +145,12 @@ class SelfAuditor:
         evidence_lower = evidence_text.lower()
 
         # --- Delivery mode audit ---
+        dm_ann = ann_by_field.get("delivery_mode", {})
+        dm_reasoning = dm_ann.get("reasoning", "")
         dm_correction = self._audit_delivery_mode(
             nct_id, final_by_field.get("delivery_mode", ""),
             evidence_lower, evidence_citations,
+            annotation_reasoning=dm_reasoning,
         )
         if dm_correction:
             corrections.append(dm_correction)
@@ -196,12 +203,18 @@ class SelfAuditor:
     def _audit_delivery_mode(
         self, nct_id: str, agent_value: str,
         evidence_lower: str, all_citations: list[dict],
+        annotation_reasoning: str = "",
     ) -> Optional[dict]:
-        """Check if evidence contains explicit route that agent missed."""
+        """Check if evidence or agent reasoning contains explicit route that was missed.
+
+        v10: Also searches the agent's own Pass 1 output (stored in reasoning).
+        This catches the common case where Pass 1 correctly extracts a specific
+        route but Pass 2 defaults to Other/Unspecified anyway.
+        """
         if agent_value not in _UNSPECIFIC_ROUTES:
             return None  # agent was already specific
 
-        # Search evidence for route keywords
+        # --- Source 1: Search citation snippets + raw_data for route keywords ---
         best_match = None
         best_citation = None
         for keyword, correct_value in _ROUTE_EVIDENCE_MAP.items():
@@ -217,21 +230,40 @@ class SelfAuditor:
                 if best_match:
                     break
 
-        if not best_match or best_match == agent_value:
-            return None
+        if best_match and best_match != agent_value:
+            return {
+                "field_name": "delivery_mode",
+                "original_value": agent_value,
+                "corrected_value": best_match,
+                "reflection": (
+                    f"Evidence contains explicit route '{best_match}' "
+                    f"(source: {best_citation['source']}) but agent defaulted to "
+                    f"'{agent_value}'. The specific route in the evidence should "
+                    f"override the generic classification."
+                ),
+                "evidence_citations": [best_citation],
+            }
 
-        return {
-            "field_name": "delivery_mode",
-            "original_value": agent_value,
-            "corrected_value": best_match,
-            "reflection": (
-                f"Evidence contains explicit route '{best_match}' "
-                f"(source: {best_citation['source']}) but agent defaulted to "
-                f"'{agent_value}'. The specific route in the evidence should "
-                f"override the generic classification."
-            ),
-            "evidence_citations": [best_citation],
-        }
+        # --- Source 2: Search agent's own Pass 1 reasoning for contradictions ---
+        if annotation_reasoning:
+            reasoning_lower = annotation_reasoning.lower()
+            for keyword, correct_value in _ROUTE_EVIDENCE_MAP.items():
+                if correct_value is None:
+                    continue
+                if keyword in reasoning_lower:
+                    return {
+                        "field_name": "delivery_mode",
+                        "original_value": agent_value,
+                        "corrected_value": correct_value,
+                        "reflection": (
+                            f"Agent's own Pass 1 extraction found '{keyword}' "
+                            f"but Pass 2 defaulted to '{agent_value}'. The model's "
+                            f"extraction contradicts its own classification."
+                        ),
+                        "evidence_citations": [],
+                    }
+
+        return None
 
     def _audit_peptide(
         self, nct_id: str, agent_value: str,
