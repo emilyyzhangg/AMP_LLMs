@@ -278,6 +278,7 @@ function AgentVsHumanTab() {
   const [concordance, setConcordance] = useState<{
     agent_vs_r1: JobConcordance;
     agent_vs_r2: JobConcordance;
+    r1_vs_r2: JobConcordance;
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -340,7 +341,82 @@ function AgentVsHumanTab() {
 
       {concordance && (
         <>
-          {/* Summary tables */}
+          {/* Combined comparison table: Agent vs R1, Agent vs R2, Human baseline (R1 vs R2) */}
+          <div className="card mb-2">
+            <div className="card-title">
+              Concordance Comparison
+              <span className="text-sm text-muted" style={{ fontWeight: 400, marginLeft: "0.75rem" }}>
+                Green = exceeds human baseline, Red = below
+              </span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th style={{ textAlign: "center", borderLeft: "2px solid var(--border)" }}>Agent vs R1</th>
+                  <th style={{ textAlign: "center" }}>Agent vs R2</th>
+                  <th style={{ textAlign: "center", borderLeft: "2px solid var(--warning)", background: "rgba(234,179,8,0.05)" }}>R1 vs R2 (Human Baseline)</th>
+                  <th style={{ textAlign: "center", borderLeft: "2px solid var(--border)" }}>Verdict</th>
+                </tr>
+              </thead>
+              <tbody>
+                {concordance.agent_vs_r1.fields.map((f, i) => {
+                  const r2f = concordance.agent_vs_r2.fields[i];
+                  const hf = concordance.r1_vs_r2.fields[i];
+                  const agentBest = Math.max(f.agree_pct, r2f?.agree_pct ?? 0);
+                  const humanBaseline = hf?.agree_pct ?? 0;
+                  const exceeds = agentBest > humanBaseline;
+                  return (
+                    <tr key={f.field_name}>
+                      <td style={{ fontWeight: 500 }}>{f.field_name}</td>
+                      <td style={{
+                        textAlign: "center",
+                        borderLeft: "2px solid var(--border)",
+                        fontWeight: 600,
+                        color: f.agree_pct > humanBaseline ? "var(--success)" : f.agree_pct < humanBaseline ? "var(--error)" : "var(--text-primary)",
+                      }}>
+                        {f.agree_pct.toFixed(1)}%
+                        <span className="text-sm text-muted" style={{ fontWeight: 400 }}>
+                          {" "}(n={f.n}, &kappa;={f.kappa != null ? f.kappa.toFixed(2) : "N/A"})
+                        </span>
+                      </td>
+                      <td style={{
+                        textAlign: "center",
+                        fontWeight: 600,
+                        color: (r2f?.agree_pct ?? 0) > humanBaseline ? "var(--success)" : (r2f?.agree_pct ?? 0) < humanBaseline ? "var(--error)" : "var(--text-primary)",
+                      }}>
+                        {r2f ? `${r2f.agree_pct.toFixed(1)}%` : "—"}
+                        <span className="text-sm text-muted" style={{ fontWeight: 400 }}>
+                          {r2f ? ` (n=${r2f.n}, \u03BA=${r2f.kappa != null ? r2f.kappa.toFixed(2) : "N/A"})` : ""}
+                        </span>
+                      </td>
+                      <td style={{
+                        textAlign: "center",
+                        borderLeft: "2px solid var(--warning)",
+                        background: "rgba(234,179,8,0.05)",
+                        fontWeight: 600,
+                      }}>
+                        {hf ? `${hf.agree_pct.toFixed(1)}%` : "—"}
+                        <span className="text-sm text-muted" style={{ fontWeight: 400 }}>
+                          {hf ? ` (n=${hf.n}, \u03BA=${hf.kappa != null ? hf.kappa.toFixed(2) : "N/A"})` : ""}
+                        </span>
+                      </td>
+                      <td style={{
+                        textAlign: "center",
+                        borderLeft: "2px solid var(--border)",
+                        fontWeight: 700,
+                        color: exceeds ? "var(--success)" : "var(--error)",
+                      }}>
+                        {exceeds ? "EXCEEDS" : "BELOW"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Individual detail tables */}
           <ConcordanceSummaryTable
             fields={concordance.agent_vs_r1.fields}
             label={`Agent vs R1 — Overall ${concordance.agent_vs_r1.overall_agree_pct.toFixed(1)}% agreement`}
@@ -349,8 +425,12 @@ function AgentVsHumanTab() {
             fields={concordance.agent_vs_r2.fields}
             label={`Agent vs R2 — Overall ${concordance.agent_vs_r2.overall_agree_pct.toFixed(1)}% agreement`}
           />
+          <ConcordanceSummaryTable
+            fields={concordance.r1_vs_r2.fields}
+            label={`R1 vs R2 (Human Baseline) — Overall ${concordance.r1_vs_r2.overall_agree_pct.toFixed(1)}% agreement`}
+          />
 
-          {/* Per-field expandable details (use R1 data, which has the full matrices) */}
+          {/* Per-field expandable details */}
           <h3 style={{ margin: "1.5rem 0 0.75rem" }}>Field Details (Agent vs R1)</h3>
           {concordance.agent_vs_r1.fields.map((f) => (
             <FieldDetail key={f.field_name} field={f} labelA="Agent" labelB="R1" />
