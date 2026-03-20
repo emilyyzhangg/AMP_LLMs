@@ -28,17 +28,17 @@ This paper describes the complete Agent Annotate system, presents baseline evalu
 
 ### 2.1 Antimicrobial Peptide Classification
 
-Antimicrobial peptides exert their therapeutic effects through four recognized modes of action, which we designate Modes A through D:
+Antimicrobial peptides (AMPs) exert their therapeutic effects through direct antimicrobial mechanisms. We classify AMPs by three modes of action (Modes A--C). A fourth mode (Mode D, pathogen-targeting vaccines) was initially included but removed after concordance analysis showed it caused systematic over-classification.
 
 **Mode A --- Direct Antimicrobial.** Peptides that kill or inhibit microbial growth through direct physical interaction, typically via membrane disruption or pore formation. Representative examples include colistin, polymyxin B, melittin, and nisin. These peptides interact directly with microbial cell membranes, compromising structural integrity and leading to cell death.
 
-**Mode B --- Immunostimulatory Host Defense.** Peptides that enhance the host immune response against pathogens by recruiting neutrophils, enhancing phagocytosis, or modulating cytokine production. Representative examples include LL-37, defensins, and thymosin alpha-1. These peptides do not necessarily kill pathogens directly but potentiate the host's capacity to clear infection.
+**Mode B --- Immunostimulatory Host Defense.** Peptides that recruit innate immune cells to kill pathogens at infection sites, enhancing phagocytosis or modulating cytokine production toward pathogen clearance. Representative examples include LL-37, defensins, and cathelicidins. These peptides potentiate the host's innate capacity to clear infection. General immunomodulation or adaptive immune activation does not qualify --- the peptide must specifically recruit innate defense against pathogens.
 
 **Mode C --- Anti-Biofilm.** Peptides that disrupt established microbial biofilms or prevent biofilm formation. Representative examples include LL-37, DJK-5, and IDR-1018. Biofilm disruption is mechanistically distinct from direct antimicrobial activity, as biofilm-resident organisms exhibit phenotypic tolerance that renders them resistant to conventional antimicrobials.
 
-**Mode D --- Pathogen-Targeting Vaccines and Immunogens.** Peptide-based vaccines or immunogens designed to elicit adaptive immune responses against specific pathogens. Representative examples include StreptInCor and peptide-based HIV vaccine candidates. These peptides function as antigens rather than effectors.
+**Mode D --- Removed.** Pathogen-targeting vaccine peptides (StreptInCor, HIV peptide vaccines) were initially classified as AMPs. Concordance analysis on 70 trials revealed this caused systematic over-classification: vaccine peptides induce adaptive immune responses, but the peptide itself does not directly kill pathogens. Mode D peptides are now classified as "Other."
 
-A critical distinction governs classification: peptides that *promote* defense against pathogens qualify as AMPs under this schema, while peptides that *suppress* immunity (such as autoimmune therapeutics like dnaJP1) do not. Similarly, metabolic hormones and their analogues (GLP-1 receptor agonists, insulin derivatives) are excluded regardless of their peptide nature, as are neuropeptides, radiolabeled peptide tracers, and other non-antimicrobial applications.
+A critical distinction governs classification: the AMP classification is independent of the Peptide field. Many peptides are not antimicrobial --- neuropeptides (VIP/aviptadil, peptide T), metabolic hormones (GLP-1 agonists, insulin), viral entry inhibitors (enfuvirtide), bone regulators (calcitonin, vosoritide), and vaccine immunogens are all classified as "Other" despite being peptides (Peptide=True). Similarly, peptides that *suppress* immunity (autoimmune therapeutics like dnaJP1) are excluded. The core requirement is direct antimicrobial mechanism: the peptide must physically kill, disrupt, or recruit innate immune effectors against pathogens through its own biochemical action.
 
 ### 2.2 Annotation Schema
 
@@ -52,7 +52,9 @@ Each clinical trial is annotated across five structured fields:
 | Reason for Failure | Categorical (5+empty) | Ineffective for purpose, Adverse effects/safety concerns, Formulation/stability issues, Superseded by alternatives, Insufficient enrollment, (empty) |
 | Peptide | Boolean | True, False |
 
-The **Classification** field distinguishes true AMP trials targeting infection from AMP trials with non-infection applications (e.g., wound healing via host defense peptides) and non-AMP trials. **Delivery Mode** captures the route of administration. **Outcome** reflects the current status and result of the trial, incorporating both registry status and published findings. **Reason for Failure** applies only to trials with negative outcomes and must be supported by cited evidence. **Peptide** indicates whether the intervention compound is a true peptide.
+The **Classification** field distinguishes true AMP trials targeting infection from AMP trials with non-infection applications (e.g., wound healing via host defense peptides) and non-AMP trials. Classification and Peptide are independent: a trial can have Peptide=True but Classification=Other (e.g., enfuvirtide is a peptide but not an AMP). **Delivery Mode** captures the route of administration. **Outcome** reflects the current status and result of the trial, incorporating both registry status and published findings. **Reason for Failure** applies only to trials with negative outcomes and must be supported by cited evidence.
+
+**Peptide** indicates whether any active intervention drug is a peptide therapeutic --- defined as a molecule of 2--100 amino acid residues that serves as the primary pharmacological agent. This includes antimicrobial peptides, hormone analogues (semaglutide, octreotide), cyclic peptides (vancomycin), peptide vaccines, neuropeptides (aviptadil, peptide T), viral entry inhibitors (enfuvirtide), and insulin. It excludes monoclonal antibodies (>100 aa, distinct drug class), small molecules, nutritional formulas containing hydrolyzed proteins, and peptide cargo in delivery vehicles (exosomes, HSP complexes). The question is whether the active drug is a peptide, not whether the formulation contains peptides.
 
 ### 2.3 Challenges in Manual Annotation
 
