@@ -1,101 +1,93 @@
-# EDAM Learning Run Plan
+# EDAM Learning Run Plan (Revised)
 
-## Dataset
+## Why the original plan was wrong
 
-| Set | NCTs | Description |
-|---|---|---|
-| Human-annotated (at least 1 field filled) | **964** | Concordance target — agent must annotate to measure accuracy |
-| Both R1 and R2 annotated | 849 | Strongest concordance (both replicates available) |
-| Assigned but never annotated | 884 | Have metadata but zero annotation fields filled — agent-only |
-| Agent already annotated (pre-v10) | 114 | From prior runs, 104 overlap with human set |
-| **Remaining for Phase 1** | **~860** | 964 minus ~104 already done |
+The original plan called for running the same 25 NCTs 3-6 times to bootstrap EDAM through stability tracking. This doesn't work well because:
 
-The Excel has 1,848 NCT rows total, but only **964 have any actual annotation**. The other 884 have metadata (title, status, conditions) but all 5 annotation fields are blank — the human reviewers were assigned these trials but never completed them.
+1. **Temperature is 0.1.** The pipeline is nearly deterministic. Re-running the same NCTs produces ~95% identical results. Stability tracking just confirms "same input → same output" — that's not learning.
+2. **Self-audit is the highest-value loop.** It catches evidence contradictions (FDA says "INTRAVENOUS", agent says "Other/Unspecified") on the FIRST run. It doesn't need re-runs.
+3. **Re-runs waste compute.** Each batch takes ~3 hours. Running 25 NCTs 3 times uses 9 hours that could annotate 75 new NCTs instead.
 
-## Goal
+## Revised approach: forward progress with self-audit
 
-1. **Phase 1**: Agent annotates all 964 human-annotated NCTs → full concordance measurement
-2. **Phase 2**: Measure concordance, identify gaps, EDAM learns from corrections
-3. **Phase 3**: Re-annotate with EDAM guidance → measured improvement
-4. **Phase 4**: Annotate the 884 unreviewed NCTs — agent-only, no human counterpart
-5. **Target**: Agent accuracy exceeds human inter-rater reliability (R1 vs R2 baseline)
+Instead of re-running the same NCTs, move forward through all 964 in batches. Self-audit generates corrections after each batch. EDAM guidance compounds batch-over-batch.
 
-## Human Inter-Rater Baseline (the bar to beat)
+## What's already done
 
-| Field | R1 vs R2 Agreement | Both-filled N | Notes |
-|---|---|---|---|
-| Classification | 91.6% | 620 | High agreement but kappa ≈ 0 (prevalence paradox) |
-| Delivery mode | 68.2% | 579 | Route specificity disagreements |
-| **Outcome** | **55.6%** | **372** | **Weakest field — agent can exceed this** |
-| Reason for failure | 91.3% | 46 | Small N, mostly blank-blank agreement |
-| **Peptide** | **48.4%** | **62** | **8:1 ratio (R1=451 True, R2=56 True) — definitional disagreement** |
+| Batch | Job ID | NCTs | Status | EDAM corrections |
+|---|---|---|---|---|
+| A | c7e666682865 | 25 (richest) | Complete | 0 (self-audit not in this commit) |
+| B | ae1ece9d4e0a | 25 (next richest) | Complete | 0 (no overlap, self-audit not active) |
+| A repeat | 5d207b30f11c | same 25 as A | Running | First self-audit run — expect corrections |
 
-## Runtime Estimates
+## Plan going forward
 
-| Hardware | Per trial | 964 trials | 5 batches × ~200 |
-|---|---|---|---|
-| Mac Mini | ~450s | ~120 hours (5.0 days) | ~24h per batch |
-| Server | ~350s | ~94 hours (3.9 days) | ~19h per batch |
+### Phase 1: Complete the 964 human-annotated NCTs
 
-## Phase 1: Full Human-Set Annotation (964 NCTs)
+After the A repeat finishes (with self-audit generating its first corrections):
 
-```bash
-cd "standalone modules/agent_annotate"
-
-# All 964 NCTs are in scripts/human_annotated_ncts.txt
-# Submit in 5 batches of ~200:
-.venv/bin/python -c "
-import httpx
-ncts = open('scripts/human_annotated_ncts.txt').read().strip().split('\n')
-batch_size = 200
-for i in range(0, len(ncts), batch_size):
-    batch = ncts[i:i+batch_size]
-    resp = httpx.post('http://localhost:9005/api/jobs',
-        json={'nct_ids': batch}, timeout=30)
-    print(f'Batch {i//batch_size + 1}: {resp.json().get(\"job_id\", \"error\")} ({len(batch)} NCTs)')
-"
+```
+Batch C: ~200 NCTs  (~24 hours)  — EDAM guidance from A-repeat self-audit corrections
+Batch D: ~200 NCTs  (~24 hours)  — EDAM guidance from A-repeat + C corrections
+Batch E: ~200 NCTs  (~24 hours)  — compounding corrections
+Batch F: ~164 NCTs  (~20 hours)  — remaining NCTs, richest EDAM guidance
 ```
 
-**EDAM accumulates learning across batches:**
-- Batch 1: cold start, ~1,000 experiences stored, self-review on flagged items
-- Batch 2: EDAM guidance from batch 1 corrections, ~2,000 total experiences
-- Batch 3: prompt optimization fires (every 3rd job), first variant proposals
-- Batch 4-5: full EDAM guidance with corrections, exemplars, evolved prompts
+**What EDAM does each batch:**
+- Self-audit scans ALL trials for evidence contradictions → corrections stored with citations
+- Corrections from prior batches appear as guidance in future annotation prompts
+- Prompt optimization fires after batch D (every 3rd job) — first variant proposals
+- Self-review handles any flagged items
 
-## Phase 2: Concordance Measurement
+**Total: ~92 hours (3.8 days) for remaining 914 NCTs in 4-5 batches.**
+
+### Phase 2: Measure concordance on all 964
 
 ```bash
 .venv/bin/python scripts/concordance_jobs.py
 ```
 
-Produces: Agent vs R1, Agent vs R2, R1 vs R2, per-annotator breakdown (kappa + CI + AC₁).
+Compare: Agent vs R1, Agent vs R2, R1 vs R2 baseline across all 964 NCTs.
 
-**Decision point:** If agent concordance exceeds R1 vs R2 on outcome and peptide (the weakest human fields), proceed to Phase 3. If not, analyze error patterns and adjust.
+### Phase 3: Re-annotate ALL 964 with full EDAM learning
 
-## Phase 3: Re-Annotate with Full EDAM Learning
+After Phase 1+2, EDAM has corrections from 964 trials. Now re-run the entire set:
+- Every annotation gets EDAM guidance (corrections, exemplars, evolved prompts)
+- Compare Phase 3 concordance vs Phase 1 — this is the measured improvement
 
-Re-run all 964 NCTs. EDAM guidance from Phase 1 (corrections, exemplars, evolved prompts) now informs every annotation. Compare Phase 3 concordance vs Phase 1 — this is the paper's improvement metric.
+### Phase 4: Annotate the 884 unannotated NCTs
 
-## Phase 4: Annotate Beyond the Human Set (884 NCTs)
+Agent-only, no human counterpart. Grounded by EDAM learning from 964 validated trials.
 
-The 884 NCTs that humans never annotated. The agent annotates these with EDAM guidance from 964 human-validated trials. No concordance measurement possible — these annotations stand on the agent's learned accuracy, with full citation traceability and confidence scores.
+## What to do RIGHT NOW
 
-## Monitoring
+After job `5d207b30f11c` completes:
 
+**1. Check if self-audit generated corrections:**
 ```bash
-# EDAM stats
-sqlite3 results/edam.db "SELECT COUNT(*) as experiences FROM experiences;"
-sqlite3 results/edam.db "SELECT source, COUNT(*) FROM corrections GROUP BY source;"
-sqlite3 results/edam.db "SELECT field_name, ROUND(AVG(stability_score),2), COUNT(*) FROM stability_index GROUP BY field_name;"
-
-# Review flagged trials in real-time during running jobs
-# Pipeline view → click "Review" on flagged NCTs
+PROD="/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/results"
+sqlite3 "$PROD/edam.db" "SELECT source, COUNT(*) FROM corrections GROUP BY source;"
+sqlite3 "$PROD/edam.db" "SELECT nct_id, field_name, original_value, corrected_value, reflection FROM corrections LIMIT 10;"
 ```
 
-## Files
+**2. If corrections exist → submit batch C (next 200 NCTs):**
+```bash
+cd "standalone modules/agent_annotate"
+# Extract NCTs not yet annotated (exclude first 50)
+comm -23 scripts/human_annotated_ncts.txt <(sort scripts/fast_learning_batch_50.txt) | head -200 > /tmp/batch_c.txt
+NCTS=$(cat /tmp/batch_c.txt | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip().split()))")
+curl -X POST http://localhost:8005/api/jobs -H "Content-Type: application/json" -d "{\"nct_ids\": $NCTS}"
+```
 
-- `scripts/human_annotated_ncts.txt` — 964 NCTs with actual human annotations
-- `scripts/concordance_jobs.py` — Full concordance with per-annotator breakdown
-- `scripts/edam_learning_cycle.py` — Automated calibration cycle (for 10-NCT testing)
-- `scripts/stability_test.py` — 3x stability test
-- `results/edam.db` — Learning database (persists across all runs)
+**3. If no corrections → investigate why self-audit didn't fire:**
+Check the prod logs for EDAM self-audit output:
+```bash
+grep "self-audit" "$PROD/../logs/agent_annotate.log" | tail -20
+```
+
+## Key files
+- `scripts/human_annotated_ncts.txt` — all 964 NCTs
+- `scripts/fast_learning_batch_25.txt` — batch A NCTs (25)
+- `scripts/fast_learning_batch_50.txt` — batch A+B NCTs (50)
+- `results/edam.db` — EDAM learning database
+- `CONTINUATION_PLAN.md` — step-by-step pickup instructions
