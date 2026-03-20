@@ -1,9 +1,10 @@
 """
 EDAM — Experience-Driven Annotation Memory.
 
-Self-learning system for agent_annotate. Three feedback loops:
-  Loop 1 (Stability):  Cross-run comparison → stable exemplars + instability flags
+Self-learning system for agent_annotate. Four feedback loops:
+  Loop 1 (Stability):   Cross-run comparison → stable exemplars + instability flags
   Loop 2 (Corrections): Human review + self-review → error reflections
+  Loop 2b (Self-Audit): Evidence consistency checking → catches agent contradictions
   Loop 3 (Prompt Opt):  Accuracy analysis → prompt variant A/B testing
 
 All loops persist to SQLite and use Ollama embeddings for similarity search.
@@ -17,6 +18,7 @@ from app.services.memory.memory_store import MemoryStore, memory_store
 from app.services.memory.stability_tracker import StabilityTracker
 from app.services.memory.correction_learner import CorrectionLearner
 from app.services.memory.prompt_optimizer import PromptOptimizer
+from app.services.memory.self_audit import SelfAuditor
 from app.services.memory.edam_config import OPTIMIZATION_INTERVAL_JOBS
 
 logger = logging.getLogger("agent_annotate.edam")
@@ -25,6 +27,7 @@ logger = logging.getLogger("agent_annotate.edam")
 stability_tracker = StabilityTracker(memory_store)
 correction_learner = CorrectionLearner(memory_store)
 prompt_optimizer = PromptOptimizer(memory_store)
+self_auditor = SelfAuditor(memory_store)
 
 # Job counter for optimization interval
 _job_count = 0
@@ -88,6 +91,16 @@ async def edam_post_job_hook(job_id: str, all_trial_results: list[dict],
     except Exception as e:
         logger.error("EDAM Loop 2 (corrections) failed: %s", e, exc_info=True)
         summary["errors"].append(f"corrections: {e}")
+
+    # --- Loop 2b: Self-audit ALL trials for evidence consistency ---
+    try:
+        audit_result = await self_auditor.audit_job(
+            job_id, all_trial_results, config_hash, git_commit
+        )
+        summary["self_audit"] = audit_result
+    except Exception as e:
+        logger.error("EDAM Loop 2b (self-audit) failed: %s", e, exc_info=True)
+        summary["errors"].append(f"self_audit: {e}")
 
     # --- Loop 3: Prompt optimization (every Nth job) ---
     if _job_count % OPTIMIZATION_INTERVAL_JOBS == 0:

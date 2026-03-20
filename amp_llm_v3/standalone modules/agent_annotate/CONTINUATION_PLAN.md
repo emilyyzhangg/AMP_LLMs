@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-03-19
-**Current state:** Batch A (25 richest NCTs) running on prod as job `c7e666682865`
+**Last updated:** 2026-03-19 (post-batch A analysis)
+**Current state:** Batch A COMPLETE. Results analyzed. Ready for batch B.
 
 ## What was done this session
 
@@ -22,31 +22,19 @@
 
 ## What to do next
 
-### After job `c7e666682865` completes (~3 hours):
+### Batch A: COMPLETE (job c7e666682865)
+- **25/25 trials completed** in 3.0 hours (435s/trial avg)
+- **1/25 flagged** (4%) — NCT05361733 (peptide + delivery_mode)
+- **EDAM:** 125 experiences, 81 embeddings, 0 corrections (only 1 flagged trial), epoch 1
+- **Full analysis:** `results/batch_a_analysis.md`
 
-**Step 1: Check results**
-```bash
-curl -s http://localhost:8005/api/jobs/c7e666682865 | python3 -m json.tool
-# Look for: status=completed, completed_trials=25
-```
+**Key results:**
+- **Outcome: κ=0.742 vs R1 (Substantial) — EXCEEDS human baseline of 55.6%**
+- Classification: AC₁=0.917 (kappa paradox — 92% "Other")
+- Peptide: 68.2% vs R1 — improving but agent too strict on False
+- Delivery mode: 44% vs R1 — agent defaults to "Other/Unspecified" too often
 
-**Step 2: Check EDAM learned**
-```bash
-# On the prod machine, in the prod results directory:
-sqlite3 /path/to/prod/results/edam.db "SELECT COUNT(*) FROM experiences;"
-# Should show ~125 (25 NCTs × 5 fields)
-sqlite3 /path/to/prod/results/edam.db "SELECT source, COUNT(*) FROM corrections GROUP BY source;"
-# Should show self_review corrections if any trials were flagged
-```
-
-**Step 3: Run concordance on batch A results**
-```bash
-cd "standalone modules/agent_annotate"
-.venv/bin/python scripts/concordance_jobs.py
-# Add the new job JSON to the JOB_FILES list in the script first
-```
-
-**Step 4: Submit batch B (next 25 richest NCTs)**
+### Next: Submit batch B (next 25 richest NCTs)
 ```bash
 # The fast_learning_batch_50.txt has 50 NCTs — batch A was the first 25
 # Extract NCTs 26-50:
