@@ -129,6 +129,16 @@ class ClinicalProtocolAgent(BaseResearchAgent):
                 retrieved_at=datetime.utcnow().isoformat(),
             ))
 
+        detailed = desc.get("detailedDescription", "")
+        if detailed:
+            citations.append(SourceCitation(
+                source_name="clinicaltrials_gov", identifier=nct_id,
+                source_url=base_url, title="Detailed Description",
+                snippet=detailed[:500],
+                quality_score=self.compute_quality_score("clinicaltrials_gov"),
+                retrieved_at=datetime.utcnow().isoformat(),
+            ))
+
         overall_status = status_mod.get("overallStatus", "")
         if overall_status:
             why_stopped = status_mod.get("whyStopped", "")
@@ -171,6 +181,19 @@ class ClinicalProtocolAgent(BaseResearchAgent):
                 quality_score=self.compute_quality_score("clinicaltrials_gov"),
                 retrieved_at=datetime.utcnow().isoformat(),
             ))
+
+        for arm in arms_mod.get("armGroups", []):
+            label = arm.get("label", "")
+            arm_desc = arm.get("description", "")
+            if arm_desc:
+                snippet = f"Arm: {label} - {arm_desc[:400]}"
+                citations.append(SourceCitation(
+                    source_name="clinicaltrials_gov", identifier=nct_id,
+                    source_url=base_url, title=f"Arm Group: {label}",
+                    snippet=snippet,
+                    quality_score=self.compute_quality_score("clinicaltrials_gov"),
+                    retrieved_at=datetime.utcnow().isoformat(),
+                ))
 
         phases = design_mod.get("phases", [])
         if phases:
