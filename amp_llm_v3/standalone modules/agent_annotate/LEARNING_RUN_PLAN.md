@@ -1,6 +1,6 @@
 # EDAM Learning Run Plan
 
-**Last updated:** 2026-03-20 ~11:30
+**Last updated:** 2026-03-21 ~19:00
 
 ## Job Registry
 
@@ -12,7 +12,11 @@ This is the canonical list of every annotation job run. Update after every job.
 | 2 | B | ae1ece9d4e0a | 25 | 25/25 | **Complete** | v9 | 8d6f236 | 0 | 2026-03-19 ~17:00 | 2026-03-19 ~20:00 | Next richest 25. No NCT overlap with A. |
 | 3 | A repeat | 5d207b30f11c | 25 | 25/25 | **Complete** | v9 | 8d6f236 | 0 | 2026-03-19 20:34 | 2026-03-19 23:31 | EDAM bootstrap — same 25 as batch A. Differences are stochastic noise only. |
 | 4 | C (v9) | 49ac8fdd9e90 | 200 | 36/200 | **Cancelled** | v9 | c1d6599 | N/A | 2026-03-20 05:59 | 2026-03-20 ~11:00 | Cancelled to merge v10 agents. 36 per-trial annotations saved. No consolidated JSON. |
-| 5 | C (v10) | 92fb568c1b96 | 200 | 0/200 | **Running** | v10 | 272503c | TBD | 2026-03-20 ~11:15 | — | Same 200 NCTs as job #4, now with v10 agents. Fresh research (new job_id = new cache). |
+| 5 | C (v10) | 92fb568c1b96 | 200 | 143/200 | **Running** (resumed) | v10 | 272503c | TBD | 2026-03-20 ~11:15 | — | Same 200 NCTs as job #4. Interrupted twice by autoupdater, resumed at 143. |
+| 6 | D | 7412fcad059f | 200 | 0/200 | **Queued** | v10 | 1112528 | TBD | — | — | NCT03516773–NCT04389775. First batch with EDAM corrections from job #5. |
+| 7 | E | daa1db01dac0 | 200 | 0/200 | **Queued** | v10 | 1112528 | TBD | — | — | NCT04397926–NCT05293665. Compounding EDAM corrections. |
+| 8 | F | 1d9944e81bda | 200 | 0/200 | **Queued** | v10 | 1112528 | TBD | — | — | NCT05301192–NCT06429566. |
+| 9 | G | 076d1edc6060 | 114 | 0/114 | **Queued** | v10 | 1112528 | TBD | — | — | NCT06430671–NCT07012330. Final batch, completes all 964. |
 
 ### Agent version summary
 
@@ -20,6 +24,7 @@ This is the canonical list of every annotation job run. Update after every job.
 |---|---|---|
 | v9 | 8d6f236 | Two-pass annotation, deterministic bypass, EDAM system, verification personas |
 | v10 | 272503c (main), f041f84d (dev) | delivery_mode: expanded keywords (31), all-source search, 14B model on mac_mini. clinical_protocol: detailedDescription + armGroups. classification: _parse_value fix. self_audit: searches agent reasoning for contradictions. |
+| v10+queue | 1112528 (main), 84118cdc (dev) | Job queue: multiple jobs submitted and run sequentially. Cross-branch gatekeeper in worker. METHODOLOGY/PAPER: Peptide and AMP definitions expanded. |
 
 ## NCT Coverage
 
@@ -27,8 +32,8 @@ This is the canonical list of every annotation job run. Update after every job.
 |---|---|---|
 | Human-annotated (total) | 964 | Target for Phase 1 |
 | Batch A+B (richest 50) | 50 | Complete (v9), 25 have 2 runs |
-| Batch C (next 200) | 200 | v9 cancelled at 36. v10 running (job #5). |
-| Remaining | 714 | Not yet submitted |
+| Batch C (200) | 200 | v10 running (job #5, 143/200) |
+| Batches D–G (714) | 714 | Queued (jobs #6–9), auto-starts after #5 |
 | Unannotated (no human ref) | 884 | Phase 6 — agent-only |
 
 ## Why EDAM self-audit generated 0 corrections (jobs #1-4)
@@ -52,14 +57,21 @@ This is the canonical list of every annotation job run. Update after every job.
 
 ### Phase 1: Complete 964 human-annotated NCTs with v10
 
+All jobs queued and running autonomously. No intervention required.
+
 ```
-Job #5: 200 NCTs (RUNNING) — v10, fresh research with new citations
-Job #6: ~200 NCTs              — submit after #5 completes
-Job #7: ~200 NCTs              — compounding EDAM corrections
-Job #8: ~164 NCTs              — remaining
+Job #5: 200 NCTs (RUNNING, 143/200) — ~7h remaining
+Job #6: 200 NCTs (QUEUED)           — ~24h, first batch with EDAM corrections from #5
+Job #7: 200 NCTs (QUEUED)           — ~24h, compounding corrections
+Job #8: 200 NCTs (QUEUED)           — ~24h
+Job #9: 114 NCTs (QUEUED)           — ~14h, final batch
 ```
 
-After each job: update this registry, run concordance, check EDAM corrections count.
+**Estimated total: ~4 days from 2026-03-21 19:00 → ~2026-03-25.**
+
+EDAM post-job hook fires between each job, storing corrections that feed into the next job's prompts. Prompt optimization fires every 3rd job (will first trigger after job #7 or #8).
+
+After all jobs complete: update this registry, run full concordance, check EDAM corrections.
 
 ### Phase 2: Full concordance on all 964
 
