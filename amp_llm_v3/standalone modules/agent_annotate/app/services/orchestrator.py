@@ -34,10 +34,17 @@ logger = logging.getLogger("agent_annotate.orchestrator")
 
 
 class PipelineOrchestrator:
-    """Creates, tracks, and runs annotation pipeline jobs."""
+    """Creates, tracks, and runs annotation pipeline jobs.
+
+    Jobs are queued and processed sequentially by a background worker.
+    Only one job runs at a time (Ollama bottleneck), but multiple jobs
+    can be queued. The worker starts automatically on first job submission.
+    """
 
     def __init__(self):
         self._jobs: dict[str, AnnotationJob] = {}
+        self._queue: asyncio.Queue[str] = asyncio.Queue()
+        self._worker_running = False
         # Reload persisted job states from disk
         self._reload_persisted_jobs()
 
@@ -131,7 +138,99 @@ class PipelineOrchestrator:
             commit_hash=get_git_commit_short(),
         )
         self._jobs[job_id] = job
+        self._persist_job(job)
         return job
+
+    def enqueue_job(self, job_id: str) -> None:
+        """Add a job to the processing queue."""
+        self._queue.put_nowait(job_id)
+        self._ensure_worker()
+
+    def queue_size(self) -> int:
+        """Number of jobs waiting in the queue (not including the running one)."""
+        return self._queue.qsize()
+
+    def queued_jobs(self) -> list[str]:
+        """Return job IDs currently waiting in the queue."""
+        return [j.job_id for j in self._jobs.values()
+                if j.status == "queued" and j.job_id not in
+                {jid for jid in [self._running_job_id()] if jid}]
+
+    def _running_job_id(self) -> Optional[str]:
+        """Return the job_id of the currently running job, if any."""
+        for j in self._jobs.values():
+            if j.status == "running":
+                return j.job_id
+        return None
+
+    def _ensure_worker(self) -> None:
+        """Start the queue worker if not already running."""
+        if not self._worker_running:
+            self._worker_running = True
+            asyncio.ensure_future(self._queue_worker())
+
+    async def _queue_worker(self) -> None:
+        """Background worker that processes queued jobs sequentially.
+
+        Waits for the other branch to finish before starting a job,
+        since both branches share the same Ollama instance.
+        """
+        logger.info("Job queue worker started")
+        try:
+            while True:
+                # Wait for next job (blocks until one is available)
+                job_id = await asyncio.wait_for(self._queue.get(), timeout=60)
+                job = self._jobs.get(job_id)
+                if not job:
+                    logger.warning(f"Queue worker: job {job_id} not found, skipping")
+                    continue
+                if job.status == "cancelled":
+                    logger.info(f"Queue worker: job {job_id} was cancelled while queued, skipping")
+                    continue
+
+                # Wait for other branch to finish (cross-branch gatekeeper)
+                await self._wait_for_other_branch(job_id)
+
+                logger.info(f"Queue worker: starting job {job_id} ({job.progress.total_trials} trials)")
+                await self.run_pipeline(job_id)
+                logger.info(f"Queue worker: job {job_id} finished with status '{job.status}'")
+        except asyncio.TimeoutError:
+            # No jobs for 60s — shut down worker, will restart on next enqueue
+            logger.info("Job queue worker idle, shutting down")
+        except Exception as e:
+            logger.error(f"Job queue worker crashed: {e}", exc_info=True)
+        finally:
+            self._worker_running = False
+
+    async def _wait_for_other_branch(self, job_id: str) -> None:
+        """Wait until the other branch's agent-annotate has no active jobs."""
+        import httpx
+        from app.config import AGENT_ANNOTATE_PORT
+
+        other_port = 9005 if AGENT_ANNOTATE_PORT < 9000 else 8005
+        other_url = f"http://localhost:{other_port}/api/jobs/active"
+        other_branch = "dev" if AGENT_ANNOTATE_PORT < 9000 else "main"
+
+        while True:
+            try:
+                async with httpx.AsyncClient(timeout=5.0) as client:
+                    resp = await client.get(other_url)
+                    if resp.status_code == 200:
+                        other_active = resp.json().get("active", 0)
+                        if other_active > 0:
+                            logger.info(
+                                f"Queue worker: waiting for {other_branch} job to finish "
+                                f"before starting {job_id}"
+                            )
+                            await asyncio.sleep(30)
+                            # Check if our job was cancelled while waiting
+                            job = self._jobs.get(job_id)
+                            if job and job.status == "cancelled":
+                                return
+                            continue
+            except Exception:
+                pass  # Other branch not reachable — safe to proceed
+            break
 
     def get_job(self, job_id: str) -> Optional[AnnotationJob]:
         return self._jobs.get(job_id)

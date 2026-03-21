@@ -37,7 +37,9 @@ The review queue (trials flagged for manual review) is persisted to disk and sur
 
 ### 2.1 Definition
 
-Antimicrobial peptides (AMPs), also called host defense peptides, are short peptides that contribute to pathogen defense through DIRECT antimicrobial mechanisms. The pipeline classifies AMPs by three modes of action. A peptide therapeutic must fit at least one of these modes to be considered an AMP.
+An antimicrobial peptide (AMP), also called a host defense peptide, is a peptide (2--100 amino acids) that contributes to pathogen defense through DIRECT antimicrobial mechanisms. "Direct" means the peptide itself physically kills, disrupts, or recruits innate immune effectors against pathogens through its own biochemical action. The pipeline classifies AMPs by three modes of action. A peptide must fit at least one mode to be classified as an AMP.
+
+**Critically, the AMP classification is independent of the Peptide field.** A trial can have Peptide=True (the drug is a peptide) but Classification=Other (the peptide is not antimicrobial). For example, enfuvirtide is a peptide (Peptide=True) but is a viral entry inhibitor, not an AMP (Classification=Other). Semaglutide is a peptide (Peptide=True) but is a metabolic hormone, not an AMP (Classification=Other).
 
 ### 2.2 Three Modes of Action (v2)
 
@@ -45,22 +47,33 @@ Antimicrobial peptides (AMPs), also called host defense peptides, are short pept
 Peptides that directly kill or inhibit pathogens through membrane disruption, pore formation, or intracellular targeting. Examples: colistin, polymyxin B, melittin, daptomycin, nisin.
 
 **Mode B -- Immunostimulatory / Host Defense**
-Peptides that directly recruit innate immune cells to kill pathogens at infection sites. Examples: LL-37, defensins, cathelicidins.
+Peptides that directly recruit innate immune cells to kill pathogens at infection sites. Examples: LL-37, defensins, cathelicidins. The peptide must specifically recruit innate defense against pathogens --- general immunomodulation or adaptive immune activation does not qualify.
 
 **Mode C -- Anti-Biofilm**
 Peptides that directly disrupt microbial biofilms through biochemical interaction. Examples: LL-37, DJK-5, IDR-1018.
 
-**Mode D was removed in v2.** Pathogen-targeting vaccine peptides (StreptInCor, HIV peptide vaccines) were previously classified as AMPs, but 70-trial concordance analysis showed this caused systematic over-classification. Vaccine peptides induce adaptive immune responses — the peptide itself does not directly kill pathogens. They are now classified as "Other."
+**Mode D was removed in v2.** Pathogen-targeting vaccine peptides (StreptInCor, HIV peptide vaccines) were previously classified as AMPs, but 70-trial concordance analysis showed this caused systematic over-classification. Vaccine peptides induce adaptive immune responses --- the peptide itself does not directly kill pathogens. They are now classified as "Other."
 
 ### 2.3 Key Distinctions
 
-1. **Direct antimicrobial mechanism required.** The peptide must physically kill, lyse, or disrupt pathogens through its own biochemical action — or directly recruit innate immune cells to kill pathogens. General immunomodulation, antibody induction, or receptor blocking does not qualify.
+1. **Direct antimicrobial mechanism required.** The peptide must physically kill, lyse, or disrupt pathogens through its own biochemical action --- or directly recruit innate immune cells to kill pathogens. General immunomodulation, antibody induction, or receptor blocking does not qualify.
 
-2. **Treating infection ≠ AMP.** A peptide that treats an infectious disease through a non-antimicrobial mechanism (e.g., enfuvirtide blocks HIV viral fusion but does not kill the virus) is classified as "Other."
+2. **Treating infection ≠ AMP.** A peptide that treats an infectious disease through a non-antimicrobial mechanism (e.g., enfuvirtide blocks HIV viral fusion but does not kill the virus) is classified as "Other." Being tested in an infection context does not make a peptide an AMP.
 
 3. **Promoting defense vs suppressing immunity.** An immunosuppressive peptide is "Other" regardless of its peptide nature. An immunostimulatory peptide is only an AMP if it specifically recruits innate defense against pathogens (Mode B), not if it merely promotes general immune activation.
 
-4. **Vaccine peptides are not AMPs.** Peptides designed to induce antibody responses against pathogens (HIV vaccines, influenza vaccines, etc.) are "Other" — the adaptive immune response they trigger is not a direct antimicrobial mechanism.
+4. **Vaccine peptides are not AMPs.** Peptides designed to induce antibody responses against pathogens (HIV vaccines, influenza vaccines, etc.) are "Other" --- the adaptive immune response they trigger is not a direct antimicrobial mechanism.
+
+5. **Peptide ≠ AMP.** Many peptides are not antimicrobial: neuropeptides (VIP/aviptadil, peptide T), metabolic hormones (GLP-1 agonists, insulin), bone growth regulators (vosoritide/CNP, calcitonin), viral entry inhibitors (enfuvirtide), and radiolabeled tracers. All are classified as "Other" despite being peptides (Peptide=True).
+
+### 2.4 Relationship Between Peptide and Classification Fields
+
+| Peptide | Classification | Example |
+|---|---|---|
+| True | AMP(infection) | Colistin for MDR bacterial infection |
+| True | AMP(other) | LL-37 for diabetic wound healing |
+| True | Other | Enfuvirtide (viral entry inhibitor), semaglutide (GLP-1), calcitonin (bone), peptide T (neuropeptide), HIV peptide vaccine |
+| False | Other | Amoxicillin (small molecule), Peptamen (nutritional formula), pembrolizumab (antibody) |
 
 
 ## 3. Annotation Fields
@@ -112,7 +125,30 @@ Applies only when a trial has failed or terminated. Otherwise left empty.
 
 ### 3.5 Peptide
 
-Boolean field (True/False) indicating whether the intervention is a peptide.
+Boolean field (True/False) indicating whether the intervention is a peptide therapeutic.
+
+**Definition:** A peptide therapeutic is a molecule consisting of 2--100 amino acid residues that serves as the ACTIVE therapeutic drug in the clinical trial. The peptide must be the primary pharmacological agent --- not a carrier, adjuvant, nutritional component, or targeting vector.
+
+**Included as peptide (True):**
+- Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37, defensins
+- Hormone analogues: semaglutide (GLP-1), octreotide (somatostatin), leuprolide (GnRH)
+- Cyclic peptides and glycopeptides: vancomycin, gramicidin, bacitracin
+- Peptide vaccines where the peptide IS the active immunogen (e.g., StreptInCor, HIV gp120 peptide vaccines)
+- Neuropeptides used as drugs: aviptadil (VIP), substance P antagonists, peptide T
+- Insulin and insulin analogues (51 amino acids)
+- Viral entry inhibitors that are peptides: enfuvirtide (T-20, 36 amino acids)
+- Bone/growth peptides: vosoritide (CNP analogue), teriparatide, calcitonin
+
+**Excluded as peptide (False):**
+- Monoclonal antibodies (>100 amino acids, distinct drug class): pembrolizumab, trastuzumab
+- Small molecule drugs: amoxicillin, metformin, ciprofloxacin
+- Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms
+- Heat shock protein-peptide complexes: HSPPC-96/Oncophage (the HSP is the drug)
+- Exosome/dexosome vehicles loaded with peptides (the vehicle is the drug)
+- Gene therapies, cell therapies, medical devices
+- Whole proteins >100 amino acids (interferons, erythropoietin) unless specifically peptide fragments
+
+**Key rule:** The question is whether ANY active intervention drug is a peptide --- not whether the formulation contains peptides. Brand names containing "peptide" do NOT make the product a peptide drug.
 
 
 ## 4. Phase 1 -- Research Agents
