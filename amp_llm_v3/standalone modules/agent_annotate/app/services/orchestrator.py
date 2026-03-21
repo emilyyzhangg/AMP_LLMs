@@ -203,13 +203,19 @@ class PipelineOrchestrator:
             self._worker_running = False
 
     async def _wait_for_other_branch(self, job_id: str) -> None:
-        """Wait until the other branch's agent-annotate has no active jobs."""
-        import httpx
-        from app.config import AGENT_ANNOTATE_PORT
+        """Wait until the other branch's agent-annotate has no active jobs.
 
-        other_port = 9005 if AGENT_ANNOTATE_PORT < 9000 else 8005
+        Detects which port we're actually running on by checking which port
+        is bound, rather than relying on AGENT_ANNOTATE_PORT config (which
+        may not be set correctly in the LaunchDaemon environment).
+        """
+        import httpx
+
+        # Detect our actual port by checking which one we're serving on
+        our_port = self._detect_our_port()
+        other_port = 9005 if our_port == 8005 else 8005
         other_url = f"http://localhost:{other_port}/api/jobs/active"
-        other_branch = "dev" if AGENT_ANNOTATE_PORT < 9000 else "main"
+        other_branch = "dev" if other_port == 9005 else "main"
 
         while True:
             try:
@@ -231,6 +237,21 @@ class PipelineOrchestrator:
             except Exception:
                 pass  # Other branch not reachable — safe to proceed
             break
+
+    @staticmethod
+    def _detect_our_port() -> int:
+        """Detect which port this service is actually running on."""
+        import socket
+        # Try to bind on 8005 — if it fails, we're on 8005
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.bind(("127.0.0.1", 8005))
+            s.close()
+            # Port 8005 is free — we must be on 9005
+            return 9005
+        except OSError:
+            # Port 8005 is in use (by us) — we're on 8005
+            return 8005
 
     def get_job(self, job_id: str) -> Optional[AnnotationJob]:
         return self._jobs.get(job_id)
