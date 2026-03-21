@@ -1,19 +1,17 @@
 """
-Job management endpoints - create, list, cancel annotation jobs.
+Job management endpoints - create, list, cancel, queue annotation jobs.
 
-The create_job endpoint acts as a cross-branch gatekeeper: it checks
-both the local orchestrator AND the other branch's agent-annotate service
-to ensure only one annotation job runs at a time across all branches.
-This is necessary because both branches share the same Ollama instance.
+Jobs are queued and processed sequentially by a background worker.
+Multiple jobs can be submitted — they will run one at a time. The
+queue worker also checks the other branch's service (cross-branch
+gatekeeper) since both branches share the same Ollama instance.
 """
 
 import logging
 import re
-import httpx
-from fastapi import APIRouter, HTTPException, BackgroundTasks
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from app.config import AGENT_ANNOTATE_PORT
 from app.services.orchestrator import orchestrator
 from app.services.ollama_client import ollama_client
 
@@ -23,12 +21,6 @@ router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
 NCT_PATTERN = re.compile(r"^NCT\d{8}$")
 MAX_BATCH_SIZE = 500
-MAX_CONCURRENT_JOBS = 1
-
-# Cross-branch gatekeeper: detect the other branch's annotate port
-_CURRENT_BRANCH = "main" if AGENT_ANNOTATE_PORT < 9000 else "dev"
-_OTHER_ANNOTATE_PORT = 9005 if _CURRENT_BRANCH == "main" else 8005
-_OTHER_ANNOTATE_URL = f"http://localhost:{_OTHER_ANNOTATE_PORT}"
 
 
 class CreateJobRequest(BaseModel):
@@ -36,8 +28,12 @@ class CreateJobRequest(BaseModel):
 
 
 @router.post("")
-async def create_job(req: CreateJobRequest, background_tasks: BackgroundTasks):
-    """Create and start a new annotation pipeline job."""
+async def create_job(req: CreateJobRequest):
+    """Create and queue a new annotation pipeline job.
+
+    Jobs are queued and processed sequentially. If a job is already running,
+    the new job will wait in the queue until the current one finishes.
+    """
     if not req.nct_ids:
         raise HTTPException(status_code=400, detail="nct_ids list cannot be empty")
 
@@ -64,34 +60,6 @@ async def create_job(req: CreateJobRequest, background_tasks: BackgroundTasks):
             detail=f"Batch too large: {len(valid_ids)} trials. Maximum is {MAX_BATCH_SIZE}.",
         )
 
-    # Concurrent job limit — cross-branch gatekeeper
-    # Check local jobs first
-    if orchestrator.active_count() >= MAX_CONCURRENT_JOBS:
-        raise HTTPException(
-            status_code=429,
-            detail=f"An annotation job is already running on {_CURRENT_BRANCH}. Wait for it to complete or cancel it.",
-        )
-
-    # Check the other branch's agent-annotate service
-    other_branch = "main" if _CURRENT_BRANCH == "dev" else "dev"
-    try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            resp = await client.get(f"{_OTHER_ANNOTATE_URL}/api/jobs/active")
-            if resp.status_code == 200:
-                other_active = resp.json().get("active", 0)
-                if other_active > 0:
-                    raise HTTPException(
-                        status_code=429,
-                        detail=f"An annotation job is already running on {other_branch}. Only one job can run at a time across all branches.",
-                    )
-    except httpx.ConnectError:
-        # Other branch's service is not running — safe to proceed
-        logger.debug(f"Other branch ({other_branch}) agent-annotate not reachable — proceeding")
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.debug(f"Could not check other branch ({other_branch}) active jobs: {e}")
-
     # Pre-check Ollama
     ollama_ok = await ollama_client.health_check()
     if not ollama_ok:
@@ -104,13 +72,17 @@ async def create_job(req: CreateJobRequest, background_tasks: BackgroundTasks):
     valid_ids = list(dict.fromkeys(valid_ids))
 
     job = orchestrator.create_job(valid_ids)
-    background_tasks.add_task(orchestrator.run_pipeline, job.job_id)
+    orchestrator.enqueue_job(job.job_id)
 
+    position = orchestrator.queue_size()
     response = {
         "job_id": job.job_id,
         "status": job.status,
         "total_trials": len(valid_ids),
+        "queue_position": position,
     }
+    if position > 0:
+        response["message"] = f"Job queued. {position} job(s) ahead in queue."
     if invalid_ids:
         response["warning"] = f"{len(invalid_ids)} invalid IDs skipped: {invalid_ids[:5]}"
 
@@ -129,6 +101,21 @@ async def active_jobs():
     return {"active": orchestrator.active_count()}
 
 
+@router.get("/queue")
+async def queue_status():
+    """Return queue status: running job, queued jobs, and queue size."""
+    running = None
+    for j in orchestrator.list_jobs():
+        if j.status == "running":
+            running = j.job_id
+            break
+    return {
+        "running": running,
+        "queued": orchestrator.queued_jobs(),
+        "queue_size": orchestrator.queue_size(),
+    }
+
+
 @router.get("/{job_id}")
 async def get_job(job_id: str):
     """Get full details for a specific job."""
@@ -143,34 +130,11 @@ class ResumeJobRequest(BaseModel):
 
 
 @router.post("/{job_id}/resume")
-async def resume_job(job_id: str, req: ResumeJobRequest, background_tasks: BackgroundTasks):
-    """Resume a failed or cancelled annotation job from persisted state."""
-    # Check slot availability
-    if orchestrator.active_count() >= MAX_CONCURRENT_JOBS:
-        raise HTTPException(
-            status_code=429,
-            detail=f"An annotation job is already running on {_CURRENT_BRANCH}. Wait for it to complete or cancel it.",
-        )
+async def resume_job(job_id: str, req: ResumeJobRequest):
+    """Resume a failed or cancelled annotation job from persisted state.
 
-    # Cross-branch check
-    other_branch = "main" if _CURRENT_BRANCH == "dev" else "dev"
-    try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            resp = await client.get(f"{_OTHER_ANNOTATE_URL}/api/jobs/active")
-            if resp.status_code == 200:
-                other_active = resp.json().get("active", 0)
-                if other_active > 0:
-                    raise HTTPException(
-                        status_code=429,
-                        detail=f"An annotation job is already running on {other_branch}.",
-                    )
-    except httpx.ConnectError:
-        pass
-    except HTTPException:
-        raise
-    except Exception:
-        pass
-
+    The resumed job is queued and will run after any currently running job finishes.
+    """
     # Pre-check Ollama
     ollama_ok = await ollama_client.health_check()
     if not ollama_ok:
@@ -184,7 +148,7 @@ async def resume_job(job_id: str, req: ResumeJobRequest, background_tasks: Backg
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    background_tasks.add_task(orchestrator.run_pipeline, job.job_id)
+    orchestrator.enqueue_job(job.job_id)
 
     # Get resume validation info for response
     from app.services.persistence_service import PersistenceService
@@ -194,10 +158,12 @@ async def resume_job(job_id: str, req: ResumeJobRequest, background_tasks: Backg
     persistence = PersistenceService(RESULTS_DIR)
     validation = persistence.validate_resume(job_id, get_git_commit_full())
 
+    position = orchestrator.queue_size()
     return {
         "job_id": job.job_id,
         "status": job.status,
         "resumed": True,
+        "queue_position": position,
         "research_completed": validation.research_completed,
         "research_total": validation.research_total,
         "annotations_completed": validation.annotations_completed,
