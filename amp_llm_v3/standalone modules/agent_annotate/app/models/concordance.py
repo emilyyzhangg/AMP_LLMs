@@ -133,3 +133,15 @@ class FullJobConcordanceResponse(BaseModel):
     agent_vs_r1: JobConcordance
     agent_vs_r2: JobConcordance
     r1_vs_r2: JobConcordance
+
+
+class AnnotatorInfo(BaseModel):
+    """Summary info about a single human annotator."""
+    name: str
+    replicate: str = Field(description="'r1' or 'r2'")
+    nct_count: int = Field(description="Number of NCTs annotated by this person")
+
+
+class AnnotatorListResponse(BaseModel):
+    """Response for GET /api/concordance/annotators."""
+    annotators: list[AnnotatorInfo] = Field(default_factory=list)

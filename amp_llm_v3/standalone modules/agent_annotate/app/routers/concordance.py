@@ -8,6 +8,7 @@ and are exempt from authentication.
 from fastapi import APIRouter, HTTPException
 
 from app.models.concordance import (
+    AnnotatorListResponse,
     ComparisonResult,
     ConcordanceHistory,
     FullJobConcordanceResponse,
@@ -90,5 +91,36 @@ async def get_human_concordance():
         raise HTTPException(
             status_code=404,
             detail="Human annotation data not available",
+        )
+    return result
+
+
+@router.get("/annotators", response_model=AnnotatorListResponse)
+async def list_annotators():
+    """List all human annotators with their NCT counts."""
+    annotators = concordance_service.annotator_list()
+    return AnnotatorListResponse(annotators=annotators)
+
+
+@router.get("/job/{job_id}/annotator/{annotator}", response_model=JobConcordance)
+async def get_job_annotator_concordance(job_id: str, annotator: str):
+    """Concordance of an agent job against a specific human annotator's NCTs."""
+    result = concordance_service.agent_vs_annotator(job_id, annotator)
+    if not result.fields:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No data for job '{job_id}' vs annotator '{annotator}'",
+        )
+    return result
+
+
+@router.get("/human/annotator/{annotator}", response_model=JobConcordance)
+async def get_human_annotator_concordance(annotator: str):
+    """R1 vs R2 filtered to only NCTs by a specific annotator."""
+    result = concordance_service.r1_vs_r2_for_annotator(annotator)
+    if not result.fields:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No data for annotator '{annotator}'",
         )
     return result

@@ -123,7 +123,7 @@ export const getConcordanceJobs = () =>
   request<{ jobs: Array<{ job_id: string; timestamp: string; total_trials: number }> }>("/concordance/jobs");
 
 export const getJobConcordance = (jobId: string) =>
-  request<{ agent_vs_r1: JobConcordance; agent_vs_r2: JobConcordance }>(`/concordance/job/${jobId}`);
+  request<{ agent_vs_r1: JobConcordance; agent_vs_r2: JobConcordance; r1_vs_r2: JobConcordance }>(`/concordance/job/${jobId}`);
 
 export const compareJobs = (jobIdA: string, jobIdB: string) =>
   request<ComparisonResult>(`/concordance/compare/${jobIdA}/${jobIdB}`);
@@ -133,6 +133,15 @@ export const getConcordanceHistory = () =>
 
 export const getHumanConcordance = () =>
   request<JobConcordance>("/concordance/human");
+
+export const getAnnotators = () =>
+  request<{ annotators: Array<{ name: string; replicate: string; nct_count: number }> }>("/concordance/annotators");
+
+export const getJobAnnotatorConcordance = (jobId: string, annotator: string) =>
+  request<JobConcordance>(`/concordance/job/${jobId}/annotator/${encodeURIComponent(annotator)}`);
+
+export const getHumanAnnotatorConcordance = (annotator: string) =>
+  request<JobConcordance>(`/concordance/human/annotator/${encodeURIComponent(annotator)}`);
 
 // Settings
 export const getSettings = () =>
