@@ -180,6 +180,47 @@ def _get_annotator_for_row(row_num: int, replicate: str) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Blank handling standard (universal rule)
+# ---------------------------------------------------------------------------
+#
+# BLANK_HANDLING_STANDARD:
+#
+# An NCT is considered "annotated" by a human only if at least one of the
+# five annotation fields (classification, delivery_mode, outcome,
+# reason_for_failure, peptide) has a non-blank value. Rows where all five
+# fields are blank/None are treated as unannotated — the annotator was
+# assigned the row but did not engage with it.
+#
+# This applies universally:
+#   - Annotator NCT counts: only count rows with at least one filled field
+#   - Annotator-filtered concordance: only include annotated rows
+#   - Per-field concordance: blank_means_skip=True fields skip when EITHER
+#     side is blank. reason_for_failure uses outcome-aware blank handling
+#     (blank reason + blank outcome = skipped trial, not "no failure").
+#   - Agent annotations always have all 5 fields filled (never blank).
+#
+# This standard exists because many annotators left large portions of their
+# assigned rows blank (e.g., Ali 12%, Emre 7%, Berke 11% coverage). Without
+# this filter, annotator counts are inflated and concordance includes
+# unannotated trials as false disagreements.
+# ---------------------------------------------------------------------------
+
+
+def _has_any_annotation(field_data: dict[str, str]) -> bool:
+    """Check if at least one annotation field has a non-blank value.
+
+    Uses the universal blank handling standard: an NCT is only considered
+    annotated if at least one of the five fields is filled.
+    """
+    for field_name in FIELDS:
+        raw = field_data.get(field_name, "")
+        _, is_blank = _normalise(raw, field_name)
+        if not is_blank:
+            return True
+    return False
+
+
+# ---------------------------------------------------------------------------
 # Normalisation
 # ---------------------------------------------------------------------------
 def _normalise(value: object, field_name: str) -> tuple[str, bool]:
@@ -577,13 +618,17 @@ def _build_job_concordance(
 def _human_data_as_flat(replicate: str) -> dict[str, dict[str, str]]:
     """Convert human Excel data for a replicate into flat {nct: {field: value}} format.
 
-    This matches the agent annotation format so we can reuse _build_job_concordance.
+    Only includes NCTs where the annotator filled in at least one field.
+    This matches the universal blank handling standard and the agent
+    annotation format so we can reuse _build_job_concordance.
     """
     excel_data = _load_excel_annotations()
     flat: dict[str, dict[str, str]] = {}
     for nct_id, reps in excel_data.items():
         rep_data = reps.get(replicate, {})
-        flat[nct_id] = {field: rep_data.get(field, "") for field in FIELDS}
+        entry = {field: rep_data.get(field, "") for field in FIELDS}
+        if _has_any_annotation(entry):
+            flat[nct_id] = entry
     return flat
 
 
@@ -761,8 +806,9 @@ def _human_data_for_annotator(
     """Return flat human data filtered to only NCTs by a specific annotator.
 
     Returns (flat_data, replicate) where replicate is 'r1' or 'r2'.
-    An annotator belongs to whichever replicate their name appears in.
-    If they appear in both, R1 is preferred (more granular breakdown).
+    Only includes NCTs where the annotator actually filled in at least one
+    annotation field. Rows assigned to an annotator but left completely
+    blank are excluded — see BLANK_HANDLING_STANDARD in docstring.
     """
     excel_data = _load_excel_annotations()
     flat: dict[str, dict[str, str]] = {}
@@ -783,25 +829,34 @@ def _human_data_for_annotator(
     for nct_id, reps in excel_data.items():
         if reps.get(f"{detected_replicate}_annotator") == annotator:
             rep_data = reps.get(detected_replicate, {})
-            flat[nct_id] = {field: rep_data.get(field, "") for field in FIELDS}
+            entry = {field: rep_data.get(field, "") for field in FIELDS}
+            # Only include if annotator actually filled in at least one field
+            if _has_any_annotation(entry):
+                flat[nct_id] = entry
 
     return flat, detected_replicate
 
 
 def annotator_list() -> list[AnnotatorInfo]:
-    """Return a list of all annotators with their NCT counts."""
+    """Return a list of all annotators with their ACTUAL annotation counts.
+
+    Only counts NCTs where the annotator filled in at least one annotation
+    field. Rows assigned but left blank are not counted.
+    """
     excel_data = _load_excel_annotations()
 
-    # Count NCTs per annotator per replicate
     r1_counts: Counter = Counter()
     r2_counts: Counter = Counter()
 
     for reps in excel_data.values():
         r1_ann = reps.get("r1_annotator", "")
         r2_ann = reps.get("r2_annotator", "")
-        if r1_ann:
+        r1_data = reps.get("r1", {})
+        r2_data = reps.get("r2", {})
+
+        if r1_ann and _has_any_annotation(r1_data):
             r1_counts[r1_ann] += 1
-        if r2_ann:
+        if r2_ann and _has_any_annotation(r2_data):
             r2_counts[r2_ann] += 1
 
     result: list[AnnotatorInfo] = []
