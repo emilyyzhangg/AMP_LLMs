@@ -16,23 +16,30 @@ import {
 import type {
   JobConcordance,
   ConcordanceField,
+  CategoryMetrics,
   ComparisonResult,
   ConcordanceHistoryEntry,
 } from "../types";
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
-function kappaColor(k: number): string {
+/** Color for agreement metrics (AC1 or kappa). */
+function metricColor(k: number): string {
   if (k > 0.6) return "var(--success)";
   if (k >= 0.2) return "var(--warning)";
   return "var(--error)";
 }
 
-function kappaBg(k: number): string {
+/** Background for the primary metric (AC1). */
+function metricBg(k: number): string {
   if (k > 0.6) return "#064e3b";
   if (k >= 0.2) return "#3b3314";
   return "#451a1a";
 }
+
+// Keep legacy aliases for kappa (used in version-compare tab)
+function kappaColor(k: number): string { return metricColor(k); }
+function kappaBg(k: number): string { return metricBg(k); }
 
 const FIELD_COLORS: Record<string, string> = {
   classification: "#7c8cff",
@@ -77,6 +84,7 @@ function ConcordanceSummaryTable({
             <th>Skipped</th>
             <th>Coverage</th>
             <th>Agree %</th>
+            <th style={{ textAlign: "center" }}>AC&#x2081;</th>
             <th style={{ textAlign: "center" }}>&kappa;</th>
             <th>Interpretation</th>
           </tr>
@@ -95,9 +103,17 @@ function ConcordanceSummaryTable({
                 style={{
                   textAlign: "center",
                   fontWeight: 600,
-                  color: f.kappa != null ? kappaColor(f.kappa) : "var(--text-secondary)",
-                  background: f.kappa != null ? kappaBg(f.kappa) : "transparent",
+                  color: f.ac1 != null ? metricColor(f.ac1) : "var(--text-secondary)",
+                  background: f.ac1 != null ? metricBg(f.ac1) : "transparent",
                   borderRadius: "4px",
+                }}
+              >
+                {f.ac1 != null ? f.ac1.toFixed(3) : "N/A"}
+              </td>
+              <td
+                style={{
+                  textAlign: "center",
+                  color: f.kappa != null ? "var(--text-secondary)" : "var(--text-secondary)",
                 }}
               >
                 {f.kappa != null ? f.kappa.toFixed(3) : "N/A"}
@@ -155,7 +171,7 @@ function FieldDetail({ field, labelA = "Agent", labelB = "Human" }: { field: Con
       >
         <span style={{ fontWeight: 500 }}>{field.field_name}</span>
         <span className="text-sm text-muted">
-          &kappa; = {field.kappa != null ? field.kappa.toFixed(3) : "N/A"} &middot; {field.agree_pct.toFixed(1)}% agree
+          AC&#x2081; = {field.ac1 != null ? field.ac1.toFixed(3) : "N/A"} &middot; &kappa; = {field.kappa != null ? field.kappa.toFixed(3) : "N/A"} &middot; {field.agree_pct.toFixed(1)}% agree
           &middot; {open ? "Collapse" : "Expand"}
         </span>
       </button>
@@ -233,6 +249,46 @@ function FieldDetail({ field, labelA = "Agent", labelB = "Human" }: { field: Con
                         })}
                       </tr>
                     ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+
+          {/* Per-category F1 scores */}
+          {field.category_metrics && field.category_metrics.length > 0 && (
+            <>
+              <div className="card-title mt-2">Per-Category F1 Scores</div>
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ fontSize: "0.8rem" }}>
+                  <thead>
+                    <tr>
+                      <th>Category</th>
+                      <th style={{ textAlign: "center" }}>Count ({labelA})</th>
+                      <th style={{ textAlign: "center" }}>Count ({labelB})</th>
+                      <th style={{ textAlign: "center" }}>Precision</th>
+                      <th style={{ textAlign: "center" }}>Recall</th>
+                      <th style={{ textAlign: "center" }}>F1</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {field.category_metrics.map((cm: CategoryMetrics) => {
+                      const f1Color = cm.f1 != null
+                        ? cm.f1 >= 0.8 ? "var(--success)" : cm.f1 >= 0.5 ? "var(--warning)" : "var(--error)"
+                        : "var(--text-secondary)";
+                      return (
+                        <tr key={cm.value || "(blank)"}>
+                          <td style={{ fontWeight: 500 }}>{cm.value || "(blank)"}</td>
+                          <td style={{ textAlign: "center" }}>{cm.count_a}</td>
+                          <td style={{ textAlign: "center" }}>{cm.count_b}</td>
+                          <td style={{ textAlign: "center" }}>{cm.precision != null ? cm.precision.toFixed(3) : "\u2014"}</td>
+                          <td style={{ textAlign: "center" }}>{cm.recall != null ? cm.recall.toFixed(3) : "\u2014"}</td>
+                          <td style={{ textAlign: "center", fontWeight: 600, color: f1Color }}>
+                            {cm.f1 != null ? cm.f1.toFixed(3) : "\u2014"}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -1141,12 +1197,106 @@ function TrendsTab() {
 
 // ── Main page ────────────────────────────────────────────────────────
 
+function MetricsExplainer() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="card mb-2">
+      <button
+        className="btn btn-secondary"
+        onClick={() => setOpen(!open)}
+        style={{ width: "100%", justifyContent: "space-between" }}
+      >
+        <span style={{ fontWeight: 500 }}>About these metrics</span>
+        <span className="text-sm text-muted">{open ? "Collapse" : "Expand"}</span>
+      </button>
+      {open && (
+        <div style={{ marginTop: "1rem", fontSize: "0.9rem", lineHeight: 1.6, color: "var(--text-secondary)" }}>
+          <p style={{ marginBottom: "0.75rem" }}>
+            <strong style={{ color: "var(--text-primary)" }}>Gwet's AC&#x2081;</strong> (primary metric): Measures agreement between two annotators, correcting for
+            chance agreement. Unlike Cohen's &kappa;, AC&#x2081; handles the "prevalence paradox" &mdash; when one category
+            dominates (e.g., 85% of trials are "Other"), &kappa; collapses to near-zero even with high agreement,
+            while AC&#x2081; correctly reports the true agreement level.
+          </p>
+          <p style={{ marginBottom: "0.75rem", paddingLeft: "1rem", borderLeft: "3px solid var(--border)" }}>
+            Interpretation: &lt;0.20 Poor | 0.21&ndash;0.40 Fair | 0.41&ndash;0.60 Moderate | 0.61&ndash;0.80 Substantial | 0.81&ndash;1.00 Almost Perfect
+          </p>
+          <p style={{ marginBottom: "0.75rem" }}>
+            <strong style={{ color: "var(--text-primary)" }}>Cohen's &kappa;</strong> (secondary metric): The traditional inter-rater agreement metric. Provided for
+            comparability with prior literature. Unreliable when one category is highly prevalent (classification,
+            reason_for_failure in this dataset).
+          </p>
+          <p>
+            <strong style={{ color: "var(--text-primary)" }}>Per-category F1</strong>: For each possible value in a field, F1 = 2&times;Precision&times;Recall/(Precision+Recall).
+            Precision = "when the agent says X, how often is the human also X?"
+            Recall = "when the human says X, how often does the agent also say X?"
+            This reveals which specific categories the agent handles well vs poorly.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DataCleaningRules() {
+  const [open, setOpen] = useState(false);
+  const ruleStyle: React.CSSProperties = { marginBottom: "0.4rem" };
+  return (
+    <div className="card mb-2">
+      <button
+        className="btn btn-secondary"
+        onClick={() => setOpen(!open)}
+        style={{ width: "100%", justifyContent: "space-between" }}
+      >
+        <span style={{ fontWeight: 500 }}>Data cleaning &amp; comparison rules</span>
+        <span className="text-sm text-muted">{open ? "Collapse" : "Expand"}</span>
+      </button>
+      {open && (
+        <div style={{ marginTop: "1rem", fontSize: "0.85rem", lineHeight: 1.6, color: "var(--text-secondary)" }}>
+          <p style={{ marginBottom: "0.75rem" }}><strong style={{ color: "var(--text-primary)" }}>Blank handling (universal standard)</strong></p>
+          <ul style={{ paddingLeft: "1.2rem", margin: 0 }}>
+            <li style={ruleStyle}>An NCT is considered "annotated" only if at least 1 of the 5 annotation fields has a non-blank value. Rows assigned to an annotator but left completely blank are excluded from all counts and comparisons.</li>
+            <li style={ruleStyle}>For <strong>classification, delivery_mode, outcome, peptide</strong> (blank_means_skip): a pair is skipped if <em>either</em> side is blank. The agent always fills all fields, so skips only occur when the human left a field empty.</li>
+            <li style={ruleStyle}>For <strong>reason_for_failure</strong> (outcome-aware): blank reason + blank outcome on both sides = skipped (annotator didn't engage). Blank reason with a non-failure outcome = legitimate "no failure" (counts as agreement if both blank). Blank reason with a failure outcome = missing data (skipped).</li>
+            <li style={ruleStyle}>Agent annotations always have all 5 fields filled — the agent never produces blank values.</li>
+          </ul>
+
+          <p style={{ marginBottom: "0.75rem", marginTop: "1rem" }}><strong style={{ color: "var(--text-primary)" }}>Value normalization</strong></p>
+          <ul style={{ paddingLeft: "1.2rem", margin: 0 }}>
+            <li style={ruleStyle}><strong>Classification:</strong> Case-normalized. "amp(infection)" → "AMP(infection)", "amp (other)" → "AMP(other)", etc.</li>
+            <li style={ruleStyle}><strong>Delivery mode:</strong> Multi-value fields are split on comma, each part normalized independently, then sorted alphabetically and re-joined. Aliases: "intravenous"/"iv" → "IV", "subcutaneous"/"sc" → "Subcutaneous/Intradermal", etc.</li>
+            <li style={ruleStyle}><strong>Outcome:</strong> "active" → "Active, not recruiting", "failed" / "completed" → "Failed - completed trial", etc.</li>
+            <li style={ruleStyle}><strong>Reason for failure:</strong> Case-normalized. "business_reason" → "Business Reason", "toxic_unsafe" → "Toxic/Unsafe".</li>
+            <li style={ruleStyle}><strong>Peptide:</strong> Boolean normalization. "true"/"yes"/"1"/True → "True", "false"/"no"/"0"/False → "False".</li>
+          </ul>
+
+          <p style={{ marginBottom: "0.75rem", marginTop: "1rem" }}><strong style={{ color: "var(--text-primary)" }}>Annotator identification</strong></p>
+          <ul style={{ paddingLeft: "1.2rem", margin: 0 }}>
+            <li style={ruleStyle}>R1 and R2 are independent annotation replicates from separate Excel sheets.</li>
+            <li style={ruleStyle}>Individual annotators are identified by Excel row ranges (workload assignment). Counts reflect only rows where the annotator actually filled in at least one field.</li>
+            <li style={ruleStyle}>Anat, Ali, and Iris appear in both R1 and R2 (different NCT ranges). Selecting them from the R1 row gives their R1 annotations; from the R2 row gives their R2 annotations. These are separate annotation sessions on different NCTs.</li>
+            <li style={ruleStyle}>Multi-selecting annotators within the same replicate combines their NCTs into one concordance. Cross-replicate selections produce separate tables (cannot merge because the same NCT may have different values in R1 vs R2).</li>
+          </ul>
+
+          <p style={{ marginBottom: "0.75rem", marginTop: "1rem" }}><strong style={{ color: "var(--text-primary)" }}>Agent data source</strong></p>
+          <ul style={{ paddingLeft: "1.2rem", margin: 0 }}>
+            <li style={ruleStyle}>Agent values are the <strong>final verified values</strong> from the verification pipeline (post-consensus, post-reconciliation). If verification was skipped (deterministic annotation with high confidence), the primary annotator value is used.</li>
+            <li style={ruleStyle}>Only completed annotation jobs with consolidated JSON output are available for concordance. Cancelled/partial jobs are not included.</li>
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function ConcordancePage() {
   const [activeTab, setActiveTab] = useState<TabKey>("agent-human");
 
   return (
     <div>
       <h2 style={{ marginBottom: "1rem" }}>Concordance Dashboard</h2>
+
+      {/* Metrics explainer (collapsed by default) */}
+      <MetricsExplainer />
 
       {/* Tab bar */}
       <div style={{ display: "flex", gap: "0.25rem", marginBottom: "1.5rem" }}>
@@ -1166,6 +1316,11 @@ export default function ConcordancePage() {
       {activeTab === "version-compare" && <VersionCompareTab />}
       {activeTab === "human-inter" && <HumanInterRaterTab />}
       {activeTab === "trends" && <TrendsTab />}
+
+      {/* Data cleaning rules (collapsed by default, below tab content) */}
+      <div style={{ marginTop: "2rem" }}>
+        <DataCleaningRules />
+      </div>
     </div>
   );
 }
