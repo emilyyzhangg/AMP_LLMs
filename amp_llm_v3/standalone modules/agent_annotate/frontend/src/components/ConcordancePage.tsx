@@ -9,6 +9,9 @@ import {
   compareJobs,
   getConcordanceHistory,
   getHumanConcordance,
+  getAnnotators,
+  getJobAnnotatorConcordance,
+  getHumanAnnotatorConcordance,
 } from "../api/client";
 import type {
   JobConcordance,
@@ -270,6 +273,94 @@ function FieldDetail({ field, labelA = "Agent", labelB = "Human" }: { field: Con
   );
 }
 
+// ── Annotator types and pill selector ─────────────────────────────────
+
+interface AnnotatorInfo {
+  name: string;
+  replicate: string;
+  nct_count: number;
+}
+
+function AnnotatorPills({
+  annotators,
+  selected,
+  onSelect,
+  includeAllOptions,
+}: {
+  annotators: AnnotatorInfo[];
+  selected: string;
+  onSelect: (value: string) => void;
+  includeAllOptions?: boolean;
+}) {
+  const r1Annotators = annotators.filter((a) => a.replicate === "r1");
+  const r2Annotators = annotators.filter((a) => a.replicate === "r2");
+
+  const pillStyle = (active: boolean): React.CSSProperties => ({
+    padding: "0.3rem 0.7rem",
+    borderRadius: "999px",
+    border: active ? "2px solid var(--accent)" : "1px solid var(--border)",
+    background: active ? "var(--accent)" : "transparent",
+    color: active ? "#fff" : "var(--text-secondary)",
+    cursor: "pointer",
+    fontSize: "0.8rem",
+    fontWeight: active ? 600 : 400,
+    whiteSpace: "nowrap",
+  });
+
+  return (
+    <div className="card mb-2" style={{ padding: "0.6rem 1rem" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
+        <span className="text-sm" style={{ fontWeight: 600, marginRight: "0.3rem" }}>Filter:</span>
+        {includeAllOptions && (
+          <>
+            <button style={pillStyle(selected === "")} onClick={() => onSelect("")}>
+              All R1
+            </button>
+            <button style={pillStyle(selected === "__all_r2__")} onClick={() => onSelect("__all_r2__")}>
+              All R2
+            </button>
+            <span style={{ borderLeft: "1px solid var(--border)", height: "1.2rem", margin: "0 0.2rem" }} />
+          </>
+        )}
+        {!includeAllOptions && (
+          <button style={pillStyle(selected === "")} onClick={() => onSelect("")}>
+            All
+          </button>
+        )}
+        {r1Annotators.length > 0 && (
+          <>
+            <span className="text-sm text-muted" style={{ fontSize: "0.7rem" }}>R1:</span>
+            {r1Annotators.map((a) => (
+              <button
+                key={`r1-${a.name}`}
+                style={pillStyle(selected === a.name)}
+                onClick={() => onSelect(a.name)}
+              >
+                {a.name} ({a.nct_count})
+              </button>
+            ))}
+          </>
+        )}
+        {r2Annotators.length > 0 && (
+          <>
+            <span style={{ borderLeft: "1px solid var(--border)", height: "1.2rem", margin: "0 0.2rem" }} />
+            <span className="text-sm text-muted" style={{ fontSize: "0.7rem" }}>R2:</span>
+            {r2Annotators.map((a) => (
+              <button
+                key={`r2-${a.name}`}
+                style={pillStyle(selected === a.name)}
+                onClick={() => onSelect(a.name)}
+              >
+                {a.name} ({a.nct_count})
+              </button>
+            ))}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Tab 1: Agent vs Human ────────────────────────────────────────────
 
 function AgentVsHumanTab() {
@@ -283,7 +374,13 @@ function AgentVsHumanTab() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Load job list
+  // Annotator state
+  const [annotators, setAnnotators] = useState<AnnotatorInfo[]>([]);
+  const [selectedAnnotator, setSelectedAnnotator] = useState("");  // "" = All R1, "__all_r2__" = All R2, else annotator name
+  const [annotatorConcordance, setAnnotatorConcordance] = useState<JobConcordance | null>(null);
+  const [annotatorLoading, setAnnotatorLoading] = useState(false);
+
+  // Load job list and annotators
   useEffect(() => {
     (async () => {
       try {
@@ -291,6 +388,14 @@ function AgentVsHumanTab() {
         setJobs(Array.isArray(data.jobs) ? data.jobs : []);
       } catch {
         console.error("Failed to load job list");
+      }
+    })();
+    (async () => {
+      try {
+        const data = await getAnnotators();
+        setAnnotators(Array.isArray(data.annotators) ? data.annotators : []);
+      } catch {
+        console.error("Failed to load annotators");
       }
     })();
   }, []);
@@ -303,6 +408,8 @@ function AgentVsHumanTab() {
     }
     setLoading(true);
     setError("");
+    setSelectedAnnotator("");  // Reset annotator filter when job changes
+    setAnnotatorConcordance(null);
     (async () => {
       try {
         const data = await getJobConcordance(selectedJob);
@@ -316,6 +423,33 @@ function AgentVsHumanTab() {
       }
     })();
   }, [selectedJob]);
+
+  // Load annotator-specific concordance
+  useEffect(() => {
+    if (!selectedJob || !selectedAnnotator || selectedAnnotator === "__all_r2__") {
+      setAnnotatorConcordance(null);
+      return;
+    }
+    setAnnotatorLoading(true);
+    (async () => {
+      try {
+        const data = await getJobAnnotatorConcordance(selectedJob, selectedAnnotator);
+        setAnnotatorConcordance(data);
+      } catch {
+        setAnnotatorConcordance(null);
+      } finally {
+        setAnnotatorLoading(false);
+      }
+    })();
+  }, [selectedJob, selectedAnnotator]);
+
+  // Determine which data to show based on annotator selection
+  const showAnnotatorView = selectedAnnotator !== "" && selectedAnnotator !== "__all_r2__" && annotatorConcordance;
+  const activeR1 = showAnnotatorView ? annotatorConcordance : concordance?.agent_vs_r1 ?? null;
+  const activeR2 = selectedAnnotator === "__all_r2__" ? concordance?.agent_vs_r2 ?? null : null;
+  // When an annotator is selected, we show a single concordance table instead of the comparison grid
+  const showSingleView = showAnnotatorView || selectedAnnotator === "__all_r2__";
+  const singleViewData = showAnnotatorView ? annotatorConcordance : activeR2;
 
   return (
     <div>
@@ -341,105 +475,135 @@ function AgentVsHumanTab() {
 
       {concordance && (
         <>
-          {/* Combined comparison table: Agent vs R1, Agent vs R2, Human baseline (R1 vs R2) */}
-          <div className="card mb-2">
-            <div className="card-title">
-              Concordance Comparison
-              <span className="text-sm text-muted" style={{ fontWeight: 400, marginLeft: "0.75rem" }}>
-                Green = exceeds human baseline, Red = below
-              </span>
-            </div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Field</th>
-                  <th style={{ textAlign: "center", borderLeft: "2px solid var(--border)" }}>Agent vs R1</th>
-                  <th style={{ textAlign: "center" }}>Agent vs R2</th>
-                  <th style={{ textAlign: "center", borderLeft: "2px solid var(--warning)", background: "rgba(234,179,8,0.05)" }}>R1 vs R2 (Human Baseline)</th>
-                  <th style={{ textAlign: "center", borderLeft: "2px solid var(--border)" }}>Verdict</th>
-                </tr>
-              </thead>
-              <tbody>
-                {concordance.agent_vs_r1.fields.map((f, i) => {
-                  const r2f = concordance.agent_vs_r2.fields[i];
-                  const hf = concordance.r1_vs_r2.fields[i];
-                  const agentBest = Math.max(f.agree_pct, r2f?.agree_pct ?? 0);
-                  const humanBaseline = hf?.agree_pct ?? 0;
-                  const exceeds = agentBest > humanBaseline;
-                  return (
-                    <tr key={f.field_name}>
-                      <td style={{ fontWeight: 500 }}>{f.field_name}</td>
-                      <td style={{
-                        textAlign: "center",
-                        borderLeft: "2px solid var(--border)",
-                        fontWeight: 600,
-                        color: f.agree_pct > humanBaseline ? "var(--success)" : f.agree_pct < humanBaseline ? "var(--error)" : "var(--text-primary)",
-                      }}>
-                        {f.agree_pct.toFixed(1)}%
-                        <span className="text-sm text-muted" style={{ fontWeight: 400 }}>
-                          {" "}(n={f.n}, &kappa;={f.kappa != null ? f.kappa.toFixed(2) : "N/A"})
-                        </span>
-                      </td>
-                      <td style={{
-                        textAlign: "center",
-                        fontWeight: 600,
-                        color: (r2f?.agree_pct ?? 0) > humanBaseline ? "var(--success)" : (r2f?.agree_pct ?? 0) < humanBaseline ? "var(--error)" : "var(--text-primary)",
-                      }}>
-                        {r2f ? `${r2f.agree_pct.toFixed(1)}%` : "—"}
-                        <span className="text-sm text-muted" style={{ fontWeight: 400 }}>
-                          {r2f ? ` (n=${r2f.n}, \u03BA=${r2f.kappa != null ? r2f.kappa.toFixed(2) : "N/A"})` : ""}
-                        </span>
-                      </td>
-                      <td style={{
-                        textAlign: "center",
-                        borderLeft: "2px solid var(--warning)",
-                        background: "rgba(234,179,8,0.05)",
-                        fontWeight: 600,
-                      }}>
-                        {hf ? `${hf.agree_pct.toFixed(1)}%` : "—"}
-                        <span className="text-sm text-muted" style={{ fontWeight: 400 }}>
-                          {hf ? ` (n=${hf.n}, \u03BA=${hf.kappa != null ? hf.kappa.toFixed(2) : "N/A"})` : ""}
-                        </span>
-                      </td>
-                      <td style={{
-                        textAlign: "center",
-                        borderLeft: "2px solid var(--border)",
-                        fontWeight: 700,
-                        color: exceeds ? "var(--success)" : "var(--error)",
-                      }}>
-                        {exceeds ? "EXCEEDS" : "BELOW"}
-                      </td>
+          {/* Annotator filter pills */}
+          {annotators.length > 0 && (
+            <AnnotatorPills
+              annotators={annotators}
+              selected={selectedAnnotator}
+              onSelect={setSelectedAnnotator}
+              includeAllOptions
+            />
+          )}
+
+          {annotatorLoading && <div className="card text-muted">Loading annotator concordance...</div>}
+
+          {/* Single annotator or All R2 view */}
+          {showSingleView && singleViewData && (
+            <>
+              <ConcordanceSummaryTable
+                fields={singleViewData.fields}
+                label={`${singleViewData.comparison_label} — Overall ${singleViewData.overall_agree_pct.toFixed(1)}% agreement (n=${singleViewData.n_overlapping})`}
+              />
+              {singleViewData.fields.map((f) => (
+                <FieldDetail key={f.field_name} field={f} labelA="Agent" labelB={selectedAnnotator === "__all_r2__" ? "R2" : selectedAnnotator} />
+              ))}
+            </>
+          )}
+
+          {/* Default All R1 view: full comparison grid */}
+          {!showSingleView && !annotatorLoading && (
+            <>
+              {/* Combined comparison table: Agent vs R1, Agent vs R2, Human baseline (R1 vs R2) */}
+              <div className="card mb-2">
+                <div className="card-title">
+                  Concordance Comparison
+                  <span className="text-sm text-muted" style={{ fontWeight: 400, marginLeft: "0.75rem" }}>
+                    Green = exceeds human baseline, Red = below
+                  </span>
+                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Field</th>
+                      <th style={{ textAlign: "center", borderLeft: "2px solid var(--border)" }}>Agent vs R1</th>
+                      <th style={{ textAlign: "center" }}>Agent vs R2</th>
+                      <th style={{ textAlign: "center", borderLeft: "2px solid var(--warning)", background: "rgba(234,179,8,0.05)" }}>R1 vs R2 (Human Baseline)</th>
+                      <th style={{ textAlign: "center", borderLeft: "2px solid var(--border)" }}>Verdict</th>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                  </thead>
+                  <tbody>
+                    {concordance.agent_vs_r1.fields.map((f, i) => {
+                      const r2f = concordance.agent_vs_r2.fields[i];
+                      const hf = concordance.r1_vs_r2.fields[i];
+                      const agentBest = Math.max(f.agree_pct, r2f?.agree_pct ?? 0);
+                      const humanBaseline = hf?.agree_pct ?? 0;
+                      const exceeds = agentBest > humanBaseline;
+                      return (
+                        <tr key={f.field_name}>
+                          <td style={{ fontWeight: 500 }}>{f.field_name}</td>
+                          <td style={{
+                            textAlign: "center",
+                            borderLeft: "2px solid var(--border)",
+                            fontWeight: 600,
+                            color: f.agree_pct > humanBaseline ? "var(--success)" : f.agree_pct < humanBaseline ? "var(--error)" : "var(--text-primary)",
+                          }}>
+                            {f.agree_pct.toFixed(1)}%
+                            <span className="text-sm text-muted" style={{ fontWeight: 400 }}>
+                              {" "}(n={f.n}, &kappa;={f.kappa != null ? f.kappa.toFixed(2) : "N/A"})
+                            </span>
+                          </td>
+                          <td style={{
+                            textAlign: "center",
+                            fontWeight: 600,
+                            color: (r2f?.agree_pct ?? 0) > humanBaseline ? "var(--success)" : (r2f?.agree_pct ?? 0) < humanBaseline ? "var(--error)" : "var(--text-primary)",
+                          }}>
+                            {r2f ? `${r2f.agree_pct.toFixed(1)}%` : "\u2014"}
+                            <span className="text-sm text-muted" style={{ fontWeight: 400 }}>
+                              {r2f ? ` (n=${r2f.n}, \u03BA=${r2f.kappa != null ? r2f.kappa.toFixed(2) : "N/A"})` : ""}
+                            </span>
+                          </td>
+                          <td style={{
+                            textAlign: "center",
+                            borderLeft: "2px solid var(--warning)",
+                            background: "rgba(234,179,8,0.05)",
+                            fontWeight: 600,
+                          }}>
+                            {hf ? `${hf.agree_pct.toFixed(1)}%` : "\u2014"}
+                            <span className="text-sm text-muted" style={{ fontWeight: 400 }}>
+                              {hf ? ` (n=${hf.n}, \u03BA=${hf.kappa != null ? hf.kappa.toFixed(2) : "N/A"})` : ""}
+                            </span>
+                          </td>
+                          <td style={{
+                            textAlign: "center",
+                            borderLeft: "2px solid var(--border)",
+                            fontWeight: 700,
+                            color: exceeds ? "var(--success)" : "var(--error)",
+                          }}>
+                            {exceeds ? "EXCEEDS" : "BELOW"}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
 
-          {/* Individual detail tables */}
-          <ConcordanceSummaryTable
-            fields={concordance.agent_vs_r1.fields}
-            label={`Agent vs R1 — Overall ${concordance.agent_vs_r1.overall_agree_pct.toFixed(1)}% agreement`}
-          />
-          <ConcordanceSummaryTable
-            fields={concordance.agent_vs_r2.fields}
-            label={`Agent vs R2 — Overall ${concordance.agent_vs_r2.overall_agree_pct.toFixed(1)}% agreement`}
-          />
-          <ConcordanceSummaryTable
-            fields={concordance.r1_vs_r2.fields}
-            label={`R1 vs R2 (Human Baseline) — Overall ${concordance.r1_vs_r2.overall_agree_pct.toFixed(1)}% agreement`}
-          />
+              {/* Individual detail tables */}
+              <ConcordanceSummaryTable
+                fields={concordance.agent_vs_r1.fields}
+                label={`Agent vs R1 — Overall ${concordance.agent_vs_r1.overall_agree_pct.toFixed(1)}% agreement`}
+              />
+              <ConcordanceSummaryTable
+                fields={concordance.agent_vs_r2.fields}
+                label={`Agent vs R2 — Overall ${concordance.agent_vs_r2.overall_agree_pct.toFixed(1)}% agreement`}
+              />
+              <ConcordanceSummaryTable
+                fields={concordance.r1_vs_r2.fields}
+                label={`R1 vs R2 (Human Baseline) — Overall ${concordance.r1_vs_r2.overall_agree_pct.toFixed(1)}% agreement`}
+              />
 
-          {/* Per-field expandable details */}
-          <h3 style={{ margin: "1.5rem 0 0.75rem" }}>Field Details (Agent vs R1)</h3>
-          {concordance.agent_vs_r1.fields.map((f) => (
-            <FieldDetail key={f.field_name} field={f} labelA="Agent" labelB="R1" />
-          ))}
+              {/* Per-field expandable details */}
+              <h3 style={{ margin: "1.5rem 0 0.75rem" }}>Field Details (Agent vs R1)</h3>
+              {concordance.agent_vs_r1.fields.map((f) => (
+                <FieldDetail key={f.field_name} field={f} labelA="Agent" labelB="R1" />
+              ))}
 
-          <h3 style={{ margin: "1.5rem 0 0.75rem" }}>Field Details (Agent vs R2)</h3>
-          {concordance.agent_vs_r2.fields.map((f) => (
-            <FieldDetail key={f.field_name} field={f} labelA="Agent" labelB="R2" />
-          ))}
+              <h3 style={{ margin: "1.5rem 0 0.75rem" }}>Field Details (Agent vs R2)</h3>
+              {concordance.agent_vs_r2.fields.map((f) => (
+                <FieldDetail key={f.field_name} field={f} labelA="Agent" labelB="R2" />
+              ))}
+            </>
+          )}
         </>
       )}
     </div>
@@ -657,6 +821,12 @@ function HumanInterRaterTab() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Annotator state
+  const [annotators, setAnnotators] = useState<AnnotatorInfo[]>([]);
+  const [selectedAnnotator, setSelectedAnnotator] = useState("");
+  const [annotatorConcordance, setAnnotatorConcordance] = useState<JobConcordance | null>(null);
+  const [annotatorLoading, setAnnotatorLoading] = useState(false);
+
   useEffect(() => {
     (async () => {
       try {
@@ -669,7 +839,36 @@ function HumanInterRaterTab() {
         setLoading(false);
       }
     })();
+    (async () => {
+      try {
+        const data = await getAnnotators();
+        setAnnotators(Array.isArray(data.annotators) ? data.annotators : []);
+      } catch {
+        console.error("Failed to load annotators");
+      }
+    })();
   }, []);
+
+  // Load annotator-filtered R1 vs R2
+  useEffect(() => {
+    if (!selectedAnnotator) {
+      setAnnotatorConcordance(null);
+      return;
+    }
+    setAnnotatorLoading(true);
+    (async () => {
+      try {
+        const data = await getHumanAnnotatorConcordance(selectedAnnotator);
+        setAnnotatorConcordance(data);
+      } catch {
+        setAnnotatorConcordance(null);
+      } finally {
+        setAnnotatorLoading(false);
+      }
+    })();
+  }, [selectedAnnotator]);
+
+  const activeConcordance = selectedAnnotator && annotatorConcordance ? annotatorConcordance : concordance;
 
   if (loading) return <div className="card text-muted">Loading human inter-rater data...</div>;
   if (error) return <div className="card" style={{ color: "var(--error)" }}>{error}</div>;
@@ -692,14 +891,29 @@ function HumanInterRaterTab() {
         </p>
       </div>
 
-      <ConcordanceSummaryTable
-        fields={concordance.fields}
-        label={`R1 vs R2 — Overall ${concordance.overall_agree_pct.toFixed(1)}% agreement`}
-      />
+      {/* Annotator filter pills */}
+      {annotators.length > 0 && (
+        <AnnotatorPills
+          annotators={annotators}
+          selected={selectedAnnotator}
+          onSelect={setSelectedAnnotator}
+        />
+      )}
 
-      {concordance.fields.map((f) => (
-        <FieldDetail key={f.field_name} field={f} labelA="R1" labelB="R2" />
-      ))}
+      {annotatorLoading && <div className="card text-muted">Loading annotator concordance...</div>}
+
+      {activeConcordance && !annotatorLoading && (
+        <>
+          <ConcordanceSummaryTable
+            fields={activeConcordance.fields}
+            label={`${activeConcordance.comparison_label} — Overall ${activeConcordance.overall_agree_pct.toFixed(1)}% agreement (n=${activeConcordance.n_overlapping})`}
+          />
+
+          {activeConcordance.fields.map((f) => (
+            <FieldDetail key={f.field_name} field={f} labelA="R1" labelB="R2" />
+          ))}
+        </>
+      )}
     </div>
   );
 }

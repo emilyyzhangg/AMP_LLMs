@@ -26,6 +26,7 @@ from app.services.concordance_stats import (
     bias_index,
 )
 from app.models.concordance import (
+    AnnotatorInfo,
     ComparisonFieldDelta,
     ComparisonResult,
     ConcordanceHistory,
@@ -143,6 +144,40 @@ PEPTIDE_ALIASES: dict[str, str] = {
     "0": "False",
 }
 
+# ---------------------------------------------------------------------------
+# Annotator row ranges (1-indexed Excel rows, data starts at row 2)
+# Row numbers below are 1-indexed data rows (i.e. Excel row 2 = data row 1).
+# ---------------------------------------------------------------------------
+R1_ANNOTATOR_RANGES: list[tuple[str, int, int]] = [
+    ("Mercan", 1, 309),
+    ("Maya", 310, 617),
+    ("Anat", 617, 822),
+    ("Ali", 823, 926),
+    ("Emre", 926, 1186),
+    ("Iris", 1187, 1417),
+    ("Ali", 1417, 1544),   # Ali has a second range
+    ("Berke", 1545, 1846),
+]
+
+R2_ANNOTATOR_RANGES: list[tuple[str, int, int]] = [
+    ("Anat", 462, 480),
+    ("Ali", 923, 941),
+    ("Iris", 1384, 1405),
+]
+
+
+def _get_annotator_for_row(row_num: int, replicate: str) -> str:
+    """Determine which annotator produced a given data row (1-indexed).
+
+    For R2, rows not in the explicit ranges default to Emily.
+    """
+    ranges = R1_ANNOTATOR_RANGES if replicate == "r1" else R2_ANNOTATOR_RANGES
+    for name, start, end in ranges:
+        if start <= row_num <= end:
+            return name
+    # R2 default is Emily; R1 should always match but fall back just in case
+    return "Emily" if replicate == "r2" else "Unknown"
+
 
 # ---------------------------------------------------------------------------
 # Normalisation
@@ -221,7 +256,12 @@ _excel_cache: Optional[dict[str, dict]] = None
 def _load_excel_annotations() -> dict[str, dict]:
     """Load human annotations from both replicate sheets.
 
-    Returns: {nct_id: {'r1': {field: raw_value}, 'r2': {field: raw_value}}}
+    Returns: {nct_id: {
+        'r1': {field: raw_value},
+        'r2': {field: raw_value},
+        'r1_annotator': str,
+        'r2_annotator': str,
+    }}
 
     Results are cached in-memory after first load.
     """
@@ -235,7 +275,9 @@ def _load_excel_annotations() -> dict[str, dict]:
 
     logger.info("Loading human annotations from %s", EXCEL_PATH)
     wb = openpyxl.load_workbook(str(EXCEL_PATH), read_only=True, data_only=True)
-    data: dict[str, dict] = defaultdict(lambda: {"r1": {}, "r2": {}})
+    data: dict[str, dict] = defaultdict(
+        lambda: {"r1": {}, "r2": {}, "r1_annotator": "", "r2_annotator": ""}
+    )
 
     for replicate, sheet_name in [
         ("r1", "Trials Replicate 1"),
@@ -246,7 +288,9 @@ def _load_excel_annotations() -> dict[str, dict]:
         except KeyError:
             logger.error("Sheet '%s' not found in Excel file", sheet_name)
             continue
+        row_num = 0  # 1-indexed data row counter
         for row in ws.iter_rows(min_row=2, values_only=True):
+            row_num += 1
             nct = row[0]
             if nct is None:
                 continue
@@ -255,6 +299,9 @@ def _load_excel_annotations() -> dict[str, dict]:
                 col_idx = field_def[f"excel_{replicate}_col"]
                 raw = row[col_idx] if col_idx < len(row) else None
                 data[nct][replicate][field_name] = raw
+            # Track which annotator produced this row
+            annotator = _get_annotator_for_row(row_num, replicate)
+            data[nct][f"{replicate}_annotator"] = annotator
 
     wb.close()
     _excel_cache = dict(data)
@@ -703,3 +750,131 @@ def concordance_history() -> ConcordanceHistory:
     entries.sort(key=lambda e: e.timestamp or "")
 
     return ConcordanceHistory(history=entries)
+
+
+# ---------------------------------------------------------------------------
+# Annotator-level concordance
+# ---------------------------------------------------------------------------
+def _human_data_for_annotator(
+    annotator: str,
+) -> tuple[dict[str, dict[str, str]], str]:
+    """Return flat human data filtered to only NCTs by a specific annotator.
+
+    Returns (flat_data, replicate) where replicate is 'r1' or 'r2'.
+    An annotator belongs to whichever replicate their name appears in.
+    If they appear in both, R1 is preferred (more granular breakdown).
+    """
+    excel_data = _load_excel_annotations()
+    flat: dict[str, dict[str, str]] = {}
+    detected_replicate = ""
+
+    # Determine which replicate this annotator belongs to
+    r1_names = {name for name, _, _ in R1_ANNOTATOR_RANGES}
+    r2_names = {name for name, _, _ in R2_ANNOTATOR_RANGES}
+    r2_names.add("Emily")  # Emily is the R2 default
+
+    if annotator in r1_names:
+        detected_replicate = "r1"
+    elif annotator in r2_names:
+        detected_replicate = "r2"
+    else:
+        return flat, ""
+
+    for nct_id, reps in excel_data.items():
+        if reps.get(f"{detected_replicate}_annotator") == annotator:
+            rep_data = reps.get(detected_replicate, {})
+            flat[nct_id] = {field: rep_data.get(field, "") for field in FIELDS}
+
+    return flat, detected_replicate
+
+
+def annotator_list() -> list[AnnotatorInfo]:
+    """Return a list of all annotators with their NCT counts."""
+    excel_data = _load_excel_annotations()
+
+    # Count NCTs per annotator per replicate
+    r1_counts: Counter = Counter()
+    r2_counts: Counter = Counter()
+
+    for reps in excel_data.values():
+        r1_ann = reps.get("r1_annotator", "")
+        r2_ann = reps.get("r2_annotator", "")
+        if r1_ann:
+            r1_counts[r1_ann] += 1
+        if r2_ann:
+            r2_counts[r2_ann] += 1
+
+    result: list[AnnotatorInfo] = []
+    for name, count in sorted(r1_counts.items()):
+        result.append(AnnotatorInfo(name=name, replicate="r1", nct_count=count))
+    for name, count in sorted(r2_counts.items()):
+        result.append(AnnotatorInfo(name=name, replicate="r2", nct_count=count))
+
+    return result
+
+
+def agent_vs_annotator(job_id: str, annotator: str) -> JobConcordance:
+    """Compare an agent job against a specific human annotator's NCTs only."""
+    agent_data = _load_agent_annotations(job_id)
+    if not agent_data:
+        return JobConcordance(
+            job_id=job_id,
+            comparison_label=f"Agent vs {annotator}",
+        )
+
+    ann_data, replicate = _human_data_for_annotator(annotator)
+    if not ann_data:
+        return JobConcordance(
+            job_id=job_id,
+            comparison_label=f"Agent vs {annotator}",
+        )
+
+    timestamp = _get_job_timestamp(job_id)
+    rep_label = replicate.upper()
+
+    return _build_job_concordance(
+        data_a=agent_data,
+        data_b=ann_data,
+        label_a="Agent",
+        label_b=f"{annotator} ({rep_label})",
+        job_id=job_id,
+        comparison_label=f"Agent vs {annotator} ({rep_label})",
+        timestamp=timestamp,
+    )
+
+
+def r1_vs_r2_for_annotator(annotator: str) -> JobConcordance:
+    """R1 vs R2 filtered to only NCTs annotated by a specific annotator.
+
+    The annotator can be from either replicate. Their NCTs are used to filter
+    the comparison between R1 and R2.
+    """
+    ann_data, replicate = _human_data_for_annotator(annotator)
+    if not ann_data:
+        return JobConcordance(
+            job_id="human",
+            comparison_label=f"R1 vs R2 ({annotator})",
+        )
+
+    # Get full data for the other replicate, but only for the same NCTs
+    other_rep = "r2" if replicate == "r1" else "r1"
+    excel_data = _load_excel_annotations()
+    other_flat: dict[str, dict[str, str]] = {}
+    for nct_id in ann_data:
+        if nct_id in excel_data:
+            rep_data = excel_data[nct_id].get(other_rep, {})
+            other_flat[nct_id] = {field: rep_data.get(field, "") for field in FIELDS}
+
+    if replicate == "r1":
+        data_r1, data_r2 = ann_data, other_flat
+    else:
+        data_r1, data_r2 = other_flat, ann_data
+
+    return _build_job_concordance(
+        data_a=data_r1,
+        data_b=data_r2,
+        label_a="R1",
+        label_b="R2",
+        job_id="human",
+        comparison_label=f"R1 vs R2 ({annotator} NCTs)",
+    )
