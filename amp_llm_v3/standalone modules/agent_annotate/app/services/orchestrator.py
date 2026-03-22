@@ -45,8 +45,24 @@ class PipelineOrchestrator:
         self._jobs: dict[str, AnnotationJob] = {}
         self._queue: asyncio.Queue[str] = asyncio.Queue()
         self._worker_running = False
+        self._pending_requeue: list[str] = []
         # Reload persisted job states from disk
         self._reload_persisted_jobs()
+
+    def restore_queued_jobs(self) -> None:
+        """Re-enqueue any jobs that were 'queued' when the service restarted.
+
+        Called from app startup (after event loop is running) because
+        asyncio.Queue and ensure_future require a running loop.
+        """
+        for job_id in self._pending_requeue:
+            job = self._jobs.get(job_id)
+            if job and job.status == "queued":
+                self._queue.put_nowait(job_id)
+                logger.info(f"Re-enqueued persisted job {job_id}")
+        if self._pending_requeue:
+            self._ensure_worker()
+        self._pending_requeue.clear()
 
     def _reload_persisted_jobs(self) -> None:
         """Reload job states from disk on startup.
@@ -83,6 +99,9 @@ class PipelineOrchestrator:
                 job.status = "failed"
                 job.error = "Service restarted while job was running"
                 job.progress.current_stage = "interrupted"
+            elif status == "queued":
+                job.status = "queued"
+                self._pending_requeue.append(job_id)
             else:
                 job.status = status
 

@@ -78,6 +78,9 @@ async def lifespan(app: FastAPI):
         len(config.research_agents),
         len(config.annotation_agents),
     )
+    # Re-enqueue any jobs that were queued when the service last shut down
+    from app.services.orchestrator import orchestrator
+    orchestrator.restore_queued_jobs()
     yield
     logger.info("Agent Annotate shutting down...")
 
