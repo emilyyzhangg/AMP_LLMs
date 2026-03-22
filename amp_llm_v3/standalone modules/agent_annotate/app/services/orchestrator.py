@@ -46,23 +46,39 @@ class PipelineOrchestrator:
         self._queue: asyncio.Queue[str] = asyncio.Queue()
         self._worker_running = False
         self._pending_requeue: list[str] = []
+        self._pending_resume: list[str] = []
         # Reload persisted job states from disk
         self._reload_persisted_jobs()
 
     def restore_queued_jobs(self) -> None:
-        """Re-enqueue any jobs that were 'queued' when the service restarted.
+        """Re-enqueue queued jobs and auto-resume interrupted jobs on startup.
 
         Called from app startup (after event loop is running) because
         asyncio.Queue and ensure_future require a running loop.
+
+        Interrupted jobs (were 'running' when service died) are automatically
+        resumed so the autoupdater can restart freely without losing progress.
         """
+        # First: resume interrupted jobs (were running, now marked failed)
+        for job_id in list(self._pending_resume):
+            try:
+                job = self.resume_job(job_id, force=True)
+                self._queue.put_nowait(job_id)
+                logger.info(f"Auto-resuming interrupted job {job_id}")
+            except Exception as e:
+                logger.warning(f"Failed to auto-resume job {job_id}: {e}")
+        self._pending_resume.clear()
+
+        # Then: re-enqueue jobs that were queued
         for job_id in self._pending_requeue:
             job = self._jobs.get(job_id)
             if job and job.status == "queued":
                 self._queue.put_nowait(job_id)
                 logger.info(f"Re-enqueued persisted job {job_id}")
-        if self._pending_requeue:
-            self._ensure_worker()
         self._pending_requeue.clear()
+
+        if not self._queue.empty():
+            self._ensure_worker()
 
     def _reload_persisted_jobs(self) -> None:
         """Reload job states from disk on startup.
@@ -94,11 +110,12 @@ class PipelineOrchestrator:
                 commit_hash=state.get("commit_hash", ""),
             )
 
-            # Jobs that were running at crash time -> mark failed (resumable)
+            # Jobs that were running at crash time -> mark failed, auto-resume
             if status == "running":
                 job.status = "failed"
                 job.error = "Service restarted while job was running"
                 job.progress.current_stage = "interrupted"
+                self._pending_resume.append(job_id)
             elif status == "queued":
                 job.status = "queued"
                 self._pending_requeue.append(job_id)

@@ -82,43 +82,29 @@ if [ "$LOCAL_HASH" != "$LAST_DEPLOYED_HASH" ]; then
     done
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Dependencies installed" >> "$LOG_FILE"
 
+    # Wait for chat LLM jobs only (short-lived, usually < 60s)
+    # Agent-annotate jobs are long-running and auto-resume after restart,
+    # so we don't wait for them — just restart and the orchestrator picks up.
     WEBAPP_URL="http://localhost:8000"
-    ANNOTATE_URL="http://localhost:8005"
-    MAX_WAIT=64800
-    POLL_INTERVAL=10
+    MAX_WAIT=120
+    POLL_INTERVAL=5
     WAITED=0
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔍 Checking for active jobs (chat + agent-annotate)..." >> "$LOG_FILE"
-    while true; do
-        TOTAL_ACTIVE=0
-
-        # Check chat LLM jobs
-        JOBS_RESPONSE=$(curl -s --max-time 5 "$WEBAPP_URL/api/chat/jobs" 2>/dev/null)
-        if [ -n "$JOBS_RESPONSE" ]; then
-            CHAT_ACTIVE=$(echo "$JOBS_RESPONSE" | python3 -c "import sys, json; data = json.load(sys.stdin); print(data.get('active', 0))" 2>/dev/null)
-            CHAT_ACTIVE=${CHAT_ACTIVE:-0}
-            TOTAL_ACTIVE=$((TOTAL_ACTIVE + CHAT_ACTIVE))
+    JOBS_RESPONSE=$(curl -s --max-time 5 "$WEBAPP_URL/api/chat/jobs" 2>/dev/null)
+    if [ -n "$JOBS_RESPONSE" ]; then
+        CHAT_ACTIVE=$(echo "$JOBS_RESPONSE" | python3 -c "import sys, json; data = json.load(sys.stdin); print(data.get('active', 0))" 2>/dev/null)
+        CHAT_ACTIVE=${CHAT_ACTIVE:-0}
+        if [ "$CHAT_ACTIVE" != "0" ]; then
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⏳ $CHAT_ACTIVE chat job(s) running, waiting up to ${MAX_WAIT}s..." >> "$LOG_FILE"
+            while [ "$CHAT_ACTIVE" != "0" ] && [ $WAITED -lt $MAX_WAIT ]; do
+                sleep $POLL_INTERVAL
+                WAITED=$((WAITED + POLL_INTERVAL))
+                JOBS_RESPONSE=$(curl -s --max-time 5 "$WEBAPP_URL/api/chat/jobs" 2>/dev/null)
+                CHAT_ACTIVE=$(echo "$JOBS_RESPONSE" | python3 -c "import sys, json; data = json.load(sys.stdin); print(data.get('active', 0))" 2>/dev/null)
+                CHAT_ACTIVE=${CHAT_ACTIVE:-0}
+            done
         fi
-
-        # Check agent-annotate jobs
-        ANNOTATE_RESPONSE=$(curl -s --max-time 5 "$ANNOTATE_URL/api/jobs/active" 2>/dev/null)
-        if [ -n "$ANNOTATE_RESPONSE" ]; then
-            ANNOTATE_ACTIVE=$(echo "$ANNOTATE_RESPONSE" | python3 -c "import sys, json; data = json.load(sys.stdin); print(data.get('active', 0))" 2>/dev/null)
-            ANNOTATE_ACTIVE=${ANNOTATE_ACTIVE:-0}
-            TOTAL_ACTIVE=$((TOTAL_ACTIVE + ANNOTATE_ACTIVE))
-        fi
-
-        if [ "$TOTAL_ACTIVE" = "0" ]; then
-            echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ No active jobs, proceeding with restart" >> "$LOG_FILE"
-            break
-        fi
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⏳ $TOTAL_ACTIVE active job(s) running (chat: ${CHAT_ACTIVE:-0}, annotate: ${ANNOTATE_ACTIVE:-0}), waiting... (${WAITED}s elapsed)" >> "$LOG_FILE"
-        sleep $POLL_INTERVAL
-        WAITED=$((WAITED + POLL_INTERVAL))
-        if [ $WAITED -ge $MAX_WAIT ]; then
-            echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️ Max wait time reached, proceeding with restart anyway" >> "$LOG_FILE"
-            break
-        fi
-    done
+    fi
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Proceeding with restart (annotation jobs auto-resume)" >> "$LOG_FILE"
 
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🧹 Restarting MAIN services..." >> "$LOG_FILE"
     SERVICES=""
