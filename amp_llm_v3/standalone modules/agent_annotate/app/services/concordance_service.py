@@ -410,6 +410,23 @@ def _load_agent_annotations(job_id: str) -> dict[str, dict[str, str]]:
     return data
 
 
+def _load_agent_annotations_multi(job_ids: list[str]) -> dict[str, dict[str, str]]:
+    """Load and merge agent annotations from multiple jobs.
+
+    When the same NCT appears in multiple jobs, the LATEST job's annotation
+    wins (based on job order in the list — callers should sort by timestamp).
+    This represents the agent's best attempt with the most EDAM corrections.
+
+    Returns: {nct_id: {field_name: value}}
+    """
+    merged: dict[str, dict[str, str]] = {}
+    for job_id in job_ids:
+        job_data = _load_agent_annotations(job_id)
+        # Later jobs overwrite earlier ones for the same NCT
+        merged.update(job_data)
+    return merged
+
+
 def _get_job_timestamp(job_id: str) -> Optional[str]:
     """Extract the timestamp from a job JSON file."""
     json_path = JSON_DIR / f"{job_id}.json"
@@ -719,6 +736,58 @@ def r1_vs_r2() -> JobConcordance:
         label_b="R2",
         job_id="human",
         comparison_label="R1 vs R2",
+    )
+
+
+def agent_vs_r1_multi(job_ids: list[str]) -> JobConcordance:
+    """Compare merged agent annotations from multiple jobs against R1.
+
+    Jobs are sorted by timestamp (oldest first) so that later jobs
+    overwrite earlier ones for overlapping NCTs — the latest annotation
+    represents the agent's best attempt with the most EDAM corrections.
+    """
+    # Sort jobs by timestamp (oldest first, so latest overwrites)
+    sorted_ids = sorted(job_ids, key=lambda jid: _get_job_timestamp(jid) or "")
+    agent_data = _load_agent_annotations_multi(sorted_ids)
+    if not agent_data:
+        return JobConcordance(
+            job_id="+".join(job_ids),
+            comparison_label="Agent vs R1",
+        )
+
+    r1_data = _human_data_as_flat("r1")
+    label = f"{len(agent_data)} unique NCTs from {len(job_ids)} jobs"
+
+    return _build_job_concordance(
+        data_a=agent_data,
+        data_b=r1_data,
+        label_a="Agent",
+        label_b="R1",
+        job_id="+".join(jid[:8] for jid in sorted_ids),
+        comparison_label=f"Agent vs R1 ({label})",
+    )
+
+
+def agent_vs_r2_multi(job_ids: list[str]) -> JobConcordance:
+    """Compare merged agent annotations from multiple jobs against R2."""
+    sorted_ids = sorted(job_ids, key=lambda jid: _get_job_timestamp(jid) or "")
+    agent_data = _load_agent_annotations_multi(sorted_ids)
+    if not agent_data:
+        return JobConcordance(
+            job_id="+".join(job_ids),
+            comparison_label="Agent vs R2",
+        )
+
+    r2_data = _human_data_as_flat("r2")
+    label = f"{len(agent_data)} unique NCTs from {len(job_ids)} jobs"
+
+    return _build_job_concordance(
+        data_a=agent_data,
+        data_b=r2_data,
+        label_a="Agent",
+        label_b="R2",
+        job_id="+".join(jid[:8] for jid in sorted_ids),
+        comparison_label=f"Agent vs R2 ({label})",
     )
 
 

@@ -125,6 +125,12 @@ export const getConcordanceJobs = () =>
 export const getJobConcordance = (jobId: string) =>
   request<{ agent_vs_r1: JobConcordance; agent_vs_r2: JobConcordance; r1_vs_r2: JobConcordance }>(`/concordance/job/${jobId}`);
 
+export const getMultiJobConcordance = (jobIds: string[]) =>
+  request<{ agent_vs_r1: JobConcordance; agent_vs_r2: JobConcordance; r1_vs_r2: JobConcordance }>("/concordance/jobs/multi", {
+    method: "POST",
+    body: JSON.stringify({ job_ids: jobIds }),
+  });
+
 export const compareJobs = (jobIdA: string, jobIdB: string) =>
   request<ComparisonResult>(`/concordance/compare/${jobIdA}/${jobIdB}`);
 

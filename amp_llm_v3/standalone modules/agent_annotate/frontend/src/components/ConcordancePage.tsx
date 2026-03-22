@@ -6,6 +6,7 @@ import {
 import {
   getConcordanceJobs,
   getJobConcordance,
+  getMultiJobConcordance,
   compareJobs,
   getConcordanceHistory,
   getHumanConcordance,
@@ -453,7 +454,7 @@ function AnnotatorSelector({
 
 function AgentVsHumanTab() {
   const [jobs, setJobs] = useState<Array<{job_id: string; timestamp: string; total_trials: number}>>([]);
-  const [selectedJob, setSelectedJob] = useState("");
+  const [selectedJobs, setSelectedJobs] = useState<Set<string>>(new Set());
   const [concordance, setConcordance] = useState<{
     agent_vs_r1: JobConcordance;
     agent_vs_r2: JobConcordance;
@@ -497,9 +498,9 @@ function AgentVsHumanTab() {
     })();
   }, []);
 
-  // Load base concordance for selected job (used for the comparison grid)
+  // Load base concordance for selected job(s)
   useEffect(() => {
-    if (!selectedJob) {
+    if (selectedJobs.size === 0) {
       setConcordance(null);
       return;
     }
@@ -507,7 +508,13 @@ function AgentVsHumanTab() {
     setError("");
     (async () => {
       try {
-        const data = await getJobConcordance(selectedJob);
+        const jobIds = [...selectedJobs];
+        let data;
+        if (jobIds.length === 1) {
+          data = await getJobConcordance(jobIds[0]);
+        } else {
+          data = await getMultiJobConcordance(jobIds);
+        }
         setConcordance(data);
       } catch (e) {
         const msg = e instanceof Error ? e.message : "Unknown error";
@@ -517,21 +524,34 @@ function AgentVsHumanTab() {
         setLoading(false);
       }
     })();
-  }, [selectedJob]);
+  }, [selectedJobs]);
 
   // Load multi-annotator concordance when selections change
+  // For multi-job, uses the first selected job for annotator queries (annotator filtering
+  // only makes sense per-job since different jobs may cover different NCT ranges)
+  const primaryJobId = useMemo(() => {
+    if (selectedJobs.size === 0) return "";
+    // Use latest job for annotator queries
+    const sorted = [...selectedJobs].sort((a, b) => {
+      const ja = jobs.find(j => j.job_id === a);
+      const jb = jobs.find(j => j.job_id === b);
+      return (jb?.timestamp || "").localeCompare(ja?.timestamp || "");
+    });
+    return sorted[0];
+  }, [selectedJobs, jobs]);
+
   useEffect(() => {
-    if (!selectedJob || !initDone) return;
+    if (!primaryJobId || !initDone) return;
 
     let cancelled = false;
     setAnnotatorLoading(true);
 
     const fetchR1 = selectedR1.size > 0
-      ? getJobAnnotatorsConcordance(selectedJob, [...selectedR1], "r1")
+      ? getJobAnnotatorsConcordance(primaryJobId, [...selectedR1], "r1")
       : Promise.resolve(null);
 
     const fetchR2 = selectedR2.size > 0
-      ? getJobAnnotatorsConcordance(selectedJob, [...selectedR2], "r2")
+      ? getJobAnnotatorsConcordance(primaryJobId, [...selectedR2], "r2")
       : Promise.resolve(null);
 
     Promise.all([fetchR1, fetchR2])
@@ -552,7 +572,7 @@ function AgentVsHumanTab() {
       });
 
     return () => { cancelled = true; };
-  }, [selectedJob, selectedR1, selectedR2, initDone]);
+  }, [primaryJobId, selectedR1, selectedR2, initDone]);
 
   // Determine if we're in the "All R1 + no R2" default state (show comparison grid)
   const allR1Names = new Set(annotators.filter((a) => a.replicate === "r1").map((a) => a.name));
@@ -562,20 +582,56 @@ function AgentVsHumanTab() {
   return (
     <div>
       <div className="card mb-2">
-        <label htmlFor="job-select">Select completed job</label>
-        <select
-          id="job-select"
-          value={selectedJob}
-          onChange={(e) => setSelectedJob(e.target.value)}
-          style={{ maxWidth: "400px" }}
-        >
-          <option value="">-- choose a job --</option>
-          {jobs.map((j) => (
-            <option key={j.job_id} value={j.job_id}>
-              {j.job_id} ({j.total_trials} trials{j.timestamp ? `, ${j.timestamp}` : ""})
-            </option>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+          <label style={{ fontWeight: 600 }}>Select jobs {selectedJobs.size > 0 && <span className="text-sm text-muted">({selectedJobs.size} selected, overlapping NCTs use latest job)</span>}</label>
+          <div style={{ display: "flex", gap: "0.4rem" }}>
+            <button
+              className="btn btn-secondary"
+              style={{ fontSize: "0.75rem", padding: "0.2rem 0.5rem" }}
+              onClick={() => setSelectedJobs(new Set(jobs.map(j => j.job_id)))}
+            >
+              Select all
+            </button>
+            <button
+              className="btn btn-secondary"
+              style={{ fontSize: "0.75rem", padding: "0.2rem 0.5rem" }}
+              onClick={() => setSelectedJobs(new Set())}
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem", maxHeight: "200px", overflowY: "auto" }}>
+          {[...jobs].sort((a, b) => (b.timestamp || "").localeCompare(a.timestamp || "")).map((j) => (
+            <label
+              key={j.job_id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                padding: "0.3rem 0.5rem",
+                borderRadius: "var(--radius)",
+                cursor: "pointer",
+                background: selectedJobs.has(j.job_id) ? "rgba(99, 102, 241, 0.1)" : "transparent",
+                border: selectedJobs.has(j.job_id) ? "1px solid var(--accent)" : "1px solid transparent",
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={selectedJobs.has(j.job_id)}
+                onChange={(e) => {
+                  const next = new Set(selectedJobs);
+                  if (e.target.checked) next.add(j.job_id);
+                  else next.delete(j.job_id);
+                  setSelectedJobs(next);
+                }}
+              />
+              <span style={{ fontFamily: "monospace", fontSize: "0.85rem" }}>{j.job_id.slice(0, 8)}</span>
+              <span className="text-sm text-muted">{j.total_trials} trials</span>
+              {j.timestamp && <span className="text-sm text-muted">{j.timestamp}</span>}
+            </label>
           ))}
-        </select>
+        </div>
       </div>
 
       {loading && <div className="card text-muted">Loading concordance data...</div>}
