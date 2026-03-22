@@ -933,3 +933,129 @@ def r1_vs_r2_for_annotator(annotator: str) -> JobConcordance:
         job_id="human",
         comparison_label=f"R1 vs R2 ({annotator} NCTs)",
     )
+
+
+# ---------------------------------------------------------------------------
+# Multi-annotator concordance (replicate-aware)
+# ---------------------------------------------------------------------------
+def _human_data_for_annotators(
+    annotator_names: list[str],
+    replicate: str,
+) -> dict[str, dict[str, str]]:
+    """Return flat human data combining NCTs from multiple annotators in ONE replicate.
+
+    Only includes NCTs where the annotator filled in at least one field
+    (universal blank handling standard).
+
+    Parameters:
+        annotator_names: List of annotator names to include.
+        replicate: 'r1' or 'r2' — which replicate sheet to draw from.
+
+    Returns: {nct_id: {field: value}} for all NCTs by the selected annotators.
+    """
+    excel_data = _load_excel_annotations()
+    flat: dict[str, dict[str, str]] = {}
+    name_set = set(annotator_names)
+
+    for nct_id, reps in excel_data.items():
+        annotator = reps.get(f"{replicate}_annotator", "")
+        if annotator not in name_set:
+            continue
+        rep_data = reps.get(replicate, {})
+        entry = {field: rep_data.get(field, "") for field in FIELDS}
+        if _has_any_annotation(entry):
+            flat[nct_id] = entry
+
+    return flat
+
+
+def agent_vs_annotators(
+    job_id: str,
+    annotator_names: list[str],
+    replicate: str,
+) -> JobConcordance:
+    """Compare agent job against multiple annotators from ONE replicate.
+
+    Combines NCTs from all selected annotators in the specified replicate
+    into one concordance computation.
+
+    Parameters:
+        job_id: Agent job to compare.
+        annotator_names: List of annotator names (e.g. ["Mercan", "Maya"]).
+        replicate: 'r1' or 'r2'.
+
+    Returns: JobConcordance with combined data.
+    """
+    names_label = ", ".join(annotator_names)
+    rep_label = replicate.upper()
+    comparison_label = f"Agent vs {rep_label} ({names_label})"
+
+    agent_data = _load_agent_annotations(job_id)
+    if not agent_data:
+        return JobConcordance(
+            job_id=job_id,
+            comparison_label=comparison_label,
+        )
+
+    human_data = _human_data_for_annotators(annotator_names, replicate)
+    if not human_data:
+        return JobConcordance(
+            job_id=job_id,
+            comparison_label=comparison_label,
+        )
+
+    timestamp = _get_job_timestamp(job_id)
+
+    return _build_job_concordance(
+        data_a=agent_data,
+        data_b=human_data,
+        label_a="Agent",
+        label_b=rep_label,
+        job_id=job_id,
+        comparison_label=comparison_label,
+        timestamp=timestamp,
+    )
+
+
+def r1_vs_r2_for_annotators(
+    r1_names: Optional[list[str]] = None,
+    r2_names: Optional[list[str]] = None,
+) -> JobConcordance:
+    """R1 vs R2 inter-rater agreement filtered by selected annotators.
+
+    When annotators are selected for a replicate, only their NCTs are used
+    for that side. When no annotators are selected for a replicate, ALL NCTs
+    from that replicate are used (full replicate data).
+
+    Parameters:
+        r1_names: Selected R1 annotators, or None/empty for all R1.
+        r2_names: Selected R2 annotators, or None/empty for all R2.
+
+    Returns: JobConcordance comparing the filtered R1 vs R2 data.
+    """
+    # Build R1 side
+    if r1_names:
+        data_r1 = _human_data_for_annotators(r1_names, "r1")
+        r1_label = ", ".join(r1_names)
+    else:
+        data_r1 = _human_data_as_flat("r1")
+        r1_label = "All"
+
+    # Build R2 side
+    if r2_names:
+        data_r2 = _human_data_for_annotators(r2_names, "r2")
+        r2_label = ", ".join(r2_names)
+    else:
+        data_r2 = _human_data_as_flat("r2")
+        r2_label = "All"
+
+    comparison_label = f"R1 ({r1_label}) vs R2 ({r2_label})"
+
+    return _build_job_concordance(
+        data_a=data_r1,
+        data_b=data_r2,
+        label_a="R1",
+        label_b="R2",
+        job_id="human",
+        comparison_label=comparison_label,
+    )
