@@ -80,6 +80,33 @@ async def get_job_concordance(job_id: str):
     )
 
 
+class MultiJobRequest(BaseModel):
+    job_ids: list[str]
+
+
+@router.post("/jobs/multi", response_model=FullJobConcordanceResponse)
+async def get_multi_job_concordance(req: MultiJobRequest):
+    """Concordance across multiple jobs merged. Latest job wins for overlapping NCTs."""
+    if not req.job_ids:
+        raise HTTPException(status_code=400, detail="job_ids list cannot be empty")
+
+    vs_r1 = concordance_service.agent_vs_r1_multi(req.job_ids)
+    if not vs_r1.fields:
+        raise HTTPException(
+            status_code=404,
+            detail="No overlapping trials found across selected jobs",
+        )
+
+    vs_r2 = concordance_service.agent_vs_r2_multi(req.job_ids)
+    human = concordance_service.r1_vs_r2()
+
+    return FullJobConcordanceResponse(
+        agent_vs_r1=vs_r1,
+        agent_vs_r2=vs_r2,
+        r1_vs_r2=human,
+    )
+
+
 @router.get("/compare/{job_id_a}/{job_id_b}", response_model=ComparisonResult)
 async def compare_jobs(job_id_a: str, job_id_b: str):
     """Inter-version comparison: field-by-field kappa delta between two agent jobs."""
