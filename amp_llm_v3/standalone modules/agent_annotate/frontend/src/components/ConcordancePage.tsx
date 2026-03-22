@@ -86,7 +86,7 @@ function ConcordanceSummaryTable({
             <th>Agree %</th>
             <th style={{ textAlign: "center" }}>AC&#x2081;</th>
             <th style={{ textAlign: "center" }}>&kappa;</th>
-            <th>Interpretation</th>
+            <th>Interpretation (AC&#x2081;)</th>
           </tr>
         </thead>
         <tbody>
@@ -602,7 +602,7 @@ function AgentVsHumanTab() {
               {/* Combined comparison table: Agent vs R1, Agent vs R2, Human baseline (R1 vs R2) */}
               <div className="card mb-2">
                 <div className="card-title">
-                  Concordance Comparison
+                  Concordance Comparison (AC&#x2081;)
                   <span className="text-sm text-muted" style={{ fontWeight: 400, marginLeft: "0.75rem" }}>
                     Green = exceeds human baseline, Red = below
                   </span>
@@ -621,9 +621,11 @@ function AgentVsHumanTab() {
                     {concordance.agent_vs_r1.fields.map((f, i) => {
                       const r2f = concordance.agent_vs_r2.fields[i];
                       const hf = concordance.r1_vs_r2.fields[i];
-                      const agentBest = Math.max(f.agree_pct, r2f?.agree_pct ?? 0);
-                      const humanBaseline = hf?.agree_pct ?? 0;
-                      const exceeds = agentBest > humanBaseline;
+                      const fAc1 = f.ac1 ?? -1;
+                      const r2Ac1 = r2f?.ac1 ?? -1;
+                      const hAc1 = hf?.ac1 ?? -1;
+                      const agentBestAc1 = Math.max(fAc1, r2Ac1);
+                      const exceeds = agentBestAc1 > hAc1;
                       return (
                         <tr key={f.field_name}>
                           <td style={{ fontWeight: 500 }}>{f.field_name}</td>
@@ -631,21 +633,21 @@ function AgentVsHumanTab() {
                             textAlign: "center",
                             borderLeft: "2px solid var(--border)",
                             fontWeight: 600,
-                            color: f.agree_pct > humanBaseline ? "var(--success)" : f.agree_pct < humanBaseline ? "var(--error)" : "var(--text-primary)",
+                            color: fAc1 > hAc1 ? "var(--success)" : fAc1 < hAc1 ? "var(--error)" : "var(--text-primary)",
                           }}>
-                            {f.agree_pct.toFixed(1)}%
+                            {f.ac1 != null ? f.ac1.toFixed(3) : "N/A"}
                             <span className="text-sm text-muted" style={{ fontWeight: 400 }}>
-                              {" "}(n={f.n}, &kappa;={f.kappa != null ? f.kappa.toFixed(2) : "N/A"})
+                              {" "}(n={f.n}, {f.agree_pct.toFixed(1)}%)
                             </span>
                           </td>
                           <td style={{
                             textAlign: "center",
                             fontWeight: 600,
-                            color: (r2f?.agree_pct ?? 0) > humanBaseline ? "var(--success)" : (r2f?.agree_pct ?? 0) < humanBaseline ? "var(--error)" : "var(--text-primary)",
+                            color: r2Ac1 > hAc1 ? "var(--success)" : r2Ac1 < hAc1 ? "var(--error)" : "var(--text-primary)",
                           }}>
-                            {r2f ? `${r2f.agree_pct.toFixed(1)}%` : "\u2014"}
+                            {r2f?.ac1 != null ? r2f.ac1.toFixed(3) : "\u2014"}
                             <span className="text-sm text-muted" style={{ fontWeight: 400 }}>
-                              {r2f ? ` (n=${r2f.n}, \u03BA=${r2f.kappa != null ? r2f.kappa.toFixed(2) : "N/A"})` : ""}
+                              {r2f ? ` (n=${r2f.n}, ${r2f.agree_pct.toFixed(1)}%)` : ""}
                             </span>
                           </td>
                           <td style={{
@@ -654,9 +656,9 @@ function AgentVsHumanTab() {
                             background: "rgba(234,179,8,0.05)",
                             fontWeight: 600,
                           }}>
-                            {hf ? `${hf.agree_pct.toFixed(1)}%` : "\u2014"}
+                            {hf?.ac1 != null ? hf.ac1.toFixed(3) : "\u2014"}
                             <span className="text-sm text-muted" style={{ fontWeight: 400 }}>
-                              {hf ? ` (n=${hf.n}, \u03BA=${hf.kappa != null ? hf.kappa.toFixed(2) : "N/A"})` : ""}
+                              {hf ? ` (n=${hf.n}, ${hf.agree_pct.toFixed(1)}%)` : ""}
                             </span>
                           </td>
                           <td style={{
