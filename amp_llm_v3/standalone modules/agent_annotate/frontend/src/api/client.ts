@@ -143,6 +143,18 @@ export const getJobAnnotatorConcordance = (jobId: string, annotator: string) =>
 export const getHumanAnnotatorConcordance = (annotator: string) =>
   request<JobConcordance>(`/concordance/human/annotator/${encodeURIComponent(annotator)}`);
 
+export const getJobAnnotatorsConcordance = (jobId: string, annotators: string[], replicate: string) =>
+  request<JobConcordance>(`/concordance/job/${jobId}/annotators`, {
+    method: "POST",
+    body: JSON.stringify({ annotators, replicate }),
+  });
+
+export const getHumanAnnotatorsConcordance = (r1Annotators?: string[], r2Annotators?: string[]) =>
+  request<JobConcordance>("/concordance/human/annotators", {
+    method: "POST",
+    body: JSON.stringify({ r1_annotators: r1Annotators || null, r2_annotators: r2Annotators || null }),
+  });
+
 // Settings
 export const getSettings = () =>
   request<Record<string, unknown>>("/settings");

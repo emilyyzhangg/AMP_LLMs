@@ -10,8 +10,8 @@ import {
   getConcordanceHistory,
   getHumanConcordance,
   getAnnotators,
-  getJobAnnotatorConcordance,
-  getHumanAnnotatorConcordance,
+  getJobAnnotatorsConcordance,
+  getHumanAnnotatorsConcordance,
 } from "../api/client";
 import type {
   JobConcordance,
@@ -273,7 +273,7 @@ function FieldDetail({ field, labelA = "Agent", labelB = "Human" }: { field: Con
   );
 }
 
-// ── Annotator types and pill selector ─────────────────────────────────
+// ── Annotator types and multi-select selector ────────────────────────
 
 interface AnnotatorInfo {
   name: string;
@@ -281,19 +281,27 @@ interface AnnotatorInfo {
   nct_count: number;
 }
 
-function AnnotatorPills({
+function AnnotatorSelector({
   annotators,
-  selected,
-  onSelect,
-  includeAllOptions,
+  selectedR1,
+  selectedR2,
+  onChangeR1,
+  onChangeR2,
 }: {
   annotators: AnnotatorInfo[];
-  selected: string;
-  onSelect: (value: string) => void;
-  includeAllOptions?: boolean;
+  selectedR1: Set<string>;
+  selectedR2: Set<string>;
+  onChangeR1: (next: Set<string>) => void;
+  onChangeR2: (next: Set<string>) => void;
 }) {
   const r1Annotators = annotators.filter((a) => a.replicate === "r1");
   const r2Annotators = annotators.filter((a) => a.replicate === "r2");
+
+  const allR1Names = new Set(r1Annotators.map((a) => a.name));
+  const allR2Names = new Set(r2Annotators.map((a) => a.name));
+
+  const allR1Selected = allR1Names.size > 0 && [...allR1Names].every((n) => selectedR1.has(n));
+  const allR2Selected = allR2Names.size > 0 && [...allR2Names].every((n) => selectedR2.has(n));
 
   const pillStyle = (active: boolean): React.CSSProperties => ({
     padding: "0.3rem 0.7rem",
@@ -307,55 +315,79 @@ function AnnotatorPills({
     whiteSpace: "nowrap",
   });
 
+  const toggleR1 = (name: string) => {
+    const next = new Set(selectedR1);
+    if (next.has(name)) next.delete(name);
+    else next.add(name);
+    onChangeR1(next);
+  };
+
+  const toggleR2 = (name: string) => {
+    const next = new Set(selectedR2);
+    if (next.has(name)) next.delete(name);
+    else next.add(name);
+    onChangeR2(next);
+  };
+
+  const toggleAllR1 = () => {
+    if (allR1Selected) {
+      onChangeR1(new Set());
+    } else {
+      onChangeR1(new Set(allR1Names));
+    }
+  };
+
+  const toggleAllR2 = () => {
+    if (allR2Selected) {
+      onChangeR2(new Set());
+    } else {
+      onChangeR2(new Set(allR2Names));
+    }
+  };
+
+  const rowStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.4rem",
+    flexWrap: "wrap",
+  };
+
   return (
     <div className="card mb-2" style={{ padding: "0.6rem 1rem" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
-        <span className="text-sm" style={{ fontWeight: 600, marginRight: "0.3rem" }}>Filter:</span>
-        {includeAllOptions && (
-          <>
-            <button style={pillStyle(selected === "")} onClick={() => onSelect("")}>
-              All R1
-            </button>
-            <button style={pillStyle(selected === "__all_r2__")} onClick={() => onSelect("__all_r2__")}>
-              All R2
-            </button>
-            <span style={{ borderLeft: "1px solid var(--border)", height: "1.2rem", margin: "0 0.2rem" }} />
-          </>
-        )}
-        {!includeAllOptions && (
-          <button style={pillStyle(selected === "")} onClick={() => onSelect("")}>
-            All
+      {/* Row 1: Aggregate toggles */}
+      <div style={{ ...rowStyle, marginBottom: "0.4rem" }}>
+        <button style={pillStyle(allR1Selected)} onClick={toggleAllR1}>
+          All R1
+        </button>
+        <button style={pillStyle(allR2Selected)} onClick={toggleAllR2}>
+          All R2
+        </button>
+      </div>
+      {/* Row 2: R1 annotators */}
+      <div style={{ ...rowStyle, marginBottom: "0.3rem" }}>
+        <span className="text-sm text-muted" style={{ fontSize: "0.7rem", minWidth: "1.6rem" }}>R1:</span>
+        {r1Annotators.map((a) => (
+          <button
+            key={`r1-${a.name}`}
+            style={pillStyle(selectedR1.has(a.name))}
+            onClick={() => toggleR1(a.name)}
+          >
+            {a.name} ({a.nct_count})
           </button>
-        )}
-        {r1Annotators.length > 0 && (
-          <>
-            <span className="text-sm text-muted" style={{ fontSize: "0.7rem" }}>R1:</span>
-            {r1Annotators.map((a) => (
-              <button
-                key={`r1-${a.name}`}
-                style={pillStyle(selected === a.name)}
-                onClick={() => onSelect(a.name)}
-              >
-                {a.name} ({a.nct_count})
-              </button>
-            ))}
-          </>
-        )}
-        {r2Annotators.length > 0 && (
-          <>
-            <span style={{ borderLeft: "1px solid var(--border)", height: "1.2rem", margin: "0 0.2rem" }} />
-            <span className="text-sm text-muted" style={{ fontSize: "0.7rem" }}>R2:</span>
-            {r2Annotators.map((a) => (
-              <button
-                key={`r2-${a.name}`}
-                style={pillStyle(selected === a.name)}
-                onClick={() => onSelect(a.name)}
-              >
-                {a.name} ({a.nct_count})
-              </button>
-            ))}
-          </>
-        )}
+        ))}
+      </div>
+      {/* Row 3: R2 annotators */}
+      <div style={rowStyle}>
+        <span className="text-sm text-muted" style={{ fontSize: "0.7rem", minWidth: "1.6rem" }}>R2:</span>
+        {r2Annotators.map((a) => (
+          <button
+            key={`r2-${a.name}`}
+            style={pillStyle(selectedR2.has(a.name))}
+            onClick={() => toggleR2(a.name)}
+          >
+            {a.name} ({a.nct_count})
+          </button>
+        ))}
       </div>
     </div>
   );
@@ -374,11 +406,14 @@ function AgentVsHumanTab() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Annotator state
+  // Multi-select annotator state
   const [annotators, setAnnotators] = useState<AnnotatorInfo[]>([]);
-  const [selectedAnnotator, setSelectedAnnotator] = useState("");  // "" = All R1, "__all_r2__" = All R2, else annotator name
-  const [annotatorConcordance, setAnnotatorConcordance] = useState<JobConcordance | null>(null);
+  const [selectedR1, setSelectedR1] = useState<Set<string>>(new Set());
+  const [selectedR2, setSelectedR2] = useState<Set<string>>(new Set());
+  const [r1Concordance, setR1Concordance] = useState<JobConcordance | null>(null);
+  const [r2Concordance, setR2Concordance] = useState<JobConcordance | null>(null);
   const [annotatorLoading, setAnnotatorLoading] = useState(false);
+  const [initDone, setInitDone] = useState(false);
 
   // Load job list and annotators
   useEffect(() => {
@@ -393,14 +428,20 @@ function AgentVsHumanTab() {
     (async () => {
       try {
         const data = await getAnnotators();
-        setAnnotators(Array.isArray(data.annotators) ? data.annotators : []);
+        const list = Array.isArray(data.annotators) ? data.annotators : [];
+        setAnnotators(list);
+        // Default: All R1 selected
+        const r1Names = new Set(list.filter((a) => a.replicate === "r1").map((a) => a.name));
+        setSelectedR1(r1Names);
+        setInitDone(true);
       } catch {
         console.error("Failed to load annotators");
+        setInitDone(true);
       }
     })();
   }, []);
 
-  // Load concordance for selected job
+  // Load base concordance for selected job (used for the comparison grid)
   useEffect(() => {
     if (!selectedJob) {
       setConcordance(null);
@@ -408,8 +449,6 @@ function AgentVsHumanTab() {
     }
     setLoading(true);
     setError("");
-    setSelectedAnnotator("");  // Reset annotator filter when job changes
-    setAnnotatorConcordance(null);
     (async () => {
       try {
         const data = await getJobConcordance(selectedJob);
@@ -424,32 +463,45 @@ function AgentVsHumanTab() {
     })();
   }, [selectedJob]);
 
-  // Load annotator-specific concordance
+  // Load multi-annotator concordance when selections change
   useEffect(() => {
-    if (!selectedJob || !selectedAnnotator || selectedAnnotator === "__all_r2__") {
-      setAnnotatorConcordance(null);
-      return;
-    }
-    setAnnotatorLoading(true);
-    (async () => {
-      try {
-        const data = await getJobAnnotatorConcordance(selectedJob, selectedAnnotator);
-        setAnnotatorConcordance(data);
-      } catch {
-        setAnnotatorConcordance(null);
-      } finally {
-        setAnnotatorLoading(false);
-      }
-    })();
-  }, [selectedJob, selectedAnnotator]);
+    if (!selectedJob || !initDone) return;
 
-  // Determine which data to show based on annotator selection
-  const showAnnotatorView = selectedAnnotator !== "" && selectedAnnotator !== "__all_r2__" && annotatorConcordance;
-  const activeR1 = showAnnotatorView ? annotatorConcordance : concordance?.agent_vs_r1 ?? null;
-  const activeR2 = selectedAnnotator === "__all_r2__" ? concordance?.agent_vs_r2 ?? null : null;
-  // When an annotator is selected, we show a single concordance table instead of the comparison grid
-  const showSingleView = showAnnotatorView || selectedAnnotator === "__all_r2__";
-  const singleViewData = showAnnotatorView ? annotatorConcordance : activeR2;
+    let cancelled = false;
+    setAnnotatorLoading(true);
+
+    const fetchR1 = selectedR1.size > 0
+      ? getJobAnnotatorsConcordance(selectedJob, [...selectedR1], "r1")
+      : Promise.resolve(null);
+
+    const fetchR2 = selectedR2.size > 0
+      ? getJobAnnotatorsConcordance(selectedJob, [...selectedR2], "r2")
+      : Promise.resolve(null);
+
+    Promise.all([fetchR1, fetchR2])
+      .then(([r1, r2]) => {
+        if (!cancelled) {
+          setR1Concordance(r1);
+          setR2Concordance(r2);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setR1Concordance(null);
+          setR2Concordance(null);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setAnnotatorLoading(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [selectedJob, selectedR1, selectedR2, initDone]);
+
+  // Determine if we're in the "All R1 + no R2" default state (show comparison grid)
+  const allR1Names = new Set(annotators.filter((a) => a.replicate === "r1").map((a) => a.name));
+  const isDefaultState = selectedR2.size === 0 && allR1Names.size > 0 && [...allR1Names].every((n) => selectedR1.has(n));
+  const hasAnySelection = selectedR1.size > 0 || selectedR2.size > 0;
 
   return (
     <div>
@@ -475,33 +527,21 @@ function AgentVsHumanTab() {
 
       {concordance && (
         <>
-          {/* Annotator filter pills */}
+          {/* Multi-select annotator selector */}
           {annotators.length > 0 && (
-            <AnnotatorPills
+            <AnnotatorSelector
               annotators={annotators}
-              selected={selectedAnnotator}
-              onSelect={setSelectedAnnotator}
-              includeAllOptions
+              selectedR1={selectedR1}
+              selectedR2={selectedR2}
+              onChangeR1={setSelectedR1}
+              onChangeR2={setSelectedR2}
             />
           )}
 
           {annotatorLoading && <div className="card text-muted">Loading annotator concordance...</div>}
 
-          {/* Single annotator or All R2 view */}
-          {showSingleView && singleViewData && (
-            <>
-              <ConcordanceSummaryTable
-                fields={singleViewData.fields}
-                label={`${singleViewData.comparison_label} — Overall ${singleViewData.overall_agree_pct.toFixed(1)}% agreement (n=${singleViewData.n_overlapping})`}
-              />
-              {singleViewData.fields.map((f) => (
-                <FieldDetail key={f.field_name} field={f} labelA="Agent" labelB={selectedAnnotator === "__all_r2__" ? "R2" : selectedAnnotator} />
-              ))}
-            </>
-          )}
-
-          {/* Default All R1 view: full comparison grid */}
-          {!showSingleView && !annotatorLoading && (
+          {/* Default All R1 state: show full comparison grid */}
+          {isDefaultState && !annotatorLoading && (
             <>
               {/* Combined comparison table: Agent vs R1, Agent vs R2, Human baseline (R1 vs R2) */}
               <div className="card mb-2">
@@ -603,6 +643,42 @@ function AgentVsHumanTab() {
                 <FieldDetail key={f.field_name} field={f} labelA="Agent" labelB="R2" />
               ))}
             </>
+          )}
+
+          {/* Non-default state: show separate tables per replicate */}
+          {!isDefaultState && !annotatorLoading && hasAnySelection && (
+            <>
+              {/* R1 concordance section */}
+              {r1Concordance && r1Concordance.fields.length > 0 && (
+                <>
+                  <ConcordanceSummaryTable
+                    fields={r1Concordance.fields}
+                    label={`${r1Concordance.comparison_label} — Overall ${r1Concordance.overall_agree_pct.toFixed(1)}% agreement (n=${r1Concordance.n_overlapping})`}
+                  />
+                  {r1Concordance.fields.map((f) => (
+                    <FieldDetail key={`r1-${f.field_name}`} field={f} labelA="Agent" labelB="R1" />
+                  ))}
+                </>
+              )}
+
+              {/* R2 concordance section */}
+              {r2Concordance && r2Concordance.fields.length > 0 && (
+                <>
+                  <ConcordanceSummaryTable
+                    fields={r2Concordance.fields}
+                    label={`${r2Concordance.comparison_label} — Overall ${r2Concordance.overall_agree_pct.toFixed(1)}% agreement (n=${r2Concordance.n_overlapping})`}
+                  />
+                  {r2Concordance.fields.map((f) => (
+                    <FieldDetail key={`r2-${f.field_name}`} field={f} labelA="Agent" labelB="R2" />
+                  ))}
+                </>
+              )}
+            </>
+          )}
+
+          {/* No selection state */}
+          {!isDefaultState && !annotatorLoading && !hasAnySelection && (
+            <div className="card text-muted">Select annotators to view concordance data.</div>
           )}
         </>
       )}
@@ -821,11 +897,13 @@ function HumanInterRaterTab() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Annotator state
+  // Multi-select annotator state
   const [annotators, setAnnotators] = useState<AnnotatorInfo[]>([]);
-  const [selectedAnnotator, setSelectedAnnotator] = useState("");
-  const [annotatorConcordance, setAnnotatorConcordance] = useState<JobConcordance | null>(null);
+  const [selectedR1, setSelectedR1] = useState<Set<string>>(new Set());
+  const [selectedR2, setSelectedR2] = useState<Set<string>>(new Set());
+  const [filteredConcordance, setFilteredConcordance] = useState<JobConcordance | null>(null);
   const [annotatorLoading, setAnnotatorLoading] = useState(false);
+  const [initDone, setInitDone] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -842,33 +920,64 @@ function HumanInterRaterTab() {
     (async () => {
       try {
         const data = await getAnnotators();
-        setAnnotators(Array.isArray(data.annotators) ? data.annotators : []);
+        const list = Array.isArray(data.annotators) ? data.annotators : [];
+        setAnnotators(list);
+        // Default: All R1 selected (matches previous default of "All" which showed full R1 vs R2)
+        const r1Names = new Set(list.filter((a) => a.replicate === "r1").map((a) => a.name));
+        setSelectedR1(r1Names);
+        setInitDone(true);
       } catch {
         console.error("Failed to load annotators");
+        setInitDone(true);
       }
     })();
   }, []);
 
-  // Load annotator-filtered R1 vs R2
+  // Load filtered concordance when selections change
   useEffect(() => {
-    if (!selectedAnnotator) {
-      setAnnotatorConcordance(null);
+    if (!initDone) return;
+
+    const allR1Names = new Set(annotators.filter((a) => a.replicate === "r1").map((a) => a.name));
+    const allR1Selected = allR1Names.size > 0 && [...allR1Names].every((n) => selectedR1.has(n));
+    const noR2 = selectedR2.size === 0;
+
+    // If all R1 selected and no R2 selected, that's the default (full R1 vs R2)
+    if (allR1Selected && noR2) {
+      setFilteredConcordance(null);
       return;
     }
-    setAnnotatorLoading(true);
-    (async () => {
-      try {
-        const data = await getHumanAnnotatorConcordance(selectedAnnotator);
-        setAnnotatorConcordance(data);
-      } catch {
-        setAnnotatorConcordance(null);
-      } finally {
-        setAnnotatorLoading(false);
-      }
-    })();
-  }, [selectedAnnotator]);
 
-  const activeConcordance = selectedAnnotator && annotatorConcordance ? annotatorConcordance : concordance;
+    // If nothing selected, clear
+    if (selectedR1.size === 0 && selectedR2.size === 0) {
+      setFilteredConcordance(null);
+      return;
+    }
+
+    let cancelled = false;
+    setAnnotatorLoading(true);
+
+    getHumanAnnotatorsConcordance(
+      selectedR1.size > 0 ? [...selectedR1] : undefined,
+      selectedR2.size > 0 ? [...selectedR2] : undefined,
+    )
+      .then((data) => {
+        if (!cancelled) setFilteredConcordance(data);
+      })
+      .catch(() => {
+        if (!cancelled) setFilteredConcordance(null);
+      })
+      .finally(() => {
+        if (!cancelled) setAnnotatorLoading(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [selectedR1, selectedR2, initDone, annotators]);
+
+  // Determine display state
+  const allR1Names = new Set(annotators.filter((a) => a.replicate === "r1").map((a) => a.name));
+  const isDefaultState = allR1Names.size > 0 && [...allR1Names].every((n) => selectedR1.has(n)) && selectedR2.size === 0;
+  const activeConcordance = isDefaultState ? concordance : filteredConcordance;
+  const hasAnySelection = selectedR1.size > 0 || selectedR2.size > 0;
 
   if (loading) return <div className="card text-muted">Loading human inter-rater data...</div>;
   if (error) return <div className="card" style={{ color: "var(--error)" }}>{error}</div>;
@@ -891,18 +1000,20 @@ function HumanInterRaterTab() {
         </p>
       </div>
 
-      {/* Annotator filter pills */}
+      {/* Multi-select annotator selector */}
       {annotators.length > 0 && (
-        <AnnotatorPills
+        <AnnotatorSelector
           annotators={annotators}
-          selected={selectedAnnotator}
-          onSelect={setSelectedAnnotator}
+          selectedR1={selectedR1}
+          selectedR2={selectedR2}
+          onChangeR1={setSelectedR1}
+          onChangeR2={setSelectedR2}
         />
       )}
 
       {annotatorLoading && <div className="card text-muted">Loading annotator concordance...</div>}
 
-      {activeConcordance && !annotatorLoading && (
+      {!annotatorLoading && hasAnySelection && activeConcordance && (
         <>
           <ConcordanceSummaryTable
             fields={activeConcordance.fields}
@@ -913,6 +1024,10 @@ function HumanInterRaterTab() {
             <FieldDetail key={f.field_name} field={f} labelA="R1" labelB="R2" />
           ))}
         </>
+      )}
+
+      {!annotatorLoading && !hasAnySelection && (
+        <div className="card text-muted">Select annotators to view inter-rater concordance data.</div>
       )}
     </div>
   );

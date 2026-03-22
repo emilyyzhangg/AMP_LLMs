@@ -5,7 +5,10 @@ All endpoints are read-only reference data for scientific analysis
 and are exempt from authentication.
 """
 
+from typing import Optional
+
 from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
 from app.models.concordance import (
     AnnotatorListResponse,
@@ -15,6 +18,18 @@ from app.models.concordance import (
     JobConcordance,
 )
 from app.services import concordance_service
+
+
+class MultiAnnotatorRequest(BaseModel):
+    """Request body for multi-annotator concordance endpoints."""
+    annotators: list[str]
+    replicate: str  # "r1" or "r2"
+
+
+class HumanMultiAnnotatorRequest(BaseModel):
+    """Request body for human inter-rater with multi-annotator filtering."""
+    r1_annotators: Optional[list[str]] = None
+    r2_annotators: Optional[list[str]] = None
 
 router = APIRouter(prefix="/api/concordance", tags=["concordance"])
 
@@ -122,5 +137,45 @@ async def get_human_annotator_concordance(annotator: str):
         raise HTTPException(
             status_code=404,
             detail=f"No data for annotator '{annotator}'",
+        )
+    return result
+
+
+@router.post("/job/{job_id}/annotators", response_model=JobConcordance)
+async def get_job_multi_annotator_concordance(job_id: str, body: MultiAnnotatorRequest):
+    """Concordance of an agent job against multiple annotators from one replicate.
+
+    Combines NCTs from all selected annotators in the specified replicate
+    into a single concordance computation.
+    """
+    if body.replicate not in ("r1", "r2"):
+        raise HTTPException(status_code=400, detail="replicate must be 'r1' or 'r2'")
+    if not body.annotators:
+        raise HTTPException(status_code=400, detail="annotators list must not be empty")
+
+    result = concordance_service.agent_vs_annotators(job_id, body.annotators, body.replicate)
+    if not result.fields:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No data for job '{job_id}' vs annotators {body.annotators} ({body.replicate})",
+        )
+    return result
+
+
+@router.post("/human/annotators", response_model=JobConcordance)
+async def get_human_multi_annotator_concordance(body: HumanMultiAnnotatorRequest):
+    """R1 vs R2 inter-rater agreement filtered by selected annotators.
+
+    When annotators are selected for a replicate, only their NCTs are used
+    for that side. Unselected replicates use all data.
+    """
+    result = concordance_service.r1_vs_r2_for_annotators(
+        r1_names=body.r1_annotators,
+        r2_names=body.r2_annotators,
+    )
+    if not result.fields:
+        raise HTTPException(
+            status_code=404,
+            detail="No overlapping data for selected annotators",
         )
     return result
