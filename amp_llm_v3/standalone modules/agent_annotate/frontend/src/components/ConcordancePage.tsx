@@ -86,7 +86,7 @@ function ConcordanceSummaryTable({
             <th>Agree %</th>
             <th style={{ textAlign: "center" }}>AC&#x2081;</th>
             <th style={{ textAlign: "center" }}>&kappa;</th>
-            <th>Interpretation</th>
+            <th>Interpretation (AC&#x2081;)</th>
           </tr>
         </thead>
         <tbody>
