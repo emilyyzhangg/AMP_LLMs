@@ -104,6 +104,15 @@ export interface ResultSummary {
 
 // Concordance types
 
+export interface CategoryMetrics {
+  value: string;
+  count_a: number;
+  count_b: number;
+  precision: number | null;
+  recall: number | null;
+  f1: number | null;
+}
+
 export interface ConcordanceField {
   field_name: string;
   n: number;
@@ -111,7 +120,9 @@ export interface ConcordanceField {
   agree_count: number;
   agree_pct: number;
   kappa: number | null;
+  ac1: number | null;
   interpretation: string;
+  category_metrics: CategoryMetrics[];
   confusion_matrix: Record<string, Record<string, number>>;
   value_distribution: Record<string, Record<string, number>>;
   disagreements: Array<{ nct_id: string; field: string; value_a: string; value_b: string }>;

@@ -9,6 +9,25 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 
+class CategoryMetrics(BaseModel):
+    """Per-category precision, recall, and F1 for a single value in a field."""
+    value: str
+    count_a: int = Field(description="How many times annotator A assigned this value")
+    count_b: int = Field(description="How many times annotator B assigned this value")
+    precision: Optional[float] = Field(
+        default=None,
+        description="TP / (TP + FP) — when A says this value, how often does B agree?",
+    )
+    recall: Optional[float] = Field(
+        default=None,
+        description="TP / (TP + FN) — when B says this value, how often does A agree?",
+    )
+    f1: Optional[float] = Field(
+        default=None,
+        description="2 * precision * recall / (precision + recall)",
+    )
+
+
 class Disagreement(BaseModel):
     """A single instance where two annotators disagree on a field."""
     nct_id: str
@@ -57,7 +76,11 @@ class ConcordanceResult(BaseModel):
         description="Bias index — measures systematic disagreement between raters.",
     )
     interpretation: str = Field(
-        description="Landis & Koch interpretation of kappa",
+        description="Landis & Koch interpretation based on AC1 (primary metric)",
+    )
+    category_metrics: list[CategoryMetrics] = Field(
+        default_factory=list,
+        description="Per-category precision, recall, and F1 scores",
     )
     confusion_matrix: dict[str, dict[str, int]] = Field(
         default_factory=dict,

@@ -27,6 +27,7 @@ from app.services.concordance_stats import (
 )
 from app.models.concordance import (
     AnnotatorInfo,
+    CategoryMetrics,
     ComparisonFieldDelta,
     ComparisonResult,
     ConcordanceHistory,
@@ -555,6 +556,33 @@ def _compute_field_concordance(
         label_b: dict(dist_b),
     }
 
+    # ── Per-category precision / recall / F1 ──
+    all_values = sorted(set(labels_a) | set(labels_b))
+    cat_metrics: list[CategoryMetrics] = []
+    for val in all_values:
+        tp = sum(1 for a, b in zip(labels_a, labels_b) if a == val and b == val)
+        fp = sum(1 for a, b in zip(labels_a, labels_b) if a == val and b != val)
+        fn = sum(1 for a, b in zip(labels_a, labels_b) if a != val and b == val)
+        cnt_a = tp + fp  # times annotator A said this value
+        cnt_b = tp + fn  # times annotator B said this value
+        precision = round(tp / (tp + fp), 4) if (tp + fp) > 0 else None
+        recall = round(tp / (tp + fn), 4) if (tp + fn) > 0 else None
+        if precision is not None and recall is not None and (precision + recall) > 0:
+            f1_val = round(2 * precision * recall / (precision + recall), 4)
+        else:
+            f1_val = None
+        cat_metrics.append(CategoryMetrics(
+            value=val,
+            count_a=cnt_a,
+            count_b=cnt_b,
+            precision=precision,
+            recall=recall,
+            f1=f1_val,
+        ))
+
+    # Interpretation is now based on AC1 (primary metric)
+    interpretation = _kappa_interpretation(ac1_val)
+
     return ConcordanceResult(
         field_name=field_name,
         n=n,
@@ -569,7 +597,8 @@ def _compute_field_concordance(
         ac1_ci_upper=ac1_ci_hi,
         prevalence_idx=pi_val,
         bias_idx=bi_val,
-        interpretation=_kappa_interpretation(kappa),
+        interpretation=interpretation,
+        category_metrics=cat_metrics,
         confusion_matrix=confusion_dict,
         value_distribution=distribution,
         disagreements=disagreements,
