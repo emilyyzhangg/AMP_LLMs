@@ -670,7 +670,20 @@ The v3 concordance protocol addresses three methodological issues identified in 
 - Non-failure outcome + blank reason -- legitimate empty (agreement if agent also empty)
 - Failure outcome + blank reason -- missing data (treated as blank/skip)
 
-### 8.8 Concordance Limitations
+### 8.8 Universal Blank Handling Standard
+
+All concordance computations, annotator counts, and data displays follow one standard:
+
+**An NCT is considered "annotated" by a human only if at least one of the five annotation fields has a non-blank value.** Rows where all five fields are blank/None are treated as unannotated — the annotator was assigned the row but did not engage with it.
+
+This standard applies everywhere:
+1. **Annotator NCT counts**: Only count rows with at least one filled field. Many annotators left large portions of their assigned rows blank (Ali 12%, Emre 7%, Berke 11% coverage in R1; Emily filled 817 of 1789 assigned rows in R2). Without this filter, counts are misleadingly inflated.
+2. **Annotator-filtered concordance**: Only include annotated rows when computing per-annotator concordance.
+3. **R1/R2 flat data**: The `_human_data_as_flat()` function excludes completely blank rows, so overlapping NCT counts and concordance denominators reflect actual annotations only.
+4. **Per-field blank handling**: Within annotated rows, individual fields may still be blank. For `blank_means_skip=True` fields (classification, delivery_mode, outcome, peptide), the pair is skipped if either side is blank. For `reason_for_failure`, outcome-aware handling applies (blank reason + blank outcome = unannotated, blank reason + non-failure outcome = legitimate "no failure").
+5. **Agent annotations**: Always have all 5 fields filled — the agent never produces blank annotations.
+
+### 8.9 Concordance Limitations
 
 1. **R1 is a multi-annotator composite.** Cohen's kappa between R1 and R2 measures agreement between a 7-person team and a single annotator, not between two equivalent raters. Internal variability within R1 is not captured by the current analysis and may inflate apparent R1-R2 disagreement.
 
