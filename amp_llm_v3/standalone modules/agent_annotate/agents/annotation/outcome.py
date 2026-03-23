@@ -1,25 +1,16 @@
 """
-Outcome Annotation Agent (v3 — investigative, calibrated).
+Outcome Annotation Agent (v4 — v11 accuracy fixes).
 
 Determines trial outcome using a two-pass strategy:
   Pass 1: Extract ClinicalTrials.gov status, phase, and published results
   Pass 2: Determine outcome using calibrated decision tree
 
-v3 changes (from 25-trial baseline concordance analysis):
-  - Fixed "Failed" bias: agent was defaulting 80% of trials to "Failed - completed
-    trial" because it confused "COMPLETED" registry status with negative results.
-  - Added explicit rule: "Failed" requires EVIDENCE of failure (published negative
-    results, failure to meet endpoints). Merely completing is not failure.
-  - Added phase-awareness: Phase I trials that complete usually met their safety/
-    dosing objectives — lean Positive unless evidence says otherwise.
-  - Strengthened "Unknown" vs "Failed" distinction.
-
-Key insight from human annotation data:
-  - ClinicalTrials.gov status is often STALE or INCOMPLETE
-  - Published literature (PubMed, PMC) is the authoritative source for actual results
-  - Even TERMINATED trials can have positive published results (5 cases in dataset)
-  - UNKNOWN status requires active investigation, not a default "Unknown" answer
-  - COMPLETED Phase I/II trials are often positive — completing the trial IS the success
+v4/v11 changes (from 400-trial concordance — outcome regressed from 80% to 47%):
+  - Expanded deterministic pass: COMPLETED+hasResults→Positive, Phase I+no pubs→Unknown
+  - Fixed confidence calculation: now min(citation_quality, source_sufficiency)
+  - Tightened Pass 2 prompt: explicit H1 prohibition with negative examples
+  - Root cause: 8B model was calling "Positive" for Phase I completions without
+    corroboration, and "Recruiting" was under-detected (17.6% recall)
 """
 
 import re
@@ -43,7 +34,7 @@ VALID_VALUES = [
 ]
 
 # --------------------------------------------------------------------------- #
-#  Deterministic outcome mapping (v9)
+#  Deterministic outcome mapping (v11)
 # --------------------------------------------------------------------------- #
 
 _DETERMINISTIC_STATUSES = {
@@ -58,7 +49,10 @@ _DETERMINISTIC_STATUSES = {
 
 
 def _deterministic_outcome(research_results: list) -> FieldAnnotation | None:
-    """Map clear-cut registry statuses deterministically. COMPLETED/UNKNOWN fall through to LLM."""
+    """Map clear-cut registry statuses deterministically.
+
+    v11: Also handles COMPLETED trials with hasResults and Phase I without publications.
+    """
     for result in research_results:
         if result.error or result.agent_name != "clinical_protocol":
             continue
@@ -67,14 +61,43 @@ def _deterministic_outcome(research_results: list) -> FieldAnnotation | None:
         proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
         status_mod = proto.get("statusModule", {})
         overall_status = status_mod.get("overallStatus", "")
+
+        # Simple status mappings (RECRUITING, WITHDRAWN, etc.)
         if overall_status in _DETERMINISTIC_STATUSES:
             value = _DETERMINISTIC_STATUSES[overall_status]
             logger.info(f"  outcome: deterministic → {value} (registry status: {overall_status})")
             return FieldAnnotation(
                 field_name="outcome", value=value, confidence=0.95,
-                reasoning=f"[Deterministic v9] Registry status '{overall_status}' → '{value}'",
+                reasoning=f"[Deterministic v11] Registry status '{overall_status}' → '{value}'",
                 evidence=[], model_name="deterministic", skip_verification=True,
             )
+
+        # v11: COMPLETED with hasResults=true → Positive (results were posted)
+        if overall_status == "COMPLETED":
+            has_results = status_mod.get("hasResults", False)
+            if has_results is True or str(has_results).lower() == "true":
+                logger.info(f"  outcome: deterministic → Positive (COMPLETED + hasResults=true)")
+                return FieldAnnotation(
+                    field_name="outcome", value="Positive", confidence=0.90,
+                    reasoning="[Deterministic v11] COMPLETED + hasResults=true → Positive",
+                    evidence=[], model_name="deterministic", skip_verification=False,
+                )
+
+            # v11: COMPLETED Phase I without hasResults → Unknown (prevent H1 violation)
+            design_mod = proto.get("designModule", {})
+            phases = design_mod.get("phases", [])
+            if isinstance(phases, str):
+                phases = [phases]
+            phase_str = " ".join(phases).upper() if phases else ""
+            is_phase1 = "PHASE1" in phase_str or "EARLY_PHASE1" in phase_str
+            if is_phase1 and not has_results:
+                logger.info(f"  outcome: deterministic → Unknown (COMPLETED Phase I, no hasResults)")
+                return FieldAnnotation(
+                    field_name="outcome", value="Unknown", confidence=0.85,
+                    reasoning="[Deterministic v11] COMPLETED Phase I without hasResults → Unknown (H1 requires corroboration)",
+                    evidence=[], model_name="deterministic", skip_verification=False,
+                )
+
     return None
 
 # Pass 1: Extract the registry status and what we know so far
@@ -137,6 +160,10 @@ H1. PHASE I COMPLETION: Phase I/Early Phase I trials that completed normally (no
     If Phase I completed but ZERO publications were found and Results Posted = No/Unknown,
     → "Unknown" (not enough evidence to confirm success). Do NOT apply H1 without corroboration.
 
+    *** CRITICAL: DO NOT say "lean towards Positive" or "likely Positive" for Phase I trials
+    without corroboration. This is the #1 error in previous annotations. If you have ZERO
+    publications AND Results Posted = No/Unknown, the answer MUST be "Unknown". ***
+
 H2. PHASE II/III COMPLETION WITH hasResults=Yes: If ClinicalTrials.gov indicates results were posted
     (hasResults field), the trial produced data. Lean toward "Positive" unless evidence says otherwise.
 
@@ -162,6 +189,14 @@ CRITICAL RULES:
 - RECENCY: If multiple publications exist with conflicting conclusions, the MOST RECENT publication takes priority.
 - COMPLETED + no published results + Results Posted = No/Unknown → "Unknown".
 - COMPLETED + Results Posted = Yes (even without findable publications) → lean "Positive".
+
+NEGATIVE EXAMPLE (DO NOT make this mistake):
+  Registry Status: COMPLETED
+  Trial Phase: PHASE1
+  Published Results: None found
+  Results Posted: Unknown
+  → WRONG: "Outcome: Positive" (reasoning: "lean towards Positive given Phase I completion")
+  → CORRECT: "Outcome: Unknown" (no corroboration for H1: zero publications, no results posted)
 
 IMPORTANT: Format your response EXACTLY as:
 Outcome: [one of the 7 values above]
@@ -199,7 +234,7 @@ class OutcomeAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
-        # v9: Try deterministic status mapping first
+        # v11: Try deterministic status mapping first
         det_result = _deterministic_outcome(research_results)
         if det_result is not None:
             return det_result
@@ -279,12 +314,17 @@ class OutcomeAgent(BaseAnnotationAgent):
         # Include pass 1 extraction in the reasoning for audit trail
         full_reasoning = f"[Pass 1 facts] {pass1_output[:500]}\n[Pass 2 decision] {reasoning}"
 
-        quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
+        # v11: Confidence = min(citation quality, source sufficiency).
+        # If only 1 source (e.g., just ClinicalTrials.gov), cap confidence at 0.5.
+        citation_quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
+        num_distinct_sources = len({c.source_name for c in cited_sources[:10]})
+        source_sufficiency = min(1.0, num_distinct_sources / 2)
+        confidence = min(citation_quality, source_sufficiency)
 
         return FieldAnnotation(
             field_name=self.field_name,
             value=value,
-            confidence=quality,
+            confidence=confidence,
             reasoning=full_reasoning,
             evidence=cited_sources[:10],
             model_name=primary_model,

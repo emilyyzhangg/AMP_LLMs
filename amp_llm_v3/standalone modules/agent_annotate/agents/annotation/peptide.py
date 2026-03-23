@@ -1,15 +1,12 @@
 """
-Peptide Annotation Agent.
+Peptide Annotation Agent (v11).
 
 Determines whether the intervention is a peptide (True/False).
 
-v2 changes (from 70-trial concordance analysis):
-  - Enhanced prompt with additional disambiguation rules for edge cases
-    observed in concordance disagreements (nutritional products, large
-    biologics, multi-drug trials).
-  - Added two-pass design: Pass 1 extracts molecular facts, Pass 2 applies
-    decision tree. This mirrors the classification agent's approach and
-    reduces the 8B model's tendency to shortcut on surface-level keywords.
+v11 changes (from 400-trial concordance — peptide at 65% vs 83% human baseline):
+  - Added _KNOWN_PEPTIDE_DRUGS for deterministic True bypass
+  - Field-specific snippet length override (250→400 chars on Mac Mini)
+  - Root cause: 130 True→False EDAM corrections + 8B model defaulting to False
 """
 
 import re
@@ -165,6 +162,71 @@ _KNOWN_NON_PEPTIDE_DRUGS = {
     "hydrolyzed whey", "hydrolyzed protein", "hydrolysed whey",
 }
 
+# --------------------------------------------------------------------------- #
+#  Known peptide drugs — deterministic True bypass (v11)
+# --------------------------------------------------------------------------- #
+# These are unambiguously peptide therapeutics. Catches false negatives
+# from the LLM which was under-calling True (65% vs 83% human baseline).
+_KNOWN_PEPTIDE_DRUGS = {
+    # GLP-1 / metabolic peptides
+    "semaglutide", "liraglutide", "exenatide", "dulaglutide", "tirzepatide",
+    "apraglutide", "teduglutide", "glepaglutide",
+    # Insulin analogues (51 AA, single-chain polypeptide)
+    "insulin", "insulin glargine", "insulin lispro", "insulin aspart",
+    "insulin detemir", "insulin degludec",
+    # GnRH analogues
+    "leuprolide", "leuprorelin", "goserelin", "triptorelin", "buserelin",
+    "nafarelin", "degarelix", "cetrorelix", "ganirelix",
+    # Somatostatin analogues
+    "octreotide", "lanreotide", "pasireotide", "vapreotide",
+    # Antimicrobial peptides
+    "colistin", "colistimethate", "polymyxin b", "polymyxin e",
+    "daptomycin", "nisin", "gramicidin", "tyrothricin", "bacitracin",
+    "vancomycin", "teicoplanin", "telavancin", "dalbavancin", "oritavancin",
+    "ramoplanin", "surotomycin", "friulimicin",
+    "pexiganan", "omiganan", "iseganan",
+    # Neuropeptides / vasopeptides
+    "aviptadil", "calcitonin", "teriparatide", "abaloparatide",
+    "oxytocin", "vasopressin", "desmopressin", "terlipressin", "carbetocin",
+    "vosoritide",
+    # Host defense peptides
+    "ll-37", "ll37", "cathelicidin", "thymosin alpha-1", "thymalfasin",
+    # Peptide vaccines (peptide IS the active immunogen)
+    "streptincor",
+    # HIV peptides (still peptides even though not AMPs)
+    "enfuvirtide", "t-20", "fuzeon", "peptide t", "dapta",
+    # Other peptide therapeutics
+    "melittin", "magainin", "cecropin", "lactoferricin",
+    "bivalirudin", "ziconotide", "eptifibatide", "icatibant",
+    "nesiritide", "pramlintide", "romiplostim",
+}
+
+
+def _check_known_peptide(research_results: list) -> FieldAnnotation | None:
+    """v11: Check if the intervention is a known peptide drug → True deterministically."""
+    intervention_names: list[str] = []
+    for result in research_results:
+        if result.error or result.agent_name != "clinical_protocol":
+            continue
+        if not result.raw_data:
+            continue
+        proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
+        arms_mod = proto.get("armsInterventionsModule", {})
+        for interv in arms_mod.get("interventions", []):
+            name = interv.get("name", "")
+            if name:
+                intervention_names.append(name.lower().strip())
+    for name in intervention_names:
+        for pep_drug in _KNOWN_PEPTIDE_DRUGS:
+            if pep_drug in name or name in pep_drug:
+                logger.info(f"  peptide: deterministic → True (known peptide: '{name}' matched '{pep_drug}')")
+                return FieldAnnotation(
+                    field_name="peptide", value="True", confidence=0.95,
+                    reasoning=f"[Deterministic v11] Known peptide drug: '{name}' matched '{pep_drug}'",
+                    evidence=[], model_name="deterministic", skip_verification=True,
+                )
+    return None
+
 
 def _check_known_non_peptide(research_results: list) -> FieldAnnotation | None:
     """Check if the intervention is a known non-peptide drug."""
@@ -203,17 +265,26 @@ class PeptideAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
-        # v9: Check known non-peptide drugs first
+        # v11: Check known peptide drugs first (deterministic True)
+        det_true = _check_known_peptide(research_results)
+        if det_true is not None:
+            return det_true
+
+        # v9: Check known non-peptide drugs
         det_result = _check_known_non_peptide(research_results)
         if det_result is not None:
             return det_result
 
         from app.services.config_service import config_service
+        from app.services.memory.edam_config import FIELD_SNIPPET_OVERRIDES
 
         config = config_service.get()
-        is_server = config.orchestrator.hardware_profile == "server"
+        profile = config.orchestrator.hardware_profile
+        is_server = profile == "server"
         max_cites = 35 if is_server else 20
-        max_snippet = 500 if is_server else 250
+        # v11: Use field-specific snippet override if available
+        default_snippet = 500 if is_server else 250
+        max_snippet = FIELD_SNIPPET_OVERRIDES.get(profile, {}).get("peptide", default_snippet)
 
         # Build structured evidence — drug/peptide data and structural
         # sections are most important for peptide determination
