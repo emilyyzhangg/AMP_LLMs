@@ -153,8 +153,30 @@ FIELD_CORRECTION_WEIGHTS = {
             "active drug", "active therapeutic",
         ],
     },
-    "classification": {"base_weight": 1.0},
+    "classification": {
+        "base_weight": 1.1,         # v11: slight bonus — AMP classification corrections
+        "definition_keywords": [     # are grounded in antimicrobial mechanism
+            "antimicrobial", "membrane disruption", "DRAMP", "DBAASP",
+            "pore formation", "bactericidal",
+        ],
+    },
     "delivery_mode": {"base_weight": 1.0},
-    "outcome": {"base_weight": 1.0},
+    "outcome": {
+        "base_weight": 1.1,         # v11: slight bonus — outcome corrections
+        "definition_keywords": [     # are grounded in registry status
+            "hasResults", "overallStatus", "registry",
+            "RECRUITING", "COMPLETED", "publication",
+        ],
+    },
     "reason_for_failure": {"base_weight": 1.0},
+}
+
+# ---------------------------------------------------------------------------
+# v11: Field-specific snippet length overrides for Mac Mini
+# Peptide needs longer snippets to preserve amino acid count evidence.
+# ---------------------------------------------------------------------------
+FIELD_SNIPPET_OVERRIDES = {
+    "mac_mini": {
+        "peptide": 400,     # up from 250 — preserve AA count evidence
+    },
 }
