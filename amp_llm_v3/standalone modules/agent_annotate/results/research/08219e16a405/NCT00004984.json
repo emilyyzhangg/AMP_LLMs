@@ -1,0 +1,802 @@
+{
+  "nct_id": "NCT00004984",
+  "completed_at": "2026-03-16 12:36:45 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00004984",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004984",
+          "identifier": "NCT00004984",
+          "title": "The Diabetes Prevention Trial of Type 1 Diabetes (DPT-1)",
+          "snippet": "Title: The Diabetes Prevention Trial of Type 1 Diabetes (DPT-1)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.494924"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004984",
+          "identifier": "NCT00004984",
+          "title": "Brief Summary",
+          "snippet": "The Diabetes Prevention Trial of Type 1 (DPT-1) was a multicenter randomized, controlled clinical trial designed to determine whether it is possible to delay or prevent the clinical onset of type 1 diabetes through daily doses of insulin in individuals determined to be at risk for the disease. Subjects were recruited from study clinics and through media campaigns.First-degree relatives, 3 to 45 years of age, and second-degree relatives, 3 to 20 years of age, of patients with diabetes were screen",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.494932"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004984",
+          "identifier": "NCT00004984",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.494936"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004984",
+          "identifier": "NCT00004984",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Diabetes Mellitus, Type 1 | Keywords: diabetes, insulin, prediction, prevention, C-peptide levels, insulin autoantibodies, pancreatic beta cell autoantibodies, cellular immune responses, prediction of type 1 diabetes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.494941"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004984",
+          "identifier": "NCT00004984",
+          "title": "Intervention: Parenteral Insulin",
+          "snippet": "DRUG: Parenteral Insulin - Subcutaneous injections of recombinant human ultralente insulin in the morning and in the evening; the initial dose for each injection was 0.125 U per kilogram of body weight.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.494944"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004984",
+          "identifier": "NCT00004984",
+          "title": "Intervention: Close Observation",
+          "snippet": "OTHER: Close Observation - Study visits every 6 months including an oral glucose tolerance test",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.494948"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004984",
+          "identifier": "NCT00004984",
+          "title": "Intervention: Oral Insulin",
+          "snippet": "DRUG: Oral Insulin - Capsules oral insulin, 7.5 mg of recombinant human insulin crystals",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.494950"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004984",
+          "identifier": "NCT00004984",
+          "title": "Intervention: Placebo",
+          "snippet": "DRUG: Placebo - Placebo for oral insulin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.494953"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004984",
+          "identifier": "NCT00004984",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.494956"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00004984",
+            "orgStudyIdInfo": {
+              "id": "DPT-1"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "U01DK060782",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK060782"
+              },
+              {
+                "id": "U01DK060916",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK060916"
+              },
+              {
+                "id": "U01DK060987",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK060987"
+              },
+              {
+                "id": "U01DK061010",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK061010"
+              },
+              {
+                "id": "U01DK061029",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK061029"
+              },
+              {
+                "id": "U01DK061030",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK061030"
+              },
+              {
+                "id": "U01DK061034",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK061034"
+              },
+              {
+                "id": "U01DK061035",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK061035"
+              },
+              {
+                "id": "U01DK061036",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK061036"
+              },
+              {
+                "id": "U01DK061037",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK061037"
+              },
+              {
+                "id": "U01DK061038",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK061038"
+              },
+              {
+                "id": "U01DK061040",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK061040"
+              },
+              {
+                "id": "U01DK061041",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK061041"
+              },
+              {
+                "id": "U01DK061042",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK061042"
+              },
+              {
+                "id": "U01DK061058",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK061058"
+              },
+              {
+                "id": "U01DK061055",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/U01DK061055"
+              }
+            ],
+            "organization": {
+              "fullName": "National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK)",
+              "class": "NIH"
+            },
+            "briefTitle": "The Diabetes Prevention Trial of Type 1 Diabetes (DPT-1)",
+            "officialTitle": "The Diabetes Prevention Trial of Type 1 Diabetes (DPT-1)",
+            "acronym": "DPT-1"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2020-04",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "1994-02",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2003-06",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2003-06",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2000-03-13",
+            "studyFirstSubmitQcDate": "2000-03-13",
+            "studyFirstPostDateStruct": {
+              "date": "2000-03-14",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2020-04-22",
+            "lastUpdatePostDateStruct": {
+              "date": "2020-04-24",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK)",
+              "class": "NIH"
+            },
+            "collaborators": [
+              {
+                "name": "National Center for Research Resources (NCRR)",
+                "class": "NIH"
+              },
+              {
+                "name": "National Institute of Allergy and Infectious Diseases (NIAID)",
+                "class": "NIH"
+              },
+              {
+                "name": "Eunice Kennedy Shriver National Institute of Child Health and Human Development (NICHD)",
+                "class": "NIH"
+              },
+              {
+                "name": "National Institute on Minority Health and Health Disparities (NIMHD)",
+                "class": "NIH"
+              },
+              {
+                "name": "Office of Research on Women's Health (ORWH)",
+                "class": "NIH"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": true,
+            "isFdaRegulatedDrug": true,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "The Diabetes Prevention Trial of Type 1 (DPT-1) was a multicenter randomized, controlled clinical trial designed to determine whether it is possible to delay or prevent the clinical onset of type 1 diabetes through daily doses of insulin in individuals determined to be at risk for the disease. Subjects were recruited from study clinics and through media campaigns.First-degree relatives, 3 to 45 years of age, and second-degree relatives, 3 to 20 years of age, of patients with diabetes were screened for islet-cell antibodies. Those individuals found to be at high risk of diabetes were randomized to receive either close observation or low-dose parenteral insulin. Those individuals found to be at intermediate risk of diabetes are randomized to receive insulin orally or to receive placebo. Patients were followed for up to six years.",
+            "detailedDescription": "The study was divided into three parts: screening, staging, and intervention. Subjects were recruited from study clinics and through media campaigns.First-degree relatives, 3 to 45 years of age, and second-degree relatives, 3 to 20 years of age, of patients with diabetes were screened for islet-cell antibodies. Those with an islet-cell antibody titer of 10 Juvenile Diabetes Foundation (JDF) units or higher were offered staging evaluations.\n\nStaging confirmed the presence of islet-cell antibodies, measured insulin antibodies, assessed the first-phase insulin response to intravenous glucose, assessed oral glucose tolerance, and determined the presence or absence of HLA-DQA1\\*0102, DQB1\\*0602, a protective haplotype, the presence of which excluded subjects from further participation.\n\nIslet-cell antibody-positive subjects were then defined as having a high risk of diabetes (a five-year risk of more than 50 percent) and were deemed eligible for the parenteral insulin trial if they had a first-phase insulin response below the threshold (as defined below) on two occasions, if their oral glucose-tolerance results were not completely normal,or both.\n\nRelatives who tested positive for islet-cell antibodies and insulin antibodies and who had a first-phase insulin response above the threshold and normal glucose tolerance were defined as having intermediate risk (a five-year risk of 26 to 50 percent) and were deemed eligible for the ongoing oral insulin trial.\n\nAll randomized subjects were seen every six months, at which time an oral glucose-tolerance test was administered to assess glycemic status, the primary study end point. Mixed-meal tolerance tests were performed at base line, at years 1, 3, and 5, and at the end of the study. Intravenous glucose-tolerance testing was performed at years 2, 4, and 6 and at the end of the study."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Diabetes Mellitus, Type 1"
+            ],
+            "keywords": [
+              "diabetes",
+              "insulin",
+              "prediction",
+              "prevention",
+              "C-peptide levels",
+              "insulin autoantibodies",
+              "pancreatic beta cell autoantibodies",
+              "cellular immune responses",
+              "prediction of type 1 diabetes"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE3"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "PREVENTION",
+              "maskingInfo": {
+                "masking": "QUADRUPLE",
+                "maskingDescription": "The oral insulin study was masked, but the parenteral insulin study was not masked",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "CARE_PROVIDER",
+                  "INVESTIGATOR",
+                  "OUTCOMES_ASSESSOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 711,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Parenteral Insulin",
+                "type": "EXPERIMENTAL",
+                "description": "High risk participants randomized to intervention",
+                "interventionNames": [
+                  "Drug: Parenteral Insulin"
+                ]
+              },
+              {
+                "label": "Close Observation",
+                "type": "ACTIVE_COMPARATOR",
+                "description": "High risk participants randomized to observation",
+                "interventionNames": [
+                  "Other: Close Observation"
+                ]
+              },
+              {
+                "label": "Oral Insulin",
+                "type": "EXPERIMENTAL",
+                "description": "Intermediate risk participants randomized to intervention",
+                "interventionNames": [
+                  "Drug: Oral Insulin"
+                ]
+              },
+              {
+                "label": "Placebo",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "Intermediate risk participants randomized to placebo",
+                "interventionNames": [
+                  "Drug: Placebo"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Parenteral Insulin",
+                "description": "Subcutaneous injections of recombinant human ultralente insulin in the morning and in the evening; the initial dose for each injection was 0.125 U per kilogram of body weight.",
+                "armGroupLabels": [
+                  "Parenteral Insulin"
+                ]
+              },
+              {
+                "type": "OTHER",
+                "name": "Close Observation",
+                "description": "Study visits every 6 months including an oral glucose tolerance test",
+                "armGroupLabels": [
+                  "Close Observation"
+                ]
+              },
+              {
+                "type": "DRUG",
+                "name": "Oral Insulin",
+                "description": "Capsules oral insulin, 7.5 mg of recombinant human insulin crystals",
+                "armGroupLabels": [
+                  "Oral Insulin"
+                ]
+              },
+              {
+                "type": "DRUG",
+                "name": "Placebo",
+                "description": "Placebo for oral insulin",
+                "armGroupLabels": [
+                  "Placebo"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Rate of Type 1 Diabetes Per Year",
+                "description": "The rate of type 1 diabetes per year is calculated by dividing the number of participants who develop diabetes by the total number of years of follow-up. The diagnosis of diabetes is as defined by the American Diabetes Association (ADA) based on oral glucose testing or the presence of symptoms and unequivocal hyperglycemia.",
+                "timeFrame": "Glucose tolerance is measured every 6 months for up to 6 years"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Individuals 3-45 years old who have an immediate family member with type 1 diabetes (such as a child, parent, or sibling)\n* Individuals 3-20 years old who have an extended family member with type 1 diabetes (such as a cousin, niece, nephew, aunt, uncle, grandparent, or half-sibling)\n\nExclusion Criteria:\n\n* To be eligible, a person must:\n* Not have diabetes already.\n* Have no previous history of being treated with insulin or oral diabetes medications.\n* Have not received any prior therapy for prevention of type 1 diabetes such as insulin, nicotinamide, or immunosuppressive drugs (i.e. have not been involved in any previous clinical studies of these agents.)\n* Have no known serious diseases.\n* If you are a woman, you must not be planning to become pregnant during the course of the study. You will not be excluded from participation, but are not encouraged to volunteer in the first place if you plan to have a baby during the trial period).",
+            "healthyVolunteers": true,
+            "sex": "ALL",
+            "minimumAge": "3 Years",
+            "maximumAge": "45 Years",
+            "stdAges": [
+              "CHILD",
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Jay S. Skyler, MD",
+                "affiliation": "University of Miami",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Childrens Hospital of Los Angeles, Division of Endocrinology",
+                "city": "Los Angeles",
+                "state": "California",
+                "zip": "90027",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.05223,
+                  "lon": -118.24368
+                }
+              },
+              {
+                "facility": "University of California-San Francisco, Milberry Union East RM 405, 500 Parnassus Ave Box 0136",
+                "city": "San Francisco",
+                "state": "California",
+                "zip": "94143",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.77493,
+                  "lon": -122.41942
+                }
+              },
+              {
+                "facility": "Stanford University",
+                "city": "Stanford",
+                "state": "California",
+                "zip": "94305-5208",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.42411,
+                  "lon": -122.16608
+                }
+              },
+              {
+                "facility": "University of Colorado Barbara Davis Center for Childhood Diabetes",
+                "city": "Denver",
+                "state": "Colorado",
+                "zip": "80262",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.73915,
+                  "lon": -104.9847
+                }
+              },
+              {
+                "facility": "University of Florida Diabetes Research Center",
+                "city": "Gainesville",
+                "state": "Florida",
+                "zip": "32610-0296",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.65163,
+                  "lon": -82.32483
+                }
+              },
+              {
+                "facility": "DPT-1 Operations Coordinating Center",
+                "city": "Miami",
+                "state": "Florida",
+                "zip": "33136",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 25.77427,
+                  "lon": -80.19366
+                }
+              },
+              {
+                "facility": "University of Miami School of Medicine, Jackson Medical Tower",
+                "city": "Miami",
+                "state": "Florida",
+                "zip": "33136",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 25.77427,
+                  "lon": -80.19366
+                }
+              },
+              {
+                "facility": "Indiana University, James Whitcomb Riley Hospital for Children, 702 Barnhill Dr, Ste 5960",
+                "city": "Indianapolis",
+                "state": "Indiana",
+                "zip": "46202",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.76838,
+                  "lon": -86.15804
+                }
+              },
+              {
+                "facility": "Joslin Diabetes Center",
+                "city": "Boston",
+                "state": "Massachusetts",
+                "zip": "02215",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.35843,
+                  "lon": -71.05977
+                }
+              },
+              {
+                "facility": "University of Minnesota",
+                "city": "Minneapolis",
+                "state": "Minnesota",
+                "zip": "55455",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 44.97997,
+                  "lon": -93.26384
+                }
+              },
+              {
+                "facility": "Naomi Berrie Diabetes Center, Columbia University, 1150 St. Nicholas Ave",
+                "city": "New York",
+                "state": "New York",
+                "zip": "10032",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.71427,
+                  "lon": -74.00597
+                }
+              },
+              {
+                "facility": "Children's Hospital of Pittsburgh, Dept/Pediatric Endocrinology, 3705 5th Ave",
+                "city": "Pittsburgh",
+                "state": "Pennsylvania",
+                "zip": "15213",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.44062,
+                  "lon": -79.99589
+                }
+              },
+              {
+                "facility": "University of Texas, Children's Medical Center, 6300 Harry Hines Ste 1200",
+                "city": "Dallas",
+                "state": "Texas",
+                "zip": "75235",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.78306,
+                  "lon": -96.80667
+                }
+              },
+              {
+                "facility": "Virginia Mason Research Center, 1201 Ninth Avenue",
+                "city": "Seattle",
+                "state": "Washington",
+                "zip": "98101",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 47.60621,
+                  "lon": -122.33207
+                }
+              },
+              {
+                "facility": "Hospital for Sick Children, Division of Endocrinology, 555 University Ave, Rm 5110",
+                "city": "Toronto",
+                "state": "Ontario",
+                "zip": "M5G-1X8",
+                "country": "Canada",
+                "geoPoint": {
+                  "lat": 43.70643,
+                  "lon": -79.39864
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "2644534",
+                "type": "BACKGROUND",
+                "citation": "Shah SC, Malone JI, Simpson NE. A randomized trial of intensive insulin therapy in newly diagnosed insulin-dependent diabetes mellitus. N Engl J Med. 1989 Mar 2;320(9):550-4. doi: 10.1056/NEJM198903023200902."
+              },
+              {
+                "pmid": "8096268",
+                "type": "BACKGROUND",
+                "citation": "Keller RJ, Eisenbarth GS, Jackson RA. Insulin prophylaxis in individuals at high risk of type I diabetes. Lancet. 1993 Apr 10;341(8850):927-8. doi: 10.1016/0140-6736(93)91215-8."
+              },
+              {
+                "pmid": "1946445",
+                "type": "BACKGROUND",
+                "citation": "Zhang ZJ, Davidson L, Eisenbarth G, Weiner HL. Suppression of diabetes in nonobese diabetic mice by oral administration of porcine insulin. Proc Natl Acad Sci U S A. 1991 Nov 15;88(22):10252-6. doi: 10.1073/pnas.88.22.10252."
+              },
+              {
+                "pmid": "15855569",
+                "type": "RESULT",
+                "citation": "Skyler JS, Krischer JP, Wolfsdorf J, Cowie C, Palmer JP, Greenbaum C, Cuthbertson D, Rafkin-Mervis LE, Chase HP, Leschek E. Effects of oral insulin in relatives of patients with type 1 diabetes: The Diabetes Prevention Trial--Type 1. Diabetes Care. 2005 May;28(5):1068-76. doi: 10.2337/diacare.28.5.1068."
+              },
+              {
+                "pmid": "12037147",
+                "type": "RESULT",
+                "citation": "Diabetes Prevention Trial--Type 1 Diabetes Study Group. Effects of insulin in relatives of patients with type 1 diabetes mellitus. N Engl J Med. 2002 May 30;346(22):1685-91. doi: 10.1056/NEJMoa012350."
+              },
+              {
+                "pmid": "17583798",
+                "type": "DERIVED",
+                "citation": "Barker JM, McFann KK, Orban T. Effect of oral insulin on insulin autoantibody levels in the Diabetes Prevention Trial Type 1 oral insulin study. Diabetologia. 2007 Aug;50(8):1603-6. doi: 10.1007/s00125-007-0694-0. Epub 2007 Jun 22."
+              },
+              {
+                "pmid": "17563348",
+                "type": "DERIVED",
+                "citation": "Johnson SB, Baughcum AE, Hood K, Rafkin-Mervis LE, Schatz DA; DPT-1 Study Group. Participant and parent experiences in the parenteral insulin arm of the diabetes prevention trial for type 1 diabetes. Diabetes Care. 2007 Sep;30(9):2193-8. doi: 10.2337/dc06-2422. Epub 2007 Jun 11."
+              }
+            ],
+            "seeAlsoLinks": [
+              {
+                "label": "Website for the American Diabetes Association which also gives information about the DPT-1.",
+                "url": "http://www.diabetes.org"
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "YES",
+            "description": "Data are available at the NIDDK Central Repository: https://repository.niddk.nih.gov/studies/dpt-1/?query=dpt-1",
+            "url": "https://repository.niddk.nih.gov/studies/dpt-1/?query=dpt-1"
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00004984",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/17583798/",
+          "identifier": "PMID:17583798",
+          "title": "Effect of oral insulin on insulin autoantibody levels in the Diabetes Prevention Trial Type 1 oral insulin study.",
+          "snippet": "Title: Effect of oral insulin on insulin autoantibody levels in the Diabetes Prevention Trial Type 1 oral insulin study.\nAuthors: Barker JM, McFann KK, Orban T\nJournal: Diabetologia (2007)",
+          "quality_score": 0.45,
+          "retrieved_at": "2026-03-16T19:36:42.422075"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/17563348/",
+          "identifier": "PMID:17563348",
+          "title": "Participant and parent experiences in the parenteral insulin arm of the diabetes prevention trial for type 1 diabetes.",
+          "snippet": "Title: Participant and parent experiences in the parenteral insulin arm of the diabetes prevention trial for type 1 diabetes.\nAuthors: Johnson SB, Baughcum AE, Hood K et al.\nJournal: Diabetes Care (2007)",
+          "quality_score": 0.45,
+          "retrieved_at": "2026-03-16T19:36:42.422149"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10019031/",
+          "identifier": "PMC:10019031",
+          "title": "PMC Article 10019031",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:40.238077"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9716154/",
+          "identifier": "PMC:9716154",
+          "title": "PMC Article 9716154",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:40.238143"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8494707/",
+          "identifier": "PMC:8494707",
+          "title": "PMC Article 8494707",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:40.238164"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7550404/",
+          "identifier": "PMC:7550404",
+          "title": "PMC Article 7550404",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:40.238182"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7139632/",
+          "identifier": "PMC:7139632",
+          "title": "PMC Article 7139632",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:40.238199"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5321245/",
+          "identifier": "PMC:5321245",
+          "title": "PMC Article 5321245",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:40.238215"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5021120/",
+          "identifier": "PMC:5021120",
+          "title": "PMC Article 5021120",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:40.238230"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3628322/",
+          "identifier": "PMC:3628322",
+          "title": "PMC Article 3628322",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:40.238246"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2925042/",
+          "identifier": "PMC:2925042",
+          "title": "PMC Article 2925042",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:40.238261"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [
+          "17583798",
+          "17563348"
+        ],
+        "pubmed_count": 2,
+        "pubmed_efetch_error": "HTTP 429",
+        "pmc_ids": [
+          "10019031",
+          "9716154",
+          "8494707",
+          "7550404",
+          "7139632",
+          "5321245",
+          "5021120",
+          "3628322",
+          "2925042"
+        ],
+        "pmc_count": 9,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 1,
+        "semantic_scholar_total": 1
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00004984",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00004984",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00004984",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00004984",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00004984",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00004984",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

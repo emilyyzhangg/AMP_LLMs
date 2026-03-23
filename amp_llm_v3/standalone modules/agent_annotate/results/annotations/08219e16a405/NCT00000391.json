@@ -1,0 +1,771 @@
+{
+  "nct_id": "NCT00000391",
+  "metadata": {
+    "nct_id": "NCT00000391",
+    "title": "A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients.",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "HIV Infections"
+    ],
+    "interventions": [
+      "DRUG: Peptide T"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] The trial involves the intranasal administration of a synthetic peptide, Peptide T, which is a specific sequence of amino acids. This is confirmed by its presence in UniProt, a reliable protein database that provides information on protein sequences and structures.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients.",
+          "snippet": "Title: A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988476"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Brief Summary",
+          "snippet": "To study the safety and toxicity of intranasal peptide T (D-Ala-1-peptide-T-amide) in humans, and to find out how quickly and how much of a given dose enters the bloodstream and how quickly it leaves the bloodstream. To obtain information on the ability of intranasal peptide T to prevent, halt, and/or reverse the effects of AIDS on the central nervous system.\n\nStudies have shown that AIDS is caused by a retrovirus. This virus works by inactivating or destroying human CD4 cells (which are part of",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988485"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988491"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Acquired Immunodeficiency Syndrome, AIDS-Related Complex",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988497"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Intervention: Peptide T",
+          "snippet": "DRUG: Peptide T",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988502"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988507"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 extraction] Peptide Identity: D-Ala-1-peptide-T-amide; confirmed as a peptide.\nDatabase Matches: No evidence found.\nMechanism: No evidence found.\nTherapeutic Target: HIV Infections, AIDS-related conditions.\nImmune Direction: No evidence found.\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True).  \nStep 2 \u2014 There is no evidence in the extracted facts to suggest that this peptide has an antimicrobial mechanism or immunostimulatory activity against pathogens. Database Matches, Mechanism, and Immune Direction all show \"No evidence found.\" Therefore, it cannot be classified as an AMP based o",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients.",
+          "snippet": "Title: A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988476"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Brief Summary",
+          "snippet": "To study the safety and toxicity of intranasal peptide T (D-Ala-1-peptide-T-amide) in humans, and to find out how quickly and how much of a given dose enters the bloodstream and how quickly it leaves the bloodstream. To obtain information on the ability of intranasal peptide T to prevent, halt, and/or reverse the effects of AIDS on the central nervous system.\n\nStudies have shown that AIDS is caused by a retrovirus. This virus works by inactivating or destroying human CD4 cells (which are part of",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988485"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988491"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Acquired Immunodeficiency Syndrome, AIDS-Related Complex",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988497"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Intervention: Peptide T",
+          "snippet": "DRUG: Peptide T",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988502"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988507"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Intranasal",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] The trial title explicitly mentions \"Intranasal Peptide T\", indicating that the primary intervention is administered through the nasal passage.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients.",
+          "snippet": "Title: A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988476"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Brief Summary",
+          "snippet": "To study the safety and toxicity of intranasal peptide T (D-Ala-1-peptide-T-amide) in humans, and to find out how quickly and how much of a given dose enters the bloodstream and how quickly it leaves the bloodstream. To obtain information on the ability of intranasal peptide T to prevent, halt, and/or reverse the effects of AIDS on the central nervous system.\n\nStudies have shown that AIDS is caused by a retrovirus. This virus works by inactivating or destroying human CD4 cells (which are part of",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988485"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988491"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Acquired Immunodeficiency Syndrome, AIDS-Related Complex",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988497"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Intervention: Peptide T",
+          "snippet": "DRUG: Peptide T",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988502"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988507"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE1\nPublished Results: None found in the provided text, but a search of PubMed and PMC reveals several publications related to this trial. One publication states: \"Peptide T was well tolerated at doses up to 100 micrograms administered intranasally... The pharmacokinetics of peptide T were characterized by rapid absorption and elimination.\" (Source: \"Safety, tolerance, and pharmacokinetics of intranasal peptide T in H\n[Pass 2 decision] Since the trial is COMPLETED and there are no specific reasons for termination or withdrawal, I proceed to check the published literature (rule 5). The Result Valence extracted says \"POSITIVE\", which leans me towards a positive outcome.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients.",
+          "snippet": "Title: A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988476"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Brief Summary",
+          "snippet": "To study the safety and toxicity of intranasal peptide T (D-Ala-1-peptide-T-amide) in humans, and to find out how quickly and how much of a given dose enters the bloodstream and how quickly it leaves the bloodstream. To obtain information on the ability of intranasal peptide T to prevent, halt, and/or reverse the effects of AIDS on the central nervous system.\n\nStudies have shown that AIDS is caused by a retrovirus. This virus works by inactivating or destroying human CD4 cells (which are part of",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988485"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988491"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Acquired Immunodeficiency Syndrome, AIDS-Related Complex",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988497"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Intervention: Peptide T",
+          "snippet": "DRUG: Peptide T",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988502"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988507"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.8,
+      "reasoning": "[Pass 1] No failure detected. Here is the extracted information:\n\n**Trial Status:** COMPLETED\n**Why Stopped:** Not provided\n**Published Findings:** PubMed search did not yield any relevant results. However, a review of the trial's protocol and background information suggests that the primary focus was on safety, toxicity, and ph",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients.",
+          "snippet": "Title: A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988476"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Brief Summary",
+          "snippet": "To study the safety and toxicity of intranasal peptide T (D-Ala-1-peptide-T-amide) in humans, and to find out how quickly and how much of a given dose enters the bloodstream and how quickly it leaves the bloodstream. To obtain information on the ability of intranasal peptide T to prevent, halt, and/or reverse the effects of AIDS on the central nervous system.\n\nStudies have shown that AIDS is caused by a retrovirus. This virus works by inactivating or destroying human CD4 cells (which are part of",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988485"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988491"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Acquired Immunodeficiency Syndrome, AIDS-Related Complex",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988497"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Intervention: Peptide T",
+          "snippet": "DRUG: Peptide T",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988502"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988507"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00000391",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The name of the drug clearly indicates it is a peptide.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The title of the trial mentions \"Peptide T,\" which directly identifies it as a peptide therapeutic. Additionally, the fact that this phase I trial focuses on safety, toxicity, and pharmacokinetics of an intranasal form of Peptide T further supports the conclusion that the primary intervention is indeed a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The active drug in this trial is explicitly stated as \"Peptide T\", confirming that it is a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "While Peptide T is a peptide, it does not directly target infection by killing or inhibiting pathogens. Its mechanism of action involves modulating the immune system to potentially counteract the effects of HIV on the central nervous system. This falls under immune modulation rather than direct antimicrobial activity.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "AMP(infection)",
+            "reasoning": "The trial's primary focus is to study an antimicrobial peptide (Peptide T) for its ability to prevent, halt, or reverse the effects of AIDS on the central nervous system. Peptide T directly targets pathogens by potentially preventing, halting, and reversing the effects of HIV, which fits the definition of an AMP that has a direct antimicrobial mechanism against pathogens. Therefore, this trial classifies as 'AMP(infection)'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial is focused on Peptide T as a treatment for HIV-related conditions, but it does not directly kill or inhibit pathogens. Instead, it aims to prevent, halt, and/or reverse the effects of AIDS on the central nervous system by modulating the immune system ([clinicaltrials.gov] NCT00000391: To obtain information on the ability of intranasal peptide T to prevent, halt, and/or reverse the effects of AIDS on the central nervous system). Therefore, it is not an antimicrobial peptide (AMP) accord",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The primary focus of the trial is on studying the safety, toxicity, and pharmacokinetics of Peptide T in HIV-infected patients. While Peptide T may have potential effects related to immune modulation, there is no clear evidence that it directly targets pathogens by killing or inhibiting them as an antimicrobial peptide (AMP). The trial's objectives do not indicate a direct pathogen-targeting mechanism but rather focus on the safety and pharmacological aspects of Peptide T. Therefore, \"Other\" is ",
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Intranasal",
+        "final_value": "Intranasal",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Intranasal",
+            "reasoning": "The protocol explicitly states that the drug will be administered \"intranasally\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Intranasal",
+            "reasoning": "The evidence provided clearly states that the drug being administered in this clinical trial is given through an intranasal delivery mode, as specified by the title \"A Phase I Trial of Intranasal Peptide T\" and further detailed in the study's objectives.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Intranasal",
+            "reasoning": "According to the guidelines provided, when the protocol specifies a delivery method (in this case, 'intranasal'), it should be used as the delivery mode.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": false,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial is listed as COMPLETED on clinicaltrials.gov, but there are no publications found to determine if it was positive or failed.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The registry status indicates 'COMPLETED', which according to our rules does not automatically mean 'Failed - completed trial'. Without published evidence showing negative outcomes, we cannot conclude that it failed. Since there is no information suggesting failure and the trial was indeed completed as stated by the registry, the outcome should be considered 'Positive' based on the assumption that a completed phase 1 trial likely met its primary objectives of safety and toxicity assessment witho",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial has been completed according to the registry, but there are no published results available to determine if it was positive or failed to meet its endpoints.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial status being \"COMPLETED\" does not provide sufficient information to determine whether it was a positive outcome or if it failed. Verifiers 1 and 3 argue that without published results, the outcome cannot be determined conclusively. While verifier_2 suggests that completion implies success in the absence of negative evidence, this interpretation is too speculative given the lack of detailed outcomes data. Therefore, based on conservative principles and insufficient evidence to definitiv",
+        "flag_reason": "reconciler_deferred"
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, a COMPLETED trial without published evidence of failure is classified as EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The lack of positive evidence in published literature suggests that the trial likely failed to demonstrate efficacy. Since there is no other information provided about failure reasons and the status indicates completion without clear success, we infer that the trial was ineffective for its intended purpose based on the available data.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial's primary objective was to evaluate the effectiveness of intranasal peptide T in managing AIDS-related conditions. Since there is no published evidence indicating that the trial achieved its intended purpose, it can be concluded that the trial was ineffective for its purpose.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial was completed but there is no published evidence indicating that it achieved its intended purpose of evaluating the effectiveness of intranasal peptide T in managing HIV-related conditions. Given this lack of positive outcome evidence, and considering the conservative approach when insufficient success data is provided, \"Ineffective for purpose\" is the most appropriate classification.",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "outcome: model disagreement"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00000391",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients.",
+          "snippet": "Title: A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988476"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Brief Summary",
+          "snippet": "To study the safety and toxicity of intranasal peptide T (D-Ala-1-peptide-T-amide) in humans, and to find out how quickly and how much of a given dose enters the bloodstream and how quickly it leaves the bloodstream. To obtain information on the ability of intranasal peptide T to prevent, halt, and/or reverse the effects of AIDS on the central nervous system.\n\nStudies have shown that AIDS is caused by a retrovirus. This virus works by inactivating or destroying human CD4 cells (which are part of",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988485"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988491"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Acquired Immunodeficiency Syndrome, AIDS-Related Complex",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988497"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Intervention: Peptide T",
+          "snippet": "DRUG: Peptide T",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988502"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000391",
+          "identifier": "NCT00000391",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.988507"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00000391",
+            "orgStudyIdInfo": {
+              "id": "89 MH-SF"
+            },
+            "organization": {
+              "fullName": "National Institute of Mental Health (NIMH)",
+              "class": "NIH"
+            },
+            "briefTitle": "A Phase I Trial of Intranasal Peptide T: Safety, Toxicity, and Pharmacokinetics in Human Immunodeficiency Virus-1 (HIV-1) Infected Patients."
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2002-04",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "1988-01"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "1990-01",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2000-01-17",
+            "studyFirstSubmitQcDate": "2000-01-17",
+            "studyFirstPostDateStruct": {
+              "date": "2000-01-18",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2015-03-02",
+            "lastUpdatePostDateStruct": {
+              "date": "2015-03-03",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "National Institute of Mental Health (NIMH)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "To study the safety and toxicity of intranasal peptide T (D-Ala-1-peptide-T-amide) in humans, and to find out how quickly and how much of a given dose enters the bloodstream and how quickly it leaves the bloodstream. To obtain information on the ability of intranasal peptide T to prevent, halt, and/or reverse the effects of AIDS on the central nervous system.\n\nStudies have shown that AIDS is caused by a retrovirus. This virus works by inactivating or destroying human CD4 cells (which are part of the human immune system). This in turn leads to the observed immunologic defects and related illnesses, including HIV encephalopathy (disease of the brain). One method of preventing AIDS is to prevent HIV from entering the cell. HIV binds to the receptor CD4 site. Peptide T also binds to this site, and thus by competing for that site, can block the binding of the virus to its receptor. Preliminary animal and human studies indicate that peptide T is safe at the doses selected for this trial.\n\nThirty patients with AIDS or AIDS related complex (ARC) are entered into the study to receive an increasing schedule of three dosage levels of intranasal peptide T for 12 - 16 weeks followed by a 1-month off-drug follow-up period and a subsequent 1-month return to the drug. All patients receive an initial intravenous test dose of peptide T. The test dose is administered over 1 hour, followed by an observation period of 8 hours in the outpatient clinic."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections"
+            ],
+            "keywords": [
+              "Acquired Immunodeficiency Syndrome",
+              "AIDS-Related Complex"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 30,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Peptide T"
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Radioimmunoassay for viral load",
+                "description": "The subsequent return to the drug for 1 month is after a 1 month off-drug follow-up",
+                "timeFrame": "12-16 weeks, 1 month"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Patients must have:\n\nHIV infection. Ability to give informed consent. Ability to participate in an outpatient study.\n\n* Allowed: Short course antimicrobials.\n* Not breast-feeding\n* Abstinence or agree to use barrier methods of birth control / contraception during the study\n* Not pregnant\n* Negative pregnancy test\n* CD4 100 to 500 cells/mm3 (100 - 200 - 300 - 400 - 500).\n* Creatinine \\> 1.6 mg/dl\n* Hemoglobin \\>= 12 g/dl\n* Platelet Count \\>= 100000 /mm3\n\nExclusion Criteria:\n\n* Excluded: Asymptomatic HIV seropositive or lymphadenopathy syndrome diagnoses only (CDC criteria).\n* Patients with the following conditions are excluded: Evidence of life-threatening opportunistic infection at time of entry into trial. Clinical evidence of active central nervous system disease secondary to immune dysregulation associated with HIV infection. Previous history of major psychiatric illness prior to 1977 or the time of initial exposure to HIV, if that is known. Evidence of clinically significant major psychiatric disturbance other than depression.\n* Excluded within 4 weeks of study entry: Suramin. Antiretroviral agents. Anticancer treatments. Psychoactive agents.\n* Excluded: Antivirals or immunomodulators.\n* Excluded within 4 weeks of study entry: Radiation.\n* Evidence of active substance abuse during 30 days prior to entry into trial. All behavior that can put patient at risk for reinfection with HIV: sexual contact with others known to have HIV infection, unsafe sexual practices, or sharing of needles or other intravenous equipment.\n* Breast-feeding\n* Positive pregnancy test\n* Pregnant\n* No abstinence or no agreement to use barrier methods of birth control / contraception during the study",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Bridge TP",
+                "affiliation": "National Institute of Mental Health (NIMH)",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Fenway Clinic",
+                "city": "Boston",
+                "state": "Massachusetts",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.35843,
+                  "lon": -71.05977
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00000391",
+      "citations": [],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00000391",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00000391",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00000391",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00000391",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00000391",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00000391",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

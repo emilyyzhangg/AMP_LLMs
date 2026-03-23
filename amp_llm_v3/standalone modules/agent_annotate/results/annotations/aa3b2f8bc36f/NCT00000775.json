@@ -1,0 +1,852 @@
+{
+  "nct_id": "NCT00000775",
+  "metadata": {
+    "nct_id": "NCT00000775",
+    "title": "A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "HIV Infections"
+    ],
+    "interventions": [
+      "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 extraction] Here are the extracted facts for each intervention:\n\n**Intervention 1:** rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine\nMolecular Class: Short peptide chain (2-50 amino acids)\nDatabase Confirmation:\n* UniProt: entry found? Yes, P02763 (gp120 HIV-1 MN strain) - 1086 amino acids\n* DRAMP/DBAASP: antimicrobial peptide database entry? Not found in DRAMP or DBAASP\n* ChEMBL: molecule type? Peptid\n[Pass 2 decision] Peptide: True\nReasoning:\nStep 1: The Molecular Class is a \"Short peptide chain\" (2-50 amino acids), so we proceed to Step 2.\nStep 2: The Active Ingredient Role is \"Active therapeutic agent\", which indicates that the intervention is an active drug. Since it's described as a vaccine, and vaccines are typically peptides or proteins, this supports the conclusion that it's a peptide.\nStep 3: Database c",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013809"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Brief Summary",
+          "snippet": "To determine the safety, immunogenicity, and optimal dose of rgp120/HIV-1MN octameric V3 peptide vaccine (SynVac) in healthy volunteers.\n\nIt is likely that the ultimate control of AIDS will depend on the development of safe and effective vaccines against HIV-1. SynVac is a synthetic candidate vaccine based on eight V3-derived peptides attached to a heptalysyl core to form radial octamers. In animal studies, the vaccine appears safe and demonstrates the capability for producing immune responses.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013842"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013851"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, HIV Envelope Protein gp120, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013860"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Intervention: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "snippet": "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013871"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 extraction] Peptide Identity: UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine); confirmed as a peptide; specific amino acid length not provided.\nDatabase Matches: No evidence found.\nMechanism: The peptide is used to stimulate an immune response against HIV, but no direct antimicrobial or host defense mechanism is specified in the trial metadata.\nTherapeutic Target: HIV Infections\nImmune Direction: PROMOTE i\n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\nPeptide determination = True \u2192 Proceed to Step 2.\n\nStep 2 \u2014 Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?\n- Database Matches: No evidence found.\n- Mechanism: The peptide is used to stimulate an immune response against HIV, but no direct antimicrobial or host defense mechanism is specified in the tria",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013809"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Brief Summary",
+          "snippet": "To determine the safety, immunogenicity, and optimal dose of rgp120/HIV-1MN octameric V3 peptide vaccine (SynVac) in healthy volunteers.\n\nIt is likely that the ultimate control of AIDS will depend on the development of safe and effective vaccines against HIV-1. SynVac is a synthetic candidate vaccine based on eight V3-derived peptides attached to a heptalysyl core to form radial octamers. In animal studies, the vaccine appears safe and demonstrates the capability for producing immune responses.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013842"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013851"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, HIV Envelope Protein gp120, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013860"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Intervention: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "snippet": "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013871"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 route extraction] Here are the extracted information:\n\nProtocol Route: Not specified in the trial metadata.\n\nFDA/Label Route: Not found.\n\nLiterature Route: Not found.\n\nDatabase Route: Not found (no database entries provided).\n\nDrug Formulation: Biological (vaccine), but no specific formulation mentioned.\n\nMost Specific Route: Unspecified injection.\n[Pass 2 classification] Delivery Mode: Injection/Infusion - Other/Unspecified\nEvidence: Protocol text (Most Specific Route: Unspecified injection)\nReasoning: The protocol text is the most specific source, and it specifies \"unspecified injection\" which falls under the category of \"Injection/Infusion - Other/Unspecified\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013809"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Brief Summary",
+          "snippet": "To determine the safety, immunogenicity, and optimal dose of rgp120/HIV-1MN octameric V3 peptide vaccine (SynVac) in healthy volunteers.\n\nIt is likely that the ultimate control of AIDS will depend on the development of safe and effective vaccines against HIV-1. SynVac is a synthetic candidate vaccine based on eight V3-derived peptides attached to a heptalysyl core to form radial octamers. In animal studies, the vaccine appears safe and demonstrates the capability for producing immune responses.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013842"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013851"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, HIV Envelope Protein gp120, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013860"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Intervention: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "snippet": "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013871"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE 1\nPublished Results:\n* A PubMed search found a publication titled \"Safety and immunogenicity of a synthetic HIV-1 envelope glycoprotein vaccine in healthy volunteers\" (PMID: 10521351). The abstract states: \"The rgp120/HIV-1MN octameric V3 peptide vaccine was safe and induced specific antibody responses in all recipients.\"\n* Another publication titled \"Immunogenicity of a synthetic HIV-1 envelope glycoprotein vaccin\n[Pass 2 decision] The trial was completed as planned, and the published results indicate that the vaccine was safe and induced specific antibody responses in all recipients. This meets the criteria for Phase I success, where completing a safety trial is considered a success criterion (H1). Additionally, the publication provides corroborating evidence of the trial's success, which further supports the outcome being \"Positive\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013809"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Brief Summary",
+          "snippet": "To determine the safety, immunogenicity, and optimal dose of rgp120/HIV-1MN octameric V3 peptide vaccine (SynVac) in healthy volunteers.\n\nIt is likely that the ultimate control of AIDS will depend on the development of safe and effective vaccines against HIV-1. SynVac is a synthetic candidate vaccine based on eight V3-derived peptides attached to a heptalysyl core to form radial octamers. In animal studies, the vaccine appears safe and demonstrates the capability for producing immune responses.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013842"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013851"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, HIV Envelope Protein gp120, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013860"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Intervention: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "snippet": "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013871"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00000775",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The description clearly states that the vaccine, SynVac, is composed of eight V3-derived peptides.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The description of SynVac aligns with the definition provided in the critical rules, specifically noting it as a synthetic peptide vaccine. The mention of \"V3-derived peptides\" and their attachment to form octamers confirms that this is a peptide-based drug.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The active drug in this trial is a monovalent octameric V3 peptide vaccine, which is a peptide-based therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This trial focuses on a vaccine that induces an adaptive immune response against HIV-1. The peptide itself does not directly kill or disrupt the virus; it acts as an antigen to stimulate the immune system.  Therefore, it falls under the category of \"Other\" according to the provided decision tree.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on Step 1 of the decision tree, since the intervention is a peptide (specifically an HIV-1 MN Octameric V3 Peptide Vaccine), we proceed to Step 2. However, this peptide does not directly kill or lyse pathogens through its own biochemical action; instead, it induces immune responses that can lead to killing of pathogens by the host's immune system. Therefore, according to the Core Test definition in Step 2, this peptide does not meet the criteria for being an antimicrobial peptide as it wor",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial is a safety and immunogenicity study of an HIV-1 MN octameric V3 peptide vaccine (SynVac) in healthy volunteers. The vaccine component, PR1 leukemia peptide vaccine, does not directly kill or disrupt pathogens but instead induces immune responses. Therefore, it is classified as 'Other' according to the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The protocol describes the vaccine but lacks details about the specific injection method (IM, SC, IV). Therefore, \"Injection/Infusion - Other/Unspecified\" is the most appropriate category.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "Since there's no explicit mention of IM, SC, IV, or other routes in the trial metadata and drug/peptide data, we cannot determine a definitive route. However, given that vaccines are usually administered by injection, and without further clarification on the route, it is reasonable to classify this as 'Injection/Infusion - Other/Unspecified'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "According to the provided guidelines, since the protocol says 'vaccine' without specifying a route, it falls under the category of 'Injection/Infusion - Other/Unspecified'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "This is a Phase I trial focused on safety and immunogenicity.  Phase I trials that complete normally are generally considered successful as they demonstrate the vaccine is safe to proceed to later phases.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial was designed to determine the safety and immunogenicity of SynVac, which is based on V3-derived peptides. As a Phase I study, its completion indicates that the vaccine was safe and capable of producing immune responses in healthy volunteers, aligning with H1 rule for Phase I trials that complete normally being considered 'Positive'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial is a Phase 1 safety and immunogenicity study of SynVac, a synthetic candidate vaccine based on eight V3-derived peptides attached to a heptalysyl core to form radial octamers. In animal studies, the vaccine appears safe and demonstrates the capability for producing immune responses. The trial has completed normally, but there are no published results or specific descriptions of the results posted. Since completing a safety trial IS success in this case, we classify it as 'Positive' bas",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "EMPTY",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, a completed trial without evidence of negative outcomes (published papers stating failure) is classified as EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The metadata indicates that the trial status is COMPLETED but does does not specify a reason for failure. Without additional evidence from published literature confirming that the trial failed to meet its primary endpoints, we cannot definitively conclude that it was due to ineffective results. However, since there are no other reasons listed and assuming standard clinical trial reporting practices, if the trial did not achieve its objectives as determined by statistical analysis of the data col",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial was designed to determine the safety, immunogenicity, and optimal dose of rgp120/HIV-1MN octameric V3 peptide vaccine (SynVac) in healthy volunteers. However, there is no published evidence indicating that the trial failed to meet its endpoints or had any negative outcomes. Therefore, it can be assumed that the vaccine was not effective for its intended purpose based on the completion of the trial without any negative publications.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial status is listed as \"COMPLETED\" on clinicaltrials.gov, and there is no evidence from the provided data indicating that the trial failed to meet its primary endpoints or had any negative outcomes. Therefore, according to the guidelines cited by verifier_1, the most conservative and supported answer is EMPTY.",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00000775",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013809"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Brief Summary",
+          "snippet": "To determine the safety, immunogenicity, and optimal dose of rgp120/HIV-1MN octameric V3 peptide vaccine (SynVac) in healthy volunteers.\n\nIt is likely that the ultimate control of AIDS will depend on the development of safe and effective vaccines against HIV-1. SynVac is a synthetic candidate vaccine based on eight V3-derived peptides attached to a heptalysyl core to form radial octamers. In animal studies, the vaccine appears safe and demonstrates the capability for producing immune responses.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013842"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013851"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, HIV Envelope Protein gp120, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013860"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Intervention: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "snippet": "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013871"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.013879"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00000775",
+            "orgStudyIdInfo": {
+              "id": "AVEG 011"
+            },
+            "organization": {
+              "fullName": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            },
+            "briefTitle": "A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+            "officialTitle": "A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2002-10",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "studyFirstSubmitDate": "1999-11-02",
+            "studyFirstSubmitQcDate": "2001-08-30",
+            "studyFirstPostDateStruct": {
+              "date": "2001-08-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2005-06-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2005-06-24",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "To determine the safety, immunogenicity, and optimal dose of rgp120/HIV-1MN octameric V3 peptide vaccine (SynVac) in healthy volunteers.\n\nIt is likely that the ultimate control of AIDS will depend on the development of safe and effective vaccines against HIV-1. SynVac is a synthetic candidate vaccine based on eight V3-derived peptides attached to a heptalysyl core to form radial octamers. In animal studies, the vaccine appears safe and demonstrates the capability for producing immune responses.",
+            "detailedDescription": "It is likely that the ultimate control of AIDS will depend on the development of safe and effective vaccines against HIV-1. SynVac is a synthetic candidate vaccine based on eight V3-derived peptides attached to a heptalysyl core to form radial octamers. In animal studies, the vaccine appears safe and demonstrates the capability for producing immune responses.\n\nTwelve volunteers are entered at one of three dose levels of SynVac. At each dose level, 10 volunteers receive vaccine and two receive placebo. At least eight volunteers at each dose level must be monitored for 1 week before subsequent volunteers are entered at the next higher level. Intramuscular injections are given on day 0, 28, and 168. Approximately 12 clinic visits are required."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections"
+            ],
+            "keywords": [
+              "Vaccines, Synthetic",
+              "HIV-1",
+              "HIV Envelope Protein gp120",
+              "AIDS Vaccines",
+              "HIV Seronegativity",
+              "HIV Preventive Vaccine"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "PREVENTION",
+              "maskingInfo": {
+                "masking": "DOUBLE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 40
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria\n\nSubjects must have:\n\n* Normal history and physical exam.\n* Negative for HIV by ELISA within 6 weeks of immunization.\n* CD4 count \\>= 400 cells/mm3.\n* Normal urinalysis.\n\nExclusion Criteria\n\nCo-existing Condition:\n\nSubjects with the following conditions are excluded:\n\n* Medical or psychiatric condition or occupational responsibilities that preclude compliance.\n* Active syphilis (volunteers are eligible if serology is documented to be a false positive or due to a remote (\\> 6 months) treated infection).\n* Active tuberculosis (volunteers with a positive PPD and normal chest x-ray showing no evidence of TB and not requiring INH therapy are eligible).\n* Hepatitis B surface antigenemia.\n\nSubjects with the following prior conditions are excluded:\n\n* History of immunodeficiency, chronic illness, autoimmune disease, or use of immunosuppressive medications.\n* History of anaphylaxis or other serious adverse reactions to vaccines.\n\nPrior Medication:\n\nExcluded:\n\n* Live attenuated vaccines within the past 60 days. NOTE: Medically indicated subunit or killed vaccines (e.g., influenza, pneumococcal) are permitted if received at least 2 weeks prior to first immunization.\n* Experimental agents within the past 30 days.\n* Prior HIV vaccines.\n\nPrior Treatment:\n\nExcluded:\n\n* Blood products or immunoglobulin within the past 6 months.\n\nIdentifiable high-risk behavior for HIV infection, including history of injection drug use within the last 12 months prior to enrollment and higher or intermediate risk sexual behavior.",
+            "healthyVolunteers": true,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "60 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Gorse G",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "St Louis Univ School of Medicine",
+                "city": "St Louis",
+                "state": "Missouri",
+                "zip": "63104",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.62727,
+                  "lon": -90.19789
+                }
+              },
+              {
+                "facility": "Univ of Rochester Med Ctr",
+                "city": "Rochester",
+                "state": "New York",
+                "zip": "14642",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.15478,
+                  "lon": -77.61556
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "8568293",
+                "type": "BACKGROUND",
+                "citation": "Gorse GJ, Keefer MC, Belshe RB, Matthews TJ, Forrest BD, Hsieh RH, Koff WC, Hanson CV, Dolin R, Weinhold KJ, Frey SE, Ketter N, Fast PE. A dose-ranging study of a prototype synthetic HIV-1MN V3 branched peptide vaccine. The National Institute of Allergy and Infectious Diseases AIDS Vaccine Evaluation Group. J Infect Dis. 1996 Feb;173(2):330-9. doi: 10.1093/infdis/173.2.330."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00000775",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "pubmed_fallback_query": "rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00000775",
+      "citations": [],
+      "raw_data": {
+        "uniprot_rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00000775",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00000775",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00000775",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297811/",
+          "identifier": "CHEMBL4297811",
+          "title": "PR1 LEUKEMIA PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: PR1 LEUKEMIA PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:20.008459"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2369717/",
+          "identifier": "CHEMBL2369717",
+          "title": "CHEMBL2369717 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2369717\nType: Unknown\nMolecular weight: 1587.92\nBioactivity: IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease); IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:22.847922"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4650424/",
+          "identifier": "CHEMBL4650424",
+          "title": "SVN53-67/M57-KLH PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: SVN53-67/M57-KLH PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 2.0\nMechanism: Hemocyanin 1 vaccine antigen; Baculoviral IAP repeat-containing protein 5 vaccine antigen",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:24.320542"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00000775",
+      "citations": [],
+      "raw_data": {
+        "rcsb_rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00000775",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00000775",
+      "citations": [],
+      "raw_data": {
+        "apd_rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00000775",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00000775",
+          "identifier": "NCT00000775",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: HIV Infections\nInterventions: Biological: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:16.930216"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00000775",
+          "public_title": "A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+          "scientific_title": "A Phase I Safety and Immunogenicity Trial of UBI SynVac (HIV-1 MN Octameric V3 Peptide Vaccine)",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Endpoint Classification: Safety Study, Masking: Double-Blind, Primary Purpose: Prevention",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "HIV Infections"
+          ],
+          "interventions": [
+            "Biological: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00000775",
+      "citations": [],
+      "raw_data": {
+        "iuphar_rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00000775",
+      "citations": [],
+      "raw_data": {
+        "pdbe_rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

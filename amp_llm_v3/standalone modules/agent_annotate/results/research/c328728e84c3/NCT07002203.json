@@ -1,0 +1,485 @@
+{
+  "nct_id": "NCT07002203",
+  "completed_at": "2026-03-19 17:15:29 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT07002203",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT07002203",
+          "identifier": "NCT07002203",
+          "title": "A Phase Ib Clinical Study of Personalized Neoantigen Peptide Vaccines for Solid Tumors",
+          "snippet": "Title: A Phase Ib Clinical Study of Personalized Neoantigen Peptide Vaccines for Solid Tumors",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-20T00:12:28.282519"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT07002203",
+          "identifier": "NCT07002203",
+          "title": "Brief Summary",
+          "snippet": "This clinical trial is studying the safety and efficacy of a personalized cancer vaccine called a neoantigen peptide vaccine in patients with solid tumors. These vaccines are custom-made for each patient using specific mutations (neoantigens) found in their own tumor. The goal is to help the patient's immune system recognize and attack their cancer.\n\nThe study will enroll adult patients (20 years or older) who have solid tumors that meet specific stage-related criteria. These include advanced ca",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-20T00:12:28.282579"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT07002203",
+          "identifier": "NCT07002203",
+          "title": "Study Status",
+          "snippet": "Status: RECRUITING",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-20T00:12:28.282601"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT07002203",
+          "identifier": "NCT07002203",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Solid Tumors, Advanced Cancer, Recurrent Cancer, Neoantigen-Specific Immunotherapy, Personalized Cancer Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-20T00:12:28.282622"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT07002203",
+          "identifier": "NCT07002203",
+          "title": "Intervention: Personalized Neoantigen Peptide Vaccine",
+          "snippet": "BIOLOGICAL: Personalized Neoantigen Peptide Vaccine - This is a personalized cancer vaccine made of 10-20 synthetic long peptides derived from the unique mutations (neoantigens) found in a patient's tumor. Each vaccine is custom-formulated based on whole exome and RNA sequencing of tumor and normal tissue. The peptides are administered intramuscularly ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-20T00:12:28.282648"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT07002203",
+          "identifier": "NCT07002203",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-20T00:12:28.282668"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT07002203",
+            "orgStudyIdInfo": {
+              "id": "SQK01-002"
+            },
+            "organization": {
+              "fullName": "Seqker Biosciences, Inc.",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Personalized Neoantigen Peptide Vaccines for Solid Tumors",
+            "officialTitle": "A Phase Ib Clinical Study of Personalized Neoantigen Peptide Vaccines for Solid Tumors"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2025-11",
+            "overallStatus": "RECRUITING",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2024-03-01",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2027-08",
+              "type": "ESTIMATED"
+            },
+            "completionDateStruct": {
+              "date": "2027-08",
+              "type": "ESTIMATED"
+            },
+            "studyFirstSubmitDate": "2025-05-23",
+            "studyFirstSubmitQcDate": "2025-05-23",
+            "studyFirstPostDateStruct": {
+              "date": "2025-06-03",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2025-11-27",
+            "lastUpdatePostDateStruct": {
+              "date": "2025-12-01",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Seqker Biosciences, Inc.",
+              "class": "INDUSTRY"
+            },
+            "collaborators": [
+              {
+                "name": "Bumrungrad International Hospital",
+                "class": "OTHER"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": true,
+            "isFdaRegulatedDrug": false,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "This clinical trial is studying the safety and efficacy of a personalized cancer vaccine called a neoantigen peptide vaccine in patients with solid tumors. These vaccines are custom-made for each patient using specific mutations (neoantigens) found in their own tumor. The goal is to help the patient's immune system recognize and attack their cancer.\n\nThe study will enroll adult patients (20 years or older) who have solid tumors that meet specific stage-related criteria. These include advanced cancers that are resistant to prior treatments and early-stage cancers at high risk of recurrence, where there are no standard adjuvant therapies available.\n\nParticipants will receive:\n\n* A personalized neoantigen peptide vaccine designed from the mutations in their tumor tissue.\n* Poly-ICLC (Hiltonol), a substance that stimulates the immune system.\n* An anti-PD-1 immune checkpoint inhibitor, a drug that helps the immune system stay active against cancer.\n\nThe vaccine and drugs will be given through multiple injections over several months. Blood samples and imaging will be used to monitor the immune response and how the cancer responds to treatment. Participants will be followed for up to 12 months.\n\nThis study does not include a placebo group. Every participant will receive the personalized vaccine along with the other therapies.\n\nThe primary objectives of this study are:\n\n1. To assess whether the treatment is safe and tolerable.\n2. To evaluate whether this approach helps control the cancer and can be combined with other standard treatments in the future."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Solid Tumors",
+              "Advanced Cancer",
+              "Recurrent Cancer",
+              "Neoantigen-Specific Immunotherapy",
+              "Personalized Cancer Vaccine"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1",
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 10,
+              "type": "ESTIMATED"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Personalized Neoantigen Peptide Vaccine + Poly-ICLC + Anti-PD-1",
+                "type": "EXPERIMENTAL",
+                "interventionNames": [
+                  "Biological: Personalized Neoantigen Peptide Vaccine"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "Personalized Neoantigen Peptide Vaccine",
+                "description": "This is a personalized cancer vaccine made of 10-20 synthetic long peptides derived from the unique mutations (neoantigens) found in a patient's tumor. Each vaccine is custom-formulated based on whole exome and RNA sequencing of tumor and normal tissue. The peptides are administered intramuscularly in combination with poly-ICLC (Hiltonol) as an adjuvant to enhance immune response. The intervention aims to induce T-cell responses against tumor-specific neoantigens. Vaccinations are given during priming and booster phases, with long-term follow-up and immune monitoring.",
+                "armGroupLabels": [
+                  "Personalized Neoantigen Peptide Vaccine + Poly-ICLC + Anti-PD-1"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Incidence of Adverse Events",
+                "description": "Number and severity of treatment-emergent adverse events, graded according to CTCAE v5.0, to evaluate the safety and tolerability of personalized neoantigen peptide vaccines in combination with poly-ICLC and an anti-PD-1 immune checkpoint inhibitor.",
+                "timeFrame": "From first vaccination through 72 weeks"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Objective Tumor Response Rate (ORR)",
+                "description": "Proportion of participants achieving complete or partial response as assessed by RECIST v1.1 or mRECIST criteria.",
+                "timeFrame": "Baseline to 72 weeks after initial vaccination"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n1. Age: 20 years or older.\n2. Language proficiency: Able to read and understand Thai clearly.\n3. Consent: Willing to provide informed consent and sign a participation agreement.\n4. Life expectancy: Estimated to be at least 6 months from the date of consent.\n5. Eligibility from prior research: Must have participated in the SQK01-002A research project and have tumor tissue confirmed as suitable for neoantigen peptide vaccine production.\n6. Performance status: ECOG performance status of 0-2 with stable organ function, no rapid disease progression, or impending organ failure.\n7. Cancer diagnosis: Clinically and pathologically confirmed cancer diagnosis, with supporting radiological evidence.\n8. Cancer stage-specific criteria:\n\n   i. Advanced cancer: Suitable for immune checkpoint inhibitors (ICIs) and shows resistance to prior therapies, with measurable lesions based on mRECIST1.1 criteria.\n\n   ii. Early-stage cancer: High recurrence risk despite prior surgery and/or radiotherapy, with no current adjuvant treatment standard.\n9. Laboratory parameters:\n\n   i. Lymphocyte count \u2265 800 cells/\u03bcL. ii. Neutrophil count \u2265 1,500 cells/\u03bcL. iii. Platelet count \u2265 75,000 cells/\u03bcL. iv. AST \u2264 2.5 times the upper limit of normal (ULN). v. ALT \u2264 2.5 times ULN. vi. Total bilirubin \u2264 1.5 times ULN. vii. Serum creatinine \u2264 1.5 times ULN.\n10. Consent to Avoid Pregnancy or Causing Pregnancy Under the Following Criteria i. Female participants not of reproductive age, defined as having undergone a hysterectomy and/or bilateral oophorectomy, experiencing continuous menopause for more than 12 months, or being over 60 years of age.\n\nii. Female participants of reproductive age must undergo a pregnancy test and have a confirmed negative result during the preparation phase and before the first day of vaccination. They must also consent to using contraception with an efficacy rate greater than 99%, as recommended by the principal investigator, throughout the study duration, including the preparation phase and follow-up, and up to 120 days after the final treatment.\n\niii. Male participants must consent to using contraception with an efficacy rate greater than 99%, as recommended by the principal investigator, throughout the study duration, including the preparation phase and up to 120 days after the final treatment.\n\nExclusion Criteria:\n\n1. History of hypersensitivity to peptide vaccines or related substances.\n2. Autoimmune disease history.\n3. Previous treatments that significantly suppress or impair immune function.\n4. Refusal of current standard-of-care treatment.\n5. Active brain or central nervous system metastases unless well-controlled with steroids \u2264 10 mg/day prednisolone.\n6. Presence of more than one active cancer type.\n7. Uncontrolled cardiac conditions, such as unstable angina or advanced heart failure (NYHA Class III/IV).\n\n   i. Participants with pacemakers may be eligible if stabilized for at least 1 month before vaccination.\n8. Receipt of any other vaccines within 28 days before the first neoantigen peptide vaccine.\n9. Participation in another clinical trial.\n10. Use of immunosuppressive drugs or steroids \\> 10 mg/day prednisolone (except inhaled/intranasal corticosteroids).\n11. Pre-existing conditions that could compromise the efficacy or safety of the peptide vaccine.\n12. Pregnancy or breastfeeding.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "20 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "centralContacts": [
+              {
+                "name": "Seqker Clinical Study Team",
+                "role": "CONTACT",
+                "phone": "+6690-986-2498",
+                "email": "clinical@seqker.com"
+              },
+              {
+                "name": "Trairak Pisitkun, M.D.",
+                "role": "CONTACT",
+                "phone": "+6692-537-0549",
+                "email": "trairak.pisitkun@seqker.com"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Horizon Cancer Excellence Center, Bumrungrad International Hospital",
+                "status": "RECRUITING",
+                "city": "Bangkok",
+                "zip": "10110",
+                "country": "Thailand",
+                "contacts": [
+                  {
+                    "name": "Clinical Research Center",
+                    "role": "CONTACT",
+                    "phone": "+662-011-4245",
+                    "email": "researchcenter@bumrungrad.com"
+                  }
+                ],
+                "geoPoint": {
+                  "lat": 13.75398,
+                  "lon": 100.50144
+                }
+              },
+              {
+                "facility": "Phyathai-1 Hospital",
+                "status": "RECRUITING",
+                "city": "Bangkok",
+                "zip": "10400",
+                "country": "Thailand",
+                "contacts": [
+                  {
+                    "name": "Vigrom Jennetisin, M.D.",
+                    "role": "CONTACT",
+                    "phone": "+6693-535-4556",
+                    "email": "vigrom_md@yahoo.com"
+                  }
+                ],
+                "geoPoint": {
+                  "lat": 13.75398,
+                  "lon": 100.50144
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT07002203",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/33473101/",
+          "identifier": "PMID:33473101",
+          "title": "Personalized neoantigen pulsed dendritic cell vaccine for advanced lung cancer.",
+          "snippet": "Title: Personalized neoantigen pulsed dendritic cell vaccine for advanced lung cancer.\nAuthors: Ding Zhenyu, Li Qing, Zhang Rui et al.\nJournal: Signal transduction and targeted therapy (2021)\nAbstract: Neoantigens are considered to be ultimate target of tumor immunotherapy due to their high tumor specificity and immunogenicity. Dendritic cell (DCs) vaccines based on neoantigens have exciting effects in treatment of some malignant tumors and are a promising therapeutic modality. Lung cancer is a le",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-20T00:12:36.057395"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/40094414/",
+          "identifier": "PMID:40094414",
+          "title": "PGV001, a Multi-Peptide Personalized Neoantigen Vaccine Platform: Phase I Study in Patients with Solid and Hematologic Malignancies in the Adjuvant Setting.",
+          "snippet": "Title: PGV001, a Multi-Peptide Personalized Neoantigen Vaccine Platform: Phase I Study in Patients with Solid and Hematologic Malignancies in the Adjuvant Setting.\nAuthors: Saxena Mansi, Marron Thomas U, Kodysh Julia et al.\nJournal: Cancer discovery (2025)\nAbstract: The PGV001 platform is feasible, safe, and immunogenic. The OpenVax pipeline predicted immunogenic neoantigens in tumors with wide-ranging mutational burdens. Data from this study prompted three additional PGV001 trials, one in newly diagnosed glioblastoma, one in urothelial cancer in combination wi",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-20T00:12:36.057456"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/39127809/",
+          "identifier": "PMID:39127809",
+          "title": "A real-world observation of patients with glioblastoma treated with a personalized peptide vaccine.",
+          "snippet": "Title: A real-world observation of patients with glioblastoma treated with a personalized peptide vaccine.\nAuthors: Latzer Pauline, Zelba Henning, Battke Florian et al.\nJournal: Nature communications (2024)\nAbstract: Current treatment outcome of patients with glioblastoma (GBM) remains poor. Following standard therapy, recurrence is universal with limited survival. Tumors from 173 GBM patients are analysed for somatic mutations to generate a personalized peptide vaccine targeting tumor-specific neoantigens. All ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-20T00:12:36.057471"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/40645179/",
+          "identifier": "PMID:40645179",
+          "title": "A multi-adjuvant personal neoantigen vaccine generates potent immunity in melanoma.",
+          "snippet": "Title: A multi-adjuvant personal neoantigen vaccine generates potent immunity in melanoma.\nAuthors: Blass Eryn, Keskin Derin B, Tu Chloe R et al.\nJournal: Cell (2025)\nAbstract: Personalized neoantigen-targeting vaccines have demonstrated great promise; however, improved immunogenicity is still needed. Since antigen availability and effective T cell priming are critical for maximal immunogenicity, we tested a synthetic long peptide vaccine formulated with Montanide, poly-IC",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-20T00:12:36.057484"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/39582860/",
+          "identifier": "PMID:39582860",
+          "title": "Personalized cancer vaccine design using AI-powered technologies.",
+          "snippet": "Title: Personalized cancer vaccine design using AI-powered technologies.\nAuthors: Kumar Anant, Dixit Shriniket, Srinivasan Kathiravan et al.\nJournal: Frontiers in immunology (2024)\nAbstract: Immunotherapy has ushered in a new era of cancer treatment, yet cancer remains a leading cause of global mortality. Among various therapeutic strategies, cancer vaccines have shown promise by activating the immune system to specifically target cancer cells. While current cancer vaccines are primaril",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-20T00:12:36.057496"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "pubmed_fallback_query": "Personalized Neoantigen Peptide Vaccine",
+        "pubmed_fallback_ids": [
+          "33473101",
+          "40094414",
+          "39127809",
+          "40645179",
+          "39582860"
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT07002203",
+      "citations": [],
+      "raw_data": {
+        "uniprot_Personalized Neoantigen Peptide Vaccine": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT07002203",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT07002203",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Personalized Neoantigen Peptide Vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT07002203",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297811/",
+          "identifier": "CHEMBL4297811",
+          "title": "PR1 LEUKEMIA PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: PR1 LEUKEMIA PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:30.021351"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4650424/",
+          "identifier": "CHEMBL4650424",
+          "title": "SVN53-67/M57-KLH PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: SVN53-67/M57-KLH PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 2.0\nMechanism: Hemocyanin 1 vaccine antigen; Baculoviral IAP repeat-containing protein 5 vaccine antigen",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:30.361662"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'Personalized Neoantigen Peptide Vaccine'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT07002203",
+      "citations": [],
+      "raw_data": {
+        "rcsb_Personalized Neoantigen Peptide Vaccine": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT07002203",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_Personalized Neoantigen Peptide Vaccine_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT07002203",
+      "citations": [],
+      "raw_data": {
+        "apd_Personalized Neoantigen Peptide Vaccine": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT07002203",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT07002203",
+          "identifier": "NCT07002203",
+          "title": "Personalized Neoantigen Peptide Vaccines for Solid Tumors",
+          "snippet": "Title: Personalized Neoantigen Peptide Vaccines for Solid Tumors\nStatus: Recruiting\nPhase: Phase 1/Phase 2\nCountries: Thailand\nConditions: Solid Tumors, Advanced Cancer, Personalized Cancer Vaccine, Neoantigen-Specific Immunotherapy, Recurrent Cancer\nInterventions: Biological: Personalized Neoantigen Peptide Vaccine\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-20T00:15:29.249806"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT07002203",
+          "public_title": "Personalized Neoantigen Peptide Vaccines for Solid Tumors",
+          "scientific_title": "A Phase Ib Clinical Study of Personalized Neoantigen Peptide Vaccines for Solid Tumors",
+          "recruitment_status": "Recruiting",
+          "phase": "Phase 1/Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: N/A. Intervention model: Single Group Assignment. Primary purpose: Treatment. Masking: None (Open Label).",
+          "countries": [
+            "Thailand"
+          ],
+          "conditions": [
+            "Solid Tumors",
+            "Advanced Cancer",
+            "Personalized Cancer Vaccine",
+            "Neoantigen-Specific Immunotherapy",
+            "Recurrent Cancer"
+          ],
+          "interventions": [
+            "Biological: Personalized Neoantigen Peptide Vaccine"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT07002203",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Personalized Neoantigen Peptide Vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT07002203",
+      "citations": [],
+      "raw_data": {
+        "pdbe_Personalized Neoantigen Peptide Vaccine_count": 0
+      },
+      "error": null
+    }
+  ]
+}

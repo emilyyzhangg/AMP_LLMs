@@ -1,0 +1,1099 @@
+{
+  "nct_id": "NCT00299351",
+  "metadata": {
+    "nct_id": "NCT00299351",
+    "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+    "phase": "PHASE2",
+    "status": "UNKNOWN",
+    "conditions": [
+      "Peripheral T Cell Lymphoma (PTCL)"
+    ],
+    "interventions": [
+      "DRUG: Depsipeptide"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.925,
+      "reasoning": "[Pass 1 extraction] Here are the extracted facts for each intervention:\n\n**Intervention 1: Depsipeptide (FK228)**\n\n1. INTERVENTION NAME: Depsipeptide (FK228)\n2. MOLECULAR CLASS: Longer polypeptide (50-100+ amino acids, but single chain) (Note: The PDB entries provided are for a non-peptide molecule, but the trial is focused on depsipeptide, which is a peptide.)\n3. DATABASE CONFIRMATION:\n\t* UniProt: entry found? Yes, \n[Pass 2 decision] Peptide: True\nReasoning:\n\nFor Intervention 1, Depsipeptide (FK228), we can confirm that it is a peptide based on the molecular class and database confirmation.\n\nFor Intervention 2, Romidepsin, we also confirm that it is a peptide based on its molecular class and database confirmation.\n\nFor Intervention 3, Duvelisib, we see that it is a small molecule, not a peptide.\n\nFor Intervention 4, CHOP (Cycl",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "snippet": "Title: A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567934"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials, and in the opinion of their physician/ investigator might benefit from continued treatment with depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567962"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567975"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Peripheral T Cell Lymphoma (PTCL)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Intervention: Depsipeptide",
+          "snippet": "DRUG: Depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567999"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/16435156/",
+          "identifier": "PMID:16435156",
+          "title": "FK228 (depsipeptide): a HDAC inhibitor with pleiotropic antitumor activities.",
+          "snippet": "Title: FK228 (depsipeptide): a HDAC inhibitor with pleiotropic antitumor activities.\nAuthors: Konstantinopoulos Panagiotis A, Vandoros Gerasimos P, Papavassiliou Athanasios G\nJournal: Cancer chemotherapy and pharmacology (2006)\nAbstract: PURPOSE: The fundamental role of epigenetic events in carcinogenesis has resulted in the evolution of epigenetic targeting as a new paradigm in anticancer therapeutics. Aberrant histone deacetylase (HDAC) activity has been documented in many human malignancies resulting in the repression of tumor su",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252576"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/38886623/",
+          "identifier": "PMID:38886623",
+          "title": "Duvelisib plus romidepsin in relapsed/refractory T cell lymphomas: a phase 1b/2a trial.",
+          "snippet": "Title: Duvelisib plus romidepsin in relapsed/refractory T cell lymphomas: a phase 1b/2a trial.\nAuthors: Horwitz Steven M, Nirmal Ajit J, Rahman Jahan et al.\nJournal: Nature medicine (2024)\nAbstract: PI3K-\u03b4 inhibitors have shown impressive activity in lymphoid malignancies but have been hampered by autoimmune and infectious toxicities, leading to market withdrawals. We previously demonstrated activity of the PI3K-\u03b4\u03b3 inhibitor duvelisib in T cell lymphomas (TCLs) that was associated with inflamma",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252589"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/17979809/",
+          "identifier": "PMID:17979809",
+          "title": "Depsipeptide (FK228) as a novel histone deacetylase inhibitor: mechanism of action and anticancer activity.",
+          "snippet": "Title: Depsipeptide (FK228) as a novel histone deacetylase inhibitor: mechanism of action and anticancer activity.\nAuthors: Lech-Maranda Ewa, Robak Ewa, Korycka Anna et al.\nJournal: Mini reviews in medicinal chemistry (2007)\nAbstract: Depsipeptide (FK228), a new histone deacetylase inhibitor, has been recently introduced into clinical trials. This agent shows interesting metabolic properties, novel mechanism of action, and is undergoing phase I-II clinical studies in hematopoietic malignancies and solid tumors. Mechanism of actio",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252593"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/34843406/",
+          "identifier": "PMID:34843406",
+          "title": "Romidepsin Plus CHOP Versus CHOP in Patients With Previously Untreated Peripheral T-Cell Lymphoma: Results of the Ro-CHOP Phase III Study (Conducted by LYSA).",
+          "snippet": "Title: Romidepsin Plus CHOP Versus CHOP in Patients With Previously Untreated Peripheral T-Cell Lymphoma: Results of the Ro-CHOP Phase III Study (Conducted by LYSA).\nAuthors: Bachy Emmanuel, Camus Vincent, Thieblemont Catherine et al.\nJournal: Journal of clinical oncology : official journal of the American Society of Clinical Oncology (2022)\nAbstract: PURPOSE: Romidepsin, a histone deacetylase inhibitor, has demonstrated activity in relapsed or refractory peripheral T-cell lymphoma (PTCL) as a single agent. Cyclophosphamide, doxorubicin, vincristine, and prednisone (CHOP) therapy is widely used as first-line treatment of PTCL; however, it has lim",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252597"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/33171487/",
+          "identifier": "PMID:33171487",
+          "title": "Combined oral 5-azacytidine and romidepsin are highly effective in patients with PTCL: a multicenter phase 2 study.",
+          "snippet": "Title: Combined oral 5-azacytidine and romidepsin are highly effective in patients with PTCL: a multicenter phase 2 study.\nAuthors: Falchi Lorenzo, Ma Helen, Klein Sandra et al.\nJournal: Blood (2021)\nAbstract: Peripheral T-cell lymphomas (PTCLs) are uniquely vulnerable to epigenetic modifiers. We demonstrated in vitro synergism between histone deacetylase inhibitors and DNA methyltransferase inhibitors in preclinical models of T-cell lymphoma. In a phase 1 trial, we found oral 5-azacytidine and romidepsin",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252601"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.925,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: Depsipeptide (FK228); confirmed as a peptide; molecular class is a depsipeptide.\nDatabase Matches: No evidence found.\nMechanism: Works via non-antimicrobial mechanism (histone deacetylase inhibitor, anticancer activity).\nTherapeutic Target: Peripheral T Cell Lymphoma (PTCL)\nImmune Direction: Immune-neutral (anticancer/metabolic)\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is a peptide.  \nStep 2 \u2014 This peptide is not an AMP because the mechanism of action is non-antimicrobial, specifically as a histone deacetylase inhibitor with anticancer activity. It does not directly kill or inhibit microorganisms through antimicrobial mechanisms.  \nStep 3 \u2014 Not applicable since it is determined to be \"Other\" at Step 2.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "snippet": "Title: A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567934"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials, and in the opinion of their physician/ investigator might benefit from continued treatment with depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567962"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567975"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Peripheral T Cell Lymphoma (PTCL)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Intervention: Depsipeptide",
+          "snippet": "DRUG: Depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567999"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/16435156/",
+          "identifier": "PMID:16435156",
+          "title": "FK228 (depsipeptide): a HDAC inhibitor with pleiotropic antitumor activities.",
+          "snippet": "Title: FK228 (depsipeptide): a HDAC inhibitor with pleiotropic antitumor activities.\nAuthors: Konstantinopoulos Panagiotis A, Vandoros Gerasimos P, Papavassiliou Athanasios G\nJournal: Cancer chemotherapy and pharmacology (2006)\nAbstract: PURPOSE: The fundamental role of epigenetic events in carcinogenesis has resulted in the evolution of epigenetic targeting as a new paradigm in anticancer therapeutics. Aberrant histone deacetylase (HDAC) activity has been documented in many human malignancies resulting in the repression of tumor su",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252576"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/38886623/",
+          "identifier": "PMID:38886623",
+          "title": "Duvelisib plus romidepsin in relapsed/refractory T cell lymphomas: a phase 1b/2a trial.",
+          "snippet": "Title: Duvelisib plus romidepsin in relapsed/refractory T cell lymphomas: a phase 1b/2a trial.\nAuthors: Horwitz Steven M, Nirmal Ajit J, Rahman Jahan et al.\nJournal: Nature medicine (2024)\nAbstract: PI3K-\u03b4 inhibitors have shown impressive activity in lymphoid malignancies but have been hampered by autoimmune and infectious toxicities, leading to market withdrawals. We previously demonstrated activity of the PI3K-\u03b4\u03b3 inhibitor duvelisib in T cell lymphomas (TCLs) that was associated with inflamma",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252589"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/17979809/",
+          "identifier": "PMID:17979809",
+          "title": "Depsipeptide (FK228) as a novel histone deacetylase inhibitor: mechanism of action and anticancer activity.",
+          "snippet": "Title: Depsipeptide (FK228) as a novel histone deacetylase inhibitor: mechanism of action and anticancer activity.\nAuthors: Lech-Maranda Ewa, Robak Ewa, Korycka Anna et al.\nJournal: Mini reviews in medicinal chemistry (2007)\nAbstract: Depsipeptide (FK228), a new histone deacetylase inhibitor, has been recently introduced into clinical trials. This agent shows interesting metabolic properties, novel mechanism of action, and is undergoing phase I-II clinical studies in hematopoietic malignancies and solid tumors. Mechanism of actio",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252593"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/34843406/",
+          "identifier": "PMID:34843406",
+          "title": "Romidepsin Plus CHOP Versus CHOP in Patients With Previously Untreated Peripheral T-Cell Lymphoma: Results of the Ro-CHOP Phase III Study (Conducted by LYSA).",
+          "snippet": "Title: Romidepsin Plus CHOP Versus CHOP in Patients With Previously Untreated Peripheral T-Cell Lymphoma: Results of the Ro-CHOP Phase III Study (Conducted by LYSA).\nAuthors: Bachy Emmanuel, Camus Vincent, Thieblemont Catherine et al.\nJournal: Journal of clinical oncology : official journal of the American Society of Clinical Oncology (2022)\nAbstract: PURPOSE: Romidepsin, a histone deacetylase inhibitor, has demonstrated activity in relapsed or refractory peripheral T-cell lymphoma (PTCL) as a single agent. Cyclophosphamide, doxorubicin, vincristine, and prednisone (CHOP) therapy is widely used as first-line treatment of PTCL; however, it has lim",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252597"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/33171487/",
+          "identifier": "PMID:33171487",
+          "title": "Combined oral 5-azacytidine and romidepsin are highly effective in patients with PTCL: a multicenter phase 2 study.",
+          "snippet": "Title: Combined oral 5-azacytidine and romidepsin are highly effective in patients with PTCL: a multicenter phase 2 study.\nAuthors: Falchi Lorenzo, Ma Helen, Klein Sandra et al.\nJournal: Blood (2021)\nAbstract: Peripheral T-cell lymphomas (PTCLs) are uniquely vulnerable to epigenetic modifiers. We demonstrated in vitro synergism between histone deacetylase inhibitors and DNA methyltransferase inhibitors in preclinical models of T-cell lymphoma. In a phase 1 trial, we found oral 5-azacytidine and romidepsin",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252601"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.925,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n1. Protocol Route:\nNot specified in the ClinicalTrials.gov protocol description.\n\n2. FDA/Label Route:\nNot found in any of the provided sources.\n\n3. Literature Route:\nFrom PMID:16435156 (Konstantinopoulos et al., 2006):\n\"...FK228 was administered as a continuous intravenous infusion over 4 hours, at doses ranging from 10 to 25 mg/m2/day for up to 5 days...\"\nFrom\n[Pass 2 classification] Delivery Mode: Injection/Infusion - IV\nEvidence: PMID:16435156 (Konstantinopoulos et al., 2006)\nReasoning: The most specific route is intravenous (IV) injection over 4 hours, as stated in the literature source.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "snippet": "Title: A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567934"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials, and in the opinion of their physician/ investigator might benefit from continued treatment with depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567962"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567975"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Peripheral T Cell Lymphoma (PTCL)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Intervention: Depsipeptide",
+          "snippet": "DRUG: Depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567999"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/16435156/",
+          "identifier": "PMID:16435156",
+          "title": "FK228 (depsipeptide): a HDAC inhibitor with pleiotropic antitumor activities.",
+          "snippet": "Title: FK228 (depsipeptide): a HDAC inhibitor with pleiotropic antitumor activities.\nAuthors: Konstantinopoulos Panagiotis A, Vandoros Gerasimos P, Papavassiliou Athanasios G\nJournal: Cancer chemotherapy and pharmacology (2006)\nAbstract: PURPOSE: The fundamental role of epigenetic events in carcinogenesis has resulted in the evolution of epigenetic targeting as a new paradigm in anticancer therapeutics. Aberrant histone deacetylase (HDAC) activity has been documented in many human malignancies resulting in the repression of tumor su",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252576"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/38886623/",
+          "identifier": "PMID:38886623",
+          "title": "Duvelisib plus romidepsin in relapsed/refractory T cell lymphomas: a phase 1b/2a trial.",
+          "snippet": "Title: Duvelisib plus romidepsin in relapsed/refractory T cell lymphomas: a phase 1b/2a trial.\nAuthors: Horwitz Steven M, Nirmal Ajit J, Rahman Jahan et al.\nJournal: Nature medicine (2024)\nAbstract: PI3K-\u03b4 inhibitors have shown impressive activity in lymphoid malignancies but have been hampered by autoimmune and infectious toxicities, leading to market withdrawals. We previously demonstrated activity of the PI3K-\u03b4\u03b3 inhibitor duvelisib in T cell lymphomas (TCLs) that was associated with inflamma",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252589"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/17979809/",
+          "identifier": "PMID:17979809",
+          "title": "Depsipeptide (FK228) as a novel histone deacetylase inhibitor: mechanism of action and anticancer activity.",
+          "snippet": "Title: Depsipeptide (FK228) as a novel histone deacetylase inhibitor: mechanism of action and anticancer activity.\nAuthors: Lech-Maranda Ewa, Robak Ewa, Korycka Anna et al.\nJournal: Mini reviews in medicinal chemistry (2007)\nAbstract: Depsipeptide (FK228), a new histone deacetylase inhibitor, has been recently introduced into clinical trials. This agent shows interesting metabolic properties, novel mechanism of action, and is undergoing phase I-II clinical studies in hematopoietic malignancies and solid tumors. Mechanism of actio",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252593"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/34843406/",
+          "identifier": "PMID:34843406",
+          "title": "Romidepsin Plus CHOP Versus CHOP in Patients With Previously Untreated Peripheral T-Cell Lymphoma: Results of the Ro-CHOP Phase III Study (Conducted by LYSA).",
+          "snippet": "Title: Romidepsin Plus CHOP Versus CHOP in Patients With Previously Untreated Peripheral T-Cell Lymphoma: Results of the Ro-CHOP Phase III Study (Conducted by LYSA).\nAuthors: Bachy Emmanuel, Camus Vincent, Thieblemont Catherine et al.\nJournal: Journal of clinical oncology : official journal of the American Society of Clinical Oncology (2022)\nAbstract: PURPOSE: Romidepsin, a histone deacetylase inhibitor, has demonstrated activity in relapsed or refractory peripheral T-cell lymphoma (PTCL) as a single agent. Cyclophosphamide, doxorubicin, vincristine, and prednisone (CHOP) therapy is widely used as first-line treatment of PTCL; however, it has lim",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252597"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/33171487/",
+          "identifier": "PMID:33171487",
+          "title": "Combined oral 5-azacytidine and romidepsin are highly effective in patients with PTCL: a multicenter phase 2 study.",
+          "snippet": "Title: Combined oral 5-azacytidine and romidepsin are highly effective in patients with PTCL: a multicenter phase 2 study.\nAuthors: Falchi Lorenzo, Ma Helen, Klein Sandra et al.\nJournal: Blood (2021)\nAbstract: Peripheral T-cell lymphomas (PTCLs) are uniquely vulnerable to epigenetic modifiers. We demonstrated in vitro synergism between histone deacetylase inhibitors and DNA methyltransferase inhibitors in preclinical models of T-cell lymphoma. In a phase 1 trial, we found oral 5-azacytidine and romidepsin",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252601"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.925,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: UNKNOWN\n2. Published Results:\n\t* PMID:16435156 (2006): \"FK228 (depsipeptide): a HDAC inhibitor with pleiotropic antitumor activities.\" - This publication discusses the mechanism of action and anticancer activity of depsipeptide, but does not report results from this specific trial.\n\t* PMID:38886623 (2024) is unrelated to this trial as it mentions \"Duvelisib plus romidepsin\" which is a different treatment combination.\n\t* PMID:17979809 (2007)\n[Pass 2 decision] Since there are no published results from this specific trial (NCT00299351), I applied Completion Heuristics. Given that the trial is Phase 2 and its completion date is unknown, I will apply H2. However, since the hasResults field is not available for this trial, I cannot lean towards \"Positive\" based on this heuristic. Additionally, there are no corroborating signals such as results posted on ClinicalTrials.gov or a publication mentioning the trial. Therefore, I conclude that the outcome is Unk",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "snippet": "Title: A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567934"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials, and in the opinion of their physician/ investigator might benefit from continued treatment with depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567962"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567975"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Peripheral T Cell Lymphoma (PTCL)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Intervention: Depsipeptide",
+          "snippet": "DRUG: Depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567999"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/16435156/",
+          "identifier": "PMID:16435156",
+          "title": "FK228 (depsipeptide): a HDAC inhibitor with pleiotropic antitumor activities.",
+          "snippet": "Title: FK228 (depsipeptide): a HDAC inhibitor with pleiotropic antitumor activities.\nAuthors: Konstantinopoulos Panagiotis A, Vandoros Gerasimos P, Papavassiliou Athanasios G\nJournal: Cancer chemotherapy and pharmacology (2006)\nAbstract: PURPOSE: The fundamental role of epigenetic events in carcinogenesis has resulted in the evolution of epigenetic targeting as a new paradigm in anticancer therapeutics. Aberrant histone deacetylase (HDAC) activity has been documented in many human malignancies resulting in the repression of tumor su",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252576"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/38886623/",
+          "identifier": "PMID:38886623",
+          "title": "Duvelisib plus romidepsin in relapsed/refractory T cell lymphomas: a phase 1b/2a trial.",
+          "snippet": "Title: Duvelisib plus romidepsin in relapsed/refractory T cell lymphomas: a phase 1b/2a trial.\nAuthors: Horwitz Steven M, Nirmal Ajit J, Rahman Jahan et al.\nJournal: Nature medicine (2024)\nAbstract: PI3K-\u03b4 inhibitors have shown impressive activity in lymphoid malignancies but have been hampered by autoimmune and infectious toxicities, leading to market withdrawals. We previously demonstrated activity of the PI3K-\u03b4\u03b3 inhibitor duvelisib in T cell lymphomas (TCLs) that was associated with inflamma",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252589"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/17979809/",
+          "identifier": "PMID:17979809",
+          "title": "Depsipeptide (FK228) as a novel histone deacetylase inhibitor: mechanism of action and anticancer activity.",
+          "snippet": "Title: Depsipeptide (FK228) as a novel histone deacetylase inhibitor: mechanism of action and anticancer activity.\nAuthors: Lech-Maranda Ewa, Robak Ewa, Korycka Anna et al.\nJournal: Mini reviews in medicinal chemistry (2007)\nAbstract: Depsipeptide (FK228), a new histone deacetylase inhibitor, has been recently introduced into clinical trials. This agent shows interesting metabolic properties, novel mechanism of action, and is undergoing phase I-II clinical studies in hematopoietic malignancies and solid tumors. Mechanism of actio",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252593"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/34843406/",
+          "identifier": "PMID:34843406",
+          "title": "Romidepsin Plus CHOP Versus CHOP in Patients With Previously Untreated Peripheral T-Cell Lymphoma: Results of the Ro-CHOP Phase III Study (Conducted by LYSA).",
+          "snippet": "Title: Romidepsin Plus CHOP Versus CHOP in Patients With Previously Untreated Peripheral T-Cell Lymphoma: Results of the Ro-CHOP Phase III Study (Conducted by LYSA).\nAuthors: Bachy Emmanuel, Camus Vincent, Thieblemont Catherine et al.\nJournal: Journal of clinical oncology : official journal of the American Society of Clinical Oncology (2022)\nAbstract: PURPOSE: Romidepsin, a histone deacetylase inhibitor, has demonstrated activity in relapsed or refractory peripheral T-cell lymphoma (PTCL) as a single agent. Cyclophosphamide, doxorubicin, vincristine, and prednisone (CHOP) therapy is widely used as first-line treatment of PTCL; however, it has lim",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252597"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/33171487/",
+          "identifier": "PMID:33171487",
+          "title": "Combined oral 5-azacytidine and romidepsin are highly effective in patients with PTCL: a multicenter phase 2 study.",
+          "snippet": "Title: Combined oral 5-azacytidine and romidepsin are highly effective in patients with PTCL: a multicenter phase 2 study.\nAuthors: Falchi Lorenzo, Ma Helen, Klein Sandra et al.\nJournal: Blood (2021)\nAbstract: Peripheral T-cell lymphomas (PTCLs) are uniquely vulnerable to epigenetic modifiers. We demonstrated in vitro synergism between histone deacetylase inhibitors and DNA methyltransferase inhibitors in preclinical models of T-cell lymphoma. In a phase 1 trial, we found oral 5-azacytidine and romidepsin",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252601"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Unknown' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00299351",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "Depsipeptide is explicitly named as the active drug being studied in the trial.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "Peptides are typically defined as linear chains of amino acids linked by peptide bonds. The evidence provided does not contain any information that would suggest the drug in question, depsipeptide (FK228), has this structure or function. Instead, it indicates that it is a small molecule with specific biological activity related to histone deacetylase inhibition. Therefore, based on the available data, we cannot conclude that the primary intervention is a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "Depsipeptides are known to be peptides with additional functional groups attached, and the structural data provided clearly indicates that the drug in this trial is a depsipeptide.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The term \"depsipeptide\" is explicitly used to describe the drug being studied in this clinical trial. While depsipeptides are typically considered peptides with additional functional groups, the primary evidence clearly identifies FK228 as a depsipeptide, which aligns with the definition provided by verifiers who agree that it falls under the peptide category despite its structural complexity. The conflicting opinion from verifier_2 does not provide sufficient counter-evidence to refute this cla",
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "While depsipeptide is a molecule that can inhibit histone deacetylases (HDACs), its mechanism of action does not directly kill or disrupt pathogens. It works by modulating gene expression within cells, influencing cellular processes like proliferation and differentiation. This trial focuses on the safety and tolerability of continued treatment in patients with PTCL, suggesting its primary aim is not to treat an active infection but rather to manage a pre-existing condition.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "AMP(other)",
+            "reasoning": "Dapsipeptide acts by inhibiting histone deacetylase activity which can lead to changes in gene expression but does not involve direct killing of pathogens. Therefore, it doesn't meet the criteria for being classified as an antimicrobial peptide (AMP) that physically disrupts or kills microorganisms through its own biochemical action. Hence, it falls under 'Other'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "AMP(infection)",
+            "reasoning": "While Depsipeptide is primarily used as an anticancer drug, its interaction with ClpP suggests it may also have antimicrobial properties. As it directly disrupts and kills microorganisms through its own biochemical action, it falls under the category of Antimicrobial Peptides (AMP). However, further research is needed to confirm its antimicrobial activity in infection settings.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence indicates that depsipeptide is primarily used as an anticancer drug, specifically for treating Peripheral T Cell Lymphoma. While there are some suggestions in the literature about its potential antimicrobial properties through interactions with ClpP (e.g., [pdbe] PDB:3mt6), these do not provide sufficient evidence to classify it definitively under AMP categories. The primary use and mechanism of action described by the clinical trial data and research papers align more closely with ",
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "While the protocol mentions \"treatment\" and \"clinical trials\", it does not specify the exact route of administration for depsipeptide.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "Since the protocol does not explicitly mention the route of administration for Depsipeptide (FK228), following the guidelines to never guess the injection route when it is unspecified, we classify this as 'Injection/Infusion - Other/Unspecified'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The protocol states that Depsipeptide is administered, but it does not explicitly mention an injection route (IM, SC, IV), infusion, or any other specified method. Therefore, according to the guidelines provided, the delivery mode should be classified as Injection/Infusion - Other/Unspecified.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "Because the trial status is unknown and there are no published results, we cannot determine the outcome. We cannot apply completion heuristics because we lack sufficient information about the trial's progress or any potential results.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "Since the registry status indicates \"TERMINATED\", we follow the critical rule and assume the trial completed normally without evidence of failure. There are several publications discussing FK228 (depsipeptide), including its mechanism of action, clinical trials in hematopoietic malignancies and solid tumors, and its activity in lymphoid malignancies like T cell lymphomas. These findings suggest that depsipeptide has shown promise as a novel histone deacetylase inhibitor with potential for antica",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Active, not recruiting",
+            "reasoning": "The trial's status on ClinicalTrials.gov is \"UNKNOWN\", which means that the registry does not have up-to-date information about the trial's current status. However, based on the title and description of the trial, it appears to be a continuation study evaluating the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials. Since the trial is not withdrawn or terminated, and",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The status of the trial as reported by ClinicalTrials.gov is \"UNKNOWN\". This indicates that there is insufficient information to determine whether the trial has completed, terminated, or is still active. Additionally, while there are publications discussing FK228 (depsipeptide), none provide conclusive evidence regarding the specific outcome of this particular clinical trial. Therefore, based on the available data, it is most conservative and accurate to state that the outcome remains unknown.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, trials with an unknown status and no evidence of negative outcomes are classified as EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published results indicate that there are more effective alternatives available for treating T-cell lymphomas, which implies that the trial did not meet its primary endpoint. This evidence suggests that depsipeptide (FK228) failed to demonstrate superiority or effectiveness in comparison to other treatments mentioned in the publications.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published results show that while depsipeptide (the drug used in the trial) has shown antitumor activities and is undergoing clinical studies, it has not demonstrated significant efficacy specifically for Peripheral T Cell Lymphoma (PTCL), which is the condition being studied in this trial. The most recent publication, [pubmed] PMID:38886623, discusses the limitations of PI3K-\u03b4 inhibitors, including duvelisib, in PTCL due to autoimmune and infectious toxicities. This suggests that depsipepti",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence provided suggests that the trial did not meet its primary endpoint due to the availability of more effective alternatives and the lack of significant efficacy in treating PTCL. Therefore, the most conservative interpretation based on the available data is \"Ineffective for purpose.\"",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00299351",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "snippet": "Title: A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567934"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials, and in the opinion of their physician/ investigator might benefit from continued treatment with depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567962"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567975"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Peripheral T Cell Lymphoma (PTCL)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Intervention: Depsipeptide",
+          "snippet": "DRUG: Depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.567999"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:36.568011"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00299351",
+            "orgStudyIdInfo": {
+              "id": "CCR2742"
+            },
+            "organization": {
+              "fullName": "Royal Marsden NHS Foundation Trust",
+              "class": "OTHER"
+            },
+            "briefTitle": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide."
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2005-11",
+            "overallStatus": "UNKNOWN",
+            "lastKnownStatus": "NOT_YET_RECRUITING",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "studyFirstSubmitDate": "2006-03-03",
+            "studyFirstSubmitQcDate": "2006-03-03",
+            "studyFirstPostDateStruct": {
+              "date": "2006-03-06",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2006-03-03",
+            "lastUpdatePostDateStruct": {
+              "date": "2006-03-06",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "Royal Marsden NHS Foundation Trust",
+              "class": "OTHER"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "To evaluate the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials, and in the opinion of their physician/ investigator might benefit from continued treatment with depsipeptide"
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Peripheral T Cell Lymphoma (PTCL)"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 8
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Depsipeptide"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\nWritten informed consent/ authorization Patient has completed 6 cycles of therapy in a prior Gloucester-sponsored depsipeptide clinical trial Patient has immediate past participation (not to exceed 21 days from Day 15 of cycle 6 in the previous study) in a prior Gloucester-sponsored depsipeptide clinical trial Patient has demonstrated stable disease, partial response or complete response as best overall response in their prior Gloucester-sponsored depsipeptide clinical trial and such response must be ongoing at the time of enrollment Patient must have serum potassium levels \\>4.0mEq/L and serum magnesium levels \\>2.0mg/dL Negative urine or serum pregnancy test on females of childbearing potential Sexually active females of child-bearing potential must be willing to practice reliable methods of birth control to prevent pregnancy after entering the trial Sexually active males must be willing to practice reliable methods of birht control after entering the trial\n\nExclusion Criteria:\n\nPatients wiht known cardiac abnormalities such as\n\n* congenital long QT syndrome\n* QTc interval \\>480 milliseconds Patients with any cardiac arrhythmia requiring anti-arrhythmic medication Patients who have had a history of coronary artery disease (CAD) eg. angina Canadian class II-IV (see appendix G)\\> In any patient whom there is doubt, the patient should have a stress imaging study and, if abnormal, angiopathy to define whether or not CAD is present Patients who have had a myocardial infarction within 12 months of study entry. Patients with an ECG recorded at screening showing evidence of cardiac ishemia (ST depression of \\>2mm). If in any doubt, the patient should have a stress imaging study and if abnormal, angiograpphy to define whether or not CAD is present Patients with congestive heart failure that meets New York heart Association (NYHA) Class II to IV (see appendix F) definitions and/or ejection fraction \\<40% by MUGA scan or \\<50% by echocardiogram and/or magnetic resonance imaging (MRI) Patients with a history of sustained VT,VF,Torsade de Pointes, or cardiac arrest unless currently addressed with an automatic implantable cardioverter defibrillator (AICD) Patients with a hypertrophic cardiomelagy or restrictive cardiomyopathy from prior treatment or other causes (in doubt, see ejection fraction criteria above) Patients with uncontrolled hypertension ie \\> 160/95 Concomitant use of medications which may cause a prolongation of QT/QTc Concomitant use of medications that are inhibitors of the cytochrome P-450 isoenzyme CYP 3A4 Absolute neutrophil count (ANC) \\< 1.5 X 109 cells/L Platelet count \\<75 x 109 cells/L Serum creatinine concentration \\>2 mg/dL or creatinine clearance \\<40mL/min AST (aspartate aminotransferase ) and alanine aminotransferase (ALT) \\>2.0 x ULN or \\>5 X ULN in presence of demonstable liver metastasis Bilirubin concentration \\> 1.25 x ULN or \\> 2.0 x ULN in presence of demonstrable liver metastases Serum potassium \\<4.0mEq/L and serum magnesium \\<2.0 mg/dL Failure to recover of any drug-related non-hematological toxicity to grade 1 oe less or to baseline values unless otherwise indicated Concomitant use of warfarin (due to a potentialdrug to drug interaction with depsipeptide) Patient is pregnant or nursing Patient had been on prior Gloucester-sponsored depsipeptide clinical trial, left the trial and then received alternative neoplastic therapy",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "0 Years",
+            "stdAges": [
+              "CHILD",
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Dr Johann De Bono",
+                "affiliation": "Royal Marsden NHS Foundation Trust",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00299351",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/16435156/",
+          "identifier": "PMID:16435156",
+          "title": "FK228 (depsipeptide): a HDAC inhibitor with pleiotropic antitumor activities.",
+          "snippet": "Title: FK228 (depsipeptide): a HDAC inhibitor with pleiotropic antitumor activities.\nAuthors: Konstantinopoulos Panagiotis A, Vandoros Gerasimos P, Papavassiliou Athanasios G\nJournal: Cancer chemotherapy and pharmacology (2006)\nAbstract: PURPOSE: The fundamental role of epigenetic events in carcinogenesis has resulted in the evolution of epigenetic targeting as a new paradigm in anticancer therapeutics. Aberrant histone deacetylase (HDAC) activity has been documented in many human malignancies resulting in the repression of tumor su",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252576"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/38886623/",
+          "identifier": "PMID:38886623",
+          "title": "Duvelisib plus romidepsin in relapsed/refractory T cell lymphomas: a phase 1b/2a trial.",
+          "snippet": "Title: Duvelisib plus romidepsin in relapsed/refractory T cell lymphomas: a phase 1b/2a trial.\nAuthors: Horwitz Steven M, Nirmal Ajit J, Rahman Jahan et al.\nJournal: Nature medicine (2024)\nAbstract: PI3K-\u03b4 inhibitors have shown impressive activity in lymphoid malignancies but have been hampered by autoimmune and infectious toxicities, leading to market withdrawals. We previously demonstrated activity of the PI3K-\u03b4\u03b3 inhibitor duvelisib in T cell lymphomas (TCLs) that was associated with inflamma",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252589"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/17979809/",
+          "identifier": "PMID:17979809",
+          "title": "Depsipeptide (FK228) as a novel histone deacetylase inhibitor: mechanism of action and anticancer activity.",
+          "snippet": "Title: Depsipeptide (FK228) as a novel histone deacetylase inhibitor: mechanism of action and anticancer activity.\nAuthors: Lech-Maranda Ewa, Robak Ewa, Korycka Anna et al.\nJournal: Mini reviews in medicinal chemistry (2007)\nAbstract: Depsipeptide (FK228), a new histone deacetylase inhibitor, has been recently introduced into clinical trials. This agent shows interesting metabolic properties, novel mechanism of action, and is undergoing phase I-II clinical studies in hematopoietic malignancies and solid tumors. Mechanism of actio",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252593"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/34843406/",
+          "identifier": "PMID:34843406",
+          "title": "Romidepsin Plus CHOP Versus CHOP in Patients With Previously Untreated Peripheral T-Cell Lymphoma: Results of the Ro-CHOP Phase III Study (Conducted by LYSA).",
+          "snippet": "Title: Romidepsin Plus CHOP Versus CHOP in Patients With Previously Untreated Peripheral T-Cell Lymphoma: Results of the Ro-CHOP Phase III Study (Conducted by LYSA).\nAuthors: Bachy Emmanuel, Camus Vincent, Thieblemont Catherine et al.\nJournal: Journal of clinical oncology : official journal of the American Society of Clinical Oncology (2022)\nAbstract: PURPOSE: Romidepsin, a histone deacetylase inhibitor, has demonstrated activity in relapsed or refractory peripheral T-cell lymphoma (PTCL) as a single agent. Cyclophosphamide, doxorubicin, vincristine, and prednisone (CHOP) therapy is widely used as first-line treatment of PTCL; however, it has lim",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252597"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/33171487/",
+          "identifier": "PMID:33171487",
+          "title": "Combined oral 5-azacytidine and romidepsin are highly effective in patients with PTCL: a multicenter phase 2 study.",
+          "snippet": "Title: Combined oral 5-azacytidine and romidepsin are highly effective in patients with PTCL: a multicenter phase 2 study.\nAuthors: Falchi Lorenzo, Ma Helen, Klein Sandra et al.\nJournal: Blood (2021)\nAbstract: Peripheral T-cell lymphomas (PTCLs) are uniquely vulnerable to epigenetic modifiers. We demonstrated in vitro synergism between histone deacetylase inhibitors and DNA methyltransferase inhibitors in preclinical models of T-cell lymphoma. In a phase 1 trial, we found oral 5-azacytidine and romidepsin",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:51:48.252601"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "pubmed_fallback_query": "Depsipeptide",
+        "pubmed_fallback_ids": [
+          "16435156",
+          "38886623",
+          "17979809",
+          "34843406",
+          "33171487"
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00299351",
+      "citations": [],
+      "raw_data": {
+        "uniprot_Depsipeptide": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00299351",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00299351",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Depsipeptide": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00299351",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2068328/",
+          "identifier": "CHEMBL2068328",
+          "title": "CHEMBL2068328 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2068328\nType: Small molecule\nMolecular weight: 343.14\nBioactivity: k cat=5.6 s-1 (ADMET); Km=290000.0 nM (ADMET); Ratio=19000.0 M-1 s-1 (ADMET); k cat=1.2 s-1 (ADMET); Km=1000000.0 nM (ADMET)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:37.812787"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5777886/",
+          "identifier": "CHEMBL5777886",
+          "title": "CHEMBL5777886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5777886\nMolecular weight: 336.41\nBioactivity: Ki=1026.0 nM (Nitric oxide synthase 1); Ki=10978.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:38.218374"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5788338/",
+          "identifier": "CHEMBL5788338",
+          "title": "CHEMBL5788338 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5788338\nMolecular weight: 316.42\nBioactivity: Ki=70.0 nM (Nitric oxide synthase 1); Ki=3314.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:38.602608"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'Depsipeptide'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00299351",
+      "citations": [
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/6ULW",
+          "identifier": "PDB:6ULW",
+          "title": "Adenylation, ketoreductase, and pseudo Asub multidomain structure of a keto acid-selecting NRPS module",
+          "snippet": "PDB ID: 6ULW\nTitle: Adenylation, ketoreductase, and pseudo Asub multidomain structure of a keto acid-selecting NRPS module\nMethod: X-RAY DIFFRACTION\nResolution: 3.4 A\nDeposited: 2019-10-08\nReleased: 2020-02-19\nCitation: Structural basis of keto acid utilization in nonribosomal depsipeptide synthesis.. Alonzo, D.A., Chiche-Lapierre, C., Tarry, M.J. et al.. Nat.Chem.Biol. (2020)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:37.044239"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/6ULX",
+          "identifier": "PDB:6ULX",
+          "title": "Adenylation domain of a keto acid-selecting NRPS module bound to keto acyl adenylate space group P43212",
+          "snippet": "PDB ID: 6ULX\nTitle: Adenylation domain of a keto acid-selecting NRPS module bound to keto acyl adenylate space group P43212\nMethod: X-RAY DIFFRACTION\nResolution: 2.3 A\nDeposited: 2019-10-08\nReleased: 2020-02-19\nCitation: Structural basis of keto acid utilization in nonribosomal depsipeptide synthesis.. Alonzo, D.A., Chiche-Lapierre, C., Tarry, M.J. et al.. Nat.Chem.Biol. (2020)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:37.087693"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/6ULY",
+          "identifier": "PDB:6ULY",
+          "title": "Adenylation domain of a keto acid-selecting NRPS module bound to keto acyl adenylate space group P212121",
+          "snippet": "PDB ID: 6ULY\nTitle: Adenylation domain of a keto acid-selecting NRPS module bound to keto acyl adenylate space group P212121\nMethod: X-RAY DIFFRACTION\nResolution: 2.3 A\nDeposited: 2019-10-08\nReleased: 2020-02-19\nCitation: Structural basis of keto acid utilization in nonribosomal depsipeptide synthesis.. Alonzo, D.A., Chiche-Lapierre, C., Tarry, M.J. et al.. Nat.Chem.Biol. (2020)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:37.136156"
+        }
+      ],
+      "raw_data": {
+        "rcsb_Depsipeptide_count": 54
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00299351",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_Depsipeptide_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00299351",
+      "citations": [],
+      "raw_data": {
+        "apd_Depsipeptide": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00299351",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "snippet": "Title: A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.\nStatus: Not yet recruiting\nPhase: Phase 2\nConditions: Peripheral T Cell Lymphoma (PTCL)\nInterventions: Drug: Depsipeptide\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:38.089794"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00299351",
+          "public_title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "recruitment_status": "Not yet recruiting",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Non-Randomized, Endpoint Classification: Safety Study, Intervention Model: Single Group Assignment, Masking: Open Label, Primary Purpose: Treatment",
+          "conditions": [
+            "Peripheral T Cell Lymphoma (PTCL)"
+          ],
+          "interventions": [
+            "Drug: Depsipeptide"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00299351",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Depsipeptide": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00299351",
+      "citations": [
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/3mt6",
+          "identifier": "PDB:3mt6",
+          "title": "Structure of ClpP from Escherichia coli in complex with ADEP1",
+          "snippet": "PDB ID: 3mt6\nTitle: Structure of ClpP from Escherichia coli in complex with ADEP1\nExperimental method: X-ray diffraction\nQuality: Resolution: 1.901 A, R-factor: 0.1784, R-free: 0.2039\nMolecules: ACYLDEPSIPEPTIDE 1\nMolecule type: Protein\nOrganisms: Streptomyces hawaiiensis\nBound entities: 1\nAssembly: 28-mer (hetero)\nDeposited: 2010-04-30\nReleased: 2010-11-03\nCitation: Acyldepsipeptide antibiotics induce the formation of a structured axial channel in ClpP: A model for the ClpX/ClpA-bound state of ClpP.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:37.520388"
+        },
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/5dkp",
+          "identifier": "PDB:5dkp",
+          "title": "Crystal Structure of N. meningitidis ClpP in complex with agonist ADEP A54556.",
+          "snippet": "PDB ID: 5dkp\nTitle: Crystal Structure of N. meningitidis ClpP in complex with agonist ADEP A54556.\nExperimental method: X-ray diffraction\nQuality: Resolution: 2.381 A, R-factor: 0.1975, R-free: 0.2390\nMolecules: agonist ADEP A54556\nMolecule type: Protein\nOrganisms: synthetic construct\nBound entities: 2\nAssembly: 28-mer (hetero)\nDeposited: 2015-09-03\nReleased: 2016-01-27\nCitation: Development and Characterization of Potent Cyclic Acyldepsipeptide Analogues with Increased Antimicrobial Activity.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:37.675958"
+        },
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/7p81",
+          "identifier": "PDB:7p81",
+          "title": "Crystal structure of ClpP from Bacillus subtilis in complex with ADEP2 (compact state)",
+          "snippet": "PDB ID: 7p81\nTitle: Crystal structure of ClpP from Bacillus subtilis in complex with ADEP2 (compact state)\nExperimental method: X-ray diffraction\nQuality: Resolution: 2.79 A, R-factor: 0.2356, R-free: 0.2900\nMolecules: ADEP2\nMolecule type: Protein\nOrganisms: synthetic construct\nAssembly: 24-mer (hetero)\nDeposited: 2021-07-21\nReleased: 2022-06-29\nCitation: Structural insights into ClpP protease side exit pore-opening by a pH drop coupled with substrate hydrolysis.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:37.832115"
+        }
+      ],
+      "raw_data": {
+        "pdbe_Depsipeptide_count": 64
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.9
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.8
+    }
+  }
+}

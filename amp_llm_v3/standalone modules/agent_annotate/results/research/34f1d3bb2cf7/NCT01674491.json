@@ -1,0 +1,618 @@
+{
+  "nct_id": "NCT01674491",
+  "completed_at": "2026-03-17 07:59:23 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01674491",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:13.948913"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Brief Summary",
+          "snippet": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:13.948963"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:13.948978"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypertension",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:13.948993"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Intervention: black soy peptide",
+          "snippet": "DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:13.949009"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:13.949024"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01674491",
+            "orgStudyIdInfo": {
+              "id": "BPS_201106"
+            },
+            "organization": {
+              "fullName": "Yonsei University",
+              "class": "OTHER"
+            },
+            "briefTitle": "Effects of Black Soy Peptide Supplementation on Blood Pressure",
+            "officialTitle": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2012-08",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2011-07"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2011-09",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2012-03",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-08-10",
+            "studyFirstSubmitQcDate": "2012-08-27",
+            "studyFirstPostDateStruct": {
+              "date": "2012-08-28",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2012-08-27",
+            "lastUpdatePostDateStruct": {
+              "date": "2012-08-28",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Yonsei University",
+              "class": "OTHER"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": true
+          },
+          "descriptionModule": {
+            "briefSummary": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+            "detailedDescription": "Trial participants included men and women aged 30 to 65 years who had an average systolic blood pressure (SBP) between 130 to 159 mmHg, average diastolic blood pressure (DBP) between 80 to 99 mmHg, or both, based on an average of six measurements during two screening visits. Participants were supplied with 84 pouches of placebo (casein) or black soy peptide (3 pouches/day) at 0-week and at 4-week visits. Test group subjects received pouches containing black soy peptides (4.5 g/day total soy peptides for 8 weeks). The control group received pouches containing casein that had a similar appearance to the black soy peptide tablet. During the intervention, we instructed study participants to continue their current food intake patterns and lifestyles so that total energy intake and energy expenditure would be constant during the course of trial. Participants brought back unconsumed pouches at their 4- and 8-week follow-up visits. The dietitian counted the number of returned pouches, and we used this to assess the participants' adherence to their assigned intervention."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Hypertension"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE3"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "BASIC_SCIENCE",
+              "maskingInfo": {
+                "masking": "QUADRUPLE",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "CARE_PROVIDER",
+                  "INVESTIGATOR",
+                  "OUTCOMES_ASSESSOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 100,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "4.5g/day black soy peptide",
+                "type": "EXPERIMENTAL",
+                "description": "4.5 g/day, 8weeks",
+                "interventionNames": [
+                  "Dietary Supplement: black soy peptide"
+                ]
+              },
+              {
+                "label": "placebo",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "similar appearance to the black soy peptide tablet, 8 weeks",
+                "interventionNames": [
+                  "Dietary Supplement: black soy peptide"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DIETARY_SUPPLEMENT",
+                "name": "black soy peptide",
+                "description": "black soy peptide: 4.5g/day for 8 weeks",
+                "armGroupLabels": [
+                  "4.5g/day black soy peptide",
+                  "placebo"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "change from baseline in Systolic blood pressure at 8 weeks",
+                "timeFrame": "8 weeks"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Change from baseline in Diastolic blood pressure at 8 weeks",
+                "timeFrame": "8 weeks"
+              },
+              {
+                "measure": "change from baseline in plasma malondialdehyde at 8 weeks",
+                "timeFrame": "8 weeks"
+              },
+              {
+                "measure": "change from baseline in Urinary 8-epi-prostaglandin F2 at 8 weeks",
+                "timeFrame": "8 weeks"
+              },
+              {
+                "measure": "change from baseline in Renin at 8 weeks",
+                "timeFrame": "8 weeks"
+              },
+              {
+                "measure": "Change from baseline in angiotensin-converting enzyme at 8 weeks",
+                "timeFrame": "8 weeks"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Average systolic blood pressure (SBP) between 130 to 159 mmHg\n* Average diastolic blood pressure (DBP) between 80 to 99 mmHg, or both, based on an average of six measurements during two screening visits\n\nExclusion Criteria:\n\n* Previous diagnosed clinical hypertension\n* Self-reported use of anti-hypertensive medication\n* Abnormal liver or renal function\n* History of cardiovascular disease, cancer, thyroid or pituitary disease, or any other serious life-threatening illness that required regular medical treatment",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "30 Years",
+            "maximumAge": "65 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Jong Ho Lee, Ph.D",
+                "affiliation": "Yonsei University",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Laboratory of Clinical Nutrigenetics/Nutrigenomic",
+                "city": "Seoul",
+                "zip": "120-749",
+                "country": "South Korea",
+                "geoPoint": {
+                  "lat": 37.566,
+                  "lon": 126.9784
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 0,
+        "semantic_scholar_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "uniprot_black soy peptide": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_black soy peptide": {
+          "total": 0,
+          "entries": []
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01674491",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1093278/",
+          "identifier": "CHEMBL1093278",
+          "title": "CHLORAZOL BLACK - ChEMBL",
+          "snippet": "Molecule: CHLORAZOL BLACK\nType: Small molecule\nMolecular weight: 737.78",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:19.123130"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4298060/",
+          "identifier": "CHEMBL4298060",
+          "title": "SOY ISOFLAVONES - ChEMBL",
+          "snippet": "Molecule: SOY ISOFLAVONES\nType: Unknown\nMax clinical phase: 2.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:21.054416"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL471028/",
+          "identifier": "CHEMBL471028",
+          "title": "ERIOCHROME BLUE BLACK B - ChEMBL",
+          "snippet": "Molecule: ERIOCHROME BLUE BLACK B\nType: Small molecule\nMolecular weight: 416.39\nBioactivity: GI50=5058.25 nM (MDA-N); GI50=23442.29 nM (SN12C); GI50=24603.68 nM (ACHN); GI50=15240.53 nM (NCI-H23)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:22.116058"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'black soy peptide'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "rcsb_{'name': 'black soy peptide'}_status": 400
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_{'name': 'black soy peptide'}_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "apd_{'name': 'black soy peptide'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbamp",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "dbamp_{'name': 'black soy peptide'}_error": "Server unreachable: ConnectError"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT01674491",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure\nStatus: Completed\nPhase: Phase 3\nCountries: Korea, Republic of\nConditions: Hypertension\nInterventions: Dietary Supplement: black soy peptide\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:59:23.807266"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT01674491",
+          "public_title": "Effects of Black Soy Peptide Supplementation on Blood Pressure",
+          "scientific_title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "recruitment_status": "Completed",
+          "phase": "Phase 3",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Randomized, Endpoint Classification: Safety Study, Intervention Model: Parallel Assignment, Masking: Double Blind (Subject, Caregiver, Investigator, Outcomes Assessor), Primary Purpose: Basic Science",
+          "countries": [
+            "Korea, Republic of"
+          ],
+          "conditions": [
+            "Hypertension"
+          ],
+          "interventions": [
+            "Dietary Supplement: black soy peptide"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "iuphar_black soy peptide": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "intact",
+      "nct_id": "NCT01674491",
+      "citations": [
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366233",
+          "identifier": "IntAct:EBI-366233",
+          "title": "MAPT - IntAct",
+          "snippet": "Interactor: MAPT\nDescription: Microtubule-associated protein tau\nUniProt: P10636-8\nSpecies: Homo sapiens\nType: protein\nInteractions: 7000",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:15.260948"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-77613",
+          "identifier": "IntAct:EBI-77613",
+          "title": "APP - IntAct",
+          "snippet": "Interactor: APP\nDescription: Amyloid-beta precursor protein\nUniProt: P05067\nSpecies: Homo sapiens\nType: protein\nInteractions: 1779",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:15.260962"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366083",
+          "identifier": "IntAct:EBI-366083",
+          "title": "TP53 - IntAct",
+          "snippet": "Interactor: TP53\nDescription: Cellular tumor antigen p53\nUniProt: P04637\nSpecies: Homo sapiens\nType: protein\nInteractions: 1757",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:15.260967"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-297353",
+          "identifier": "IntAct:EBI-297353",
+          "title": "EGFR - IntAct",
+          "snippet": "Interactor: EGFR\nDescription: Epidermal growth factor receptor\nUniProt: P00533\nSpecies: Homo sapiens\nType: protein\nInteractions: 1723",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:15.260971"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-357345",
+          "identifier": "IntAct:EBI-357345",
+          "title": "SCRIB - IntAct",
+          "snippet": "Interactor: SCRIB\nDescription: Protein scribble homolog\nUniProt: Q14160\nSpecies: Homo sapiens\nType: protein\nInteractions: 1704",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:15.260974"
+        }
+      ],
+      "raw_data": {
+        "intact_black soy peptide": {
+          "total_elements": 1728,
+          "interactors": [
+            {
+              "interactorAc": "EBI-366233",
+              "interactorName": "MAPT",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P10636-8",
+              "interactorDescription": "Microtubule-associated protein tau",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 7000,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-77613",
+              "interactorName": "APP",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P05067",
+              "interactorDescription": "Amyloid-beta precursor protein",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1779,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-366083",
+              "interactorName": "TP53",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P04637",
+              "interactorDescription": "Cellular tumor antigen p53",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1757,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-297353",
+              "interactorName": "EGFR",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P00533",
+              "interactorDescription": "Epidermal growth factor receptor",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1723,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-357345",
+              "interactorName": "SCRIB",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "Q14160",
+              "interactorDescription": "Protein scribble homolog",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1704,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            }
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "card",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "card_livesearch_black soy peptide_html_len": 22,
+        "card_black soy peptide_matches": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "pdbe_{'name': 'black soy peptide'}_count": 0
+      },
+      "error": null
+    }
+  ]
+}

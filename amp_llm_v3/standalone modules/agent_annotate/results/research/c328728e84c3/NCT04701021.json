@@ -1,0 +1,532 @@
+{
+  "nct_id": "NCT04701021",
+  "completed_at": "2026-03-19 17:14:58 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT04701021",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04701021",
+          "identifier": "NCT04701021",
+          "title": "Safety and Effect of Different Doses of TENDU Vaccine, a Therapeutic Peptide Conjugate Vaccine, in Patients With Relapse After Primary Radical Prostatectomy",
+          "snippet": "Title: Safety and Effect of Different Doses of TENDU Vaccine, a Therapeutic Peptide Conjugate Vaccine, in Patients With Relapse After Primary Radical Prostatectomy",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-20T00:12:12.006563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04701021",
+          "identifier": "NCT04701021",
+          "title": "Brief Summary",
+          "snippet": "This is a phase I, dose selection study of safety and effect of different doses of TENDU vaccine, a therapeutic peptide conjugate vaccine, in patients with relapse after primary radical prostatectomy.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-20T00:12:12.006573"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04701021",
+          "identifier": "NCT04701021",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-20T00:12:12.006580"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04701021",
+          "identifier": "NCT04701021",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Prostate Cancer | Keywords: prostate, vaccine, cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-20T00:12:12.006588"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04701021",
+          "identifier": "NCT04701021",
+          "title": "Intervention: TENDU",
+          "snippet": "BIOLOGICAL: TENDU - The vaccine is administrated by subcutaneous injections, one injection per drug substance (four separate injections) consecutively.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-20T00:12:12.006595"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04701021",
+          "identifier": "NCT04701021",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-20T00:12:12.006603"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT04701021",
+            "orgStudyIdInfo": {
+              "id": "TENDU-101"
+            },
+            "organization": {
+              "fullName": "Ultimovacs ASA",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "TENDU Vaccine in Patients With Relapse After Primary Radical Prostatectomy",
+            "officialTitle": "Safety and Effect of Different Doses of TENDU Vaccine, a Therapeutic Peptide Conjugate Vaccine, in Patients With Relapse After Primary Radical Prostatectomy"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2024-07",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2021-02-17",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2023-08-16",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2023-08-16",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2021-01-05",
+            "studyFirstSubmitQcDate": "2021-01-07",
+            "studyFirstPostDateStruct": {
+              "date": "2021-01-08",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2024-07-05",
+            "lastUpdatePostDateStruct": {
+              "date": "2024-07-08",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Ultimovacs ASA",
+              "class": "INDUSTRY"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": true,
+            "isFdaRegulatedDrug": false,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "This is a phase I, dose selection study of safety and effect of different doses of TENDU vaccine, a therapeutic peptide conjugate vaccine, in patients with relapse after primary radical prostatectomy.",
+            "detailedDescription": "This is a open label dose selection study to investigate the safety, tolerability, immune response and preliminary clinical effect of different doses of the TENDU vaccine. TENDU is a synthetic therapeutic peptide conjugate vaccine intended for treatment of prostate cancer.\n\nThe patients enrolled in this study is adults with documented progressive disease after radical prostatectomy and who are eligible for salvage radiotherapy and short-term (6 months) androgen deprivation therapy.\n\nAll patients taking part at the study must be vaccinated with a Boostrix vaccine (including tetanus antigen) one week prior to the first TENDU vaccine treatment.\n\nThree different doses, 40, 400 and 960 \u03bcg of the TENDU vaccine are to be investigated.\n\nThe vaccine is administrated by subcutaneous injections with one injection per drug substance (four separate injections) consecutively. The TENDU vaccine will be given four times during a treatment period lasting for 6 weeks and followed up for 6 months after the last treatment.\n\nIn total between 12 to 18 patients will be enrolled with a 3+3 design in each dose cohort. The first patient will receive the lowest dose of the TENDU vaccine, and after the treatment is completed, a safety evaluation will be done to evaluate enrolment of the next patients in this cohort. If one patient develops a dose limiting toxicity at a specific dose, an additional three patients are to be enrolled into that same dose cohort, and on the recommended dose an addition of 3 patients will be enrolled."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Prostate Cancer"
+            ],
+            "keywords": [
+              "prostate",
+              "vaccine",
+              "cancer"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 12,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "TENDU",
+                "type": "EXPERIMENTAL",
+                "description": "Three different doses of the TENDU vaccine are to be investigated: 40, 400 and 960\u03bcg.",
+                "interventionNames": [
+                  "Biological: TENDU"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "TENDU",
+                "description": "The vaccine is administrated by subcutaneous injections, one injection per drug substance (four separate injections) consecutively.",
+                "armGroupLabels": [
+                  "TENDU"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Assessment of safety and tolerability of TENDU vaccine",
+                "description": "Frequency and severity of Adverse Events (AEs) graded according to CTCAE version 5.0.",
+                "timeFrame": "Time from enrollment until 6 months after last dose"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Assessment of Immunological response",
+                "description": "To evaluate the immunological response against the prostate specific peptides in the patients at baseline and after TENDU vaccinations.",
+                "timeFrame": "Time from enrollment until 6 months after last dose"
+              },
+              {
+                "measure": "Assessment of anti-tetanus protein and anti-MTTE titers",
+                "description": "To evaluate the preliminary anti-tumor activity of the TENDU vaccine in patients pre- and post the vaccination with Boostrix (including tetanus antigen) and the TENDU vaccinations by evaluation of anti-tetanus protein and anti-MTTE titers.",
+                "timeFrame": "Time from enrollment until 6 months after last dose"
+              },
+              {
+                "measure": "Assessment of Anti-tumor activity",
+                "description": "To evaluate the preliminary anti-tumor activity of the TENDU vaccine according to changes in the PSA, PAP, PSMA and PET/CT.",
+                "timeFrame": "Time from enrollment until 6 months after last dose"
+              }
+            ],
+            "otherOutcomes": [
+              {
+                "measure": "Assessment of antibody titers",
+                "description": "Evaluation of antibody titers against PAP and PSMA peptides epitopes presented in the TENDU vaccine.",
+                "timeFrame": "Time from enrollment until 6 months after last dose"
+              },
+              {
+                "measure": "Assessment of possible biomarkers",
+                "description": "Assessment of possible biomarkers e.g. phenotyping of circulating tumor cells (CTCs)",
+                "timeFrame": "Time from enrollment until 6 months after last dose"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n1. Males \u226518 years of age\n2. PSA rise \\>0.2 ng/mL less than 18 months following radical prostatectomy (RP) and pathological ISUP Grade 4-5 (Gleason score \\>7), or persisting PSA \\>0.1 ng/mL six weeks after RP and short PSA-DT, eligible for salvage radiotherapy and short term androgen deprivation therapy\n3. ECOG performance status 0 or 1\n4. Adequate organ function as indicated by the following laboratory values:\n\n   * White blood cell count \u2265 2,500/\u03bcL\n   * Absolute neutrophil count \u2265 1,000/\u03bcL\n   * Platelets \u2265 100,000/\u03bcL\n   * Haemoglobin \u2265 9 g/dL or \u2265 5.6 mmol/L\n   * Serum creatinine \u2264 1.5 x upper limit of normal (ULN)\n   * Serum total bilirubin \u2264 1.5 x ULN or direct bilirubin \u2264 ULN for patients with total bilirubin levels \\> 1.5 ULN\n   * AST and ALT \u2264 2.5 x ULN\n5. Patients with potential to father children must use an acceptable contraceptive method\n6. Written informed consent prior to any study-specific evaluations\n\nExclusion Criteria:\n\n1. History of hematologic or primary solid tumor malignancy other than prostate cancer with remission less than 3 years prior study enrolment.\n2. Metastatic disease assessed by PSMA PET/CT\n3. Hypersensitivity to the active substance or any of its excipients\n4. Current use of androgen deprivation therapy or radiotherapy to the pelvis\n5. Known history or any evidence of active, non-infectious pneumonitis\n6. History of New York Heart Association class 3-4 congestive heart failure or history of myocardial infarction within 6 months of starting study treatment\n7. Active autoimmune disease that has required systemic treatment in past 2 years (i.e. with use of disease modifying agents, corticosteroids or immunosuppressive drugs). Patients with vitiligo or resolved childhood asthma/atopy would be an exception to this rule.\n8. Active infection requiring systemic therapy\n9. Diagnosis of immunodeficiency\n10. Any use of immunosuppressive (cytotoxic chemotherapy, systemic steroids) or immunomodulating agents within 8 weeks of study entry.\n11. Hepatitis B or Hepatitis C or Human Immunodeficiency Virus positive\n12. Expected to require any other form of systemic or localized antineoplastic therapy during the study\n13. Received any other investigational therapy within 4 weeks of the first dose of study treatment\n14. Any medical, psychological, social or neurological condition that would make it difficult for the patient to participate in the study and comply with the study procedures, restrictions, and requirements",
+            "healthyVolunteers": false,
+            "sex": "MALE",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Wolfgang Lilleby, MD PhD",
+                "affiliation": "Oslo University Hospital",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Oslo University Hospital, The Norwegian Radium Hospital",
+                "city": "Oslo",
+                "zip": "0379",
+                "country": "Norway",
+                "geoPoint": {
+                  "lat": 59.91273,
+                  "lon": 10.74609
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT04701021",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12954635/",
+          "identifier": "PMC:12954635",
+          "title": "Novel Therapeutic Strategies for Metastatic Prostate Cancer Care.",
+          "snippet": "Title: Novel Therapeutic Strategies for Metastatic Prostate Cancer Care.\nAuthors: Cimadamore A, Boixareu C, Sharp A et al.\nJournal: Eur Urol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144690"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12586155/",
+          "identifier": "PMC:12586155",
+          "title": "Targeted and immunotherapeutic strategies for castration-resistant prostate cancer: emerging strategies, challenges, and future directions.",
+          "snippet": "Title: Targeted and immunotherapeutic strategies for castration-resistant prostate cancer: emerging strategies, challenges, and future directions.\nAuthors: Wang B, Xiang Y, Fang Z et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144745"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12525195/",
+          "identifier": "PMC:12525195",
+          "title": "Challenges and opportunities on achieving an adequate delivery efficiency and immunogenicity with peptide-based anticancer vaccines.",
+          "snippet": "Title: Challenges and opportunities on achieving an adequate delivery efficiency and immunogenicity with peptide-based anticancer vaccines.\nAuthors: Wang Y, Sun D, Laney V et al.\nJournal: Adv Drug Deliv Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144759"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12169757/",
+          "identifier": "PMC:12169757",
+          "title": "Novel synthetic peptide-based vaccine shows promise against prostate cancer.",
+          "snippet": "Title: Novel synthetic peptide-based vaccine shows promise against prostate cancer.\nAuthors: V\u00e1zquez-Arregu\u00edn K\nJournal: Mol Ther Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144771"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12166800/",
+          "identifier": "PMC:12166800",
+          "title": "Preclinical development and clinical safety assessment of a synthetic peptide conjugate enabling endogenous antibody binding to promote innate receptor engagement.",
+          "snippet": "Title: Preclinical development and clinical safety assessment of a synthetic peptide conjugate enabling endogenous antibody binding to promote innate receptor engagement.\nAuthors: Fletcher EAK, Cordfunke RA, Nasi A et al.\nJournal: Mol Ther Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144782"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12122770/",
+          "identifier": "PMC:12122770",
+          "title": "Development of a multi-neoepitope vaccine targeting non-small cell lung cancer through reverse vaccinology and bioinformatics approaches.",
+          "snippet": "Title: Development of a multi-neoepitope vaccine targeting non-small cell lung cancer through reverse vaccinology and bioinformatics approaches.\nAuthors: Asadollahi E, Zomorodipour A, Soheili ZS et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144793"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11982186/",
+          "identifier": "PMC:11982186",
+          "title": "Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.",
+          "snippet": "Title: Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.\nAuthors: Shah BA, Holden JA, Lenzo JC et al.\nJournal: NPJ Vaccines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144803"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11119780/",
+          "identifier": "PMC:11119780",
+          "title": "Innovative Drug Modalities for the Treatment of Advanced Prostate Cancer.",
+          "snippet": "Title: Innovative Drug Modalities for the Treatment of Advanced Prostate Cancer.\nAuthors: Capuozzo M, Santorsola M, Ianniello M et al.\nJournal: Diseases",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144814"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11084719/",
+          "identifier": "PMC:11084719",
+          "title": "Tumor-Derived Antigenic Peptides as Potential Cancer Vaccines.",
+          "snippet": "Title: Tumor-Derived Antigenic Peptides as Potential Cancer Vaccines.\nAuthors: Sotirov S, Dimitrov I\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144824"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10531627/",
+          "identifier": "PMC:10531627",
+          "title": "Emerging Immunotherapy Approaches for Treating Prostate Cancer.",
+          "snippet": "Title: Emerging Immunotherapy Approaches for Treating Prostate Cancer.\nAuthors: Meng L, Yang Y, Mortazavi A et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144834"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8303369/",
+          "identifier": "PMC:8303369",
+          "title": "Circulating Tumor Cell Persistence Associates with Long-Term Clinical Outcome to a Therapeutic Cancer Vaccine in Prostate Cancer.",
+          "snippet": "Title: Circulating Tumor Cell Persistence Associates with Long-Term Clinical Outcome to a Therapeutic Cancer Vaccine in Prostate Cancer.\nAuthors: Guldvik IJ, Ekseth L, Kishan AU et al.\nJournal: J Pers Med",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144846"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8279810/",
+          "identifier": "PMC:8279810",
+          "title": "Beyond Just Peptide Antigens: The Complex World of Peptide-Based Cancer Vaccines.",
+          "snippet": "Title: Beyond Just Peptide Antigens: The Complex World of Peptide-Based Cancer Vaccines.\nAuthors: Stephens AJ, Burgess-Brown NA, Jiang S\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144856"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8228524/",
+          "identifier": "PMC:8228524",
+          "title": "Cancer Vaccines for Genitourinary Tumors: Recent Progresses and Future Possibilities.",
+          "snippet": "Title: Cancer Vaccines for Genitourinary Tumors: Recent Progresses and Future Possibilities.\nAuthors: Maiorano BA, Schinzari G, Ciardiello D et al.\nJournal: Vaccines (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144866"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8125679/",
+          "identifier": "PMC:8125679",
+          "title": "More Than Meets the Eye: Scientific Rationale behind Molecular Imaging and Therapeutic Targeting of Prostate-Specific Membrane Antigen (PSMA) in Metastatic Prostate Cancer and Beyond.",
+          "snippet": "Title: More Than Meets the Eye: Scientific Rationale behind Molecular Imaging and Therapeutic Targeting of Prostate-Specific Membrane Antigen (PSMA) in Metastatic Prostate Cancer and Beyond.\nAuthors: Hyv\u00e4kk\u00e4 A, Virtanen V, Kemppainen J et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:18.144877"
+        }
+      ],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_ids": [
+          "12954635",
+          "12586155",
+          "12525195",
+          "12169757",
+          "12166800",
+          "12122770",
+          "11982186",
+          "11119780",
+          "11084719",
+          "10531627",
+          "8303369",
+          "8279810",
+          "8228524",
+          "8125679"
+        ],
+        "pmc_count": 14,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT04701021",
+      "citations": [],
+      "raw_data": {
+        "uniprot_TENDU": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT04701021",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT04701021",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_TENDU": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT04701021",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5777886/",
+          "identifier": "CHEMBL5777886",
+          "title": "CHEMBL5777886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5777886\nMolecular weight: 336.41\nBioactivity: Ki=1026.0 nM (Nitric oxide synthase 1); Ki=10978.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:19.934828"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5788338/",
+          "identifier": "CHEMBL5788338",
+          "title": "CHEMBL5788338 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5788338\nMolecular weight: 316.42\nBioactivity: Ki=70.0 nM (Nitric oxide synthase 1); Ki=3314.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:22.057133"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5801236/",
+          "identifier": "CHEMBL5801236",
+          "title": "CHEMBL5801236 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5801236\nMolecular weight: 330.45\nBioactivity: Ki=46.0 nM (Nitric oxide synthase 1); Ki=5043.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-20T00:12:23.083963"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'TENDU'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT04701021",
+      "citations": [],
+      "raw_data": {
+        "rcsb_TENDU": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT04701021",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_TENDU_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT04701021",
+      "citations": [],
+      "raw_data": {
+        "apd_TENDU": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT04701021",
+      "citations": [],
+      "raw_data": {
+        "ictrp_error": ""
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT04701021",
+      "citations": [],
+      "raw_data": {
+        "iuphar_TENDU": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT04701021",
+      "citations": [],
+      "raw_data": {
+        "pdbe_TENDU_count": 0
+      },
+      "error": null
+    }
+  ]
+}

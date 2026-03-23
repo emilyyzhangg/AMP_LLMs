@@ -1,0 +1,5204 @@
+{
+  "nct_id": "NCT00004494",
+  "completed_at": "2026-03-17 07:58:48 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00004494",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "snippet": "Title: Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:35.628971"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES:\n\nI. Determine the maximum tolerated dose of vasoactive intestinal peptide in patients with acute respiratory distress syndrome.\n\nII. Evaluate the safety and pharmacodynamic activity of this peptide in these patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:35.628983"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:35.628989"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Sepsis, Respiratory Distress Syndrome, Respiratory Distress Syndrome, Adult | Keywords: cardiovascular and respiratory diseases, immunologic disorders and infectious disorders, neonatal disorders, rare disease, respiratory distress syndrome, sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:35.628995"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Intervention: vasoactive intestinal peptide",
+          "snippet": "DRUG: vasoactive intestinal peptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:35.629001"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:35.629006"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00004494",
+            "orgStudyIdInfo": {
+              "id": "199/14275"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "SUNY-SB-FDR001488"
+              },
+              {
+                "id": "SUNY-SB-96-077"
+              },
+              {
+                "id": "SUNY-SB-98-2606"
+              },
+              {
+                "id": "FD-R-0001488",
+                "type": "OTHER_GRANT",
+                "domain": "FDA Orphan Drug Products"
+              }
+            ],
+            "organization": {
+              "fullName": "Stony Brook University",
+              "class": "OTHER"
+            },
+            "briefTitle": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2022-05",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "1998-09"
+            },
+            "studyFirstSubmitDate": "1999-10-18",
+            "studyFirstSubmitQcDate": "1999-10-18",
+            "studyFirstPostDateStruct": {
+              "date": "1999-10-19",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2022-05-03",
+            "lastUpdatePostDateStruct": {
+              "date": "2022-05-04",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "Stony Brook University",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "State University of New York",
+                "class": "OTHER"
+              },
+              {
+                "name": "FDA Office of Orphan Products Development",
+                "class": "FED"
+              }
+            ]
+          },
+          "descriptionModule": {
+            "briefSummary": "OBJECTIVES:\n\nI. Determine the maximum tolerated dose of vasoactive intestinal peptide in patients with acute respiratory distress syndrome.\n\nII. Evaluate the safety and pharmacodynamic activity of this peptide in these patients.",
+            "detailedDescription": "PROTOCOL OUTLINE:\n\nThis is a dose escalation study.\n\nPatients receive vasoactive intestinal peptide (VIP) IV over either 6 or 12 hours.\n\nCohorts of 3 patients each receive escalating doses of VIP over either 6 or 12 hours until the maximum tolerated dose is determined.\n\nPatients are followed for 30 days."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Sepsis",
+              "Respiratory Distress Syndrome",
+              "Respiratory Distress Syndrome, Adult"
+            ],
+            "keywords": [
+              "cardiovascular and respiratory diseases",
+              "immunologic disorders and infectious disorders",
+              "neonatal disorders",
+              "rare disease",
+              "respiratory distress syndrome",
+              "sepsis"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "TREATMENT"
+            },
+            "enrollmentInfo": {
+              "count": 18,
+              "type": "ESTIMATED"
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "vasoactive intestinal peptide"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "PROTOCOL ENTRY CRITERIA:\n\n--Disease Characteristics--\n\nDiagnosis of adult respiratory distress syndrome (ARDS) with sepsis\n\nARDS characterized by: hypoxemia refractory to supplemental oxygen therapy, diffuse pulmonary infiltrates, no cardiogenic cause of pulmonary edema, and reduced pulmonary compliance\n\nSepsis characterized by: Two or more of the following: Fever or hypothermia; Tachycardia; Tachypnea; WBC greater than 12,000/mm3 or less than 4,000/mm3 or immature neutrophils; Hypotension; Clinical suspicion of infection; Inadequate organ perfusion or organ dysfunction as demonstrated by: Acute deterioration in mental acuity (excluding sedatives or other nonsepsis causes) OR Unexplained metabolic acidosis OR Oliguria for greater than 2 hours OR Unexplained coagulopathy (elevated PT or PTT or platelet count decreased to less than 50% of baseline within 24 hours or less than 100,000/mm3) OR Acute elevation of bilirubin to greater than 2.0 mg/dL AND elevation of alkaline phosphatase, SGOT, or SGPT\n\nNo sepsis with unstable BP\n\n--Prior/Concurrent Therapy--\n\nAt least 30 days since prior enrollment in investigational trial; No other concurrent enrollment in investigational trial\n\n--Patient Characteristics--\n\nHematopoietic: See Disease Characteristics; No uncontrolled hemorrhage (transfusion of 4 or more units required within past 24 hours); No chemotherapy induced neutropenia (granulocyte count less than 1000/mm3)\n\nHepatic: No severe liver disease with portal hypertension\n\nRenal: No anuria (urine output less than 50 mL/day)\n\nCardiovascular: No cardiogenic shock\n\nNeurologic: No recent stroke, head trauma, or increased intracranial pressure; No other serious neurologic disorder\n\nOther: Not pregnant; No acquired immune deficiency syndrome; No immunosuppressed transplant patients; No severe burns; No irreversible underlying condition with rapidly fatal course; No marked obesity; No recent history of diarrhea",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Sami I. Said",
+                "affiliation": "State University of New York",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Veterans Affairs Medical Center - Northport",
+                "city": "Northport",
+                "state": "New York",
+                "zip": "11768",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.90093,
+                  "lon": -73.34317
+                }
+              },
+              {
+                "facility": "State University of New York Health Sciences Center - Stony Brook",
+                "city": "Stony Brook",
+                "state": "New York",
+                "zip": "11790-7775",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.92565,
+                  "lon": -73.14094
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00004494",
+      "citations": [
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/P48143",
+          "identifier": "P48143",
+          "title": "VIP peptides",
+          "snippet": "Organism: Gallus gallus. Protein: VIP peptides. Accession: P48143",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:36.538229"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/P01283",
+          "identifier": "P01283",
+          "title": "VIP peptides",
+          "snippet": "Organism: Rattus norvegicus. Protein: VIP peptides. Accession: P01283",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:36.538235"
+        }
+      ],
+      "raw_data": {
+        "uniprot_vasoactive intestinal peptide": [
+          {
+            "entryType": "UniProtKB reviewed (Swiss-Prot)",
+            "primaryAccession": "P48143",
+            "secondaryAccessions": [
+              "P01285"
+            ],
+            "uniProtkbId": "VIP_CHICK",
+            "entryAudit": {
+              "firstPublicDate": "1986-07-21",
+              "lastAnnotationUpdateDate": "2026-01-28",
+              "lastSequenceUpdateDate": "1996-02-01",
+              "entryVersion": 139,
+              "sequenceVersion": 1
+            },
+            "annotationScore": 5.0,
+            "organism": {
+              "scientificName": "Gallus gallus",
+              "commonName": "Chicken",
+              "taxonId": 9031,
+              "lineage": [
+                "Eukaryota",
+                "Metazoa",
+                "Chordata",
+                "Craniata",
+                "Vertebrata",
+                "Euteleostomi",
+                "Archelosauria",
+                "Archosauria",
+                "Dinosauria",
+                "Saurischia",
+                "Theropoda",
+                "Coelurosauria",
+                "Aves",
+                "Neognathae",
+                "Galloanserae",
+                "Galliformes",
+                "Phasianidae",
+                "Phasianinae",
+                "Gallus"
+              ]
+            },
+            "proteinExistence": "1: Evidence at protein level",
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "value": "VIP peptides"
+                }
+              },
+              "contains": [
+                {
+                  "recommendedName": {
+                    "fullName": {
+                      "value": "Intestinal peptide PHI-27-like"
+                    }
+                  }
+                },
+                {
+                  "recommendedName": {
+                    "fullName": {
+                      "value": "Vasoactive intestinal peptide"
+                    },
+                    "shortNames": [
+                      {
+                        "value": "VIP"
+                      }
+                    ]
+                  },
+                  "alternativeNames": [
+                    {
+                      "fullName": {
+                        "value": "Vasoactive intestinal polypeptide"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "flag": "Precursor"
+            },
+            "genes": [
+              {
+                "geneName": {
+                  "value": "VIP"
+                }
+              }
+            ],
+            "comments": [
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000250",
+                        "source": "UniProtKB",
+                        "id": "P01282"
+                      }
+                    ],
+                    "value": "VIP is a neuropeptide involved in a diverse array of physiological processes through activating the PACAP subfamily of class B1 G protein-coupled receptors: VIP receptor 1 (VPR1) and VIP receptor 2 (VPR2). Abundantly expressed throughout the CNS and peripheral nervous systems where they primarily exert neuroprotective and immune modulatory roles (By similarity). Also causes vasodilation, lowers arterial blood pressure, stimulates myocardial contractility, increases glycogenolysis and relaxes the smooth muscle of trachea, stomach and gall bladder (By similarity)"
+                  }
+                ],
+                "commentType": "FUNCTION",
+                "molecule": "Vasoactive intestinal peptide"
+              },
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000250",
+                        "source": "UniProtKB",
+                        "id": "P01282"
+                      }
+                    ],
+                    "value": "PHM-27 is a bioactive form from proteolysis of the same precursor protein, that causes vasodilation"
+                  }
+                ],
+                "commentType": "FUNCTION"
+              },
+              {
+                "commentType": "SUBCELLULAR LOCATION",
+                "subcellularLocations": [
+                  {
+                    "location": {
+                      "value": "Secreted",
+                      "id": "SL-0243"
+                    }
+                  }
+                ]
+              },
+              {
+                "commentType": "ALTERNATIVE PRODUCTS",
+                "events": [
+                  "Alternative splicing"
+                ],
+                "isoforms": [
+                  {
+                    "name": {
+                      "value": "Long"
+                    },
+                    "isoformIds": [
+                      "P48143-1"
+                    ],
+                    "isoformSequenceStatus": "Displayed"
+                  },
+                  {
+                    "name": {
+                      "value": "Short"
+                    },
+                    "isoformIds": [
+                      "P48143-2"
+                    ],
+                    "sequenceIds": [
+                      "VSP_001758"
+                    ],
+                    "isoformSequenceStatus": "Described"
+                  }
+                ]
+              },
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000305"
+                      }
+                    ],
+                    "value": "Belongs to the glucagon family"
+                  }
+                ],
+                "commentType": "SIMILARITY"
+              }
+            ],
+            "features": [
+              {
+                "type": "Signal",
+                "location": {
+                  "start": {
+                    "value": 1,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 25,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000255"
+                  }
+                ]
+              },
+              {
+                "type": "Propeptide",
+                "location": {
+                  "start": {
+                    "value": 26,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 87,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "",
+                "featureId": "PRO_0000011476"
+              },
+              {
+                "type": "Peptide",
+                "location": {
+                  "start": {
+                    "value": 89,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 115,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Intestinal peptide PHI-27-like",
+                "featureId": "PRO_0000011477"
+              },
+              {
+                "type": "Propeptide",
+                "location": {
+                  "start": {
+                    "value": 119,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 126,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "",
+                "featureId": "PRO_0000011478"
+              },
+              {
+                "type": "Peptide",
+                "location": {
+                  "start": {
+                    "value": 129,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 156,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Vasoactive intestinal peptide",
+                "featureId": "PRO_0000011479"
+              },
+              {
+                "type": "Propeptide",
+                "location": {
+                  "start": {
+                    "value": 160,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 200,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "",
+                "featureId": "PRO_0000011480"
+              },
+              {
+                "type": "Modified residue",
+                "location": {
+                  "start": {
+                    "value": 156,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 156,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Threonine amide",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000269",
+                    "source": "PubMed",
+                    "id": "1227973"
+                  }
+                ]
+              },
+              {
+                "type": "Alternative sequence",
+                "location": {
+                  "start": {
+                    "value": 85,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 119,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "in isoform Short",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000305"
+                  }
+                ],
+                "featureId": "VSP_001758",
+                "alternativeSequence": {}
+              }
+            ],
+            "keywords": [
+              {
+                "id": "KW-0025",
+                "category": "Coding sequence diversity",
+                "name": "Alternative splicing"
+              },
+              {
+                "id": "KW-0027",
+                "category": "PTM",
+                "name": "Amidation"
+              },
+              {
+                "id": "KW-0165",
+                "category": "PTM",
+                "name": "Cleavage on pair of basic residues"
+              },
+              {
+                "id": "KW-0903",
+                "category": "Technical term",
+                "name": "Direct protein sequencing"
+              },
+              {
+                "id": "KW-0372",
+                "category": "Molecular function",
+                "name": "Hormone"
+              },
+              {
+                "id": "KW-1185",
+                "category": "Technical term",
+                "name": "Reference proteome"
+              },
+              {
+                "id": "KW-0964",
+                "category": "Cellular component",
+                "name": "Secreted"
+              },
+              {
+                "id": "KW-0732",
+                "category": "Domain",
+                "name": "Signal"
+              }
+            ],
+            "references": [
+              {
+                "referenceNumber": 1,
+                "citation": {
+                  "id": "7890166",
+                  "citationType": "journal article",
+                  "authors": [
+                    "McFarlin D.R.",
+                    "Lehn D.A.",
+                    "Moran S.M.",
+                    "MacDonald M.J.",
+                    "Epstein M.L."
+                  ],
+                  "citationCrossReferences": [
+                    {
+                      "database": "PubMed",
+                      "id": "7890166"
+                    },
+                    {
+                      "database": "DOI",
+                      "id": "10.1016/0378-1119(94)00856-n"
+                    }
+                  ],
+                  "title": "Sequence of a cDNA encoding chicken vasoactive intestinal peptide (VIP).",
+                  "publicationDate": "1995",
+                  "journal": "Gene",
+                  "firstPage": "211",
+                  "lastPage": "213",
+                  "volume": "154"
+                },
+                "referencePositions": [
+                  "NUCLEOTIDE SEQUENCE [MRNA]"
+                ],
+                "referenceComments": [
+                  {
+                    "value": "Brain",
+                    "type": "TISSUE"
+                  }
+                ]
+              },
+              {
+                "referenceNumber": 2,
+                "citation": {
+                  "id": "CI-APKRU388EO25P",
+                  "citationType": "submission",
+                  "authors": [
+                    "Talbot R.T.",
+                    "Dunn I.C.",
+                    "Wilson P.W.",
+                    "Sang H.M.",
+                    "Sharp P.J."
+                  ],
+                  "publicationDate": "AUG-1994",
+                  "submissionDatabase": "EMBL/GenBank/DDBJ databases"
+                },
+                "referencePositions": [
+                  "NUCLEOTIDE SEQUENCE [MRNA] OF 1-84 AND 120-200"
+                ],
+                "referenceComments": [
+                  {
+                    "value": "Hypothalamus",
+                    "type": "TISSUE"
+                  }
+                ]
+              },
+              {
+                "referenceNumber": 3,
+                "citation": {
+                  "id": "1227973",
+                  "citationType": "journal article",
+                  "authors": [
+                    "Nilsson A."
+                  ],
+                  "citationCrossReferences": [
+                    {
+                      "database": "PubMed",
+                      "id": "1227973"
+                    },
+                    {
+                      "database": "DOI",
+                      "id": "10.1016/0014-5793(75)80740-x"
+                    }
+                  ],
+                  "title": "Structure of the vasoactive intestinal octacosapeptide from chicken intestine. The amino acid sequence.",
+                  "publicationDate": "1975",
+                  "journal": "FEBS Lett.",
+                  "firstPage": "322",
+                  "lastPage": "326",
+                  "volume": "60"
+                },
+                "referencePositions": [
+                  "PROTEIN SEQUENCE OF 129-156",
+                  "AMIDATION AT THR-156"
+                ]
+              },
+              {
+                "referenceNumber": 4,
+                "citation": {
+                  "id": "CI-8ROHRRK0CBDN6",
+                  "citationType": "journal article",
+                  "authors": [
+                    "Bodanszky M.",
+                    "Lin C.Y.",
+                    "Yiotakis A.E.",
+                    "Mutt V.",
+                    "Said S.I."
+                  ],
+                  "title": "Vasoactive intestinal peptide (VIP) from chicken. Synthesis and properties of the C-terminal hendecapeptide.",
+                  "publicationDate": "1976",
+                  "journal": "Bioorg. Chem.",
+                  "firstPage": "339",
+                  "lastPage": "350",
+                  "volume": "5"
+                },
+                "referencePositions": [
+                  "SYNTHESIS OF VIP",
+                  "PROTEIN SEQUENCE OF 139-156"
+                ]
+              }
+            ],
+            "uniProtKBCrossReferences": [
+              {
+                "database": "EMBL",
+                "id": "U09350",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "AAA87896.1"
+                  },
+                  {
+                    "key": "Status",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MoleculeType",
+                    "value": "mRNA"
+                  }
+                ]
+              },
+              {
+                "database": "EMBL",
+                "id": "X80906",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "CAA56867.1"
+                  },
+                  {
+                    "key": "Status",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MoleculeType",
+                    "value": "mRNA"
+                  }
+                ]
+              },
+              {
+                "database": "PIR",
+                "id": "S47470",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "VRCH"
+                  }
+                ]
+              },
+              {
+                "database": "RefSeq",
+                "id": "NP_001170780.1",
+                "properties": [
+                  {
+                    "key": "NucleotideSequenceId",
+                    "value": "NM_001177309.2"
+                  }
+                ],
+                "isoformId": "P48143-2"
+              },
+              {
+                "database": "RefSeq",
+                "id": "NP_990697.3",
+                "properties": [
+                  {
+                    "key": "NucleotideSequenceId",
+                    "value": "NM_205366.3"
+                  }
+                ],
+                "isoformId": "P48143-1"
+              },
+              {
+                "database": "AlphaFoldDB",
+                "id": "P48143",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "SMR",
+                "id": "P48143",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "FunCoup",
+                "id": "P48143",
+                "properties": [
+                  {
+                    "key": "Number of interactors",
+                    "value": "6"
+                  }
+                ]
+              },
+              {
+                "database": "STRING",
+                "id": "9031.ENSGALP00000022092",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "PaxDb",
+                "id": "9031-ENSGALP00000040805",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "Ensembl",
+                "id": "ENSGALT00010012401.1",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "ENSGALP00010006965.1"
+                  },
+                  {
+                    "key": "GeneId",
+                    "value": "ENSGALG00010005240.1"
+                  }
+                ],
+                "isoformId": "P48143-1"
+              },
+              {
+                "database": "Ensembl",
+                "id": "ENSGALT00010012403.1",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "ENSGALP00010006967.1"
+                  },
+                  {
+                    "key": "GeneId",
+                    "value": "ENSGALG00010005240.1"
+                  }
+                ],
+                "isoformId": "P48143-2"
+              },
+              {
+                "database": "GeneID",
+                "id": "396323",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "KEGG",
+                "id": "gga:396323",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "CTD",
+                "id": "7432",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "VEuPathDB",
+                "id": "HostDB:geneid_396323",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "eggNOG",
+                "id": "ENOG502QVTA",
+                "properties": [
+                  {
+                    "key": "ToxonomicScope",
+                    "value": "Eukaryota"
+                  }
+                ]
+              },
+              {
+                "database": "GeneTree",
+                "id": "ENSGT00950000183154",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "InParanoid",
+                "id": "P48143",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "OMA",
+                "id": "PPFSDNY",
+                "properties": [
+                  {
+                    "key": "Fingerprint",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "OrthoDB",
+                "id": "8795594at2759",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "PhylomeDB",
+                "id": "P48143",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "Reactome",
+                "id": "R-GGA-418555",
+                "properties": [
+                  {
+                    "key": "PathwayName",
+                    "value": "G alpha (s) signalling events"
+                  }
+                ]
+              },
+              {
+                "database": "Reactome",
+                "id": "R-GGA-420092",
+                "properties": [
+                  {
+                    "key": "PathwayName",
+                    "value": "Glucagon-type ligand receptors"
+                  }
+                ]
+              },
+              {
+                "database": "PRO",
+                "id": "PR:P48143",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "Proteomes",
+                "id": "UP000000539",
+                "properties": [
+                  {
+                    "key": "Component",
+                    "value": "Chromosome 3"
+                  }
+                ]
+              },
+              {
+                "database": "Bgee",
+                "id": "ENSGALG00000013604",
+                "properties": [
+                  {
+                    "key": "ExpressionPatterns",
+                    "value": "Expressed in colon and 8 other cell types or tissues"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0005576",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:extracellular region"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-SubCell"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0043005",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:neuron projection"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:AgBase"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "9629189"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0005184",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:neuropeptide hormone activity"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISS:UniProtKB"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0051428",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:peptide hormone receptor binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IBA:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0031891",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:type 1 vasoactive intestinal polypeptide receptor binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISS:UniProtKB"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0007189",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:adenylate cyclase-activating G protein-coupled receptor signaling pathway"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:AgBase"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "12794310"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0048242",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:epinephrine secretion"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IMP:AgBase"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000315",
+                    "source": "PubMed",
+                    "id": "10974664"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0048255",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:mRNA stabilization"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISS:AgBase"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0141163",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:positive regulation of cAMP/PKA signal transduction"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IBA:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0032812",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:positive regulation of epinephrine secretion"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IMP:AgBase"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000315",
+                    "source": "PubMed",
+                    "id": "11927398"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0070459",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:prolactin secretion"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISS:AgBase"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0032880",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:regulation of protein localization"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IBA:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "6.10.250.590",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR000532",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Glucagon_GIP_secretin_VIP"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR046963",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "VIP/GHRH-like"
+                  }
+                ]
+              },
+              {
+                "database": "PANTHER",
+                "id": "PTHR11213",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "GLUCAGON-FAMILY NEUROPEPTIDE"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "PANTHER",
+                "id": "PTHR11213:SF5",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "VIP PEPTIDES"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF00123",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Hormone_2"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "SMART",
+                "id": "SM00070",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "GLUCA"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "PROSITE",
+                "id": "PS00260",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "GLUCAGON"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              }
+            ],
+            "sequence": {
+              "value": "MEHRGASPLLLALALLSALCWRARALPPRGAAFPAVPRLGNRLPFDAASESDRAHGSLKSESDILQNTLPENEKFYFDLSRIIDRNARHADGIFTSVYSHLLAKLAVKRYLHSLIRKRVSSQDSPVKRHSDAVFTDNYSRFRKQMAVKKYLNSVLTGKRSQEELNPAKLRGEAEILEPSFSENYDDVSVDELLSHLPLDL",
+              "length": 200,
+              "molWeight": 22540,
+              "crc64": "902A88F998CAB402",
+              "md5": "6622512E14837511E72E96FA8C9BE843"
+            },
+            "extraAttributes": {
+              "countByCommentType": {
+                "FUNCTION": 2,
+                "SUBCELLULAR LOCATION": 1,
+                "ALTERNATIVE PRODUCTS": 2,
+                "SIMILARITY": 1
+              },
+              "countByFeatureType": {
+                "Signal": 1,
+                "Propeptide": 3,
+                "Peptide": 2,
+                "Modified residue": 1,
+                "Alternative sequence": 1
+              },
+              "uniParcId": "UPI0000138845"
+            }
+          },
+          {
+            "entryType": "UniProtKB reviewed (Swiss-Prot)",
+            "primaryAccession": "P01283",
+            "secondaryAccessions": [
+              "Q9QUN1"
+            ],
+            "uniProtkbId": "VIP_RAT",
+            "entryAudit": {
+              "firstPublicDate": "1986-07-21",
+              "lastAnnotationUpdateDate": "2026-01-28",
+              "lastSequenceUpdateDate": "1993-10-01",
+              "entryVersion": 169,
+              "sequenceVersion": 2
+            },
+            "annotationScore": 5.0,
+            "organism": {
+              "scientificName": "Rattus norvegicus",
+              "commonName": "Rat",
+              "taxonId": 10116,
+              "lineage": [
+                "Eukaryota",
+                "Metazoa",
+                "Chordata",
+                "Craniata",
+                "Vertebrata",
+                "Euteleostomi",
+                "Mammalia",
+                "Eutheria",
+                "Euarchontoglires",
+                "Glires",
+                "Rodentia",
+                "Myomorpha",
+                "Muroidea",
+                "Muridae",
+                "Murinae",
+                "Rattus"
+              ]
+            },
+            "proteinExistence": "1: Evidence at protein level",
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "value": "VIP peptides"
+                }
+              },
+              "contains": [
+                {
+                  "recommendedName": {
+                    "fullName": {
+                      "value": "Intestinal peptide PHV-42"
+                    }
+                  }
+                },
+                {
+                  "recommendedName": {
+                    "fullName": {
+                      "value": "Intestinal peptide PHI-27"
+                    }
+                  },
+                  "alternativeNames": [
+                    {
+                      "fullName": {
+                        "value": "Peptide histidine isoleucinamide 27"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "recommendedName": {
+                    "fullName": {
+                      "value": "Vasoactive intestinal peptide"
+                    },
+                    "shortNames": [
+                      {
+                        "value": "VIP"
+                      }
+                    ]
+                  },
+                  "alternativeNames": [
+                    {
+                      "fullName": {
+                        "value": "Vasoactive intestinal polypeptide"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "flag": "Precursor"
+            },
+            "genes": [
+              {
+                "geneName": {
+                  "value": "Vip"
+                }
+              }
+            ],
+            "comments": [
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000250",
+                        "source": "UniProtKB",
+                        "id": "P01282"
+                      }
+                    ],
+                    "value": "VIP is a neuropeptide involved in a diverse array of physiological processes through activating the PACAP subfamily of class B1 G protein-coupled receptors: VIP receptor 1 (VPR1) and VIP receptor 2 (VPR2). Abundantly expressed throughout the CNS and peripheral nervous systems where they primarily exert neuroprotective and immune modulatory roles (By similarity). Also causes vasodilation, lowers arterial blood pressure, stimulates myocardial contractility, increases glycogenolysis and relaxes the smooth muscle of trachea, stomach and gall bladder (By similarity)"
+                  }
+                ],
+                "commentType": "FUNCTION",
+                "molecule": "Vasoactive intestinal peptide"
+              },
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000250",
+                        "source": "UniProtKB",
+                        "id": "P01282"
+                      }
+                    ],
+                    "value": "Bioactive forms that cause vasodilation. PHM-27 is a potent agonist of the calcitonin receptor CALCR, with similar efficacy as calcitonin"
+                  }
+                ],
+                "commentType": "FUNCTION",
+                "molecule": "Intestinal peptide PHI-27"
+              },
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000250",
+                        "source": "UniProtKB",
+                        "id": "P01282"
+                      }
+                    ],
+                    "value": "Bioactive forms that cause vasodilation"
+                  }
+                ],
+                "commentType": "FUNCTION",
+                "molecule": "Intestinal peptide PHV-42"
+              },
+              {
+                "commentType": "SUBCELLULAR LOCATION",
+                "subcellularLocations": [
+                  {
+                    "location": {
+                      "value": "Secreted",
+                      "id": "SL-0243"
+                    }
+                  }
+                ]
+              },
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000305"
+                      }
+                    ],
+                    "value": "Belongs to the glucagon family"
+                  }
+                ],
+                "commentType": "SIMILARITY"
+              }
+            ],
+            "features": [
+              {
+                "type": "Signal",
+                "location": {
+                  "start": {
+                    "value": 1,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 21,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": ""
+              },
+              {
+                "type": "Propeptide",
+                "location": {
+                  "start": {
+                    "value": 22,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 79,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "",
+                "featureId": "PRO_0000011471"
+              },
+              {
+                "type": "Peptide",
+                "location": {
+                  "start": {
+                    "value": 81,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 122,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Intestinal peptide PHV-42",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000250"
+                  }
+                ],
+                "featureId": "PRO_0000011472"
+              },
+              {
+                "type": "Peptide",
+                "location": {
+                  "start": {
+                    "value": 81,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 107,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Intestinal peptide PHI-27",
+                "featureId": "PRO_0000011473"
+              },
+              {
+                "type": "Peptide",
+                "location": {
+                  "start": {
+                    "value": 125,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 152,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Vasoactive intestinal peptide",
+                "featureId": "PRO_0000011474"
+              },
+              {
+                "type": "Propeptide",
+                "location": {
+                  "start": {
+                    "value": 156,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 170,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "",
+                "featureId": "PRO_0000011475"
+              },
+              {
+                "type": "Modified residue",
+                "location": {
+                  "start": {
+                    "value": 76,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 76,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Phosphoserine",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0007744",
+                    "source": "PubMed",
+                    "id": "22673903"
+                  }
+                ]
+              },
+              {
+                "type": "Modified residue",
+                "location": {
+                  "start": {
+                    "value": 107,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 107,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Isoleucine amide",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000269",
+                    "source": "PubMed",
+                    "id": "3838518"
+                  }
+                ]
+              },
+              {
+                "type": "Modified residue",
+                "location": {
+                  "start": {
+                    "value": 152,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 152,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Asparagine amide",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000269",
+                    "source": "PubMed",
+                    "id": "3379062"
+                  },
+                  {
+                    "evidenceCode": "ECO:0000269",
+                    "source": "PubMed",
+                    "id": "3838518"
+                  }
+                ]
+              },
+              {
+                "type": "Glycosylation",
+                "location": {
+                  "start": {
+                    "value": 133,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 133,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "N-linked (GlcNAc...) asparagine",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000255"
+                  }
+                ],
+                "featureId": ""
+              }
+            ],
+            "keywords": [
+              {
+                "id": "KW-0027",
+                "category": "PTM",
+                "name": "Amidation"
+              },
+              {
+                "id": "KW-0165",
+                "category": "PTM",
+                "name": "Cleavage on pair of basic residues"
+              },
+              {
+                "id": "KW-0903",
+                "category": "Technical term",
+                "name": "Direct protein sequencing"
+              },
+              {
+                "id": "KW-0325",
+                "category": "PTM",
+                "name": "Glycoprotein"
+              },
+              {
+                "id": "KW-0372",
+                "category": "Molecular function",
+                "name": "Hormone"
+              },
+              {
+                "id": "KW-0597",
+                "category": "PTM",
+                "name": "Phosphoprotein"
+              },
+              {
+                "id": "KW-1185",
+                "category": "Technical term",
+                "name": "Reference proteome"
+              },
+              {
+                "id": "KW-0964",
+                "category": "Cellular component",
+                "name": "Secreted"
+              },
+              {
+                "id": "KW-0732",
+                "category": "Domain",
+                "name": "Signal"
+              }
+            ],
+            "references": [
+              {
+                "referenceNumber": 1,
+                "citation": {
+                  "id": "2159586",
+                  "citationType": "journal article",
+                  "authors": [
+                    "Giladi E.",
+                    "Shani Y.",
+                    "Gozes I."
+                  ],
+                  "citationCrossReferences": [
+                    {
+                      "database": "PubMed",
+                      "id": "2159586"
+                    },
+                    {
+                      "database": "DOI",
+                      "id": "10.1016/0169-328x(90)90036-d"
+                    }
+                  ],
+                  "title": "The complete structure of the rat VIP gene.",
+                  "publicationDate": "1990",
+                  "journal": "Brain Res. Mol. Brain Res.",
+                  "firstPage": "261",
+                  "lastPage": "267",
+                  "volume": "7"
+                },
+                "referencePositions": [
+                  "NUCLEOTIDE SEQUENCE [GENOMIC DNA]"
+                ]
+              },
+              {
+                "referenceNumber": 2,
+                "citation": {
+                  "id": "3838518",
+                  "citationType": "journal article",
+                  "authors": [
+                    "Nishizawa M.",
+                    "Hayakawa Y.",
+                    "Yanaihara N.",
+                    "Okamoto H."
+                  ],
+                  "citationCrossReferences": [
+                    {
+                      "database": "PubMed",
+                      "id": "3838518"
+                    },
+                    {
+                      "database": "DOI",
+                      "id": "10.1016/0014-5793(85)80953-4"
+                    }
+                  ],
+                  "title": "Nucleotide sequence divergence and functional constraint in VIP precursor mRNA evolution between human and rat.",
+                  "publicationDate": "1985",
+                  "journal": "FEBS Lett.",
+                  "firstPage": "55",
+                  "lastPage": "59",
+                  "volume": "183"
+                },
+                "referencePositions": [
+                  "NUCLEOTIDE SEQUENCE [MRNA] OF 9-170",
+                  "AMIDATION AT ILE-107 AND ASN-152"
+                ],
+                "referenceComments": [
+                  {
+                    "value": "Brain cortex",
+                    "type": "TISSUE"
+                  }
+                ]
+              },
+              {
+                "referenceNumber": 3,
+                "citation": {
+                  "id": "1851524",
+                  "citationType": "journal article",
+                  "authors": [
+                    "Lamperti E.D.",
+                    "Rosen K.M.",
+                    "Villa-Komaroff L."
+                  ],
+                  "citationCrossReferences": [
+                    {
+                      "database": "PubMed",
+                      "id": "1851524"
+                    },
+                    {
+                      "database": "DOI",
+                      "id": "10.1016/0169-328x(91)90005-i"
+                    }
+                  ],
+                  "title": "Characterization of the gene and messages for vasoactive intestinal polypeptide (VIP) in rat and mouse.",
+                  "publicationDate": "1991",
+                  "journal": "Brain Res. Mol. Brain Res.",
+                  "firstPage": "217",
+                  "lastPage": "231",
+                  "volume": "9"
+                },
+                "referencePositions": [
+                  "NUCLEOTIDE SEQUENCE [MRNA] OF 78-155"
+                ]
+              },
+              {
+                "referenceNumber": 4,
+                "citation": {
+                  "id": "3379062",
+                  "citationType": "journal article",
+                  "authors": [
+                    "Goetzl E.J.",
+                    "Sreedharan S.P.",
+                    "Turck C.W."
+                  ],
+                  "citationCrossReferences": [
+                    {
+                      "database": "PubMed",
+                      "id": "3379062"
+                    },
+                    {
+                      "database": "DOI",
+                      "id": "10.1016/s0021-9258(19)76511-9"
+                    }
+                  ],
+                  "title": "Structurally distinctive vasoactive intestinal peptides from rat basophilic leukemia cells.",
+                  "publicationDate": "1988",
+                  "journal": "J. Biol. Chem.",
+                  "firstPage": "9083",
+                  "lastPage": "9086",
+                  "volume": "263"
+                },
+                "referencePositions": [
+                  "PROTEIN SEQUENCE OF 134-152",
+                  "AMIDATION AT ASN-152"
+                ]
+              },
+              {
+                "referenceNumber": 5,
+                "citation": {
+                  "id": "8402943",
+                  "citationType": "journal article",
+                  "authors": [
+                    "Wershil B.K.",
+                    "Turck C.W.",
+                    "Sreedharan S.P.",
+                    "Yang J.",
+                    "An S.",
+                    "Galli S.J.",
+                    "Goetzl E.J."
+                  ],
+                  "citationCrossReferences": [
+                    {
+                      "database": "PubMed",
+                      "id": "8402943"
+                    },
+                    {
+                      "database": "DOI",
+                      "id": "10.1006/cimm.1993.1246"
+                    }
+                  ],
+                  "title": "Variants of vasoactive intestinal peptide in mouse mast cells and rat basophilic leukemia cells.",
+                  "publicationDate": "1993",
+                  "journal": "Cell. Immunol.",
+                  "firstPage": "369",
+                  "lastPage": "378",
+                  "volume": "151"
+                },
+                "referencePositions": [
+                  "PROTEIN SEQUENCE OF 134-152"
+                ]
+              },
+              {
+                "referenceNumber": 6,
+                "citation": {
+                  "id": "22673903",
+                  "citationType": "journal article",
+                  "authors": [
+                    "Lundby A.",
+                    "Secher A.",
+                    "Lage K.",
+                    "Nordsborg N.B.",
+                    "Dmytriyev A.",
+                    "Lundby C.",
+                    "Olsen J.V."
+                  ],
+                  "citationCrossReferences": [
+                    {
+                      "database": "PubMed",
+                      "id": "22673903"
+                    },
+                    {
+                      "database": "DOI",
+                      "id": "10.1038/ncomms1871"
+                    }
+                  ],
+                  "title": "Quantitative maps of protein phosphorylation sites across 14 different rat organs and tissues.",
+                  "publicationDate": "2012",
+                  "journal": "Nat. Commun.",
+                  "firstPage": "876",
+                  "lastPage": "876",
+                  "volume": "3"
+                },
+                "referencePositions": [
+                  "PHOSPHORYLATION [LARGE SCALE ANALYSIS] AT SER-76",
+                  "IDENTIFICATION BY MASS SPECTROMETRY [LARGE SCALE ANALYSIS]"
+                ]
+              }
+            ],
+            "uniProtKBCrossReferences": [
+              {
+                "database": "EMBL",
+                "id": "X02341",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "CAA26200.1"
+                  },
+                  {
+                    "key": "Status",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MoleculeType",
+                    "value": "mRNA"
+                  }
+                ]
+              },
+              {
+                "database": "PIR",
+                "id": "A60053",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "VRRT"
+                  }
+                ]
+              },
+              {
+                "database": "RefSeq",
+                "id": "NP_446443.1",
+                "properties": [
+                  {
+                    "key": "NucleotideSequenceId",
+                    "value": "NM_053991.1"
+                  }
+                ]
+              },
+              {
+                "database": "AlphaFoldDB",
+                "id": "P01283",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "BMRB",
+                "id": "P01283",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "SMR",
+                "id": "P01283",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "FunCoup",
+                "id": "P01283",
+                "properties": [
+                  {
+                    "key": "Number of interactors",
+                    "value": "66"
+                  }
+                ]
+              },
+              {
+                "database": "STRING",
+                "id": "10116.ENSRNOP00000075997",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "BindingDB",
+                "id": "P01283",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "GlyCosmos",
+                "id": "P01283",
+                "properties": [
+                  {
+                    "key": "glycosylation",
+                    "value": "1 site, No reported glycans"
+                  }
+                ]
+              },
+              {
+                "database": "GlyGen",
+                "id": "P01283",
+                "properties": [
+                  {
+                    "key": "glycosylation",
+                    "value": "1 site"
+                  }
+                ]
+              },
+              {
+                "database": "iPTMnet",
+                "id": "P01283",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "PhosphoSitePlus",
+                "id": "P01283",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "PaxDb",
+                "id": "10116-ENSRNOP00000025477",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "ABCD",
+                "id": "P01283",
+                "properties": [
+                  {
+                    "key": "antibodies",
+                    "value": "1 sequenced antibody"
+                  }
+                ]
+              },
+              {
+                "database": "Ensembl",
+                "id": "ENSRNOT00000025477.8",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "ENSRNOP00000025477.6"
+                  },
+                  {
+                    "key": "GeneId",
+                    "value": "ENSRNOG00000018808.9"
+                  }
+                ]
+              },
+              {
+                "database": "Ensembl",
+                "id": "ENSRNOT00055037126",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "ENSRNOP00055030213"
+                  },
+                  {
+                    "key": "GeneId",
+                    "value": "ENSRNOG00055021671"
+                  }
+                ]
+              },
+              {
+                "database": "Ensembl",
+                "id": "ENSRNOT00060013909",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "ENSRNOP00060010622"
+                  },
+                  {
+                    "key": "GeneId",
+                    "value": "ENSRNOG00060008357"
+                  }
+                ]
+              },
+              {
+                "database": "Ensembl",
+                "id": "ENSRNOT00065053062",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "ENSRNOP00065043587"
+                  },
+                  {
+                    "key": "GeneId",
+                    "value": "ENSRNOG00065030773"
+                  }
+                ]
+              },
+              {
+                "database": "GeneID",
+                "id": "117064",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "KEGG",
+                "id": "rno:117064",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "UCSC",
+                "id": "RGD:621647",
+                "properties": [
+                  {
+                    "key": "OrganismName",
+                    "value": "rat"
+                  }
+                ]
+              },
+              {
+                "database": "AGR",
+                "id": "RGD:621647",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "CTD",
+                "id": "7432",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "RGD",
+                "id": "621647",
+                "properties": [
+                  {
+                    "key": "GeneName",
+                    "value": "Vip"
+                  }
+                ]
+              },
+              {
+                "database": "eggNOG",
+                "id": "ENOG502QVTA",
+                "properties": [
+                  {
+                    "key": "ToxonomicScope",
+                    "value": "Eukaryota"
+                  }
+                ]
+              },
+              {
+                "database": "GeneTree",
+                "id": "ENSGT00950000183154",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "HOGENOM",
+                "id": "CLU_133877_1_0_1",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "InParanoid",
+                "id": "P01283",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "OrthoDB",
+                "id": "8795594at2759",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "PhylomeDB",
+                "id": "P01283",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "Reactome",
+                "id": "R-RNO-420092",
+                "properties": [
+                  {
+                    "key": "PathwayName",
+                    "value": "Glucagon-type ligand receptors"
+                  }
+                ]
+              },
+              {
+                "database": "PRO",
+                "id": "PR:P01283",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "Proteomes",
+                "id": "UP000002494",
+                "properties": [
+                  {
+                    "key": "Component",
+                    "value": "Chromosome 1"
+                  }
+                ]
+              },
+              {
+                "database": "Bgee",
+                "id": "ENSRNOG00000018808",
+                "properties": [
+                  {
+                    "key": "ExpressionPatterns",
+                    "value": "Expressed in jejunum and 8 other cell types or tissues"
+                  }
+                ]
+              },
+              {
+                "database": "ExpressionAtlas",
+                "id": "P01283",
+                "properties": [
+                  {
+                    "key": "ExpressionPatterns",
+                    "value": "baseline and differential"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0005615",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:extracellular space"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:RGD"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0043005",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:neuron projection"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IBA:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0044306",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:neuron projection terminus"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:RGD"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0043025",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:neuronal cell body"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:RGD"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "22108610"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0005179",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:hormone activity"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:BHF-UCL"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "9603988"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0005184",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:neuropeptide hormone activity"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISS:UniProtKB"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0051428",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:peptide hormone receptor binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:RGD"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0005102",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:signaling receptor binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:RGD"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "1314625"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0031891",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:type 1 vasoactive intestinal polypeptide receptor binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISS:UniProtKB"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0031892",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:type 2 vasoactive intestinal polypeptide receptor binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:RGD"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0007189",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:adenylate cyclase-activating G protein-coupled receptor signaling pathway"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:BHF-UCL"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "9603988"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0061844",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:antimicrobial humoral immune response mediated by antimicrobial peptide"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:RGD"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0048242",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:epinephrine secretion"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IBA:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0045087",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:innate immune response"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:RGD"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0007611",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:learning or memory"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:RGD"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "19465061"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0048255",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:mRNA stabilization"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISS:AgBase"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0043066",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:negative regulation of apoptotic process"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:RGD"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "21850490"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0043267",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:negative regulation of potassium ion transport"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:RGD"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "20699230"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0048662",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:negative regulation of smooth muscle cell proliferation"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IMP:RGD"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000315",
+                    "source": "PubMed",
+                    "id": "20452385"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0141163",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:positive regulation of cAMP/PKA signal transduction"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IBA:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0001938",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:positive regulation of endothelial cell proliferation"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:RGD"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "19332106"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0060406",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:positive regulation of penile erection"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:RGD"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "21166748"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0045732",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:positive regulation of protein catabolic process"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:BHF-UCL"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "9603988"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0070459",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:prolactin secretion"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISS:AgBase"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0032880",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:regulation of protein localization"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:BHF-UCL"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "9603988"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0009966",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:regulation of signal transduction"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:RGD"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "6.10.250.590",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR000532",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Glucagon_GIP_secretin_VIP"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR046963",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "VIP/GHRH-like"
+                  }
+                ]
+              },
+              {
+                "database": "PANTHER",
+                "id": "PTHR11213",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "GLUCAGON-FAMILY NEUROPEPTIDE"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "PANTHER",
+                "id": "PTHR11213:SF5",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "VIP PEPTIDES"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF00123",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Hormone_2"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "SMART",
+                "id": "SM00070",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "GLUCA"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "PROSITE",
+                "id": "PS00260",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "GLUCAGON"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              }
+            ],
+            "sequence": {
+              "value": "MESRSKPQFLAILTLFSVLFSQSLAWPLYGPPSSVRLDDRLQFEGAGDPDQVSLKADSDILQNALAENDTPYYDVSRNARHADGVFTSDYSRLLGQISAKKYLESLIGKRISSSISEDPVPVKRHSDAVFTDNYTRLRKQMAVKKYLNSILNGKRSSEGDSPDFLEELEK",
+              "length": 170,
+              "molWeight": 19079,
+              "crc64": "202AEE82EBBD190B",
+              "md5": "B3B3E7962D3E8F679FFA0EA4C74FB50A"
+            },
+            "extraAttributes": {
+              "countByCommentType": {
+                "FUNCTION": 3,
+                "SUBCELLULAR LOCATION": 1,
+                "SIMILARITY": 1
+              },
+              "countByFeatureType": {
+                "Signal": 1,
+                "Propeptide": 2,
+                "Peptide": 3,
+                "Modified residue": 3,
+                "Glycosylation": 1
+              },
+              "uniParcId": "UPI000013884A"
+            }
+          },
+          {
+            "entryType": "UniProtKB reviewed (Swiss-Prot)",
+            "primaryAccession": "P32648",
+            "secondaryAccessions": [
+              "Q9D2Z7",
+              "Q9QUN1"
+            ],
+            "uniProtkbId": "VIP_MOUSE",
+            "entryAudit": {
+              "firstPublicDate": "1993-10-01",
+              "lastAnnotationUpdateDate": "2026-01-28",
+              "lastSequenceUpdateDate": "1993-10-01",
+              "entryVersion": 160,
+              "sequenceVersion": 1
+            },
+            "annotationScore": 5.0,
+            "organism": {
+              "scientificName": "Mus musculus",
+              "commonName": "Mouse",
+              "taxonId": 10090,
+              "lineage": [
+                "Eukaryota",
+                "Metazoa",
+                "Chordata",
+                "Craniata",
+                "Vertebrata",
+                "Euteleostomi",
+                "Mammalia",
+                "Eutheria",
+                "Euarchontoglires",
+                "Glires",
+                "Rodentia",
+                "Myomorpha",
+                "Muroidea",
+                "Muridae",
+                "Murinae",
+                "Mus",
+                "Mus"
+              ]
+            },
+            "proteinExistence": "1: Evidence at protein level",
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "value": "VIP peptides"
+                }
+              },
+              "contains": [
+                {
+                  "recommendedName": {
+                    "fullName": {
+                      "value": "Intestinal peptide PHI-42"
+                    }
+                  }
+                },
+                {
+                  "recommendedName": {
+                    "fullName": {
+                      "value": "Intestinal peptide PHI-27"
+                    }
+                  },
+                  "alternativeNames": [
+                    {
+                      "fullName": {
+                        "value": "Peptide histidine isoleucinamide 27"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "recommendedName": {
+                    "fullName": {
+                      "value": "Vasoactive intestinal peptide"
+                    },
+                    "shortNames": [
+                      {
+                        "value": "VIP"
+                      }
+                    ]
+                  },
+                  "alternativeNames": [
+                    {
+                      "fullName": {
+                        "value": "Vasoactive intestinal polypeptide"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "flag": "Precursor"
+            },
+            "genes": [
+              {
+                "geneName": {
+                  "value": "Vip"
+                }
+              }
+            ],
+            "comments": [
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000250",
+                        "source": "UniProtKB",
+                        "id": "P01282"
+                      }
+                    ],
+                    "value": "VIP is a neuropeptide involved in a diverse array of physiological processes through activating the PACAP subfamily of class B1 G protein-coupled receptors: VIP receptor 1 (VPR1) and VIP receptor 2 (VPR2). Abundantly expressed throughout the CNS and peripheral nervous systems where they primarily exert neuroprotective and immune modulatory roles (By similarity). Also causes vasodilation, lowers arterial blood pressure, stimulates myocardial contractility, increases glycogenolysis and relaxes the smooth muscle of trachea, stomach and gall bladder (By similarity)"
+                  }
+                ],
+                "commentType": "FUNCTION",
+                "molecule": "Vasoactive intestinal peptide"
+              },
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000250",
+                        "source": "UniProtKB",
+                        "id": "P01282"
+                      }
+                    ],
+                    "value": "Bioactive forms that cause vasodilation. PHM-27 is a potent agonist of the calcitonin receptor CALCR, with similar efficacy as calcitonin"
+                  }
+                ],
+                "commentType": "FUNCTION",
+                "molecule": "Intestinal peptide PHI-27"
+              },
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000250",
+                        "source": "UniProtKB",
+                        "id": "P01282"
+                      }
+                    ],
+                    "value": "Bioactive forms that cause vasodilation"
+                  }
+                ],
+                "commentType": "FUNCTION",
+                "molecule": "Intestinal peptide PHI-42"
+              },
+              {
+                "commentType": "SUBCELLULAR LOCATION",
+                "subcellularLocations": [
+                  {
+                    "location": {
+                      "value": "Secreted",
+                      "id": "SL-0243"
+                    }
+                  }
+                ]
+              },
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000305"
+                      }
+                    ],
+                    "value": "Belongs to the glucagon family"
+                  }
+                ],
+                "commentType": "SIMILARITY"
+              }
+            ],
+            "features": [
+              {
+                "type": "Signal",
+                "location": {
+                  "start": {
+                    "value": 1,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 21,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000250"
+                  }
+                ]
+              },
+              {
+                "type": "Propeptide",
+                "location": {
+                  "start": {
+                    "value": 22,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 79,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "",
+                "featureId": "PRO_0000011462"
+              },
+              {
+                "type": "Peptide",
+                "location": {
+                  "start": {
+                    "value": 81,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 122,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Intestinal peptide PHI-42",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000250"
+                  }
+                ],
+                "featureId": "PRO_0000011463"
+              },
+              {
+                "type": "Peptide",
+                "location": {
+                  "start": {
+                    "value": 81,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 107,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Intestinal peptide PHI-27",
+                "featureId": "PRO_0000011464"
+              },
+              {
+                "type": "Peptide",
+                "location": {
+                  "start": {
+                    "value": 125,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 152,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Vasoactive intestinal peptide",
+                "featureId": "PRO_0000011465"
+              },
+              {
+                "type": "Propeptide",
+                "location": {
+                  "start": {
+                    "value": 156,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 170,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "",
+                "featureId": "PRO_0000011466"
+              },
+              {
+                "type": "Modified residue",
+                "location": {
+                  "start": {
+                    "value": 76,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 76,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Phosphoserine",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000250",
+                    "source": "UniProtKB",
+                    "id": "P01283"
+                  }
+                ]
+              },
+              {
+                "type": "Modified residue",
+                "location": {
+                  "start": {
+                    "value": 107,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 107,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Isoleucine amide",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000250"
+                  }
+                ]
+              },
+              {
+                "type": "Modified residue",
+                "location": {
+                  "start": {
+                    "value": 152,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 152,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Asparagine amide",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000269",
+                    "source": "PubMed",
+                    "id": "8402943"
+                  }
+                ]
+              },
+              {
+                "type": "Glycosylation",
+                "location": {
+                  "start": {
+                    "value": 133,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 133,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "N-linked (GlcNAc...) asparagine",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000255"
+                  }
+                ],
+                "featureId": ""
+              },
+              {
+                "type": "Sequence conflict",
+                "location": {
+                  "start": {
+                    "value": 35,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 35,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "in Ref. 2 and 3",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000305"
+                  }
+                ],
+                "alternativeSequence": {
+                  "originalSequence": "V",
+                  "alternativeSequences": [
+                    "VS"
+                  ]
+                }
+              },
+              {
+                "type": "Sequence conflict",
+                "location": {
+                  "start": {
+                    "value": 122,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 122,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "in Ref. 5; AA sequence",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000305"
+                  }
+                ],
+                "alternativeSequence": {
+                  "originalSequence": "I",
+                  "alternativeSequences": [
+                    "V"
+                  ]
+                }
+              }
+            ],
+            "keywords": [
+              {
+                "id": "KW-0027",
+                "category": "PTM",
+                "name": "Amidation"
+              },
+              {
+                "id": "KW-0165",
+                "category": "PTM",
+                "name": "Cleavage on pair of basic residues"
+              },
+              {
+                "id": "KW-0903",
+                "category": "Technical term",
+                "name": "Direct protein sequencing"
+              },
+              {
+                "id": "KW-0325",
+                "category": "PTM",
+                "name": "Glycoprotein"
+              },
+              {
+                "id": "KW-0372",
+                "category": "Molecular function",
+                "name": "Hormone"
+              },
+              {
+                "id": "KW-0597",
+                "category": "PTM",
+                "name": "Phosphoprotein"
+              },
+              {
+                "id": "KW-1185",
+                "category": "Technical term",
+                "name": "Reference proteome"
+              },
+              {
+                "id": "KW-0964",
+                "category": "Cellular component",
+                "name": "Secreted"
+              },
+              {
+                "id": "KW-0732",
+                "category": "Domain",
+                "name": "Signal"
+              }
+            ],
+            "references": [
+              {
+                "referenceNumber": 1,
+                "citation": {
+                  "id": "1851524",
+                  "citationType": "journal article",
+                  "authors": [
+                    "Lamperti E.D.",
+                    "Rosen K.M.",
+                    "Villa-Komaroff L."
+                  ],
+                  "citationCrossReferences": [
+                    {
+                      "database": "PubMed",
+                      "id": "1851524"
+                    },
+                    {
+                      "database": "DOI",
+                      "id": "10.1016/0169-328x(91)90005-i"
+                    }
+                  ],
+                  "title": "Characterization of the gene and messages for vasoactive intestinal polypeptide (VIP) in rat and mouse.",
+                  "publicationDate": "1991",
+                  "journal": "Brain Res. Mol. Brain Res.",
+                  "firstPage": "217",
+                  "lastPage": "231",
+                  "volume": "9"
+                },
+                "referencePositions": [
+                  "NUCLEOTIDE SEQUENCE [GENOMIC DNA]"
+                ]
+              },
+              {
+                "referenceNumber": 2,
+                "citation": {
+                  "id": "16141072",
+                  "citationType": "journal article",
+                  "authors": [
+                    "Carninci P.",
+                    "Kasukawa T.",
+                    "Katayama S.",
+                    "Gough J.",
+                    "Frith M.C.",
+                    "Maeda N.",
+                    "Oyama R.",
+                    "Ravasi T.",
+                    "Lenhard B.",
+                    "Wells C.",
+                    "Kodzius R.",
+                    "Shimokawa K.",
+                    "Bajic V.B.",
+                    "Brenner S.E.",
+                    "Batalov S.",
+                    "Forrest A.R.",
+                    "Zavolan M.",
+                    "Davis M.J.",
+                    "Wilming L.G.",
+                    "Aidinis V.",
+                    "Allen J.E.",
+                    "Ambesi-Impiombato A.",
+                    "Apweiler R.",
+                    "Aturaliya R.N.",
+                    "Bailey T.L.",
+                    "Bansal M.",
+                    "Baxter L.",
+                    "Beisel K.W.",
+                    "Bersano T.",
+                    "Bono H.",
+                    "Chalk A.M.",
+                    "Chiu K.P.",
+                    "Choudhary V.",
+                    "Christoffels A.",
+                    "Clutterbuck D.R.",
+                    "Crowe M.L.",
+                    "Dalla E.",
+                    "Dalrymple B.P.",
+                    "de Bono B.",
+                    "Della Gatta G.",
+                    "di Bernardo D.",
+                    "Down T.",
+                    "Engstrom P.",
+                    "Fagiolini M.",
+                    "Faulkner G.",
+                    "Fletcher C.F.",
+                    "Fukushima T.",
+                    "Furuno M.",
+                    "Futaki S.",
+                    "Gariboldi M.",
+                    "Georgii-Hemming P.",
+                    "Gingeras T.R.",
+                    "Gojobori T.",
+                    "Green R.E.",
+                    "Gustincich S.",
+                    "Harbers M.",
+                    "Hayashi Y.",
+                    "Hensch T.K.",
+                    "Hirokawa N.",
+                    "Hill D.",
+                    "Huminiecki L.",
+                    "Iacono M.",
+                    "Ikeo K.",
+                    "Iwama A.",
+                    "Ishikawa T.",
+                    "Jakt M.",
+                    "Kanapin A.",
+                    "Katoh M.",
+                    "Kawasawa Y.",
+                    "Kelso J.",
+                    "Kitamura H.",
+                    "Kitano H.",
+                    "Kollias G.",
+                    "Krishnan S.P.",
+                    "Kruger A.",
+                    "Kummerfeld S.K.",
+                    "Kurochkin I.V.",
+                    "Lareau L.F.",
+                    "Lazarevic D.",
+                    "Lipovich L.",
+                    "Liu J.",
+                    "Liuni S.",
+                    "McWilliam S.",
+                    "Madan Babu M.",
+                    "Madera M.",
+                    "Marchionni L.",
+                    "Matsuda H.",
+                    "Matsuzawa S.",
+                    "Miki H.",
+                    "Mignone F.",
+                    "Miyake S.",
+                    "Morris K.",
+                    "Mottagui-Tabar S.",
+                    "Mulder N.",
+                    "Nakano N.",
+                    "Nakauchi H.",
+                    "Ng P.",
+                    "Nilsson R.",
+                    "Nishiguchi S.",
+                    "Nishikawa S.",
+                    "Nori F.",
+                    "Ohara O.",
+                    "Okazaki Y.",
+                    "Orlando V.",
+                    "Pang K.C.",
+                    "Pavan W.J.",
+                    "Pavesi G.",
+                    "Pesole G.",
+                    "Petrovsky N.",
+                    "Piazza S.",
+                    "Reed J.",
+                    "Reid J.F.",
+                    "Ring B.Z.",
+                    "Ringwald M.",
+                    "Rost B.",
+                    "Ruan Y.",
+                    "Salzberg S.L.",
+                    "Sandelin A.",
+                    "Schneider C.",
+                    "Schoenbach C.",
+                    "Sekiguchi K.",
+                    "Semple C.A.",
+                    "Seno S.",
+                    "Sessa L.",
+                    "Sheng Y.",
+                    "Shibata Y.",
+                    "Shimada H.",
+                    "Shimada K.",
+                    "Silva D.",
+                    "Sinclair B.",
+                    "Sperling S.",
+                    "Stupka E.",
+                    "Sugiura K.",
+                    "Sultana R.",
+                    "Takenaka Y.",
+                    "Taki K.",
+                    "Tammoja K.",
+                    "Tan S.L.",
+                    "Tang S.",
+                    "Taylor M.S.",
+                    "Tegner J.",
+                    "Teichmann S.A.",
+                    "Ueda H.R.",
+                    "van Nimwegen E.",
+                    "Verardo R.",
+                    "Wei C.L.",
+                    "Yagi K.",
+                    "Yamanishi H.",
+                    "Zabarovsky E.",
+                    "Zhu S.",
+                    "Zimmer A.",
+                    "Hide W.",
+                    "Bult C.",
+                    "Grimmond S.M.",
+                    "Teasdale R.D.",
+                    "Liu E.T.",
+                    "Brusic V.",
+                    "Quackenbush J.",
+                    "Wahlestedt C.",
+                    "Mattick J.S.",
+                    "Hume D.A.",
+                    "Kai C.",
+                    "Sasaki D.",
+                    "Tomaru Y.",
+                    "Fukuda S.",
+                    "Kanamori-Katayama M.",
+                    "Suzuki M.",
+                    "Aoki J.",
+                    "Arakawa T.",
+                    "Iida J.",
+                    "Imamura K.",
+                    "Itoh M.",
+                    "Kato T.",
+                    "Kawaji H.",
+                    "Kawagashira N.",
+                    "Kawashima T.",
+                    "Kojima M.",
+                    "Kondo S.",
+                    "Konno H.",
+                    "Nakano K.",
+                    "Ninomiya N.",
+                    "Nishio T.",
+                    "Okada M.",
+                    "Plessy C.",
+                    "Shibata K.",
+                    "Shiraki T.",
+                    "Suzuki S.",
+                    "Tagami M.",
+                    "Waki K.",
+                    "Watahiki A.",
+                    "Okamura-Oho Y.",
+                    "Suzuki H.",
+                    "Kawai J.",
+                    "Hayashizaki Y."
+                  ],
+                  "citationCrossReferences": [
+                    {
+                      "database": "PubMed",
+                      "id": "16141072"
+                    },
+                    {
+                      "database": "DOI",
+                      "id": "10.1126/science.1112014"
+                    }
+                  ],
+                  "title": "The transcriptional landscape of the mammalian genome.",
+                  "publicationDate": "2005",
+                  "journal": "Science",
+                  "firstPage": "1559",
+                  "lastPage": "1563",
+                  "volume": "309"
+                },
+                "referencePositions": [
+                  "NUCLEOTIDE SEQUENCE [LARGE SCALE MRNA]"
+                ],
+                "referenceComments": [
+                  {
+                    "value": "C57BL/6J",
+                    "type": "STRAIN"
+                  },
+                  {
+                    "value": "Cecum",
+                    "type": "TISSUE"
+                  }
+                ]
+              },
+              {
+                "referenceNumber": 3,
+                "citation": {
+                  "id": "15489334",
+                  "citationType": "journal article",
+                  "authoringGroup": [
+                    "The MGC Project Team"
+                  ],
+                  "citationCrossReferences": [
+                    {
+                      "database": "PubMed",
+                      "id": "15489334"
+                    },
+                    {
+                      "database": "DOI",
+                      "id": "10.1101/gr.2596504"
+                    }
+                  ],
+                  "title": "The status, quality, and expansion of the NIH full-length cDNA project: the Mammalian Gene Collection (MGC).",
+                  "publicationDate": "2004",
+                  "journal": "Genome Res.",
+                  "firstPage": "2121",
+                  "lastPage": "2127",
+                  "volume": "14"
+                },
+                "referencePositions": [
+                  "NUCLEOTIDE SEQUENCE [LARGE SCALE MRNA]"
+                ],
+                "referenceComments": [
+                  {
+                    "value": "Pituitary",
+                    "type": "TISSUE"
+                  }
+                ]
+              },
+              {
+                "referenceNumber": 4,
+                "citation": {
+                  "id": "7894056",
+                  "citationType": "journal article",
+                  "authors": [
+                    "Sena M.",
+                    "Bravo D.T.",
+                    "Agoston D.",
+                    "Waschek J.A."
+                  ],
+                  "citationCrossReferences": [
+                    {
+                      "database": "PubMed",
+                      "id": "7894056"
+                    },
+                    {
+                      "database": "DOI",
+                      "id": "10.3109/10425179409039701"
+                    }
+                  ],
+                  "title": "High conservation of upstream regulatory sequences on the human and mouse vasoactive intestinal peptide (VIP) genes.",
+                  "publicationDate": "1994",
+                  "journal": "DNA Seq.",
+                  "firstPage": "25",
+                  "lastPage": "29",
+                  "volume": "5"
+                },
+                "referencePositions": [
+                  "NUCLEOTIDE SEQUENCE [GENOMIC DNA] OF 1-36"
+                ],
+                "referenceComments": [
+                  {
+                    "value": "C57BL/6J",
+                    "type": "STRAIN"
+                  },
+                  {
+                    "value": "Spleen",
+                    "type": "TISSUE"
+                  }
+                ]
+              },
+              {
+                "referenceNumber": 5,
+                "citation": {
+                  "id": "8402943",
+                  "citationType": "journal article",
+                  "authors": [
+                    "Wershil B.K.",
+                    "Turck C.W.",
+                    "Sreedharan S.P.",
+                    "Yang J.",
+                    "An S.",
+                    "Galli S.J.",
+                    "Goetzl E.J."
+                  ],
+                  "citationCrossReferences": [
+                    {
+                      "database": "PubMed",
+                      "id": "8402943"
+                    },
+                    {
+                      "database": "DOI",
+                      "id": "10.1006/cimm.1993.1246"
+                    }
+                  ],
+                  "title": "Variants of vasoactive intestinal peptide in mouse mast cells and rat basophilic leukemia cells.",
+                  "publicationDate": "1993",
+                  "journal": "Cell. Immunol.",
+                  "firstPage": "369",
+                  "lastPage": "378",
+                  "volume": "151"
+                },
+                "referencePositions": [
+                  "PROTEIN SEQUENCE OF 119-129 AND 134-152",
+                  "AMIDATION AT ASN-152"
+                ],
+                "referenceComments": [
+                  {
+                    "value": "Mast cell",
+                    "type": "TISSUE"
+                  }
+                ]
+              }
+            ],
+            "uniProtKBCrossReferences": [
+              {
+                "database": "EMBL",
+                "id": "AK018599",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "BAB31301.1"
+                  },
+                  {
+                    "key": "Status",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MoleculeType",
+                    "value": "mRNA"
+                  }
+                ]
+              },
+              {
+                "database": "EMBL",
+                "id": "BC089511",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "AAH89511.1"
+                  },
+                  {
+                    "key": "Status",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MoleculeType",
+                    "value": "mRNA"
+                  }
+                ]
+              },
+              {
+                "database": "EMBL",
+                "id": "X74297",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "CAA52350.1"
+                  },
+                  {
+                    "key": "Status",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MoleculeType",
+                    "value": "Genomic_DNA"
+                  }
+                ]
+              },
+              {
+                "database": "PIR",
+                "id": "A60037",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "A60037"
+                  }
+                ]
+              },
+              {
+                "database": "RefSeq",
+                "id": "NP_001300898.1",
+                "properties": [
+                  {
+                    "key": "NucleotideSequenceId",
+                    "value": "NM_001313969.1"
+                  }
+                ]
+              },
+              {
+                "database": "RefSeq",
+                "id": "NP_001394459.1",
+                "properties": [
+                  {
+                    "key": "NucleotideSequenceId",
+                    "value": "NM_001407530.1"
+                  }
+                ]
+              },
+              {
+                "database": "RefSeq",
+                "id": "NP_035832.1",
+                "properties": [
+                  {
+                    "key": "NucleotideSequenceId",
+                    "value": "NM_011702.3"
+                  }
+                ]
+              },
+              {
+                "database": "AlphaFoldDB",
+                "id": "P32648",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "BMRB",
+                "id": "P32648",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "SMR",
+                "id": "P32648",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "BioGRID",
+                "id": "204525",
+                "properties": [
+                  {
+                    "key": "Interactions",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "FunCoup",
+                "id": "P32648",
+                "properties": [
+                  {
+                    "key": "Number of interactors",
+                    "value": "575"
+                  }
+                ]
+              },
+              {
+                "database": "STRING",
+                "id": "10090.ENSMUSP00000019906",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "GlyCosmos",
+                "id": "P32648",
+                "properties": [
+                  {
+                    "key": "glycosylation",
+                    "value": "1 site, No reported glycans"
+                  }
+                ]
+              },
+              {
+                "database": "GlyGen",
+                "id": "P32648",
+                "properties": [
+                  {
+                    "key": "glycosylation",
+                    "value": "1 site"
+                  }
+                ]
+              },
+              {
+                "database": "PhosphoSitePlus",
+                "id": "P32648",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "PaxDb",
+                "id": "10090-ENSMUSP00000019906",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "ProteomicsDB",
+                "id": "297885",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "Pumba",
+                "id": "P32648",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "DNASU",
+                "id": "22353",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "GeneID",
+                "id": "22353",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "KEGG",
+                "id": "mmu:22353",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "UCSC",
+                "id": "uc007egk.1",
+                "properties": [
+                  {
+                    "key": "OrganismName",
+                    "value": "mouse"
+                  }
+                ]
+              },
+              {
+                "database": "AGR",
+                "id": "MGI:98933",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "CTD",
+                "id": "7432",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "MGI",
+                "id": "MGI:98933",
+                "properties": [
+                  {
+                    "key": "GeneName",
+                    "value": "Vip"
+                  }
+                ]
+              },
+              {
+                "database": "eggNOG",
+                "id": "ENOG502QVTA",
+                "properties": [
+                  {
+                    "key": "ToxonomicScope",
+                    "value": "Eukaryota"
+                  }
+                ]
+              },
+              {
+                "database": "InParanoid",
+                "id": "P32648",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "OrthoDB",
+                "id": "8795594at2759",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "PhylomeDB",
+                "id": "P32648",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "Reactome",
+                "id": "R-MMU-418555",
+                "properties": [
+                  {
+                    "key": "PathwayName",
+                    "value": "G alpha (s) signalling events"
+                  }
+                ]
+              },
+              {
+                "database": "Reactome",
+                "id": "R-MMU-420092",
+                "properties": [
+                  {
+                    "key": "PathwayName",
+                    "value": "Glucagon-type ligand receptors"
+                  }
+                ]
+              },
+              {
+                "database": "BioGRID-ORCS",
+                "id": "22353",
+                "properties": [
+                  {
+                    "key": "hits",
+                    "value": "2 hits in 76 CRISPR screens"
+                  }
+                ]
+              },
+              {
+                "database": "PRO",
+                "id": "PR:P32648",
+                "properties": [
+                  {
+                    "key": "Description",
+                    "value": "-"
+                  }
+                ]
+              },
+              {
+                "database": "Proteomes",
+                "id": "UP000000589",
+                "properties": [
+                  {
+                    "key": "Component",
+                    "value": "Unplaced"
+                  }
+                ]
+              },
+              {
+                "database": "RNAct",
+                "id": "P32648",
+                "properties": [
+                  {
+                    "key": "moleculeType",
+                    "value": "protein"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0005615",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:extracellular space"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0043005",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:neuron projection"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IBA:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0043025",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:neuronal cell body"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0005179",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:hormone activity"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:BHF-UCL"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "9603988"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0005184",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:neuropeptide hormone activity"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISS:UniProtKB"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0051428",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:peptide hormone receptor binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IBA:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0005102",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:signaling receptor binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0031891",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:type 1 vasoactive intestinal polypeptide receptor binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISS:UniProtKB"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0031892",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:type 2 vasoactive intestinal polypeptide receptor binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0007189",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:adenylate cyclase-activating G protein-coupled receptor signaling pathway"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:BHF-UCL"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "9603988"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0019731",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:antibacterial humoral response"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0019732",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:antifungal humoral response"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0061844",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:antimicrobial humoral immune response mediated by antimicrobial peptide"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0050829",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:defense response to Gram-negative bacterium"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0050830",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:defense response to Gram-positive bacterium"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0048242",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:epinephrine secretion"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IBA:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0045087",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:innate immune response"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0007611",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:learning or memory"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0048255",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:mRNA stabilization"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISS:AgBase"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0043066",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:negative regulation of apoptotic process"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0043267",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:negative regulation of potassium ion transport"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0048662",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:negative regulation of smooth muscle cell proliferation"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0141163",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:positive regulation of cAMP/PKA signal transduction"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IBA:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0001938",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:positive regulation of endothelial cell proliferation"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0060406",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:positive regulation of penile erection"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0045732",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:positive regulation of protein catabolic process"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:BHF-UCL"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "9603988"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0070459",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:prolactin secretion"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISS:AgBase"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0032880",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:regulation of protein localization"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IDA:BHF-UCL"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000314",
+                    "source": "PubMed",
+                    "id": "9603988"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0009966",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:regulation of signal transduction"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IMP:MGI"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000315",
+                    "source": "PubMed",
+                    "id": "21737879"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0001878",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:response to yeast"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "ISO:GO_Central"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "6.10.250.590",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR000532",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Glucagon_GIP_secretin_VIP"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR046963",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "VIP/GHRH-like"
+                  }
+                ]
+              },
+              {
+                "database": "PANTHER",
+                "id": "PTHR11213",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "GLUCAGON-FAMILY NEUROPEPTIDE"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "PANTHER",
+                "id": "PTHR11213:SF5",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "VIP PEPTIDES"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF00123",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Hormone_2"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "SMART",
+                "id": "SM00070",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "GLUCA"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "PROSITE",
+                "id": "PS00260",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "GLUCAGON"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              }
+            ],
+            "sequence": {
+              "value": "MEARSKPQFLAFLILFSVLFSQSLAWPLFGPPSVVRLDDRMPFEGAGDPDQVSLKADSDILQNPLAENGTPYYDVSRNARHADGVFTSDYSRLLGQISAKKYLESLIGKRISSSISEDPVPIKRHSDAVFTDNYTRLRKQMAVKKYLNSILNGKRSSEGDSADFLEELEK",
+              "length": 170,
+              "molWeight": 19049,
+              "crc64": "0164C831F8F5C73D",
+              "md5": "71174EB5E6E470B6742520A8A5495E9F"
+            },
+            "extraAttributes": {
+              "countByCommentType": {
+                "FUNCTION": 3,
+                "SUBCELLULAR LOCATION": 1,
+                "SIMILARITY": 1
+              },
+              "countByFeatureType": {
+                "Signal": 1,
+                "Propeptide": 2,
+                "Peptide": 3,
+                "Modified residue": 3,
+                "Glycosylation": 1,
+                "Sequence conflict": 2
+              },
+              "uniParcId": "UPI000002171F"
+            }
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00004494",
+      "citations": [
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPR_4456",
+          "identifier": "DBAASP:DBAASPR_4456",
+          "title": "Vasoactive intestinal peptide, VIP - DBAASP",
+          "snippet": "Peptide: Vasoactive intestinal peptide, VIP\nSequence: HSDAVFTDNYTRLRKQMAVKKYLNSILN\nLength: 28 aa\nSynthesis: Ribosomal\nComplexity: monomer\nPDB: 2RRH$https://www.rcsb.org/structure/2RRH",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:36.314991"
+        }
+      ],
+      "raw_data": {
+        "dbaasp_vasoactive intestinal peptide": {
+          "total": 1,
+          "entries": [
+            {
+              "id": 4456,
+              "dbaaspId": "DBAASPR_4456",
+              "name": "Vasoactive intestinal peptide, VIP",
+              "nTerminus": null,
+              "sequence": "HSDAVFTDNYTRLRKQMAVKKYLNSILN",
+              "sequenceLength": 28,
+              "pdb": "2RRH$https://www.rcsb.org/structure/2RRH",
+              "pubchemCid": null,
+              "cTerminus": "AMD",
+              "complexity": "monomer",
+              "synthesisType": "Ribosomal"
+            }
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00004494",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL525028/",
+          "identifier": "CHEMBL525028",
+          "title": "VASOACTIVE INTESTINAL PEPTIDE - ChEMBL",
+          "snippet": "Molecule: VASOACTIVE INTESTINAL PEPTIDE\nType: Protein\nMax clinical phase: 3.0\nHELM: PEPTIDE1{H.S.D.A.V.F.T.D.N.Y.[lalloT].R.L.R.K.Q.M.A.V.K.K.[dY].L.N.S.[lalloI].L.N}$$$$\nMolecular weight: 3326.84",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:44.969293"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2108665/",
+          "identifier": "CHEMBL2108665",
+          "title": "WOUND MATRIX, SMALL INTESTINAL SUBMUCOSA - ChEMBL",
+          "snippet": "Molecule: WOUND MATRIX, SMALL INTESTINAL SUBMUCOSA\nType: Unknown\nMax clinical phase: -1.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.006930"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL158666/",
+          "identifier": "CHEMBL158666",
+          "title": "AUTONOM NAME: - ChEMBL",
+          "snippet": "Molecule: AUTONOM NAME:\nType: Small molecule\nMolecular weight: 398.58\nBioactivity: Ki=50.4 nM (Protein kinase C alpha type); LogD=7.0 (No relevant target)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:48.523753"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'vasoactive intestinal peptide'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "rcsb_{'name': 'vasoactive intestinal peptide'}_status": 400
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_{'name': 'vasoactive intestinal peptide'}_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "apd_{'name': 'vasoactive intestinal peptide'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbamp",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "dbamp_{'name': 'vasoactive intestinal peptide'}_error": "Server unreachable: ConnectError"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00004494",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "snippet": "Title: Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: Sepsis, Respiratory Distress Syndrome, Respiratory Distress Syndrome, Adult\nInterventions: Drug: vasoactive intestinal peptide\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:58:47.730731"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00004494",
+          "public_title": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Primary purpose: Treatment.",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Sepsis",
+            "Respiratory Distress Syndrome",
+            "Respiratory Distress Syndrome, Adult"
+          ],
+          "interventions": [
+            "Drug: vasoactive intestinal peptide"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00004494",
+      "citations": [
+        {
+          "source_name": "iuphar",
+          "source_url": "https://www.guidetopharmacology.org/GRAC/LigandDisplayForward?ligandId=2278",
+          "identifier": "GtoPdb:2278",
+          "title": "[Ala<sup>11,22,28</sup>]VIP - Guide to Pharmacology",
+          "snippet": "Ligand: [Ala<sup>11,22,28</sup>]VIP\nType: Peptide",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:58:36.869996"
+        },
+        {
+          "source_name": "iuphar",
+          "source_url": "https://www.guidetopharmacology.org/GRAC/LigandDisplayForward?ligandId=2277",
+          "identifier": "GtoPdb:2277",
+          "title": "[<sup>125</sup>I]VIP (human, mouse, rat) - Guide to Pharmacology",
+          "snippet": "Ligand: [<sup>125</sup>I]VIP (human, mouse, rat)\nType: Peptide",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:58:37.101015"
+        },
+        {
+          "source_name": "iuphar",
+          "source_url": "https://www.guidetopharmacology.org/GRAC/LigandDisplayForward?ligandId=2271",
+          "identifier": "GtoPdb:2271",
+          "title": "N-stearyl-[Nle<sup>17</sup>]VIP - Guide to Pharmacology",
+          "snippet": "Ligand: N-stearyl-[Nle<sup>17</sup>]VIP\nType: Peptide",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:58:37.343791"
+        }
+      ],
+      "raw_data": {
+        "iuphar_vasoactive intestinal peptide": [
+          {
+            "ligandId": 2278,
+            "name": "[Ala<sup>11,22,28</sup>]VIP",
+            "type": "Peptide",
+            "inn": "",
+            "approvalSource": "",
+            "approved": false,
+            "whoEssential": false,
+            "withdrawn": false,
+            "antibacterial": false,
+            "immuno": false,
+            "malaria": false,
+            "labelled": false,
+            "radioactive": false,
+            "activeDrugIds": [],
+            "prodrugIds": [],
+            "complexIds": [],
+            "subunitIds": [],
+            "species": ""
+          },
+          {
+            "ligandId": 2277,
+            "name": "[<sup>125</sup>I]VIP (human, mouse, rat)",
+            "type": "Peptide",
+            "abbreviation": "",
+            "inn": "",
+            "approvalSource": "",
+            "approved": false,
+            "whoEssential": false,
+            "withdrawn": false,
+            "antibacterial": false,
+            "immuno": false,
+            "malaria": false,
+            "labelled": true,
+            "radioactive": true,
+            "activeDrugIds": [],
+            "prodrugIds": [],
+            "complexIds": [],
+            "subunitIds": [],
+            "species": ""
+          },
+          {
+            "ligandId": 2271,
+            "name": "N-stearyl-[Nle<sup>17</sup>]VIP",
+            "type": "Peptide",
+            "inn": "",
+            "approvalSource": "",
+            "approved": false,
+            "whoEssential": false,
+            "withdrawn": false,
+            "antibacterial": false,
+            "immuno": false,
+            "malaria": false,
+            "labelled": false,
+            "radioactive": false,
+            "activeDrugIds": [],
+            "prodrugIds": [],
+            "complexIds": [],
+            "subunitIds": [],
+            "species": ""
+          },
+          {
+            "ligandId": 3546,
+            "name": "endothelin-2",
+            "type": "Peptide",
+            "abbreviation": "ET-2",
+            "inn": "",
+            "approvalSource": "",
+            "approved": false,
+            "whoEssential": false,
+            "withdrawn": false,
+            "antibacterial": false,
+            "immuno": false,
+            "malaria": false,
+            "labelled": false,
+            "radioactive": false,
+            "activeDrugIds": [],
+            "prodrugIds": [],
+            "complexIds": [],
+            "subunitIds": [],
+            "species": "Mouse, Rat"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "intact",
+      "nct_id": "NCT00004494",
+      "citations": [
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366233",
+          "identifier": "IntAct:EBI-366233",
+          "title": "MAPT - IntAct",
+          "snippet": "Interactor: MAPT\nDescription: Microtubule-associated protein tau\nUniProt: P10636-8\nSpecies: Homo sapiens\nType: protein\nInteractions: 7000",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:38.374807"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-77613",
+          "identifier": "IntAct:EBI-77613",
+          "title": "APP - IntAct",
+          "snippet": "Interactor: APP\nDescription: Amyloid-beta precursor protein\nUniProt: P05067\nSpecies: Homo sapiens\nType: protein\nInteractions: 1779",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:38.374850"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366083",
+          "identifier": "IntAct:EBI-366083",
+          "title": "TP53 - IntAct",
+          "snippet": "Interactor: TP53\nDescription: Cellular tumor antigen p53\nUniProt: P04637\nSpecies: Homo sapiens\nType: protein\nInteractions: 1757",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:38.374860"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-297353",
+          "identifier": "IntAct:EBI-297353",
+          "title": "EGFR - IntAct",
+          "snippet": "Interactor: EGFR\nDescription: Epidermal growth factor receptor\nUniProt: P00533\nSpecies: Homo sapiens\nType: protein\nInteractions: 1723",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:38.374869"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-357345",
+          "identifier": "IntAct:EBI-357345",
+          "title": "SCRIB - IntAct",
+          "snippet": "Interactor: SCRIB\nDescription: Protein scribble homolog\nUniProt: Q14160\nSpecies: Homo sapiens\nType: protein\nInteractions: 1704",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:38.374877"
+        }
+      ],
+      "raw_data": {
+        "intact_vasoactive intestinal peptide": {
+          "total_elements": 1778,
+          "interactors": [
+            {
+              "interactorAc": "EBI-366233",
+              "interactorName": "MAPT",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P10636-8",
+              "interactorDescription": "Microtubule-associated protein tau",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 7000,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-77613",
+              "interactorName": "APP",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P05067",
+              "interactorDescription": "Amyloid-beta precursor protein",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1779,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-366083",
+              "interactorName": "TP53",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P04637",
+              "interactorDescription": "Cellular tumor antigen p53",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1757,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-297353",
+              "interactorName": "EGFR",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P00533",
+              "interactorDescription": "Epidermal growth factor receptor",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1723,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-357345",
+              "interactorName": "SCRIB",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "Q14160",
+              "interactorDescription": "Protein scribble homolog",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1704,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            }
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "card",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "card_livesearch_vasoactive intestinal peptide_html_len": 22,
+        "card_vasoactive intestinal peptide_matches": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "pdbe_{'name': 'vasoactive intestinal peptide'}_count": 0
+      },
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,1486 @@
+{
+  "nct_id": "NCT00001386",
+  "metadata": {
+    "nct_id": "NCT00001386",
+    "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "Acquired Immunodeficiency Syndrome",
+      "HIV Infection"
+    ],
+    "interventions": [
+      "DRUG: PCLUS 3-18 MN",
+      "DRUG: PCLUS 6.1 MN"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.8099999999999999,
+      "reasoning": "[Pass 1 extraction] Here are the extracted facts:\n\nIntervention: Synthetic HIV Peptide Vaccines\nMolecular Class: Short peptide chain (2-50 amino acids)\nDatabase Confirmation:\n* UniProt: No evidence found\n* DRAMP/DBAASP: No evidence found\n* ChEMBL: No hits found for \"Synthetic HIV Envelope Peptides\"\n* PDB: No structural data available\nProduct Description: The product is described as a \"vaccine\", specifically a \"peptid\n[Pass 2 decision] Peptide: True\nReasoning:\n\nStep 1: Molecular Class is a \"Short peptide chain\" (2-50 amino acids), so we proceed to Step 2.\n\nStep 2: Active Ingredient Role is \"active therapeutic agent\", which indicates that the peptide is indeed the active drug. Since it's described as a vaccine, it's likely intended for therapeutic use.\n\nStep 3: Although database confirmation does not show any hits in UniProt, DRA",
+      "evidence": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2431867/",
+          "identifier": "CHEMBL2431867",
+          "title": "CHEMBL2431867 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2431867\nType: Small molecule\nMolecular weight: 264.32\nBioactivity: IC50=34673.69 nM (Poly [ADP-ribose] polymerase 2); IC50=19054.61 nM (Poly [ADP-ribose] polymerase 1); IC50=72.44 nM (Poly [ADP-ribose] polymerase tankyrase-2); IC50=6.026 nM (Poly [ADP-ribose] polymerase tankyrase-1); IC50=34900.0 nM (Poly [ADP-ribose] polymerase 2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:45.803156"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3780886/",
+          "identifier": "CHEMBL3780886",
+          "title": "CHEMBL3780886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3780886\nType: Small molecule\nMolecular weight: 490.55",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.707846"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL158666/",
+          "identifier": "CHEMBL158666",
+          "title": "AUTONOM NAME: - ChEMBL",
+          "snippet": "Molecule: AUTONOM NAME:\nType: Small molecule\nMolecular weight: 398.58\nBioactivity: Ki=50.4 nM (Protein kinase C alpha type); LogD=7.0 (No relevant target)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.006367"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2431867/",
+          "identifier": "CHEMBL2431867",
+          "title": "CHEMBL2431867 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2431867\nType: Small molecule\nMolecular weight: 264.32\nBioactivity: IC50=34673.69 nM (Poly [ADP-ribose] polymerase 2); IC50=19054.61 nM (Poly [ADP-ribose] polymerase 1); IC50=72.44 nM (Poly [ADP-ribose] polymerase tankyrase-2); IC50=6.026 nM (Poly [ADP-ribose] polymerase tankyrase-1); IC50=34900.0 nM (Poly [ADP-ribose] polymerase 2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:03.900239"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3918926/",
+          "identifier": "CHEMBL3918926",
+          "title": "CHEMBL3918926 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3918926\nType: Small molecule\nMolecular weight: 468.44\nBioactivity: IC50=15.7 nM (Neutrophil elastase); IC50=16.0 nM (Neutrophil elastase)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:06.912624"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3686990/",
+          "identifier": "CHEMBL3686990",
+          "title": "CHEMBL3686990 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3686990\nType: Small molecule\nMolecular weight: 408.51\nBioactivity: IC50=1.0 nM (cAMP and cAMP-inhibited cGMP 3',5'-cyclic phosphodiesterase 10A); IC50=1.0 nM (cAMP and cAMP-inhibited cGMP 3',5'-cyclic phosphodiesterase 10A)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:08.425835"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-354065",
+          "identifier": "IntAct:EBI-354065",
+          "title": "YBX1 - IntAct",
+          "snippet": "Interactor: YBX1\nDescription: Y-box-binding protein 1\nUniProt: P67809\nSpecies: Homo sapiens\nType: protein\nInteractions: 956",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:22.469907"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-1053596",
+          "identifier": "IntAct:EBI-1053596",
+          "title": "DYRK1A - IntAct",
+          "snippet": "Interactor: DYRK1A\nDescription: Dual specificity tyrosine-phosphorylation-regulated kinase 1A\nUniProt: Q13627\nSpecies: Homo sapiens\nType: protein\nInteractions: 907",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:22.469979"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-353944",
+          "identifier": "IntAct:EBI-353944",
+          "title": "ACTB - IntAct",
+          "snippet": "Interactor: ACTB\nDescription: Actin, cytoplasmic 1\nUniProt: P60709\nSpecies: Homo sapiens\nType: protein\nInteractions: 868",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:22.470002"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-353208",
+          "identifier": "IntAct:EBI-353208",
+          "title": "XRCC6 - IntAct",
+          "snippet": "Interactor: XRCC6\nDescription: X-ray repair cross-complementing protein 6\nUniProt: P12956\nSpecies: Homo sapiens\nType: protein\nInteractions: 489",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:22.470025"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9199999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: The intervention involves synthetic HIV envelope peptides (PCLUS 3-18 MN and PCLUS 6.1 MN). These are confirmed as peptides.\nDatabase Matches: No evidence found.\nMechanism: No evidence found.\nTherapeutic Target: The trial is treating HIV infection, which is an infectious disease caused by the Human Immunodeficiency Virus (HIV).\nImmune Direction: Promote immune defense (stimulate)\n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\n- Peptide determination = True \u2192 Proceed to Step 2.\n\nStep 2 \u2014 Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?\n- Database Matches: No evidence found.\n- Mechanism: No evidence found.\n- Immune Direction: Promote immune defense (stimulate)\n- The peptides are synthetic HIV envelope peptides used in the tria",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "snippet": "Title: Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648346"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Brief Summary",
+          "snippet": "Synthetic HIV Peptide Vaccines (Treatment Protocol)\n\nWe are conducting a study to evaluate the safety of two peptide vaccines (given alone or in combination) in patients with early HIV infection. Patients entered onto the study must have \\>500 CD4 cells/mm(3) and have preserved cardiac, hepatic, renal, and bone marrow function. Patients must be off all anti-retroviral therapy for at least 6 months and may not have received any experimental HIV vaccines. The vaccines being testing in this trial a",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648368"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648380"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Acquired Immunodeficiency Syndrome, HIV Infection | Keywords: AIDS, Retrovirus, Therapeutic Vaccine, Vaccine, Helper T Cells",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648393"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 3-18 MN",
+          "snippet": "DRUG: PCLUS 3-18 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648406"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 6.1 MN",
+          "snippet": "DRUG: PCLUS 6.1 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648419"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648432"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2431867/",
+          "identifier": "CHEMBL2431867",
+          "title": "CHEMBL2431867 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2431867\nType: Small molecule\nMolecular weight: 264.32\nBioactivity: IC50=34673.69 nM (Poly [ADP-ribose] polymerase 2); IC50=19054.61 nM (Poly [ADP-ribose] polymerase 1); IC50=72.44 nM (Poly [ADP-ribose] polymerase tankyrase-2); IC50=6.026 nM (Poly [ADP-ribose] polymerase tankyrase-1); IC50=34900.0 nM (Poly [ADP-ribose] polymerase 2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:45.803156"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3780886/",
+          "identifier": "CHEMBL3780886",
+          "title": "CHEMBL3780886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3780886\nType: Small molecule\nMolecular weight: 490.55",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.707846"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL158666/",
+          "identifier": "CHEMBL158666",
+          "title": "AUTONOM NAME: - ChEMBL",
+          "snippet": "Molecule: AUTONOM NAME:\nType: Small molecule\nMolecular weight: 398.58\nBioactivity: Ki=50.4 nM (Protein kinase C alpha type); LogD=7.0 (No relevant target)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.006367"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.915,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n**Protocol Route:** Not specified in the ClinicalTrials.gov protocol description.\n\n**FDA/Label Route:** Not found in any FDA-approved route, drug label route, or prescribing information route.\n\n**Literature Route:** Not found in any PubMed/PMC publications. The provided text does not mention how the drugs are administered.\n\n**Database Route:**\n\n* ChEMBL entries\n[Pass 2 classification] Delivery Mode: Injection/Infusion - Other/Unspecified\nEvidence: ClinicalTrials.gov protocol description (NCT00001386)\nReasoning: The most specific source is the ClinicalTrials.gov protocol description, which does not specify the route of administration. Since no other source provides specific inform",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "snippet": "Title: Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648346"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Brief Summary",
+          "snippet": "Synthetic HIV Peptide Vaccines (Treatment Protocol)\n\nWe are conducting a study to evaluate the safety of two peptide vaccines (given alone or in combination) in patients with early HIV infection. Patients entered onto the study must have \\>500 CD4 cells/mm(3) and have preserved cardiac, hepatic, renal, and bone marrow function. Patients must be off all anti-retroviral therapy for at least 6 months and may not have received any experimental HIV vaccines. The vaccines being testing in this trial a",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648368"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648380"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Acquired Immunodeficiency Syndrome, HIV Infection | Keywords: AIDS, Retrovirus, Therapeutic Vaccine, Vaccine, Helper T Cells",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648393"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 3-18 MN",
+          "snippet": "DRUG: PCLUS 3-18 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648406"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 6.1 MN",
+          "snippet": "DRUG: PCLUS 6.1 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648419"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648432"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "snippet": "Title: Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: Acquired Immunodeficiency Syndrome, HIV Infection\nInterventions: Drug: PCLUS 3-18 MN, Drug: PCLUS 6.1 MN\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:58:30.898216"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2431867/",
+          "identifier": "CHEMBL2431867",
+          "title": "CHEMBL2431867 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2431867\nType: Small molecule\nMolecular weight: 264.32\nBioactivity: IC50=34673.69 nM (Poly [ADP-ribose] polymerase 2); IC50=19054.61 nM (Poly [ADP-ribose] polymerase 1); IC50=72.44 nM (Poly [ADP-ribose] polymerase tankyrase-2); IC50=6.026 nM (Poly [ADP-ribose] polymerase tankyrase-1); IC50=34900.0 nM (Poly [ADP-ribose] polymerase 2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:45.803156"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3780886/",
+          "identifier": "CHEMBL3780886",
+          "title": "CHEMBL3780886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3780886\nType: Small molecule\nMolecular weight: 490.55",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.707846"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.915,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: COMPLETED\n2. Published Results: None found in the provided evidence.\n3. Results Posted: NOT FOUND (no indication of results being posted on ClinicalTrials.gov)\n4. Completion Date: Unknown (not specified in the provided evidence)\n5. Why Stopped: N/A (since it was a Phase I trial, completion is expected as part of the protocol)\n6. Trial Phase: PHASE1\n7. Result Valence: NOT AVAILABLE (no results or outcomes are mentioned in the provided eviden\n[Pass 2 decision] The trial was a Phase I study, and completing a Phase I trial is considered success. According to Heuristic H1 (PHASE I COMPLETION), Phase I/Early Phase I trials that complete normally are typically \"Positive\". This is because completing a Phase I trial establishes acceptable safety, tolerability, and pharmacokinetics. Since there is no evidence of failure or negative results, the outcome is Positive.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "snippet": "Title: Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648346"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Brief Summary",
+          "snippet": "Synthetic HIV Peptide Vaccines (Treatment Protocol)\n\nWe are conducting a study to evaluate the safety of two peptide vaccines (given alone or in combination) in patients with early HIV infection. Patients entered onto the study must have \\>500 CD4 cells/mm(3) and have preserved cardiac, hepatic, renal, and bone marrow function. Patients must be off all anti-retroviral therapy for at least 6 months and may not have received any experimental HIV vaccines. The vaccines being testing in this trial a",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648368"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648380"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Acquired Immunodeficiency Syndrome, HIV Infection | Keywords: AIDS, Retrovirus, Therapeutic Vaccine, Vaccine, Helper T Cells",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648393"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 3-18 MN",
+          "snippet": "DRUG: PCLUS 3-18 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648406"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 6.1 MN",
+          "snippet": "DRUG: PCLUS 6.1 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648419"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648432"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "snippet": "Title: Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: Acquired Immunodeficiency Syndrome, HIV Infection\nInterventions: Drug: PCLUS 3-18 MN, Drug: PCLUS 6.1 MN\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:58:30.898216"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2431867/",
+          "identifier": "CHEMBL2431867",
+          "title": "CHEMBL2431867 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2431867\nType: Small molecule\nMolecular weight: 264.32\nBioactivity: IC50=34673.69 nM (Poly [ADP-ribose] polymerase 2); IC50=19054.61 nM (Poly [ADP-ribose] polymerase 1); IC50=72.44 nM (Poly [ADP-ribose] polymerase tankyrase-2); IC50=6.026 nM (Poly [ADP-ribose] polymerase tankyrase-1); IC50=34900.0 nM (Poly [ADP-ribose] polymerase 2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:45.803156"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3780886/",
+          "identifier": "CHEMBL3780886",
+          "title": "CHEMBL3780886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3780886\nType: Small molecule\nMolecular weight: 490.55",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.707846"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00001386",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The study directly states that synthetic peptides derived from the HIV envelope are being used as vaccines.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The title, description, and interventions clearly state that the study focuses on synthetic HIV envelope peptides as vaccines. These peptides are specifically designed for use in immunization against HIV infection, making them peptide therapeutics by definition.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "The active drug in this trial is a synthetic peptide vaccine, not a naturally occurring peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The title and conditions of the study clearly indicate that synthetic peptides derived from the HIV envelope are being used as vaccines. This aligns with the definitions provided by verifiers 1 and 2, who agree that these synthetic peptides fall under the category of peptide therapeutics. Verifier 3's reasoning is based on a distinction between naturally occurring and synthetic peptides, but since the study explicitly uses synthetic peptides for therapeutic purposes, it still qualifies as a pept",
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This trial focuses on vaccination, which relies on inducing an adaptive immune response rather than direct antimicrobial action. The peptides are intended to trigger antibody production and T-cell activation, not directly kill HIV.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on the decision tree criteria, since these peptide vaccines do not work by directly killing or lysing pathogens through their own biochemical action, they are classified as 'Other'. They fall under this category because they induce an adaptive immune response rather than acting as antimicrobial peptides that kill pathogens themselves.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial involves peptides (synthetic HIV envelope peptides), but they do not function as antimicrobial peptides since they work by inducing adaptive immunity, not by directly killing or disrupting pathogens.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "As per the critical guidelines, if the protocol mentions \"injection\" without specifying IM, SC, or IV, it should be classified as \"Injection/Infusion - Other/Unspecified\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The lack of specificity in the protocol means that we must adhere to the rule of never guessing the injection route. Therefore, the most appropriate choice is 'Injection/Infusion - Other/Unspecified'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "According to the guidelines provided, when the protocol says 'vaccine' without route, it should be classified as 'Injection/Infusion - Other/Unspecified'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial is listed as completed on ClinicalTrials.gov and it is a Phase I trial, which focuses on safety.  Phase I trials that complete normally are generally considered successful.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "A phase I trial primarily focuses on assessing safety and tolerability of the vaccine. If the trial completes as planned with no major safety concerns raised, it can be considered successful from a safety perspective. The lack of publications does not negate this conclusion since there is no evidence to suggest otherwise based on the information provided by clinicaltrials.gov alone.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial has completed normally, and it is a safety trial for peptide vaccines in patients with early HIV infection. Completion of a Phase I safety trial implies success in terms of safety, even though efficacy data may not be available yet. Since no negative evidence was found in the provided data, we can lean towards a positive outcome.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "EMPTY",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "According to the rules, a completed trial without published evidence of failure is classified as EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Toxic/Unsafe",
+            "reasoning": "Although there are no explicit details about why the trial was stopped or failed, given that it ended with a status of 'Completed' without any published positive results, it suggests that there could be underlying reasons for stopping the trial which were not favorable. The lack of specific evidence pointing towards ineffective outcomes and absence of funding issues or other business-related reasons makes Toxic/Unsafe as the most plausible reason based on the available information.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial has completed, but there is no evidence in the provided data suggesting that it achieved its intended goals or that it failed due to any specific reason. Therefore, the most appropriate answer is \"Ineffective for purpose\" as there is no published evidence showing that the trial met its endpoints.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial has been marked as \"COMPLETED\" in the clinical trials database. There is no explicit evidence provided that indicates any failure or adverse outcome from the trial. Therefore, based on the rules and available data, the most appropriate classification for a completed trial without published evidence of failure is \"EMPTY\".",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": null
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "dbamp",
+    "who_ictrp",
+    "iuphar",
+    "intact",
+    "card",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00001386",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "snippet": "Title: Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648346"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Brief Summary",
+          "snippet": "Synthetic HIV Peptide Vaccines (Treatment Protocol)\n\nWe are conducting a study to evaluate the safety of two peptide vaccines (given alone or in combination) in patients with early HIV infection. Patients entered onto the study must have \\>500 CD4 cells/mm(3) and have preserved cardiac, hepatic, renal, and bone marrow function. Patients must be off all anti-retroviral therapy for at least 6 months and may not have received any experimental HIV vaccines. The vaccines being testing in this trial a",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648368"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648380"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Acquired Immunodeficiency Syndrome, HIV Infection | Keywords: AIDS, Retrovirus, Therapeutic Vaccine, Vaccine, Helper T Cells",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648393"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 3-18 MN",
+          "snippet": "DRUG: PCLUS 3-18 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648406"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 6.1 MN",
+          "snippet": "DRUG: PCLUS 6.1 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648419"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:09.648432"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00001386",
+            "orgStudyIdInfo": {
+              "id": "940159"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "94-C-0159"
+              }
+            ],
+            "organization": {
+              "fullName": "National Institutes of Health Clinical Center (CC)",
+              "class": "NIH"
+            },
+            "briefTitle": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+            "officialTitle": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2002-01",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "1994-06"
+            },
+            "completionDateStruct": {
+              "date": "2002-01"
+            },
+            "studyFirstSubmitDate": "1999-11-03",
+            "studyFirstSubmitQcDate": "1999-11-03",
+            "studyFirstPostDateStruct": {
+              "date": "1999-11-04",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2008-03-03",
+            "lastUpdatePostDateStruct": {
+              "date": "2008-03-04",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "National Cancer Institute (NCI)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "Synthetic HIV Peptide Vaccines (Treatment Protocol)\n\nWe are conducting a study to evaluate the safety of two peptide vaccines (given alone or in combination) in patients with early HIV infection. Patients entered onto the study must have \\>500 CD4 cells/mm(3) and have preserved cardiac, hepatic, renal, and bone marrow function. Patients must be off all anti-retroviral therapy for at least 6 months and may not have received any experimental HIV vaccines. The vaccines being testing in this trial are comprised of short peptide segments of the HIV envelope, including the V3 loop. In animal studies, the peptides were able to induce neutralizing antibodies as well as cytotoxic T responses to HIV. This will be the first trial in which they are given to humans. The study will last for approximately one year, during which time the volunteers will receive 6 peptide vaccines under the skin. For more information, please call Tino Merced-Galindez, R.N. at (301) 496-8959 or Dr. Richard Little at (800) 772-5464.",
+            "detailedDescription": "Assessment of toxicity and immunogenicity of two HIV-1 derived peptide vaccines in Montanide ISA-51 (incomplete Freund's adjuvant) given singly and in combination."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Acquired Immunodeficiency Syndrome",
+              "HIV Infection"
+            ],
+            "keywords": [
+              "AIDS",
+              "Retrovirus",
+              "Therapeutic Vaccine",
+              "Vaccine",
+              "Helper T Cells"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "TREATMENT"
+            },
+            "enrollmentInfo": {
+              "count": 31
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "PCLUS 3-18 MN"
+              },
+              {
+                "type": "DRUG",
+                "name": "PCLUS 6.1 MN"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Patients who are seropositive, documented by a licensed ELISA with a confirmatory Western blot assay for HIV with greater than or equal to 500 CD4+ cells/mm(3) at the time of screening who also meet either of the 2 following criteria:\n\nDuring acute infection there is no lower limit for the CD4 count (acute infection is defined for this protocol as the 6 month period after diagnosis of HIV seropositivity in a patient with documented negative HIV serology within the 6 months prior to diagnosis of HIV seropositivity) OR;\n\nIf there is a history of CD4 count less than 300 cells/mm(s) at any point after initial HIV seropositive diagnosis patient will not be eligible, unless this count was during the time of acute infection.\n\nAmbulatory status, and ability and willingness to give informed consent.\n\nMust be over 18 years old and have an estimated life expectancy of more than 12 months.\n\nHgb greater than or equal to 12 g/dl for men and 11 gm/dl for women.\n\nANC greater than or equal to 1000/mm(3).\n\nCreatinine greater than or equal to 1.5 mg/dl or creatinine clearance greater than 50 ml/min.\n\nLFT: AST and ALT less than or equal to 3x upper limit of normal IU/ml for enrollment. Alkaline phosphatase less than or equal to 2.5x ULN.\n\nBilirubin within normal limits, except for known Gilbert's Syndrome or if patient is on protease inhibitor therapy. For patients on protease inhibitor therapy, direct bilirubin less than or equal to 0.3 mg/dl and indirect bilirubin less than or equal to 4.5 mg/dl.\n\nPatients must be willing to comply with a medical regimen of highly active antiretroviral therapy, and must be on a stable antiretroviral regimen for a minimum of 4 weeks prior to the first vaccination.\n\nPatients should not be receiving antiretroviral therapy or should not have received antiretroviral therapy within 6 months.\n\nPatients without actual or suspected allergies to any component of vaccine.\n\nNo prior vaccines for HIV.\n\nPatients should not have received treatment with the following meds at study entry or within preceding 3 months - agents with immunomodulating activity, parenteral therapies, HIV drugs, vaccines, interferons, corticosteroids, any growth factors.\n\nNo prior Aids defining OI.\n\nNo active life threatening infection.\n\nNo severe malabsorption.\n\nNo evidence of Kaposi Sarcoma or other tumor - likely to require cytotoxic antitumor therapy within 6 months of entering study. Must complete acute therapy for infections at least 14 days prior to entry.\n\nNo pregnancy. Female patients of child bearing potential must have a negative pregnancy test prior to vaccine administration. Males and females must agree to use effective birth control methods during the course of vaccination.\n\nNo patients in whom there is a medical contraindication or potential problems in complying with the requirements of the protocol.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "stdAges": [
+              "CHILD",
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "facility": "National Cancer Institute (NCI)",
+                "city": "Bethesda",
+                "state": "Maryland",
+                "zip": "20892",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.98067,
+                  "lon": -77.10026
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "1826020",
+                "type": "BACKGROUND",
+                "citation": "Clerici M, Lucey DR, Zajac RA, Boswell RN, Gebel HM, Takahashi H, Berzofsky JA, Shearer GM. Detection of cytotoxic T lymphocytes specific for synthetic peptides of gp160 in HIV-seropositive individuals. J Immunol. 1991 Apr 1;146(7):2214-9."
+              },
+              {
+                "pmid": "8515081",
+                "type": "BACKGROUND",
+                "citation": "Ahlers JD, Pendleton CD, Dunlop N, Minassian A, Nara PL, Berzofsky JA. Construction of an HIV-1 peptide vaccine containing a multideterminant helper peptide linked to a V3 loop peptide 18 inducing strong neutralizing antibody responses in mice of multiple MHC haplotypes after two immunizations. J Immunol. 1993 Jun 15;150(12):5647-65."
+              },
+              {
+                "pmid": "1715888",
+                "type": "BACKGROUND",
+                "citation": "Berzofsky JA, Pendleton CD, Clerici M, Ahlers J, Lucey DR, Putney SD, Shearer GM. Construction of peptides encompassing multideterminant clusters of human immunodeficiency virus envelope to induce in vitro T cell responses in mice and humans of multiple MHC types. J Clin Invest. 1991 Sep;88(3):876-84. doi: 10.1172/JCI115389."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 0,
+        "semantic_scholar_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "uniprot_PCLUS 3-18 MN": [],
+        "uniprot_PCLUS 6.1 MN": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_PCLUS 3-18 MN": {
+          "total": 0,
+          "entries": []
+        },
+        "dbaasp_PCLUS 6.1 MN": {
+          "total": 0,
+          "entries": []
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00001386",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2431867/",
+          "identifier": "CHEMBL2431867",
+          "title": "CHEMBL2431867 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2431867\nType: Small molecule\nMolecular weight: 264.32\nBioactivity: IC50=34673.69 nM (Poly [ADP-ribose] polymerase 2); IC50=19054.61 nM (Poly [ADP-ribose] polymerase 1); IC50=72.44 nM (Poly [ADP-ribose] polymerase tankyrase-2); IC50=6.026 nM (Poly [ADP-ribose] polymerase tankyrase-1); IC50=34900.0 nM (Poly [ADP-ribose] polymerase 2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:45.803156"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3780886/",
+          "identifier": "CHEMBL3780886",
+          "title": "CHEMBL3780886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3780886\nType: Small molecule\nMolecular weight: 490.55",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.707846"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL158666/",
+          "identifier": "CHEMBL158666",
+          "title": "AUTONOM NAME: - ChEMBL",
+          "snippet": "Molecule: AUTONOM NAME:\nType: Small molecule\nMolecular weight: 398.58\nBioactivity: Ki=50.4 nM (Protein kinase C alpha type); LogD=7.0 (No relevant target)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.006367"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2431867/",
+          "identifier": "CHEMBL2431867",
+          "title": "CHEMBL2431867 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2431867\nType: Small molecule\nMolecular weight: 264.32\nBioactivity: IC50=34673.69 nM (Poly [ADP-ribose] polymerase 2); IC50=19054.61 nM (Poly [ADP-ribose] polymerase 1); IC50=72.44 nM (Poly [ADP-ribose] polymerase tankyrase-2); IC50=6.026 nM (Poly [ADP-ribose] polymerase tankyrase-1); IC50=34900.0 nM (Poly [ADP-ribose] polymerase 2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:03.900239"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3918926/",
+          "identifier": "CHEMBL3918926",
+          "title": "CHEMBL3918926 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3918926\nType: Small molecule\nMolecular weight: 468.44\nBioactivity: IC50=15.7 nM (Neutrophil elastase); IC50=16.0 nM (Neutrophil elastase)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:06.912624"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3686990/",
+          "identifier": "CHEMBL3686990",
+          "title": "CHEMBL3686990 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3686990\nType: Small molecule\nMolecular weight: 408.51\nBioactivity: IC50=1.0 nM (cAMP and cAMP-inhibited cGMP 3',5'-cyclic phosphodiesterase 10A); IC50=1.0 nM (cAMP and cAMP-inhibited cGMP 3',5'-cyclic phosphodiesterase 10A)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:08.425835"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'PCLUS 3-18 MN'}_count": 5,
+        "chembl_{'name': 'PCLUS 6.1 MN'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "rcsb_{'name': 'PCLUS 3-18 MN'}_status": 400,
+        "rcsb_{'name': 'PCLUS 6.1 MN'}_status": 400
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_{'name': 'PCLUS 3-18 MN'}_count": 0,
+        "ebi_proteins_{'name': 'PCLUS 6.1 MN'}_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "apd_{'name': 'PCLUS 3-18 MN'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)",
+        "apd_{'name': 'PCLUS 6.1 MN'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbamp",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "dbamp_{'name': 'PCLUS 3-18 MN'}_error": "Server unreachable: ConnectError",
+        "dbamp_{'name': 'PCLUS 6.1 MN'}_error": "Server unreachable: ConnectError"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00001386",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "snippet": "Title: Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: Acquired Immunodeficiency Syndrome, HIV Infection\nInterventions: Drug: PCLUS 3-18 MN, Drug: PCLUS 6.1 MN\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:58:30.898216"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00001386",
+          "public_title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "scientific_title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Endpoint Classification: Safety Study, Primary Purpose: Treatment",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Acquired Immunodeficiency Syndrome",
+            "HIV Infection"
+          ],
+          "interventions": [
+            "Drug: PCLUS 3-18 MN",
+            "Drug: PCLUS 6.1 MN"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "iuphar_PCLUS 3-18 MN": {
+          "found": false
+        },
+        "iuphar_PCLUS 6.1 MN": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "intact",
+      "nct_id": "NCT00001386",
+      "citations": [
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-354065",
+          "identifier": "IntAct:EBI-354065",
+          "title": "YBX1 - IntAct",
+          "snippet": "Interactor: YBX1\nDescription: Y-box-binding protein 1\nUniProt: P67809\nSpecies: Homo sapiens\nType: protein\nInteractions: 956",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:22.469907"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-1053596",
+          "identifier": "IntAct:EBI-1053596",
+          "title": "DYRK1A - IntAct",
+          "snippet": "Interactor: DYRK1A\nDescription: Dual specificity tyrosine-phosphorylation-regulated kinase 1A\nUniProt: Q13627\nSpecies: Homo sapiens\nType: protein\nInteractions: 907",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:22.469979"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-353944",
+          "identifier": "IntAct:EBI-353944",
+          "title": "ACTB - IntAct",
+          "snippet": "Interactor: ACTB\nDescription: Actin, cytoplasmic 1\nUniProt: P60709\nSpecies: Homo sapiens\nType: protein\nInteractions: 868",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:22.470002"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-353208",
+          "identifier": "IntAct:EBI-353208",
+          "title": "XRCC6 - IntAct",
+          "snippet": "Interactor: XRCC6\nDescription: X-ray repair cross-complementing protein 6\nUniProt: P12956\nSpecies: Homo sapiens\nType: protein\nInteractions: 489",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:22.470025"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-354932",
+          "identifier": "IntAct:EBI-354932",
+          "title": "HSPA9 - IntAct",
+          "snippet": "Interactor: HSPA9\nDescription: Stress-70 protein, mitochondrial\nUniProt: P38646\nSpecies: Homo sapiens\nType: protein\nInteractions: 418",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:22.470044"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-354065",
+          "identifier": "IntAct:EBI-354065",
+          "title": "YBX1 - IntAct",
+          "snippet": "Interactor: YBX1\nDescription: Y-box-binding protein 1\nUniProt: P67809\nSpecies: Homo sapiens\nType: protein\nInteractions: 956",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:30.372630"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-1053596",
+          "identifier": "IntAct:EBI-1053596",
+          "title": "DYRK1A - IntAct",
+          "snippet": "Interactor: DYRK1A\nDescription: Dual specificity tyrosine-phosphorylation-regulated kinase 1A\nUniProt: Q13627\nSpecies: Homo sapiens\nType: protein\nInteractions: 907",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:30.372709"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-353944",
+          "identifier": "IntAct:EBI-353944",
+          "title": "ACTB - IntAct",
+          "snippet": "Interactor: ACTB\nDescription: Actin, cytoplasmic 1\nUniProt: P60709\nSpecies: Homo sapiens\nType: protein\nInteractions: 868",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:30.372734"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-353208",
+          "identifier": "IntAct:EBI-353208",
+          "title": "XRCC6 - IntAct",
+          "snippet": "Interactor: XRCC6\nDescription: X-ray repair cross-complementing protein 6\nUniProt: P12956\nSpecies: Homo sapiens\nType: protein\nInteractions: 489",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:30.372755"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-354932",
+          "identifier": "IntAct:EBI-354932",
+          "title": "HSPA9 - IntAct",
+          "snippet": "Interactor: HSPA9\nDescription: Stress-70 protein, mitochondrial\nUniProt: P38646\nSpecies: Homo sapiens\nType: protein\nInteractions: 418",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:30.372776"
+        }
+      ],
+      "raw_data": {
+        "intact_PCLUS 3-18 MN": {
+          "total_elements": 300,
+          "interactors": [
+            {
+              "interactorAc": "EBI-354065",
+              "interactorName": "YBX1",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P67809",
+              "interactorDescription": "Y-box-binding protein 1",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 956,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-1053596",
+              "interactorName": "DYRK1A",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "Q13627",
+              "interactorDescription": "Dual specificity tyrosine-phosphorylation-regulated kinase 1A",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 907,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-353944",
+              "interactorName": "ACTB",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P60709",
+              "interactorDescription": "Actin, cytoplasmic 1",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 868,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-353208",
+              "interactorName": "XRCC6",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P12956",
+              "interactorDescription": "X-ray repair cross-complementing protein 6",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 489,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-354932",
+              "interactorName": "HSPA9",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P38646",
+              "interactorDescription": "Stress-70 protein, mitochondrial",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 418,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            }
+          ]
+        },
+        "intact_PCLUS 6.1 MN": {
+          "total_elements": 305,
+          "interactors": [
+            {
+              "interactorAc": "EBI-354065",
+              "interactorName": "YBX1",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P67809",
+              "interactorDescription": "Y-box-binding protein 1",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 956,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-1053596",
+              "interactorName": "DYRK1A",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "Q13627",
+              "interactorDescription": "Dual specificity tyrosine-phosphorylation-regulated kinase 1A",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 907,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-353944",
+              "interactorName": "ACTB",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P60709",
+              "interactorDescription": "Actin, cytoplasmic 1",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 868,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-353208",
+              "interactorName": "XRCC6",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P12956",
+              "interactorDescription": "X-ray repair cross-complementing protein 6",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 489,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-354932",
+              "interactorName": "HSPA9",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P38646",
+              "interactorDescription": "Stress-70 protein, mitochondrial",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 418,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            }
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "card",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "card_livesearch_PCLUS 3-18 MN_html_len": 22,
+        "card_PCLUS 3-18 MN_matches": 0,
+        "card_livesearch_PCLUS 6.1 MN_html_len": 22,
+        "card_PCLUS 6.1 MN_matches": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "pdbe_{'name': 'PCLUS 3-18 MN'}_count": 0,
+        "pdbe_{'name': 'PCLUS 6.1 MN'}_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 7,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbamp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "intact": {
+      "citations_count": 10,
+      "has_data": true,
+      "quality_avg": 0.75
+    },
+    "card": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

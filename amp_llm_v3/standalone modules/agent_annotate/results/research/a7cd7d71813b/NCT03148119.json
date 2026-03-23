@@ -1,0 +1,495 @@
+{
+  "nct_id": "NCT03148119",
+  "completed_at": "2026-03-19 01:35:00 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT03148119",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03148119",
+          "identifier": "NCT03148119",
+          "title": "Phase IB Study of QRH-882260 Heptapeptide Application in the Colon",
+          "snippet": "Title: Phase IB Study of QRH-882260 Heptapeptide Application in the Colon",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:34:05.038200"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03148119",
+          "identifier": "NCT03148119",
+          "title": "Brief Summary",
+          "snippet": "A Phase 1B study of the efficacy of a topically-administered 7-amino acid peptide labeled with a near-infrared fluorophore Cy5 for detecting neoplastic areas of the colon is proposed. The study will test the efficacy of administering this agent (QRH-882260 Heptapeptide) to human subjects undergoing clinically-indicated colonoscopy for endoscopic resection of known colonic adenomas or for surveillance biopsies of known dysplasia in the setting of irritable bowel disease (IBD). Up to 120 evaluable",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:34:05.038216"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03148119",
+          "identifier": "NCT03148119",
+          "title": "Study Status",
+          "snippet": "Status: TERMINATED | Why stopped: It was decided to use the QRH for a new study.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:34:05.038225"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03148119",
+          "identifier": "NCT03148119",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Colon Cancer Prevention",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:34:05.038233"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03148119",
+          "identifier": "NCT03148119",
+          "title": "Intervention: QRH-882260 Heptapeptide",
+          "snippet": "DRUG: QRH-882260 Heptapeptide - topical spray; fluorescently-labeled peptide composed of a 7-amino acid sequence \\[Gln-Arg-His-Lys-Pro-Arg-Glu\\] attached via a 5 amino acid linker \\[Gly-Gly-Gly-Ser-Lys\\] to a near-infrared fluorophore, Cy5. The complete peptide sequence is written as: Gln-Arg-His-Lys-Pro-Arg-Glu-Gly-Gly-Gly-Ser-Ly",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:34:05.038243"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03148119",
+          "identifier": "NCT03148119",
+          "title": "Intervention: Scanning Fiber Endoscope",
+          "snippet": "DEVICE: Scanning Fiber Endoscope - Endoscope used for providing the light via laser to image the area of interest in the colon after the QRH has been sprayed and rinsed.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:34:05.038251"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03148119",
+          "identifier": "NCT03148119",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:34:05.038258"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT03148119",
+            "orgStudyIdInfo": {
+              "id": "HUM00122077"
+            },
+            "organization": {
+              "fullName": "University of Michigan",
+              "class": "OTHER"
+            },
+            "briefTitle": "Study of QRH-882260 Heptapeptide Application in the Colon",
+            "officialTitle": "Phase IB Study of QRH-882260 Heptapeptide Application in the Colon"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2018-04",
+            "overallStatus": "TERMINATED",
+            "whyStopped": "It was decided to use the QRH for a new study.",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2017-03-31",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2017-07-11",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2017-07-11",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2017-04-12",
+            "studyFirstSubmitQcDate": "2017-05-08",
+            "studyFirstPostDateStruct": {
+              "date": "2017-05-10",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2018-04-20",
+            "lastUpdatePostDateStruct": {
+              "date": "2018-04-24",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR_INVESTIGATOR",
+              "investigatorFullName": "Danielle Kim Turgeon",
+              "investigatorTitle": "Professor of Internal Medicine",
+              "investigatorAffiliation": "University of Michigan"
+            },
+            "leadSponsor": {
+              "name": "Danielle Kim Turgeon",
+              "class": "OTHER"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": true,
+            "isFdaRegulatedDrug": true,
+            "isFdaRegulatedDevice": true
+          },
+          "descriptionModule": {
+            "briefSummary": "A Phase 1B study of the efficacy of a topically-administered 7-amino acid peptide labeled with a near-infrared fluorophore Cy5 for detecting neoplastic areas of the colon is proposed. The study will test the efficacy of administering this agent (QRH-882260 Heptapeptide) to human subjects undergoing clinically-indicated colonoscopy for endoscopic resection of known colonic adenomas or for surveillance biopsies of known dysplasia in the setting of irritable bowel disease (IBD). Up to 120 evaluable subjects will be enrolled.\n\nSubjects will be recruited around scheduled standard of care procedures. The endoscopists performing the procedures are all endoscopists credentialed at the University of Michigan to do these procedures. Urine for dipstick pregnancy testing (if applicable) will be collected before the procedure, along with medical information. Vital signs are routinely monitored throughout the clinical procedure and are available in the electronic medical record. The endoscopy will proceed per the University of Michigan Health System (UMHS) standard of care. The endoscopist performing the clinical procedure will evaluate the potential risk (if any) for the subject to continue with the procedure or study. Five mL of the reconstituted QRH-882260 Heptapeptide (\\~100 \u03bcM) will be sprayed onto the site of interest through a catheter in the endoscope. Five minutes after QRH-882260 Heptapeptide application, the unbound peptide will be washed off using the endogator irrigator and the residual liquid will be suctioned. Pictures with white-light and fluorescence will be taken with the scanning fiber based molecular imaging endoscopic probe inserted via the instrument channel of the standard endoscope before the QRH-882260 Heptapeptide application, immediately after application and then again after the QRH-882260 Heptapeptide will be washed off. The area of interest identified will be resected/biopsied per discretion of the endoscopist per clinical care. All specimens taken are for clinical care only (not research use) and will be sent for routine histology per UMHS standard of care."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Colon Cancer Prevention"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "DIAGNOSTIC",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 5,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Topical QRH Heptapeptide Administration",
+                "type": "EXPERIMENTAL",
+                "interventionNames": [
+                  "Drug: QRH-882260 Heptapeptide",
+                  "Device: Scanning Fiber Endoscope"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "QRH-882260 Heptapeptide",
+                "description": "topical spray; fluorescently-labeled peptide composed of a 7-amino acid sequence \\[Gln-Arg-His-Lys-Pro-Arg-Glu\\] attached via a 5 amino acid linker \\[Gly-Gly-Gly-Ser-Lys\\] to a near-infrared fluorophore, Cy5. The complete peptide sequence is written as: Gln-Arg-His-Lys-Pro-Arg-Glu-Gly-Gly-Gly-Ser-Lys(Cy5)-NH2, and is abbreviated as: QRHKPRE-GGGSK-(Cy5)-NH2.",
+                "armGroupLabels": [
+                  "Topical QRH Heptapeptide Administration"
+                ],
+                "otherNames": [
+                  "QRH"
+                ]
+              },
+              {
+                "type": "DEVICE",
+                "name": "Scanning Fiber Endoscope",
+                "description": "Endoscope used for providing the light via laser to image the area of interest in the colon after the QRH has been sprayed and rinsed.",
+                "armGroupLabels": [
+                  "Topical QRH Heptapeptide Administration"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Incidence of QRH-882260 Heptapeptide administration-related adverse events",
+                "description": "Continued monitoring of safety in subjects as measured by the number of Adverse Event (AE) assessments, severity (grade), and relationship to the study drug (any that could be related).",
+                "timeFrame": "1 year"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Efficacy of QRH-882260 Heptapeptide administration for detection of polypoid and non-polypoid colonic neoplasia",
+                "description": "The test product efficacy will be assessed by evaluating the fluorescence intensified measured from suspicious regions of colonic mucosa where the fluorescently-labeled peptide (QRH-882260) is administered. Measurement of peptide binding will be evaluated by the fluorescence intensity measured from the suspicious (target) region and normal tissues (background) to produce a target-to-background ratio.",
+                "timeFrame": "1 year"
+              }
+            ],
+            "otherOutcomes": [
+              {
+                "measure": "Efficacy of QRH-882260 Heptapeptide administration for detection of dysplasia in the setting of IBD",
+                "description": "The test product efficacy will be assessed by evaluating the fluorescence intensified measured from suspicious regions of colonic mucosa where the fluorescently-labeled peptide (QRH-882260) is administered. Measurement of peptide binding will be evaluated by the fluorescence intensity measured from the suspicious (target) region and normal tissues (background) to produce a target-to-background ratio.",
+                "timeFrame": "1 year"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\nSubject meets at least one of the following criteria:\n\n* At increased risk for colorectal cancer (CRC) and colonic polyps\n* Known colonic adenomas scheduled for colonic resection\n* Scheduled for outpatient colonoscopy for follow up surveillance of IBD with known dysplasia or who are at high risk for high grade dysplasia\n* Subject is scheduled for outpatient colonoscopy in the Medical Procedures Unit at UMHS\n* Subject is medically cleared for the procedure (e.g. washout for anticoagulants, co-morbidities) Standard practice guidelines for safely proceeding with the procedure will be sufficient for the study\n* Age 18 to 100 years\n* Willing and able to sign informed consent\n\nExclusion Criteria:\n\nSubjects with known allergy or negative reaction to Cy5 (a near-infrared fluorophore) or derivatives\n\n* Subjects on active chemotherapy or radiation treatment\n* Pregnant or trying to conceive",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "100 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "D K Turgeon, MD",
+                "affiliation": "University of Michigan",
+                "role": "STUDY_DIRECTOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "University of Michigan",
+                "city": "Ann Arbor",
+                "state": "Michigan",
+                "zip": "48109",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.27756,
+                  "lon": -83.74088
+                }
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "NO"
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT03148119",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9737320/",
+          "identifier": "PMC:9737320",
+          "title": "Short Linear Motifs in Colorectal Cancer Interactome and Tumorigenesis.",
+          "snippet": "Title: Short Linear Motifs in Colorectal Cancer Interactome and Tumorigenesis.\nAuthors: Fasano C, Grossi V, Forte G et al.\nJournal: Cells",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:34:05.828589"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7115043/",
+          "identifier": "PMC:7115043",
+          "title": "Fluorescence Image-Guided Surgery - a Perspective on Contrast Agent Development.",
+          "snippet": "Title: Fluorescence Image-Guided Surgery - a Perspective on Contrast Agent Development.\nAuthors: Barth CW, Gibbs SL\nJournal: Proc SPIE Int Soc Opt Eng",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:34:05.828659"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6129851/",
+          "identifier": "PMC:6129851",
+          "title": "Targeted Optical Imaging Agents in Cancer: Focus on Clinical Applications.",
+          "snippet": "Title: Targeted Optical Imaging Agents in Cancer: Focus on Clinical Applications.\nAuthors: Joshi BP, Wang TD\nJournal: Contrast Media Mol Imaging",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:34:05.828683"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "9737320",
+          "7115043",
+          "6129851"
+        ],
+        "pmc_count": 3,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT03148119",
+      "citations": [],
+      "raw_data": {
+        "uniprot_QRH-882260 Heptapeptide": [],
+        "uniprot_Scanning Fiber Endoscope": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT03148119",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 403
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT03148119",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_QRH-882260 Heptapeptide": {
+          "found": false
+        },
+        "dbaasp_Scanning Fiber Endoscope": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT03148119",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4594489/",
+          "identifier": "CHEMBL4594489",
+          "title": "QRH-882260 - ChEMBL",
+          "snippet": "Molecule: QRH-882260\nType: Unknown\nMax clinical phase: 1.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:34:07.730241"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5777886/",
+          "identifier": "CHEMBL5777886",
+          "title": "CHEMBL5777886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5777886\nMolecular weight: 336.41\nBioactivity: Ki=1026.0 nM (Nitric oxide synthase 1); Ki=10978.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:34:08.281100"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5777886/",
+          "identifier": "CHEMBL5777886",
+          "title": "CHEMBL5777886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5777886\nMolecular weight: 336.41\nBioactivity: Ki=1026.0 nM (Nitric oxide synthase 1); Ki=10978.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:34:09.850178"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5788338/",
+          "identifier": "CHEMBL5788338",
+          "title": "CHEMBL5788338 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5788338\nMolecular weight: 316.42\nBioactivity: Ki=70.0 nM (Nitric oxide synthase 1); Ki=3314.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:34:10.472423"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5801236/",
+          "identifier": "CHEMBL5801236",
+          "title": "CHEMBL5801236 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5801236\nMolecular weight: 330.45\nBioactivity: Ki=46.0 nM (Nitric oxide synthase 1); Ki=5043.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:34:10.953060"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'QRH-882260 Heptapeptide'}_count": 5,
+        "chembl_{'name': 'Scanning Fiber Endoscope'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT03148119",
+      "citations": [],
+      "raw_data": {
+        "rcsb_QRH-882260 Heptapeptide": {
+          "count": 0
+        },
+        "rcsb_Scanning Fiber Endoscope": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT03148119",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_QRH-882260 Heptapeptide_count": 0,
+        "ebi_proteins_Scanning Fiber Endoscope_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT03148119",
+      "citations": [],
+      "raw_data": {
+        "apd_QRH-882260 Heptapeptide": {
+          "searched": true,
+          "found": false
+        },
+        "apd_Scanning Fiber Endoscope": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT03148119",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT03148119",
+          "identifier": "NCT03148119",
+          "title": "Study of QRH-882260 Heptapeptide Application in the Colon",
+          "snippet": "Title: Study of QRH-882260 Heptapeptide Application in the Colon\nStatus: Terminated\nPhase: Phase 1\nCountries: United States\nConditions: Colon Cancer Prevention\nInterventions: Drug: QRH-882260 Heptapeptide, Device: Scanning Fiber Endoscope\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-19T08:35:00.162226"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT03148119",
+          "public_title": "Study of QRH-882260 Heptapeptide Application in the Colon",
+          "scientific_title": "Phase IB Study of QRH-882260 Heptapeptide Application in the Colon",
+          "recruitment_status": "Terminated",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Allocation: N/A. Intervention model: Single Group Assignment. Primary purpose: Diagnostic. Masking: None (Open Label).",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Colon Cancer Prevention"
+          ],
+          "interventions": [
+            "Drug: QRH-882260 Heptapeptide",
+            "Device: Scanning Fiber Endoscope"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT03148119",
+      "citations": [],
+      "raw_data": {
+        "iuphar_QRH-882260 Heptapeptide": {
+          "found": false
+        },
+        "iuphar_Scanning Fiber Endoscope": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT03148119",
+      "citations": [],
+      "raw_data": {
+        "pdbe_QRH-882260 Heptapeptide_count": 0,
+        "pdbe_Scanning Fiber Endoscope_count": 0
+      },
+      "error": null
+    }
+  ]
+}

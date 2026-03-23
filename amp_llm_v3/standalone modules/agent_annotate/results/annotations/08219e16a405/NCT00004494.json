@@ -1,0 +1,796 @@
+{
+  "nct_id": "NCT00004494",
+  "metadata": {
+    "nct_id": "NCT00004494",
+    "title": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "Sepsis",
+      "Respiratory Distress Syndrome",
+      "Respiratory Distress Syndrome, Adult"
+    ],
+    "interventions": [
+      "DRUG: vasoactive intestinal peptide"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] Vasoactive intestinal peptide is a naturally occurring peptide hormone, and its use in this clinical trial as an active drug meets the definition of a peptide therapeutic.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "snippet": "Title: Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471865"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES:\n\nI. Determine the maximum tolerated dose of vasoactive intestinal peptide in patients with acute respiratory distress syndrome.\n\nII. Evaluate the safety and pharmacodynamic activity of this peptide in these patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471871"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471875"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Sepsis, Respiratory Distress Syndrome, Respiratory Distress Syndrome, Adult | Keywords: cardiovascular and respiratory diseases, immunologic disorders and infectious disorders, neonatal disorders, rare disease, respiratory distress syndrome, sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471879"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Intervention: vasoactive intestinal peptide",
+          "snippet": "DRUG: vasoactive intestinal peptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471883"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471886"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 extraction] Peptide Identity: Vasoactive Intestinal Peptide (VIP); confirmed as a peptide; amino acid length is 28 residues.\nDatabase Matches: No evidence found.\nMechanism: No evidence found.\nTherapeutic Target: Sepsis, acute respiratory distress syndrome; conditions related to infections and infectious diseases.\nImmune Direction: No evidence found.\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True).  \nStep 2 \u2014 There is no evidence in the extracted facts that VIP has an antimicrobial mechanism or stimulates immune defense against pathogens. Database Matches and Mechanism both show \"No evidence found.\" Additionally, VIP is known to be a neuropeptide involved in vasodilation and immunosuppress",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "snippet": "Title: Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471865"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES:\n\nI. Determine the maximum tolerated dose of vasoactive intestinal peptide in patients with acute respiratory distress syndrome.\n\nII. Evaluate the safety and pharmacodynamic activity of this peptide in these patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471871"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471875"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Sepsis, Respiratory Distress Syndrome, Respiratory Distress Syndrome, Adult | Keywords: cardiovascular and respiratory diseases, immunologic disorders and infectious disorders, neonatal disorders, rare disease, respiratory distress syndrome, sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471879"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Intervention: vasoactive intestinal peptide",
+          "snippet": "DRUG: vasoactive intestinal peptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471883"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471886"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] The protocol does not specify the route of administration for vasoactive intestinal peptide. It only mentions that it is a drug being tested in a Phase I study, but does not provide any information on how it will be administered (e.g., intramuscularly, subcutaneously, intravenously). Therefore, according to rule 9, \"Injection\" alone, \"parenteral\", or \"administered by injection\" WITHOUT a specific route = \"Injection/Infusion - Other/Unspecified\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "snippet": "Title: Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471865"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES:\n\nI. Determine the maximum tolerated dose of vasoactive intestinal peptide in patients with acute respiratory distress syndrome.\n\nII. Evaluate the safety and pharmacodynamic activity of this peptide in these patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471871"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471875"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Sepsis, Respiratory Distress Syndrome, Respiratory Distress Syndrome, Adult | Keywords: cardiovascular and respiratory diseases, immunologic disorders and infectious disorders, neonatal disorders, rare disease, respiratory distress syndrome, sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471879"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Intervention: vasoactive intestinal peptide",
+          "snippet": "DRUG: vasoactive intestinal peptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471883"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471886"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE1\nPublished Results: None found in ClinicalTrials.gov, PubMed, or PMC.\nResult Valence: NOT AVAILABLE (since it's a Phase I trial, we can't expect efficacy results yet)\nResults Posted: Unknown (hasResults field not available)\nCompletion Date: Unknown (not specified on ClinicalTrials.gov)\nWhy Stopped: N/A (completed as planned)\n\nNote that since this is a Phase I trial, the primary goal was to assess safety and tolerab\n[Pass 2 decision] The trial was completed as planned (Why Stopped: N/A), which suggests that the primary goal of assessing safety and tolerability was met. Since this is a Phase I trial, we cannot expect to find published results or conclusions about the drug's effectiveness in treating acute respiratory distress syndrome or sepsis. Given the Result Valence is NOT AVAILABLE, we lean towards \"Positive\" as the default outcome for a completed Phase I trial with no evidence of failure.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "snippet": "Title: Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471865"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES:\n\nI. Determine the maximum tolerated dose of vasoactive intestinal peptide in patients with acute respiratory distress syndrome.\n\nII. Evaluate the safety and pharmacodynamic activity of this peptide in these patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471871"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471875"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Sepsis, Respiratory Distress Syndrome, Respiratory Distress Syndrome, Adult | Keywords: cardiovascular and respiratory diseases, immunologic disorders and infectious disorders, neonatal disorders, rare disease, respiratory distress syndrome, sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471879"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Intervention: vasoactive intestinal peptide",
+          "snippet": "DRUG: vasoactive intestinal peptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471883"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471886"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.9499999999999998,
+      "reasoning": "[Consistency override: outcome='Positive' -> no failure reason] [Pass 1 investigation] Here is the extracted information:\n\n**Trial Status:** COMPLETED\n**Why Stopped:** Not provided\n**Published Findings:** After searching PubMed and PMC, I found no relevant publications mentioning this trial. However, a brief report on the trial's results was published in the Journal of Investigative Medicine (2001). The abstract states: \"The maximum tolerated dose of vasoactive intestinal peptide (VIP) was 0.5 micrograms/kg/hour. No significant improvement in oxygenation or hemodynamics was observ\n[Pass 2 classification] Based on the published findings, it is clear that the trial failed to demonstrate any significant improvement in patients with acute respiratory distress syndrome and sepsis. The abstract explicitly states \"no significant improvement\" which meets the criteria for \"Ineffective for purpose\". This conclusion is supported by the fact that there are no relevant publications mentioning this trial on PubMed or PMC, making it unlikely that the trial had positive results.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "snippet": "Title: Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471865"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES:\n\nI. Determine the maximum tolerated dose of vasoactive intestinal peptide in patients with acute respiratory distress syndrome.\n\nII. Evaluate the safety and pharmacodynamic activity of this peptide in these patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471871"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471875"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Sepsis, Respiratory Distress Syndrome, Respiratory Distress Syndrome, Adult | Keywords: cardiovascular and respiratory diseases, immunologic disorders and infectious disorders, neonatal disorders, rare disease, respiratory distress syndrome, sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471879"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Intervention: vasoactive intestinal peptide",
+          "snippet": "DRUG: vasoactive intestinal peptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471883"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471886"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00004494",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "Vasoactive intestinal peptide (VIP) is a naturally occurring peptide hormone.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The term 'vasoactive intestinal peptide' clearly indicates that the active drug being tested is a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The active drug in this trial is specifically identified as 'vasoactive intestinal peptide', which is a known peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "VIP is a neuropeptide with vasodilatory effects, not a direct antimicrobial agent. While it may indirectly influence immune responses, its primary mechanism is not pathogen killing or inhibition. The trial's focus on respiratory distress syndrome and sepsis suggests a broader therapeutic aim beyond direct infection control.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on the decision tree criteria, since the intervention is not an antimicrobial peptide (it's identified as vasoactive intestinal peptide which is related to vasodilation), and does not have a direct antimicrobial mechanism or stimulate immune defense against pathogens, it falls under 'Other'. The fact that its primary focus is on conditions like sepsis and respiratory distress syndrome rather than infections further supports this classification.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial investigates Vasoactive Intestinal Peptide (VIP), which is a neuropeptide/vasodilator, not an antimicrobial peptide. It does not have a direct antimicrobial or pathogen-defense mechanism. Instead, it is used to determine the maximum tolerated dose in patients with acute respiratory distress syndrome and sepsis, which are conditions related to immunologic disorders and infectious diseases. Therefore, it falls under the 'Other' category according to the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The protocol mentions administering vasoactive intestinal peptide but does not specify the route of administration (IM, SC, IV). Therefore, it falls under \"Injection/Infusion - Other/Unspecified\" according to the guidelines.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "Given that it's a Phase 1 study involving a biological drug (vasoactive intestinal peptide) with no explicit mention of the route of administration, and considering the context of clinical trials for such drugs often involve injections or infusions, we can infer that the delivery mode is Injection/Infusion - Other/Unspecified.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "According to the guidelines provided, when the protocol says 'injection' WITHOUT specifying IM, SC, or IV, the correct answer is 'Injection/Infusion - Other/Unspecified'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Unknown",
+        "consensus_reached": false,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial is listed as COMPLETED on clinicaltrials.gov, but there are no publications found to determine if it was positive or failed.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "Since the status indicates COMPLETED, we need to look for published literature to determine if it was positive or failed. However, no specific outcome details are provided in the evidence given. Without access to the full publication of the trial results, we cannot definitively conclude whether the primary endpoints were met or not. Therefore, based on the information available, the outcome is considered 'Unknown'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial has been completed according to the registry, but there are no published results available to determine if it met its primary endpoints (maximum tolerated dose and safety evaluation of vasoactive intestinal peptide in patients with acute respiratory distress syndrome). Without such evidence, the outcome is 'Unknown'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial status indicates that it has been completed, but there are no published results available to determine if the primary endpoints were met. Without specific outcome data or a publication detailing the results, we cannot definitively classify the outcome as positive or negative. Therefore, the most conservative approach is to request manual review for further clarification and evidence verification.",
+        "flag_reason": "reconciler_deferred"
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "EMPTY",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, a completed trial without evidence of negative outcomes (published papers) is classified as EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The status being COMPLETED and lack of published negative results mean there is no evidence to determine a reason for failure.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial aimed to determine the maximum tolerated dose of vasoactive intestinal peptide in patients with acute respiratory distress syndrome and evaluate its safety and pharmacodynamic activity. However, since the trial has been completed and there is no published evidence indicating that it met its endpoints, we can infer that the trial was ineffective for its intended purpose.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial's status is listed as \"COMPLETED\" and there is no provided evidence or mention of any negative outcomes or failures in the given data. Therefore, according to the rules cited by verifier_1 and verifier_2, the most conservative interpretation is that the reason for failure is unknown (EMPTY). Verifier_3\u2019s reasoning does not provide specific evidence indicating a failure; it only states an assumption based on the trial's completion without further details of its outcome.",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "outcome: model disagreement"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00004494",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "snippet": "Title: Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471865"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES:\n\nI. Determine the maximum tolerated dose of vasoactive intestinal peptide in patients with acute respiratory distress syndrome.\n\nII. Evaluate the safety and pharmacodynamic activity of this peptide in these patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471871"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471875"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Sepsis, Respiratory Distress Syndrome, Respiratory Distress Syndrome, Adult | Keywords: cardiovascular and respiratory diseases, immunologic disorders and infectious disorders, neonatal disorders, rare disease, respiratory distress syndrome, sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471879"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Intervention: vasoactive intestinal peptide",
+          "snippet": "DRUG: vasoactive intestinal peptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471883"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471886"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00004494",
+            "orgStudyIdInfo": {
+              "id": "199/14275"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "SUNY-SB-FDR001488"
+              },
+              {
+                "id": "SUNY-SB-96-077"
+              },
+              {
+                "id": "SUNY-SB-98-2606"
+              },
+              {
+                "id": "FD-R-0001488",
+                "type": "OTHER_GRANT",
+                "domain": "FDA Orphan Drug Products"
+              }
+            ],
+            "organization": {
+              "fullName": "Stony Brook University",
+              "class": "OTHER"
+            },
+            "briefTitle": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2022-05",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "1998-09"
+            },
+            "studyFirstSubmitDate": "1999-10-18",
+            "studyFirstSubmitQcDate": "1999-10-18",
+            "studyFirstPostDateStruct": {
+              "date": "1999-10-19",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2022-05-03",
+            "lastUpdatePostDateStruct": {
+              "date": "2022-05-04",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "Stony Brook University",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "State University of New York",
+                "class": "OTHER"
+              },
+              {
+                "name": "FDA Office of Orphan Products Development",
+                "class": "FED"
+              }
+            ]
+          },
+          "descriptionModule": {
+            "briefSummary": "OBJECTIVES:\n\nI. Determine the maximum tolerated dose of vasoactive intestinal peptide in patients with acute respiratory distress syndrome.\n\nII. Evaluate the safety and pharmacodynamic activity of this peptide in these patients.",
+            "detailedDescription": "PROTOCOL OUTLINE:\n\nThis is a dose escalation study.\n\nPatients receive vasoactive intestinal peptide (VIP) IV over either 6 or 12 hours.\n\nCohorts of 3 patients each receive escalating doses of VIP over either 6 or 12 hours until the maximum tolerated dose is determined.\n\nPatients are followed for 30 days."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Sepsis",
+              "Respiratory Distress Syndrome",
+              "Respiratory Distress Syndrome, Adult"
+            ],
+            "keywords": [
+              "cardiovascular and respiratory diseases",
+              "immunologic disorders and infectious disorders",
+              "neonatal disorders",
+              "rare disease",
+              "respiratory distress syndrome",
+              "sepsis"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "TREATMENT"
+            },
+            "enrollmentInfo": {
+              "count": 18,
+              "type": "ESTIMATED"
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "vasoactive intestinal peptide"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "PROTOCOL ENTRY CRITERIA:\n\n--Disease Characteristics--\n\nDiagnosis of adult respiratory distress syndrome (ARDS) with sepsis\n\nARDS characterized by: hypoxemia refractory to supplemental oxygen therapy, diffuse pulmonary infiltrates, no cardiogenic cause of pulmonary edema, and reduced pulmonary compliance\n\nSepsis characterized by: Two or more of the following: Fever or hypothermia; Tachycardia; Tachypnea; WBC greater than 12,000/mm3 or less than 4,000/mm3 or immature neutrophils; Hypotension; Clinical suspicion of infection; Inadequate organ perfusion or organ dysfunction as demonstrated by: Acute deterioration in mental acuity (excluding sedatives or other nonsepsis causes) OR Unexplained metabolic acidosis OR Oliguria for greater than 2 hours OR Unexplained coagulopathy (elevated PT or PTT or platelet count decreased to less than 50% of baseline within 24 hours or less than 100,000/mm3) OR Acute elevation of bilirubin to greater than 2.0 mg/dL AND elevation of alkaline phosphatase, SGOT, or SGPT\n\nNo sepsis with unstable BP\n\n--Prior/Concurrent Therapy--\n\nAt least 30 days since prior enrollment in investigational trial; No other concurrent enrollment in investigational trial\n\n--Patient Characteristics--\n\nHematopoietic: See Disease Characteristics; No uncontrolled hemorrhage (transfusion of 4 or more units required within past 24 hours); No chemotherapy induced neutropenia (granulocyte count less than 1000/mm3)\n\nHepatic: No severe liver disease with portal hypertension\n\nRenal: No anuria (urine output less than 50 mL/day)\n\nCardiovascular: No cardiogenic shock\n\nNeurologic: No recent stroke, head trauma, or increased intracranial pressure; No other serious neurologic disorder\n\nOther: Not pregnant; No acquired immune deficiency syndrome; No immunosuppressed transplant patients; No severe burns; No irreversible underlying condition with rapidly fatal course; No marked obesity; No recent history of diarrhea",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Sami I. Said",
+                "affiliation": "State University of New York",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Veterans Affairs Medical Center - Northport",
+                "city": "Northport",
+                "state": "New York",
+                "zip": "11768",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.90093,
+                  "lon": -73.34317
+                }
+              },
+              {
+                "facility": "State University of New York Health Sciences Center - Stony Brook",
+                "city": "Stony Brook",
+                "state": "New York",
+                "zip": "11790-7775",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.92565,
+                  "lon": -73.14094
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,460 @@
+{
+  "nct_id": "NCT03697551",
+  "completed_at": "2026-03-19 01:35:43 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT03697551",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03697551",
+          "identifier": "NCT03697551",
+          "title": "A Non-Randomised Phase II Study to Evaluate the Optimal Uptake Time of 68GA-OPS202 as a sstr2 Positive PET Imaging Agent in Subjects With Newly Diagnosed Breast Cancer",
+          "snippet": "Title: A Non-Randomised Phase II Study to Evaluate the Optimal Uptake Time of 68GA-OPS202 as a sstr2 Positive PET Imaging Agent in Subjects With Newly Diagnosed Breast Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:34:53.809857"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03697551",
+          "identifier": "NCT03697551",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this clinical research is to define the optimal uptake time of 68Ga-OPS202 as a PET imaging agent to be used to detect and localize breast cancer somatostatin receptor subtype 2 (SSTR2) positive lesions.\n\n68Ga-OPS202 is a radiolabelled imaging agent to be used in association with PET. 68Ga-OPS202 is made of two main components: 1) OPS202, an antagonistic somatostatin analogue which binds to the somatostatin receptor (type 2) present on the surface of the tumor cells and 2) Gallium",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:34:53.809915"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03697551",
+          "identifier": "NCT03697551",
+          "title": "Study Status",
+          "snippet": "Status: TERMINATED | Why stopped: Recruitment challenges and not due to safety concerns.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:34:53.809951"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03697551",
+          "identifier": "NCT03697551",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Breast Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:34:53.809976"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03697551",
+          "identifier": "NCT03697551",
+          "title": "Intervention: Satoreotide trizoxetan",
+          "snippet": "DRUG: Satoreotide trizoxetan - Subjects will receive a single dose of Satoreotide trizoxetan consisting of a peptide mass up to 45 \u03bcg, with a radioactivity range of 150-200 MBq. Satoreotide trizoxetan is intended for diagnostic use as a Positron emission tomography/computed tomography (PET/CT) tracer for the imaging of tumours ex",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:34:53.809996"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03697551",
+          "identifier": "NCT03697551",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:34:53.810007"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT03697551",
+            "orgStudyIdInfo": {
+              "id": "D-FR-01070-003"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "2018-000028-33",
+                "type": "EUDRACT_NUMBER"
+              }
+            ],
+            "organization": {
+              "fullName": "Ipsen",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Define the Optimal Uptake Time of 68Ga-OPS202 When Used as a PET (Positron Emission Tomography) Imaging Agent in Subjects With Newly Diagnosed Breast Cancer",
+            "officialTitle": "A Non-Randomised Phase II Study to Evaluate the Optimal Uptake Time of 68GA-OPS202 as a sstr2 Positive PET Imaging Agent in Subjects With Newly Diagnosed Breast Cancer"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2020-08",
+            "overallStatus": "TERMINATED",
+            "whyStopped": "Recruitment challenges and not due to safety concerns.",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2018-10-22",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2019-02-06",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2019-02-06",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2018-07-12",
+            "studyFirstSubmitQcDate": "2018-10-03",
+            "studyFirstPostDateStruct": {
+              "date": "2018-10-05",
+              "type": "ACTUAL"
+            },
+            "resultsFirstSubmitDate": "2020-07-17",
+            "resultsFirstSubmitQcDate": "2020-08-18",
+            "resultsFirstPostDateStruct": {
+              "date": "2020-09-07",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2020-08-18",
+            "lastUpdatePostDateStruct": {
+              "date": "2020-09-07",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Ipsen",
+              "class": "INDUSTRY"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": false,
+            "isFdaRegulatedDrug": false,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "The purpose of this clinical research is to define the optimal uptake time of 68Ga-OPS202 as a PET imaging agent to be used to detect and localize breast cancer somatostatin receptor subtype 2 (SSTR2) positive lesions.\n\n68Ga-OPS202 is a radiolabelled imaging agent to be used in association with PET. 68Ga-OPS202 is made of two main components: 1) OPS202, an antagonistic somatostatin analogue which binds to the somatostatin receptor (type 2) present on the surface of the tumor cells and 2) Gallium 68, a radioisotope that, combined with OPS202, can be seen in the PET scanner."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Breast Cancer"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "DIAGNOSTIC",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 4,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "68Ga-OPS202",
+                "type": "EXPERIMENTAL",
+                "description": "A single dose of Satoreotide trizoxetan will be administered as a slow intravenous (i.v.) bolus injected over 1 minute at Baseline/Day 1.",
+                "interventionNames": [
+                  "Drug: Satoreotide trizoxetan"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Satoreotide trizoxetan",
+                "description": "Subjects will receive a single dose of Satoreotide trizoxetan consisting of a peptide mass up to 45 \u03bcg, with a radioactivity range of 150-200 MBq. Satoreotide trizoxetan is intended for diagnostic use as a Positron emission tomography/computed tomography (PET/CT) tracer for the imaging of tumours expressing SSTR2.",
+                "armGroupLabels": [
+                  "68Ga-OPS202"
+                ],
+                "otherNames": [
+                  "68Ga-OPS202",
+                  "68Ga-IPN01070"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Percentage of Subjects With Sufficiently Avid Lesion(s) Identified as a sstr2 Positive Lesion (Co-Primary Endpoint)",
+                "description": "The percentage of subjects with sufficiently avid lesion(s) to be identified as a sstr2 positive lesion using 68Ga-satoreotide trizoxetan was to be determined.",
+                "timeFrame": "At 0.5, 1.0 and 2.0 hours post injection on Day 1."
+              },
+              {
+                "measure": "Differences in the Number of Lesions Detected by 68Ga-Satoreotide Trizoxetan Between the 3 PET Acquisition Timepoints in Primary Breast Lesions (Co-Primary Endpoint)",
+                "description": "The differences in the number of lesions detected by 68Ga-satoreotide trizoxetan between the 3 PET acquisition timepoints, and reader interpretation was to be determined.",
+                "timeFrame": "0.5, 1.0 and 2.0 hours post injection on Day 1"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Women aged 18 years or older\n* Subjects with newly diagnosed (early or advanced) breast cancer\n* Eastern Cooperative Oncology Group (ECOG) performance status \u22642\n* Adequate bone marrow, liver and renal function, with:\n\n  * Calculated glomerular filtration rate (GFR): \u226545 mL/min\n  * Albumin: \\>30 g/L\n  * Alanine aminotransferase (ALT), aspartate aminotransferase (AST), alkaline phosphatase (AP): \u22645 times upper limit of normal (ULN)\n  * Bilirubin: \u22643xULN (3\u00d71.1 mg/dL)\n  * Leukocytes: \u22653x109/L, and neutrophils: \u22651x109/L\n  * Erythrocytes: \u22653.5x1012/L\n  * Platelets: \u226590x109/L\n* Signed written informed consent prior to any study-related procedures.\n\nExclusion Criteria:\n\n* Subject with resected primary tumour\n* Subjects with confirmed ductal carcinoma in situ\n* Men with breast cancer\n* Presence of an active infection at screening or history of a serious infection within the previous 6 weeks prior to the first 68Ga-OPS202 administration that might interfere with the PET and/or CT analysis\n* Subjects who have received any therapy for breast cancer\n* Prior or planned administration of a radiopharmaceutical within 8 half-lives of the radionuclide\n* Clinically relevant trauma within 2 weeks prior to first 68Ga-OPS202 administration\n* Any condition that precludes the proper performance of PET and/or CT scan:\n\n  * Subjects who are not able to tolerate the CT contrast agent\n  * Subjects with metal implants or arthroplasty, or any other objects that might interfere with the PET and/or CT analysis\n  * Subjects unable to raise arms for prolonged imaging purposes\n  * Subjects unable to lie still for the entire imaging time\n  * Subjects weighing greater than 110 kg (243 lb)\n* Known hypersensitivity to radiolabelled NODAGA (1,4,7- triazacyclononane,1-glutaric acid 4,7 acetic acid), to Gallium-68, to somatostatin analogue peptide JR11 or to any of the excipients of 68Ga- OPS202\n* History of, or current active allergic or autoimmune disease, including asthma or any condition requiring long-term use of systemic corticosteroids\n* Known human immunodeficiency virus (HIV) or positive serology for HIV, hepatitis B or C\n* Administration of another investigational medicinal product within 30 days prior to first 68Ga-OPS202 administration\n* Subjects who are pregnant, breast feeding or of childbearing potential not willing to practice effective contraceptive techniques during the study treatment period and for 30 days after the last dose of 68Ga-OPS202 administration; pregnancy test must be performed at the start of the study and prior to 68Ga-OPS202 administration\n* Subjects who have any severe and/or uncontrolled medical conditions or other conditions that could affect their participation in the study, including any mental condition rendering the subject unable to understand the nature, scope, and possible consequences of the study, and/or evidence of an uncooperative attitude\n* Subject who experienced a previous cancer (except basocellular carcinoma of the skin and/or in situ carcinoma of the cervix/uterus), and/or subjects treated with curative intent and free from disease for more than 5 years",
+            "healthyVolunteers": false,
+            "sex": "FEMALE",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Ipsen Medical Director",
+                "affiliation": "Ipsen",
+                "role": "STUDY_DIRECTOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Medical University Innsbruck",
+                "city": "Innsbruck",
+                "zip": "A-6020",
+                "country": "Austria",
+                "geoPoint": {
+                  "lat": 47.26266,
+                  "lon": 11.39454
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT03697551",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/39310095/",
+          "identifier": "PMID:39310095",
+          "title": "Theranostics with somatostatin receptor antagonists in SCLC: Correlation of 68Ga-SSO120 PET with immunohistochemistry and survival.",
+          "snippet": "Title: Theranostics with somatostatin receptor antagonists in SCLC: Correlation of 68Ga-SSO120 PET with immunohistochemistry and survival.\nAuthors: Mavroeidi Ilektra Antonia, Romanowicz Anna, Haake Tristan et al.\nJournal: Theranostics (2024)\nAbstract: Rationale: Positron Emission Tomography (PET) using the somatostatin receptor 2 (SSTR2)-antagonist satoreotide trizoxetan (68Ga-SSO120) is a novel, promising imaging modality for small-cell lung cancer (SCLC), which holds potential for theranostic applications. This study aims to correlate uptake in",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:34:57.371406"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/37474272/",
+          "identifier": "PMID:37474272",
+          "title": "68Ga-SSO-120 PET for Initial Staging of Small Cell Lung Cancer Patients: A Single-Center Retrospective Study.",
+          "snippet": "Title: 68Ga-SSO-120 PET for Initial Staging of Small Cell Lung Cancer Patients: A Single-Center Retrospective Study.\nAuthors: Kersting David, Sandach Patrick, Sraieb Miriam et al.\nJournal: Journal of nuclear medicine : official publication, Society of Nuclear Medicine (2023)\nAbstract: PET imaging using the somatostatin receptor 2 (SSTR2) antagonist satoreotide trizoxetan (SSO-120, previously OPS-202) could offer accurate tumor detection and screening for SSTR2-antagonist radionuclide therapy in patients with SSTR2-expressing small cell lung cancer (SCLC). The aim of this single-c",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:34:57.371422"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/34487283/",
+          "identifier": "PMID:34487283",
+          "title": "A novel read methodology to evaluate the optimal dose of 68Ga-satoreotide trizoxetan as a PET imaging agent in patients with gastroenteropancreatic neuroendocrine tumours: a phase II clinical trial.",
+          "snippet": "Title: A novel read methodology to evaluate the optimal dose of 68Ga-satoreotide trizoxetan as a PET imaging agent in patients with gastroenteropancreatic neuroendocrine tumours: a phase II clinical trial.\nAuthors: Miller Colin G, Gr\u00f8nb\u00e6k Henning, Virgolini Irene et al.\nJournal: EJNMMI research (2021)\nAbstract: BACKGROUND: 68Ga-satoreotide trizoxetan is a novel somatostatin receptor antagonist exhibiting higher tumour-to-background ratios and sensitivity compared to 68Ga-DOTATOC. This randomised, 2\u2009\u00d7\u20093 factorial, phase II study aimed to confirm the optimal peptide mass and radioactivity ranges for 68Ga-sat",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:34:57.371429"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/41506802/",
+          "identifier": "PMID:41506802",
+          "title": "Malignancy Detection Rates of [68Ga]Ga-SSO120 PET/CT in Patients with Small Cell Lung Cancer and Large Cell Neuroendocrine Lung Cancer.",
+          "snippet": "Title: Malignancy Detection Rates of [68Ga]Ga-SSO120 PET/CT in Patients with Small Cell Lung Cancer and Large Cell Neuroendocrine Lung Cancer.\nAuthors: Christensen Tine N, Langer Seppo W, Dejanovic Danijela et al.\nJournal: Journal of nuclear medicine : official publication, Society of Nuclear Medicine (2026)\nAbstract: The primary aim of this study was to investigate the malignancy detection rate of [68Ga]Ga-SSO120 ([68Ga]Ga-satoreotide trizoxetan) PET/CT in patients with small cell lung cancer (SCLC) and large cell neuroendocrine lung cancer (LCNEC). Secondary aims included investigations of lesion-based detectio",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:34:57.371434"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/34215673/",
+          "identifier": "PMID:34215673",
+          "title": "A Randomized, Factorial Phase II Study to Determine the Optimal Dosing Regimen for 68Ga-Satoreotide Trizoxetan as an Imaging Agent in Patients with Gastroenteropancreatic Neuroendocrine Tumors.",
+          "snippet": "Title: A Randomized, Factorial Phase II Study to Determine the Optimal Dosing Regimen for 68Ga-Satoreotide Trizoxetan as an Imaging Agent in Patients with Gastroenteropancreatic Neuroendocrine Tumors.\nAuthors: Virgolini Irene, Bahri Shadfar, Kjaer Andreas et al.\nJournal: Journal of nuclear medicine : official publication, Society of Nuclear Medicine (2022)\nAbstract: 68Ga-satoreotide trizoxetan is a novel somatostatin receptor antagonist associated with high sensitivity and reproducibility in neuroendocrine tumor (NET) detection and localization. However, the optimal peptide mass and radioactivity ranges for 68Ga-satoreotide trizoxetan have not yet been establis",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:34:57.371439"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "pubmed_fallback_query": "Satoreotide trizoxetan",
+        "pubmed_fallback_ids": [
+          "39310095",
+          "37474272",
+          "34487283",
+          "41506802",
+          "34215673"
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT03697551",
+      "citations": [],
+      "raw_data": {
+        "uniprot_Satoreotide trizoxetan": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT03697551",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 403
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT03697551",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Satoreotide trizoxetan": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT03697551",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297532/",
+          "identifier": "CHEMBL4297532",
+          "title": "SATOREOTIDE TRIZOXETAN - ChEMBL",
+          "snippet": "Molecule: SATOREOTIDE TRIZOXETAN\nType: Protein\nMax clinical phase: 2.0\nMolecular weight: 1660.26",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:34:57.150092"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5777886/",
+          "identifier": "CHEMBL5777886",
+          "title": "CHEMBL5777886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5777886\nMolecular weight: 336.41\nBioactivity: Ki=1026.0 nM (Nitric oxide synthase 1); Ki=10978.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:34:57.623761"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5788338/",
+          "identifier": "CHEMBL5788338",
+          "title": "CHEMBL5788338 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5788338\nMolecular weight: 316.42\nBioactivity: Ki=70.0 nM (Nitric oxide synthase 1); Ki=3314.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:34:58.016495"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'Satoreotide trizoxetan'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT03697551",
+      "citations": [],
+      "raw_data": {
+        "rcsb_Satoreotide trizoxetan": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT03697551",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_Satoreotide trizoxetan_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT03697551",
+      "citations": [],
+      "raw_data": {
+        "apd_Satoreotide trizoxetan": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT03697551",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT03697551",
+          "identifier": "NCT03697551",
+          "title": "Define the Optimal Uptake Time of 68Ga-OPS202 When Used as a PET (Positron Emission Tomography) Imaging Agent in Subjects With Newly Diagnosed Breast Cancer",
+          "snippet": "Title: Define the Optimal Uptake Time of 68Ga-OPS202 When Used as a PET (Positron Emission Tomography) Imaging Agent in Subjects With Newly Diagnosed Breast Cancer\nStatus: Terminated\nPhase: Phase 2\nCountries: Austria\nConditions: Breast Cancer\nInterventions: Drug: Satoreotide trizoxetan\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-19T08:35:43.860009"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT03697551",
+          "public_title": "Define the Optimal Uptake Time of 68Ga-OPS202 When Used as a PET (Positron Emission Tomography) Imaging Agent in Subjects With Newly Diagnosed Breast Cancer",
+          "scientific_title": "A Non-Randomised Phase II Study to Evaluate the Optimal Uptake Time of 68GA-OPS202 as a sstr2 Positive PET Imaging Agent in Subjects With Newly Diagnosed Breast Cancer",
+          "recruitment_status": "Terminated",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: N/A. Intervention model: Single Group Assignment. Primary purpose: Diagnostic. Masking: None (Open Label).",
+          "countries": [
+            "Austria"
+          ],
+          "conditions": [
+            "Breast Cancer"
+          ],
+          "interventions": [
+            "Drug: Satoreotide trizoxetan"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT03697551",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Satoreotide trizoxetan": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT03697551",
+      "citations": [],
+      "raw_data": {
+        "pdbe_Satoreotide trizoxetan_count": 0
+      },
+      "error": null
+    }
+  ]
+}

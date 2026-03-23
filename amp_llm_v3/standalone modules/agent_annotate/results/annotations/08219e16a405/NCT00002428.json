@@ -1,0 +1,817 @@
+{
+  "nct_id": "NCT00002428",
+  "metadata": {
+    "nct_id": "NCT00002428",
+    "title": "A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "HIV Infections"
+    ],
+    "interventions": [
+      "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+      "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] The trial involves a synthetic branched peptide vaccine, which is a designed polypeptide sequence used as the active drug. This matches the definition of a peptide therapeutic.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333350"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and immunogenicity of a combination of microparticulate monovalent HIV-1 MN synthetic branched peptide candidate vaccine for oral administration and monovalent HIV-1 MN synthetic branched peptide vaccine in alum for intramuscular administration in intermediate or higher risk HIV-negative volunteers.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333358"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333363"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, HIV Envelope Protein gp120, AIDS Vaccines, HIV Seronegativity",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333367"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333371"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "snippet": "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333374"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333378"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 extraction] Peptide Identity: HIV-1 MN synthetic branched peptide vaccine and monovalent octameric V3 peptide vaccine. The intervention is confirmed as a peptide.\nDatabase Matches: No evidence found.\nMechanism: No evidence found.\nTherapeutic Target: HIV Infections (infectious disease)\nImmune Direction: PROMOTE immune defense (stimulate, recruit, activate)\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True).  \nStep 2 \u2014 There is no evidence in the Database Matches or Mechanism that this peptide has an antimicrobial mechanism. Although it PROMOTES immune defense, its purpose is to target HIV infection through immunostimulation rather than direct antimicrobial action against pathogens. This does not me",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333350"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and immunogenicity of a combination of microparticulate monovalent HIV-1 MN synthetic branched peptide candidate vaccine for oral administration and monovalent HIV-1 MN synthetic branched peptide vaccine in alum for intramuscular administration in intermediate or higher risk HIV-negative volunteers.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333358"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333363"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, HIV Envelope Protein gp120, AIDS Vaccines, HIV Seronegativity",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333367"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333371"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "snippet": "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333374"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333378"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Subcutaneous/Intradermal",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] The trial involves two types of vaccines with different routes of administration. One is administered orally, which corresponds to the \"Oral - Tablet\" category since it's not specified as a food product or drink. The other is administered via injection, but the specific route (intramuscular) is mentioned in conjunction with alum, indicating that it falls under the \"Injection/Infusion - Subcutaneous/Intradermal\" category.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333350"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and immunogenicity of a combination of microparticulate monovalent HIV-1 MN synthetic branched peptide candidate vaccine for oral administration and monovalent HIV-1 MN synthetic branched peptide vaccine in alum for intramuscular administration in intermediate or higher risk HIV-negative volunteers.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333358"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333363"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, HIV Envelope Protein gp120, AIDS Vaccines, HIV Seronegativity",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333367"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333371"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "snippet": "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333374"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333378"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE1\nPublished Results: None found in ClinicalTrials.gov or PubMed/PubMed Central search.\nResult Valence: Not Available (since it's a Phase I trial, we can't determine efficacy yet)\nResults Posted: Unknown (hasResults field not available)\nCompletion Date: Unknown (not specified on ClinicalTrials.gov)\nWhy Stopped: N/A (since it was completed as planned)\nNote: As this is a Phase I trial, the primary goal is to assess saf\n[Pass 2 decision] Since the trial is COMPLETED and in Phase I, we can't determine efficacy yet. However, as a Phase I trial, the primary goal is to assess safety and tolerability, rather than efficacy. Given that there are no published results found in ClinicalTrials.gov or PubMed/PubMed Central search, we cannot conclude failure.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333350"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and immunogenicity of a combination of microparticulate monovalent HIV-1 MN synthetic branched peptide candidate vaccine for oral administration and monovalent HIV-1 MN synthetic branched peptide vaccine in alum for intramuscular administration in intermediate or higher risk HIV-negative volunteers.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333358"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333363"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, HIV Envelope Protein gp120, AIDS Vaccines, HIV Seronegativity",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333367"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333371"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "snippet": "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333374"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333378"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.8,
+      "reasoning": "[Pass 1] No failure detected. Trial Status: COMPLETED\nWhy Stopped: Not provided\nPublished Findings:\nA PubMed search did not yield any relevant results for this trial. However, a search on the National Institutes of Health (NIH) website revealed that the trial was part of a larger research effort to develop an HIV vaccine. The NI",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333350"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and immunogenicity of a combination of microparticulate monovalent HIV-1 MN synthetic branched peptide candidate vaccine for oral administration and monovalent HIV-1 MN synthetic branched peptide vaccine in alum for intramuscular administration in intermediate or higher risk HIV-negative volunteers.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333358"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333363"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, HIV Envelope Protein gp120, AIDS Vaccines, HIV Seronegativity",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333367"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333371"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "snippet": "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333374"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333378"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00002428",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial clearly states that the intervention is a peptide vaccine composed of  \"HIV-1 Peptide Vaccine\" and \"rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The descriptions provided specifically mention that the intervention is a synthetic branched peptide vaccine, which confirms that it is indeed a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The active drug in this trial is a synthetic branched peptide vaccine designed to target HIV-1, which meets the criteria for being a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This trial focuses on evaluating the safety and immunogenicity of a peptide vaccine. While it targets HIV, the peptide's mechanism is to stimulate an immune response against the virus, not directly kill it.  This falls under 'Other' as it does not have a direct antimicrobial or pathogen-defense mechanism.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The peptide in question is used for vaccination purposes, which involves stimulating an immune response against HIV. It does not have a direct antimicrobial action and instead aims to prevent infection by enhancing the body's defenses against the virus. Therefore, it falls under the category of 'Other' as per the decision tree criteria.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial is evaluating a peptide vaccine for HIV-1 seronegative volunteers, but it does not have a direct antimicrobial mechanism against pathogens. Instead, it stimulates the immune system to prevent HIV infections, making it an 'Other' classification according to the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Subcutaneous/Intradermal",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The protocol states the vaccine will be administered intramuscularly, but it does not explicitly say \"intramuscular\" or \"IM\".  Therefore, we must use \"Injection/Infusion - Other/Unspecified\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Intramuscular",
+            "reasoning": "The protocol specifies two different routes of administration - one being oral (food) and the other being intramuscular (IM). Therefore, based on the provided evidence, we can conclude that there are two distinct delivery modes for this trial.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Oral - Unspecified",
+            "reasoning": "The trial mentions that one of the vaccines is for oral administration, which indicates an oral delivery mode. However, the specific type of oral delivery (tablet, capsule, drink, etc.) is not specified in the provided data.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "While verifier_2 suggests \"Injection/Infusion - Intramuscular\", this is based on an assumption rather than explicit evidence stating \"intramuscular\". Verifier_1's reasoning that the specific term \"intramuscular\" is missing and therefore using \"Other/Unspecified\" as a fallback option aligns with conservative interpretation guidelines. Additionally, verifier_3 points out another route of administration being oral, which further complicates specifying a single mode without clear evidence for each. ",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial is listed as COMPLETED on clinicaltrials.gov, but there are no publications found to determine if it was positive or failed.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "Since the status indicates 'COMPLETED', we need to look for published literature to determine if it was positive, negative or unknown. However, no specific outcome details are provided in the evidence given, and there's no mention of whether the primary endpoints were met or not. Therefore, based on the information available, the outcome is considered 'Unknown'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial has been completed and a publication was found that shows the trial met its primary endpoints (safety and immunogenicity) as stated in the title of the publication.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The primary annotator's answer is supported by the title of the publication, which indicates that the trial evaluated safety and immunogenicity. Verifier_3 also agrees with this interpretation and cites a publication showing the trial met its primary endpoints (safety and immunogenicity). While verifiers 1 and 2 argue for \"Unknown\" due to lack of specific outcome details in clinicaltrials.gov, the title of the publication provides sufficient evidence to conclude that the trial was positive. Ther",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "EMPTY",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, a completed trial without evidence of negative outcomes (published papers stating failure) is classified as EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The status of the trial being COMPLETED means it has concluded, but without evidence that it failed to meet its objectives or encountered issues such as safety concerns, lack of efficacy, funding problems, etc., we cannot determine a specific reason for failure.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial is marked as completed but there are no published results indicating that it met its primary endpoint, which was to evaluate the safety and immunogenicity of a combination of microparticulate monovalent HIV-1 MN synthetic branched peptide candidate vaccine for oral administration and monovalent HIV-1 MN synthetic branched peptide vaccine in alum for intramuscular administration in intermediate or higher risk HIV-negative volunteers. The absence of published results does not necessarily",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial's status being \"COMPLETED\" indicates that it has concluded without any explicit mention of failure or issues in the provided evidence. Verifier_3's reasoning suggests a lack of published results indicating success, but this does not provide sufficient evidence to classify the reason for failure as anything other than empty. Therefore, based on the conservative approach and the absence of definitive negative outcomes, \"EMPTY\" is the most appropriate classification.",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": null
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00002428",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333350"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and immunogenicity of a combination of microparticulate monovalent HIV-1 MN synthetic branched peptide candidate vaccine for oral administration and monovalent HIV-1 MN synthetic branched peptide vaccine in alum for intramuscular administration in intermediate or higher risk HIV-negative volunteers.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333358"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333363"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, HIV Envelope Protein gp120, AIDS Vaccines, HIV Seronegativity",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333367"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333371"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "snippet": "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333374"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333378"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00002428",
+            "orgStudyIdInfo": {
+              "id": "091"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "UBI V106"
+              }
+            ],
+            "organization": {
+              "fullName": "NIH AIDS Clinical Trials Information Service",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+            "officialTitle": "A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "1996-03",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "studyFirstSubmitDate": "1999-11-02",
+            "studyFirstSubmitQcDate": "2001-08-30",
+            "studyFirstPostDateStruct": {
+              "date": "2001-08-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2005-06-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2005-06-24",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "United Biomedical",
+              "class": "INDUSTRY"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "To evaluate the safety and immunogenicity of a combination of microparticulate monovalent HIV-1 MN synthetic branched peptide candidate vaccine for oral administration and monovalent HIV-1 MN synthetic branched peptide vaccine in alum for intramuscular administration in intermediate or higher risk HIV-negative volunteers.",
+            "detailedDescription": "Volunteers receive one of two schedules of vaccines or placebo administered at days 0, 28, and 168. Specifically, group 1 receives oral microparticulate monovalent vaccine over 3 consecutive days on days 0, 1, and 2, and 28, 29, and 30, with the intramuscular monovalent vaccine given on day 168. Group 2 receives the intramuscular vaccine first, on day 0, followed by the oral form given on days 28, 29, and 30 and 168, 169, and 170. Volunteers are followed for 1 year."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections"
+            ],
+            "keywords": [
+              "Vaccines, Synthetic",
+              "HIV-1",
+              "HIV Envelope Protein gp120",
+              "AIDS Vaccines",
+              "HIV Seronegativity"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "PREVENTION",
+              "maskingInfo": {
+                "masking": "DOUBLE"
+              }
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "HIV-1 Peptide Vaccine, Microparticulate Monovalent"
+              },
+              {
+                "type": "BIOLOGICAL",
+                "name": "rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria\n\nVolunteers must have:\n\n* Normal history and physical exam.\n* HIV negativity.\n* CD4 count \\>= 400 cells/mm3.\n* Intermediate or high risk sexual behavior or a history of injection drug use within 12 months prior to study entry.\n* Normal urine dipstick with esterase and nitrite.\n\nExclusion Criteria\n\nCo-existing Condition:\n\nVolunteers with the following symptoms or conditions are excluded:\n\n* Active tuberculosis.\n* Occupational or other responsibilities that would prevent completion of study.\n\nVolunteers with the following prior conditions are excluded:\n\n* History of immunodeficiency, chronic illness, autoimmune disease, or use of immunosuppressive medications.\n* Psychiatric, medical, or substance abuse problems within the past 6 months that would affect ability to participate in study.\n* History of anaphylaxis or other serious adverse reactions to vaccines.\n* History of inflammatory gastrointestinal disease, celiac disease, or intestinal malignancy.\n* Acute gastroenteritis or gastrointestinal surgery within the past 12 months.\n\nPrior Medication:\n\nExcluded:\n\n* Live or attenuated vaccine within the past 60 days.\n* Illicit or experimental agents within the past 30 days. Intermediate or high risk sexual behavior. Injection drug use within the past 12 months.",
+            "healthyVolunteers": true,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "50 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "facility": "Univ of California at San Francisco Gen Hosp",
+                "city": "San Francisco",
+                "state": "California",
+                "zip": "94110",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.77493,
+                  "lon": -122.41942
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "11311997",
+                "type": "BACKGROUND",
+                "citation": "Lambert JS, Keefer M, Mulligan MJ, Schwartz D, Mestecky J, Weinhold K, Smith C, Hsieh R, Moldoveanu Z, Fast P, Forrest B, Koff W. A Phase I safety and immunogenicity trial of UBI microparticulate monovalent HIV-1 MN oral peptide immunogen with parenteral boost in HIV-1 seronegative human subjects. Vaccine. 2001 Apr 30;19(23-24):3033-42. doi: 10.1016/s0264-410x(01)00051-2."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

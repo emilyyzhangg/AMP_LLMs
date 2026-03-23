@@ -1,0 +1,362 @@
+{
+  "nct_id": "NCT01677104",
+  "completed_at": "2026-03-16 12:37:00 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01677104",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01677104",
+          "identifier": "NCT01677104",
+          "title": "The Microvascular Function of GLP-1 and Its Analogues in Humans, in Vivo: the Role of DPP-IV Inhibition",
+          "snippet": "Title: The Microvascular Function of GLP-1 and Its Analogues in Humans, in Vivo: the Role of DPP-IV Inhibition",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.905501"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01677104",
+          "identifier": "NCT01677104",
+          "title": "Brief Summary",
+          "snippet": "Incretins have become a successful drug target in the repertoire of medications used for the treatment of type 2 diabetes. However little is known about a potential benefit of GLP-1 on the vascular system in humans, independent of their glucose lowering actions and data are only derived from ex vivo studies in animals. Particularly little is known about clinically relevant benefits of GLP-1 and its analogues on the microvascular system of individuals with type 2 diabetes.\n\nThe vascular effect co",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.905505"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01677104",
+          "identifier": "NCT01677104",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.905508"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01677104",
+          "identifier": "NCT01677104",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 2 Diabetes, Obesity | Keywords: GLP-1, DPP-IV inhibitor, microcirculation, Exenatide, Liraglutide, Linagliptin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.905511"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01677104",
+          "identifier": "NCT01677104",
+          "title": "Intervention: GLP-1",
+          "snippet": "DRUG: GLP-1 - GLP-1 and its analogues will be compared with placebo with and without prior DPP-IV inhibition",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.905514"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01677104",
+          "identifier": "NCT01677104",
+          "title": "Intervention: Placebo",
+          "snippet": "DRUG: Placebo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.905517"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01677104",
+          "identifier": "NCT01677104",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.905519"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01677104",
+            "orgStudyIdInfo": {
+              "id": "11/SW/0195"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "1204620",
+                "type": "OTHER",
+                "domain": "Research and Development"
+              }
+            ],
+            "organization": {
+              "fullName": "Royal Devon and Exeter NHS Foundation Trust",
+              "class": "OTHER"
+            },
+            "briefTitle": "The Microvascular Function of GLP-1 and Its Analogues",
+            "officialTitle": "The Microvascular Function of GLP-1 and Its Analogues in Humans, in Vivo: the Role of DPP-IV Inhibition"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2017-04",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2012-08"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2014-07",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2014-07",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-08-29",
+            "studyFirstSubmitQcDate": "2012-08-30",
+            "studyFirstPostDateStruct": {
+              "date": "2012-08-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2017-04-12",
+            "lastUpdatePostDateStruct": {
+              "date": "2017-04-13",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR_INVESTIGATOR",
+              "investigatorFullName": "Katarina Kos",
+              "investigatorTitle": "Consultant Physician and Senior Lecturer",
+              "investigatorAffiliation": "Royal Devon and Exeter NHS Foundation Trust"
+            },
+            "leadSponsor": {
+              "name": "Katarina Kos",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "Diabetes UK",
+                "class": "OTHER"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": true
+          },
+          "descriptionModule": {
+            "briefSummary": "Incretins have become a successful drug target in the repertoire of medications used for the treatment of type 2 diabetes. However little is known about a potential benefit of GLP-1 on the vascular system in humans, independent of their glucose lowering actions and data are only derived from ex vivo studies in animals. Particularly little is known about clinically relevant benefits of GLP-1 and its analogues on the microvascular system of individuals with type 2 diabetes.\n\nThe vascular effect could be medicated by endogenous GLP-1 (9,36) amide, the breakdown product of GLP-1 (7,36) amide which has a low affinity for the GLP-1 receptor. The investigators hypothesis is that the co-administration of DPP-IV inhibitors will lack the beneficial effects of GLP-1 on the vascular system as GLP-1 (9,36) amide will not be produced by the body.\n\nThe study aims to examine the response of GLP-1 and its analogues on small blood vessels and examine the effect of the addition of DPP-IV inhibition in healthy lean individuals, obese individuals and subjects with Type 2 diabetes."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Type 2 Diabetes",
+              "Obesity"
+            ],
+            "keywords": [
+              "GLP-1",
+              "DPP-IV inhibitor",
+              "microcirculation",
+              "Exenatide",
+              "Liraglutide",
+              "Linagliptin"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "NA"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "CROSSOVER",
+              "primaryPurpose": "DIAGNOSTIC",
+              "maskingInfo": {
+                "masking": "TRIPLE",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "INVESTIGATOR",
+                  "OUTCOMES_ASSESSOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 63,
+              "type": "ESTIMATED"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "DPP-IV inhibitor",
+                "type": "ACTIVE_COMPARATOR",
+                "description": "Linagliptin 5mg (Tradjenta) before microinjection of GLP-1 and its analogues",
+                "interventionNames": [
+                  "Drug: GLP-1",
+                  "Drug: Placebo"
+                ]
+              },
+              {
+                "label": "Placebo pill",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "One placebo tablet before microinjection",
+                "interventionNames": [
+                  "Drug: GLP-1",
+                  "Drug: Placebo"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "GLP-1",
+                "description": "GLP-1 and its analogues will be compared with placebo with and without prior DPP-IV inhibition",
+                "armGroupLabels": [
+                  "DPP-IV inhibitor",
+                  "Placebo pill"
+                ],
+                "otherNames": [
+                  "native GLP-1(7,36)",
+                  "Exenatide (Byetta)",
+                  "Liraglutide (Vicotza)"
+                ]
+              },
+              {
+                "type": "DRUG",
+                "name": "Placebo",
+                "armGroupLabels": [
+                  "DPP-IV inhibitor",
+                  "Placebo pill"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "skin blood flow",
+                "description": "skin blood flow will be assessed before and after microinjection of GLP-1 or its analogues and the injection site monitored and compared to sites injected with placebo",
+                "timeFrame": "3 hours"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Lean BMI \u2264 25.0 kg/m2\n* Obese BMI \u226530.0kg/m2\n* Non diabetic subjects and subjects with Type 2 diabetes on stable medication for at least 3 months\n\nExclusion Criteria:\n\n* cardiovascular disease\n* Raynaud's disease\n* current treatment with any anti-hypertensive\n* lipid lowering therapies\n* severe hepatic impairment\n* pregnancy and lactation\n* subjects with Type 2 diabetes on insulin therapy\n* subjects with Type 2 diabetes on sulphonylureas\n* subjects with Type 2 diabetes on incretin based therapies\n* subjects with Type 2 diabetes and peripheral vascular disease\n* subjects with Type 2 diabetes and history of advanced retinopathy\n* subjects with Type 2 diabetes and advanced nephropathy\n* subjects with Type 2 diabetes with uncontrolled diabetes (HbA1c \\> 8.5%)",
+            "healthyVolunteers": true,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Katarina Kos, MD, PHD",
+                "affiliation": "Institue of Biomedical and Clinical Sciences, Peninsula Medical School, University of Exeter",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Diabetes and Vascular Center",
+                "city": "Exeter",
+                "zip": "EX2 5AX",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 50.7236,
+                  "lon": -3.52751
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "31203378",
+                "type": "DERIVED",
+                "citation": "Aung MM, Slade K, Freeman LAR, Kos K, Whatmore JL, Shore AC, Gooding KM. Locally delivered GLP-1 analogues liraglutide and exenatide enhance microvascular perfusion in individuals with and without type 2 diabetes. Diabetologia. 2019 Sep;62(9):1701-1711. doi: 10.1007/s00125-019-4918-x. Epub 2019 Jun 16."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01677104",
+      "citations": [
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/86e35b93ea65006d150dcf085bf0ba39265f5f2e",
+          "identifier": "PMID:31203378",
+          "title": "Locally delivered GLP-1 analogues liraglutide and exenatide enhance microvascular perfusion in individuals with and without type 2 diabetes",
+          "snippet": "Title: Locally delivered GLP-1 analogues liraglutide and exenatide enhance microvascular perfusion in individuals with and without type 2 diabetes\nVenue: Diabetologia (2019)\nCited by: 18\nAbstract: Aims/hypothesisGlucagon-like peptide-1 (GLP-1) analogues reduce the risk of macrovascular disease in diabetes; however, little is known about their microvascular effects. This research examined the microvascular actions of the GLP-1 analogues liraglutide and exenatide in individuals with and without type 2 diabetes (study 1). It also explored the involvement of the GLP-1 receptor (study 2) and the nitric oxide pathway in mediating the microvascular effects of the analogues.MethodsTrial design: S",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-16T19:36:46.988454"
+        }
+      ],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 1,
+        "semantic_scholar_total": 1
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01677104",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01677104",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01677104",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01677104",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01677104",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01677104",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

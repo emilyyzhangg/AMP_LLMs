@@ -1,0 +1,1114 @@
+{
+  "nct_id": "NCT00000795",
+  "metadata": {
+    "nct_id": "NCT00000795",
+    "title": "A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "HIV Infections"
+    ],
+    "interventions": [
+      "BIOLOGICAL: HIV-1 Peptide Immunogen, Multivalent"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.925,
+      "reasoning": "[Pass 1 extraction] Here are the extracted facts for each intervention:\n\n**Intervention 1: UBI Multivalent HIV-1 Peptide Immunogen**\n\n1. INTERVENTION NAME: UBI Multivalent HIV-1 Peptide Immunogen\n2. MOLECULAR CLASS: Short peptide chain (2-50 amino acids)\n3. DATABASE CONFIRMATION:\n\t* UniProt: entry found? No evidence found.\n\t* DRAMP/DBAASP: antimicrobial peptide database entry? No evidence found.\n\t* ChEMBL: molecule t\n[Pass 2 decision] Peptide: True\nReasoning:\n\nSTEP 1 \u2014 Is the Molecular Class a peptide?\nThe molecular class of the intervention is \"Short peptide chain (2-50 amino acids)\", which indicates that it is a peptide.\n\nSTEP 2 \u2014 Is the peptide the ACTIVE DRUG?\nThe Active Ingredient Role is listed as \"Active therapeutic agent\", indicating that the UBI Multivalent HIV-1 Peptide Immunogen is indeed an active drug. \n\nSTEP 3 \u2014 F",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715876"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Brief Summary",
+          "snippet": "To evaluate, in healthy adult volunteers, the safety and immunogenicity of multivalent HIV-1 peptide immunogen, a formulation of HIV-1 gp120 principal neutralizing domain (PND) branched synthetic peptides from 15 viral strains representative of diverse worldwide isolates.\n\nBecause there is considerable variation among HIV-1 virus strains from differing geographical locations worldwide, a multivalent peptide vaccine has been constructed to include prevalent and divergent isolates, potentially pro",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715887"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715895"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715904"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Intervention: HIV-1 Peptide Immunogen, Multivalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Immunogen, Multivalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715912"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/25371202/",
+          "identifier": "PMID:25371202",
+          "title": "Mechanism of multivalent nanoparticle encounter with HIV-1 for potency enhancement of peptide triazole virus inactivation.",
+          "snippet": "Title: Mechanism of multivalent nanoparticle encounter with HIV-1 for potency enhancement of peptide triazole virus inactivation.\nAuthors: Rosemary Bastian Arangassery, Nangarlia Aakansha, Bailey Lauren D et al.\nJournal: The Journal of biological chemistry (2015)\nAbstract: Entry of HIV-1 into host cells remains a compelling yet elusive target for developing agents to prevent infection. A peptide triazole (PT) class of entry inhibitor has previously been shown to bind to HIV-1 gp120, suppress interactions of the Env protein at host cell receptor binding sites, inhibit ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731112"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/38816615/",
+          "identifier": "PMID:38816615",
+          "title": "Vaccination induces broadly neutralizing antibody precursors to HIV gp41.",
+          "snippet": "Title: Vaccination induces broadly neutralizing antibody precursors to HIV gp41.\nAuthors: Schiffner Torben, Phung Ivy, Ray Rashmi et al.\nJournal: Nature immunology (2024)\nAbstract: A key barrier to the development of vaccines that induce broadly neutralizing antibodies (bnAbs) against human immunodeficiency virus (HIV) and other viruses of high antigenic diversity is the design of priming immunogens that induce rare bnAb-precursor B cells. The high neutralization breadth of th",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731155"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/12467718/",
+          "identifier": "PMID:12467718",
+          "title": "Carbohydrate-centered maleimide cluster as a new type of templates for multivalent peptide assembling. synthesis of multivalent HIV-1 gp41 peptides.",
+          "snippet": "Title: Carbohydrate-centered maleimide cluster as a new type of templates for multivalent peptide assembling. synthesis of multivalent HIV-1 gp41 peptides.\nAuthors: Wang Lai-Xi, Ni Jiahong, Singh Suddham\nJournal: Bioorganic & medicinal chemistry (2003)\nAbstract: This paper describes a facile synthesis of carbohydrate-centered maleimide clusters and their application as a new type of templates for multivalent peptide assembling. Simultaneous introduction of multiple maleimide functionalities onto a carbohydrate core was achieved through the reaction of carbo",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731166"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/33333740/",
+          "identifier": "PMID:33333740",
+          "title": "Virus-Like Particle Based Vaccines Elicit Neutralizing Antibodies against the HIV-1 Fusion Peptide.",
+          "snippet": "Title: Virus-Like Particle Based Vaccines Elicit Neutralizing Antibodies against the HIV-1 Fusion Peptide.\nAuthors: Mogus Alemu Tekewe, Liu Lihong, Jia Manxue et al.\nJournal: Vaccines (2020)\nAbstract: Broadly neutralizing antibodies (bnAbs) isolated from HIV-infected individuals delineate vulnerable sites on the HIV envelope glycoprotein that are potential vaccine targets. A linear epitope within the N-terminal region of the HIV-1 fusion peptide (FP8) is the primary target of VRC34.01, a bnAb tha",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731175"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/15955803/",
+          "identifier": "PMID:15955803",
+          "title": "Antigenic properties of peptide mimotopes of HIV-1-associated carbohydrate antigens.",
+          "snippet": "Title: Antigenic properties of peptide mimotopes of HIV-1-associated carbohydrate antigens.\nAuthors: Pashov Anastas, Canziani Gabriela, Monzavi-Karbassi Behjatolah et al.\nJournal: The Journal of biological chemistry (2005)\nAbstract: The glycan shield of the human immunodeficiency virus (HIV) envelope protein presents many potential epitopes for vaccine development. To augment immune responses to HIV, type 1 (HIV-1), envelope-associated carbohydrate antigens, we are defining peptide mimics of HIV-associated carbohydrate antigens",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731183"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.925,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: UBI Multivalent HIV-1 Peptide Immunogen; confirmed as a peptide. It consists of branched synthetic peptides derived from the gp120 principal neutralizing domain (PND) of 15 viral strains.\nDatabase Matches: No evidence found.\nMechanism: The peptide is designed to stimulate an immune response against HIV-1, specifically inducing broadly neutralizing antibodies and enhancing vaccine\n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\n- Peptide determination: True \u2192 Proceed to Step 2.\n\nStep 2 \u2014 Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?\n- Database Matches: No evidence found.\n- Mechanism: The peptide is designed to stimulate an immune response against HIV-1, specifically inducing broadly neutralizing antibodies and enhancing vac",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715876"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Brief Summary",
+          "snippet": "To evaluate, in healthy adult volunteers, the safety and immunogenicity of multivalent HIV-1 peptide immunogen, a formulation of HIV-1 gp120 principal neutralizing domain (PND) branched synthetic peptides from 15 viral strains representative of diverse worldwide isolates.\n\nBecause there is considerable variation among HIV-1 virus strains from differing geographical locations worldwide, a multivalent peptide vaccine has been constructed to include prevalent and divergent isolates, potentially pro",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715887"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715895"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715904"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Intervention: HIV-1 Peptide Immunogen, Multivalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Immunogen, Multivalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715912"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/25371202/",
+          "identifier": "PMID:25371202",
+          "title": "Mechanism of multivalent nanoparticle encounter with HIV-1 for potency enhancement of peptide triazole virus inactivation.",
+          "snippet": "Title: Mechanism of multivalent nanoparticle encounter with HIV-1 for potency enhancement of peptide triazole virus inactivation.\nAuthors: Rosemary Bastian Arangassery, Nangarlia Aakansha, Bailey Lauren D et al.\nJournal: The Journal of biological chemistry (2015)\nAbstract: Entry of HIV-1 into host cells remains a compelling yet elusive target for developing agents to prevent infection. A peptide triazole (PT) class of entry inhibitor has previously been shown to bind to HIV-1 gp120, suppress interactions of the Env protein at host cell receptor binding sites, inhibit ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731112"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/38816615/",
+          "identifier": "PMID:38816615",
+          "title": "Vaccination induces broadly neutralizing antibody precursors to HIV gp41.",
+          "snippet": "Title: Vaccination induces broadly neutralizing antibody precursors to HIV gp41.\nAuthors: Schiffner Torben, Phung Ivy, Ray Rashmi et al.\nJournal: Nature immunology (2024)\nAbstract: A key barrier to the development of vaccines that induce broadly neutralizing antibodies (bnAbs) against human immunodeficiency virus (HIV) and other viruses of high antigenic diversity is the design of priming immunogens that induce rare bnAb-precursor B cells. The high neutralization breadth of th",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731155"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/12467718/",
+          "identifier": "PMID:12467718",
+          "title": "Carbohydrate-centered maleimide cluster as a new type of templates for multivalent peptide assembling. synthesis of multivalent HIV-1 gp41 peptides.",
+          "snippet": "Title: Carbohydrate-centered maleimide cluster as a new type of templates for multivalent peptide assembling. synthesis of multivalent HIV-1 gp41 peptides.\nAuthors: Wang Lai-Xi, Ni Jiahong, Singh Suddham\nJournal: Bioorganic & medicinal chemistry (2003)\nAbstract: This paper describes a facile synthesis of carbohydrate-centered maleimide clusters and their application as a new type of templates for multivalent peptide assembling. Simultaneous introduction of multiple maleimide functionalities onto a carbohydrate core was achieved through the reaction of carbo",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731166"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/33333740/",
+          "identifier": "PMID:33333740",
+          "title": "Virus-Like Particle Based Vaccines Elicit Neutralizing Antibodies against the HIV-1 Fusion Peptide.",
+          "snippet": "Title: Virus-Like Particle Based Vaccines Elicit Neutralizing Antibodies against the HIV-1 Fusion Peptide.\nAuthors: Mogus Alemu Tekewe, Liu Lihong, Jia Manxue et al.\nJournal: Vaccines (2020)\nAbstract: Broadly neutralizing antibodies (bnAbs) isolated from HIV-infected individuals delineate vulnerable sites on the HIV envelope glycoprotein that are potential vaccine targets. A linear epitope within the N-terminal region of the HIV-1 fusion peptide (FP8) is the primary target of VRC34.01, a bnAb tha",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731175"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/15955803/",
+          "identifier": "PMID:15955803",
+          "title": "Antigenic properties of peptide mimotopes of HIV-1-associated carbohydrate antigens.",
+          "snippet": "Title: Antigenic properties of peptide mimotopes of HIV-1-associated carbohydrate antigens.\nAuthors: Pashov Anastas, Canziani Gabriela, Monzavi-Karbassi Behjatolah et al.\nJournal: The Journal of biological chemistry (2005)\nAbstract: The glycan shield of the human immunodeficiency virus (HIV) envelope protein presents many potential epitopes for vaccine development. To augment immune responses to HIV, type 1 (HIV-1), envelope-associated carbohydrate antigens, we are defining peptide mimics of HIV-associated carbohydrate antigens",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731183"
+        }
+      ],
+      "model_name": "qwen2.5:14b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.925,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n**Protocol Route:** Not specified\nThe ClinicalTrials.gov protocol does not mention the route of administration.\n\n**FDA/Label Route:** Not found\nThere is no FDA-approved label or prescribing information provided in the sources.\n\n**Literature Route:** Not found\nNone of the PubMed/PMC publications describe how this drug is administered. The abstracts and articles \n[Pass 2 classification] Delivery Mode: Injection/Infusion - Other/Unspecified\nEvidence: Most Specific Route\nReasoning: Based on the lack of specificity in all sources, including the ClinicalTrials.gov protocol, FDA-approved label or prescribing information, and PubMed/PMC publications, the most specific route that can be d",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715876"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Brief Summary",
+          "snippet": "To evaluate, in healthy adult volunteers, the safety and immunogenicity of multivalent HIV-1 peptide immunogen, a formulation of HIV-1 gp120 principal neutralizing domain (PND) branched synthetic peptides from 15 viral strains representative of diverse worldwide isolates.\n\nBecause there is considerable variation among HIV-1 virus strains from differing geographical locations worldwide, a multivalent peptide vaccine has been constructed to include prevalent and divergent isolates, potentially pro",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715887"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715895"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715904"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Intervention: HIV-1 Peptide Immunogen, Multivalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Immunogen, Multivalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715912"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/25371202/",
+          "identifier": "PMID:25371202",
+          "title": "Mechanism of multivalent nanoparticle encounter with HIV-1 for potency enhancement of peptide triazole virus inactivation.",
+          "snippet": "Title: Mechanism of multivalent nanoparticle encounter with HIV-1 for potency enhancement of peptide triazole virus inactivation.\nAuthors: Rosemary Bastian Arangassery, Nangarlia Aakansha, Bailey Lauren D et al.\nJournal: The Journal of biological chemistry (2015)\nAbstract: Entry of HIV-1 into host cells remains a compelling yet elusive target for developing agents to prevent infection. A peptide triazole (PT) class of entry inhibitor has previously been shown to bind to HIV-1 gp120, suppress interactions of the Env protein at host cell receptor binding sites, inhibit ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731112"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/38816615/",
+          "identifier": "PMID:38816615",
+          "title": "Vaccination induces broadly neutralizing antibody precursors to HIV gp41.",
+          "snippet": "Title: Vaccination induces broadly neutralizing antibody precursors to HIV gp41.\nAuthors: Schiffner Torben, Phung Ivy, Ray Rashmi et al.\nJournal: Nature immunology (2024)\nAbstract: A key barrier to the development of vaccines that induce broadly neutralizing antibodies (bnAbs) against human immunodeficiency virus (HIV) and other viruses of high antigenic diversity is the design of priming immunogens that induce rare bnAb-precursor B cells. The high neutralization breadth of th",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731155"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/12467718/",
+          "identifier": "PMID:12467718",
+          "title": "Carbohydrate-centered maleimide cluster as a new type of templates for multivalent peptide assembling. synthesis of multivalent HIV-1 gp41 peptides.",
+          "snippet": "Title: Carbohydrate-centered maleimide cluster as a new type of templates for multivalent peptide assembling. synthesis of multivalent HIV-1 gp41 peptides.\nAuthors: Wang Lai-Xi, Ni Jiahong, Singh Suddham\nJournal: Bioorganic & medicinal chemistry (2003)\nAbstract: This paper describes a facile synthesis of carbohydrate-centered maleimide clusters and their application as a new type of templates for multivalent peptide assembling. Simultaneous introduction of multiple maleimide functionalities onto a carbohydrate core was achieved through the reaction of carbo",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731166"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/33333740/",
+          "identifier": "PMID:33333740",
+          "title": "Virus-Like Particle Based Vaccines Elicit Neutralizing Antibodies against the HIV-1 Fusion Peptide.",
+          "snippet": "Title: Virus-Like Particle Based Vaccines Elicit Neutralizing Antibodies against the HIV-1 Fusion Peptide.\nAuthors: Mogus Alemu Tekewe, Liu Lihong, Jia Manxue et al.\nJournal: Vaccines (2020)\nAbstract: Broadly neutralizing antibodies (bnAbs) isolated from HIV-infected individuals delineate vulnerable sites on the HIV envelope glycoprotein that are potential vaccine targets. A linear epitope within the N-terminal region of the HIV-1 fusion peptide (FP8) is the primary target of VRC34.01, a bnAb tha",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731175"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/15955803/",
+          "identifier": "PMID:15955803",
+          "title": "Antigenic properties of peptide mimotopes of HIV-1-associated carbohydrate antigens.",
+          "snippet": "Title: Antigenic properties of peptide mimotopes of HIV-1-associated carbohydrate antigens.\nAuthors: Pashov Anastas, Canziani Gabriela, Monzavi-Karbassi Behjatolah et al.\nJournal: The Journal of biological chemistry (2005)\nAbstract: The glycan shield of the human immunodeficiency virus (HIV) envelope protein presents many potential epitopes for vaccine development. To augment immune responses to HIV, type 1 (HIV-1), envelope-associated carbohydrate antigens, we are defining peptide mimics of HIV-associated carbohydrate antigens",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731183"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.925,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n**Registry Status:** COMPLETED\n**Trial Phase:** PHASE1\n**Published Results:** \nMultiple publications discuss related topics, but none directly report results from this specific trial. However, one publication mentions a vaccine that induces broadly neutralizing antibody precursors to HIV gp41 (PMID:38816615). Another study discusses virus-like particle-based vaccines eliciting neutralizing antibodies against the HIV-1 fusion peptide (PMID:33333740).\n\n**Result \n[Pass 2 decision] Since the trial is in Phase I, completion alone does not necessarily indicate success. However, applying Heuristic H1, which states that Phase I trials that complete normally are typically \"Positive\", we can consider this outcome. Additionally, there is no evidence of failure or termination, and the trial's status on ClinicalTrials.gov suggests it was completed as intended. Furthermore, while there are no publications directly reporting results from this specific trial, Heuristic H4 suggests lea",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715876"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Brief Summary",
+          "snippet": "To evaluate, in healthy adult volunteers, the safety and immunogenicity of multivalent HIV-1 peptide immunogen, a formulation of HIV-1 gp120 principal neutralizing domain (PND) branched synthetic peptides from 15 viral strains representative of diverse worldwide isolates.\n\nBecause there is considerable variation among HIV-1 virus strains from differing geographical locations worldwide, a multivalent peptide vaccine has been constructed to include prevalent and divergent isolates, potentially pro",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715887"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715895"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715904"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Intervention: HIV-1 Peptide Immunogen, Multivalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Immunogen, Multivalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715912"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/25371202/",
+          "identifier": "PMID:25371202",
+          "title": "Mechanism of multivalent nanoparticle encounter with HIV-1 for potency enhancement of peptide triazole virus inactivation.",
+          "snippet": "Title: Mechanism of multivalent nanoparticle encounter with HIV-1 for potency enhancement of peptide triazole virus inactivation.\nAuthors: Rosemary Bastian Arangassery, Nangarlia Aakansha, Bailey Lauren D et al.\nJournal: The Journal of biological chemistry (2015)\nAbstract: Entry of HIV-1 into host cells remains a compelling yet elusive target for developing agents to prevent infection. A peptide triazole (PT) class of entry inhibitor has previously been shown to bind to HIV-1 gp120, suppress interactions of the Env protein at host cell receptor binding sites, inhibit ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731112"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/38816615/",
+          "identifier": "PMID:38816615",
+          "title": "Vaccination induces broadly neutralizing antibody precursors to HIV gp41.",
+          "snippet": "Title: Vaccination induces broadly neutralizing antibody precursors to HIV gp41.\nAuthors: Schiffner Torben, Phung Ivy, Ray Rashmi et al.\nJournal: Nature immunology (2024)\nAbstract: A key barrier to the development of vaccines that induce broadly neutralizing antibodies (bnAbs) against human immunodeficiency virus (HIV) and other viruses of high antigenic diversity is the design of priming immunogens that induce rare bnAb-precursor B cells. The high neutralization breadth of th",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731155"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/12467718/",
+          "identifier": "PMID:12467718",
+          "title": "Carbohydrate-centered maleimide cluster as a new type of templates for multivalent peptide assembling. synthesis of multivalent HIV-1 gp41 peptides.",
+          "snippet": "Title: Carbohydrate-centered maleimide cluster as a new type of templates for multivalent peptide assembling. synthesis of multivalent HIV-1 gp41 peptides.\nAuthors: Wang Lai-Xi, Ni Jiahong, Singh Suddham\nJournal: Bioorganic & medicinal chemistry (2003)\nAbstract: This paper describes a facile synthesis of carbohydrate-centered maleimide clusters and their application as a new type of templates for multivalent peptide assembling. Simultaneous introduction of multiple maleimide functionalities onto a carbohydrate core was achieved through the reaction of carbo",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731166"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/33333740/",
+          "identifier": "PMID:33333740",
+          "title": "Virus-Like Particle Based Vaccines Elicit Neutralizing Antibodies against the HIV-1 Fusion Peptide.",
+          "snippet": "Title: Virus-Like Particle Based Vaccines Elicit Neutralizing Antibodies against the HIV-1 Fusion Peptide.\nAuthors: Mogus Alemu Tekewe, Liu Lihong, Jia Manxue et al.\nJournal: Vaccines (2020)\nAbstract: Broadly neutralizing antibodies (bnAbs) isolated from HIV-infected individuals delineate vulnerable sites on the HIV envelope glycoprotein that are potential vaccine targets. A linear epitope within the N-terminal region of the HIV-1 fusion peptide (FP8) is the primary target of VRC34.01, a bnAb tha",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731175"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/15955803/",
+          "identifier": "PMID:15955803",
+          "title": "Antigenic properties of peptide mimotopes of HIV-1-associated carbohydrate antigens.",
+          "snippet": "Title: Antigenic properties of peptide mimotopes of HIV-1-associated carbohydrate antigens.\nAuthors: Pashov Anastas, Canziani Gabriela, Monzavi-Karbassi Behjatolah et al.\nJournal: The Journal of biological chemistry (2005)\nAbstract: The glycan shield of the human immunodeficiency virus (HIV) envelope protein presents many potential epitopes for vaccine development. To augment immune responses to HIV, type 1 (HIV-1), envelope-associated carbohydrate antigens, we are defining peptide mimics of HIV-associated carbohydrate antigens",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731183"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00000795",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial is evaluating a \"multivalent HIV-1 peptide immunogen\" which is explicitly stated to be composed of \"branched synthetic peptides\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial's focus is on evaluating the safety and immunogenicity of multivalent HIV-1 peptide immunogens, indicating that the primary intervention involves peptides. The use of \"peptide\" in this context refers to a class of molecules being tested for their ability to induce an immune response against HIV, which aligns with the definition provided in the critical rules.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The primary study drug in this trial is a multivalent HIV-1 peptide immunogen, which is a formulation of HIV-1 gp120 principal neutralizing domain (PND) branched synthetic peptides from 15 viral strains representative of diverse worldwide isolates. This meets the criteria for being a peptide therapeutic as it is a synthetic peptide designed to be used as a vaccine.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This trial focuses on vaccination, which aims to stimulate the body's own immune system to fight infection. The peptide itself does not directly kill HIV-1; it acts as a trigger for the immune response.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on the decision tree criteria provided, this trial does not involve a peptide that directly kills, lyses, or physically disrupts pathogens through its own biochemical action (AMP CORE TEST). Instead, it involves a vaccine formulation designed to induce an immune response against HIV by priming immunogens. Therefore, it falls under the category of 'Other' as it works by inducing antibodies rather than directly killing pathogens.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial is focused on a multivalent peptide immunogen for HIV prevention, which induces antibodies rather than directly killing or disrupting pathogens. Therefore, it does not meet the criteria of an antimicrobial peptide (AMP).",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "While the trial investigates a vaccine, the provided information lacks details about how the vaccine is delivered (e.g., injection, nasal spray, etc.).",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "Since there's no specific route mentioned in the metadata or any other source provided, we use 'Injection/Infusion - Other/Unspecified' as per the guidelines for when no source provides specificity about the route of administration.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The trial metadata only mentions that the peptide is administered to healthy adult volunteers, but does not specify the delivery mode. Similarly, the published results focus on the efficacy and mechanism of action of the peptide, without mentioning the route of administration. Therefore, based on the provided data, it cannot be determined with certainty whether the peptide is administered intramuscularly, subcutaneously, or via another method. As a result, 'Injection/Infusion - Other/Unspecified",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial status indicates completion, and the presence of publications like PMID:25371202 and PMID:38816615 suggest that the initial findings led to further research and development in the field. This aligns with Completion Heuristic H3.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The publications suggest that the multivalent HIV-1 peptide immunogen used in this trial was effective in enhancing vaccine potency and inducing broadly neutralizing antibodies against HIV, which are key goals for HIV vaccine development. This indicates a positive outcome for the trial.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial NCT00000795 is a Phase I safety and immunogenicity trial of a multivalent HIV-1 peptide immunogen. There are multiple published results that provide evidence of the success of this trial in terms of safety, immunogenicity, and inducing broadly neutralizing antibodies against HIV-1. These publications include PMID:25371202, PMID:38816615, PMID:12467718, PMID:33333740, and PMID:15955803. Therefore, the trial outcome is Positive.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00000795",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715876"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Brief Summary",
+          "snippet": "To evaluate, in healthy adult volunteers, the safety and immunogenicity of multivalent HIV-1 peptide immunogen, a formulation of HIV-1 gp120 principal neutralizing domain (PND) branched synthetic peptides from 15 viral strains representative of diverse worldwide isolates.\n\nBecause there is considerable variation among HIV-1 virus strains from differing geographical locations worldwide, a multivalent peptide vaccine has been constructed to include prevalent and divergent isolates, potentially pro",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715887"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715895"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715904"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Intervention: HIV-1 Peptide Immunogen, Multivalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Immunogen, Multivalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715912"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:03.715921"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00000795",
+            "orgStudyIdInfo": {
+              "id": "AVEG 017"
+            },
+            "organization": {
+              "fullName": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            },
+            "briefTitle": "A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+            "officialTitle": "A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2002-10",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "studyFirstSubmitDate": "1999-11-02",
+            "studyFirstSubmitQcDate": "2001-08-30",
+            "studyFirstPostDateStruct": {
+              "date": "2001-08-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2008-09-08",
+            "lastUpdatePostDateStruct": {
+              "date": "2008-09-09",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "To evaluate, in healthy adult volunteers, the safety and immunogenicity of multivalent HIV-1 peptide immunogen, a formulation of HIV-1 gp120 principal neutralizing domain (PND) branched synthetic peptides from 15 viral strains representative of diverse worldwide isolates.\n\nBecause there is considerable variation among HIV-1 virus strains from differing geographical locations worldwide, a multivalent peptide vaccine has been constructed to include prevalent and divergent isolates, potentially providing for wide coverage of geographically isolated epidemics.",
+            "detailedDescription": "Because there is considerable variation among HIV-1 virus strains from differing geographical locations worldwide, a multivalent peptide vaccine has been constructed to include prevalent and divergent isolates, potentially providing for wide coverage of geographically isolated epidemics.\n\nFourteen volunteers are entered at one of two dose levels of multivalent candidate vaccine. At each dose level, 12 volunteers receive vaccine and two receive placebo. At least eight volunteers at the low dose level must be monitored for 2 weeks before subsequent volunteers are entered at the high dose. Intramuscular injections are given on days 0, 28, and 168, and patients are followed for a minimum of 48 weeks after the initial immunization. Approximately 13 clinical visits are required."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections"
+            ],
+            "keywords": [
+              "Vaccines, Synthetic",
+              "HIV-1",
+              "AIDS Vaccines",
+              "HIV Seronegativity",
+              "HIV Preventive Vaccine"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "PREVENTION",
+              "maskingInfo": {
+                "masking": "DOUBLE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 28
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "HIV-1 Peptide Immunogen, Multivalent"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria\n\nSubjects must have:\n\n* Normal history and physical exam.\n* HIV negativity by ELISA within 8 weeks of immunization.\n* CD4 count \\>= 400 cells/mm3.\n* Normal urinalysis.\n\nExclusion Criteria\n\nCo-existing Condition:\n\nSubjects with the following symptoms or conditions are excluded:\n\n* Positive hepatitis B surface antigen.\n* Medical or psychiatric condition or occupational responsibilities that preclude study compliance.\n* Active syphilis. NOTE: Subjects whose serology is documented to be a false positive or due to a remote (\\> 6 months) treated infection are eligible.\n* Active tuberculosis. NOTE: Subjects with a positive PPD and normal chest x-ray showing no evidence of TB and not requiring isoniazid therapy are eligible.\n\nSubjects with the following prior conditions are excluded:\n\n* History of immunodeficiency, chronic illness, or autoimmune disease.\n* History of anaphylaxis or other serious reactions to vaccines.\n\nPrior Medication:\n\nExcluded:\n\n* History of immunosuppressive medications.\n* Live attenuated vaccines within 60 days prior to study entry (NOTE: Medically indicated subunit or killed vaccines, e.g., influenza or pneumococcal, are not exclusionary, but should not be given within 2 weeks of HIV immunization).\n* Experimental agents within 30 days prior to study entry.\n* Prior HIV vaccines.\n\nPrior Treatment:\n\nExcluded:\n\n* Blood products or immunoglobulin within the past 6 months.\n\nIdentifiable higher risk behavior for HIV infection, including the following:\n\n* History of injection drug use within the past 12 months.\n* Higher risk sexual behavior as defined by the AVEG.",
+            "healthyVolunteers": true,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "60 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Keefer M",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Johns Hopkins Univ / Ctr for Immunological Research",
+                "city": "Baltimore",
+                "state": "Maryland",
+                "zip": "21205",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.29038,
+                  "lon": -76.61219
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "8989424",
+                "type": "BACKGROUND",
+                "citation": "Kelleher AD, Emery S, Cunningham P, Duncombe C, Carr A, Golding H, Forde S, Hudson J, Roggensack M, Forrest BD, Cooper DA. Safety and immunogenicity of UBI HIV-1MN octameric V3 peptide vaccine administered by subcutaneous injection. AIDS Res Hum Retroviruses. 1997 Jan 1;13(1):29-32. doi: 10.1089/aid.1997.13.29."
+              },
+              {
+                "pmid": "9486388",
+                "type": "BACKGROUND",
+                "citation": "Evans TG, Fitzgerald T, Gibbons DC, Keefer MC, Soucier H. Th1/Th2 cytokine responses following HIV-1 immunization in seronegative volunteers. The AIDS Vaccine Evaluation Group. Clin Exp Immunol. 1998 Feb;111(2):243-50. doi: 10.1046/j.1365-2249.1998.00486.x."
+              },
+              {
+                "type": "BACKGROUND",
+                "citation": "Kahn J, Murcar N, Elbeik T, Staprans S, Hanson C, Mayer Y, Doyle R, Gonzalez L, Koff W. UBI HIV-1MN octameric V3 peptide vaccine in HIV-1 negative humans. Conf Adv AIDS Vaccine Dev. 1996 Feb 11-15:167 [Poster 47]"
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00000795",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/25371202/",
+          "identifier": "PMID:25371202",
+          "title": "Mechanism of multivalent nanoparticle encounter with HIV-1 for potency enhancement of peptide triazole virus inactivation.",
+          "snippet": "Title: Mechanism of multivalent nanoparticle encounter with HIV-1 for potency enhancement of peptide triazole virus inactivation.\nAuthors: Rosemary Bastian Arangassery, Nangarlia Aakansha, Bailey Lauren D et al.\nJournal: The Journal of biological chemistry (2015)\nAbstract: Entry of HIV-1 into host cells remains a compelling yet elusive target for developing agents to prevent infection. A peptide triazole (PT) class of entry inhibitor has previously been shown to bind to HIV-1 gp120, suppress interactions of the Env protein at host cell receptor binding sites, inhibit ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731112"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/38816615/",
+          "identifier": "PMID:38816615",
+          "title": "Vaccination induces broadly neutralizing antibody precursors to HIV gp41.",
+          "snippet": "Title: Vaccination induces broadly neutralizing antibody precursors to HIV gp41.\nAuthors: Schiffner Torben, Phung Ivy, Ray Rashmi et al.\nJournal: Nature immunology (2024)\nAbstract: A key barrier to the development of vaccines that induce broadly neutralizing antibodies (bnAbs) against human immunodeficiency virus (HIV) and other viruses of high antigenic diversity is the design of priming immunogens that induce rare bnAb-precursor B cells. The high neutralization breadth of th",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731155"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/12467718/",
+          "identifier": "PMID:12467718",
+          "title": "Carbohydrate-centered maleimide cluster as a new type of templates for multivalent peptide assembling. synthesis of multivalent HIV-1 gp41 peptides.",
+          "snippet": "Title: Carbohydrate-centered maleimide cluster as a new type of templates for multivalent peptide assembling. synthesis of multivalent HIV-1 gp41 peptides.\nAuthors: Wang Lai-Xi, Ni Jiahong, Singh Suddham\nJournal: Bioorganic & medicinal chemistry (2003)\nAbstract: This paper describes a facile synthesis of carbohydrate-centered maleimide clusters and their application as a new type of templates for multivalent peptide assembling. Simultaneous introduction of multiple maleimide functionalities onto a carbohydrate core was achieved through the reaction of carbo",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731166"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/33333740/",
+          "identifier": "PMID:33333740",
+          "title": "Virus-Like Particle Based Vaccines Elicit Neutralizing Antibodies against the HIV-1 Fusion Peptide.",
+          "snippet": "Title: Virus-Like Particle Based Vaccines Elicit Neutralizing Antibodies against the HIV-1 Fusion Peptide.\nAuthors: Mogus Alemu Tekewe, Liu Lihong, Jia Manxue et al.\nJournal: Vaccines (2020)\nAbstract: Broadly neutralizing antibodies (bnAbs) isolated from HIV-infected individuals delineate vulnerable sites on the HIV envelope glycoprotein that are potential vaccine targets. A linear epitope within the N-terminal region of the HIV-1 fusion peptide (FP8) is the primary target of VRC34.01, a bnAb tha",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731175"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/15955803/",
+          "identifier": "PMID:15955803",
+          "title": "Antigenic properties of peptide mimotopes of HIV-1-associated carbohydrate antigens.",
+          "snippet": "Title: Antigenic properties of peptide mimotopes of HIV-1-associated carbohydrate antigens.\nAuthors: Pashov Anastas, Canziani Gabriela, Monzavi-Karbassi Behjatolah et al.\nJournal: The Journal of biological chemistry (2005)\nAbstract: The glycan shield of the human immunodeficiency virus (HIV) envelope protein presents many potential epitopes for vaccine development. To augment immune responses to HIV, type 1 (HIV-1), envelope-associated carbohydrate antigens, we are defining peptide mimics of HIV-associated carbohydrate antigens",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:30:11.731183"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "pubmed_fallback_query": "HIV-1 Peptide Immunogen, Multivalent",
+        "pubmed_fallback_ids": [
+          "25371202",
+          "38816615",
+          "12467718",
+          "33333740",
+          "15955803"
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00000795",
+      "citations": [],
+      "raw_data": {
+        "uniprot_HIV-1 Peptide Immunogen, Multivalent": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00000795",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "Study Details | NCT00000795 | A Phase I Safety and Immunogenicity Trial ...",
+          "snippet": "Web result for: NCT00000795",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-03-19T08:30:05.704020"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://cdek.pharmacy.purdue.edu/trial/NCT00000795/",
+          "identifier": "NCT00000795",
+          "title": "Trial | NCT00000795",
+          "snippet": "Web result for: NCT00000795",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-03-19T08:30:05.704026"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://trial.medpath.com/clinical-trial/0c21b4b3af1854cb/nct00000795-safety-immunogenicity-trial-ubi-hiv-1-peptide-immunogen",
+          "identifier": "NCT00000795",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 ...",
+          "snippet": "Web result for: NCT00000795",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-03-19T08:30:05.704030"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ichgcp.net/clinical-trials-registry/NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "HIV-1 Peptide Immunogen, Multivalent in HIV Infections - ICH GCP",
+          "snippet": "Web result for: NCT00000795",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-03-19T08:30:05.704033"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://synapse.zhihuiya.com/drug/9faa339ae2d44f638ecff25651103706",
+          "identifier": "NCT00000795",
+          "title": "Multivalent HIV-1 peptide immunogen vaccine: \u836f\u7269\u9776\u70b9\uff0c\u9002\u5e94\u75c7\uff0c\u4e13\u5229 - \u667a\u6167\u82bd\u65b0\u836f\u60c5\u62a5\u5e93",
+          "snippet": "Web result for: NCT00000795",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-03-19T08:30:05.704036"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 23917
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00000795",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_HIV-1 Peptide Immunogen, Multivalent": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00000795",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2369717/",
+          "identifier": "CHEMBL2369717",
+          "title": "CHEMBL2369717 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2369717\nType: Unknown\nMolecular weight: 1587.92\nBioactivity: IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease); IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:30:11.627863"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3672477/",
+          "identifier": "CHEMBL3672477",
+          "title": "CHEMBL3672477 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3672477\nType: Small molecule\nMolecular weight: 317.28\nBioactivity: IC50=58700.0 nM (Gag-Pol polyprotein)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:30:14.832796"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1161331/",
+          "identifier": "CHEMBL1161331",
+          "title": "CHEMBL1161331 - ChEMBL",
+          "snippet": "Molecule: CHEMBL1161331\nType: Small molecule\nMolecular weight: 1197.41\nBioactivity: IC50=10000.0 nM (Somatostatin receptor type 1); IC50=1000.0 nM (Somatostatin receptor type 2); IC50=1000.0 nM (Somatostatin receptor type 3); IC50=56.0 nM (Somatostatin receptor type 4); IC50=1000.0 nM (Somatostatin receptor type 5)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:30:17.692206"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'HIV-1 Peptide Immunogen, Multivalent'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00000795",
+      "citations": [],
+      "raw_data": {
+        "rcsb_HIV-1 Peptide Immunogen, Multivalent": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00000795",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_HIV-1 Peptide Immunogen, Multivalent_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00000795",
+      "citations": [],
+      "raw_data": {
+        "apd_HIV-1 Peptide Immunogen, Multivalent": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00000795",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00000795",
+          "identifier": "NCT00000795",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: HIV Infections\nInterventions: Biological: HIV-1 Peptide Immunogen, Multivalent\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-19T08:30:19.108328"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00000795",
+          "public_title": "A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "scientific_title": "A Phase I Safety and Immunogenicity Trial of UBI Multivalent HIV-1 Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Endpoint Classification: Safety Study, Masking: Double-Blind, Primary Purpose: Prevention",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "HIV Infections"
+          ],
+          "interventions": [
+            "Biological: HIV-1 Peptide Immunogen, Multivalent"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00000795",
+      "citations": [],
+      "raw_data": {
+        "iuphar_HIV-1 Peptide Immunogen, Multivalent": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00000795",
+      "citations": [],
+      "raw_data": {
+        "pdbe_HIV-1 Peptide Immunogen, Multivalent_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.9
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.4
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

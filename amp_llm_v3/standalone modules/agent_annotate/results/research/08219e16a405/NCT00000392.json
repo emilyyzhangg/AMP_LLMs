@@ -1,0 +1,346 @@
+{
+  "nct_id": "NCT00000392",
+  "completed_at": "2026-03-16 12:36:30 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00000392",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000392",
+          "identifier": "NCT00000392",
+          "title": "Phase II Study of the Efficacy of Peptide T in HIV-Positive Individuals With Cognitive Impairment.",
+          "snippet": "Title: Phase II Study of the Efficacy of Peptide T in HIV-Positive Individuals With Cognitive Impairment.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.980740"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000392",
+          "identifier": "NCT00000392",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the chemical efficacy and safety of intranasally administered peptide T on neurocognitive function in HIV seropositive individuals.\n\nPrevious studies have shown that treatment with peptide T can result in cognitive improvement in HIV-infected patients.\n\nPatients are randomized to receive either peptide T or placebo for the first 6 months. All patients then receive open-label peptide T for approximately 6 additional months. Neuropsychologic tests are used to determine drug effects.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.980761"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000392",
+          "identifier": "NCT00000392",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.980768"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000392",
+          "identifier": "NCT00000392",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections, Cognition Disorders | Keywords: Acquired Immunodeficiency Syndrome, AIDS-Related Complex",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.980776"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000392",
+          "identifier": "NCT00000392",
+          "title": "Intervention: Peptide T",
+          "snippet": "DRUG: Peptide T",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.980782"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000392",
+          "identifier": "NCT00000392",
+          "title": "Intervention: Placebo",
+          "snippet": "DRUG: Placebo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.980788"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000392",
+          "identifier": "NCT00000392",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.980794"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00000392",
+            "orgStudyIdInfo": {
+              "id": "N01 MH00013"
+            },
+            "organization": {
+              "fullName": "National Institute of Mental Health (NIMH)",
+              "class": "NIH"
+            },
+            "briefTitle": "Phase II Study of the Efficacy of Peptide T in HIV-Positive Individuals With Cognitive Impairment.",
+            "officialTitle": "Phase II Study of the Efficacy of Peptide T in HIV-Positive Individuals With Cognitive Impairment."
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2013-10",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "1990-01"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "1996-08",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "1996-08",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2000-01-17",
+            "studyFirstSubmitQcDate": "2000-01-17",
+            "studyFirstPostDateStruct": {
+              "date": "2000-01-18",
+              "type": "ESTIMATED"
+            },
+            "resultsFirstSubmitDate": "2015-07-17",
+            "resultsFirstSubmitQcDate": "2015-07-29",
+            "resultsFirstPostDateStruct": {
+              "date": "2015-08-04",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2017-02-27",
+            "lastUpdatePostDateStruct": {
+              "date": "2017-02-28",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "National Institute of Mental Health (NIMH)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "To evaluate the chemical efficacy and safety of intranasally administered peptide T on neurocognitive function in HIV seropositive individuals.\n\nPrevious studies have shown that treatment with peptide T can result in cognitive improvement in HIV-infected patients.\n\nPatients are randomized to receive either peptide T or placebo for the first 6 months. All patients then receive open-label peptide T for approximately 6 additional months. Neuropsychologic tests are used to determine drug effects."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections",
+              "Cognition Disorders"
+            ],
+            "keywords": [
+              "Acquired Immunodeficiency Syndrome",
+              "AIDS-Related Complex"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "DOUBLE",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "CARE_PROVIDER"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 215,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Peptide T",
+                "type": "ACTIVE_COMPARATOR",
+                "description": "Peptide T given intranasally at a dosage of 2mg 3 times a day for 6 months",
+                "interventionNames": [
+                  "Drug: Peptide T"
+                ]
+              },
+              {
+                "label": "Placebo",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "Placebo given intranasally at a dosage of 2mg 3 times a day for 6 months",
+                "interventionNames": [
+                  "Drug: Placebo"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Peptide T",
+                "armGroupLabels": [
+                  "Peptide T"
+                ]
+              },
+              {
+                "type": "DRUG",
+                "name": "Placebo",
+                "armGroupLabels": [
+                  "Placebo"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Change in Global Neurocognitive Performance z Score From Baseline",
+                "description": "Higher values for change in z-score represent an improvement in Neurocognitive Performance (NP)",
+                "timeFrame": "Baseline and 6 months"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Change in Neurocognitive Performance Domain z Scores From Baseline",
+                "description": "Higher values for change in z-score represent an improvement in Neurocognitive Performance (NP)",
+                "timeFrame": "Baseline and 6 months"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Patients must have:\n\n  1. Cognitive dysfunction on neuropsychological testing.\n  2. HIV antibody positivity.\n  3. Expected survival of 6 months.\n  4. EITHER no use of an antiretroviral within the past 4 weeks OR use of approved regimens of AZT, ddI, or ddC.\n  5. Medically stable EKG and urinalysis.\n  6. Given informed, written consent to participate.\n* Allowed:\n\n  1. Inhaled aerosolized pentamidine for Pneumocystis carinii pneumonia prophylaxis, dapsone, cotrimoxazole, topical antifungal agents, nystatin or ketoconazole, acyclovir.\n  2. Amitriptyline (up to 50 mg/day) or an equivalent dose of another antidepressant for relief of peripheral neuropathy that is expected to remain unchanged throughout the first 6 months of the study.\n* Abstinence or agree to use barrier methods of birth control / contraception during the study\n* Negative pregnancy test within 30 days of study entry\n* Bilirubin \\<= 3\n* CD4 (Must be \\<= 500 cells/mm3 if patient is without non-cognitive HIV-related symptoms. CD4 count \\> 500 cells/mm3 allowed if patient has other (non-cognitive) HIV-related symptoms. ( 0 - 100 - 200 - 300 - 400 - 500 - 600 - 700 - 800 plus.)\n* Creatinine \\<= 1.5 mg/dl\n* Granulocytes \\>= 750\n* Hemoglobin \\> 8 g/dl (No more than two transfusions per month permitted.)\n* Other Lab Values Prothrombin time \\> 70 percent of control.\n* Platelet Count \\>= 75000 /mm3\n* SGOT(AST) \\< 5 x ULN (ULN = upper limit of normal).\n\nExclusion Criteria:\n\n* Patients with the following are excluded:\n\n  1. History of mental retardation or learning disability.\n  2. Evidence of current DSM-III-R Axis I disorder within 3 months prior to study entry or past history of psychotic disorder or bipolar mania.\n  3. History of neurologic disorder not secondary to HIV infection (e.g., head trauma requiring medical observation or hospitalization, seizure disorder).\n* Patients with the following symptoms or conditions are excluded:\n\n  1. Kaposi's sarcoma or other malignancy likely to require chemotherapy during the first 6 months of the study.\n  2. Serious underlying medical problems that may complicate interpretation of the treatment results, including unstable diabetes mellitus, severe arteriosclerotic heart disease, uncontrolled hypertension, or hepatic or renal failure.\n  3. Non-HIV related condition that is likely to interfere with interpretation of neuropsychologic test results.\n  4. Inability to participate in neuropsychologic testing or unable to comply with intranasal study medication administration.\n* Excluded within 4 weeks prior to study entry:\n\n  1. Antiretrovirals except as allowed in the Patient Inclusion Criteria.\n  2. Psychoactive agents (e.g., benzodiazepines, antidepressants, antipsychotics, amphetamines)\n\nExcluded within 8 weeks prior to study entry:\n\nLong-acting psychoactive agents (e.g., Prozac).\n\n* Active alcohol abuse in the past 3 months, or abuse judged by the investigators as likely to interfere with the analyses of neuropsychologic function. Abuse of cocaine, marijuana, heroin or other opiates (including methadone), barbiturates, amphetamines or other substances within the past 3 months, judged by the investigators as likely to interfere with the analyses of neuropsychologic tests.\n* Positive pregnancy test within 30 days of study entry\n* No abstinence or no agreement to use barrier methods of birth control / contraception during the study",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "60 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "facility": "Los Angeles County - USC Med Ctr",
+                "city": "Los Angeles",
+                "state": "California",
+                "zip": "90033",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.05223,
+                  "lon": -118.24368
+                }
+              },
+              {
+                "facility": "UCSD",
+                "city": "San Diego",
+                "state": "California",
+                "zip": "92103",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.71571,
+                  "lon": -117.16472
+                }
+              },
+              {
+                "facility": "Univ of Miami School of Medicine",
+                "city": "Miami",
+                "state": "Florida",
+                "zip": "33136",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 25.77427,
+                  "lon": -80.19366
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "9443710",
+                "type": "BACKGROUND",
+                "citation": "Heseltine PN, Goodkin K, Atkinson JH, Vitiello B, Rochon J, Heaton RK, Eaton EM, Wilkie FL, Sobel E, Brown SJ, Feaster D, Schneider L, Goldschmidts WL, Stover ES. Randomized double-blind placebo-controlled trial of peptide T for HIV-associated cognitive impairment. Arch Neurol. 1998 Jan;55(1):41-51. doi: 10.1001/archneur.55.1.41."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00000392",
+      "citations": [],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00000392",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00000392",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00000392",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00000392",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00000392",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00000392",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

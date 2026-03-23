@@ -1,0 +1,1930 @@
+{
+  "nct_id": "NCT00078338",
+  "metadata": {
+    "nct_id": "NCT00078338",
+    "title": "Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis",
+    "phase": "PHASE4",
+    "status": "COMPLETED",
+    "conditions": [
+      "Relapsing-remitting Multiple Sclerosis"
+    ],
+    "interventions": [
+      "DRUG: Rebif\u00ae",
+      "DRUG: Copaxone\u00ae"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.915,
+      "reasoning": "The primary intervention in this clinical trial is Rebif, which contains the recombinant protein Interferon beta-1a. According to UniProt, Interferon beta-1a consists of 165 amino acids, making it a peptide therapeutic.",
+      "evidence": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/18789766/",
+          "identifier": "PMID:18789766",
+          "title": "Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial.",
+          "snippet": "Title: Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial.\nAuthors: Mikol Daniel D, Barkhof Frederik, Chang Peter et al.\nJournal: The Lancet. Neurology (2008)\nAbstract: BACKGROUND: Interferon beta-1a and glatiramer acetate are commonly prescribed for relapsing-remitting multiple sclerosis (RRMS), but no published randomised trials have directly compared these two drugs. Our aim in the REGARD (REbif vs Glatiramer Acetate in Relapsing MS Disease) study was to compare interferon beta-1a with glatiramer acetate in patients with RRMS. METHODS: In this multicentre, randomised, comparative, parallel-group, open-label study, patients with RRMS diagnosed with the McDona",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-16T19:36:39.461157"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10687854/",
+          "identifier": "PMC:10687854",
+          "title": "Adverse effects of immunotherapies for multiple sclerosis: a network meta-analysis.",
+          "snippet": "Title: Adverse effects of immunotherapies for multiple sclerosis: a network meta-analysis.\nAuthors: Tramacere I, Virgili G, Perduca V et al.\nJournal: Cochrane Database Syst Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.400998"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11460132/",
+          "identifier": "PMC:11460132",
+          "title": "Brain volume loss in relapsing multiple sclerosis: indirect treatment comparisons of available disease-modifying therapies.",
+          "snippet": "Title: Brain volume loss in relapsing multiple sclerosis: indirect treatment comparisons of available disease-modifying therapies.\nAuthors: Zivadinov R, Keenan AJ, Le HH et al.\nJournal: BMC Neurol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.401082"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4464731/",
+          "identifier": "PMC:4464731",
+          "title": "Pharmacological Approaches to Delaying Disability Progression in Patients with Multiple Sclerosis.",
+          "snippet": "Title: Pharmacological Approaches to Delaying Disability Progression in Patients with Multiple Sclerosis.\nAuthors: Wiendl H, Meuth SG\nJournal: Drugs",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.401109"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis",
+          "snippet": "Title: Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890484"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Brief Summary",
+          "snippet": "The primary objective of the study is to assess the clinical efficacy of Rebif\u00ae 44 microgram (mcg) three times per week compared with Copaxone\u00ae 20 milligram (mg) daily in subjects with relapsing Multiple Sclerosis.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890489"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890493"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Relapsing-remitting Multiple Sclerosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890496"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Intervention: Rebif\u00ae",
+          "snippet": "DRUG: Rebif\u00ae - Subjects will be administered with Rebif\u00ae (Recombinant interferon beta-1a) as subcutaneous (SC) injection at a dose of 44 microgram (mcg) three times weekly (tiw).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890500"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Intervention: Copaxone\u00ae",
+          "snippet": "DRUG: Copaxone\u00ae - Subjects will be administered with Copaxone\u00ae (Glatiramer acetate) as subcutaneous (SC) injection at a dose of 20 milligram (mg) once daily (qd).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890503"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.925,
+      "reasoning": "[Peptide cascade: re-classified after peptide flipped True\u2192False] [Pass 1 extraction] Peptide Identity: False (The intervention is not a peptide but rather recombinant interferon beta-1a and glatiramer acetate.)\nDatabase Matches: No evidence found\nMechanism: No evidence found\nTherapeutic Target: Relapsing-remitting Multiple Sclerosis\nImmune Direction: No evidence found\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is not a peptide (Peptide determination = False). Therefore, it does not meet the criteria for being an AMP or any other peptide-related classification.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis",
+          "snippet": "Title: Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890484"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Brief Summary",
+          "snippet": "The primary objective of the study is to assess the clinical efficacy of Rebif\u00ae 44 microgram (mcg) three times per week compared with Copaxone\u00ae 20 milligram (mg) daily in subjects with relapsing Multiple Sclerosis.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890489"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890493"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Relapsing-remitting Multiple Sclerosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890496"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Intervention: Rebif\u00ae",
+          "snippet": "DRUG: Rebif\u00ae - Subjects will be administered with Rebif\u00ae (Recombinant interferon beta-1a) as subcutaneous (SC) injection at a dose of 44 microgram (mcg) three times weekly (tiw).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890500"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Intervention: Copaxone\u00ae",
+          "snippet": "DRUG: Copaxone\u00ae - Subjects will be administered with Copaxone\u00ae (Glatiramer acetate) as subcutaneous (SC) injection at a dose of 20 milligram (mg) once daily (qd).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890503"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Phase",
+          "snippet": "Phase: PHASE4",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890506"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/18789766/",
+          "identifier": "PMID:18789766",
+          "title": "Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial.",
+          "snippet": "Title: Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial.\nAuthors: Mikol Daniel D, Barkhof Frederik, Chang Peter et al.\nJournal: The Lancet. Neurology (2008)\nAbstract: BACKGROUND: Interferon beta-1a and glatiramer acetate are commonly prescribed for relapsing-remitting multiple sclerosis (RRMS), but no published randomised trials have directly compared these two drugs. Our aim in the REGARD (REbif vs Glatiramer Acetate in Relapsing MS Disease) study was to compare interferon beta-1a with glatiramer acetate in patients with RRMS. METHODS: In this multicentre, randomised, comparative, parallel-group, open-label study, patients with RRMS diagnosed with the McDona",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-16T19:36:39.461157"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10687854/",
+          "identifier": "PMC:10687854",
+          "title": "Adverse effects of immunotherapies for multiple sclerosis: a network meta-analysis.",
+          "snippet": "Title: Adverse effects of immunotherapies for multiple sclerosis: a network meta-analysis.\nAuthors: Tramacere I, Virgili G, Perduca V et al.\nJournal: Cochrane Database Syst Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.400998"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11460132/",
+          "identifier": "PMC:11460132",
+          "title": "Brain volume loss in relapsing multiple sclerosis: indirect treatment comparisons of available disease-modifying therapies.",
+          "snippet": "Title: Brain volume loss in relapsing multiple sclerosis: indirect treatment comparisons of available disease-modifying therapies.\nAuthors: Zivadinov R, Keenan AJ, Le HH et al.\nJournal: BMC Neurol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.401082"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Subcutaneous/Intradermal",
+      "confidence": 0.925,
+      "reasoning": "The protocol explicitly states that Rebif is administered via \"subcutaneous (SC) injection\", which falls under the category of Injection/Infusion - Subcutaneous/Intradermal.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis",
+          "snippet": "Title: Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890484"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Brief Summary",
+          "snippet": "The primary objective of the study is to assess the clinical efficacy of Rebif\u00ae 44 microgram (mcg) three times per week compared with Copaxone\u00ae 20 milligram (mg) daily in subjects with relapsing Multiple Sclerosis.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890489"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890493"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Relapsing-remitting Multiple Sclerosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890496"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Intervention: Rebif\u00ae",
+          "snippet": "DRUG: Rebif\u00ae - Subjects will be administered with Rebif\u00ae (Recombinant interferon beta-1a) as subcutaneous (SC) injection at a dose of 44 microgram (mcg) three times weekly (tiw).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890500"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Intervention: Copaxone\u00ae",
+          "snippet": "DRUG: Copaxone\u00ae - Subjects will be administered with Copaxone\u00ae (Glatiramer acetate) as subcutaneous (SC) injection at a dose of 20 milligram (mg) once daily (qd).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890503"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Phase",
+          "snippet": "Phase: PHASE4",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890506"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/18789766/",
+          "identifier": "PMID:18789766",
+          "title": "Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial.",
+          "snippet": "Title: Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial.\nAuthors: Mikol Daniel D, Barkhof Frederik, Chang Peter et al.\nJournal: The Lancet. Neurology (2008)\nAbstract: BACKGROUND: Interferon beta-1a and glatiramer acetate are commonly prescribed for relapsing-remitting multiple sclerosis (RRMS), but no published randomised trials have directly compared these two drugs. Our aim in the REGARD (REbif vs Glatiramer Acetate in Relapsing MS Disease) study was to compare interferon beta-1a with glatiramer acetate in patients with RRMS. METHODS: In this multicentre, randomised, comparative, parallel-group, open-label study, patients with RRMS diagnosed with the McDona",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-16T19:36:39.461157"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10687854/",
+          "identifier": "PMC:10687854",
+          "title": "Adverse effects of immunotherapies for multiple sclerosis: a network meta-analysis.",
+          "snippet": "Title: Adverse effects of immunotherapies for multiple sclerosis: a network meta-analysis.\nAuthors: Tramacere I, Virgili G, Perduca V et al.\nJournal: Cochrane Database Syst Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.400998"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11460132/",
+          "identifier": "PMC:11460132",
+          "title": "Brain volume loss in relapsing multiple sclerosis: indirect treatment comparisons of available disease-modifying therapies.",
+          "snippet": "Title: Brain volume loss in relapsing multiple sclerosis: indirect treatment comparisons of available disease-modifying therapies.\nAuthors: Zivadinov R, Keenan AJ, Le HH et al.\nJournal: BMC Neurol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.401082"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.925,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE4\nPublished Results:\n* The Lancet Neurology (2008): \"Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial.\" \n\t+ The study found that interferon beta-1a was non-inferior to glatiramer acetate in reducing the risk of relapse.\n* Co\n[Pass 2 decision] The trial was completed and had a positive result. According to the decision tree, for COMPLETED or UNKNOWN status, we check published literature. Since the published results show POSITIVE findings (the study found that interferon beta-1a was non-inferior to glatiramer acetate in reducing the risk of relapse), the outcome is \"Positive\". The Result Valence also says \"POSITIVE\", which further supports this decision.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis",
+          "snippet": "Title: Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890484"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Brief Summary",
+          "snippet": "The primary objective of the study is to assess the clinical efficacy of Rebif\u00ae 44 microgram (mcg) three times per week compared with Copaxone\u00ae 20 milligram (mg) daily in subjects with relapsing Multiple Sclerosis.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890489"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890493"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Relapsing-remitting Multiple Sclerosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890496"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Intervention: Rebif\u00ae",
+          "snippet": "DRUG: Rebif\u00ae - Subjects will be administered with Rebif\u00ae (Recombinant interferon beta-1a) as subcutaneous (SC) injection at a dose of 44 microgram (mcg) three times weekly (tiw).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890500"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Intervention: Copaxone\u00ae",
+          "snippet": "DRUG: Copaxone\u00ae - Subjects will be administered with Copaxone\u00ae (Glatiramer acetate) as subcutaneous (SC) injection at a dose of 20 milligram (mg) once daily (qd).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890503"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Phase",
+          "snippet": "Phase: PHASE4",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890506"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/18789766/",
+          "identifier": "PMID:18789766",
+          "title": "Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial.",
+          "snippet": "Title: Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial.\nAuthors: Mikol Daniel D, Barkhof Frederik, Chang Peter et al.\nJournal: The Lancet. Neurology (2008)\nAbstract: BACKGROUND: Interferon beta-1a and glatiramer acetate are commonly prescribed for relapsing-remitting multiple sclerosis (RRMS), but no published randomised trials have directly compared these two drugs. Our aim in the REGARD (REbif vs Glatiramer Acetate in Relapsing MS Disease) study was to compare interferon beta-1a with glatiramer acetate in patients with RRMS. METHODS: In this multicentre, randomised, comparative, parallel-group, open-label study, patients with RRMS diagnosed with the McDona",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-16T19:36:39.461157"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10687854/",
+          "identifier": "PMC:10687854",
+          "title": "Adverse effects of immunotherapies for multiple sclerosis: a network meta-analysis.",
+          "snippet": "Title: Adverse effects of immunotherapies for multiple sclerosis: a network meta-analysis.\nAuthors: Tramacere I, Virgili G, Perduca V et al.\nJournal: Cochrane Database Syst Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.400998"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11460132/",
+          "identifier": "PMC:11460132",
+          "title": "Brain volume loss in relapsing multiple sclerosis: indirect treatment comparisons of available disease-modifying therapies.",
+          "snippet": "Title: Brain volume loss in relapsing multiple sclerosis: indirect treatment comparisons of available disease-modifying therapies.\nAuthors: Zivadinov R, Keenan AJ, Le HH et al.\nJournal: BMC Neurol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.401082"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.8,
+      "reasoning": "[Pass 1] No failure detected. Here is the extracted information:\n\n1. TRIAL STATUS: COMPLETED\n2. WHY STOPPED: Not provided\n3. PUBLISHED FINDINGS:\nThe Lancet Neurology paper (PMID:18789766) reports on the results of the REGARD study, which compared subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing ",
+      "evidence": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/18789766/",
+          "identifier": "PMID:18789766",
+          "title": "Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial.",
+          "snippet": "Title: Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial.\nAuthors: Mikol Daniel D, Barkhof Frederik, Chang Peter et al.\nJournal: The Lancet. Neurology (2008)\nAbstract: BACKGROUND: Interferon beta-1a and glatiramer acetate are commonly prescribed for relapsing-remitting multiple sclerosis (RRMS), but no published randomised trials have directly compared these two drugs. Our aim in the REGARD (REbif vs Glatiramer Acetate in Relapsing MS Disease) study was to compare interferon beta-1a with glatiramer acetate in patients with RRMS. METHODS: In this multicentre, randomised, comparative, parallel-group, open-label study, patients with RRMS diagnosed with the McDona",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-16T19:36:39.461157"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10687854/",
+          "identifier": "PMC:10687854",
+          "title": "Adverse effects of immunotherapies for multiple sclerosis: a network meta-analysis.",
+          "snippet": "Title: Adverse effects of immunotherapies for multiple sclerosis: a network meta-analysis.\nAuthors: Tramacere I, Virgili G, Perduca V et al.\nJournal: Cochrane Database Syst Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.400998"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11460132/",
+          "identifier": "PMC:11460132",
+          "title": "Brain volume loss in relapsing multiple sclerosis: indirect treatment comparisons of available disease-modifying therapies.",
+          "snippet": "Title: Brain volume loss in relapsing multiple sclerosis: indirect treatment comparisons of available disease-modifying therapies.\nAuthors: Zivadinov R, Keenan AJ, Le HH et al.\nJournal: BMC Neurol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.401082"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4464731/",
+          "identifier": "PMC:4464731",
+          "title": "Pharmacological Approaches to Delaying Disability Progression in Patients with Multiple Sclerosis.",
+          "snippet": "Title: Pharmacological Approaches to Delaying Disability Progression in Patients with Multiple Sclerosis.\nAuthors: Wiendl H, Meuth SG\nJournal: Drugs",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.401109"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis",
+          "snippet": "Title: Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890484"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Brief Summary",
+          "snippet": "The primary objective of the study is to assess the clinical efficacy of Rebif\u00ae 44 microgram (mcg) three times per week compared with Copaxone\u00ae 20 milligram (mg) daily in subjects with relapsing Multiple Sclerosis.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890489"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890493"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Relapsing-remitting Multiple Sclerosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890496"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Intervention: Rebif\u00ae",
+          "snippet": "DRUG: Rebif\u00ae - Subjects will be administered with Rebif\u00ae (Recombinant interferon beta-1a) as subcutaneous (SC) injection at a dose of 44 microgram (mcg) three times weekly (tiw).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890500"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Intervention: Copaxone\u00ae",
+          "snippet": "DRUG: Copaxone\u00ae - Subjects will be administered with Copaxone\u00ae (Glatiramer acetate) as subcutaneous (SC) injection at a dose of 20 milligram (mg) once daily (qd).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890503"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00078338",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "False",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "Both Rebif and Copaxone are listed as the active drugs in the trial. Neither is a peptide. Interferon beta-1a is a protein, not a peptide. Glatiramer acetate is a synthetic polypeptide, but it's not considered a traditional peptide therapeutic in this context.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "The information provided indicates that both treatments are administered via subcutaneous injection but does not specify their chemical composition beyond stating that they are recombinant interferon beta-1a and glatiramer acetate respectively. Neither of these substances is explicitly described as peptides, and the context suggests they are biological drugs rather than peptide-based therapies.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "The active drug in this trial is not a peptide as per the critical rules mentioned earlier. It is a recombinant protein, specifically interferon beta-1a.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence clearly states that Rebif\u00ae is recombinant interferon beta-1a, which is a protein and not a peptide. Copaxone\u00ae, while it contains glatiramer acetate, is described as a synthetic polypeptide but is not considered a traditional peptide therapeutic in this context according to the verifiers' reasoning. Therefore, neither of the active drugs used in the trial fits the definition of a peptide.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "While both drugs are administered via injection, they are not antimicrobial peptides. They work by modulating the immune system to reduce inflammation and slow disease progression in multiple sclerosis, an autoimmune disorder. They do not directly kill or inhibit pathogens.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The drugs involved in this clinical trial are not antimicrobial peptides based on the criteria provided. They are metabolic hormones and immunomodulatory agents that do not have a direct antimicrobial mechanism or stimulate immune defense against pathogens as defined by the decision tree steps.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial is investigating the efficacy of Rebif\u00ae (Recombinant interferon beta-1a) and Copaxone\u00ae (Glatiramer acetate) in the treatment of Relapsing-remitting Multiple Sclerosis. These drugs are not antimicrobial peptides, but rather immunomodulatory therapies used to manage the disease symptoms. Therefore, they do not have a direct antimicrobial or pathogen-defense mechanism and are classified as 'Other'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Subcutaneous/Intradermal",
+        "final_value": "Injection/Infusion - Subcutaneous/Intradermal",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The protocol explicitly states that both Rebif\u00ae and Copaxone\u00ae will be administered via subcutaneous (SC) injections.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The protocol explicitly mentions 'subcutaneous' for the administration route, which overrides any generic term like 'injection'. Therefore, based on this specific information provided in the clinical trial details, the delivery mode is identified as Injection/Infusion - Subcutaneous/Intradermal.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The words 'subcutaneous' and 'injection' appear explicitly in the trial protocol, indicating that the drug is to be delivered via a subcutaneous injection.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The published paper from The Lancet Neurology reports on the REGARD study which directly compared Rebif and Copaxone.  The abstract states that the aim of the study was to compare the two drugs in patients with RRMS. This suggests the trial met its primary objective.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "Since the registry status is COMPLETED, we need to determine if there are published results showing positive or negative outcomes. The PubMed reference provides evidence from a completed trial comparing Rebif and Copaxone in relapsing multiple sclerosis patients, which implies that the trial was completed with some form of assessment of efficacy between the two treatments. However, without access to the full text of this publication, we cannot definitively state whether the primary endpoint was ",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial titled \"Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial\" published in The Lancet Neurology (2008) shows that the trial met its primary endpoint of assessing the clinical efficacy of Rebif\u00ae 44 microgram (mcg) three times per week compared with Copaxone\u00ae 20 milligram (mg) daily in subjects with ",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published paper states that the REGARD trial directly compared Rebif and Copaxone in patients with relapsing MS.  The abstract indicates the trial aimed to compare their efficacy.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The evidence from the published literature indicates that the study, titled \"Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial,\" compared the efficacy of Rebif\u00ae and Copaxone\u00ae. The abstract from this publication states that no published randomized trials have directly compared these two drugs for relapsing",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published research titled \"Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial\" shows that the trial failed to meet its primary endpoint of assessing the clinical efficacy of Rebif\u00ae 44 microgram (mcg) three times per week compared with Copaxone\u00ae 20 milligram (mg) daily in subjects with relapsing Multipl",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence clearly indicates that the primary objective of the REGARD trial was to compare the efficacy of Rebif\u00ae and Copaxone\u00ae. Since all verifiers agree on this point, their reasoning is supported by the clinical trial's stated objectives and published literature. Therefore, the correct answer is \"Ineffective for purpose\" as the study aimed to assess efficacy but did not meet its primary objective effectively according to the provided evidence.",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": null
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00078338",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis",
+          "snippet": "Title: Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890484"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Brief Summary",
+          "snippet": "The primary objective of the study is to assess the clinical efficacy of Rebif\u00ae 44 microgram (mcg) three times per week compared with Copaxone\u00ae 20 milligram (mg) daily in subjects with relapsing Multiple Sclerosis.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890489"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890493"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Relapsing-remitting Multiple Sclerosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890496"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Intervention: Rebif\u00ae",
+          "snippet": "DRUG: Rebif\u00ae - Subjects will be administered with Rebif\u00ae (Recombinant interferon beta-1a) as subcutaneous (SC) injection at a dose of 44 microgram (mcg) three times weekly (tiw).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890500"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Intervention: Copaxone\u00ae",
+          "snippet": "DRUG: Copaxone\u00ae - Subjects will be administered with Copaxone\u00ae (Glatiramer acetate) as subcutaneous (SC) injection at a dose of 20 milligram (mg) once daily (qd).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890503"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00078338",
+          "identifier": "NCT00078338",
+          "title": "Phase",
+          "snippet": "Phase: PHASE4",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.890506"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00078338",
+            "orgStudyIdInfo": {
+              "id": "24735"
+            },
+            "organization": {
+              "fullName": "EMD Serono",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Rebif\u00ae Versus Copaxone\u00ae in the Treatment of Relapsing Remitting Multiple Sclerosis",
+            "officialTitle": "Phase IV, Multicenter, Open Label, Randomized Study of Rebif\u00ae 44 mcg Administered Three Times Per Week by Subcutaneous Injection Compared With Copaxone\u00ae 20 mg Administered Daily by Subcutaneous Injection in the Treatment of Relapsing Remitting Multiple Sclerosis"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2017-09",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2004-02-16",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2006-11-28",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2006-11-28",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2004-02-23",
+            "studyFirstSubmitQcDate": "2004-02-25",
+            "studyFirstPostDateStruct": {
+              "date": "2004-02-26",
+              "type": "ESTIMATED"
+            },
+            "resultsFirstSubmitDate": "2017-09-15",
+            "resultsFirstSubmitQcDate": "2017-09-15",
+            "resultsFirstPostDateStruct": {
+              "date": "2018-06-27",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2017-09-15",
+            "lastUpdatePostDateStruct": {
+              "date": "2018-06-27",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "EMD Serono",
+              "class": "INDUSTRY"
+            },
+            "collaborators": [
+              {
+                "name": "Pfizer",
+                "class": "INDUSTRY"
+              }
+            ]
+          },
+          "descriptionModule": {
+            "briefSummary": "The primary objective of the study is to assess the clinical efficacy of Rebif\u00ae 44 microgram (mcg) three times per week compared with Copaxone\u00ae 20 milligram (mg) daily in subjects with relapsing Multiple Sclerosis."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Relapsing-remitting Multiple Sclerosis"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE4"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 764,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Rebif\u00ae",
+                "type": "EXPERIMENTAL",
+                "interventionNames": [
+                  "Drug: Rebif\u00ae"
+                ]
+              },
+              {
+                "label": "Copaxone\u00ae",
+                "type": "ACTIVE_COMPARATOR",
+                "interventionNames": [
+                  "Drug: Copaxone\u00ae"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Rebif\u00ae",
+                "description": "Subjects will be administered with Rebif\u00ae (Recombinant interferon beta-1a) as subcutaneous (SC) injection at a dose of 44 microgram (mcg) three times weekly (tiw).",
+                "armGroupLabels": [
+                  "Rebif\u00ae"
+                ],
+                "otherNames": [
+                  "Recombinant interferon beta-1a"
+                ]
+              },
+              {
+                "type": "DRUG",
+                "name": "Copaxone\u00ae",
+                "description": "Subjects will be administered with Copaxone\u00ae (Glatiramer acetate) as subcutaneous (SC) injection at a dose of 20 milligram (mg) once daily (qd).",
+                "armGroupLabels": [
+                  "Copaxone\u00ae"
+                ],
+                "otherNames": [
+                  "Glatiramer acetate"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Time to First Relapse",
+                "description": "Relapse was defined as new, worsening or recurrent neurological symptoms attributed to multiple sclerosis that last for at least 24 hours without fever or infection, or adverse reaction to prescribed medication, preceded by a stable or improving neurological status of at least 30 days. These new or worsening symptoms should be noted by subject and must be accompanied by at least 1 of the following: An increase of greater than or equal to (\\>=) 1 grade in \\>=2 functional scales of the Expanded Disability Status Scale (EDSS) or an increase of \\>=2 grades in 1 functional scale of the EDSS or an increase of \\>= 0.5 or an increase of \\>=1.0 in EDSS if the previous EDSS was 0. Time to first relapse was defined as the time in days from the date of first dose of study treatment to the date of first multiple sclerosis relapse. The mean time to first relapse for the 25th percentile and the 30th percentile during the 96-week treatment period was measured by Kaplan-Meier estimates and was reported.",
+                "timeFrame": "Baseline up to 96 weeks"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Be between 18 and 60 years of age\n* Have definite relapsing multiple sclerosis\n* Have had one or more relapses within the prior 12 months\n* Must be in a clinically stable or improving neurological state during the four weeks prior to Study Day 1\n* Expanded Disability Status Scale (EDSS) score from 0 to 5.5, inclusive\n* If female, she must either be post-menopausal or surgically sterilized; or use a hormonal contraceptive, intra uterine device, diaphragm with spermicide, or condom with spermicide, for the duration of the study; and be neither pregnant nor breast-feeding\n* Confirmation that the subject is not pregnant must be established by a negative serum human chorionic gonadotropin (hCG) pregnancy test within 7 days of Study Day 1 and a negative urine pregnancy test on Study Day 1. A pregnancy test is not required if the subject is post-menopausal or surgically sterilized\n* Be willing and able to comply with the protocol for the duration of the study\n* Voluntarily provide written informed consent and, for USA sites only, a subject authorization under Health Insurance Portability and Accountability Act (HIPAA), prior to any study-related procedure that is not part of normal medical care, with the understanding that consent may be withdrawn by the subject at any time without prejudice to their future medical care\n\nExclusion Criteria:\n\n* Have secondary progressive multiple sclerosis (SPMS) or primary progressive MS (PPMS)\n* Prior use of any interferon or glatiramer acetate\n* Have had treatment with oral or systemic corticosteroids or adrenocorticotrophic hormone (ACTH) within 4 weeks of Study Day 1 and within 7 days prior to the Day 1 magnetic resonance imaging (MRI)\n* Have a psychiatric disorder that is unstable or would preclude safe participation in the study.\n* Have significant leukopenia (white blood cell count \\< 0.5 times the lower limit of normal of the central laboratory) within 7 days of Study Day 1.\n* Have elevated liver function tests (alanine aminotransferase \\[AST\\], aspartate aminotransferase \\[ALT\\], alkaline phosphatase \\> 2.0 times the upper limit of normal \\[ULN\\] of the central laboratory, or total bilirubin \\> 1.5 times the ULN of the central laboratory) within 7 days of Study Day 1 or a history of hepatitis (including infectious or drug-induced)\n* Prior cytokine or anti-cytokine therapy within 3 months prior to Study Day 1\n* Prior use of immunomodulatory or immunosuppressive therapy (including but not limited to cyclophosphamide, cyclosporin, methotrexate, azathioprine, linomide, mitoxantrone) within the 12 months prior to Study Day 1\n* Prior use of cladribine or have received total lymphoid irradiation\n* Have allergy or hypersensitivity to human serum albumin, mannitol, glatiramer acetate, natural or recombinant interferon-\u03b2, or any other components of the study drugs or gadolinium diethylenetriaminepentaacetic acid\n* Have taken intravenous immunoglobulin or any other investigational drug or taken part in any experimental procedure in the 6 months prior to Study Day 1.\n* Presence of systemic disease that might interfere with subject safety, compliance or evaluation of the condition under study (e.g. insulin-dependent diabetes, Lyme disease, clinically significant cardiac disease, human immunodeficiency virus \\[HIV\\], human T-cell lymphotrophic virus type I \\[HTLV-1\\])\n* Have had plasma exchange in 3 months prior to Study Day 1.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "60 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Medical Responsible",
+                "affiliation": "Merck KGaA, Darmstadt, Germany",
+                "role": "STUDY_DIRECTOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "University of Alabama at Birmingham",
+                "city": "Birmingham",
+                "state": "Alabama",
+                "zip": "35249",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.52066,
+                  "lon": -86.80249
+                }
+              },
+              {
+                "facility": "Barrow Neurology Clinics",
+                "city": "Phoenix",
+                "state": "Arizona",
+                "zip": "85013",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.44838,
+                  "lon": -112.07404
+                }
+              },
+              {
+                "facility": "Northwest NeuroSpecialists",
+                "city": "Tucson",
+                "state": "Arizona",
+                "zip": "85741",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.22174,
+                  "lon": -110.92648
+                }
+              },
+              {
+                "facility": "University of California, Davis",
+                "city": "Sacramento",
+                "state": "California",
+                "zip": "95817",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.58157,
+                  "lon": -121.4944
+                }
+              },
+              {
+                "facility": "Kaiser Permanente Neurology",
+                "city": "San Diego",
+                "state": "California",
+                "zip": "92102",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.71571,
+                  "lon": -117.16472
+                }
+              },
+              {
+                "facility": "Advanced Neurology of Colorado, LLC",
+                "city": "Fort Collins",
+                "state": "Colorado",
+                "zip": "80528",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.58526,
+                  "lon": -105.08442
+                }
+              },
+              {
+                "facility": "The MS Treatment Center at Griffin Hospital",
+                "city": "Derby",
+                "state": "Connecticut",
+                "zip": "06418",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.32065,
+                  "lon": -73.089
+                }
+              },
+              {
+                "facility": "Associated Neurologists of Southern Connecticut, P.C.",
+                "city": "Fairfield",
+                "state": "Connecticut",
+                "zip": "06824",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.14121,
+                  "lon": -73.26373
+                }
+              },
+              {
+                "facility": "Neurological Center of South Florida",
+                "city": "Miami",
+                "state": "Florida",
+                "zip": "33176",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 25.77427,
+                  "lon": -80.19366
+                }
+              },
+              {
+                "facility": "Harbourside Medical Plaza",
+                "city": "Tampa",
+                "state": "Florida",
+                "zip": "33606",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 27.94752,
+                  "lon": -82.45843
+                }
+              },
+              {
+                "facility": "Shepherd Center",
+                "city": "Atlanta",
+                "state": "Georgia",
+                "zip": "30309",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.749,
+                  "lon": -84.38798
+                }
+              },
+              {
+                "facility": "University Chicago Hospitals",
+                "city": "Chicago",
+                "state": "Illinois",
+                "zip": "60619",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.85003,
+                  "lon": -87.65005
+                }
+              },
+              {
+                "facility": "Consultants In Neurology, Ltd.",
+                "city": "Northbrook",
+                "state": "Illinois",
+                "zip": "60062",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.12753,
+                  "lon": -87.82895
+                }
+              },
+              {
+                "facility": "Fort Wayne Neurological Center",
+                "city": "Fort Wayne",
+                "state": "Indiana",
+                "zip": "46805",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.1306,
+                  "lon": -85.12886
+                }
+              },
+              {
+                "facility": "University of Maryland MD Center for MS",
+                "city": "Baltimore",
+                "state": "Maryland",
+                "zip": "21201",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.29038,
+                  "lon": -76.61219
+                }
+              },
+              {
+                "facility": "University Of Michigan",
+                "city": "Ann Arbor",
+                "state": "Michigan",
+                "zip": "48109",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.27756,
+                  "lon": -83.74088
+                }
+              },
+              {
+                "facility": "Wayne State University",
+                "city": "Detroit",
+                "state": "Michigan",
+                "zip": "48201",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.33143,
+                  "lon": -83.04575
+                }
+              },
+              {
+                "facility": "Henry Ford Hospital Dept of Neurology",
+                "city": "Detroit",
+                "state": "Michigan",
+                "zip": "48202",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.33143,
+                  "lon": -83.04575
+                }
+              },
+              {
+                "facility": "The Minneapolis Clinic of Neurology",
+                "city": "Golden Valley",
+                "state": "Minnesota",
+                "zip": "55422",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 45.00969,
+                  "lon": -93.34912
+                }
+              },
+              {
+                "facility": "University of Minnesota Medical School, Dept of Neurology",
+                "city": "Minneapolis",
+                "state": "Minnesota",
+                "zip": "55455",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 44.97997,
+                  "lon": -93.26384
+                }
+              },
+              {
+                "facility": "Nevada Neurological Consultants",
+                "city": "Henderson",
+                "state": "Nevada",
+                "zip": "89052",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 36.0397,
+                  "lon": -114.98194
+                }
+              },
+              {
+                "facility": "Albany Medical College Dept of Neurology MC-70",
+                "city": "Albany",
+                "state": "New York",
+                "zip": "12208",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.65258,
+                  "lon": -73.75623
+                }
+              },
+              {
+                "facility": "Neurology University of Rochester",
+                "city": "Rochester",
+                "state": "New York",
+                "zip": "14642",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.15478,
+                  "lon": -77.61556
+                }
+              },
+              {
+                "facility": "SUNY At Stony Brook U Hospital - Department of Neurology",
+                "city": "Stony Brook",
+                "state": "New York",
+                "zip": "11794",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.92565,
+                  "lon": -73.14094
+                }
+              },
+              {
+                "facility": "SUNY Upstate Medical University Dept of Neurology",
+                "city": "Syracuse",
+                "state": "New York",
+                "zip": "13210",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.04812,
+                  "lon": -76.14742
+                }
+              },
+              {
+                "facility": "MS Center/CHS",
+                "city": "Charlotte",
+                "state": "North Carolina",
+                "zip": "28207",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.22709,
+                  "lon": -80.84313
+                }
+              },
+              {
+                "facility": "Wake Forest Univ. Health Sciences",
+                "city": "Winston-Salem",
+                "state": "North Carolina",
+                "zip": "27157",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 36.09986,
+                  "lon": -80.24422
+                }
+              },
+              {
+                "facility": "Ohio State University",
+                "city": "Columbus",
+                "state": "Ohio",
+                "zip": "43210",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.96118,
+                  "lon": -82.99879
+                }
+              },
+              {
+                "facility": "Oak Clinic for Multiple Sclerosis",
+                "city": "Uniontown",
+                "state": "Ohio",
+                "zip": "44685",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.97506,
+                  "lon": -81.40817
+                }
+              },
+              {
+                "facility": "Medford Neurological and Spine Clinic",
+                "city": "Medford",
+                "state": "Oregon",
+                "zip": "97504",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.32652,
+                  "lon": -122.87559
+                }
+              },
+              {
+                "facility": "University Of Pennsylvania",
+                "city": "Philadelphia",
+                "state": "Pennsylvania",
+                "zip": "19104",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.95238,
+                  "lon": -75.16362
+                }
+              },
+              {
+                "facility": "Thomas Jefferson University Physicians Dept of Neurology",
+                "city": "Philadelphia",
+                "state": "Pennsylvania",
+                "zip": "19107",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.95238,
+                  "lon": -75.16362
+                }
+              },
+              {
+                "facility": "Baptist West Hospital",
+                "city": "Knoxville",
+                "state": "Tennessee",
+                "zip": "37922",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.96064,
+                  "lon": -83.92074
+                }
+              },
+              {
+                "facility": "University of Texas-Houston",
+                "city": "Houston",
+                "state": "Texas",
+                "zip": "77030",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.76328,
+                  "lon": -95.36327
+                }
+              },
+              {
+                "facility": "Central Texas Neurology",
+                "city": "Round Rock",
+                "state": "Texas",
+                "zip": "78681",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 30.50826,
+                  "lon": -97.6789
+                }
+              },
+              {
+                "facility": "Neurology Health Care Service / Fletcher Allen Health Care",
+                "city": "Burlington",
+                "state": "Vermont",
+                "zip": "05401",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 44.47588,
+                  "lon": -73.21207
+                }
+              },
+              {
+                "facility": "Neurology Center of Fairfax",
+                "city": "Fairfax",
+                "state": "Virginia",
+                "zip": "22031",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.84622,
+                  "lon": -77.30637
+                }
+              },
+              {
+                "facility": "Blue Ridge Research Center",
+                "city": "Roanoke",
+                "state": "Virginia",
+                "zip": "24014",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.27097,
+                  "lon": -79.94143
+                }
+              },
+              {
+                "facility": "Minor & James Medical, PLLC",
+                "city": "Seattle",
+                "state": "Washington",
+                "zip": "98104",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 47.60621,
+                  "lon": -122.33207
+                }
+              },
+              {
+                "facility": "CAMC Institute",
+                "city": "Charleston",
+                "state": "West Virginia",
+                "zip": "25304",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.34982,
+                  "lon": -81.63262
+                }
+              },
+              {
+                "facility": "Center for Neurological Disorders",
+                "city": "Milwaukee",
+                "state": "Wisconsin",
+                "zip": "53215",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.0389,
+                  "lon": -87.90647
+                }
+              },
+              {
+                "facility": "Servicio de Neurologia",
+                "city": "Buenos Aires",
+                "zip": "1221",
+                "country": "Argentina",
+                "geoPoint": {
+                  "lat": -34.61315,
+                  "lon": -58.37723
+                }
+              },
+              {
+                "facility": "Departmento Enfermedades Desmielinizantes",
+                "city": "Buenos Aires",
+                "zip": "1428",
+                "country": "Argentina",
+                "geoPoint": {
+                  "lat": -34.61315,
+                  "lon": -58.37723
+                }
+              },
+              {
+                "facility": "Servicio de Neurologia Departmento Enfermedades Desmielinizantes",
+                "city": "Buenos Aires",
+                "zip": "C118ACH",
+                "country": "Argentina",
+                "geoPoint": {
+                  "lat": -34.61315,
+                  "lon": -58.37723
+                }
+              },
+              {
+                "facility": "Seccion Neurolgia Instituto INEBA",
+                "city": "Buenos Aires",
+                "zip": "C1192AAW",
+                "country": "Argentina",
+                "geoPoint": {
+                  "lat": -34.61315,
+                  "lon": -58.37723
+                }
+              },
+              {
+                "facility": "Fundacion Rosarina de Neurorehabilitacion",
+                "city": "Rosario",
+                "zip": "CP 2000",
+                "country": "Argentina",
+                "geoPoint": {
+                  "lat": -32.94682,
+                  "lon": -60.63932
+                }
+              },
+              {
+                "facility": "Dept Neurologia Sanatorio Britanico de Rosario",
+                "city": "Rosario",
+                "country": "Argentina",
+                "geoPoint": {
+                  "lat": -32.94682,
+                  "lon": -60.63932
+                }
+              },
+              {
+                "facility": "OO Landes-Nervenklinik",
+                "city": "Linz",
+                "zip": "4020",
+                "country": "Austria",
+                "geoPoint": {
+                  "lat": 48.30639,
+                  "lon": 14.28611
+                }
+              },
+              {
+                "facility": "Campus Ribeirao Preto Faculdade de Medicina de Sao Paolo",
+                "city": "Riberao Preto-SP",
+                "zip": "14048-900",
+                "country": "Brazil"
+              },
+              {
+                "facility": "Dept of Neurology CHU Timone",
+                "city": "Marseille",
+                "zip": "13385",
+                "country": "France",
+                "geoPoint": {
+                  "lat": 43.29695,
+                  "lon": 5.38107
+                }
+              },
+              {
+                "facility": "Hopital Pontchaillou",
+                "city": "Rennes",
+                "zip": "35033",
+                "country": "France",
+                "geoPoint": {
+                  "lat": 48.11109,
+                  "lon": -1.67431
+                }
+              },
+              {
+                "facility": "Dept of Neurology Johannes Gutenberg University",
+                "city": "Mainz",
+                "zip": "55131",
+                "country": "Germany",
+                "geoPoint": {
+                  "lat": 49.98185,
+                  "lon": 8.28008
+                }
+              },
+              {
+                "facility": "Dept of Neurology Universitatsklinikum Munster",
+                "city": "M\u00fcnster",
+                "zip": "48149",
+                "country": "Germany",
+                "geoPoint": {
+                  "lat": 51.96236,
+                  "lon": 7.62571
+                }
+              },
+              {
+                "facility": "Dept of Neurological and Psychiatric Sciences University of Bari",
+                "city": "Bari",
+                "zip": "70124",
+                "country": "Italy",
+                "geoPoint": {
+                  "lat": 41.12066,
+                  "lon": 16.86982
+                }
+              },
+              {
+                "facility": "Dept of Neurosciences Oftamology and Genetics Univ of Genoa",
+                "city": "Genoa",
+                "zip": "16132",
+                "country": "Italy",
+                "geoPoint": {
+                  "lat": 44.40478,
+                  "lon": 8.94439
+                }
+              },
+              {
+                "facility": "Dept Neurology Ospedale San Raffaele",
+                "city": "Milan",
+                "country": "Italy",
+                "geoPoint": {
+                  "lat": 45.46427,
+                  "lon": 9.18951
+                }
+              },
+              {
+                "facility": "Dept of Neurological Sciences University La Sapienza Rome",
+                "city": "Rome",
+                "zip": "00185",
+                "country": "Italy",
+                "geoPoint": {
+                  "lat": 41.89193,
+                  "lon": 12.51133
+                }
+              },
+              {
+                "facility": "Academisch Ziekenhuis Vrije Universiteit",
+                "city": "Amsterdam",
+                "zip": "1081",
+                "country": "Netherlands",
+                "geoPoint": {
+                  "lat": 52.37403,
+                  "lon": 4.88969
+                }
+              },
+              {
+                "facility": "MS Center Nijmegen",
+                "city": "Nijmegen",
+                "zip": "6533 PA",
+                "country": "Netherlands",
+                "geoPoint": {
+                  "lat": 51.8425,
+                  "lon": 5.85278
+                }
+              },
+              {
+                "facility": "City Clinical Hospital No 83",
+                "city": "Moscow",
+                "zip": "115682",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 55.75204,
+                  "lon": 37.61781
+                }
+              },
+              {
+                "facility": "Dept Of Neurology and Neurosurgery, Russian State Med Univ",
+                "city": "Moscow",
+                "zip": "117049",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 55.75204,
+                  "lon": 37.61781
+                }
+              },
+              {
+                "facility": "State Instituion Central Clinical Milatary Hospital",
+                "city": "Moscow",
+                "zip": "123182",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 55.75204,
+                  "lon": 37.61781
+                }
+              },
+              {
+                "facility": "Scientific Research Center of Neurology Russian MOH",
+                "city": "Moscow",
+                "zip": "125367",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 55.75204,
+                  "lon": 37.61781
+                }
+              },
+              {
+                "facility": "Department of Neurology City Hospital #33",
+                "city": "Nizhny Novgorod",
+                "zip": "603076",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 56.32867,
+                  "lon": 44.00205
+                }
+              },
+              {
+                "facility": "Institute of Clinical Immunology RAMS",
+                "city": "Novosibirsk",
+                "zip": "630099",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 55.02259,
+                  "lon": 82.93175
+                }
+              },
+              {
+                "facility": "Military Medical Academy",
+                "city": "Saint Petersburg",
+                "zip": "194044",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 59.93863,
+                  "lon": 30.31413
+                }
+              },
+              {
+                "facility": "Dept of Neurology St Petersburg State Medical University",
+                "city": "Saint Petersburg",
+                "zip": "197022",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 59.93863,
+                  "lon": 30.31413
+                }
+              },
+              {
+                "facility": "Dept of MS Institute for Human Brain of R.A.Sci",
+                "city": "Saint Petersburg",
+                "zip": "197376",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 59.93863,
+                  "lon": 30.31413
+                }
+              },
+              {
+                "facility": "Dept of Neurology Medical Clinic of Russian MoH",
+                "city": "Saint Petersburg",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 59.93863,
+                  "lon": 30.31413
+                }
+              },
+              {
+                "facility": "Chair of Nuerological Diseases and Medical Genetics",
+                "city": "Yaroslavl",
+                "zip": "150030",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 57.62987,
+                  "lon": 39.87368
+                }
+              },
+              {
+                "facility": "Neuroinmunologia Clinica Hospital Vall d'Hebron",
+                "city": "Barcelona",
+                "zip": "08035",
+                "country": "Spain",
+                "geoPoint": {
+                  "lat": 41.38879,
+                  "lon": 2.15899
+                }
+              },
+              {
+                "facility": "Servicio de Neurologia Hospital Bellvitge",
+                "city": "L'Hospitalet de Llobregat",
+                "zip": "08907",
+                "country": "Spain",
+                "geoPoint": {
+                  "lat": 41.35967,
+                  "lon": 2.10028
+                }
+              },
+              {
+                "facility": "Neurologia Hospital Carlos Haya",
+                "city": "M\u00e1laga",
+                "zip": "29010",
+                "country": "Spain",
+                "geoPoint": {
+                  "lat": 36.72016,
+                  "lon": -4.42034
+                }
+              },
+              {
+                "facility": "Unidad de EM Neurologia Hospital Virgen Macarena",
+                "city": "Seville",
+                "zip": "41009",
+                "country": "Spain",
+                "geoPoint": {
+                  "lat": 37.38283,
+                  "lon": -5.97317
+                }
+              },
+              {
+                "facility": "Dept Of Neurology",
+                "city": "Zurich",
+                "zip": "8091",
+                "country": "Switzerland",
+                "geoPoint": {
+                  "lat": 47.36667,
+                  "lon": 8.55
+                }
+              },
+              {
+                "facility": "Department of Neurology",
+                "city": "Whitechapel",
+                "state": "London",
+                "zip": "E1 1BB",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 51.51382,
+                  "lon": -0.06583
+                }
+              },
+              {
+                "facility": "Department Of Neurology Royal London Hospital",
+                "city": "London",
+                "zip": "E1 1BB",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 51.50853,
+                  "lon": -0.12574
+                }
+              },
+              {
+                "facility": "Royal Victoria Infirmary",
+                "city": "Newcastle upon Tyne",
+                "zip": "NE1 4LP",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 54.97328,
+                  "lon": -1.61396
+                }
+              },
+              {
+                "facility": "Div of Clinical Neurology B Floor Medical School Univ Hospital",
+                "city": "Nottingham",
+                "zip": "NG7 2UH",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 52.9536,
+                  "lon": -1.15047
+                }
+              },
+              {
+                "facility": "Division of Clinical Neurology Medical School Universtity Hopsital",
+                "city": "Nottingham",
+                "zip": "NG7 2UH",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 52.9536,
+                  "lon": -1.15047
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "18789766",
+                "type": "RESULT",
+                "citation": "Mikol DD, Barkhof F, Chang P, Coyle PK, Jeffery DR, Schwid SR, Stubinski B, Uitdehaag B; REGARD study group. Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial. Lancet Neurol. 2008 Oct;7(10):903-14. doi: 10.1016/S1474-4422(08)70200-X. Epub 2008 Sep 11."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00078338",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/18789766/",
+          "identifier": "PMID:18789766",
+          "title": "Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial.",
+          "snippet": "Title: Comparison of subcutaneous interferon beta-1a with glatiramer acetate in patients with relapsing multiple sclerosis (the REbif vs Glatiramer Acetate in Relapsing MS Disease [REGARD] study): a multicentre, randomised, parallel, open-label trial.\nAuthors: Mikol Daniel D, Barkhof Frederik, Chang Peter et al.\nJournal: The Lancet. Neurology (2008)\nAbstract: BACKGROUND: Interferon beta-1a and glatiramer acetate are commonly prescribed for relapsing-remitting multiple sclerosis (RRMS), but no published randomised trials have directly compared these two drugs. Our aim in the REGARD (REbif vs Glatiramer Acetate in Relapsing MS Disease) study was to compare interferon beta-1a with glatiramer acetate in patients with RRMS. METHODS: In this multicentre, randomised, comparative, parallel-group, open-label study, patients with RRMS diagnosed with the McDona",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-16T19:36:39.461157"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10687854/",
+          "identifier": "PMC:10687854",
+          "title": "Adverse effects of immunotherapies for multiple sclerosis: a network meta-analysis.",
+          "snippet": "Title: Adverse effects of immunotherapies for multiple sclerosis: a network meta-analysis.\nAuthors: Tramacere I, Virgili G, Perduca V et al.\nJournal: Cochrane Database Syst Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.400998"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11460132/",
+          "identifier": "PMC:11460132",
+          "title": "Brain volume loss in relapsing multiple sclerosis: indirect treatment comparisons of available disease-modifying therapies.",
+          "snippet": "Title: Brain volume loss in relapsing multiple sclerosis: indirect treatment comparisons of available disease-modifying therapies.\nAuthors: Zivadinov R, Keenan AJ, Le HH et al.\nJournal: BMC Neurol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.401082"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4464731/",
+          "identifier": "PMC:4464731",
+          "title": "Pharmacological Approaches to Delaying Disability Progression in Patients with Multiple Sclerosis.",
+          "snippet": "Title: Pharmacological Approaches to Delaying Disability Progression in Patients with Multiple Sclerosis.\nAuthors: Wiendl H, Meuth SG\nJournal: Drugs",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:39.401109"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [
+          "18789766"
+        ],
+        "pubmed_count": 1,
+        "pmc_ids": [
+          "10687854",
+          "11460132",
+          "4464731"
+        ],
+        "pmc_count": 3,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 1,
+        "semantic_scholar_total": 1
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00078338",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00078338",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00078338",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00078338",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00078338",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00078338",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 7,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 4,
+      "has_data": true,
+      "quality_avg": 0.863
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

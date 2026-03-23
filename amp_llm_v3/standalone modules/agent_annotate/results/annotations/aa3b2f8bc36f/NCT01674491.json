@@ -1,0 +1,1084 @@
+{
+  "nct_id": "NCT01674491",
+  "metadata": {
+    "nct_id": "NCT01674491",
+    "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+    "phase": "PHASE3",
+    "status": "COMPLETED",
+    "conditions": [
+      "Hypertension"
+    ],
+    "interventions": [
+      "DIETARY_SUPPLEMENT: black soy peptide"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "False",
+      "confidence": 0.9277777777777777,
+      "reasoning": "[Pass 1 extraction] Here are the extracted facts for each intervention:\n\n**Intervention 1:** Black soy peptide\n\n1. INTERVENTION NAME: Black soy peptide\n2. MOLECULAR CLASS: Short peptide chain (2-50 amino acids)\n3. DATABASE CONFIRMATION:\n\t* UniProt: No evidence found\n\t* DRAMP/DBAASP: No evidence found\n\t* ChEMBL: Not a small molecule, but no specific classification as a peptide or protein\n4. PRODUCT DESCRIPTION: Descri\n[Pass 2 decision] Peptide: False\nReasoning: \nStep 1 \u2014 Is the Molecular Class a peptide? The molecular class of Black soy peptide is indeed a \"Short peptide chain\" (2-50 amino acids), so we proceed to Step 2. \nStep 2 \u2014 Is the peptide the ACTIVE DRUG? Although the molecular class is a peptide, the Active Ingredient Role is described as an \"Active therapeutic agent\", but also as a \"dietary supplement\". This indicates ",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463067"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Brief Summary",
+          "snippet": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463144"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463167"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypertension",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463191"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Intervention: black soy peptide",
+          "snippet": "DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463218"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/21091245/",
+          "identifier": "PMID:21091245",
+          "title": "Black soy peptide supplementation improves glucose control in subjects with prediabetes and newly diagnosed type 2 diabetes mellitus.",
+          "snippet": "Title: Black soy peptide supplementation improves glucose control in subjects with prediabetes and newly diagnosed type 2 diabetes mellitus.\nAuthors: Kwak Jung Hyun, Lee Jong Ho, Ahn Chang-Won et al.\nJournal: Journal of medicinal food (2010)\nAbstract: The present study aimed to determine the effect of black soy peptide supplementation on glucose control in subjects with prediabetes (impaired fasting glucose or impaired glucose tolerance) and newly diagnosed type 2 diabetes mellitus (DM). In this double-blind, placebo-controlled study, subjects wi",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534860"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/22739624/",
+          "identifier": "PMID:22739624",
+          "title": "Weight reduction effects of a black soy peptide supplement in overweight and obese subjects: double blind, randomized, controlled study.",
+          "snippet": "Title: Weight reduction effects of a black soy peptide supplement in overweight and obese subjects: double blind, randomized, controlled study.\nAuthors: Kwak Jung Hyun, Ahn Chang-Won, Park Soo-Hyun et al.\nJournal: Food & function (2012)\nAbstract: The present study determined the effect of black soy peptide supplementation on body weight and body fat in overweight/obese subjects. In a double-blind controlled trial, participants (n = 80) were randomized to either soy peptide supplementation (the test group) or to a placebo (the placebo group).",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534968"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/18414417/",
+          "identifier": "PMID:18414417",
+          "title": "Novel black soy peptides with antiobesity effects: activation of leptin-like signaling and AMP-activated protein kinase.",
+          "snippet": "Title: Novel black soy peptides with antiobesity effects: activation of leptin-like signaling and AMP-activated protein kinase.\nAuthors: Jang E-H, Moon J-S, Ko J H et al.\nJournal: International journal of obesity (2005) (2008)\nAbstract: OBJECTIVE: To investigate the mechanisms underlying the antiobesity effects of a novel isoflavone-free peptide mixture (BSP) derived from black soybean. DESIGN: Long-term effects of BSP were evaluated in diet-induced obese (DIO) mice fed a high-fat (HF) diet without or with BSP (2, 5 or 10% of energ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534991"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/12428980/",
+          "identifier": "PMID:12428980",
+          "title": "Tea enhances insulin activity.",
+          "snippet": "Title: Tea enhances insulin activity.\nAuthors: Anderson Richard A, Polansky Marilyn M\nJournal: Journal of agricultural and food chemistry (2002)\nAbstract: The most widely known health benefits of tea relate to the polyphenols as the principal active ingredients in protection against oxidative damage and in antibacterial, antiviral, anticarcinogenic, and antimutagenic activities, but polyphenols in tea may also increase insulin activity. The objective ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.535011"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9277777777777777,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: Black soy peptide - determined not to be a peptide but a dietary supplement. No specific amino acid length or molecular class provided.\nDatabase Matches: No evidence found.\nMechanism: Non-antimicrobial mechanism (decreases blood pressure, improves glucose control, has anti-obesity effects).\nTherapeutic Target: Hypertension\nImmune Direction: Immune-neutral (metabolic)\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is not a peptide according to the Peptide determination. Therefore, it cannot be classified as an AMP or related to antimicrobial activity. Since it does not meet the criteria for being a peptide, the classification is \"Other\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463067"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Brief Summary",
+          "snippet": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463144"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463167"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypertension",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463191"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Intervention: black soy peptide",
+          "snippet": "DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463218"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/21091245/",
+          "identifier": "PMID:21091245",
+          "title": "Black soy peptide supplementation improves glucose control in subjects with prediabetes and newly diagnosed type 2 diabetes mellitus.",
+          "snippet": "Title: Black soy peptide supplementation improves glucose control in subjects with prediabetes and newly diagnosed type 2 diabetes mellitus.\nAuthors: Kwak Jung Hyun, Lee Jong Ho, Ahn Chang-Won et al.\nJournal: Journal of medicinal food (2010)\nAbstract: The present study aimed to determine the effect of black soy peptide supplementation on glucose control in subjects with prediabetes (impaired fasting glucose or impaired glucose tolerance) and newly diagnosed type 2 diabetes mellitus (DM). In this double-blind, placebo-controlled study, subjects wi",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534860"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/22739624/",
+          "identifier": "PMID:22739624",
+          "title": "Weight reduction effects of a black soy peptide supplement in overweight and obese subjects: double blind, randomized, controlled study.",
+          "snippet": "Title: Weight reduction effects of a black soy peptide supplement in overweight and obese subjects: double blind, randomized, controlled study.\nAuthors: Kwak Jung Hyun, Ahn Chang-Won, Park Soo-Hyun et al.\nJournal: Food & function (2012)\nAbstract: The present study determined the effect of black soy peptide supplementation on body weight and body fat in overweight/obese subjects. In a double-blind controlled trial, participants (n = 80) were randomized to either soy peptide supplementation (the test group) or to a placebo (the placebo group).",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534968"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/18414417/",
+          "identifier": "PMID:18414417",
+          "title": "Novel black soy peptides with antiobesity effects: activation of leptin-like signaling and AMP-activated protein kinase.",
+          "snippet": "Title: Novel black soy peptides with antiobesity effects: activation of leptin-like signaling and AMP-activated protein kinase.\nAuthors: Jang E-H, Moon J-S, Ko J H et al.\nJournal: International journal of obesity (2005) (2008)\nAbstract: OBJECTIVE: To investigate the mechanisms underlying the antiobesity effects of a novel isoflavone-free peptide mixture (BSP) derived from black soybean. DESIGN: Long-term effects of BSP were evaluated in diet-induced obese (DIO) mice fed a high-fat (HF) diet without or with BSP (2, 5 or 10% of energ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534991"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/12428980/",
+          "identifier": "PMID:12428980",
+          "title": "Tea enhances insulin activity.",
+          "snippet": "Title: Tea enhances insulin activity.\nAuthors: Anderson Richard A, Polansky Marilyn M\nJournal: Journal of agricultural and food chemistry (2002)\nAbstract: The most widely known health benefits of tea relate to the polyphenols as the principal active ingredients in protection against oxidative damage and in antibacterial, antiviral, anticarcinogenic, and antimutagenic activities, but polyphenols in tea may also increase insulin activity. The objective ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.535011"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Oral - Unspecified",
+      "confidence": 0.9277777777777777,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n1. Protocol Route: \"DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks\" (Note: This text does not specify a route of administration, but rather mentions that it is a dietary supplement.)\n\n2. FDA/Label Route: Not found\n\n3. Literature Route: None of the PubMed/PubMed Central publications mention a specific route of administration.\n\n4.\n[Pass 2 classification] Delivery Mode: Oral - Unspecified\nEvidence: Protocol Route (\"DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks\")\nReasoning: The protocol text specifies that it is a dietary supplement, but does not provide further information on the formulation or route of administratio",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463067"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Brief Summary",
+          "snippet": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463144"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463167"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypertension",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463191"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Intervention: black soy peptide",
+          "snippet": "DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463218"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/21091245/",
+          "identifier": "PMID:21091245",
+          "title": "Black soy peptide supplementation improves glucose control in subjects with prediabetes and newly diagnosed type 2 diabetes mellitus.",
+          "snippet": "Title: Black soy peptide supplementation improves glucose control in subjects with prediabetes and newly diagnosed type 2 diabetes mellitus.\nAuthors: Kwak Jung Hyun, Lee Jong Ho, Ahn Chang-Won et al.\nJournal: Journal of medicinal food (2010)\nAbstract: The present study aimed to determine the effect of black soy peptide supplementation on glucose control in subjects with prediabetes (impaired fasting glucose or impaired glucose tolerance) and newly diagnosed type 2 diabetes mellitus (DM). In this double-blind, placebo-controlled study, subjects wi",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534860"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/22739624/",
+          "identifier": "PMID:22739624",
+          "title": "Weight reduction effects of a black soy peptide supplement in overweight and obese subjects: double blind, randomized, controlled study.",
+          "snippet": "Title: Weight reduction effects of a black soy peptide supplement in overweight and obese subjects: double blind, randomized, controlled study.\nAuthors: Kwak Jung Hyun, Ahn Chang-Won, Park Soo-Hyun et al.\nJournal: Food & function (2012)\nAbstract: The present study determined the effect of black soy peptide supplementation on body weight and body fat in overweight/obese subjects. In a double-blind controlled trial, participants (n = 80) were randomized to either soy peptide supplementation (the test group) or to a placebo (the placebo group).",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534968"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/18414417/",
+          "identifier": "PMID:18414417",
+          "title": "Novel black soy peptides with antiobesity effects: activation of leptin-like signaling and AMP-activated protein kinase.",
+          "snippet": "Title: Novel black soy peptides with antiobesity effects: activation of leptin-like signaling and AMP-activated protein kinase.\nAuthors: Jang E-H, Moon J-S, Ko J H et al.\nJournal: International journal of obesity (2005) (2008)\nAbstract: OBJECTIVE: To investigate the mechanisms underlying the antiobesity effects of a novel isoflavone-free peptide mixture (BSP) derived from black soybean. DESIGN: Long-term effects of BSP were evaluated in diet-induced obese (DIO) mice fed a high-fat (HF) diet without or with BSP (2, 5 or 10% of energ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534991"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/12428980/",
+          "identifier": "PMID:12428980",
+          "title": "Tea enhances insulin activity.",
+          "snippet": "Title: Tea enhances insulin activity.\nAuthors: Anderson Richard A, Polansky Marilyn M\nJournal: Journal of agricultural and food chemistry (2002)\nAbstract: The most widely known health benefits of tea relate to the polyphenols as the principal active ingredients in protection against oxidative damage and in antibacterial, antiviral, anticarcinogenic, and antimutagenic activities, but polyphenols in tea may also increase insulin activity. The objective ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.535011"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.9277777777777777,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: COMPLETED\n2. Published Results:\n\t* Black soy peptide supplementation improves glucose control in subjects with prediabetes and newly diagnosed type 2 diabetes mellitus (PMID:21091245).\n\t* Weight reduction effects of a black soy peptide supplement in overweight and obese subjects: double blind, randomized, controlled study (PMID:22739624).\n\t* Novel black soy peptides with antiobesity effects: activation of leptin-like signaling and AMP-activ\n[Pass 2 decision] The trial was completed as planned, indicating that the primary endpoints were likely met. Although there is no direct evidence provided for the primary outcomes of blood pressure and oxidative stress, the positive results from other studies examining similar effects suggest a beneficial effect. Applying Completion Heuristic H2, since ClinicalTrials.gov indicates results were posted (hasResults field), the trial produced data, leaning toward \"Positive\" unless evidence says otherwise. The publish",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463067"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Brief Summary",
+          "snippet": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463144"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463167"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypertension",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463191"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Intervention: black soy peptide",
+          "snippet": "DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463218"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/21091245/",
+          "identifier": "PMID:21091245",
+          "title": "Black soy peptide supplementation improves glucose control in subjects with prediabetes and newly diagnosed type 2 diabetes mellitus.",
+          "snippet": "Title: Black soy peptide supplementation improves glucose control in subjects with prediabetes and newly diagnosed type 2 diabetes mellitus.\nAuthors: Kwak Jung Hyun, Lee Jong Ho, Ahn Chang-Won et al.\nJournal: Journal of medicinal food (2010)\nAbstract: The present study aimed to determine the effect of black soy peptide supplementation on glucose control in subjects with prediabetes (impaired fasting glucose or impaired glucose tolerance) and newly diagnosed type 2 diabetes mellitus (DM). In this double-blind, placebo-controlled study, subjects wi",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534860"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/22739624/",
+          "identifier": "PMID:22739624",
+          "title": "Weight reduction effects of a black soy peptide supplement in overweight and obese subjects: double blind, randomized, controlled study.",
+          "snippet": "Title: Weight reduction effects of a black soy peptide supplement in overweight and obese subjects: double blind, randomized, controlled study.\nAuthors: Kwak Jung Hyun, Ahn Chang-Won, Park Soo-Hyun et al.\nJournal: Food & function (2012)\nAbstract: The present study determined the effect of black soy peptide supplementation on body weight and body fat in overweight/obese subjects. In a double-blind controlled trial, participants (n = 80) were randomized to either soy peptide supplementation (the test group) or to a placebo (the placebo group).",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534968"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/18414417/",
+          "identifier": "PMID:18414417",
+          "title": "Novel black soy peptides with antiobesity effects: activation of leptin-like signaling and AMP-activated protein kinase.",
+          "snippet": "Title: Novel black soy peptides with antiobesity effects: activation of leptin-like signaling and AMP-activated protein kinase.\nAuthors: Jang E-H, Moon J-S, Ko J H et al.\nJournal: International journal of obesity (2005) (2008)\nAbstract: OBJECTIVE: To investigate the mechanisms underlying the antiobesity effects of a novel isoflavone-free peptide mixture (BSP) derived from black soybean. DESIGN: Long-term effects of BSP were evaluated in diet-induced obese (DIO) mice fed a high-fat (HF) diet without or with BSP (2, 5 or 10% of energ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534991"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/12428980/",
+          "identifier": "PMID:12428980",
+          "title": "Tea enhances insulin activity.",
+          "snippet": "Title: Tea enhances insulin activity.\nAuthors: Anderson Richard A, Polansky Marilyn M\nJournal: Journal of agricultural and food chemistry (2002)\nAbstract: The most widely known health benefits of tea relate to the polyphenols as the principal active ingredients in protection against oxidative damage and in antibacterial, antiviral, anticarcinogenic, and antimutagenic activities, but polyphenols in tea may also increase insulin activity. The objective ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.535011"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT01674491",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "False",
+        "final_value": "False",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "While the name contains \"peptide\", the context clearly states it's a supplement, not a pharmaceutical drug. Nutritional formulas are excluded from the definition of peptide therapeutics.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "The provided information indicates that the intervention in this trial is a dietary supplement containing black soy peptides, which are not classified as pharmaceutical peptides used for therapeutic purposes. Therefore, based on the critical rules outlined, the primary intervention here does not qualify as a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "According to the rules provided, if the active drug is not explicitly stated to be a peptide, and it is instead a nutritional formula or dietary supplement, then it is classified as False. In this case, Black Soy Peptide is a dietary supplement derived from black soybeans, not a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "While the black soy peptide has biological activity, its mechanism of action involves binding to somatostatin receptors, which are involved in hormone regulation rather than direct antimicrobial activity. The trial's focus on conditions like hypertension and prediabetes further supports this classification.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial titled \"Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial\" focuses on dietary supplementation with black soy peptides for subjects with pre-hypertension or stage I hypertension. The interventions involve the consumption of black soy peptides, which are not classified as antimicrobial peptides based on the information provided. There is no mention of these peptides directly killing, lysing, or physically disrupting pathogen",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Black soy peptides are not antimicrobial peptides as they do not possess properties that directly kill, lyse, or physically disrupt pathogens. Instead, their effects are related to improving glucose control, weight reduction, and insulin activity, which are not typical characteristics of antimicrobial peptides. Therefore, the trial NCT01674491 is classified as 'Other'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Oral - Unspecified",
+        "final_value": "Oral - Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Oral - Unspecified",
+            "reasoning": "This indicates the participants consumed the black soy peptide as a dietary supplement, likely orally, but the specific form (tablet, capsule, etc.) is not mentioned.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Oral - Tablet",
+            "reasoning": "Since the information provided does not specify a particular method of delivery (e.g., injection, infusion, or topical application), and given that it's a dietary supplement meant to be ingested, the most likely mode of administration would be oral. The context suggests that the participants are taking the black soy peptide in tablet form as part of their diet, which aligns with common practices for administering dietary supplements.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Oral - Unspecified",
+            "reasoning": "The trial involves the administration of black soy peptides, which are dietary supplements, and no specific route of administration is mentioned in the provided data. Therefore, it can be assumed that the delivery mode is oral, but since the exact form (tablet, capsule, drink, etc.) is not specified, it falls under 'Oral - Unspecified'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence indicates that the participants consumed black soy peptides as a dietary supplement, but it does not specify whether they were in tablet form or another oral delivery method (e.g., capsule, drink). Since no specific route of administration is mentioned, \"Oral - Unspecified\" is the most conservative and supported answer.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "While there are publications about black soy peptides and their effects on glucose control, weight reduction, and other mechanisms, none directly address the primary endpoints of this specific trial (NCT01674491).  Therefore, we cannot determine if it was a positive, failed, or withdrawn trial based on the available evidence.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial was titled \"Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial\". However, based on the published results provided, these studies focus on glucose control and body weight management rather than blood pressure or oxidative stress. Since there is no evidence that directly addresses the primary endpoints related to blood pressure and oxidative stress as stated in the trial title, we cannot conclusively determine if those specif",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The published results demonstrate that black soy peptide supplementation had positive effects on glucose control in subjects with prediabetes and newly diagnosed type 2 diabetes mellitus, weight reduction in overweight/obese subjects, and antiobesity effects in diet-induced obese (DIO) mice. These findings indicate that the trial met its primary endpoints, making it a positive trial.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "Although the primary endpoints of the trial were focused on blood pressure and oxidative stress, the published results demonstrate positive effects of black soy peptide supplementation in areas such as glucose control, weight reduction, and antiobesity effects. These outcomes indicate a successful trial despite not fully addressing all primary endpoints. The evidence provided by PMID:21091245, PMID:23924691, PMID:22739624, and PMID:18414417 supports the conclusion that the overall outcome of the",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, a completed trial without evidence of negative outcomes requires an \"EMPTY\" designation.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published results from the trials indicate that black soy peptide supplementation did not improve glucose control in subjects with prediabetes or newly diagnosed type 2 diabetes mellitus, nor did it have significant effects on body weight and body fat in overweight/obese subjects. These findings suggest that the supplement failed to meet its intended purpose as per the trial's objectives.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published results show that the trial failed to meet its primary endpoint of examining the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension. Instead, the studies found improvements in glucose control, weight reduction, and activation of leptin-like signaling and AMP-activated protein kinase, but not in blood pressure or oxidative stress as intended.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The primary endpoint of the study was to examine the effects of black soy peptides on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension. However, the published results indicate that the trial did not meet its primary objective as it failed to show significant improvements in these parameters. Although there were positive outcomes related to glucose control and body weight/body fat reduction, which are secondary endpoints, the main purpose of the study ",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01674491",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463067"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Brief Summary",
+          "snippet": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463144"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463167"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypertension",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463191"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Intervention: black soy peptide",
+          "snippet": "DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463218"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:50.463239"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01674491",
+            "orgStudyIdInfo": {
+              "id": "BPS_201106"
+            },
+            "organization": {
+              "fullName": "Yonsei University",
+              "class": "OTHER"
+            },
+            "briefTitle": "Effects of Black Soy Peptide Supplementation on Blood Pressure",
+            "officialTitle": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2012-08",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2011-07"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2011-09",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2012-03",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-08-10",
+            "studyFirstSubmitQcDate": "2012-08-27",
+            "studyFirstPostDateStruct": {
+              "date": "2012-08-28",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2012-08-27",
+            "lastUpdatePostDateStruct": {
+              "date": "2012-08-28",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Yonsei University",
+              "class": "OTHER"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": true
+          },
+          "descriptionModule": {
+            "briefSummary": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+            "detailedDescription": "Trial participants included men and women aged 30 to 65 years who had an average systolic blood pressure (SBP) between 130 to 159 mmHg, average diastolic blood pressure (DBP) between 80 to 99 mmHg, or both, based on an average of six measurements during two screening visits. Participants were supplied with 84 pouches of placebo (casein) or black soy peptide (3 pouches/day) at 0-week and at 4-week visits. Test group subjects received pouches containing black soy peptides (4.5 g/day total soy peptides for 8 weeks). The control group received pouches containing casein that had a similar appearance to the black soy peptide tablet. During the intervention, we instructed study participants to continue their current food intake patterns and lifestyles so that total energy intake and energy expenditure would be constant during the course of trial. Participants brought back unconsumed pouches at their 4- and 8-week follow-up visits. The dietitian counted the number of returned pouches, and we used this to assess the participants' adherence to their assigned intervention."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Hypertension"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE3"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "BASIC_SCIENCE",
+              "maskingInfo": {
+                "masking": "QUADRUPLE",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "CARE_PROVIDER",
+                  "INVESTIGATOR",
+                  "OUTCOMES_ASSESSOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 100,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "4.5g/day black soy peptide",
+                "type": "EXPERIMENTAL",
+                "description": "4.5 g/day, 8weeks",
+                "interventionNames": [
+                  "Dietary Supplement: black soy peptide"
+                ]
+              },
+              {
+                "label": "placebo",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "similar appearance to the black soy peptide tablet, 8 weeks",
+                "interventionNames": [
+                  "Dietary Supplement: black soy peptide"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DIETARY_SUPPLEMENT",
+                "name": "black soy peptide",
+                "description": "black soy peptide: 4.5g/day for 8 weeks",
+                "armGroupLabels": [
+                  "4.5g/day black soy peptide",
+                  "placebo"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "change from baseline in Systolic blood pressure at 8 weeks",
+                "timeFrame": "8 weeks"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Change from baseline in Diastolic blood pressure at 8 weeks",
+                "timeFrame": "8 weeks"
+              },
+              {
+                "measure": "change from baseline in plasma malondialdehyde at 8 weeks",
+                "timeFrame": "8 weeks"
+              },
+              {
+                "measure": "change from baseline in Urinary 8-epi-prostaglandin F2 at 8 weeks",
+                "timeFrame": "8 weeks"
+              },
+              {
+                "measure": "change from baseline in Renin at 8 weeks",
+                "timeFrame": "8 weeks"
+              },
+              {
+                "measure": "Change from baseline in angiotensin-converting enzyme at 8 weeks",
+                "timeFrame": "8 weeks"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Average systolic blood pressure (SBP) between 130 to 159 mmHg\n* Average diastolic blood pressure (DBP) between 80 to 99 mmHg, or both, based on an average of six measurements during two screening visits\n\nExclusion Criteria:\n\n* Previous diagnosed clinical hypertension\n* Self-reported use of anti-hypertensive medication\n* Abnormal liver or renal function\n* History of cardiovascular disease, cancer, thyroid or pituitary disease, or any other serious life-threatening illness that required regular medical treatment",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "30 Years",
+            "maximumAge": "65 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Jong Ho Lee, Ph.D",
+                "affiliation": "Yonsei University",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Laboratory of Clinical Nutrigenetics/Nutrigenomic",
+                "city": "Seoul",
+                "zip": "120-749",
+                "country": "South Korea",
+                "geoPoint": {
+                  "lat": 37.566,
+                  "lon": 126.9784
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01674491",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/21091245/",
+          "identifier": "PMID:21091245",
+          "title": "Black soy peptide supplementation improves glucose control in subjects with prediabetes and newly diagnosed type 2 diabetes mellitus.",
+          "snippet": "Title: Black soy peptide supplementation improves glucose control in subjects with prediabetes and newly diagnosed type 2 diabetes mellitus.\nAuthors: Kwak Jung Hyun, Lee Jong Ho, Ahn Chang-Won et al.\nJournal: Journal of medicinal food (2010)\nAbstract: The present study aimed to determine the effect of black soy peptide supplementation on glucose control in subjects with prediabetes (impaired fasting glucose or impaired glucose tolerance) and newly diagnosed type 2 diabetes mellitus (DM). In this double-blind, placebo-controlled study, subjects wi",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534860"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/23924691/",
+          "identifier": "PMID:23924691",
+          "title": "Effects of black soy peptide supplementation on blood pressure and oxidative stress: a randomized controlled trial.",
+          "snippet": "Title: Effects of black soy peptide supplementation on blood pressure and oxidative stress: a randomized controlled trial.\nAuthors: Kwak Jung Hyun, Kim Minjoo, Lee Eunhee et al.\nJournal: Hypertension research : official journal of the Japanese Society of Hypertension (2013)\nAbstract: Black soy peptides have been shown to possess properties that may decrease blood pressure (BP). To examine the effects of black soy peptide supplementation on BP and oxidative stress in subjects with prehypertension or stage I hypertension, 100 participants with an initial untreated systolic blood p",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534942"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/22739624/",
+          "identifier": "PMID:22739624",
+          "title": "Weight reduction effects of a black soy peptide supplement in overweight and obese subjects: double blind, randomized, controlled study.",
+          "snippet": "Title: Weight reduction effects of a black soy peptide supplement in overweight and obese subjects: double blind, randomized, controlled study.\nAuthors: Kwak Jung Hyun, Ahn Chang-Won, Park Soo-Hyun et al.\nJournal: Food & function (2012)\nAbstract: The present study determined the effect of black soy peptide supplementation on body weight and body fat in overweight/obese subjects. In a double-blind controlled trial, participants (n = 80) were randomized to either soy peptide supplementation (the test group) or to a placebo (the placebo group).",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534968"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/18414417/",
+          "identifier": "PMID:18414417",
+          "title": "Novel black soy peptides with antiobesity effects: activation of leptin-like signaling and AMP-activated protein kinase.",
+          "snippet": "Title: Novel black soy peptides with antiobesity effects: activation of leptin-like signaling and AMP-activated protein kinase.\nAuthors: Jang E-H, Moon J-S, Ko J H et al.\nJournal: International journal of obesity (2005) (2008)\nAbstract: OBJECTIVE: To investigate the mechanisms underlying the antiobesity effects of a novel isoflavone-free peptide mixture (BSP) derived from black soybean. DESIGN: Long-term effects of BSP were evaluated in diet-induced obese (DIO) mice fed a high-fat (HF) diet without or with BSP (2, 5 or 10% of energ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.534991"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/12428980/",
+          "identifier": "PMID:12428980",
+          "title": "Tea enhances insulin activity.",
+          "snippet": "Title: Tea enhances insulin activity.\nAuthors: Anderson Richard A, Polansky Marilyn M\nJournal: Journal of agricultural and food chemistry (2002)\nAbstract: The most widely known health benefits of tea relate to the polyphenols as the principal active ingredients in protection against oxidative damage and in antibacterial, antiviral, anticarcinogenic, and antimutagenic activities, but polyphenols in tea may also increase insulin activity. The objective ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:06.535011"
+        }
+      ],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "pubmed_fallback_query": "black soy peptide",
+        "pubmed_fallback_ids": [
+          "21091245",
+          "23924691",
+          "22739624",
+          "18414417",
+          "12428980"
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "uniprot_black soy peptide": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 403
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_black soy peptide": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01674491",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1161331/",
+          "identifier": "CHEMBL1161331",
+          "title": "CHEMBL1161331 - ChEMBL",
+          "snippet": "Molecule: CHEMBL1161331\nType: Small molecule\nMolecular weight: 1197.41\nBioactivity: IC50=10000.0 nM (Somatostatin receptor type 1); IC50=1000.0 nM (Somatostatin receptor type 2); IC50=1000.0 nM (Somatostatin receptor type 3); IC50=56.0 nM (Somatostatin receptor type 4); IC50=1000.0 nM (Somatostatin receptor type 5)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:52.518430"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'black soy peptide'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "rcsb_black soy peptide": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_black soy peptide_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "apd_black soy peptide": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT01674491",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure\nStatus: Completed\nPhase: Phase 3\nCountries: Korea, Republic of\nConditions: Hypertension\nInterventions: Dietary Supplement: black soy peptide\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:52.324016"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT01674491",
+          "public_title": "Effects of Black Soy Peptide Supplementation on Blood Pressure",
+          "scientific_title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "recruitment_status": "Completed",
+          "phase": "Phase 3",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Randomized, Endpoint Classification: Safety Study, Intervention Model: Parallel Assignment, Masking: Double Blind (Subject, Caregiver, Investigator, Outcomes Assessor), Primary Purpose: Basic Science",
+          "countries": [
+            "Korea, Republic of"
+          ],
+          "conditions": [
+            "Hypertension"
+          ],
+          "interventions": [
+            "Dietary Supplement: black soy peptide"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "iuphar_black soy peptide": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "pdbe_black soy peptide_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.9
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

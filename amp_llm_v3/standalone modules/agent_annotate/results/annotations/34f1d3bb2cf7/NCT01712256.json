@@ -1,0 +1,4733 @@
+{
+  "nct_id": "NCT01712256",
+  "metadata": {
+    "nct_id": "NCT01712256",
+    "title": "Re-boosting of Subjects Previously Included in the CT BI-Vacc-4x 2007/1 Study. An Open, Multicenter, Immunogenicity, Follow-up Re-boosting Study With Vacc-4x in Subjects Infected With HIV-1 Who Have Maintained an Adequate Response to ART",
+    "phase": "PHASE2",
+    "status": "COMPLETED",
+    "conditions": [
+      "HIV-1 Infection"
+    ],
+    "interventions": [
+      "BIOLOGICAL: Vacc-4x"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.9199999999999999,
+      "reasoning": "[Pass 1 extraction] Here is the extracted information:\n\nIntervention: Vacc-4x\nMolecular Class: Short peptide chain (2-50 amino acids)\nDatabase Confirmation:\n* UniProt: entry found for A0A2K9YAE9 and A0A2K9YAM6, both are Gag polyprotein from Human immunodeficiency virus type 1.\n* DRAMP/DBAASP: No evidence found\n* ChEMBL: No evidence found (only small molecule entries)\n* PDB: No evidence found\n* List specific hits or \"\n[Pass 2 decision] Peptide: True\nReasoning:\n\nStep 1: Molecular Class is a \"Short peptide chain\" (2-50 amino acids), so we proceed to Step 2.\n\nStep 2: Active Ingredient Role is \"the peptide is the ACTIVE therapeutic agent\", which means it's an active drug, not a food ingredient or targeting vector. Since it's described as a \"peptide-based HIV immunotherapy vaccine\", this confirms that it's indeed a peptide therapeuti",
+      "evidence": [
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/A0A2K9YAE9",
+          "identifier": "A0A2K9YAE9",
+          "title": "Gag polyprotein",
+          "snippet": "Organism: Human immunodeficiency virus type 1. Protein: Gag polyprotein. Accession: A0A2K9YAE9",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:24.924736"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/A0A2K9YAM6",
+          "identifier": "A0A2K9YAM6",
+          "title": "Gag polyprotein",
+          "snippet": "Organism: Human immunodeficiency virus type 1. Protein: Gag polyprotein. Accession: A0A2K9YAM6",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:24.924819"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3689009/",
+          "identifier": "CHEMBL3689009",
+          "title": "CHEMBL3689009 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3689009\nType: Small molecule\nMolecular weight: 466.56\nBioactivity: IC50=120.0 nM (Serine/threonine-protein kinase mTOR)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:28.274866"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL6004481/",
+          "identifier": "CHEMBL6004481",
+          "title": "CHEMBL6004481 - ChEMBL",
+          "snippet": "Molecule: CHEMBL6004481\nMolecular weight: 549.91\nBioactivity: IC50=3.0 nM (Unchecked)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:29.232855"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL158666/",
+          "identifier": "CHEMBL158666",
+          "title": "AUTONOM NAME: - ChEMBL",
+          "snippet": "Molecule: AUTONOM NAME:\nType: Small molecule\nMolecular weight: 398.58\nBioactivity: Ki=50.4 nM (Protein kinase C alpha type); LogD=7.0 (No relevant target)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:31.060425"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Re-boosting of Subjects Previously Included in the CT BI-Vacc-4x 2007/1 Study. An Open, Multicenter, Immunogenicity, Follow-up Re-boosting Study With Vacc-4x in Subjects Infected With HIV-1 Who Have Maintained an Adequate Response to ART",
+          "snippet": "Title: Re-boosting of Subjects Previously Included in the CT BI-Vacc-4x 2007/1 Study. An Open, Multicenter, Immunogenicity, Follow-up Re-boosting Study With Vacc-4x in Subjects Infected With HIV-1 Who Have Maintained an Adequate Response to ART",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988770"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Brief Summary",
+          "snippet": "During the course of HIV infection the number of CD4 cells decreases, resulting in a reduced immunological response and eventually immune deficiency. Vacc-4x is a peptide-based HIV immunotherapy vaccine and is anticipated to strengthen the immune system's response to HIV.\n\nAll patients participating in this trial have previously received the vacc-4x vaccine in order to reduce the amount of HIV-1 virus in the blood and increase the immune response. The primary objective of this study is to evalua",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988837"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988854"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV-1 Infection | Keywords: CD4, Clinical trial, Human immunodeficiency virus-1 (HIV-1), HIV, Immunomodulary, Infection, Phase II, Re-boost, Vaccine, Vacc-4x",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988873"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Intervention: Vacc-4x",
+          "snippet": "BIOLOGICAL: Vacc-4x - Vacc-4x is a peptide-based HIV immunotherapy administered intradermally. Vacc-4x peptides are reconstituted in sterile water.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988890"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9299999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: Vacc-4x - a peptide-based HIV immunotherapy vaccine. The exact amino acid sequence or length is not provided in the evidence.\nDatabase Matches: No specific matches found in antimicrobial peptide databases (DRAMP, DBAASP, APD3, UniProt with \"antimicrobial\" annotation). ChEMBL contains bioactivity data for small molecules but no direct hits for Vacc-4x as an antimicrobial peptide. \n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\nPeptide determination is True, so it proceeds to Step 2.\n\nStep 2 \u2014 Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?\n- Database Matches: No specific matches found in antimicrobial peptide databases.\n- Mechanism: The peptide does not directly kill or inhibit microorganisms. Its mechanism appears to be imm",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Re-boosting of Subjects Previously Included in the CT BI-Vacc-4x 2007/1 Study. An Open, Multicenter, Immunogenicity, Follow-up Re-boosting Study With Vacc-4x in Subjects Infected With HIV-1 Who Have Maintained an Adequate Response to ART",
+          "snippet": "Title: Re-boosting of Subjects Previously Included in the CT BI-Vacc-4x 2007/1 Study. An Open, Multicenter, Immunogenicity, Follow-up Re-boosting Study With Vacc-4x in Subjects Infected With HIV-1 Who Have Maintained an Adequate Response to ART",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988770"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Brief Summary",
+          "snippet": "During the course of HIV infection the number of CD4 cells decreases, resulting in a reduced immunological response and eventually immune deficiency. Vacc-4x is a peptide-based HIV immunotherapy vaccine and is anticipated to strengthen the immune system's response to HIV.\n\nAll patients participating in this trial have previously received the vacc-4x vaccine in order to reduce the amount of HIV-1 virus in the blood and increase the immune response. The primary objective of this study is to evalua",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988837"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988854"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV-1 Infection | Keywords: CD4, Clinical trial, Human immunodeficiency virus-1 (HIV-1), HIV, Immunomodulary, Infection, Phase II, Re-boost, Vaccine, Vacc-4x",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988873"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Intervention: Vacc-4x",
+          "snippet": "BIOLOGICAL: Vacc-4x - Vacc-4x is a peptide-based HIV immunotherapy administered intradermally. Vacc-4x peptides are reconstituted in sterile water.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988890"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988902"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/A0A2K9YAE9",
+          "identifier": "A0A2K9YAE9",
+          "title": "Gag polyprotein",
+          "snippet": "Organism: Human immunodeficiency virus type 1. Protein: Gag polyprotein. Accession: A0A2K9YAE9",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:24.924736"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/A0A2K9YAM6",
+          "identifier": "A0A2K9YAM6",
+          "title": "Gag polyprotein",
+          "snippet": "Organism: Human immunodeficiency virus type 1. Protein: Gag polyprotein. Accession: A0A2K9YAM6",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:24.924819"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3689009/",
+          "identifier": "CHEMBL3689009",
+          "title": "CHEMBL3689009 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3689009\nType: Small molecule\nMolecular weight: 466.56\nBioactivity: IC50=120.0 nM (Serine/threonine-protein kinase mTOR)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:28.274866"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL6004481/",
+          "identifier": "CHEMBL6004481",
+          "title": "CHEMBL6004481 - ChEMBL",
+          "snippet": "Molecule: CHEMBL6004481\nMolecular weight: 549.91\nBioactivity: IC50=3.0 nM (Unchecked)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:29.232855"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Subcutaneous/Intradermal",
+      "confidence": 0.925,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n1. Protocol Route: \"Vacc-4x is a peptide-based HIV immunotherapy administered intradermally.\" (Source: ClinicalTrials.gov, Intervention description)\n\n2. FDA/Label Route: Not found in the provided sources.\n\n3. Literature Route: Not found in the provided PubMed/PMC publications.\n\n4. Database Route: \n   - UniProt entries A0A2K9YAE9 and A0A2K9YAM6 are for HIV-1 pro\n[Pass 2 classification] Delivery Mode: Injection/Infusion - Subcutaneous/Intradermal\nEvidence: [clinicaltrials_gov] NCT01712256: BIOLOGICAL: Vacc-4x - Vacc-4x is a peptide-based HIV immunotherapy administered intradermally.\nReasoning: The most specific source, the ClinicalTrials.gov protocol text, explicitly states that Va",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Re-boosting of Subjects Previously Included in the CT BI-Vacc-4x 2007/1 Study. An Open, Multicenter, Immunogenicity, Follow-up Re-boosting Study With Vacc-4x in Subjects Infected With HIV-1 Who Have Maintained an Adequate Response to ART",
+          "snippet": "Title: Re-boosting of Subjects Previously Included in the CT BI-Vacc-4x 2007/1 Study. An Open, Multicenter, Immunogenicity, Follow-up Re-boosting Study With Vacc-4x in Subjects Infected With HIV-1 Who Have Maintained an Adequate Response to ART",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988770"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Brief Summary",
+          "snippet": "During the course of HIV infection the number of CD4 cells decreases, resulting in a reduced immunological response and eventually immune deficiency. Vacc-4x is a peptide-based HIV immunotherapy vaccine and is anticipated to strengthen the immune system's response to HIV.\n\nAll patients participating in this trial have previously received the vacc-4x vaccine in order to reduce the amount of HIV-1 virus in the blood and increase the immune response. The primary objective of this study is to evalua",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988837"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988854"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV-1 Infection | Keywords: CD4, Clinical trial, Human immunodeficiency virus-1 (HIV-1), HIV, Immunomodulary, Infection, Phase II, Re-boost, Vaccine, Vacc-4x",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988873"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Intervention: Vacc-4x",
+          "snippet": "BIOLOGICAL: Vacc-4x - Vacc-4x is a peptide-based HIV immunotherapy administered intradermally. Vacc-4x peptides are reconstituted in sterile water.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988890"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988902"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Re-boosting of HIV-1 Infected Subjects With Vacc-4x",
+          "snippet": "Title: Re-boosting of HIV-1 Infected Subjects With Vacc-4x\nStatus: Completed\nPhase: Phase 2\nCountries: Germany, Italy, Spain, United Kingdom, United States\nConditions: HIV-1 Infection\nInterventions: Biological: Vacc-4x\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:59:38.347905"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/A0A2K9YAE9",
+          "identifier": "A0A2K9YAE9",
+          "title": "Gag polyprotein",
+          "snippet": "Organism: Human immunodeficiency virus type 1. Protein: Gag polyprotein. Accession: A0A2K9YAE9",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:24.924736"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/A0A2K9YAM6",
+          "identifier": "A0A2K9YAM6",
+          "title": "Gag polyprotein",
+          "snippet": "Organism: Human immunodeficiency virus type 1. Protein: Gag polyprotein. Accession: A0A2K9YAM6",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:24.924819"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3689009/",
+          "identifier": "CHEMBL3689009",
+          "title": "CHEMBL3689009 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3689009\nType: Small molecule\nMolecular weight: 466.56\nBioactivity: IC50=120.0 nM (Serine/threonine-protein kinase mTOR)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:28.274866"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.9049999999999999,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n**Registry Status:** COMPLETED\n**Trial Phase:** PHASE2\n**Published Results:** None found in PubMed, PMC, or web evidence.\n**Result Valence:** Not Available (since no results are available)\n**Results Posted:** Unknown (hasResults field not specified)\n**Completion Date:** Unknown (completion date not specified on ClinicalTrials.gov)\n**Why Stopped:** N/A (trial was completed as planned)\n**Trial Phase:** PHASE2\n[Pass 2 decision] The trial is COMPLETED and in PHASE II, but no published results are available. Applying Completion Heuristic H4, since Results Posted = Unknown (hasResults field not specified), I lean towards \"Positive\" as the act of posting results for a completed trial typically happens for trials with reportable outcomes. Additionally, the primary objective of this study is to evaluate the re-boosting effect of Vacc-4x in HIV-1 infected subjects, suggesting that the trial aimed to demonstrate efficacy or sa",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Re-boosting of Subjects Previously Included in the CT BI-Vacc-4x 2007/1 Study. An Open, Multicenter, Immunogenicity, Follow-up Re-boosting Study With Vacc-4x in Subjects Infected With HIV-1 Who Have Maintained an Adequate Response to ART",
+          "snippet": "Title: Re-boosting of Subjects Previously Included in the CT BI-Vacc-4x 2007/1 Study. An Open, Multicenter, Immunogenicity, Follow-up Re-boosting Study With Vacc-4x in Subjects Infected With HIV-1 Who Have Maintained an Adequate Response to ART",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988770"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Brief Summary",
+          "snippet": "During the course of HIV infection the number of CD4 cells decreases, resulting in a reduced immunological response and eventually immune deficiency. Vacc-4x is a peptide-based HIV immunotherapy vaccine and is anticipated to strengthen the immune system's response to HIV.\n\nAll patients participating in this trial have previously received the vacc-4x vaccine in order to reduce the amount of HIV-1 virus in the blood and increase the immune response. The primary objective of this study is to evalua",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988837"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988854"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV-1 Infection | Keywords: CD4, Clinical trial, Human immunodeficiency virus-1 (HIV-1), HIV, Immunomodulary, Infection, Phase II, Re-boost, Vaccine, Vacc-4x",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988873"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Intervention: Vacc-4x",
+          "snippet": "BIOLOGICAL: Vacc-4x - Vacc-4x is a peptide-based HIV immunotherapy administered intradermally. Vacc-4x peptides are reconstituted in sterile water.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988890"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988902"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Re-boosting of HIV-1 Infected Subjects With Vacc-4x",
+          "snippet": "Title: Re-boosting of HIV-1 Infected Subjects With Vacc-4x\nStatus: Completed\nPhase: Phase 2\nCountries: Germany, Italy, Spain, United Kingdom, United States\nConditions: HIV-1 Infection\nInterventions: Biological: Vacc-4x\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:59:38.347905"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3689009/",
+          "identifier": "CHEMBL3689009",
+          "title": "CHEMBL3689009 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3689009\nType: Small molecule\nMolecular weight: 466.56\nBioactivity: IC50=120.0 nM (Serine/threonine-protein kinase mTOR)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:28.274866"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL6004481/",
+          "identifier": "CHEMBL6004481",
+          "title": "CHEMBL6004481 - ChEMBL",
+          "snippet": "Molecule: CHEMBL6004481\nMolecular weight: 549.91\nBioactivity: IC50=3.0 nM (Unchecked)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:29.232855"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL158666/",
+          "identifier": "CHEMBL158666",
+          "title": "AUTONOM NAME: - ChEMBL",
+          "snippet": "Molecule: AUTONOM NAME:\nType: Small molecule\nMolecular weight: 398.58\nBioactivity: Ki=50.4 nM (Protein kinase C alpha type); LogD=7.0 (No relevant target)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:31.060425"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT01712256",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The clinical trial description explicitly states that Vacc-4x is a \"peptide-based HIV immunotherapy vaccine\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The description and administration method of the active drug (Vacc-4x) align with the definition provided in the critical rules for identifying a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The active drug in this trial, Vacc-4x, is a peptide-based HIV immunotherapy, making it a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial describes Vacc-4x as an immunotherapy vaccine designed to boost the immune response against HIV. This indicates that the peptide does not directly kill or disrupt the virus, but rather aims to stimulate the body's own immune system to fight the infection.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on the information provided, Vacc-4x works by inducing an immunological response against HIV rather than directly killing or disrupting pathogens. It does not fall under the category of antimicrobial peptides as it does not directly kill, lyse, or physically disrupt microorganisms through its own biochemical action. Instead, it functions by enhancing the immune system's ability to fight off the virus. Therefore, according to the decision tree criteria, this intervention is classified as 'O",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial NCT01712256 is a phase 2 study for a peptide-based HIV immunotherapy vaccine (Vacc-4x) in subjects infected with HIV-1. The primary objective of this study is to evaluate the immune response, not to directly kill or disrupt pathogens. Therefore, Vacc-4x does not meet the criteria for an antimicrobial peptide as defined by the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Subcutaneous/Intradermal",
+        "final_value": "Injection/Infusion - Subcutaneous/Intradermal",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The protocol explicitly states that Vacc-4x is administered intradermally.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The term 'intradermal' specifically indicates the route of administration as subcutaneous/intradermal, which overrides any generic 'injection' description in the protocol.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "According to the guidelines provided, if the protocol says 'administered by injection' without specifying a route, the delivery mode should be classified as Injection/Infusion - Other/Unspecified. The fact that Vacc-4x is administered intradermally supports this classification, but since the specific route (IM or SC) is not explicitly mentioned, it remains unspecified.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence clearly states that Vacc-4x is administered intradermally, which aligns with the classification of \"Injection/Infusion - Subcutaneous/Intradermal\" as per the guidelines. Verifier_3's reasoning would apply if there was no specific route mentioned, but since the protocol explicitly specifies 'intradermal', this overrides any generic interpretation.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial is listed as COMPLETED on clinicaltrials.gov.  Since it's a Phase II trial and there are no publications indicating negative results, we lean towards 'Positive' based on the COMPLETION HEURISTICS.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "Since the trial status indicates 'COMPLETED', we need evidence from published literature or heuristics to determine its outcome. The provided information does not specify whether the primary endpoints were met or not. However, given that the primary objective was to evaluate re-boosting with Vacc-4x in HIV-infected subjects who have maintained an adequate response to ART, and considering this is a Phase II study focusing on immunogenicity, it leans towards being 'Positive'. The completion of suc",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial has been completed, and there is no evidence of negative outcomes in the published literature. Since it's a Phase II trial for an HIV vaccine, completion implies success in terms of safety and immunogenicity, as a successful safety trial is considered a positive outcome for Phase I trials. Additionally, the results have been posted on ClinicalTrials.gov, which leans towards a positive outcome.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "EMPTY",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, a completed trial without evidence of negative publications should be classified as EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The provided information states that the trial is completed, and there are no published results indicating negative outcomes or stating that the primary endpoint was not met. Therefore, based on the available data, we cannot conclude that the trial failed to meet its objectives.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial aimed to evaluate the immunogenicity of re-boosting subjects previously included in the CT BI-Vacc-4x 2007/1 study with Vacc-4x. However, there is no published evidence indicating that the trial failed to meet its endpoints or had any negative outcomes. Therefore, the reason for failure is not evident from the provided data.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial is marked as completed in both the clinical trials database and WHO ICTRP. There is no evidence provided that indicates any negative outcomes or failure to meet its objectives. Therefore, based on the available data, the most conservative interpretation would be \"EMPTY\" since there is insufficient information to conclude a specific reason for failure.",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": null
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "dbamp",
+    "who_ictrp",
+    "iuphar",
+    "intact",
+    "card",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01712256",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Re-boosting of Subjects Previously Included in the CT BI-Vacc-4x 2007/1 Study. An Open, Multicenter, Immunogenicity, Follow-up Re-boosting Study With Vacc-4x in Subjects Infected With HIV-1 Who Have Maintained an Adequate Response to ART",
+          "snippet": "Title: Re-boosting of Subjects Previously Included in the CT BI-Vacc-4x 2007/1 Study. An Open, Multicenter, Immunogenicity, Follow-up Re-boosting Study With Vacc-4x in Subjects Infected With HIV-1 Who Have Maintained an Adequate Response to ART",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988770"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Brief Summary",
+          "snippet": "During the course of HIV infection the number of CD4 cells decreases, resulting in a reduced immunological response and eventually immune deficiency. Vacc-4x is a peptide-based HIV immunotherapy vaccine and is anticipated to strengthen the immune system's response to HIV.\n\nAll patients participating in this trial have previously received the vacc-4x vaccine in order to reduce the amount of HIV-1 virus in the blood and increase the immune response. The primary objective of this study is to evalua",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988837"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988854"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV-1 Infection | Keywords: CD4, Clinical trial, Human immunodeficiency virus-1 (HIV-1), HIV, Immunomodulary, Infection, Phase II, Re-boost, Vaccine, Vacc-4x",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988873"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Intervention: Vacc-4x",
+          "snippet": "BIOLOGICAL: Vacc-4x - Vacc-4x is a peptide-based HIV immunotherapy administered intradermally. Vacc-4x peptides are reconstituted in sterile water.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988890"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:23.988902"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01712256",
+            "orgStudyIdInfo": {
+              "id": "CT-BI Vacc-4x 2012/1"
+            },
+            "organization": {
+              "fullName": "Bionor Immuno AS",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Re-boosting of HIV-1 Infected Subjects With Vacc-4x",
+            "officialTitle": "Re-boosting of Subjects Previously Included in the CT BI-Vacc-4x 2007/1 Study. An Open, Multicenter, Immunogenicity, Follow-up Re-boosting Study With Vacc-4x in Subjects Infected With HIV-1 Who Have Maintained an Adequate Response to ART",
+            "acronym": "Re-boost"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2017-01",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2012-12"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2014-01",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2014-01",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-10-16",
+            "studyFirstSubmitQcDate": "2012-10-19",
+            "studyFirstPostDateStruct": {
+              "date": "2012-10-23",
+              "type": "ESTIMATED"
+            },
+            "resultsFirstSubmitDate": "2017-01-11",
+            "resultsFirstSubmitQcDate": "2017-01-11",
+            "resultsFirstPostDateStruct": {
+              "date": "2017-03-06",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2017-01-11",
+            "lastUpdatePostDateStruct": {
+              "date": "2017-03-06",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Bionor Immuno AS",
+              "class": "INDUSTRY"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": true
+          },
+          "descriptionModule": {
+            "briefSummary": "During the course of HIV infection the number of CD4 cells decreases, resulting in a reduced immunological response and eventually immune deficiency. Vacc-4x is a peptide-based HIV immunotherapy vaccine and is anticipated to strengthen the immune system's response to HIV.\n\nAll patients participating in this trial have previously received the vacc-4x vaccine in order to reduce the amount of HIV-1 virus in the blood and increase the immune response. The primary objective of this study is to evaluate if a re-boost with Vacc-4x could further reduce the amount of HIV-1 virus and increase the immune response.",
+            "detailedDescription": "Human immunodeficiency virus (HIV) infects the cluster of differentiation 4 (CD4) subset of T-cells that are critical for initiating immune responses to infection. The level of CD4 cells in the blood is a marker of a patient's immunological status. During the course of an HIV infection, the number of CD4 cells decreases, resulting in reduced immunological responsiveness and ultimately immune deficiency.\n\nCurrent management of an HIV infection includes antiretroviral therapy (ART). The advent of effective ART in 1996 led to a profound decrease in type 1 HIV (HIV-1)-associated morbidity and mortality in developed countries where ART has been available.\n\nDespite the ability of ART to inhibit HIV-1 replication, it cannot cure infection, making ART a lifelong treatment that requires sustained compliance and imposes significant individual and societal financial burdens on healthcare services. Furthermore, ART side effects (e.g., metabolic toxicity and stigmatizing body fat redistribution) often require medication that further increases the inconveniences and financial burdens of HIV management. Of additional concern is the emergence of viruses resistant to ART that can result in treatment failure.\n\nVacc-4x is a peptide-based HIV therapeutic vaccine. The primary objective of Vacc-4x therapeutic vaccine is to strengthen the immune system's response to HIV p24. ART dramatically reduces the level of virus in circulation in the body, thereby allowing the immune system to focus on the therapeutic vaccine that is administered. ART also allows for the generation of new na\u00efve CD4 cells that can be triggered by the therapeutic vaccine to generate new immune responses to HIV-1. Subjects are therefore immunized with Vacc-4x in the presence of ART to generate new HIV-specific immune responses that can sustain immunological fitness for prolonged periods when patients are removed from ART. It is likely that periodic boosting on ART will be required to sustain the immunotherapeutic effect - in this way ART may become an intermittent therapy.\n\nThis study is a follow-up, re-boosting study of Study CT-BI Vacc-4x 2007/1 (EudraCT Number 2007-006302-13) performed in US and Europe (UK, Germany, Spain and Italy). All subjects to be included have been given a therapeutic immunization with Vacc-4x during the CT-BI Vacc-4x 2007/1 study. During the study a reduction in the viral load set-point (mean viral load at Week 48 and Week 52, or if Week 52 not reached, mean viral load of the last two measured values before restart of ART) was seen in the Vacc-4x group compared to placebo group. Further stimulation of the immune system by re-boosting with Vacc-4x could reduce the viral load set-point further."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV-1 Infection"
+            ],
+            "keywords": [
+              "CD4",
+              "Clinical trial",
+              "Human immunodeficiency virus-1 (HIV-1)",
+              "HIV",
+              "Immunomodulary",
+              "Infection",
+              "Phase II",
+              "Re-boost",
+              "Vaccine",
+              "Vacc-4x"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 33,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Re-boosting with Vacc-4x",
+                "type": "EXPERIMENTAL",
+                "description": "Intradermal Vacc-4x (1.2 mg) given with Leukine\u00ae (rhu-GM-CSF) (0.06 mg) at day 1 and day 15.",
+                "interventionNames": [
+                  "Biological: Vacc-4x"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "Vacc-4x",
+                "description": "Vacc-4x is a peptide-based HIV immunotherapy administered intradermally. Vacc-4x peptides are reconstituted in sterile water.",
+                "armGroupLabels": [
+                  "Re-boosting with Vacc-4x"
+                ],
+                "otherNames": [
+                  "Combination of Vacc-10, Vacc-11, Vacc-12 and Vacc-13"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Vacc-4x Effect on Viral Load Set-point",
+                "description": "Viral load (VL) set point in the present re-boost study was compared with VL set point in the 2007/1 study.",
+                "timeFrame": "37 weeks"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Vacc-4x Effect on Immune Response Measured as CD4 Count",
+                "description": "Effect of Re-boost with Vacc-4x on immune response obtained following immunization with Vacc-4x in Study CT-BI Vacc-4x 2007/1",
+                "timeFrame": "36 weeks"
+              },
+              {
+                "measure": "Vacc-4x Effect on Immune Response Measured as CD8 Count",
+                "description": "Effect of Re-boost with Vacc-4x on immune response obtained following immunization with Vacc-4x in Study CT-BI Vacc-4x 2007/1",
+                "timeFrame": "36 weeks"
+              },
+              {
+                "measure": "Delayed Type Hypersensitivity Test (DTH), Positive Responses for Induration",
+                "description": "The proportion of subjects who show Delayed Type Hypersensitivity (DTH) during the treatment phase.",
+                "timeFrame": "4 weeks"
+              },
+              {
+                "measure": "Delayed Type Hypersensitivity Test (DTH), Positive Responses for Erythema",
+                "description": "The proportion of subjects who show Delayed Type Hypersensitivity (DTH) during the treatment phase.",
+                "timeFrame": "4 Weeks"
+              },
+              {
+                "measure": "Number of Participants With Adverse Events as a Measure of Safety and Tolerability",
+                "description": "To evaluate the safety and tolerability of re-boosting with Vacc-4x by number of participants with Adverse Events",
+                "timeFrame": "37 weeks"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n1. Completed immunization regimen with Vacc-4x active and stopped ART (at Week 28) in the CT-BI Vacc-4x 2007/1 study. (No re-start of ART is required).\n2. Documented pre-study CD4 cell count \u2265400x106/L.\n3. Documented pre-study viral load \\< 300 000copies/mL.\n4. Signed informed consent.\n\nExclusion Criteria:\n\n1. Reported AIDS-defining illness within the previous year.\n2. Malignant disease.\n3. On chronic treatment with immune-suppressive therapy.\n4. Unacceptable values of the hematologic and clinical chemistry parameters, as judged by the Investigator, including creatinine values \\>1.5 x upper limit of normal (ULN), and AST, ALT and alkaline phosphatase (ALP) values \\>2.5 x ULN.\n5. Concurrent chronic active infection such as viral hepatitis B or C or tuberculosis.\n6. Pregnant or breastfeeding women.\n7. Women of childbearing potential not using reliable and adequate contraceptive methods (defined as: use of oral, implanted, injectable, mechanical or barrier products for the prevention of pregnancy; practicing abstinence; sterile) during the 5 weeks re-boosting period including the DTH and for 2 weeks after the DTH test, or sexually active male subjects with partners of child bearing potential unwilling to practice effective contraception during the 5 weeks re-boosting period including the DTH and for 12 weeks after the DTH-test.\n8. Current participation in other clinical therapeutic studies.\n9. Incapability of compliance to treatment protocol, in the opinion of the Investigator.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "63 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Vidar Wendel-Hansen, Dr. med",
+                "affiliation": "Bionor Pharma ASA, Kronprinsesse M\u00e4rthas Plass 1, P.O. Box 1477 Vika, NO-0116 Oslo, Norway",
+                "role": "STUDY_DIRECTOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "UCLA CARE Center",
+                "city": "Los Angeles",
+                "state": "California",
+                "zip": "90035",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.05223,
+                  "lon": -118.24368
+                }
+              },
+              {
+                "facility": "UC Davis Medical Center",
+                "city": "Sacramento",
+                "state": "California",
+                "zip": "95817",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.58157,
+                  "lon": -121.4944
+                }
+              },
+              {
+                "facility": "Universit\u00e4tsklinikum Bonn, Medizinische Klinik und Poliklinik I; Immunologische Ambulanz, Siegmund-Freud-Str. 25",
+                "city": "Bonn",
+                "state": "Bonn",
+                "zip": "53127",
+                "country": "Germany",
+                "geoPoint": {
+                  "lat": 50.73438,
+                  "lon": 7.09549
+                }
+              },
+              {
+                "facility": "ifi - Studien und Projekte GmbH, an der Asklepios-Klinik St. George",
+                "city": "Hamburg",
+                "state": "Hamburg",
+                "zip": "20099",
+                "country": "Germany",
+                "geoPoint": {
+                  "lat": 53.55073,
+                  "lon": 9.99302
+                }
+              },
+              {
+                "facility": "EIPMED - Gesellschaft f\u0171r epidemiologische und klinische Forschung in der Medizin mbH Rubensstrasse 125",
+                "city": "Berlin",
+                "state": "State of Berlin",
+                "zip": "12157",
+                "country": "Germany",
+                "geoPoint": {
+                  "lat": 52.52437,
+                  "lon": 13.41053
+                }
+              },
+              {
+                "facility": "Universit\u00e4tsklinikum Hamburg Eppendorf",
+                "city": "Hamburg",
+                "zip": "20246",
+                "country": "Germany",
+                "geoPoint": {
+                  "lat": 53.55073,
+                  "lon": 9.99302
+                }
+              },
+              {
+                "facility": "Istituto San Raffaele",
+                "city": "Milan",
+                "state": "Milano",
+                "zip": "20127",
+                "country": "Italy",
+                "geoPoint": {
+                  "lat": 42.78235,
+                  "lon": 12.59836
+                }
+              },
+              {
+                "facility": "Hospital Germans Trias i Pujol",
+                "city": "Badalona",
+                "zip": "08916",
+                "country": "Spain",
+                "geoPoint": {
+                  "lat": 41.45004,
+                  "lon": 2.24741
+                }
+              },
+              {
+                "facility": "Unidad de VIH, Hospital de Bellvitge, Calle Feixa Llarga s/n, Hospitalet de Llobregat.",
+                "city": "Barcelona",
+                "zip": "08907",
+                "country": "Spain",
+                "geoPoint": {
+                  "lat": 41.38879,
+                  "lon": 2.15899
+                }
+              },
+              {
+                "facility": "Harrison Wing St Thomas' Hospital",
+                "city": "London",
+                "state": "London",
+                "zip": "SE1 7EH",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 51.50853,
+                  "lon": -0.12574
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "22339677",
+                "type": "BACKGROUND",
+                "citation": "Kran AM, Sommerfelt MA, Baksaas I, Sorensen B, Kvale D. Delayed-type hypersensitivity responses to HIV Gag p24 relate to clinical outcome after peptide-based therapeutic immunization for chronic HIV infection. APMIS. 2012 Mar;120(3):204-9. doi: 10.1111/j.1600-0463.2011.02843.x. Epub 2011 Nov 27."
+              },
+              {
+                "pmid": "22339485",
+                "type": "BACKGROUND",
+                "citation": "Lind A, Sommerfelt M, Holmberg JO, Baksaas I, Sorensen B, Kvale D. Intradermal vaccination of HIV-infected patients with short HIV Gag p24-like peptides induces CD4 + and CD8 + T cell responses lasting more than seven years. Scand J Infect Dis. 2012 Aug;44(8):566-72. doi: 10.3109/00365548.2011.653581. Epub 2012 Feb 19."
+              },
+              {
+                "pmid": "20721838",
+                "type": "BACKGROUND",
+                "citation": "Jones T. Vacc-4x, a therapeutic vaccine comprised of four engineered peptides for the potential treatment of HIV infection. Curr Opin Investig Drugs. 2010 Aug;11(8):964-70."
+              },
+              {
+                "pmid": "16470131",
+                "type": "BACKGROUND",
+                "citation": "Kran AM, Sorensen B, Sommerfelt MA, Nyhus J, Baksaas I, Kvale D. Long-term HIV-specific responses and delayed resumption of antiretroviral therapy after peptide immunization targeting dendritic cells. AIDS. 2006 Feb 28;20(4):627-30. doi: 10.1097/01.aids.0000210620.75707.ac."
+              },
+              {
+                "pmid": "30699178",
+                "type": "DERIVED",
+                "citation": "Rockstroh JK, Asmuth D, Pantaleo G, Clotet B, Podzamczer D, van Lunzen J, Arasteh K, Mitsuyasu R, Peters B, Silvia N, Jolliffe D, Okvist M, Krogsgaard K, Sommerfelt MA. Re-boost immunizations with the peptide-based therapeutic HIV vaccine, Vacc-4x, restores geometric mean viral load set-point during treatment interruption. PLoS One. 2019 Jan 30;14(1):e0210965. doi: 10.1371/journal.pone.0210965. eCollection 2019."
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "NO",
+            "description": "Participants have not provided informed consent for their anonymized individual data to be made available beyond that described in the patient information sheet."
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01712256",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01712256",
+      "citations": [
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/A0A2K9YAE9",
+          "identifier": "A0A2K9YAE9",
+          "title": "Gag polyprotein",
+          "snippet": "Organism: Human immunodeficiency virus type 1. Protein: Gag polyprotein. Accession: A0A2K9YAE9",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:24.924736"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/A0A2K9YAM6",
+          "identifier": "A0A2K9YAM6",
+          "title": "Gag polyprotein",
+          "snippet": "Organism: Human immunodeficiency virus type 1. Protein: Gag polyprotein. Accession: A0A2K9YAM6",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:24.924819"
+        }
+      ],
+      "raw_data": {
+        "uniprot_Vacc-4x": [
+          {
+            "entryType": "UniProtKB unreviewed (TrEMBL)",
+            "primaryAccession": "A0A2K9YAE9",
+            "uniProtkbId": "A0A2K9YAE9_HV1",
+            "entryAudit": {
+              "firstPublicDate": "2018-04-25",
+              "lastAnnotationUpdateDate": "2026-01-28",
+              "lastSequenceUpdateDate": "2018-04-25",
+              "entryVersion": 21,
+              "sequenceVersion": 1
+            },
+            "annotationScore": 3.0,
+            "organism": {
+              "scientificName": "Human immunodeficiency virus type 1",
+              "commonName": "HIV-1",
+              "taxonId": 11676,
+              "evidences": [
+                {
+                  "evidenceCode": "ECO:0000313",
+                  "source": "EMBL",
+                  "id": "AUW29416.1"
+                }
+              ],
+              "lineage": [
+                "Viruses",
+                "Riboviria",
+                "Pararnavirae",
+                "Artverviricota",
+                "Revtraviricetes",
+                "Ortervirales",
+                "Retroviridae",
+                "Orthoretrovirinae",
+                "Lentivirus",
+                "Lentivirus humimdef1"
+              ]
+            },
+            "organismHosts": [
+              {
+                "scientificName": "Homo sapiens",
+                "commonName": "Human",
+                "taxonId": 9606
+              }
+            ],
+            "proteinExistence": "3: Inferred from homology",
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "evidences": [
+                    {
+                      "evidenceCode": "ECO:0000256",
+                      "source": "ARBA",
+                      "id": "ARBA00019628"
+                    }
+                  ],
+                  "value": "Gag polyprotein"
+                }
+              },
+              "alternativeNames": [
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00031060"
+                      }
+                    ],
+                    "value": "Pr55Gag"
+                  }
+                }
+              ],
+              "flag": "Fragment"
+            },
+            "genes": [
+              {
+                "geneName": {
+                  "evidences": [
+                    {
+                      "evidenceCode": "ECO:0000313",
+                      "source": "EMBL",
+                      "id": "AUW29416.1"
+                    }
+                  ],
+                  "value": "gag"
+                }
+              }
+            ],
+            "comments": [
+              {
+                "commentType": "SUBCELLULAR LOCATION",
+                "subcellularLocations": [
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004425"
+                        }
+                      ],
+                      "value": "Host cell membrane",
+                      "id": "SL-0375"
+                    },
+                    "topology": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004425"
+                        }
+                      ],
+                      "value": "Lipid-anchor",
+                      "id": "SL-9901"
+                    }
+                  },
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004192"
+                        }
+                      ],
+                      "value": "Host cytoplasm",
+                      "id": "SL-0381"
+                    }
+                  },
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004560"
+                        }
+                      ],
+                      "value": "Host endosome, host multivesicular body",
+                      "id": "SL-0453"
+                    }
+                  },
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004147"
+                        }
+                      ],
+                      "value": "Host nucleus",
+                      "id": "SL-0414"
+                    }
+                  },
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00037826"
+                        }
+                      ],
+                      "value": "Virion membrane",
+                      "id": "SL-0275"
+                    },
+                    "topology": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00037826"
+                        }
+                      ],
+                      "value": "Lipid-anchor",
+                      "id": "SL-9901"
+                    }
+                  }
+                ]
+              },
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00008364"
+                      }
+                    ],
+                    "value": "Belongs to the primate lentivirus group gag polyprotein family"
+                  }
+                ],
+                "commentType": "SIMILARITY"
+              }
+            ],
+            "features": [
+              {
+                "type": "Domain",
+                "location": {
+                  "start": {
+                    "value": 255,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 270,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "CCHC-type",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000259",
+                    "source": "PROSITE",
+                    "id": "PS50158"
+                  }
+                ]
+              },
+              {
+                "type": "Domain",
+                "location": {
+                  "start": {
+                    "value": 277,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 292,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "CCHC-type",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000259",
+                    "source": "PROSITE",
+                    "id": "PS50158"
+                  }
+                ]
+              },
+              {
+                "type": "Region",
+                "location": {
+                  "start": {
+                    "value": 83,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 102,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Disordered",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "SAM",
+                    "id": "MobiDB-lite"
+                  }
+                ]
+              },
+              {
+                "type": "Region",
+                "location": {
+                  "start": {
+                    "value": 302,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 351,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Disordered",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "SAM",
+                    "id": "MobiDB-lite"
+                  }
+                ]
+              },
+              {
+                "type": "Compositional bias",
+                "location": {
+                  "start": {
+                    "value": 330,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 340,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Low complexity",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "SAM",
+                    "id": "MobiDB-lite"
+                  }
+                ]
+              },
+              {
+                "type": "Non-terminal residue",
+                "location": {
+                  "start": {
+                    "value": 1,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 1,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000313",
+                    "source": "EMBL",
+                    "id": "AUW29416.1"
+                  }
+                ]
+              }
+            ],
+            "keywords": [
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022561"
+                  }
+                ],
+                "id": "KW-0167",
+                "category": "Cellular component",
+                "name": "Capsid protein"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022511"
+                  }
+                ],
+                "id": "KW-1032",
+                "category": "Cellular component",
+                "name": "Host cell membrane"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023200"
+                  }
+                ],
+                "id": "KW-1035",
+                "category": "Cellular component",
+                "name": "Host cytoplasm"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023046"
+                  }
+                ],
+                "id": "KW-1039",
+                "category": "Cellular component",
+                "name": "Host endosome"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022870"
+                  }
+                ],
+                "id": "KW-1043",
+                "category": "Cellular component",
+                "name": "Host membrane"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022562"
+                  }
+                ],
+                "id": "KW-1048",
+                "category": "Cellular component",
+                "name": "Host nucleus"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022581"
+                  }
+                ],
+                "id": "KW-0945",
+                "category": "Biological process",
+                "name": "Host-virus interaction"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023288"
+                  }
+                ],
+                "id": "KW-0449",
+                "category": "PTM",
+                "name": "Lipoprotein"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023136"
+                  }
+                ],
+                "id": "KW-0472",
+                "category": "Cellular component",
+                "name": "Membrane"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022723"
+                  }
+                ],
+                "id": "KW-0479",
+                "category": "Ligand",
+                "name": "Metal-binding"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022707"
+                  }
+                ],
+                "id": "KW-0519",
+                "category": "PTM",
+                "name": "Myristate"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022553"
+                  }
+                ],
+                "id": "KW-0597",
+                "category": "PTM",
+                "name": "Phosphoprotein"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022737"
+                  }
+                ],
+                "id": "KW-0677",
+                "category": "Domain",
+                "name": "Repeat"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022758"
+                  }
+                ],
+                "id": "KW-0688",
+                "category": "Coding sequence diversity",
+                "name": "Ribosomal frameshifting"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022884"
+                  }
+                ],
+                "id": "KW-0694",
+                "category": "Molecular function",
+                "name": "RNA-binding"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022637"
+                  }
+                ],
+                "id": "KW-1198",
+                "category": "Biological process",
+                "name": "Viral budding"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022462"
+                  }
+                ],
+                "id": "KW-1187",
+                "category": "Biological process",
+                "name": "Viral budding via the host ESCRT complexes"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023086"
+                  }
+                ],
+                "id": "KW-0543",
+                "category": "Molecular function",
+                "name": "Viral nucleoprotein"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022612"
+                  }
+                ],
+                "id": "KW-1188",
+                "category": "Biological process",
+                "name": "Viral release from host cell"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022844"
+                  }
+                ],
+                "id": "KW-0946",
+                "category": "Cellular component",
+                "name": "Virion"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022833"
+                  }
+                ],
+                "id": "KW-0862",
+                "category": "Ligand",
+                "name": "Zinc"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022771"
+                  },
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "PROSITE-ProRule",
+                    "id": "PRU00047"
+                  }
+                ],
+                "id": "KW-0863",
+                "category": "Domain",
+                "name": "Zinc-finger"
+              }
+            ],
+            "references": [
+              {
+                "referenceNumber": 1,
+                "citation": {
+                  "id": "CI-C0RQV5CS85HGC",
+                  "citationType": "submission",
+                  "authors": [
+                    "Winckelmann A.",
+                    "Morcilla V.",
+                    "Shao W.",
+                    "Schleimann M.H.",
+                    "Hojen J.F.",
+                    "Schlub T.E.",
+                    "Denton P.W.",
+                    "Ostergaard L.",
+                    "Sogaard O.S.",
+                    "Tolstrup M.",
+                    "Palmer S."
+                  ],
+                  "title": "Genetic characterization of the HIV-1 reservoir after Vacc-4x and romidepsin therapy in HIV-1 infected individuals during suppressive ART.",
+                  "publicationDate": "JAN-2018",
+                  "submissionDatabase": "EMBL/GenBank/DDBJ databases"
+                },
+                "referencePositions": [
+                  "NUCLEOTIDE SEQUENCE"
+                ],
+                "referenceComments": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000313",
+                        "source": "EMBL",
+                        "id": "AUW29416.1"
+                      }
+                    ],
+                    "value": "REB36_Immunisation_Timepoint1_CRNA_2",
+                    "type": "STRAIN"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000313",
+                    "source": "EMBL",
+                    "id": "AUW29416.1"
+                  }
+                ]
+              }
+            ],
+            "uniProtKBCrossReferences": [
+              {
+                "database": "EMBL",
+                "id": "MG771726",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "AUW29416.1"
+                  },
+                  {
+                    "key": "Status",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MoleculeType",
+                    "value": "Genomic_RNA"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0042025",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:host cell nucleus"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-SubCell"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0020002",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:host cell plasma membrane"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-SubCell"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0072494",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:host multivesicular body"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-SubCell"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0019013",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:viral nucleocapsid"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0055036",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:virion membrane"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-SubCell"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0003723",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:RNA binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0008270",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:zinc ion binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0039702",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:viral budding via host ESCRT complex"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0075523",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:viral translational frameshifting"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "FunFam",
+                "id": "1.10.1200.30:FF:000001",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag polyprotein"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "FunFam",
+                "id": "1.10.375.10:FF:000001",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag polyprotein"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "FunFam",
+                "id": "4.10.60.10:FF:000001",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag polyprotein"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "1.10.1200.30",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "6.10.250.390",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "1.10.375.10",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Human Immunodeficiency Virus Type 1 Capsid Protein"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "1.20.5.760",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Single helix bin"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "4.10.60.10",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Zinc finger, CCHC-type"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR045345",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p24_C"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR014817",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p6"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR050195",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Primate_lentivir_Gag_pol-like"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR008916",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrov_capsid_C"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR008919",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrov_capsid_N"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR001878",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Znf_CCHC"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR036875",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Znf_CCHC_sf"
+                  }
+                ]
+              },
+              {
+                "database": "PANTHER",
+                "id": "PTHR40389:SF4",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "PANTHER",
+                "id": "PTHR40389",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "ENDOGENOUS RETROVIRUS GROUP K MEMBER 24 GAG POLYPROTEIN-RELATED"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF00607",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p24"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF19317",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p24_C"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF08705",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p6"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF00098",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "zf-CCHC"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "SMART",
+                "id": "SM00343",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "ZnF_C2HC"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "SUPFAM",
+                "id": "SSF47353",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrovirus capsid dimerization domain-like"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "SUPFAM",
+                "id": "SSF47943",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrovirus capsid protein, N-terminal core domain"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "SUPFAM",
+                "id": "SSF57756",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrovirus zinc finger-like domains"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "PROSITE",
+                "id": "PS50158",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "ZF_CCHC"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              }
+            ],
+            "sequence": {
+              "value": "QNLQGQMVHQAISPRTLNAWVKVIEEKAFSPEIIPMFTALSEGATPQDLNTMLNTVGGHQAAMQMLKETINEEAAEWDRLHPVQAGPNPPGQMREPRGSDIAGTTSTLQEQIAWMTNNPPIPVGDIYKRWIILGLNKIVRMYSPVSILDIRQGPKEPFRDYVDRFYKTLRAEQATQEVKNWMTETLLVQNANPDCKTILRALGPAATLEEMMTACQGVGGPGHKARVLAEAMSQINSATIMMQRGNFKNQRRTVKCFNCGKEGHIAKNCRAPRKRGCWKCGKEGHQMKDCTERQANFLGKIWPSHKGRPGNFLQSRPEPTAPPEESFRFATAPPEETTTPSQKQEPIDKDLYPLASLRSLFGNDPSSQ",
+              "length": 368,
+              "molWeight": 41146,
+              "crc64": "980EBF879F7EC539",
+              "md5": "063E519FF8241E08FFA219CC5FE92E7A"
+            },
+            "extraAttributes": {
+              "countByCommentType": {
+                "SUBCELLULAR LOCATION": 1,
+                "SIMILARITY": 1
+              },
+              "countByFeatureType": {
+                "Domain": 2,
+                "Region": 2,
+                "Compositional bias": 1,
+                "Non-terminal residue": 1
+              },
+              "uniParcId": "UPI000CDC0890"
+            }
+          },
+          {
+            "entryType": "UniProtKB unreviewed (TrEMBL)",
+            "primaryAccession": "A0A2K9YAM6",
+            "uniProtkbId": "A0A2K9YAM6_HV1",
+            "entryAudit": {
+              "firstPublicDate": "2018-04-25",
+              "lastAnnotationUpdateDate": "2026-01-28",
+              "lastSequenceUpdateDate": "2018-04-25",
+              "entryVersion": 21,
+              "sequenceVersion": 1
+            },
+            "annotationScore": 3.0,
+            "organism": {
+              "scientificName": "Human immunodeficiency virus type 1",
+              "commonName": "HIV-1",
+              "taxonId": 11676,
+              "evidences": [
+                {
+                  "evidenceCode": "ECO:0000313",
+                  "source": "EMBL",
+                  "id": "AUW29460.1"
+                }
+              ],
+              "lineage": [
+                "Viruses",
+                "Riboviria",
+                "Pararnavirae",
+                "Artverviricota",
+                "Revtraviricetes",
+                "Ortervirales",
+                "Retroviridae",
+                "Orthoretrovirinae",
+                "Lentivirus",
+                "Lentivirus humimdef1"
+              ]
+            },
+            "organismHosts": [
+              {
+                "scientificName": "Homo sapiens",
+                "commonName": "Human",
+                "taxonId": 9606
+              }
+            ],
+            "proteinExistence": "3: Inferred from homology",
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "evidences": [
+                    {
+                      "evidenceCode": "ECO:0000256",
+                      "source": "ARBA",
+                      "id": "ARBA00019628"
+                    }
+                  ],
+                  "value": "Gag polyprotein"
+                }
+              },
+              "alternativeNames": [
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00031060"
+                      }
+                    ],
+                    "value": "Pr55Gag"
+                  }
+                }
+              ],
+              "flag": "Fragment"
+            },
+            "genes": [
+              {
+                "geneName": {
+                  "evidences": [
+                    {
+                      "evidenceCode": "ECO:0000313",
+                      "source": "EMBL",
+                      "id": "AUW29460.1"
+                    }
+                  ],
+                  "value": "gag"
+                }
+              }
+            ],
+            "comments": [
+              {
+                "commentType": "SUBCELLULAR LOCATION",
+                "subcellularLocations": [
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004425"
+                        }
+                      ],
+                      "value": "Host cell membrane",
+                      "id": "SL-0375"
+                    },
+                    "topology": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004425"
+                        }
+                      ],
+                      "value": "Lipid-anchor",
+                      "id": "SL-9901"
+                    }
+                  },
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004192"
+                        }
+                      ],
+                      "value": "Host cytoplasm",
+                      "id": "SL-0381"
+                    }
+                  },
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004560"
+                        }
+                      ],
+                      "value": "Host endosome, host multivesicular body",
+                      "id": "SL-0453"
+                    }
+                  },
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004147"
+                        }
+                      ],
+                      "value": "Host nucleus",
+                      "id": "SL-0414"
+                    }
+                  },
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00037826"
+                        }
+                      ],
+                      "value": "Virion membrane",
+                      "id": "SL-0275"
+                    },
+                    "topology": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00037826"
+                        }
+                      ],
+                      "value": "Lipid-anchor",
+                      "id": "SL-9901"
+                    }
+                  }
+                ]
+              },
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00008364"
+                      }
+                    ],
+                    "value": "Belongs to the primate lentivirus group gag polyprotein family"
+                  }
+                ],
+                "commentType": "SIMILARITY"
+              }
+            ],
+            "features": [
+              {
+                "type": "Domain",
+                "location": {
+                  "start": {
+                    "value": 255,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 270,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "CCHC-type",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000259",
+                    "source": "PROSITE",
+                    "id": "PS50158"
+                  }
+                ]
+              },
+              {
+                "type": "Domain",
+                "location": {
+                  "start": {
+                    "value": 277,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 292,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "CCHC-type",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000259",
+                    "source": "PROSITE",
+                    "id": "PS50158"
+                  }
+                ]
+              },
+              {
+                "type": "Region",
+                "location": {
+                  "start": {
+                    "value": 83,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 102,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Disordered",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "SAM",
+                    "id": "MobiDB-lite"
+                  }
+                ]
+              },
+              {
+                "type": "Region",
+                "location": {
+                  "start": {
+                    "value": 302,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 351,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Disordered",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "SAM",
+                    "id": "MobiDB-lite"
+                  }
+                ]
+              },
+              {
+                "type": "Compositional bias",
+                "location": {
+                  "start": {
+                    "value": 330,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 340,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Low complexity",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "SAM",
+                    "id": "MobiDB-lite"
+                  }
+                ]
+              },
+              {
+                "type": "Non-terminal residue",
+                "location": {
+                  "start": {
+                    "value": 1,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 1,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000313",
+                    "source": "EMBL",
+                    "id": "AUW29460.1"
+                  }
+                ]
+              }
+            ],
+            "keywords": [
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022561"
+                  }
+                ],
+                "id": "KW-0167",
+                "category": "Cellular component",
+                "name": "Capsid protein"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022511"
+                  }
+                ],
+                "id": "KW-1032",
+                "category": "Cellular component",
+                "name": "Host cell membrane"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023200"
+                  }
+                ],
+                "id": "KW-1035",
+                "category": "Cellular component",
+                "name": "Host cytoplasm"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023046"
+                  }
+                ],
+                "id": "KW-1039",
+                "category": "Cellular component",
+                "name": "Host endosome"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022870"
+                  }
+                ],
+                "id": "KW-1043",
+                "category": "Cellular component",
+                "name": "Host membrane"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022562"
+                  }
+                ],
+                "id": "KW-1048",
+                "category": "Cellular component",
+                "name": "Host nucleus"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022581"
+                  }
+                ],
+                "id": "KW-0945",
+                "category": "Biological process",
+                "name": "Host-virus interaction"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023288"
+                  }
+                ],
+                "id": "KW-0449",
+                "category": "PTM",
+                "name": "Lipoprotein"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023136"
+                  }
+                ],
+                "id": "KW-0472",
+                "category": "Cellular component",
+                "name": "Membrane"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022723"
+                  }
+                ],
+                "id": "KW-0479",
+                "category": "Ligand",
+                "name": "Metal-binding"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022707"
+                  }
+                ],
+                "id": "KW-0519",
+                "category": "PTM",
+                "name": "Myristate"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022553"
+                  }
+                ],
+                "id": "KW-0597",
+                "category": "PTM",
+                "name": "Phosphoprotein"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022737"
+                  }
+                ],
+                "id": "KW-0677",
+                "category": "Domain",
+                "name": "Repeat"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022758"
+                  }
+                ],
+                "id": "KW-0688",
+                "category": "Coding sequence diversity",
+                "name": "Ribosomal frameshifting"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022884"
+                  }
+                ],
+                "id": "KW-0694",
+                "category": "Molecular function",
+                "name": "RNA-binding"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022637"
+                  }
+                ],
+                "id": "KW-1198",
+                "category": "Biological process",
+                "name": "Viral budding"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022462"
+                  }
+                ],
+                "id": "KW-1187",
+                "category": "Biological process",
+                "name": "Viral budding via the host ESCRT complexes"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023086"
+                  }
+                ],
+                "id": "KW-0543",
+                "category": "Molecular function",
+                "name": "Viral nucleoprotein"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022612"
+                  }
+                ],
+                "id": "KW-1188",
+                "category": "Biological process",
+                "name": "Viral release from host cell"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022844"
+                  }
+                ],
+                "id": "KW-0946",
+                "category": "Cellular component",
+                "name": "Virion"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022833"
+                  }
+                ],
+                "id": "KW-0862",
+                "category": "Ligand",
+                "name": "Zinc"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022771"
+                  },
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "PROSITE-ProRule",
+                    "id": "PRU00047"
+                  }
+                ],
+                "id": "KW-0863",
+                "category": "Domain",
+                "name": "Zinc-finger"
+              }
+            ],
+            "references": [
+              {
+                "referenceNumber": 1,
+                "citation": {
+                  "id": "CI-C0RQV5CS85HGC",
+                  "citationType": "submission",
+                  "authors": [
+                    "Winckelmann A.",
+                    "Morcilla V.",
+                    "Shao W.",
+                    "Schleimann M.H.",
+                    "Hojen J.F.",
+                    "Schlub T.E.",
+                    "Denton P.W.",
+                    "Ostergaard L.",
+                    "Sogaard O.S.",
+                    "Tolstrup M.",
+                    "Palmer S."
+                  ],
+                  "title": "Genetic characterization of the HIV-1 reservoir after Vacc-4x and romidepsin therapy in HIV-1 infected individuals during suppressive ART.",
+                  "publicationDate": "JAN-2018",
+                  "submissionDatabase": "EMBL/GenBank/DDBJ databases"
+                },
+                "referencePositions": [
+                  "NUCLEOTIDE SEQUENCE"
+                ],
+                "referenceComments": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000313",
+                        "source": "EMBL",
+                        "id": "AUW29460.1"
+                      }
+                    ],
+                    "value": "REB36_Immunisation_Timepoint1_DNA_17",
+                    "type": "STRAIN"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000313",
+                    "source": "EMBL",
+                    "id": "AUW29460.1"
+                  }
+                ]
+              }
+            ],
+            "uniProtKBCrossReferences": [
+              {
+                "database": "EMBL",
+                "id": "MG771748",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "AUW29460.1"
+                  },
+                  {
+                    "key": "Status",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MoleculeType",
+                    "value": "Genomic_DNA"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0042025",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:host cell nucleus"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-SubCell"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0020002",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:host cell plasma membrane"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-SubCell"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0072494",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:host multivesicular body"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-SubCell"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0019013",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:viral nucleocapsid"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0055036",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:virion membrane"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-SubCell"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0003723",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:RNA binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0008270",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:zinc ion binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0039702",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:viral budding via host ESCRT complex"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0075523",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:viral translational frameshifting"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "FunFam",
+                "id": "1.10.1200.30:FF:000001",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag polyprotein"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "FunFam",
+                "id": "1.10.375.10:FF:000001",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag polyprotein"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "FunFam",
+                "id": "4.10.60.10:FF:000001",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag polyprotein"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "1.10.1200.30",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "6.10.250.390",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "1.10.375.10",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Human Immunodeficiency Virus Type 1 Capsid Protein"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "1.20.5.760",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Single helix bin"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "4.10.60.10",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Zinc finger, CCHC-type"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR045345",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p24_C"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR014817",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p6"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR050195",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Primate_lentivir_Gag_pol-like"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR008916",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrov_capsid_C"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR008919",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrov_capsid_N"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR001878",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Znf_CCHC"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR036875",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Znf_CCHC_sf"
+                  }
+                ]
+              },
+              {
+                "database": "PANTHER",
+                "id": "PTHR40389:SF4",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "PANTHER",
+                "id": "PTHR40389",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "ENDOGENOUS RETROVIRUS GROUP K MEMBER 24 GAG POLYPROTEIN-RELATED"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF00607",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p24"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF19317",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p24_C"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF08705",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p6"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF00098",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "zf-CCHC"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "SMART",
+                "id": "SM00343",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "ZnF_C2HC"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "SUPFAM",
+                "id": "SSF47353",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrovirus capsid dimerization domain-like"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "SUPFAM",
+                "id": "SSF47943",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrovirus capsid protein, N-terminal core domain"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "SUPFAM",
+                "id": "SSF57756",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrovirus zinc finger-like domains"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "PROSITE",
+                "id": "PS50158",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "ZF_CCHC"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              }
+            ],
+            "sequence": {
+              "value": "QNLQGQMVHQAISPRTLNAWVKVIEEKAFSPEIIPMFTALSEGATPQDLNTMLNTVGGHQAAMQMLKETINEEAAEWDRLHPVQAGPHPPGQMREPRGSDIAGTTSTLQEQIAWMTNNPPIPVGDIYKRWIILGLNKIVRMYSPVSILDIRQGPKEPFRDYVDRFYKTLRAEQATQEVKNWMTETLLVQNANPDCKTILRALGPAATLEEMMTACQGVGGPGHKARVLAEAMSQINSATIMMQRGNFKNQRKTVKCFNCGKEGHIAKNCRAPRKRGCWKCGKEGHQMKDCTERQANFLGKIWPSHKGRPGNFLQSRPEPTAPPEESFRFATAPPEETTTPSQKQEPIDKDLYPLASLRSLFGNDPSSQ",
+              "length": 368,
+              "molWeight": 41141,
+              "crc64": "69895EF9966AD7F4",
+              "md5": "81ED9A71523F99D3E6797B25319E37BD"
+            },
+            "extraAttributes": {
+              "countByCommentType": {
+                "SUBCELLULAR LOCATION": 1,
+                "SIMILARITY": 1
+              },
+              "countByFeatureType": {
+                "Domain": 2,
+                "Region": 2,
+                "Compositional bias": 1,
+                "Non-terminal residue": 1
+              },
+              "uniParcId": "UPI000CDC6E93"
+            }
+          },
+          {
+            "entryType": "UniProtKB unreviewed (TrEMBL)",
+            "primaryAccession": "A0A2K9YAP6",
+            "uniProtkbId": "A0A2K9YAP6_HV1",
+            "entryAudit": {
+              "firstPublicDate": "2018-04-25",
+              "lastAnnotationUpdateDate": "2026-01-28",
+              "lastSequenceUpdateDate": "2018-04-25",
+              "entryVersion": 21,
+              "sequenceVersion": 1
+            },
+            "annotationScore": 3.0,
+            "organism": {
+              "scientificName": "Human immunodeficiency virus type 1",
+              "commonName": "HIV-1",
+              "taxonId": 11676,
+              "evidences": [
+                {
+                  "evidenceCode": "ECO:0000313",
+                  "source": "EMBL",
+                  "id": "AUW29462.1"
+                }
+              ],
+              "lineage": [
+                "Viruses",
+                "Riboviria",
+                "Pararnavirae",
+                "Artverviricota",
+                "Revtraviricetes",
+                "Ortervirales",
+                "Retroviridae",
+                "Orthoretrovirinae",
+                "Lentivirus",
+                "Lentivirus humimdef1"
+              ]
+            },
+            "organismHosts": [
+              {
+                "scientificName": "Homo sapiens",
+                "commonName": "Human",
+                "taxonId": 9606
+              }
+            ],
+            "proteinExistence": "3: Inferred from homology",
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "evidences": [
+                    {
+                      "evidenceCode": "ECO:0000256",
+                      "source": "ARBA",
+                      "id": "ARBA00019628"
+                    }
+                  ],
+                  "value": "Gag polyprotein"
+                }
+              },
+              "alternativeNames": [
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00031060"
+                      }
+                    ],
+                    "value": "Pr55Gag"
+                  }
+                }
+              ],
+              "flag": "Fragment"
+            },
+            "genes": [
+              {
+                "geneName": {
+                  "evidences": [
+                    {
+                      "evidenceCode": "ECO:0000313",
+                      "source": "EMBL",
+                      "id": "AUW29462.1"
+                    }
+                  ],
+                  "value": "gag"
+                }
+              }
+            ],
+            "comments": [
+              {
+                "commentType": "SUBCELLULAR LOCATION",
+                "subcellularLocations": [
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004425"
+                        }
+                      ],
+                      "value": "Host cell membrane",
+                      "id": "SL-0375"
+                    },
+                    "topology": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004425"
+                        }
+                      ],
+                      "value": "Lipid-anchor",
+                      "id": "SL-9901"
+                    }
+                  },
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004192"
+                        }
+                      ],
+                      "value": "Host cytoplasm",
+                      "id": "SL-0381"
+                    }
+                  },
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004560"
+                        }
+                      ],
+                      "value": "Host endosome, host multivesicular body",
+                      "id": "SL-0453"
+                    }
+                  },
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00004147"
+                        }
+                      ],
+                      "value": "Host nucleus",
+                      "id": "SL-0414"
+                    }
+                  },
+                  {
+                    "location": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00037826"
+                        }
+                      ],
+                      "value": "Virion membrane",
+                      "id": "SL-0275"
+                    },
+                    "topology": {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000256",
+                          "source": "ARBA",
+                          "id": "ARBA00037826"
+                        }
+                      ],
+                      "value": "Lipid-anchor",
+                      "id": "SL-9901"
+                    }
+                  }
+                ]
+              },
+              {
+                "texts": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00008364"
+                      }
+                    ],
+                    "value": "Belongs to the primate lentivirus group gag polyprotein family"
+                  }
+                ],
+                "commentType": "SIMILARITY"
+              }
+            ],
+            "features": [
+              {
+                "type": "Domain",
+                "location": {
+                  "start": {
+                    "value": 255,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 270,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "CCHC-type",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000259",
+                    "source": "PROSITE",
+                    "id": "PS50158"
+                  }
+                ]
+              },
+              {
+                "type": "Domain",
+                "location": {
+                  "start": {
+                    "value": 277,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 292,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "CCHC-type",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000259",
+                    "source": "PROSITE",
+                    "id": "PS50158"
+                  }
+                ]
+              },
+              {
+                "type": "Region",
+                "location": {
+                  "start": {
+                    "value": 83,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 102,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Disordered",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "SAM",
+                    "id": "MobiDB-lite"
+                  }
+                ]
+              },
+              {
+                "type": "Region",
+                "location": {
+                  "start": {
+                    "value": 302,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 351,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Disordered",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "SAM",
+                    "id": "MobiDB-lite"
+                  }
+                ]
+              },
+              {
+                "type": "Compositional bias",
+                "location": {
+                  "start": {
+                    "value": 330,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 340,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Low complexity",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "SAM",
+                    "id": "MobiDB-lite"
+                  }
+                ]
+              },
+              {
+                "type": "Non-terminal residue",
+                "location": {
+                  "start": {
+                    "value": 1,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 1,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000313",
+                    "source": "EMBL",
+                    "id": "AUW29462.1"
+                  }
+                ]
+              }
+            ],
+            "keywords": [
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022561"
+                  }
+                ],
+                "id": "KW-0167",
+                "category": "Cellular component",
+                "name": "Capsid protein"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022511"
+                  }
+                ],
+                "id": "KW-1032",
+                "category": "Cellular component",
+                "name": "Host cell membrane"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023200"
+                  }
+                ],
+                "id": "KW-1035",
+                "category": "Cellular component",
+                "name": "Host cytoplasm"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023046"
+                  }
+                ],
+                "id": "KW-1039",
+                "category": "Cellular component",
+                "name": "Host endosome"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022870"
+                  }
+                ],
+                "id": "KW-1043",
+                "category": "Cellular component",
+                "name": "Host membrane"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022562"
+                  }
+                ],
+                "id": "KW-1048",
+                "category": "Cellular component",
+                "name": "Host nucleus"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022581"
+                  }
+                ],
+                "id": "KW-0945",
+                "category": "Biological process",
+                "name": "Host-virus interaction"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023288"
+                  }
+                ],
+                "id": "KW-0449",
+                "category": "PTM",
+                "name": "Lipoprotein"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023136"
+                  }
+                ],
+                "id": "KW-0472",
+                "category": "Cellular component",
+                "name": "Membrane"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022723"
+                  }
+                ],
+                "id": "KW-0479",
+                "category": "Ligand",
+                "name": "Metal-binding"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022707"
+                  }
+                ],
+                "id": "KW-0519",
+                "category": "PTM",
+                "name": "Myristate"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022553"
+                  }
+                ],
+                "id": "KW-0597",
+                "category": "PTM",
+                "name": "Phosphoprotein"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022737"
+                  }
+                ],
+                "id": "KW-0677",
+                "category": "Domain",
+                "name": "Repeat"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022758"
+                  }
+                ],
+                "id": "KW-0688",
+                "category": "Coding sequence diversity",
+                "name": "Ribosomal frameshifting"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022884"
+                  }
+                ],
+                "id": "KW-0694",
+                "category": "Molecular function",
+                "name": "RNA-binding"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022637"
+                  }
+                ],
+                "id": "KW-1198",
+                "category": "Biological process",
+                "name": "Viral budding"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022462"
+                  }
+                ],
+                "id": "KW-1187",
+                "category": "Biological process",
+                "name": "Viral budding via the host ESCRT complexes"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00023086"
+                  }
+                ],
+                "id": "KW-0543",
+                "category": "Molecular function",
+                "name": "Viral nucleoprotein"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022612"
+                  }
+                ],
+                "id": "KW-1188",
+                "category": "Biological process",
+                "name": "Viral release from host cell"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022844"
+                  }
+                ],
+                "id": "KW-0946",
+                "category": "Cellular component",
+                "name": "Virion"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022833"
+                  }
+                ],
+                "id": "KW-0862",
+                "category": "Ligand",
+                "name": "Zinc"
+              },
+              {
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "ARBA",
+                    "id": "ARBA00022771"
+                  },
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "PROSITE-ProRule",
+                    "id": "PRU00047"
+                  }
+                ],
+                "id": "KW-0863",
+                "category": "Domain",
+                "name": "Zinc-finger"
+              }
+            ],
+            "references": [
+              {
+                "referenceNumber": 1,
+                "citation": {
+                  "id": "CI-C0RQV5CS85HGC",
+                  "citationType": "submission",
+                  "authors": [
+                    "Winckelmann A.",
+                    "Morcilla V.",
+                    "Shao W.",
+                    "Schleimann M.H.",
+                    "Hojen J.F.",
+                    "Schlub T.E.",
+                    "Denton P.W.",
+                    "Ostergaard L.",
+                    "Sogaard O.S.",
+                    "Tolstrup M.",
+                    "Palmer S."
+                  ],
+                  "title": "Genetic characterization of the HIV-1 reservoir after Vacc-4x and romidepsin therapy in HIV-1 infected individuals during suppressive ART.",
+                  "publicationDate": "JAN-2018",
+                  "submissionDatabase": "EMBL/GenBank/DDBJ databases"
+                },
+                "referencePositions": [
+                  "NUCLEOTIDE SEQUENCE"
+                ],
+                "referenceComments": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000313",
+                        "source": "EMBL",
+                        "id": "AUW29462.1"
+                      }
+                    ],
+                    "value": "REB36_Immunisation_Timepoint1_DNA_19",
+                    "type": "STRAIN"
+                  }
+                ],
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000313",
+                    "source": "EMBL",
+                    "id": "AUW29462.1"
+                  }
+                ]
+              }
+            ],
+            "uniProtKBCrossReferences": [
+              {
+                "database": "EMBL",
+                "id": "MG771749",
+                "properties": [
+                  {
+                    "key": "ProteinId",
+                    "value": "AUW29462.1"
+                  },
+                  {
+                    "key": "Status",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MoleculeType",
+                    "value": "Genomic_DNA"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0042025",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:host cell nucleus"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-SubCell"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0020002",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:host cell plasma membrane"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-SubCell"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0072494",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:host multivesicular body"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-SubCell"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0019013",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:viral nucleocapsid"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0055036",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "C:virion membrane"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-SubCell"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0003723",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:RNA binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0008270",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "F:zinc ion binding"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0039702",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:viral budding via host ESCRT complex"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "GO",
+                "id": "GO:0075523",
+                "properties": [
+                  {
+                    "key": "GoTerm",
+                    "value": "P:viral translational frameshifting"
+                  },
+                  {
+                    "key": "GoEvidenceType",
+                    "value": "IEA:UniProtKB-KW"
+                  }
+                ]
+              },
+              {
+                "database": "FunFam",
+                "id": "1.10.1200.30:FF:000001",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag polyprotein"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "FunFam",
+                "id": "1.10.375.10:FF:000001",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag polyprotein"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "FunFam",
+                "id": "4.10.60.10:FF:000001",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag polyprotein"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "1.10.1200.30",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "6.10.250.390",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "1.10.375.10",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Human Immunodeficiency Virus Type 1 Capsid Protein"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "1.20.5.760",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Single helix bin"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Gene3D",
+                "id": "4.10.60.10",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Zinc finger, CCHC-type"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR045345",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p24_C"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR014817",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p6"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR050195",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Primate_lentivir_Gag_pol-like"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR008916",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrov_capsid_C"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR008919",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrov_capsid_N"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR001878",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Znf_CCHC"
+                  }
+                ]
+              },
+              {
+                "database": "InterPro",
+                "id": "IPR036875",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Znf_CCHC_sf"
+                  }
+                ]
+              },
+              {
+                "database": "PANTHER",
+                "id": "PTHR40389:SF4",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "-"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "PANTHER",
+                "id": "PTHR40389",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "ENDOGENOUS RETROVIRUS GROUP K MEMBER 24 GAG POLYPROTEIN-RELATED"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF00607",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p24"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF19317",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p24_C"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF08705",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Gag_p6"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "Pfam",
+                "id": "PF00098",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "zf-CCHC"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "SMART",
+                "id": "SM00343",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "ZnF_C2HC"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "database": "SUPFAM",
+                "id": "SSF47353",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrovirus capsid dimerization domain-like"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "SUPFAM",
+                "id": "SSF47943",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrovirus capsid protein, N-terminal core domain"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "SUPFAM",
+                "id": "SSF57756",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "Retrovirus zinc finger-like domains"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "database": "PROSITE",
+                "id": "PS50158",
+                "properties": [
+                  {
+                    "key": "EntryName",
+                    "value": "ZF_CCHC"
+                  },
+                  {
+                    "key": "MatchStatus",
+                    "value": "2"
+                  }
+                ]
+              }
+            ],
+            "sequence": {
+              "value": "QNLQGQMVHQAISPRTLNAWVKVIEEKAFSPEIIPMFTALSEGATPQDLNTMLNTVGGHQAAMQMLKETINEEAAEWDRLHPVQAGPHPPGQMREPRGSDIAGTTSTLQEQIAWMTNNPPIPVGDIYKRWIILGLNKIVRMYSPVSILDIRQGPKEPFRDYVDRFYKTLRAEQATQEVKNWMTETLLVQNANPDCKTILRALGPAATLEEMMTACQGVGGPGHKARVLAEAMSQINSATIMMQRGNFKNQRKTVKCFNCGKEGHIAKNCRAPRKKGCWKCGREGHQMKDCTERQANFLGKIWPSHKGRPGNFLQSRPEPTAPPEESFRFATAPPEETTTPSQKQEPIDKDLYPLASLRSLFGNDPSSQ",
+              "length": 368,
+              "molWeight": 41141,
+              "crc64": "C37CF1B52F724C49",
+              "md5": "0FA9EAE7DC36DEFA05E8FCBA9ED89783"
+            },
+            "extraAttributes": {
+              "countByCommentType": {
+                "SUBCELLULAR LOCATION": 1,
+                "SIMILARITY": 1
+              },
+              "countByFeatureType": {
+                "Domain": 2,
+                "Region": 2,
+                "Compositional bias": 1,
+                "Non-terminal residue": 1
+              },
+              "uniParcId": "UPI000CDBB991"
+            }
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01712256",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01712256",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Vacc-4x": {
+          "total": 0,
+          "entries": []
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01712256",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3689009/",
+          "identifier": "CHEMBL3689009",
+          "title": "CHEMBL3689009 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3689009\nType: Small molecule\nMolecular weight: 466.56\nBioactivity: IC50=120.0 nM (Serine/threonine-protein kinase mTOR)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:28.274866"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL6004481/",
+          "identifier": "CHEMBL6004481",
+          "title": "CHEMBL6004481 - ChEMBL",
+          "snippet": "Molecule: CHEMBL6004481\nMolecular weight: 549.91\nBioactivity: IC50=3.0 nM (Unchecked)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:29.232855"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL158666/",
+          "identifier": "CHEMBL158666",
+          "title": "AUTONOM NAME: - ChEMBL",
+          "snippet": "Molecule: AUTONOM NAME:\nType: Small molecule\nMolecular weight: 398.58\nBioactivity: Ki=50.4 nM (Protein kinase C alpha type); LogD=7.0 (No relevant target)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:31.060425"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'Vacc-4x'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01712256",
+      "citations": [],
+      "raw_data": {
+        "rcsb_{'name': 'Vacc-4x'}_status": 400
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01712256",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_{'name': 'Vacc-4x'}_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT01712256",
+      "citations": [],
+      "raw_data": {
+        "apd_{'name': 'Vacc-4x'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbamp",
+      "nct_id": "NCT01712256",
+      "citations": [],
+      "raw_data": {
+        "dbamp_{'name': 'Vacc-4x'}_error": "Server unreachable: ConnectError"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT01712256",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01712256",
+          "identifier": "NCT01712256",
+          "title": "Re-boosting of HIV-1 Infected Subjects With Vacc-4x",
+          "snippet": "Title: Re-boosting of HIV-1 Infected Subjects With Vacc-4x\nStatus: Completed\nPhase: Phase 2\nCountries: Germany, Italy, Spain, United Kingdom, United States\nConditions: HIV-1 Infection\nInterventions: Biological: Vacc-4x\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:59:38.347905"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT01712256",
+          "public_title": "Re-boosting of HIV-1 Infected Subjects With Vacc-4x",
+          "scientific_title": "Re-boosting of Subjects Previously Included in the CT BI-Vacc-4x 2007/1 Study. An Open, Multicenter, Immunogenicity, Follow-up Re-boosting Study With Vacc-4x in Subjects Infected With HIV-1 Who Have Maintained an Adequate Response to ART",
+          "recruitment_status": "Completed",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Intervention model: Single Group Assignment. Primary purpose: Treatment. Masking: None (Open Label).",
+          "countries": [
+            "Germany",
+            "Italy",
+            "Spain",
+            "United Kingdom",
+            "United States"
+          ],
+          "conditions": [
+            "HIV-1 Infection"
+          ],
+          "interventions": [
+            "Biological: Vacc-4x"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT01712256",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Vacc-4x": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "intact",
+      "nct_id": "NCT01712256",
+      "citations": [],
+      "raw_data": {
+        "intact_Vacc-4x": {
+          "total_elements": 0,
+          "interactors": []
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "card",
+      "nct_id": "NCT01712256",
+      "citations": [],
+      "raw_data": {
+        "card_livesearch_Vacc-4x_html_len": 22,
+        "card_Vacc-4x_matches": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT01712256",
+      "citations": [],
+      "raw_data": {
+        "pdbe_{'name': 'Vacc-4x'}_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "peptide_identity": {
+      "citations_count": 2,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbamp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "intact": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "card": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

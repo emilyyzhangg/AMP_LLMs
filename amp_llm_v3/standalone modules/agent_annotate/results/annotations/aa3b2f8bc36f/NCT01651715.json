@@ -1,0 +1,1454 @@
+{
+  "nct_id": "NCT01651715",
+  "metadata": {
+    "nct_id": "NCT01651715",
+    "title": "Multicentre, Randomised, Double-blind, Parallel, Placebo-controlled Study Evaluating the Efficacy and Safety of Early Self-Treatment of Viral Upper Respiratory Tract Infections With Homeopathic Oral Antibodies to the TLR3 FYW Peptide (TAO1)",
+    "phase": "PHASE1, PHASE2",
+    "status": "COMPLETED",
+    "conditions": [
+      "Common Cold"
+    ],
+    "interventions": [
+      "DRUG: TAO1, oral homeopathic antibodies"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "False",
+      "confidence": 0.9166666666666666,
+      "reasoning": "[Pass 1 extraction] Here are the extracted facts for each intervention:\n\n1. INTERVENTION NAME:\n\t* TAO1 (oral homeopathic antibodies)\n2. MOLECULAR CLASS:\n\t* TAO1: Unknown (no molecular class specified in trial metadata or published results)\n3. DATABASE CONFIRMATION:\n\t* UniProt: Not found\n\t* DRAMP/DBAASP: Not found\n\t* ChEMBL: Not found\n\t* PDB: Not found\n4. PRODUCT DESCRIPTION:\n\t* TAO1 is described as a \"homeopathic ora\n[Pass 2 decision] Peptide: False\nReasoning: \nStep 1 \u2014 Is the Molecular Class a peptide? Since \"Unknown\" is specified for TAO1, we must check database confirmation in Step 2. \nStep 2 \u2014 Is the peptide the ACTIVE DRUG? The Active Ingredient Role = \"active therapeutic agent\", which does not indicate that it's a food ingredient or targeting vector. However, since there's no molecular class information and no hits in any",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Multicentre, Randomised, Double-blind, Parallel, Placebo-controlled Study Evaluating the Efficacy and Safety of Early Self-Treatment of Viral Upper Respiratory Tract Infections With Homeopathic Oral Antibodies to the TLR3 FYW Peptide (TAO1)",
+          "snippet": "Title: Multicentre, Randomised, Double-blind, Parallel, Placebo-controlled Study Evaluating the Efficacy and Safety of Early Self-Treatment of Viral Upper Respiratory Tract Infections With Homeopathic Oral Antibodies to the TLR3 FYW Peptide (TAO1)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139727"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to determine whether early self-treatment with homeopathic dilutions of oral antibodies to a key-protein of the immune system are effective and safe in the treatment of viral upper respiratory tract infections",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139873"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139895"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Common Cold",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139906"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Intervention: TAO1, oral homeopathic antibodies",
+          "snippet": "DRUG: TAO1, oral homeopathic antibodies - TAO1 comprises a mixture of homeopathic dilutions C12+C30+C200 (drug product is made by impregnation of pre-made tablets).\n\nThe investigational product will be taken for 7 days as follow:\n\nDay 1: 3 tablets over the first 2 hours of treatment, then 3 tablets over the rest of Day 1.\n\nDays 2-3: 5 table",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139921"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139932"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9555683/",
+          "identifier": "PMC:9555683",
+          "title": "Contribution of T- and B-cell intrinsic toll-like receptors to the adaptive immune response in viral infectious diseases.",
+          "snippet": "Title: Contribution of T- and B-cell intrinsic toll-like receptors to the adaptive immune response in viral infectious diseases.\nAuthors: Zhang E, Ma Z, Lu M\nJournal: Cell Mol Life Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246389"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8771547/",
+          "identifier": "PMC:8771547",
+          "title": "Oral delivery of protein and peptide drugs: from non-specific formulation approaches to intestinal cell targeting strategies.",
+          "snippet": "Title: Oral delivery of protein and peptide drugs: from non-specific formulation approaches to intestinal cell targeting strategies.\nAuthors: Chen G, Kang W, Li W et al.\nJournal: Theranostics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246397"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8036930/",
+          "identifier": "PMC:8036930",
+          "title": "Delivery of Orally Administered Digestible Antibodies Using Nanoparticles.",
+          "snippet": "Title: Delivery of Orally Administered Digestible Antibodies Using Nanoparticles.\nAuthors: Tashima T\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246401"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9049999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: False (The intervention is not a peptide but homeopathic oral antibodies to the TLR3 FYW peptide.)\nDatabase Matches: No evidence found\nMechanism: No evidence found\nTherapeutic Target: Common Cold (viral upper respiratory tract infections)\nImmune Direction: No evidence found\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is not a peptide, as indicated by Peptide determination being False. Therefore, the trial does not involve an AMP or any other type of peptide intervention. According to the decision tree, if the intervention is not a peptide, it must be classified as \"Other\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Multicentre, Randomised, Double-blind, Parallel, Placebo-controlled Study Evaluating the Efficacy and Safety of Early Self-Treatment of Viral Upper Respiratory Tract Infections With Homeopathic Oral Antibodies to the TLR3 FYW Peptide (TAO1)",
+          "snippet": "Title: Multicentre, Randomised, Double-blind, Parallel, Placebo-controlled Study Evaluating the Efficacy and Safety of Early Self-Treatment of Viral Upper Respiratory Tract Infections With Homeopathic Oral Antibodies to the TLR3 FYW Peptide (TAO1)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139727"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to determine whether early self-treatment with homeopathic dilutions of oral antibodies to a key-protein of the immune system are effective and safe in the treatment of viral upper respiratory tract infections",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139873"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139895"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Common Cold",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139906"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Intervention: TAO1, oral homeopathic antibodies",
+          "snippet": "DRUG: TAO1, oral homeopathic antibodies - TAO1 comprises a mixture of homeopathic dilutions C12+C30+C200 (drug product is made by impregnation of pre-made tablets).\n\nThe investigational product will be taken for 7 days as follow:\n\nDay 1: 3 tablets over the first 2 hours of treatment, then 3 tablets over the rest of Day 1.\n\nDays 2-3: 5 table",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139921"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139932"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Efficacy and Safety Study of Homeopathic Oral Antibodies to Treat Viral Upper Respiratory Tract Infections",
+          "snippet": "Title: Efficacy and Safety Study of Homeopathic Oral Antibodies to Treat Viral Upper Respiratory Tract Infections\nStatus: Completed\nPhase: Phase 1/Phase 2\nCountries: Belgium\nConditions: Common Cold\nInterventions: Drug: TAO1, oral homeopathic antibodies\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:44.905288"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9555683/",
+          "identifier": "PMC:9555683",
+          "title": "Contribution of T- and B-cell intrinsic toll-like receptors to the adaptive immune response in viral infectious diseases.",
+          "snippet": "Title: Contribution of T- and B-cell intrinsic toll-like receptors to the adaptive immune response in viral infectious diseases.\nAuthors: Zhang E, Ma Z, Lu M\nJournal: Cell Mol Life Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246389"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8771547/",
+          "identifier": "PMC:8771547",
+          "title": "Oral delivery of protein and peptide drugs: from non-specific formulation approaches to intestinal cell targeting strategies.",
+          "snippet": "Title: Oral delivery of protein and peptide drugs: from non-specific formulation approaches to intestinal cell targeting strategies.\nAuthors: Chen G, Kang W, Li W et al.\nJournal: Theranostics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246397"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8036930/",
+          "identifier": "PMC:8036930",
+          "title": "Delivery of Orally Administered Digestible Antibodies Using Nanoparticles.",
+          "snippet": "Title: Delivery of Orally Administered Digestible Antibodies Using Nanoparticles.\nAuthors: Tashima T\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246401"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Oral - Tablet",
+      "confidence": 0.9166666666666666,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n1. Protocol Route:\nThe protocol route is not explicitly mentioned in the ClinicalTrials.gov metadata, but it can be inferred from the intervention description that the drug will be taken orally.\n\n2. FDA/Label Route:\nNot found.\n\n3. Literature Route:\nNot found.\n\n4. Database Route:\nChEMBL and UniProt do not have specific information on the route of administration \n[Pass 2 classification] Delivery Mode: Oral - Tablet\nEvidence: Drug Formulation (drug product is made by impregnation of pre-made tablets)\nReasoning: The most specific source indicates that the drug product is a \"pre-made tablet\" formulation, which directly corresponds to the Oral - Tablet category.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Multicentre, Randomised, Double-blind, Parallel, Placebo-controlled Study Evaluating the Efficacy and Safety of Early Self-Treatment of Viral Upper Respiratory Tract Infections With Homeopathic Oral Antibodies to the TLR3 FYW Peptide (TAO1)",
+          "snippet": "Title: Multicentre, Randomised, Double-blind, Parallel, Placebo-controlled Study Evaluating the Efficacy and Safety of Early Self-Treatment of Viral Upper Respiratory Tract Infections With Homeopathic Oral Antibodies to the TLR3 FYW Peptide (TAO1)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139727"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to determine whether early self-treatment with homeopathic dilutions of oral antibodies to a key-protein of the immune system are effective and safe in the treatment of viral upper respiratory tract infections",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139873"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139895"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Common Cold",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139906"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Intervention: TAO1, oral homeopathic antibodies",
+          "snippet": "DRUG: TAO1, oral homeopathic antibodies - TAO1 comprises a mixture of homeopathic dilutions C12+C30+C200 (drug product is made by impregnation of pre-made tablets).\n\nThe investigational product will be taken for 7 days as follow:\n\nDay 1: 3 tablets over the first 2 hours of treatment, then 3 tablets over the rest of Day 1.\n\nDays 2-3: 5 table",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139921"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139932"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9555683/",
+          "identifier": "PMC:9555683",
+          "title": "Contribution of T- and B-cell intrinsic toll-like receptors to the adaptive immune response in viral infectious diseases.",
+          "snippet": "Title: Contribution of T- and B-cell intrinsic toll-like receptors to the adaptive immune response in viral infectious diseases.\nAuthors: Zhang E, Ma Z, Lu M\nJournal: Cell Mol Life Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246389"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8771547/",
+          "identifier": "PMC:8771547",
+          "title": "Oral delivery of protein and peptide drugs: from non-specific formulation approaches to intestinal cell targeting strategies.",
+          "snippet": "Title: Oral delivery of protein and peptide drugs: from non-specific formulation approaches to intestinal cell targeting strategies.\nAuthors: Chen G, Kang W, Li W et al.\nJournal: Theranostics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246397"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8036930/",
+          "identifier": "PMC:8036930",
+          "title": "Delivery of Orally Administered Digestible Antibodies Using Nanoparticles.",
+          "snippet": "Title: Delivery of Orally Administered Digestible Antibodies Using Nanoparticles.\nAuthors: Tashima T\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246401"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.9049999999999999,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: COMPLETED\n2. Published Results: None found that directly relate to the trial results of NCT01651715. However, there are three publications listed in the PMC section, but they appear to be unrelated to the trial's efficacy and safety outcomes.\n3. Results Posted: NOT FOUND (no information available on ClinicalTrials.gov)\n4. Completion Date: Unknown\n5. Why Stopped: N/A (trial was completed as planned)\n6. Trial Phase: PHASE1, PHASE2 (the trial \n[Pass 2 decision] Applying Completion Heuristic H1 for Phase I trials that complete normally (not terminated/withdrawn). Although there are no publications directly related to the trial's efficacy and safety outcomes, completing a Phase I trial IS the success criterion. Additionally, since the trial was conducted in both Phase 1 and Phase 2 simultaneously, it is likely that the trial aimed to establish acceptable safety, tolerability, pharmacokinetics, and possibly some efficacy signals.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Multicentre, Randomised, Double-blind, Parallel, Placebo-controlled Study Evaluating the Efficacy and Safety of Early Self-Treatment of Viral Upper Respiratory Tract Infections With Homeopathic Oral Antibodies to the TLR3 FYW Peptide (TAO1)",
+          "snippet": "Title: Multicentre, Randomised, Double-blind, Parallel, Placebo-controlled Study Evaluating the Efficacy and Safety of Early Self-Treatment of Viral Upper Respiratory Tract Infections With Homeopathic Oral Antibodies to the TLR3 FYW Peptide (TAO1)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139727"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to determine whether early self-treatment with homeopathic dilutions of oral antibodies to a key-protein of the immune system are effective and safe in the treatment of viral upper respiratory tract infections",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139873"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139895"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Common Cold",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139906"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Intervention: TAO1, oral homeopathic antibodies",
+          "snippet": "DRUG: TAO1, oral homeopathic antibodies - TAO1 comprises a mixture of homeopathic dilutions C12+C30+C200 (drug product is made by impregnation of pre-made tablets).\n\nThe investigational product will be taken for 7 days as follow:\n\nDay 1: 3 tablets over the first 2 hours of treatment, then 3 tablets over the rest of Day 1.\n\nDays 2-3: 5 table",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139921"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139932"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Efficacy and Safety Study of Homeopathic Oral Antibodies to Treat Viral Upper Respiratory Tract Infections",
+          "snippet": "Title: Efficacy and Safety Study of Homeopathic Oral Antibodies to Treat Viral Upper Respiratory Tract Infections\nStatus: Completed\nPhase: Phase 1/Phase 2\nCountries: Belgium\nConditions: Common Cold\nInterventions: Drug: TAO1, oral homeopathic antibodies\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:44.905288"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9555683/",
+          "identifier": "PMC:9555683",
+          "title": "Contribution of T- and B-cell intrinsic toll-like receptors to the adaptive immune response in viral infectious diseases.",
+          "snippet": "Title: Contribution of T- and B-cell intrinsic toll-like receptors to the adaptive immune response in viral infectious diseases.\nAuthors: Zhang E, Ma Z, Lu M\nJournal: Cell Mol Life Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246389"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8771547/",
+          "identifier": "PMC:8771547",
+          "title": "Oral delivery of protein and peptide drugs: from non-specific formulation approaches to intestinal cell targeting strategies.",
+          "snippet": "Title: Oral delivery of protein and peptide drugs: from non-specific formulation approaches to intestinal cell targeting strategies.\nAuthors: Chen G, Kang W, Li W et al.\nJournal: Theranostics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246397"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8036930/",
+          "identifier": "PMC:8036930",
+          "title": "Delivery of Orally Administered Digestible Antibodies Using Nanoparticles.",
+          "snippet": "Title: Delivery of Orally Administered Digestible Antibodies Using Nanoparticles.\nAuthors: Tashima T\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246401"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT01651715",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "False",
+        "final_value": "False",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "Homeopathy relies on extreme dilutions that often result in the absence of the original substance. While TAO1 targets a protein, it's unlikely to be administered as a peptide due to the nature of homeopathic preparations.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "The term \"homeopathic\" indicates that the treatment uses highly diluted substances believed to stimulate healing responses in the body according to homeopathy principles. Homeopathic remedies are typically made from natural substances but are prepared through a series of dilutions and succussions, which can result in very low concentrations of active ingredients if any remain after preparation. The fact that TAO1 is described as \"oral homeopathic antibodies\" suggests it might contain substances ",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "The product name does not contain 'peptide', and there is no evidence to suggest that the active drug is a peptide based on the information provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "While the intervention involves a peptide (\"FYW Peptide\"), it functions as part of a homeopathic treatment, which relies on extremely diluted substances. The primary mechanism is not direct antimicrobial action but rather stimulating the body's own immune response through antibody administration. This falls under \"Other\" because the peptide itself does not directly kill pathogens.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on the decision tree criteria:\n- STEP 1: The intervention is not a peptide since it's described as homeopathic dilutions (not specifically defined as peptides).\n- STEP 2: It does not directly kill or lyse pathogens through its own biochemical action, nor does it recruit innate immune cells to kill pathogens at infection sites. Instead, the document suggests that TAO1 induces an immune response against a key-protein of the immune system.\n- DECISIVE RULE: Since this intervention works by ind",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The investigational product TAO1 is a homeopathic oral antibody mixture that induces an immune response ([pmc] PMC:9555683). It does not directly kill or disrupt pathogens, but rather works by stimulating the immune system to respond to viral infections. Therefore, it does not meet the criteria for an antimicrobial peptide as defined in the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Oral - Tablet",
+        "final_value": "Oral - Tablet",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Oral - Tablet",
+            "reasoning": "The protocol states that TAO1 is made by impregnating pre-made tablets. This indicates an oral tablet delivery method.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Oral - Tablet",
+            "reasoning": "Since the drug is described as being in tablet form and administered orally, the delivery mode is classified as Oral - Tablet.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Oral - Tablet",
+            "reasoning": "The drug is administered orally in the form of tablets.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "As per the rules, a COMPLETED status requires further investigation. Since there are no publications found detailing the outcome of the trial (positive or negative), we apply the \"Unknown\" outcome.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "According to the completion heuristics, since this is a Phase I/Early Phase I trial that completed normally and it led to subsequent trials, we can infer that the trial had positive outcomes. There are no conflicting publications or results posted on ClinicalTrials.gov, so H1 applies here.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "Since the trial completed and there are no clear indications of positive or negative outcomes from the published literature, we apply the completion heuristics (H5) which states that only use 'Unknown' after exhausting H1-H4. In this case, since there is no specific result description in the results posted on ClinicalTrials.gov and no subsequent trials were found, we cannot definitively say whether the trial was successful or not.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial is marked as \"COMPLETED\" on ClinicalTrials.gov, but there are no explicit statements regarding the positive or negative outcomes of the study. Verifiers 1 and 3 argue that without clear indications of success or failure from published literature, it's prudent to apply a conservative approach by marking the outcome as \"Unknown\". Although verifier_2 suggests inferring a positive outcome based on subsequent trials, this is speculative without direct evidence in the provided data. Therefor",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "While the trial status is \"COMPLETED,\" there are no publications cited that indicate whether the trial met its endpoints or failed to do so.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published literature indicates that the study did not demonstrate effectiveness in meeting its purpose as stated on clinicaltrials.gov and who_ictrp. Since there is no evidence of positive outcomes or results from the trial itself provided in the publications, we can conclude that the trial failed to show efficacy for treating viral upper respiratory tract infections with homeopathic oral antibodies TAO1.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published results show that the trial failed to meet its endpoints as there is no evidence suggesting that early self-treatment with homeopathic oral antibodies to the TLR3 FYW peptide (TAO1) was effective in treating viral upper respiratory tract infections. Instead, the published literature focuses on other topics such as T- and B-cell intrinsic toll-like receptors, oral delivery of protein and peptide drugs, and delivery of orally administered digestible antibodies using nanoparticles. Th",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence provided does not include any positive outcomes or results from the trial itself that would indicate success. Verifier_1, verifier_2, and verifier_3 all cite a lack of evidence showing effectiveness in meeting the trial's purpose as stated on clinicaltrials.gov and who_ictrp. Since there is no clear indication of success in the published literature or other cited sources, the most conservative interpretation based on available data supports that the reason for failure was \"Ineffecti",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01651715",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Multicentre, Randomised, Double-blind, Parallel, Placebo-controlled Study Evaluating the Efficacy and Safety of Early Self-Treatment of Viral Upper Respiratory Tract Infections With Homeopathic Oral Antibodies to the TLR3 FYW Peptide (TAO1)",
+          "snippet": "Title: Multicentre, Randomised, Double-blind, Parallel, Placebo-controlled Study Evaluating the Efficacy and Safety of Early Self-Treatment of Viral Upper Respiratory Tract Infections With Homeopathic Oral Antibodies to the TLR3 FYW Peptide (TAO1)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139727"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to determine whether early self-treatment with homeopathic dilutions of oral antibodies to a key-protein of the immune system are effective and safe in the treatment of viral upper respiratory tract infections",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139873"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139895"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Common Cold",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139906"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Intervention: TAO1, oral homeopathic antibodies",
+          "snippet": "DRUG: TAO1, oral homeopathic antibodies - TAO1 comprises a mixture of homeopathic dilutions C12+C30+C200 (drug product is made by impregnation of pre-made tablets).\n\nThe investigational product will be taken for 7 days as follow:\n\nDay 1: 3 tablets over the first 2 hours of treatment, then 3 tablets over the rest of Day 1.\n\nDays 2-3: 5 table",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139921"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.139932"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01651715",
+            "orgStudyIdInfo": {
+              "id": "ESTUAR001"
+            },
+            "organization": {
+              "fullName": "Theranor s.p.r.l",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Efficacy and Safety Study of Homeopathic Oral Antibodies to Treat Viral Upper Respiratory Tract Infections",
+            "officialTitle": "Multicentre, Randomised, Double-blind, Parallel, Placebo-controlled Study Evaluating the Efficacy and Safety of Early Self-Treatment of Viral Upper Respiratory Tract Infections With Homeopathic Oral Antibodies to the TLR3 FYW Peptide (TAO1)",
+            "acronym": "ESTUAR"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2013-08",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2012-09"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2013-08",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2013-08",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-07-25",
+            "studyFirstSubmitQcDate": "2012-07-26",
+            "studyFirstPostDateStruct": {
+              "date": "2012-07-27",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2013-08-05",
+            "lastUpdatePostDateStruct": {
+              "date": "2013-08-07",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Theranor s.p.r.l",
+              "class": "INDUSTRY"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": false
+          },
+          "descriptionModule": {
+            "briefSummary": "The purpose of this study is to determine whether early self-treatment with homeopathic dilutions of oral antibodies to a key-protein of the immune system are effective and safe in the treatment of viral upper respiratory tract infections",
+            "detailedDescription": "TAO1 is an investigational medicinal product containing homoeopathic dilutions (\\<10-24M) of antibodies purified from the serum of rabbit immunised against a synthetic peptide with an amino acid sequence selected in the human toll-like receptor type 3 sequence (anti-TLR3). It is intended for the treatment of viral Upper Respiratory Tract Infections (URTIs) such as common cold, influenza or influenza-like illnesses.\n\nThe validity of the TAO1 development approach was addressed in a proof of concept study of efficacy in a non-lethal influenza infection in mice. In this blinded study, TAO1 was given in drinking water for 5 days before and 10 days after viral challenge. The statistical analysis of preclinical data was carried out by using the Mann-Whitney non-parametric test (2-tailed). The clinical disease duration was significantly reduced from 6.0 (5.25 (25th percentile);7.0 (75th percentile)) days to 5.0 (5.0;5.0) days (p=0.00037) as well as the overall disease severity that was lowered from 8.0 (7.0;10.0) points to 6.0 (5.0;7.5) points (p=0.00032).\n\nGiven the high homoeopathic dilution, the active substance in the finished product lies beyond sensitivity of existing analytical assays. TAO1 is therefore not amenable to pharmacokinetics studies.\n\nThere are currently no data on clinical efficacy of TAO1 in common cold obtained in double-blind placebo-controlled clinical trials. Based on the efficacy in the animal model, the expected magnitude of effect of TAO1 in humans is a reduction of common cold duration by 2-3 days, provided that the treatment is started early after the onset of the symptoms.\n\nPrimary objective:\n\nTo evaluate the efficacy of TAO1 in reducing the severity of symptoms of common cold in otherwise healthy adults.\n\nSecondary objectives:\n\nTo evaluate the efficacy of TAO1 in reducing the duration of common cold. To evaluate the impact of TAO1 on health-related Quality of Life (functional impairment) in patients with common cold.\n\nTo evaluate the safety of TAO1.\n\nExperimental design: Double-blind, parallel-group, randomised, multicentre, placebo-controlled study.\n\nTreatment allocation: Balanced allocation between TAO1 and placebo (1:1).\n\nAt Visit 1, the medications, questionnaires and diary cards will be dispensed to patients who have signed informed consent. Upon contracting a common cold, they will start the treatment immediately and take contact with the doctor by phone within 36 hours. On Day 2-3 after the onset of disease, they will visit the doctor (Visit 2) to confirm the diagnosis. The doctor will check if questionnaires are filled in correctly. On the 10-14th day (at the latest) after start of treatment, Visit 3 is planned to pick up questionnaires, evaluate safety, disease complications and treatment compliance.\n\nTreatment group: TAO1 tablets (to be dissolved in the mouth, not to be swallowed; should be taken at least 10 minutes apart from meals and/or smoking):\n\nDay 1: 3 tablets to be taken over the first 2 hours of treatment, then 3 tablets over the rest of Day 1,\n\nDays 2-3: 5 tablets/day (intakes distributed evenly over the daytime),\n\nDays 4-7: 3 tablets/day (intakes distributed evenly over the daytime).\n\nControl: Placebo tablets: same dosage regimen as for TAO1.\n\nConcomitant medications: Only oral analgesics/antipyretics, such as paracetamol or ibuprofen, will be allowed in case of fever or headache. Each intake of such medications will be registered in the patient's diary.\n\nSeverity and duration of self-reported symptoms evaluated daily by the validated Wisconsin Upper Respiratory Symptom Survey short version (WURSS-21)\n\nEvaluation of safety: adverse events (AEs) and serious adverse events (SAEs) coded using the Medical Dictionary for Regulatory Activities (MedDRA) assessed according to their frequency, severity, outcome and relationship to the study drug.\n\nData collection: Paper Case Report Form (CRF).\n\nDuration of treatment: 7 days\n\nDuration of study: maximum 10 months.\n\nNumber of Investigators: about 35 investigators (General Practitioners).\n\nType of study: Phase II, self-contained study\n\nNumber of patients: 240 (120 treated with TAO1 and 120 treated with placebo)\n\nSample size justification: A sample size of 115 in each group will have 80% power to detect a difference in mean AUCs of 103 (a difference of 30% between a Placebo AUC mean of 310 and a TAO1 AUC mean of 207) assuming that the common standard deviation is 277 using a two group t-test with a 0.050 two-sided significance level."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Common Cold"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1",
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "DOUBLE",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "INVESTIGATOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 232,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "TAO1, oral homeopathic antibodies",
+                "type": "EXPERIMENTAL",
+                "description": "TAO1 is an investigational medicinal product containing homeopathic dilutions (\\<10-24M) of antibodies purified from the serum of rabbit immunised against a synthetic peptide with an amino acid sequence selected in the human toll-like receptor type 3 sequence (anti-TLR3). It is intended for the treatment of viral Upper Respiratory Tract Infections (URTIs) such as common cold, influenza or influenza-like illnesses.",
+                "interventionNames": [
+                  "Drug: TAO1, oral homeopathic antibodies"
+                ]
+              },
+              {
+                "label": "Placebo",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "Same characteristics as investigational medicinal Product except for homeopathic dilutions of oral antibodies to the TLR3 FYW peptide",
+                "interventionNames": [
+                  "Drug: TAO1, oral homeopathic antibodies"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "TAO1, oral homeopathic antibodies",
+                "description": "TAO1 comprises a mixture of homeopathic dilutions C12+C30+C200 (drug product is made by impregnation of pre-made tablets).\n\nThe investigational product will be taken for 7 days as follow:\n\nDay 1: 3 tablets over the first 2 hours of treatment, then 3 tablets over the rest of Day 1.\n\nDays 2-3: 5 tablets/day (intakes distributed evenly over the daytime). Days 4-7: 3 tablets/day (intakes distributed evenly over the daytime).",
+                "armGroupLabels": [
+                  "Placebo",
+                  "TAO1, oral homeopathic antibodies"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Severity of symptoms of common cold",
+                "description": "Decrease in severity is assessed as reduction in average area under the curve (AUC) under the time severity curve (sum of all WURSS scores over the follow-up). The Wisconsin Upper Respiratory Symptom Survey-21 (WURSS-21) is a validated tool to evaluate the duration and severity of common cold. It is constituted of twenty-one categorical questions (Likert-type 7-level severity scale).",
+                "timeFrame": "Since start of symptoms of common cold up to the visit 3 (day 10-14)"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Duration of common cold",
+                "description": "Duration is defined as the number of days from self-reported onset of disease to the last day before the participant answered \"Not sick\" to the question, \"How sick do you feel today?\" (WURSS-21). A 2-day reduction in average disease duration versus placebo will be regarded as clinically significant.",
+                "timeFrame": "Since start of symptoms of common cold up to visit 3 (Day 10-14)"
+              },
+              {
+                "measure": "Functional impairments in the course of the disease",
+                "description": "Day-to-day scores for functional impairments domain. Overall (sum of all WURSS scores related to functional impairments over the follow-up).",
+                "timeFrame": "Since start of symptoms of common cold up to visit 3 (Day 10-14)"
+              },
+              {
+                "measure": "The need of symptomatic analgesics/antipyretics",
+                "description": "Patients will fill in diary cards on a daily basis. The following information will be recorded: study and patient identification, date of assessment, study medication intake, other medications (name, dose, frequency) and, AEs/SAEs (description)",
+                "timeFrame": "Since start of symptoms of common cold up to visit 3 (Day 10-14)"
+              },
+              {
+                "measure": "Evaluation of safety",
+                "description": "Patients will fill in diary cards on a daily basis including AEs/SAEs reporting. Investigators will question patients at phone call and scheduled visits about AEs/SAEs. Frequency, severity, outcome and relationship to the study drug will be assessed.",
+                "timeFrame": "since start of symptoms of common cold up to visit 3 (Day 10-14)"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Outpatients aged \\> or = 18 years\n* Ability and willingness to adhere to the study protocol\n* Signed informed consent\n* Self-reported recently emerged symptoms of common cold: answer \"Yes\" to the question \"Do you believe that you are coming down with a cold?\"\n* At least one of the following 4 common cold symptoms: sneezing, runny nose, nasal obstruction and/or sore throat, with no limitations of symptom severity.\n\nExclusion Criteria:\n\n* Specific chronic diseases (autoimmune disease, chronic bronchitis, human immunodeficiency virus (HIV) infection, lupus, rheumatoid arthritis)\n* Malignancy for which the patient has undergone resection, radiation or chemotherapy within the last five years. Patients with treated basal cell carcinoma are allowed.\n* Cancer therapy\n* Immunosuppressant therapies\n* Use of systemic corticosteroids\n* A history of asthma or allergic rhinitis and corresponding symptoms (itchy eyes, sneezing, wheezing)\n* Any of the common cold symptoms persisting since more than 36 hours\n* Use of other homeopathic drugs designed to treat URTIs\n* Use of antibiotics, anti-histaminergic drugs or decongestants\n* Participation in another clinical trial within one month prior to treatment start\n* Previous participation (receipt of randomised treatment) in this study",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "St\u00e9phane Heijmans, MD",
+                "affiliation": "RESEARCHLINK sprl",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              },
+              {
+                "name": "Luc Moriau, PhD",
+                "affiliation": "ECSOR sa/nv",
+                "role": "STUDY_DIRECTOR"
+              },
+              {
+                "name": "Michel Thiry, PhD",
+                "affiliation": "THERANOR sprl",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Frank Heyvaert",
+                "city": "Deurne",
+                "state": "Antwerpen",
+                "zip": "2100",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 51.22134,
+                  "lon": 4.46595
+                }
+              },
+              {
+                "facility": "Christel Van Der Geer",
+                "city": "Geel",
+                "state": "Antwerpen",
+                "zip": "2440",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 51.16557,
+                  "lon": 4.98917
+                }
+              },
+              {
+                "facility": "Hugo Loos",
+                "city": "Geel",
+                "state": "Antwerpen",
+                "zip": "2440",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 51.16557,
+                  "lon": 4.98917
+                }
+              },
+              {
+                "facility": "Jan Joris",
+                "city": "Mol",
+                "state": "Antwerpen",
+                "zip": "2400",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 51.19188,
+                  "lon": 5.11662
+                }
+              },
+              {
+                "facility": "Jan De Jongh",
+                "city": "Vorst",
+                "state": "Antwerpen",
+                "zip": "2430",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 51.08029,
+                  "lon": 5.01998
+                }
+              },
+              {
+                "facility": "Jean-Pierre Devaux",
+                "city": "Baisy-Thy",
+                "state": "Brabant",
+                "zip": "1470",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.59708,
+                  "lon": 4.47598
+                }
+              },
+              {
+                "facility": "Virginie Risse",
+                "city": "Brussels",
+                "state": "Brabant",
+                "zip": "1180",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.85045,
+                  "lon": 4.34878
+                }
+              },
+              {
+                "facility": "Roel De Ryck",
+                "city": "Kraainem",
+                "state": "Brabant",
+                "zip": "1950",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.86155,
+                  "lon": 4.46946
+                }
+              },
+              {
+                "facility": "ResearchLink sprl",
+                "city": "Linkebeek",
+                "state": "Brabant",
+                "zip": "1630",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.76781,
+                  "lon": 4.33688
+                }
+              },
+              {
+                "facility": "St\u00e9phane Vanden Bemden",
+                "city": "Melsbroek",
+                "state": "Brabant",
+                "zip": "1820",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.91559,
+                  "lon": 4.47985
+                }
+              },
+              {
+                "facility": "Bart Van Essche",
+                "city": "Steenokkerzeel",
+                "state": "Brabant",
+                "zip": "1820",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.91851,
+                  "lon": 4.50989
+                }
+              },
+              {
+                "facility": "Erik Schreurs",
+                "city": "Tremelo",
+                "state": "Brabant",
+                "zip": "3120",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.99231,
+                  "lon": 4.70807
+                }
+              },
+              {
+                "facility": "Lode Vermeersch",
+                "city": "Tremelo",
+                "state": "Brabant",
+                "zip": "3120",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.99231,
+                  "lon": 4.70807
+                }
+              },
+              {
+                "facility": "Luc De Munck",
+                "city": "Vilvoorde",
+                "state": "Brabant",
+                "zip": "1800",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.92814,
+                  "lon": 4.42938
+                }
+              },
+              {
+                "facility": "Patrice Lechien",
+                "city": "Braine-le-Comte",
+                "state": "Hainaut",
+                "zip": "7090",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.60979,
+                  "lon": 4.14658
+                }
+              },
+              {
+                "facility": "Charles Corbisier",
+                "city": "Ecaussinnes",
+                "state": "Hainaut",
+                "zip": "7190",
+                "country": "Belgium"
+              },
+              {
+                "facility": "Elise De Meulemeester",
+                "city": "Goz\u00e9e",
+                "state": "Hainaut",
+                "zip": "6534",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.33461,
+                  "lon": 4.35273
+                }
+              },
+              {
+                "facility": "Magali Trefois",
+                "city": "Goz\u00e9e",
+                "state": "Hainaut",
+                "zip": "6534",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.33461,
+                  "lon": 4.35273
+                }
+              },
+              {
+                "facility": "Aubry Robert",
+                "city": "Ham-sur-Heure-Nalinnes",
+                "state": "Hainaut",
+                "zip": "6120",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.31686,
+                  "lon": 4.38432
+                }
+              },
+              {
+                "facility": "Philippe Jacques",
+                "city": "Ham-sur-Heure-Nalinnes",
+                "state": "Hainaut",
+                "zip": "6120",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.31686,
+                  "lon": 4.38432
+                }
+              },
+              {
+                "facility": "Michel Gr\u00e9goire",
+                "city": "Pont-\u00e0-Celles",
+                "state": "Hainaut",
+                "zip": "6230",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.50518,
+                  "lon": 4.36887
+                }
+              },
+              {
+                "facility": "Etienne Demanet",
+                "city": "Thuin",
+                "state": "Hainaut",
+                "zip": "6530",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.33933,
+                  "lon": 4.28604
+                }
+              },
+              {
+                "facility": "Maria Buscemi",
+                "city": "Thuin",
+                "state": "Hainaut",
+                "zip": "6530",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.33933,
+                  "lon": 4.28604
+                }
+              },
+              {
+                "facility": "Etienne Plees",
+                "city": "Beringen",
+                "state": "Limburg",
+                "zip": "3580",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 51.04954,
+                  "lon": 5.22606
+                }
+              },
+              {
+                "facility": "Nicole Olaerts",
+                "city": "Ham",
+                "state": "Limburg",
+                "zip": "3945",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 50.94066,
+                  "lon": 3.45852
+                }
+              },
+              {
+                "facility": "Paul Beke",
+                "city": "Leopoldsburg",
+                "state": "Limburg",
+                "zip": "3970",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 51.11667,
+                  "lon": 5.25
+                }
+              },
+              {
+                "facility": "Steven Windmolders",
+                "city": "Overpelt",
+                "state": "Limburg",
+                "zip": "3900",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 51.21038,
+                  "lon": 5.41557
+                }
+              },
+              {
+                "facility": "Jan Behets",
+                "city": "Paal",
+                "state": "Limburg",
+                "zip": "3583",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 51.03988,
+                  "lon": 5.17233
+                }
+              },
+              {
+                "facility": "Jos Weckx",
+                "city": "Paal",
+                "state": "Limburg",
+                "zip": "3583",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 51.03988,
+                  "lon": 5.17233
+                }
+              },
+              {
+                "facility": "Herman Van Den Broeck",
+                "city": "Tessenderlo",
+                "state": "Limburg",
+                "zip": "3980",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 51.06513,
+                  "lon": 5.08856
+                }
+              },
+              {
+                "facility": "Yvan Calozet",
+                "city": "Gribomont",
+                "state": "Luxembourg",
+                "zip": "6887",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 49.82166,
+                  "lon": 5.3243
+                }
+              },
+              {
+                "facility": "Pierre-Henri Arnould",
+                "city": "Libramont-Chevigny",
+                "state": "Luxembourg",
+                "zip": "6800",
+                "country": "Belgium"
+              },
+              {
+                "facility": "Guy Van Damme",
+                "city": "Heusden",
+                "state": "Oost Vlaanderen",
+                "zip": "9070",
+                "country": "Belgium",
+                "geoPoint": {
+                  "lat": 51.03664,
+                  "lon": 5.28013
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01651715",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9555683/",
+          "identifier": "PMC:9555683",
+          "title": "Contribution of T- and B-cell intrinsic toll-like receptors to the adaptive immune response in viral infectious diseases.",
+          "snippet": "Title: Contribution of T- and B-cell intrinsic toll-like receptors to the adaptive immune response in viral infectious diseases.\nAuthors: Zhang E, Ma Z, Lu M\nJournal: Cell Mol Life Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246389"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8771547/",
+          "identifier": "PMC:8771547",
+          "title": "Oral delivery of protein and peptide drugs: from non-specific formulation approaches to intestinal cell targeting strategies.",
+          "snippet": "Title: Oral delivery of protein and peptide drugs: from non-specific formulation approaches to intestinal cell targeting strategies.\nAuthors: Chen G, Kang W, Li W et al.\nJournal: Theranostics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246397"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8036930/",
+          "identifier": "PMC:8036930",
+          "title": "Delivery of Orally Administered Digestible Antibodies Using Nanoparticles.",
+          "snippet": "Title: Delivery of Orally Administered Digestible Antibodies Using Nanoparticles.\nAuthors: Tashima T\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:48.246401"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "9555683",
+          "8771547",
+          "8036930"
+        ],
+        "pmc_count": 3,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01651715",
+      "citations": [],
+      "raw_data": {
+        "uniprot_TAO1, oral homeopathic antibodies": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01651715",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01651715",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_TAO1, oral homeopathic antibodies": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01651715",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2108778/",
+          "identifier": "CHEMBL2108778",
+          "title": "POLIOVIRUS VACCINE LIVE ORAL - ChEMBL",
+          "snippet": "Molecule: POLIOVIRUS VACCINE LIVE ORAL\nType: Vaccine component\nMax clinical phase: 3.0\nMechanism: Biological vaccine - induces immune response",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:43.013605"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5777886/",
+          "identifier": "CHEMBL5777886",
+          "title": "CHEMBL5777886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5777886\nMolecular weight: 336.41\nBioactivity: Ki=1026.0 nM (Nitric oxide synthase 1); Ki=10978.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:43.420755"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5788338/",
+          "identifier": "CHEMBL5788338",
+          "title": "CHEMBL5788338 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5788338\nMolecular weight: 316.42\nBioactivity: Ki=70.0 nM (Nitric oxide synthase 1); Ki=3314.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:43.809410"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'TAO1, oral homeopathic antibodies'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01651715",
+      "citations": [],
+      "raw_data": {
+        "rcsb_TAO1, oral homeopathic antibodies": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01651715",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_TAO1, oral homeopathic antibodies_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT01651715",
+      "citations": [],
+      "raw_data": {
+        "apd_TAO1, oral homeopathic antibodies": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT01651715",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01651715",
+          "identifier": "NCT01651715",
+          "title": "Efficacy and Safety Study of Homeopathic Oral Antibodies to Treat Viral Upper Respiratory Tract Infections",
+          "snippet": "Title: Efficacy and Safety Study of Homeopathic Oral Antibodies to Treat Viral Upper Respiratory Tract Infections\nStatus: Completed\nPhase: Phase 1/Phase 2\nCountries: Belgium\nConditions: Common Cold\nInterventions: Drug: TAO1, oral homeopathic antibodies\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:44.905288"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT01651715",
+          "public_title": "Efficacy and Safety Study of Homeopathic Oral Antibodies to Treat Viral Upper Respiratory Tract Infections",
+          "scientific_title": "Multicentre, Randomised, Double-blind, Parallel, Placebo-controlled Study Evaluating the Efficacy and Safety of Early Self-Treatment of Viral Upper Respiratory Tract Infections With Homeopathic Oral Antibodies to the TLR3 FYW Peptide (TAO1)",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1/Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Randomized, Endpoint Classification: Safety/Efficacy Study, Intervention Model: Parallel Assignment, Masking: Double Blind (Subject, Investigator), Primary Purpose: Treatment",
+          "countries": [
+            "Belgium"
+          ],
+          "conditions": [
+            "Common Cold"
+          ],
+          "interventions": [
+            "Drug: TAO1, oral homeopathic antibodies"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT01651715",
+      "citations": [],
+      "raw_data": {
+        "iuphar_TAO1, oral homeopathic antibodies": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT01651715",
+      "citations": [],
+      "raw_data": {
+        "pdbe_TAO1, oral homeopathic antibodies_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

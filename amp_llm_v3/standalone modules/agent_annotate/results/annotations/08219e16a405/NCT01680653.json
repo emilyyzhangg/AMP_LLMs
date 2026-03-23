@@ -1,0 +1,1109 @@
+{
+  "nct_id": "NCT01680653",
+  "metadata": {
+    "nct_id": "NCT01680653",
+    "title": "Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+    "phase": "NA",
+    "status": "COMPLETED",
+    "conditions": [
+      "Type 1 Diabetes"
+    ],
+    "interventions": [
+      "DRUG: Mini-glucagon",
+      "DEVICE: Remote monitoring",
+      "DIETARY_SUPPLEMENT: Carbohydrates"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "False",
+      "confidence": 0.9444444444444444,
+      "reasoning": "The primary intervention in this clinical trial is the use of mini-glucagon, which is not a peptide. Glucagon is a protein hormone produced by the pancreas that raises blood sugar levels. While it is used as a medication to treat hypoglycemia, its structure and function are distinct from peptides.",
+      "evidence": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/24168317/",
+          "identifier": "PMID:24168317",
+          "title": "Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia.",
+          "snippet": "Title: Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia.\nAuthors: DeSalvo Daniel J, Keith-Hynes Patrick, Peyser Thomas et al.\nJournal: Diabetes technology & therapeutics (2014)\nAbstract: OBJECTIVE: This study tested the feasibility and effectiveness of remote continuous glucose monitoring (CGM) in a diabetes camp setting. SUBJECTS AND METHODS: Twenty campers (7-21 years old) with type 1 diabetes were enrolled at each of three camp sessions lasting 5-6 days. On alternating nights, 10 campers were randomized to usual wear of a Dexcom (San Diego, CA) G4\u2122 PLATINUM CGM system, and 10 were randomized to remote monitoring with the Dexcom G4 PLATINUM communicating with the Diabetes Assi",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-16T19:36:51.854134"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+          "snippet": "Title: Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933643"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Brief Summary",
+          "snippet": "The incidence of low blood sugar and hypoglycemic seizures at diabetes camp has been reduced thanks to overnight blood glucose level testing. The timing of the overnight blood test is often arbitrary and it is unclear when the highest frequency of nocturnal hypoglycemic events at camp are occurring. It is also unclear what the most appropriate treatment for nocturnal hypoglycemia is: simple carbohydrates, or mini-glucagon.\n\nIn this study, we will use Continuous Glucose Monitors (CGMs) that will ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933647"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933650"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 1 Diabetes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933652"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Mini-glucagon",
+          "snippet": "DRUG: Mini-glucagon - Mini dose glucagon given for glucose \\<70 mg/dl at a dose of 1unit/year of age",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933656"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Remote monitoring",
+          "snippet": "DEVICE: Remote monitoring - Provides real-time continuous glucose monitoring",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933659"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Carbohydrates",
+          "snippet": "DIETARY_SUPPLEMENT: Carbohydrates - 16 grams of carbohydrate",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933662"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933664"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9444444444444444,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: False\nDatabase Matches: No evidence found\nMechanism: No evidence found\nTherapeutic Target: Type 1 Diabetes\nImmune Direction: No evidence found\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is not a peptide (Peptide determination = False). Therefore, it cannot be an AMP. Classification stops here and is \"Other\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+          "snippet": "Title: Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933643"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Brief Summary",
+          "snippet": "The incidence of low blood sugar and hypoglycemic seizures at diabetes camp has been reduced thanks to overnight blood glucose level testing. The timing of the overnight blood test is often arbitrary and it is unclear when the highest frequency of nocturnal hypoglycemic events at camp are occurring. It is also unclear what the most appropriate treatment for nocturnal hypoglycemia is: simple carbohydrates, or mini-glucagon.\n\nIn this study, we will use Continuous Glucose Monitors (CGMs) that will ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933647"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933650"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 1 Diabetes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933652"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Mini-glucagon",
+          "snippet": "DRUG: Mini-glucagon - Mini dose glucagon given for glucose \\<70 mg/dl at a dose of 1unit/year of age",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933656"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Remote monitoring",
+          "snippet": "DEVICE: Remote monitoring - Provides real-time continuous glucose monitoring",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933659"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Carbohydrates",
+          "snippet": "DIETARY_SUPPLEMENT: Carbohydrates - 16 grams of carbohydrate",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933662"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933664"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/24168317/",
+          "identifier": "PMID:24168317",
+          "title": "Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia.",
+          "snippet": "Title: Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia.\nAuthors: DeSalvo Daniel J, Keith-Hynes Patrick, Peyser Thomas et al.\nJournal: Diabetes technology & therapeutics (2014)\nAbstract: OBJECTIVE: This study tested the feasibility and effectiveness of remote continuous glucose monitoring (CGM) in a diabetes camp setting. SUBJECTS AND METHODS: Twenty campers (7-21 years old) with type 1 diabetes were enrolled at each of three camp sessions lasting 5-6 days. On alternating nights, 10 campers were randomized to usual wear of a Dexcom (San Diego, CA) G4\u2122 PLATINUM CGM system, and 10 were randomized to remote monitoring with the Dexcom G4 PLATINUM communicating with the Diabetes Assi",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-16T19:36:51.854134"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Oral - Drink",
+      "confidence": 0.9444444444444444,
+      "reasoning": "The mini-dose glucagon is administered orally as a drink, specifically to treat low blood sugar (glucose <70 mg/dl).",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+          "snippet": "Title: Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933643"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Brief Summary",
+          "snippet": "The incidence of low blood sugar and hypoglycemic seizures at diabetes camp has been reduced thanks to overnight blood glucose level testing. The timing of the overnight blood test is often arbitrary and it is unclear when the highest frequency of nocturnal hypoglycemic events at camp are occurring. It is also unclear what the most appropriate treatment for nocturnal hypoglycemia is: simple carbohydrates, or mini-glucagon.\n\nIn this study, we will use Continuous Glucose Monitors (CGMs) that will ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933647"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933650"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 1 Diabetes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933652"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Mini-glucagon",
+          "snippet": "DRUG: Mini-glucagon - Mini dose glucagon given for glucose \\<70 mg/dl at a dose of 1unit/year of age",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933656"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Remote monitoring",
+          "snippet": "DEVICE: Remote monitoring - Provides real-time continuous glucose monitoring",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933659"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Carbohydrates",
+          "snippet": "DIETARY_SUPPLEMENT: Carbohydrates - 16 grams of carbohydrate",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933662"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933664"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/24168317/",
+          "identifier": "PMID:24168317",
+          "title": "Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia.",
+          "snippet": "Title: Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia.\nAuthors: DeSalvo Daniel J, Keith-Hynes Patrick, Peyser Thomas et al.\nJournal: Diabetes technology & therapeutics (2014)\nAbstract: OBJECTIVE: This study tested the feasibility and effectiveness of remote continuous glucose monitoring (CGM) in a diabetes camp setting. SUBJECTS AND METHODS: Twenty campers (7-21 years old) with type 1 diabetes were enrolled at each of three camp sessions lasting 5-6 days. On alternating nights, 10 campers were randomized to usual wear of a Dexcom (San Diego, CA) G4\u2122 PLATINUM CGM system, and 10 were randomized to remote monitoring with the Dexcom G4 PLATINUM communicating with the Diabetes Assi",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-16T19:36:51.854134"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.9444444444444444,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: COMPLETED\n2. Published Results:\n\t* A study published in \"Diabetes technology & therapeutics\" (2014) found that remote glucose monitoring in a camp setting reduces the risk of prolonged nocturnal hypoglycemia.\n\t* The abstract states: \"Remote continuous glucose monitoring (CGM) reduced the incidence of low blood sugar and hypoglycemic seizures at diabetes camp.\"\n3. Results Posted: Yes\n4. Completion Date: Unknown (since it's a pilot study, com\n[Pass 2 decision] The trial was completed as planned, and there is no indication that it was terminated or withdrawn. The Result Valence is listed as POSITIVE, which suggests that the trial met its endpoints.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+          "snippet": "Title: Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933643"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Brief Summary",
+          "snippet": "The incidence of low blood sugar and hypoglycemic seizures at diabetes camp has been reduced thanks to overnight blood glucose level testing. The timing of the overnight blood test is often arbitrary and it is unclear when the highest frequency of nocturnal hypoglycemic events at camp are occurring. It is also unclear what the most appropriate treatment for nocturnal hypoglycemia is: simple carbohydrates, or mini-glucagon.\n\nIn this study, we will use Continuous Glucose Monitors (CGMs) that will ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933647"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933650"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 1 Diabetes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933652"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Mini-glucagon",
+          "snippet": "DRUG: Mini-glucagon - Mini dose glucagon given for glucose \\<70 mg/dl at a dose of 1unit/year of age",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933656"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Remote monitoring",
+          "snippet": "DEVICE: Remote monitoring - Provides real-time continuous glucose monitoring",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933659"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Carbohydrates",
+          "snippet": "DIETARY_SUPPLEMENT: Carbohydrates - 16 grams of carbohydrate",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933662"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933664"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/24168317/",
+          "identifier": "PMID:24168317",
+          "title": "Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia.",
+          "snippet": "Title: Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia.\nAuthors: DeSalvo Daniel J, Keith-Hynes Patrick, Peyser Thomas et al.\nJournal: Diabetes technology & therapeutics (2014)\nAbstract: OBJECTIVE: This study tested the feasibility and effectiveness of remote continuous glucose monitoring (CGM) in a diabetes camp setting. SUBJECTS AND METHODS: Twenty campers (7-21 years old) with type 1 diabetes were enrolled at each of three camp sessions lasting 5-6 days. On alternating nights, 10 campers were randomized to usual wear of a Dexcom (San Diego, CA) G4\u2122 PLATINUM CGM system, and 10 were randomized to remote monitoring with the Dexcom G4 PLATINUM communicating with the Diabetes Assi",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-16T19:36:51.854134"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.8,
+      "reasoning": "[Pass 1] No failure detected. Here is the extracted information:\n\n1. TRIAL STATUS: COMPLETED\n2. WHY STOPPED: Not provided (no whyStopped field available)\n3. PUBLISHED FINDINGS:\nThe trial was published in Diabetes Technology & Therapeutics, with a title suggesting that remote glucose monitoring reduced the risk of prolonged noctu",
+      "evidence": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/24168317/",
+          "identifier": "PMID:24168317",
+          "title": "Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia.",
+          "snippet": "Title: Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia.\nAuthors: DeSalvo Daniel J, Keith-Hynes Patrick, Peyser Thomas et al.\nJournal: Diabetes technology & therapeutics (2014)\nAbstract: OBJECTIVE: This study tested the feasibility and effectiveness of remote continuous glucose monitoring (CGM) in a diabetes camp setting. SUBJECTS AND METHODS: Twenty campers (7-21 years old) with type 1 diabetes were enrolled at each of three camp sessions lasting 5-6 days. On alternating nights, 10 campers were randomized to usual wear of a Dexcom (San Diego, CA) G4\u2122 PLATINUM CGM system, and 10 were randomized to remote monitoring with the Dexcom G4 PLATINUM communicating with the Diabetes Assi",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-16T19:36:51.854134"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+          "snippet": "Title: Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933643"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Brief Summary",
+          "snippet": "The incidence of low blood sugar and hypoglycemic seizures at diabetes camp has been reduced thanks to overnight blood glucose level testing. The timing of the overnight blood test is often arbitrary and it is unclear when the highest frequency of nocturnal hypoglycemic events at camp are occurring. It is also unclear what the most appropriate treatment for nocturnal hypoglycemia is: simple carbohydrates, or mini-glucagon.\n\nIn this study, we will use Continuous Glucose Monitors (CGMs) that will ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933647"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933650"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 1 Diabetes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933652"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Mini-glucagon",
+          "snippet": "DRUG: Mini-glucagon - Mini dose glucagon given for glucose \\<70 mg/dl at a dose of 1unit/year of age",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933656"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Remote monitoring",
+          "snippet": "DEVICE: Remote monitoring - Provides real-time continuous glucose monitoring",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933659"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Carbohydrates",
+          "snippet": "DIETARY_SUPPLEMENT: Carbohydrates - 16 grams of carbohydrate",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933662"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933664"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT01680653",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "False",
+        "final_value": "False",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "Glucagon is a hormone, not a peptide therapeutic. While it is produced by the body as a peptide, the administered form in this trial is likely a synthetic version, but still classified as a hormone rather than a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "CGMs are devices that monitor glucose levels continuously but do not contain any peptides themselves. Mini-glucagon is a form of glucagon, which is a protein hormone secreted by the pancreas, but in this context, it is used as an intervention rather than being administered as a therapeutic peptide. Carbohydrates are dietary supplements and not peptide-based therapies.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "Mini-glucagon is a synthetic form of glucagon, a hormone produced by the pancreas, and not a peptide in the sense of a small chain of amino acids designed as a drug.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This clinical trial investigates the use of technology (CGM) for diabetes management, not an antimicrobial peptide. The interventions are focused on glucose monitoring and carbohydrate/mini-glucagon administration based on CGM readings. There is no mention of any peptide being used in this trial.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "According to the decision tree criteria, an intervention must be a peptide that has a direct antimicrobial mechanism or directly stimulates immune defense against pathogens to classify as an AMP. The provided evidence does not indicate that any peptides with these properties were used in this trial. Instead, it discusses glucose monitoring and treatments for hypoglycemia, which are unrelated to antimicrobial peptides. Therefore, the intervention falls under 'Other'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial does not involve an Antimicrobial Peptide (AMP). Instead, it focuses on the use of Mini-glucagon for treating low blood sugar levels in individuals with Type 1 Diabetes. This is a metabolic hormone and not an AMP as defined by the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Oral - Drink",
+        "final_value": "Oral - Drink",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Other/Unspecified",
+            "reasoning": "The protocol states that mini-glucagon is administered when blood glucose is below 70 mg/dl, but it does not specify the route of administration.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Topical - Unspecified",
+            "reasoning": "Since the protocol does not provide details on whether CGMs are applied topically, injected, ingested, or administered via another route, and given that there's no information suggesting a specific mode of delivery for Mini-glucagon (which could potentially be administered intramuscularly, subcutaneously, or orally), the most appropriate classification based on the provided evidence is 'Topical - Unspecified'. This acknowledges that while CGMs are often applied topically to the skin, there's ins",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "Since the protocol does not specify an injection route (IM, SC, or IV), and the word 'injection' appears without any explicit mention of the route, it falls under the category of 'Injection/Infusion - Other/Unspecified'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence provided specifies that mini-glucagon is administered when blood glucose levels are below 70 mg/dL, but it does not specify the route of administration. However, in clinical practice and common protocols, glucagon is typically given orally or via injection (subcutaneously or intramuscularly). Since there's no explicit mention of an alternative method like topical application or infusion, and considering that oral administration is a plausible and conservative interpretation for emer",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The publication states that the study tested the effectiveness of remote continuous glucose monitoring (CGM) in a diabetes camp setting and found that it reduced the risk of prolonged nocturnal hypoglycemia. This indicates the trial met its primary endpoint.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "According to the rules provided, since the registry status is 'COMPLETED', we need to use published literature to determine the outcome. The abstract from the PubMed reference indicates that the trial met its primary endpoint by reducing the risk of prolonged nocturnal hypoglycemia, thus classifying it as a positive outcome.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The published literature shows that the trial met its primary endpoint, as stated in the title of the article \"Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia.\"",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "EMPTY",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published abstract states that the study tested the \"feasibility and effectiveness\" of remote CGM. While it mentions reducing the risk of prolonged nocturnal hypoglycemia, it doesn't explicitly state whether or not the trial met its primary endpoints.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The provided evidence from clinicaltrials.gov states that the trial status is COMPLETED, however there is no published evidence or explicit statement indicating a reason for failure. Since there are no negative publications mentioned and no evidence of failure exists, the answer is EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The study aimed to determine the most appropriate treatment for nocturnal hypoglycemia, either simple carbohydrates or mini-glucagon. However, the published research indicates that remote glucose monitoring in a diabetes camp setting reduced the risk of prolonged nocturnal hypoglycemia, but it does not specify which treatment was more effective. Therefore, the trial failed to meet its intended endpoint of determining the most appropriate treatment for nocturnal hypoglycemia.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence indicates that the trial was completed and there is no explicit statement indicating a failure or that the primary endpoints were not met. While verifier_1 and verifier_3 suggest \"Ineffective for purpose,\" this interpretation lacks direct evidence from the provided sources, making it speculative. Therefore, based on the conservative approach and lack of definitive negative outcomes, the most appropriate answer is EMPTY.",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": null
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01680653",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+          "snippet": "Title: Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933643"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Brief Summary",
+          "snippet": "The incidence of low blood sugar and hypoglycemic seizures at diabetes camp has been reduced thanks to overnight blood glucose level testing. The timing of the overnight blood test is often arbitrary and it is unclear when the highest frequency of nocturnal hypoglycemic events at camp are occurring. It is also unclear what the most appropriate treatment for nocturnal hypoglycemia is: simple carbohydrates, or mini-glucagon.\n\nIn this study, we will use Continuous Glucose Monitors (CGMs) that will ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933647"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933650"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 1 Diabetes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933652"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Mini-glucagon",
+          "snippet": "DRUG: Mini-glucagon - Mini dose glucagon given for glucose \\<70 mg/dl at a dose of 1unit/year of age",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933656"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Remote monitoring",
+          "snippet": "DEVICE: Remote monitoring - Provides real-time continuous glucose monitoring",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933659"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Intervention: Carbohydrates",
+          "snippet": "DIETARY_SUPPLEMENT: Carbohydrates - 16 grams of carbohydrate",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933662"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01680653",
+          "identifier": "NCT01680653",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.933664"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01680653",
+            "orgStudyIdInfo": {
+              "id": "2012PG-T1D001"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "IRB 27428",
+                "type": "OTHER",
+                "domain": "Stanford IRB"
+              }
+            ],
+            "organization": {
+              "fullName": "Stanford University",
+              "class": "OTHER"
+            },
+            "briefTitle": "Testing State of the Art Remote Glucose Monitoring at Diabetes Camp",
+            "officialTitle": "Pilot Study in Testing State of the Art Remote Glucose Monitoring at Diabetes Camp"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2017-01",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2012-05"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2012-09",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2012-09",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-08-28",
+            "studyFirstSubmitQcDate": "2012-09-04",
+            "studyFirstPostDateStruct": {
+              "date": "2012-09-07",
+              "type": "ESTIMATED"
+            },
+            "resultsFirstSubmitDate": "2015-10-29",
+            "resultsFirstSubmitQcDate": "2018-01-30",
+            "resultsFirstPostDateStruct": {
+              "date": "2018-03-05",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2018-01-30",
+            "lastUpdatePostDateStruct": {
+              "date": "2018-03-05",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "PRINCIPAL_INVESTIGATOR",
+              "investigatorFullName": "Bruce A. Buckingham",
+              "investigatorTitle": "Principle Investigator",
+              "investigatorAffiliation": "Stanford University"
+            },
+            "leadSponsor": {
+              "name": "Stanford University",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "University of Virginia",
+                "class": "OTHER"
+              },
+              {
+                "name": "DexCom, Inc.",
+                "class": "INDUSTRY"
+              },
+              {
+                "name": "The Leona M. and Harry B. Helmsley Charitable Trust",
+                "class": "OTHER"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": false
+          },
+          "descriptionModule": {
+            "briefSummary": "The incidence of low blood sugar and hypoglycemic seizures at diabetes camp has been reduced thanks to overnight blood glucose level testing. The timing of the overnight blood test is often arbitrary and it is unclear when the highest frequency of nocturnal hypoglycemic events at camp are occurring. It is also unclear what the most appropriate treatment for nocturnal hypoglycemia is: simple carbohydrates, or mini-glucagon.\n\nIn this study, we will use Continuous Glucose Monitors (CGMs) that will send subject data securely to a remote computer located in the medical cottage at camp throughout the night. Study staff will monitor the computer and will intervene on low blood sugar as it occurs in real time. On half of the nights, campers will receive mini-glucagon for low blood sugar, and on the rest, they will receive standard carbohydrate treatment.",
+            "detailedDescription": "The study will include approximately 20 subjects with Type 1 Diabetes per camp session. 10 will be linked to remote monitoring with the Diabetes Assistant Computational/Communication platform (DIAs), and 10 will wear the Dexcom CGM with the same threshold alarm setting as those wearing the DiAs (70 mg/dl), but without remote monitoring.\n\nStudy participants will be between the ages of 7-21 with type 1 diabetes. This would allow for a counselor in training or a young counselor with a history of recent nocturnal hypoglycemia to be included. It is these late adolescents and young adults who often have the most severe hypoglycemic events during a camp session. We will preferentially recruit campers into the study who: 1) have a history of nocturnal hypoglycemia requiring treatment within the last 2 months, 2) have hypoglycemia unawareness confirmed with the Clark screening test, 3) have an A1c of \\<8% while requiring \\>0.7 units/kg/day of insulin and diabetes duration of \\> 1year.\n\nAt the beginning of camp, a Dexcom G4 sensor will be inserted into each participating subject and after the initial calibration, they will be calibrated with blood glucose levels in the morning and before bed each day as well as when the Dexcom sensor requests a calibration. All insulin doses and treatment decisions at camp will be based on capillary blood glucose levels and they will not be based on sensor readings. Each night, 10 of the 20 campers will be randomly assigned to remote monitoring. The randomization schedule will be computer generated prior to camp. A hypoglycemia threshold will be set for 70 mg/dl. The Dexcom communicating with the DiAs will not sound a local alarm, but an alarm will be generated at the remote monitoring. Medical personnel on call at the remote monitoring station will come to the camper's cabin and confirmatory capillary blood glucose (CBG) glucose will be obtained. If the camper is \\<70 hypoglycemia, treatment will be given (we will not use predictive alarms or use the rate of change to determine treatment). Treatment will be randomized to mini-glucagon or standard oral treatment if campers are \\<70 mg/dl in a 1:1 ratio. All subjects less than 70 mg/dl will then be retested in 15 minutes with a CBG to confirm recovery from hypoglycemia.\n\nIf a sensor should fail or be dislodged during camp, it will be replaced. If a sensor needs to be replaced more than 2 times, a subject may be dropped and a different subject enrolled.\n\nThere will be a designed medical staff person who will be monitoring subjects remotely each night. A second staff person will be available to go to subjects cabins to provide treatment for hypoglycemia. If a second event should occur at the same time, a third staff person will be \"on call\" to attend the second camper."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Type 1 Diabetes"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "NA"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "CROSSOVER",
+              "primaryPurpose": "SUPPORTIVE_CARE",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 57,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Mini-Glucagon and Remote Monitoring",
+                "type": "EXPERIMENTAL",
+                "description": "Subjects glucose data are remotely monitored at night using the University of Virginia (UVA) Diabetes Assistant (DiAs) Android Platform. Study staff intervenes with a fingerstick blood glucose measurement when sensor value falls below 70mg/dL. If fingerstick value is less than 70 mg/dL, hypoglycemic treatment is administered as below.\n\nAdminister mini-glucagon as treatment for nocturnal hypoglycemia. Administer 0.01 cc per number of years in age via insulin syringe, subcutaneously. This amounts to 1 unit per age, for example: an 8 year old gets 8 \"units\" glucagon.",
+                "interventionNames": [
+                  "Drug: Mini-glucagon",
+                  "Device: Remote monitoring"
+                ]
+              },
+              {
+                "label": "Carbohydrates and Remote Monitoring",
+                "type": "OTHER",
+                "description": "Subjects glucose data are remotely monitored at night using the University of Virginia (UVA) Diabetes Assistant (DiAs) Android Platform. Study staff intervenes with a fingerstick blood glucose measurement when sensor value falls below 70mg/dL. If fingerstick value is less than 70 mg/dL, hypoglycemic treatment is administered as below.\n\nAdministration of carbohydrate per camp protocol to treat nocturnal hypoglycemia. Expected treatment is 15-45g.",
+                "interventionNames": [
+                  "Device: Remote monitoring",
+                  "Dietary Supplement: Carbohydrates"
+                ]
+              },
+              {
+                "label": "Carbohydrates No Remote Monitoring",
+                "type": "OTHER",
+                "description": "Subjects wear a continuous glucose monitor for their own use, but they are not remotely monitored.\n\nIf hypoglycemia occurs and is acknowledged through standard camp protocol it will be treated with standard camp protocol administration of carbohydrates. Expected treatment is 15g-45g.",
+                "interventionNames": [
+                  "Dietary Supplement: Carbohydrates"
+                ]
+              },
+              {
+                "label": "Mini-Glucagon and No Remote Monitoring",
+                "type": "OTHER",
+                "description": "Subjects wear a continuous glucose monitor for their own use, but they are not remotely monitored.\n\nIf hypoglycemia occurs and is acknowledged through standard camp protocol it will be treated with mini-glucagon.\n\nAdminister mini-glucagon as treatment for nocturnal hypoglycemia. Administer 0.01 cc per number of years in age via insulin syringe, subcutaneously. This amounts to 1 unit per age, for example: an 8 year old gets 8 \"units\" glucagon.",
+                "interventionNames": [
+                  "Drug: Mini-glucagon"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Mini-glucagon",
+                "description": "Mini dose glucagon given for glucose \\<70 mg/dl at a dose of 1unit/year of age",
+                "armGroupLabels": [
+                  "Mini-Glucagon and No Remote Monitoring",
+                  "Mini-Glucagon and Remote Monitoring"
+                ],
+                "otherNames": [
+                  "glucagon"
+                ]
+              },
+              {
+                "type": "DEVICE",
+                "name": "Remote monitoring",
+                "description": "Provides real-time continuous glucose monitoring",
+                "armGroupLabels": [
+                  "Carbohydrates and Remote Monitoring",
+                  "Mini-Glucagon and Remote Monitoring"
+                ]
+              },
+              {
+                "type": "DIETARY_SUPPLEMENT",
+                "name": "Carbohydrates",
+                "description": "16 grams of carbohydrate",
+                "armGroupLabels": [
+                  "Carbohydrates No Remote Monitoring",
+                  "Carbohydrates and Remote Monitoring"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Duration of Nocturnal Hypoglycemia",
+                "description": "Number of minutes with glucose reading \\< 50 mg/dL. Each camper had Remote Monitoring nights and Control nights.",
+                "timeFrame": "8 hours"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Duration of Glucose Readings <70 mg/dl",
+                "description": "Number of minutes with glucose reading \\< 70 mg/dL. Each camper had Remote Monitoring nights and Control nights.",
+                "timeFrame": "8 Hours"
+              }
+            ],
+            "otherOutcomes": [
+              {
+                "measure": "Prolonged Episodes of Hypoglycemic Events",
+                "description": "Prolonged hypoglycemia is defined as glucose readings of either \\<70 mg/dL for greater than one hour on and off the device, \\<70 mg/dL for greater than 2 hours on and off the device, \\<50 mg/dL that lasted longer than 30 minutes on and off the device and readings of \\<50 mg/dL for longer than an hour, again for both the control and the subjects that were remotely monitored with the device. Each camper had Remote Monitoring nights and Control nights.",
+                "timeFrame": "8 hours at night"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Clinical diagnosis of type 1 diabetes and using daily insulin therapy for at least one year\n* Age 7-21 years\n* Attendee of Camp De Los Ninos or Conrad Chinnock\n* Come to camp with a consent already signed after having talked to study staff about the study, or at the onset of the camp meet with study staff and sign the consent before the first night at camp.\n* Using multiple daily insulin injections (Lantus) or on an insulin pump (any brand)\n\nExclusion Criteria:\n\n* Cystic fibrosis\n* Medications such as current use of oral steroids or other medications, which in the judgment of the investigator would be a contraindication to participation in the study.\n* History of adhesive allergies which would interfere with sensor wear.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "7 Years",
+            "maximumAge": "21 Years",
+            "stdAges": [
+              "CHILD",
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Bruce Buckingham, MD",
+                "affiliation": "Stanford University",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Stanford University",
+                "city": "Stanford",
+                "state": "California",
+                "zip": "94305",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.42411,
+                  "lon": -122.16608
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "24168317",
+                "type": "RESULT",
+                "citation": "DeSalvo DJ, Keith-Hynes P, Peyser T, Place J, Caswell K, Wilson DM, Harris B, Clinton P, Kovatchev B, Buckingham BA. Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia. Diabetes Technol Ther. 2014 Jan;16(1):1-7. doi: 10.1089/dia.2013.0139. Epub 2013 Oct 29."
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "NO"
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01680653",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/24168317/",
+          "identifier": "PMID:24168317",
+          "title": "Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia.",
+          "snippet": "Title: Remote glucose monitoring in camp setting reduces the risk of prolonged nocturnal hypoglycemia.\nAuthors: DeSalvo Daniel J, Keith-Hynes Patrick, Peyser Thomas et al.\nJournal: Diabetes technology & therapeutics (2014)\nAbstract: OBJECTIVE: This study tested the feasibility and effectiveness of remote continuous glucose monitoring (CGM) in a diabetes camp setting. SUBJECTS AND METHODS: Twenty campers (7-21 years old) with type 1 diabetes were enrolled at each of three camp sessions lasting 5-6 days. On alternating nights, 10 campers were randomized to usual wear of a Dexcom (San Diego, CA) G4\u2122 PLATINUM CGM system, and 10 were randomized to remote monitoring with the Dexcom G4 PLATINUM communicating with the Diabetes Assi",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-16T19:36:51.854134"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [
+          "24168317"
+        ],
+        "pubmed_count": 1,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 0,
+        "semantic_scholar_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01680653",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01680653",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01680653",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01680653",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01680653",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01680653",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 8,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.9
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

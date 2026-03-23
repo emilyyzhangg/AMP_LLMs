@@ -1,0 +1,277 @@
+{
+  "nct_id": "NCT00001705",
+  "completed_at": "2026-03-16 12:36:30 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00001705",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001705",
+          "identifier": "NCT00001705",
+          "title": "Immunization of Patients With Metastatic Melanoma Using the GP100 Peptide Preceded by an Endoplasmic Reticulum Insertion Signal Sequence",
+          "snippet": "Title: Immunization of Patients With Metastatic Melanoma Using the GP100 Peptide Preceded by an Endoplasmic Reticulum Insertion Signal Sequence",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.356173"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001705",
+          "identifier": "NCT00001705",
+          "title": "Brief Summary",
+          "snippet": "Patients with metastatic melanoma who are HLA-A201+ will be immunized with a modified peptide from the gp100 molecule that contains a signal sequence designed to improve peptide presentation by antigen presenting cells. This peptide called gp100:ES209-217 (210M) will be administered either alone or in combination with high or low dose IL-2. Patients will be evaluated for clinical response, as well as undergo studies of the immunologic response to the peptide immunization.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.356237"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001705",
+          "identifier": "NCT00001705",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.356245"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001705",
+          "identifier": "NCT00001705",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma, Neoplasm Metastasis | Keywords: Antigen, Cancer, Immunotherapy",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.356256"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001705",
+          "identifier": "NCT00001705",
+          "title": "Intervention: GP100 peptide",
+          "snippet": "DRUG: GP100 peptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.356264"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001705",
+          "identifier": "NCT00001705",
+          "title": "Intervention: IL-2",
+          "snippet": "DRUG: IL-2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.356271"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001705",
+          "identifier": "NCT00001705",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.356278"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00001705",
+            "orgStudyIdInfo": {
+              "id": "980142"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "98-C-0142"
+              }
+            ],
+            "organization": {
+              "fullName": "National Institutes of Health Clinical Center (CC)",
+              "class": "NIH"
+            },
+            "briefTitle": "Immunization of Patients With Metastatic Melanoma Using the GP100 Peptide Preceded by an Endoplasmic Reticulum Insertion Signal Sequence",
+            "officialTitle": "Immunization of Patients With Metastatic Melanoma Using the GP100 Peptide Preceded by an Endoplasmic Reticulum Insertion Signal Sequence"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2000-07",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "1998-07"
+            },
+            "completionDateStruct": {
+              "date": "2001-06"
+            },
+            "studyFirstSubmitDate": "1999-11-03",
+            "studyFirstSubmitQcDate": "2002-12-09",
+            "studyFirstPostDateStruct": {
+              "date": "2002-12-10",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2008-03-03",
+            "lastUpdatePostDateStruct": {
+              "date": "2008-03-04",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "National Cancer Institute (NCI)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "Patients with metastatic melanoma who are HLA-A201+ will be immunized with a modified peptide from the gp100 molecule that contains a signal sequence designed to improve peptide presentation by antigen presenting cells. This peptide called gp100:ES209-217 (210M) will be administered either alone or in combination with high or low dose IL-2. Patients will be evaluated for clinical response, as well as undergo studies of the immunologic response to the peptide immunization.",
+            "detailedDescription": "Patients with metastatic melanoma who are HLA-A201+ will be immunized with a modified peptide from the gp100 molecule that contains a signal sequence designed to improve peptide presentation by antigen presenting cells. This peptide called gp100:ES209-217 (210M) will be administered either alone or in combination with high or low dose IL-2. Patients will be evaluated for clinical response, as well as undergo studies of the immunologic response to the peptide immunization."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Melanoma",
+              "Neoplasm Metastasis"
+            ],
+            "keywords": [
+              "Antigen",
+              "Cancer",
+              "Immunotherapy"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "primaryPurpose": "TREATMENT"
+            },
+            "enrollmentInfo": {
+              "count": 141
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "GP100 peptide"
+              },
+              {
+                "type": "DRUG",
+                "name": "IL-2"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Any patient age greater than or equal to 18 with measurable metastatic melanoma who has failed standard treatment and has an expected survival of greater than three months will be considered.\n\nSerum creatinine of 2.0 mg/dl or less.\n\nBilirubin 1.6 mg/dl or less.\n\nWBC 3000/mm(3) or greater.\n\nPlatelet count 90,000 mm(3) or greater.\n\nSerum AST/ALT less then two times normal.\n\nECOG performance status of 0 or 1 or 2.\n\nPatients of both genders must be willing to practice effective birth control during this trial.\n\nNo patients who are undergoing or have undergone in the past 3 weeks any other form of therapy except surgery for their cancer.\n\nNo patients who have active systemic infections, coagulation disorders, autoimmune disease or other major medical illnesses of the cardiovascular or respiratory systems or any known immunodeficiency disease. Patients with cardiovascular disease will be eligible to receive peptide in IFA alone.\n\nNo patients who require steroid therapy.\n\nNo patients who are pregnant (because of possible side effects on the fetus).\n\nNo patients who are known to be positive for hepatitis BsAG or HIV antibody (because of possible immune effects of these conditions).\n\nNo patients who have any form of primary or secondary immunodeficiency. (The experimental treatment being evaluated in this protocol depends on an intact immune system. Patients who have decreased immune competence may be less responsive to the experimental treatment and more susceptible to its toxicities).",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "stdAges": [
+              "CHILD",
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "facility": "National Cancer Institute (NCI)",
+                "city": "Bethesda",
+                "state": "Maryland",
+                "zip": "20892",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.98067,
+                  "lon": -77.10026
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "8120958",
+                "type": "BACKGROUND",
+                "citation": "Rosenberg SA, Yang JC, Topalian SL, Schwartzentruber DJ, Weber JS, Parkinson DR, Seipp CA, Einhorn JH, White DE. Treatment of 283 consecutive patients with metastatic melanoma or renal cell cancer using high-dose bolus interleukin 2. JAMA. 1994 Mar 23-30;271(12):907-13."
+              },
+              {
+                "pmid": "9136454",
+                "type": "BACKGROUND",
+                "citation": "Rosenberg SA. Cancer vaccines based on the identification of genes encoding cancer regression antigens. Immunol Today. 1997 Apr;18(4):175-82. doi: 10.1016/s0167-5699(97)84664-6. No abstract available."
+              },
+              {
+                "pmid": "9500606",
+                "type": "BACKGROUND",
+                "citation": "Rosenberg SA, Yang JC, Schwartzentruber DJ, Hwu P, Marincola FM, Topalian SL, Restifo NP, Dudley ME, Schwarz SL, Spiess PJ, Wunderlich JR, Parkhurst MR, Kawakami Y, Seipp CA, Einhorn JH, White DE. Immunologic and therapeutic evaluation of a synthetic peptide vaccine for the treatment of patients with metastatic melanoma. Nat Med. 1998 Mar;4(3):321-7. doi: 10.1038/nm0398-321."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00001705",
+      "citations": [],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00001705",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00001705",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00001705",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00001705",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00001705",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00001705",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

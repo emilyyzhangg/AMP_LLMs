@@ -1,0 +1,317 @@
+{
+  "nct_id": "NCT00042497",
+  "completed_at": "2026-03-17 23:51:49 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00042497",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "snippet": "Title: A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:34.415018"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Brief Summary",
+          "snippet": "The objective is to determine the safety and efficacy of dexosome immunotherapy in patients with Stage IV malignant melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:34.415048"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Study Status",
+          "snippet": "Status: SUSPENDED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:34.415056"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:34.415064"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Intervention: autologous dexosomes loaded with tumor-specific peptides",
+          "snippet": "BIOLOGICAL: autologous dexosomes loaded with tumor-specific peptides",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:34.415072"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:34.415079"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00042497",
+            "orgStudyIdInfo": {
+              "id": "AN2002-04"
+            },
+            "organization": {
+              "fullName": "Anosys",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+            "officialTitle": "A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2002-09",
+            "overallStatus": "SUSPENDED",
+            "startDateStruct": {
+              "date": "2002-07"
+            },
+            "studyFirstSubmitDate": "2002-07-30",
+            "studyFirstSubmitQcDate": "2002-07-31",
+            "studyFirstPostDateStruct": {
+              "date": "2002-08-01",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2005-06-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2005-06-24",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "Anosys",
+              "class": "INDUSTRY"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "The objective is to determine the safety and efficacy of dexosome immunotherapy in patients with Stage IV malignant melanoma"
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Melanoma"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 60
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "autologous dexosomes loaded with tumor-specific peptides"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "* Patients with Stage IV metastatic melanoma with 0-1 prior treatments for metastatic disease.\n* All patients must have distant skin, subcutaneous, or nodal metastases (M1a) or lung metastases (M1b), measurable disease, normal lactate dehydrogenase levels, and HLA type A1, A2, or B35.\n* Patients must have adequate organ function and an estimated life expectancy of at least 3 months.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "pubmed_fallback_query": "autologous dexosomes loaded with tumor-specific peptides",
+        "pubmed_fallback_ids": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "uniprot_autologous dexosomes loaded with tumor-specific peptides": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_autologous dexosomes loaded with tumor-specific peptides": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00042497",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5315067/",
+          "identifier": "CHEMBL5315067",
+          "title": "AUTOLOGOUS PERIPHERAL-BLOOD MONONUCLEAR CELLS INCLUDING A MINIMUM OF 50 MILLION AUTOLOGOUS CD54+ CELLS ACTIVATED WITH PROSTATIC ACID PHOSPHATASE GRANULOCYTE-MACROPHAGE COLONY-STIMULATING FACTOR - ChEMBL",
+          "snippet": "Molecule: AUTOLOGOUS PERIPHERAL-BLOOD MONONUCLEAR CELLS INCLUDING A MINIMUM OF 50 MILLION AUTOLOGOUS CD54+ CELLS ACTIVATED WITH PROSTATIC ACID PHOSPHATASE GRANULOCYTE-MACROPHAGE COLONY-STIMULATING FACTOR\nType: Unknown\nMax clinical phase: 4.0\nFirst approval: 2013\nMechanism: Somatic cell supplemental therapy",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:36.416340"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2074849/",
+          "identifier": "CHEMBL2074849",
+          "title": "CHEMBL2074849 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2074849\nType: Unknown",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:36.814253"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1160639/",
+          "identifier": "CHEMBL1160639",
+          "title": "CHEMBL1160639 - ChEMBL",
+          "snippet": "Molecule: CHEMBL1160639\nType: Small molecule\nMolecular weight: 239.21\nBioactivity: Ki=950000.0 nM (Interstitial collagenase)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:37.148992"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'autologous dexosomes loaded with tumor-specific peptides'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "rcsb_autologous dexosomes loaded with tumor-specific peptides": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_autologous dexosomes loaded with tumor-specific peptides_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "apd_autologous dexosomes loaded with tumor-specific peptides": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00042497",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "snippet": "Title: Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma\nStatus: Suspended\nPhase: Phase 2\nConditions: Melanoma\nInterventions: Biological: autologous dexosomes loaded with tumor-specific peptides\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:36.257742"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00042497",
+          "public_title": "Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "scientific_title": "A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "recruitment_status": "Suspended",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Non-Randomized, Endpoint Classification: Safety/Efficacy Study, Intervention Model: Parallel Assignment, Masking: Open Label, Primary Purpose: Treatment",
+          "conditions": [
+            "Melanoma"
+          ],
+          "interventions": [
+            "Biological: autologous dexosomes loaded with tumor-specific peptides"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "iuphar_autologous dexosomes loaded with tumor-specific peptides": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "pdbe_autologous dexosomes loaded with tumor-specific peptides_count": 0
+      },
+      "error": null
+    }
+  ]
+}

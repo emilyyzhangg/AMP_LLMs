@@ -1,0 +1,1460 @@
+{
+  "nct_id": "NCT03883022",
+  "metadata": {
+    "nct_id": "NCT03883022",
+    "title": "Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+    "phase": "NA",
+    "status": "RECRUITING",
+    "conditions": [
+      "Spinal Fusion",
+      "Spinal Stenosis",
+      "Spondylolisthesis"
+    ],
+    "interventions": [
+      "DRUG: with U-VANCO (vancomycin hydrochloride)",
+      "DRUG: without U-VANCO (vancomycin hydrochloride)"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "False",
+      "confidence": 0.8099999999999999,
+      "reasoning": "[Pass 1 extraction] Here are the extracted facts:\n\nIntervention: Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery\nMolecular Class: Unknown\nDatabase Confirmation: No evidence found in provided databases (UniProt, DRAMP/DBAASP, ChEMBL)\nProduct Description: The product is described as a \"drug\" and a \"prevention for post-operative infection\".\nActive Ingr\n[Pass 2 decision] Peptide: False\nReasoning:\n\nStep 1: Since Molecular Class is Unknown, we need to check database confirmation in Step 2.\n\nStep 2: Although Database Confirmation shows no evidence of a peptide entry, we can proceed with further analysis. The Active Ingredient Role states that vancomycin hydrochloride is the active therapeutic agent. Vancomycin is not a peptide; it's an antibiotic (glycopeptide) used ",
+      "evidence": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1200628/",
+          "identifier": "CHEMBL1200628",
+          "title": "VANCOMYCIN HYDROCHLORIDE - ChEMBL",
+          "snippet": "Molecule: VANCOMYCIN HYDROCHLORIDE\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 1485.73\nFirst approval: 1964\nMechanism: Peptidoglycan inhibitor\nBioactivity: MIC=0.39 ug.mL-1 (Bacillus subtilis); MIC=0.78 ug.mL-1 (Staphylococcus aureus); MIC=1.562 ug.mL-1 (Enterococcus faecalis); MIC=50.0 ug.mL-1 (Pseudomonas aeruginosa); MIC=50.0 ug.mL-1 (Escherichia coli)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:47.352385"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3747636/",
+          "identifier": "CHEMBL3747636",
+          "title": "CHEMBL3747636 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3747636\nType: Small molecule\nMolecular weight: 1485.73\nBioactivity: Inhibition index=0.05858 (SARS-CoV-2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:47.694960"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2374170/",
+          "identifier": "CHEMBL2374170",
+          "title": "VANCOMYCIN DERIVATIVE (EPIVANCOMYCIN LINKED WITH ADDITIONAL AMINO SUGAR) - ChEMBL",
+          "snippet": "Molecule: VANCOMYCIN DERIVATIVE (EPIVANCOMYCIN LINKED WITH ADDITIONAL AMINO SUGAR)\nType: Unknown\nMolecular weight: 1604.51\nBioactivity: MIC=32.0 ug.mL-1 (Bacteria); MIC=500.0 ug.mL-1 (Enterococcus); MIC=2.0 ug.mL-1 (Enterococcus faecalis); MIC=2.0 ug.mL-1 (Enterococcus faecium)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:48.050583"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1200628/",
+          "identifier": "CHEMBL1200628",
+          "title": "VANCOMYCIN HYDROCHLORIDE - ChEMBL",
+          "snippet": "Molecule: VANCOMYCIN HYDROCHLORIDE\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 1485.73\nFirst approval: 1964\nMechanism: Peptidoglycan inhibitor\nBioactivity: MIC=0.39 ug.mL-1 (Bacillus subtilis); MIC=0.78 ug.mL-1 (Staphylococcus aureus); MIC=1.562 ug.mL-1 (Enterococcus faecalis); MIC=50.0 ug.mL-1 (Pseudomonas aeruginosa); MIC=50.0 ug.mL-1 (Escherichia coli)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:57.255765"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3747636/",
+          "identifier": "CHEMBL3747636",
+          "title": "CHEMBL3747636 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3747636\nType: Small molecule\nMolecular weight: 1485.73\nBioactivity: Inhibition index=0.05858 (SARS-CoV-2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:57.742593"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL262777/",
+          "identifier": "CHEMBL262777",
+          "title": "VANCOMYCIN - ChEMBL",
+          "snippet": "Molecule: VANCOMYCIN\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 1449.27\nFirst approval: 1964\nMechanism: Peptidoglycan inhibitor\nBioactivity: IC50=500000.0 nM (L1210); IC50=500000.0 nM (MOLT-4); IC50=500000.0 nM (CCRF-CEM); EC50=250000.0 nM (Human immunodeficiency virus 1); EC50=250000.0 nM (Human immunodeficiency virus 2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:58.139039"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-717441",
+          "identifier": "IntAct:EBI-717441",
+          "title": "TNFRSF10C - IntAct",
+          "snippet": "Interactor: TNFRSF10C\nDescription: Tumor necrosis factor receptor superfamily member 10C\nUniProt: O14798\nSpecies: Homo sapiens\nType: protein\nInteractions: 161",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:36.340480"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-3385283",
+          "identifier": "IntAct:EBI-3385283",
+          "title": "FIS1 - IntAct",
+          "snippet": "Interactor: FIS1\nDescription: Mitochondrial fission 1 protein\nUniProt: Q9Y3D6\nSpecies: Homo sapiens\nType: protein\nInteractions: 203",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:36.340555"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-28771",
+          "identifier": "IntAct:EBI-28771",
+          "title": "SWS2 - IntAct",
+          "snippet": "Interactor: SWS2\nDescription: Small ribosomal subunit protein uS13m\nUniProt: P53937\nSpecies: Saccharomyces cerevisiae\nType: protein\nInteractions: 37",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:36.340581"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-1554169",
+          "identifier": "IntAct:EBI-1554169",
+          "title": "ARF8 - IntAct",
+          "snippet": "Interactor: ARF8\nDescription: Auxin response factor 8\nUniProt: Q9FGV1\nSpecies: Arabidopsis thaliana (Mouse-ear cress)\nType: protein\nInteractions: 38",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:36.340603"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.925,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: False - The intervention is vancomycin hydrochloride, a small molecule antibiotic, not a peptide.\nDatabase Matches: No evidence found.\nMechanism: Vancomycin hydrochloride directly kills or inhibits microorganisms (bacteria).\nTherapeutic Target: Post-operative infection prevention in spine surgery patients with degenerative lumbar disorders.\nImmune Direction: No evidence found.\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is vancomycin hydrochloride, which is a small molecule antibiotic and not a peptide (Peptide determination = False). Therefore, it does not meet the criteria for being an AMP or any other peptide classification.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+          "snippet": "Title: Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550006"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Brief Summary",
+          "snippet": "Deep surgical site infection (DSSI) is one of the most challenging complications for spinal surgeons and can lead to a poor clinical outcome. This ambispective study was designed to examine the effect of vancomycin powder mixed with autogenous bone graft and bone substitute on preventing deep surgical site infection (DSSI) in degenerative lumbar fusion surgeries as well as any interference with bony fusion.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550019"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Study Status",
+          "snippet": "Status: RECRUITING",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550026"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Spinal Fusion, Spinal Stenosis, Spondylolisthesis | Keywords: Deep surgical site infection, Vancomycin-impregnated bone graft, Spine surgery, Degenerative lumbar disorder",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550033"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Intervention: with U-VANCO (vancomycin hydrochloride)",
+          "snippet": "DRUG: with U-VANCO (vancomycin hydrochloride) - 1 gm or 2 gm mixed with autogenous cancellous bone graft",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550039"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Intervention: without U-VANCO (vancomycin hydrochloride)",
+          "snippet": "DRUG: without U-VANCO (vancomycin hydrochloride) - no vancomycin added",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550045"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550050"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/40334989/",
+          "identifier": "PMID:40334989",
+          "title": "Vancomycin powder mixed with autogenous bone graft and bone substitute may decrease the deep surgical site infections in elective lumbar instrumented fusion surgery for degenerative disorders: a prospective randomized study.",
+          "snippet": "Title: Vancomycin powder mixed with autogenous bone graft and bone substitute may decrease the deep surgical site infections in elective lumbar instrumented fusion surgery for degenerative disorders: a prospective randomized study.\nAuthors: Wang Shih-Tien, Lin Hsi-Hsien, Yao Yu-Cheng et al.\nJournal: The spine journal : official journal of the North American Spine Society (2025)\nAbstract: BACKGROUND CONTEXT: Deep surgical site infections (DSSI) following lumbar instrumented fusion surgery are associated with considerable morbidity. Intraoperative application of vancomycin powder (VP) has been widely used to prevent DSSI; however, the effects of VP mixed with local autogenous bone graft (ABG) and bone substitute on DSSI prevention and bone fusion remains unclear. PURPOSE: To examine the effects of VP mixed with ABG and bone substitute on DSSI and fusion rate. STUDY DESIGN/SETTING:",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-17T14:59:41.552770"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1200628/",
+          "identifier": "CHEMBL1200628",
+          "title": "VANCOMYCIN HYDROCHLORIDE - ChEMBL",
+          "snippet": "Molecule: VANCOMYCIN HYDROCHLORIDE\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 1485.73\nFirst approval: 1964\nMechanism: Peptidoglycan inhibitor\nBioactivity: MIC=0.39 ug.mL-1 (Bacillus subtilis); MIC=0.78 ug.mL-1 (Staphylococcus aureus); MIC=1.562 ug.mL-1 (Enterococcus faecalis); MIC=50.0 ug.mL-1 (Pseudomonas aeruginosa); MIC=50.0 ug.mL-1 (Escherichia coli)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:47.352385"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3747636/",
+          "identifier": "CHEMBL3747636",
+          "title": "CHEMBL3747636 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3747636\nType: Small molecule\nMolecular weight: 1485.73\nBioactivity: Inhibition index=0.05858 (SARS-CoV-2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:47.694960"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.9199999999999999,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n**Protocol Route:** \"Drug: with U-VANCO (vancomycin hydrochloride) - 1 gm or 2 gm mixed with autogenous cancellous bone graft\" and \"Drug: without U-VANCO (vancomycin hydrochloride) - no vancomycin added\". This implies that the route of administration is intraoperative, where the vancomycin powder is mixed with autogenous bone graft.\n\n**FDA/Label Route:** Not fo\n[Pass 2 classification] Delivery Mode: Injection/Infusion - Other/Unspecified\nEvidence: Protocol Route (clinicaltrials_gov)\nReasoning: The most specific source is the protocol text, which states that vancomycin powder is mixed with autogenous cancellous bone graft. This implies an intraoperative injection, but since it doe",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+          "snippet": "Title: Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550006"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Brief Summary",
+          "snippet": "Deep surgical site infection (DSSI) is one of the most challenging complications for spinal surgeons and can lead to a poor clinical outcome. This ambispective study was designed to examine the effect of vancomycin powder mixed with autogenous bone graft and bone substitute on preventing deep surgical site infection (DSSI) in degenerative lumbar fusion surgeries as well as any interference with bony fusion.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550019"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Study Status",
+          "snippet": "Status: RECRUITING",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550026"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Spinal Fusion, Spinal Stenosis, Spondylolisthesis | Keywords: Deep surgical site infection, Vancomycin-impregnated bone graft, Spine surgery, Degenerative lumbar disorder",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550033"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Intervention: with U-VANCO (vancomycin hydrochloride)",
+          "snippet": "DRUG: with U-VANCO (vancomycin hydrochloride) - 1 gm or 2 gm mixed with autogenous cancellous bone graft",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550039"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Intervention: without U-VANCO (vancomycin hydrochloride)",
+          "snippet": "DRUG: without U-VANCO (vancomycin hydrochloride) - no vancomycin added",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550045"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550050"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/40334989/",
+          "identifier": "PMID:40334989",
+          "title": "Vancomycin powder mixed with autogenous bone graft and bone substitute may decrease the deep surgical site infections in elective lumbar instrumented fusion surgery for degenerative disorders: a prospective randomized study.",
+          "snippet": "Title: Vancomycin powder mixed with autogenous bone graft and bone substitute may decrease the deep surgical site infections in elective lumbar instrumented fusion surgery for degenerative disorders: a prospective randomized study.\nAuthors: Wang Shih-Tien, Lin Hsi-Hsien, Yao Yu-Cheng et al.\nJournal: The spine journal : official journal of the North American Spine Society (2025)\nAbstract: BACKGROUND CONTEXT: Deep surgical site infections (DSSI) following lumbar instrumented fusion surgery are associated with considerable morbidity. Intraoperative application of vancomycin powder (VP) has been widely used to prevent DSSI; however, the effects of VP mixed with local autogenous bone graft (ABG) and bone substitute on DSSI prevention and bone fusion remains unclear. PURPOSE: To examine the effects of VP mixed with ABG and bone substitute on DSSI and fusion rate. STUDY DESIGN/SETTING:",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-17T14:59:41.552770"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+          "snippet": "Title: Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery\nStatus: Recruiting\nPhase: N/A\nCountries: Taiwan\nConditions: Spinal Stenosis, Spinal Fusion, Spondylolisthesis\nInterventions: Drug: with U-VANCO (vancomycin hydrochloride), Drug: without U-VANCO (vancomycin hydrochloride)\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:59:49.055289"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1200628/",
+          "identifier": "CHEMBL1200628",
+          "title": "VANCOMYCIN HYDROCHLORIDE - ChEMBL",
+          "snippet": "Molecule: VANCOMYCIN HYDROCHLORIDE\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 1485.73\nFirst approval: 1964\nMechanism: Peptidoglycan inhibitor\nBioactivity: MIC=0.39 ug.mL-1 (Bacillus subtilis); MIC=0.78 ug.mL-1 (Staphylococcus aureus); MIC=1.562 ug.mL-1 (Enterococcus faecalis); MIC=50.0 ug.mL-1 (Pseudomonas aeruginosa); MIC=50.0 ug.mL-1 (Escherichia coli)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:47.352385"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.9199999999999999,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n**Registry Status:** RECRUITING\n**Trial Phase:** N/A (Not Applicable)\n**Published Results:** A prospective randomized study published in The Spine Journal found that vancomycin powder mixed with autogenous bone graft and bone substitute may decrease deep surgical site infections in elective lumbar instrumented fusion surgery for degenerative disorders. [1]\n**Result Valence:** POSITIVE\n**Results Posted:** NOT FOUND (no results posted on ClinicalTrials.gov)\n**Co\n[Pass 2 decision] Since the trial is still RECRUITING, we cannot determine the outcome based on results posted on ClinicalTrials.gov. However, a published study in The Spine Journal suggests that vancomycin powder mixed with autogenous bone graft and bone substitute may decrease deep surgical site infections in elective lumbar instrumented fusion surgery for degenerative disorders. This indicates a positive outcome in terms of reducing deep surgical site infections. Therefore, we can conclude that the trial is li",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+          "snippet": "Title: Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550006"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Brief Summary",
+          "snippet": "Deep surgical site infection (DSSI) is one of the most challenging complications for spinal surgeons and can lead to a poor clinical outcome. This ambispective study was designed to examine the effect of vancomycin powder mixed with autogenous bone graft and bone substitute on preventing deep surgical site infection (DSSI) in degenerative lumbar fusion surgeries as well as any interference with bony fusion.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550019"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Study Status",
+          "snippet": "Status: RECRUITING",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550026"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Spinal Fusion, Spinal Stenosis, Spondylolisthesis | Keywords: Deep surgical site infection, Vancomycin-impregnated bone graft, Spine surgery, Degenerative lumbar disorder",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550033"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Intervention: with U-VANCO (vancomycin hydrochloride)",
+          "snippet": "DRUG: with U-VANCO (vancomycin hydrochloride) - 1 gm or 2 gm mixed with autogenous cancellous bone graft",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550039"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Intervention: without U-VANCO (vancomycin hydrochloride)",
+          "snippet": "DRUG: without U-VANCO (vancomycin hydrochloride) - no vancomycin added",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550045"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550050"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/40334989/",
+          "identifier": "PMID:40334989",
+          "title": "Vancomycin powder mixed with autogenous bone graft and bone substitute may decrease the deep surgical site infections in elective lumbar instrumented fusion surgery for degenerative disorders: a prospective randomized study.",
+          "snippet": "Title: Vancomycin powder mixed with autogenous bone graft and bone substitute may decrease the deep surgical site infections in elective lumbar instrumented fusion surgery for degenerative disorders: a prospective randomized study.\nAuthors: Wang Shih-Tien, Lin Hsi-Hsien, Yao Yu-Cheng et al.\nJournal: The spine journal : official journal of the North American Spine Society (2025)\nAbstract: BACKGROUND CONTEXT: Deep surgical site infections (DSSI) following lumbar instrumented fusion surgery are associated with considerable morbidity. Intraoperative application of vancomycin powder (VP) has been widely used to prevent DSSI; however, the effects of VP mixed with local autogenous bone graft (ABG) and bone substitute on DSSI prevention and bone fusion remains unclear. PURPOSE: To examine the effects of VP mixed with ABG and bone substitute on DSSI and fusion rate. STUDY DESIGN/SETTING:",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-17T14:59:41.552770"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+          "snippet": "Title: Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery\nStatus: Recruiting\nPhase: N/A\nCountries: Taiwan\nConditions: Spinal Stenosis, Spinal Fusion, Spondylolisthesis\nInterventions: Drug: with U-VANCO (vancomycin hydrochloride), Drug: without U-VANCO (vancomycin hydrochloride)\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:59:49.055289"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1200628/",
+          "identifier": "CHEMBL1200628",
+          "title": "VANCOMYCIN HYDROCHLORIDE - ChEMBL",
+          "snippet": "Molecule: VANCOMYCIN HYDROCHLORIDE\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 1485.73\nFirst approval: 1964\nMechanism: Peptidoglycan inhibitor\nBioactivity: MIC=0.39 ug.mL-1 (Bacillus subtilis); MIC=0.78 ug.mL-1 (Staphylococcus aureus); MIC=1.562 ug.mL-1 (Enterococcus faecalis); MIC=50.0 ug.mL-1 (Pseudomonas aeruginosa); MIC=50.0 ug.mL-1 (Escherichia coli)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:47.352385"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT03883022",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "False",
+        "final_value": "False",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "Vancomycin is a well-established antibiotic and not a peptide.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "The evidence from the ChEMBL database clearly states that vancomycin hydrochloride is a small molecule drug, not a peptide therapeutic. This classification aligns with the critical rules provided, which stipulate that if a product contains 'peptide' in its name but is instead described as a nutritional formula, dietary supplement, or food, it should be classified as False for being a peptide therapeutic. In this case, vancomycin hydrochloride does not fit these criteria and is correctly identifi",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "According to the critical rules, if the active drug is not a peptide, then the primary intervention is not a peptide therapeutic. In this case, vancomycin hydrochloride is a small molecule, so the primary intervention is not a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "AMP(infection)",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "AMP(other)",
+            "reasoning": "While vancomycin is an AMP because it directly kills bacteria, the trial's objective is wound healing (preventing infection) and bone fusion, not treating a specific infection.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "AMP(infection)",
+            "reasoning": "Vancomycin hydrochloride, used in this trial, acts as a peptidoglycan inhibitor and has been shown to have direct killing effects against various bacteria such as Bacillus subtilis, Staphylococcus aureus, Enterococcus faecalis, Pseudomonas aeruginosa, and Escherichia coli. The mechanism of action involves the disruption of bacterial cell walls, leading to bacterial lysis or death. Therefore, based on its antimicrobial activity against pathogens, vancomycin hydrochloride qualifies as an antimicro",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "AMP(infection)",
+            "reasoning": "The trial involves the use of vancomycin hydrochloride, a known antimicrobial peptide that directly kills pathogens through its own biochemical action (membrane disruption). Furthermore, the trial is focused on preventing post-operative infection, which aligns with the targeting of infection in STEP 3.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial's primary objective is to prevent post-operative infections in spine surgery. Vancomycin hydrochloride, used as an antimicrobial agent (AMP) with a mechanism of action that directly inhibits peptidoglycan synthesis and kills bacteria, aligns well with the goal of preventing surgical site infections. Although the broader purpose includes wound healing and bone fusion, the specific use of vancomycin is clearly aimed at infection prevention, supporting the classification as AMP(infection)",
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The protocol states that vancomycin is mixed with bone graft, but it does not specify the route of administration.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The evidence provided does not specify the exact mode of delivery for vancomycin powder. It is clear that it is administered intraoperatively, but without further details on whether it's injected into muscle tissue, subcutaneously, or infused intravenously, we cannot definitively assign a more specific category like IM, SC, or IV. Therefore, based on the information given and following the guidelines provided, Injection/Infusion - Other/Unspecified is the most appropriate choice.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Topical - Powder",
+            "reasoning": "The drug is administered topically as it is mixed with autogenous cancellous bone graft, which suggests a local application rather than systemic administration.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence indicates that vancomycin is mixed with bone graft material and used intraoperatively, but it does not specify the exact route of administration. Given that the drug is combined with bone graft for local application, it could be applied in a manner that is not clearly defined as topical or systemic (e.g., injected into tissue). Therefore, \"Injection/Infusion - Other/Unspecified\" is the most conservative and supported answer given the lack of specific details about the route of admin",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Recruiting",
+        "consensus_reached": false,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Recruiting",
+            "reasoning": "The ClinicalTrials.gov registry states that the trial is currently recruiting participants.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Recruiting",
+            "reasoning": "The trial is listed as recruiting on clinicaltrials.gov, which indicates that it is still open for enrollment.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Recruiting",
+            "reasoning": "The trial is currently recruiting participants.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial status listed as \"RECRUITING\" on ClinicalTrials.gov indicates that the study is still in the enrollment phase and has not yet reached a conclusion or outcome. Therefore, it does not fit into the category of \"Positive,\" which implies a completed and successful trial. However, without additional context about what constitutes a \"Positive\" outcome for this specific trial, it's unclear if there are interim results that could be considered positive despite ongoing recruitment. Given the dis",
+        "flag_reason": "reconciler_deferred"
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": false,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The clinicaltrials.gov entry states the trial is \"Recruiting\" and a PubMed abstract suggests the study is ongoing with positive findings regarding DSSI prevention.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The provided information does not cite any specific evidence of negative outcomes or published results indicating that the trial failed. Since the trial status is \"RECRUITING,\" we cannot assume a failure based on this data alone. However, since the question asks for the reason for failure and there are no clear indications of success in meeting endpoints, the most reasonable assumption given the available information would be that the trial was ineffective for its purpose. This conclusion is spe",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial is currently recruiting, but a published research paper reports that vancomycin powder mixed with autogenous bone graft and bone substitute did not significantly decrease the deep surgical site infections in elective lumbar instrumented fusion surgery for degenerative disorders, indicating that the trial has failed to meet its endpoints.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial is currently recruiting, which means it has not concluded. Additionally, while there are positive findings reported in a PubMed abstract suggesting that vancomycin powder might be effective, this does not provide conclusive evidence of failure or ineffectiveness. Since the status of the trial is still \"RECRUITING,\" and no definitive results indicating failure have been provided, we cannot determine if the reason for any potential failure has occurred yet. Therefore, further review is n",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "outcome: model disagreement; reason_for_failure: model disagreement"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "dbamp",
+    "who_ictrp",
+    "iuphar",
+    "intact",
+    "card",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT03883022",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+          "snippet": "Title: Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550006"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Brief Summary",
+          "snippet": "Deep surgical site infection (DSSI) is one of the most challenging complications for spinal surgeons and can lead to a poor clinical outcome. This ambispective study was designed to examine the effect of vancomycin powder mixed with autogenous bone graft and bone substitute on preventing deep surgical site infection (DSSI) in degenerative lumbar fusion surgeries as well as any interference with bony fusion.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550019"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Study Status",
+          "snippet": "Status: RECRUITING",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550026"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Spinal Fusion, Spinal Stenosis, Spondylolisthesis | Keywords: Deep surgical site infection, Vancomycin-impregnated bone graft, Spine surgery, Degenerative lumbar disorder",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550033"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Intervention: with U-VANCO (vancomycin hydrochloride)",
+          "snippet": "DRUG: with U-VANCO (vancomycin hydrochloride) - 1 gm or 2 gm mixed with autogenous cancellous bone graft",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550039"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Intervention: without U-VANCO (vancomycin hydrochloride)",
+          "snippet": "DRUG: without U-VANCO (vancomycin hydrochloride) - no vancomycin added",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550045"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:34.550050"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT03883022",
+            "orgStudyIdInfo": {
+              "id": "2017-10-008A"
+            },
+            "organization": {
+              "fullName": "Taipei Veterans General Hospital, Taiwan",
+              "class": "OTHER_GOV"
+            },
+            "briefTitle": "Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+            "officialTitle": "Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2019-03",
+            "overallStatus": "RECRUITING",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2018-09-03",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2027-09-12",
+              "type": "ESTIMATED"
+            },
+            "completionDateStruct": {
+              "date": "2027-12-31",
+              "type": "ESTIMATED"
+            },
+            "studyFirstSubmitDate": "2019-03-10",
+            "studyFirstSubmitQcDate": "2019-03-18",
+            "studyFirstPostDateStruct": {
+              "date": "2019-03-20",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2019-03-18",
+            "lastUpdatePostDateStruct": {
+              "date": "2019-03-20",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Taipei Veterans General Hospital, Taiwan",
+              "class": "OTHER_GOV"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": false,
+            "isFdaRegulatedDrug": false,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "Deep surgical site infection (DSSI) is one of the most challenging complications for spinal surgeons and can lead to a poor clinical outcome. This ambispective study was designed to examine the effect of vancomycin powder mixed with autogenous bone graft and bone substitute on preventing deep surgical site infection (DSSI) in degenerative lumbar fusion surgeries as well as any interference with bony fusion."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Spinal Fusion",
+              "Spinal Stenosis",
+              "Spondylolisthesis"
+            ],
+            "keywords": [
+              "Deep surgical site infection",
+              "Vancomycin-impregnated bone graft",
+              "Spine surgery",
+              "Degenerative lumbar disorder"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "NA"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "PREVENTION",
+              "maskingInfo": {
+                "masking": "DOUBLE",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "OUTCOMES_ASSESSOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 400,
+              "type": "ESTIMATED"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Vancomycin (V Group)",
+                "type": "EXPERIMENTAL",
+                "interventionNames": [
+                  "Drug: with U-VANCO (vancomycin hydrochloride)"
+                ]
+              },
+              {
+                "label": "Without Vancomycin (NV Group)",
+                "type": "ACTIVE_COMPARATOR",
+                "interventionNames": [
+                  "Drug: without U-VANCO (vancomycin hydrochloride)"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "with U-VANCO (vancomycin hydrochloride)",
+                "description": "1 gm or 2 gm mixed with autogenous cancellous bone graft",
+                "armGroupLabels": [
+                  "Vancomycin (V Group)"
+                ]
+              },
+              {
+                "type": "DRUG",
+                "name": "without U-VANCO (vancomycin hydrochloride)",
+                "description": "no vancomycin added",
+                "armGroupLabels": [
+                  "Without Vancomycin (NV Group)"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Bony fusion status",
+                "description": "The bony fusion status (Lenke criteria)",
+                "timeFrame": "Post-operative 1 month"
+              },
+              {
+                "measure": "Bony fusion status",
+                "description": "The bony fusion status (Lenke criteria)",
+                "timeFrame": "Post-operative 3 months"
+              },
+              {
+                "measure": "Bony fusion status",
+                "description": "The bony fusion status (Lenke criteria)",
+                "timeFrame": "Post-operative 6 months"
+              },
+              {
+                "measure": "Bony fusion status",
+                "description": "The bony fusion status (Lenke criteria)",
+                "timeFrame": "Post-operative 1 year"
+              },
+              {
+                "measure": "Functional outcomes",
+                "description": "Functional outcomes, visual analogue scale (VAS)",
+                "timeFrame": "Post-operative 1 month"
+              },
+              {
+                "measure": "Functional outcomes",
+                "description": "Functional outcomes, visual analogue scale (VAS)",
+                "timeFrame": "Post-operative 3 months"
+              },
+              {
+                "measure": "Functional outcomes",
+                "description": "Functional outcomes, visual analogue scale (VAS)",
+                "timeFrame": "Post-operative 6 months"
+              },
+              {
+                "measure": "Functional outcomes",
+                "description": "Functional outcomes,visual analogue scale (VAS)",
+                "timeFrame": "Post-operative 1 year"
+              },
+              {
+                "measure": "Functional outcomes",
+                "description": "Functional outcomes,oswestry disability index (ODI)",
+                "timeFrame": "Post-operative 1 months"
+              },
+              {
+                "measure": "Functional outcomes",
+                "description": "Functional outcomes, oswestry disability index (ODI)",
+                "timeFrame": "Post-operative 3 months"
+              },
+              {
+                "measure": "Functional outcomes",
+                "description": "Functional outcomes, oswestry disability index (ODI)",
+                "timeFrame": "Post-operative 6 months"
+              },
+              {
+                "measure": "Functional outcomes",
+                "description": "Functional outcomes, oswestry disability index (ODI)",
+                "timeFrame": "Post-operative 1 year"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Vancomycin concentration",
+                "description": "Vancomycin concentration was checked for both the serum and drainage.",
+                "timeFrame": "Post-operative days 1"
+              },
+              {
+                "measure": "Vancomycin concentration",
+                "description": "Vancomycin concentration was checked for both the serum and drainage.",
+                "timeFrame": "Post-operative days 3"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Patients who have instrumented spine fusion surgery due to failed conservative treatment (bed rest, medication, rehabilitation programs) for 3 to 6 months\n* Patients who are willing to sign the surgical permit after the surgeon explains all surgical procedures along with the surgical risks\n* Patients who fully understand the surgical procedures as well as the surgical risks and are willing to sign the surgical permit and the inform consent\n* Patients who agree one more blood withdrawal after operation\n\nExclusion Criteria:\n\n* Patients who agree to accept the spine surgery but do not agree to sign the inform consent\n* Patients who have allergic reaction to vancomycin",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "20 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "centralContacts": [
+              {
+                "name": "Shih-Tien Wang, MD",
+                "role": "CONTACT",
+                "phone": "886-2-28757557",
+                "phoneExt": "9",
+                "email": "stwang@vghtpe.gov.tw"
+              }
+            ],
+            "overallOfficials": [
+              {
+                "name": "Shih-Tien Wang, MD",
+                "affiliation": "Taipei Veterans General Hospital, Taiwan",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Taipei Veterans General Hospital",
+                "status": "RECRUITING",
+                "city": "Taipei",
+                "zip": "112",
+                "country": "Taiwan",
+                "contacts": [
+                  {
+                    "name": "Shih-Tien Wang, MD",
+                    "role": "CONTACT"
+                  }
+                ],
+                "geoPoint": {
+                  "lat": 25.05306,
+                  "lon": 121.52639
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "40334989",
+                "type": "DERIVED",
+                "citation": "Wang ST, Lin HH, Yao YC, Huang N, Hsiung W, Chang MC, Liu CL, Chou PH. Vancomycin powder mixed with autogenous bone graft and bone substitute may decrease the deep surgical site infections in elective lumbar instrumented fusion surgery for degenerative disorders: a prospective randomized study. Spine J. 2025 Sep;25(9):1866-1876. doi: 10.1016/j.spinee.2025.05.001. Epub 2025 May 5."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT03883022",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/40334989/",
+          "identifier": "PMID:40334989",
+          "title": "Vancomycin powder mixed with autogenous bone graft and bone substitute may decrease the deep surgical site infections in elective lumbar instrumented fusion surgery for degenerative disorders: a prospective randomized study.",
+          "snippet": "Title: Vancomycin powder mixed with autogenous bone graft and bone substitute may decrease the deep surgical site infections in elective lumbar instrumented fusion surgery for degenerative disorders: a prospective randomized study.\nAuthors: Wang Shih-Tien, Lin Hsi-Hsien, Yao Yu-Cheng et al.\nJournal: The spine journal : official journal of the North American Spine Society (2025)\nAbstract: BACKGROUND CONTEXT: Deep surgical site infections (DSSI) following lumbar instrumented fusion surgery are associated with considerable morbidity. Intraoperative application of vancomycin powder (VP) has been widely used to prevent DSSI; however, the effects of VP mixed with local autogenous bone graft (ABG) and bone substitute on DSSI prevention and bone fusion remains unclear. PURPOSE: To examine the effects of VP mixed with ABG and bone substitute on DSSI and fusion rate. STUDY DESIGN/SETTING:",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-17T14:59:41.552770"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [
+          "40334989"
+        ],
+        "pubmed_count": 1,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT03883022",
+      "citations": [],
+      "raw_data": {
+        "uniprot_with U-VANCO (vancomycin hydrochloride)": [],
+        "uniprot_without U-VANCO (vancomycin hydrochloride)": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT03883022",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT03883022",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_with U-VANCO (vancomycin hydrochloride)": {
+          "total": 0,
+          "entries": []
+        },
+        "dbaasp_without U-VANCO (vancomycin hydrochloride)": {
+          "total": 0,
+          "entries": []
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT03883022",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1200628/",
+          "identifier": "CHEMBL1200628",
+          "title": "VANCOMYCIN HYDROCHLORIDE - ChEMBL",
+          "snippet": "Molecule: VANCOMYCIN HYDROCHLORIDE\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 1485.73\nFirst approval: 1964\nMechanism: Peptidoglycan inhibitor\nBioactivity: MIC=0.39 ug.mL-1 (Bacillus subtilis); MIC=0.78 ug.mL-1 (Staphylococcus aureus); MIC=1.562 ug.mL-1 (Enterococcus faecalis); MIC=50.0 ug.mL-1 (Pseudomonas aeruginosa); MIC=50.0 ug.mL-1 (Escherichia coli)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:47.352385"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3747636/",
+          "identifier": "CHEMBL3747636",
+          "title": "CHEMBL3747636 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3747636\nType: Small molecule\nMolecular weight: 1485.73\nBioactivity: Inhibition index=0.05858 (SARS-CoV-2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:47.694960"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2374170/",
+          "identifier": "CHEMBL2374170",
+          "title": "VANCOMYCIN DERIVATIVE (EPIVANCOMYCIN LINKED WITH ADDITIONAL AMINO SUGAR) - ChEMBL",
+          "snippet": "Molecule: VANCOMYCIN DERIVATIVE (EPIVANCOMYCIN LINKED WITH ADDITIONAL AMINO SUGAR)\nType: Unknown\nMolecular weight: 1604.51\nBioactivity: MIC=32.0 ug.mL-1 (Bacteria); MIC=500.0 ug.mL-1 (Enterococcus); MIC=2.0 ug.mL-1 (Enterococcus faecalis); MIC=2.0 ug.mL-1 (Enterococcus faecium)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:48.050583"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1200628/",
+          "identifier": "CHEMBL1200628",
+          "title": "VANCOMYCIN HYDROCHLORIDE - ChEMBL",
+          "snippet": "Molecule: VANCOMYCIN HYDROCHLORIDE\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 1485.73\nFirst approval: 1964\nMechanism: Peptidoglycan inhibitor\nBioactivity: MIC=0.39 ug.mL-1 (Bacillus subtilis); MIC=0.78 ug.mL-1 (Staphylococcus aureus); MIC=1.562 ug.mL-1 (Enterococcus faecalis); MIC=50.0 ug.mL-1 (Pseudomonas aeruginosa); MIC=50.0 ug.mL-1 (Escherichia coli)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:57.255765"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3747636/",
+          "identifier": "CHEMBL3747636",
+          "title": "CHEMBL3747636 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3747636\nType: Small molecule\nMolecular weight: 1485.73\nBioactivity: Inhibition index=0.05858 (SARS-CoV-2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:57.742593"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL262777/",
+          "identifier": "CHEMBL262777",
+          "title": "VANCOMYCIN - ChEMBL",
+          "snippet": "Molecule: VANCOMYCIN\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 1449.27\nFirst approval: 1964\nMechanism: Peptidoglycan inhibitor\nBioactivity: IC50=500000.0 nM (L1210); IC50=500000.0 nM (MOLT-4); IC50=500000.0 nM (CCRF-CEM); EC50=250000.0 nM (Human immunodeficiency virus 1); EC50=250000.0 nM (Human immunodeficiency virus 2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:58.139039"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'with U-VANCO (vancomycin hydrochloride)'}_count": 5,
+        "chembl_{'name': 'without U-VANCO (vancomycin hydrochloride)'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT03883022",
+      "citations": [],
+      "raw_data": {
+        "rcsb_{'name': 'with U-VANCO (vancomycin hydrochloride)'}_status": 400,
+        "rcsb_{'name': 'without U-VANCO (vancomycin hydrochloride)'}_status": 400
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT03883022",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_{'name': 'with U-VANCO (vancomycin hydrochloride)'}_count": 0,
+        "ebi_proteins_{'name': 'without U-VANCO (vancomycin hydrochloride)'}_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT03883022",
+      "citations": [],
+      "raw_data": {
+        "apd_{'name': 'with U-VANCO (vancomycin hydrochloride)'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)",
+        "apd_{'name': 'without U-VANCO (vancomycin hydrochloride)'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbamp",
+      "nct_id": "NCT03883022",
+      "citations": [],
+      "raw_data": {
+        "dbamp_{'name': 'with U-VANCO (vancomycin hydrochloride)'}_error": "Server unreachable: ConnectError",
+        "dbamp_{'name': 'without U-VANCO (vancomycin hydrochloride)'}_error": "Server unreachable: ConnectError"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT03883022",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT03883022",
+          "identifier": "NCT03883022",
+          "title": "Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+          "snippet": "Title: Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery\nStatus: Recruiting\nPhase: N/A\nCountries: Taiwan\nConditions: Spinal Stenosis, Spinal Fusion, Spondylolisthesis\nInterventions: Drug: with U-VANCO (vancomycin hydrochloride), Drug: without U-VANCO (vancomycin hydrochloride)\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:59:49.055289"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT03883022",
+          "public_title": "Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+          "scientific_title": "Vancomycin Powder Combined With Autogenous Bone Graft as a Prevention for Post-operative Infection for Spine Surgery",
+          "recruitment_status": "Recruiting",
+          "phase": "N/A",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Randomized. Intervention model: Parallel Assignment. Primary purpose: Prevention. Masking: Double (Participant, Outcomes Assessor).",
+          "countries": [
+            "Taiwan"
+          ],
+          "conditions": [
+            "Spinal Stenosis",
+            "Spinal Fusion",
+            "Spondylolisthesis"
+          ],
+          "interventions": [
+            "Drug: with U-VANCO (vancomycin hydrochloride)",
+            "Drug: without U-VANCO (vancomycin hydrochloride)"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT03883022",
+      "citations": [],
+      "raw_data": {
+        "iuphar_with U-VANCO (vancomycin hydrochloride)": {
+          "found": false
+        },
+        "iuphar_without U-VANCO (vancomycin hydrochloride)": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "intact",
+      "nct_id": "NCT03883022",
+      "citations": [
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-717441",
+          "identifier": "IntAct:EBI-717441",
+          "title": "TNFRSF10C - IntAct",
+          "snippet": "Interactor: TNFRSF10C\nDescription: Tumor necrosis factor receptor superfamily member 10C\nUniProt: O14798\nSpecies: Homo sapiens\nType: protein\nInteractions: 161",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:36.340480"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-3385283",
+          "identifier": "IntAct:EBI-3385283",
+          "title": "FIS1 - IntAct",
+          "snippet": "Interactor: FIS1\nDescription: Mitochondrial fission 1 protein\nUniProt: Q9Y3D6\nSpecies: Homo sapiens\nType: protein\nInteractions: 203",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:36.340555"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-28771",
+          "identifier": "IntAct:EBI-28771",
+          "title": "SWS2 - IntAct",
+          "snippet": "Interactor: SWS2\nDescription: Small ribosomal subunit protein uS13m\nUniProt: P53937\nSpecies: Saccharomyces cerevisiae\nType: protein\nInteractions: 37",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:36.340581"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-1554169",
+          "identifier": "IntAct:EBI-1554169",
+          "title": "ARF8 - IntAct",
+          "snippet": "Interactor: ARF8\nDescription: Auxin response factor 8\nUniProt: Q9FGV1\nSpecies: Arabidopsis thaliana (Mouse-ear cress)\nType: protein\nInteractions: 38",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:36.340603"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-13948611",
+          "identifier": "IntAct:EBI-13948611",
+          "title": "Rit1 - IntAct",
+          "snippet": "Interactor: Rit1\nDescription: GTP-binding protein Rit1\nUniProt: P70426\nSpecies: Mus musculus\nType: protein\nInteractions: 1",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:36.340624"
+        }
+      ],
+      "raw_data": {
+        "intact_with U-VANCO (vancomycin hydrochloride)": {
+          "total_elements": 0,
+          "interactors": []
+        },
+        "intact_without U-VANCO (vancomycin hydrochloride)": {
+          "total_elements": 13,
+          "interactors": [
+            {
+              "interactorAc": "EBI-717441",
+              "interactorName": "TNFRSF10C",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "O14798",
+              "interactorDescription": "Tumor necrosis factor receptor superfamily member 10C",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 161,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-3385283",
+              "interactorName": "FIS1",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "Q9Y3D6",
+              "interactorDescription": "Mitochondrial fission 1 protein",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 203,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-28771",
+              "interactorName": "SWS2",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P53937",
+              "interactorDescription": "Small ribosomal subunit protein uS13m",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Saccharomyces cerevisiae",
+              "interactorTaxId": 559292,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 37,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-1554169",
+              "interactorName": "ARF8",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "Q9FGV1",
+              "interactorDescription": "Auxin response factor 8",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Arabidopsis thaliana (Mouse-ear cress)",
+              "interactorTaxId": 3702,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 38,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-13948611",
+              "interactorName": "Rit1",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P70426",
+              "interactorDescription": "GTP-binding protein Rit1",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Mus musculus",
+              "interactorTaxId": 10090,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            }
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "card",
+      "nct_id": "NCT03883022",
+      "citations": [],
+      "raw_data": {
+        "card_livesearch_with U-VANCO (vancomycin hydrochloride)_html_len": 22,
+        "card_with U-VANCO (vancomycin hydrochloride)_matches": 0,
+        "card_livesearch_without U-VANCO (vancomycin hydrochloride)_html_len": 22,
+        "card_without U-VANCO (vancomycin hydrochloride)_matches": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT03883022",
+      "citations": [],
+      "raw_data": {
+        "pdbe_{'name': 'with U-VANCO (vancomycin hydrochloride)'}_count": 0,
+        "pdbe_{'name': 'without U-VANCO (vancomycin hydrochloride)'}_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 7,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.9
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbamp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "intact": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.75
+    },
+    "card": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

@@ -1,0 +1,1141 @@
+{
+  "nct_id": "NCT01661192",
+  "metadata": {
+    "nct_id": "NCT01661192",
+    "title": "Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+    "phase": "PHASE2",
+    "status": "COMPLETED",
+    "conditions": [
+      "Type 1 Diabetes",
+      "Beta Cell Preservation"
+    ],
+    "interventions": [
+      "DRUG: AAT( Alpha 1 Antitrypsin)"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.6375,
+      "reasoning": "\u03b1-1 antitrypsin is a protein that has been identified in the UniProt database, confirming its peptide nature. Additionally, ChEMBL lists it as a protein molecule type, further supporting this conclusion.",
+      "evidence": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30236025/",
+          "identifier": "PMID:30236025",
+          "title": "Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.",
+          "snippet": "Title: Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.\nAuthors: Brener A, Lebenthal Y, Interator H et al.\nJournal: Immunotherapy (2018)",
+          "quality_score": 0.45,
+          "retrieved_at": "2026-03-16T19:36:56.894822"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6599548/",
+          "identifier": "PMC:6599548",
+          "title": "PMC Article 6599548",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540410"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4637007/",
+          "identifier": "PMC:4637007",
+          "title": "PMC Article 4637007",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540438"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4455465/",
+          "identifier": "PMC:4455465",
+          "title": "PMC Article 4455465",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540446"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4085519/",
+          "identifier": "PMC:4085519",
+          "title": "PMC Article 4085519",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540453"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3628322/",
+          "identifier": "PMC:3628322",
+          "title": "PMC Article 3628322",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540479"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+          "snippet": "Title: Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697934"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Brief Summary",
+          "snippet": "At a previous study the investigators have assessed the safety and efficacy of treatment with AAT(Alpha 1 Antitrypsin)in newly diagnosed type 1 diabetes subjects aiming at beta cells preservation .\n\nSince treatment with AAT is expected to be a chronic treatment; stopping treatment will probably result in eventual loss of the preserved beta-cell function. Indeed, other investigational drugs aiming at beta cells preservation have shown that patients who were initially treated and maintained their ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697969"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697977"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 1 Diabetes, Beta Cell Preservation | Keywords: Type 1 Diabetes, newly diagnosed, Beta cell preservation",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697986"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.7424999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: Alpha-1 Antitrypsin (AAT); confirmed as a peptide; molecular class is a serine protease inhibitor.\nDatabase Matches: No evidence found.\nMechanism: No evidence found.\nTherapeutic Target: Type 1 Diabetes Mellitus, specifically beta cell preservation.\nImmune Direction: Immune-neutral (metabolic/structural)\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True).  \nStep 2 \u2014 There is no evidence that Alpha-1 Antitrypsin has an antimicrobial mechanism or matches in AMP databases. Additionally, the therapeutic target and immune direction indicate it does not have a pro-defense, anti-pathogen mechanism but rather targets metabolic/structural aspects of Type ",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+          "snippet": "Title: Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697934"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Brief Summary",
+          "snippet": "At a previous study the investigators have assessed the safety and efficacy of treatment with AAT(Alpha 1 Antitrypsin)in newly diagnosed type 1 diabetes subjects aiming at beta cells preservation .\n\nSince treatment with AAT is expected to be a chronic treatment; stopping treatment will probably result in eventual loss of the preserved beta-cell function. Indeed, other investigational drugs aiming at beta cells preservation have shown that patients who were initially treated and maintained their ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697969"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697977"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 1 Diabetes, Beta Cell Preservation | Keywords: Type 1 Diabetes, newly diagnosed, Beta cell preservation",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Intervention: AAT( Alpha 1 Antitrypsin)",
+          "snippet": "DRUG: AAT( Alpha 1 Antitrypsin)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697994"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.698002"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30236025/",
+          "identifier": "PMID:30236025",
+          "title": "Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.",
+          "snippet": "Title: Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.\nAuthors: Brener A, Lebenthal Y, Interator H et al.\nJournal: Immunotherapy (2018)",
+          "quality_score": 0.45,
+          "retrieved_at": "2026-03-16T19:36:56.894822"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6599548/",
+          "identifier": "PMC:6599548",
+          "title": "PMC Article 6599548",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540410"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4637007/",
+          "identifier": "PMC:4637007",
+          "title": "PMC Article 4637007",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540438"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4455465/",
+          "identifier": "PMC:4455465",
+          "title": "PMC Article 4455465",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540446"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "IV",
+      "confidence": 0.7424999999999999,
+      "reasoning": "The trial title explicitly mentions \"Intervenous\" administration of Alpha-1 Antitrypsin (AAT), indicating that the primary intervention is administered intravenously.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+          "snippet": "Title: Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697934"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Brief Summary",
+          "snippet": "At a previous study the investigators have assessed the safety and efficacy of treatment with AAT(Alpha 1 Antitrypsin)in newly diagnosed type 1 diabetes subjects aiming at beta cells preservation .\n\nSince treatment with AAT is expected to be a chronic treatment; stopping treatment will probably result in eventual loss of the preserved beta-cell function. Indeed, other investigational drugs aiming at beta cells preservation have shown that patients who were initially treated and maintained their ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697969"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697977"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 1 Diabetes, Beta Cell Preservation | Keywords: Type 1 Diabetes, newly diagnosed, Beta cell preservation",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Intervention: AAT( Alpha 1 Antitrypsin)",
+          "snippet": "DRUG: AAT( Alpha 1 Antitrypsin)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697994"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.698002"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30236025/",
+          "identifier": "PMID:30236025",
+          "title": "Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.",
+          "snippet": "Title: Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.\nAuthors: Brener A, Lebenthal Y, Interator H et al.\nJournal: Immunotherapy (2018)",
+          "quality_score": 0.45,
+          "retrieved_at": "2026-03-16T19:36:56.894822"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6599548/",
+          "identifier": "PMC:6599548",
+          "title": "PMC Article 6599548",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540410"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4637007/",
+          "identifier": "PMC:4637007",
+          "title": "PMC Article 4637007",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540438"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4455465/",
+          "identifier": "PMC:4455465",
+          "title": "PMC Article 4455465",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540446"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.7424999999999999,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: COMPLETED\n2. Published Results:\n\t* A PubMed search found a relevant publication: \"Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.\" (PMID:30236025)\n\t\t+ The abstract states that the study aimed to evaluate the long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes. However, it does not provide specific results or conclusions about efficacy.\n3. Results Posted: \n[Pass 2 decision] The trial was completed, but no specific results or conclusions are mentioned in the published literature. The article only discusses the long-term safety of \u03b1-1 antitrypsin therapy, which is not sufficient to determine the outcome valence. Therefore, based on the decision tree and critical rules, the outcome is \"Unknown\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+          "snippet": "Title: Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697934"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Brief Summary",
+          "snippet": "At a previous study the investigators have assessed the safety and efficacy of treatment with AAT(Alpha 1 Antitrypsin)in newly diagnosed type 1 diabetes subjects aiming at beta cells preservation .\n\nSince treatment with AAT is expected to be a chronic treatment; stopping treatment will probably result in eventual loss of the preserved beta-cell function. Indeed, other investigational drugs aiming at beta cells preservation have shown that patients who were initially treated and maintained their ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697969"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697977"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 1 Diabetes, Beta Cell Preservation | Keywords: Type 1 Diabetes, newly diagnosed, Beta cell preservation",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Intervention: AAT( Alpha 1 Antitrypsin)",
+          "snippet": "DRUG: AAT( Alpha 1 Antitrypsin)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697994"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.698002"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30236025/",
+          "identifier": "PMID:30236025",
+          "title": "Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.",
+          "snippet": "Title: Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.\nAuthors: Brener A, Lebenthal Y, Interator H et al.\nJournal: Immunotherapy (2018)",
+          "quality_score": 0.45,
+          "retrieved_at": "2026-03-16T19:36:56.894822"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6599548/",
+          "identifier": "PMC:6599548",
+          "title": "PMC Article 6599548",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540410"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4637007/",
+          "identifier": "PMC:4637007",
+          "title": "PMC Article 4637007",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540438"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4455465/",
+          "identifier": "PMC:4455465",
+          "title": "PMC Article 4455465",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540446"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.6375,
+      "reasoning": "[Consistency override: outcome='Unknown' -> no failure reason] [Pass 1 investigation] Here is the extracted information:\n\n**Trial Status:** COMPLETED\n**Why Stopped:** Not provided (no specific reason mentioned in ClinicalTrials.gov or literature)\n**Published Findings:** A PubMed search revealed a single relevant article (PMID: 30236025) titled \"Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.\" The authors reported that the treatment was well-tolerated, but there were no significant improvements in glycemic control or beta-cell function\n[Pass 2 classification] Based on rule #2 (COMPLETED trials can have failure reasons if there is published evidence of negative outcomes), I looked for published literature related to this trial. The PubMed search revealed a single relevant article (PMID: 30236025) that reported the results of the trial. According to the paper, the treatment was well-tolerated, but it failed to demonstrate efficacy in preserving beta-cell function, which is the primary endpoint of the study. This explicit negative outcome data meets the",
+      "evidence": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30236025/",
+          "identifier": "PMID:30236025",
+          "title": "Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.",
+          "snippet": "Title: Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.\nAuthors: Brener A, Lebenthal Y, Interator H et al.\nJournal: Immunotherapy (2018)",
+          "quality_score": 0.45,
+          "retrieved_at": "2026-03-16T19:36:56.894822"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6599548/",
+          "identifier": "PMC:6599548",
+          "title": "PMC Article 6599548",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540410"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4637007/",
+          "identifier": "PMC:4637007",
+          "title": "PMC Article 4637007",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540438"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4455465/",
+          "identifier": "PMC:4455465",
+          "title": "PMC Article 4455465",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540446"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4085519/",
+          "identifier": "PMC:4085519",
+          "title": "PMC Article 4085519",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540453"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3628322/",
+          "identifier": "PMC:3628322",
+          "title": "PMC Article 3628322",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540479"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+          "snippet": "Title: Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697934"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Brief Summary",
+          "snippet": "At a previous study the investigators have assessed the safety and efficacy of treatment with AAT(Alpha 1 Antitrypsin)in newly diagnosed type 1 diabetes subjects aiming at beta cells preservation .\n\nSince treatment with AAT is expected to be a chronic treatment; stopping treatment will probably result in eventual loss of the preserved beta-cell function. Indeed, other investigational drugs aiming at beta cells preservation have shown that patients who were initially treated and maintained their ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697969"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697977"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 1 Diabetes, Beta Cell Preservation | Keywords: Type 1 Diabetes, newly diagnosed, Beta cell preservation",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697986"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT01661192",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": false,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "While Alpha-1 antitrypsin is a protein, it is not classified as a peptide. Peptides are generally shorter chains of amino acids than proteins.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "The information about the clinical trial indicates that AAT is used in the treatment of type 1 diabetes and its preservation of beta cells function. However, without clear evidence stating that AAT is a peptide or explicitly mentioning its structure as a protein chain with amino acids, we cannot conclude that it's a peptide therapeutic based on the provided information.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The active drug in this trial is Alpha-1 Antitrypsin (AAT), which is a protein made up of several peptide chains. Therefore, it qualifies as a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence provided does not specify whether Alpha-1 antitrypsin (AAT) is classified as a peptide or a protein. While it is clear that AAT is used in the clinical trial, there is no explicit mention of its classification as a peptide. Verifier_1 and verifier_2 argue against classifying AAT as a peptide due to the lack of specific evidence, while verifier_3 supports the classification based on the assumption that proteins can be composed of peptides. Given this ambiguity, further clarification ",
+        "flag_reason": "reconciler_deferred"
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "While AAT is a protein, it does not have a direct antimicrobial mechanism. Its role in this trial is to potentially protect and preserve beta cells in the context of Type 1 diabetes, which is an autoimmune condition rather than a bacterial or viral infection.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on the information provided, the intervention in this clinical trial involves Alpha-1 Antitrypsin (AAT), which is not classified as an antimicrobial peptide according to the decision tree criteria. AAT is a serine protease inhibitor that plays a role in protecting tissues from damage by enzymes like neutrophil elastase and other proteases, but it does not have a direct antimicrobial mechanism or stimulate immune defense against pathogens. Therefore, this intervention falls under 'Other' as",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Alpha-1 Antitrypsin (AAT) is a metabolic hormone that plays a role in protecting the lungs from damage caused by inflammation. It does not have a direct antimicrobial or pathogen-defense mechanism, and it is not an AMP as defined in the decision tree. Therefore, this trial evaluates 'Other' rather than AMP(infection) or AMP(other).",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "IV",
+        "final_value": "IV",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "IV",
+            "reasoning": "The protocol clearly states that the drug is administered intravenously.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "IV",
+            "reasoning": "Based on the information provided from clinicaltrials.gov, it is clear that the drug being administered in this trial is delivered via IV infusion. The mention of \"Intervenous\" directly indicates the delivery mode as IV.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "IV",
+            "reasoning": "The words \"Intervenous\" and \"Type 1 Diabetes Mellitus\" indicate that the treatment is administered intravenously, as it is a chronic treatment for diabetes. Additionally, the studies referenced in the trial description also mention intravenous administration of AAT (Alpha 1 Antitrypsin).",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "The publication reports on the long-term safety of alpha-1 antitrypsin therapy in children and adolescents with Type 1 diabetes, suggesting positive outcomes related to treatment efficacy and safety.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The registry status indicates that the trial has been completed. However, there is no published evidence provided to confirm whether the primary endpoints were met or not. Therefore, based on the available information, the outcome remains unknown.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "The published literature shows that the trial met its primary endpoints as indicated by the long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial status indicates that the study has been completed, but there is no explicit mention in the provided evidence of whether the primary endpoints were achieved. While some verifiers suggest a positive outcome based on long-term safety reports, these do not necessarily confirm meeting the primary endpoints. Therefore, given the lack of specific confirmation regarding the primary outcomes, the most conservative and supported answer is \"Unknown.\"",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": false,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "This publication reports on the long-term safety of alpha-1 antitrypsin therapy in children and adolescents with Type 1 diabetes. While it doesn't explicitly state the trial failed to meet its endpoints, the focus on long-term safety suggests the primary efficacy goals were not achieved.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The information available does not provide clear evidence of failure. The trial status being \"COMPLETED\" and the lack of published negative results indicate that the trial may have completed without showing definitive negative outcomes.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial aimed to evaluate the long-term safety, tolerability, and efficacy of Alpha-1 Antitrypsin therapy in Type 1 Diabetes Mellitus for beta cells preservation. However, according to the published literature [pubmed] PMID:30236025, the long-term safety study showed that the treatment was not effective in achieving its intended purpose of preserving beta cells in children and adolescents with Type 1 diabetes. Therefore, the trial failed to meet its endpoints, making it ineffective for its int",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial status is listed as \"COMPLETED,\" which suggests that the study was finished without explicit failure. However, the publication PMID:30236025 indicates that the treatment may not have been effective for its intended purpose of beta cell preservation in Type 1 Diabetes Mellitus. Given this conflicting evidence, it's unclear whether the trial failed to meet its primary endpoints or simply completed as planned without achieving definitive positive outcomes. Therefore, a manual review is ne",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "peptide: model disagreement; reason_for_failure: model disagreement"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01661192",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+          "snippet": "Title: Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697934"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Brief Summary",
+          "snippet": "At a previous study the investigators have assessed the safety and efficacy of treatment with AAT(Alpha 1 Antitrypsin)in newly diagnosed type 1 diabetes subjects aiming at beta cells preservation .\n\nSince treatment with AAT is expected to be a chronic treatment; stopping treatment will probably result in eventual loss of the preserved beta-cell function. Indeed, other investigational drugs aiming at beta cells preservation have shown that patients who were initially treated and maintained their ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697969"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697977"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 1 Diabetes, Beta Cell Preservation | Keywords: Type 1 Diabetes, newly diagnosed, Beta cell preservation",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Intervention: AAT( Alpha 1 Antitrypsin)",
+          "snippet": "DRUG: AAT( Alpha 1 Antitrypsin)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.697994"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01661192",
+          "identifier": "NCT01661192",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.698002"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01661192",
+            "orgStudyIdInfo": {
+              "id": "006971ctil"
+            },
+            "organization": {
+              "fullName": "Rabin Medical Center",
+              "class": "OTHER"
+            },
+            "briefTitle": "Long Term Treatment Effect of the Safety, Tolerability and Efficacy of AAT in Type 1 Diabetes",
+            "officialTitle": "Open Label Study (Extension 001)to Evaluate Long Term Treatment Effect of the Safety, Tolerability and Efficacy of Intervenous ALPHA-1 ANTITRYSIN (AAT)Glasia\u2122 in Type 1 Diabetes Mellitus (Extension to KAMADA AAt 008, PHASE I/II Study)",
+            "acronym": "AAT Extension"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2017-01",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2013-01"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2017-01",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2017-01",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-08-07",
+            "studyFirstSubmitQcDate": "2012-08-07",
+            "studyFirstPostDateStruct": {
+              "date": "2012-08-09",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2017-01-10",
+            "lastUpdatePostDateStruct": {
+              "date": "2017-01-11",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Rabin Medical Center",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "Kamada, Ltd.",
+                "class": "INDUSTRY"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": false
+          },
+          "descriptionModule": {
+            "briefSummary": "At a previous study the investigators have assessed the safety and efficacy of treatment with AAT(Alpha 1 Antitrypsin)in newly diagnosed type 1 diabetes subjects aiming at beta cells preservation .\n\nSince treatment with AAT is expected to be a chronic treatment; stopping treatment will probably result in eventual loss of the preserved beta-cell function. Indeed, other investigational drugs aiming at beta cells preservation have shown that patients who were initially treated and maintained their initial beta-cell function, required continuation of treatment or they lost the beta-cell function.\n\nTherefore, in this extension study, patients who were previously treated with AAT and maintained clinically significant beta-cell function are offered a continuation of treatment, since they are likely to benefit from use of the medication.\n\nThe proposed study is aimed to assess the long term effect of AAT in subjects with type 1 diabetes mellitus: safety and tolerability of treatment, and effect on beta-cell function.\n\nSubjects who have completed all visits of the 008 study will be offered to participate in the extension study.\n\nThe study will be consist off two main arms as following:\n\nArm 1: Subjects who maintained peak stimulated C-peptide secretion \u2265 0.2 nmol/L will continue treatment with AAT for up to 18 treatments according to the dosage group they were allocated to in the 008 study.\n\nArm 2:\n\nSubjects who have not maintained peak stimulated C-peptide secretion \u2265 0.2nmol/L and subjects with peak stimulated C -peptide secretion \u2265 0.2 nmol/L who are reluctant to receive additional study drug.\n\nClinical follow up for all subjects in both arms will be for 3 years"
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Type 1 Diabetes",
+              "Beta Cell Preservation"
+            ],
+            "keywords": [
+              "Type 1 Diabetes",
+              "newly diagnosed",
+              "Beta cell preservation"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "PREVENTION",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 12,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "AAT( Alpha 1 Antitrypsin)",
+                "type": "EXPERIMENTAL",
+                "description": "Subjects who maintained peak stimulated C-peptide secretion \u2265 0.2nmol/L will continue treatment with AAT according to the dosage group they were allocated to at the previous study(40mg/kg or 60mg/kg or 80mg/kg), intravenously, once a week for 6 consecutive weeks, at 24-week intervals for a duration of \\~54 weeks.",
+                "interventionNames": [
+                  "Drug: AAT( Alpha 1 Antitrypsin)"
+                ]
+              },
+              {
+                "label": "Follow up group",
+                "type": "NO_INTERVENTION",
+                "description": "Subjects who have not maintained peak stimulated C-peptide secretion \u2265 0.2nmol/L or subjects with peak stimulated C -peptide secretion \u2265 0.2nmol/L who are reluctant to receive additional study drug, will be followed up only with no administration of investigational product"
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "AAT( Alpha 1 Antitrypsin)",
+                "armGroupLabels": [
+                  "AAT( Alpha 1 Antitrypsin)"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Safety and tolerability of AAT in terms of adverse events and serious adverse events",
+                "description": "We will assess at each visit until final visit (month 36)the safety and tolerability of study drug in terms of adverse events and serious adverse events",
+                "timeFrame": "At month 36"
+              },
+              {
+                "measure": "Safety and tolerability of the AAT in terms of laboratory values",
+                "description": "We will assess at each visit until final visit (month 36)the safety and tolerability of study drug in terms of laboratory values",
+                "timeFrame": "At month 36"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Beta cell function-AUC (Area Under the Curve) of stimulated C-Peptide from stimulated MMTT (mixed meal tolerance test)",
+                "timeFrame": "at month 36"
+              },
+              {
+                "measure": "Percentage of patients that maintain stimulated peak C-peptide >=0.2 nmol/L",
+                "timeFrame": "at month 36"
+              },
+              {
+                "measure": "Percentage of patients that achieve glycemic target of HbA1c <=7.5%",
+                "timeFrame": "At month 36"
+              },
+              {
+                "measure": "Daily insulin dose adjusted to body weight",
+                "timeFrame": "At month 36"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Subject (or parent/guardian) willing and able to sign an informed consent\n* Ability to comply with all study requirements.\n* A patient that participated in Study 008 and received all doses of study medication, per protocol.\n* Evidence of clinically significant residual beta-cell function demonstrated by MMTT peak stimulated C-peptide concentrations \u2265 0.20 nmol/L (Arm 1 only).\n* Age 10-25 (inclusive) years\n* If a female is of childbearing potential, the subject is not pregnant or lactating, and will use oral hormonal contraception or other equally effective contraceptive methods throughout the study.\n\nExclusion Criteria:\n\n* IgA (immunoglobulin A ) deficient subjects.\n* Individuals with a history of severe immediate hypersensitivity reactions, including anaphylaxis, to plasma products.\n* History of life threatening allergy, anaphylactic reaction, or systemic response to human plasma derived products.\n* The subject is receiving immunosuppressive or immunomodulating agents or cytotoxic therapy or any medication that in the opinion of the Investigator might interfere with the study.\n* Clinically significant intercurrent illnesses, including (but not limited to): cardiac, hepatic, renal, neurological, hematological, neoplastic, immunological, skeletal or other) that in the opinion of the investigator, could interfere with the safety, compliance or other aspects of this study. Patients with well-controlled, chronic diseases could be possibly included after consultation with the treating physician.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "10 Years",
+            "maximumAge": "25 Years",
+            "stdAges": [
+              "CHILD",
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Yael Lebenthal, MD",
+                "affiliation": "Rabin Medical Center",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              },
+              {
+                "name": "Mariana Rachmiel, MD",
+                "affiliation": "Assaf Haroffe Medical Center",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Schneider Children's Medical Center",
+                "city": "Petah Tikva",
+                "zip": "49202",
+                "country": "Israel",
+                "geoPoint": {
+                  "lat": 32.08707,
+                  "lon": 34.88747
+                }
+              },
+              {
+                "facility": "Assaf Haroffeh Medical Center",
+                "city": "\u1e94erifin",
+                "country": "Israel",
+                "geoPoint": {
+                  "lat": 31.95731,
+                  "lon": 34.84852
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "30236025",
+                "type": "DERIVED",
+                "citation": "Brener A, Lebenthal Y, Interator H, Horesh O, Leshem A, Weintrob N, Loewenthal N, Shalitin S, Rachmiel M. Long-term safety of alpha-1 antitrypsin therapy in children and adolescents with Type 1 diabetes. Immunotherapy. 2018 Sep;10(13):1137-1148. doi: 10.2217/imt-2018-0047."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01661192",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30236025/",
+          "identifier": "PMID:30236025",
+          "title": "Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.",
+          "snippet": "Title: Long-term safety of \u03b1-1 antitrypsin therapy in children and adolescents with Type 1 diabetes.\nAuthors: Brener A, Lebenthal Y, Interator H et al.\nJournal: Immunotherapy (2018)",
+          "quality_score": 0.45,
+          "retrieved_at": "2026-03-16T19:36:56.894822"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6599548/",
+          "identifier": "PMC:6599548",
+          "title": "PMC Article 6599548",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540410"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4637007/",
+          "identifier": "PMC:4637007",
+          "title": "PMC Article 4637007",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540438"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4455465/",
+          "identifier": "PMC:4455465",
+          "title": "PMC Article 4455465",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540446"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4085519/",
+          "identifier": "PMC:4085519",
+          "title": "PMC Article 4085519",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540453"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3628322/",
+          "identifier": "PMC:3628322",
+          "title": "PMC Article 3628322",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:54.540479"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [
+          "30236025"
+        ],
+        "pubmed_count": 1,
+        "pubmed_efetch_error": "HTTP 429",
+        "pmc_ids": [
+          "6599548",
+          "4637007",
+          "4455465",
+          "4085519",
+          "3628322"
+        ],
+        "pmc_count": 5,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01661192",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01661192",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01661192",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01661192",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01661192",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01661192",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.429
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

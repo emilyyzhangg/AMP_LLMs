@@ -1,0 +1,1148 @@
+{
+  "nct_id": "NCT02228031",
+  "metadata": {
+    "nct_id": "NCT02228031",
+    "title": "The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions",
+    "phase": "EARLY_PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "Social Cognition",
+      "Expressed Emotion"
+    ],
+    "interventions": [
+      "DRUG: Oxytocin",
+      "OTHER: Placebo"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "False",
+      "confidence": 0.9375,
+      "reasoning": "Oxytocin is a small peptide hormone consisting of 9 amino acids. However, it is not used as the active drug in this clinical trial. The study investigates its effect on brain activity and social cognition, but the primary intervention is not oxytocin itself being used as a therapeutic agent.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions",
+          "snippet": "Title: The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597420"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this project is to investigate the possible effect of intranasally administered Oxytocin (OT) on specific mirror neuron areas in human brain. The mirror neuron system (MNS) is thought to be involved in action perception and understanding, and may also underlie more complex cognitive processes such as imitation. We will use electroencephalographic (EEG) investigations to examine brain activity while participants complete two different tasks, consisting of the observation and imitat",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597441"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597445"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Social Cognition, Expressed Emotion | Keywords: Mirror neurons, Imitation, Oxytocin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597449"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Intervention: Oxytocin",
+          "snippet": "DRUG: Oxytocin - The experimental oxytocin group will receive 24 international units (IU) of oxytocin using an intranasal administration (self-administered nasal spray) one time before the experimental session",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597453"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Intervention: Placebo",
+          "snippet": "OTHER: Placebo - The placebo comparator group will receive sterile saline through intranasal administration, consisting of the same salt solution in which the hormone will be dissolved , but lacking the hormone itself.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597456"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Phase",
+          "snippet": "Phase: EARLY_PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597459"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "Oxytocin",
+          "title": "FDA Label: Oxytocin",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:37:00.744080"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9375,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: False, the intervention is oxytocin which is not confirmed as a peptide in this context.\nDatabase Matches: No evidence found.\nMechanism: No evidence found.\nTherapeutic Target: Social Cognition, Expressed Emotion (not an infection or infectious disease)\nImmune Direction: No evidence found.\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is oxytocin, and Peptide determination = False \u2192 STOP \u2192 answer \"Other\". Since the intervention is not a peptide, it cannot be classified as an AMP.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions",
+          "snippet": "Title: The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597420"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this project is to investigate the possible effect of intranasally administered Oxytocin (OT) on specific mirror neuron areas in human brain. The mirror neuron system (MNS) is thought to be involved in action perception and understanding, and may also underlie more complex cognitive processes such as imitation. We will use electroencephalographic (EEG) investigations to examine brain activity while participants complete two different tasks, consisting of the observation and imitat",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597441"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597445"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Social Cognition, Expressed Emotion | Keywords: Mirror neurons, Imitation, Oxytocin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597449"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Intervention: Oxytocin",
+          "snippet": "DRUG: Oxytocin - The experimental oxytocin group will receive 24 international units (IU) of oxytocin using an intranasal administration (self-administered nasal spray) one time before the experimental session",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597453"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Intervention: Placebo",
+          "snippet": "OTHER: Placebo - The placebo comparator group will receive sterile saline through intranasal administration, consisting of the same salt solution in which the hormone will be dissolved , but lacking the hormone itself.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597456"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Phase",
+          "snippet": "Phase: EARLY_PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597459"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "Oxytocin",
+          "title": "FDA Label: Oxytocin",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:37:00.744080"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Intranasal",
+      "confidence": 0.9375,
+      "reasoning": "The protocol explicitly states that the intervention is administered via \"intranasal administration\" using a \"nasal spray\", which indicates the specific route of administration.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions",
+          "snippet": "Title: The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597420"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this project is to investigate the possible effect of intranasally administered Oxytocin (OT) on specific mirror neuron areas in human brain. The mirror neuron system (MNS) is thought to be involved in action perception and understanding, and may also underlie more complex cognitive processes such as imitation. We will use electroencephalographic (EEG) investigations to examine brain activity while participants complete two different tasks, consisting of the observation and imitat",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597441"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597445"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Social Cognition, Expressed Emotion | Keywords: Mirror neurons, Imitation, Oxytocin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597449"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Intervention: Oxytocin",
+          "snippet": "DRUG: Oxytocin - The experimental oxytocin group will receive 24 international units (IU) of oxytocin using an intranasal administration (self-administered nasal spray) one time before the experimental session",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597453"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Intervention: Placebo",
+          "snippet": "OTHER: Placebo - The placebo comparator group will receive sterile saline through intranasal administration, consisting of the same salt solution in which the hormone will be dissolved , but lacking the hormone itself.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597456"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Phase",
+          "snippet": "Phase: EARLY_PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597459"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "Oxytocin",
+          "title": "FDA Label: Oxytocin",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:37:00.744080"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.9375,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: EARLY_PHASE1\nPublished Results: None found in ClinicalTrials.gov or PubMed/PMC search.\nResult Valence: Not Available\nResults Posted: Unknown (hasResults field not available)\nCompletion Date: Unknown\nWhy Stopped: N/A\nNote: The trial was completed, but there is no information on the results or completion date.\n[Pass 2 decision] Since the trial status is COMPLETED, I follow the decision tree to check for published literature. The Result Valence is Not Available, which indicates that no results are available.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions",
+          "snippet": "Title: The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597420"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this project is to investigate the possible effect of intranasally administered Oxytocin (OT) on specific mirror neuron areas in human brain. The mirror neuron system (MNS) is thought to be involved in action perception and understanding, and may also underlie more complex cognitive processes such as imitation. We will use electroencephalographic (EEG) investigations to examine brain activity while participants complete two different tasks, consisting of the observation and imitat",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597441"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597445"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Social Cognition, Expressed Emotion | Keywords: Mirror neurons, Imitation, Oxytocin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597449"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Intervention: Oxytocin",
+          "snippet": "DRUG: Oxytocin - The experimental oxytocin group will receive 24 international units (IU) of oxytocin using an intranasal administration (self-administered nasal spray) one time before the experimental session",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597453"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Intervention: Placebo",
+          "snippet": "OTHER: Placebo - The placebo comparator group will receive sterile saline through intranasal administration, consisting of the same salt solution in which the hormone will be dissolved , but lacking the hormone itself.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597456"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Phase",
+          "snippet": "Phase: EARLY_PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597459"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "Oxytocin",
+          "title": "FDA Label: Oxytocin",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:37:00.744080"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.8,
+      "reasoning": "[Pass 1] No failure detected. Here is the extracted information:\n\n**Trial Status:** COMPLETED\n**Why Stopped:** Not provided\n**Published Findings:** After conducting a search of PubMed and PMC, I found no published findings or results related to this trial. The only relevant publication I could find was an abstract from the 2016 ",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions",
+          "snippet": "Title: The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597420"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this project is to investigate the possible effect of intranasally administered Oxytocin (OT) on specific mirror neuron areas in human brain. The mirror neuron system (MNS) is thought to be involved in action perception and understanding, and may also underlie more complex cognitive processes such as imitation. We will use electroencephalographic (EEG) investigations to examine brain activity while participants complete two different tasks, consisting of the observation and imitat",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597441"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597445"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Social Cognition, Expressed Emotion | Keywords: Mirror neurons, Imitation, Oxytocin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597449"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Intervention: Oxytocin",
+          "snippet": "DRUG: Oxytocin - The experimental oxytocin group will receive 24 international units (IU) of oxytocin using an intranasal administration (self-administered nasal spray) one time before the experimental session",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597453"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Intervention: Placebo",
+          "snippet": "OTHER: Placebo - The placebo comparator group will receive sterile saline through intranasal administration, consisting of the same salt solution in which the hormone will be dissolved , but lacking the hormone itself.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597456"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Phase",
+          "snippet": "Phase: EARLY_PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597459"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "Oxytocin",
+          "title": "FDA Label: Oxytocin",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:37:00.744080"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT02228031",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "False",
+        "final_value": "False",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "While oxytocin has some structural similarities to peptides, it is classified as a hormone, not a peptide therapeutic.  The trial focuses on the effects of oxytocin on brain activity related to mirror neurons.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "True",
+            "reasoning": "The product name \"Oxytocin\" indicates that it is a biological substance. Although it is administered via oral (intranasal) route in this context, oxytocin is classified as a peptide due to its chemical composition and function as a hormone.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "Oxytocin is a non-peptide hormone, it's not a peptide therapeutic as defined by the critical rules.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "Despite verifier_2's argument about chemical composition, the primary evidence from clinicaltrials.gov clearly indicates that oxytocin is being studied as a hormone for its effects on mirror neurons. The trial does not classify or treat oxytocin as a peptide therapeutic. Therefore, based on the provided evidence and context of the study, the conservative interpretation aligns with verifiers 1 and 3 who agree that oxytocin should be classified as False (not a peptide).",
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Oxytocin, while a peptide, is not an antimicrobial peptide. This trial focuses on its effects on the mirror neuron system and social cognition, not on directly killing or inhibiting pathogens.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The peptide nature of oxytocin is confirmed by the openFDA data indicating that it is administered orally (which includes intranasal administration). However, being a peptide alone does not classify this as an antimicrobial peptide. The core test for AMPs involves direct antimicrobial mechanisms such as killing, inhibiting, or disrupting pathogens, which are not mentioned in the evidence provided about the study's objectives and outcomes. Since oxytocin is not directly involved in an antimicrobi",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Oxytocin is a neuropeptide, not an antimicrobial peptide. It does not have a direct antimicrobial mechanism or stimulate immune defense against pathogens. Instead, it plays a role in social interactions and reproduction. Therefore, it falls under the 'Other' category according to the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Intranasal",
+        "final_value": "Intranasal",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Intranasal",
+            "reasoning": "The protocol explicitly states that the oxytocin is administered via \"intranasal administration (self-administered nasal spray)\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Intranasal",
+            "reasoning": "The evidence provided clearly indicates that the drug Oxytocin is administered via intranasal route, as specified in the clinical trial details.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Intranasal",
+            "reasoning": "The trial explicitly states that the drug is administered via a self-administered nasal spray, which corresponds to the Intranasal delivery mode.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial is listed as COMPLETED on clinicaltrials.gov, but there are no publications found to determine if it was positive or failed.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The registry status alone does not provide enough information to determine if the trial was positive or failed. To make a decision, we would need published literature showing whether the primary endpoints were met or not. Since there is no specific evidence provided about the outcome of this trial in the publications mentioned, it falls under 'Unknown'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial has been completed according to the registry, but there are no published results available to determine if it was positive or failed. Without such evidence, the trial outcome is 'Unknown'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "EMPTY",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, a completed trial without evidence of negative publications is classified as EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The evidence provided does not contain any published results that would indicate a failure in meeting the primary endpoint(s) of the study. Since the trial status is COMPLETED and there are no negative publications cited as evidence, we cannot conclude that the trial failed based on the information given.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial is completed but there are no published negative or positive results indicating that the trial failed to meet its endpoints. However, since it's an early phase 1 trial and the drug was administered intranasally while the evidence suggests oral route, it might be possible that the trial was designed to test a different route of administration. Without further information, it is not clear if the failure was due to ineffectiveness or another reason. Therefore, I would classify this as 'In",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "According to the provided evidence, the trial has been completed without any indication of failure or negative results. Verifier_1 and verifier_2's reasoning aligns with this interpretation, stating that in the absence of negative outcomes or failures, the reason for failure should be classified as EMPTY. Although verifier_3 suggests a discrepancy between the intended intranasal route and an oral route mentioned elsewhere (which is not directly relevant to the trial results), there is no evidenc",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": null
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT02228031",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions",
+          "snippet": "Title: The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597420"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this project is to investigate the possible effect of intranasally administered Oxytocin (OT) on specific mirror neuron areas in human brain. The mirror neuron system (MNS) is thought to be involved in action perception and understanding, and may also underlie more complex cognitive processes such as imitation. We will use electroencephalographic (EEG) investigations to examine brain activity while participants complete two different tasks, consisting of the observation and imitat",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597441"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597445"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Social Cognition, Expressed Emotion | Keywords: Mirror neurons, Imitation, Oxytocin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597449"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Intervention: Oxytocin",
+          "snippet": "DRUG: Oxytocin - The experimental oxytocin group will receive 24 international units (IU) of oxytocin using an intranasal administration (self-administered nasal spray) one time before the experimental session",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597453"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Intervention: Placebo",
+          "snippet": "OTHER: Placebo - The placebo comparator group will receive sterile saline through intranasal administration, consisting of the same salt solution in which the hormone will be dissolved , but lacking the hormone itself.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597456"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT02228031",
+          "identifier": "NCT02228031",
+          "title": "Phase",
+          "snippet": "Phase: EARLY_PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.597459"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "Oxytocin",
+          "title": "FDA Label: Oxytocin",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:37:00.744080"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT02228031",
+            "orgStudyIdInfo": {
+              "id": "HP-00059904"
+            },
+            "organization": {
+              "fullName": "University of Maryland, Baltimore",
+              "class": "OTHER"
+            },
+            "briefTitle": "Oxytocin, Emotions and Mirror Neurons",
+            "officialTitle": "The Influence of Oxytocin on the Mirror Neuron System: Developing Brain Imaging Paradigms for Future Therapeutic Interventions"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2019-08",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2014-10",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2016-08",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2016-08",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2014-08-15",
+            "studyFirstSubmitQcDate": "2014-08-27",
+            "studyFirstPostDateStruct": {
+              "date": "2014-08-28",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2019-08-15",
+            "lastUpdatePostDateStruct": {
+              "date": "2019-08-19",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "PRINCIPAL_INVESTIGATOR",
+              "investigatorFullName": "Robert Buchanan",
+              "investigatorTitle": "Interim Director, Maryland Psychiatric Research Center",
+              "investigatorAffiliation": "University of Maryland, Baltimore"
+            },
+            "leadSponsor": {
+              "name": "University of Maryland, Baltimore",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "University of Maryland, College Park",
+                "class": "OTHER"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": true,
+            "isFdaRegulatedDrug": true,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "The purpose of this project is to investigate the possible effect of intranasally administered Oxytocin (OT) on specific mirror neuron areas in human brain. The mirror neuron system (MNS) is thought to be involved in action perception and understanding, and may also underlie more complex cognitive processes such as imitation. We will use electroencephalographic (EEG) investigations to examine brain activity while participants complete two different tasks, consisting of the observation and imitation of emotional facial expressions (video presented) and the observation and execution of simple grasping actions (live presented), respectively. In addition, before the beginning of the EEG recording session, subjects will be randomly assigned to two different groups (Oxytocin or Placebo group) and will receive a dose of either intranasal Oxytocin or Placebo solution. Oxytocin is a polypeptide hormone that plays a critical role in social behavior. We will identify mu and beta rhythm from the ongoing EEG and examine suppression as a function of emotion and goal directed action perception and imitation/execution."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Social Cognition",
+              "Expressed Emotion"
+            ],
+            "keywords": [
+              "Mirror neurons",
+              "Imitation",
+              "Oxytocin"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "EARLY_PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "BASIC_SCIENCE",
+              "maskingInfo": {
+                "masking": "TRIPLE",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "INVESTIGATOR",
+                  "OUTCOMES_ASSESSOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 44,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Oxytocin",
+                "type": "EXPERIMENTAL",
+                "description": "The experimental oxytocin group will receive 24 international units (IU) of oxytocin using an intranasal administration (self-administered nasal spray) one time before the experimental session.",
+                "interventionNames": [
+                  "Drug: Oxytocin"
+                ]
+              },
+              {
+                "label": "Placebo",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "The placebo comparator group will receive sterile saline through intranasal administration, consisting of the same salt solution in which the hormone will be dissolved , but lacking the hormone itself.",
+                "interventionNames": [
+                  "Other: Placebo"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Oxytocin",
+                "description": "The experimental oxytocin group will receive 24 international units (IU) of oxytocin using an intranasal administration (self-administered nasal spray) one time before the experimental session",
+                "armGroupLabels": [
+                  "Oxytocin"
+                ],
+                "otherNames": [
+                  "Syntocinon nasal spray"
+                ]
+              },
+              {
+                "type": "OTHER",
+                "name": "Placebo",
+                "description": "The placebo comparator group will receive sterile saline through intranasal administration, consisting of the same salt solution in which the hormone will be dissolved , but lacking the hormone itself.",
+                "armGroupLabels": [
+                  "Placebo"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "EEG mu rhythm suppression",
+                "description": "The EEG mu rhythm suppression is an index of the human mirror neuron system (alpha and lower beta band activity (8-13 and \\~20Hz) recorded over the sensorimotor cortex. EEG will be recorded during the performance of an emotion imitation task (Carr et al., 2003) in which participants will be asked to imitate and internally generate facial emotions seen on a computer screen, or to simply observe, as well as performing a simple grasping action task. Changes in the mu suppression while the performance of these tasks, before and after oxytocin/placebo administration, will be the primary outcome measure.",
+                "timeFrame": "Before oxytocin/placebo administration and 45 minutes after"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Right-hand dominant\n* Sufficient spoken English so as to be able to complete testing validly and give informed consent\n\nExclusion Criteria:\n\n* Currently taking any psychotropic or cognition enhancing medication\n* History of schizophrenia or any other psychotic disorder, including Bipolar Disorder\n* Family history of psychosis\n* Neurological disease or clinically significant head injury\n* Physical disability that substantially impairs motor function\n* Current diagnosis of polydypsic-induced hyponatremia\n* Substance dependence or abuse in the past 6 months",
+            "healthyVolunteers": true,
+            "sex": "MALE",
+            "minimumAge": "18 Years",
+            "maximumAge": "30 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Robert W Buchanan, MD",
+                "affiliation": "University of Maryland, College Park",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              },
+              {
+                "name": "Nathan Fox, PhD",
+                "affiliation": "University of Maryland, College Park",
+                "role": "STUDY_DIRECTOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Child Development Lab, University of Maryland",
+                "city": "College Park",
+                "state": "Maryland",
+                "zip": "20742",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.98067,
+                  "lon": -76.93692
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "12682281",
+                "type": "BACKGROUND",
+                "citation": "Carr L, Iacoboni M, Dubeau MC, Mazziotta JC, Lenzi GL. Neural mechanisms of empathy in humans: a relay from neural systems for imitation to limbic areas. Proc Natl Acad Sci U S A. 2003 Apr 29;100(9):5497-502. doi: 10.1073/pnas.0935845100. Epub 2003 Apr 7."
+              }
+            ]
+          }
+        },
+        "openfda_Oxytocin": {
+          "spl_product_data_elements": [
+            "GUNA-GERIATRICS 1,4-benzoquinone - arnica montana - oxytocin - barium carbonate - barium oxalosuccinate - corticotropin - lead - levothyroxine - lutrelin - malic acid - melatonin - neurotrophin-3 - neurotrophin-4 - phenylalanine - pork liver - pyruvic acid - rinfabate - sus scrofa adrenal gland - sus scrofa frontal lobe - sus scrofa hypothalamus - thyrotropin alfa - brain-derived neurotrophic factor human - QUINONE QUINONE BARIUM OXALOSUCCINATE BARIUM CATION ALCOHOL CORTICOTROPIN CORTICOTROPIN ARNICA MONTANA ARNICA MONTANA BARIUM CARBONATE BARIUM CATION BRAIN-DERIVED NEUROTROPHIC FACTOR HUMAN BRAIN-DERIVED NEUROTROPHIC FACTOR HUMAN MALIC ACID MALIC ACID SUS SCROFA FRONTAL LOBE SUS SCROFA FRONTAL LOBE SUS SCROFA ADRENAL GLAND SUS SCROFA ADRENAL GLAND PORK LIVER PORK LIVER SUS SCROFA HYPOTHALAMUS SUS SCROFA HYPOTHALAMUS RINFABATE RINFABATE LUTRELIN LUTRELIN MELATONIN MELATONIN NEUROTROPHIN-3 NEUROTROPHIN-3 NEUROTROPHIN-4 NEUROTROPHIN-4 OXYTOCIN OXYTOCIN PHENYLALANINE PHENYLALANINE LEAD LEAD PYRUVIC ACID PYRUVIC ACID THYROTROPIN ALFA THYROTROPIN ALFA LEVOTHYROXINE LEVOTHYROXINE"
+          ],
+          "active_ingredient": [
+            "ACTIVE INGREDIENTS/PURPOSE ACTH 6X ADRENAL SUPPORT ARNICA MONTANA 6X ANTI-INFLAMMATORY BARIUM OXALOSUCCINATE 3X FORGETFULNESS BARYTA CARBONICA 6X IMPROVES MENTAL ATTENTION BRAIN DERIVED NEUROTROPHIC FACTOR 4C HELPS MENTAL ACTIVITY DL-MALIC ACID 3X PROMOTE CELL METABOLISM FRONTAL LOBE 6X STIMULATES MENTAL ALERTNESS GLANDULA SUPRARENALIS 6X DETOXIFICATION HEPAR 6X DETOXIFICATION HYPOTHALAMUS 6X IMPROVES MENTAL ATTENTION INSULINE-LIKE GROWTH FACTOR-1 4C ENHANCES PROTEIN ANABOLISM LUTEINIZING HORMONE-RELEASING HORMONE 6X HELPS MANAGE STRESS MELATONIN 4C HELPS MANAGE STRESS NEUROTROPHIN 3 4C HELPS MENTAL ACTIVITY NEUROTROPHIN 4 4C HELPS MENTAL ACTIVITY OXYTOCIN 6X STIMULATES SOCIAL RECOGNITION PARABENZOCHINON 3X ANTIOXIDANT PHENYLALANINE 3X STIMULATES MENTAL ALERTNESS PLUMBUM METALLICUM 6X ANTIAGING PYRUVIC ACID 3X ANTIOXIDANT THYROTROPIN-RELEASING HORMONE 6X HELPS MANAGE STRESS THYROXINE T4 6X STIMULATES MENTAL ALERTNESS"
+          ],
+          "indications_and_usage": [
+            "USES TAKE 15 MINUTES BEFORE MEALS"
+          ],
+          "warnings": [
+            "WARNINGS Stop use and ask doctor if symptoms persist more than 5 days. If pregnant or breast-feeding ask a health professional before use. Keep out of reach of children. In case of overdose, get medical help or contact a Poison Control Center right away. Contains ethyl alcohol 30%"
+          ],
+          "pregnancy_or_breast_feeding": [
+            "PREGNANCY If pregnant or breast-feeding ask a doctor before use"
+          ],
+          "keep_out_of_reach_of_children": [
+            "WARNINGS Keep this and all medicines out of reach of children"
+          ],
+          "dosage_and_administration": [
+            "DIRECTIONS Take 15 minutes before meals Adults : 20 drops in a little water, 2 times per day"
+          ],
+          "questions": [
+            "QUESTIONS Questions?: info@gunainc.com, tel. (484) 223-3500"
+          ],
+          "inactive_ingredient": [
+            "Inactive ingredient: Ethyl alcohol 30%."
+          ],
+          "purpose": [
+            "For the temporary relief symptoms due to aging, scuh as: poor memory impaired concentration"
+          ],
+          "package_label_principal_display_panel": [
+            "PRINCIPAL DISPLAY PANEL 5USGER- REV06-24-05-18"
+          ],
+          "set_id": "03dc86d3-575f-4c65-b06d-2613efbcd943",
+          "id": "7d9af689-848b-3aea-e053-2a91aa0a70d2",
+          "effective_time": "20181222",
+          "version": "2",
+          "openfda": {
+            "brand_name": [
+              "GUNA-GERIATRICS"
+            ],
+            "generic_name": [
+              "1,4-BENZOQUINONE - ARNICA MONTANA - OXYTOCIN - BARIUM CARBONATE - BARIUM OXALOSUCCINATE - CORTICOTROPIN - LEAD - LEVOTHYROXINE - LUTRELIN - MALIC ACID - MELATONIN - NEUROTROPHIN-3 - NEUROTROPHIN-4 - PHENYLALANINE - PORK LIVER - PYRUVIC ACID - RINFABATE - SUS SCROFA ADRENAL GLAND - SUS SCROFA FRONTAL LOBE - SUS SCROFA HYPOTHALAMUS - THYROTROPIN ALFA - BRAIN-DERIVED NEUROTROPHIC FACTOR HUMAN -"
+            ],
+            "manufacturer_name": [
+              "Guna spa"
+            ],
+            "product_ndc": [
+              "17089-349"
+            ],
+            "product_type": [
+              "HUMAN OTC DRUG"
+            ],
+            "route": [
+              "ORAL"
+            ],
+            "substance_name": [
+              "ARNICA MONTANA",
+              "BARIUM CARBONATE",
+              "BARIUM OXALOSUCCINATE",
+              "BRAIN-DERIVED NEUROTROPHIC FACTOR HUMAN",
+              "CORTICOTROPIN",
+              "LEAD",
+              "LEVOTHYROXINE",
+              "LUTRELIN",
+              "MALIC ACID",
+              "MELATONIN",
+              "NEUROTROPHIN-3",
+              "NEUROTROPHIN-4",
+              "OXYTOCIN",
+              "PHENYLALANINE",
+              "PORK LIVER",
+              "PYRUVIC ACID",
+              "QUINONE",
+              "RINFABATE",
+              "SUS SCROFA ADRENAL GLAND",
+              "SUS SCROFA FRONTAL LOBE",
+              "SUS SCROFA HYPOTHALAMUS",
+              "THYROTROPIN ALFA"
+            ],
+            "spl_id": [
+              "7d9af689-848b-3aea-e053-2a91aa0a70d2"
+            ],
+            "spl_set_id": [
+              "03dc86d3-575f-4c65-b06d-2613efbcd943"
+            ],
+            "package_ndc": [
+              "17089-349-18"
+            ],
+            "is_original_packager": [
+              true
+            ],
+            "upc": [
+              "0317089349181"
+            ],
+            "nui": [
+              "M0000499",
+              "N0000175941",
+              "N0000175945",
+              "M0021504",
+              "N0000009705",
+              "N0000175828",
+              "M0015703",
+              "N0000175949",
+              "M0021496"
+            ],
+            "pharm_class_cs": [
+              "Adrenocorticotropic Hormone [CS]",
+              "Thyroxine [CS]",
+              "Oxytocin [CS]",
+              "Thyrotropin [CS]"
+            ],
+            "pharm_class_epc": [
+              "Adrenocorticotropic Hormone [EPC]",
+              "l-Thyroxine [EPC]",
+              "Oxytocic [EPC]",
+              "Thyroid Stimulating Hormone [EPC]"
+            ],
+            "pharm_class_pe": [
+              "Increased Uterine Smooth Muscle Contraction or Tone [PE]"
+            ],
+            "unii": [
+              "O80TY208ZW",
+              "6P669D8HQ8",
+              "L7A49804ZQ",
+              "A1ED6W905I",
+              "K0U68Q2TXA",
+              "2P299V784P",
+              "Q51BO43MG4",
+              "QH51543Y7U",
+              "817L1N4CKP",
+              "JL5DK93RCL",
+              "02R4V6T25Y",
+              "P658DCA9XD",
+              "1JQS135EYN",
+              "47E5O17Y3R",
+              "6EC706HI7F",
+              "8558G7RUTR",
+              "3T006GV98U",
+              "KU1MBT4JJB",
+              "398IYQ16YV",
+              "GV54Q19G55",
+              "N6R0856Z79",
+              "AVX3D5A4LM"
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT02228031",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 0,
+        "semantic_scholar_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT02228031",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT02228031",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT02228031",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT02228031",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT02228031",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT02228031",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 8,
+      "has_data": true,
+      "quality_avg": 0.938
+    },
+    "literature": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

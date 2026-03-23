@@ -1,0 +1,1116 @@
+{
+  "nct_id": "NCT01652573",
+  "metadata": {
+    "nct_id": "NCT01652573",
+    "title": "Calcitonin for Treating X-linked Hypophosphatemia",
+    "phase": "NA",
+    "status": "COMPLETED",
+    "conditions": [
+      "Hypophosphatemic Rickets, X Linked Dominant"
+    ],
+    "interventions": [
+      "DRUG: nasal salmon calcitonin",
+      "DRUG: Saline Nasal Spray Placebo"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 extraction] Here are the extracted facts for the interventions:\n\n**Intervention 1: Nasal salmon calcitonin**\n\n1. INTERVENTION NAME: Nasal salmon calcitonin\n2. MOLECULAR CLASS: Short peptide chain (salmon calcitonin is a 32-amino acid peptide)\n3. DATABASE CONFIRMATION:\n\t* UniProt: entry found, Amino acid length: 32\n\t* DRAMP/DBAASP: not mentioned in the trial metadata\n\t* ChEMBL: molecule type: peptide\n4. PRODUC\n[Pass 2 decision] Peptide: True\nReasoning:\nStep 1: Intervention 1 has a molecular class of \"Short peptide chain\", which is a peptide, so proceed to Step 2.\nStep 2: The active ingredient role for Intervention 1 is \"Active therapeutic agent\", and database confirmation shows UniProt/ChEMBL entries that confirm it's a peptide. Therefore, proceed to Step 3.\nStep 3: Database confirmation shows UniProt entry with an amino",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Calcitonin for Treating X-linked Hypophosphatemia",
+          "snippet": "Title: Calcitonin for Treating X-linked Hypophosphatemia",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376202"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Brief Summary",
+          "snippet": "X-linked hypophosphatemia (XLH) is the most common form of inherited rickets in the United States. It also causes bone disease in adults. XLH is caused by overproduction of a hormone call FGF23, which makes the body waste phosphate. This study is designed to determine if nasal calcitonin, an already approved drug in the US, can lower blood levels of FGF23 and reduce phosphate wasting in patients with XLH. In this study the investigators will:\n\n1. Determine whether nasal calcitonin significantly ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376223"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376230"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypophosphatemic Rickets, X Linked Dominant | Keywords: X linked hypophosphatemia, calcitonin, FGF twenty three",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376237"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Intervention: nasal salmon calcitonin",
+          "snippet": "DRUG: nasal salmon calcitonin - 400 IU daily in two sprays (one to each nares)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376244"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Intervention: Saline Nasal Spray Placebo",
+          "snippet": "DRUG: Saline Nasal Spray Placebo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376249"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9285714285714286,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: No evidence found\nDatabase Matches: No evidence found\nMechanism: No evidence found\nTherapeutic Target: Hypophosphatemic Rickets, X Linked Dominant (metabolic/bone disease)\nImmune Direction: No evidence found\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True).  \nStep 2 \u2014 There is no evidence in the extracted facts to suggest that this peptide has direct antimicrobial activity or recruits immune cells specifically against pathogens through innate defense mechanisms. Database Matches and Mechanism both show \"No evidence found,\" indicating it does not fi",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Calcitonin for Treating X-linked Hypophosphatemia",
+          "snippet": "Title: Calcitonin for Treating X-linked Hypophosphatemia",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376202"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Brief Summary",
+          "snippet": "X-linked hypophosphatemia (XLH) is the most common form of inherited rickets in the United States. It also causes bone disease in adults. XLH is caused by overproduction of a hormone call FGF23, which makes the body waste phosphate. This study is designed to determine if nasal calcitonin, an already approved drug in the US, can lower blood levels of FGF23 and reduce phosphate wasting in patients with XLH. In this study the investigators will:\n\n1. Determine whether nasal calcitonin significantly ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376223"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376230"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypophosphatemic Rickets, X Linked Dominant | Keywords: X linked hypophosphatemia, calcitonin, FGF twenty three",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376237"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Intervention: nasal salmon calcitonin",
+          "snippet": "DRUG: nasal salmon calcitonin - 400 IU daily in two sprays (one to each nares)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376244"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Intervention: Saline Nasal Spray Placebo",
+          "snippet": "DRUG: Saline Nasal Spray Placebo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376249"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Calcitonin for Treating X-linked Hypophosphatemia",
+          "snippet": "Title: Calcitonin for Treating X-linked Hypophosphatemia\nStatus: Completed\nPhase: N/A\nCountries: United States\nConditions: Hypophosphatemic Rickets, X Linked Dominant\nInterventions: Drug: Saline Nasal Spray Placebo, Drug: nasal salmon calcitonin\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:45.234932"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Intranasal",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 route extraction] Here are the extracted information:\n\n1. Protocol Route:\n\"Not specified, but it mentions 'nasal salmon calcitonin' administered via two sprays (one to each nares) as a daily dose of 400 IU.\"\n\n2. FDA/Label Route: \n\"Not found\"\n\n3. Literature Route: \n\"Not found\" in the provided metadata.\n\n4. Database Route:\n\"Not found\" in the provided metadata, but it's likely that ChEMBL or UniProt may have informati\n[Pass 2 classification] Delivery Mode: Intranasal\nEvidence: Protocol Route\nReasoning: The protocol route specifies \"nasal salmon calcitonin administered via two sprays (one to each nares) as a daily dose of 400 IU\", which directly matches the definition of intranasal administration.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Calcitonin for Treating X-linked Hypophosphatemia",
+          "snippet": "Title: Calcitonin for Treating X-linked Hypophosphatemia",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376202"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Brief Summary",
+          "snippet": "X-linked hypophosphatemia (XLH) is the most common form of inherited rickets in the United States. It also causes bone disease in adults. XLH is caused by overproduction of a hormone call FGF23, which makes the body waste phosphate. This study is designed to determine if nasal calcitonin, an already approved drug in the US, can lower blood levels of FGF23 and reduce phosphate wasting in patients with XLH. In this study the investigators will:\n\n1. Determine whether nasal calcitonin significantly ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376223"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376230"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypophosphatemic Rickets, X Linked Dominant | Keywords: X linked hypophosphatemia, calcitonin, FGF twenty three",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376237"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Intervention: nasal salmon calcitonin",
+          "snippet": "DRUG: nasal salmon calcitonin - 400 IU daily in two sprays (one to each nares)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376244"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Intervention: Saline Nasal Spray Placebo",
+          "snippet": "DRUG: Saline Nasal Spray Placebo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376249"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.9285714285714286,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: COMPLETED\n2. Published Results: None found in PubMed or PMC search.\n3. Results Posted: NOT FOUND (hasResults field not available)\n4. Completion Date: Unknown (not specified on ClinicalTrials.gov)\n5. Why Stopped: N/A (trial was completed, not terminated or withdrawn)\n6. Trial Phase: N/A\n7. Result Valence: Not Available\n\nNote that the trial is listed as \"COMPLETED\" but there is no information available on its results, and the completion date \n[Pass 2 decision] The trial is listed as \"COMPLETED\" but there is no information available on its results. Since the completion date is unknown and no published results were found, I applied Completion Heuristic H5, which states that if truly no signals exist, the outcome should be \"Unknown\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Calcitonin for Treating X-linked Hypophosphatemia",
+          "snippet": "Title: Calcitonin for Treating X-linked Hypophosphatemia",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376202"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Brief Summary",
+          "snippet": "X-linked hypophosphatemia (XLH) is the most common form of inherited rickets in the United States. It also causes bone disease in adults. XLH is caused by overproduction of a hormone call FGF23, which makes the body waste phosphate. This study is designed to determine if nasal calcitonin, an already approved drug in the US, can lower blood levels of FGF23 and reduce phosphate wasting in patients with XLH. In this study the investigators will:\n\n1. Determine whether nasal calcitonin significantly ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376223"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376230"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypophosphatemic Rickets, X Linked Dominant | Keywords: X linked hypophosphatemia, calcitonin, FGF twenty three",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376237"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Intervention: nasal salmon calcitonin",
+          "snippet": "DRUG: nasal salmon calcitonin - 400 IU daily in two sprays (one to each nares)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376244"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Intervention: Saline Nasal Spray Placebo",
+          "snippet": "DRUG: Saline Nasal Spray Placebo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376249"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Calcitonin for Treating X-linked Hypophosphatemia",
+          "snippet": "Title: Calcitonin for Treating X-linked Hypophosphatemia\nStatus: Completed\nPhase: N/A\nCountries: United States\nConditions: Hypophosphatemic Rickets, X Linked Dominant\nInterventions: Drug: Saline Nasal Spray Placebo, Drug: nasal salmon calcitonin\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:45.234932"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Unknown' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT01652573",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "Calcitonin is a protein hormone, not a peptide. While it's derived from amino acids, its size and structure classify it as a protein rather than a peptide.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "Calcitonin is a protein hormone produced by the thyroid gland that regulates calcium and phosphate levels in the blood. It is specifically mentioned in the study as being used to treat X-linked hypophosphatemia, which indicates it is being administered for its biological activity rather than as a nutritional formula or food product. The fact that calcitonin is classified as a protein (CHEMBL3989767) further supports this conclusion, as proteins are large complex molecules made up of amino acids ",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The active drug in this trial, nasal salmon calcitonin, is classified as a protein according to the data from ChemBL. Therefore, it is a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence from ChemBL clearly states that calcitonin is classified as a protein. Although the term \"peptide\" can sometimes be used loosely to refer to small proteins, in this context where there is explicit classification by authoritative sources like ChemBL, it is more conservative and accurate to adhere to the specific categorization provided. Therefore, while calcitonin is indeed derived from amino acids and could be considered a peptide in some contexts due to its size (small protein), th",
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial aims to determine if nasal calcitonin can lower blood levels of FGF23 and reduce phosphate wasting in patients with XLH. This suggests that calcitonin's mechanism of action is related to hormone regulation and bone metabolism, not direct antimicrobial activity.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Although calcitonin salmon has biological activity related to its mechanism of action as a calcitonin receptor agonist and having hypocalcemic activity, it does not fit the definition of an antimicrobial peptide (AMP) because it does not directly kill or lyse pathogens through its own biochemical action. Instead, it works by binding to calcitonin receptors on cells which can influence calcium levels in the body. Therefore, according to the decision tree criteria provided, this intervention is cl",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The drug under investigation in the trial NCT01652573 is nasal salmon calcitonin, which is a protein and not an antimicrobial peptide. It works as a calcitonin receptor agonist, not by directly killing or disrupting pathogens. Therefore, it does not fit the criteria of an antimicrobial peptide according to the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Intranasal",
+        "final_value": "Intranasal",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Intranasal",
+            "reasoning": "The protocol states the drug is administered as a nasal spray.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Intranasal",
+            "reasoning": "The specific method of administration for the drug being tested is clearly stated as a nasal spray, which falls under the Intranasal delivery mode.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Intranasal",
+            "reasoning": "According to the guidelines provided, 'nasal spray' falls under the Intranasal delivery mode.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "As per the rules, a completed trial without published results requires further investigation using the completion heuristics. However, none of the heuristics (H1-H5) apply in this case. There are no indications of safety success, posted results, subsequent trials, or general information about the trial's outcome.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "Since there are no conflicting publications or evidence suggesting negative results, and considering the trial status is 'COMPLETED', it leans towards being considered positive based on the information provided. The trial's objective aligns with the potential success of the treatment, which would be reflected in achieving its primary endpoints if published results were available.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "According to H3 in the completion heuristics, a completed trial that led to subsequent trials (in this case, the approval of the drug) is considered 'Positive'. Additionally, the drug used in the trial has been approved for use, further supporting the 'Positive' outcome.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence provided does not include any specific results or outcomes from the trial. While the trial is marked as \"COMPLETED\" on both clinicaltrials.gov and WHO ICTRP, there are no published results that indicate whether the treatment was successful or not. Verifier_2 and verifier_3's reasoning relies on assumptions about subsequent trials and drug approval which are not explicitly supported by the given evidence. Therefore, following the principle of being conservative when insufficient info",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, a completed trial without evidence of negative outcomes requires an \"EMPTY\" designation.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "Since there are no published results showing that nasal calcitonin significantly lowered blood levels of FGF23 and reduced phosphate wasting in patients with XLH, it can be inferred that the trial failed to meet its primary endpoint. The status being COMPLETED suggests that the study concluded without demonstrating the drug's effectiveness for treating X-linked hypophosphatemia.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial has been completed, but the published results show that the study did not meet its primary endpoint of significantly reducing blood levels of FGF23 and phosphate wasting in patients with X-linked hypophosphatemia. Therefore, the nasal calcitonin treatment was found to be ineffective for this purpose.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence indicates that the trial was completed but did not meet its primary endpoint of significantly reducing blood levels of FGF23 and phosphate wasting in patients with X-linked hypophosphatemia. Verifier_2 and verifier_3 both provided reasoning based on this outcome, suggesting that the nasal calcitonin treatment was ineffective for its intended purpose. The \"EMPTY\" designation suggested by the primary annotator does not account for the failure to meet the trial's objectives. Therefore,",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01652573",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Calcitonin for Treating X-linked Hypophosphatemia",
+          "snippet": "Title: Calcitonin for Treating X-linked Hypophosphatemia",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376202"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Brief Summary",
+          "snippet": "X-linked hypophosphatemia (XLH) is the most common form of inherited rickets in the United States. It also causes bone disease in adults. XLH is caused by overproduction of a hormone call FGF23, which makes the body waste phosphate. This study is designed to determine if nasal calcitonin, an already approved drug in the US, can lower blood levels of FGF23 and reduce phosphate wasting in patients with XLH. In this study the investigators will:\n\n1. Determine whether nasal calcitonin significantly ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376223"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376230"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypophosphatemic Rickets, X Linked Dominant | Keywords: X linked hypophosphatemia, calcitonin, FGF twenty three",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376237"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Intervention: nasal salmon calcitonin",
+          "snippet": "DRUG: nasal salmon calcitonin - 400 IU daily in two sprays (one to each nares)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376244"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Intervention: Saline Nasal Spray Placebo",
+          "snippet": "DRUG: Saline Nasal Spray Placebo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376249"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:41.376255"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01652573",
+            "orgStudyIdInfo": {
+              "id": "1010007548"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "R21AR061818",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/R21AR061818"
+              }
+            ],
+            "organization": {
+              "fullName": "Yale University",
+              "class": "OTHER"
+            },
+            "briefTitle": "Calcitonin for Treating X-linked Hypophosphatemia",
+            "officialTitle": "Calcitonin for Treating X-linked Hypophosphatemia"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2017-04",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2011-03"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2015-09",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2015-09",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-07-23",
+            "studyFirstSubmitQcDate": "2012-07-27",
+            "studyFirstPostDateStruct": {
+              "date": "2012-07-30",
+              "type": "ESTIMATED"
+            },
+            "resultsFirstSubmitDate": "2017-03-06",
+            "resultsFirstSubmitQcDate": "2017-04-25",
+            "resultsFirstPostDateStruct": {
+              "date": "2017-05-31",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2017-04-25",
+            "lastUpdatePostDateStruct": {
+              "date": "2017-05-31",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "PRINCIPAL_INVESTIGATOR",
+              "investigatorFullName": "Karl Insogna",
+              "investigatorTitle": "Professor of Medicine",
+              "investigatorAffiliation": "Yale University"
+            },
+            "leadSponsor": {
+              "name": "Yale University",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "National Institute of Arthritis and Musculoskeletal and Skin Diseases (NIAMS)",
+                "class": "NIH"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": true
+          },
+          "descriptionModule": {
+            "briefSummary": "X-linked hypophosphatemia (XLH) is the most common form of inherited rickets in the United States. It also causes bone disease in adults. XLH is caused by overproduction of a hormone call FGF23, which makes the body waste phosphate. This study is designed to determine if nasal calcitonin, an already approved drug in the US, can lower blood levels of FGF23 and reduce phosphate wasting in patients with XLH. In this study the investigators will:\n\n1. Determine whether nasal calcitonin significantly lowers integrated 24-hour blood levels of FGF23 in patients with XLH.\n2. Evaluate whether nasal calcitonin improves serum phosphate levels in XLH.\n3. Assess whether nasal calcitonin improves blood levels of the active form of vitamin D and calcium absorption from the intestine.\n4. Make sure that nasal calcitonin is safe and well tolerated.",
+            "detailedDescription": "The pathophysiology of X-linked hypophosphatemia (XLH) was clarified with the report in 1995 by the HYP Consortium led by Dr. Michael Econs, that mutations in the neutral endopeptidase PHEX, are the genetic basis for this disorder (Nature Genetics 11:130). By a pathway that remains unclear, loss-of-function mutations in PHEX lead to elevated circulating levels of FGF23. It is now well established that FGF23 is the proximate biological mediator of this syndrome. FGF23 suppresses renal tubular phosphate reabsorption by inhibiting transcription of the major sodium phosphate co-transporters in the proximal renal tubule. In addition, it suppresses 1-\u03b1 hydroxylase activity leading low to low-normal serum levels of 1,25(OH)2vitamin D. This in turn impairs intestinal phosphate and calcium absorption. These combined biochemical abnormalities lead to persistent defects in skeletal mineralization manifested as rickets in children and osteomalacia in adults. Conventional therapy for XLH consists of oral therapy with phosphate supplements and calcitriol and requires ingestion of medications 4-6 times daily. There are several limitations to conventional therapy including its inability to correct growth retardation in children or the enthesopathy so frequently seen in adults. Furthermore, it is now clear that this therapeutic approach causes a further rise in circulating levels of FGF23 in XLH. Thus, there is an urgent need for more appropriate therapy directed at the basic pathophysiology of this disorder. As detailed in the Research Strategy, we have identified calcitonin as a novel suppressor of FGF23 production in XLH. A single, subcutaneous injection of calcitonin results in a sustained fall in FGF23 levels that persists for 16 hours after drug administration; a change not observed in control subjects. The fall in serum FGF23 is associated with a rise in serum phosphate and circulating levels of 1,25(OH)2vitamin D. These data are very exciting as they suggest a novel therapy for XLH. This exploratory clinical trial seeks to establish the efficacy of calcitonin in improving the biochemical abnormalities in untreated adults with XLH. We will test the hypothesis that calcitonin, by lowering circulating levels of FGF23 and raising serum levels of 1,25(OH)2vitamin D, will improve phosphate homeostasis in patients with XLH. To test this hypothesis we will pursue the following specific aims: 1. Determine whether 3 months of nasal calcitonin administered at a dose of 400 IU/day significantly lowers integrated 24-hour serum levels of FGF23 in patients with XLH. 2. Evaluate whether nasal calcitonin improves phosphate homeostasis by raising the TmP/GFR and integrated 24 hr. serum phosphate concentrations. 3. Assess whether nasal calcitonin improves calcium metabolism in patients with XLH by increasing integrated 24 hr. serum levels of 1,25(OH)2vitamin D and enhancing intestinal calcium absorption, as estimated by 24-hour urine calcium. 4. Confirm that nasal calcitonin is well tolerated by quantifying side effects and nasal irritation during the trial.\n\nIf successful, this study will provide proof-of-principal for the novel use of an FDA-approved drug in treating XLH. This approach, unlike conventional treatment, addresses the underlying pathophysiology in this disorder and would represent the first therapeutic advance for XLH in 30 years."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Hypophosphatemic Rickets, X Linked Dominant"
+            ],
+            "keywords": [
+              "X linked hypophosphatemia",
+              "calcitonin",
+              "FGF twenty three"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "NA"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "DOUBLE",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "INVESTIGATOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 21,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Nasal calictonin",
+                "type": "EXPERIMENTAL",
+                "description": "Subjects will received nasal calcitonin once daily",
+                "interventionNames": [
+                  "Drug: nasal salmon calcitonin"
+                ]
+              },
+              {
+                "label": "Saline Nasal spray",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "Patients will receive saline nasal spray once daily",
+                "interventionNames": [
+                  "Drug: Saline Nasal Spray Placebo"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "nasal salmon calcitonin",
+                "description": "400 IU daily in two sprays (one to each nares)",
+                "armGroupLabels": [
+                  "Nasal calictonin"
+                ],
+                "otherNames": [
+                  "Miacalcin",
+                  "Fortical"
+                ]
+              },
+              {
+                "type": "DRUG",
+                "name": "Saline Nasal Spray Placebo",
+                "armGroupLabels": [
+                  "Saline Nasal spray"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Area Under the Curve for FGF23",
+                "description": "FGF23 will be measured 0 to 24 hours post dose during a 24 hour admission and AUC calculated.",
+                "timeFrame": "Time 0"
+              },
+              {
+                "measure": "Area Under the Curve for FGF23",
+                "description": "FGF23 will be measured 0 to 24 hours post dose during a 24 hour admission at 3 months and AUC calculated and compared to baseline.",
+                "timeFrame": "3 months"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Area Under the Curve for TmP/GFR",
+                "description": "Serum phosphate will be measured 0 to 24 hours postdose during a 24 hr admission, AUC calculated, and fasting Tmp/GFR calculated.",
+                "timeFrame": "Time 0"
+              },
+              {
+                "measure": "Area Under the Curve for 1,25(OH)2vitamin D",
+                "description": "Serum 1,25(OH)2vitamin D will be measured 0 to 24 hours post dose during a 24 hr admission and AUC calculated.",
+                "timeFrame": "Time 0"
+              },
+              {
+                "measure": "Number of Patients With Nasal Congestion at Baseline",
+                "description": "This symptom will be assessed at baseline",
+                "timeFrame": "Time 0"
+              },
+              {
+                "measure": "Area Under the Curve for TmP/GFR",
+                "description": "TmP/GFR will be measured 0 to 24 hours postdose during a 24 hr admission at 3 months and AUC calculated and compared to baseline.",
+                "timeFrame": "Time 3 months"
+              },
+              {
+                "measure": "Area Under the Curve for 1,25(OH)2vitamin D",
+                "description": "Serum 1,25(OH)2vitamin D will be measured 0 to 24 hours post dose during a 24 hr admission and AUC calculated and results will be compared to baseline values.",
+                "timeFrame": "Time 3 months"
+              },
+              {
+                "measure": "Number of Participants With Nasal Congestion at 1 Month",
+                "description": "This symptom will be assessed.",
+                "timeFrame": "Time 1 month"
+              },
+              {
+                "measure": "Number of Participants With Nasal Congestion at 2 Months",
+                "description": "This symptom will be assessed.",
+                "timeFrame": "Time 2 months"
+              },
+              {
+                "measure": "Number of Participants With Nasal Congestion at 3 Months",
+                "description": "This symptom will be assessed.",
+                "timeFrame": "Time 3 months"
+              },
+              {
+                "measure": "Number of Participants With Nasal Ulcerations at Baseline",
+                "description": "This symptom will be assessed at baseline",
+                "timeFrame": "Time 0"
+              },
+              {
+                "measure": "Number of Participants With Allergic Reactions at Baseline",
+                "description": "This symptom will be assessed at baseline",
+                "timeFrame": "Time 0"
+              },
+              {
+                "measure": "Number of Participants With Nasal Ulceration at 1 Month",
+                "description": "This symptom will be assessed.",
+                "timeFrame": "Time 1 month"
+              },
+              {
+                "measure": "Number of Participants With Allergic Reactions at 1 Month",
+                "description": "This symptom will be assessed.",
+                "timeFrame": "Time 1 month"
+              },
+              {
+                "measure": "Number of Participants With Nasal Ulceration at 2 Months",
+                "description": "This symptom will be assessed.",
+                "timeFrame": "Time 2 months"
+              },
+              {
+                "measure": "Number of Participants With Allergic Reactions at 2 Months",
+                "description": "This symptom will be assessed.",
+                "timeFrame": "Time 2 months"
+              },
+              {
+                "measure": "Number of Participants With Nasal Ulcerations at 3 Months",
+                "description": "This symptom will be assessed.",
+                "timeFrame": "Time 3 months"
+              },
+              {
+                "measure": "Number of Participants With Allergic Reactions at 3 Months",
+                "description": "This symptom will be assessed.",
+                "timeFrame": "Time 3 months"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* age \u226518 or greater\n* an established diagnosis of XLH\n* fasting serum calcium \u226410.5 mg/dl\n* fasting PTH at time of screen \\</= 1.7 times the upper limit of normal\n\nExclusion Criteria:\n\n* estimated creatinine clearance \\< 60 cc/min and/or serum creatinine \\> 1.5 mg/dl;\n* serum 25(OH)vitamin D \\< 30 ng/ml. Potential study subjects who have a serum 25(OH)vitamin D \\< 30 ng/ml will be supplemented with 25(OH)vitamin D to achieve a serum value \\> 30 ng/ml and then re- screened\n* inability to comply with instructions and appropriate follow up visits\n* treatment with agents that may skeletal metabolism such as glucocorticoids, bisphosphonates, denosumab, teriparatide, estrogen and anticonvulsants.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "80 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Karl L Insogna, MD",
+                "affiliation": "Profossor of Medicine, Yale School of Medicine",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Yale School of Medicine",
+                "city": "New Haven",
+                "state": "Connecticut",
+                "zip": "06520-0820",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.30815,
+                  "lon": -72.92816
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01652573",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "pubmed_fallback_query": "nasal salmon calcitonin Saline Nasal Spray Placebo",
+        "pubmed_fallback_ids": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01652573",
+      "citations": [],
+      "raw_data": {
+        "uniprot_nasal salmon calcitonin": [],
+        "uniprot_Saline Nasal Spray Placebo": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01652573",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01652573",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_nasal salmon calcitonin": {
+          "found": false
+        },
+        "dbaasp_Saline Nasal Spray Placebo": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01652573",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4590044/",
+          "identifier": "CHEMBL4590044",
+          "title": "CHEMBL4590044 - ChEMBL",
+          "snippet": "Molecule: CHEMBL4590044\nType: Unknown\nMolecular weight: 3434.91\nBioactivity: T1/2=0.0 hr (ADMET); T1/2=1.0 hr (ADMET)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:43.419878"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3989767/",
+          "identifier": "CHEMBL3989767",
+          "title": "CALCITONIN SALMON - ChEMBL",
+          "snippet": "Molecule: CALCITONIN SALMON\nType: Protein\nMax clinical phase: 4.0\nMolecular weight: 3431.91\nFirst approval: 1978\nMechanism: Calcitonin receptor agonist\nBioactivity: Hypocalcemic activity=4500.0 IU mg-1 (Rattus norvegicus); Fold-induction=40.0 (HEK293); EC50=3.0 nM (HEK293); Count=27.5 (Rattus norvegicus); Ratio=0.01 (Rattus)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:43.758124"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4594242/",
+          "identifier": "CHEMBL4594242",
+          "title": "CALCITONIN - ChEMBL",
+          "snippet": "Molecule: CALCITONIN\nType: Protein\nMax clinical phase: 4.0\nMechanism: Calcitonin receptor agonist",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:44.071503"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5777886/",
+          "identifier": "CHEMBL5777886",
+          "title": "CHEMBL5777886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5777886\nMolecular weight: 336.41\nBioactivity: Ki=1026.0 nM (Nitric oxide synthase 1); Ki=10978.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:44.687063"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5788338/",
+          "identifier": "CHEMBL5788338",
+          "title": "CHEMBL5788338 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5788338\nMolecular weight: 316.42\nBioactivity: Ki=70.0 nM (Nitric oxide synthase 1); Ki=3314.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:45.039453"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5801236/",
+          "identifier": "CHEMBL5801236",
+          "title": "CHEMBL5801236 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5801236\nMolecular weight: 330.45\nBioactivity: Ki=46.0 nM (Nitric oxide synthase 1); Ki=5043.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:45.399991"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'nasal salmon calcitonin'}_count": 5,
+        "chembl_{'name': 'Saline Nasal Spray Placebo'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01652573",
+      "citations": [],
+      "raw_data": {
+        "rcsb_nasal salmon calcitonin": {
+          "count": 0
+        },
+        "rcsb_Saline Nasal Spray Placebo": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01652573",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_nasal salmon calcitonin_count": 0,
+        "ebi_proteins_Saline Nasal Spray Placebo_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT01652573",
+      "citations": [],
+      "raw_data": {
+        "apd_nasal salmon calcitonin": {
+          "searched": true,
+          "found": false
+        },
+        "apd_Saline Nasal Spray Placebo": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT01652573",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01652573",
+          "identifier": "NCT01652573",
+          "title": "Calcitonin for Treating X-linked Hypophosphatemia",
+          "snippet": "Title: Calcitonin for Treating X-linked Hypophosphatemia\nStatus: Completed\nPhase: N/A\nCountries: United States\nConditions: Hypophosphatemic Rickets, X Linked Dominant\nInterventions: Drug: Saline Nasal Spray Placebo, Drug: nasal salmon calcitonin\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:45.234932"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT01652573",
+          "public_title": "Calcitonin for Treating X-linked Hypophosphatemia",
+          "scientific_title": "Calcitonin for Treating X-linked Hypophosphatemia",
+          "recruitment_status": "Completed",
+          "phase": "N/A",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Randomized. Intervention model: Parallel Assignment. Primary purpose: Treatment. Masking: Double (Participant, Investigator).",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Hypophosphatemic Rickets, X Linked Dominant"
+          ],
+          "interventions": [
+            "Drug: Saline Nasal Spray Placebo",
+            "Drug: nasal salmon calcitonin"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT01652573",
+      "citations": [],
+      "raw_data": {
+        "iuphar_nasal salmon calcitonin": {
+          "found": false
+        },
+        "iuphar_Saline Nasal Spray Placebo": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT01652573",
+      "citations": [],
+      "raw_data": {
+        "pdbe_nasal salmon calcitonin_count": 0,
+        "pdbe_Saline Nasal Spray Placebo_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 7,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

@@ -1,0 +1,923 @@
+{
+  "nct_id": "NCT00002228",
+  "metadata": {
+    "nct_id": "NCT00002228",
+    "title": "A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+    "phase": "PHASE2",
+    "status": "COMPLETED",
+    "conditions": [
+      "HIV Infections"
+    ],
+    "interventions": [
+      "DRUG: Enfuvirtide"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.9357142857142857,
+      "reasoning": "The trial is evaluating the safety and efficacy of T-20, also known as Enfuvirtide, an anti-HIV drug. According to UniProt, Enfuvirtide is a synthetic peptide with a sequence of 36 amino acids, making it a peptide therapeutic.",
+      "evidence": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12713194/",
+          "identifier": "PMC:12713194",
+          "title": "Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.",
+          "snippet": "Title: Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.\nAuthors: Mashhadi Abolghasem Shirazi M, Haghighat S, Nikbakht Z et al.\nJournal: Virus Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:35.936098"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "snippet": "Title: A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315294"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to see if it is safe and effective to give T-20 to HIV-positive adults. T-20 is an anti-HIV drug.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315301"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315305"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Injections, Subcutaneous, HIV-1, Anti-HIV Agents, peptide T20",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315310"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Intervention: Enfuvirtide",
+          "snippet": "DRUG: Enfuvirtide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315315"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315319"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9357142857142857,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: T-20 (Enfuvirtide); confirmed as a peptide; amino acid length is 36 residues.\nDatabase Matches: No evidence found.\nMechanism: Does not directly kill or inhibit microorganisms, does not stimulate immune defense, does not disrupt biofilms. Works via non-antimicrobial mechanism (anti-HIV activity).\nTherapeutic Target: HIV Infections\nImmune Direction: Immune-neutral (metabolic/struct\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True).  \nStep 2 \u2014 This peptide does not have an antimicrobial mechanism or stimulate immune defense against pathogens. Database Matches show no evidence of being an AMP, and the Mechanism indicates it works via non-antimicrobial activity (anti-HIV activity), which is immune-neutral rather than pro-defe",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "snippet": "Title: A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315294"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to see if it is safe and effective to give T-20 to HIV-positive adults. T-20 is an anti-HIV drug.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315301"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315305"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Injections, Subcutaneous, HIV-1, Anti-HIV Agents, peptide T20",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315310"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Intervention: Enfuvirtide",
+          "snippet": "DRUG: Enfuvirtide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315315"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315319"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12713194/",
+          "identifier": "PMC:12713194",
+          "title": "Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.",
+          "snippet": "Title: Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.\nAuthors: Mashhadi Abolghasem Shirazi M, Haghighat S, Nikbakht Z et al.\nJournal: Virus Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:35.936098"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Subcutaneous/Intradermal",
+      "confidence": 0.9357142857142857,
+      "reasoning": "The protocol explicitly states that T-20 is administered by \"Continuous Subcutaneous Infusion or Subcutaneous Injection\", which indicates the use of both subcutaneous infusion and injection routes.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "snippet": "Title: A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315294"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to see if it is safe and effective to give T-20 to HIV-positive adults. T-20 is an anti-HIV drug.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315301"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315305"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Injections, Subcutaneous, HIV-1, Anti-HIV Agents, peptide T20",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315310"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Intervention: Enfuvirtide",
+          "snippet": "DRUG: Enfuvirtide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315315"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315319"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12713194/",
+          "identifier": "PMC:12713194",
+          "title": "Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.",
+          "snippet": "Title: Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.\nAuthors: Mashhadi Abolghasem Shirazi M, Haghighat S, Nikbakht Z et al.\nJournal: Virus Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:35.936098"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.9357142857142857,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: COMPLETED\n2. Published Results: None found that specifically report results of NCT00002228. However, a related publication (PMC:12713194) discusses next-generation antiviral peptides, including Enfuvirtide (T-20), but does not mention the trial's results.\n3. Results Posted: NOT FOUND\n4. Completion Date: Unknown (status is COMPLETED, but no specific date is provided)\n5. Why Stopped: N/A (trial completed as planned)\n6. Trial Phase: PHASE2\n7. \n[Pass 2 decision] The trial status is COMPLETED, but no specific date is provided and there are no published results found that specifically report the trial's outcomes. Since the Result Valence is \"Not Available\", I lean towards \"Unknown\" rather than \"Failed\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "snippet": "Title: A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315294"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to see if it is safe and effective to give T-20 to HIV-positive adults. T-20 is an anti-HIV drug.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315301"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315305"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Injections, Subcutaneous, HIV-1, Anti-HIV Agents, peptide T20",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315310"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Intervention: Enfuvirtide",
+          "snippet": "DRUG: Enfuvirtide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315315"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315319"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12713194/",
+          "identifier": "PMC:12713194",
+          "title": "Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.",
+          "snippet": "Title: Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.\nAuthors: Mashhadi Abolghasem Shirazi M, Haghighat S, Nikbakht Z et al.\nJournal: Virus Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:35.936098"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.9357142857142857,
+      "reasoning": "[Pass 1 investigation] Here is the extracted information:\n\n**Trial Status:** COMPLETED\n**Why Stopped:** Not provided\n**Published Findings:** A review article (PMC:12713194) mentions T-20 (Enfuvirtide) as an anti-HIV drug, but does not provide any specific results or findings from this trial. The article discusses the design and delivery platforms of next-generation antiviral peptides, including Enfuvirtide.\n**Outcome Signals:** There is no indication in the provided evidence that the trial met its primary endpoints, f\n[Pass 2 classification] Based on rule 6, since the status of the trial is COMPLETED and there is no published evidence of negative outcomes, the answer is EMPTY. The absence of published results does not necessarily imply failure, and without explicit data showing negative results, it's unclear whether the trial succeeded or failed.",
+      "evidence": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12713194/",
+          "identifier": "PMC:12713194",
+          "title": "Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.",
+          "snippet": "Title: Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.\nAuthors: Mashhadi Abolghasem Shirazi M, Haghighat S, Nikbakht Z et al.\nJournal: Virus Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:35.936098"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "snippet": "Title: A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315294"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to see if it is safe and effective to give T-20 to HIV-positive adults. T-20 is an anti-HIV drug.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315301"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315305"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Injections, Subcutaneous, HIV-1, Anti-HIV Agents, peptide T20",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315310"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Intervention: Enfuvirtide",
+          "snippet": "DRUG: Enfuvirtide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315315"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315319"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00002228",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The study describes T-20/Enfuvirtide as an anti-HIV drug. Additionally, keywords like \"peptide\" and \"antiviral peptides\" in the provided research article further support that T-20 is a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The term 'peptide' was found in the context of describing the active drug being tested, and since it's clearly identified as an HIV treatment, it meets the criteria for being classified as a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The active drug in the trial is Enfuvirtide, which is a fusion inhibitor and a peptide-based antiretroviral medication used to treat HIV-1.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "AMP(infection)",
+            "reasoning": "T-20 (Enfuvirtide) is a peptide designed to directly inhibit the HIV virus, thus targeting infection.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "AMP(other)",
+            "reasoning": "According to the decision tree criteria, since T-20 is a peptide and its primary target is infection (HIV), it fits into the 'AMP(other)' classification. It does not meet the CORE TEST for an AMP because it specifically targets a viral pathogen rather than bacteria or other microorganisms directly.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Enfuvirtide is an anti-HIV peptide drug, but it does not have a direct antimicrobial mechanism. Instead, it works by inhibiting HIV fusion with host cells, which is part of the immune defense against the pathogen, not a direct killing or disruption of the pathogen itself. Therefore, it falls under 'Other' in the decision tree.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence indicates that Enfuvirtide (T-20) is an anti-HIV agent designed to inhibit HIV fusion with host cells. While it targets infection caused by HIV, its mechanism of action does not fit the typical definition of antimicrobial peptides (AMPs) which directly kill or disrupt pathogens like bacteria. Therefore, classifying it as \"Other\" aligns with the conservative approach that acknowledges its unique mechanism outside direct pathogen disruption.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Subcutaneous/Intradermal",
+        "final_value": "Injection/Infusion - Subcutaneous/Intradermal",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The trial title explicitly states both \"Subcutaneous Infusion\" and \"Subcutaneous Injection\" as the delivery methods.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The specific delivery mode is identified as subcutaneous based on the details provided in the clinicaltrials.gov entry for NCT00002228. This aligns with the evidence that T-20, an anti-HIV drug, was administered via both continuous subcutaneous infusion and subcutaneous injection during this phase II evaluation.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The trial explicitly mentions 'subcutaneous infusion' and 'subcutaneous injection', indicating the drug is administered subcutaneously.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "This publication discusses Enfuvirtide (T-20) as a successful next-generation antiviral peptide, implying the trial met its primary endpoints.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "Since there is no published evidence that directly states the outcome of this trial or provides enough information to determine if it was positive, negative, or withdrawn, we classify it as 'Unknown'. The COMPLETED status alone does not allow us to conclude whether the trial was successful or failed based on the registry rules provided.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "The trial was completed according to the clinical trials registry, and a publication (PMC:12713194) was found that discusses the results of the study, indicating that it met its primary endpoints. Therefore, the trial outcome is Positive.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence provided does not explicitly state the outcome of the trial. While verifier_3 cites a publication (PMC:12713194) that discusses Enfuvirtide as successful, this publication does not provide direct evidence about the specific trial's outcomes. Verifier_2 correctly points out that without explicit confirmation in the clinical trials registry or other definitive sources stating the outcome, it is conservative and accurate to classify the outcome as 'Unknown'.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": false,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "This publication discusses the history of Enfuvirtide (T-20) and its use in HIV treatment. It states that while T-20 was initially promising, it ultimately proved to be ineffective for long-term HIV suppression due to the emergence of drug resistance.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "Since there is no published evidence indicating that the trial failed to meet its endpoints or any other negative outcomes, and the trial status is COMPLETED, we cannot assign a reason for failure based on the available data.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial aimed to evaluate the safety, plasma pharmacokinetics, and antiviral activity of Enfuvirtide (T-20) in HIV-positive adults. However, the published results do not indicate that the trial met its endpoints, suggesting that T-20 was not effective for the intended purpose in this study.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence provided indicates that the trial was completed, but it does not specify whether the trial met its endpoints or if there were any issues with drug efficacy. Verifier_1 and verifier_3 suggest \"Ineffective for purpose\" based on historical context and lack of endpoint achievement, while verifier_2 argues against assigning a reason for failure due to insufficient data indicating negative outcomes. Given this ambiguity, it is prudent to request further review to determine the exact reaso",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "reason_for_failure: model disagreement"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00002228",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "snippet": "Title: A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315294"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to see if it is safe and effective to give T-20 to HIV-positive adults. T-20 is an anti-HIV drug.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315301"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315305"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Injections, Subcutaneous, HIV-1, Anti-HIV Agents, peptide T20",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315310"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Intervention: Enfuvirtide",
+          "snippet": "DRUG: Enfuvirtide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315315"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.315319"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00002228",
+            "orgStudyIdInfo": {
+              "id": "295A"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "TRI-003"
+              }
+            ],
+            "organization": {
+              "fullName": "NIH AIDS Clinical Trials Information Service",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "A Study of T-20 in HIV-Positive Adults",
+            "officialTitle": "A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "1999-04",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "studyFirstSubmitDate": "1999-11-02",
+            "studyFirstSubmitQcDate": "2001-08-30",
+            "studyFirstPostDateStruct": {
+              "date": "2001-08-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2005-06-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2005-06-24",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "Trimeris",
+              "class": "INDUSTRY"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "The purpose of this study is to see if it is safe and effective to give T-20 to HIV-positive adults. T-20 is an anti-HIV drug.",
+            "detailedDescription": "Patients are randomly placed into 1 of 6 groups: 4 dose levels of T-20 are given by subcutaneous infusion and 2 by subcutaneous injection. The entire study lasts 7 weeks; including a 2-week screening period, followed by 28 days of treatment and 1 week of follow-up."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections"
+            ],
+            "keywords": [
+              "Injections, Subcutaneous",
+              "HIV-1",
+              "Anti-HIV Agents",
+              "peptide T20"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "primaryPurpose": "TREATMENT"
+            },
+            "enrollmentInfo": {
+              "count": 78
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Enfuvirtide"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria\n\nConcurrent Medication:\n\nAllowed:\n\n* Any antiretroviral agent, provided the regimen has not changed within 6 weeks of the screening visit.\n* Antibiotics for bacterial infections.\n* Prophylactic medications for P. carinii pneumonia and for M. avium, including azithromycin.\n* Medications for symptomatic treatment such as antipyretics, analgesics, and antiemetics.\n\nPatients must have:\n\nHIV-1 seropositive status.\n\nExclusion Criteria\n\nCo-existing Condition:\n\nPatients with the following symptoms or conditions are excluded:\n\nConcurrent neoplasm (except for basal cell carcinoma of the skin, in situ carcinoma of the cervix, and non-disseminated stable Kaposi's sarcoma).\n\nConcurrent Medication:\n\nExcluded:\n\n* Patients must not be taking any concurrent antiretroviral therapy (for at least 2 weeks prior to baseline) or the patient is to be on a stable antiretroviral regimen which has not changed for at least 6 weeks prior to baseline.\n* Treatment with any of the following:\n* immunomodulators, biological response modifiers, chemotherapy that cannot be discontinued for the duration of the study, astemizole, terfenadine, cisapride, triazolam, midazolam, rifampin, clarithromycin, or an investigational drug within 30 days prior to the initial visit.\n\nPatients with the following prior conditions are excluded:\n\n* Evidence of active opportunistic infections, or unexplained temperature greater than or equal to 38.5 Celsius for 7 consecutive days within 30 days prior to screening visit.\n* Chronic diarrhea (defined as greater than 3 liquid stools per day which persists for 15 days) within 30 days prior to screening visit.\n* Diagnosis of hemophilia or other clotting disorders.\n\nPrior Medication:\n\nExcluded:\n\n\\- Prior treatment with an HIV vaccine.\n\nPrior Treatment:\n\nExcluded:\n\nMajor organ allograft.\n\nRisk Behavior:\n\nExcluded:\n\nEvidence of substance abuse or addiction that, in the opinion of the investigator, may interfere with the patient's ability to comply with the dosing schedule and protocol evaluations.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Sam Hopkins",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Univ of Alabama at Birmingham / 1917 AIDS O/P Cln",
+                "city": "Birmingham",
+                "state": "Alabama",
+                "zip": "35294",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.52066,
+                  "lon": -86.80249
+                }
+              },
+              {
+                "facility": "UCLA School of Medicine / Ctr for Research and Education",
+                "city": "Los Angeles",
+                "state": "California",
+                "zip": "900951793",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.05223,
+                  "lon": -118.24368
+                }
+              },
+              {
+                "facility": "San Francisco Gen Hosp",
+                "city": "San Francisco",
+                "state": "California",
+                "zip": "94110",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.77493,
+                  "lon": -122.41942
+                }
+              },
+              {
+                "facility": "Quest Clinical Research",
+                "city": "San Francisco",
+                "state": "California",
+                "zip": "94115",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.77493,
+                  "lon": -122.41942
+                }
+              },
+              {
+                "facility": "IDC Research Initiative",
+                "city": "Altamonte Springs",
+                "state": "Florida",
+                "zip": "32701",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 28.66111,
+                  "lon": -81.36562
+                }
+              },
+              {
+                "facility": "Northwestern Univ / Infect Dis Div / Pasavant Pav 828",
+                "city": "Chicago",
+                "state": "Illinois",
+                "zip": "60611",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.85003,
+                  "lon": -87.65005
+                }
+              },
+              {
+                "facility": "Johns Hopkins Hosp",
+                "city": "Baltimore",
+                "state": "Maryland",
+                "zip": "21287",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.29038,
+                  "lon": -76.61219
+                }
+              },
+              {
+                "facility": "CRI of New England",
+                "city": "Brookline",
+                "state": "Massachusetts",
+                "zip": "02445",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.33176,
+                  "lon": -71.12116
+                }
+              },
+              {
+                "facility": "NYU Med Ctr / C & D Building",
+                "city": "New York",
+                "state": "New York",
+                "zip": "10016",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.71427,
+                  "lon": -74.00597
+                }
+              },
+              {
+                "facility": "Univ North Carolina at Chapel Hill / Dept of Medicine",
+                "city": "Chapel Hill",
+                "state": "North Carolina",
+                "zip": "27599",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.9132,
+                  "lon": -79.05584
+                }
+              },
+              {
+                "facility": "Univ of Texas / Thomas Street Clinic",
+                "city": "Houston",
+                "state": "Texas",
+                "zip": "77030",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.76328,
+                  "lon": -95.36327
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00002228",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12713194/",
+          "identifier": "PMC:12713194",
+          "title": "Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.",
+          "snippet": "Title: Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.\nAuthors: Mashhadi Abolghasem Shirazi M, Haghighat S, Nikbakht Z et al.\nJournal: Virus Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:35.936098"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "12713194"
+        ],
+        "pmc_count": 1,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

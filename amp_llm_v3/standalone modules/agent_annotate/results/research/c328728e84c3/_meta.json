@@ -1,0 +1,191 @@
+{
+  "job_id": "c328728e84c3",
+  "git_commit_full": "ec63dac4c2dcacc286dac6a965aae39465de35f9",
+  "config_hash": "8372996f39d0",
+  "created_at": "2026-03-19 17:12:11 PT",
+  "nct_ids": [
+    "NCT00002428",
+    "NCT00004984",
+    "NCT00977145",
+    "NCT00982696",
+    "NCT00995358",
+    "NCT01729884",
+    "NCT02620332",
+    "NCT03018288",
+    "NCT03165435",
+    "NCT03258008",
+    "NCT03397966",
+    "NCT03490942",
+    "NCT03500484",
+    "NCT03604289",
+    "NCT03675126",
+    "NCT03724253",
+    "NCT03850522",
+    "NCT03959553",
+    "NCT04672083",
+    "NCT04701021",
+    "NCT04749641",
+    "NCT04771013",
+    "NCT05813314",
+    "NCT06833931",
+    "NCT07002203"
+  ],
+  "total_trials": 25,
+  "config_snapshot": {
+    "verification": {
+      "num_verifiers": 3,
+      "require_consensus": true,
+      "consensus_threshold": 0.67,
+      "models": {
+        "primary": {
+          "name": "llama3.1:8b",
+          "role": "annotator"
+        },
+        "verifier_1": {
+          "name": "gemma2:9b",
+          "role": "verifier"
+        },
+        "verifier_2": {
+          "name": "qwen2.5:7b",
+          "role": "verifier"
+        },
+        "verifier_3": {
+          "name": "phi4-mini:3.8b",
+          "role": "verifier"
+        },
+        "reconciliation": {
+          "name": "qwen2.5:14b",
+          "role": "reconciler"
+        }
+      }
+    },
+    "evidence_thresholds": {
+      "classification": {
+        "min_sources": 2,
+        "min_quality": 0.5
+      },
+      "delivery_mode": {
+        "min_sources": 2,
+        "min_quality": 0.5
+      },
+      "outcome": {
+        "min_sources": 2,
+        "min_quality": 0.5
+      },
+      "reason_for_failure": {
+        "min_sources": 1,
+        "min_quality": 0.3
+      },
+      "peptide": {
+        "min_sources": 2,
+        "min_quality": 0.5
+      }
+    },
+    "research_agents": {
+      "clinical_protocol": {
+        "sources": [
+          "clinicaltrials_gov",
+          "openfda"
+        ]
+      },
+      "literature": {
+        "sources": [
+          "pubmed",
+          "pmc",
+          "pmc_bioc"
+        ]
+      },
+      "peptide_identity": {
+        "sources": [
+          "uniprot",
+          "dramp"
+        ]
+      },
+      "web_context": {
+        "sources": [
+          "duckduckgo"
+        ]
+      },
+      "dbaasp": {
+        "sources": [
+          "dbaasp"
+        ]
+      },
+      "chembl": {
+        "sources": [
+          "chembl"
+        ]
+      },
+      "rcsb_pdb": {
+        "sources": [
+          "rcsb_pdb"
+        ]
+      },
+      "ebi_proteins": {
+        "sources": [
+          "ebi_proteins"
+        ]
+      },
+      "apd": {
+        "sources": [
+          "apd"
+        ]
+      },
+      "who_ictrp": {
+        "sources": [
+          "who_ictrp"
+        ]
+      },
+      "iuphar": {
+        "sources": [
+          "iuphar"
+        ]
+      },
+      "pdbe": {
+        "sources": [
+          "pdbe"
+        ]
+      }
+    },
+    "annotation_agents": {
+      "classification": {
+        "primary_research": "clinical_protocol",
+        "secondary_research": "literature"
+      },
+      "delivery_mode": {
+        "primary_research": "clinical_protocol",
+        "secondary_research": "literature"
+      },
+      "outcome": {
+        "primary_research": "clinical_protocol",
+        "secondary_research": "web_context"
+      },
+      "reason_for_failure": {
+        "primary_research": "web_context",
+        "secondary_research": "literature"
+      },
+      "peptide": {
+        "primary_research": "peptide_identity",
+        "secondary_research": "literature"
+      }
+    },
+    "orchestrator": {
+      "max_retry_rounds": null,
+      "parallel_research": true,
+      "parallel_annotation": true,
+      "hardware_profile": "mac_mini",
+      "server_premium_model": "kimi-k2-thinking",
+      "server_verifiers": [
+        "gemma2:27b",
+        "qwen2.5:32b",
+        "phi4:14b"
+      ]
+    },
+    "ollama": {
+      "host": "localhost",
+      "port": 11434,
+      "timeout": 600,
+      "temperature": 0.1
+    }
+  }
+}

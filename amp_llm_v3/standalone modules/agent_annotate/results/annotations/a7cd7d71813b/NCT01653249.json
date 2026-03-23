@@ -1,0 +1,1191 @@
+{
+  "nct_id": "NCT01653249",
+  "metadata": {
+    "nct_id": "NCT01653249",
+    "title": "A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "Human Papillomavirus"
+    ],
+    "interventions": [
+      "BIOLOGICAL: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.9,
+      "reasoning": "[Pass 1 extraction] Here are the extracted facts for each intervention:\n\n**Intervention 1:** HPV-16 E6 peptides\nMolecular Class: Short peptide chain (2-50 amino acids)\nDatabase Confirmation:\n* UniProt: entry found? No evidence found\n* DRAMP/DBAASP: antimicrobial peptide database entry? No evidence found\n* ChEMBL: molecule type? Not applicable (peptide sequence not provided)\n* PDB: structural data available? No eviden\n[Pass 2 decision] Peptide: True\nReasoning:\n\nSTEP 1 \u2014 Is the Molecular Class a peptide?\n- Intervention 1 has \"Short peptide chain\" which indicates it is a peptide.\n- Intervention 2's molecular class is unknown, so we cannot determine if it is a peptide.\n\nSince only one of the interventions meets the criteria for being a peptide (Step 1), we will evaluate that one. We do not need to proceed with evaluating Interventi",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+          "snippet": "Title: A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984780"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Brief Summary",
+          "snippet": "This study will consist of 300 women aged 18-50 years. The study will show that a new therapeutic human papillomavirus (HPV) vaccine designed to regress a precancerous condition called high-grade squamous intraepithelial neoplasia (HSIL)is safe. HPV is known to cause cervical, vaginal, oral, and anal cancers. This novel vaccine will consist of a synthetically made fragment of HPV protein called E6 and yeast extract called Candin\u00ae. Previous studies have revealed that immune response to E6 is impo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984791"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984796"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Human Papillomavirus | Keywords: human papillomavirus (HPV), vaccine, treatment",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984802"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Intervention: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae",
+          "snippet": "BIOLOGICAL: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984807"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11693788/",
+          "identifier": "PMC:11693788",
+          "title": "Exploring the Intricacies of Cervical Intraepithelial Neoplasia and Its Connection with HPV: A Narrative Review.",
+          "snippet": "Title: Exploring the Intricacies of Cervical Intraepithelial Neoplasia and Its Connection with HPV: A Narrative Review.\nAuthors: Karimi P, Reza Hosseini SM, Mousavian Hiagh ZS et al.\nJournal: Iran J Public Health",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108514"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10208188/",
+          "identifier": "PMC:10208188",
+          "title": "HPV pathogenesis, various types of vaccines, safety concern, prophylactic and therapeutic applications to control cervical cancer, and future perspective.",
+          "snippet": "Title: HPV pathogenesis, various types of vaccines, safety concern, prophylactic and therapeutic applications to control cervical cancer, and future perspective.\nAuthors: Ashique S, Hussain A, Fatima N et al.\nJournal: Virusdisease",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108560"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10105157/",
+          "identifier": "PMC:10105157",
+          "title": "Molecular mechanisms augmenting resistance to current therapies in clinics among cervical cancer patients.",
+          "snippet": "Title: Molecular mechanisms augmenting resistance to current therapies in clinics among cervical cancer patients.\nAuthors: Das S, Babu A, Medha T et al.\nJournal: Med Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108580"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9220913/",
+          "identifier": "PMC:9220913",
+          "title": "Review of the Standard and Advanced Screening, Staging Systems and Treatment Modalities for Cervical Cancer.",
+          "snippet": "Title: Review of the Standard and Advanced Screening, Staging Systems and Treatment Modalities for Cervical Cancer.\nAuthors: Boon SS, Luk HY, Xiao C et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108597"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8887913/",
+          "identifier": "PMC:8887913",
+          "title": "Peptide-Based Nanovaccines in the Treatment of Cervical Cancer: A Review of Recent Advances.",
+          "snippet": "Title: Peptide-Based Nanovaccines in the Treatment of Cervical Cancer: A Review of Recent Advances.\nAuthors: Zhang J, Fan J, Skwarczynski M et al.\nJournal: Int J Nanomedicine",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108613"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: The intervention is a vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae. These are confirmed as peptides derived from the HPV-16 E6 protein.\n\nDatabase Matches: No evidence found.\n\nMechanism: The peptide's mechanism involves stimulating an immune response to regress high-grade squamous intraepithelial neoplasia (HSIL) caused by HPV infection, but it does no\n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\n- Peptide determination is True \u2192 Proceed to Step 2.\n\nStep 2 \u2014 Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?\n- Database Matches: No evidence found. \n- Mechanism: The mechanism involves stimulating an immune response to regress HSIL caused by HPV infection, but it does not directly kill or inhibit mic",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+          "snippet": "Title: A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984780"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Brief Summary",
+          "snippet": "This study will consist of 300 women aged 18-50 years. The study will show that a new therapeutic human papillomavirus (HPV) vaccine designed to regress a precancerous condition called high-grade squamous intraepithelial neoplasia (HSIL)is safe. HPV is known to cause cervical, vaginal, oral, and anal cancers. This novel vaccine will consist of a synthetically made fragment of HPV protein called E6 and yeast extract called Candin\u00ae. Previous studies have revealed that immune response to E6 is impo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984791"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984796"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Human Papillomavirus | Keywords: human papillomavirus (HPV), vaccine, treatment",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984802"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Intervention: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae",
+          "snippet": "BIOLOGICAL: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984807"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11693788/",
+          "identifier": "PMC:11693788",
+          "title": "Exploring the Intricacies of Cervical Intraepithelial Neoplasia and Its Connection with HPV: A Narrative Review.",
+          "snippet": "Title: Exploring the Intricacies of Cervical Intraepithelial Neoplasia and Its Connection with HPV: A Narrative Review.\nAuthors: Karimi P, Reza Hosseini SM, Mousavian Hiagh ZS et al.\nJournal: Iran J Public Health",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108514"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10208188/",
+          "identifier": "PMC:10208188",
+          "title": "HPV pathogenesis, various types of vaccines, safety concern, prophylactic and therapeutic applications to control cervical cancer, and future perspective.",
+          "snippet": "Title: HPV pathogenesis, various types of vaccines, safety concern, prophylactic and therapeutic applications to control cervical cancer, and future perspective.\nAuthors: Ashique S, Hussain A, Fatima N et al.\nJournal: Virusdisease",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108560"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10105157/",
+          "identifier": "PMC:10105157",
+          "title": "Molecular mechanisms augmenting resistance to current therapies in clinics among cervical cancer patients.",
+          "snippet": "Title: Molecular mechanisms augmenting resistance to current therapies in clinics among cervical cancer patients.\nAuthors: Das S, Babu A, Medha T et al.\nJournal: Med Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108580"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9220913/",
+          "identifier": "PMC:9220913",
+          "title": "Review of the Standard and Advanced Screening, Staging Systems and Treatment Modalities for Cervical Cancer.",
+          "snippet": "Title: Review of the Standard and Advanced Screening, Staging Systems and Treatment Modalities for Cervical Cancer.\nAuthors: Boon SS, Luk HY, Xiao C et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108597"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8887913/",
+          "identifier": "PMC:8887913",
+          "title": "Peptide-Based Nanovaccines in the Treatment of Cervical Cancer: A Review of Recent Advances.",
+          "snippet": "Title: Peptide-Based Nanovaccines in the Treatment of Cervical Cancer: A Review of Recent Advances.\nAuthors: Zhang J, Fan J, Skwarczynski M et al.\nJournal: Int J Nanomedicine",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108613"
+        }
+      ],
+      "model_name": "qwen2.5:14b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.9,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n**Protocol Route:** not specified\nThe ClinicalTrials.gov protocol does not mention the route of administration.\n\n**FDA/Label Route:** not found\nThere is no FDA-approved label or prescribing information provided in the given sources.\n\n**Literature Route:**\n[pmc] PMC:11693788: Title: Exploring the Intricacies of Cervical Intraepithelial Neoplasia and Its Connecti\n[Pass 2 classification] Delivery Mode: Injection/Infusion - Other/Unspecified\nEvidence: Most Specific Route (unspecified injection)\nReasoning: The most specific route mentioned is \"unspecified injection\", which implies that the route of administration is not specified beyond being an injection. Since no other source specif",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+          "snippet": "Title: A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984780"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Brief Summary",
+          "snippet": "This study will consist of 300 women aged 18-50 years. The study will show that a new therapeutic human papillomavirus (HPV) vaccine designed to regress a precancerous condition called high-grade squamous intraepithelial neoplasia (HSIL)is safe. HPV is known to cause cervical, vaginal, oral, and anal cancers. This novel vaccine will consist of a synthetically made fragment of HPV protein called E6 and yeast extract called Candin\u00ae. Previous studies have revealed that immune response to E6 is impo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984791"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984796"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Human Papillomavirus | Keywords: human papillomavirus (HPV), vaccine, treatment",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984802"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Intervention: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae",
+          "snippet": "BIOLOGICAL: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984807"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11693788/",
+          "identifier": "PMC:11693788",
+          "title": "Exploring the Intricacies of Cervical Intraepithelial Neoplasia and Its Connection with HPV: A Narrative Review.",
+          "snippet": "Title: Exploring the Intricacies of Cervical Intraepithelial Neoplasia and Its Connection with HPV: A Narrative Review.\nAuthors: Karimi P, Reza Hosseini SM, Mousavian Hiagh ZS et al.\nJournal: Iran J Public Health",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108514"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10208188/",
+          "identifier": "PMC:10208188",
+          "title": "HPV pathogenesis, various types of vaccines, safety concern, prophylactic and therapeutic applications to control cervical cancer, and future perspective.",
+          "snippet": "Title: HPV pathogenesis, various types of vaccines, safety concern, prophylactic and therapeutic applications to control cervical cancer, and future perspective.\nAuthors: Ashique S, Hussain A, Fatima N et al.\nJournal: Virusdisease",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108560"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10105157/",
+          "identifier": "PMC:10105157",
+          "title": "Molecular mechanisms augmenting resistance to current therapies in clinics among cervical cancer patients.",
+          "snippet": "Title: Molecular mechanisms augmenting resistance to current therapies in clinics among cervical cancer patients.\nAuthors: Das S, Babu A, Medha T et al.\nJournal: Med Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108580"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9220913/",
+          "identifier": "PMC:9220913",
+          "title": "Review of the Standard and Advanced Screening, Staging Systems and Treatment Modalities for Cervical Cancer.",
+          "snippet": "Title: Review of the Standard and Advanced Screening, Staging Systems and Treatment Modalities for Cervical Cancer.\nAuthors: Boon SS, Luk HY, Xiao C et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108597"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8887913/",
+          "identifier": "PMC:8887913",
+          "title": "Peptide-Based Nanovaccines in the Treatment of Cervical Cancer: A Review of Recent Advances.",
+          "snippet": "Title: Peptide-Based Nanovaccines in the Treatment of Cervical Cancer: A Review of Recent Advances.\nAuthors: Zhang J, Fan J, Skwarczynski M et al.\nJournal: Int J Nanomedicine",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108613"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.9,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: COMPLETED\n2. Published Results:\n\t* None of the published articles directly report results from this specific trial (NCT01653249). However, one article mentions a case study where a therapeutic vaccine recipient's cervical high-grade squamous intraepithelial lesion regressed (PMCID: PMC8515132).\n3. Results Posted: No\n4. Completion Date: Unknown (status is COMPLETED, but no completion date is provided)\n5. Why Stopped: N/A (trial was completed\n[Pass 2 decision] Since the trial completed as planned, I applied Completion Heuristic H1 for Phase I trials. Although there are no direct results reported from this specific trial, the case study (PMCID: PMC8515132) provides a corroborating signal that suggests the vaccine is effective in regressing cervical high-grade squamous intraepithelial lesions. This evidence supports the conclusion that the trial was successful and met its endpoints.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+          "snippet": "Title: A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984780"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Brief Summary",
+          "snippet": "This study will consist of 300 women aged 18-50 years. The study will show that a new therapeutic human papillomavirus (HPV) vaccine designed to regress a precancerous condition called high-grade squamous intraepithelial neoplasia (HSIL)is safe. HPV is known to cause cervical, vaginal, oral, and anal cancers. This novel vaccine will consist of a synthetically made fragment of HPV protein called E6 and yeast extract called Candin\u00ae. Previous studies have revealed that immune response to E6 is impo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984791"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984796"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Human Papillomavirus | Keywords: human papillomavirus (HPV), vaccine, treatment",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984802"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Intervention: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae",
+          "snippet": "BIOLOGICAL: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984807"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11693788/",
+          "identifier": "PMC:11693788",
+          "title": "Exploring the Intricacies of Cervical Intraepithelial Neoplasia and Its Connection with HPV: A Narrative Review.",
+          "snippet": "Title: Exploring the Intricacies of Cervical Intraepithelial Neoplasia and Its Connection with HPV: A Narrative Review.\nAuthors: Karimi P, Reza Hosseini SM, Mousavian Hiagh ZS et al.\nJournal: Iran J Public Health",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108514"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10208188/",
+          "identifier": "PMC:10208188",
+          "title": "HPV pathogenesis, various types of vaccines, safety concern, prophylactic and therapeutic applications to control cervical cancer, and future perspective.",
+          "snippet": "Title: HPV pathogenesis, various types of vaccines, safety concern, prophylactic and therapeutic applications to control cervical cancer, and future perspective.\nAuthors: Ashique S, Hussain A, Fatima N et al.\nJournal: Virusdisease",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108560"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10105157/",
+          "identifier": "PMC:10105157",
+          "title": "Molecular mechanisms augmenting resistance to current therapies in clinics among cervical cancer patients.",
+          "snippet": "Title: Molecular mechanisms augmenting resistance to current therapies in clinics among cervical cancer patients.\nAuthors: Das S, Babu A, Medha T et al.\nJournal: Med Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108580"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9220913/",
+          "identifier": "PMC:9220913",
+          "title": "Review of the Standard and Advanced Screening, Staging Systems and Treatment Modalities for Cervical Cancer.",
+          "snippet": "Title: Review of the Standard and Advanced Screening, Staging Systems and Treatment Modalities for Cervical Cancer.\nAuthors: Boon SS, Luk HY, Xiao C et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108597"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8887913/",
+          "identifier": "PMC:8887913",
+          "title": "Peptide-Based Nanovaccines in the Treatment of Cervical Cancer: A Review of Recent Advances.",
+          "snippet": "Title: Peptide-Based Nanovaccines in the Treatment of Cervical Cancer: A Review of Recent Advances.\nAuthors: Zhang J, Fan J, Skwarczynski M et al.\nJournal: Int J Nanomedicine",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108613"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT01653249",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The primary intervention in this trial is a vaccine consisting of \"four HPV-16 E6 peptides\". Peptides are chains of amino acids, thus fulfilling the criteria for a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The description and metadata provided clearly state that the study involves a therapeutic vaccine made up of synthetic fragments of HPV protein, specifically E6 peptides. There are no indications that this product contains any small molecules or other non-peptide components as its primary intervention.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The vaccine being used in the trial consists of four HPV-16 E6 peptides, which are small chains of amino acids that make up proteins and thus qualify as peptides.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This trial focuses on inducing an immune response against HPV through vaccination, not directly killing pathogens with an antimicrobial peptide. The peptide fragment E6 is designed to trigger an immune response against HPV, not directly disrupt or kill the virus.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on the information provided, there is no clear indication that this intervention works by physically disrupting or killing microorganisms as an AMP would do. The document focuses on HPV and cervical cancer treatments rather than infection control, which suggests it might not be an AMP. Therefore, without more specific details about how these peptides function against pathogens, classifying them as 'Other' seems appropriate until further evidence is provided that they directly kill or disru",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial involves a vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae. However, the peptide does not directly kill or disrupt pathogens; instead, it is designed to induce an immune response against HPV. Therefore, it falls under the 'Other' category according to the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The provided text describes the vaccine composition but does not specify the delivery method.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The information available does not specify an exact route such as Intramuscular (IM) or Subcutaneous (SC), but since vaccines are often administered via injection, and considering the context of therapeutic interventions where specificity is preferred when available, 'Injection/Infusion - Subcutaneous/Intradermal' is chosen. The lack of explicit details necessitates the use of a more general route description than Intramuscular or Subcutaneous alone, hence opting for Injection/Infusion with the ",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "Since the trial metadata and published results do not provide explicit information about the route of administration, I have chosen 'Injection/Infusion - Other/Unspecified' as the most appropriate answer based on the given rules.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence provided does not specify the exact route of administration for the vaccine. Since there is no explicit information about whether it was administered subcutaneously, intradermally, or another method, and considering that the trial metadata and published results do not provide this detail, \"Injection/Infusion - Other/Unspecified\" is the most conservative and supported answer based on the available data.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "As per the rules, a COMPLETED trial without published results or Results Posted=Yes requires an 'Unknown' outcome.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "According to the rules provided, when a trial has been marked as 'COMPLETED' by the registry and there are no published results or specific result descriptions available, we lean towards considering the outcome as 'Positive'. This decision is based on the fact that Phase I trials typically aim to assess safety and tolerability of a new drug or vaccine. The completion of such a trial without any negative outcomes (as indicated by the COMPLETED status) suggests success in this regard. Moreover, th",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "According to the completion heuristics, H2 indicates that results being posted on ClinicalTrials.gov leans towards a positive outcome. However, since there are no specific result descriptions or publications found, we cannot definitively conclude that it was a success (Positive). Since there is no published evidence of negative results either, we cannot conclude that the trial failed to meet its endpoints (Failed - completed trial). Therefore, we classify this trial as 'Unknown'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "According to the provided evidence, the trial is marked as \"COMPLETED\" but there are no published results or specific result descriptions available. The rules indicate that in such cases where completion does not provide definitive outcome information, the most conservative approach is to classify the outcome as 'Unknown'. This aligns with the reasoning of verifier_1 and verifier_3 who argue for an 'Unknown' status due to insufficient evidence to determine a positive outcome definitively.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01653249",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+          "snippet": "Title: A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984780"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Brief Summary",
+          "snippet": "This study will consist of 300 women aged 18-50 years. The study will show that a new therapeutic human papillomavirus (HPV) vaccine designed to regress a precancerous condition called high-grade squamous intraepithelial neoplasia (HSIL)is safe. HPV is known to cause cervical, vaginal, oral, and anal cancers. This novel vaccine will consist of a synthetically made fragment of HPV protein called E6 and yeast extract called Candin\u00ae. Previous studies have revealed that immune response to E6 is impo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984791"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984796"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Human Papillomavirus | Keywords: human papillomavirus (HPV), vaccine, treatment",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984802"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Intervention: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae",
+          "snippet": "BIOLOGICAL: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984807"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:32:10.984812"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01653249",
+            "orgStudyIdInfo": {
+              "id": "130662"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "R01CA143130",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/R01CA143130"
+              }
+            ],
+            "organization": {
+              "fullName": "University of Arkansas",
+              "class": "OTHER"
+            },
+            "briefTitle": "A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+            "officialTitle": "A Phase I Clinical Trial of an HPV Therapeutic Vaccine"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2016-10",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2012-08"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2015-07",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2015-07",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-07-26",
+            "studyFirstSubmitQcDate": "2012-07-26",
+            "studyFirstPostDateStruct": {
+              "date": "2012-07-30",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2016-10-11",
+            "lastUpdatePostDateStruct": {
+              "date": "2016-10-12",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "University of Arkansas",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "National Cancer Institute (NCI)",
+                "class": "NIH"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": true
+          },
+          "descriptionModule": {
+            "briefSummary": "This study will consist of 300 women aged 18-50 years. The study will show that a new therapeutic human papillomavirus (HPV) vaccine designed to regress a precancerous condition called high-grade squamous intraepithelial neoplasia (HSIL)is safe. HPV is known to cause cervical, vaginal, oral, and anal cancers. This novel vaccine will consist of a synthetically made fragment of HPV protein called E6 and yeast extract called Candin\u00ae. Previous studies have revealed that immune response to E6 is important in fighting HPV. We also know that injecting Candin has anti-HPV effect since it has been used to treat common warts which are caused by different types of HPV. The current standard treatment for HSIL is loop electrical excision procedure (LEEP). The immune system is the part of the body that fights infection and cancer. This research study will also examine the immune response to the vaccine and its effectiveness in regressing HSIL. Volunteers would be eligible to enroll in the study if they have had a recent Papanicolaou (Pap) smear result indicating HSIL or \"Cannot rule out HSIL\", and if they meet the inclusion/exclusion criteria. Subjects will be eligible to receive vaccinations if biopsy confirms HSIL. A series of four vaccinations will be given roughly 3 weeks apart, and LEEP will be performed at the end of the study approximately 12 weeks after the last vaccination."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Human Papillomavirus"
+            ],
+            "keywords": [
+              "human papillomavirus (HPV)",
+              "vaccine",
+              "treatment"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 52,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "vaccination",
+                "type": "EXPERIMENTAL",
+                "description": "an escalating dose study of a vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae to determine the clinically optimum dose (COD), immunologically optimal dose (IOD), and maximum tolerated dose (MTD). An additional 30 subjects will be vaccinated at the final dose (apparent COD) for further assessment of clinical response.",
+                "interventionNames": [
+                  "Biological: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae",
+                "armGroupLabels": [
+                  "vaccination"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "safety",
+                "description": "real-time safety measurement of the combined administration of HPV vaccine and Candin\u00ae as measured by dose limiting toxicity as defined by adverse events; safety will be assessed at time of vaccination, 30 minutes post-injection, and daily for 7 days post injections.",
+                "timeFrame": "immediately then up to 7 days post vaccinations"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "clinical and virological/immunological response to the HPV vaccine",
+                "description": "Clinical response as defined by loop electrical excision procedure (LEEP); virological assessment to assess the clearance of HPV infection after vaccination; immunological assessments of T-Cells and circulating immune cells (regulated T-Cells and myeloid derived suppressor cells); and assessment of cervical immune cells.",
+                "timeFrame": "within weeks of vaccinations or procedures"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Aged 18-50 years\n* Had recent Pap smear result consistent with HSIL or \"cannot rule out HSIL\" or HSIL on biopsy\n* Untreated for HSIL or \"Cannot rule out HSIL\"\n* Able to provide informed consent\n* Certain physical exam and blood component parameters within acceptable ranges\n* Willingness and able to comply with the requirements of the protocol with a good command of the English language\n\nExclusion Criteria:\n\n* History of disease or treatment causing immunosuppression (e.g., cancer, HIV, organ transplant, autoimmune disease)\n* Being pregnant or attempting to be pregnant within the period of enrollment\n* Breast feeding or planning to breast feed within the period of enrollment\n* Allergy to Candida antigen\n* History of severe asthma requiring emergency room visit or hospitalization\n* Current use of beta-blocker medication (may not respond to epinephrine in case of anaphylaxis)\n* If in the opinion of the Principal Investigator or other Investigators, it is not in the best interest of the patient to enter this study",
+            "healthyVolunteers": false,
+            "sex": "FEMALE",
+            "minimumAge": "18 Years",
+            "maximumAge": "50 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Mayumi Nakagawa, MD, PhD",
+                "affiliation": "University of Arkansas",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              },
+              {
+                "name": "William W Greenfield, MD",
+                "affiliation": "University of Arkansas",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "University of Arkansas for Medical Sciences",
+                "city": "Little Rock",
+                "state": "Arkansas",
+                "zip": "72205",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.74648,
+                  "lon": -92.28959
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01653249",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11693788/",
+          "identifier": "PMC:11693788",
+          "title": "Exploring the Intricacies of Cervical Intraepithelial Neoplasia and Its Connection with HPV: A Narrative Review.",
+          "snippet": "Title: Exploring the Intricacies of Cervical Intraepithelial Neoplasia and Its Connection with HPV: A Narrative Review.\nAuthors: Karimi P, Reza Hosseini SM, Mousavian Hiagh ZS et al.\nJournal: Iran J Public Health",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108514"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10208188/",
+          "identifier": "PMC:10208188",
+          "title": "HPV pathogenesis, various types of vaccines, safety concern, prophylactic and therapeutic applications to control cervical cancer, and future perspective.",
+          "snippet": "Title: HPV pathogenesis, various types of vaccines, safety concern, prophylactic and therapeutic applications to control cervical cancer, and future perspective.\nAuthors: Ashique S, Hussain A, Fatima N et al.\nJournal: Virusdisease",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108560"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10105157/",
+          "identifier": "PMC:10105157",
+          "title": "Molecular mechanisms augmenting resistance to current therapies in clinics among cervical cancer patients.",
+          "snippet": "Title: Molecular mechanisms augmenting resistance to current therapies in clinics among cervical cancer patients.\nAuthors: Das S, Babu A, Medha T et al.\nJournal: Med Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108580"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9220913/",
+          "identifier": "PMC:9220913",
+          "title": "Review of the Standard and Advanced Screening, Staging Systems and Treatment Modalities for Cervical Cancer.",
+          "snippet": "Title: Review of the Standard and Advanced Screening, Staging Systems and Treatment Modalities for Cervical Cancer.\nAuthors: Boon SS, Luk HY, Xiao C et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108597"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8887913/",
+          "identifier": "PMC:8887913",
+          "title": "Peptide-Based Nanovaccines in the Treatment of Cervical Cancer: A Review of Recent Advances.",
+          "snippet": "Title: Peptide-Based Nanovaccines in the Treatment of Cervical Cancer: A Review of Recent Advances.\nAuthors: Zhang J, Fan J, Skwarczynski M et al.\nJournal: Int J Nanomedicine",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108613"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8515132/",
+          "identifier": "PMC:8515132",
+          "title": "Expansion of Human Papillomavirus-Specific T Cells in Periphery and Cervix in a Therapeutic Vaccine Recipient Whose Cervical High-Grade Squamous Intraepithelial Lesion Regressed.",
+          "snippet": "Title: Expansion of Human Papillomavirus-Specific T Cells in Periphery and Cervix in a Therapeutic Vaccine Recipient Whose Cervical High-Grade Squamous Intraepithelial Lesion Regressed.\nAuthors: Shibata T, Shah S, Evans T et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108630"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7549137/",
+          "identifier": "PMC:7549137",
+          "title": "Therapeutic Vaccines for HPV-Associated Malignancies.",
+          "snippet": "Title: Therapeutic Vaccines for HPV-Associated Malignancies.\nAuthors: Smalley Rumfield C, Roller N, Pellom ST et al.\nJournal: Immunotargets Ther",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108646"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4964648/",
+          "identifier": "PMC:4964648",
+          "title": "Current therapeutic vaccination and immunotherapy strategies for HPV-related diseases.",
+          "snippet": "Title: Current therapeutic vaccination and immunotherapy strategies for HPV-related diseases.\nAuthors: Skeate JG, Woodham AW, Einstein MH et al.\nJournal: Hum Vaccin Immunother",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108662"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5152541/",
+          "identifier": "PMC:5152541",
+          "title": "Targeting immune response with therapeutic vaccines in premalignant lesions and cervical cancer: hope or reality from clinical studies.",
+          "snippet": "Title: Targeting immune response with therapeutic vaccines in premalignant lesions and cervical cancer: hope or reality from clinical studies.\nAuthors: Vici P, Pizzuti L, Mariani L et al.\nJournal: Expert Rev Vaccines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108679"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4590015/",
+          "identifier": "PMC:4590015",
+          "title": "A phase I dose-escalation clinical trial of a peptide-based human papillomavirus therapeutic vaccine with Candida skin test reagent as a novel vaccine adjuvant for treating women with biopsy-proven cervical intraepithelial neoplasia 2/3.",
+          "snippet": "Title: A phase I dose-escalation clinical trial of a peptide-based human papillomavirus therapeutic vaccine with Candida skin test reagent as a novel vaccine adjuvant for treating women with biopsy-proven cervical intraepithelial neoplasia 2/3.\nAuthors: Greenfield WW, Stratton SL, Myrick RS et al.\nJournal: Oncoimmunology",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108697"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4494257/",
+          "identifier": "PMC:4494257",
+          "title": "Therapeutic Vaccine Strategies against Human Papillomavirus.",
+          "snippet": "Title: Therapeutic Vaccine Strategies against Human Papillomavirus.\nAuthors: Khallouf H, Grabowska AK, Riemer AB\nJournal: Vaccines (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108717"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3907066/",
+          "identifier": "PMC:3907066",
+          "title": "IL-12 secretion by Langerhans cells stimulated with Candida skin test reagent is mediated by dectin-1 in some healthy individuals.",
+          "snippet": "Title: IL-12 secretion by Langerhans cells stimulated with Candida skin test reagent is mediated by dectin-1 in some healthy individuals.\nAuthors: Nakagawa M, Coleman HN, Wang X et al.\nJournal: Cytokine",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108733"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3856859/",
+          "identifier": "PMC:3856859",
+          "title": "Candida skin test reagent as a novel adjuvant for a human papillomavirus peptide-based therapeutic vaccine.",
+          "snippet": "Title: Candida skin test reagent as a novel adjuvant for a human papillomavirus peptide-based therapeutic vaccine.\nAuthors: Wang X, Coleman HN, Nagarajan U et al.\nJournal: Vaccine",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:20.108750"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "11693788",
+          "10208188",
+          "10105157",
+          "9220913",
+          "8887913",
+          "8515132",
+          "7549137",
+          "4964648",
+          "5152541",
+          "4590015",
+          "4494257",
+          "3907066",
+          "3856859"
+        ],
+        "pmc_count": 13,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01653249",
+      "citations": [],
+      "raw_data": {
+        "uniprot_Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01653249",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01653249",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01653249",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1160639/",
+          "identifier": "CHEMBL1160639",
+          "title": "CHEMBL1160639 - ChEMBL",
+          "snippet": "Molecule: CHEMBL1160639\nType: Small molecule\nMolecular weight: 239.21\nBioactivity: Ki=950000.0 nM (Interstitial collagenase)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:12.759693"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1160645/",
+          "identifier": "CHEMBL1160645",
+          "title": "CHEMBL1160645 - ChEMBL",
+          "snippet": "Molecule: CHEMBL1160645\nType: Small molecule\nMolecular weight: 239.21\nBioactivity: Ki=990000.0 nM (Interstitial collagenase)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:13.488072"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5965557/",
+          "identifier": "CHEMBL5965557",
+          "title": "CHEMBL5965557 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5965557\nMolecular weight: 556.56\nBioactivity: IC50=341.0 nM (Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit alpha isoform); IC50=9.0 nM (Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit delta isoform)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:32:14.089256"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01653249",
+      "citations": [],
+      "raw_data": {
+        "rcsb_Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01653249",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT01653249",
+      "citations": [],
+      "raw_data": {
+        "apd_Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT01653249",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01653249",
+          "identifier": "NCT01653249",
+          "title": "A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+          "snippet": "Title: A Phase I Clinical Trial of an HPV Therapeutic Vaccine\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: Human Papillomavirus\nInterventions: Biological: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-19T08:33:58.864531"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT01653249",
+          "public_title": "A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+          "scientific_title": "A Phase I Clinical Trial of an HPV Therapeutic Vaccine",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Endpoint Classification: Safety Study, Intervention Model: Single Group Assignment, Masking: Open Label",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Human Papillomavirus"
+          ],
+          "interventions": [
+            "Biological: Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT01653249",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT01653249",
+      "citations": [],
+      "raw_data": {
+        "pdbe_Vaccine consisting of four HPV-16 E6 peptides in combination with Candin\u00ae_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 13,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

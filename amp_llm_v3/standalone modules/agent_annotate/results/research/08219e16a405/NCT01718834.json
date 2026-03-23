@@ -1,0 +1,382 @@
+{
+  "nct_id": "NCT01718834",
+  "completed_at": "2026-03-16 12:37:15 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01718834",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718834",
+          "identifier": "NCT01718834",
+          "title": "Safety and Efficacy of a Novel Candidate Peptide Vaccine Against HCV Infection in Healthy Volunteers and in Treated (Non-responders/ Responders) Chronic HCV Patients. Clinical Trials Phases I and II",
+          "snippet": "Title: Safety and Efficacy of a Novel Candidate Peptide Vaccine Against HCV Infection in Healthy Volunteers and in Treated (Non-responders/ Responders) Chronic HCV Patients. Clinical Trials Phases I and II",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.380016"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718834",
+          "identifier": "NCT01718834",
+          "title": "Brief Summary",
+          "snippet": "Description: A randomized Placebo-controlled study to evaluate safety and efficacy of Cenv3 peptide vaccine in normal volunteers. This study is designed to test safety of 3 consecutive monthly escalating doses of the immunogen ( 0.324 mg, 0.648 and 3.240 mg / 70 kgm body weight) in 40 healthy male subjects (15,15 and10 subjects respectively) plus 10 subjects on placebo. Bioavailability of Cenv3 will be tested throughout the duration of the experiment. In the study hyperimmune state will be achie",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.380027"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718834",
+          "identifier": "NCT01718834",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.380033"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718834",
+          "identifier": "NCT01718834",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Vaccine Overdose of Undetermined Intent | Keywords: prophylactic vaccine, chronic HCV patients, healthy risk volunteers",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.380039"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718834",
+          "identifier": "NCT01718834",
+          "title": "Intervention: prophylactic peptide vaccine",
+          "snippet": "BIOLOGICAL: prophylactic peptide vaccine - synthetic peptide vaccine derived from HCV E1 and HCV E2 will be used for immunization of healthy volunteers",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.380045"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718834",
+          "identifier": "NCT01718834",
+          "title": "Intervention: therapeutic peptide vaccine",
+          "snippet": "BIOLOGICAL: therapeutic peptide vaccine - therapeutic peptide vaccine will immunize to HCV chronic HCV patients non responders to INF",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.380050"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718834",
+          "identifier": "NCT01718834",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.380055"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01718834",
+            "orgStudyIdInfo": {
+              "id": "NRC"
+            },
+            "organization": {
+              "fullName": "National Liver Institute, Egypt",
+              "class": "OTHER"
+            },
+            "briefTitle": "Safety and Efficacy Study of CENV3 Vaccine to Protect Against HCV Infection",
+            "officialTitle": "Safety and Efficacy of a Novel Candidate Peptide Vaccine Against HCV Infection in Healthy Volunteers and in Treated (Non-responders/ Responders) Chronic HCV Patients. Clinical Trials Phases I and II",
+            "acronym": "CENV3"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2012-10",
+            "overallStatus": "UNKNOWN",
+            "lastKnownStatus": "RECRUITING",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2011-03"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2013-03",
+              "type": "ESTIMATED"
+            },
+            "completionDateStruct": {
+              "date": "2013-03",
+              "type": "ESTIMATED"
+            },
+            "studyFirstSubmitDate": "2012-06-27",
+            "studyFirstSubmitQcDate": "2012-10-30",
+            "studyFirstPostDateStruct": {
+              "date": "2012-10-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2012-10-30",
+            "lastUpdatePostDateStruct": {
+              "date": "2012-10-31",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "PRINCIPAL_INVESTIGATOR",
+              "investigatorFullName": "Mostafa K. El Awady",
+              "investigatorTitle": "Professor",
+              "investigatorAffiliation": "National Liver Institute, Egypt"
+            },
+            "leadSponsor": {
+              "name": "National Liver Institute, Egypt",
+              "class": "OTHER"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": true
+          },
+          "descriptionModule": {
+            "briefSummary": "Description: A randomized Placebo-controlled study to evaluate safety and efficacy of Cenv3 peptide vaccine in normal volunteers. This study is designed to test safety of 3 consecutive monthly escalating doses of the immunogen ( 0.324 mg, 0.648 and 3.240 mg / 70 kgm body weight) in 40 healthy male subjects (15,15 and10 subjects respectively) plus 10 subjects on placebo. Bioavailability of Cenv3 will be tested throughout the duration of the experiment. In the study hyperimmune state will be achieved via 3 subcutaneous injections (0.648 mg each), once every 4 weeks. A placebo treated healthy subjects ( n= 10) will serve as controls. Chronic HCV patients ( n=50) who did not respond to IFN + RBV combined therapy will be recruited to test therapeutic efficacy of the compound via 6 consecutive injections ( 0.648 mg each ) every 2 weeks. ( NB : this group of patients has been already recruited in the first part of this project where evaluation of the compound is currently underway). Immunized healthy volunteers will be followed for a year compared with placebo group, where all biochemical, hematological, immunological and allergic parameters are recorded. Treated CHC patients will be evaluated for virological, hematological, biochemical and immunological states at the end of treatment.\n\nSubject : Cenv3 potential prophylactic and therapeutic immunogens in healthy volunteers and against chronic HCV infection respectively.",
+            "detailedDescription": "In the present work, we plan to study the safety and efficacy of a peptide vaccine termed Cenv3 ( C for HCV, en for envelop, v for vaccine, 3 for 3 epitopes). The main outlines of the current study include: 1) Examining the safety parameters throughout the vaccination period including acute and chronic reactions if present in a phase 1 clinical study ( i.e. in healthy volunteers). The vaccine will be administered sc at 3 escalating doses in presence and absence of adjuvant. Bioavailability of the vaccine throughout the experiment duration will also be determined. 2) Assessment of the humoral and cellular immune responses towards Cenv3 in healthy volunteers ( higher risk for acquiring HCV infection). 3) Evaluation of the neutralizing capacity of the generated Abs to interfere with intracellular replication of HCV in permissive cell lines\n\nii) Objective The present proposal aims at:-\n\n1. Examining safety and tolerability towards the candidate HCV peptide vaccine in healthy volunteers.\n2. Testing cell mediated immunity via cytotoxic T lymphocyte responses in vaccinated healthy subjects ( CMI).\n3. Determining epitope specific B cell response and antibody titers in vaccinated individuals (humoral Immunogenicity).\n4. Testing the viral neutralization by antibodies against the vaccine epitopes. (Efficacy).\n5. Studying the bioavailability of the peptides in subjects' circulation throughout the vaccination time and 90 days post vaccination.\n\niii) Study population\n\nSubjects with any cardiovascular problems, asthma, or allergies, should be excluded from the study. Also, any subject who has participated in any experimental medicine clinical trial in the past 3 months will be excluded. Healthy volunteers including subjects from both sexes, 18-55 years of age will be enrolled. All subjects had to fulfill all inclusion criteria as follows: mentally and physically healthy, no clinically relevant pathological findings in any of the investigations of the pre-study examination including blood chemistry ( liver and kidney function tests), differential blood counts, coagulation test, ultrasensitive C-reactive protein levels. Subjects should be able to provide written informed consents. The exclusion criteria included pregnant or breast feeding women, patients with chronic viral-infections (e.g., HBV, HCV, HIV, CMV, HSV), evidence of decompensated liver disease, pre-existing hematuria, or proteinuria, cryoglobulin levels \\>1% or other immunologically driven diseases, schistosomiasis, acute infectious illness, severe psychiatric disorders, current or past history of malignancy and patients who received treatment with interferon or any investigational therapy for hepatitis during the 3 months prior to study entry.\n\niv) Consent The volunteers will be provided with a written information sheet on the vaccine and the requirements of this trial. They will\n\n, in return, give written consent to participate in the study. Subjects will be paid an honorarium for their participation. They will also be provided with transport money to and from the hospital.\n\nv) Outlines of the study : In the proposed study, we aim at evaluating tolerability, safety, immunogenicity and efficacy of Cenv3 peptide vaccine in 112 healthy volunteers as a placebo controlled open labeled phase 1 clinical trial. Tolerability and safety parameters include clinical signs ( acute and chronic), biochemical assays ( hepatic and renal functions as well as other metabolic parameters) and hematological tests ( all blood cell parameters). Both humoral and cellular responses to the immunization protocols will be evaluated. Neutralizing capacities of specific Abs generated in response to the vaccine will also be determined after vaccination.\n\nvi) Vaccination\n\nPreparation of vaccine will be performed under the principles of Good Manufacturing Practice. The lyophilized peptides are manufactured in an eight arm multiple antigenic peptide (MAP) in a commercial facility specialized in peptide synthesis and structure modification ( .e.g AnaSpec USA). Peptides will be dissolved in PBS made for human use. The whole procedure will be done in sterilized areas of drug/vaccine industry ( e.g. VACSERA, MOH Wezaret Al Zera'a street Agouza). The lyophilized peptides will be stored in regular fridge, while dissolved peptides will be stored at -80 0 C as aliquots ( in sealed ampoules each contains 1X dose) ready for injection and transported to the hospital in dry ice just before use. Note : These storage and transportation precautions are followed during these early stages of the study. While the strategy would be modified at a commercial scale when the current product proves effective. In this later case a lyophilized powder with the recommended dose will be packaged in a sealed ampoules and dissolved just before use. HCV peptide vaccine Cenv3 will be injected subcutaneously in 3 different doses ( 1x i.e. 324 ug , 2x i.e. 648 ug or 3x 1296 ug/ 70 kgm body weight adult). It should be noted here, that dose 1X equals to the calculated pharmaceutical dose from mice experiments, therefore 324 ug/ 70 kg body weight is the Minimum Available Biologically Effective dose Level (MABEL). Based on other laboratories experience with peptide vaccine administration to man ( Tanaka and Manns) who used up to 5000 ug of peptide vaccine for their immunization experiments. The highest dose used in our protocol is 4X ( 1296 ug/ 70 kg bw) and therefore considered the No Observable Adverse Effect Level ( NOAEL) in this protocol. The vaccine will be administered either as a MAP form ( self adjuvanted) or supplemented with adjuvant ( MF59) in a common protocol of monthly injection for 3 consecutive months.\n\nvii) Sample collection\n\nAll immunization and sampling procedures will be performed in Ahmed Maher Educational Hospital ( MOH). Subject enrollment, consenting, vaccination, sampling and clinical observation post vaccination will be done under close medical supervision by trained clinicians in the hospital. Seven blood samples will be taken from subjects prior to the first immunization and at days 30, 60, 90 ( during vaccination period) and days 135, 180 and 360 thereafter. At day 360 subjects will be immunized with a booster dose equal to the original dose given to the same subject and an 8th blood sample will be collected 30 days after the booster dose. Each time 15 ml venous blood will be withdrawn. Eight ml will be used for serum separation for humoral response determination, neutralization assays and biochemical testing. Seven ml on EDTA for CBC and lymphocyte separation for EliSpot assay."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Vaccine Overdose of Undetermined Intent"
+            ],
+            "keywords": [
+              "prophylactic vaccine",
+              "chronic HCV patients",
+              "healthy risk volunteers"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1",
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "PREVENTION",
+              "maskingInfo": {
+                "masking": "SINGLE",
+                "whoMasked": [
+                  "INVESTIGATOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 50,
+              "type": "ESTIMATED"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "prophylactic vaccine",
+                "type": "ACTIVE_COMPARATOR",
+                "description": "6 monthly doses each of 648 ug of prophylactic vaccine subcutaneously injected to healthy volunteers",
+                "interventionNames": [
+                  "Biological: prophylactic peptide vaccine"
+                ]
+              },
+              {
+                "label": "therapeutic vaccine",
+                "type": "ACTIVE_COMPARATOR",
+                "description": "6 monthly doses each of 648 ug subcutaneously injected to chronic HCV patients",
+                "interventionNames": [
+                  "Biological: therapeutic peptide vaccine"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "prophylactic peptide vaccine",
+                "description": "synthetic peptide vaccine derived from HCV E1 and HCV E2 will be used for immunization of healthy volunteers",
+                "armGroupLabels": [
+                  "prophylactic vaccine"
+                ],
+                "otherNames": [
+                  "synthetic peptide vaccine derived from HCV E1 and HCV E2"
+                ]
+              },
+              {
+                "type": "BIOLOGICAL",
+                "name": "therapeutic peptide vaccine",
+                "description": "therapeutic peptide vaccine will immunize to HCV chronic HCV patients non responders to INF",
+                "armGroupLabels": [
+                  "therapeutic vaccine"
+                ],
+                "otherNames": [
+                  "CENV3 peptide vaccine"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Safety and Efficacy Study of CENV3 Vaccine to Protect Against HCV Infection",
+                "description": "production of peptide vaccine to Protect Against HCV Infection Injection site reactions will be evaluated immediately and 1 h after each vaccination and at subsequent visits, and will be recorded as AE, if they occurred more than 1 h after injection.\n\nEfficacy of vaccine will be measured via assessment of humoral Ab responses to vaccine epitopes in both groups of subjects.",
+                "timeFrame": "two years"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Healthy volunteers including subjects from both sexes,\n* 18-55 years of age will be enrolled.\n\nAll subjects had to fulfill all inclusion criteria as follows:\n\n* mentally and physically healthy,\n* no clinically relevant pathological findings in any of the investigations of the pre-study examination including blood chemistry (liver and kidney function tests),\n* differential blood counts,\n* coagulation test,\n* ultrasensitive C-reactive protein levels. Subjects should be able to provide written informed consents.\n\nExclusion Criteria:\n\n* pregnant or breast feeding women,\n* patients with chronic viral-infections (e.g., HBV, HCV, HIV), evidence of decompensated liver disease, pre-existing hematuria, or proteinuria,\n* cryoglobulin levels \\> 1% or other immunologically driven diseases,\n* schistosomiasis,\n* acute infectious illness,\n* severe psychiatric disorders,\n* current or past history of malignancy and patients who received treatment with interferon or any investigational therapy for hepatitis during the 3 months prior to study entry.",
+            "healthyVolunteers": true,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "55 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Mostafa K. El Awady, Professor",
+                "affiliation": "National Research Center",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "National Liver Institute, Menofyia University",
+                "status": "RECRUITING",
+                "city": "Shebin El Kom",
+                "state": "Menofia",
+                "country": "Egypt",
+                "contacts": [
+                  {
+                    "name": "Mostafa El-Awady",
+                    "role": "CONTACT",
+                    "email": "mkawady@yahoo.com"
+                  },
+                  {
+                    "name": "Mohamed ElGendy, MD",
+                    "role": "SUB_INVESTIGATOR"
+                  }
+                ]
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "19995542",
+                "type": "BACKGROUND",
+                "citation": "El-Awady MK, Tabll AA, Yousif H, El-Abd Y, Reda M, Khalil SB, El-Zayadi AR, Shaker MH, Bader El Din NG. Murine neutralizing antibody response and toxicity to synthetic peptides derived from E1 and E2 proteins of hepatitis C virus. Vaccine. 2010 Dec 6;28(52):8338-44. doi: 10.1016/j.vaccine.2009.11.059. Epub 2009 Dec 6."
+              }
+            ],
+            "seeAlsoLinks": [
+              {
+                "label": "National Liver Institute, Shebin El kom, Egypt",
+                "url": "http://www.liver-eg.org/"
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01718834",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8568586/",
+          "identifier": "PMC:8568586",
+          "title": "In the era of rapid mRNA-based vaccines: Why is there no effective hepatitis C virus vaccine yet?",
+          "snippet": "Title: In the era of rapid mRNA-based vaccines: Why is there no effective hepatitis C virus vaccine yet?\nAuthors: Echeverr\u00eda N, Comas V, Aldunate F et al.\nJournal: World J Hepatol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:37:09.389617"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8373402/",
+          "identifier": "PMC:8373402",
+          "title": "Perspectives on passive antibody therapy and peptide-based vaccines against emerging pathogens like SARS-CoV-2.",
+          "snippet": "Title: Perspectives on passive antibody therapy and peptide-based vaccines against emerging pathogens like SARS-CoV-2.\nAuthors: Palma M\nJournal: Germs",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:37:09.389700"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4670951/",
+          "identifier": "PMC:4670951",
+          "title": "Hepatitis C genotype 4: The past, present, and future.",
+          "snippet": "Title: Hepatitis C genotype 4: The past, present, and future.\nAuthors: Abdel-Ghaffar TY, Sira MM, El Naghi S\nJournal: World J Hepatol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:37:09.389727"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "8568586",
+          "8373402",
+          "4670951"
+        ],
+        "pmc_count": 3,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01718834",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01718834",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01718834",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01718834",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01718834",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01718834",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

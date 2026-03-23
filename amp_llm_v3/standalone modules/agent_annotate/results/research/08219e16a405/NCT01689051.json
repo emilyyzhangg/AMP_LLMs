@@ -1,0 +1,331 @@
+{
+  "nct_id": "NCT01689051",
+  "completed_at": "2026-03-16 12:37:00 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01689051",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01689051",
+          "identifier": "NCT01689051",
+          "title": "Vasodilatory and Metabolic Effects of Glucagon-like Peptide-1 in Periphery Circulation in Patients With and Without Type 2 Diabetes Mellitus",
+          "snippet": "Title: Vasodilatory and Metabolic Effects of Glucagon-like Peptide-1 in Periphery Circulation in Patients With and Without Type 2 Diabetes Mellitus",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:46.093186"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01689051",
+          "identifier": "NCT01689051",
+          "title": "Brief Summary",
+          "snippet": "Diabetes and high blood pressure are risk factors for developing heart disease. An increase in the number of diabetes patients is expected. This increases the number of patients with heart disease, and since the vast majority with diabetes die from heart disease, it is extremely important to investigate how these diseases can be prevented and treated.\n\nStudies in animals have shown that intestinal hormone glucagon-like peptide-1 (GLP-1) can expand blood vessels, thus lowering blood pressure, but",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:46.093193"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01689051",
+          "identifier": "NCT01689051",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:46.093196"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01689051",
+          "identifier": "NCT01689051",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 2 Diabetes, Blod Pressure, Glucagon-like Peptide-1, Human Physiology, Blood Flow | Keywords: Type 2 diabetes, Blod pressure, Glucagon-like peptide-1, Human physiology, Blood flow",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:46.093201"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01689051",
+          "identifier": "NCT01689051",
+          "title": "Intervention: human glucagon-like peptide 1 (7-36)amide",
+          "snippet": "OTHER: human glucagon-like peptide 1 (7-36)amide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:46.093205"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01689051",
+          "identifier": "NCT01689051",
+          "title": "Intervention: human glucagon-like peptide 1 (9-36)amide",
+          "snippet": "OTHER: human glucagon-like peptide 1 (9-36)amide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:46.093208"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01689051",
+          "identifier": "NCT01689051",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:46.093212"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01689051",
+            "orgStudyIdInfo": {
+              "id": "1-Sivertsen"
+            },
+            "organization": {
+              "fullName": "University Hospital, Gentofte, Copenhagen",
+              "class": "OTHER"
+            },
+            "briefTitle": "Vasodilatory and Metabolic Effects of Glucagon-like Peptide-1 in Periphery Circulation in Patients With and Without Type 2 Diabetes Mellitus"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2014-01",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2012-03"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2013-04",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2013-04",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-09-17",
+            "studyFirstSubmitQcDate": "2012-09-17",
+            "studyFirstPostDateStruct": {
+              "date": "2012-09-20",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2014-01-30",
+            "lastUpdatePostDateStruct": {
+              "date": "2014-01-31",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "PRINCIPAL_INVESTIGATOR",
+              "investigatorFullName": "Jacob Christian Sivertsen",
+              "investigatorTitle": "MD",
+              "investigatorAffiliation": "University Hospital, Gentofte, Copenhagen"
+            },
+            "leadSponsor": {
+              "name": "University Hospital, Gentofte, Copenhagen",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "Danish Heart Foundation",
+                "class": "OTHER"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": false
+          },
+          "descriptionModule": {
+            "briefSummary": "Diabetes and high blood pressure are risk factors for developing heart disease. An increase in the number of diabetes patients is expected. This increases the number of patients with heart disease, and since the vast majority with diabetes die from heart disease, it is extremely important to investigate how these diseases can be prevented and treated.\n\nStudies in animals have shown that intestinal hormone glucagon-like peptide-1 (GLP-1) can expand blood vessels, thus lowering blood pressure, but it is not known whether the effects is found in humans, which we will investigate.\n\nStudies have also shown that GLP-1 lowers blood sugar, but it is unclear whether this is solely due to increased insulin production, weight loss associated with GLP-1 intake or GLP-1 has an effect on the muscles which increases the uptake of sugar. We investigate whether GLP-1 enhances the absorption of sugar in the leg.\n\nThe investigators also examines whether these effects are greater in people with diabetes then in healthy."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Type 2 Diabetes",
+              "Blod Pressure",
+              "Glucagon-like Peptide-1",
+              "Human Physiology",
+              "Blood Flow"
+            ],
+            "keywords": [
+              "Type 2 diabetes",
+              "Blod pressure",
+              "Glucagon-like peptide-1",
+              "Human physiology",
+              "Blood flow"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "NA"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "CROSSOVER",
+              "primaryPurpose": "BASIC_SCIENCE",
+              "maskingInfo": {
+                "masking": "SINGLE",
+                "whoMasked": [
+                  "PARTICIPANT"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 20,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Healthy subjects",
+                "type": "ACTIVE_COMPARATOR",
+                "interventionNames": [
+                  "Other: human glucagon-like peptide 1 (7-36)amide",
+                  "Other: human glucagon-like peptide 1 (9-36)amide"
+                ]
+              },
+              {
+                "label": "Patients with type 2 diabetes",
+                "type": "ACTIVE_COMPARATOR",
+                "interventionNames": [
+                  "Other: human glucagon-like peptide 1 (7-36)amide",
+                  "Other: human glucagon-like peptide 1 (9-36)amide"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "OTHER",
+                "name": "human glucagon-like peptide 1 (7-36)amide",
+                "armGroupLabels": [
+                  "Healthy subjects",
+                  "Patients with type 2 diabetes"
+                ]
+              },
+              {
+                "type": "OTHER",
+                "name": "human glucagon-like peptide 1 (9-36)amide",
+                "armGroupLabels": [
+                  "Healthy subjects",
+                  "Patients with type 2 diabetes"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Femoral artery blood flow"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Leg glucose uptake"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Written informed consent\n* T2DM according to WHO's criteria (only T2DM subjects)\n\nExclusion Criteria:\n\n* Anemia\n* T1DM\n* Severe liver or renal disease\n* Severe heart disease\n* Atrial fibrillation",
+            "healthyVolunteers": true,
+            "sex": "MALE",
+            "minimumAge": "18 Years",
+            "maximumAge": "75 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Jacob C Sivertsen, MD",
+                "affiliation": "University Hospital, Gentofte, Copenhagen",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Gentofte Hospital, Department of Cardiology",
+                "city": "Hellerup",
+                "zip": "2900",
+                "country": "Denmark",
+                "geoPoint": {
+                  "lat": 55.73204,
+                  "lon": 12.57093
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01689051",
+      "citations": [],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01689051",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01689051",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01689051",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01689051",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01689051",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01689051",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,1033 @@
+{
+  "nct_id": "NCT00000798",
+  "metadata": {
+    "nct_id": "NCT00000798",
+    "title": "A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "HIV Infections"
+    ],
+    "interventions": [
+      "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.9125,
+      "reasoning": "[Pass 1 extraction] Here are the extracted facts:\n\n1. INTERVENTION NAME:\n\t* HIV-1 Peptide Vaccine, Microparticulate Monovalent\n2. MOLECULAR CLASS:\n\t* HIV-1 Peptide Vaccine, Microparticulate Monovalent: Short peptide chain (2-50 amino acids)\n3. DATABASE CONFIRMATION:\n\t* UniProt: entry found? No evidence found.\n\t* DRAMP/DBAASP: antimicrobial peptide database entry? No evidence found.\n\t* ChEMBL: molecule type? No eviden\n[Pass 2 decision] Peptide: True\nReasoning:\n\nSTEP 1 \u2014 Is the Molecular Class a peptide?\nThe Molecular Class is listed as \"Short peptide chain (2-50 amino acids)\", which indicates it is a peptide.\n\nSTEP 2 \u2014 Is the peptide the ACTIVE DRUG?\nThe Active Ingredient Role states that the HIV-1 Peptide Vaccine, Microparticulate Monovalent is the active therapeutic agent. This confirms that the peptide vaccine is indeed an ac",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752389"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and immunogenicity of a new microparticulate formulation of an HIV-1 MN PND peptide for oral administration in healthy, HIV-1 seronegative adult volunteers at low risk for infection.\n\nVaccine formulations of synthetic peptides adsorbed to alum may not provide other requisite characteristics of an effective HIV vaccine, such as induction of mucosal immunity, production of cytotoxic T cells, and ease of administration. An oral microparticulate vaccine containing a prototype ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752394"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752397"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, Administration, Oral, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752400"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752403"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12399211/",
+          "identifier": "PMC:12399211",
+          "title": "Blades and barriers: Oral vaccines for conquering cancers and warding off infectious diseases.",
+          "snippet": "Title: Blades and barriers: Oral vaccines for conquering cancers and warding off infectious diseases.\nAuthors: Yang K, Liu J, Zhao Y et al.\nJournal: Acta Pharm Sin B",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446737"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6067898/",
+          "identifier": "PMC:6067898",
+          "title": "Noninvasive vaccination against infectious diseases.",
+          "snippet": "Title: Noninvasive vaccination against infectious diseases.\nAuthors: Zheng Z, Diaz-Ar\u00e9valo D, Guan H et al.\nJournal: Hum Vaccin Immunother",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446819"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3466469/",
+          "identifier": "PMC:3466469",
+          "title": "Mucosal immunity and protection against HIV/SIV infection: strategies and challenges for vaccine design.",
+          "snippet": "Title: Mucosal immunity and protection against HIV/SIV infection: strategies and challenges for vaccine design.\nAuthors: Demberg T, Robert-Guroff M\nJournal: Int Rev Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446848"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9125,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen. It is confirmed as a peptide derived from the HIV-1 MN strain. The exact amino acid sequence or length is not specified in the provided evidence.\nDatabase Matches: No evidence found.\nMechanism: No specific mechanism of action for antimicrobial activity is mentioned. The peptide is intended to stimulate an immune response\n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\nPeptide determination = True \u2192 Proceed to Step 2.\n\nStep 2 \u2014 Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?\n- Database Matches: No evidence found.\n- Mechanism: The mechanism does not describe any direct antimicrobial activity. It is intended to stimulate an immune response against HIV-1, but no direct ",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752389"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and immunogenicity of a new microparticulate formulation of an HIV-1 MN PND peptide for oral administration in healthy, HIV-1 seronegative adult volunteers at low risk for infection.\n\nVaccine formulations of synthetic peptides adsorbed to alum may not provide other requisite characteristics of an effective HIV vaccine, such as induction of mucosal immunity, production of cytotoxic T cells, and ease of administration. An oral microparticulate vaccine containing a prototype ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752394"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752397"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, Administration, Oral, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752400"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752403"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12399211/",
+          "identifier": "PMC:12399211",
+          "title": "Blades and barriers: Oral vaccines for conquering cancers and warding off infectious diseases.",
+          "snippet": "Title: Blades and barriers: Oral vaccines for conquering cancers and warding off infectious diseases.\nAuthors: Yang K, Liu J, Zhao Y et al.\nJournal: Acta Pharm Sin B",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446737"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6067898/",
+          "identifier": "PMC:6067898",
+          "title": "Noninvasive vaccination against infectious diseases.",
+          "snippet": "Title: Noninvasive vaccination against infectious diseases.\nAuthors: Zheng Z, Diaz-Ar\u00e9valo D, Guan H et al.\nJournal: Hum Vaccin Immunother",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446819"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3466469/",
+          "identifier": "PMC:3466469",
+          "title": "Mucosal immunity and protection against HIV/SIV infection: strategies and challenges for vaccine design.",
+          "snippet": "Title: Mucosal immunity and protection against HIV/SIV infection: strategies and challenges for vaccine design.\nAuthors: Demberg T, Robert-Guroff M\nJournal: Int Rev Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446848"
+        }
+      ],
+      "model_name": "qwen2.5:14b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Oral - Unspecified",
+      "confidence": 0.9125,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n1. Protocol Route: \"oral administration\" (from ClinicalTrials.gov metadata)\n2. FDA/Label Route: Not found in any sources provided\n3. Literature Route: \n   - PMC:12399211 mentions oral vaccines, but does not specifically mention this drug.\n   - PMC:6067898 discusses noninvasive vaccination methods, including oral administration, but again does not specify this d\n[Pass 2 classification] Delivery Mode: Oral - Unspecified\nEvidence: [clinicaltrials_gov] NCT00000798: To evaluate the safety and immunogenicity of a new microparticulate formulation of an HIV-1 MN PND peptide for oral administration in healthy, HIV-1 seronegative adult volunteers at low risk for infection.\nReasoning: The m",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752389"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and immunogenicity of a new microparticulate formulation of an HIV-1 MN PND peptide for oral administration in healthy, HIV-1 seronegative adult volunteers at low risk for infection.\n\nVaccine formulations of synthetic peptides adsorbed to alum may not provide other requisite characteristics of an effective HIV vaccine, such as induction of mucosal immunity, production of cytotoxic T cells, and ease of administration. An oral microparticulate vaccine containing a prototype ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752394"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752397"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, Administration, Oral, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752400"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752403"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12399211/",
+          "identifier": "PMC:12399211",
+          "title": "Blades and barriers: Oral vaccines for conquering cancers and warding off infectious diseases.",
+          "snippet": "Title: Blades and barriers: Oral vaccines for conquering cancers and warding off infectious diseases.\nAuthors: Yang K, Liu J, Zhao Y et al.\nJournal: Acta Pharm Sin B",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446737"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6067898/",
+          "identifier": "PMC:6067898",
+          "title": "Noninvasive vaccination against infectious diseases.",
+          "snippet": "Title: Noninvasive vaccination against infectious diseases.\nAuthors: Zheng Z, Diaz-Ar\u00e9valo D, Guan H et al.\nJournal: Hum Vaccin Immunother",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446819"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3466469/",
+          "identifier": "PMC:3466469",
+          "title": "Mucosal immunity and protection against HIV/SIV infection: strategies and challenges for vaccine design.",
+          "snippet": "Title: Mucosal immunity and protection against HIV/SIV infection: strategies and challenges for vaccine design.\nAuthors: Demberg T, Robert-Guroff M\nJournal: Int Rev Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446848"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.9125,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: COMPLETED\n2. Published Results:\n\t* None of the published articles directly mention results from NCT00000798. However, they discuss general concepts related to oral vaccines and mucosal immunity.\n3. Results Posted: NOT FOUND (hasResults field not available)\n4. Completion Date: Unknown (not specified in ClinicalTrials.gov metadata)\n5. Why Stopped: N/A (trial was completed as planned)\n6. Trial Phase: PHASE1\n7. Result Valence: NOT AVAILABLE (no\n[Pass 2 decision] The trial was a Phase I safety and immunogenicity trial of an HIV-1 MN peptide immunogen. According to Heuristic 1, Phase I trials that complete normally are typically \"Positive\", as completing a Phase I trial is the success criterion. This criterion is met in this case. Additionally, there is a corroborating signal: one of the published articles (PMCID: PMC12399211) mentions oral vaccines and mucosal immunity, which suggests that the trial was successful in establishing acceptable safety, toler",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752389"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and immunogenicity of a new microparticulate formulation of an HIV-1 MN PND peptide for oral administration in healthy, HIV-1 seronegative adult volunteers at low risk for infection.\n\nVaccine formulations of synthetic peptides adsorbed to alum may not provide other requisite characteristics of an effective HIV vaccine, such as induction of mucosal immunity, production of cytotoxic T cells, and ease of administration. An oral microparticulate vaccine containing a prototype ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752394"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752397"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, Administration, Oral, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752400"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752403"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12399211/",
+          "identifier": "PMC:12399211",
+          "title": "Blades and barriers: Oral vaccines for conquering cancers and warding off infectious diseases.",
+          "snippet": "Title: Blades and barriers: Oral vaccines for conquering cancers and warding off infectious diseases.\nAuthors: Yang K, Liu J, Zhao Y et al.\nJournal: Acta Pharm Sin B",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446737"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6067898/",
+          "identifier": "PMC:6067898",
+          "title": "Noninvasive vaccination against infectious diseases.",
+          "snippet": "Title: Noninvasive vaccination against infectious diseases.\nAuthors: Zheng Z, Diaz-Ar\u00e9valo D, Guan H et al.\nJournal: Hum Vaccin Immunother",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446819"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3466469/",
+          "identifier": "PMC:3466469",
+          "title": "Mucosal immunity and protection against HIV/SIV infection: strategies and challenges for vaccine design.",
+          "snippet": "Title: Mucosal immunity and protection against HIV/SIV infection: strategies and challenges for vaccine design.\nAuthors: Demberg T, Robert-Guroff M\nJournal: Int Rev Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446848"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00000798",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial clearly states that the active drug is a peptide (HIV-1 MN PND peptide) formulated into a microparticulate vaccine.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The description provided clearly states that the study involves an HIV-1 MN PND (peptide nucleic acid) peptide immunogen, which confirms that the primary intervention is a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The primary study drug in the trial is a microparticulate formulation of an HIV-1 peptide vaccine, which meets the criteria for being a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This trial is evaluating a vaccine, which induces antibodies against HIV-1.  The peptide itself does not directly kill the virus. It works by stimulating the immune system to produce antibodies that fight the virus.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The peptide being studied is part of a vaccine designed to induce an immune response against HIV, which works by blocking viral fusion (entry inhibitor) rather than directly killing or disrupting pathogens. Therefore, it does not meet the criteria for being classified as an antimicrobial peptide since its mechanism of action involves inducing antibodies and activating innate immunity instead of directly killing pathogens through its own biochemical action.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial is evaluating a vaccine component ([chembl] CHEMBL4297811: PR1 LEUKEMIA PEPTIDE VACCINE and [chembl] CHEMBL4650424: SVN53-67/M57-KLH PEPTIDE VACCINE) that induces adaptive immunity, not a direct killing mechanism. Therefore, it does not meet the criteria for an antimicrobial peptide.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Oral - Unspecified",
+        "final_value": "Oral - Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Oral - Drink",
+            "reasoning": "The trial protocol explicitly states that the vaccine will be administered orally.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Oral - Food",
+            "reasoning": "The information provided indicates that the study involves an oral administration of a vaccine formulation containing a prototype HIV-1 peptide, supporting the conclusion that the delivery mode is Oral - Food.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Oral - Unspecified",
+            "reasoning": "According to the clinical trial's title and description, the HIV-1 peptide vaccine is being tested for oral administration in healthy, HIV-1 seronegative adult volunteers. This indicates an oral delivery mode. Since no specific route of oral administration (tablet, capsule, drink, etc.) is mentioned explicitly, it falls under the category of Oral - Unspecified.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence clearly states that the vaccine is being administered orally but does not specify the exact method (e.g., drink or food). Therefore, \"Oral - Unspecified\" is the most conservative and accurate answer based on the available information.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "This trial is a Phase I trial focused on safety and immunogenicity. Successful completion of a Phase I trial, especially one with no reported adverse events or safety concerns, is generally considered positive as it demonstrates the potential for further development.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "According to COMPLETION HEURISTIC H3, since this is an old trial (pre-2010) that completed normally and led to subsequent trials, it leans towards being 'Positive'. There are no conflicting publications or results posted on ClinicalTrials.gov.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial completed normally and there are published results that discuss the vaccine formulation (CHEMBL2369717) used in this study. Although the specific trial is not directly mentioned in these publications, they provide evidence of research into oral vaccines for HIV-1, which aligns with the purpose of this trial. Additionally, the vaccine component CHEMBL4650424 was used in a subsequent phase 2 trial, further supporting the success of this phase 1 study.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00000798",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752389"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and immunogenicity of a new microparticulate formulation of an HIV-1 MN PND peptide for oral administration in healthy, HIV-1 seronegative adult volunteers at low risk for infection.\n\nVaccine formulations of synthetic peptides adsorbed to alum may not provide other requisite characteristics of an effective HIV vaccine, such as induction of mucosal immunity, production of cytotoxic T cells, and ease of administration. An oral microparticulate vaccine containing a prototype ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752394"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752397"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, Administration, Oral, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752400"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752403"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T23:48:48.752405"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00000798",
+            "orgStudyIdInfo": {
+              "id": "AVEG 018"
+            },
+            "organization": {
+              "fullName": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            },
+            "briefTitle": "A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+            "officialTitle": "A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2002-10",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "studyFirstSubmitDate": "1999-11-02",
+            "studyFirstSubmitQcDate": "2001-08-30",
+            "studyFirstPostDateStruct": {
+              "date": "2001-08-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2005-06-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2005-06-24",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            },
+            "collaborators": [
+              {
+                "name": "United Biomedical",
+                "class": "INDUSTRY"
+              }
+            ]
+          },
+          "descriptionModule": {
+            "briefSummary": "To evaluate the safety and immunogenicity of a new microparticulate formulation of an HIV-1 MN PND peptide for oral administration in healthy, HIV-1 seronegative adult volunteers at low risk for infection.\n\nVaccine formulations of synthetic peptides adsorbed to alum may not provide other requisite characteristics of an effective HIV vaccine, such as induction of mucosal immunity, production of cytotoxic T cells, and ease of administration. An oral microparticulate vaccine containing a prototype synthetic peptide has been developed. The microparticles can be degraded over time, inducing both secretory and systemic immune responses.",
+            "detailedDescription": "Vaccine formulations of synthetic peptides adsorbed to alum may not provide other requisite characteristics of an effective HIV vaccine, such as induction of mucosal immunity, production of cytotoxic T cells, and ease of administration. An oral microparticulate vaccine containing a prototype synthetic peptide has been developed. The microparticles can be degraded over time, inducing both secretory and systemic immune responses.\n\nTwelve volunteers per dose regimen will receive oral microparticulate multivalent HIV-1 peptide vaccine at months 0, 1, and 6, either daily as a low dose for 3 days or a single higher dose. Additionally, four volunteers per regimen will receive placebo. Volunteers are followed for 1 year. They will be contacted once or twice yearly for 5 years to check on health status."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections"
+            ],
+            "keywords": [
+              "Vaccines, Synthetic",
+              "HIV-1",
+              "Administration, Oral",
+              "AIDS Vaccines",
+              "HIV Seronegativity",
+              "HIV Preventive Vaccine"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "PREVENTION",
+              "maskingInfo": {
+                "masking": "DOUBLE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 32
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "HIV-1 Peptide Vaccine, Microparticulate Monovalent"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria\n\nSubjects must have:\n\n* Normal history and physical exam.\n* HIV negativity by ELISA within 8 weeks of study entry.\n* Absolute CD4 count \\>= 400 cells/mm3.\n* Normal urine dipstick with esterase and nitrite.\n* Lower or intermediate risk sexual behavior.\n\nNOTE:\n\n* No more than 10 percent of subjects may be over 50 years of age.\n\nExclusion Criteria\n\nCo-existing Condition:\n\nSubjects with the following symptoms or conditions are excluded:\n\n* Positive hepatitis B surface antigen.\n* Medical or psychiatric condition (such as psychosis or suicidal tendencies) or occupational responsibilities that preclude study compliance.\n* Active syphilis. NOTE: Subjects whose serology is documented to be a false positive or due to a remote (\\> 6 months) treated infection are eligible.\n* Active tuberculosis. NOTE: Subjects with a positive PPD and normal chest x-ray showing no evidence of TB and not requiring isoniazid therapy are eligible.\n\nSubjects with the following prior conditions are excluded:\n\n* History of immunodeficiency, chronic illness, or autoimmune disease.\n* History of anaphylaxis or other serious reactions to vaccines.\n* History of inflammatory gastrointestinal disease, celiac disease, or intestinal malignancy.\n* History of acute gastroenteritis within the past month or gastrointestinal surgery within the past year.\n* History of cancer unless there has been surgical excision with reasonable assurance of cure.\n* History of serious allergic reaction.\n\nPrior Medication:\n\nExcluded:\n\n* History of immunosuppressive medications.\n* Live attenuated vaccines within 60 days prior to study entry (NOTE: Medically indicated subunit or killed vaccines, e.g., influenza or pneumococcal, are not exclusionary, but should not be given within 2 weeks of HIV immunization).\n* Experimental agents within 30 days prior to study entry.\n* Prior HIV vaccines.\n\nPrior Treatment:\n\nExcluded:\n\n* Blood products or immunoglobulin within the past 6 months.\n\nIdentifiable higher risk behavior for HIV infection, including the following:\n\n* History of injection drug use within the past 12 months.\n* Higher risk sexual behavior as defined by the AVEG.",
+            "healthyVolunteers": true,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "60 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Lambert J",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Johns Hopkins Univ / Ctr for Immunological Research",
+                "city": "Baltimore",
+                "state": "Maryland",
+                "zip": "21205",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.29038,
+                  "lon": -76.61219
+                }
+              },
+              {
+                "facility": "Univ of Rochester Med Ctr",
+                "city": "Rochester",
+                "state": "New York",
+                "zip": "14642",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.15478,
+                  "lon": -77.61556
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "8989424",
+                "type": "BACKGROUND",
+                "citation": "Kelleher AD, Emery S, Cunningham P, Duncombe C, Carr A, Golding H, Forde S, Hudson J, Roggensack M, Forrest BD, Cooper DA. Safety and immunogenicity of UBI HIV-1MN octameric V3 peptide vaccine administered by subcutaneous injection. AIDS Res Hum Retroviruses. 1997 Jan 1;13(1):29-32. doi: 10.1089/aid.1997.13.29."
+              },
+              {
+                "type": "BACKGROUND",
+                "citation": "Kahn J, Murcar N, Elbeik T, Staprans S, Hanson C, Mayer Y, Doyle R, Gonzalez L, Koff W. UBI HIV-1MN octameric V3 peptide vaccine in HIV-1 negative humans. Conf Adv AIDS Vaccine Dev. 1996 Feb 11-15:167 [Poster 47]"
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00000798",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12399211/",
+          "identifier": "PMC:12399211",
+          "title": "Blades and barriers: Oral vaccines for conquering cancers and warding off infectious diseases.",
+          "snippet": "Title: Blades and barriers: Oral vaccines for conquering cancers and warding off infectious diseases.\nAuthors: Yang K, Liu J, Zhao Y et al.\nJournal: Acta Pharm Sin B",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446737"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6067898/",
+          "identifier": "PMC:6067898",
+          "title": "Noninvasive vaccination against infectious diseases.",
+          "snippet": "Title: Noninvasive vaccination against infectious diseases.\nAuthors: Zheng Z, Diaz-Ar\u00e9valo D, Guan H et al.\nJournal: Hum Vaccin Immunother",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446819"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3466469/",
+          "identifier": "PMC:3466469",
+          "title": "Mucosal immunity and protection against HIV/SIV infection: strategies and challenges for vaccine design.",
+          "snippet": "Title: Mucosal immunity and protection against HIV/SIV infection: strategies and challenges for vaccine design.\nAuthors: Demberg T, Robert-Guroff M\nJournal: Int Rev Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:48:55.446848"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "12399211",
+          "6067898",
+          "3466469"
+        ],
+        "pmc_count": 3,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00000798",
+      "citations": [],
+      "raw_data": {
+        "uniprot_HIV-1 Peptide Vaccine, Microparticulate Monovalent": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00000798",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "Study Details | NCT00000798 | A Phase I Safety and Immunogenicity Trial ...",
+          "snippet": "Web result for: NCT00000798",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-03-18T23:48:51.088585"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://trial.medpath.com/clinical-trial/3422c59565aaeb1b/nct00000798-safety-immunogenicity-trial-ubi-hiv1-mn-peptide-immunogen",
+          "identifier": "NCT00000798",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Microparticulate ...",
+          "snippet": "Web result for: NCT00000798",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-03-18T23:48:51.088631"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://cdek.pharmacy.purdue.edu/trial/NCT00000798/",
+          "identifier": "NCT00000798",
+          "title": "Trial | NCT00000798",
+          "snippet": "Web result for: NCT00000798",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-03-18T23:48:51.088639"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ichgcp.net/clinical-trials-registry/NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "HIV-1 Peptide Vaccine, Microparticulate Monovalent in HIV ... - ICH GCP",
+          "snippet": "Web result for: NCT00000798",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-03-18T23:48:51.088647"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://synapse.patsnap.com/drug/a8973a36cee845e3b0ac447de00a8ba9",
+          "identifier": "NCT00000798",
+          "title": "HIV-1 peptide vaccine (United Biomedical, Inc.) - Drug Targets ...",
+          "snippet": "Web result for: NCT00000798",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-03-18T23:48:51.088655"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 23291
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00000798",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_HIV-1 Peptide Vaccine, Microparticulate Monovalent": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00000798",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2369717/",
+          "identifier": "CHEMBL2369717",
+          "title": "CHEMBL2369717 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2369717\nType: Unknown\nMolecular weight: 1587.92\nBioactivity: IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease); IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:49:14.782632"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297811/",
+          "identifier": "CHEMBL4297811",
+          "title": "PR1 LEUKEMIA PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: PR1 LEUKEMIA PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:49:27.001912"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4650424/",
+          "identifier": "CHEMBL4650424",
+          "title": "SVN53-67/M57-KLH PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: SVN53-67/M57-KLH PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 2.0\nMechanism: Hemocyanin 1 vaccine antigen; Baculoviral IAP repeat-containing protein 5 vaccine antigen",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T23:49:51.312672"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'HIV-1 Peptide Vaccine, Microparticulate Monovalent'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00000798",
+      "citations": [],
+      "raw_data": {
+        "rcsb_HIV-1 Peptide Vaccine, Microparticulate Monovalent": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00000798",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_HIV-1 Peptide Vaccine, Microparticulate Monovalent_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00000798",
+      "citations": [],
+      "raw_data": {
+        "apd_HIV-1 Peptide Vaccine, Microparticulate Monovalent": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00000798",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00000798",
+          "identifier": "NCT00000798",
+          "title": "A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: HIV Infections\nInterventions: Biological: HIV-1 Peptide Vaccine, Microparticulate Monovalent\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T23:49:03.486674"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00000798",
+          "public_title": "A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "scientific_title": "A Phase I Safety and Immunogenicity Trial of UBI Microparticulate Monovalent HIV-1 MN Peptide Immunogen in HIV-1 Seronegative Human Subjects",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Endpoint Classification: Safety Study, Masking: Double-Blind, Primary Purpose: Prevention",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "HIV Infections"
+          ],
+          "interventions": [
+            "Biological: HIV-1 Peptide Vaccine, Microparticulate Monovalent"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00000798",
+      "citations": [],
+      "raw_data": {
+        "iuphar_HIV-1 Peptide Vaccine, Microparticulate Monovalent": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00000798",
+      "citations": [],
+      "raw_data": {
+        "pdbe_HIV-1 Peptide Vaccine, Microparticulate Monovalent_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.4
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

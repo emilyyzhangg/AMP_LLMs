@@ -1,0 +1,1481 @@
+{
+  "nct_id": "NCT00000846",
+  "metadata": {
+    "nct_id": "NCT00000846",
+    "title": "A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "HIV Infections"
+    ],
+    "interventions": [
+      "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+      "BIOLOGICAL: HIV-1 Peptide Immunogen, Multivalent"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.8099999999999999,
+      "reasoning": "[Pass 1 extraction] Here are the answers to the questions:\n\nIntervention: UBI HIV-1 MN PND peptide immunogen and UBI microparticulate monovalent HIV-1 MN branched peptide\nMolecular Class: Short peptide chain (2-50 amino acids)\nDatabase Confirmation:\n* UniProt: No evidence found\n* DRAMP/DBAASP: No evidence found\n* ChEMBL: CHEMBL4297811: Molecule: PR1 LEUKEMIA PEPTIDE VACCINE, Type: Vaccine component\n* PDB: No evidence\n[Pass 2 decision] Peptide: True\nReasoning:\n\nSTEP 1 \u2014 Is the Molecular Class a peptide?\nThe Molecular Class is listed as a \"Short peptide chain (2-50 amino acids)\", which indicates that it meets this criterion.\n\nSTEP 2 \u2014 Is the peptide the ACTIVE DRUG?\nThe Active Ingredient Role is listed as an \"Active therapeutic agent\", indicating that the peptide is indeed the active drug being tested in the trial.\n\nSTEP 3 \u2014 Fina",
+      "evidence": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2369717/",
+          "identifier": "CHEMBL2369717",
+          "title": "CHEMBL2369717 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2369717\nType: Unknown\nMolecular weight: 1587.92\nBioactivity: IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease); IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:33.793643"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297811/",
+          "identifier": "CHEMBL4297811",
+          "title": "PR1 LEUKEMIA PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: PR1 LEUKEMIA PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:34.979220"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4650424/",
+          "identifier": "CHEMBL4650424",
+          "title": "SVN53-67/M57-KLH PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: SVN53-67/M57-KLH PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 2.0\nMechanism: Hemocyanin 1 vaccine antigen; Baculoviral IAP repeat-containing protein 5 vaccine antigen",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:36.709363"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2369717/",
+          "identifier": "CHEMBL2369717",
+          "title": "CHEMBL2369717 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2369717\nType: Unknown\nMolecular weight: 1587.92\nBioactivity: IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease); IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:45.320964"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5095277/",
+          "identifier": "CHEMBL5095277",
+          "title": "G17DT IMMUNOGEN - ChEMBL",
+          "snippet": "Molecule: G17DT IMMUNOGEN\nType: Unknown\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.326248"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3672477/",
+          "identifier": "CHEMBL3672477",
+          "title": "CHEMBL3672477 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3672477\nType: Small molecule\nMolecular weight: 317.28\nBioactivity: IC50=58700.0 nM (Gag-Pol polyprotein)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:50.646507"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366233",
+          "identifier": "IntAct:EBI-366233",
+          "title": "MAPT - IntAct",
+          "snippet": "Interactor: MAPT\nDescription: Microtubule-associated protein tau\nUniProt: P10636-8\nSpecies: Homo sapiens\nType: protein\nInteractions: 7000",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:18.676187"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-77613",
+          "identifier": "IntAct:EBI-77613",
+          "title": "APP - IntAct",
+          "snippet": "Interactor: APP\nDescription: Amyloid-beta precursor protein\nUniProt: P05067\nSpecies: Homo sapiens\nType: protein\nInteractions: 1779",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:18.676242"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366083",
+          "identifier": "IntAct:EBI-366083",
+          "title": "TP53 - IntAct",
+          "snippet": "Interactor: TP53\nDescription: Cellular tumor antigen p53\nUniProt: P04637\nSpecies: Homo sapiens\nType: protein\nInteractions: 1757",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:18.676254"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-297353",
+          "identifier": "IntAct:EBI-297353",
+          "title": "EGFR - IntAct",
+          "snippet": "Interactor: EGFR\nDescription: Epidermal growth factor receptor\nUniProt: P00533\nSpecies: Homo sapiens\nType: protein\nInteractions: 1723",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:18.676274"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9199999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: UBI HIV-1MN PND peptide immunogen and UBI microparticulate monovalent HIV-1 MN branched peptide. The evidence confirms these are peptides used as vaccines.\nDatabase Matches: No evidence found.\nMechanism: Hemocyanin 1 vaccine antigen; Baculoviral IAP repeat-containing protein 5 vaccine antigen (from ChEMBL for related peptide vaccines). No direct antimicrobial or host defense mech\n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\nPeptide determination is True \u2192 Proceed to Step 2.\n\nStep 2 \u2014 Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?\n- Database Matches: No evidence found.\n- Mechanism: Hemocyanin 1 vaccine antigen; Baculoviral IAP repeat-containing protein 5 vaccine antigen. The mechanism does not specify any direct antimicro",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+          "snippet": "Title: A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324174"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Brief Summary",
+          "snippet": "To evaluate safety and immunogenicity of 2 different HIV-1 peptide candidate vaccines, the UBI HIV-1 MN PND peptide immunogen and the UBI microparticulate monovalent HIV-1 MN branched peptide when administered sequentially by 2 different routes of immunization, parental priming followed by oral boosting.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324179"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324182"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324185"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324188"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Intervention: HIV-1 Peptide Immunogen, Multivalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Immunogen, Multivalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324191"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324193"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2369717/",
+          "identifier": "CHEMBL2369717",
+          "title": "CHEMBL2369717 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2369717\nType: Unknown\nMolecular weight: 1587.92\nBioactivity: IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease); IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:33.793643"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297811/",
+          "identifier": "CHEMBL4297811",
+          "title": "PR1 LEUKEMIA PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: PR1 LEUKEMIA PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:34.979220"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4650424/",
+          "identifier": "CHEMBL4650424",
+          "title": "SVN53-67/M57-KLH PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: SVN53-67/M57-KLH PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 2.0\nMechanism: Hemocyanin 1 vaccine antigen; Baculoviral IAP repeat-containing protein 5 vaccine antigen",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:36.709363"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Intramuscular",
+      "confidence": 0.915,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n1. Protocol Route:\nThe ClinicalTrials.gov protocol mentions that one of the interventions is given by \"IM Injection\" (intramuscular injection). The exact text from the intervention description is: \"Biological: HIV-1 Peptide Immunogen, Multivalent, Given by IM Injection\".\n\n2. FDA/Label Route:\nNot found.\n\n3. Literature Route:\nNot found.\n\n4. Database Route:\nThe Ch\n[Pass 2 classification] Delivery Mode: Injection/Infusion - Intramuscular: IM injection\nEvidence: ClinicalTrials.gov protocol (NCT00000846)\nReasoning: The most specific route is explicitly stated in the ClinicalTrials.gov protocol as \"Given by IM Injection\". According to the classification rules, this takes precedence over",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+          "snippet": "Title: A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324174"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Brief Summary",
+          "snippet": "To evaluate safety and immunogenicity of 2 different HIV-1 peptide candidate vaccines, the UBI HIV-1 MN PND peptide immunogen and the UBI microparticulate monovalent HIV-1 MN branched peptide when administered sequentially by 2 different routes of immunization, parental priming followed by oral boosting.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324179"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324182"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324185"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324188"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Intervention: HIV-1 Peptide Immunogen, Multivalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Immunogen, Multivalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324191"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324193"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+          "snippet": "Title: A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: HIV Infections\nInterventions: Biological: HIV-1 Peptide Immunogen, Multivalent, Biological: HIV-1 Peptide Vaccine, Microparticulate Monovalent\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:58:56.495432"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2369717/",
+          "identifier": "CHEMBL2369717",
+          "title": "CHEMBL2369717 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2369717\nType: Unknown\nMolecular weight: 1587.92\nBioactivity: IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease); IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:33.793643"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297811/",
+          "identifier": "CHEMBL4297811",
+          "title": "PR1 LEUKEMIA PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: PR1 LEUKEMIA PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:34.979220"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.915,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: COMPLETED\n2. Published Results: None found in PubMed, PMC, or web evidence.\n3. Results Posted: NOT FOUND (hasResults field not available)\n4. Completion Date: Unknown (not specified on ClinicalTrials.gov)\n5. Why Stopped: N/A (trial completed as planned)\n6. Trial Phase: PHASE1\n7. Result Valence: NOT AVAILABLE (no results found)\n\nNote that the trial was a Phase I safety and immunogenicity study, so success would be measured by demonstrating sa\n[Pass 2 decision] The trial was a Phase I safety and immunogenicity study, which means that success would be measured by demonstrating safety and tolerability of the vaccine candidates. Since the trial completed as planned (Registry Status: COMPLETED) and there is no evidence of negative results, I applied Heuristic H1: PHASE I COMPLETION. According to this heuristic, Phase I trials that complete normally are typically \"Positive\", as completing a Phase I trial IS the success criterion.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+          "snippet": "Title: A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324174"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Brief Summary",
+          "snippet": "To evaluate safety and immunogenicity of 2 different HIV-1 peptide candidate vaccines, the UBI HIV-1 MN PND peptide immunogen and the UBI microparticulate monovalent HIV-1 MN branched peptide when administered sequentially by 2 different routes of immunization, parental priming followed by oral boosting.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324179"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324182"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324185"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324188"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Intervention: HIV-1 Peptide Immunogen, Multivalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Immunogen, Multivalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324191"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324193"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+          "snippet": "Title: A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: HIV Infections\nInterventions: Biological: HIV-1 Peptide Immunogen, Multivalent, Biological: HIV-1 Peptide Vaccine, Microparticulate Monovalent\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:58:56.495432"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2369717/",
+          "identifier": "CHEMBL2369717",
+          "title": "CHEMBL2369717 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2369717\nType: Unknown\nMolecular weight: 1587.92\nBioactivity: IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease); IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:33.793643"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297811/",
+          "identifier": "CHEMBL4297811",
+          "title": "PR1 LEUKEMIA PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: PR1 LEUKEMIA PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:34.979220"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00000846",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial description clearly identifies both interventions as peptides used in a vaccine.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The term \"peptide immunogen\" directly refers to a substance that can stimulate an immune response and is composed of amino acids, thus classifying it as a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The active drugs being studied in this trial are peptides, as indicated by their names and the information provided about them in the clinical trial description and databases such as ChemBL.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This clinical trial focuses on vaccination, which relies on inducing an adaptive immune response rather than direct pathogen killing by the peptide itself. The peptides are intended to stimulate the body's own immune system to fight HIV infection, not act as antimicrobial agents.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on the information provided, the intervention is not classified as an antimicrobial peptide because it does not directly kill, lyse, or physically disrupt pathogens through its own biochemical action. Instead, it induces an immunogenic response in HIV-1 uninfected volunteers, which falls under the category of vaccine development rather than direct antimicrobial treatment. Therefore, this trial is classified as 'Other'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "According to the decision tree provided, if a peptide treats infection but works by inducing adaptive immunity (vaccine), it is classified as 'Other'. In this case, the peptides being tested are HIV-1 peptide vaccines, and they do not directly kill or disrupt pathogens.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Intramuscular",
+        "final_value": "Injection/Infusion - Intramuscular",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The protocol states the UBI HIV-1MN PND peptide immunogen is given by \"IM Injection\". While it specifies intramuscular,  it does not explicitly state \"intramuscular\" or \"IM\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Intramuscular",
+            "reasoning": "The specific mention of \"IM Injection\" in the title and description indicates that this is the route of administration for one of the vaccine components. Therefore, based on the provided evidence, we can confidently determine that the delivery mode for this particular vaccine component is Intramuscular injection.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "According to the guidelines provided, if the protocol says 'injection' WITHOUT specifying IM, SC, or IV, the delivery mode should be classified as Injection/Infusion - Other/Unspecified. The other peptide could potentially be administered orally, but since the specific route is not mentioned, it remains unspecified.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The title explicitly states that the \"UBI HIV-1MN PND Peptide Immunogen\" is given by \"IM Injection,\" which clearly indicates an intramuscular route of administration. Although some models suggest using \"Injection/Infusion - Other/Unspecified\" due to a lack of explicit wording, the use of \"IM Injection\" in the title provides sufficient clarity for classifying it as \"Intramuscular.\"",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial is a Phase I trial, which focuses on safety and tolerability.  Since it was completed, we can assume it met its primary objectives related to safety.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "Phase I trials are primarily focused on assessing the safety profile of a new drug or vaccine. They do not aim for efficacy outcomes as they involve small sample sizes and are conducted before larger, more definitive studies can be performed. The completion status alone does not indicate failure; it indicates that the trial was successfully completed according to its protocol without any major issues being reported in terms of safety or ethics. Therefore, based on the information provided, the o",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial is a Phase I study that completed normally (as indicated by the registry status), evaluating the safety and immunogenicity of two different HIV-1 peptide candidate vaccines. Since the completion of a Phase I trial implies success in terms of safety, we can classify this trial as Positive.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "EMPTY",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, a completed trial without published evidence of negative results is classified as EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The lack of specific details about endpoint results in the provided evidence suggests that without published negative results or further clarification on the trial's outcomes, we cannot conclusively determine failure. However, considering the nature of a Phase I trial and its primary focus on safety and immunogenicity, if these objectives were not met, it could be inferred as ineffective for purpose based on typical expectations in clinical research.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial aimed to evaluate the safety and immunogenicity of two different HIV-1 peptide candidate vaccines, but there is no evidence that it met its endpoints as the trial status is marked as completed on ClinicalTrials.gov.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial status is marked as \"COMPLETED\" and there is no published evidence of negative results or failure. Verifier_2 and verifier_3 suggest that without specific details about the endpoint results, we cannot conclusively determine a reason for failure beyond the fact that it did not meet its intended purpose due to lack of information. Therefore, following the conservative approach as per the critical rules, the most appropriate classification is \"EMPTY\".",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": null
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "dbamp",
+    "who_ictrp",
+    "iuphar",
+    "intact",
+    "card",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00000846",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+          "snippet": "Title: A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324174"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Brief Summary",
+          "snippet": "To evaluate safety and immunogenicity of 2 different HIV-1 peptide candidate vaccines, the UBI HIV-1 MN PND peptide immunogen and the UBI microparticulate monovalent HIV-1 MN branched peptide when administered sequentially by 2 different routes of immunization, parental priming followed by oral boosting.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324179"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324182"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, AIDS Vaccines, HIV Seronegativity, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324185"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324188"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Intervention: HIV-1 Peptide Immunogen, Multivalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Immunogen, Multivalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324191"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:08.324193"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00000846",
+            "orgStudyIdInfo": {
+              "id": "AVEG 023"
+            },
+            "organization": {
+              "fullName": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            },
+            "briefTitle": "A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+            "officialTitle": "A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers."
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2002-10",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "studyFirstSubmitDate": "1999-11-02",
+            "studyFirstSubmitQcDate": "2001-08-30",
+            "studyFirstPostDateStruct": {
+              "date": "2001-08-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2005-06-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2005-06-24",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "To evaluate safety and immunogenicity of 2 different HIV-1 peptide candidate vaccines, the UBI HIV-1 MN PND peptide immunogen and the UBI microparticulate monovalent HIV-1 MN branched peptide when administered sequentially by 2 different routes of immunization, parental priming followed by oral boosting.",
+            "detailedDescription": "After the prescreening, volunteers will be randomized into Group I or Group II. Each group will contain 16 volunteers. At least 5 volunteers in each group must be women. At month 0 all volunteers will receive multivalent HIV-1 peptide immunogen or the placebo. Group I will receive the injection in the deltoid and Group II will receive it in the anterior thigh. At months 1, 2 and 8 all patients will receive microparticulate monovalent HIV-1 peptide or the placebo. Follow up will be conducted."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections"
+            ],
+            "keywords": [
+              "Vaccines, Synthetic",
+              "HIV-1",
+              "AIDS Vaccines",
+              "HIV Seronegativity",
+              "HIV Preventive Vaccine"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "PREVENTION",
+              "maskingInfo": {
+                "masking": "DOUBLE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 36
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "HIV-1 Peptide Vaccine, Microparticulate Monovalent"
+              },
+              {
+                "type": "BIOLOGICAL",
+                "name": "HIV-1 Peptide Immunogen, Multivalent"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria\n\nPatients must have or be:\n\n* Healthy.\n* Negative ELISA for HIV.\n* Negative for Hepatitis B surface antigen.\n* Normal urine dipstick.\n* Normal history and physical exam.\n* Availability for follow-up for planned duration of the study (60 weeks).\n\nRisk Behavior: Required:\n\n* Lower or intermediate risk sexual behavior as defined by AVEG.\n\nExclusion Criteria\n\nCo-existing Condition:\n\nPatients with any of the following symptoms or conditions are excluded:\n\n* Medical or psychiatric condition or occupational responsibilities which preclude subject compliance with the protocol.\n* Active syphilis. NOTE: If the serology is documented to be a false positive or due to a remote (\\> 6 months) treated infection, the volunteer is eligible.\n* Active tuberculosis. NOTE: Volunteers with a positive PPD and a normal chest X-ray showing no evidence of TB and not requiring INH therapy are eligible.\n\nPatients with any of the following prior conditions are excluded:\n\n* History of immunodeficiency, chronic illness, malignancy or autoimmune disease.\n* History of anaphylaxis or other serious adverse reactions to vaccines.\n* History of inflammatory gastrointestinal disease, celiac disease or intestinal malignancy.\n* History of acute gastroenteritis within the past month or gastrointestinal surgery within the past 12 months.\n\nPrior Medication:\n\nExcluded:\n\n* History of use of immunosuppressive medication.\n* Live attenuated vaccines within 60 days of study. NOTE: Medically indicated subunit or killed vaccines (e.g., influenza, pneumococcal) are not exclusionary but should be given at least 2 weeks away from HIV immunizations.\n* Use of experimental agents within 30 days prior to study.\n* Receipt of blood products or immunoglobulin in the past 6 months.\n* Prior receipt of HIV vaccines or a placebo recipient in an HIV vaccine trial.\n\nRisk Behavior:\n\nExcluded:\n\n* Subjects with identifiable higher risk behavior for HIV infection as determined by screening questionnaire designed to identify risk factors for HIV infection.\n* History of injection drug use within the last 12 months to enrollment.\n* Higher risk sexual behavior as defined by AVEG.",
+            "healthyVolunteers": true,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "60 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Mulligan M",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Univ of Alabama at Birmingham",
+                "city": "Birmingham",
+                "state": "Alabama",
+                "zip": "35294",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.52066,
+                  "lon": -86.80249
+                }
+              },
+              {
+                "facility": "Univ of Rochester Med Ctr",
+                "city": "Rochester",
+                "state": "New York",
+                "zip": "14642",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.15478,
+                  "lon": -77.61556
+                }
+              },
+              {
+                "facility": "Univ of Washington / Pacific Med Ctr",
+                "city": "Seattle",
+                "state": "Washington",
+                "zip": "98144",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 47.60621,
+                  "lon": -122.33207
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00000846",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00000846",
+      "citations": [],
+      "raw_data": {
+        "uniprot_HIV-1 Peptide Vaccine, Microparticulate Monovalent": [],
+        "uniprot_HIV-1 Peptide Immunogen, Multivalent": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00000846",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00000846",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_HIV-1 Peptide Vaccine, Microparticulate Monovalent": {
+          "total": 0,
+          "entries": []
+        },
+        "dbaasp_HIV-1 Peptide Immunogen, Multivalent": {
+          "total": 0,
+          "entries": []
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00000846",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2369717/",
+          "identifier": "CHEMBL2369717",
+          "title": "CHEMBL2369717 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2369717\nType: Unknown\nMolecular weight: 1587.92\nBioactivity: IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease); IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:33.793643"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297811/",
+          "identifier": "CHEMBL4297811",
+          "title": "PR1 LEUKEMIA PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: PR1 LEUKEMIA PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:34.979220"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4650424/",
+          "identifier": "CHEMBL4650424",
+          "title": "SVN53-67/M57-KLH PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: SVN53-67/M57-KLH PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 2.0\nMechanism: Hemocyanin 1 vaccine antigen; Baculoviral IAP repeat-containing protein 5 vaccine antigen",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:36.709363"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2369717/",
+          "identifier": "CHEMBL2369717",
+          "title": "CHEMBL2369717 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2369717\nType: Unknown\nMolecular weight: 1587.92\nBioactivity: IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease); IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:45.320964"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5095277/",
+          "identifier": "CHEMBL5095277",
+          "title": "G17DT IMMUNOGEN - ChEMBL",
+          "snippet": "Molecule: G17DT IMMUNOGEN\nType: Unknown\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.326248"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3672477/",
+          "identifier": "CHEMBL3672477",
+          "title": "CHEMBL3672477 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3672477\nType: Small molecule\nMolecular weight: 317.28\nBioactivity: IC50=58700.0 nM (Gag-Pol polyprotein)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:50.646507"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'HIV-1 Peptide Vaccine, Microparticulate Monovalent'}_count": 5,
+        "chembl_{'name': 'HIV-1 Peptide Immunogen, Multivalent'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00000846",
+      "citations": [],
+      "raw_data": {
+        "rcsb_{'name': 'HIV-1 Peptide Vaccine, Microparticulate Monovalent'}_status": 400,
+        "rcsb_{'name': 'HIV-1 Peptide Immunogen, Multivalent'}_status": 400
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00000846",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_{'name': 'HIV-1 Peptide Vaccine, Microparticulate Monovalent'}_count": 0,
+        "ebi_proteins_{'name': 'HIV-1 Peptide Immunogen, Multivalent'}_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00000846",
+      "citations": [],
+      "raw_data": {
+        "apd_{'name': 'HIV-1 Peptide Vaccine, Microparticulate Monovalent'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)",
+        "apd_{'name': 'HIV-1 Peptide Immunogen, Multivalent'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbamp",
+      "nct_id": "NCT00000846",
+      "citations": [],
+      "raw_data": {
+        "dbamp_{'name': 'HIV-1 Peptide Vaccine, Microparticulate Monovalent'}_error": "Server unreachable: ConnectError",
+        "dbamp_{'name': 'HIV-1 Peptide Immunogen, Multivalent'}_error": "Server unreachable: ConnectError"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00000846",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00000846",
+          "identifier": "NCT00000846",
+          "title": "A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+          "snippet": "Title: A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: HIV Infections\nInterventions: Biological: HIV-1 Peptide Immunogen, Multivalent, Biological: HIV-1 Peptide Vaccine, Microparticulate Monovalent\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:58:56.495432"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00000846",
+          "public_title": "A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+          "scientific_title": "A Phase I Trial To Evaluate the Safety and Immunogenicity of the UBI HIV-1MN PND Peptide Immunogen, Given by IM Injection, in Combination With the UBI Microparticulate Monovalent HIV-1 MN Branched Peptide Given Orally, in HIV-1 Uninfected Volunteers.",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Endpoint Classification: Safety Study, Masking: Double-Blind, Primary Purpose: Prevention",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "HIV Infections"
+          ],
+          "interventions": [
+            "Biological: HIV-1 Peptide Immunogen, Multivalent",
+            "Biological: HIV-1 Peptide Vaccine, Microparticulate Monovalent"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00000846",
+      "citations": [],
+      "raw_data": {
+        "iuphar_HIV-1 Peptide Vaccine, Microparticulate Monovalent": {
+          "found": false
+        },
+        "iuphar_HIV-1 Peptide Immunogen, Multivalent": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "intact",
+      "nct_id": "NCT00000846",
+      "citations": [
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366233",
+          "identifier": "IntAct:EBI-366233",
+          "title": "MAPT - IntAct",
+          "snippet": "Interactor: MAPT\nDescription: Microtubule-associated protein tau\nUniProt: P10636-8\nSpecies: Homo sapiens\nType: protein\nInteractions: 7000",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:18.676187"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-77613",
+          "identifier": "IntAct:EBI-77613",
+          "title": "APP - IntAct",
+          "snippet": "Interactor: APP\nDescription: Amyloid-beta precursor protein\nUniProt: P05067\nSpecies: Homo sapiens\nType: protein\nInteractions: 1779",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:18.676242"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366083",
+          "identifier": "IntAct:EBI-366083",
+          "title": "TP53 - IntAct",
+          "snippet": "Interactor: TP53\nDescription: Cellular tumor antigen p53\nUniProt: P04637\nSpecies: Homo sapiens\nType: protein\nInteractions: 1757",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:18.676254"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-297353",
+          "identifier": "IntAct:EBI-297353",
+          "title": "EGFR - IntAct",
+          "snippet": "Interactor: EGFR\nDescription: Epidermal growth factor receptor\nUniProt: P00533\nSpecies: Homo sapiens\nType: protein\nInteractions: 1723",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:18.676274"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-357345",
+          "identifier": "IntAct:EBI-357345",
+          "title": "SCRIB - IntAct",
+          "snippet": "Interactor: SCRIB\nDescription: Protein scribble homolog\nUniProt: Q14160\nSpecies: Homo sapiens\nType: protein\nInteractions: 1704",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:18.676284"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366233",
+          "identifier": "IntAct:EBI-366233",
+          "title": "MAPT - IntAct",
+          "snippet": "Interactor: MAPT\nDescription: Microtubule-associated protein tau\nUniProt: P10636-8\nSpecies: Homo sapiens\nType: protein\nInteractions: 7000",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:29.267200"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-77613",
+          "identifier": "IntAct:EBI-77613",
+          "title": "APP - IntAct",
+          "snippet": "Interactor: APP\nDescription: Amyloid-beta precursor protein\nUniProt: P05067\nSpecies: Homo sapiens\nType: protein\nInteractions: 1779",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:29.267273"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366083",
+          "identifier": "IntAct:EBI-366083",
+          "title": "TP53 - IntAct",
+          "snippet": "Interactor: TP53\nDescription: Cellular tumor antigen p53\nUniProt: P04637\nSpecies: Homo sapiens\nType: protein\nInteractions: 1757",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:29.267298"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-297353",
+          "identifier": "IntAct:EBI-297353",
+          "title": "EGFR - IntAct",
+          "snippet": "Interactor: EGFR\nDescription: Epidermal growth factor receptor\nUniProt: P00533\nSpecies: Homo sapiens\nType: protein\nInteractions: 1723",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:29.267320"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-357345",
+          "identifier": "IntAct:EBI-357345",
+          "title": "SCRIB - IntAct",
+          "snippet": "Interactor: SCRIB\nDescription: Protein scribble homolog\nUniProt: Q14160\nSpecies: Homo sapiens\nType: protein\nInteractions: 1704",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:29.267342"
+        }
+      ],
+      "raw_data": {
+        "intact_HIV-1 Peptide Vaccine, Microparticulate Monovalent": {
+          "total_elements": 1772,
+          "interactors": [
+            {
+              "interactorAc": "EBI-366233",
+              "interactorName": "MAPT",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P10636-8",
+              "interactorDescription": "Microtubule-associated protein tau",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 7000,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-77613",
+              "interactorName": "APP",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P05067",
+              "interactorDescription": "Amyloid-beta precursor protein",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1779,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-366083",
+              "interactorName": "TP53",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P04637",
+              "interactorDescription": "Cellular tumor antigen p53",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1757,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-297353",
+              "interactorName": "EGFR",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P00533",
+              "interactorDescription": "Epidermal growth factor receptor",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1723,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-357345",
+              "interactorName": "SCRIB",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "Q14160",
+              "interactorDescription": "Protein scribble homolog",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1704,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            }
+          ]
+        },
+        "intact_HIV-1 Peptide Immunogen, Multivalent": {
+          "total_elements": 1770,
+          "interactors": [
+            {
+              "interactorAc": "EBI-366233",
+              "interactorName": "MAPT",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P10636-8",
+              "interactorDescription": "Microtubule-associated protein tau",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 7000,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-77613",
+              "interactorName": "APP",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P05067",
+              "interactorDescription": "Amyloid-beta precursor protein",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1779,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-366083",
+              "interactorName": "TP53",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P04637",
+              "interactorDescription": "Cellular tumor antigen p53",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1757,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-297353",
+              "interactorName": "EGFR",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P00533",
+              "interactorDescription": "Epidermal growth factor receptor",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1723,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-357345",
+              "interactorName": "SCRIB",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "Q14160",
+              "interactorDescription": "Protein scribble homolog",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1704,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            }
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "card",
+      "nct_id": "NCT00000846",
+      "citations": [],
+      "raw_data": {
+        "card_livesearch_HIV-1 Peptide Vaccine, Microparticulate Monovalent_html_len": 22,
+        "card_HIV-1 Peptide Vaccine, Microparticulate Monovalent_matches": 0,
+        "card_livesearch_HIV-1 Peptide Immunogen, Multivalent_html_len": 22,
+        "card_HIV-1 Peptide Immunogen, Multivalent_matches": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00000846",
+      "citations": [],
+      "raw_data": {
+        "pdbe_{'name': 'HIV-1 Peptide Vaccine, Microparticulate Monovalent'}_count": 0,
+        "pdbe_{'name': 'HIV-1 Peptide Immunogen, Multivalent'}_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 7,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbamp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "intact": {
+      "citations_count": 10,
+      "has_data": true,
+      "quality_avg": 0.75
+    },
+    "card": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

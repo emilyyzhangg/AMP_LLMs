@@ -1,0 +1,735 @@
+{
+  "nct_id": "NCT01718899",
+  "completed_at": "2026-03-19 01:34:39 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01718899",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "snippet": "Title: A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:33:44.468055"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to determine the safety and tolerability of PVX-410, (a cancer vaccine), treatment regimen for patients with smoldering multiple myeloma as a single agent and in combination with lenalidomide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:33:44.468122"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:33:44.468144"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:33:44.468163"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Intervention: PVX-410",
+          "snippet": "BIOLOGICAL: PVX-410 - Approximately 10 patients will receive 6, bi-weekly, subcutaneous injections of a dose of PVX-410 in combination with an intramuscular injection of Hiltonol (Poly ICLC). Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:33:44.468186"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:33:44.468204"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01718899",
+            "orgStudyIdInfo": {
+              "id": "2010-001"
+            },
+            "organization": {
+              "fullName": "OncoPep, Inc.",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Phase 1/2a Study of Cancer Vaccine to Treat Smoldering Multiple Myeloma",
+            "officialTitle": "A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2016-09",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2012-11"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2016-06",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2016-09",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-10-29",
+            "studyFirstSubmitQcDate": "2012-10-29",
+            "studyFirstPostDateStruct": {
+              "date": "2012-10-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2016-09-26",
+            "lastUpdatePostDateStruct": {
+              "date": "2016-09-28",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "OncoPep, Inc.",
+              "class": "INDUSTRY"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": true
+          },
+          "descriptionModule": {
+            "briefSummary": "The purpose of this study is to determine the safety and tolerability of PVX-410, (a cancer vaccine), treatment regimen for patients with smoldering multiple myeloma as a single agent and in combination with lenalidomide.",
+            "detailedDescription": "This is a dose escalation, phase 1/2a study to assess the safety and tolerability of PVX-410, (a multi-peptide cancer vaccine), treatment regimen in patients with smoldering multiple myeloma as a single agent and in combination with lenalidomide.. Approximately 22 patients will receive six (6) bi-weekly, subcutaneous injections of PVX-410 for a total of twelve (12) weeks of treatment. Safety will be monitored throughout the study. Tolerability, immunogenicity and clinical response will also be measured as described in the protocol."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Smoldering Multiple Myeloma"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 22,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "PVX-410, .4 mg dose",
+                "type": "EXPERIMENTAL",
+                "description": "Approximately 3 patients will receive 6, bi-weekly, subcutaneous injections of a .4 mg dose of PVX-410 in combination with an intramuscular injection of Hiltonol (poly ICLC). Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12 months.",
+                "interventionNames": [
+                  "Biological: PVX-410"
+                ]
+              },
+              {
+                "label": "PVX-410, .8 mg dose",
+                "type": "EXPERIMENTAL",
+                "description": "Approximately 10 patients will receive 6, bi-weekly, subcutaneous injections of an .8 mg dose of PVX-410 in combination with an intramuscular injection of Hiltonol (Poly ICLC). Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12 months.",
+                "interventionNames": [
+                  "Biological: PVX-410"
+                ]
+              },
+              {
+                "label": "PVX-410 plus lenalidomide",
+                "type": "EXPERIMENTAL",
+                "description": "Approximately 10 patients will receive 6, bi-weekly, subcutaneous injections of an .8 mg dose of PVX-410 in combination with an intramuscular injection of Hiltonol (Poly ICLC). Patients will also receive 3 cycles of lenalidomide. Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12 months",
+                "interventionNames": [
+                  "Biological: PVX-410"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "PVX-410",
+                "description": "Approximately 10 patients will receive 6, bi-weekly, subcutaneous injections of a dose of PVX-410 in combination with an intramuscular injection of Hiltonol (Poly ICLC). Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12 months",
+                "armGroupLabels": [
+                  "PVX-410 plus lenalidomide",
+                  "PVX-410, .4 mg dose",
+                  "PVX-410, .8 mg dose"
+                ],
+                "otherNames": [
+                  "Revlimid"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "All adverse events will be recorded.",
+                "timeFrame": "Throughout treatment phase (3 months) and follow up period (12 months)"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Immune response to the vaccine will be measured",
+                "description": "Patient blood samples will be measured for immune response through ELISPOT and Pentamer assays.",
+                "timeFrame": "Designated timepoints during the treatment phase (3 months) and follow up phase (12 months)"
+              }
+            ],
+            "otherOutcomes": [
+              {
+                "measure": "Clinical Response will be measured.",
+                "description": "Clinical response will be determined by the treating physician according to the International Myeloma Working Group Disease Response Criteria.",
+                "timeFrame": "Designated timepoints during the treatment phase (3 months) and follow up phase (12 months)"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "* Patient has confirmed clinical diagnosis of SMM according to a definition derived from the International Myeloma Working Group (IMWG) definition: serum M-protein \u22653 g/dL or bone marrow clonal plasma cells (BMPC) greater than or equal to 10%, or both, along with normal organ and marrow function (CRAB) within 4 weeks before baseline.\n* C: Absence of hypercalcemia, evidenced by a calcium \\<10.5 mg/dL.\n* R: Absence of renal failure, evidenced by a creatinine \\<2.0 mg/dL or calculated creatinine clearance (using the Modification of Diet in Renal Disease \\[MDRD\\] formula) \\>50 mL/min.\n* A: Absence of anemia, evidenced by a hemoglobin \\>10 g/dL.\n* B: Absence of lytic bone lesions on standard skeletal survey.\n* Patient is at higher than average risk of progression to active MM, defined as having 2 or more of the following features:\n* Serum monoclonal (M)-protein \u22653 g/dL.\n* BMPC greater than or equal to 10%.\n* Abnormal serum free light chain (FLC) ratio (0.26-1.65).\n* Patient has a life expectancy of greater than 6 months\n* Patient is human leukocyte antigen (HLA)-A2 positive.\n* Patient has an Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1.\n* Patient has adequate bone marrow function, evidenced by a platelet count \u226575\u00d7109/L and an absolute neutrophil count (ANC) \u22651.0\u00d7109/L within 2 weeks before baseline.\n* Patient has adequate hepatic function, evidenced by a bilirubin \u22642.0 mg/dL and an alanine transaminase (ALT), and aspartate transaminase (AST) \u22642.5\u00d7 the upper limit of normal (ULN) within 2 weeks before baseline.\n* If of child-bearing potential, patient agrees to use adequate birth control measures during study participation.\n* If a female of child-bearing potential, patient has negative urine pregnancy test results within 2 weeks before baseline and is not lactating.\n* Patient (or his or her legally accepted representative) has provided written informed consent to participate in the study.\n\nExclusion Criteria:\n\n* Patient has symptomatic multiple myeloma, as defined by any of the following:\n* Lytic lesions or pathologic fractures.\n* Anemia (hemoglobin \\<10 g/dL).\n* Hypercalcemia (corrected serum calcium \\>11.5 mg/dL).\n* Renal insufficiency (creatinine \\>2 mg/dL).\n* Other: symptomatic hyperviscosity, amyloidosis.\n* Patient has abnormal cardiac status, evidenced by any of the following:\n* New York Heart Association (NYHA) stage III or IV congestive heart failure (CHF).\n* Myocardial infarction within the previous 6 months.\n* Symptomatic cardiac arrhythmia requiring treatment or persisting despite treatment.\n* Patient is receiving any other investigational agent.\n* Patient has a current active infectious disease or positive serology for human immunodeficiency virus (HIV), hepatitis C virus (HCV), or hepatitis B virus (HBV).\n* Patient has a history of or current auto-immune disease.\n* Patient has been vaccinated with live attenuated vaccines within 4 weeks before study vaccination.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "95 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Noopur Raje, MD",
+                "affiliation": "Massachusetts General Hospital",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              },
+              {
+                "name": "Michael Wang, MD",
+                "affiliation": "M.D. Anderson Cancer Center",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              },
+              {
+                "name": "Ajay Nooka, MD",
+                "affiliation": "Emory University",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Winship Cancer Institute, Emory University",
+                "city": "Atlanta",
+                "state": "Georgia",
+                "zip": "30322",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.749,
+                  "lon": -84.38798
+                }
+              },
+              {
+                "facility": "Illinois Cancer Specialists",
+                "city": "Niles",
+                "state": "Illinois",
+                "zip": "60714",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.01892,
+                  "lon": -87.80284
+                }
+              },
+              {
+                "facility": "Beth Israel Deaconess Medical Center",
+                "city": "Boston",
+                "state": "Massachusetts",
+                "zip": "02115",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.35843,
+                  "lon": -71.05977
+                }
+              },
+              {
+                "facility": "Dana Farber Cancer Institute",
+                "city": "Boston",
+                "state": "Massachusetts",
+                "zip": "02115",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.35843,
+                  "lon": -71.05977
+                }
+              },
+              {
+                "facility": "Massachusetts General Hospital",
+                "city": "Boston",
+                "state": "Massachusetts",
+                "zip": "02115",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.35843,
+                  "lon": -71.05977
+                }
+              },
+              {
+                "facility": "University of Texas, MD Anderson Cancer Center",
+                "city": "Houston",
+                "state": "Texas",
+                "zip": "77030",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.76328,
+                  "lon": -95.36327
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "30128502",
+                "type": "DERIVED",
+                "citation": "Nooka AK, Wang ML, Yee AJ, Kaufman JL, Bae J, Peterkin D, Richardson PG, Raje NS. Assessment of Safety and Immunogenicity of PVX-410 Vaccine With or Without Lenalidomide in Patients With Smoldering Multiple Myeloma: A Nonrandomized Clinical Trial. JAMA Oncol. 2018 Dec 1;4(12):e183267. doi: 10.1001/jamaoncol.2018.3267. Epub 2018 Dec 13."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01718899",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30128502/",
+          "identifier": "PMID:30128502",
+          "title": "Assessment of Safety and Immunogenicity of PVX-410 Vaccine With or Without Lenalidomide in Patients With Smoldering Multiple Myeloma: A Nonrandomized Clinical Trial.",
+          "snippet": "Title: Assessment of Safety and Immunogenicity of PVX-410 Vaccine With or Without Lenalidomide in Patients With Smoldering Multiple Myeloma: A Nonrandomized Clinical Trial.\nAuthors: Nooka Ajay K, Wang Michael Luhua, Yee Andrew J et al.\nJournal: JAMA oncology (2018)\nAbstract: IMPORTANCE: Increasing evidence suggests the significance of the role of the immune system in the progression of smoldering multiple myeloma (SMM) to symptomatic multiple myeloma (MM). Boosting the immune system via vaccination in the earlier, asymptomatic SMM stage may provide a novel strategy to p",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:33:45.197537"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12991424/",
+          "identifier": "PMC:12991424",
+          "title": "Recent developments in cancer immuno-interception strategies.",
+          "snippet": "Title: Recent developments in cancer immuno-interception strategies.\nAuthors: Zhu Z, Mathew J, Barrett B et al.\nJournal: Trends Mol Med",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.363843"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12197479/",
+          "identifier": "PMC:12197479",
+          "title": "Synergistic Integration of HDAC Inhibitors and Individualized Neoantigen Therapy (INT): A Next-Generation Combinatorial Approach for Cancer Immunotherapy.",
+          "snippet": "Title: Synergistic Integration of HDAC Inhibitors and Individualized Neoantigen Therapy (INT): A Next-Generation Combinatorial Approach for Cancer Immunotherapy.\nAuthors: Han R, Zhou H, Peng B et al.\nJournal: Vaccines (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.363927"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11982186/",
+          "identifier": "PMC:11982186",
+          "title": "Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.",
+          "snippet": "Title: Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.\nAuthors: Shah BA, Holden JA, Lenzo JC et al.\nJournal: NPJ Vaccines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.363957"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11734666/",
+          "identifier": "PMC:11734666",
+          "title": "Pathogen Molecular Pattern Receptor Agonists: Treating Cancer by Mimicking Infection.",
+          "snippet": "Title: Pathogen Molecular Pattern Receptor Agonists: Treating Cancer by Mimicking Infection.\nAuthors: Aleynick M, Svensson-Arvelund J, Flowers CR et al.\nJournal: Clin Cancer Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.363981"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10548442/",
+          "identifier": "PMC:10548442",
+          "title": "Worth a Pound of Cure? Emerging Strategies and Challenges in Cancer Immunoprevention.",
+          "snippet": "Title: Worth a Pound of Cure? Emerging Strategies and Challenges in Cancer Immunoprevention.\nAuthors: Haldar SD, Vilar E, Maitra A et al.\nJournal: Cancer Prev Res (Phila)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364004"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11035824/",
+          "identifier": "PMC:11035824",
+          "title": "Targeted therapy for multiple myeloma: an overview on CD138-based strategies.",
+          "snippet": "Title: Targeted therapy for multiple myeloma: an overview on CD138-based strategies.\nAuthors: Riccardi F, Tangredi C, Dal Bo M et al.\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364025"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9236862/",
+          "identifier": "PMC:9236862",
+          "title": "Targeting syndecan-1: new opportunities in cancer therapy.",
+          "snippet": "Title: Targeting syndecan-1: new opportunities in cancer therapy.\nAuthors: Yang Z, Chen S, Ying H et al.\nJournal: Am J Physiol Cell Physiol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364049"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9844382/",
+          "identifier": "PMC:9844382",
+          "title": "Monoclonal Gammopathies and the Bone Marrow Microenvironment: From Bench to Bedside and Then Back Again.",
+          "snippet": "Title: Monoclonal Gammopathies and the Bone Marrow Microenvironment: From Bench to Bedside and Then Back Again.\nAuthors: Plano F, Corsale AM, Gigliotta E et al.\nJournal: Hematol Rep",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364071"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8561280/",
+          "identifier": "PMC:8561280",
+          "title": "2021 European Myeloma Network review and consensus statement on smoldering multiple myeloma: how to distinguish (and manage) Dr. Jekyll and Mr. Hyde.",
+          "snippet": "Title: 2021 European Myeloma Network review and consensus statement on smoldering multiple myeloma: how to distinguish (and manage) Dr. Jekyll and Mr. Hyde.\nAuthors: Musto P, Engelhardt M, Caers J et al.\nJournal: Haematologica",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364093"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8507631/",
+          "identifier": "PMC:8507631",
+          "title": "Keeping Myeloma in Check: The Past, Present and Future of Immunotherapy in Multiple Myeloma.",
+          "snippet": "Title: Keeping Myeloma in Check: The Past, Present and Future of Immunotherapy in Multiple Myeloma.\nAuthors: Ackley J, Ochoa MA, Ghoshal D et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364115"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7865294/",
+          "identifier": "PMC:7865294",
+          "title": "What Is New in the Treatment of Smoldering Multiple Myeloma?",
+          "snippet": "Title: What Is New in the Treatment of Smoldering Multiple Myeloma?\nAuthors: Bolli N, Sgherza N, Curci P et al.\nJournal: J Clin Med",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364136"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7281647/",
+          "identifier": "PMC:7281647",
+          "title": "Treatment of Smoldering Multiple Myeloma: Ready for Prime Time?",
+          "snippet": "Title: Treatment of Smoldering Multiple Myeloma: Ready for Prime Time?\nAuthors: Kim EB, Yee AJ, Raje N\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364158"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6440721/",
+          "identifier": "PMC:6440721",
+          "title": "Assessment of Safety and Immunogenicity of PVX-410 Vaccine With or Without Lenalidomide in Patients With Smoldering Multiple Myeloma: A Nonrandomized Clinical Trial.",
+          "snippet": "Title: Assessment of Safety and Immunogenicity of PVX-410 Vaccine With or Without Lenalidomide in Patients With Smoldering Multiple Myeloma: A Nonrandomized Clinical Trial.\nAuthors: Nooka AK, Wang ML, Yee AJ et al.\nJournal: JAMA Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364179"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6467346/",
+          "identifier": "PMC:6467346",
+          "title": "Smoldering multiple myeloma: prevalence and current evidence guiding treatment decisions.",
+          "snippet": "Title: Smoldering multiple myeloma: prevalence and current evidence guiding treatment decisions.\nAuthors: Blum A, Bazou D, O'Gorman P\nJournal: Blood Lymphat Cancer",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364200"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6152877/",
+          "identifier": "PMC:6152877",
+          "title": "Overcoming multiple myeloma drug resistance in the era of cancer 'omics'.",
+          "snippet": "Title: Overcoming multiple myeloma drug resistance in the era of cancer 'omics'.\nAuthors: Guang MHZ, McCann A, Bianchi G et al.\nJournal: Leuk Lymphoma",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364221"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6142464/",
+          "identifier": "PMC:6142464",
+          "title": "Cellular and vaccine immunotherapy for multiple myeloma.",
+          "snippet": "Title: Cellular and vaccine immunotherapy for multiple myeloma.\nAuthors: Garfall AL, Stadtmauer EA\nJournal: Hematology Am Soc Hematol Educ Program",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364243"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5705823/",
+          "identifier": "PMC:5705823",
+          "title": "End points and statistical considerations in immuno-oncology trials: impact on multiple myeloma.",
+          "snippet": "Title: End points and statistical considerations in immuno-oncology trials: impact on multiple myeloma.\nAuthors: Hoering A, Durie B, Wang H et al.\nJournal: Future Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364264"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5118065/",
+          "identifier": "PMC:5118065",
+          "title": "Targeting Intrinsic and Extrinsic Vulnerabilities for the Treatment of Multiple Myeloma.",
+          "snippet": "Title: Targeting Intrinsic and Extrinsic Vulnerabilities for the Treatment of Multiple Myeloma.\nAuthors: Anreddy N, Hazlehurst LA\nJournal: J Cell Biochem",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364285"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4707075/",
+          "identifier": "PMC:4707075",
+          "title": "Dissecting the multiple myeloma-bone microenvironment reveals new therapeutic opportunities.",
+          "snippet": "Title: Dissecting the multiple myeloma-bone microenvironment reveals new therapeutic opportunities.\nAuthors: Shay G, Hazlehurst L, Lynch CC\nJournal: J Mol Med (Berl)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364306"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5168808/",
+          "identifier": "PMC:5168808",
+          "title": "The Society for Immunotherapy of Cancer consensus statement on immunotherapy for the treatment of hematologic malignancies: multiple myeloma, lymphoma, and acute leukemia.",
+          "snippet": "Title: The Society for Immunotherapy of Cancer consensus statement on immunotherapy for the treatment of hematologic malignancies: multiple myeloma, lymphoma, and acute leukemia.\nAuthors: Boyiadzis M, Bishop MR, Abonour R et al.\nJournal: J Immunother Cancer",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364326"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4560339/",
+          "identifier": "PMC:4560339",
+          "title": "Promising therapies in multiple myeloma.",
+          "snippet": "Title: Promising therapies in multiple myeloma.\nAuthors: Bianchi G, Richardson PG, Anderson KC\nJournal: Blood",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364347"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3902120/",
+          "identifier": "PMC:3902120",
+          "title": "Trial Watch: Peptide vaccines in cancer therapy.",
+          "snippet": "Title: Trial Watch: Peptide vaccines in cancer therapy.\nAuthors: Aranda F, Vacchelli E, Eggermont A et al.\nJournal: Oncoimmunology",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364368"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3782517/",
+          "identifier": "PMC:3782517",
+          "title": "Trial Watch: Toll-like receptor agonists for cancer therapy.",
+          "snippet": "Title: Trial Watch: Toll-like receptor agonists for cancer therapy.\nAuthors: Vacchelli E, Eggermont A, Saut\u00e8s-Fridman C et al.\nJournal: Oncoimmunology",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.364391"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [
+          "30128502"
+        ],
+        "pubmed_count": 1,
+        "pmc_ids": [
+          "12991424",
+          "12197479",
+          "11982186",
+          "11734666",
+          "10548442",
+          "11035824",
+          "9236862",
+          "9844382",
+          "8561280",
+          "8507631",
+          "7865294",
+          "7281647",
+          "6440721",
+          "6467346",
+          "6152877",
+          "6142464",
+          "5705823",
+          "5118065",
+          "4707075",
+          "5168808",
+          "4560339",
+          "3902120",
+          "3782517"
+        ],
+        "pmc_count": 23,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "uniprot_PVX-410": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 403
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_PVX-410": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01718899",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL6037588/",
+          "identifier": "CHEMBL6037588",
+          "title": "CHEMBL6037588 - ChEMBL",
+          "snippet": "Molecule: CHEMBL6037588\nMolecular weight: 563.05\nBioactivity: IC50=11.0 nM (Unchecked); IC50=10.9 nM (Unchecked)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:46.632464"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3654167/",
+          "identifier": "CHEMBL3654167",
+          "title": "CHEMBL3654167 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3654167\nType: Small molecule\nMolecular weight: 912.86\nBioactivity: Ki=0.01 nM (Apoptosis regulator Bcl-2); Ki=0.01 nM (Apoptosis regulator Bcl-2); Ki=0.01 nM (Apoptosis regulator Bcl-2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:47.965960"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3693150/",
+          "identifier": "CHEMBL3693150",
+          "title": "CHEMBL3693150 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3693150\nType: Small molecule\nMolecular weight: 427.46\nBioactivity: Ki=4.0 nM (Arachidonate 5-lipoxygenase-activating protein); Ki=4.0 nM (Arachidonate 5-lipoxygenase-activating protein); Ki=4.0 nM (Flap endonuclease 1)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:48.546448"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'PVX-410'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "rcsb_PVX-410": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_PVX-410_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "apd_PVX-410": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT01718899",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Phase 1/2a Study of Cancer Vaccine to Treat Smoldering Multiple Myeloma",
+          "snippet": "Title: Phase 1/2a Study of Cancer Vaccine to Treat Smoldering Multiple Myeloma\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: Smoldering Multiple Myeloma\nInterventions: Biological: PVX-410\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-19T08:34:39.076664"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT01718899",
+          "public_title": "Phase 1/2a Study of Cancer Vaccine to Treat Smoldering Multiple Myeloma",
+          "scientific_title": "A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Non-Randomized, Endpoint Classification: Safety Study, Intervention Model: Single Group Assignment, Masking: Open Label, Primary Purpose: Treatment",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Smoldering Multiple Myeloma"
+          ],
+          "interventions": [
+            "Biological: PVX-410"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "iuphar_PVX-410": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "pdbe_PVX-410_count": 0
+      },
+      "error": null
+    }
+  ]
+}

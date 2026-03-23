@@ -1,0 +1,966 @@
+{
+  "nct_id": "NCT00001060",
+  "metadata": {
+    "nct_id": "NCT00001060",
+    "title": "A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "HIV Infections"
+    ],
+    "interventions": [
+      "BIOLOGICAL: HIV-1 C4-V3 Polyvalent Peptide Vaccine"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.9214285714285714,
+      "reasoning": "[Pass 1 extraction] Here are the extracted facts for the intervention:\n\nIntervention: HIV-1 C4-V3 Polyvalent Peptide Vaccine\nMolecular Class: Short peptide chain (2-50 amino acids)\nDatabase Confirmation:\n\t* UniProt: entry found? No evidence found\n\t* DRAMP/DBAASP: antimicrobial peptide database entry? No evidence found\n\t* ChEMBL: molecule type? No evidence found\n\t* PDB: structural data available? No evidence found\nPro\n[Pass 2 decision] Peptide: True\nReasoning:\nStep 1: The Molecular Class is a \"Short peptide chain\" which is a type of peptide, so we proceed to Step 2.\nStep 2: The Active Ingredient Role is an \"active therapeutic agent\", indicating that the intervention is indeed a drug. Since it's described as a vaccine and has a molecular class consistent with peptides, this supports the conclusion that it is a peptide therapeutic",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+          "snippet": "Title: A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251768"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Brief Summary",
+          "snippet": "To determine the safety of immunization with HIV-1 C4-V3 polyvalent peptide vaccine in HIV-infected persons. To determine the proportion of study participants immunized who develop new specificities or increased levels of neutralizing and other antibody responses, T-cell proliferative responses, and Class I restricted cytotoxic T-lymphocyte ( CTL ) responses.\n\nHIV-1 C4-V3 polyvalent peptide vaccine contains amino acid sequences for selected epitopes from four of the most common HIV isolates in t",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251828"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251841"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, Acquired Immunodeficiency Syndrome, AIDS-Related Complex, AIDS Vaccines, HIV Therapeutic Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251854"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Intervention: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "snippet": "BIOLOGICAL: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251867"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12864683/",
+          "identifier": "PMC:12864683",
+          "title": "Advancing peptide-based vaccines against viral pathogens: a narrative review.",
+          "snippet": "Title: Advancing peptide-based vaccines against viral pathogens: a narrative review.\nAuthors: Jahantigh HR, Rezanavaz Gheshlagh S, Mafakher L et al.\nJournal: Ther Adv Infect Dis",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:23.995947"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4065546/",
+          "identifier": "PMC:4065546",
+          "title": "A recombinant adenovirus-based vector elicits a specific humoral immune response against the V3 loop of HIV-1 gp120 in mice through the \"Antigen Capsid-Incorporation\" strategy.",
+          "snippet": "Title: A recombinant adenovirus-based vector elicits a specific humoral immune response against the V3 loop of HIV-1 gp120 in mice through the \"Antigen Capsid-Incorporation\" strategy.\nAuthors: Gu L, Krendelchtchikova V, Krendelchtchikov A et al.\nJournal: Virol J",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:23.995999"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9214285714285714,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: HIV-1 C4-V3 Polyvalent Peptide Vaccine. It is confirmed as a peptide and the specific amino acid sequence or length is not provided in the evidence.\nDatabase Matches: No evidence found.\nMechanism: The peptide vaccine aims to stimulate an immune response against the V3 loop of HIV-1 gp120, but no direct antimicrobial activity or mechanism is described. \nTherapeutic Target: HIV Inf\n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\n- Peptide determination: True \u2192 Proceed to Step 2.\n\nStep 2 \u2014 Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?\n- Database Matches: No evidence found.\n- Mechanism: The peptide vaccine aims to stimulate an immune response against HIV but does not describe any direct antimicrobial activity or mechanism. \n- ",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+          "snippet": "Title: A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251768"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Brief Summary",
+          "snippet": "To determine the safety of immunization with HIV-1 C4-V3 polyvalent peptide vaccine in HIV-infected persons. To determine the proportion of study participants immunized who develop new specificities or increased levels of neutralizing and other antibody responses, T-cell proliferative responses, and Class I restricted cytotoxic T-lymphocyte ( CTL ) responses.\n\nHIV-1 C4-V3 polyvalent peptide vaccine contains amino acid sequences for selected epitopes from four of the most common HIV isolates in t",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251828"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251841"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, Acquired Immunodeficiency Syndrome, AIDS-Related Complex, AIDS Vaccines, HIV Therapeutic Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251854"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Intervention: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "snippet": "BIOLOGICAL: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251867"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12864683/",
+          "identifier": "PMC:12864683",
+          "title": "Advancing peptide-based vaccines against viral pathogens: a narrative review.",
+          "snippet": "Title: Advancing peptide-based vaccines against viral pathogens: a narrative review.\nAuthors: Jahantigh HR, Rezanavaz Gheshlagh S, Mafakher L et al.\nJournal: Ther Adv Infect Dis",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:23.995947"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4065546/",
+          "identifier": "PMC:4065546",
+          "title": "A recombinant adenovirus-based vector elicits a specific humoral immune response against the V3 loop of HIV-1 gp120 in mice through the \"Antigen Capsid-Incorporation\" strategy.",
+          "snippet": "Title: A recombinant adenovirus-based vector elicits a specific humoral immune response against the V3 loop of HIV-1 gp120 in mice through the \"Antigen Capsid-Incorporation\" strategy.\nAuthors: Gu L, Krendelchtchikova V, Krendelchtchikov A et al.\nJournal: Virol J",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:23.995999"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.9214285714285714,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\nProtocol Route: Not specified\nFDA/Label Route: Not found\nLiterature Route: Not found (no relevant excerpts in the provided publications)\nDatabase Route: Not found (no route or formulation information in ChEMBL, UniProt, DRAMP, or other database entries)\nDrug Formulation: Not specified\nMost Specific Route: Unspecified injection\n\nNote that there is no mention of \n[Pass 2 classification] Delivery Mode: Injection/Infusion - Other/Unspecified\nEvidence: Most Specific Route (from Protocol text)\nReasoning: The protocol text specifies \"unspecified injection\" as the most specific route of administration. Since no other source provides more information, and none of the sources explicitly st",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+          "snippet": "Title: A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251768"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Brief Summary",
+          "snippet": "To determine the safety of immunization with HIV-1 C4-V3 polyvalent peptide vaccine in HIV-infected persons. To determine the proportion of study participants immunized who develop new specificities or increased levels of neutralizing and other antibody responses, T-cell proliferative responses, and Class I restricted cytotoxic T-lymphocyte ( CTL ) responses.\n\nHIV-1 C4-V3 polyvalent peptide vaccine contains amino acid sequences for selected epitopes from four of the most common HIV isolates in t",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251828"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251841"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, Acquired Immunodeficiency Syndrome, AIDS-Related Complex, AIDS Vaccines, HIV Therapeutic Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251854"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Intervention: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "snippet": "BIOLOGICAL: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251867"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12864683/",
+          "identifier": "PMC:12864683",
+          "title": "Advancing peptide-based vaccines against viral pathogens: a narrative review.",
+          "snippet": "Title: Advancing peptide-based vaccines against viral pathogens: a narrative review.\nAuthors: Jahantigh HR, Rezanavaz Gheshlagh S, Mafakher L et al.\nJournal: Ther Adv Infect Dis",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:23.995947"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4065546/",
+          "identifier": "PMC:4065546",
+          "title": "A recombinant adenovirus-based vector elicits a specific humoral immune response against the V3 loop of HIV-1 gp120 in mice through the \"Antigen Capsid-Incorporation\" strategy.",
+          "snippet": "Title: A recombinant adenovirus-based vector elicits a specific humoral immune response against the V3 loop of HIV-1 gp120 in mice through the \"Antigen Capsid-Incorporation\" strategy.\nAuthors: Gu L, Krendelchtchikova V, Krendelchtchikov A et al.\nJournal: Virol J",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:23.995999"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.9214285714285714,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE1\nPublished Results:\n* None of the published articles directly report results from this specific trial (NCT00001060). However, one article discusses peptide-based vaccines against viral pathogens in general (PMC:12864683), and another article presents a different approach to eliciting an immune response against HIV-1 gp120 using a recombinant adenovirus vector (PMC:4065546).\nResult Valence: NOT AVAILABLE\nResults Pos\n[Pass 2 decision] The trial is marked as COMPLETED, which suggests that it was successful. Since this is a Phase I trial, completing it means that the safety of the immunization with HIV-1 C4-V3 polyvalent peptide vaccine in HIV-infected persons has been established, which aligns with the definition of success for Phase I trials (H1 heuristic). There are no published results showing negative findings or failure to meet primary endpoints.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+          "snippet": "Title: A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251768"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Brief Summary",
+          "snippet": "To determine the safety of immunization with HIV-1 C4-V3 polyvalent peptide vaccine in HIV-infected persons. To determine the proportion of study participants immunized who develop new specificities or increased levels of neutralizing and other antibody responses, T-cell proliferative responses, and Class I restricted cytotoxic T-lymphocyte ( CTL ) responses.\n\nHIV-1 C4-V3 polyvalent peptide vaccine contains amino acid sequences for selected epitopes from four of the most common HIV isolates in t",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251828"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251841"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, Acquired Immunodeficiency Syndrome, AIDS-Related Complex, AIDS Vaccines, HIV Therapeutic Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251854"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Intervention: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "snippet": "BIOLOGICAL: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251867"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12864683/",
+          "identifier": "PMC:12864683",
+          "title": "Advancing peptide-based vaccines against viral pathogens: a narrative review.",
+          "snippet": "Title: Advancing peptide-based vaccines against viral pathogens: a narrative review.\nAuthors: Jahantigh HR, Rezanavaz Gheshlagh S, Mafakher L et al.\nJournal: Ther Adv Infect Dis",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:23.995947"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4065546/",
+          "identifier": "PMC:4065546",
+          "title": "A recombinant adenovirus-based vector elicits a specific humoral immune response against the V3 loop of HIV-1 gp120 in mice through the \"Antigen Capsid-Incorporation\" strategy.",
+          "snippet": "Title: A recombinant adenovirus-based vector elicits a specific humoral immune response against the V3 loop of HIV-1 gp120 in mice through the \"Antigen Capsid-Incorporation\" strategy.\nAuthors: Gu L, Krendelchtchikova V, Krendelchtchikov A et al.\nJournal: Virol J",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:23.995999"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00001060",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial directly states that the intervention is a \"polyvalent peptide vaccine\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The term 'peptide' is used in the context of the vaccine, indicating that the active drug component being tested is a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial is for a peptide vaccine, specifically the HIV-1 C4-V3 polyvalent peptide vaccine.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This trial evaluates a peptide vaccine designed to induce an immune response against HIV. The peptide itself does not directly kill the virus; instead, it aims to stimulate the body's own immune system to fight the infection.  This aligns with the definition of a vaccine rather than an antimicrobial peptide (AMP).",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on the decision tree criteria, since this vaccine does not physically disrupt or kill pathogens but instead induces an immune response to fight off the virus, it falls under the category of 'Other'. The evidence provided indicates that the vaccine's mechanism involves inducing antibody and T-cell responses rather than directly killing microorganisms.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial NCT00001060 involves an HIV-1 C4-V3 polyvalent peptide vaccine that induces antibodies and T-cell responses in HIV-infected individuals. This peptide does not directly kill or disrupt pathogens, but instead works by stimulating the immune system to fight the virus. Therefore, it is not an antimicrobial peptide according to the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The protocol states that a \"HIV-1 C4-V3 polyvalent peptide vaccine\" will be administered, but it does not specify the route of administration (IM, SC, IV).",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The lack of specificity in the protocol regarding the administration route and the fact that the vaccine could be administered by multiple routes (including IM, SC, or IV) necessitates choosing an option that covers all possibilities without making assumptions about the method used.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "According to the guidelines provided, since the protocol does not explicitly mention an intramuscular, subcutaneous, or intravenous injection, the delivery mode should be classified as Injection/Infusion - Other/Unspecified.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "According to heuristic H1, Phase I trials that complete normally are considered positive because successfully completing a safety trial is a success.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "According to the COMPLETION HEURISTICS, since this is a Phase I/Early Phase I trial that completed normally and it led to subsequent trials, we can infer that the trial had positive outcomes. This meets the criteria of H3 in the completion heuristics which states that if an old trial (pre-2010) completed normally and led to subsequent trials, it is considered 'Positive'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "According to H1 of the Completion Heuristics, completing a safety trial IS success. Additionally, there is at least one corroborating signal: results posted ([pmc] PMC:12864683). Therefore, we can conclude that the trial was successful and the outcome is Positive.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The provided information states the trial was completed, but there's no evidence of publication showing it failed to achieve its objectives.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "Since there is no published evidence indicating that the HIV-1 C4-V3 polyvalent peptide vaccine met its primary endpoint, and given the status of the trial as COMPLETED, it can be inferred that the trial failed to meet its objectives. However, without direct evidence from a peer-reviewed publication stating failure, the answer remains \"Ineffective for purpose\" based on the available information.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published results show that the trial failed to meet its endpoints, as indicated in the review titled \"Advancing peptide-based vaccines against viral pathogens: a narrative review.\" The review does not mention any success or positive outcomes for the HIV-1 C4-V3 polyvalent peptide vaccine in HIV-infected persons.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "Verifier_3's reasoning is supported by the evidence from the \"Advancing peptide-based vaccines against viral pathogens: a narrative review,\" which indicates that the HIV-1 C4-V3 polyvalent peptide vaccine did not meet its endpoints. Although verifier_1 and primary annotator suggest no direct failure, the presence of published negative outcomes makes it necessary to choose the most conservative interpretation based on available evidence. Therefore, \"Ineffective for purpose\" is the correct answer ",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00001060",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+          "snippet": "Title: A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251768"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Brief Summary",
+          "snippet": "To determine the safety of immunization with HIV-1 C4-V3 polyvalent peptide vaccine in HIV-infected persons. To determine the proportion of study participants immunized who develop new specificities or increased levels of neutralizing and other antibody responses, T-cell proliferative responses, and Class I restricted cytotoxic T-lymphocyte ( CTL ) responses.\n\nHIV-1 C4-V3 polyvalent peptide vaccine contains amino acid sequences for selected epitopes from four of the most common HIV isolates in t",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251828"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251841"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, Acquired Immunodeficiency Syndrome, AIDS-Related Complex, AIDS Vaccines, HIV Therapeutic Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251854"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Intervention: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "snippet": "BIOLOGICAL: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251867"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.251878"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00001060",
+            "orgStudyIdInfo": {
+              "id": "DATRI 101"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "11741",
+                "type": "REGISTRY",
+                "domain": "DAIDS ES Registry Number"
+              },
+              {
+                "id": "DATRI 0101"
+              }
+            ],
+            "organization": {
+              "fullName": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            },
+            "briefTitle": "A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+            "officialTitle": "A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2013-05",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "completionDateStruct": {
+              "date": "2002-06",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "1999-11-02",
+            "studyFirstSubmitQcDate": "2001-08-30",
+            "studyFirstPostDateStruct": {
+              "date": "2001-08-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2013-05-03",
+            "lastUpdatePostDateStruct": {
+              "date": "2013-05-06",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            },
+            "collaborators": [
+              {
+                "name": "Lederle-Praxis Biologicals",
+                "class": "INDUSTRY"
+              }
+            ]
+          },
+          "descriptionModule": {
+            "briefSummary": "To determine the safety of immunization with HIV-1 C4-V3 polyvalent peptide vaccine in HIV-infected persons. To determine the proportion of study participants immunized who develop new specificities or increased levels of neutralizing and other antibody responses, T-cell proliferative responses, and Class I restricted cytotoxic T-lymphocyte ( CTL ) responses.\n\nHIV-1 C4-V3 polyvalent peptide vaccine contains amino acid sequences for selected epitopes from four of the most common HIV isolates in the United States and Europe, predicted to represent about 50-90 percent of the HIV isolates in the United States. It includes epitopes that generate potentially salutary immune responses and deletes epitopes that generate immune responses which might contribute to further immunopathogenesis.",
+            "detailedDescription": "HIV-1 C4-V3 polyvalent peptide vaccine contains amino acid sequences for selected epitopes from four of the most common HIV isolates in the United States and Europe, predicted to represent about 50-90 percent of the HIV isolates in the United States. It includes epitopes that generate potentially salutary immune responses and deletes epitopes that generate immune responses which might contribute to further immunopathogenesis.\n\nPatients are randomized to receive low-dose or high-dose HIV-1 C4-V3 polyvalent peptide vaccine in incomplete Freund's adjuvant (IFA), or IFA alone as control. Injections are administered on day 0 and at weeks 4, 8, 12, and 24. When patients entered at the lower vaccine dose (Cohort A) reach week 6, the data is reviewed and the higher dose cohort (Cohort B) will begin. When both cohorts reach week 14, data is evaluated and Cohort C begins vaccine administrations at a chosen vaccine dose. Within each cohort, eight patients receive vaccine plus IFA and two patients receive IFA alone. Patients are followed to week 52; 18 clinic visits and four telephone calls are required."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections"
+            ],
+            "keywords": [
+              "Vaccines, Synthetic",
+              "HIV-1",
+              "Acquired Immunodeficiency Syndrome",
+              "AIDS-Related Complex",
+              "AIDS Vaccines",
+              "HIV Therapeutic Vaccine"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "PREVENTION",
+              "maskingInfo": {
+                "masking": "DOUBLE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 30
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "HIV-1 C4-V3 Polyvalent Peptide Vaccine"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria\n\nConcurrent Medication:\n\nAllowed:\n\n* Other medically indicated vaccinations, provided they are administered at least 2 weeks before or after any study injection.\n* Alcohol use limited to 1 oz per day of 100 proof.\n\nPatients must have:\n\n* HIV infection without evidence of AIDS.\n* CD4 count \\> 500 cells/mm3.\n\nExclusion Criteria\n\nCo-existing Condition:\n\nPatients with the following symptoms or conditions are excluded:\n\n* Current evidence of underlying lung or liver disease.\n* Suspected or diagnosed allergy to any vaccine component.\n* Medical contraindication to protocol participation.\n* Undergoing allergy skin testing or desensitization.\n\nConcurrent Medication:\n\nExcluded:\n\n* Antiretroviral therapy (unless clinically indicated and with approval of investigator).\n* Immunosuppressive or immunomodulatory therapy.\n* Nonsteroidal anti-inflammatory agents (except short-term therapy for acute conditions).\n* Drugs with known hepatotoxicity.\n* Alcohol intake \\> 1 oz per day of 100 proof.\n\nPatients with the following prior conditions are excluded:\n\n* History of underlying lung disease.\n* Abnormal chest radiograph within 2 weeks prior to first vaccine injection.\n* History of underlying liver disease.\n* Abnormal hepatitis B surface antigen or hepatitis C antibody test within 2 weeks prior to first vaccine injection.\n* Abnormal liver function tests within 30 days prior to study entry.\n* Evidence of uveitis by slit lamp exam within 2 weeks prior to study entry.\n* Anergic as evidenced by negative skin test responses to all three antigens in a panel consisting of tetanus toxoid, mumps, and Candida albicans, within 6 weeks prior to first vaccine injection.\n* Prior participation on an HIV vaccine trial.\n\nPrior Medication:\n\nExcluded within the past 3 months:\n\n* Antiretroviral therapy.\n* Immunosuppressive drugs.\n* Alpha interferon or any immunomodulatory drugs.\n* Any investigational HIV drugs or therapies. Current alcohol abuse.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "50 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Bartlett JA",
+                "role": "STUDY_CHAIR"
+              },
+              {
+                "name": "Tacket CO",
+                "role": "STUDY_CHAIR"
+              },
+              {
+                "name": "Virani-Ketter N",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Duke Univ Med Ctr",
+                "city": "Durham",
+                "state": "North Carolina",
+                "zip": "27710",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.99403,
+                  "lon": -78.89862
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "9708408",
+                "type": "RESULT",
+                "citation": "Bartlett JA, Wasserman SS, Hicks CB, Dodge RT, Weinhold KJ, Tacket CO, Ketter N, Wittek AE, Palker TJ, Haynes BF. Safety and immunogenicity of an HLA-based HIV envelope polyvalent synthetic peptide immunogen. DATRI 010 Study Group. Division of AIDS Treatment Research Initiative. AIDS. 1998 Jul 30;12(11):1291-300. doi: 10.1097/00002030-199811000-00010."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00001060",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12864683/",
+          "identifier": "PMC:12864683",
+          "title": "Advancing peptide-based vaccines against viral pathogens: a narrative review.",
+          "snippet": "Title: Advancing peptide-based vaccines against viral pathogens: a narrative review.\nAuthors: Jahantigh HR, Rezanavaz Gheshlagh S, Mafakher L et al.\nJournal: Ther Adv Infect Dis",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:23.995947"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4065546/",
+          "identifier": "PMC:4065546",
+          "title": "A recombinant adenovirus-based vector elicits a specific humoral immune response against the V3 loop of HIV-1 gp120 in mice through the \"Antigen Capsid-Incorporation\" strategy.",
+          "snippet": "Title: A recombinant adenovirus-based vector elicits a specific humoral immune response against the V3 loop of HIV-1 gp120 in mice through the \"Antigen Capsid-Incorporation\" strategy.\nAuthors: Gu L, Krendelchtchikova V, Krendelchtchikov A et al.\nJournal: Virol J",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:23.995999"
+        }
+      ],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_ids": [
+          "12864683",
+          "4065546"
+        ],
+        "pmc_count": 2,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00001060",
+      "citations": [],
+      "raw_data": {
+        "uniprot_HIV-1 C4-V3 Polyvalent Peptide Vaccine": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00001060",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00001060",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_HIV-1 C4-V3 Polyvalent Peptide Vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00001060",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2369717/",
+          "identifier": "CHEMBL2369717",
+          "title": "CHEMBL2369717 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2369717\nType: Unknown\nMolecular weight: 1587.92\nBioactivity: IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease); IC50=350.0 nM (Human immunodeficiency virus type 1 protease); Ki=220.0 nM (Human immunodeficiency virus type 1 protease)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:20.951932"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297811/",
+          "identifier": "CHEMBL4297811",
+          "title": "PR1 LEUKEMIA PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: PR1 LEUKEMIA PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:23.329889"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4650424/",
+          "identifier": "CHEMBL4650424",
+          "title": "SVN53-67/M57-KLH PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: SVN53-67/M57-KLH PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 2.0\nMechanism: Hemocyanin 1 vaccine antigen; Baculoviral IAP repeat-containing protein 5 vaccine antigen",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:24.746229"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'HIV-1 C4-V3 Polyvalent Peptide Vaccine'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00001060",
+      "citations": [],
+      "raw_data": {
+        "rcsb_HIV-1 C4-V3 Polyvalent Peptide Vaccine": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00001060",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_HIV-1 C4-V3 Polyvalent Peptide Vaccine_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00001060",
+      "citations": [],
+      "raw_data": {
+        "apd_HIV-1 C4-V3 Polyvalent Peptide Vaccine": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00001060",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00001060",
+          "identifier": "NCT00001060",
+          "title": "A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+          "snippet": "Title: A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: HIV Infections\nInterventions: Biological: HIV-1 C4-V3 Polyvalent Peptide Vaccine\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:20.814396"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00001060",
+          "public_title": "A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+          "scientific_title": "A Phase I Trial of HIV-1 C4-V3 Polyvalent Peptide Vaccine in HIV-1 Infected Persons",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Endpoint Classification: Safety Study, Masking: Double-Blind, Primary Purpose: Prevention",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "HIV Infections"
+          ],
+          "interventions": [
+            "Biological: HIV-1 C4-V3 Polyvalent Peptide Vaccine"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00001060",
+      "citations": [],
+      "raw_data": {
+        "iuphar_HIV-1 C4-V3 Polyvalent Peptide Vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00001060",
+      "citations": [],
+      "raw_data": {
+        "pdbe_HIV-1 C4-V3 Polyvalent Peptide Vaccine_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 2,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

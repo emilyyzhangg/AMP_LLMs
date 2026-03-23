@@ -1,0 +1,2124 @@
+{
+  "nct_id": "NCT01920191",
+  "metadata": {
+    "nct_id": "NCT01920191",
+    "title": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+    "phase": "PHASE1, PHASE2",
+    "status": "COMPLETED",
+    "conditions": [
+      "CNS Tumor, Adult"
+    ],
+    "interventions": [
+      "BIOLOGICAL: IMA 950",
+      "BIOLOGICAL: Poly ICLC",
+      "OTHER: Immunomonitoring"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.8400000000000001,
+      "reasoning": "[Pass 1 extraction] Here are the answers to the questions:\n\n1. INTERVENTION NAME: IMA-026\n2. MOLECULAR CLASS: Unknown\n3. DATABASE CONFIRMATION: No evidence found in ChEMBL or UniProt databases for IMA-026. However, there is a mention of \"multipeptide\" vaccine, which suggests that the intervention may be a peptide-based vaccine.\n4. PRODUCT DESCRIPTION: The product is described as a \"vaccine\", specifically a multipepti\n[Pass 2 decision] Peptide: True\nReasoning:\n\nStep 1: Since Molecular Class is Unknown, we need to check database confirmation in Step 2.\n\nStep 2: Although there's no direct evidence of IMA-026 in ChEMBL or UniProt databases, the mention of \"multipeptide\" vaccine suggests it may be a peptide-based vaccine. Given that the Active Ingredient Role states the peptide is the active therapeutic agent, we can proceed to Step",
+      "evidence": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5805328/",
+          "identifier": "CHEMBL5805328",
+          "title": "CHEMBL5805328 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5805328\nMolecular weight: 544.70\nBioactivity: IC50=7.2 nM (Toll-like receptor 7); IC50=4.9 nM (Toll-like receptor 8)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:31.914296"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5809237/",
+          "identifier": "CHEMBL5809237",
+          "title": "CHEMBL5809237 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5809237\nMolecular weight: 510.62\nBioactivity: IC50=0.47 nM (Serine/threonine-protein kinase B-raf); IC50=0.21 nM (Unchecked)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:33.396033"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4594477/",
+          "identifier": "CHEMBL4594477",
+          "title": "IMA-026 - ChEMBL",
+          "snippet": "Molecule: IMA-026\nType: Unknown\nMax clinical phase: 1.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:33.814376"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297559/",
+          "identifier": "CHEMBL4297559",
+          "title": "HILTONOL - ChEMBL",
+          "snippet": "Molecule: HILTONOL\nType: Unknown\nMax clinical phase: 2.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:36.039370"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL158666/",
+          "identifier": "CHEMBL158666",
+          "title": "AUTONOM NAME: - ChEMBL",
+          "snippet": "Molecule: AUTONOM NAME:\nType: Small molecule\nMolecular weight: 398.58\nBioactivity: Ki=50.4 nM (Protein kinase C alpha type); LogD=7.0 (No relevant target)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:36.557824"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2147156/",
+          "identifier": "CHEMBL2147156",
+          "title": "POLY(AMIDOAMINE)DENDRIMER - ChEMBL",
+          "snippet": "Molecule: POLY(AMIDOAMINE)DENDRIMER\nType: Small molecule\nMolecular weight: 3256.24\nBioactivity: Tm=62.8 degrees C (Ribonuclease pancreatic); Tm=63.2 degrees C (Ribonuclease pancreatic)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:36.967012"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL158666/",
+          "identifier": "CHEMBL158666",
+          "title": "AUTONOM NAME: - ChEMBL",
+          "snippet": "Molecule: AUTONOM NAME:\nType: Small molecule\nMolecular weight: 398.58\nBioactivity: Ki=50.4 nM (Protein kinase C alpha type); LogD=7.0 (No relevant target)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:37.865068"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5777886/",
+          "identifier": "CHEMBL5777886",
+          "title": "CHEMBL5777886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5777886\nMolecular weight: 336.41\nBioactivity: Ki=1026.0 nM (Nitric oxide synthase 1); Ki=10978.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.224847"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5788338/",
+          "identifier": "CHEMBL5788338",
+          "title": "CHEMBL5788338 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5788338\nMolecular weight: 316.42\nBioactivity: Ki=70.0 nM (Nitric oxide synthase 1); Ki=3314.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.581120"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-930964",
+          "identifier": "IntAct:EBI-930964",
+          "title": "ATXN1 - IntAct",
+          "snippet": "Interactor: ATXN1\nDescription: Ataxin-1\nUniProt: P54253\nSpecies: Homo sapiens\nType: protein\nInteractions: 2302",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:30.096439"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9349999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: IMA 950 is a multi-tumour-associated peptides (TUMAPs) vaccine. It consists of multiple tumour-associated peptides identified on primary glioblastoma multiforme cells. No specific amino acid length or molecular class provided.\n\nDatabase Matches: No evidence found.\n\nMechanism: The peptide does not directly kill or inhibit microorganisms, nor does it disrupt biofilms. Its mechanism\n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\n- Peptide determination: True \u2192 Proceed to Step 2.\n\nStep 2 \u2014 Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?\n- Database Matches: No evidence found.\n- Mechanism: The peptide does not directly kill or inhibit microorganisms, nor does it disrupt biofilms. Its mechanism involves stimulating immune defense ",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "snippet": "Title: Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677416"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Brief Summary",
+          "snippet": "RATIONALE : IMA 950 is multi tumour-associated peptides (TUMAPs) vaccine, these peptides have been identified on primary glioblastoma multiforme (GBM) cells. Poly-ICLC is a potent vaccine adjuvant with broad innate and adaptive immune enhancing effects. IMA 950 and Poly-ICLC will be administered to patients alongside standard primary therapy for glioblastoma. This includes the alkylating drug temozolomide (TMZ). Effective vaccine-induced immune responses associated with prolonged survival have b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677491"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677512"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: CNS Tumor, Adult | Keywords: Glioblastoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677538"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: IMA 950",
+          "snippet": "BIOLOGICAL: IMA 950",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Poly ICLC",
+          "snippet": "BIOLOGICAL: Poly ICLC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677580"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Immunomonitoring",
+          "snippet": "OTHER: Immunomonitoring - Blood samples, DTH analysis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677599"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677619"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30753611/",
+          "identifier": "PMID:30753611",
+          "title": "Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.",
+          "snippet": "Title: Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.\nAuthors: Migliorini Denis, Dutoit Val\u00e9rie, Allard Mathilde et al.\nJournal: Neuro-oncology (2019)\nAbstract: BACKGROUND: Peptide vaccines offer the opportunity to elicit glioma-specific T cells with tumor killing ability. Using antigens eluted from the surface of glioblastoma samples, we designed a phase I/II study to test safety and immunogenicity of the IMA950 multipeptide vaccine adjuvanted with poly-ICLC (polyinosinic-polycytidylic acid stabilized with polylysine and carboxymethylcellulose) in human leukocyte antigen A2+ glioma patients. METHODS: Adult patients with newly diagnosed glioblastoma (n ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-17T14:59:35.892599"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12955588/",
+          "identifier": "PMC:12955588",
+          "title": "Tumor antigen only (TAO) vaccine platforms for glioblastoma therapeutics: a systematic review of evidence from clinical trials.",
+          "snippet": "Title: Tumor antigen only (TAO) vaccine platforms for glioblastoma therapeutics: a systematic review of evidence from clinical trials.\nAuthors: Chen HC, Wong ET, Sarangi S et al.\nJournal: EClinicalMedicine",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247546"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Intramuscular",
+      "confidence": 0.9349999999999999,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n1. Protocol Route:\nNot specified in the ClinicalTrials.gov protocol description.\n\n2. FDA/Label Route:\nNot found in any of the provided sources.\n\n3. Literature Route:\nFrom PMID:30753611 (Migliorini et al., 2019): \"The IMA950 multipeptide vaccine adjuvanted with poly-ICLC was administered intradermally and intra-muscularly, respectively.\"\n\n4. Database Route:\nNot \n[Pass 2 classification] Delivery Mode: Injection/Infusion - Intramuscular\nEvidence: PMID:30753611 (Migliorini et al., 2019)\nReasoning: The most specific route is intramuscular (IM) based on the literature route, which states that the IMA950 multipeptide vaccine was administered intra-muscularly.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "snippet": "Title: Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677416"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Brief Summary",
+          "snippet": "RATIONALE : IMA 950 is multi tumour-associated peptides (TUMAPs) vaccine, these peptides have been identified on primary glioblastoma multiforme (GBM) cells. Poly-ICLC is a potent vaccine adjuvant with broad innate and adaptive immune enhancing effects. IMA 950 and Poly-ICLC will be administered to patients alongside standard primary therapy for glioblastoma. This includes the alkylating drug temozolomide (TMZ). Effective vaccine-induced immune responses associated with prolonged survival have b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677491"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677512"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: CNS Tumor, Adult | Keywords: Glioblastoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677538"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: IMA 950",
+          "snippet": "BIOLOGICAL: IMA 950",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Poly ICLC",
+          "snippet": "BIOLOGICAL: Poly ICLC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677580"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Immunomonitoring",
+          "snippet": "OTHER: Immunomonitoring - Blood samples, DTH analysis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677599"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677619"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30753611/",
+          "identifier": "PMID:30753611",
+          "title": "Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.",
+          "snippet": "Title: Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.\nAuthors: Migliorini Denis, Dutoit Val\u00e9rie, Allard Mathilde et al.\nJournal: Neuro-oncology (2019)\nAbstract: BACKGROUND: Peptide vaccines offer the opportunity to elicit glioma-specific T cells with tumor killing ability. Using antigens eluted from the surface of glioblastoma samples, we designed a phase I/II study to test safety and immunogenicity of the IMA950 multipeptide vaccine adjuvanted with poly-ICLC (polyinosinic-polycytidylic acid stabilized with polylysine and carboxymethylcellulose) in human leukocyte antigen A2+ glioma patients. METHODS: Adult patients with newly diagnosed glioblastoma (n ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-17T14:59:35.892599"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12955588/",
+          "identifier": "PMC:12955588",
+          "title": "Tumor antigen only (TAO) vaccine platforms for glioblastoma therapeutics: a systematic review of evidence from clinical trials.",
+          "snippet": "Title: Tumor antigen only (TAO) vaccine platforms for glioblastoma therapeutics: a systematic review of evidence from clinical trials.\nAuthors: Chen HC, Wong ET, Sarangi S et al.\nJournal: EClinicalMedicine",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247546"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.9349999999999999,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: COMPLETED\n2. Published Results:\nThe only publication directly related to this trial (NCT01920191) is a Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients, published in Neuro-oncology (2019). The abstract states: \"Using antigens eluted from the surface of glioblastoma samples, we designed a phase I/II study to test safety and immunogenicity o\n[Pass 2 decision] The trial was completed as planned and the publication directly related to this trial shows positive findings, indicating that the vaccine was well-tolerated and induced specific immune responses in most patients. This aligns with Heuristic H2, which states that if a Phase II/III completion has results posted (hasResults=Yes), the trial produced data and should be leaned towards \"Positive\" unless evidence says otherwise. In this case, there is no negative evidence presented, so I applied this he",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "snippet": "Title: Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677416"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Brief Summary",
+          "snippet": "RATIONALE : IMA 950 is multi tumour-associated peptides (TUMAPs) vaccine, these peptides have been identified on primary glioblastoma multiforme (GBM) cells. Poly-ICLC is a potent vaccine adjuvant with broad innate and adaptive immune enhancing effects. IMA 950 and Poly-ICLC will be administered to patients alongside standard primary therapy for glioblastoma. This includes the alkylating drug temozolomide (TMZ). Effective vaccine-induced immune responses associated with prolonged survival have b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677491"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677512"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: CNS Tumor, Adult | Keywords: Glioblastoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677538"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: IMA 950",
+          "snippet": "BIOLOGICAL: IMA 950",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Poly ICLC",
+          "snippet": "BIOLOGICAL: Poly ICLC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677580"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Immunomonitoring",
+          "snippet": "OTHER: Immunomonitoring - Blood samples, DTH analysis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677599"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677619"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30753611/",
+          "identifier": "PMID:30753611",
+          "title": "Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.",
+          "snippet": "Title: Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.\nAuthors: Migliorini Denis, Dutoit Val\u00e9rie, Allard Mathilde et al.\nJournal: Neuro-oncology (2019)\nAbstract: BACKGROUND: Peptide vaccines offer the opportunity to elicit glioma-specific T cells with tumor killing ability. Using antigens eluted from the surface of glioblastoma samples, we designed a phase I/II study to test safety and immunogenicity of the IMA950 multipeptide vaccine adjuvanted with poly-ICLC (polyinosinic-polycytidylic acid stabilized with polylysine and carboxymethylcellulose) in human leukocyte antigen A2+ glioma patients. METHODS: Adult patients with newly diagnosed glioblastoma (n ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-17T14:59:35.892599"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12955588/",
+          "identifier": "PMC:12955588",
+          "title": "Tumor antigen only (TAO) vaccine platforms for glioblastoma therapeutics: a systematic review of evidence from clinical trials.",
+          "snippet": "Title: Tumor antigen only (TAO) vaccine platforms for glioblastoma therapeutics: a systematic review of evidence from clinical trials.\nAuthors: Chen HC, Wong ET, Sarangi S et al.\nJournal: EClinicalMedicine",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247546"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT01920191",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "IMA950 is explicitly stated to be a multi-peptide vaccine composed of tumor-associated peptides identified on glioblastoma cells. This clearly indicates that the active drug in this trial is a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The presence of the peptide-based vaccine (IMA950) as an intervention in this clinical trial directly indicates that the primary intervention is a peptide therapeutic. The fact that IMA950 is described as a multi-tumor-associated peptides (TUMAPs) vaccine further supports this conclusion, as it suggests that the active drug contains multiple peptide sequences derived from tumor cells.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial is testing a peptide-based vaccine, specifically IMA 950.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "While IMA950 is composed of peptides, its mechanism of action involves inducing an adaptive immune response against glioblastoma cells. It does not directly kill pathogens through biochemical action. The vaccine aims to stimulate the patient's own immune system to recognize and destroy tumor cells.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "AMP(other)",
+            "reasoning": "The peptide-based vaccine under investigation in this clinical trial works by stimulating an immune response against glioblastoma cells. This is achieved through the induction of antibodies and T-cell responses that target tumor antigens, not microorganisms. Therefore, it does not meet the criteria for being classified as an antimicrobial peptide (AMP) since its primary function is to treat cancer rather than infections.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial is testing a peptide vaccine (IMA950) for glioblastoma treatment. However, the peptide does not directly kill or disrupt pathogens; instead, it aims to elicit glioma-specific T cells with tumor killing ability. Therefore, it falls under 'Other' category as per the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence clearly indicates that IMA950 is a multi-tumour-associated peptide vaccine designed to stimulate an immune response against glioblastoma cells, not pathogens or microorganisms directly. Verifier_2's reasoning incorrectly suggests the classification should be AMP(other) based on the mechanism of action, but this does not align with the specific criteria for AMP classifications which typically involve direct pathogen targeting rather than tumor-specific antigens. The majority opinion ",
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Intramuscular",
+        "final_value": "Injection/Infusion - Intramuscular",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The protocol states that IMA 950 and Poly-ICLC will be administered, but it does not specify the route of administration.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Intramuscular",
+            "reasoning": "The specific mention of \"Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC\" in the title and description of the clinical trial provides clear evidence that the vaccine is administered via intramuscular injection. This directly aligns with the guidelines provided for determining the delivery mode without needing to guess or infer from other information.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The protocol explicitly mentions \"injection\" without specifying IM, SC, or IV, so according to the guidelines provided, the delivery mode should be classified as Injection/Infusion - Other/Unspecified.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The title explicitly mentions that the vaccine is administered \"Intradermally\" while the adjuvant (Poly-ICLC) is given via an \"Intra Muscular\" route. This directly specifies the delivery mode for Poly-ICLC as intramuscular, aligning with the guidelines provided and supporting the primary annotator's answer over those suggesting \"Other/Unspecified.\"",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial is listed as completed on ClinicalTrials.gov. A publication exists detailing the results of the trial, which focused on the safety and immunogenicity of the vaccine.  This suggests a positive outcome.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "Although there is no direct publication cited that specifically states the outcome of this trial, the information provided indicates that the trial was designed as a safety and immunogenicity study for a vaccine in glioblastoma patients. The completion status suggests that the trial met its objectives without any major issues being reported during its execution. Therefore, based on the context and the nature of the trial design, it leans towards a 'Positive' outcome.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The published literature provides evidence that the trial met its primary endpoints, as indicated by the positive results reported in the study titled \"Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.\"",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published abstract states the trial was designed to test safety and immunogenicity of the vaccine, implying it aimed to meet certain endpoints related to these factors.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "Since there is no clear evidence that the trial met its primary endpoints based on the provided information, and since the status of the trial is completed, we can infer that the trial did not achieve its intended outcomes. The lack of a specific failure reason in the clinicaltrials.gov entry suggests that it might be due to ineffective results for purpose rather than other reasons like toxicity or business decisions.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial aimed to test the safety and immunogenicity of a peptide vaccine for glioblastoma, but the published results show that the vaccine was not effective in eliciting glioma-specific T cells with tumor killing ability.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence indicates that the trial aimed to test safety and immunogenicity of the vaccine. Verifier_3's reasoning is supported by [pubmed] PMID:30753611 which states the trial was designed to test these aspects, but also notes that the vaccine did not elicit glioma-specific T cells with tumor killing ability. This suggests the primary purpose (eliciting a specific immune response) was not achieved, making \"Ineffective for purpose\" the most appropriate answer based on the conservative interpre",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": null
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "dbamp",
+    "who_ictrp",
+    "iuphar",
+    "intact",
+    "card",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01920191",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "snippet": "Title: Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677416"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Brief Summary",
+          "snippet": "RATIONALE : IMA 950 is multi tumour-associated peptides (TUMAPs) vaccine, these peptides have been identified on primary glioblastoma multiforme (GBM) cells. Poly-ICLC is a potent vaccine adjuvant with broad innate and adaptive immune enhancing effects. IMA 950 and Poly-ICLC will be administered to patients alongside standard primary therapy for glioblastoma. This includes the alkylating drug temozolomide (TMZ). Effective vaccine-induced immune responses associated with prolonged survival have b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677491"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677512"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: CNS Tumor, Adult | Keywords: Glioblastoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677538"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: IMA 950",
+          "snippet": "BIOLOGICAL: IMA 950",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Poly ICLC",
+          "snippet": "BIOLOGICAL: Poly ICLC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677580"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Immunomonitoring",
+          "snippet": "OTHER: Immunomonitoring - Blood samples, DTH analysis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677599"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:59:28.677619"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01920191",
+            "orgStudyIdInfo": {
+              "id": "IMA950 Poly ICLC"
+            },
+            "organization": {
+              "fullName": "University Hospital, Geneva",
+              "class": "OTHER"
+            },
+            "briefTitle": "Phase I/II Trial of IMA950 Multi-peptide Vaccine Plus Poly-ICLC in Glioblastoma",
+            "officialTitle": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2016-04",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2013-08"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2016-03",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2016-03",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2013-07-31",
+            "studyFirstSubmitQcDate": "2013-08-07",
+            "studyFirstPostDateStruct": {
+              "date": "2013-08-09",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2016-04-19",
+            "lastUpdatePostDateStruct": {
+              "date": "2016-04-20",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "PRINCIPAL_INVESTIGATOR",
+              "investigatorFullName": "Pierre-Yves Dietrich",
+              "investigatorTitle": "Professor",
+              "investigatorAffiliation": "University Hospital, Geneva"
+            },
+            "leadSponsor": {
+              "name": "University Hospital, Geneva",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "Immatics Biotechnologies GmbH",
+                "class": "INDUSTRY"
+              },
+              {
+                "name": "Oncovir, Inc.",
+                "class": "INDUSTRY"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": true
+          },
+          "descriptionModule": {
+            "briefSummary": "RATIONALE : IMA 950 is multi tumour-associated peptides (TUMAPs) vaccine, these peptides have been identified on primary glioblastoma multiforme (GBM) cells. Poly-ICLC is a potent vaccine adjuvant with broad innate and adaptive immune enhancing effects. IMA 950 and Poly-ICLC will be administered to patients alongside standard primary therapy for glioblastoma. This includes the alkylating drug temozolomide (TMZ). Effective vaccine-induced immune responses associated with prolonged survival have been observed in glioblastoma patients during TMZ adjuvant therapy, suggesting a possible synergistic effect. A second component of glioblastoma standard treatment is external beam irradiation of the tumor site post-surgery. As a side effect, potentially beneficial tumor-infiltrating immune cells may also be killed by radiation. However, the combination of radiation with immunotherapy has been suggested to be favorable both in pre-clinical models.",
+            "detailedDescription": "OBJECTIVES\n\nPrimary\n\n* Tolerability and safety of IMA950 adjuvanted with Poly-ICLC when given together with temozolomide, using CTCAE V 4.0.\n* Immunogenicity of IMA950 plus Poly-ICLC when given together with temozolomide.\n\nSecondary\n\n* 6, 9 month progression free survival (PFS) using gadolinium enhanced MRI and clinical assessment according to revised RANO criteria\n* Overall survival (OS)\n* Immunologic endpoints (correlation between clinical and immunological responses):\n* evaluation of peptide immunogenicity by tetramer staining\n* analysis of memory, activation and homing marker expression by tetramer positive cells\n* analysis of cytokine secretion and proliferation by antigen-specific CD4 and CD8 T cells\n* analysis of the presence of T regulatory and myeloid-derived suppressor cells\n* The immunological analyses will be performed on:\n* peripheral blood mononuclear cells (PBMC)\n* cultures of skin punch biopsy at delayed-type hypersensitivity (DTH) site\n* tumor-infiltrating lymphocytes (TIL) if brain tissue is available at recurrence\n\nOUTLINE\n\nThis is a monocentric, open label, one cohort, safety and immunogenicity, Phase I/II study.\n\nA maximum of 16 HLA-A2 positive patients with newly diagnosed glioblastoma will be enrolled into the study after treatment with radiation therapy and concurrent temozolomide.\n\nAll patients will receive the same dose of IMA950 with Poly-ICLC and follow the same vaccination schedule which comprises a Vaccination Induction Phase of 4 intensive vaccinations, followed by a Vaccination Maintenance Phase of five vaccinations over a longer period.\n\nThe Vaccination Induction Phase will start a minimum of 7 days after the final radiotherapy/TMZ dose of CRT and 28 days (+7 days) prior to the first scheduled dose of adjuvant TMZ.\n\nThis will ensure that all 4 vaccinations in the Induction Phase will be administered a week after immunosuppressive therapy (i.e. combined radiotherapy and temozolomide) and will finish a week prior to the start of adjuvant TMZ.\n\nTwo Phases :\n\nInduction phase, patient receive the first 4 doses of Poly ICLC mixed with IMA 950 Peptide based vaccine (subcutaneously or IM) on days 1,8,15, and 21 in absence of unacceptable toxicity or disease progression.\n\nMaintenance Phase, patient receive Poly ICLC mixed with IMA 950 Peptide based vaccine (SC or IM) on day 21 of each adjuvant temozolomide cycle in absence unacceptable toxicity or disease progression.\n\nImmunomonitoring assessments will be performed at 8 time points with blood samples collection and one DTH site analysis(after vaccination 5).\n\nBrain MRI will be performed every two months for disease assessment.\n\nN.B. :\n\nAn amendment has been accepted by Swissmedic and Local Ethics committee on september 2014, after suboptimal immunomonitoring preliminary assessments, the schedule of administration has been changed in order to improve the immunogenicity of the vaccine, as follows :\n\n* injection of mixed peptides and adjuvant Poly ICLC\n* 4 vaccinations in the induction phase instead of 6\n* one site of injection (thigh)\n* two arms for the next 10 patients to be included that will be equally divided in 2 groups : one group will be vaccinated subcutaneously and the other intramuscularly."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "CNS Tumor, Adult"
+            ],
+            "keywords": [
+              "Glioblastoma"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1",
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 19,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "IMA 950 and Poly ICLC",
+                "type": "EXPERIMENTAL",
+                "interventionNames": [
+                  "Biological: IMA 950",
+                  "Biological: Poly ICLC",
+                  "Other: Immunomonitoring"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "IMA 950",
+                "armGroupLabels": [
+                  "IMA 950 and Poly ICLC"
+                ]
+              },
+              {
+                "type": "BIOLOGICAL",
+                "name": "Poly ICLC",
+                "armGroupLabels": [
+                  "IMA 950 and Poly ICLC"
+                ],
+                "otherNames": [
+                  "Hiltonol"
+                ]
+              },
+              {
+                "type": "OTHER",
+                "name": "Immunomonitoring",
+                "description": "Blood samples, DTH analysis",
+                "armGroupLabels": [
+                  "IMA 950 and Poly ICLC"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Tolerability and safety of IMA950 adjuvanted with Poly-ICLC when given together with temozolomide, using CTCAE V 4.0",
+                "timeFrame": "up to 2 years"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "6, 9 month progression free survival (PFS) using gadolinium enhanced MRI and clinical assessment according to revised RANO criteria",
+                "timeFrame": "up to 2 years"
+              },
+              {
+                "measure": "Overall survival (OS)",
+                "timeFrame": "up to 2 years"
+              },
+              {
+                "measure": "Immunologic endpoints",
+                "description": "Correlation between clinical and immunological response. Blood sampling at baseline (week 4 and 5 after beginning of radiotherapy with concomitant temozolomide) and at week 10,11,12,16,19,23,27 and 31.\n\nPunch biopsy at DTH (Delayed Type Hypersensitivity) site performed 48h after DTH skin test 7 days after Vaccination 7.\n\n* evaluation of peptide immunogenicity by tetramer staining\n* analysis of memory, activation and homing marker expression by tetramer positive cells\n* analysis of cytokine secretion and proliferation by antigen-specific CD4 and CD8 T cells\n* analysis of the presence of T regulatory and myeloid-derived suppressor cells",
+                "timeFrame": "up to 2 years"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n1. Histological documentation of glioblastoma. For experimental purposes only, 5 additional grade III astrocytoma may be included (these cases will not be included in the endpoints analysis).\n2. Patients must have completed radiation therapy with concomitant temozolomide.\n3. HLA-A2 positive.\n4. Eastern Cooperative Oncology Group performance status of 0 or 1 (Appendix1).\n5. Age \\> 18 years, life expectancy of least 4 months.\n6. Patient must be on stable or decreasing dose of steroids, with a maximal dose of Dexamethasone of 4mg/day.\n7. Adequate bone marrow, liver and kidney function.\n8. Hepatitis B serology negative (HBcAg-seronegative)\n9. Written (signed and dated) informed consent. Capable of co-operating with standard therapy and IMA950 with Poly-ICLC vaccinations and follow-up.\n\nExclusion Criteria:\n\n1. Any other vaccination given within 2 weeks before first IMA950 vaccination.\n2. History of cardiac disease: congestive heart failure \\> New York heart association class 2, active CAD, cardiac requiring anti-arrhythmic therapy or uncontrolled hypertension.\n3. History of HIV infection or chronic hepatitis B or C or clinical active infections.\n4. Patients with evidence of history bleeding diathesis.\n5. Pregnant or potentially pregnant patients. Women of childbearing age must be tested for pregnancy (serum or urine HCG) before treatment and must not contemplate pregnancy during the study",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Pierre-Yves Dietrich, Professor",
+                "affiliation": "University Hospital, Geneva",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Geneva University Hospitals, Centre of Oncology",
+                "city": "Geneva",
+                "zip": "CH-1211",
+                "country": "Switzerland",
+                "geoPoint": {
+                  "lat": 46.20222,
+                  "lon": 6.14569
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "30753611",
+                "type": "DERIVED",
+                "citation": "Migliorini D, Dutoit V, Allard M, Grandjean Hallez N, Marinari E, Widmer V, Philippin G, Corlazzoli F, Gustave R, Kreutzfeldt M, Blazek N, Wasem J, Hottinger A, Koka A, Momjian S, Lobrinus A, Merkler D, Vargas MI, Walker PR, Patrikidou A, Dietrich PY. Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients. Neuro Oncol. 2019 Jul 11;21(7):923-933. doi: 10.1093/neuonc/noz040."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01920191",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30753611/",
+          "identifier": "PMID:30753611",
+          "title": "Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.",
+          "snippet": "Title: Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.\nAuthors: Migliorini Denis, Dutoit Val\u00e9rie, Allard Mathilde et al.\nJournal: Neuro-oncology (2019)\nAbstract: BACKGROUND: Peptide vaccines offer the opportunity to elicit glioma-specific T cells with tumor killing ability. Using antigens eluted from the surface of glioblastoma samples, we designed a phase I/II study to test safety and immunogenicity of the IMA950 multipeptide vaccine adjuvanted with poly-ICLC (polyinosinic-polycytidylic acid stabilized with polylysine and carboxymethylcellulose) in human leukocyte antigen A2+ glioma patients. METHODS: Adult patients with newly diagnosed glioblastoma (n ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-17T14:59:35.892599"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12955588/",
+          "identifier": "PMC:12955588",
+          "title": "Tumor antigen only (TAO) vaccine platforms for glioblastoma therapeutics: a systematic review of evidence from clinical trials.",
+          "snippet": "Title: Tumor antigen only (TAO) vaccine platforms for glioblastoma therapeutics: a systematic review of evidence from clinical trials.\nAuthors: Chen HC, Wong ET, Sarangi S et al.\nJournal: EClinicalMedicine",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247546"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12933839/",
+          "identifier": "PMC:12933839",
+          "title": "Advances in delivery technologies-powered cancer vaccines.",
+          "snippet": "Title: Advances in delivery technologies-powered cancer vaccines.\nAuthors: Huang C, Wang H, Luo S et al.\nJournal: Bioact Mater",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247628"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12628236/",
+          "identifier": "PMC:12628236",
+          "title": "The role of regulatory T cells in central nervous system diseases in dogs: fighting with a double-edged sword toward translational discoveries.",
+          "snippet": "Title: The role of regulatory T cells in central nervous system diseases in dogs: fighting with a double-edged sword toward translational discoveries.\nAuthors: Benavides ED, Fuentes MDM, Bell L et al.\nJournal: Am J Transl Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247698"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12418597/",
+          "identifier": "PMC:12418597",
+          "title": "Immunologic specificity in glioblastoma: Antigen discovery and translational implications.",
+          "snippet": "Title: Immunologic specificity in glioblastoma: Antigen discovery and translational implications.\nAuthors: Hill CM, Wang AZ, Hsueh B et al.\nJournal: Neurooncol Adv",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247730"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12418593/",
+          "identifier": "PMC:12418593",
+          "title": "Translational advancements in tumor vaccine therapies for glioblastomas.",
+          "snippet": "Title: Translational advancements in tumor vaccine therapies for glioblastomas.\nAuthors: Jha R, Spanehl L, Chen JA et al.\nJournal: Neurooncol Adv",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247752"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12305673/",
+          "identifier": "PMC:12305673",
+          "title": "Immunotherapy in Glioblastoma: An Overview of Current Status.",
+          "snippet": "Title: Immunotherapy in Glioblastoma: An Overview of Current Status.\nAuthors: Sarfraz Z, Maharaj A, Venur VA et al.\nJournal: Clin Pharmacol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247770"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12257104/",
+          "identifier": "PMC:12257104",
+          "title": "Vaccine therapies for glioma: clinical frontiers and potential breakthrough.",
+          "snippet": "Title: Vaccine therapies for glioma: clinical frontiers and potential breakthrough.\nAuthors: Xing Y, Liu C, Feng Y et al.\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247788"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12240793/",
+          "identifier": "PMC:12240793",
+          "title": "Rational therapeutic targeting of myeloid cells in glioblastoma: challenges and perspectives.",
+          "snippet": "Title: Rational therapeutic targeting of myeloid cells in glioblastoma: challenges and perspectives.\nAuthors: Akay F, Saleh M\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247805"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12166567/",
+          "identifier": "PMC:12166567",
+          "title": "Recent developments in peptide vaccines against Glioblastoma, a review and update.",
+          "snippet": "Title: Recent developments in peptide vaccines against Glioblastoma, a review and update.\nAuthors: Salahlou R, Farajnia S, Alizadeh E et al.\nJournal: Mol Brain",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247822"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12153865/",
+          "identifier": "PMC:12153865",
+          "title": "Immunotherapy for High-Grade Gliomas.",
+          "snippet": "Title: Immunotherapy for High-Grade Gliomas.\nAuthors: Karbhari N, Frechette KM, Burns TC et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247840"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12081429/",
+          "identifier": "PMC:12081429",
+          "title": "An update on the clinical trial research of immunotherapy for glioblastoma.",
+          "snippet": "Title: An update on the clinical trial research of immunotherapy for glioblastoma.\nAuthors: Zhou Y, Shi F, Zhu J et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247860"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11982186/",
+          "identifier": "PMC:11982186",
+          "title": "Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.",
+          "snippet": "Title: Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.\nAuthors: Shah BA, Holden JA, Lenzo JC et al.\nJournal: NPJ Vaccines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247877"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11607068/",
+          "identifier": "PMC:11607068",
+          "title": "Immunotherapy for glioblastoma: current state, challenges, and future perspectives.",
+          "snippet": "Title: Immunotherapy for glioblastoma: current state, challenges, and future perspectives.\nAuthors: Liu Y, Zhou F, Ali H et al.\nJournal: Cell Mol Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247894"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11477105/",
+          "identifier": "PMC:11477105",
+          "title": "Review of Novel Surgical, Radiation, and Systemic Therapies and Clinical Trials in Glioblastoma.",
+          "snippet": "Title: Review of Novel Surgical, Radiation, and Systemic Therapies and Clinical Trials in Glioblastoma.\nAuthors: Valerius AR, Webb LM, Thomsen A et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247913"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10556227/",
+          "identifier": "PMC:10556227",
+          "title": "Combined cytotoxic and immune-stimulatory gene therapy using Ad-TK and Ad-Flt3L: Translational developments from rodents to glioma patients.",
+          "snippet": "Title: Combined cytotoxic and immune-stimulatory gene therapy using Ad-TK and Ad-Flt3L: Translational developments from rodents to glioma patients.\nAuthors: Faisal SM, Castro MG, Lowenstein PR\nJournal: Mol Ther",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247930"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11359082/",
+          "identifier": "PMC:11359082",
+          "title": "Lessons from Post-Immunotherapy Tumor Tissues in Clinical Trials: How Can We Fuel the Tumor Microenvironment in Gliomas?",
+          "snippet": "Title: Lessons from Post-Immunotherapy Tumor Tissues in Clinical Trials: How Can We Fuel the Tumor Microenvironment in Gliomas?\nAuthors: Phung LH, Nejo T, Okada H\nJournal: Vaccines (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247946"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11274945/",
+          "identifier": "PMC:11274945",
+          "title": "Neuroinflammation in Glioblastoma: Progress and Perspectives.",
+          "snippet": "Title: Neuroinflammation in Glioblastoma: Progress and Perspectives.\nAuthors: Li X, Gou W, Zhang X\nJournal: Brain Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247963"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11077829/",
+          "identifier": "PMC:11077829",
+          "title": "Understanding the immunosuppressive microenvironment of glioma: mechanistic insights and clinical perspectives.",
+          "snippet": "Title: Understanding the immunosuppressive microenvironment of glioma: mechanistic insights and clinical perspectives.\nAuthors: Lin H, Liu C, Hu A et al.\nJournal: J Hematol Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247981"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11029493/",
+          "identifier": "PMC:11029493",
+          "title": "Concepts in glioma immunotherapy.",
+          "snippet": "Title: Concepts in glioma immunotherapy.\nAuthors: Platten M, Bunse L, Wick W et al.\nJournal: Cancer Immunol Immunother",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.247998"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11010873/",
+          "identifier": "PMC:11010873",
+          "title": "Immunotherapeutic Strategies for the Treatment of Glioblastoma: Current Challenges and Future Perspectives.",
+          "snippet": "Title: Immunotherapeutic Strategies for the Treatment of Glioblastoma: Current Challenges and Future Perspectives.\nAuthors: Salvato I, Marchini A\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248016"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10994265/",
+          "identifier": "PMC:10994265",
+          "title": "Present and Future of Immunotherapy in Patients With Glioblastoma: Limitations and Opportunities.",
+          "snippet": "Title: Present and Future of Immunotherapy in Patients With Glioblastoma: Limitations and Opportunities.\nAuthors: Maccari M, Baek C, Caccese M et al.\nJournal: Oncologist",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248033"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10931797/",
+          "identifier": "PMC:10931797",
+          "title": "Glioblastoma Therapy: Past, Present and Future.",
+          "snippet": "Title: Glioblastoma Therapy: Past, Present and Future.\nAuthors: Obrador E, Moreno-Murciano P, Oriol-Caballo M et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248050"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10808938/",
+          "identifier": "PMC:10808938",
+          "title": "Glioblastoma vaccines: past, present, and opportunities.",
+          "snippet": "Title: Glioblastoma vaccines: past, present, and opportunities.\nAuthors: Xiong Z, Raphael I, Olin M et al.\nJournal: EBioMedicine",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248066"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10669378/",
+          "identifier": "PMC:10669378",
+          "title": "Advances in Glioblastoma Therapy: An Update on Current Approaches.",
+          "snippet": "Title: Advances in Glioblastoma Therapy: An Update on Current Approaches.\nAuthors: Angom RS, Nakka NMR, Bhattacharya S\nJournal: Brain Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248083"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10606063/",
+          "identifier": "PMC:10606063",
+          "title": "Glioblastoma Immunotherapy: A Systematic Review of the Present Strategies and Prospects for Advancements.",
+          "snippet": "Title: Glioblastoma Immunotherapy: A Systematic Review of the Present Strategies and Prospects for Advancements.\nAuthors: Agosti E, Zeppieri M, De Maria L et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248100"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10512462/",
+          "identifier": "PMC:10512462",
+          "title": "Immunotherapy: a promising approach for glioma treatment.",
+          "snippet": "Title: Immunotherapy: a promising approach for glioma treatment.\nAuthors: Yasinjan F, Xing Y, Geng H et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248117"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10487158/",
+          "identifier": "PMC:10487158",
+          "title": "Unravelling the Glioblastoma Tumour Microenvironment: Can Aptamer Targeted Delivery Become Successful in Treating Brain Cancers?",
+          "snippet": "Title: Unravelling the Glioblastoma Tumour Microenvironment: Can Aptamer Targeted Delivery Become Successful in Treating Brain Cancers?\nAuthors: Giles B, Nakhjavani M, Wiesa A et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248136"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10452459/",
+          "identifier": "PMC:10452459",
+          "title": "A Holistic Approach to Hard-to-Treat Cancers: The Future of Immunotherapy for Glioblastoma, Triple Negative Breast Cancer, and Advanced Prostate Cancer.",
+          "snippet": "Title: A Holistic Approach to Hard-to-Treat Cancers: The Future of Immunotherapy for Glioblastoma, Triple Negative Breast Cancer, and Advanced Prostate Cancer.\nAuthors: Puig-Saenz C, Pearson JRD, Thomas JE et al.\nJournal: Biomedicines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248153"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10356842/",
+          "identifier": "PMC:10356842",
+          "title": "Vaccine adjuvants: mechanisms and platforms.",
+          "snippet": "Title: Vaccine adjuvants: mechanisms and platforms.\nAuthors: Zhao T, Cai Y, Jiang Y et al.\nJournal: Signal Transduct Target Ther",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248171"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10215375/",
+          "identifier": "PMC:10215375",
+          "title": "Tumor Microenvironment and Glioblastoma Cell Interplay as Promoters of Therapeutic Resistance.",
+          "snippet": "Title: Tumor Microenvironment and Glioblastoma Cell Interplay as Promoters of Therapeutic Resistance.\nAuthors: Agosti E, Panciani PP, Zeppieri M et al.\nJournal: Biology (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248189"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10141140/",
+          "identifier": "PMC:10141140",
+          "title": "The Current Status, Challenges, and Future Potential of Therapeutic Vaccination in Glioblastoma.",
+          "snippet": "Title: The Current Status, Challenges, and Future Potential of Therapeutic Vaccination in Glioblastoma.\nAuthors: Neth BJ, Webb MJ, Parney IF et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248208"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10093409/",
+          "identifier": "PMC:10093409",
+          "title": "The Glioma Immune Landscape: A Double-Edged Sword for Treatment Regimens.",
+          "snippet": "Title: The Glioma Immune Landscape: A Double-Edged Sword for Treatment Regimens.\nAuthors: Mahajan S, Schmidt MHH, Schumann U\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248227"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9606568/",
+          "identifier": "PMC:9606568",
+          "title": "Targeting tumor-associated macrophages for the immunotherapy of glioblastoma: Navigating the clinical and translational landscape.",
+          "snippet": "Title: Targeting tumor-associated macrophages for the immunotherapy of glioblastoma: Navigating the clinical and translational landscape.\nAuthors: Wang Z, Zhong H, Liang X et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248251"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9060812/",
+          "identifier": "PMC:9060812",
+          "title": "Glioblastoma: Pitfalls and Opportunities of Immunotherapeutic Combinations.",
+          "snippet": "Title: Glioblastoma: Pitfalls and Opportunities of Immunotherapeutic Combinations.\nAuthors: Niedba\u0142a M, Malarz K, Sharma G et al.\nJournal: Onco Targets Ther",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248277"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9024739/",
+          "identifier": "PMC:9024739",
+          "title": "Emerging Biomarkers for Immunotherapy in Glioblastoma.",
+          "snippet": "Title: Emerging Biomarkers for Immunotherapy in Glioblastoma.\nAuthors: Mensali N, Inderberg EM\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248299"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9006576/",
+          "identifier": "PMC:9006576",
+          "title": "Emerging role of RNA sensors in tumor microenvironment and immunotherapy.",
+          "snippet": "Title: Emerging role of RNA sensors in tumor microenvironment and immunotherapy.\nAuthors: Yang R, Yu S, Xu T et al.\nJournal: J Hematol Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248322"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8909866/",
+          "identifier": "PMC:8909866",
+          "title": "Tumor-Associated Macrophages in Gliomas-Basic Insights and Treatment Opportunities.",
+          "snippet": "Title: Tumor-Associated Macrophages in Gliomas-Basic Insights and Treatment Opportunities.\nAuthors: Andersen JK, Miletic H, Hossain JA\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248343"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8833347/",
+          "identifier": "PMC:8833347",
+          "title": "Evolution and Targeting of Myeloid Suppressor Cells in Cancer: A Translational Perspective.",
+          "snippet": "Title: Evolution and Targeting of Myeloid Suppressor Cells in Cancer: A Translational Perspective.\nAuthors: Bleve A, Consonni FM, Porta C et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248367"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8797698/",
+          "identifier": "PMC:8797698",
+          "title": "Immunotherapy and radiation for high-grade glioma: a narrative review.",
+          "snippet": "Title: Immunotherapy and radiation for high-grade glioma: a narrative review.\nAuthors: Fakhoury KR, Ney DE, Ormond DR et al.\nJournal: Transl Cancer Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248390"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8718605/",
+          "identifier": "PMC:8718605",
+          "title": "Immunotherapy Resistance in Glioblastoma.",
+          "snippet": "Title: Immunotherapy Resistance in Glioblastoma.\nAuthors: Wang EJ, Chen JS, Jain S et al.\nJournal: Front Genet",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248414"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8678283/",
+          "identifier": "PMC:8678283",
+          "title": "Antibody Drug Conjugates in Glioblastoma - Is There a Future for Them?",
+          "snippet": "Title: Antibody Drug Conjugates in Glioblastoma - Is There a Future for Them?\nAuthors: Parakh S, Nicolazzo J, Scott AM et al.\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248436"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8606765/",
+          "identifier": "PMC:8606765",
+          "title": "T-cell intrinsic Toll-like receptor signaling: implications for cancer immunotherapy and CAR T-cells.",
+          "snippet": "Title: T-cell intrinsic Toll-like receptor signaling: implications for cancer immunotherapy and CAR T-cells.\nAuthors: Nouri Y, Weinkove R, Perret R\nJournal: J Immunother Cancer",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248458"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8555307/",
+          "identifier": "PMC:8555307",
+          "title": "Toll-like receptors and toll-like receptor-targeted immunotherapy against glioma.",
+          "snippet": "Title: Toll-like receptors and toll-like receptor-targeted immunotherapy against glioma.\nAuthors: Xun Y, Yang H, Kaminska B et al.\nJournal: J Hematol Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248479"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8497485/",
+          "identifier": "PMC:8497485",
+          "title": "Myeloid-derived suppressor cells as immunosuppressive regulators and therapeutic targets in cancer.",
+          "snippet": "Title: Myeloid-derived suppressor cells as immunosuppressive regulators and therapeutic targets in cancer.\nAuthors: Li K, Shi H, Zhang B et al.\nJournal: Signal Transduct Target Ther",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248501"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7733526/",
+          "identifier": "PMC:7733526",
+          "title": "The current state of immunotherapy for primary and secondary brain tumors: similarities and differences.",
+          "snippet": "Title: The current state of immunotherapy for primary and secondary brain tumors: similarities and differences.\nAuthors: Nejo T, Mende A, Okada H\nJournal: Jpn J Clin Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248522"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8415230/",
+          "identifier": "PMC:8415230",
+          "title": "Critical View of Novel Treatment Strategies for Glioblastoma: Failure and Success of Resistance Mechanisms by Glioblastoma Cells.",
+          "snippet": "Title: Critical View of Novel Treatment Strategies for Glioblastoma: Failure and Success of Resistance Mechanisms by Glioblastoma Cells.\nAuthors: Burster T, Traut R, Yermekkyzy Z et al.\nJournal: Front Cell Dev Biol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248544"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8317971/",
+          "identifier": "PMC:8317971",
+          "title": "Myeloid-Derived Suppressor Cells: Implications in the Resistance of Malignant Tumors to T Cell-Based Immunotherapy.",
+          "snippet": "Title: Myeloid-Derived Suppressor Cells: Implications in the Resistance of Malignant Tumors to T Cell-Based Immunotherapy.\nAuthors: Shi H, Li K, Ni Y et al.\nJournal: Front Cell Dev Biol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248567"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8229304/",
+          "identifier": "PMC:8229304",
+          "title": "A systematic review on poly(I:C) and poly-ICLC in glioblastoma: adjuvants coordinating the unlocking of immunotherapy.",
+          "snippet": "Title: A systematic review on poly(I:C) and poly-ICLC in glioblastoma: adjuvants coordinating the unlocking of immunotherapy.\nAuthors: De Waele J, Verhezen T, van der Heijden S et al.\nJournal: J Exp Clin Cancer Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248590"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8141615/",
+          "identifier": "PMC:8141615",
+          "title": "Making a Cold Tumor Hot: The Role of Vaccines in the Treatment of Glioblastoma.",
+          "snippet": "Title: Making a Cold Tumor Hot: The Role of Vaccines in the Treatment of Glioblastoma.\nAuthors: Frederico SC, Hancock JC, Brettschneider EES et al.\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248611"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8070707/",
+          "identifier": "PMC:8070707",
+          "title": "New Insights into the Multifaceted Role of Myeloid-Derived Suppressor Cells (MDSCs) in High-Grade Gliomas: From Metabolic Reprograming, Immunosuppression, and Therapeutic Resistance to Current Strategies for Targeting MDSCs.",
+          "snippet": "Title: New Insights into the Multifaceted Role of Myeloid-Derived Suppressor Cells (MDSCs) in High-Grade Gliomas: From Metabolic Reprograming, Immunosuppression, and Therapeutic Resistance to Current Strategies for Targeting MDSCs.\nAuthors: Lakshmanachetty S, Cruz-Cruz J, Hoffmeyer E et al.\nJournal: Cells",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.248635"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [
+          "30753611"
+        ],
+        "pubmed_count": 1,
+        "pmc_ids": [
+          "12955588",
+          "12933839",
+          "12628236",
+          "12418597",
+          "12418593",
+          "12305673",
+          "12257104",
+          "12240793",
+          "12166567",
+          "12153865",
+          "12081429",
+          "11982186",
+          "11607068",
+          "11477105",
+          "10556227",
+          "11359082",
+          "11274945",
+          "11077829",
+          "11029493",
+          "11010873",
+          "10994265",
+          "10931797",
+          "10808938",
+          "10669378",
+          "10606063",
+          "10512462",
+          "10487158",
+          "10452459",
+          "10356842",
+          "10215375",
+          "10141140",
+          "10093409",
+          "9606568",
+          "9060812",
+          "9024739",
+          "9006576",
+          "8909866",
+          "8833347",
+          "8797698",
+          "8718605",
+          "8678283",
+          "8606765",
+          "8555307",
+          "8497485",
+          "7733526",
+          "8415230",
+          "8317971",
+          "8229304",
+          "8141615",
+          "8070707"
+        ],
+        "pmc_count": 91,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "uniprot_IMA 950": [],
+        "uniprot_Poly ICLC": [],
+        "uniprot_Immunomonitoring": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_IMA 950": {
+          "total": 0,
+          "entries": []
+        },
+        "dbaasp_Poly ICLC": {
+          "total": 0,
+          "entries": []
+        },
+        "dbaasp_Immunomonitoring": {
+          "total": 0,
+          "entries": []
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01920191",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5805328/",
+          "identifier": "CHEMBL5805328",
+          "title": "CHEMBL5805328 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5805328\nMolecular weight: 544.70\nBioactivity: IC50=7.2 nM (Toll-like receptor 7); IC50=4.9 nM (Toll-like receptor 8)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:31.914296"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5809237/",
+          "identifier": "CHEMBL5809237",
+          "title": "CHEMBL5809237 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5809237\nMolecular weight: 510.62\nBioactivity: IC50=0.47 nM (Serine/threonine-protein kinase B-raf); IC50=0.21 nM (Unchecked)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:33.396033"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4594477/",
+          "identifier": "CHEMBL4594477",
+          "title": "IMA-026 - ChEMBL",
+          "snippet": "Molecule: IMA-026\nType: Unknown\nMax clinical phase: 1.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:33.814376"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297559/",
+          "identifier": "CHEMBL4297559",
+          "title": "HILTONOL - ChEMBL",
+          "snippet": "Molecule: HILTONOL\nType: Unknown\nMax clinical phase: 2.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:36.039370"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL158666/",
+          "identifier": "CHEMBL158666",
+          "title": "AUTONOM NAME: - ChEMBL",
+          "snippet": "Molecule: AUTONOM NAME:\nType: Small molecule\nMolecular weight: 398.58\nBioactivity: Ki=50.4 nM (Protein kinase C alpha type); LogD=7.0 (No relevant target)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:36.557824"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2147156/",
+          "identifier": "CHEMBL2147156",
+          "title": "POLY(AMIDOAMINE)DENDRIMER - ChEMBL",
+          "snippet": "Molecule: POLY(AMIDOAMINE)DENDRIMER\nType: Small molecule\nMolecular weight: 3256.24\nBioactivity: Tm=62.8 degrees C (Ribonuclease pancreatic); Tm=63.2 degrees C (Ribonuclease pancreatic)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:36.967012"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL158666/",
+          "identifier": "CHEMBL158666",
+          "title": "AUTONOM NAME: - ChEMBL",
+          "snippet": "Molecule: AUTONOM NAME:\nType: Small molecule\nMolecular weight: 398.58\nBioactivity: Ki=50.4 nM (Protein kinase C alpha type); LogD=7.0 (No relevant target)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:37.865068"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5777886/",
+          "identifier": "CHEMBL5777886",
+          "title": "CHEMBL5777886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5777886\nMolecular weight: 336.41\nBioactivity: Ki=1026.0 nM (Nitric oxide synthase 1); Ki=10978.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.224847"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5788338/",
+          "identifier": "CHEMBL5788338",
+          "title": "CHEMBL5788338 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5788338\nMolecular weight: 316.42\nBioactivity: Ki=70.0 nM (Nitric oxide synthase 1); Ki=3314.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:38.581120"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'IMA 950'}_count": 5,
+        "chembl_{'name': 'Poly ICLC'}_count": 5,
+        "chembl_{'name': 'Immunomonitoring'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "rcsb_{'name': 'IMA 950'}_status": 400,
+        "rcsb_{'name': 'Poly ICLC'}_status": 400,
+        "rcsb_{'name': 'Immunomonitoring'}_status": 400
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_{'name': 'IMA 950'}_count": 0,
+        "ebi_proteins_{'name': 'Poly ICLC'}_count": 0,
+        "ebi_proteins_{'name': 'Immunomonitoring'}_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "apd_{'name': 'IMA 950'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)",
+        "apd_{'name': 'Poly ICLC'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)",
+        "apd_{'name': 'Immunomonitoring'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbamp",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "dbamp_{'name': 'IMA 950'}_error": "Server unreachable: ConnectError",
+        "dbamp_{'name': 'Poly ICLC'}_error": "Server unreachable: ConnectError",
+        "dbamp_{'name': 'Immunomonitoring'}_error": "Server unreachable: ConnectError"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT01920191",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase I/II Trial of IMA950 Multi-peptide Vaccine Plus Poly-ICLC in Glioblastoma",
+          "snippet": "Title: Phase I/II Trial of IMA950 Multi-peptide Vaccine Plus Poly-ICLC in Glioblastoma\nStatus: Completed\nPhase: Phase 1/Phase 2\nCountries: Switzerland\nConditions: CNS Tumor, Adult\nInterventions: Other: Immunomonitoring, Biological: IMA 950, Biological: Poly ICLC\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:59:43.885638"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT01920191",
+          "public_title": "Phase I/II Trial of IMA950 Multi-peptide Vaccine Plus Poly-ICLC in Glioblastoma",
+          "scientific_title": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1/Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Intervention Model: Single Group Assignment, Masking: Open Label, Primary Purpose: Treatment",
+          "countries": [
+            "Switzerland"
+          ],
+          "conditions": [
+            "CNS Tumor, Adult"
+          ],
+          "interventions": [
+            "Other: Immunomonitoring",
+            "Biological: IMA 950",
+            "Biological: Poly ICLC"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "iuphar_IMA 950": {
+          "found": false
+        },
+        "iuphar_Poly ICLC": {
+          "found": false
+        },
+        "iuphar_Immunomonitoring": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "intact",
+      "nct_id": "NCT01920191",
+      "citations": [
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-930964",
+          "identifier": "IntAct:EBI-930964",
+          "title": "ATXN1 - IntAct",
+          "snippet": "Interactor: ATXN1\nDescription: Ataxin-1\nUniProt: P54253\nSpecies: Homo sapiens\nType: protein\nInteractions: 2302",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:30.096439"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-356498",
+          "identifier": "IntAct:EBI-356498",
+          "title": "YWHAE - IntAct",
+          "snippet": "Interactor: YWHAE\nDescription: 14-3-3 protein epsilon\nUniProt: P62258\nSpecies: Homo sapiens\nType: protein\nInteractions: 2023",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:30.096500"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-359854",
+          "identifier": "IntAct:EBI-359854",
+          "title": "YWHAQ - IntAct",
+          "snippet": "Interactor: YWHAQ\nDescription: 14-3-3 protein theta\nUniProt: P27348\nSpecies: Homo sapiens\nType: protein\nInteractions: 1874",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:30.096516"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-355164",
+          "identifier": "IntAct:EBI-355164",
+          "title": "VCP - IntAct",
+          "snippet": "Interactor: VCP\nDescription: Transitional endoplasmic reticulum ATPase\nUniProt: P55072\nSpecies: Homo sapiens\nType: protein\nInteractions: 1829",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:30.096530"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-355744",
+          "identifier": "IntAct:EBI-355744",
+          "title": "TRAF2 - IntAct",
+          "snippet": "Interactor: TRAF2\nDescription: TNF receptor-associated factor 2\nUniProt: Q12933\nSpecies: Homo sapiens\nType: protein\nInteractions: 1687",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:30.096542"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-466029",
+          "identifier": "IntAct:EBI-466029",
+          "title": "HTT - IntAct",
+          "snippet": "Interactor: HTT\nDescription: Huntingtin\nUniProt: P42858\nSpecies: Homo sapiens\nType: protein\nInteractions: 7002",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:30.616626"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-2341576",
+          "identifier": "IntAct:EBI-2341576",
+          "title": "BMI1 - IntAct",
+          "snippet": "Interactor: BMI1\nDescription: Polycomb complex protein BMI-1\nUniProt: P35226\nSpecies: Homo sapiens\nType: protein\nInteractions: 1418",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:30.616664"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-1038838",
+          "identifier": "IntAct:EBI-1038838",
+          "title": "CACNA1C - IntAct",
+          "snippet": "Interactor: CACNA1C\nDescription: Voltage-dependent L-type calcium channel subunit alpha-1C\nUniProt: Q13936\nSpecies: Homo sapiens\nType: protein\nInteractions: 1103",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:30.616681"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-307486",
+          "identifier": "IntAct:EBI-307486",
+          "title": "SKP1 - IntAct",
+          "snippet": "Interactor: SKP1\nDescription: S-phase kinase-associated protein 1\nUniProt: P63208\nSpecies: Homo sapiens\nType: protein\nInteractions: 995",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:30.616696"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-357407",
+          "identifier": "IntAct:EBI-357407",
+          "title": "CCT2 - IntAct",
+          "snippet": "Interactor: CCT2\nDescription: T-complex protein 1 subunit beta\nUniProt: P78371\nSpecies: Homo sapiens\nType: protein\nInteractions: 921",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:59:30.616710"
+        }
+      ],
+      "raw_data": {
+        "intact_IMA 950": {
+          "total_elements": 963,
+          "interactors": [
+            {
+              "interactorAc": "EBI-930964",
+              "interactorName": "ATXN1",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P54253",
+              "interactorDescription": "Ataxin-1",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 2302,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-356498",
+              "interactorName": "YWHAE",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P62258",
+              "interactorDescription": "14-3-3 protein epsilon",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 2023,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-359854",
+              "interactorName": "YWHAQ",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P27348",
+              "interactorDescription": "14-3-3 protein theta",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1874,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-355164",
+              "interactorName": "VCP",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P55072",
+              "interactorDescription": "Transitional endoplasmic reticulum ATPase",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1829,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-355744",
+              "interactorName": "TRAF2",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "Q12933",
+              "interactorDescription": "TNF receptor-associated factor 2",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1687,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            }
+          ]
+        },
+        "intact_Poly ICLC": {
+          "total_elements": 3476,
+          "interactors": [
+            {
+              "interactorAc": "EBI-466029",
+              "interactorName": "HTT",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P42858",
+              "interactorDescription": "Huntingtin",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 7002,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-2341576",
+              "interactorName": "BMI1",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P35226",
+              "interactorDescription": "Polycomb complex protein BMI-1",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1418,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-1038838",
+              "interactorName": "CACNA1C",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "Q13936",
+              "interactorDescription": "Voltage-dependent L-type calcium channel subunit alpha-1C",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1103,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-307486",
+              "interactorName": "SKP1",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P63208",
+              "interactorDescription": "S-phase kinase-associated protein 1",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 995,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-357407",
+              "interactorName": "CCT2",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P78371",
+              "interactorDescription": "T-complex protein 1 subunit beta",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 921,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            }
+          ]
+        },
+        "intact_Immunomonitoring": {
+          "total_elements": 0,
+          "interactors": []
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "card",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "card_livesearch_IMA 950_html_len": 22,
+        "card_IMA 950_matches": 0,
+        "card_livesearch_Poly ICLC_html_len": 22,
+        "card_Poly ICLC_matches": 0,
+        "card_livesearch_Immunomonitoring_html_len": 22,
+        "card_Immunomonitoring_matches": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "pdbe_{'name': 'IMA 950'}_count": 0,
+        "pdbe_{'name': 'Poly ICLC'}_count": 0,
+        "pdbe_{'name': 'Immunomonitoring'}_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 8,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 51,
+      "has_data": true,
+      "quality_avg": 0.851
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 9,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbamp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "intact": {
+      "citations_count": 10,
+      "has_data": true,
+      "quality_avg": 0.75
+    },
+    "card": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

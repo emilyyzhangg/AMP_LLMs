@@ -1,0 +1,1130 @@
+{
+  "nct_id": "NCT00028431",
+  "metadata": {
+    "nct_id": "NCT00028431",
+    "title": "An Open Label Study of MDX-CTLA4 in Combination With Tyrosinase/gp100/MART-1 Peptides Emulsified With Montanide ISA 51 in the Treatment of Patients With Resected Stage III or IV Melanoma",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "Melanoma"
+    ],
+    "interventions": [
+      "BIOLOGICAL: MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.8799999999999999,
+      "reasoning": "[Pass 1 extraction] Here are the answers to the questions:\n\nIntervention: MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine\nMolecular Class: Short peptide chain (2-50 amino acids)\nDatabase Confirmation:\n* ChEMBL: CHEMBL2109434: Molecule: IMC-GP100, Type: Unknown (no specific information on tyrosinase/gp100/MART-1 peptides)\n* No evidence found in UniProt or DRAMP/DBAASP\n* No structural data availab\n[Pass 2 decision] Peptide: True\nReasoning:\n\nStep 1: Since the Molecular Class is a \"Short peptide chain\" with 2-50 amino acids, we proceed to Step 2.\n\nStep 2: The Active Ingredient Role states that the peptide (tyrosinase, gp100, and MART-1) is the active therapeutic agent. This confirms that the peptide is indeed the active drug.\n\nStep 3: Although there is no database confirmation in UniProt or DRAMP/DBAASP, and n",
+      "evidence": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5095345/",
+          "identifier": "CHEMBL5095345",
+          "title": "TYROSINASE - ChEMBL",
+          "snippet": "Molecule: TYROSINASE\nType: Enzyme\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:55.692795"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2109434/",
+          "identifier": "CHEMBL2109434",
+          "title": "IMC-GP100 - ChEMBL",
+          "snippet": "Molecule: IMC-GP100\nType: Unknown\nMax clinical phase: -1.0\nMechanism: T cell surface glycoprotein CD3 cross-linking agent; Melanocyte protein PMEL cross-linking agent",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:57.430374"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2109492/",
+          "identifier": "CHEMBL2109492",
+          "title": "MDX-1411 - ChEMBL",
+          "snippet": "Molecule: MDX-1411\nType: Unknown\nMax clinical phase: 1.0\nMechanism: CD70 antigen cross-linking agent",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:01.016035"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5943163/",
+          "identifier": "PMC:5943163",
+          "title": "Cancer vaccines: translation from mice to human clinical trials.",
+          "snippet": "Title: Cancer vaccines: translation from mice to human clinical trials.\nAuthors: Maeng H, Terabe M, Berzofsky JA\nJournal: Curr Opin Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.395967"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5394116/",
+          "identifier": "PMC:5394116",
+          "title": "Advancing Cancer Therapy with Present and Emerging Immuno-Oncology Approaches.",
+          "snippet": "Title: Advancing Cancer Therapy with Present and Emerging Immuno-Oncology Approaches.\nAuthors: Kamta J, Chaar M, Ande A et al.\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396048"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4514024/",
+          "identifier": "PMC:4514024",
+          "title": "Antigen-specific vaccines for cancer treatment.",
+          "snippet": "Title: Antigen-specific vaccines for cancer treatment.\nAuthors: Tagliamonte M, Petrizzo A, Tornesello ML et al.\nJournal: Hum Vaccin Immunother",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396073"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3228689/",
+          "identifier": "PMC:3228689",
+          "title": "Tumor evasion from T cell surveillance.",
+          "snippet": "Title: Tumor evasion from T cell surveillance.\nAuthors: T\u00f6pfer K, Kempe S, M\u00fcller N et al.\nJournal: J Biomed Biotechnol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396095"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "An Open Label Study of MDX-CTLA4 in Combination With Tyrosinase/gp100/MART-1 Peptides Emulsified With Montanide ISA 51 in the Treatment of Patients With Resected Stage III or IV Melanoma",
+          "snippet": "Title: An Open Label Study of MDX-CTLA4 in Combination With Tyrosinase/gp100/MART-1 Peptides Emulsified With Montanide ISA 51 in the Treatment of Patients With Resected Stage III or IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312730"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Brief Summary",
+          "snippet": "This is a study to determine the efficacy of a melanoma vaccine chemotherapy cocktail composed of CTLA-4 antibody; tyrosinase, gp100, and MART-1 peptides; and incomplete Freund's adjuvant (IFA) with or without interleukin-12 in patients with resected stage III or IV melanoma.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312742"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312746"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9099999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: Tyrosinase, gp100, and MART-1 peptides. These are melanoma-associated antigens used in a vaccine formulation.\nDatabase Matches: No evidence found.\nMechanism: The peptides are used to stimulate an immune response against melanoma cells by presenting tumor-specific antigens to T-cells.\nTherapeutic Target: Melanoma (resected stage III or IV)\nImmune Direction: PROMOTE immune defense \n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\nPeptide determination is True \u2192 Proceed to Step 2.\n\nStep 2 \u2014 Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?\n- Database Matches: No evidence found.\n- Mechanism: The peptides are used to stimulate an immune response against melanoma cells by presenting tumor-specific antigens to T-cells. This mechanism ",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "An Open Label Study of MDX-CTLA4 in Combination With Tyrosinase/gp100/MART-1 Peptides Emulsified With Montanide ISA 51 in the Treatment of Patients With Resected Stage III or IV Melanoma",
+          "snippet": "Title: An Open Label Study of MDX-CTLA4 in Combination With Tyrosinase/gp100/MART-1 Peptides Emulsified With Montanide ISA 51 in the Treatment of Patients With Resected Stage III or IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312730"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Brief Summary",
+          "snippet": "This is a study to determine the efficacy of a melanoma vaccine chemotherapy cocktail composed of CTLA-4 antibody; tyrosinase, gp100, and MART-1 peptides; and incomplete Freund's adjuvant (IFA) with or without interleukin-12 in patients with resected stage III or IV melanoma.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312742"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312746"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma | Keywords: Stage III melanoma, Stage IV melanoma, Interleukin-12, Cancer Vaccines, Antineoplastic Agents, Combined, Incomplete Freund's adjuvant, Monophenol Monooxygenase, Mannitol, Adjuvants, Immunologic, Melan-A Protein, Antigens, Neoplasm, Antibodies, Melanocyte lineage-specific antigen gp100, CTLA-4",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312751"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Intervention: MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine",
+          "snippet": "BIOLOGICAL: MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312755"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312758"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5943163/",
+          "identifier": "PMC:5943163",
+          "title": "Cancer vaccines: translation from mice to human clinical trials.",
+          "snippet": "Title: Cancer vaccines: translation from mice to human clinical trials.\nAuthors: Maeng H, Terabe M, Berzofsky JA\nJournal: Curr Opin Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.395967"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5394116/",
+          "identifier": "PMC:5394116",
+          "title": "Advancing Cancer Therapy with Present and Emerging Immuno-Oncology Approaches.",
+          "snippet": "Title: Advancing Cancer Therapy with Present and Emerging Immuno-Oncology Approaches.\nAuthors: Kamta J, Chaar M, Ande A et al.\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396048"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4514024/",
+          "identifier": "PMC:4514024",
+          "title": "Antigen-specific vaccines for cancer treatment.",
+          "snippet": "Title: Antigen-specific vaccines for cancer treatment.\nAuthors: Tagliamonte M, Petrizzo A, Tornesello ML et al.\nJournal: Hum Vaccin Immunother",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396073"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3228689/",
+          "identifier": "PMC:3228689",
+          "title": "Tumor evasion from T cell surveillance.",
+          "snippet": "Title: Tumor evasion from T cell surveillance.\nAuthors: T\u00f6pfer K, Kempe S, M\u00fcller N et al.\nJournal: J Biomed Biotechnol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396095"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.9099999999999999,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n**Protocol Route:** Not specified in ClinicalTrials.gov protocol description.\n\n**FDA/Label Route:** Not found in FDA label or prescribing information.\n\n**Literature Route:** \nNot found in PubMed/PMC publications. The articles mention cancer vaccines, immunotherapy, and melanoma treatment but do not specify the route of administration for MDX-CTLA4 antibody.\n\n**\n[Pass 2 classification] Delivery Mode: Injection/Infusion - Other/Unspecified\nEvidence: Protocol Route (Not specified in ClinicalTrials.gov protocol description)\nReasoning: Since the route of administration is not specified in any source, and none of the other sources provide explicit information on the route for MDX-CTLA4",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "An Open Label Study of MDX-CTLA4 in Combination With Tyrosinase/gp100/MART-1 Peptides Emulsified With Montanide ISA 51 in the Treatment of Patients With Resected Stage III or IV Melanoma",
+          "snippet": "Title: An Open Label Study of MDX-CTLA4 in Combination With Tyrosinase/gp100/MART-1 Peptides Emulsified With Montanide ISA 51 in the Treatment of Patients With Resected Stage III or IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312730"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Brief Summary",
+          "snippet": "This is a study to determine the efficacy of a melanoma vaccine chemotherapy cocktail composed of CTLA-4 antibody; tyrosinase, gp100, and MART-1 peptides; and incomplete Freund's adjuvant (IFA) with or without interleukin-12 in patients with resected stage III or IV melanoma.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312742"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312746"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma | Keywords: Stage III melanoma, Stage IV melanoma, Interleukin-12, Cancer Vaccines, Antineoplastic Agents, Combined, Incomplete Freund's adjuvant, Monophenol Monooxygenase, Mannitol, Adjuvants, Immunologic, Melan-A Protein, Antigens, Neoplasm, Antibodies, Melanocyte lineage-specific antigen gp100, CTLA-4",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312751"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Intervention: MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine",
+          "snippet": "BIOLOGICAL: MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312755"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312758"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5943163/",
+          "identifier": "PMC:5943163",
+          "title": "Cancer vaccines: translation from mice to human clinical trials.",
+          "snippet": "Title: Cancer vaccines: translation from mice to human clinical trials.\nAuthors: Maeng H, Terabe M, Berzofsky JA\nJournal: Curr Opin Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.395967"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5394116/",
+          "identifier": "PMC:5394116",
+          "title": "Advancing Cancer Therapy with Present and Emerging Immuno-Oncology Approaches.",
+          "snippet": "Title: Advancing Cancer Therapy with Present and Emerging Immuno-Oncology Approaches.\nAuthors: Kamta J, Chaar M, Ande A et al.\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396048"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4514024/",
+          "identifier": "PMC:4514024",
+          "title": "Antigen-specific vaccines for cancer treatment.",
+          "snippet": "Title: Antigen-specific vaccines for cancer treatment.\nAuthors: Tagliamonte M, Petrizzo A, Tornesello ML et al.\nJournal: Hum Vaccin Immunother",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396073"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3228689/",
+          "identifier": "PMC:3228689",
+          "title": "Tumor evasion from T cell surveillance.",
+          "snippet": "Title: Tumor evasion from T cell surveillance.\nAuthors: T\u00f6pfer K, Kempe S, M\u00fcller N et al.\nJournal: J Biomed Biotechnol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396095"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.9099999999999999,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n**Registry Status:** COMPLETED\n**Trial Phase:** PHASE1\n**Published Results:** None found in the provided literature, but a general overview of cancer vaccines and immunotherapy approaches can be seen in the PMC articles. These articles discuss the concept of using cancer vaccines to stimulate an immune response against tumors, but do not specifically mention the results of this trial.\n**Result Valence:** Not Available\n**Results Posted:** NOT FOUND (no informat\n[Pass 2 decision] This is a Phase I trial that completed as planned, which suggests that the trial was successful in establishing acceptable safety and tolerability of the melanoma vaccine chemotherapy cocktail. According to Heuristic H1, \"Phase I COMPLETION: Phase I/Early Phase I trials that completed normally (not terminated/withdrawn) are typically 'Positive'. Completing a Phase I trial IS the success criterion.\" Therefore, since this trial was designed to evaluate the efficacy of a melanoma vaccine chemothera",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "An Open Label Study of MDX-CTLA4 in Combination With Tyrosinase/gp100/MART-1 Peptides Emulsified With Montanide ISA 51 in the Treatment of Patients With Resected Stage III or IV Melanoma",
+          "snippet": "Title: An Open Label Study of MDX-CTLA4 in Combination With Tyrosinase/gp100/MART-1 Peptides Emulsified With Montanide ISA 51 in the Treatment of Patients With Resected Stage III or IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312730"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Brief Summary",
+          "snippet": "This is a study to determine the efficacy of a melanoma vaccine chemotherapy cocktail composed of CTLA-4 antibody; tyrosinase, gp100, and MART-1 peptides; and incomplete Freund's adjuvant (IFA) with or without interleukin-12 in patients with resected stage III or IV melanoma.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312742"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312746"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma | Keywords: Stage III melanoma, Stage IV melanoma, Interleukin-12, Cancer Vaccines, Antineoplastic Agents, Combined, Incomplete Freund's adjuvant, Monophenol Monooxygenase, Mannitol, Adjuvants, Immunologic, Melan-A Protein, Antigens, Neoplasm, Antibodies, Melanocyte lineage-specific antigen gp100, CTLA-4",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312751"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Intervention: MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine",
+          "snippet": "BIOLOGICAL: MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312755"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312758"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5943163/",
+          "identifier": "PMC:5943163",
+          "title": "Cancer vaccines: translation from mice to human clinical trials.",
+          "snippet": "Title: Cancer vaccines: translation from mice to human clinical trials.\nAuthors: Maeng H, Terabe M, Berzofsky JA\nJournal: Curr Opin Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.395967"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5394116/",
+          "identifier": "PMC:5394116",
+          "title": "Advancing Cancer Therapy with Present and Emerging Immuno-Oncology Approaches.",
+          "snippet": "Title: Advancing Cancer Therapy with Present and Emerging Immuno-Oncology Approaches.\nAuthors: Kamta J, Chaar M, Ande A et al.\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396048"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4514024/",
+          "identifier": "PMC:4514024",
+          "title": "Antigen-specific vaccines for cancer treatment.",
+          "snippet": "Title: Antigen-specific vaccines for cancer treatment.\nAuthors: Tagliamonte M, Petrizzo A, Tornesello ML et al.\nJournal: Hum Vaccin Immunother",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396073"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3228689/",
+          "identifier": "PMC:3228689",
+          "title": "Tumor evasion from T cell surveillance.",
+          "snippet": "Title: Tumor evasion from T cell surveillance.\nAuthors: T\u00f6pfer K, Kempe S, M\u00fcller N et al.\nJournal: J Biomed Biotechnol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396095"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00028431",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial explicitly states the use of \"Tyrosinase/gp100/MART-1 Peptides\" as part of the intervention. These are peptides.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The presence of tyrosinase, gp100 (also known as Melan-A), and MART-1 in the vaccine indicates that these are peptide antigens used for cancer treatment. Peptides are defined as linear chains of amino acids, which fits the description provided for these components. Therefore, based on this evidence, the primary intervention is a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial involves a melanoma vaccine composed of CTLA-4 antibody, tyrosinase, gp100, and MART-1 peptides. These are all biologics, and gp100 is specifically identified as a peptide in the ChemBL database. Therefore, the primary intervention in this trial is a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This trial focuses on a vaccine for cancer treatment. While peptides are involved, they function by inducing an immune response against tumor cells rather than directly killing them. The goal is to stimulate the body's own immune system to fight the cancer, not to have the peptides themselves act as antimicrobial agents.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Although the intervention contains peptide components (tyrosinase, gp100, and MART-1), its primary function is to induce a host's immune system to recognize and attack melanoma cells. This does not fit the definition of an antimicrobial peptide because it does not directly kill or disrupt pathogens through its own biochemical action; instead, it works by stimulating the innate and adaptive immune responses against cancerous cells. Therefore, based on the evidence provided, this intervention is c",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial is for a melanoma vaccine composed of CTLA-4 antibody; tyrosinase, gp100, and MART-1 peptides; and incomplete Freund's adjuvant (IFA) with or without interleukin-12. This vaccine does not directly kill pathogens but instead induces adaptive immunity, making it an 'Other' classification according to the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "While the specific route of administration is not mentioned, the term \"vaccine\" and \"Antibody\" suggest an injection-based delivery method.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "Given that vaccines are typically administered via injection and considering the lack of specific route mentioned in the protocol, this classification aligns with the provided guidelines. The use of terms like \"emulsified\" suggests a liquid form which could be injected rather than being taken orally or applied topically.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "Since the protocol does not specify an injection route (IM, SC, or IV), and no other delivery mode is mentioned, we can classify it as 'Injection/Infusion - Other/Unspecified'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial is completed and in Phase I.  Phase I trials that complete normally are considered successful as they primarily focus on safety.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "Phase I trials are primarily designed to assess safety and tolerability of new treatments or combinations of treatments. The completion of such a trial is generally considered a success as it indicates that the treatment was safe enough for further investigation in later phases (II and III). Additionally, there is no evidence suggesting negative outcomes from this trial. Therefore, based on the available information, we can infer that the trial likely met its primary safety endpoints successfull",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial has completed normally (Phase 1) and there are published literature that discuss the use of cancer vaccines, including the specific vaccine used in this trial (MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine). While the publications do not specifically mention the results of this particular trial, they provide evidence that cancer vaccines are being researched and developed, which suggests that the completion of this trial is considered a success (positive outcome",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "According to the rules, a COMPLETED trial requires published evidence of failure to determine a reason. Since there are no publications indicating the trial failed to meet its endpoints, the answer is EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The lack of specific evidence about the outcome in the provided information suggests that the trial might have failed to show sufficient efficacy. Typically, when a clinical trial is completed but there are no published results indicating success or meeting predefined endpoints, this implies that the trial likely did not achieve its primary objectives. Therefore, based on the context and assuming standard practices for reporting outcomes of clinical trials, it can be reasonably inferred that the",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published literature indicates that the trial NCT00028431 did not meet its endpoints as it was aimed at determining the efficacy of a melanoma vaccine chemotherapy cocktail. However, the literature suggests challenges in advancing cancer therapy with immuno-oncology approaches and tumor evasion from T cell surveillance, which could explain the failure of the trial to achieve its intended purpose.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence suggests that the trial NCT00028431 did not meet its endpoints as it was aimed at determining the efficacy of a melanoma vaccine chemotherapy cocktail. Although there is no explicit statement indicating failure in meeting predefined endpoints, the literature on immuno-oncology approaches and tumor evasion indicates challenges in advancing cancer therapy with such methods. This implies that the trial likely failed to show sufficient efficacy, supporting the answer \"Ineffective for pu",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": null
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "dbamp",
+    "who_ictrp",
+    "iuphar",
+    "intact",
+    "card",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00028431",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "An Open Label Study of MDX-CTLA4 in Combination With Tyrosinase/gp100/MART-1 Peptides Emulsified With Montanide ISA 51 in the Treatment of Patients With Resected Stage III or IV Melanoma",
+          "snippet": "Title: An Open Label Study of MDX-CTLA4 in Combination With Tyrosinase/gp100/MART-1 Peptides Emulsified With Montanide ISA 51 in the Treatment of Patients With Resected Stage III or IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312730"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Brief Summary",
+          "snippet": "This is a study to determine the efficacy of a melanoma vaccine chemotherapy cocktail composed of CTLA-4 antibody; tyrosinase, gp100, and MART-1 peptides; and incomplete Freund's adjuvant (IFA) with or without interleukin-12 in patients with resected stage III or IV melanoma.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312742"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312746"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma | Keywords: Stage III melanoma, Stage IV melanoma, Interleukin-12, Cancer Vaccines, Antineoplastic Agents, Combined, Incomplete Freund's adjuvant, Monophenol Monooxygenase, Mannitol, Adjuvants, Immunologic, Melan-A Protein, Antigens, Neoplasm, Antibodies, Melanocyte lineage-specific antigen gp100, CTLA-4",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312751"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Intervention: MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine",
+          "snippet": "BIOLOGICAL: MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312755"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:40.312758"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00028431",
+            "orgStudyIdInfo": {
+              "id": "FD-R-1975-01"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "10M-00-4;"
+              },
+              {
+                "id": "FD-R-001975-01"
+              }
+            ],
+            "organization": {
+              "fullName": "University of Southern California",
+              "class": "OTHER"
+            },
+            "briefTitle": "Novel Adjuvants for Peptide-Based Melanoma Vaccines",
+            "officialTitle": "An Open Label Study of MDX-CTLA4 in Combination With Tyrosinase/gp100/MART-1 Peptides Emulsified With Montanide ISA 51 in the Treatment of Patients With Resected Stage III or IV Melanoma"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2014-05",
+            "overallStatus": "COMPLETED",
+            "startDateStruct": {
+              "date": "2001-08"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2003-01",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2005-06",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2002-01-04",
+            "studyFirstSubmitQcDate": "2002-01-08",
+            "studyFirstPostDateStruct": {
+              "date": "2002-01-09",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2014-05-20",
+            "lastUpdatePostDateStruct": {
+              "date": "2014-05-22",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "University of Southern California",
+              "class": "OTHER"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "This is a study to determine the efficacy of a melanoma vaccine chemotherapy cocktail composed of CTLA-4 antibody; tyrosinase, gp100, and MART-1 peptides; and incomplete Freund's adjuvant (IFA) with or without interleukin-12 in patients with resected stage III or IV melanoma.",
+            "detailedDescription": "In the Phase I/II trial, patients with resected stages III and IV melanoma who have been rendered free of disease, but are at high risk of relapse, are treated with peptides/IFA at a dose of 0.5 mg each peptide plus CTLA-4 antibody given intravenously, 3 mg/kg, after each vaccination. In the Phase II randomized study, patients are treated with the melanoma peptide vaccine alone, with CTLA-4 antibody, or with CTLA-4 antibody combined with IL-12 at 30 ng/kg with alum. The peptides are tyrosinase 368-376 (370D); gp100 209-217 (210M); and MART-1 26-35 (27L) which are emulsified with IFA. The dosing schedule for both trials are at 1, 2, 3, 4, 5, and 6 months; then at 9 and 12 for a total of 8 vaccinations."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Melanoma"
+            ],
+            "keywords": [
+              "Stage III melanoma",
+              "Stage IV melanoma",
+              "Interleukin-12",
+              "Cancer Vaccines",
+              "Antineoplastic Agents, Combined",
+              "Incomplete Freund's adjuvant",
+              "Monophenol Monooxygenase",
+              "Mannitol",
+              "Adjuvants, Immunologic",
+              "Melan-A Protein",
+              "Antigens, Neoplasm",
+              "Antibodies",
+              "Melanocyte lineage-specific antigen gp100",
+              "CTLA-4"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 19,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion criteria:\n\n* Diagnosis of stage III or IV cutaneous, mucosal, or ocular melanoma\n* Completely resected disease or disease-free\n* HLA-A2.1 positive\n* Tumor tissue available for immunohistochemical analysis and staining positive for at least 1 of the specified antigens\n* At least 1 month since prior therapy for cancer, including radiotherapy and adjuvant therapy\n* WBC count at least 3,000/mm3\n* Granulocyte count at least 1,500/mm3\n* Platelet count at least 100,000/mm3\n* Hemoglobin at least 9.0 gm/dL\n* Creatinine no greater than 2.0 mg/dL\n* Bilirubin no greater than 2.0 mg/dL\n* SGOT/SGPT no greater than 2.5 times upper limit of normal\n* ECOG performance status 0-1\n* Have failed alpha-interferons (patients with resected stage III disease)\n\nExclusion criteria:\n\n* Prior treatment with tyrosinase: 368-376(370D), gp100:209-217(210M), and MART-1:26-35(27L) peptides\n* Steroid therapy or other immunosuppressive medication requirement\n* Major systemic infections (e.g., pneumonia or sepsis)\n* Coagulation or bleeding disorders\n* Major medical illnesses of the gastrointestinal, cardiovascular, or respiratory systems\n* Allergic reaction to Montanide ISA 51 (incomplete Freund's adjuvant)\n* History of uveitis or autoimmune inflammatory eye disease\n* Other active autoimmune disease\n* Positive for hepatitis B surface antigen, hepatitis C antibody, or HIV antibody\n* Pregnant or nursing",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Jeffrey S. Weber, M.D., Ph.D.",
+                "affiliation": "University of Southern California/Norris Cancer Center",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Universtiy of Southern California/Kenneth Norris, Jr. Comprehensive Cancer Center",
+                "city": "Los Angeles",
+                "state": "California",
+                "zip": "90089",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.05223,
+                  "lon": -118.24368
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00028431",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5943163/",
+          "identifier": "PMC:5943163",
+          "title": "Cancer vaccines: translation from mice to human clinical trials.",
+          "snippet": "Title: Cancer vaccines: translation from mice to human clinical trials.\nAuthors: Maeng H, Terabe M, Berzofsky JA\nJournal: Curr Opin Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.395967"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5394116/",
+          "identifier": "PMC:5394116",
+          "title": "Advancing Cancer Therapy with Present and Emerging Immuno-Oncology Approaches.",
+          "snippet": "Title: Advancing Cancer Therapy with Present and Emerging Immuno-Oncology Approaches.\nAuthors: Kamta J, Chaar M, Ande A et al.\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396048"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4514024/",
+          "identifier": "PMC:4514024",
+          "title": "Antigen-specific vaccines for cancer treatment.",
+          "snippet": "Title: Antigen-specific vaccines for cancer treatment.\nAuthors: Tagliamonte M, Petrizzo A, Tornesello ML et al.\nJournal: Hum Vaccin Immunother",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396073"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3228689/",
+          "identifier": "PMC:3228689",
+          "title": "Tumor evasion from T cell surveillance.",
+          "snippet": "Title: Tumor evasion from T cell surveillance.\nAuthors: T\u00f6pfer K, Kempe S, M\u00fcller N et al.\nJournal: J Biomed Biotechnol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:47.396095"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "5943163",
+          "5394116",
+          "4514024",
+          "3228689"
+        ],
+        "pmc_count": 4,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 0,
+        "semantic_scholar_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00028431",
+      "citations": [],
+      "raw_data": {
+        "uniprot_MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00028431",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00028431",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine": {
+          "total": 0,
+          "entries": []
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00028431",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5095345/",
+          "identifier": "CHEMBL5095345",
+          "title": "TYROSINASE - ChEMBL",
+          "snippet": "Molecule: TYROSINASE\nType: Enzyme\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:55.692795"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2109434/",
+          "identifier": "CHEMBL2109434",
+          "title": "IMC-GP100 - ChEMBL",
+          "snippet": "Molecule: IMC-GP100\nType: Unknown\nMax clinical phase: -1.0\nMechanism: T cell surface glycoprotein CD3 cross-linking agent; Melanocyte protein PMEL cross-linking agent",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:57.430374"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2109492/",
+          "identifier": "CHEMBL2109492",
+          "title": "MDX-1411 - ChEMBL",
+          "snippet": "Molecule: MDX-1411\nType: Unknown\nMax clinical phase: 1.0\nMechanism: CD70 antigen cross-linking agent",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:01.016035"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00028431",
+      "citations": [],
+      "raw_data": {
+        "rcsb_{'name': 'MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine'}_status": 400
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00028431",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_{'name': 'MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine'}_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00028431",
+      "citations": [],
+      "raw_data": {
+        "apd_{'name': 'MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbamp",
+      "nct_id": "NCT00028431",
+      "citations": [],
+      "raw_data": {
+        "dbamp_{'name': 'MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine'}_error": "Server unreachable: ConnectError"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00028431",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00028431",
+          "identifier": "NCT00028431",
+          "title": "Novel Adjuvants for Peptide-Based Melanoma Vaccines",
+          "snippet": "Title: Novel Adjuvants for Peptide-Based Melanoma Vaccines\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: Melanoma\nInterventions: Biological: MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:59:10.182920"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00028431",
+          "public_title": "Novel Adjuvants for Peptide-Based Melanoma Vaccines",
+          "scientific_title": "An Open Label Study of MDX-CTLA4 in Combination With Tyrosinase/gp100/MART-1 Peptides Emulsified With Montanide ISA 51 in the Treatment of Patients With Resected Stage III or IV Melanoma",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Non-Randomized, Endpoint Classification: Safety/Efficacy Study, Intervention Model: Single Group Assignment, Masking: Open Label, Primary Purpose: Treatment",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Melanoma"
+          ],
+          "interventions": [
+            "Biological: MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00028431",
+      "citations": [],
+      "raw_data": {
+        "iuphar_MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "intact",
+      "nct_id": "NCT00028431",
+      "citations": [],
+      "raw_data": {
+        "intact_MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "card",
+      "nct_id": "NCT00028431",
+      "citations": [],
+      "raw_data": {
+        "card_livesearch_MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine_html_len": 22,
+        "card_MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine_matches": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00028431",
+      "citations": [],
+      "raw_data": {
+        "pdbe_{'name': 'MDX-CTLA4 Antibody; Tyrosinase/gp100/MART-1 Peptides Melanoma Vaccine'}_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 4,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbamp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "intact": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "card": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

@@ -1,0 +1,369 @@
+{
+  "nct_id": "NCT00004358",
+  "completed_at": "2026-03-16 12:36:45 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00004358",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "snippet": "Title: Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451922"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES: I. Determine whether intermittent, long-term, subcutaneous administration of calcitonin increases phosphaturia, reduces hyperphosphatemia, and increases intact parathyroid hormone levels in patients with tumoral calcinosis.\n\nII. Determine whether calcitonin reduces or prevents tumor recurrence. III. Determine whether hyperphosphatemia abolishes the normal circadian pattern of serum phosphorus.\n\nIV. Determine how repetitive calcitonin administration alters the biochemical markers of b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451931"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451936"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Calcinosis | Keywords: arthritis & connective tissue diseases, rare disease, tumoral calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451941"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Intervention: calcitonin",
+          "snippet": "DRUG: calcitonin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451945"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451949"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "calcitonin",
+          "title": "FDA Label: calcitonin",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:30.606624"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00004358",
+            "orgStudyIdInfo": {
+              "id": "199/11925"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "NU-477"
+              }
+            ],
+            "organization": {
+              "fullName": "National Center for Research Resources (NCRR)",
+              "class": "NIH"
+            },
+            "briefTitle": "Phase II Study of Calcitonin for Tumoral Calcinosis"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2003-12",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "1992-11"
+            },
+            "studyFirstSubmitDate": "1999-10-18",
+            "studyFirstSubmitQcDate": "1999-10-18",
+            "studyFirstPostDateStruct": {
+              "date": "1999-10-19",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2005-06-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2005-06-24",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "National Center for Research Resources (NCRR)",
+              "class": "NIH"
+            },
+            "collaborators": [
+              {
+                "name": "Ann & Robert H Lurie Children's Hospital of Chicago",
+                "class": "OTHER"
+              }
+            ]
+          },
+          "descriptionModule": {
+            "briefSummary": "OBJECTIVES: I. Determine whether intermittent, long-term, subcutaneous administration of calcitonin increases phosphaturia, reduces hyperphosphatemia, and increases intact parathyroid hormone levels in patients with tumoral calcinosis.\n\nII. Determine whether calcitonin reduces or prevents tumor recurrence. III. Determine whether hyperphosphatemia abolishes the normal circadian pattern of serum phosphorus.\n\nIV. Determine how repetitive calcitonin administration alters the biochemical markers of bone metabolism in osteopenic patients with tumoral calcinosis.",
+            "detailedDescription": "PROTOCOL OUTLINE: Patients are treated with subcutaneous injections of salmon calcitonin every 3 weeks. Ondansetron premedication and intravenous hydration are also administered.\n\nPatients are followed for disease progression and tumor recurrence."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Calcinosis"
+            ],
+            "keywords": [
+              "arthritis & connective tissue diseases",
+              "rare disease",
+              "tumoral calcinosis"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "primaryPurpose": "TREATMENT"
+            },
+            "enrollmentInfo": {
+              "count": 9
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "calcitonin"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "PROTOCOL ENTRY CRITERIA:\n\n--Disease Characteristics-- Histologically confirmed tumoral calcinosis --Prior/Concurrent Therapy-- Prior surgical resection of calcinotic lesion required",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "0 Years",
+            "stdAges": [
+              "CHILD",
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Craig B. Langman",
+                "affiliation": "Ann & Robert H Lurie Children's Hospital of Chicago",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Children's Memorial Hospital, Chicago",
+                "city": "Chicago",
+                "state": "Illinois",
+                "zip": "60614",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.85003,
+                  "lon": -87.65005
+                }
+              }
+            ]
+          }
+        },
+        "openfda_calcitonin": {
+          "spl_product_data_elements": [
+            "OSTEOBIOS CALCITONIN HUMAN - CALCIUM CARBONATE - CALCIUM FLUORIDE - CALCIUM PHOSPHATE - ISOLEUCINE - LEUCINE - LYSINE - METHIONINE - PHENYLALANINE - SUS SCROFA BONE - SUS SCROFA PARATHYROID GLAND - THREONINE - TRYPTOPHAN - VALINE - ALCOHOL CALCITONIN HUMAN CALCITONIN HUMAN ISOLEUCINE ISOLEUCINE LEUCINE LEUCINE LYSINE LYSINE METHIONINE METHIONINE PHENYLALANINE PHENYLALANINE THREONINE THREONINE TRYPTOPHAN TRYPTOPHAN VALINE VALINE CALCIUM CARBONATE CALCIUM CATION CARBONATE ION CALCIUM FLUORIDE FLUORIDE ION CALCIUM PHOSPHATE CALCIUM CATION SUS SCROFA BONE SUS SCROFA BONE SUS SCROFA PARATHYROID GLAND SUS SCROFA PARATHYROID GLAND"
+          ],
+          "active_ingredient": [
+            "ACTIVE INGREDIENTS/PURPOSE BONE 10X 30X 200X BONE FRACTURES CALCAREA FLUORICA 12X 30X 200X BONE FRACTURES CALCAREA CARBONICA 12X 30X 200X BONE FRACTURES CALCAREA PHOSPHORICA 12X 30X 200X BONE FRACTURES CALCITONIN 6X BONE FRACTURES PARATHYROID GLAND 10X 30X 200X IMPROVES BONE REPAIR"
+          ],
+          "purpose": [
+            "USES Temporary relief of symptoms related weak bones such as: Frequent and slow-healing fractures Sharp and dull bone pain"
+          ],
+          "warnings": [
+            "WARNINGS Stop use and ask doctor if symptoms persist more than 5 days. If pregnant or breast-feeding ask a health professional before use. Keep out of reach of children . In case of overdose, get medical help or contact a Poison Control Center right away. Contains ethyl alcohol 30%"
+          ],
+          "pregnancy_or_breast_feeding": [
+            "PREGNANCY If pregnant or breast-feeding ask a doctor before use"
+          ],
+          "keep_out_of_reach_of_children": [
+            "WARNINGS Keep out of reach of children"
+          ],
+          "dosage_and_administration": [
+            "DIRECTIONS Adults and children 12 years and older 20 drops in a little water, 2 times per day Children between 12 years and 6 years of age 10 drops in a little water, 2 times per day Children under 6 years 5 drops in a glass of water, 2 times per day"
+          ],
+          "questions": [
+            "QUESTIONS Questions?: info@gunainc.com, tel. (484) 223-3500"
+          ],
+          "inactive_ingredient": [
+            "Inactive ingredient : Ethyl alcohol 30%."
+          ],
+          "indications_and_usage": [
+            "Take 15 minutes before meals"
+          ],
+          "package_label_principal_display_panel": [
+            "PRINCIPAL DISPLAY PANEL 5USOST-REV05-03-04-18"
+          ],
+          "set_id": "1b8c8c83-1a46-4c0a-b883-e7dce781c5d1",
+          "id": "ed712a71-07a8-02bc-e053-2995a90a8c42",
+          "effective_time": "20221114",
+          "version": "5",
+          "openfda": {
+            "brand_name": [
+              "OSTEOBIOS"
+            ],
+            "generic_name": [
+              "CALCITONIN HUMAN - CALCIUM CARBONATE - CALCIUM FLUORIDE - CALCIUM PHOSPHATE - ISOLEUCINE - LEUCINE - LYSINE - METHIONINE - PHENYLALANINE - SUS SCROFA BONE - SUS SCROFA PARATHYROID GLAND - THREONINE - TRYPTOPHAN - VALINE -"
+            ],
+            "manufacturer_name": [
+              "Guna spa"
+            ],
+            "product_ndc": [
+              "17089-259"
+            ],
+            "product_type": [
+              "HUMAN OTC DRUG"
+            ],
+            "route": [
+              "ORAL"
+            ],
+            "substance_name": [
+              "CALCITONIN HUMAN",
+              "CALCIUM CARBONATE",
+              "CALCIUM FLUORIDE",
+              "CALCIUM PHOSPHATE",
+              "ISOLEUCINE",
+              "LEUCINE",
+              "LYSINE",
+              "METHIONINE",
+              "PHENYLALANINE",
+              "SUS SCROFA BONE",
+              "SUS SCROFA PARATHYROID GLAND",
+              "THREONINE",
+              "TRYPTOPHAN",
+              "VALINE"
+            ],
+            "spl_id": [
+              "ed712a71-07a8-02bc-e053-2995a90a8c42"
+            ],
+            "spl_set_id": [
+              "1b8c8c83-1a46-4c0a-b883-e7dce781c5d1"
+            ],
+            "package_ndc": [
+              "17089-259-18"
+            ],
+            "is_original_packager": [
+              true
+            ],
+            "upc": [
+              "0317089259183"
+            ],
+            "unii": [
+              "I0IO929019",
+              "H0G9379FGK",
+              "O3B55K4YKI",
+              "97Z1WI3NDX",
+              "04Y7590D77",
+              "GMW67QNF9C",
+              "K3Z4F929H6",
+              "AE28F7PNPL",
+              "47E5O17Y3R",
+              "597RLJ09RG",
+              "2KBE35NE8S",
+              "2ZD004190S",
+              "8DUH1N11BX",
+              "HG18B9YRS7"
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 0,
+        "semantic_scholar_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

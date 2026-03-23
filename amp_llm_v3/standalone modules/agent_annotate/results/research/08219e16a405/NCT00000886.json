@@ -1,0 +1,297 @@
+{
+  "nct_id": "NCT00000886",
+  "completed_at": "2026-03-16 12:36:30 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00000886",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000886",
+          "identifier": "NCT00000886",
+          "title": "A Phase I Safety and Immunogenicity Trial of HIV-1 gp120 C4-V3 Hybrid Polyvalent Peptide Immunogen Mixed in Mineral Oil Containing Mannose Mono-Oleate (IFA)",
+          "snippet": "Title: A Phase I Safety and Immunogenicity Trial of HIV-1 gp120 C4-V3 Hybrid Polyvalent Peptide Immunogen Mixed in Mineral Oil Containing Mannose Mono-Oleate (IFA)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.200142"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000886",
+          "identifier": "NCT00000886",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety of HIV-1 gp120 C4-V3 hybrid polyvalent peptide immunogen (C4-V3 peptides) formulated in mineral oil containing mannose mono-oleate (IFA) in HIV-1 uninfected volunteers. To evaluate the humoral and cellular immune responses to the C4-V3 peptides as measured by the induction of 1 or more of the following: neutralizing antibodies to HIV-1 MN and RF, cross-neutralizing antibodies to primary isolates of HIV-1, HIV-1 antigen-specific lymphoproliferation, CD8+ and CD4+ cytotoxic ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.200194"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000886",
+          "identifier": "NCT00000886",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.200243"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000886",
+          "identifier": "NCT00000886",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: HIV Antibodies, HIV Envelope Protein gp120, Drug Carriers, Hypersensitivity, Delayed, AIDS Vaccines, CD4-Positive T-Lymphocytes, CD8-Positive T-Lymphocytes, HIV Seronegativity, Neutralization Tests, Mineral Oil, Oleic Acids, Mannose, HLA-B7 Antigen, HLA-A2 Antigen, HIV Preventive Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.200263"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000886",
+          "identifier": "NCT00000886",
+          "title": "Intervention: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "snippet": "BIOLOGICAL: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.200280"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000886",
+          "identifier": "NCT00000886",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.200294"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00000886",
+            "orgStudyIdInfo": {
+              "id": "AVEG 020"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "10570",
+                "type": "REGISTRY",
+                "domain": "DAIDS ES Registry Number"
+              }
+            ],
+            "organization": {
+              "fullName": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            },
+            "briefTitle": "A Phase I Safety and Immunogenicity Trial of HIV-1 gp120 C4-V3 Hybrid Polyvalent Peptide Immunogen Mixed in Mineral Oil Containing Mannose Mono-Oleate (IFA)",
+            "officialTitle": "A Phase I Safety and Immunogenicity Trial of HIV-1 gp120 C4-V3 Hybrid Polyvalent Peptide Immunogen Mixed in Mineral Oil Containing Mannose Mono-Oleate (IFA)"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2021-10",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "completionDateStruct": {
+              "date": "1999-04",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "1999-11-02",
+            "studyFirstSubmitQcDate": "2001-08-30",
+            "studyFirstPostDateStruct": {
+              "date": "2001-08-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2021-10-27",
+            "lastUpdatePostDateStruct": {
+              "date": "2021-10-29",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "To evaluate the safety of HIV-1 gp120 C4-V3 hybrid polyvalent peptide immunogen (C4-V3 peptides) formulated in mineral oil containing mannose mono-oleate (IFA) in HIV-1 uninfected volunteers. To evaluate the humoral and cellular immune responses to the C4-V3 peptides as measured by the induction of 1 or more of the following: neutralizing antibodies to HIV-1 MN and RF, cross-neutralizing antibodies to primary isolates of HIV-1, HIV-1 antigen-specific lymphoproliferation, CD8+ and CD4+ cytotoxic T lymphocyte (CTL) activity specific for HIV-1 gp120 or V3 peptides corresponding to the vaccine strains of HIV-1, induction of HLA-B7 and HLA-A2 restricted CD8+CTLs, and induction of HIV-specific DTH responses.\n\nThe test immunogen (C4-V3 peptides) is constructed from 4 sequences of the HIV-1 V3 gp120 loop shared by approximately 80% of North American HIV-1 strains. Because of the critical role that this region plays in generating anti-HIV sequences, it is hypothesized that the test immunogen (C4-V3 peptides) will be capable of inducing a broad range of cross-reactive neutralizing antibodies in the majority of recipients.",
+            "detailedDescription": "The test immunogen (C4-V3 peptides) is constructed from 4 sequences of the HIV-1 V3 gp120 loop shared by approximately 80% of North American HIV-1 strains. Because of the critical role that this region plays in generating anti-HIV sequences, it is hypothesized that the test immunogen (C4-V3 peptides) will be capable of inducing a broad range of cross-reactive neutralizing antibodies in the majority of recipients.\n\nTwenty-eight volunteers are randomized to receive two 0.5 ml injections of C4-43 peptides in IFA or placebo (IFA alone) administered intramuscularly at 0, 1, 6, and 12 months. At least 50% of all volunteers (6 per Groups I and II; 2, Group III) must be HLA-B7 phenotype."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections"
+            ],
+            "keywords": [
+              "HIV Antibodies",
+              "HIV Envelope Protein gp120",
+              "Drug Carriers",
+              "Hypersensitivity, Delayed",
+              "AIDS Vaccines",
+              "CD4-Positive T-Lymphocytes",
+              "CD8-Positive T-Lymphocytes",
+              "HIV Seronegativity",
+              "Neutralization Tests",
+              "Mineral Oil",
+              "Oleic Acids",
+              "Mannose",
+              "HLA-B7 Antigen",
+              "HLA-A2 Antigen",
+              "HIV Preventive Vaccine"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "PREVENTION",
+              "maskingInfo": {
+                "masking": "DOUBLE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 24,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "HIV-1 C4-V3 Polyvalent Peptide Vaccine"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria\n\nVolunteers must have:\n\n* Negative ELISA for HIV within 8 weeks of immunization.\n* Normal history and physical examination.\n* Normal chest x-ray within 4 weeks prior to initial immunization.\n* Low-risk sexual behavior as defined by AVEG.\n\nExclusion Criteria\n\nCo-existing Condition:\n\nVolunteers with the following conditions are excluded:\n\n* Medical or psychiatric condition that precludes compliance with the protocol, including recent suicidal ideation or present psychosis.\n* Occupational responsibilities which preclude compliance with the protocol.\n* Active syphilis (if the serology is documented to be a false positive or due to a remote \\[more than 6 months\\] treated infection, the volunteer is eligible).\n* Active tuberculosis (volunteers with a positive purified protein derivative and a normal chest x-ray showing no evidence of TB and not requiring isoniazid therapy are eligible).\n* Positivity for hepatitis B surface antigen.\n\nVolunteers with the following prior conditions are excluded:\n\n* History of immunodeficiency, chronic illness, malignancy, or autoimmune disease. NOTE: Individuals with a history of cancer are excluded unless there has been surgical excision followed by a sufficient observation period to give a reasonable assurance of cure.\n* History of suicide attempts or past psychosis.\n* History of anaphylaxis or other serious adverse reactions to vaccines.\n* History of serious allergic reaction to any substance, requiring hospitalization or emergent medical care (e.g., Stevens-Johnson syndrome, bronchospasm, or hypotension).\n* History of lung disease.\n\nPrior Medication:\n\nExcluded:\n\n* Live attenuated vaccines within 60 days of study. NOTE: Medically indicated subunit or killed vaccines (e.g., influenza, pneumococcal) are not exclusionary, but should be given at least 2 weeks away from HIV immunizations.\n* Experimental agents within 30 days prior to study.\n* HIV-1 vaccines or placebo, received in a previous HIV vaccine trial.\n* Immunosuppressive medications.\n\nPrior Treatment:\n\nExcluded:\n\n* Receipt of blood products or immunoglobulin in the past 6 months.\n\nRisk Behavior: Excluded:\n\n* Alcohol intake greater than or equal to the equivalent of 1 oz of 100 proof per day (4 oz. glass of wine or 12 oz. of beer per day).\n* Identifiable higher-risk behavior for HIV infection as determined by screening questions designed to identify risk factors for HIV infection; specific exclusions include a history of injection drug use within the last 12 months prior to enrollment and higher- or immediate-risk sexual behavior as defined by the AVEG (i.e., meeting the criteria for AVEG Risk Groups C and D).",
+            "healthyVolunteers": true,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "60 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "B Graham",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Univ. of Rochester AVEG",
+                "city": "Rochester",
+                "state": "New York",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.15478,
+                  "lon": -77.61556
+                }
+              },
+              {
+                "facility": "Vanderbilt Univ. Hosp. AVEG",
+                "city": "Nashville",
+                "state": "Tennessee",
+                "zip": "37232",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 36.16589,
+                  "lon": -86.78444
+                }
+              },
+              {
+                "facility": "UW - Seattle AVEG",
+                "city": "Seattle",
+                "state": "Washington",
+                "zip": "98144",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 47.60621,
+                  "lon": -122.33207
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "20706632",
+                "type": "DERIVED",
+                "citation": "Graham BS, McElrath MJ, Keefer MC, Rybczyk K, Berger D, Weinhold KJ, Ottinger J, Ferarri G, Montefiori DC, Stablein D, Smith C, Ginsberg R, Eldridge J, Duerr A, Fast P, Haynes BF; AIDS Vaccine Evaluation Group. Immunization with cocktail of HIV-derived peptides in montanide ISA-51 is immunogenic, but causes sterile abscesses and unacceptable reactogenicity. PLoS One. 2010 Aug 10;5(8):e11995. doi: 10.1371/journal.pone.0011995."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00000886",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00000886",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00000886",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00000886",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00000886",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00000886",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00000886",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,943 @@
+{
+  "nct_id": "NCT01718899",
+  "metadata": {
+    "nct_id": "NCT01718899",
+    "title": "A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "Smoldering Multiple Myeloma"
+    ],
+    "interventions": [
+      "BIOLOGICAL: PVX-410"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] The trial involves a cancer vaccine called PVX-410, which is described as a \"multi-peptide\" vaccine. This suggests that the active drug is composed of multiple peptides, making it a peptide therapeutic.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "snippet": "Title: A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428017"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to determine the safety and tolerability of PVX-410, (a cancer vaccine), treatment regimen for patients with smoldering multiple myeloma as a single agent and in combination with lenalidomide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428029"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428036"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428042"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Intervention: PVX-410",
+          "snippet": "BIOLOGICAL: PVX-410 - Approximately 10 patients will receive 6, bi-weekly, subcutaneous injections of a dose of PVX-410 in combination with an intramuscular injection of Hiltonol (Poly ICLC). Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428049"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428055"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 extraction] Peptide Identity: PVX-410 is a multi-peptide cancer vaccine. No specific amino acid length or molecular class provided.\nDatabase Matches: No evidence found.\nMechanism: No evidence found.\nTherapeutic Target: Smoldering Multiple Myeloma (cancer, not an infection)\nImmune Direction: Promote immune defense (as it is a cancer vaccine designed to stimulate the immune system)\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True).  \nStep 2 \u2014 This peptide is NOT an AMP. Database Matches show no evidence of PVX-410 being in DRAMP or APD3, and the Mechanism shows no direct antimicrobial activity. Additionally, since it is a cancer vaccine targeting immune defense against tumor cells (not pathogens), it does not meet the crit",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "snippet": "Title: A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428017"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to determine the safety and tolerability of PVX-410, (a cancer vaccine), treatment regimen for patients with smoldering multiple myeloma as a single agent and in combination with lenalidomide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428029"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428036"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428042"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Intervention: PVX-410",
+          "snippet": "BIOLOGICAL: PVX-410 - Approximately 10 patients will receive 6, bi-weekly, subcutaneous injections of a dose of PVX-410 in combination with an intramuscular injection of Hiltonol (Poly ICLC). Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428049"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428055"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Subcutaneous/Intradermal",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] The protocol explicitly states that the treatment regimen involves \"subcutaneous injections\" of PVX-410.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "snippet": "Title: A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428017"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to determine the safety and tolerability of PVX-410, (a cancer vaccine), treatment regimen for patients with smoldering multiple myeloma as a single agent and in combination with lenalidomide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428029"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428036"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428042"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Intervention: PVX-410",
+          "snippet": "BIOLOGICAL: PVX-410 - Approximately 10 patients will receive 6, bi-weekly, subcutaneous injections of a dose of PVX-410 in combination with an intramuscular injection of Hiltonol (Poly ICLC). Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428049"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428055"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE1\nPublished Results: None found in ClinicalTrials.gov or PubMed/PMC search.\nResult Valence: Not Available (since it's a Phase 1 trial, we can't expect efficacy results yet)\nResults Posted: Unknown (hasResults field not available)\nCompletion Date: Unknown (not specified on ClinicalTrials.gov)\nWhy Stopped: N/A (completed as planned)\n\nNote that since this is a Phase 1 trial, the primary goal was to assess safety and to\n[Pass 2 decision] Since this is a Phase 1 trial, the primary goal was to assess safety and tolerability of PVX-410. The trial completed as planned, which suggests that it met its objectives. Although there are no published results available, the Result Valence is \"Not Available\" due to the trial's phase, not because of negative findings. Therefore, I lean towards a positive outcome based on the fact that Phase 1 trials that complete with acceptable safety/tolerability are typically considered successful.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "snippet": "Title: A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428017"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to determine the safety and tolerability of PVX-410, (a cancer vaccine), treatment regimen for patients with smoldering multiple myeloma as a single agent and in combination with lenalidomide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428029"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428036"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428042"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Intervention: PVX-410",
+          "snippet": "BIOLOGICAL: PVX-410 - Approximately 10 patients will receive 6, bi-weekly, subcutaneous injections of a dose of PVX-410 in combination with an intramuscular injection of Hiltonol (Poly ICLC). Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428049"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428055"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.8,
+      "reasoning": "[Pass 1] No failure detected. Here is the extracted information:\n\n**Trial Status:** COMPLETED\n**Why Stopped:** Not provided\n**Published Findings:** No published findings were found in PubMed, PMC, or web evidence. The trial status on ClinicalTrials.gov indicates that it was completed, but there are no publicly available results ",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "snippet": "Title: A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428017"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to determine the safety and tolerability of PVX-410, (a cancer vaccine), treatment regimen for patients with smoldering multiple myeloma as a single agent and in combination with lenalidomide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428029"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428036"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428042"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Intervention: PVX-410",
+          "snippet": "BIOLOGICAL: PVX-410 - Approximately 10 patients will receive 6, bi-weekly, subcutaneous injections of a dose of PVX-410 in combination with an intramuscular injection of Hiltonol (Poly ICLC). Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428049"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428055"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT01718899",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial describes PVX-410 as a \"Multi-Peptide Cancer Vaccine\", clearly indicating the active drug is composed of peptides.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The term 'multi-peptide' in the title suggests that PVX-410 consists of peptides, which aligns with the definition provided in the critical rules. Additionally, the description confirms that PVX-410 is used as a vaccine, further supporting its classification as a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The title and the description of the study clearly indicate that PVX-410 is a multi-peptide cancer vaccine, making it a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial focuses on a cancer vaccine (PVX-410) used to treat smoldering multiple myeloma.  While it involves peptides, its purpose is not to directly target infection but rather to stimulate the immune system against cancer cells. This falls under 'Other' as it does not have a direct antimicrobial or pathogen-defense mechanism.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on the decision tree, PVX-410 is not an antimicrobial peptide as it targets cancer rather than infection and its mechanism involves immunotherapy for disease prevention, which does not align with direct antimicrobial action or pathogen defense.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial is for a cancer vaccine (PVX-410) in patients with smoldering multiple myeloma, which does not have a direct antimicrobial or pathogen-defense mechanism. Therefore, it falls under the 'Other' category according to the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Subcutaneous/Intradermal",
+        "final_value": "Injection/Infusion - Subcutaneous/Intradermal",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The protocol explicitly states \"subcutaneous injections\" are to be administered.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The evidence clearly specifies the delivery mode as subcutaneous for the vaccine PVX-410.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The trial mentions \"subcutaneous injections\" explicitly, so the delivery mode is Subcutaneous/Intradermal. However, it also mentions an \"intramuscular injection of Hiltonol (Poly ICLC)\", which is not specified as being part of the PVX-410 treatment regimen, so it falls under Injection/Infusion - Other/Unspecified.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence clearly states that the primary treatment regimen for PVX-410 involves \"subcutaneous injections.\" Although there is mention of an additional intramuscular injection of Hiltonol, this does not change the delivery mode classification for PVX-410 itself. Therefore, the correct answer remains Injection/Infusion - Subcutaneous/Intradermal as it aligns with the primary treatment method described in the evidence.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Unknown",
+        "consensus_reached": false,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial is listed as COMPLETED on clinicaltrials.gov, but there are no publications found to determine if it was positive or failed.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "Since the registry status is 'COMPLETED', we cannot automatically classify this as a 'Failed - completed trial' without published results showing negative outcomes. As there is no clear information on whether the primary endpoints were met or not, and given that COMPLETED alone does not mean failure, the outcome remains unknown until further evidence of the trial's results is provided.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial has been completed according to the registry, but no published literature could be found that provides evidence of the trial's outcome. Without such evidence, the trial is considered 'Unknown'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial status is listed as \"COMPLETED\" but there are no published results available to determine if it was positive or negative. Given the lack of definitive outcome data, and considering that a completed status alone does not indicate success or failure without additional evidence, the most conservative approach is to require further review to ascertain the true outcome of the trial.",
+        "flag_reason": "reconciler_deferred"
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": false,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "Based on the provided information, there's no evidence of the trial failing. A completed status alone does not imply failure.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "Since there is no published evidence of negative outcomes and the trial status is COMPLETED, we cannot determine a reason for failure based on the available data.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial has been completed, but there is no published evidence indicating negative outcomes or failure to meet endpoints. However, the study's primary objective was to determine the safety and tolerability of PVX-410 in patients with smoldering multiple myeloma, and there is no information suggesting that this objective was achieved. Therefore, it can be inferred that the trial may have been ineffective for its intended purpose.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "While the trial status indicates that it has been completed, there is no clear evidence provided about whether the trial met its objectives or failed to do so. The purpose of determining safety and tolerability does not inherently imply failure if these aspects were successfully assessed, but without explicit results indicating success or failure, a definitive answer cannot be determined from the given data alone. Therefore, further review is necessary to ascertain the reason for completion stat",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "outcome: model disagreement; reason_for_failure: model disagreement"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01718899",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "snippet": "Title: A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428017"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to determine the safety and tolerability of PVX-410, (a cancer vaccine), treatment regimen for patients with smoldering multiple myeloma as a single agent and in combination with lenalidomide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428029"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428036"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Smoldering Multiple Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428042"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Intervention: PVX-410",
+          "snippet": "BIOLOGICAL: PVX-410 - Approximately 10 patients will receive 6, bi-weekly, subcutaneous injections of a dose of PVX-410 in combination with an intramuscular injection of Hiltonol (Poly ICLC). Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428049"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01718899",
+          "identifier": "NCT01718899",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:37:00.428055"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01718899",
+            "orgStudyIdInfo": {
+              "id": "2010-001"
+            },
+            "organization": {
+              "fullName": "OncoPep, Inc.",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Phase 1/2a Study of Cancer Vaccine to Treat Smoldering Multiple Myeloma",
+            "officialTitle": "A Phase 1/2a Dose Escalation Study of PVX-410, a Multi-Peptide Cancer Vaccine, in Patients With Smoldering Multiple Myeloma"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2016-09",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2012-11"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2016-06",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2016-09",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-10-29",
+            "studyFirstSubmitQcDate": "2012-10-29",
+            "studyFirstPostDateStruct": {
+              "date": "2012-10-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2016-09-26",
+            "lastUpdatePostDateStruct": {
+              "date": "2016-09-28",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "OncoPep, Inc.",
+              "class": "INDUSTRY"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": true
+          },
+          "descriptionModule": {
+            "briefSummary": "The purpose of this study is to determine the safety and tolerability of PVX-410, (a cancer vaccine), treatment regimen for patients with smoldering multiple myeloma as a single agent and in combination with lenalidomide.",
+            "detailedDescription": "This is a dose escalation, phase 1/2a study to assess the safety and tolerability of PVX-410, (a multi-peptide cancer vaccine), treatment regimen in patients with smoldering multiple myeloma as a single agent and in combination with lenalidomide.. Approximately 22 patients will receive six (6) bi-weekly, subcutaneous injections of PVX-410 for a total of twelve (12) weeks of treatment. Safety will be monitored throughout the study. Tolerability, immunogenicity and clinical response will also be measured as described in the protocol."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Smoldering Multiple Myeloma"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 22,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "PVX-410, .4 mg dose",
+                "type": "EXPERIMENTAL",
+                "description": "Approximately 3 patients will receive 6, bi-weekly, subcutaneous injections of a .4 mg dose of PVX-410 in combination with an intramuscular injection of Hiltonol (poly ICLC). Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12 months.",
+                "interventionNames": [
+                  "Biological: PVX-410"
+                ]
+              },
+              {
+                "label": "PVX-410, .8 mg dose",
+                "type": "EXPERIMENTAL",
+                "description": "Approximately 10 patients will receive 6, bi-weekly, subcutaneous injections of an .8 mg dose of PVX-410 in combination with an intramuscular injection of Hiltonol (Poly ICLC). Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12 months.",
+                "interventionNames": [
+                  "Biological: PVX-410"
+                ]
+              },
+              {
+                "label": "PVX-410 plus lenalidomide",
+                "type": "EXPERIMENTAL",
+                "description": "Approximately 10 patients will receive 6, bi-weekly, subcutaneous injections of an .8 mg dose of PVX-410 in combination with an intramuscular injection of Hiltonol (Poly ICLC). Patients will also receive 3 cycles of lenalidomide. Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12 months",
+                "interventionNames": [
+                  "Biological: PVX-410"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "PVX-410",
+                "description": "Approximately 10 patients will receive 6, bi-weekly, subcutaneous injections of a dose of PVX-410 in combination with an intramuscular injection of Hiltonol (Poly ICLC). Patients will complete a 12 week treatment phase and then will be followed for safety, immunogenicity and clinical response for 12 months",
+                "armGroupLabels": [
+                  "PVX-410 plus lenalidomide",
+                  "PVX-410, .4 mg dose",
+                  "PVX-410, .8 mg dose"
+                ],
+                "otherNames": [
+                  "Revlimid"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "All adverse events will be recorded.",
+                "timeFrame": "Throughout treatment phase (3 months) and follow up period (12 months)"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Immune response to the vaccine will be measured",
+                "description": "Patient blood samples will be measured for immune response through ELISPOT and Pentamer assays.",
+                "timeFrame": "Designated timepoints during the treatment phase (3 months) and follow up phase (12 months)"
+              }
+            ],
+            "otherOutcomes": [
+              {
+                "measure": "Clinical Response will be measured.",
+                "description": "Clinical response will be determined by the treating physician according to the International Myeloma Working Group Disease Response Criteria.",
+                "timeFrame": "Designated timepoints during the treatment phase (3 months) and follow up phase (12 months)"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "* Patient has confirmed clinical diagnosis of SMM according to a definition derived from the International Myeloma Working Group (IMWG) definition: serum M-protein \u22653 g/dL or bone marrow clonal plasma cells (BMPC) greater than or equal to 10%, or both, along with normal organ and marrow function (CRAB) within 4 weeks before baseline.\n* C: Absence of hypercalcemia, evidenced by a calcium \\<10.5 mg/dL.\n* R: Absence of renal failure, evidenced by a creatinine \\<2.0 mg/dL or calculated creatinine clearance (using the Modification of Diet in Renal Disease \\[MDRD\\] formula) \\>50 mL/min.\n* A: Absence of anemia, evidenced by a hemoglobin \\>10 g/dL.\n* B: Absence of lytic bone lesions on standard skeletal survey.\n* Patient is at higher than average risk of progression to active MM, defined as having 2 or more of the following features:\n* Serum monoclonal (M)-protein \u22653 g/dL.\n* BMPC greater than or equal to 10%.\n* Abnormal serum free light chain (FLC) ratio (0.26-1.65).\n* Patient has a life expectancy of greater than 6 months\n* Patient is human leukocyte antigen (HLA)-A2 positive.\n* Patient has an Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1.\n* Patient has adequate bone marrow function, evidenced by a platelet count \u226575\u00d7109/L and an absolute neutrophil count (ANC) \u22651.0\u00d7109/L within 2 weeks before baseline.\n* Patient has adequate hepatic function, evidenced by a bilirubin \u22642.0 mg/dL and an alanine transaminase (ALT), and aspartate transaminase (AST) \u22642.5\u00d7 the upper limit of normal (ULN) within 2 weeks before baseline.\n* If of child-bearing potential, patient agrees to use adequate birth control measures during study participation.\n* If a female of child-bearing potential, patient has negative urine pregnancy test results within 2 weeks before baseline and is not lactating.\n* Patient (or his or her legally accepted representative) has provided written informed consent to participate in the study.\n\nExclusion Criteria:\n\n* Patient has symptomatic multiple myeloma, as defined by any of the following:\n* Lytic lesions or pathologic fractures.\n* Anemia (hemoglobin \\<10 g/dL).\n* Hypercalcemia (corrected serum calcium \\>11.5 mg/dL).\n* Renal insufficiency (creatinine \\>2 mg/dL).\n* Other: symptomatic hyperviscosity, amyloidosis.\n* Patient has abnormal cardiac status, evidenced by any of the following:\n* New York Heart Association (NYHA) stage III or IV congestive heart failure (CHF).\n* Myocardial infarction within the previous 6 months.\n* Symptomatic cardiac arrhythmia requiring treatment or persisting despite treatment.\n* Patient is receiving any other investigational agent.\n* Patient has a current active infectious disease or positive serology for human immunodeficiency virus (HIV), hepatitis C virus (HCV), or hepatitis B virus (HBV).\n* Patient has a history of or current auto-immune disease.\n* Patient has been vaccinated with live attenuated vaccines within 4 weeks before study vaccination.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "95 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Noopur Raje, MD",
+                "affiliation": "Massachusetts General Hospital",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              },
+              {
+                "name": "Michael Wang, MD",
+                "affiliation": "M.D. Anderson Cancer Center",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              },
+              {
+                "name": "Ajay Nooka, MD",
+                "affiliation": "Emory University",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Winship Cancer Institute, Emory University",
+                "city": "Atlanta",
+                "state": "Georgia",
+                "zip": "30322",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.749,
+                  "lon": -84.38798
+                }
+              },
+              {
+                "facility": "Illinois Cancer Specialists",
+                "city": "Niles",
+                "state": "Illinois",
+                "zip": "60714",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.01892,
+                  "lon": -87.80284
+                }
+              },
+              {
+                "facility": "Beth Israel Deaconess Medical Center",
+                "city": "Boston",
+                "state": "Massachusetts",
+                "zip": "02115",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.35843,
+                  "lon": -71.05977
+                }
+              },
+              {
+                "facility": "Dana Farber Cancer Institute",
+                "city": "Boston",
+                "state": "Massachusetts",
+                "zip": "02115",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.35843,
+                  "lon": -71.05977
+                }
+              },
+              {
+                "facility": "Massachusetts General Hospital",
+                "city": "Boston",
+                "state": "Massachusetts",
+                "zip": "02115",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.35843,
+                  "lon": -71.05977
+                }
+              },
+              {
+                "facility": "University of Texas, MD Anderson Cancer Center",
+                "city": "Houston",
+                "state": "Texas",
+                "zip": "77030",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.76328,
+                  "lon": -95.36327
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "30128502",
+                "type": "DERIVED",
+                "citation": "Nooka AK, Wang ML, Yee AJ, Kaufman JL, Bae J, Peterkin D, Richardson PG, Raje NS. Assessment of Safety and Immunogenicity of PVX-410 Vaccine With or Without Lenalidomide in Patients With Smoldering Multiple Myeloma: A Nonrandomized Clinical Trial. JAMA Oncol. 2018 Dec 1;4(12):e183267. doi: 10.1001/jamaoncol.2018.3267. Epub 2018 Dec 13."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01718899",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

@@ -1,0 +1,1164 @@
+{
+  "nct_id": "NCT01920191",
+  "metadata": {
+    "nct_id": "NCT01920191",
+    "title": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+    "phase": "PHASE1, PHASE2",
+    "status": "COMPLETED",
+    "conditions": [
+      "CNS Tumor, Adult"
+    ],
+    "interventions": [
+      "BIOLOGICAL: IMA 950",
+      "BIOLOGICAL: Poly ICLC",
+      "OTHER: Immunomonitoring"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.9428571428571428,
+      "reasoning": "[Pass 1 extraction] Here are the extracted facts for each intervention:\n\n**Intervention 1: IMA950**\n\n1. INTERVENTION NAME: IMA950\n2. MOLECULAR CLASS: Short peptide chain (2-50 amino acids)\n3. DATABASE CONFIRMATION:\n\t* UniProt: entry found? No evidence found.\n\t* DRAMP/DBAASP: antimicrobial peptide database entry? No evidence found.\n\t* ChEMBL: molecule type? No evidence found.\n\t* PDB: structural data available? No evid\n[Pass 2 decision] Peptide: True\nReasoning:\nStep 1: For Intervention 1, IMA950, the Molecular Class is a \"Short peptide chain (2-50 amino acids)\", which meets the criteria for being a peptide.\nStep 2: Since IMA950 is described as an \"active therapeutic agent\" and a \"peptide-based vaccine\", it is clear that it is the active drug. Additionally, although database confirmation does not show evidence of a UniProt entry, ",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "snippet": "Title: Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987841"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Brief Summary",
+          "snippet": "RATIONALE : IMA 950 is multi tumour-associated peptides (TUMAPs) vaccine, these peptides have been identified on primary glioblastoma multiforme (GBM) cells. Poly-ICLC is a potent vaccine adjuvant with broad innate and adaptive immune enhancing effects. IMA 950 and Poly-ICLC will be administered to patients alongside standard primary therapy for glioblastoma. This includes the alkylating drug temozolomide (TMZ). Effective vaccine-induced immune responses associated with prolonged survival have b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987908"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987930"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: CNS Tumor, Adult | Keywords: Glioblastoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987951"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: IMA 950",
+          "snippet": "BIOLOGICAL: IMA 950",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987971"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Poly ICLC",
+          "snippet": "BIOLOGICAL: Poly ICLC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987989"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30753611/",
+          "identifier": "PMID:30753611",
+          "title": "Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.",
+          "snippet": "Title: Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.\nAuthors: Migliorini Denis, Dutoit Val\u00e9rie, Allard Mathilde et al.\nJournal: Neuro-oncology (2019)\nAbstract: BACKGROUND: Peptide vaccines offer the opportunity to elicit glioma-specific T cells with tumor killing ability. Using antigens eluted from the surface of glioblastoma samples, we designed a phase I/II study to test safety and immunogenicity of the IMA950 multipeptide vaccine adjuvanted with poly-IC",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:24.122328"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9299999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: IMA 950 is a multi-tumour-associated peptides (TUMAPs) vaccine. It consists of multiple peptides derived from primary glioblastoma multiforme cells. The exact amino acid length or molecular class is not specified in the provided evidence.\nDatabase Matches: No evidence found.\nMechanism: No evidence found regarding direct antimicrobial activity, biofilm disruption, immune stimulati\n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\nPeptide determination is True \u2192 Proceed to Step 2.\n\nStep 2 \u2014 Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?\n- Database Matches: No evidence found.\n- Mechanism: No evidence found regarding direct antimicrobial activity, biofilm disruption, immune stimulation, or non-antimicrobial mechanisms specific to",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "snippet": "Title: Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987841"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Brief Summary",
+          "snippet": "RATIONALE : IMA 950 is multi tumour-associated peptides (TUMAPs) vaccine, these peptides have been identified on primary glioblastoma multiforme (GBM) cells. Poly-ICLC is a potent vaccine adjuvant with broad innate and adaptive immune enhancing effects. IMA 950 and Poly-ICLC will be administered to patients alongside standard primary therapy for glioblastoma. This includes the alkylating drug temozolomide (TMZ). Effective vaccine-induced immune responses associated with prolonged survival have b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987908"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987930"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: CNS Tumor, Adult | Keywords: Glioblastoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987951"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: IMA 950",
+          "snippet": "BIOLOGICAL: IMA 950",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987971"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Poly ICLC",
+          "snippet": "BIOLOGICAL: Poly ICLC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987989"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Immunomonitoring",
+          "snippet": "OTHER: Immunomonitoring - Blood samples, DTH analysis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.988006"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.988024"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase I/II Trial of IMA950 Multi-peptide Vaccine Plus Poly-ICLC in Glioblastoma",
+          "snippet": "Title: Phase I/II Trial of IMA950 Multi-peptide Vaccine Plus Poly-ICLC in Glioblastoma\nStatus: Completed\nPhase: Phase 1/Phase 2\nCountries: Switzerland\nConditions: CNS Tumor, Adult\nInterventions: Biological: IMA 950, Biological: Poly ICLC, Other: Immunomonitoring\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:52:22.786340"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30753611/",
+          "identifier": "PMID:30753611",
+          "title": "Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.",
+          "snippet": "Title: Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.\nAuthors: Migliorini Denis, Dutoit Val\u00e9rie, Allard Mathilde et al.\nJournal: Neuro-oncology (2019)\nAbstract: BACKGROUND: Peptide vaccines offer the opportunity to elicit glioma-specific T cells with tumor killing ability. Using antigens eluted from the surface of glioblastoma samples, we designed a phase I/II study to test safety and immunogenicity of the IMA950 multipeptide vaccine adjuvanted with poly-IC",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:24.122328"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Subcutaneous/Intradermal",
+      "confidence": 0.9428571428571428,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n1. Protocol Route:\nNot specified in the ClinicalTrials.gov protocol description.\n\n2. FDA/Label Route:\nNot found in the provided text.\n\n3. Literature Route:\nFrom PMID:30753611, \"The IMA950 vaccine was administered intradermally (ID) on days 0 and 28.\" \n\n4. Database Route:\nNot found in the provided text.\n\n5. Drug Formulation:\nIMA950 is a peptide-based vaccine, im\n[Pass 2 classification] Delivery Mode: Injection/Infusion - Subcutaneous/Intradermal\nEvidence: Literature Route (PMID:30753611)\nReasoning: The most specific route is intradermal (ID) for IMA950, as stated in the literature. Although Poly-ICLC is administered intra muscularly, it's part of a combination with IMA950, which i",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "snippet": "Title: Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987841"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Brief Summary",
+          "snippet": "RATIONALE : IMA 950 is multi tumour-associated peptides (TUMAPs) vaccine, these peptides have been identified on primary glioblastoma multiforme (GBM) cells. Poly-ICLC is a potent vaccine adjuvant with broad innate and adaptive immune enhancing effects. IMA 950 and Poly-ICLC will be administered to patients alongside standard primary therapy for glioblastoma. This includes the alkylating drug temozolomide (TMZ). Effective vaccine-induced immune responses associated with prolonged survival have b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987908"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987930"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: CNS Tumor, Adult | Keywords: Glioblastoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987951"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: IMA 950",
+          "snippet": "BIOLOGICAL: IMA 950",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987971"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Poly ICLC",
+          "snippet": "BIOLOGICAL: Poly ICLC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987989"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30753611/",
+          "identifier": "PMID:30753611",
+          "title": "Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.",
+          "snippet": "Title: Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.\nAuthors: Migliorini Denis, Dutoit Val\u00e9rie, Allard Mathilde et al.\nJournal: Neuro-oncology (2019)\nAbstract: BACKGROUND: Peptide vaccines offer the opportunity to elicit glioma-specific T cells with tumor killing ability. Using antigens eluted from the surface of glioblastoma samples, we designed a phase I/II study to test safety and immunogenicity of the IMA950 multipeptide vaccine adjuvanted with poly-IC",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:24.122328"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.9299999999999999,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: COMPLETED\n2. Published Results:\nThe published results are available in the PubMed article with PMID: 30753611. The title of the article is \"Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.\" According to the abstract, the study aimed to evaluate the safety and immunogenicity of the IMA950/poly-ICLC vaccine in patients with newly diagnosed \n[Pass 2 decision] The trial was completed as planned (status: COMPLETED) and the published results show positive findings. According to the abstract of the article, the vaccine was well-tolerated and induced a specific immune response. This meets criterion b in the decision tree for COMPLETED trials with published results showing POSITIVE findings.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "snippet": "Title: Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987841"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Brief Summary",
+          "snippet": "RATIONALE : IMA 950 is multi tumour-associated peptides (TUMAPs) vaccine, these peptides have been identified on primary glioblastoma multiforme (GBM) cells. Poly-ICLC is a potent vaccine adjuvant with broad innate and adaptive immune enhancing effects. IMA 950 and Poly-ICLC will be administered to patients alongside standard primary therapy for glioblastoma. This includes the alkylating drug temozolomide (TMZ). Effective vaccine-induced immune responses associated with prolonged survival have b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987908"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987930"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: CNS Tumor, Adult | Keywords: Glioblastoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987951"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: IMA 950",
+          "snippet": "BIOLOGICAL: IMA 950",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987971"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Poly ICLC",
+          "snippet": "BIOLOGICAL: Poly ICLC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987989"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Immunomonitoring",
+          "snippet": "OTHER: Immunomonitoring - Blood samples, DTH analysis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.988006"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.988024"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase I/II Trial of IMA950 Multi-peptide Vaccine Plus Poly-ICLC in Glioblastoma",
+          "snippet": "Title: Phase I/II Trial of IMA950 Multi-peptide Vaccine Plus Poly-ICLC in Glioblastoma\nStatus: Completed\nPhase: Phase 1/Phase 2\nCountries: Switzerland\nConditions: CNS Tumor, Adult\nInterventions: Biological: IMA 950, Biological: Poly ICLC, Other: Immunomonitoring\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:52:22.786340"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30753611/",
+          "identifier": "PMID:30753611",
+          "title": "Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.",
+          "snippet": "Title: Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.\nAuthors: Migliorini Denis, Dutoit Val\u00e9rie, Allard Mathilde et al.\nJournal: Neuro-oncology (2019)\nAbstract: BACKGROUND: Peptide vaccines offer the opportunity to elicit glioma-specific T cells with tumor killing ability. Using antigens eluted from the surface of glioblastoma samples, we designed a phase I/II study to test safety and immunogenicity of the IMA950 multipeptide vaccine adjuvanted with poly-IC",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:24.122328"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT01920191",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial states that IMA 950 is a multi-peptide vaccine, indicating it consists of multiple peptide sequences.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The description and metadata provided clearly state that IMA 950 is a peptide-based vaccine, which directly aligns with the criteria for identifying a peptide therapeutic as defined in the critical rules.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The active drug in this trial is identified as IMA 950, which is a multi-tumor-associated peptides (TUMAPs) vaccine. According to the rules provided, if the product name contains 'peptide' and it is a biologic, then it is considered a peptide drug.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The peptide is used as part of a vaccine to induce an immune response against glioblastoma cells. It does not directly kill or disrupt pathogens. The primary mechanism of action is to stimulate the adaptive immune system.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The document does not provide evidence that IMA950 directly kills or disrupts pathogens through its own biochemical action. Instead, it suggests the intervention works by inducing an immune response against glioblastoma cells. Therefore, based on the decision tree criteria, this is classified as 'Other' because it does not meet the core test for being an antimicrobial peptide (AMP).",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "According to the decision tree provided, if the peptide treats infection but works by inducing an immune response rather than directly killing/disrupting pathogens, it should be classified as 'Other'. In this case, IMA950 is a peptide vaccine designed for glioblastoma treatment and does not have antimicrobial properties.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Subcutaneous/Intradermal",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The protocol states that IMA 950 and Poly-ICLC will be administered, but it does not specify the route of administration.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Intramuscular",
+            "reasoning": "The title specifies 'Intradermal' for the vaccine administration, which is a type of injection. Additionally, it mentions 'Intra Muscular' for Poly-ICLC, further confirming that both substances are delivered via an intramuscular route.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "Following the guidelines provided, since the words 'intramuscular', 'IM', 'subcutaneous', 'SC', 'sub-Q', or 'intradermal' do not appear explicitly in the data, we cannot determine if it is Injection/Infusion - Subcutaneous/Intradermal or Injection/Infusion - Other/Unspecified. However, since the trial involves a vaccine and does not specify IV infusion, it is most likely an injection but not necessarily subcutaneous or intramuscular. Therefore, we categorize it as Injection/Infusion - Other/Unsp",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence provided does not clearly specify the exact mode of delivery for all components in a single, definitive manner. While it specifies 'intradermal' for IMA 950 and 'intra muscular' for Poly-ICLC, there is no clear indication that these are administered simultaneously or via subcutaneous routes. Therefore, based on conservative interpretation and lack of explicit details, \"Injection/Infusion - Other/Unspecified\" is the most appropriate choice as it reflects the ambiguity in the specifie",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The published abstract indicates that the trial was designed to test the safety and immunogenicity of the IMA950 vaccine. This suggests the trial met its primary endpoints related to safety and immune response.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The published results from the study titled \"Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients\" indicate that the trial was completed successfully. This publication provides evidence that the trial met its primary endpoints, thus classifying it as a 'Positive' outcome according to the completion heuristics provided.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial completed and published results show that the trial met its primary endpoint of safety and immunogenicity of the IMA950 multipeptide vaccine adjuvanted with poly-ICLC in newly diagnosed adult malignant astrocytoma patients. This meets the criteria for a positive outcome as per Completion Heuristics H2 (Results posted on ClinicalTrials.gov).",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The abstract states that the trial was designed to test the safety and immunogenicity of the vaccine.  It does not mention meeting specific endpoints or efficacy outcomes.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Toxic/Unsafe",
+            "reasoning": "The published results indicate that the study was focused on assessing both the safety and immunogenicity of the vaccine, suggesting that there were concerns about its safety profile. This aligns with the reason for failure being \"Toxic/Unsafe\", as indicated by the DSMB stopping the trial due to safety concerns.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published results show that the trial failed to meet its endpoints as stated in the abstract of the paper titled \"Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.\" The trial was designed to test safety and immunogenicity, but the results indicate that the vaccine did not elicit the desired immune responses.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence provided does not clearly indicate whether the failure was due to toxicity/safety issues or ineffectiveness. While the primary focus of the trial was on safety and immunogenicity, there is no explicit statement indicating that the trial failed because it was toxic or unsafe. Similarly, there is no clear indication that the trial failed to meet its endpoints regarding efficacy. Given this ambiguity, a manual review would be necessary to determine the exact reason for failure based on",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01920191",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "snippet": "Title: Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987841"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Brief Summary",
+          "snippet": "RATIONALE : IMA 950 is multi tumour-associated peptides (TUMAPs) vaccine, these peptides have been identified on primary glioblastoma multiforme (GBM) cells. Poly-ICLC is a potent vaccine adjuvant with broad innate and adaptive immune enhancing effects. IMA 950 and Poly-ICLC will be administered to patients alongside standard primary therapy for glioblastoma. This includes the alkylating drug temozolomide (TMZ). Effective vaccine-induced immune responses associated with prolonged survival have b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987908"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987930"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: CNS Tumor, Adult | Keywords: Glioblastoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987951"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: IMA 950",
+          "snippet": "BIOLOGICAL: IMA 950",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987971"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Poly ICLC",
+          "snippet": "BIOLOGICAL: Poly ICLC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.987989"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Intervention: Immunomonitoring",
+          "snippet": "OTHER: Immunomonitoring - Blood samples, DTH analysis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.988006"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:52:20.988024"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01920191",
+            "orgStudyIdInfo": {
+              "id": "IMA950 Poly ICLC"
+            },
+            "organization": {
+              "fullName": "University Hospital, Geneva",
+              "class": "OTHER"
+            },
+            "briefTitle": "Phase I/II Trial of IMA950 Multi-peptide Vaccine Plus Poly-ICLC in Glioblastoma",
+            "officialTitle": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2016-04",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2013-08"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2016-03",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2016-03",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2013-07-31",
+            "studyFirstSubmitQcDate": "2013-08-07",
+            "studyFirstPostDateStruct": {
+              "date": "2013-08-09",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2016-04-19",
+            "lastUpdatePostDateStruct": {
+              "date": "2016-04-20",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "PRINCIPAL_INVESTIGATOR",
+              "investigatorFullName": "Pierre-Yves Dietrich",
+              "investigatorTitle": "Professor",
+              "investigatorAffiliation": "University Hospital, Geneva"
+            },
+            "leadSponsor": {
+              "name": "University Hospital, Geneva",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "Immatics Biotechnologies GmbH",
+                "class": "INDUSTRY"
+              },
+              {
+                "name": "Oncovir, Inc.",
+                "class": "INDUSTRY"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": true
+          },
+          "descriptionModule": {
+            "briefSummary": "RATIONALE : IMA 950 is multi tumour-associated peptides (TUMAPs) vaccine, these peptides have been identified on primary glioblastoma multiforme (GBM) cells. Poly-ICLC is a potent vaccine adjuvant with broad innate and adaptive immune enhancing effects. IMA 950 and Poly-ICLC will be administered to patients alongside standard primary therapy for glioblastoma. This includes the alkylating drug temozolomide (TMZ). Effective vaccine-induced immune responses associated with prolonged survival have been observed in glioblastoma patients during TMZ adjuvant therapy, suggesting a possible synergistic effect. A second component of glioblastoma standard treatment is external beam irradiation of the tumor site post-surgery. As a side effect, potentially beneficial tumor-infiltrating immune cells may also be killed by radiation. However, the combination of radiation with immunotherapy has been suggested to be favorable both in pre-clinical models.",
+            "detailedDescription": "OBJECTIVES\n\nPrimary\n\n* Tolerability and safety of IMA950 adjuvanted with Poly-ICLC when given together with temozolomide, using CTCAE V 4.0.\n* Immunogenicity of IMA950 plus Poly-ICLC when given together with temozolomide.\n\nSecondary\n\n* 6, 9 month progression free survival (PFS) using gadolinium enhanced MRI and clinical assessment according to revised RANO criteria\n* Overall survival (OS)\n* Immunologic endpoints (correlation between clinical and immunological responses):\n* evaluation of peptide immunogenicity by tetramer staining\n* analysis of memory, activation and homing marker expression by tetramer positive cells\n* analysis of cytokine secretion and proliferation by antigen-specific CD4 and CD8 T cells\n* analysis of the presence of T regulatory and myeloid-derived suppressor cells\n* The immunological analyses will be performed on:\n* peripheral blood mononuclear cells (PBMC)\n* cultures of skin punch biopsy at delayed-type hypersensitivity (DTH) site\n* tumor-infiltrating lymphocytes (TIL) if brain tissue is available at recurrence\n\nOUTLINE\n\nThis is a monocentric, open label, one cohort, safety and immunogenicity, Phase I/II study.\n\nA maximum of 16 HLA-A2 positive patients with newly diagnosed glioblastoma will be enrolled into the study after treatment with radiation therapy and concurrent temozolomide.\n\nAll patients will receive the same dose of IMA950 with Poly-ICLC and follow the same vaccination schedule which comprises a Vaccination Induction Phase of 4 intensive vaccinations, followed by a Vaccination Maintenance Phase of five vaccinations over a longer period.\n\nThe Vaccination Induction Phase will start a minimum of 7 days after the final radiotherapy/TMZ dose of CRT and 28 days (+7 days) prior to the first scheduled dose of adjuvant TMZ.\n\nThis will ensure that all 4 vaccinations in the Induction Phase will be administered a week after immunosuppressive therapy (i.e. combined radiotherapy and temozolomide) and will finish a week prior to the start of adjuvant TMZ.\n\nTwo Phases :\n\nInduction phase, patient receive the first 4 doses of Poly ICLC mixed with IMA 950 Peptide based vaccine (subcutaneously or IM) on days 1,8,15, and 21 in absence of unacceptable toxicity or disease progression.\n\nMaintenance Phase, patient receive Poly ICLC mixed with IMA 950 Peptide based vaccine (SC or IM) on day 21 of each adjuvant temozolomide cycle in absence unacceptable toxicity or disease progression.\n\nImmunomonitoring assessments will be performed at 8 time points with blood samples collection and one DTH site analysis(after vaccination 5).\n\nBrain MRI will be performed every two months for disease assessment.\n\nN.B. :\n\nAn amendment has been accepted by Swissmedic and Local Ethics committee on september 2014, after suboptimal immunomonitoring preliminary assessments, the schedule of administration has been changed in order to improve the immunogenicity of the vaccine, as follows :\n\n* injection of mixed peptides and adjuvant Poly ICLC\n* 4 vaccinations in the induction phase instead of 6\n* one site of injection (thigh)\n* two arms for the next 10 patients to be included that will be equally divided in 2 groups : one group will be vaccinated subcutaneously and the other intramuscularly."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "CNS Tumor, Adult"
+            ],
+            "keywords": [
+              "Glioblastoma"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1",
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 19,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "IMA 950 and Poly ICLC",
+                "type": "EXPERIMENTAL",
+                "interventionNames": [
+                  "Biological: IMA 950",
+                  "Biological: Poly ICLC",
+                  "Other: Immunomonitoring"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "IMA 950",
+                "armGroupLabels": [
+                  "IMA 950 and Poly ICLC"
+                ]
+              },
+              {
+                "type": "BIOLOGICAL",
+                "name": "Poly ICLC",
+                "armGroupLabels": [
+                  "IMA 950 and Poly ICLC"
+                ],
+                "otherNames": [
+                  "Hiltonol"
+                ]
+              },
+              {
+                "type": "OTHER",
+                "name": "Immunomonitoring",
+                "description": "Blood samples, DTH analysis",
+                "armGroupLabels": [
+                  "IMA 950 and Poly ICLC"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Tolerability and safety of IMA950 adjuvanted with Poly-ICLC when given together with temozolomide, using CTCAE V 4.0",
+                "timeFrame": "up to 2 years"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "6, 9 month progression free survival (PFS) using gadolinium enhanced MRI and clinical assessment according to revised RANO criteria",
+                "timeFrame": "up to 2 years"
+              },
+              {
+                "measure": "Overall survival (OS)",
+                "timeFrame": "up to 2 years"
+              },
+              {
+                "measure": "Immunologic endpoints",
+                "description": "Correlation between clinical and immunological response. Blood sampling at baseline (week 4 and 5 after beginning of radiotherapy with concomitant temozolomide) and at week 10,11,12,16,19,23,27 and 31.\n\nPunch biopsy at DTH (Delayed Type Hypersensitivity) site performed 48h after DTH skin test 7 days after Vaccination 7.\n\n* evaluation of peptide immunogenicity by tetramer staining\n* analysis of memory, activation and homing marker expression by tetramer positive cells\n* analysis of cytokine secretion and proliferation by antigen-specific CD4 and CD8 T cells\n* analysis of the presence of T regulatory and myeloid-derived suppressor cells",
+                "timeFrame": "up to 2 years"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n1. Histological documentation of glioblastoma. For experimental purposes only, 5 additional grade III astrocytoma may be included (these cases will not be included in the endpoints analysis).\n2. Patients must have completed radiation therapy with concomitant temozolomide.\n3. HLA-A2 positive.\n4. Eastern Cooperative Oncology Group performance status of 0 or 1 (Appendix1).\n5. Age \\> 18 years, life expectancy of least 4 months.\n6. Patient must be on stable or decreasing dose of steroids, with a maximal dose of Dexamethasone of 4mg/day.\n7. Adequate bone marrow, liver and kidney function.\n8. Hepatitis B serology negative (HBcAg-seronegative)\n9. Written (signed and dated) informed consent. Capable of co-operating with standard therapy and IMA950 with Poly-ICLC vaccinations and follow-up.\n\nExclusion Criteria:\n\n1. Any other vaccination given within 2 weeks before first IMA950 vaccination.\n2. History of cardiac disease: congestive heart failure \\> New York heart association class 2, active CAD, cardiac requiring anti-arrhythmic therapy or uncontrolled hypertension.\n3. History of HIV infection or chronic hepatitis B or C or clinical active infections.\n4. Patients with evidence of history bleeding diathesis.\n5. Pregnant or potentially pregnant patients. Women of childbearing age must be tested for pregnancy (serum or urine HCG) before treatment and must not contemplate pregnancy during the study",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Pierre-Yves Dietrich, Professor",
+                "affiliation": "University Hospital, Geneva",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Geneva University Hospitals, Centre of Oncology",
+                "city": "Geneva",
+                "zip": "CH-1211",
+                "country": "Switzerland",
+                "geoPoint": {
+                  "lat": 46.20222,
+                  "lon": 6.14569
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "30753611",
+                "type": "DERIVED",
+                "citation": "Migliorini D, Dutoit V, Allard M, Grandjean Hallez N, Marinari E, Widmer V, Philippin G, Corlazzoli F, Gustave R, Kreutzfeldt M, Blazek N, Wasem J, Hottinger A, Koka A, Momjian S, Lobrinus A, Merkler D, Vargas MI, Walker PR, Patrikidou A, Dietrich PY. Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients. Neuro Oncol. 2019 Jul 11;21(7):923-933. doi: 10.1093/neuonc/noz040."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01920191",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30753611/",
+          "identifier": "PMID:30753611",
+          "title": "Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.",
+          "snippet": "Title: Phase I/II trial testing safety and immunogenicity of the multipeptide IMA950/poly-ICLC vaccine in newly diagnosed adult malignant astrocytoma patients.\nAuthors: Migliorini Denis, Dutoit Val\u00e9rie, Allard Mathilde et al.\nJournal: Neuro-oncology (2019)\nAbstract: BACKGROUND: Peptide vaccines offer the opportunity to elicit glioma-specific T cells with tumor killing ability. Using antigens eluted from the surface of glioblastoma samples, we designed a phase I/II study to test safety and immunogenicity of the IMA950 multipeptide vaccine adjuvanted with poly-IC",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-18T06:52:24.122328"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [
+          "30753611"
+        ],
+        "pubmed_count": 1,
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "uniprot_IMA 950": [],
+        "uniprot_Poly ICLC": [],
+        "uniprot_Immunomonitoring": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 403
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_IMA 950": {
+          "found": false
+        },
+        "dbaasp_Poly ICLC": {
+          "found": false
+        },
+        "dbaasp_Immunomonitoring": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01920191",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5805328/",
+          "identifier": "CHEMBL5805328",
+          "title": "CHEMBL5805328 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5805328\nMolecular weight: 544.70\nBioactivity: IC50=7.2 nM (Toll-like receptor 7); IC50=4.9 nM (Toll-like receptor 8)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:52:22.717466"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5809237/",
+          "identifier": "CHEMBL5809237",
+          "title": "CHEMBL5809237 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5809237\nMolecular weight: 510.62\nBioactivity: IC50=0.47 nM (Serine/threonine-protein kinase B-raf); IC50=0.21 nM (Unchecked)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:52:23.164099"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5799539/",
+          "identifier": "CHEMBL5799539",
+          "title": "CHEMBL5799539 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5799539\nMolecular weight: 572.75\nBioactivity: IC50=2.3 nM (Toll-like receptor 7); IC50=40.7 nM (Toll-like receptor 8)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:52:23.683489"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL441925/",
+          "identifier": "CHEMBL441925",
+          "title": "CHEMBL441925 - ChEMBL",
+          "snippet": "Molecule: CHEMBL441925\nType: Small molecule\nMolecular weight: 3568.18\nBioactivity: Survival=100.0 % (Mus musculus); Cmax=8211.47 nM (Rattus norvegicus); T1/2=12.37 hr (Rattus norvegicus); CL=1.63 mL.min-1.kg-1 (Rattus norvegicus); Vdss=3.598 L.kg-1 (Rattus norvegicus)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:52:24.491619"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL410160/",
+          "identifier": "CHEMBL410160",
+          "title": "CHEMBL410160 - ChEMBL",
+          "snippet": "Molecule: CHEMBL410160\nType: Small molecule\nMolecular weight: 1786.60\nBioactivity: Survival=100.0 % (Mus musculus); Cmax=14272.92 nM (Rattus norvegicus); T1/2=10.48 hr (Rattus norvegicus); CL=2.185 mL.min-1.kg-1 (Rattus norvegicus); Vdss=2.723 L.kg-1 (Rattus norvegicus)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:52:24.874757"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5777886/",
+          "identifier": "CHEMBL5777886",
+          "title": "CHEMBL5777886 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5777886\nMolecular weight: 336.41\nBioactivity: Ki=1026.0 nM (Nitric oxide synthase 1); Ki=10978.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:52:25.578249"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5788338/",
+          "identifier": "CHEMBL5788338",
+          "title": "CHEMBL5788338 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5788338\nMolecular weight: 316.42\nBioactivity: Ki=70.0 nM (Nitric oxide synthase 1); Ki=3314.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:52:25.952489"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5801236/",
+          "identifier": "CHEMBL5801236",
+          "title": "CHEMBL5801236 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5801236\nMolecular weight: 330.45\nBioactivity: Ki=46.0 nM (Nitric oxide synthase 1); Ki=5043.0 nM (Nitric oxide synthase, inducible)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:52:26.341114"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'IMA 950'}_count": 5,
+        "chembl_{'name': 'Poly ICLC'}_count": 5,
+        "chembl_{'name': 'Immunomonitoring'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "rcsb_IMA 950": {
+          "count": 0
+        },
+        "rcsb_Poly ICLC": {
+          "count": 0
+        },
+        "rcsb_Immunomonitoring": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_IMA 950_count": 0,
+        "ebi_proteins_Poly ICLC_count": 0,
+        "ebi_proteins_Immunomonitoring_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "apd_IMA 950": {
+          "searched": true,
+          "found": false
+        },
+        "apd_Poly ICLC": {
+          "searched": true,
+          "found": false
+        },
+        "apd_Immunomonitoring": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT01920191",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01920191",
+          "identifier": "NCT01920191",
+          "title": "Phase I/II Trial of IMA950 Multi-peptide Vaccine Plus Poly-ICLC in Glioblastoma",
+          "snippet": "Title: Phase I/II Trial of IMA950 Multi-peptide Vaccine Plus Poly-ICLC in Glioblastoma\nStatus: Completed\nPhase: Phase 1/Phase 2\nCountries: Switzerland\nConditions: CNS Tumor, Adult\nInterventions: Biological: IMA 950, Biological: Poly ICLC, Other: Immunomonitoring\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:52:22.786340"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT01920191",
+          "public_title": "Phase I/II Trial of IMA950 Multi-peptide Vaccine Plus Poly-ICLC in Glioblastoma",
+          "scientific_title": "Phase I/II Study of Intradermal IMA950 Peptide-based Vaccine Adjuvanted With Intra Muscular Poly-ICLC in Combination With Temozolomide in Newly Diagnosed HLA-A2 Glioblastoma Patients",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1/Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Intervention Model: Single Group Assignment, Masking: Open Label, Primary Purpose: Treatment",
+          "countries": [
+            "Switzerland"
+          ],
+          "conditions": [
+            "CNS Tumor, Adult"
+          ],
+          "interventions": [
+            "Biological: IMA 950",
+            "Biological: Poly ICLC",
+            "Other: Immunomonitoring"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "iuphar_IMA 950": {
+          "found": false
+        },
+        "iuphar_Poly ICLC": {
+          "found": false
+        },
+        "iuphar_Immunomonitoring": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT01920191",
+      "citations": [],
+      "raw_data": {
+        "pdbe_IMA 950_count": 0,
+        "pdbe_Poly ICLC_count": 0,
+        "pdbe_Immunomonitoring_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 8,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.9
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 8,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

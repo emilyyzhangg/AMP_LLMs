@@ -1,0 +1,283 @@
+{
+  "nct_id": "NCT00004494",
+  "completed_at": "2026-03-16 12:36:45 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00004494",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "snippet": "Title: Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471865"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES:\n\nI. Determine the maximum tolerated dose of vasoactive intestinal peptide in patients with acute respiratory distress syndrome.\n\nII. Evaluate the safety and pharmacodynamic activity of this peptide in these patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471871"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471875"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Sepsis, Respiratory Distress Syndrome, Respiratory Distress Syndrome, Adult | Keywords: cardiovascular and respiratory diseases, immunologic disorders and infectious disorders, neonatal disorders, rare disease, respiratory distress syndrome, sepsis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471879"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Intervention: vasoactive intestinal peptide",
+          "snippet": "DRUG: vasoactive intestinal peptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471883"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004494",
+          "identifier": "NCT00004494",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.471886"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00004494",
+            "orgStudyIdInfo": {
+              "id": "199/14275"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "SUNY-SB-FDR001488"
+              },
+              {
+                "id": "SUNY-SB-96-077"
+              },
+              {
+                "id": "SUNY-SB-98-2606"
+              },
+              {
+                "id": "FD-R-0001488",
+                "type": "OTHER_GRANT",
+                "domain": "FDA Orphan Drug Products"
+              }
+            ],
+            "organization": {
+              "fullName": "Stony Brook University",
+              "class": "OTHER"
+            },
+            "briefTitle": "Phase I Study of Vasoactive Intestinal Peptide in Patients With Acute Respiratory Distress Syndrome and Sepsis"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2022-05",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "1998-09"
+            },
+            "studyFirstSubmitDate": "1999-10-18",
+            "studyFirstSubmitQcDate": "1999-10-18",
+            "studyFirstPostDateStruct": {
+              "date": "1999-10-19",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2022-05-03",
+            "lastUpdatePostDateStruct": {
+              "date": "2022-05-04",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "Stony Brook University",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "State University of New York",
+                "class": "OTHER"
+              },
+              {
+                "name": "FDA Office of Orphan Products Development",
+                "class": "FED"
+              }
+            ]
+          },
+          "descriptionModule": {
+            "briefSummary": "OBJECTIVES:\n\nI. Determine the maximum tolerated dose of vasoactive intestinal peptide in patients with acute respiratory distress syndrome.\n\nII. Evaluate the safety and pharmacodynamic activity of this peptide in these patients.",
+            "detailedDescription": "PROTOCOL OUTLINE:\n\nThis is a dose escalation study.\n\nPatients receive vasoactive intestinal peptide (VIP) IV over either 6 or 12 hours.\n\nCohorts of 3 patients each receive escalating doses of VIP over either 6 or 12 hours until the maximum tolerated dose is determined.\n\nPatients are followed for 30 days."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Sepsis",
+              "Respiratory Distress Syndrome",
+              "Respiratory Distress Syndrome, Adult"
+            ],
+            "keywords": [
+              "cardiovascular and respiratory diseases",
+              "immunologic disorders and infectious disorders",
+              "neonatal disorders",
+              "rare disease",
+              "respiratory distress syndrome",
+              "sepsis"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "TREATMENT"
+            },
+            "enrollmentInfo": {
+              "count": 18,
+              "type": "ESTIMATED"
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "vasoactive intestinal peptide"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "PROTOCOL ENTRY CRITERIA:\n\n--Disease Characteristics--\n\nDiagnosis of adult respiratory distress syndrome (ARDS) with sepsis\n\nARDS characterized by: hypoxemia refractory to supplemental oxygen therapy, diffuse pulmonary infiltrates, no cardiogenic cause of pulmonary edema, and reduced pulmonary compliance\n\nSepsis characterized by: Two or more of the following: Fever or hypothermia; Tachycardia; Tachypnea; WBC greater than 12,000/mm3 or less than 4,000/mm3 or immature neutrophils; Hypotension; Clinical suspicion of infection; Inadequate organ perfusion or organ dysfunction as demonstrated by: Acute deterioration in mental acuity (excluding sedatives or other nonsepsis causes) OR Unexplained metabolic acidosis OR Oliguria for greater than 2 hours OR Unexplained coagulopathy (elevated PT or PTT or platelet count decreased to less than 50% of baseline within 24 hours or less than 100,000/mm3) OR Acute elevation of bilirubin to greater than 2.0 mg/dL AND elevation of alkaline phosphatase, SGOT, or SGPT\n\nNo sepsis with unstable BP\n\n--Prior/Concurrent Therapy--\n\nAt least 30 days since prior enrollment in investigational trial; No other concurrent enrollment in investigational trial\n\n--Patient Characteristics--\n\nHematopoietic: See Disease Characteristics; No uncontrolled hemorrhage (transfusion of 4 or more units required within past 24 hours); No chemotherapy induced neutropenia (granulocyte count less than 1000/mm3)\n\nHepatic: No severe liver disease with portal hypertension\n\nRenal: No anuria (urine output less than 50 mL/day)\n\nCardiovascular: No cardiogenic shock\n\nNeurologic: No recent stroke, head trauma, or increased intracranial pressure; No other serious neurologic disorder\n\nOther: Not pregnant; No acquired immune deficiency syndrome; No immunosuppressed transplant patients; No severe burns; No irreversible underlying condition with rapidly fatal course; No marked obesity; No recent history of diarrhea",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Sami I. Said",
+                "affiliation": "State University of New York",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Veterans Affairs Medical Center - Northport",
+                "city": "Northport",
+                "state": "New York",
+                "zip": "11768",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.90093,
+                  "lon": -73.34317
+                }
+              },
+              {
+                "facility": "State University of New York Health Sciences Center - Stony Brook",
+                "city": "Stony Brook",
+                "state": "New York",
+                "zip": "11790-7775",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.92565,
+                  "lon": -73.14094
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00004494",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

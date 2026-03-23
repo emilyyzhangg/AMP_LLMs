@@ -1,0 +1,429 @@
+{
+  "timestamp": "2026-03-16T12:07:19.350121",
+  "excel_path": "/Users/amphoraxe/Developer/amphoraxe/dev-llm.amphoraxe.ca/docs/clinical_trials-with-sequences.xlsx",
+  "csv_path": "/Users/amphoraxe/Developer/amphoraxe/dev-llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/results/csv/dff30bc65cea_full_20260315_143725.csv",
+  "common_ncts": [
+    "NCT03984812",
+    "NCT03987672",
+    "NCT03989817",
+    "NCT03998592",
+    "NCT05415410",
+    "NCT06729606"
+  ],
+  "n_agent": 6,
+  "n_human": 1848,
+  "n_overlap": 6,
+  "fields": {
+    "classification": {
+      "Agent vs R1": {
+        "n": 5,
+        "skipped_blank": 1,
+        "agreements": 1,
+        "raw_agreement_pct": 20.0,
+        "cohens_kappa": -0.1765,
+        "n_disagreements": 4
+      },
+      "Agent vs R2": {
+        "n": 6,
+        "skipped_blank": 0,
+        "agreements": 4,
+        "raw_agreement_pct": 66.7,
+        "cohens_kappa": 0.5,
+        "n_disagreements": 2
+      },
+      "R1 vs R2": {
+        "n": 5,
+        "skipped_blank": 1,
+        "agreements": 3,
+        "raw_agreement_pct": 60.0,
+        "cohens_kappa": 0.1667,
+        "n_disagreements": 2
+      }
+    },
+    "delivery_mode": {
+      "Agent vs R1": {
+        "n": 6,
+        "skipped_blank": 0,
+        "agreements": 2,
+        "raw_agreement_pct": 33.3,
+        "cohens_kappa": 0.25,
+        "n_disagreements": 4
+      },
+      "Agent vs R2": {
+        "n": 6,
+        "skipped_blank": 0,
+        "agreements": 2,
+        "raw_agreement_pct": 33.3,
+        "cohens_kappa": 0.25,
+        "n_disagreements": 4
+      },
+      "R1 vs R2": {
+        "n": 6,
+        "skipped_blank": 0,
+        "agreements": 4,
+        "raw_agreement_pct": 66.7,
+        "cohens_kappa": 0.5714,
+        "n_disagreements": 2
+      }
+    },
+    "outcome": {
+      "Agent vs R1": {
+        "n": 4,
+        "skipped_blank": 2,
+        "agreements": 4,
+        "raw_agreement_pct": 100.0,
+        "cohens_kappa": 1.0,
+        "n_disagreements": 0
+      },
+      "Agent vs R2": {
+        "n": 6,
+        "skipped_blank": 0,
+        "agreements": 5,
+        "raw_agreement_pct": 83.3,
+        "cohens_kappa": 0.76,
+        "n_disagreements": 1
+      },
+      "R1 vs R2": {
+        "n": 4,
+        "skipped_blank": 2,
+        "agreements": 4,
+        "raw_agreement_pct": 100.0,
+        "cohens_kappa": 1.0,
+        "n_disagreements": 0
+      }
+    },
+    "reason_for_failure": {
+      "Agent vs R1": {
+        "n": 6,
+        "skipped_blank": 0,
+        "agreements": 2,
+        "raw_agreement_pct": 33.3,
+        "cohens_kappa": 0.2258,
+        "n_disagreements": 4
+      },
+      "Agent vs R2": {
+        "n": 6,
+        "skipped_blank": 0,
+        "agreements": 4,
+        "raw_agreement_pct": 66.7,
+        "cohens_kappa": 0.5714,
+        "n_disagreements": 2
+      },
+      "R1 vs R2": {
+        "n": 6,
+        "skipped_blank": 0,
+        "agreements": 4,
+        "raw_agreement_pct": 66.7,
+        "cohens_kappa": 0.52,
+        "n_disagreements": 2
+      }
+    },
+    "peptide": {
+      "Agent vs R1": {
+        "n": 5,
+        "skipped_blank": 1,
+        "agreements": 3,
+        "raw_agreement_pct": 60.0,
+        "cohens_kappa": 0.0,
+        "n_disagreements": 2
+      },
+      "Agent vs R2": {
+        "n": 3,
+        "skipped_blank": 3,
+        "agreements": 1,
+        "raw_agreement_pct": 33.3,
+        "cohens_kappa": -0.5,
+        "n_disagreements": 2
+      },
+      "R1 vs R2": {
+        "n": 2,
+        "skipped_blank": 4,
+        "agreements": 2,
+        "raw_agreement_pct": 100.0,
+        "cohens_kappa": 1.0,
+        "n_disagreements": 0
+      }
+    }
+  },
+  "disagreements": [
+    {
+      "nct_id": "NCT03989817",
+      "field": "classification",
+      "comparison": "Agent vs R1",
+      "agent_value": "AMP(other)",
+      "r1_value": "Other",
+      "agent_raw": "AMP(other)",
+      "r1_raw": "Other"
+    },
+    {
+      "nct_id": "NCT03998592",
+      "field": "classification",
+      "comparison": "Agent vs R1",
+      "agent_value": "AMP(other)",
+      "r1_value": "AMP(infection)",
+      "agent_raw": "AMP(other)",
+      "r1_raw": "AMP(infection)"
+    },
+    {
+      "nct_id": "NCT05415410",
+      "field": "classification",
+      "comparison": "Agent vs R1",
+      "agent_value": "Other",
+      "r1_value": "AMP(infection)",
+      "agent_raw": "Other",
+      "r1_raw": "AMP(infection)"
+    },
+    {
+      "nct_id": "NCT06729606",
+      "field": "classification",
+      "comparison": "Agent vs R1",
+      "agent_value": "AMP(infection)",
+      "r1_value": "Other",
+      "agent_raw": "AMP(infection)",
+      "r1_raw": "Other"
+    },
+    {
+      "nct_id": "NCT03989817",
+      "field": "classification",
+      "comparison": "Agent vs R2",
+      "agent_value": "AMP(other)",
+      "r2_value": "Other",
+      "agent_raw": "AMP(other)",
+      "r2_raw": "Other"
+    },
+    {
+      "nct_id": "NCT03998592",
+      "field": "classification",
+      "comparison": "Agent vs R2",
+      "agent_value": "AMP(other)",
+      "r2_value": "AMP(infection)",
+      "agent_raw": "AMP(other)",
+      "r2_raw": "AMP(infection)"
+    },
+    {
+      "nct_id": "NCT05415410",
+      "field": "classification",
+      "comparison": "R1 vs R2",
+      "r1_value": "AMP(infection)",
+      "r2_value": "Other",
+      "r1_raw": "AMP(infection)",
+      "r2_raw": "Other"
+    },
+    {
+      "nct_id": "NCT06729606",
+      "field": "classification",
+      "comparison": "R1 vs R2",
+      "r1_value": "Other",
+      "r2_value": "AMP(infection)",
+      "r1_raw": "Other",
+      "r2_raw": "AMP(infection)"
+    },
+    {
+      "nct_id": "NCT03984812",
+      "field": "delivery_mode",
+      "comparison": "Agent vs R1",
+      "agent_value": "Injection/Infusion - Other/Unspecified",
+      "r1_value": "Injection/Infusion - Subcutaneous/Intradermal",
+      "agent_raw": "Injection/Infusion - Other/Unspecified",
+      "r1_raw": "Injection/Infusion - Subcutaneous/Intradermal"
+    },
+    {
+      "nct_id": "NCT03987672",
+      "field": "delivery_mode",
+      "comparison": "Agent vs R1",
+      "agent_value": "Oral - Unspecified",
+      "r1_value": "Other/Unspecified",
+      "agent_raw": "Oral - Unspecified",
+      "r1_raw": "Other/Unspecified"
+    },
+    {
+      "nct_id": "NCT03998592",
+      "field": "delivery_mode",
+      "comparison": "Agent vs R1",
+      "agent_value": "Injection/Infusion - Intramuscular",
+      "r1_value": "Other/Unspecified",
+      "agent_raw": "Injection/Infusion - Intramuscular",
+      "r1_raw": "Other/Unspecified"
+    },
+    {
+      "nct_id": "NCT05415410",
+      "field": "delivery_mode",
+      "comparison": "Agent vs R1",
+      "agent_value": "Injection/Infusion - Other/Unspecified",
+      "r1_value": "IV, Injection/Infusion - Subcutaneous/Intradermal, Oral - Drink",
+      "agent_raw": "Injection/Infusion - Other/Unspecified",
+      "r1_raw": "Injection/Infusion - Subcutaneous/Intradermal, IV, Oral - Drink"
+    },
+    {
+      "nct_id": "NCT03984812",
+      "field": "delivery_mode",
+      "comparison": "Agent vs R2",
+      "agent_value": "Injection/Infusion - Other/Unspecified",
+      "r2_value": "Injection/Infusion - Subcutaneous/Intradermal",
+      "agent_raw": "Injection/Infusion - Other/Unspecified",
+      "r2_raw": "Injection/Infusion - Subcutaneous/Intradermal"
+    },
+    {
+      "nct_id": "NCT03987672",
+      "field": "delivery_mode",
+      "comparison": "Agent vs R2",
+      "agent_value": "Oral - Unspecified",
+      "r2_value": "Oral - Drink",
+      "agent_raw": "Oral - Unspecified",
+      "r2_raw": "Oral - Drink"
+    },
+    {
+      "nct_id": "NCT03998592",
+      "field": "delivery_mode",
+      "comparison": "Agent vs R2",
+      "agent_value": "Injection/Infusion - Intramuscular",
+      "r2_value": "Other/Unspecified",
+      "agent_raw": "Injection/Infusion - Intramuscular",
+      "r2_raw": "Other/Unspecified"
+    },
+    {
+      "nct_id": "NCT05415410",
+      "field": "delivery_mode",
+      "comparison": "Agent vs R2",
+      "agent_value": "Injection/Infusion - Other/Unspecified",
+      "r2_value": "Injection/Infusion - Subcutaneous/Intradermal",
+      "agent_raw": "Injection/Infusion - Other/Unspecified",
+      "r2_raw": "Injection/Infusion - Subcutaneous/Intradermal"
+    },
+    {
+      "nct_id": "NCT03987672",
+      "field": "delivery_mode",
+      "comparison": "R1 vs R2",
+      "r1_value": "Other/Unspecified",
+      "r2_value": "Oral - Drink",
+      "r1_raw": "Other/Unspecified",
+      "r2_raw": "Oral - Drink"
+    },
+    {
+      "nct_id": "NCT05415410",
+      "field": "delivery_mode",
+      "comparison": "R1 vs R2",
+      "r1_value": "IV, Injection/Infusion - Subcutaneous/Intradermal, Oral - Drink",
+      "r2_value": "Injection/Infusion - Subcutaneous/Intradermal",
+      "r1_raw": "Injection/Infusion - Subcutaneous/Intradermal, IV, Oral - Drink",
+      "r2_raw": "Injection/Infusion - Subcutaneous/Intradermal"
+    },
+    {
+      "nct_id": "NCT06729606",
+      "field": "outcome",
+      "comparison": "Agent vs R2",
+      "agent_value": "Failed - completed trial",
+      "r2_value": "Unknown",
+      "agent_raw": "Failed - completed trial",
+      "r2_raw": "Unknown"
+    },
+    {
+      "nct_id": "NCT03987672",
+      "field": "reason_for_failure",
+      "comparison": "Agent vs R1",
+      "agent_value": "Recruitment issues",
+      "r1_value": "",
+      "agent_raw": "Recruitment issues",
+      "r1_raw": "None"
+    },
+    {
+      "nct_id": "NCT03989817",
+      "field": "reason_for_failure",
+      "comparison": "Agent vs R1",
+      "agent_value": "Ineffective for purpose",
+      "r1_value": "",
+      "agent_raw": "Ineffective for purpose",
+      "r1_raw": "None"
+    },
+    {
+      "nct_id": "NCT03998592",
+      "field": "reason_for_failure",
+      "comparison": "Agent vs R1",
+      "agent_value": "Business Reason",
+      "r1_value": "",
+      "agent_raw": "Business Reason",
+      "r1_raw": "None"
+    },
+    {
+      "nct_id": "NCT06729606",
+      "field": "reason_for_failure",
+      "comparison": "Agent vs R1",
+      "agent_value": "Ineffective for purpose",
+      "r1_value": "",
+      "agent_raw": "Ineffective for purpose",
+      "r1_raw": "None"
+    },
+    {
+      "nct_id": "NCT03989817",
+      "field": "reason_for_failure",
+      "comparison": "Agent vs R2",
+      "agent_value": "Ineffective for purpose",
+      "r2_value": "",
+      "agent_raw": "Ineffective for purpose",
+      "r2_raw": "None"
+    },
+    {
+      "nct_id": "NCT06729606",
+      "field": "reason_for_failure",
+      "comparison": "Agent vs R2",
+      "agent_value": "Ineffective for purpose",
+      "r2_value": "",
+      "agent_raw": "Ineffective for purpose",
+      "r2_raw": "None"
+    },
+    {
+      "nct_id": "NCT03987672",
+      "field": "reason_for_failure",
+      "comparison": "R1 vs R2",
+      "r1_value": "",
+      "r2_value": "Recruitment issues",
+      "r1_raw": "None",
+      "r2_raw": "Recruitment issues"
+    },
+    {
+      "nct_id": "NCT03998592",
+      "field": "reason_for_failure",
+      "comparison": "R1 vs R2",
+      "r1_value": "",
+      "r2_value": "Business Reason",
+      "r1_raw": "None",
+      "r2_raw": "Business Reason"
+    },
+    {
+      "nct_id": "NCT03984812",
+      "field": "peptide",
+      "comparison": "Agent vs R1",
+      "agent_value": "True",
+      "r1_value": "False",
+      "agent_raw": "True",
+      "r1_raw": "False"
+    },
+    {
+      "nct_id": "NCT03987672",
+      "field": "peptide",
+      "comparison": "Agent vs R1",
+      "agent_value": "True",
+      "r1_value": "False",
+      "agent_raw": "True",
+      "r1_raw": "False"
+    },
+    {
+      "nct_id": "NCT03987672",
+      "field": "peptide",
+      "comparison": "Agent vs R2",
+      "agent_value": "True",
+      "r2_value": "False",
+      "agent_raw": "True",
+      "r2_raw": "False"
+    },
+    {
+      "nct_id": "NCT06729606",
+      "field": "peptide",
+      "comparison": "Agent vs R2",
+      "agent_value": "False",
+      "r2_value": "True",
+      "agent_raw": "False",
+      "r2_raw": "True"
+    }
+  ]
+}

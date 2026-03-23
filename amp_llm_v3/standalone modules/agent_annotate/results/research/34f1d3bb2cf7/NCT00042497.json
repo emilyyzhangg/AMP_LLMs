@@ -1,0 +1,547 @@
+{
+  "nct_id": "NCT00042497",
+  "completed_at": "2026-03-17 07:59:47 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00042497",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "snippet": "Title: A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930478"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Brief Summary",
+          "snippet": "The objective is to determine the safety and efficacy of dexosome immunotherapy in patients with Stage IV malignant melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930542"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Study Status",
+          "snippet": "Status: SUSPENDED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930582"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Intervention: autologous dexosomes loaded with tumor-specific peptides",
+          "snippet": "BIOLOGICAL: autologous dexosomes loaded with tumor-specific peptides",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930603"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930621"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00042497",
+            "orgStudyIdInfo": {
+              "id": "AN2002-04"
+            },
+            "organization": {
+              "fullName": "Anosys",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+            "officialTitle": "A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2002-09",
+            "overallStatus": "SUSPENDED",
+            "startDateStruct": {
+              "date": "2002-07"
+            },
+            "studyFirstSubmitDate": "2002-07-30",
+            "studyFirstSubmitQcDate": "2002-07-31",
+            "studyFirstPostDateStruct": {
+              "date": "2002-08-01",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2005-06-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2005-06-24",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "Anosys",
+              "class": "INDUSTRY"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "The objective is to determine the safety and efficacy of dexosome immunotherapy in patients with Stage IV malignant melanoma"
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Melanoma"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 60
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "autologous dexosomes loaded with tumor-specific peptides"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "* Patients with Stage IV metastatic melanoma with 0-1 prior treatments for metastatic disease.\n* All patients must have distant skin, subcutaneous, or nodal metastases (M1a) or lung metastases (M1b), measurable disease, normal lactate dehydrogenase levels, and HLA type A1, A2, or B35.\n* Patients must have adequate organ function and an estimated life expectancy of at least 3 months.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00042497",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12412255/",
+          "identifier": "PMC:12412255",
+          "title": "Extracellular vesicles: biogenesis mechanism and impacts on tumor immune microenvironment.",
+          "snippet": "Title: Extracellular vesicles: biogenesis mechanism and impacts on tumor immune microenvironment.\nAuthors: Yeat NY, Chen RH\nJournal: J Biomed Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620648"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11948033/",
+          "identifier": "PMC:11948033",
+          "title": "Effect of Extracellular Vesicles Derived From Tumor Cells on Immune Evasion.",
+          "snippet": "Title: Effect of Extracellular Vesicles Derived From Tumor Cells on Immune Evasion.\nAuthors: Liu X, To KKW, Zeng Q et al.\nJournal: Adv Sci (Weinh)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620706"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10013823/",
+          "identifier": "PMC:10013823",
+          "title": "Micro and nanotechnologies: The little formulations that could.",
+          "snippet": "Title: Micro and nanotechnologies: The little formulations that could.\nAuthors: Stiepel RT, Duggan E, Batty CJ et al.\nJournal: Bioeng Transl Med",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620719"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "12412255",
+          "11948033",
+          "10013823"
+        ],
+        "pmc_count": 3,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 0,
+        "semantic_scholar_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "uniprot_autologous dexosomes loaded with tumor-specific peptides": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_autologous dexosomes loaded with tumor-specific peptides": {
+          "total": 0,
+          "entries": []
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00042497",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL6068345/",
+          "identifier": "CHEMBL6068345",
+          "title": "CHARACTERISED VIABLE AUTOLOGOUS CARTILAGE CELLS EXPANDED EX VIVO EXPRESSING SPECIFIC MARKER PROTEINS - ChEMBL",
+          "snippet": "Molecule: CHARACTERISED VIABLE AUTOLOGOUS CARTILAGE CELLS EXPANDED EX VIVO EXPRESSING SPECIFIC MARKER PROTEINS\nType: Cell\nMax clinical phase: 4.0\nFirst approval: 2009\nMechanism: Somatic cell supplemental therapy",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:01.375545"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5315067/",
+          "identifier": "CHEMBL5315067",
+          "title": "AUTOLOGOUS PERIPHERAL-BLOOD MONONUCLEAR CELLS INCLUDING A MINIMUM OF 50 MILLION AUTOLOGOUS CD54+ CELLS ACTIVATED WITH PROSTATIC ACID PHOSPHATASE GRANULOCYTE-MACROPHAGE COLONY-STIMULATING FACTOR - ChEMBL",
+          "snippet": "Molecule: AUTOLOGOUS PERIPHERAL-BLOOD MONONUCLEAR CELLS INCLUDING A MINIMUM OF 50 MILLION AUTOLOGOUS CD54+ CELLS ACTIVATED WITH PROSTATIC ACID PHOSPHATASE GRANULOCYTE-MACROPHAGE COLONY-STIMULATING FACTOR\nType: Unknown\nMax clinical phase: 4.0\nFirst approval: 2013\nMechanism: Somatic cell supplemental therapy",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:03.647531"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5315092/",
+          "identifier": "CHEMBL5315092",
+          "title": "AUTOLOGOUS CULTURED CHONDROCYTES - ChEMBL",
+          "snippet": "Molecule: AUTOLOGOUS CULTURED CHONDROCYTES\nType: Unknown\nMax clinical phase: 4.0\nFirst approval: 2009\nMechanism: May promote synthesis of hyaline-like cartilage repair tissue",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:06.652279"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'autologous dexosomes loaded with tumor-specific peptides'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "rcsb_{'name': 'autologous dexosomes loaded with tumor-specific peptides'}_status": 400
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_{'name': 'autologous dexosomes loaded with tumor-specific peptides'}_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "apd_{'name': 'autologous dexosomes loaded with tumor-specific peptides'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbamp",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "dbamp_{'name': 'autologous dexosomes loaded with tumor-specific peptides'}_error": "Server unreachable: ConnectError"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00042497",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "snippet": "Title: Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma\nStatus: Suspended\nPhase: Phase 2\nConditions: Melanoma\nInterventions: Biological: autologous dexosomes loaded with tumor-specific peptides\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:59:47.154003"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00042497",
+          "public_title": "Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "scientific_title": "A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "recruitment_status": "Suspended",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Non-Randomized, Endpoint Classification: Safety/Efficacy Study, Intervention Model: Parallel Assignment, Masking: Open Label, Primary Purpose: Treatment",
+          "conditions": [
+            "Melanoma"
+          ],
+          "interventions": [
+            "Biological: autologous dexosomes loaded with tumor-specific peptides"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "iuphar_autologous dexosomes loaded with tumor-specific peptides": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "intact",
+      "nct_id": "NCT00042497",
+      "citations": [
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366233",
+          "identifier": "IntAct:EBI-366233",
+          "title": "MAPT - IntAct",
+          "snippet": "Interactor: MAPT\nDescription: Microtubule-associated protein tau\nUniProt: P10636-8\nSpecies: Homo sapiens\nType: protein\nInteractions: 7000",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385507"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-77613",
+          "identifier": "IntAct:EBI-77613",
+          "title": "APP - IntAct",
+          "snippet": "Interactor: APP\nDescription: Amyloid-beta precursor protein\nUniProt: P05067\nSpecies: Homo sapiens\nType: protein\nInteractions: 1779",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385589"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366083",
+          "identifier": "IntAct:EBI-366083",
+          "title": "TP53 - IntAct",
+          "snippet": "Interactor: TP53\nDescription: Cellular tumor antigen p53\nUniProt: P04637\nSpecies: Homo sapiens\nType: protein\nInteractions: 1757",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385599"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-297353",
+          "identifier": "IntAct:EBI-297353",
+          "title": "EGFR - IntAct",
+          "snippet": "Interactor: EGFR\nDescription: Epidermal growth factor receptor\nUniProt: P00533\nSpecies: Homo sapiens\nType: protein\nInteractions: 1723",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385609"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-357345",
+          "identifier": "IntAct:EBI-357345",
+          "title": "SCRIB - IntAct",
+          "snippet": "Interactor: SCRIB\nDescription: Protein scribble homolog\nUniProt: Q14160\nSpecies: Homo sapiens\nType: protein\nInteractions: 1704",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385617"
+        }
+      ],
+      "raw_data": {
+        "intact_autologous dexosomes loaded with tumor-specific peptides": {
+          "total_elements": 1705,
+          "interactors": [
+            {
+              "interactorAc": "EBI-366233",
+              "interactorName": "MAPT",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P10636-8",
+              "interactorDescription": "Microtubule-associated protein tau",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 7000,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-77613",
+              "interactorName": "APP",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P05067",
+              "interactorDescription": "Amyloid-beta precursor protein",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1779,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-366083",
+              "interactorName": "TP53",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P04637",
+              "interactorDescription": "Cellular tumor antigen p53",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1757,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-297353",
+              "interactorName": "EGFR",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P00533",
+              "interactorDescription": "Epidermal growth factor receptor",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1723,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-357345",
+              "interactorName": "SCRIB",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "Q14160",
+              "interactorDescription": "Protein scribble homolog",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1704,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            }
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "card",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "card_livesearch_autologous dexosomes loaded with tumor-specific peptides_html_len": 22,
+        "card_autologous dexosomes loaded with tumor-specific peptides_matches": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "pdbe_{'name': 'autologous dexosomes loaded with tumor-specific peptides'}_count": 0
+      },
+      "error": null
+    }
+  ]
+}

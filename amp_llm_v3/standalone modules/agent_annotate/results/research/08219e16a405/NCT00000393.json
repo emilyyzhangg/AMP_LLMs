@@ -1,0 +1,260 @@
+{
+  "nct_id": "NCT00000393",
+  "completed_at": "2026-03-16 12:36:30 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00000393",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000393",
+          "identifier": "NCT00000393",
+          "title": "A Phase I Trial of Peptide T: Efficacy for the Neuropsychiatric Complications of Acquired Immunodeficiency Syndrome (AIDS).",
+          "snippet": "Title: A Phase I Trial of Peptide T: Efficacy for the Neuropsychiatric Complications of Acquired Immunodeficiency Syndrome (AIDS).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.994452"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000393",
+          "identifier": "NCT00000393",
+          "title": "Brief Summary",
+          "snippet": "To study the safety, toxicology, and activity of Peptide T (D-Ala-1-peptide-T-amide) in humans and to find out more about the ability of peptide T to prevent, halt, and/or reverse AIDS-associated immunologic disturbances.\n\nRecent information suggests that the central nervous system (CNS) is often impaired in HIV-infected individuals. The dysfunction of the CNS may be either a direct or an indirect result of HIV infection. One method to prevent HIV infection is to block entry of the virus into th",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.994467"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000393",
+          "identifier": "NCT00000393",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.994474"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000393",
+          "identifier": "NCT00000393",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections, Cognition Disorders | Keywords: Acquired Immunodeficiency Syndrome",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.994481"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000393",
+          "identifier": "NCT00000393",
+          "title": "Intervention: Peptide T",
+          "snippet": "DRUG: Peptide T",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.994487"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000393",
+          "identifier": "NCT00000393",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:14.994493"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00000393",
+            "orgStudyIdInfo": {
+              "id": "89 MH-28"
+            },
+            "organization": {
+              "fullName": "National Institute of Mental Health (NIMH)",
+              "class": "NIH"
+            },
+            "briefTitle": "A Phase I Trial of Peptide T: Efficacy for the Neuropsychiatric Complications of Acquired Immunodeficiency Syndrome (AIDS)."
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2002-04",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "1988-01"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "1990-01",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2000-01-17",
+            "studyFirstSubmitQcDate": "2000-01-17",
+            "studyFirstPostDateStruct": {
+              "date": "2000-01-18",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2015-02-26",
+            "lastUpdatePostDateStruct": {
+              "date": "2015-03-02",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "National Institute of Mental Health (NIMH)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "To study the safety, toxicology, and activity of Peptide T (D-Ala-1-peptide-T-amide) in humans and to find out more about the ability of peptide T to prevent, halt, and/or reverse AIDS-associated immunologic disturbances.\n\nRecent information suggests that the central nervous system (CNS) is often impaired in HIV-infected individuals. The dysfunction of the CNS may be either a direct or an indirect result of HIV infection. One method to prevent HIV infection is to block entry of the virus into the cells of the body. Peptide T shows laboratory evidence of blocking the entrance of HIV into cells that are susceptible to HIV infection. Studies that have been done indicate that peptide T is nontoxic in the doses that are used in this study.\n\nAIDS patients with minimal (group 1) or moderate (group 2) cognitive dysfunction (mental impairment) receive an increasing schedule of three dosage levels of peptide T. All patients receive an intravenous (IV) dose of peptide T for 10 days followed by the intermediate dose and then the highest dose, each intravenously for 10 days. Following successful completion of 3 IV doses, four patients participate in an intranasal pharmacokinetic (blood level study) dosage trial of 3 doses (different from IV) of peptide T once for each of 3 successive days. Follow-up continues for up to 1 year."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections",
+              "Cognition Disorders"
+            ],
+            "keywords": [
+              "Acquired Immunodeficiency Syndrome"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 6,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Peptide T"
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Patients performance on neuropsychological tests",
+                "description": "The additional 3 days was for only 4 patients with follow-up for 1 year",
+                "timeFrame": "10 days plus 10 days plus 3 days"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* History of either opportunistic infection and/or Kaposi's sarcoma, and/or serologic evidence of past infection with HIV. Ability to give informed consent.\n* Allowed but discouraged: Antiretroviral medication. Immunomodulating medication. Psychoactive medication.\n* Not breast-feeding\n* Abstinence or agree to use barrier methods of birth control / contraception during the study\n* Not pregnant\n* Negative pregnancy test\n* CD4 \\>= 200 cells/mm3 (200 - 300 - 400 - 500 - 600 - 700 - 800 plus).\n* Creatinine \\<= 1.6 mg/dl\n* Hemoglobin \\>= 12 g/dl\n* Platelet Count \\>= 100000 /mm3\n\nExclusion Criteria:\n\n* Patients with the following diseases or symptoms are excluded: Space-occupying lesion in brain. Life-threatening opportunistic infection at time of entry into trial. History of major psychiatric illness prior to 1977 or time of initial exposure to HIV, if that is known.\n* Patients with the following diseases or symptoms are excluded: Space-occupying lesion in brain. Life-threatening opportunistic infection at time of entry into trial. History of major psychiatric illness prior to 1977 or time of initial exposure to HIV, if that is known.\n* Excluded within 4 weeks of study entry:\n\nAntiretroviral agents. Anticancer treatments. Psychoactive agents.\n\nExcluded within 4 months of study entry:\n\nSuramin.\n\n* Avoid: Antiretroviral medication. Immunomodulating medication. Psychoactive medication.\n* Excluded within 4 weeks of study entry:\n\nRadiation.\n\n* Breast-feeding\n* Positive pregnancy test\n* Pregnant\n* No abstinence or no agreement to use barrier methods of birth control / contraception during the study",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Bridge TP",
+                "affiliation": "National Institute of Mental Health (NIMH)",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Los Angeles County - USC Med Ctr",
+                "city": "Los Angeles",
+                "state": "California",
+                "zip": "90033",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.05223,
+                  "lon": -118.24368
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00000393",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 0,
+        "semantic_scholar_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00000393",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00000393",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00000393",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00000393",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00000393",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00000393",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

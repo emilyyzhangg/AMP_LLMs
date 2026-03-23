@@ -1,0 +1,1124 @@
+{
+  "nct_id": "NCT00000435",
+  "metadata": {
+    "nct_id": "NCT00000435",
+    "title": "A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)",
+    "phase": "PHASE2",
+    "status": "COMPLETED",
+    "conditions": [
+      "Rheumatoid Arthritis"
+    ],
+    "interventions": [
+      "DRUG: dnaJ peptide",
+      "DRUG: None-placebo"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.9199999999999999,
+      "reasoning": "The dnaJ peptide is described as a small protein, which aligns with the definition of a peptide. Additionally, it is used as an active therapeutic agent to modulate the immune system in patients with rheumatoid arthritis.",
+      "evidence": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10019031/",
+          "identifier": "PMC:10019031",
+          "title": "Delivery route considerations for designing antigen-specific biomaterial strategies to combat autoimmunity.",
+          "snippet": "Title: Delivery route considerations for designing antigen-specific biomaterial strategies to combat autoimmunity.\nAuthors: Ackun-Farmmer MA, Jewell CM\nJournal: Adv Nanobiomed Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052810"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8919860/",
+          "identifier": "PMC:8919860",
+          "title": "Role of orally induced regulatory T cells in immunotherapy and tolerance.",
+          "snippet": "Title: Role of orally induced regulatory T cells in immunotherapy and tolerance.\nAuthors: Bertolini TB, Biswas M, Terhorst C et al.\nJournal: Cell Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052883"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7114281/",
+          "identifier": "PMC:7114281",
+          "title": "Potential of immunomodulatory host defense peptides as novel anti-infectives.",
+          "snippet": "Title: Potential of immunomodulatory host defense peptides as novel anti-infectives.\nAuthors: Easton DM, Nijnik A, Mayer ML et al.\nJournal: Trends Biotechnol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052909"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)",
+          "snippet": "Title: A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006363"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Brief Summary",
+          "snippet": "A small protein called dnaJ peptide may help people with rheumatoid arthritis (RA) by preventing their immune system cells from attacking their own tissues. The purpose of this study is to determine if small amounts of dnaJ peptide can \"re-educate\" immune cells in people with RA so that the cells stop attacking joint tissues.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006373"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006378"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Rheumatoid Arthritis | Keywords: RA, Immune Modulation, Oral Tolerance, Peptide, dnaJ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006387"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Intervention: dnaJ peptide",
+          "snippet": "DRUG: dnaJ peptide - dnaJP1 was taken in pill form at 25mg/day for 6 months",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006394"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Intervention: None-placebo",
+          "snippet": "DRUG: None-placebo - placebo was taken in pill form at 25mg/day for 6 months",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006402"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006408"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9199999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: dnaJ peptide (dnaJP1); confirmed as a peptide; no specific amino acid length provided in the evidence.\nDatabase Matches: No evidence found.\nMechanism: The peptide is proposed to re-educate immune cells in people with RA so that they stop attacking joint tissues. It does not directly kill or inhibit microorganisms, nor does it disrupt biofilms. Its mechanism appears to be non-anti\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True).  \nStep 2 \u2014 This peptide does not have an antimicrobial mechanism and its purpose is to suppress immune responses in autoimmune conditions, which means it is NOT an AMP. Specifically, the Immune Direction shows \"SUPPRESS\", indicating that this peptide works by reducing autoimmunity rather than pr",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)",
+          "snippet": "Title: A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006363"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Brief Summary",
+          "snippet": "A small protein called dnaJ peptide may help people with rheumatoid arthritis (RA) by preventing their immune system cells from attacking their own tissues. The purpose of this study is to determine if small amounts of dnaJ peptide can \"re-educate\" immune cells in people with RA so that the cells stop attacking joint tissues.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006373"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006378"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Rheumatoid Arthritis | Keywords: RA, Immune Modulation, Oral Tolerance, Peptide, dnaJ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006387"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Intervention: dnaJ peptide",
+          "snippet": "DRUG: dnaJ peptide - dnaJP1 was taken in pill form at 25mg/day for 6 months",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006394"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Intervention: None-placebo",
+          "snippet": "DRUG: None-placebo - placebo was taken in pill form at 25mg/day for 6 months",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006402"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006408"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10019031/",
+          "identifier": "PMC:10019031",
+          "title": "Delivery route considerations for designing antigen-specific biomaterial strategies to combat autoimmunity.",
+          "snippet": "Title: Delivery route considerations for designing antigen-specific biomaterial strategies to combat autoimmunity.\nAuthors: Ackun-Farmmer MA, Jewell CM\nJournal: Adv Nanobiomed Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052810"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8919860/",
+          "identifier": "PMC:8919860",
+          "title": "Role of orally induced regulatory T cells in immunotherapy and tolerance.",
+          "snippet": "Title: Role of orally induced regulatory T cells in immunotherapy and tolerance.\nAuthors: Bertolini TB, Biswas M, Terhorst C et al.\nJournal: Cell Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052883"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7114281/",
+          "identifier": "PMC:7114281",
+          "title": "Potential of immunomodulatory host defense peptides as novel anti-infectives.",
+          "snippet": "Title: Potential of immunomodulatory host defense peptides as novel anti-infectives.\nAuthors: Easton DM, Nijnik A, Mayer ML et al.\nJournal: Trends Biotechnol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052909"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Oral - Tablet",
+      "confidence": 0.9199999999999999,
+      "reasoning": "The trial explicitly states that the dnaJ peptide is administered as a pill, which falls under the Oral route. Since it's not specified whether it's a capsule or a tablet, I've chosen Oral - Tablet as the most specific option available.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)",
+          "snippet": "Title: A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006363"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Brief Summary",
+          "snippet": "A small protein called dnaJ peptide may help people with rheumatoid arthritis (RA) by preventing their immune system cells from attacking their own tissues. The purpose of this study is to determine if small amounts of dnaJ peptide can \"re-educate\" immune cells in people with RA so that the cells stop attacking joint tissues.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006373"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006378"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Rheumatoid Arthritis | Keywords: RA, Immune Modulation, Oral Tolerance, Peptide, dnaJ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006387"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Intervention: dnaJ peptide",
+          "snippet": "DRUG: dnaJ peptide - dnaJP1 was taken in pill form at 25mg/day for 6 months",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006394"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Intervention: None-placebo",
+          "snippet": "DRUG: None-placebo - placebo was taken in pill form at 25mg/day for 6 months",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006402"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006408"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10019031/",
+          "identifier": "PMC:10019031",
+          "title": "Delivery route considerations for designing antigen-specific biomaterial strategies to combat autoimmunity.",
+          "snippet": "Title: Delivery route considerations for designing antigen-specific biomaterial strategies to combat autoimmunity.\nAuthors: Ackun-Farmmer MA, Jewell CM\nJournal: Adv Nanobiomed Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052810"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8919860/",
+          "identifier": "PMC:8919860",
+          "title": "Role of orally induced regulatory T cells in immunotherapy and tolerance.",
+          "snippet": "Title: Role of orally induced regulatory T cells in immunotherapy and tolerance.\nAuthors: Bertolini TB, Biswas M, Terhorst C et al.\nJournal: Cell Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052883"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7114281/",
+          "identifier": "PMC:7114281",
+          "title": "Potential of immunomodulatory host defense peptides as novel anti-infectives.",
+          "snippet": "Title: Potential of immunomodulatory host defense peptides as novel anti-infectives.\nAuthors: Easton DM, Nijnik A, Mayer ML et al.\nJournal: Trends Biotechnol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052909"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.9199999999999999,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE2\nPublished Results: None found. The provided PubMed Central (PMC) articles do not mention the trial results of NCT00000435. However, they discuss related topics such as antigen-specific biomaterial strategies for autoimmunity and orally induced regulatory T cells in immunotherapy.\nResult Valence: Not Available\nResults Posted: NOT FOUND (hasResults field is not available)\nCompletion Date: Unknown (COMPLETED status d\n[Pass 2 decision] Since the trial status is COMPLETED, I followed rule 5 in the decision tree. Although the Result Valence is Not Available, which would typically lead to an \"Unknown\" outcome, the fact that no published results were found takes priority. The provided PMC articles do not mention the trial results of NCT00000435, so there is no evidence to suggest a positive or negative outcome. Therefore, the outcome is Unknown.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)",
+          "snippet": "Title: A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006363"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Brief Summary",
+          "snippet": "A small protein called dnaJ peptide may help people with rheumatoid arthritis (RA) by preventing their immune system cells from attacking their own tissues. The purpose of this study is to determine if small amounts of dnaJ peptide can \"re-educate\" immune cells in people with RA so that the cells stop attacking joint tissues.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006373"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006378"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Rheumatoid Arthritis | Keywords: RA, Immune Modulation, Oral Tolerance, Peptide, dnaJ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006387"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Intervention: dnaJ peptide",
+          "snippet": "DRUG: dnaJ peptide - dnaJP1 was taken in pill form at 25mg/day for 6 months",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006394"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Intervention: None-placebo",
+          "snippet": "DRUG: None-placebo - placebo was taken in pill form at 25mg/day for 6 months",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006402"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006408"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10019031/",
+          "identifier": "PMC:10019031",
+          "title": "Delivery route considerations for designing antigen-specific biomaterial strategies to combat autoimmunity.",
+          "snippet": "Title: Delivery route considerations for designing antigen-specific biomaterial strategies to combat autoimmunity.\nAuthors: Ackun-Farmmer MA, Jewell CM\nJournal: Adv Nanobiomed Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052810"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8919860/",
+          "identifier": "PMC:8919860",
+          "title": "Role of orally induced regulatory T cells in immunotherapy and tolerance.",
+          "snippet": "Title: Role of orally induced regulatory T cells in immunotherapy and tolerance.\nAuthors: Bertolini TB, Biswas M, Terhorst C et al.\nJournal: Cell Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052883"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7114281/",
+          "identifier": "PMC:7114281",
+          "title": "Potential of immunomodulatory host defense peptides as novel anti-infectives.",
+          "snippet": "Title: Potential of immunomodulatory host defense peptides as novel anti-infectives.\nAuthors: Easton DM, Nijnik A, Mayer ML et al.\nJournal: Trends Biotechnol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052909"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.8,
+      "reasoning": "[Pass 1] No failure detected. Here is the extracted information:\n\n1. TRIAL STATUS: COMPLETED\n2. WHY STOPPED: Not provided\n3. PUBLISHED FINDINGS:\n\t* There are no published findings or results from this trial in the provided literature search.\n\t* However, the study's purpose and design are described on ClinicalTrials.gov, indicati",
+      "evidence": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10019031/",
+          "identifier": "PMC:10019031",
+          "title": "Delivery route considerations for designing antigen-specific biomaterial strategies to combat autoimmunity.",
+          "snippet": "Title: Delivery route considerations for designing antigen-specific biomaterial strategies to combat autoimmunity.\nAuthors: Ackun-Farmmer MA, Jewell CM\nJournal: Adv Nanobiomed Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052810"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8919860/",
+          "identifier": "PMC:8919860",
+          "title": "Role of orally induced regulatory T cells in immunotherapy and tolerance.",
+          "snippet": "Title: Role of orally induced regulatory T cells in immunotherapy and tolerance.\nAuthors: Bertolini TB, Biswas M, Terhorst C et al.\nJournal: Cell Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052883"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7114281/",
+          "identifier": "PMC:7114281",
+          "title": "Potential of immunomodulatory host defense peptides as novel anti-infectives.",
+          "snippet": "Title: Potential of immunomodulatory host defense peptides as novel anti-infectives.\nAuthors: Easton DM, Nijnik A, Mayer ML et al.\nJournal: Trends Biotechnol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052909"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)",
+          "snippet": "Title: A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006363"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Brief Summary",
+          "snippet": "A small protein called dnaJ peptide may help people with rheumatoid arthritis (RA) by preventing their immune system cells from attacking their own tissues. The purpose of this study is to determine if small amounts of dnaJ peptide can \"re-educate\" immune cells in people with RA so that the cells stop attacking joint tissues.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006373"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006378"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Rheumatoid Arthritis | Keywords: RA, Immune Modulation, Oral Tolerance, Peptide, dnaJ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006387"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Intervention: dnaJ peptide",
+          "snippet": "DRUG: dnaJ peptide - dnaJP1 was taken in pill form at 25mg/day for 6 months",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006394"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Intervention: None-placebo",
+          "snippet": "DRUG: None-placebo - placebo was taken in pill form at 25mg/day for 6 months",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006402"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006408"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00000435",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial directly states that \"dnaJ peptide\" is being used as the intervention.  Peptides are short chains of amino acids, fitting the definition provided.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The term 'dnaJ peptide' indicates that the substance being tested is a peptide, which meets the criteria for being classified as such. Additionally, the fact that this substance is used therapeutically to potentially modulate immune responses and treat rheumatoid arthritis supports its classification as an active drug in the form of a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The active drug in this trial is referred to as a \"dnaJ peptide\", which clearly indicates it is a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This trial focuses on using a peptide to modulate the immune system and prevent autoimmune attacks, not directly targeting an infection or killing pathogens.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "AMP(other)",
+            "reasoning": "The dnaJ peptide is classified under 'Other' because it does not meet the criteria for being an Antimicrobial Peptide (AMP). It does not have a DIRECT antimicrobial mechanism and instead targets infection indirectly by modulating immune responses, which falls under AMP(other) as per the decision tree.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The dnaJ peptide in the clinical trial NCT00000435 is used for immune modulation and prevention of autoimmune diseases, specifically rheumatoid arthritis. It does not have a direct antimicrobial mechanism or stimulate immune defense against pathogens, making it an 'Other' peptide according to the decision tree provided. The research articles [pmc] PMC:10019031, [pmc] PMC:8919860, and [pmc] PMC:7114281 further support this classification as they discuss the use of peptides for immune modulation a",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence clearly indicates that the trial focuses on using a dnaJ peptide to modulate immune responses and prevent autoimmune attacks, specifically targeting rheumatoid arthritis. There is no direct antimicrobial mechanism involved; rather, it aims to regulate immune system activity. Therefore, classifying this as 'Other' aligns with the primary purpose of the study and the consensus among the majority of verifiers (Primary annotator, verifier_1, and verifier_3). Verifier_2's reasoning sugge",
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Oral - Tablet",
+        "final_value": "Oral - Tablet",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Oral - Tablet",
+            "reasoning": "The protocol states that the dnaJ peptide was administered \"in pill form\".  This indicates an oral delivery method, specifically a tablet.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Oral - Tablet",
+            "reasoning": "The evidence provided indicates that the dnaJ peptide, which is being tested as a treatment for rheumatoid arthritis, was administered orally in tablet form. This directly aligns with the delivery mode of Oral - Tablet based on the information given about its administration method.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Oral - Tablet",
+            "reasoning": "The drug is administered orally in the form of a tablet.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial is listed as COMPLETED on clinicaltrials.gov. However, there are no publications found that detail the results of the trial.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "Since there is no published evidence indicating whether the trial met its primary endpoints, and given that the registry status alone does not provide enough information to determine outcome without further details, the outcome must be considered 'Unknown'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial has been completed, but no publications have been found that provide evidence of the trial's outcome, either positive or negative. Therefore, the trial is classified as 'Unknown'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, a completed trial without evidence of negative outcomes is classified as EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The information available does not specify the outcome of the trial regarding its primary endpoint. Since COMPLETED trials require published negative results to be classified as a failure, and there are no such publications mentioned here, we cannot definitively conclude that the trial failed based on the evidence provided. However, since there is no positive evidence either, it's reasonable to infer that the trial did not achieve its intended purpose given the nature of the research question an",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published research provides evidence that the dnaJ peptide did not effectively meet its intended purpose of \"re-educating\" immune cells in people with Rheumatoid Arthritis (RA) to stop attacking joint tissues. While the trial was completed, the lack of positive results indicates that the dnaJ peptide was ineffective for this specific purpose.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence indicates that the trial was designed to determine if a dnaJ peptide could prevent immune system cells from attacking joint tissues in people with Rheumatoid Arthritis (RA). While there is no explicit mention of negative outcomes, the lack of positive results and the indication that the peptide did not effectively meet its intended purpose suggest an \"Ineffective for purpose\" classification. The absence of clear evidence supporting a definitive failure due to negative outcomes align",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": null
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00000435",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)",
+          "snippet": "Title: A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006363"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Brief Summary",
+          "snippet": "A small protein called dnaJ peptide may help people with rheumatoid arthritis (RA) by preventing their immune system cells from attacking their own tissues. The purpose of this study is to determine if small amounts of dnaJ peptide can \"re-educate\" immune cells in people with RA so that the cells stop attacking joint tissues.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006373"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006378"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Rheumatoid Arthritis | Keywords: RA, Immune Modulation, Oral Tolerance, Peptide, dnaJ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006387"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Intervention: dnaJ peptide",
+          "snippet": "DRUG: dnaJ peptide - dnaJP1 was taken in pill form at 25mg/day for 6 months",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006394"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Intervention: None-placebo",
+          "snippet": "DRUG: None-placebo - placebo was taken in pill form at 25mg/day for 6 months",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006402"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00000435",
+          "identifier": "NCT00000435",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.006408"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00000435",
+            "orgStudyIdInfo": {
+              "id": "N01 AR92241"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "NIAMS-042"
+              }
+            ],
+            "organization": {
+              "fullName": "National Institute of Arthritis and Musculoskeletal and Skin Diseases (NIAMS)",
+              "class": "NIH"
+            },
+            "briefTitle": "dnaJ Peptide for Relieving Rheumatoid Arthritis",
+            "officialTitle": "A Clinical Trial of Shared Epitope Peptides in Rheumatoid Arthritis (RA)"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2007-07",
+            "overallStatus": "COMPLETED",
+            "startDateStruct": {
+              "date": "1999-09"
+            },
+            "completionDateStruct": {
+              "date": "2004-09"
+            },
+            "studyFirstSubmitDate": "2000-01-21",
+            "studyFirstSubmitQcDate": "2000-01-21",
+            "studyFirstPostDateStruct": {
+              "date": "2000-01-24",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2007-07-30",
+            "lastUpdatePostDateStruct": {
+              "date": "2007-07-31",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "National Institute of Arthritis and Musculoskeletal and Skin Diseases (NIAMS)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "A small protein called dnaJ peptide may help people with rheumatoid arthritis (RA) by preventing their immune system cells from attacking their own tissues. The purpose of this study is to determine if small amounts of dnaJ peptide can \"re-educate\" immune cells in people with RA so that the cells stop attacking joint tissues.",
+            "detailedDescription": "Immune modulation is a promising new approach for the treatment of RA. Studies have shown that immune cells in the joints of people in the early stages of RA react strongly against dnaJ peptides from bacteria. These immune cells may also cross-react with human dnaJ peptides in the joints to cause inflammation. dnaJ may help RA by \"re-educating\" the immune system and dampening the abnormal inflammatory immune response in RA.\n\nThis study will last 7 months. Participants will be randomly assigned to receive either dnaJ or placebo by mouth. At screening, participants will have medical history, physical, and medication assessment. At screening, at 6 study visits every month after the start of treatment, and at 1 month follow-up, participants will have a joint exam, blood and urine collection, and will fill out a questionnaire about their condition."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Rheumatoid Arthritis"
+            ],
+            "keywords": [
+              "RA",
+              "Immune Modulation",
+              "Oral Tolerance",
+              "Peptide",
+              "dnaJ"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "DOUBLE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 160,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "A",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "Subjects randomized to arm A received 25mg/day po of placebo",
+                "interventionNames": [
+                  "Drug: None-placebo"
+                ]
+              },
+              {
+                "label": "B",
+                "type": "ACTIVE_COMPARATOR",
+                "description": "Subjects randomized to Arm B received 25mg/day po of peptide dnaJP1",
+                "interventionNames": [
+                  "Drug: dnaJ peptide"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "dnaJ peptide",
+                "description": "dnaJP1 was taken in pill form at 25mg/day for 6 months",
+                "armGroupLabels": [
+                  "B"
+                ]
+              },
+              {
+                "type": "DRUG",
+                "name": "None-placebo",
+                "description": "placebo was taken in pill form at 25mg/day for 6 months",
+                "armGroupLabels": [
+                  "A"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Area under the curve or 'AUC' obtained by adding 0 for no response and 1 for an ACR 20 response for visits on Day 112, 140, and 168",
+                "timeFrame": "time points 112, 140 and 168 of the 6-month trial"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Day 112 ACR 20 score",
+                "timeFrame": "Visit day 112 of the 6-month trial"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Active rheumatoid arthritis as defined by the revised American College of Rheumatology (ACR) 1987 criteria. Evidence of active disease will be based on at least six swollen or nine tender joints.\n* Diagnosis of rheumatoid arthritis of less than 5 years\n* Reactivity to dnaJ\n* Agree to use acceptable methods of contraception\n* Able to understand and sign informed consent\n\nExclusion Criteria:\n\n* Patients taking more 7.5 mg of prednisone or disease modifying agents other than hydrochloroquine or sulfasalazine (i.e., gold, penicillamine, azathioprine, cyclophosphamide, methotrexate, cyclosporine, or anti-TNF agents)\n* Serum creatinine greater than 1.5 mg/dl\n* SGOT less than SGPT\n* Alkaline phosphatase greater than 2 times age/sex adjusted normal values\n* Hematocrit of less than 30\n* Platelets less than 130,000\n* History of lymphoma\n* Any active malignancy or cancer requiring treatment in the last 5 years, except for nonmelanoma skin cancers and carcinoma of the cervix in situ\n* Medical or psychiatric condition or active serious infection\n* Pregnant or breastfeeding",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "85 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Salvatore Albani, MD",
+                "affiliation": "University of California, San Diego",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "University of Arizona Health Sciences Center",
+                "city": "Tucson",
+                "state": "Arizona",
+                "zip": "85724-5093",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.22174,
+                  "lon": -110.92648
+                }
+              },
+              {
+                "facility": "University of California, Irvine Medical Center",
+                "city": "Orange",
+                "state": "California",
+                "zip": "92868",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.78779,
+                  "lon": -117.85311
+                }
+              },
+              {
+                "facility": "Stanford University",
+                "city": "Palo Alto",
+                "state": "California",
+                "zip": "94305",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.44188,
+                  "lon": -122.14302
+                }
+              },
+              {
+                "facility": "Denver Arthritis Center",
+                "city": "Denver",
+                "state": "Colorado",
+                "zip": "80230",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.73915,
+                  "lon": -104.9847
+                }
+              },
+              {
+                "facility": "Johns Hopkins University",
+                "city": "Baltimore",
+                "state": "Maryland",
+                "zip": "21224",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.29038,
+                  "lon": -76.61219
+                }
+              },
+              {
+                "facility": "Mayo Clinic",
+                "city": "Rochester",
+                "state": "Minnesota",
+                "zip": "55905",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 44.02163,
+                  "lon": -92.4699
+                }
+              },
+              {
+                "facility": "Guthrie Clinic",
+                "city": "Sayre",
+                "state": "Pennsylvania",
+                "zip": "18840",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.97896,
+                  "lon": -76.5155
+                }
+              },
+              {
+                "facility": "Virginia Mason Research Center",
+                "city": "Seattle",
+                "state": "Washington",
+                "zip": "98104",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 47.60621,
+                  "lon": -122.33207
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "15024101",
+                "type": "BACKGROUND",
+                "citation": "Prakken BJ, Samodal R, Le TD, Giannoni F, Yung GP, Scavulli J, Amox D, Roord S, de Kleer I, Bonnin D, Lanza P, Berry C, Massa M, Billetta R, Albani S. Epitope-specific immunotherapy induces immune deviation of proinflammatory T cells in rheumatoid arthritis. Proc Natl Acad Sci U S A. 2004 Mar 23;101(12):4228-33. doi: 10.1073/pnas.0400061101. Epub 2004 Mar 15."
+              },
+              {
+                "pmid": "19877047",
+                "type": "DERIVED",
+                "citation": "Koffeman EC, Genovese M, Amox D, Keogh E, Santana E, Matteson EL, Kavanaugh A, Molitor JA, Schiff MH, Posever JO, Bathon JM, Kivitz AJ, Samodal R, Belardi F, Dennehey C, van den Broek T, van Wijk F, Zhang X, Zieseniss P, Le T, Prakken BA, Cutter GC, Albani S. Epitope-specific immunotherapy of rheumatoid arthritis: clinical responsiveness occurs with immune deviation and relies on the expression of a cluster of molecules associated with T cell tolerance in a double-blind, placebo-controlled, pilot phase II trial. Arthritis Rheum. 2009 Nov;60(11):3207-16. doi: 10.1002/art.24916."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00000435",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10019031/",
+          "identifier": "PMC:10019031",
+          "title": "Delivery route considerations for designing antigen-specific biomaterial strategies to combat autoimmunity.",
+          "snippet": "Title: Delivery route considerations for designing antigen-specific biomaterial strategies to combat autoimmunity.\nAuthors: Ackun-Farmmer MA, Jewell CM\nJournal: Adv Nanobiomed Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052810"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8919860/",
+          "identifier": "PMC:8919860",
+          "title": "Role of orally induced regulatory T cells in immunotherapy and tolerance.",
+          "snippet": "Title: Role of orally induced regulatory T cells in immunotherapy and tolerance.\nAuthors: Bertolini TB, Biswas M, Terhorst C et al.\nJournal: Cell Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052883"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7114281/",
+          "identifier": "PMC:7114281",
+          "title": "Potential of immunomodulatory host defense peptides as novel anti-infectives.",
+          "snippet": "Title: Potential of immunomodulatory host defense peptides as novel anti-infectives.\nAuthors: Easton DM, Nijnik A, Mayer ML et al.\nJournal: Trends Biotechnol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:23.052909"
+        }
+      ],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_ids": [
+          "10019031",
+          "8919860",
+          "7114281"
+        ],
+        "pmc_count": 3,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00000435",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00000435",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00000435",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00000435",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00000435",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00000435",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

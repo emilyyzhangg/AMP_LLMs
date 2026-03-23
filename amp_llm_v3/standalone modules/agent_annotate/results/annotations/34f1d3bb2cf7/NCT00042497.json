@@ -1,0 +1,1231 @@
+{
+  "nct_id": "NCT00042497",
+  "metadata": {
+    "nct_id": "NCT00042497",
+    "title": "A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+    "phase": "PHASE2",
+    "status": "SUSPENDED",
+    "conditions": [
+      "Melanoma"
+    ],
+    "interventions": [
+      "BIOLOGICAL: autologous dexosomes loaded with tumor-specific peptides"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.8,
+      "reasoning": "[Pass 1 extraction] Here are the extracted facts:\n\nIntervention: Autologous dexosomes loaded with tumor-specific peptides\nMolecular Class: Unknown (no molecular class specified)\nDatabase Confirmation: No evidence found in provided databases (ChEMBL, UniProt, IntAct) for \"dexosomes\" or \"tumor-specific peptides\"\nProduct Description: Described as a \"biological\" intervention and an \"immunotherapy\" product\nActive Ingredie\n[Pass 2 decision] Peptide: True\nReasoning:\n\nStep 1: Since Molecular Class is Unknown, we need to check database confirmation in Step 2.\n\nStep 2: Active Ingredient Role states that \"The peptide is the active therapeutic agent\", which indicates that the peptide is indeed the active drug. Although there's no molecular class specified and no database hits for \"dexosomes\" or \"tumor-specific peptides\", the fact that the ",
+      "evidence": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL6068345/",
+          "identifier": "CHEMBL6068345",
+          "title": "CHARACTERISED VIABLE AUTOLOGOUS CARTILAGE CELLS EXPANDED EX VIVO EXPRESSING SPECIFIC MARKER PROTEINS - ChEMBL",
+          "snippet": "Molecule: CHARACTERISED VIABLE AUTOLOGOUS CARTILAGE CELLS EXPANDED EX VIVO EXPRESSING SPECIFIC MARKER PROTEINS\nType: Cell\nMax clinical phase: 4.0\nFirst approval: 2009\nMechanism: Somatic cell supplemental therapy",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:01.375545"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5315067/",
+          "identifier": "CHEMBL5315067",
+          "title": "AUTOLOGOUS PERIPHERAL-BLOOD MONONUCLEAR CELLS INCLUDING A MINIMUM OF 50 MILLION AUTOLOGOUS CD54+ CELLS ACTIVATED WITH PROSTATIC ACID PHOSPHATASE GRANULOCYTE-MACROPHAGE COLONY-STIMULATING FACTOR - ChEMBL",
+          "snippet": "Molecule: AUTOLOGOUS PERIPHERAL-BLOOD MONONUCLEAR CELLS INCLUDING A MINIMUM OF 50 MILLION AUTOLOGOUS CD54+ CELLS ACTIVATED WITH PROSTATIC ACID PHOSPHATASE GRANULOCYTE-MACROPHAGE COLONY-STIMULATING FACTOR\nType: Unknown\nMax clinical phase: 4.0\nFirst approval: 2013\nMechanism: Somatic cell supplemental therapy",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:03.647531"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5315092/",
+          "identifier": "CHEMBL5315092",
+          "title": "AUTOLOGOUS CULTURED CHONDROCYTES - ChEMBL",
+          "snippet": "Molecule: AUTOLOGOUS CULTURED CHONDROCYTES\nType: Unknown\nMax clinical phase: 4.0\nFirst approval: 2009\nMechanism: May promote synthesis of hyaline-like cartilage repair tissue",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:06.652279"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366233",
+          "identifier": "IntAct:EBI-366233",
+          "title": "MAPT - IntAct",
+          "snippet": "Interactor: MAPT\nDescription: Microtubule-associated protein tau\nUniProt: P10636-8\nSpecies: Homo sapiens\nType: protein\nInteractions: 7000",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385507"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-77613",
+          "identifier": "IntAct:EBI-77613",
+          "title": "APP - IntAct",
+          "snippet": "Interactor: APP\nDescription: Amyloid-beta precursor protein\nUniProt: P05067\nSpecies: Homo sapiens\nType: protein\nInteractions: 1779",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385589"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366083",
+          "identifier": "IntAct:EBI-366083",
+          "title": "TP53 - IntAct",
+          "snippet": "Interactor: TP53\nDescription: Cellular tumor antigen p53\nUniProt: P04637\nSpecies: Homo sapiens\nType: protein\nInteractions: 1757",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385599"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-297353",
+          "identifier": "IntAct:EBI-297353",
+          "title": "EGFR - IntAct",
+          "snippet": "Interactor: EGFR\nDescription: Epidermal growth factor receptor\nUniProt: P00533\nSpecies: Homo sapiens\nType: protein\nInteractions: 1723",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385609"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-357345",
+          "identifier": "IntAct:EBI-357345",
+          "title": "SCRIB - IntAct",
+          "snippet": "Interactor: SCRIB\nDescription: Protein scribble homolog\nUniProt: Q14160\nSpecies: Homo sapiens\nType: protein\nInteractions: 1704",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385617"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12412255/",
+          "identifier": "PMC:12412255",
+          "title": "Extracellular vesicles: biogenesis mechanism and impacts on tumor immune microenvironment.",
+          "snippet": "Title: Extracellular vesicles: biogenesis mechanism and impacts on tumor immune microenvironment.\nAuthors: Yeat NY, Chen RH\nJournal: J Biomed Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620648"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11948033/",
+          "identifier": "PMC:11948033",
+          "title": "Effect of Extracellular Vesicles Derived From Tumor Cells on Immune Evasion.",
+          "snippet": "Title: Effect of Extracellular Vesicles Derived From Tumor Cells on Immune Evasion.\nAuthors: Liu X, To KKW, Zeng Q et al.\nJournal: Adv Sci (Weinh)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620706"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9099999999999999,
+      "reasoning": "[Peptide cascade: re-classified after peptide flipped True\u2192False] [Pass 1 extraction] Peptide Identity: False (The intervention is not a peptide but rather autologous dexosomes loaded with tumor-specific peptides)\nDatabase Matches: No evidence found\nMechanism: No evidence found\nTherapeutic Target: Stage IV malignant melanoma\nImmune Direction: Promote immune defense (stimulate)\n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\nPeptide determination is False. Therefore, this trial does not involve a peptide intervention.\n\nSince the intervention is not a peptide, it cannot be classified as an AMP or related to antimicrobial activity. Thus, the classification is \"Other\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "snippet": "Title: A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930478"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Brief Summary",
+          "snippet": "The objective is to determine the safety and efficacy of dexosome immunotherapy in patients with Stage IV malignant melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930542"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Study Status",
+          "snippet": "Status: SUSPENDED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930582"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Intervention: autologous dexosomes loaded with tumor-specific peptides",
+          "snippet": "BIOLOGICAL: autologous dexosomes loaded with tumor-specific peptides",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930603"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930621"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12412255/",
+          "identifier": "PMC:12412255",
+          "title": "Extracellular vesicles: biogenesis mechanism and impacts on tumor immune microenvironment.",
+          "snippet": "Title: Extracellular vesicles: biogenesis mechanism and impacts on tumor immune microenvironment.\nAuthors: Yeat NY, Chen RH\nJournal: J Biomed Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620648"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11948033/",
+          "identifier": "PMC:11948033",
+          "title": "Effect of Extracellular Vesicles Derived From Tumor Cells on Immune Evasion.",
+          "snippet": "Title: Effect of Extracellular Vesicles Derived From Tumor Cells on Immune Evasion.\nAuthors: Liu X, To KKW, Zeng Q et al.\nJournal: Adv Sci (Weinh)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620706"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10013823/",
+          "identifier": "PMC:10013823",
+          "title": "Micro and nanotechnologies: The little formulations that could.",
+          "snippet": "Title: Micro and nanotechnologies: The little formulations that could.\nAuthors: Stiepel RT, Duggan E, Batty CJ et al.\nJournal: Bioeng Transl Med",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620719"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL6068345/",
+          "identifier": "CHEMBL6068345",
+          "title": "CHARACTERISED VIABLE AUTOLOGOUS CARTILAGE CELLS EXPANDED EX VIVO EXPRESSING SPECIFIC MARKER PROTEINS - ChEMBL",
+          "snippet": "Molecule: CHARACTERISED VIABLE AUTOLOGOUS CARTILAGE CELLS EXPANDED EX VIVO EXPRESSING SPECIFIC MARKER PROTEINS\nType: Cell\nMax clinical phase: 4.0\nFirst approval: 2009\nMechanism: Somatic cell supplemental therapy",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:01.375545"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.9049999999999999,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n1. Protocol Route:\nNot specified in the provided sources.\n\n2. FDA/Label Route:\nNot found in any of the provided sources.\n\n3. Literature Route:\nNot found in any of the provided literature sources (PMC articles).\n\n4. Database Route:\nCHEMBL entries mention \"autologous dexosomes\" but do not specify a route of administration.\n\n5. Drug Formulation:\nThe formulation is\n[Pass 2 classification] Delivery Mode: Injection/Infusion - Other/Unspecified\nEvidence: The formulation is described as \"biological: autologous dexosomes loaded with tumor-specific peptides\" in the clinicaltrials_gov source, which implies an injectable or infusion-based product.\nReasoning: Since none of the provided source",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "snippet": "Title: A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930478"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Brief Summary",
+          "snippet": "The objective is to determine the safety and efficacy of dexosome immunotherapy in patients with Stage IV malignant melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930542"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Study Status",
+          "snippet": "Status: SUSPENDED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930582"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Intervention: autologous dexosomes loaded with tumor-specific peptides",
+          "snippet": "BIOLOGICAL: autologous dexosomes loaded with tumor-specific peptides",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930603"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930621"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12412255/",
+          "identifier": "PMC:12412255",
+          "title": "Extracellular vesicles: biogenesis mechanism and impacts on tumor immune microenvironment.",
+          "snippet": "Title: Extracellular vesicles: biogenesis mechanism and impacts on tumor immune microenvironment.\nAuthors: Yeat NY, Chen RH\nJournal: J Biomed Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620648"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11948033/",
+          "identifier": "PMC:11948033",
+          "title": "Effect of Extracellular Vesicles Derived From Tumor Cells on Immune Evasion.",
+          "snippet": "Title: Effect of Extracellular Vesicles Derived From Tumor Cells on Immune Evasion.\nAuthors: Liu X, To KKW, Zeng Q et al.\nJournal: Adv Sci (Weinh)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620706"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10013823/",
+          "identifier": "PMC:10013823",
+          "title": "Micro and nanotechnologies: The little formulations that could.",
+          "snippet": "Title: Micro and nanotechnologies: The little formulations that could.\nAuthors: Stiepel RT, Duggan E, Batty CJ et al.\nJournal: Bioeng Transl Med",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620719"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "snippet": "Title: Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma\nStatus: Suspended\nPhase: Phase 2\nConditions: Melanoma\nInterventions: Biological: autologous dexosomes loaded with tumor-specific peptides\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:59:47.154003"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.9049999999999999,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n1. Registry Status: SUSPENDED\n2. Published Results: None found that specifically mention results of NCT00042497.\n3. Results Posted: NOT FOUND (no indication on ClinicalTrials.gov)\n4. Completion Date: Unknown (since trial was suspended, completion date not applicable)\n5. Why Stopped: NOT FOUND (no reason given for suspension)\n6. Trial Phase: PHASE2\n7. Result Valence: NOT AVAILABLE (no results available to determine valence)\n\nNote that the published literature p\n[Pass 2 decision] The trial is SUSPENDED, and no published results are available. Since the trial was suspended, it did not complete normally, so we cannot apply H1 (Phase I completion) or H2 (Phase II/III completion with hasResults=Yes). There is also no indication that the trial led to subsequent later-phase trials of the same drug (H3), and results were not posted on ClinicalTrials.gov (H4). Therefore, without any evidence of failure or success, we default to \"Unknown\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "snippet": "Title: A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930478"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Brief Summary",
+          "snippet": "The objective is to determine the safety and efficacy of dexosome immunotherapy in patients with Stage IV malignant melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930542"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Study Status",
+          "snippet": "Status: SUSPENDED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930582"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Intervention: autologous dexosomes loaded with tumor-specific peptides",
+          "snippet": "BIOLOGICAL: autologous dexosomes loaded with tumor-specific peptides",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930603"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930621"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12412255/",
+          "identifier": "PMC:12412255",
+          "title": "Extracellular vesicles: biogenesis mechanism and impacts on tumor immune microenvironment.",
+          "snippet": "Title: Extracellular vesicles: biogenesis mechanism and impacts on tumor immune microenvironment.\nAuthors: Yeat NY, Chen RH\nJournal: J Biomed Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620648"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11948033/",
+          "identifier": "PMC:11948033",
+          "title": "Effect of Extracellular Vesicles Derived From Tumor Cells on Immune Evasion.",
+          "snippet": "Title: Effect of Extracellular Vesicles Derived From Tumor Cells on Immune Evasion.\nAuthors: Liu X, To KKW, Zeng Q et al.\nJournal: Adv Sci (Weinh)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620706"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10013823/",
+          "identifier": "PMC:10013823",
+          "title": "Micro and nanotechnologies: The little formulations that could.",
+          "snippet": "Title: Micro and nanotechnologies: The little formulations that could.\nAuthors: Stiepel RT, Duggan E, Batty CJ et al.\nJournal: Bioeng Transl Med",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620719"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "snippet": "Title: Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma\nStatus: Suspended\nPhase: Phase 2\nConditions: Melanoma\nInterventions: Biological: autologous dexosomes loaded with tumor-specific peptides\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:59:47.154003"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Unknown' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00042497",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "False",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "While the trial utilizes tumor-specific peptides, the primary intervention is autologous dexosomes. Dexosomes are extracellular vesicles, not peptides themselves.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "The evidence provided indicates that the study uses autologous dexosomes loaded with tumor-specific peptides for immunotherapy in patients with stage IV melanoma. This suggests that the focus of the intervention is on the use of dexosomes and tumor-specific peptides as part of an immunotherapeutic approach, rather than the peptides themselves being the active therapeutic component. The fact that 'peptide' is mentioned within the context of the study does not classify the overall intervention as ",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "The active drug in this trial is a complex formulation consisting of autologous dexosomes (extracellular vesicles) and tumor-specific peptides. While the peptides are an essential part of the treatment, they are not the primary intervention being evaluated in the study.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence clearly indicates that the primary intervention in this study involves autologous dexosomes, which are extracellular vesicles. These dexosomes are loaded with tumor-specific peptides but the focus of the intervention is on the use of dexosomes as a delivery mechanism for immunotherapy rather than the peptides themselves being the primary intervention. Therefore, while tumor-specific peptides are an essential component of the treatment, they do not constitute the primary intervention",
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "While the peptide component targets cancer, it does so by inducing an immune response rather than directly killing cancer cells. This falls under the category of \"Other\" as it does not directly disrupt or kill pathogens through its own biochemical action.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The decision tree for classifying clinical trials based on the type of intervention leads us to classify this trial under 'Other' because the intervention involves peptides that are used in immunotherapy rather than antimicrobial therapy. The peptides loaded onto the dexosomes are designed to target and potentially eliminate cancer cells, not pathogens as would be the case with an antimicrobial peptide.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial involves the use of autologous dexosomes loaded with tumor-specific peptides for patients with Stage IV malignant melanoma. While these peptides may be part of the treatment, they do not directly kill or disrupt pathogens (in this case, cancer cells), but rather are intended to stimulate an immune response against the tumor cells. Therefore, they do not fit the definition of Antimicrobial Peptides (AMPs).",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "While the exact route of administration is not specified, the term \"administered\" suggests an injection or infusion method.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The information provided does not explicitly state the route of administration for the autologous dexosomes. Since it is mentioned that they are biological substances and considering common practices in clinical trials involving such substances, it's reasonable to infer an injection or infusion route. However, without further details specifying whether it's intramuscular (IM), subcutaneous (SC), or intravenous (IV), the most conservative answer based on the provided evidence is 'Injection/Infusi",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "According to the guidelines provided, if the protocol says 'injection' WITHOUT specifying IM, SC, or IV, the delivery mode should be classified as Injection/Infusion - Other/Unspecified. The term \"loaded with tumor-specific peptides\" suggests that these are likely administered through injection or infusion, but no specific route is mentioned in the provided evidence.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Terminated",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Terminated",
+            "reasoning": "The ClinicalTrials.gov registry states the trial is \"SUSPENDED\", indicating termination.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Terminated",
+            "reasoning": "The registry status indicates that the trial has been terminated, following which we would use heuristics to determine the outcome. However, since the status is already \"Suspended,\" it aligns with the rule for a TERMINATED status in the registry. No further action or evidence is needed beyond this specific information provided by clinicaltrials.gov.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": null,
+            "reasoning": "The trial status on ClinicalTrials.gov is listed as \"Suspended\", which according to the critical rules, means that the trial has been halted before completion and therefore cannot be considered Positive, Failed - completed trial, or Active.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial status listed as \"Suspended\" on ClinicalTrials.gov indicates that the trial has been halted before completion. While the primary annotator suggested \"Unknown,\" verifiers 1 and 2 argue that a suspended trial should be considered terminated, which is more conservative and aligns with typical clinical research practices where suspension often implies termination of patient enrollment and data collection. Verifier 3's reasoning also supports this interpretation by stating that a suspended ",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Business Reason",
+        "consensus_reached": false,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The trial's status is \"Suspended,\" and there's no evidence of publication reporting negative outcomes. Therefore, based on the available data, we cannot determine a reason for failure.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Business Reason",
+            "reasoning": "The trial was suspended and there is no evidence provided that it failed to meet its primary endpoint or faced safety concerns. Therefore, based on the available information, the most plausible reason for the suspension would be related to business reasons such as funding issues or decisions made by the sponsor.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": null,
+            "reasoning": "The trial was suspended, indicating that it did not complete as planned or was terminated. However, without further information about the reason for suspension, we cannot definitively determine if it was due to safety concerns, adverse events, toxicity, DSMB stopping for safety, funding issues, strategic reasons, manufacturing problems, recruitment issues, or disruptions caused by COVID-19. More specific data is needed to make a precise assessment.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The available evidence does not provide a clear reason for why the trial was suspended. Verifier_1 suggests that without further details, we cannot determine a specific reason for failure. Verifiers 2 and 3 propose different reasons (business reasons and none), but neither is supported by concrete evidence from the provided data. Therefore, based on the lack of definitive information, MANUAL_REVIEW is the most appropriate action to ensure accuracy in determining the reason for trial suspension.",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "reason_for_failure: reconciler_deferred"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "dbamp",
+    "who_ictrp",
+    "iuphar",
+    "intact",
+    "card",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00042497",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "snippet": "Title: A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930478"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Brief Summary",
+          "snippet": "The objective is to determine the safety and efficacy of dexosome immunotherapy in patients with Stage IV malignant melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930542"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Study Status",
+          "snippet": "Status: SUSPENDED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930582"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Intervention: autologous dexosomes loaded with tumor-specific peptides",
+          "snippet": "BIOLOGICAL: autologous dexosomes loaded with tumor-specific peptides",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930603"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-17T14:58:51.930621"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00042497",
+            "orgStudyIdInfo": {
+              "id": "AN2002-04"
+            },
+            "organization": {
+              "fullName": "Anosys",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+            "officialTitle": "A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2002-09",
+            "overallStatus": "SUSPENDED",
+            "startDateStruct": {
+              "date": "2002-07"
+            },
+            "studyFirstSubmitDate": "2002-07-30",
+            "studyFirstSubmitQcDate": "2002-07-31",
+            "studyFirstPostDateStruct": {
+              "date": "2002-08-01",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2005-06-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2005-06-24",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "Anosys",
+              "class": "INDUSTRY"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "The objective is to determine the safety and efficacy of dexosome immunotherapy in patients with Stage IV malignant melanoma"
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Melanoma"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 60
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "autologous dexosomes loaded with tumor-specific peptides"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "* Patients with Stage IV metastatic melanoma with 0-1 prior treatments for metastatic disease.\n* All patients must have distant skin, subcutaneous, or nodal metastases (M1a) or lung metastases (M1b), measurable disease, normal lactate dehydrogenase levels, and HLA type A1, A2, or B35.\n* Patients must have adequate organ function and an estimated life expectancy of at least 3 months.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00042497",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12412255/",
+          "identifier": "PMC:12412255",
+          "title": "Extracellular vesicles: biogenesis mechanism and impacts on tumor immune microenvironment.",
+          "snippet": "Title: Extracellular vesicles: biogenesis mechanism and impacts on tumor immune microenvironment.\nAuthors: Yeat NY, Chen RH\nJournal: J Biomed Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620648"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11948033/",
+          "identifier": "PMC:11948033",
+          "title": "Effect of Extracellular Vesicles Derived From Tumor Cells on Immune Evasion.",
+          "snippet": "Title: Effect of Extracellular Vesicles Derived From Tumor Cells on Immune Evasion.\nAuthors: Liu X, To KKW, Zeng Q et al.\nJournal: Adv Sci (Weinh)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620706"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10013823/",
+          "identifier": "PMC:10013823",
+          "title": "Micro and nanotechnologies: The little formulations that could.",
+          "snippet": "Title: Micro and nanotechnologies: The little formulations that could.\nAuthors: Stiepel RT, Duggan E, Batty CJ et al.\nJournal: Bioeng Transl Med",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:58:52.620719"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "12412255",
+          "11948033",
+          "10013823"
+        ],
+        "pmc_count": 3,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 0,
+        "semantic_scholar_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "uniprot_autologous dexosomes loaded with tumor-specific peptides": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_autologous dexosomes loaded with tumor-specific peptides": {
+          "total": 0,
+          "entries": []
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00042497",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL6068345/",
+          "identifier": "CHEMBL6068345",
+          "title": "CHARACTERISED VIABLE AUTOLOGOUS CARTILAGE CELLS EXPANDED EX VIVO EXPRESSING SPECIFIC MARKER PROTEINS - ChEMBL",
+          "snippet": "Molecule: CHARACTERISED VIABLE AUTOLOGOUS CARTILAGE CELLS EXPANDED EX VIVO EXPRESSING SPECIFIC MARKER PROTEINS\nType: Cell\nMax clinical phase: 4.0\nFirst approval: 2009\nMechanism: Somatic cell supplemental therapy",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:01.375545"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5315067/",
+          "identifier": "CHEMBL5315067",
+          "title": "AUTOLOGOUS PERIPHERAL-BLOOD MONONUCLEAR CELLS INCLUDING A MINIMUM OF 50 MILLION AUTOLOGOUS CD54+ CELLS ACTIVATED WITH PROSTATIC ACID PHOSPHATASE GRANULOCYTE-MACROPHAGE COLONY-STIMULATING FACTOR - ChEMBL",
+          "snippet": "Molecule: AUTOLOGOUS PERIPHERAL-BLOOD MONONUCLEAR CELLS INCLUDING A MINIMUM OF 50 MILLION AUTOLOGOUS CD54+ CELLS ACTIVATED WITH PROSTATIC ACID PHOSPHATASE GRANULOCYTE-MACROPHAGE COLONY-STIMULATING FACTOR\nType: Unknown\nMax clinical phase: 4.0\nFirst approval: 2013\nMechanism: Somatic cell supplemental therapy",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:03.647531"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5315092/",
+          "identifier": "CHEMBL5315092",
+          "title": "AUTOLOGOUS CULTURED CHONDROCYTES - ChEMBL",
+          "snippet": "Molecule: AUTOLOGOUS CULTURED CHONDROCYTES\nType: Unknown\nMax clinical phase: 4.0\nFirst approval: 2009\nMechanism: May promote synthesis of hyaline-like cartilage repair tissue",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-17T14:59:06.652279"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'autologous dexosomes loaded with tumor-specific peptides'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "rcsb_{'name': 'autologous dexosomes loaded with tumor-specific peptides'}_status": 400
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_{'name': 'autologous dexosomes loaded with tumor-specific peptides'}_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "apd_{'name': 'autologous dexosomes loaded with tumor-specific peptides'}_error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1077)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbamp",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "dbamp_{'name': 'autologous dexosomes loaded with tumor-specific peptides'}_error": "Server unreachable: ConnectError"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00042497",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00042497",
+          "identifier": "NCT00042497",
+          "title": "Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "snippet": "Title: Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma\nStatus: Suspended\nPhase: Phase 2\nConditions: Melanoma\nInterventions: Biological: autologous dexosomes loaded with tumor-specific peptides\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-17T14:59:47.154003"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00042497",
+          "public_title": "Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "scientific_title": "A Phase II, Multicenter, Open-Labeled Study of Immunotherapy With Autologous Dexosomes for Patients With Stage IV Melanoma",
+          "recruitment_status": "Suspended",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Non-Randomized, Endpoint Classification: Safety/Efficacy Study, Intervention Model: Parallel Assignment, Masking: Open Label, Primary Purpose: Treatment",
+          "conditions": [
+            "Melanoma"
+          ],
+          "interventions": [
+            "Biological: autologous dexosomes loaded with tumor-specific peptides"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "iuphar_autologous dexosomes loaded with tumor-specific peptides": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "intact",
+      "nct_id": "NCT00042497",
+      "citations": [
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366233",
+          "identifier": "IntAct:EBI-366233",
+          "title": "MAPT - IntAct",
+          "snippet": "Interactor: MAPT\nDescription: Microtubule-associated protein tau\nUniProt: P10636-8\nSpecies: Homo sapiens\nType: protein\nInteractions: 7000",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385507"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-77613",
+          "identifier": "IntAct:EBI-77613",
+          "title": "APP - IntAct",
+          "snippet": "Interactor: APP\nDescription: Amyloid-beta precursor protein\nUniProt: P05067\nSpecies: Homo sapiens\nType: protein\nInteractions: 1779",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385589"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-366083",
+          "identifier": "IntAct:EBI-366083",
+          "title": "TP53 - IntAct",
+          "snippet": "Interactor: TP53\nDescription: Cellular tumor antigen p53\nUniProt: P04637\nSpecies: Homo sapiens\nType: protein\nInteractions: 1757",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385599"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-297353",
+          "identifier": "IntAct:EBI-297353",
+          "title": "EGFR - IntAct",
+          "snippet": "Interactor: EGFR\nDescription: Epidermal growth factor receptor\nUniProt: P00533\nSpecies: Homo sapiens\nType: protein\nInteractions: 1723",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385609"
+        },
+        {
+          "source_name": "intact",
+          "source_url": "https://www.ebi.ac.uk/intact/details/interactor/EBI-357345",
+          "identifier": "IntAct:EBI-357345",
+          "title": "SCRIB - IntAct",
+          "snippet": "Interactor: SCRIB\nDescription: Protein scribble homolog\nUniProt: Q14160\nSpecies: Homo sapiens\nType: protein\nInteractions: 1704",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-03-17T14:58:54.385617"
+        }
+      ],
+      "raw_data": {
+        "intact_autologous dexosomes loaded with tumor-specific peptides": {
+          "total_elements": 1705,
+          "interactors": [
+            {
+              "interactorAc": "EBI-366233",
+              "interactorName": "MAPT",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P10636-8",
+              "interactorDescription": "Microtubule-associated protein tau",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 7000,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-77613",
+              "interactorName": "APP",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P05067",
+              "interactorDescription": "Amyloid-beta precursor protein",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1779,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-366083",
+              "interactorName": "TP53",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P04637",
+              "interactorDescription": "Cellular tumor antigen p53",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1757,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-297353",
+              "interactorName": "EGFR",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "P00533",
+              "interactorDescription": "Epidermal growth factor receptor",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1723,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            },
+            {
+              "interactorAc": "EBI-357345",
+              "interactorName": "SCRIB",
+              "interactorIntactName": null,
+              "interactorPreferredIdentifier": "Q14160",
+              "interactorDescription": "Protein scribble homolog",
+              "interactorAlias": [],
+              "interactorAliasNames": null,
+              "interactorAltIds": [],
+              "interactorType": "protein",
+              "interactorTypeMIIdentifier": null,
+              "interactorTypeMIIdentifierStyled": null,
+              "interactorSpecies": "Homo sapiens",
+              "interactorTaxId": 9606,
+              "interactorTaxIdStyled": null,
+              "interactorXrefs": [],
+              "interactionCount": 1704,
+              "interactionIds": [],
+              "interactionXrefs": null,
+              "interactorFeatureShortLabels": [],
+              "interactorFeatureTypes": null,
+              "interactorColor": null,
+              "interactorShape": null,
+              "interactionSearchCount": null
+            }
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "card",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "card_livesearch_autologous dexosomes loaded with tumor-specific peptides_html_len": 22,
+        "card_autologous dexosomes loaded with tumor-specific peptides_matches": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00042497",
+      "citations": [],
+      "raw_data": {
+        "pdbe_{'name': 'autologous dexosomes loaded with tumor-specific peptides'}_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbamp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "intact": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.75
+    },
+    "card": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

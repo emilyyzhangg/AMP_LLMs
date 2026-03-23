@@ -1,0 +1,878 @@
+{
+  "nct_id": "NCT00001685",
+  "metadata": {
+    "nct_id": "NCT00001685",
+    "title": "Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+    "phase": "PHASE2",
+    "status": "COMPLETED",
+    "conditions": [
+      "Melanoma",
+      "Neoplasm Metastasis"
+    ],
+    "interventions": [
+      "BIOLOGICAL: Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 extraction] Here are the extracted facts for each intervention:\n\n**Intervention 1:** Immunodominant peptides from MART-1\nMolecular Class: Short peptide chain (2-50 amino acids)\nDatabase Confirmation:\n* UniProt: entry found? No evidence found.\n* DRAMP/DBAASP: antimicrobial peptide database entry? No evidence found.\n* ChEMBL: molecule type? Not applicable (peptide).\n* PDB: structural data available? No evidence\n[Pass 2 decision] Peptide: True\nReasoning:\nStep 1: All interventions have a molecular class of \"Short peptide chain\" which is a peptide, so we proceed to Step 2.\n\nStep 2:\n- Intervention 1, 2, and 3 are all labeled as \"Active therapeutic agent\", which means they are the active drug. Since their molecular class is a peptide, we proceed to Step 3.\n- Intervention 4 is an adjuvant, not the active therapeutic agent, so i",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+          "snippet": "Title: Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261213"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Brief Summary",
+          "snippet": "This is a study of a melanoma tumor antigen peptide vaccine. Peptides representing HLA-A201 restricted T cell epitopes of the melanoma antigens, MART-1, gp100 and tyrosinase will be administered emulsified in Incomplete Freund's Adjuvant, (IFA) to HLA-A201 patients with melanoma. The study is designed to evaluate the potential therapeutic role, immunologic effects and toxicity of repeated doses of this peptide vaccine administered subcutaneously.\n\nImmune reactivity to the peptide epitope will be",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261222"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261229"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma, Neoplasm Metastasis | Keywords: Cancer, IL-12, IL-2, Immunotherapy, Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261237"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Intervention: Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase",
+          "snippet": "BIOLOGICAL: Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261244"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 extraction] Peptide Identity: The intervention is a combination of immunodominant peptides derived from the melanoma antigens MART-1, gp100, and tyrosinase. These are confirmed as peptides.\nDatabase Matches: No evidence found.\nMechanism: The peptides work via an immune-stimulating mechanism to enhance T cell responses against tumor cells but do not directly kill or inhibit microorganisms.\nTherapeutic Target: \n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\n- Peptide determination is True \u2192 Proceed to Step 2.\n\nStep 2 \u2014 Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?\n- Database Matches: No evidence found.\n- Mechanism: The peptides work via an immune-stimulating mechanism to enhance T cell responses against tumor cells but do not directly kill or inhibit mi",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+          "snippet": "Title: Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261213"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Brief Summary",
+          "snippet": "This is a study of a melanoma tumor antigen peptide vaccine. Peptides representing HLA-A201 restricted T cell epitopes of the melanoma antigens, MART-1, gp100 and tyrosinase will be administered emulsified in Incomplete Freund's Adjuvant, (IFA) to HLA-A201 patients with melanoma. The study is designed to evaluate the potential therapeutic role, immunologic effects and toxicity of repeated doses of this peptide vaccine administered subcutaneously.\n\nImmune reactivity to the peptide epitope will be",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261222"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261229"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma, Neoplasm Metastasis | Keywords: Cancer, IL-12, IL-2, Immunotherapy, Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261237"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Intervention: Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase",
+          "snippet": "BIOLOGICAL: Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261244"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 route extraction] Here are the extracted information:\n\nProtocol Route:\nNot specified in the intervention description or arm group descriptions. However, in the detailed description, it is mentioned that \"Peptides representing HLA-A201 restricted T cell epitopes of the melanoma antigens, MART-1, gp100 and tyrosinase will be administered emulsified in Incomplete Freund's Adjuvant, (IFA) to...\" which implies injection\n[Pass 2 classification] Delivery Mode: Injection/Infusion - Other/Unspecified\nEvidence: Protocol text (implied by \"administered emulsified in Incomplete Freund's Adjuvant\")\nReasoning: The protocol text implies injection, but does not specify further. Since no other source provides more specific information and the formulat",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+          "snippet": "Title: Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261213"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Brief Summary",
+          "snippet": "This is a study of a melanoma tumor antigen peptide vaccine. Peptides representing HLA-A201 restricted T cell epitopes of the melanoma antigens, MART-1, gp100 and tyrosinase will be administered emulsified in Incomplete Freund's Adjuvant, (IFA) to HLA-A201 patients with melanoma. The study is designed to evaluate the potential therapeutic role, immunologic effects and toxicity of repeated doses of this peptide vaccine administered subcutaneously.\n\nImmune reactivity to the peptide epitope will be",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261222"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261229"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma, Neoplasm Metastasis | Keywords: Cancer, IL-12, IL-2, Immunotherapy, Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261237"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Intervention: Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase",
+          "snippet": "BIOLOGICAL: Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261244"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE2 (Note: The trial title mentions \"Immunization of HLA-A201 Patients With Metastatic Melanoma\", which suggests a Phase 2 trial. However, the phase is not explicitly mentioned in the metadata.)\nPublished Results: None found in PubMed or PMC search.\nResult Valence: Not Available\nResults Posted: No (hasResults field is not available)\nCompletion Date: Unknown (status is COMPLETED, but no completion date is provided)\nWhy\n[Pass 2 decision] The trial status is COMPLETED, which suggests that the trial has reached its planned end point. Since no published results were found, I applied Completion Heuristic H4: COMPLETED + RESULTS POSTED. Although it's not explicitly stated that Results Posted = Yes, the fact that the trial completed and there are no negative evidence or publications showing failure to meet primary endpoints suggests a positive outcome. Additionally, as this is a Phase 2 trial, completing it typically indicates some le",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+          "snippet": "Title: Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261213"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Brief Summary",
+          "snippet": "This is a study of a melanoma tumor antigen peptide vaccine. Peptides representing HLA-A201 restricted T cell epitopes of the melanoma antigens, MART-1, gp100 and tyrosinase will be administered emulsified in Incomplete Freund's Adjuvant, (IFA) to HLA-A201 patients with melanoma. The study is designed to evaluate the potential therapeutic role, immunologic effects and toxicity of repeated doses of this peptide vaccine administered subcutaneously.\n\nImmune reactivity to the peptide epitope will be",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261222"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261229"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma, Neoplasm Metastasis | Keywords: Cancer, IL-12, IL-2, Immunotherapy, Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261237"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Intervention: Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase",
+          "snippet": "BIOLOGICAL: Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261244"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00001685",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial clearly states that peptides derived from melanoma antigens will be used as the active treatment.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The term 'peptides' is explicitly mentioned in the evidence provided, indicating that these are indeed peptide therapeutics.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial involves the administration of immunodominant peptides derived from three different melanoma antigens, which are known to be peptides.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This trial utilizes peptides to stimulate an adaptive immune response against melanoma cells, rather than directly killing pathogens. The peptides act as antigens to trigger the production of antibodies and activate T cells, which are then responsible for targeting and destroying cancer cells.  This mechanism falls under \"vaccine\" category, not direct antimicrobial action.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The intervention is designed to evaluate the potential therapeutic role of a peptide vaccine in patients with metastatic melanoma. This vaccine aims to stimulate the patient's immune system to recognize and target melanoma cells expressing specific antigens (MART-1, GP100, and tyrosinase). Since it does not directly kill or disrupt pathogens through its own biochemical action but instead works by inducing an adaptive immune response against these antigens, it is classified as 'Other' under the d",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial NCT00001685 is a study of a melanoma tumor antigen peptide vaccine. The peptides administered are from three melanoma antigens, MART-1, GP100, and tyrosinase. These peptides do not directly kill, lyse, or physically disrupt pathogens through their own biochemical action. Instead, they induce an immune response against the cancer cells by cross-linking with T cell surface glycoproteins CD3 and PMEL. Therefore, they are not antimicrobial peptides and fall under the 'Other' category accor",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Subcutaneous/Intradermal",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The protocol explicitly states that the vaccine will be administered \"subcutaneously\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The protocol specifies that the vaccine will be administered subcutaneously, which means under the skin. This term explicitly mentions the route of administration as subcutaneous/intradermal, making it clear that the delivery mode is Injection/Infusion - Subcutaneous/Intradermal.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "According to the guidelines provided, since the words 'subcutaneous' appear explicitly in the trial metadata, we can conclude that the delivery mode is subcutaneous injection.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "All verifiers agree based on explicit statements in the trial metadata and protocol that the delivery mode is subcutaneous. There is no evidence to support an unspecified or other route of administration, making the conservative choice clear as per the provided data.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The provided publication details the findings of the trial, indicating it met its primary endpoints.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "According to COMPLETION HEURISTICS, since the trial has been completed and there are no conflicting publications or results posted, we lean towards 'Positive'. There's also a mention of immune reactivity to peptide epitopes which suggests some level of success in achieving the primary endpoints.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial completed and published results showing positive outcomes, as the study met its primary endpoints.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published paper clearly indicates that the trial failed to achieve its primary objective of improving patient survival.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published results from the trial (NCT00001685) indicate that it failed to meet its primary endpoint, suggesting that the vaccine did not effectively treat or manage metastatic melanoma as intended.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The published results show that the trial failed to meet its endpoints, indicating that the peptide vaccine was not effective in treating melanoma.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The published results from the trial (NCT00001685) indicate that it failed to meet its primary endpoint, suggesting that the vaccine did not effectively treat or manage metastatic melanoma as intended. This is supported by multiple verifiers and the clinical status of the trial being completed without achieving its objectives.",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00001685",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+          "snippet": "Title: Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261213"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Brief Summary",
+          "snippet": "This is a study of a melanoma tumor antigen peptide vaccine. Peptides representing HLA-A201 restricted T cell epitopes of the melanoma antigens, MART-1, gp100 and tyrosinase will be administered emulsified in Incomplete Freund's Adjuvant, (IFA) to HLA-A201 patients with melanoma. The study is designed to evaluate the potential therapeutic role, immunologic effects and toxicity of repeated doses of this peptide vaccine administered subcutaneously.\n\nImmune reactivity to the peptide epitope will be",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261222"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261229"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma, Neoplasm Metastasis | Keywords: Cancer, IL-12, IL-2, Immunotherapy, Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261237"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Intervention: Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase",
+          "snippet": "BIOLOGICAL: Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261244"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-18T06:51:12.261251"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00001685",
+            "orgStudyIdInfo": {
+              "id": "980023"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "98-C-0023"
+              }
+            ],
+            "organization": {
+              "fullName": "National Institutes of Health Clinical Center (CC)",
+              "class": "NIH"
+            },
+            "briefTitle": "Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+            "officialTitle": "Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "1999-10",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "1997-11"
+            },
+            "completionDateStruct": {
+              "date": "2000-09"
+            },
+            "studyFirstSubmitDate": "1999-11-03",
+            "studyFirstSubmitQcDate": "2002-12-09",
+            "studyFirstPostDateStruct": {
+              "date": "2002-12-10",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2008-03-03",
+            "lastUpdatePostDateStruct": {
+              "date": "2008-03-04",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "National Cancer Institute (NCI)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "This is a study of a melanoma tumor antigen peptide vaccine. Peptides representing HLA-A201 restricted T cell epitopes of the melanoma antigens, MART-1, gp100 and tyrosinase will be administered emulsified in Incomplete Freund's Adjuvant, (IFA) to HLA-A201 patients with melanoma. The study is designed to evaluate the potential therapeutic role, immunologic effects and toxicity of repeated doses of this peptide vaccine administered subcutaneously.\n\nImmune reactivity to the peptide epitope will be monitored in all patients by analysis of melanoma-specific T cell precursors prior to and after immunization.",
+            "detailedDescription": "This is a study of a melanoma tumor antigen peptide vaccine. Peptides representing HLA-A201 restricted T cell epitopes of the melanoma antigens, MART-1, gp100 and tyrosinase will be administered emulsified in Incomplete Freund's Adjuvant, (IFA) to HLA-A201 patients with melanoma. The study is designed to evaluate the potential therapeutic role, immunologic effects and toxicity of repeated doses of this peptide vaccine administered subcutaneously.\n\nImmune reactivity to the peptide epitope will be monitored in all patients by analysis of melanoma-specific T cell precursors prior to and after immunization."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Melanoma",
+              "Neoplasm Metastasis"
+            ],
+            "keywords": [
+              "Cancer",
+              "IL-12",
+              "IL-2",
+              "Immunotherapy",
+              "Vaccine"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "primaryPurpose": "TREATMENT"
+            },
+            "enrollmentInfo": {
+              "count": 114
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Any patient 16 years of age or older with measurable metastatic melanoma who has failed standard treatment and has an expected survival of greater than three months.\n\nMust be HLA-A0201.\n\nSerum creatinine of 2.0 mg/dl or less.\n\nBilirubin 1.6 mg/dl or less.\n\nWBC 3000/mm(3) or greater.\n\nPlatelet count 90,000 mm(3) or greater.\n\nSerum AST/ALT less then two times normal.\n\nECOG performance status of 0 or 1.\n\nPatients of both genders must be willing to practice effective birth control during the trial.\n\nMust not be undergoing or have undergone in the past 3 weeks any other form of therapy except surgery for their cancer.\n\nMust not have active systemic infections, coagulation disorders, or other major medical illnesses of the cardiovascular or respiratory systems or any known immunodeficiency disease.\n\nMust not require steroid therapy.\n\nMust not be pregnant.\n\nMust not be positive for hepatitis B(s)AG or HIV antibody.\n\nMust not have had a known allergic reaction to Incomplete Freund's Adjuvant (IFA).",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "stdAges": [
+              "CHILD",
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "facility": "National Cancer Institute (NCI)",
+                "city": "Bethesda",
+                "state": "Maryland",
+                "zip": "20892",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.98067,
+                  "lon": -77.10026
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "9136454",
+                "type": "BACKGROUND",
+                "citation": "Rosenberg SA. Cancer vaccines based on the identification of genes encoding cancer regression antigens. Immunol Today. 1997 Apr;18(4):175-82. doi: 10.1016/s0167-5699(97)84664-6. No abstract available."
+              },
+              {
+                "pmid": "8931607",
+                "type": "BACKGROUND",
+                "citation": "Rosenberg SA. Development of cancer immunotherapies based on identification of the genes encoding cancer regression antigens. J Natl Cancer Inst. 1996 Nov 20;88(22):1635-44. doi: 10.1093/jnci/88.22.1635."
+              },
+              {
+                "pmid": "9500606",
+                "type": "BACKGROUND",
+                "citation": "Rosenberg SA, Yang JC, Schwartzentruber DJ, Hwu P, Marincola FM, Topalian SL, Restifo NP, Dudley ME, Schwarz SL, Spiess PJ, Wunderlich JR, Parkhurst MR, Kawakami Y, Seipp CA, Einhorn JH, White DE. Immunologic and therapeutic evaluation of a synthetic peptide vaccine for the treatment of patients with metastatic melanoma. Nat Med. 1998 Mar;4(3):321-7. doi: 10.1038/nm0398-321."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00001685",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11982186/",
+          "identifier": "PMC:11982186",
+          "title": "PMC Article 11982186",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-18T06:51:24.124197"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4514024/",
+          "identifier": "PMC:4514024",
+          "title": "PMC Article 4514024",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-18T06:51:24.124228"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "11982186",
+          "4514024"
+        ],
+        "pmc_count": 2,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00001685",
+      "citations": [],
+      "raw_data": {
+        "uniprot_Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00001685",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00001685",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00001685",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5095345/",
+          "identifier": "CHEMBL5095345",
+          "title": "TYROSINASE - ChEMBL",
+          "snippet": "Molecule: TYROSINASE\nType: Enzyme\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:21.030497"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2109434/",
+          "identifier": "CHEMBL2109434",
+          "title": "IMC-GP100 - ChEMBL",
+          "snippet": "Molecule: IMC-GP100\nType: Unknown\nMax clinical phase: -1.0\nMechanism: T cell surface glycoprotein CD3 cross-linking agent; Melanocyte protein PMEL cross-linking agent",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:23.352927"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5095361/",
+          "identifier": "CHEMBL5095361",
+          "title": "MELANOMA-ASSOCIATED ANTIGEN 3 - ChEMBL",
+          "snippet": "Molecule: MELANOMA-ASSOCIATED ANTIGEN 3\nType: Unknown\nMax clinical phase: 2.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-18T06:51:24.783595"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00001685",
+      "citations": [],
+      "raw_data": {
+        "rcsb_Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00001685",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00001685",
+      "citations": [],
+      "raw_data": {
+        "apd_Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00001685",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00001685",
+          "identifier": "NCT00001685",
+          "title": "Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+          "snippet": "Title: Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase\nStatus: Completed\nPhase: Phase 2\nCountries: United States\nConditions: Neoplasm Metastasis, Melanoma\nInterventions: Biological: Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-18T06:51:23.787317"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00001685",
+          "public_title": "Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+          "scientific_title": "Immunization of HLA-A201 Patients With Metastatic Melanoma Using a Combination of Immunodominant Peptides From Three Melanoma Antigens, MART-1, GP100 and Tyrosinase",
+          "recruitment_status": "Completed",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Endpoint Classification: Safety/Efficacy Study, Primary Purpose: Treatment",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Neoplasm Metastasis",
+            "Melanoma"
+          ],
+          "interventions": [
+            "Biological: Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00001685",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00001685",
+      "citations": [],
+      "raw_data": {
+        "pdbe_Immunodominant peptides from three melanoma antigens, MART-1, GP100 and tyrosinase_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 2,
+      "has_data": true,
+      "quality_avg": 0.425
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

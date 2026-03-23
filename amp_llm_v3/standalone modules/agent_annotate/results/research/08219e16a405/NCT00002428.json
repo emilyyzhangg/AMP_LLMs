@@ -1,0 +1,260 @@
+{
+  "nct_id": "NCT00002428",
+  "completed_at": "2026-03-16 12:36:45 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00002428",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "snippet": "Title: A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333350"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and immunogenicity of a combination of microparticulate monovalent HIV-1 MN synthetic branched peptide candidate vaccine for oral administration and monovalent HIV-1 MN synthetic branched peptide vaccine in alum for intramuscular administration in intermediate or higher risk HIV-negative volunteers.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333358"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333363"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Vaccines, Synthetic, HIV-1, HIV Envelope Protein gp120, AIDS Vaccines, HIV Seronegativity",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333367"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "snippet": "BIOLOGICAL: HIV-1 Peptide Vaccine, Microparticulate Monovalent",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333371"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Intervention: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "snippet": "BIOLOGICAL: rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333374"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002428",
+          "identifier": "NCT00002428",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.333378"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00002428",
+            "orgStudyIdInfo": {
+              "id": "091"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "UBI V106"
+              }
+            ],
+            "organization": {
+              "fullName": "NIH AIDS Clinical Trials Information Service",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects",
+            "officialTitle": "A Phase I/II Safety and Immunogenicity Trial of UBI Microparticulate Monovalent (HIV-1 MN) Branched Peptide Vaccine in HIV-1 Seronegative Human Subjects"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "1996-03",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "studyFirstSubmitDate": "1999-11-02",
+            "studyFirstSubmitQcDate": "2001-08-30",
+            "studyFirstPostDateStruct": {
+              "date": "2001-08-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2005-06-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2005-06-24",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "United Biomedical",
+              "class": "INDUSTRY"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "To evaluate the safety and immunogenicity of a combination of microparticulate monovalent HIV-1 MN synthetic branched peptide candidate vaccine for oral administration and monovalent HIV-1 MN synthetic branched peptide vaccine in alum for intramuscular administration in intermediate or higher risk HIV-negative volunteers.",
+            "detailedDescription": "Volunteers receive one of two schedules of vaccines or placebo administered at days 0, 28, and 168. Specifically, group 1 receives oral microparticulate monovalent vaccine over 3 consecutive days on days 0, 1, and 2, and 28, 29, and 30, with the intramuscular monovalent vaccine given on day 168. Group 2 receives the intramuscular vaccine first, on day 0, followed by the oral form given on days 28, 29, and 30 and 168, 169, and 170. Volunteers are followed for 1 year."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections"
+            ],
+            "keywords": [
+              "Vaccines, Synthetic",
+              "HIV-1",
+              "HIV Envelope Protein gp120",
+              "AIDS Vaccines",
+              "HIV Seronegativity"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "PREVENTION",
+              "maskingInfo": {
+                "masking": "DOUBLE"
+              }
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "HIV-1 Peptide Vaccine, Microparticulate Monovalent"
+              },
+              {
+                "type": "BIOLOGICAL",
+                "name": "rgp120/HIV-1MN Monovalent Octameric V3 Peptide Vaccine"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria\n\nVolunteers must have:\n\n* Normal history and physical exam.\n* HIV negativity.\n* CD4 count \\>= 400 cells/mm3.\n* Intermediate or high risk sexual behavior or a history of injection drug use within 12 months prior to study entry.\n* Normal urine dipstick with esterase and nitrite.\n\nExclusion Criteria\n\nCo-existing Condition:\n\nVolunteers with the following symptoms or conditions are excluded:\n\n* Active tuberculosis.\n* Occupational or other responsibilities that would prevent completion of study.\n\nVolunteers with the following prior conditions are excluded:\n\n* History of immunodeficiency, chronic illness, autoimmune disease, or use of immunosuppressive medications.\n* Psychiatric, medical, or substance abuse problems within the past 6 months that would affect ability to participate in study.\n* History of anaphylaxis or other serious adverse reactions to vaccines.\n* History of inflammatory gastrointestinal disease, celiac disease, or intestinal malignancy.\n* Acute gastroenteritis or gastrointestinal surgery within the past 12 months.\n\nPrior Medication:\n\nExcluded:\n\n* Live or attenuated vaccine within the past 60 days.\n* Illicit or experimental agents within the past 30 days. Intermediate or high risk sexual behavior. Injection drug use within the past 12 months.",
+            "healthyVolunteers": true,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "50 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "facility": "Univ of California at San Francisco Gen Hosp",
+                "city": "San Francisco",
+                "state": "California",
+                "zip": "94110",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.77493,
+                  "lon": -122.41942
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "11311997",
+                "type": "BACKGROUND",
+                "citation": "Lambert JS, Keefer M, Mulligan MJ, Schwartz D, Mestecky J, Weinhold K, Smith C, Hsieh R, Moldoveanu Z, Fast P, Forrest B, Koff W. A Phase I safety and immunogenicity trial of UBI microparticulate monovalent HIV-1 MN oral peptide immunogen with parenteral boost in HIV-1 seronegative human subjects. Vaccine. 2001 Apr 30;19(23-24):3033-42. doi: 10.1016/s0264-410x(01)00051-2."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00002428",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

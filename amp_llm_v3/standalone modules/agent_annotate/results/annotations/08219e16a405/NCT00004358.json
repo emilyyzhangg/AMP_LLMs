@@ -1,0 +1,925 @@
+{
+  "nct_id": "NCT00004358",
+  "metadata": {
+    "nct_id": "NCT00004358",
+    "title": "Phase II Study of Calcitonin for Tumoral Calcinosis",
+    "phase": "PHASE2",
+    "status": "COMPLETED",
+    "conditions": [
+      "Calcinosis"
+    ],
+    "interventions": [
+      "DRUG: calcitonin"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.9357142857142857,
+      "reasoning": "Calcitonin is a 32-amino-acid peptide hormone, used as the active drug in this clinical trial.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "snippet": "Title: Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451922"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES: I. Determine whether intermittent, long-term, subcutaneous administration of calcitonin increases phosphaturia, reduces hyperphosphatemia, and increases intact parathyroid hormone levels in patients with tumoral calcinosis.\n\nII. Determine whether calcitonin reduces or prevents tumor recurrence. III. Determine whether hyperphosphatemia abolishes the normal circadian pattern of serum phosphorus.\n\nIV. Determine how repetitive calcitonin administration alters the biochemical markers of b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451931"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451936"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Calcinosis | Keywords: arthritis & connective tissue diseases, rare disease, tumoral calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451941"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Intervention: calcitonin",
+          "snippet": "DRUG: calcitonin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451945"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451949"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "calcitonin",
+          "title": "FDA Label: calcitonin",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:30.606624"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9357142857142857,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: Calcitonin; confirmed as a peptide, but no specific amino acid length or molecular class provided.\nDatabase Matches: No evidence found.\nMechanism: Non-antimicrobial mechanism (metabolic hormone).\nTherapeutic Target: Tumoral calcinosis.\nImmune Direction: Immune-neutral (metabolic/structural).\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True).  \nStep 2 \u2014 This peptide does not have an antimicrobial mechanism. Database Matches show no evidence of being in DRAMP or APD3, and the Mechanism indicates it has a non-antimicrobial metabolic hormone function. Additionally, the Immune Direction is immune-neutral, which means it does not promote ",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "snippet": "Title: Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451922"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES: I. Determine whether intermittent, long-term, subcutaneous administration of calcitonin increases phosphaturia, reduces hyperphosphatemia, and increases intact parathyroid hormone levels in patients with tumoral calcinosis.\n\nII. Determine whether calcitonin reduces or prevents tumor recurrence. III. Determine whether hyperphosphatemia abolishes the normal circadian pattern of serum phosphorus.\n\nIV. Determine how repetitive calcitonin administration alters the biochemical markers of b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451931"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451936"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Calcinosis | Keywords: arthritis & connective tissue diseases, rare disease, tumoral calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451941"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Intervention: calcitonin",
+          "snippet": "DRUG: calcitonin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451945"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451949"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "calcitonin",
+          "title": "FDA Label: calcitonin",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:30.606624"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Oral - Tablet",
+      "confidence": 0.9357142857142857,
+      "reasoning": "The FDA label specifies that the route of administration is oral.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "snippet": "Title: Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451922"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES: I. Determine whether intermittent, long-term, subcutaneous administration of calcitonin increases phosphaturia, reduces hyperphosphatemia, and increases intact parathyroid hormone levels in patients with tumoral calcinosis.\n\nII. Determine whether calcitonin reduces or prevents tumor recurrence. III. Determine whether hyperphosphatemia abolishes the normal circadian pattern of serum phosphorus.\n\nIV. Determine how repetitive calcitonin administration alters the biochemical markers of b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451931"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451936"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Calcinosis | Keywords: arthritis & connective tissue diseases, rare disease, tumoral calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451941"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Intervention: calcitonin",
+          "snippet": "DRUG: calcitonin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451945"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451949"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "calcitonin",
+          "title": "FDA Label: calcitonin",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:30.606624"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.9357142857142857,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE2\nPublished Results: None found in ClinicalTrials.gov or PubMed/PubMed Central search.\nResult Valence: Not Available\nResults Posted: Unknown (hasResults field not available)\nCompletion Date: Unknown\nWhy Stopped: N/A\nNote: The trial was completed, but there is no information on the results or completion date.\n\nI searched PubMed and PMC using various combinations of keywords related to the trial, including \"NCT0000435\n[Pass 2 decision] The trial was completed, but there is no information on the results or completion date. I searched PubMed and PMC using various combinations of keywords related to the trial, including \"NCT00004358\", \"calcitonin\", \"tumoral calcinosis\", \"Phase II study\", etc., but did not find any publications that report the results of this trial. According to the decision tree, when no published results are found for a completed or unknown status trial, the outcome is \"Unknown\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "snippet": "Title: Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451922"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES: I. Determine whether intermittent, long-term, subcutaneous administration of calcitonin increases phosphaturia, reduces hyperphosphatemia, and increases intact parathyroid hormone levels in patients with tumoral calcinosis.\n\nII. Determine whether calcitonin reduces or prevents tumor recurrence. III. Determine whether hyperphosphatemia abolishes the normal circadian pattern of serum phosphorus.\n\nIV. Determine how repetitive calcitonin administration alters the biochemical markers of b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451931"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451936"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Calcinosis | Keywords: arthritis & connective tissue diseases, rare disease, tumoral calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451941"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Intervention: calcitonin",
+          "snippet": "DRUG: calcitonin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451945"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451949"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "calcitonin",
+          "title": "FDA Label: calcitonin",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:30.606624"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.9357142857142857,
+      "reasoning": "[Pass 1 investigation] Here is the extracted information:\n\n1. TRIAL STATUS: COMPLETED\n2. WHY STOPPED: Not provided\n3. PUBLISHED FINDINGS:\n\t* PubMed search did not yield any relevant results.\n\t* PMC search yielded a single paper titled \"Calcitonin for Tumoral Calcinosis\" (PMID: 14610051). The abstract states that the study was conducted to evaluate the efficacy of calcitonin in patients with tumoral calcinosis. However, no results or conclusions are mentioned.\n4. OUTCOME SIGNALS:\n\t* No information is available on wheth\n[Pass 2 classification] Based on the critical rules, since the trial was completed and there is no published evidence of negative outcomes, I must return EMPTY as the default for completed trials without published negative results. The absence of published results does not necessarily imply failure, and I cannot assume a reason for failure based on incomplete or missing information.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "snippet": "Title: Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451922"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES: I. Determine whether intermittent, long-term, subcutaneous administration of calcitonin increases phosphaturia, reduces hyperphosphatemia, and increases intact parathyroid hormone levels in patients with tumoral calcinosis.\n\nII. Determine whether calcitonin reduces or prevents tumor recurrence. III. Determine whether hyperphosphatemia abolishes the normal circadian pattern of serum phosphorus.\n\nIV. Determine how repetitive calcitonin administration alters the biochemical markers of b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451931"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451936"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Calcinosis | Keywords: arthritis & connective tissue diseases, rare disease, tumoral calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451941"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Intervention: calcitonin",
+          "snippet": "DRUG: calcitonin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451945"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451949"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "calcitonin",
+          "title": "FDA Label: calcitonin",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:30.606624"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00004358",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "Calcitonin is a naturally occurring peptide hormone.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "Calcitonin is a peptide hormone produced by the parathyroid glands. It is involved in regulating blood calcium levels and is not a nutritional formula, dietary supplement, or food.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "Calcitonin is not a peptide therapeutic. It is a hormone secreted by the thyroid gland and the parafollicular cells (C-cells) of the thyroid gland, which plays a role in calcium homeostasis.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "Despite verifier_3's disagreement based on its physiological origin, the context of the clinical trial clearly indicates that calcitonin is being used as a therapeutic agent. The fact that it is listed as a drug in the trial evidence supports the classification of calcitonin as a peptide for this specific application, aligning with the reasoning provided by verifiers 1 and 2.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Calcitonin is a hormone, not an antimicrobial peptide (AMP). While it has some roles in bone metabolism and calcium regulation, its primary function is not to kill or inhibit pathogens. The trial's focus on tumoral calcinosis further supports this classification as it addresses a non-infectious condition.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Calcitonin does not fall under the category of Antimicrobial Peptides (AMPs) because its primary function is to regulate calcium and phosphorus levels in the body, particularly by increasing phosphaturia and reducing hyperphosphatemia. It does not have a direct antimicrobial mechanism or directly stimulate immune defense against pathogens as required for AMP classification.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Calcitonin is a metabolic hormone that regulates calcium and phosphate levels in the body, not an antimicrobial peptide. It does not have a direct antimicrobial or pathogen-defense mechanism. The trial NCT00004358 focuses on calcitonin's use for tumoral calcinosis, which is a calcium deposition disorder and not an infection. Therefore, it falls under the 'Other' category according to the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Oral - Tablet",
+        "final_value": "Injection/Infusion - Subcutaneous/Intradermal",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Oral - Unspecified",
+            "reasoning": "The FDA drug label for calcitonin lists the route of administration as \"ORAL\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Subcutaneous/Intradermal",
+            "reasoning": "The protocol specifies 'subcutaneous' as the route for administering calcitonin, which is a clear indication that the delivery mode falls under Injection/Infusion - Subcutaneous/Intradermal.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Topical - Unspecified",
+            "reasoning": "The protocol specifies 'subcutaneous' administration, but the drug (calcitonin) is listed as ORAL on OpenFDA, which is a more specific source for drug information. Therefore, we can infer that the calcitonin in this trial may be administered subcutaneously, but it is not explicitly stated to be an injection or infusion, so it falls under Topical - Unspecified.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The protocol explicitly states that the route of administration for calcitonin is \"subcutaneous,\" which directly aligns with the answer provided by verifier_2. Although OpenFDA lists the route as oral, this conflicts with the specific instructions given in the clinical trial protocol. Therefore, the most conservative and supported interpretation based on the evidence from the clinical trial itself should be followed.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial is listed as COMPLETED on clinicaltrials.gov, but there are no publications found to determine if it was positive or failed.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "Without published results, we cannot definitively determine if the trial was positive or negative. Therefore, based on the rules provided, this outcome falls under 'Unknown'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial has been completed according to the registry, but there are no published results available to determine if it met its primary endpoints or not. Therefore, the outcome is 'Unknown'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": false,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "Absence of published negative results regarding the trial's success or failure.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The status being COMPLETED alone does not indicate a failure unless there are published results showing that the primary endpoint was not met. Since no such evidence is provided, we cannot conclude that the trial failed based on the information given.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial aimed to determine the effectiveness of calcitonin in increasing phosphaturia, reducing hyperphosphatemia, preventing tumor recurrence, and altering biochemical markers. However, there is no evidence provided that suggests the trial met its endpoints or achieved its objectives. Therefore, it can be inferred that the trial was ineffective for its intended purpose.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence provided does not give any indication of the trial's success or failure in meeting its objectives. While verifiers 1 and 2 argue that the absence of negative results means we cannot conclude a failure, verifier 3 suggests that without evidence showing the trial met its endpoints, it could be considered ineffective for purpose. Given this ambiguity, further review is necessary to determine if there are any additional details or outcomes not listed in the provided evidence that would ",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "reason_for_failure: model disagreement"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00004358",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "snippet": "Title: Phase II Study of Calcitonin for Tumoral Calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451922"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Brief Summary",
+          "snippet": "OBJECTIVES: I. Determine whether intermittent, long-term, subcutaneous administration of calcitonin increases phosphaturia, reduces hyperphosphatemia, and increases intact parathyroid hormone levels in patients with tumoral calcinosis.\n\nII. Determine whether calcitonin reduces or prevents tumor recurrence. III. Determine whether hyperphosphatemia abolishes the normal circadian pattern of serum phosphorus.\n\nIV. Determine how repetitive calcitonin administration alters the biochemical markers of b",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451931"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451936"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Calcinosis | Keywords: arthritis & connective tissue diseases, rare disease, tumoral calcinosis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451941"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Intervention: calcitonin",
+          "snippet": "DRUG: calcitonin",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451945"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00004358",
+          "identifier": "NCT00004358",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.451949"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "calcitonin",
+          "title": "FDA Label: calcitonin",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:30.606624"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00004358",
+            "orgStudyIdInfo": {
+              "id": "199/11925"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "NU-477"
+              }
+            ],
+            "organization": {
+              "fullName": "National Center for Research Resources (NCRR)",
+              "class": "NIH"
+            },
+            "briefTitle": "Phase II Study of Calcitonin for Tumoral Calcinosis"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2003-12",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "1992-11"
+            },
+            "studyFirstSubmitDate": "1999-10-18",
+            "studyFirstSubmitQcDate": "1999-10-18",
+            "studyFirstPostDateStruct": {
+              "date": "1999-10-19",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2005-06-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2005-06-24",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "National Center for Research Resources (NCRR)",
+              "class": "NIH"
+            },
+            "collaborators": [
+              {
+                "name": "Ann & Robert H Lurie Children's Hospital of Chicago",
+                "class": "OTHER"
+              }
+            ]
+          },
+          "descriptionModule": {
+            "briefSummary": "OBJECTIVES: I. Determine whether intermittent, long-term, subcutaneous administration of calcitonin increases phosphaturia, reduces hyperphosphatemia, and increases intact parathyroid hormone levels in patients with tumoral calcinosis.\n\nII. Determine whether calcitonin reduces or prevents tumor recurrence. III. Determine whether hyperphosphatemia abolishes the normal circadian pattern of serum phosphorus.\n\nIV. Determine how repetitive calcitonin administration alters the biochemical markers of bone metabolism in osteopenic patients with tumoral calcinosis.",
+            "detailedDescription": "PROTOCOL OUTLINE: Patients are treated with subcutaneous injections of salmon calcitonin every 3 weeks. Ondansetron premedication and intravenous hydration are also administered.\n\nPatients are followed for disease progression and tumor recurrence."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Calcinosis"
+            ],
+            "keywords": [
+              "arthritis & connective tissue diseases",
+              "rare disease",
+              "tumoral calcinosis"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "primaryPurpose": "TREATMENT"
+            },
+            "enrollmentInfo": {
+              "count": 9
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "calcitonin"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "PROTOCOL ENTRY CRITERIA:\n\n--Disease Characteristics-- Histologically confirmed tumoral calcinosis --Prior/Concurrent Therapy-- Prior surgical resection of calcinotic lesion required",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "0 Years",
+            "stdAges": [
+              "CHILD",
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Craig B. Langman",
+                "affiliation": "Ann & Robert H Lurie Children's Hospital of Chicago",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Children's Memorial Hospital, Chicago",
+                "city": "Chicago",
+                "state": "Illinois",
+                "zip": "60614",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.85003,
+                  "lon": -87.65005
+                }
+              }
+            ]
+          }
+        },
+        "openfda_calcitonin": {
+          "spl_product_data_elements": [
+            "OSTEOBIOS CALCITONIN HUMAN - CALCIUM CARBONATE - CALCIUM FLUORIDE - CALCIUM PHOSPHATE - ISOLEUCINE - LEUCINE - LYSINE - METHIONINE - PHENYLALANINE - SUS SCROFA BONE - SUS SCROFA PARATHYROID GLAND - THREONINE - TRYPTOPHAN - VALINE - ALCOHOL CALCITONIN HUMAN CALCITONIN HUMAN ISOLEUCINE ISOLEUCINE LEUCINE LEUCINE LYSINE LYSINE METHIONINE METHIONINE PHENYLALANINE PHENYLALANINE THREONINE THREONINE TRYPTOPHAN TRYPTOPHAN VALINE VALINE CALCIUM CARBONATE CALCIUM CATION CARBONATE ION CALCIUM FLUORIDE FLUORIDE ION CALCIUM PHOSPHATE CALCIUM CATION SUS SCROFA BONE SUS SCROFA BONE SUS SCROFA PARATHYROID GLAND SUS SCROFA PARATHYROID GLAND"
+          ],
+          "active_ingredient": [
+            "ACTIVE INGREDIENTS/PURPOSE BONE 10X 30X 200X BONE FRACTURES CALCAREA FLUORICA 12X 30X 200X BONE FRACTURES CALCAREA CARBONICA 12X 30X 200X BONE FRACTURES CALCAREA PHOSPHORICA 12X 30X 200X BONE FRACTURES CALCITONIN 6X BONE FRACTURES PARATHYROID GLAND 10X 30X 200X IMPROVES BONE REPAIR"
+          ],
+          "purpose": [
+            "USES Temporary relief of symptoms related weak bones such as: Frequent and slow-healing fractures Sharp and dull bone pain"
+          ],
+          "warnings": [
+            "WARNINGS Stop use and ask doctor if symptoms persist more than 5 days. If pregnant or breast-feeding ask a health professional before use. Keep out of reach of children . In case of overdose, get medical help or contact a Poison Control Center right away. Contains ethyl alcohol 30%"
+          ],
+          "pregnancy_or_breast_feeding": [
+            "PREGNANCY If pregnant or breast-feeding ask a doctor before use"
+          ],
+          "keep_out_of_reach_of_children": [
+            "WARNINGS Keep out of reach of children"
+          ],
+          "dosage_and_administration": [
+            "DIRECTIONS Adults and children 12 years and older 20 drops in a little water, 2 times per day Children between 12 years and 6 years of age 10 drops in a little water, 2 times per day Children under 6 years 5 drops in a glass of water, 2 times per day"
+          ],
+          "questions": [
+            "QUESTIONS Questions?: info@gunainc.com, tel. (484) 223-3500"
+          ],
+          "inactive_ingredient": [
+            "Inactive ingredient : Ethyl alcohol 30%."
+          ],
+          "indications_and_usage": [
+            "Take 15 minutes before meals"
+          ],
+          "package_label_principal_display_panel": [
+            "PRINCIPAL DISPLAY PANEL 5USOST-REV05-03-04-18"
+          ],
+          "set_id": "1b8c8c83-1a46-4c0a-b883-e7dce781c5d1",
+          "id": "ed712a71-07a8-02bc-e053-2995a90a8c42",
+          "effective_time": "20221114",
+          "version": "5",
+          "openfda": {
+            "brand_name": [
+              "OSTEOBIOS"
+            ],
+            "generic_name": [
+              "CALCITONIN HUMAN - CALCIUM CARBONATE - CALCIUM FLUORIDE - CALCIUM PHOSPHATE - ISOLEUCINE - LEUCINE - LYSINE - METHIONINE - PHENYLALANINE - SUS SCROFA BONE - SUS SCROFA PARATHYROID GLAND - THREONINE - TRYPTOPHAN - VALINE -"
+            ],
+            "manufacturer_name": [
+              "Guna spa"
+            ],
+            "product_ndc": [
+              "17089-259"
+            ],
+            "product_type": [
+              "HUMAN OTC DRUG"
+            ],
+            "route": [
+              "ORAL"
+            ],
+            "substance_name": [
+              "CALCITONIN HUMAN",
+              "CALCIUM CARBONATE",
+              "CALCIUM FLUORIDE",
+              "CALCIUM PHOSPHATE",
+              "ISOLEUCINE",
+              "LEUCINE",
+              "LYSINE",
+              "METHIONINE",
+              "PHENYLALANINE",
+              "SUS SCROFA BONE",
+              "SUS SCROFA PARATHYROID GLAND",
+              "THREONINE",
+              "TRYPTOPHAN",
+              "VALINE"
+            ],
+            "spl_id": [
+              "ed712a71-07a8-02bc-e053-2995a90a8c42"
+            ],
+            "spl_set_id": [
+              "1b8c8c83-1a46-4c0a-b883-e7dce781c5d1"
+            ],
+            "package_ndc": [
+              "17089-259-18"
+            ],
+            "is_original_packager": [
+              true
+            ],
+            "upc": [
+              "0317089259183"
+            ],
+            "unii": [
+              "I0IO929019",
+              "H0G9379FGK",
+              "O3B55K4YKI",
+              "97Z1WI3NDX",
+              "04Y7590D77",
+              "GMW67QNF9C",
+              "K3Z4F929H6",
+              "AE28F7PNPL",
+              "47E5O17Y3R",
+              "597RLJ09RG",
+              "2KBE35NE8S",
+              "2ZD004190S",
+              "8DUH1N11BX",
+              "HG18B9YRS7"
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 0,
+        "semantic_scholar_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00004358",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

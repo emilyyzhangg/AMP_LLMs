@@ -1,0 +1,819 @@
+{
+  "nct_id": "NCT00013910",
+  "metadata": {
+    "nct_id": "NCT00013910",
+    "title": "NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "Diabetes Mellitus, Non-Insulin-Dependent"
+    ],
+    "interventions": [
+      "DRUG: NNC 90-1170"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "False",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 extraction] Here are the extracted facts for the intervention:\n\nIntervention: NNC 90-1170\nMolecular Class: Unknown\nDatabase Confirmation: No evidence found\nProduct Description: Investigational medication, drug\nActive Ingredient Role: Active therapeutic agent\n[Pass 2 decision] Peptide: False\nReasoning: \nStep 1 \u2014 Is the Molecular Class a peptide? Since it's \"Unknown\", we need to check database confirmation in Step 2.\nStep 2 \u2014 Is the peptide the ACTIVE DRUG? The Active Ingredient Role is indeed \"Active therapeutic agent\", which suggests that NNC 90-1170 is an active drug. However, since there's no molecular class specified as a peptide and no database hits, we cannot conf",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+          "snippet": "Title: NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809080"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this research study is to investigate the mechanism of action of a new investigational medication (drug), NNC 90-1170, which is being developed for the treatment of type 2 diabetes (adult onset type of diabetes.\n\nNNC 90-1170 is a modified form of a hormone, Glucagon-Like Peptide 1 (or GLP-1), which is important for controlling insulin levels. Insulin, another hormone, is also important for controlling blood glucose levels, which are higher than normal in people who have type 2 dia",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809136"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809147"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Diabetes Mellitus, Non-Insulin-Dependent | Keywords: glucagon-like peptide 1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809159"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Intervention: NNC 90-1170",
+          "snippet": "DRUG: NNC 90-1170",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809170"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.95,
+      "reasoning": "[Peptide cascade: re-classified after peptide flipped False\u2192True] [Pass 1 extraction] Peptide Identity: NNC 90-1170, confirmed as a peptide. No specific amino acid length or molecular class provided.\nDatabase Matches: No evidence found.\nMechanism: No evidence found.\nTherapeutic Target: Diabetes Mellitus, Non-Insulin-Dependent (Type 2 diabetes)\nImmune Direction: Immune-neutral (metabolic)\n[Pass 2 decision] Classification: Other\n\nReasoning:\nStep 1 \u2014 Is the intervention a peptide?\nPeptide determination is True \u2192 Proceed to Step 2.\n\nStep 2 \u2014 Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?\nDatabase Matches and Mechanism both show \"No evidence found\" \u2192 No direct evidence that NNC 90-1170 has antimicrobial activity.\nImmune Direction is Immune-neutral, indicating a metabolic role rat",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+          "snippet": "Title: NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809080"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this research study is to investigate the mechanism of action of a new investigational medication (drug), NNC 90-1170, which is being developed for the treatment of type 2 diabetes (adult onset type of diabetes.\n\nNNC 90-1170 is a modified form of a hormone, Glucagon-Like Peptide 1 (or GLP-1), which is important for controlling insulin levels. Insulin, another hormone, is also important for controlling blood glucose levels, which are higher than normal in people who have type 2 dia",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809136"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809147"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Diabetes Mellitus, Non-Insulin-Dependent | Keywords: glucagon-like peptide 1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809159"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Intervention: NNC 90-1170",
+          "snippet": "DRUG: NNC 90-1170",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809170"
+        }
+      ],
+      "model_name": "qwen2.5:14b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 route extraction] Here are the extracted information:\n\nProtocol Route: Not specified in the provided metadata.\n\nFDA/Label Route: Not found.\n\nLiterature Route: Not found.\n\nDatabase Route: Not found.\n\nDrug Formulation: Not specified.\n\nMost Specific Route: Unspecified injection. \n\nNote that the trial is completed, but no specific route of administration is mentioned in the provided metadata.\n[Pass 2 classification] Delivery Mode: Injection/Infusion - Other/Unspecified\nEvidence: Most Specific Route (unspecified injection)\nReasoning: The most specific route of administration mentioned is \"unspecified injection\", which falls under the category of \"Injection/Infusion - Other/Unspecified\" since no other specific ro",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+          "snippet": "Title: NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809080"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this research study is to investigate the mechanism of action of a new investigational medication (drug), NNC 90-1170, which is being developed for the treatment of type 2 diabetes (adult onset type of diabetes.\n\nNNC 90-1170 is a modified form of a hormone, Glucagon-Like Peptide 1 (or GLP-1), which is important for controlling insulin levels. Insulin, another hormone, is also important for controlling blood glucose levels, which are higher than normal in people who have type 2 dia",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809136"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809147"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Diabetes Mellitus, Non-Insulin-Dependent | Keywords: glucagon-like peptide 1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809159"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Intervention: NNC 90-1170",
+          "snippet": "DRUG: NNC 90-1170",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809170"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE2 (Note: The trial title mentions \"Single-Center, Placebo-Controlled, Crossover Study\", which typically indicates a Phase 2 study)\nPublished Results: None found in PubMed or PMC. However, I did find a reference to this trial in the ClinicalTrials.gov database, but no published results were mentioned.\nResult Valence: Not Available\nResults Posted: No (hasResults field is not available for this trial)\nCompletion Date: \n[Pass 2 decision] The trial completed normally, but there are no published results found. Since the trial is a Phase 2 study and not a Phase I study, we cannot apply H1. We also do not have any corroborating signals such as results posted on ClinicalTrials.gov or publications mentioning the trial. Additionally, the Result Valence is \"Not Available\", which does not provide any information about the outcome. Therefore, based on the COMPLETION HEURISTICS, specifically H5 (DEFAULT), we conclude that the outcome is Un",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+          "snippet": "Title: NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809080"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this research study is to investigate the mechanism of action of a new investigational medication (drug), NNC 90-1170, which is being developed for the treatment of type 2 diabetes (adult onset type of diabetes.\n\nNNC 90-1170 is a modified form of a hormone, Glucagon-Like Peptide 1 (or GLP-1), which is important for controlling insulin levels. Insulin, another hormone, is also important for controlling blood glucose levels, which are higher than normal in people who have type 2 dia",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809136"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809147"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Diabetes Mellitus, Non-Insulin-Dependent | Keywords: glucagon-like peptide 1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809159"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Intervention: NNC 90-1170",
+          "snippet": "DRUG: NNC 90-1170",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809170"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Unknown' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00013910",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "False",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "True",
+            "reasoning": "The study states that the drug NNC 90-1170 is a modified form of GLP-1, which is a peptide hormone.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "True",
+            "reasoning": "GLP-1 is a well-known peptide hormone that plays a crucial role in regulating glucose metabolism. The fact that NNC 90-1170 is described as a modified form of GLP-1 strongly suggests that it is indeed a peptide therapeutic, given the context provided by the clinical trial metadata and its purpose to investigate its mechanism of action for diabetes treatment.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "True",
+            "reasoning": "The data from ChemBL indicates that the molecule in question has a molecular weight consistent with a peptide, and it is classified as unknown, which suggests it may be a peptide or protein. Additionally, the trial drug NNC 90-1170 is described as a modified form of Glucagon-Like Peptide 1 (GLP-1), which is a peptide hormone. Therefore, based on this information, it can be inferred that the primary intervention in this trial is a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The clinical trial metadata indicates that the drug is related to GLP-1, which is a well-known peptide hormone. Additionally, the ChemBL data suggests that NNC 90-1170 has a molecular weight consistent with a peptide and is classified as unknown, indicating it may be a peptide or protein. Given these pieces of evidence, the conservative interpretation aligns with the verifiers' opinions, suggesting that NNC 90-1170 is indeed a modified form of GLP-1 and thus should be categorized as a peptide.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "NNC 90-1170 is a metabolic hormone, not an antimicrobial peptide. It works by influencing insulin production and blood glucose regulation, not by directly killing or disrupting pathogens.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on the decision tree, we classify a substance as an AMP if it is a peptide and directly kills or disrupts pathogens through its own biochemical action. The information given about NNC 90-1170 indicates that it is a modified form of Glucagon-Like Peptide 1 (GLP-1), which is important for controlling insulin levels, not blood glucose levels as mentioned in the metadata. GLP-1 and its analogs are typically used to regulate glucose metabolism by promoting insulin secretion and inhibiting gluca",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial NCT00013910 investigates the mechanism of action of a new investigational medication (drug), NNC 90-1170, which is a modified form of a hormone, Glucagon-Like Peptide 1 (GLP-1). GLP-1 is not an antimicrobial peptide as it regulates insulin levels and controls blood glucose levels in people with type 2 diabetes. The provided chemical data also confirms that NNC 90-1170 is a small molecule, not a peptide with antimicrobial properties.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "While the protocol mentions administration via injection, it lacks details about the specific type (e.g., intramuscular, subcutaneous). Therefore, \"Injection/Infusion - Other/Unspecified\" is the most appropriate choice according to the provided rules.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": null,
+            "reasoning": "The nature of the study design (double-blind, randomized, single-center) typically implies administration through a more controlled method such as injection or IV infusion. Furthermore, since the drug is being developed for diabetes management, which often involves controlling blood glucose levels systemically, it's reasonable to infer that an injectable or infused form would be used to ensure consistent and effective delivery of the medication.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "IV",
+            "reasoning": "Since the trial explicitly mentions an 'infusion' and no other source provides specificity regarding the route of administration, we can infer that it is an Intravenous (IV) infusion based on the provided rules.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "While the trial mentions \"glucose infusion,\" it does not specify whether the drug itself is administered via IV or another method. Given that the protocol lacks specific details about the route of administration for NNC 90-1170, the most conservative and supported answer based on the evidence provided is \"Injection/Infusion - Other/Unspecified.\" This choice reflects the uncertainty regarding the exact mode of delivery beyond it being an infusion or injection.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "As per the rules, a COMPLETED trial without published results or Results Posted=Yes is classified as 'Unknown'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "Based on the critical rules, since the trial is listed as \"COMPLETED\" and it's a Phase I study that typically aims to assess safety and preliminary efficacy, we can consider this outcome as 'Positive'. There are no published results provided in the evidence section, but given the nature of Phase I trials, they often conclude successfully by demonstrating safety without necessarily showing efficacy. The lack of specific negative outcomes or conflicting publications supports a positive outcome for",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial is marked as completed on ClinicalTrials.gov but no published results are available. Since there is no corroborating signal such as results posted or a subsequent later-phase trial, we cannot assume that the trial was successful based solely on its completion. Therefore, according to the Completion Heuristics rule H5, the outcome is 'Unknown'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial is listed as \"COMPLETED\" on ClinicalTrials.gov, but there are no published results available. According to the rules provided, a completed trial without published results or with \"Results Posted=No\" should be classified as 'Unknown'. Therefore, the conservative and supported answer based on the evidence is 'Unknown', rather than assuming a positive outcome given only that it's a Phase I study.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00013910",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+          "snippet": "Title: NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809080"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this research study is to investigate the mechanism of action of a new investigational medication (drug), NNC 90-1170, which is being developed for the treatment of type 2 diabetes (adult onset type of diabetes.\n\nNNC 90-1170 is a modified form of a hormone, Glucagon-Like Peptide 1 (or GLP-1), which is important for controlling insulin levels. Insulin, another hormone, is also important for controlling blood glucose levels, which are higher than normal in people who have type 2 dia",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809136"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809147"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Diabetes Mellitus, Non-Insulin-Dependent | Keywords: glucagon-like peptide 1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809159"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Intervention: NNC 90-1170",
+          "snippet": "DRUG: NNC 90-1170",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809170"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:30:58.809180"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00013910",
+            "orgStudyIdInfo": {
+              "id": "NCRR-M01RR00042-1749"
+            },
+            "organization": {
+              "fullName": "National Center for Research Resources (NCRR)",
+              "class": "NIH"
+            },
+            "briefTitle": "NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+            "officialTitle": "NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2001-11",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "studyFirstSubmitDate": "2001-04-02",
+            "studyFirstSubmitQcDate": "2001-04-02",
+            "studyFirstPostDateStruct": {
+              "date": "2001-04-03",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2005-06-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2005-06-24",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "National Center for Research Resources (NCRR)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "The purpose of this research study is to investigate the mechanism of action of a new investigational medication (drug), NNC 90-1170, which is being developed for the treatment of type 2 diabetes (adult onset type of diabetes.\n\nNNC 90-1170 is a modified form of a hormone, Glucagon-Like Peptide 1 (or GLP-1), which is important for controlling insulin levels. Insulin, another hormone, is also important for controlling blood glucose levels, which are higher than normal in people who have type 2 diabetes. This study will measure the effect of NNC 90-1170, active investigational drug, to cause insulin to be released from the pancreas in response to increasing blood glucose concentrations. These results will be compared to that of a group of healthy volunteers of similar age and body weight who do not have diabetes. Also, various other hormones and substances that are known to control blood sugar will be measured in blood samples that will be drawn.\n\nOne dose of NNC 90-1170 will be given to subjects with type 2 diabetes only in this study, and the effects of this dose will be compared to a placebo (inactive substance that looks like the active drug). This is a crossover study, which means that subjects will be treated both with NNC 90-1170 and with placebo. The order in which subjects will receive the treatments will be determined by chance (randomly).\n\nThe study will be conducted as a so-called \"double-blind\" study, meaning that neither subjects nor study doctors will know the order in which subjects will be given each treatment until the study is over.\n\nThe study will include approximately 15 healthy volunteers and 15 volunteers with type 2 diabetes, and it will be conducted at 1 clinic (the University of Michigan Health System) in the United States."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Diabetes Mellitus, Non-Insulin-Dependent"
+            ],
+            "keywords": [
+              "glucagon-like peptide 1"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "CROSSOVER",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "DOUBLE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 30
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "NNC 90-1170"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion criteria:\n\nSubjects with Type 2 Diabetes\n\n1. Signed and dated informed consent must be obtained before any trial-related activities. Trial-related activities are any procedures that would not have been performed during normal management of the subject.\n2. Subjects diagnosed with type 2 diabetes according to the American Diabetes Association (ADA) criteria (6): fasting plasma glucose ?126 mg/dL (7.0 mmol/L) or 2-hour plasma glucose ? 200 mg/dL (11.1 mmol/L) during an oral glucose tolerance test (OGTT).\n3. Subjects with type 2 diabetes either newly diagnosed with at least 2 months of diet or on oral anti-diabetic monotherapy for at least 3 months.\n4. Age 30-75 years inclusive. Body Mass Index 24 to 35 kg/m2 inclusive.\n\nHealthy Volunteers\n\n1. The subject must give signed and dated informed consent before any trial-related activities. Trial-related activities are any procedures that would not have been performed during normal management of the subject.\n2. Age 30-75 years inclusive.\n3. Body Mass Index 24 to 35 kg/m2 inclusive. Must meet the ADA criteria for normal glucose tolerance (6): fasting plasma glucose below 110 mg/dL (6.1 mmol/L) and 2-hour plasma glucose \\< 140 mg/mL (7.8 mmol/L) during an OGTT.",
+            "healthyVolunteers": true,
+            "sex": "ALL",
+            "minimumAge": "30 Years",
+            "maximumAge": "75 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "facility": "University of Michigan",
+                "city": "Ann Arbor",
+                "state": "Michigan",
+                "zip": "48109",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.27756,
+                  "lon": -83.74088
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00013910",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30000036/",
+          "identifier": "PMID:30000036",
+          "title": "PubMed article 30000036",
+          "snippet": "",
+          "quality_score": 0.45,
+          "retrieved_at": "2026-03-19T08:31:04.551681"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "pubmed_fallback_query": "NNC 90-1170",
+        "pubmed_fallback_ids": [
+          "30000036"
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00013910",
+      "citations": [],
+      "raw_data": {
+        "uniprot_NNC 90-1170": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00013910",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00013910",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_NNC 90-1170": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00013910",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4758265/",
+          "identifier": "CHEMBL4758265",
+          "title": "CHEMBL4758265 - ChEMBL",
+          "snippet": "Molecule: CHEMBL4758265\nType: Unknown\nMolecular weight: 573.68\nBioactivity: Growth Rate=1.0 (HEK-293T); Growth Rate=0.0 (HEK-293T); Growth Rate=0.0 (U2OS); Growth Rate=0.0 (U2OS); Growth Rate=0.0 (Fibroblast)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:31:01.001350"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5755500/",
+          "identifier": "CHEMBL5755500",
+          "title": "CHEMBL5755500 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5755500\nMolecular weight: 382.83\nBioactivity: IC50=10.0 nM (P2X purinoceptor 7); IC50=10.0 nM (P2X purinoceptor 7)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:31:01.494782"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL583352/",
+          "identifier": "CHEMBL583352",
+          "title": "CHEMBL583352 - ChEMBL",
+          "snippet": "Molecule: CHEMBL583352\nType: Small molecule\nMolecular weight: 350.38\nBioactivity: EC50=1050.0 nM (Plasmodium falciparum); IFI=0.0 % (Unchecked); CC50=10000.0 nM (Huh-7); EC50=970.0 nM (Plasmodium falciparum)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:31:01.934143"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'NNC 90-1170'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00013910",
+      "citations": [],
+      "raw_data": {
+        "rcsb_NNC 90-1170": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00013910",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_NNC 90-1170_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00013910",
+      "citations": [],
+      "raw_data": {
+        "apd_NNC 90-1170": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00013910",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00013910",
+          "identifier": "NCT00013910",
+          "title": "NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+          "snippet": "Title: NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes\nStatus: Completed\nPhase: Phase 1\nCountries: United States\nConditions: Diabetes Mellitus, Non-Insulin-Dependent\nInterventions: Drug: NNC 90-1170\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-19T08:33:36.123930"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00013910",
+          "public_title": "NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+          "scientific_title": "NNC 90-1170 Mechanism of Action: A Double-Blind, Randomized, Single-Center, Placebo-Controlled, Crossover Study to Examine Beta-Cell Responsiveness to Graded Glucose Infusion in Subjects With Type 2 Diabetes",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Randomized, Intervention Model: Crossover Assignment, Masking: Double-Blind, Primary Purpose: Treatment",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Diabetes Mellitus, Non-Insulin-Dependent"
+          ],
+          "interventions": [
+            "Drug: NNC 90-1170"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00013910",
+      "citations": [],
+      "raw_data": {
+        "iuphar_NNC 90-1170": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00013910",
+      "citations": [],
+      "raw_data": {
+        "pdbe_NNC 90-1170_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.45
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

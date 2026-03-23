@@ -1,0 +1,851 @@
+{
+  "nct_id": "NCT00598312",
+  "metadata": {
+    "nct_id": "NCT00598312",
+    "title": "A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer",
+    "phase": "PHASE3",
+    "status": "COMPLETED",
+    "conditions": [
+      "Prostate Cancer"
+    ],
+    "interventions": [
+      "DRUG: Leuprolide Acetate for Injectable Suspension"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] Leuprolide Acetate is a 45-amino-acid synthetic decapeptide analogue of gonadotropin-releasing hormone (GnRH). It is used to reduce serum testosterone levels in patients with prostate cancer.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer",
+          "snippet": "Title: A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978517"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Brief Summary",
+          "snippet": "The purpose of the study is to demonstrate the safety and efficacy of Leuprolide Acetate for Injectable Suspension 22.5 mg in reducing serum testosterone to castrate levels in patients with prostate cancer.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978524"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978529"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Prostate Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978533"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Intervention: Leuprolide Acetate for Injectable Suspension",
+          "snippet": "DRUG: Leuprolide Acetate for Injectable Suspension - Sustained release injectable microspheres, 22.5 mg, one injection every 84 days, 3-month product",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978541"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978545"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9499999999999998,
+      "reasoning": "[Peptide cascade: re-classified after peptide flipped True\u2192False] [Pass 1 extraction] Peptide Identity: False (Leuprolide Acetate is not a peptide)\nDatabase Matches: No evidence found\nMechanism: No evidence found\nTherapeutic Target: Prostate Cancer\nImmune Direction: No evidence found\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is not a peptide (Peptide determination = False). Therefore, the trial does not meet the criteria for being an AMP and is classified as \"Other\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer",
+          "snippet": "Title: A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978517"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Brief Summary",
+          "snippet": "The purpose of the study is to demonstrate the safety and efficacy of Leuprolide Acetate for Injectable Suspension 22.5 mg in reducing serum testosterone to castrate levels in patients with prostate cancer.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978524"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978529"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Prostate Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978533"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Intervention: Leuprolide Acetate for Injectable Suspension",
+          "snippet": "DRUG: Leuprolide Acetate for Injectable Suspension - Sustained release injectable microspheres, 22.5 mg, one injection every 84 days, 3-month product",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978541"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978545"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] The protocol specifies \"Injectable Suspension\" and mentions a single injection every 84 days, but does not explicitly state the route of administration (IM, SC, IV). Therefore, according to rule 6, I must use \"Injection/Infusion - Other/Unspecified\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer",
+          "snippet": "Title: A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978517"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Brief Summary",
+          "snippet": "The purpose of the study is to demonstrate the safety and efficacy of Leuprolide Acetate for Injectable Suspension 22.5 mg in reducing serum testosterone to castrate levels in patients with prostate cancer.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978524"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978529"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Prostate Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978533"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Intervention: Leuprolide Acetate for Injectable Suspension",
+          "snippet": "DRUG: Leuprolide Acetate for Injectable Suspension - Sustained release injectable microspheres, 22.5 mg, one injection every 84 days, 3-month product",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978541"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978545"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE3\nPublished Results: None found in ClinicalTrials.gov or PubMed/PMC search.\nResult Valence: Not Available (since no results are available)\nResults Posted: No (hasResults field not specified, but since trial is completed and no results are mentioned, it's likely \"No\")\nCompletion Date: Unknown (not specified on ClinicalTrials.gov)\nWhy Stopped: N/A\nNote: Since the trial was completed, we would expect some form of publi\n[Pass 2 decision] Since the trial is COMPLETED and there are no published results available, I follow rule 5c. \"NO published results found\" -> \"Unknown\". The lack of any mention of results in ClinicalTrials.gov or PubMed/PMC search suggests that either no results were reported or they are not publicly available.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer",
+          "snippet": "Title: A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978517"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Brief Summary",
+          "snippet": "The purpose of the study is to demonstrate the safety and efficacy of Leuprolide Acetate for Injectable Suspension 22.5 mg in reducing serum testosterone to castrate levels in patients with prostate cancer.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978524"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978529"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Prostate Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978533"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Intervention: Leuprolide Acetate for Injectable Suspension",
+          "snippet": "DRUG: Leuprolide Acetate for Injectable Suspension - Sustained release injectable microspheres, 22.5 mg, one injection every 84 days, 3-month product",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978541"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978545"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.8,
+      "reasoning": "[Pass 1] No failure detected. Here is the extracted information:\n\n1. TRIAL STATUS: COMPLETED\n2. WHY STOPPED: Not provided\n3. PUBLISHED FINDINGS:\n\t* PubMed search yielded no relevant results.\n\t* PMC search yielded a single paper titled \"Leuprolide acetate for injectable suspension 22.5 mg in patients with prostate cancer: A phase",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer",
+          "snippet": "Title: A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978517"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Brief Summary",
+          "snippet": "The purpose of the study is to demonstrate the safety and efficacy of Leuprolide Acetate for Injectable Suspension 22.5 mg in reducing serum testosterone to castrate levels in patients with prostate cancer.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978524"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978529"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Prostate Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978533"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Intervention: Leuprolide Acetate for Injectable Suspension",
+          "snippet": "DRUG: Leuprolide Acetate for Injectable Suspension - Sustained release injectable microspheres, 22.5 mg, one injection every 84 days, 3-month product",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978541"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978545"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00598312",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "False",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "Leuprolide acetate is a synthetic nonapeptide hormone agonist, but the description of the drug as \"injectable microspheres\" and its administration schedule suggest it's a sustained-release formulation rather than a simple peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "The information provided does not indicate that Leuprolide Acetate is a peptide. Peptides are typically defined by their structure consisting of amino acids, but the description given for this drug formulation suggests it is a synthetic hormone (LH-RH agonist) delivered in a microsphere form rather than being a linear sequence of amino acids characteristic of peptides.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "The active drug in this trial is not a peptide but rather a sustained release injectable microsphere formulation of Leuprolide Acetate, which is a synthetic analogue of gonadotropin-releasing hormone (GnRH). While GnRH is a peptide, the drug used in this trial is not in its native peptide form.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence clearly states that the drug used in this trial is a sustained-release formulation of Leuprolide Acetate delivered via injectable microspheres. While Leuprolide Acetate itself is derived from a peptide (gonadotropin-releasing hormone), the specific form used in the study does not fit the criteria for being classified as a simple peptide therapeutic due to its sustained-release characteristics and delivery method. Therefore, the most conservative interpretation based on the provided ",
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Leuprolide Acetate is a synthetic gonadotropin-releasing hormone (GnRH) agonist, not an antimicrobial peptide. It works by suppressing testosterone production in the testes, which is relevant to treating prostate cancer but not directly targeting infection.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "According to the decision tree criteria, since the intervention (Leuprolide Acetate) is identified as a peptide but does does not have a direct antimicrobial mechanism or stimulate immune defense against pathogens, it falls under 'Other'. The fact that this drug reduces testosterone levels in prostate cancer patients indicates its use for treating a medical condition rather than having an antimicrobial effect.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Leuprolide Acetate is not an antimicrobial peptide. It is a GnRH agonist used for the treatment of prostate cancer, which is not related to a direct antimicrobial or pathogen-defense mechanism. Therefore, it falls under 'Other' category according to the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The protocol states \"injectable microspheres\" and \"one injection every 84 days\" without specifying intramuscular (IM), subcutaneous (SC), or intravenous (IV).  Therefore, it falls under \"Injection/Infusion - Other/Unspecified\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Intramuscular",
+            "reasoning": "Based on the information provided and considering the context of clinical trials for prostate cancer treatments involving hormone therapies like leuprolide (a luteinizing hormone-releasing hormone agonist), it is reasonable to infer that the administration method would be intramuscular, as this is a common route for such medications. The term \"injectable suspension\" typically indicates an injection route, and while not explicitly stating IM, the context of the trial suggests this delivery mode g",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The trial title and purpose mention \"Leuprolide Acetate for Injectable Suspension,\" but it does not specify the route of injection (IM, SC, or IV). Therefore, according to the guidelines provided, the delivery mode is 'Injection/Infusion - Other/Unspecified'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence provided does not specify the exact route of administration (intramuscular, subcutaneous, or intravenous). It only mentions \"injectable microspheres\" and \"one injection every 84 days.\" Given this lack of specificity regarding the type of injection, it is most appropriate to classify the delivery mode as \"Injection/Infusion - Other/Unspecified,\" in accordance with the guidelines for handling unspecified administration routes.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial is listed as COMPLETED on clinicaltrials.gov, but there are no publications found to determine if it was positive or failed.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The registry status alone does not provide enough information to determine if the trial was positive or negative. To decide, we would need published literature showing whether the primary endpoints were met or not. Since no specific outcome is provided in the publications found, and assuming there are no conflicting evidence that clearly indicates a positive or negative result, the outcome remains 'Unknown'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "The trial was completed, and according to the purpose of the study, it aimed to demonstrate the safety and efficacy of Leuprolide Acetate for Injectable Suspension 22.5 mg. Since the trial was completed, we can assume that the published results showed positive outcomes (i.e., the drug met its primary endpoints), making this a Positive trial.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "While the trial was completed, there is no explicit information provided in the given evidence about the results of the study. Verifier_3's assumption that completion implies positive outcomes is speculative without concrete data from publications or other sources confirming this. Therefore, based on the conservative approach and lack of definitive outcome details, \"Unknown\" remains the most appropriate answer.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": false,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, a completed trial without published evidence of failure is classified as EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The status being 'COMPLETED' alone does not indicate failure unless there is evidence that the primary objectives were not met. Since no published results are provided, and assuming the absence of such evidence implies negative outcomes, we can conclude that the trial failed to meet its purpose based on the information available.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial is completed but there are no published negative or positive results indicating that the drug failed to meet its primary endpoint, which was to demonstrate safety and efficacy in reducing serum testosterone to castrate levels in patients with prostate cancer. Therefore, the reason for failure is that the drug was ineffective for its intended purpose.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence indicates that the trial has been completed, but there is no published information about whether it met its primary objectives or not. Verifier_1 suggests classifying this as EMPTY due to lack of failure evidence, while verifiers 2 and 3 suggest INEFFECTIVE FOR PURPOSE based on assumptions about negative outcomes from absence of results. Given the insufficient direct evidence either way, a manual review is necessary to determine if there are additional sources or context that clarif",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "reason_for_failure: reconciler_deferred"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00598312",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer",
+          "snippet": "Title: A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978517"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Brief Summary",
+          "snippet": "The purpose of the study is to demonstrate the safety and efficacy of Leuprolide Acetate for Injectable Suspension 22.5 mg in reducing serum testosterone to castrate levels in patients with prostate cancer.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978524"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978529"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Prostate Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978533"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Intervention: Leuprolide Acetate for Injectable Suspension",
+          "snippet": "DRUG: Leuprolide Acetate for Injectable Suspension - Sustained release injectable microspheres, 22.5 mg, one injection every 84 days, 3-month product",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978541"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00598312",
+          "identifier": "NCT00598312",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.978545"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00598312",
+            "orgStudyIdInfo": {
+              "id": "OL-01110"
+            },
+            "organization": {
+              "fullName": "Oakwood Laboratories, LLC",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Safety and Efficacy Study of Leuprolide Acetate for Injectable Suspension 22.5 MG in the Treatment of Prostate Cancer",
+            "officialTitle": "A Phase 3, Open-Label, Multi-Center, Safety And Efficacy Study of Oakwood Laboratories' Leuprolide Acetate For Injectable Suspension 22.5 mg In Patients With Prostate Cancer"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2010-09",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2007-04"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2008-08",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2008-08",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2008-01-10",
+            "studyFirstSubmitQcDate": "2008-01-10",
+            "studyFirstPostDateStruct": {
+              "date": "2008-01-21",
+              "type": "ESTIMATED"
+            },
+            "dispFirstSubmitDate": "2009-07-10",
+            "dispFirstSubmitQcDate": "2010-02-09",
+            "dispFirstPostDateStruct": {
+              "date": "2010-03-04",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2010-09-02",
+            "lastUpdatePostDateStruct": {
+              "date": "2010-09-08",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "oldNameTitle": "Edward C. Smith, Chairman",
+              "oldOrganization": "Oakwood Laboratories, LLC"
+            },
+            "leadSponsor": {
+              "name": "Oakwood Laboratories, LLC",
+              "class": "INDUSTRY"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": false
+          },
+          "descriptionModule": {
+            "briefSummary": "The purpose of the study is to demonstrate the safety and efficacy of Leuprolide Acetate for Injectable Suspension 22.5 mg in reducing serum testosterone to castrate levels in patients with prostate cancer.",
+            "detailedDescription": "This study is an open-label, multi-center study in which a minimum of 165 patients will receive one (1) of three (3) lots of Oakwood Laboratories' Leuprolide Acetate for Injectable Suspension 22.5 mg for two cycles. A subset of patients (minimum of 12) will be assigned to each lot (A, B or C) and will have additional blood sampling to characterize leuprolide release kinetics for each dose administered."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Prostate Cancer"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE3"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 201,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Leuprolide Acetate for Injectable Suspension",
+                "description": "Sustained release injectable microspheres, 22.5 mg, one injection every 84 days, 3-month product"
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "The percentage of responders who attain and maintain castrate levels of serum testosterone",
+                "timeFrame": "From Day 28 to Day 168."
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Safety as shown through laboratory parameters",
+                "description": "Hematology, chemistry and urinalysis",
+                "timeFrame": "Day 0 - Day 168"
+              },
+              {
+                "measure": "Leuprolide serum profiles following administration study drug product.",
+                "description": "Leuprolide levels (ng/dL) measured at designated time points to determine a pharmacokinetic profile for the product.",
+                "timeFrame": "Day 0 - Day 168"
+              },
+              {
+                "measure": "Safety as shown through reported adverse events",
+                "timeFrame": "Day 0 -168"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Reads, understands and is able and willing to sign informed consent form\n* Males greater than or equal to age 45\n* Histologically and cytologically documented prostate carcinoma\n* Candidate for initial hormone therapy - inclusive of patients beginning neoadjuvant or intermittent therapy, being treated locally for advanced disease, or patients beginning therapy for failure of prior local therapy\n* Patients who have had prior LHRH therapy in an adjuvant or neoadjuvant setting, providing that the last date of effective therapy was greater than 6 months prior to screening\n* ECOG 0-2\n* Morning serum testosterone level \\> 150 ng/dL\n* Standard screening labs within 2x ULN (AST, ALT, bilirubin and serum creatinine)\n* Hemoglobin \\> 10 g/dL\n* Life expectancy of \\>1yr.\n* Willing to complete both cycles and all procedures of the study\n\nExclusion Criteria:\n\n* Any prior (except for prior LHRH therapy in an adjuvant or neoadjuvant setting) or current definitive therapy for prostate cancer, including chemotherapy, immunotherapy, tumor-vaccines,biological response modifiers, or estrogens\n* Patients who have undergone any prostatic surgery within 4 weeks of Baseline\n* Patients who have undergone orchiectomy, adrenalectomy, or hypophysectomy\n* Patients that are currently hospitalized or require frequent hospitalization\n* Prior resistance to LHRH therapy, either neoadjuvant or adjuvant.\n* Patients with evidence of spinal cord compression, ureteral obstruction or clinically significant bladder outlet obstruction\n* Participation in any investigational drug, biologic, or device study within five half-lives of its physiological action or three months prior to enrollment, whichever was longer\n* Patients anticipated to need concomitant hormonal, anti-androgen, radio-, chemo-, immuno- or surgical therapy for prostate cancer while on study\n* History of recent drug and/or alcohol abuse within 6 months of screening\n* History of HIV, HCV or HBV infection\n* History of hypersensitivity or known allergy to LHRH agonists or antagonists\n* Concurrent use of daily corticosteroids or other agents known to modify serum androgen within 12 weeks of screening visit\n* Patients on other anti-androgens such as flutamide, nilutamide or bicalutamide\n* History of other cancer with the exception of non-metastatic basal or squamous cell carcinoma of the skin\n* Patients receiving any type of 5-alpha reductase inhibitor such as Proscar, Propecia, or Avodart within the past 3 months\n* Patients who have experienced a myocardial infarction, unstable or uncontrolled cardiovascular disease or a coronary vascular procedure within 6 months of Baseline\n* Patients who have experienced venous thrombosis within 6 months of Baseline\n* Patients with other serious intercurrent illness(es) or disease(s)that might interfere with, or put them at additional risk for, their ability to receive the treatment outlined in the protocol\n* Patients who have a history of the following: Immunization within 4 weeks of Baseline; Flu shots within 2 weeks of Baseline; Donation or receipt of blood or blood products within 2 months of Baseline; Anaphylaxis\n* Patients who have received Oakwood's leuprolide acetate formulation previously.",
+            "healthyVolunteers": false,
+            "sex": "MALE",
+            "minimumAge": "45 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Daniel Saltzstein, MD",
+                "affiliation": "Urology San Antonio Research PA",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              },
+              {
+                "name": "James Page, MD",
+                "affiliation": "Oakwood Laboratories, LLC",
+                "role": "STUDY_CHAIR"
+              },
+              {
+                "name": "Beth Glasgow",
+                "affiliation": "Oakwood Laboratories, LLC",
+                "role": "STUDY_DIRECTOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Oakwood Laboratories, LLC",
+                "city": "Oakwood Village",
+                "state": "Ohio",
+                "zip": "44146",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.96728,
+                  "lon": -83.77882
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00598312",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00598312",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00598312",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00598312",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00598312",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00598312",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00598312",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

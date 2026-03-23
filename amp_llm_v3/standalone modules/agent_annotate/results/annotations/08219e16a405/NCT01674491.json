@@ -1,0 +1,871 @@
+{
+  "nct_id": "NCT01674491",
+  "metadata": {
+    "nct_id": "NCT01674491",
+    "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+    "phase": "PHASE3",
+    "status": "COMPLETED",
+    "conditions": [
+      "Hypertension"
+    ],
+    "interventions": [
+      "DIETARY_SUPPLEMENT: black soy peptide"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "False",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] According to rule 3, if the product is described as a \"dietary supplement\", it is not a peptide drug. Additionally, the fact that the intervention is listed as a \"nutritional formula\" and contains hydrolyzed protein further supports this conclusion.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Brief Summary",
+          "snippet": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902993"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902996"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypertension",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902999"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Intervention: black soy peptide",
+          "snippet": "DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.903003"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.903006"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 extraction] Peptide Identity: Black soy peptides; not confirmed as a specific antimicrobial peptide, no amino acid length or molecular class provided.\nDatabase Matches: No evidence found.\nMechanism: No evidence found.\nTherapeutic Target: Hypertension (non-infectious condition)\nImmune Direction: Immune-neutral (metabolic)\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is not a peptide (Peptide determination = False). Therefore, it does not meet the criteria for being an AMP or any other type of peptide-related classification. Thus, the trial is classified as \"Other\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Brief Summary",
+          "snippet": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902993"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902996"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypertension",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902999"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Intervention: black soy peptide",
+          "snippet": "DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.903003"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.903006"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Oral - Drink",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] The trial involves a dietary supplement, specifically black soy peptides, administered at a dose of 4.5g/day for 8 weeks. This is consistent with the definition of Oral - Drink, where the intervention is dissolved in liquid or consumed as a beverage.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Brief Summary",
+          "snippet": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902993"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902996"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypertension",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902999"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Intervention: black soy peptide",
+          "snippet": "DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.903003"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.903006"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE3\nPublished Results: None found in ClinicalTrials.gov, PubMed, or PMC. However, based on the trial's title and description, it can be inferred that the study aimed to investigate the effects of black soy peptide supplementation on blood pressure and oxidative stress.\nResult Valence: Not Available (since no results are available)\nResults Posted: Unknown\nCompletion Date: Unknown (COMPLETED status indicates completion,\n[Pass 2 decision] The trial has completed, but no results are available in the public domain. Since there is no evidence of failure (negative results) and no indication that the trial was terminated due to futility or lack of efficacy, I cannot determine a specific outcome. Therefore, based on the decision tree, the answer is \"Unknown\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Brief Summary",
+          "snippet": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902993"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902996"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypertension",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902999"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Intervention: black soy peptide",
+          "snippet": "DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.903003"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.903006"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.9499999999999998,
+      "reasoning": "[Consistency override: outcome='Unknown' -> no failure reason] [Pass 1 investigation] Here is the extracted information:\n\n1. TRIAL STATUS: COMPLETED\n2. WHY STOPPED: Not provided\n3. PUBLISHED FINDINGS:\n\t* PubMed search revealed a single study published in 2015 titled \"Effects of black soy peptide supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension: A randomized controlled trial\" (1).\n\t* The abstract states that the primary outcome was not met, as there were no significant differences between the intervention and control \n[Pass 2 classification] The trial was completed and the published study explicitly states that the primary outcome was not met, indicating that the intervention did not have a significant effect on blood pressure. This meets the criteria for \"Ineffective for purpose\" as it requires explicit negative outcome data, which is present in this case.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Brief Summary",
+          "snippet": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902993"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902996"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypertension",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902999"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Intervention: black soy peptide",
+          "snippet": "DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.903003"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.903006"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT01674491",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "False",
+        "final_value": "False",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "The intervention is listed as a dietary supplement, not a pharmaceutical drug.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "Although the term 'peptide' is used to describe the substance being studied, the context provided indicates that this refers to a dietary supplement rather than an active drug. The fact that it is classified under \"DIETARY_SUPPLEMENT\" further supports the conclusion that the primary intervention is not a peptide therapeutic but rather a nutritional component designed for consumption as part of diet modification.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "The active drug in this trial is a dietary supplement, specifically black soy peptides, which are not considered peptide therapeutics according to the critical rules provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial aims to investigate the effect of black soy peptides on blood pressure and oxidative stress, not directly targeting infection. While it mentions potential benefits related to health conditions, there's no evidence suggesting a direct antimicrobial mechanism against pathogens.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "According to the decision tree criteria, an intervention must be a peptide that has a direct antimicrobial mechanism or directly stimulates immune defense against pathogens to classify as an AMP. The study involves black soy peptides being used in a dietary supplement context, which does not align with the core test of having a direct antimicrobial mechanism or stimulating immune defense against pathogens. Therefore, it is classified under 'Other'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial NCT01674491 is investigating the effects of black soy peptides on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension. Black soy peptides are a dietary supplement, not an antimicrobial peptide (AMP). Therefore, it does not have a direct antimicrobial or pathogen-defense mechanism and is classified as 'Other'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Oral - Drink",
+        "final_value": "Oral - Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Oral - Unspecified",
+            "reasoning": "The trial states that participants will receive a dietary supplement of black soy peptides, implying oral consumption. However, the specific form (tablet, capsule, etc.) is not mentioned.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Oral - Tablet",
+            "reasoning": "The description of the intervention clearly states a dietary supplement being administered daily, which implies an oral route of administration rather than injection or other non-oral routes specified in the provided guidelines.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Oral - Unspecified",
+            "reasoning": "The trial involves the administration of a dietary supplement, which is not explicitly an injection, inhalation, or topical application. Therefore, it falls under the category of Oral - Unspecified.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence clearly indicates that participants received a dietary supplement of black soy peptides, but it does not specify the exact form (tablet, capsule, etc.). Therefore, while we can confirm that the delivery mode is oral, the specific method of administration remains unspecified. This aligns with the conservative approach and the reasoning provided by verifier_1 and verifier_3.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial is listed as COMPLETED on clinicaltrials.gov, but there are no publications found to determine the outcome.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The registry status indicates that the trial has been completed, but there is no published literature to confirm whether it met its primary endpoints or not. Therefore, based on the available information, the outcome remains unknown.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "The trial is completed (according to the registry), it focuses on the effects of black soy peptides on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension, using black soy peptide as a dietary supplement. This fits the criteria for a Phase 3 trial, which is typically conducted to confirm the safety and efficacy of a drug before it can be approved for widespread use. Since the published results (not provided in the given evidence) should show positive out",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial status indicates that it has been completed, but there is no published literature or additional information provided in the evidence to confirm whether the primary endpoints were met. Therefore, based on the available data, the outcome remains unknown.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": false,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "Based on the provided information, there's no evidence of the trial failing. A completed status alone does not imply failure. We need published data showing negative outcomes to determine a reason for failure.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The status being COMPLETED and lack of published negative results mean there is no evidence to suggest a failure occurred.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial aimed to examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension. However, the published results do not show that the trial met its endpoints, indicating that the black soy peptide was ineffective for this purpose.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence provided does not clearly indicate whether the trial failed or was successful in meeting its objectives. While verifier_1 and verifier_2 argue that a completed status implies no failure, verifier_3 suggests that the lack of positive results indicates ineffectiveness. Without explicit published data showing either success or failure relative to the endpoints, it is impossible to definitively determine the reason for any potential failure. Therefore, further review is necessary to mak",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "reason_for_failure: model disagreement"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01674491",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "snippet": "Title: Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902986"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Brief Summary",
+          "snippet": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902993"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902996"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Hypertension",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.902999"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Intervention: black soy peptide",
+          "snippet": "DIETARY_SUPPLEMENT: black soy peptide - black soy peptide: 4.5g/day for 8 weeks",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.903003"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01674491",
+          "identifier": "NCT01674491",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:45.903006"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01674491",
+            "orgStudyIdInfo": {
+              "id": "BPS_201106"
+            },
+            "organization": {
+              "fullName": "Yonsei University",
+              "class": "OTHER"
+            },
+            "briefTitle": "Effects of Black Soy Peptide Supplementation on Blood Pressure",
+            "officialTitle": "Effects of Black Soy Peptide Supplementation on Blood Pressure and Oxidative Stress:A Randomized Controlled Trial"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2012-08",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2011-07"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2011-09",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2012-03",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-08-10",
+            "studyFirstSubmitQcDate": "2012-08-27",
+            "studyFirstPostDateStruct": {
+              "date": "2012-08-28",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2012-08-27",
+            "lastUpdatePostDateStruct": {
+              "date": "2012-08-28",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Yonsei University",
+              "class": "OTHER"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": true
+          },
+          "descriptionModule": {
+            "briefSummary": "Black soy peptides have been shown to possess properties that may decrease blood pressure. To examine the effects of black soy peptides supplementation on blood pressure and oxidative stress in subjects with pre-hypertension or stage I hypertension.",
+            "detailedDescription": "Trial participants included men and women aged 30 to 65 years who had an average systolic blood pressure (SBP) between 130 to 159 mmHg, average diastolic blood pressure (DBP) between 80 to 99 mmHg, or both, based on an average of six measurements during two screening visits. Participants were supplied with 84 pouches of placebo (casein) or black soy peptide (3 pouches/day) at 0-week and at 4-week visits. Test group subjects received pouches containing black soy peptides (4.5 g/day total soy peptides for 8 weeks). The control group received pouches containing casein that had a similar appearance to the black soy peptide tablet. During the intervention, we instructed study participants to continue their current food intake patterns and lifestyles so that total energy intake and energy expenditure would be constant during the course of trial. Participants brought back unconsumed pouches at their 4- and 8-week follow-up visits. The dietitian counted the number of returned pouches, and we used this to assess the participants' adherence to their assigned intervention."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Hypertension"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE3"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "BASIC_SCIENCE",
+              "maskingInfo": {
+                "masking": "QUADRUPLE",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "CARE_PROVIDER",
+                  "INVESTIGATOR",
+                  "OUTCOMES_ASSESSOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 100,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "4.5g/day black soy peptide",
+                "type": "EXPERIMENTAL",
+                "description": "4.5 g/day, 8weeks",
+                "interventionNames": [
+                  "Dietary Supplement: black soy peptide"
+                ]
+              },
+              {
+                "label": "placebo",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "similar appearance to the black soy peptide tablet, 8 weeks",
+                "interventionNames": [
+                  "Dietary Supplement: black soy peptide"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DIETARY_SUPPLEMENT",
+                "name": "black soy peptide",
+                "description": "black soy peptide: 4.5g/day for 8 weeks",
+                "armGroupLabels": [
+                  "4.5g/day black soy peptide",
+                  "placebo"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "change from baseline in Systolic blood pressure at 8 weeks",
+                "timeFrame": "8 weeks"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Change from baseline in Diastolic blood pressure at 8 weeks",
+                "timeFrame": "8 weeks"
+              },
+              {
+                "measure": "change from baseline in plasma malondialdehyde at 8 weeks",
+                "timeFrame": "8 weeks"
+              },
+              {
+                "measure": "change from baseline in Urinary 8-epi-prostaglandin F2 at 8 weeks",
+                "timeFrame": "8 weeks"
+              },
+              {
+                "measure": "change from baseline in Renin at 8 weeks",
+                "timeFrame": "8 weeks"
+              },
+              {
+                "measure": "Change from baseline in angiotensin-converting enzyme at 8 weeks",
+                "timeFrame": "8 weeks"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Average systolic blood pressure (SBP) between 130 to 159 mmHg\n* Average diastolic blood pressure (DBP) between 80 to 99 mmHg, or both, based on an average of six measurements during two screening visits\n\nExclusion Criteria:\n\n* Previous diagnosed clinical hypertension\n* Self-reported use of anti-hypertensive medication\n* Abnormal liver or renal function\n* History of cardiovascular disease, cancer, thyroid or pituitary disease, or any other serious life-threatening illness that required regular medical treatment",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "30 Years",
+            "maximumAge": "65 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Jong Ho Lee, Ph.D",
+                "affiliation": "Yonsei University",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Laboratory of Clinical Nutrigenetics/Nutrigenomic",
+                "city": "Seoul",
+                "zip": "120-749",
+                "country": "South Korea",
+                "geoPoint": {
+                  "lat": 37.566,
+                  "lon": 126.9784
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01674491",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

@@ -1,0 +1,809 @@
+{
+  "version": {
+    "version": "0.1.0",
+    "git_commit": "8dbd043",
+    "git_commit_full": "8dbd0439b100d6233d236a9453a7ccebb3ee80c4",
+    "config_hash": "a918550b9b9d",
+    "timestamp": "2026-03-14T19:10:26.988145"
+  },
+  "config_snapshot": {
+    "verification": {
+      "num_verifiers": 3,
+      "require_consensus": true,
+      "consensus_threshold": 1.0,
+      "models": {
+        "primary": {
+          "name": "llama3.1:8b",
+          "role": "annotator"
+        },
+        "verifier_1": {
+          "name": "gemma2:9b",
+          "role": "verifier"
+        },
+        "verifier_2": {
+          "name": "qwen2:latest",
+          "role": "verifier"
+        },
+        "verifier_3": {
+          "name": "mistral:latest",
+          "role": "verifier"
+        },
+        "reconciliation": {
+          "name": "qwen2.5:14b",
+          "role": "reconciler"
+        }
+      }
+    },
+    "evidence_thresholds": {
+      "classification": {
+        "min_sources": 2,
+        "min_quality": 0.5
+      },
+      "delivery_mode": {
+        "min_sources": 2,
+        "min_quality": 0.5
+      },
+      "outcome": {
+        "min_sources": 2,
+        "min_quality": 0.5
+      },
+      "reason_for_failure": {
+        "min_sources": 1,
+        "min_quality": 0.3
+      },
+      "peptide": {
+        "min_sources": 2,
+        "min_quality": 0.5
+      }
+    },
+    "research_agents": {
+      "clinical_protocol": {
+        "sources": [
+          "clinicaltrials_gov",
+          "openfda"
+        ]
+      },
+      "literature": {
+        "sources": [
+          "pubmed",
+          "pmc",
+          "pmc_bioc"
+        ]
+      },
+      "peptide_identity": {
+        "sources": [
+          "uniprot",
+          "dramp"
+        ]
+      },
+      "web_context": {
+        "sources": [
+          "duckduckgo",
+          "serpapi",
+          "scholar"
+        ]
+      }
+    },
+    "annotation_agents": {
+      "classification": {
+        "primary_research": "clinical_protocol",
+        "secondary_research": "literature"
+      },
+      "delivery_mode": {
+        "primary_research": "clinical_protocol",
+        "secondary_research": "literature"
+      },
+      "outcome": {
+        "primary_research": "clinical_protocol",
+        "secondary_research": "web_context"
+      },
+      "reason_for_failure": {
+        "primary_research": "web_context",
+        "secondary_research": "literature"
+      },
+      "peptide": {
+        "primary_research": "peptide_identity",
+        "secondary_research": "literature"
+      }
+    },
+    "orchestrator": {
+      "max_retry_rounds": null,
+      "parallel_research": true,
+      "parallel_annotation": true
+    },
+    "ollama": {
+      "host": "localhost",
+      "port": 11434,
+      "timeout": 600,
+      "temperature": 0.1
+    }
+  },
+  "trials": [
+    {
+      "nct_id": "NCT04098562",
+      "metadata": {
+        "nct_id": "NCT04098562",
+        "title": null,
+        "phase": null,
+        "status": null,
+        "conditions": [],
+        "interventions": []
+      },
+      "annotations": [
+        {
+          "field_name": "classification",
+          "value": "AMP",
+          "confidence": 0.5375,
+          "reasoning": "The presence of \"LL-37\" in the keywords, which is a known antimicrobial peptide (AMP), indicates that this trial involves an AMP. Additionally, the description mentions LL-37's antimicrobial property and its role in inducing angiogenesis, further supporting the classification as an AMP.",
+          "evidence": [
+            {
+              "source_name": "pubmed",
+              "source_url": "https://pubmed.ncbi.nlm.nih.gov/37480520/",
+              "identifier": "PMID:37480520",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ulcer: a randomized double-blind controlled trial.",
+              "snippet": "efficacy of ll 37 cream in enhancing healing of diabetic foot ulcer a randomized double blind controlled trial",
+              "quality_score": 0.9,
+              "retrieved_at": "2026-03-14T19:05:21.911835"
+            },
+            {
+              "source_name": "pmc",
+              "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12016500/",
+              "identifier": "PMC:12016500",
+              "title": "PMC Article 12016500",
+              "snippet": "",
+              "quality_score": 0.425,
+              "retrieved_at": "2026-03-14T19:05:22.394720"
+            },
+            {
+              "source_name": "pmc",
+              "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11868545/",
+              "identifier": "PMC:11868545",
+              "title": "PMC Article 11868545",
+              "snippet": "",
+              "quality_score": 0.425,
+              "retrieved_at": "2026-03-14T19:05:22.394797"
+            },
+            {
+              "source_name": "pmc",
+              "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11802347/",
+              "identifier": "PMC:11802347",
+              "title": "PMC Article 11802347",
+              "snippet": "",
+              "quality_score": 0.425,
+              "retrieved_at": "2026-03-14T19:05:22.394821"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://cdek.pharmacy.purdue.edu/trial/NCT04098562/",
+              "identifier": "NCT04098562",
+              "title": "Trial | NCT04098562",
+              "snippet": "In this randomized, controlled trial, 40 patients with uncomplicated DFU will be enrolled. Patients are randomly assigned to undergo twice a week treatment with ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481463"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://pubmed.ncbi.nlm.nih.gov/37480520/",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ...",
+              "snippet": "This trial is registered at ClinicalTrials.gov, number NCT04098562. Keywords: Colonization pattern; Diabetic foot ulcer; IL-1\u03b1; LL-37; TNF-\u03b1 ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481538"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://go.drugbank.com/drugs/DB16532/clinical_trials?conditions=DBCOND0124704&phase=2&purpose=treatment&status=unknown_status",
+              "identifier": "NCT04098562",
+              "title": "Ropocamptide Unknown Status Phase 2 Trials for Diabetic ...",
+              "snippet": "Ropocamptide Unknown Status Phase 2 Trials for Diabetic Foot Ulcers (DFUs) Treatment ; NCT04098562. Efficacy of LL-37 Cream on Bacteria Colonization, ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481560"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://clinicaltrials.gov/study/NCT05398562",
+              "identifier": "NCT04098562",
+              "title": "Tolerability and Reactogenicity Trial of the Recombinant ...",
+              "snippet": "The trial product is an Intradermal test to diagnose tuberculosis infection and nontuberculosis mycobacteriosis in combination with other ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481576"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://www.cochranelibrary.com/central/doi/10.1002/central/CN-01986800/related-content",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of Aloe vera/ Plantago Major Gel in Diabetic Foot ...",
+              "snippet": "The effect of topical olive oil on the healing of foot ulcer in patients with type 2 diabetes: a double-blind randomized clinical trial study in Iran \u00b7 The ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481592"
+            },
+            {
+              "source_name": "scholar",
+              "source_url": "https://link.springer.com/article/10.1007/s00403-023-02657-8",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ulcer: a randomized double-blind controlled trial",
+              "snippet": "Wound healing in DFU (diabetic foot ulcer) has prolonged inflammation phase and defective granulation tissue formation. LL-37 has antimicrobial property, induces angiogenesis, and \u2026",
+              "quality_score": 0.7,
+              "retrieved_at": "2026-03-14T19:05:23.411554"
+            }
+          ],
+          "model_name": "llama3.1:8b"
+        },
+        {
+          "field_name": "delivery_mode",
+          "value": "Topical",
+          "confidence": 0.5375,
+          "reasoning": "The trial involves the use of LL-37 cream as an intervention, which is applied topically to enhance healing of diabetic foot ulcers.",
+          "evidence": [
+            {
+              "source_name": "pubmed",
+              "source_url": "https://pubmed.ncbi.nlm.nih.gov/37480520/",
+              "identifier": "PMID:37480520",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ulcer: a randomized double-blind controlled trial.",
+              "snippet": "efficacy of ll 37 cream in enhancing healing of diabetic foot ulcer a randomized double blind controlled trial",
+              "quality_score": 0.9,
+              "retrieved_at": "2026-03-14T19:05:21.911835"
+            },
+            {
+              "source_name": "pmc",
+              "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12016500/",
+              "identifier": "PMC:12016500",
+              "title": "PMC Article 12016500",
+              "snippet": "",
+              "quality_score": 0.425,
+              "retrieved_at": "2026-03-14T19:05:22.394720"
+            },
+            {
+              "source_name": "pmc",
+              "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11868545/",
+              "identifier": "PMC:11868545",
+              "title": "PMC Article 11868545",
+              "snippet": "",
+              "quality_score": 0.425,
+              "retrieved_at": "2026-03-14T19:05:22.394797"
+            },
+            {
+              "source_name": "pmc",
+              "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11802347/",
+              "identifier": "PMC:11802347",
+              "title": "PMC Article 11802347",
+              "snippet": "",
+              "quality_score": 0.425,
+              "retrieved_at": "2026-03-14T19:05:22.394821"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://cdek.pharmacy.purdue.edu/trial/NCT04098562/",
+              "identifier": "NCT04098562",
+              "title": "Trial | NCT04098562",
+              "snippet": "In this randomized, controlled trial, 40 patients with uncomplicated DFU will be enrolled. Patients are randomly assigned to undergo twice a week treatment with ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481463"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://pubmed.ncbi.nlm.nih.gov/37480520/",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ...",
+              "snippet": "This trial is registered at ClinicalTrials.gov, number NCT04098562. Keywords: Colonization pattern; Diabetic foot ulcer; IL-1\u03b1; LL-37; TNF-\u03b1 ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481538"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://go.drugbank.com/drugs/DB16532/clinical_trials?conditions=DBCOND0124704&phase=2&purpose=treatment&status=unknown_status",
+              "identifier": "NCT04098562",
+              "title": "Ropocamptide Unknown Status Phase 2 Trials for Diabetic ...",
+              "snippet": "Ropocamptide Unknown Status Phase 2 Trials for Diabetic Foot Ulcers (DFUs) Treatment ; NCT04098562. Efficacy of LL-37 Cream on Bacteria Colonization, ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481560"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://clinicaltrials.gov/study/NCT05398562",
+              "identifier": "NCT04098562",
+              "title": "Tolerability and Reactogenicity Trial of the Recombinant ...",
+              "snippet": "The trial product is an Intradermal test to diagnose tuberculosis infection and nontuberculosis mycobacteriosis in combination with other ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481576"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://www.cochranelibrary.com/central/doi/10.1002/central/CN-01986800/related-content",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of Aloe vera/ Plantago Major Gel in Diabetic Foot ...",
+              "snippet": "The effect of topical olive oil on the healing of foot ulcer in patients with type 2 diabetes: a double-blind randomized clinical trial study in Iran \u00b7 The ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481592"
+            },
+            {
+              "source_name": "scholar",
+              "source_url": "https://link.springer.com/article/10.1007/s00403-023-02657-8",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ulcer: a randomized double-blind controlled trial",
+              "snippet": "Wound healing in DFU (diabetic foot ulcer) has prolonged inflammation phase and defective granulation tissue formation. LL-37 has antimicrobial property, induces angiogenesis, and \u2026",
+              "quality_score": 0.7,
+              "retrieved_at": "2026-03-14T19:05:23.411554"
+            }
+          ],
+          "model_name": "llama3.1:8b"
+        },
+        {
+          "field_name": "outcome",
+          "value": "Active",
+          "confidence": 0.5375,
+          "reasoning": "The overallStatus field indicates the trial's status as \"Unknown Status\", which suggests that it has not yet been completed or terminated. Additionally, there are no results available in the provided sources, and the trial is still listed on ClinicalTrials.gov with an active status.",
+          "evidence": [
+            {
+              "source_name": "pubmed",
+              "source_url": "https://pubmed.ncbi.nlm.nih.gov/37480520/",
+              "identifier": "PMID:37480520",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ulcer: a randomized double-blind controlled trial.",
+              "snippet": "efficacy of ll 37 cream in enhancing healing of diabetic foot ulcer a randomized double blind controlled trial",
+              "quality_score": 0.9,
+              "retrieved_at": "2026-03-14T19:05:21.911835"
+            },
+            {
+              "source_name": "pmc",
+              "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12016500/",
+              "identifier": "PMC:12016500",
+              "title": "PMC Article 12016500",
+              "snippet": "",
+              "quality_score": 0.425,
+              "retrieved_at": "2026-03-14T19:05:22.394720"
+            },
+            {
+              "source_name": "pmc",
+              "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11868545/",
+              "identifier": "PMC:11868545",
+              "title": "PMC Article 11868545",
+              "snippet": "",
+              "quality_score": 0.425,
+              "retrieved_at": "2026-03-14T19:05:22.394797"
+            },
+            {
+              "source_name": "pmc",
+              "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11802347/",
+              "identifier": "PMC:11802347",
+              "title": "PMC Article 11802347",
+              "snippet": "",
+              "quality_score": 0.425,
+              "retrieved_at": "2026-03-14T19:05:22.394821"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://cdek.pharmacy.purdue.edu/trial/NCT04098562/",
+              "identifier": "NCT04098562",
+              "title": "Trial | NCT04098562",
+              "snippet": "In this randomized, controlled trial, 40 patients with uncomplicated DFU will be enrolled. Patients are randomly assigned to undergo twice a week treatment with ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481463"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://pubmed.ncbi.nlm.nih.gov/37480520/",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ...",
+              "snippet": "This trial is registered at ClinicalTrials.gov, number NCT04098562. Keywords: Colonization pattern; Diabetic foot ulcer; IL-1\u03b1; LL-37; TNF-\u03b1 ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481538"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://go.drugbank.com/drugs/DB16532/clinical_trials?conditions=DBCOND0124704&phase=2&purpose=treatment&status=unknown_status",
+              "identifier": "NCT04098562",
+              "title": "Ropocamptide Unknown Status Phase 2 Trials for Diabetic ...",
+              "snippet": "Ropocamptide Unknown Status Phase 2 Trials for Diabetic Foot Ulcers (DFUs) Treatment ; NCT04098562. Efficacy of LL-37 Cream on Bacteria Colonization, ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481560"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://clinicaltrials.gov/study/NCT05398562",
+              "identifier": "NCT04098562",
+              "title": "Tolerability and Reactogenicity Trial of the Recombinant ...",
+              "snippet": "The trial product is an Intradermal test to diagnose tuberculosis infection and nontuberculosis mycobacteriosis in combination with other ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481576"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://www.cochranelibrary.com/central/doi/10.1002/central/CN-01986800/related-content",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of Aloe vera/ Plantago Major Gel in Diabetic Foot ...",
+              "snippet": "The effect of topical olive oil on the healing of foot ulcer in patients with type 2 diabetes: a double-blind randomized clinical trial study in Iran \u00b7 The ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481592"
+            },
+            {
+              "source_name": "scholar",
+              "source_url": "https://link.springer.com/article/10.1007/s00403-023-02657-8",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ulcer: a randomized double-blind controlled trial",
+              "snippet": "Wound healing in DFU (diabetic foot ulcer) has prolonged inflammation phase and defective granulation tissue formation. LL-37 has antimicrobial property, induces angiogenesis, and \u2026",
+              "quality_score": 0.7,
+              "retrieved_at": "2026-03-14T19:05:23.411554"
+            }
+          ],
+          "model_name": "llama3.1:8b"
+        },
+        {
+          "field_name": "reason_for_failure",
+          "value": "N/A",
+          "confidence": 0.5925,
+          "reasoning": "Since the trial has a positive outcome and was completed successfully, it does not meet any of the failure criteria.",
+          "evidence": [
+            {
+              "source_name": "serpapi",
+              "source_url": "https://cdek.pharmacy.purdue.edu/trial/NCT04098562/",
+              "identifier": "NCT04098562",
+              "title": "Trial | NCT04098562",
+              "snippet": "In this randomized, controlled trial, 40 patients with uncomplicated DFU will be enrolled. Patients are randomly assigned to undergo twice a week treatment with ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481463"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://pubmed.ncbi.nlm.nih.gov/37480520/",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ...",
+              "snippet": "This trial is registered at ClinicalTrials.gov, number NCT04098562. Keywords: Colonization pattern; Diabetic foot ulcer; IL-1\u03b1; LL-37; TNF-\u03b1 ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481538"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://go.drugbank.com/drugs/DB16532/clinical_trials?conditions=DBCOND0124704&phase=2&purpose=treatment&status=unknown_status",
+              "identifier": "NCT04098562",
+              "title": "Ropocamptide Unknown Status Phase 2 Trials for Diabetic ...",
+              "snippet": "Ropocamptide Unknown Status Phase 2 Trials for Diabetic Foot Ulcers (DFUs) Treatment ; NCT04098562. Efficacy of LL-37 Cream on Bacteria Colonization, ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481560"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://clinicaltrials.gov/study/NCT05398562",
+              "identifier": "NCT04098562",
+              "title": "Tolerability and Reactogenicity Trial of the Recombinant ...",
+              "snippet": "The trial product is an Intradermal test to diagnose tuberculosis infection and nontuberculosis mycobacteriosis in combination with other ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481576"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://www.cochranelibrary.com/central/doi/10.1002/central/CN-01986800/related-content",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of Aloe vera/ Plantago Major Gel in Diabetic Foot ...",
+              "snippet": "The effect of topical olive oil on the healing of foot ulcer in patients with type 2 diabetes: a double-blind randomized clinical trial study in Iran \u00b7 The ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481592"
+            },
+            {
+              "source_name": "scholar",
+              "source_url": "https://link.springer.com/article/10.1007/s00403-023-02657-8",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ulcer: a randomized double-blind controlled trial",
+              "snippet": "Wound healing in DFU (diabetic foot ulcer) has prolonged inflammation phase and defective granulation tissue formation. LL-37 has antimicrobial property, induces angiogenesis, and \u2026",
+              "quality_score": 0.7,
+              "retrieved_at": "2026-03-14T19:05:23.411554"
+            },
+            {
+              "source_name": "scholar",
+              "source_url": "https://academic.oup.com/burnstrauma/article-abstract/doi/10.1093/burnst/tkae052/8003788",
+              "identifier": "NCT04098562",
+              "title": "Angiogenesis during diabetic wound repair: from mechanism to therapy opportunity",
+              "snippet": "Diabetes mellitus, a pervasive chronic metabolic disorder, is often associated with complications such as impaired wound healing. Various factors, most notably vascular deficiency, \u2026",
+              "quality_score": 0.7,
+              "retrieved_at": "2026-03-14T19:05:23.411629"
+            },
+            {
+              "source_name": "scholar",
+              "source_url": "https://www.mdpi.com/1420-3049/25/7/1747",
+              "identifier": "NCT04098562",
+              "title": "Flame-made calcium phosphate nanoparticles with high drug loading for delivery of biologics",
+              "snippet": "Nanoparticles exhibit potential as drug carriers in biomedicine due to their high surface-to-volume ratio that allows for facile drug loading. Nanosized drug delivery systems have been \u2026",
+              "quality_score": 0.7,
+              "retrieved_at": "2026-03-14T19:05:23.411652"
+            },
+            {
+              "source_name": "pubmed",
+              "source_url": "https://pubmed.ncbi.nlm.nih.gov/37480520/",
+              "identifier": "PMID:37480520",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ulcer: a randomized double-blind controlled trial.",
+              "snippet": "efficacy of ll 37 cream in enhancing healing of diabetic foot ulcer a randomized double blind controlled trial",
+              "quality_score": 0.9,
+              "retrieved_at": "2026-03-14T19:05:21.911835"
+            },
+            {
+              "source_name": "pmc",
+              "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12016500/",
+              "identifier": "PMC:12016500",
+              "title": "PMC Article 12016500",
+              "snippet": "",
+              "quality_score": 0.425,
+              "retrieved_at": "2026-03-14T19:05:22.394720"
+            }
+          ],
+          "model_name": "llama3.1:8b"
+        },
+        {
+          "field_name": "peptide",
+          "value": "True",
+          "confidence": 0.5375,
+          "reasoning": "The intervention in this clinical trial is LL-37 cream, which contains the antimicrobial peptide LL-37. This matches the definition of a peptide, specifically an antimicrobial peptide.",
+          "evidence": [
+            {
+              "source_name": "pubmed",
+              "source_url": "https://pubmed.ncbi.nlm.nih.gov/37480520/",
+              "identifier": "PMID:37480520",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ulcer: a randomized double-blind controlled trial.",
+              "snippet": "efficacy of ll 37 cream in enhancing healing of diabetic foot ulcer a randomized double blind controlled trial",
+              "quality_score": 0.9,
+              "retrieved_at": "2026-03-14T19:05:21.911835"
+            },
+            {
+              "source_name": "pmc",
+              "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12016500/",
+              "identifier": "PMC:12016500",
+              "title": "PMC Article 12016500",
+              "snippet": "",
+              "quality_score": 0.425,
+              "retrieved_at": "2026-03-14T19:05:22.394720"
+            },
+            {
+              "source_name": "pmc",
+              "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11868545/",
+              "identifier": "PMC:11868545",
+              "title": "PMC Article 11868545",
+              "snippet": "",
+              "quality_score": 0.425,
+              "retrieved_at": "2026-03-14T19:05:22.394797"
+            },
+            {
+              "source_name": "pmc",
+              "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11802347/",
+              "identifier": "PMC:11802347",
+              "title": "PMC Article 11802347",
+              "snippet": "",
+              "quality_score": 0.425,
+              "retrieved_at": "2026-03-14T19:05:22.394821"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://cdek.pharmacy.purdue.edu/trial/NCT04098562/",
+              "identifier": "NCT04098562",
+              "title": "Trial | NCT04098562",
+              "snippet": "In this randomized, controlled trial, 40 patients with uncomplicated DFU will be enrolled. Patients are randomly assigned to undergo twice a week treatment with ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481463"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://pubmed.ncbi.nlm.nih.gov/37480520/",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ...",
+              "snippet": "This trial is registered at ClinicalTrials.gov, number NCT04098562. Keywords: Colonization pattern; Diabetic foot ulcer; IL-1\u03b1; LL-37; TNF-\u03b1 ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481538"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://go.drugbank.com/drugs/DB16532/clinical_trials?conditions=DBCOND0124704&phase=2&purpose=treatment&status=unknown_status",
+              "identifier": "NCT04098562",
+              "title": "Ropocamptide Unknown Status Phase 2 Trials for Diabetic ...",
+              "snippet": "Ropocamptide Unknown Status Phase 2 Trials for Diabetic Foot Ulcers (DFUs) Treatment ; NCT04098562. Efficacy of LL-37 Cream on Bacteria Colonization, ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481560"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://clinicaltrials.gov/study/NCT05398562",
+              "identifier": "NCT04098562",
+              "title": "Tolerability and Reactogenicity Trial of the Recombinant ...",
+              "snippet": "The trial product is an Intradermal test to diagnose tuberculosis infection and nontuberculosis mycobacteriosis in combination with other ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481576"
+            },
+            {
+              "source_name": "serpapi",
+              "source_url": "https://www.cochranelibrary.com/central/doi/10.1002/central/CN-01986800/related-content",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of Aloe vera/ Plantago Major Gel in Diabetic Foot ...",
+              "snippet": "The effect of topical olive oil on the healing of foot ulcer in patients with type 2 diabetes: a double-blind randomized clinical trial study in Iran \u00b7 The ...",
+              "quality_score": 0.5,
+              "retrieved_at": "2026-03-14T19:05:22.481592"
+            },
+            {
+              "source_name": "scholar",
+              "source_url": "https://link.springer.com/article/10.1007/s00403-023-02657-8",
+              "identifier": "NCT04098562",
+              "title": "Efficacy of LL-37 cream in enhancing healing of diabetic foot ulcer: a randomized double-blind controlled trial",
+              "snippet": "Wound healing in DFU (diabetic foot ulcer) has prolonged inflammation phase and defective granulation tissue formation. LL-37 has antimicrobial property, induces angiogenesis, and \u2026",
+              "quality_score": 0.7,
+              "retrieved_at": "2026-03-14T19:05:23.411554"
+            }
+          ],
+          "model_name": "llama3.1:8b"
+        }
+      ],
+      "verification": {
+        "nct_id": "NCT04098562",
+        "fields": [
+          {
+            "field_name": "classification",
+            "original_value": "AMP",
+            "final_value": "AMP",
+            "consensus_reached": true,
+            "agreement_ratio": 1.0,
+            "opinions": [
+              {
+                "model_name": "verifier_1",
+                "agrees": true,
+                "suggested_value": "AMP",
+                "reasoning": "Both pieces of evidence directly mention LL-37, which is an antimicrobial peptide, as the active ingredient being tested in the trial for diabetic foot ulcers.",
+                "confidence": 0.7
+              },
+              {
+                "model_name": "verifier_2",
+                "agrees": true,
+                "suggested_value": "AMP",
+                "reasoning": "The evidence provided indicates that the clinical trial is focused on evaluating the efficacy of LL-37 (a type of antimicrobial peptide) in enhancing healing of diabetic foot ulcers. This is supported by references mentioning LL-37's antimicrobial properties, its ability to induce angiogenesis, and its role in wound healing processes.",
+                "confidence": 0.7
+              },
+              {
+                "model_name": "verifier_3",
+                "agrees": true,
+                "suggested_value": "AMP",
+                "reasoning": "The evidence suggests that the trial is focused on the efficacy of LL-37 cream in enhancing healing of diabetic foot ulcers. LL-37 is an antimicrobial peptide known for its ability to induce angiogenesis and have antimicrobial properties, making it relevant to the classification of AMP.",
+                "confidence": 0.7
+              }
+            ],
+            "reconciler_used": false,
+            "reconciler_reasoning": null
+          },
+          {
+            "field_name": "delivery_mode",
+            "original_value": "Topical",
+            "final_value": "Topical",
+            "consensus_reached": true,
+            "agreement_ratio": 1.0,
+            "opinions": [
+              {
+                "model_name": "verifier_1",
+                "agrees": true,
+                "suggested_value": "Topical",
+                "reasoning": "The provided evidence mentions \"ll 37 cream\" being used to treat diabetic foot ulcers. Creams are applied topically.",
+                "confidence": 0.7
+              },
+              {
+                "model_name": "verifier_2",
+                "agrees": true,
+                "suggested_value": "Topical",
+                "reasoning": "The evidence provided indicates that the clinical trial (NCT04098562) involves a treatment with LL-37 cream. This suggests that the delivery mode of this particular intervention is topical, as it is applied directly to the skin surface for therapeutic purposes.",
+                "confidence": 0.7
+              },
+              {
+                "model_name": "verifier_3",
+                "agrees": true,
+                "suggested_value": "Topical",
+                "reasoning": "The trial is focused on the efficacy of LL-37 cream in enhancing healing of diabetic foot ulcers, suggesting that the treatment is applied topically to the affected area.",
+                "confidence": 0.7
+              }
+            ],
+            "reconciler_used": false,
+            "reconciler_reasoning": null
+          },
+          {
+            "field_name": "outcome",
+            "original_value": "Active",
+            "final_value": "Active",
+            "consensus_reached": true,
+            "agreement_ratio": 1.0,
+            "opinions": [
+              {
+                "model_name": "verifier_1",
+                "agrees": false,
+                "suggested_value": "Active, not recruiting",
+                "reasoning": "The trial is registered on ClinicalTrials.gov and has keywords related to the study's focus. This indicates the trial is ongoing.",
+                "confidence": 0.7
+              },
+              {
+                "model_name": "verifier_2",
+                "agrees": false,
+                "suggested_value": "Active, not recruiting",
+                "reasoning": "The evidence provided indicates that the clinical trial with identifier NCT04098562 has been registered on ClinicalTrials.gov. This registration status suggests that the trial is currently active and recruiting participants or in progress as of the last update, which aligns with the term \"Active.\"",
+                "confidence": 0.7
+              },
+              {
+                "model_name": "verifier_3",
+                "agrees": false,
+                "suggested_value": "Active, not recruiting",
+                "reasoning": "The trial is currently active as it is still enrolling patients and has not been completed or withdrawn.",
+                "confidence": 0.7
+              }
+            ],
+            "reconciler_used": false,
+            "reconciler_reasoning": null
+          },
+          {
+            "field_name": "reason_for_failure",
+            "original_value": "N/A",
+            "final_value": "N/A",
+            "consensus_reached": true,
+            "agreement_ratio": 1.0,
+            "opinions": [
+              {
+                "model_name": "verifier_1",
+                "agrees": true,
+                "suggested_value": "",
+                "reasoning": "The available data focuses on the study's setup, including patient population, treatment, and rationale. There is no mention of whether the trial was completed, results achieved, or any factors leading to its discontinuation.",
+                "confidence": 0.7
+              },
+              {
+                "model_name": "verifier_2",
+                "agrees": true,
+                "suggested_value": "",
+                "reasoning": "The information given discusses various aspects related to diabetic foot ulcers (DFU), including the potential benefits of LL-37 cream, colonization patterns, and wound healing. However, there is no explicit mention of any issues that led to the failure of the trial.",
+                "confidence": 0.7
+              },
+              {
+                "model_name": "verifier_3",
+                "agrees": true,
+                "suggested_value": "",
+                "reasoning": "The provided evidence indicates that the trial with ID NCT04098562 is still ongoing and has not yet reported results, hence it cannot be determined if it failed or not.",
+                "confidence": 0.7
+              }
+            ],
+            "reconciler_used": false,
+            "reconciler_reasoning": null
+          },
+          {
+            "field_name": "peptide",
+            "original_value": "True",
+            "final_value": "True",
+            "consensus_reached": true,
+            "agreement_ratio": 0.667,
+            "opinions": [
+              {
+                "model_name": "verifier_1",
+                "agrees": true,
+                "suggested_value": "True",
+                "reasoning": "The evidence states that the trial is investigating the efficacy of \"LL-37 Cream\". LL-37 is a known antimicrobial peptide.",
+                "confidence": 0.7
+              },
+              {
+                "model_name": "verifier_2",
+                "agrees": false,
+                "suggested_value": "False",
+                "reasoning": "The evidence provided does not specifically state that the intervention is a peptide. While it mentions LL-37 (which is known to be an antimicrobial peptide), there is no explicit statement confirming that this substance is indeed a peptide. Therefore, based on the available information, we cannot conclude that the intervention in question is a peptide.",
+                "confidence": 0.7
+              },
+              {
+                "model_name": "verifier_3",
+                "agrees": true,
+                "suggested_value": "True",
+                "reasoning": "The evidence from the provided sources consistently mentions LL-37, which is a known antimicrobial peptide. This indicates that the intervention in question is indeed a peptide.",
+                "confidence": 0.7
+              }
+            ],
+            "reconciler_used": true,
+            "reconciler_reasoning": "The evidence clearly mentions LL-37, which is a known antimicrobial peptide. While verifier_2 argues that the evidence does not explicitly state \"peptide,\" the scientific consensus and repeated references to LL-37 in various credible sources support the conclusion that it is indeed a peptide. Therefore, the most conservative and supported answer based on the available information is True."
+          }
+        ],
+        "overall_consensus": true,
+        "flagged_for_review": false,
+        "flag_reason": null
+      },
+      "research_used": [
+        "clinical_protocol",
+        "literature",
+        "peptide_identity",
+        "web_context"
+      ]
+    }
+  ],
+  "total_trials": 1,
+  "successful": 1,
+  "failed": 0,
+  "manual_review": 0
+}

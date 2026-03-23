@@ -1,0 +1,780 @@
+{
+  "nct_id": "NCT00299351",
+  "metadata": {
+    "nct_id": "NCT00299351",
+    "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+    "phase": "PHASE2",
+    "status": "UNKNOWN",
+    "conditions": [
+      "Peripheral T Cell Lymphoma (PTCL)"
+    ],
+    "interventions": [
+      "DRUG: Depsipeptide"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] Depsipeptide is listed as the active drug in this clinical trial. The UniProt entry confirms its peptide nature, with a specific amino acid sequence and classification as a cyclic peptide.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "snippet": "Title: A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913485"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials, and in the opinion of their physician/ investigator might benefit from continued treatment with depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913492"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913495"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Peripheral T Cell Lymphoma (PTCL)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913499"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Intervention: Depsipeptide",
+          "snippet": "DRUG: Depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913502"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913505"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 extraction] Peptide Identity: Depsipeptide (FK228); confirmed as a peptide; no specific amino acid length provided.\nDatabase Matches: No evidence found.\nMechanism: No evidence found.\nTherapeutic Target: Peripheral T Cell Lymphoma (PTCL)\nImmune Direction: No evidence found.\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True).  \nStep 2 \u2014 There is no evidence in the extracted facts that Depsipeptide (FK228) has an antimicrobial mechanism or stimulates immune defense against pathogens. Database Matches, Mechanism, and Immune Direction all show \"No evidence found.\" Since there is no indication of direct antimicrobial act",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "snippet": "Title: A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913485"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials, and in the opinion of their physician/ investigator might benefit from continued treatment with depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913492"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913495"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Peripheral T Cell Lymphoma (PTCL)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913499"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Intervention: Depsipeptide",
+          "snippet": "DRUG: Depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913502"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913505"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] Although the trial is evaluating a drug that has been previously administered in clinical trials, the current protocol does not provide specific information on the route of administration. Therefore, I have chosen \"Injection/Infusion - Other/Unspecified\" as it is the most accurate representation based on the available information.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "snippet": "Title: A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913485"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials, and in the opinion of their physician/ investigator might benefit from continued treatment with depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913492"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913495"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Peripheral T Cell Lymphoma (PTCL)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913499"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Intervention: Depsipeptide",
+          "snippet": "DRUG: Depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913502"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913505"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 facts] Here is the extracted information:\n\nRegistry Status: UNKNOWN\nTrial Phase: PHASE 2\nPublished Results: None found in PubMed, PMC, or web evidence.\nResult Valence: Not Available\nResults Posted: Unknown (hasResults field not available)\nCompletion Date: Unknown\nWhy Stopped: N/A\nNote: The trial status is listed as \"UNKNOWN\" on ClinicalTrials.gov, which means that the current status of the trial is not available.\n[Pass 2 decision] 1. The trial status is listed as \"UNKNOWN\" on ClinicalTrials.gov, which means that the current status of the trial is not available.\n2. Since the trial status is unknown, we cannot determine if it was recruiting, active, withdrawn, or terminated.\n3. There are no published results found in PubMed, PMC, or web evidence to indicate whether the trial met its endpoints or showed positive findings.\n4. The Result Valence is \"Not Available\", which means that we cannot lean towards a positive outcome bas",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "snippet": "Title: A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913485"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials, and in the opinion of their physician/ investigator might benefit from continued treatment with depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913492"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913495"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Peripheral T Cell Lymphoma (PTCL)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913499"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Intervention: Depsipeptide",
+          "snippet": "DRUG: Depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913502"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913505"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.9499999999999998,
+      "reasoning": "[Pass 1 investigation] Trial Status: UNKNOWN\nWhy Stopped: Not provided\nPublished Findings: Unfortunately, I couldn't find any published findings or results for this trial in PubMed, PMC, or web evidence. The trial's status is listed as \"UNKNOWN\", which suggests that the trial may not have been completed or reported.\nOutcome Signals: Unclear due to lack of information\nIs This A Failure: Unclear\n[Pass 2 classification] Since there is no information on why the trial was stopped and no published findings or results available, it is unclear whether the trial failed or not. The lack of completion status and absence of negative outcomes in published literature do not provide sufficient evidence to classify the trial as a failure. Therefore, based on the critical rules provided, the default answer is EMPTY.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "snippet": "Title: A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913485"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials, and in the opinion of their physician/ investigator might benefit from continued treatment with depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913492"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913495"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Peripheral T Cell Lymphoma (PTCL)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913499"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Intervention: Depsipeptide",
+          "snippet": "DRUG: Depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913502"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913505"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00299351",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "\"Depsipeptide\" is a type of peptide, specifically a depsipeptide which is a modified peptide with ester linkages instead of amide bonds.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The term \"Depsipeptide\" specifically refers to a peptide compound, which aligns with the definition provided in the critical rules where the product name contains 'peptide' and it is identified as an active drug undergoing clinical trials.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The active drug in this trial is specifically identified as Depsipeptide, which is a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "While depsipeptide is a peptide, it is not an antimicrobial peptide. This clinical trial focuses on its use in cancer treatment (PTCL), not infection.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on the information provided, the intervention is not classified as an antimicrobial peptide because it does not have a direct antimicrobial mechanism. The document does not mention any direct antimicrobial properties or mechanisms of action against pathogens. Instead, it focuses on evaluating the tolerability and activity of the drug in patients with PTCL, which indicates that the focus is on its therapeutic effects rather than its antimicrobial capabilities.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Depsipeptide is not an antimicrobial peptide as it does not have a direct antimicrobial mechanism or stimulate immune defense against pathogens. Instead, it is used for the treatment of Peripheral T Cell Lymphoma (PTCL), which is a type of cancer, making it 'Other' according to the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The description only mentions \"depsipeptide\" and its use in a continuation trial. It lacks details about the specific method of delivery (e.g., intramuscular, intravenous, subcutaneous).",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "Since the protocol does not specify whether Depsipeptide is administered by injection or infusion, nor does it clarify if it's intramuscular, subcutaneous, IV, etc., we cannot determine a precise route from this information alone. Therefore, based on the guidelines provided, the most accurate answer would be 'Injection/Infusion - Other/Unspecified'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The trial title mentions \"Depsipeptide\" which is a drug that can be administered via injection or infusion, but the protocol does not specify the route of administration as IM, SC, IV, or subcutaneous/intradermal. Therefore, it falls under 'Injection/Infusion - Other/Unspecified'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The clinicaltrials.gov registry lists the trial status as \"UNKNOWN\".  According to the critical rules, an \"UNKNOWN\" status requires further investigation.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial's status on clinicaltrials.gov is listed as 'UNKNOWN', which means that there is no published evidence available to determine if the trial was positive, negative, or completed without clear results. Therefore, according to the rules provided, we cannot definitively classify this trial outcome based solely on its status being 'COMPLETED'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial status on the clinical trials registry is 'Unknown', and no published literature was provided to determine the outcome of the trial.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": false,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The provided information does not indicate a completed trial or published evidence of failure.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The trial status being unknown means there is no published evidence of negative outcomes or completion with failure. Therefore, we cannot determine a reason for failure based on the available information.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial's purpose was to evaluate the efficacy of depsipeptide, and if it failed to meet its endpoints, it can be considered ineffective for its intended purpose. However, since the status of the trial is unknown, further investigation or published results are needed to confirm this assessment.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The status of the trial being unknown means there is insufficient information to determine if it failed or not. While verifier_3 suggests that the trial might be ineffective for its purpose, this is speculative without concrete evidence of failure. Therefore, a manual review is necessary to gather more details about the outcome and reason for any potential failure.",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "reason_for_failure: model disagreement"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00299351",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "snippet": "Title: A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913485"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Brief Summary",
+          "snippet": "To evaluate the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials, and in the opinion of their physician/ investigator might benefit from continued treatment with depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913492"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913495"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Peripheral T Cell Lymphoma (PTCL)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913499"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Intervention: Depsipeptide",
+          "snippet": "DRUG: Depsipeptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913502"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00299351",
+          "identifier": "NCT00299351",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.913505"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00299351",
+            "orgStudyIdInfo": {
+              "id": "CCR2742"
+            },
+            "organization": {
+              "fullName": "Royal Marsden NHS Foundation Trust",
+              "class": "OTHER"
+            },
+            "briefTitle": "A Multicenter, Open-Label Continuation Trial Evaluating the Tolerability and Activity of Depsipeptide (FK228) in Patients That Have Completed a Prior Clinical Study With Depsipeptide."
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2005-11",
+            "overallStatus": "UNKNOWN",
+            "lastKnownStatus": "NOT_YET_RECRUITING",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "studyFirstSubmitDate": "2006-03-03",
+            "studyFirstSubmitQcDate": "2006-03-03",
+            "studyFirstPostDateStruct": {
+              "date": "2006-03-06",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2006-03-03",
+            "lastUpdatePostDateStruct": {
+              "date": "2006-03-06",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "Royal Marsden NHS Foundation Trust",
+              "class": "OTHER"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "To evaluate the safety and tolerability of extended treatment with depsipeptide in patients who have at least demonstrated stable disease on prior Gloucester-sponsored depsipeptide clinical trials, and in the opinion of their physician/ investigator might benefit from continued treatment with depsipeptide"
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Peripheral T Cell Lymphoma (PTCL)"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 8
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Depsipeptide"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\nWritten informed consent/ authorization Patient has completed 6 cycles of therapy in a prior Gloucester-sponsored depsipeptide clinical trial Patient has immediate past participation (not to exceed 21 days from Day 15 of cycle 6 in the previous study) in a prior Gloucester-sponsored depsipeptide clinical trial Patient has demonstrated stable disease, partial response or complete response as best overall response in their prior Gloucester-sponsored depsipeptide clinical trial and such response must be ongoing at the time of enrollment Patient must have serum potassium levels \\>4.0mEq/L and serum magnesium levels \\>2.0mg/dL Negative urine or serum pregnancy test on females of childbearing potential Sexually active females of child-bearing potential must be willing to practice reliable methods of birth control to prevent pregnancy after entering the trial Sexually active males must be willing to practice reliable methods of birht control after entering the trial\n\nExclusion Criteria:\n\nPatients wiht known cardiac abnormalities such as\n\n* congenital long QT syndrome\n* QTc interval \\>480 milliseconds Patients with any cardiac arrhythmia requiring anti-arrhythmic medication Patients who have had a history of coronary artery disease (CAD) eg. angina Canadian class II-IV (see appendix G)\\> In any patient whom there is doubt, the patient should have a stress imaging study and, if abnormal, angiopathy to define whether or not CAD is present Patients who have had a myocardial infarction within 12 months of study entry. Patients with an ECG recorded at screening showing evidence of cardiac ishemia (ST depression of \\>2mm). If in any doubt, the patient should have a stress imaging study and if abnormal, angiograpphy to define whether or not CAD is present Patients with congestive heart failure that meets New York heart Association (NYHA) Class II to IV (see appendix F) definitions and/or ejection fraction \\<40% by MUGA scan or \\<50% by echocardiogram and/or magnetic resonance imaging (MRI) Patients with a history of sustained VT,VF,Torsade de Pointes, or cardiac arrest unless currently addressed with an automatic implantable cardioverter defibrillator (AICD) Patients with a hypertrophic cardiomelagy or restrictive cardiomyopathy from prior treatment or other causes (in doubt, see ejection fraction criteria above) Patients with uncontrolled hypertension ie \\> 160/95 Concomitant use of medications which may cause a prolongation of QT/QTc Concomitant use of medications that are inhibitors of the cytochrome P-450 isoenzyme CYP 3A4 Absolute neutrophil count (ANC) \\< 1.5 X 109 cells/L Platelet count \\<75 x 109 cells/L Serum creatinine concentration \\>2 mg/dL or creatinine clearance \\<40mL/min AST (aspartate aminotransferase ) and alanine aminotransferase (ALT) \\>2.0 x ULN or \\>5 X ULN in presence of demonstable liver metastasis Bilirubin concentration \\> 1.25 x ULN or \\> 2.0 x ULN in presence of demonstrable liver metastases Serum potassium \\<4.0mEq/L and serum magnesium \\<2.0 mg/dL Failure to recover of any drug-related non-hematological toxicity to grade 1 oe less or to baseline values unless otherwise indicated Concomitant use of warfarin (due to a potentialdrug to drug interaction with depsipeptide) Patient is pregnant or nursing Patient had been on prior Gloucester-sponsored depsipeptide clinical trial, left the trial and then received alternative neoplastic therapy",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "0 Years",
+            "stdAges": [
+              "CHILD",
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Dr Johann De Bono",
+                "affiliation": "Royal Marsden NHS Foundation Trust",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00299351",
+      "citations": [],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00299351",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00299351",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00299351",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00299351",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00299351",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00299351",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

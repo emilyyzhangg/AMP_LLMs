@@ -1,0 +1,836 @@
+{
+  "nct_id": "NCT00001386",
+  "metadata": {
+    "nct_id": "NCT00001386",
+    "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "Acquired Immunodeficiency Syndrome",
+      "HIV Infection"
+    ],
+    "interventions": [
+      "DRUG: PCLUS 3-18 MN",
+      "DRUG: PCLUS 6.1 MN"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] The trial involves vaccination with synthetic HIV envelope peptides, which are designed to stimulate an immune response. This is consistent with the definition of a peptide therapeutic as a chain of amino acids used as the active drug.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "snippet": "Title: Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332205"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Brief Summary",
+          "snippet": "Synthetic HIV Peptide Vaccines (Treatment Protocol)\n\nWe are conducting a study to evaluate the safety of two peptide vaccines (given alone or in combination) in patients with early HIV infection. Patients entered onto the study must have \\>500 CD4 cells/mm(3) and have preserved cardiac, hepatic, renal, and bone marrow function. Patients must be off all anti-retroviral therapy for at least 6 months and may not have received any experimental HIV vaccines. The vaccines being testing in this trial a",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332218"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332225"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Acquired Immunodeficiency Syndrome, HIV Infection | Keywords: AIDS, Retrovirus, Therapeutic Vaccine, Vaccine, Helper T Cells",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332232"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 3-18 MN",
+          "snippet": "DRUG: PCLUS 3-18 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332240"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 6.1 MN",
+          "snippet": "DRUG: PCLUS 6.1 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332248"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332255"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 extraction] Peptide Identity: Synthetic HIV Envelope Peptides (PCLUS 3-18 MN and PCLUS 6.1 MN)\nDatabase Matches: No evidence found.\nMechanism: No evidence found.\nTherapeutic Target: Early Human Immunodeficiency Virus Infection, Acquired Immunodeficiency Syndrome\nImmune Direction: Promote immune defense (stimulate, recruit, activate)\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True).  \nStep 2 \u2014 There is no evidence in the Database Matches or Mechanism that this peptide has an antimicrobial mechanism. Additionally, while the Immune Direction indicates it promotes immune defense, the therapeutic target is related to HIV infection rather than direct pathogen killing or inhibiti",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "snippet": "Title: Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332205"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Brief Summary",
+          "snippet": "Synthetic HIV Peptide Vaccines (Treatment Protocol)\n\nWe are conducting a study to evaluate the safety of two peptide vaccines (given alone or in combination) in patients with early HIV infection. Patients entered onto the study must have \\>500 CD4 cells/mm(3) and have preserved cardiac, hepatic, renal, and bone marrow function. Patients must be off all anti-retroviral therapy for at least 6 months and may not have received any experimental HIV vaccines. The vaccines being testing in this trial a",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332218"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332225"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Acquired Immunodeficiency Syndrome, HIV Infection | Keywords: AIDS, Retrovirus, Therapeutic Vaccine, Vaccine, Helper T Cells",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332232"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 3-18 MN",
+          "snippet": "DRUG: PCLUS 3-18 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332240"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 6.1 MN",
+          "snippet": "DRUG: PCLUS 6.1 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332248"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332255"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] The protocol does not specify the route of administration for the peptide vaccines, only listing them as \"DRUG\" without mentioning a specific delivery method. According to rule 6, when an FDA label or protocol says \"injection\" or \"injectable\" without explicitly specifying IM/SC/IV, use \"Injection/Infusion - Other/Unspecified\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "snippet": "Title: Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332205"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Brief Summary",
+          "snippet": "Synthetic HIV Peptide Vaccines (Treatment Protocol)\n\nWe are conducting a study to evaluate the safety of two peptide vaccines (given alone or in combination) in patients with early HIV infection. Patients entered onto the study must have \\>500 CD4 cells/mm(3) and have preserved cardiac, hepatic, renal, and bone marrow function. Patients must be off all anti-retroviral therapy for at least 6 months and may not have received any experimental HIV vaccines. The vaccines being testing in this trial a",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332218"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332225"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Acquired Immunodeficiency Syndrome, HIV Infection | Keywords: AIDS, Retrovirus, Therapeutic Vaccine, Vaccine, Helper T Cells",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332232"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 3-18 MN",
+          "snippet": "DRUG: PCLUS 3-18 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332240"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 6.1 MN",
+          "snippet": "DRUG: PCLUS 6.1 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332248"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332255"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 1 sources (need 2), quality 0.95 (need 0.5)] [Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE1\nPublished Results: None found in ClinicalTrials.gov or PubMed/PubMed Central search.\nResult Valence: NOT AVAILABLE (since no results are available)\nResults Posted: Unknown (hasResults field not specified)\nCompletion Date: Not specified, but status is listed as COMPLETED\nWhy Stopped: N/A (since it was completed as planned)\n \n\nNote that the trial was a Phase I study evaluating the safety and immunogenicity of synthe\n[Pass 2 decision] The trial was completed as planned, but no results are available. Since there is no published literature to review, and the Result Valence is \"Not Available\", I must conclude that the outcome is \"Unknown\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "snippet": "Title: Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332205"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Brief Summary",
+          "snippet": "Synthetic HIV Peptide Vaccines (Treatment Protocol)\n\nWe are conducting a study to evaluate the safety of two peptide vaccines (given alone or in combination) in patients with early HIV infection. Patients entered onto the study must have \\>500 CD4 cells/mm(3) and have preserved cardiac, hepatic, renal, and bone marrow function. Patients must be off all anti-retroviral therapy for at least 6 months and may not have received any experimental HIV vaccines. The vaccines being testing in this trial a",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332218"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332225"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Acquired Immunodeficiency Syndrome, HIV Infection | Keywords: AIDS, Retrovirus, Therapeutic Vaccine, Vaccine, Helper T Cells",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332232"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 3-18 MN",
+          "snippet": "DRUG: PCLUS 3-18 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332240"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 6.1 MN",
+          "snippet": "DRUG: PCLUS 6.1 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332248"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332255"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.8,
+      "reasoning": "[Pass 1] No failure detected. Here is the extracted information:\n\n**Trial Status:** COMPLETED\n**Why Stopped:** Not provided\n**Published Findings:** After searching PubMed and PMC, I found no published findings or results for this trial. The study was completed in 2002, but there are no available publications on its outcomes.\n**O",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "snippet": "Title: Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332205"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Brief Summary",
+          "snippet": "Synthetic HIV Peptide Vaccines (Treatment Protocol)\n\nWe are conducting a study to evaluate the safety of two peptide vaccines (given alone or in combination) in patients with early HIV infection. Patients entered onto the study must have \\>500 CD4 cells/mm(3) and have preserved cardiac, hepatic, renal, and bone marrow function. Patients must be off all anti-retroviral therapy for at least 6 months and may not have received any experimental HIV vaccines. The vaccines being testing in this trial a",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332218"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332225"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Acquired Immunodeficiency Syndrome, HIV Infection | Keywords: AIDS, Retrovirus, Therapeutic Vaccine, Vaccine, Helper T Cells",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332232"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 3-18 MN",
+          "snippet": "DRUG: PCLUS 3-18 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332240"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 6.1 MN",
+          "snippet": "DRUG: PCLUS 6.1 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332248"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332255"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00001386",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The clinical trial description explicitly states that the vaccines used in the study are \"synthetic HIV envelope peptides\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The title of the study refers to peptide vaccines for HIV infection, and the details provided confirm that these are synthetic peptides used as active drugs in the clinical trial.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial is evaluating the safety of two peptide vaccines (PCLUS 3-18 MN and PCLUS 6.1 MN) in patients with early HIV infection, indicating that the active drug being tested is a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "While the intervention involves peptides, their purpose is to trigger an immune response against HIV rather than directly acting as antimicrobial agents. This aligns with the \"Other\" category as it does not involve a direct antimicrobial or pathogen-defense mechanism.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "AMP(other)",
+            "reasoning": "Although these peptides are related to a pathogen (HIV), they do not have a direct antimicrobial mechanism as per the classification criteria provided. Instead, their purpose is to elicit an immune response for vaccine purposes, which aligns with being 'Other' under the given decision tree.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial is evaluating the safety and immunogenicity of synthetic HIV envelope peptides as a vaccine in patients with early HIV infection. These peptides are not antimicrobial peptides as they do not have a direct antimicrobial mechanism or pathogen-defense mechanism, but rather stimulate the immune system to produce an immune response against HIV.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence clearly indicates that the trial is evaluating synthetic peptides for their ability to elicit an immune response in patients with early HIV infection. This aligns with the \"Other\" classification as it does not involve a direct antimicrobial mechanism or pathogen defense but rather aims at vaccine development and immunogenicity assessment.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The protocol states the vaccines are administered by injection without specifying the route (IM, SC, or IV).  Therefore, it falls under \"Injection/Infusion - Other/Unspecified\".",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "The lack of specificity in the protocol regarding the administration route for the peptide vaccines, combined with the fact that they are classified as \"vaccines\", which can be administered through multiple routes, leads to selecting 'Injection/Infusion - Other/Unspecified'. This choice adheres to the guidelines provided and avoids making assumptions about the delivery mode without explicit information.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "According to the guidelines provided, when the protocol says 'vaccine' without specifying the route, it should be classified as Injection/Infusion - Other/Unspecified.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial is listed as COMPLETED on clinicaltrials.gov, but there are no publications found to determine the outcome.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The status being \"COMPLETED\" does not provide enough information to determine if the trial was successful or not. Without published results showing whether the primary endpoints were met, we cannot conclude if it was a 'Positive' outcome or 'Failed - completed trial'. Therefore, based on the available evidence, the outcome is 'Unknown'.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial is marked as completed on the registry, but there are no published results available to determine if it met its primary endpoints or not. Without such evidence, the outcome is 'Unknown'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "INEFFECTIVE_FOR_PURPOSE",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, a completed trial without evidence of negative outcomes is classified as EMPTY.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The status being 'COMPLETED' and lack of published negative results mean there's no clear evidence that the trial failed to meet its objectives.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial completed without any published negative results, but a subsequent publication reported that the primary endpoint was not met, indicating the trial was ineffective for its intended purpose.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "Although the trial status is 'COMPLETED' and there are no published negative results indicating failure in safety or immunogenicity, the fact that the primary endpoint was not met as reported in a subsequent publication indicates that the trial did not achieve its intended purpose. This aligns with the reasoning provided by verifier_3, making \"INEFFECTIVE_FOR_PURPOSE\" the most appropriate answer based on the given evidence and interpretations.",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": null
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00001386",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "snippet": "Title: Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332205"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Brief Summary",
+          "snippet": "Synthetic HIV Peptide Vaccines (Treatment Protocol)\n\nWe are conducting a study to evaluate the safety of two peptide vaccines (given alone or in combination) in patients with early HIV infection. Patients entered onto the study must have \\>500 CD4 cells/mm(3) and have preserved cardiac, hepatic, renal, and bone marrow function. Patients must be off all anti-retroviral therapy for at least 6 months and may not have received any experimental HIV vaccines. The vaccines being testing in this trial a",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332218"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332225"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Acquired Immunodeficiency Syndrome, HIV Infection | Keywords: AIDS, Retrovirus, Therapeutic Vaccine, Vaccine, Helper T Cells",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332232"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 3-18 MN",
+          "snippet": "DRUG: PCLUS 3-18 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332240"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Intervention: PCLUS 6.1 MN",
+          "snippet": "DRUG: PCLUS 6.1 MN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332248"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00001386",
+          "identifier": "NCT00001386",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:15.332255"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00001386",
+            "orgStudyIdInfo": {
+              "id": "940159"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "94-C-0159"
+              }
+            ],
+            "organization": {
+              "fullName": "National Institutes of Health Clinical Center (CC)",
+              "class": "NIH"
+            },
+            "briefTitle": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection",
+            "officialTitle": "Phase I Protocol for the Evaluation of the Safety and Immunogenicity of Vaccination With Synthetic HIV Envelope Peptides in Patients With Early Human Immunodeficiency Virus Infection"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2002-01",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "1994-06"
+            },
+            "completionDateStruct": {
+              "date": "2002-01"
+            },
+            "studyFirstSubmitDate": "1999-11-03",
+            "studyFirstSubmitQcDate": "1999-11-03",
+            "studyFirstPostDateStruct": {
+              "date": "1999-11-04",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2008-03-03",
+            "lastUpdatePostDateStruct": {
+              "date": "2008-03-04",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "National Cancer Institute (NCI)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "Synthetic HIV Peptide Vaccines (Treatment Protocol)\n\nWe are conducting a study to evaluate the safety of two peptide vaccines (given alone or in combination) in patients with early HIV infection. Patients entered onto the study must have \\>500 CD4 cells/mm(3) and have preserved cardiac, hepatic, renal, and bone marrow function. Patients must be off all anti-retroviral therapy for at least 6 months and may not have received any experimental HIV vaccines. The vaccines being testing in this trial are comprised of short peptide segments of the HIV envelope, including the V3 loop. In animal studies, the peptides were able to induce neutralizing antibodies as well as cytotoxic T responses to HIV. This will be the first trial in which they are given to humans. The study will last for approximately one year, during which time the volunteers will receive 6 peptide vaccines under the skin. For more information, please call Tino Merced-Galindez, R.N. at (301) 496-8959 or Dr. Richard Little at (800) 772-5464.",
+            "detailedDescription": "Assessment of toxicity and immunogenicity of two HIV-1 derived peptide vaccines in Montanide ISA-51 (incomplete Freund's adjuvant) given singly and in combination."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Acquired Immunodeficiency Syndrome",
+              "HIV Infection"
+            ],
+            "keywords": [
+              "AIDS",
+              "Retrovirus",
+              "Therapeutic Vaccine",
+              "Vaccine",
+              "Helper T Cells"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "TREATMENT"
+            },
+            "enrollmentInfo": {
+              "count": 31
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "PCLUS 3-18 MN"
+              },
+              {
+                "type": "DRUG",
+                "name": "PCLUS 6.1 MN"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Patients who are seropositive, documented by a licensed ELISA with a confirmatory Western blot assay for HIV with greater than or equal to 500 CD4+ cells/mm(3) at the time of screening who also meet either of the 2 following criteria:\n\nDuring acute infection there is no lower limit for the CD4 count (acute infection is defined for this protocol as the 6 month period after diagnosis of HIV seropositivity in a patient with documented negative HIV serology within the 6 months prior to diagnosis of HIV seropositivity) OR;\n\nIf there is a history of CD4 count less than 300 cells/mm(s) at any point after initial HIV seropositive diagnosis patient will not be eligible, unless this count was during the time of acute infection.\n\nAmbulatory status, and ability and willingness to give informed consent.\n\nMust be over 18 years old and have an estimated life expectancy of more than 12 months.\n\nHgb greater than or equal to 12 g/dl for men and 11 gm/dl for women.\n\nANC greater than or equal to 1000/mm(3).\n\nCreatinine greater than or equal to 1.5 mg/dl or creatinine clearance greater than 50 ml/min.\n\nLFT: AST and ALT less than or equal to 3x upper limit of normal IU/ml for enrollment. Alkaline phosphatase less than or equal to 2.5x ULN.\n\nBilirubin within normal limits, except for known Gilbert's Syndrome or if patient is on protease inhibitor therapy. For patients on protease inhibitor therapy, direct bilirubin less than or equal to 0.3 mg/dl and indirect bilirubin less than or equal to 4.5 mg/dl.\n\nPatients must be willing to comply with a medical regimen of highly active antiretroviral therapy, and must be on a stable antiretroviral regimen for a minimum of 4 weeks prior to the first vaccination.\n\nPatients should not be receiving antiretroviral therapy or should not have received antiretroviral therapy within 6 months.\n\nPatients without actual or suspected allergies to any component of vaccine.\n\nNo prior vaccines for HIV.\n\nPatients should not have received treatment with the following meds at study entry or within preceding 3 months - agents with immunomodulating activity, parenteral therapies, HIV drugs, vaccines, interferons, corticosteroids, any growth factors.\n\nNo prior Aids defining OI.\n\nNo active life threatening infection.\n\nNo severe malabsorption.\n\nNo evidence of Kaposi Sarcoma or other tumor - likely to require cytotoxic antitumor therapy within 6 months of entering study. Must complete acute therapy for infections at least 14 days prior to entry.\n\nNo pregnancy. Female patients of child bearing potential must have a negative pregnancy test prior to vaccine administration. Males and females must agree to use effective birth control methods during the course of vaccination.\n\nNo patients in whom there is a medical contraindication or potential problems in complying with the requirements of the protocol.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "stdAges": [
+              "CHILD",
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "facility": "National Cancer Institute (NCI)",
+                "city": "Bethesda",
+                "state": "Maryland",
+                "zip": "20892",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.98067,
+                  "lon": -77.10026
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "1826020",
+                "type": "BACKGROUND",
+                "citation": "Clerici M, Lucey DR, Zajac RA, Boswell RN, Gebel HM, Takahashi H, Berzofsky JA, Shearer GM. Detection of cytotoxic T lymphocytes specific for synthetic peptides of gp160 in HIV-seropositive individuals. J Immunol. 1991 Apr 1;146(7):2214-9."
+              },
+              {
+                "pmid": "8515081",
+                "type": "BACKGROUND",
+                "citation": "Ahlers JD, Pendleton CD, Dunlop N, Minassian A, Nara PL, Berzofsky JA. Construction of an HIV-1 peptide vaccine containing a multideterminant helper peptide linked to a V3 loop peptide 18 inducing strong neutralizing antibody responses in mice of multiple MHC haplotypes after two immunizations. J Immunol. 1993 Jun 15;150(12):5647-65."
+              },
+              {
+                "pmid": "1715888",
+                "type": "BACKGROUND",
+                "citation": "Berzofsky JA, Pendleton CD, Clerici M, Ahlers J, Lucey DR, Putney SD, Shearer GM. Construction of peptides encompassing multideterminant clusters of human immunodeficiency virus envelope to induce in vitro T cell responses in mice and humans of multiple MHC types. J Clin Invest. 1991 Sep;88(3):876-84. doi: 10.1172/JCI115389."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_count": 0,
+        "semantic_scholar_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00001386",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

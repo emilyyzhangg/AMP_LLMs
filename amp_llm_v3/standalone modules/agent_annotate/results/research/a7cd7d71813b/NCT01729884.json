@@ -1,0 +1,476 @@
+{
+  "nct_id": "NCT01729884",
+  "completed_at": "2026-03-19 01:35:33 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01729884",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01729884",
+          "identifier": "NCT01729884",
+          "title": "Phase II Study to Evaluate the Development of HER2/Neu (HER2)-Specific Memory T Cells After HER2 Peptide-based Vaccination in Patients With Advanced Stage Her2+ Breast Cancer",
+          "snippet": "Title: Phase II Study to Evaluate the Development of HER2/Neu (HER2)-Specific Memory T Cells After HER2 Peptide-based Vaccination in Patients With Advanced Stage Her2+ Breast Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:33:49.403996"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01729884",
+          "identifier": "NCT01729884",
+          "title": "Brief Summary",
+          "snippet": "This phase II trial studies how well vaccine therapy works in treating patients with stage IV hormone receptor positive breast cancer. Vaccines made from peptides may help the body build an effective immune response to kill tumor cells.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:33:49.404051"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01729884",
+          "identifier": "NCT01729884",
+          "title": "Study Status",
+          "snippet": "Status: TERMINATED | Why stopped: Study ended early due to slow enrollment",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:33:49.404068"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01729884",
+          "identifier": "NCT01729884",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HER2-positive Breast Cancer, Male Breast Cancer, Recurrent Breast Cancer, Stage IV Breast Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:33:49.404084"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01729884",
+          "identifier": "NCT01729884",
+          "title": "Intervention: HER-2/neu peptide vaccine",
+          "snippet": "BIOLOGICAL: HER-2/neu peptide vaccine - Given ID",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:33:49.404100"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01729884",
+          "identifier": "NCT01729884",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:33:49.404114"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01729884",
+            "orgStudyIdInfo": {
+              "id": "7905"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "NCI-2012-02223",
+                "type": "REGISTRY",
+                "domain": "CTRP (Clinical Trial Reporting Program)"
+              },
+              {
+                "id": "7905",
+                "type": "OTHER",
+                "domain": "Fred Hutchinson Cancer Research Center/University of Washington Cancer Consortium"
+              },
+              {
+                "id": "P30CA015704",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/P30CA015704"
+              },
+              {
+                "id": "P50CA138293",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/P50CA138293"
+              }
+            ],
+            "organization": {
+              "fullName": "University of Washington",
+              "class": "OTHER"
+            },
+            "briefTitle": "Vaccine Therapy in Treating Patients With Stage IV Hormone Receptor Positive Breast Cancer",
+            "officialTitle": "Phase II Study to Evaluate the Development of HER2/Neu (HER2)-Specific Memory T Cells After HER2 Peptide-based Vaccination in Patients With Advanced Stage Her2+ Breast Cancer"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2017-04",
+            "overallStatus": "TERMINATED",
+            "whyStopped": "Study ended early due to slow enrollment",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2012-12"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2013-06",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2012-11-15",
+            "studyFirstSubmitQcDate": "2012-11-15",
+            "studyFirstPostDateStruct": {
+              "date": "2012-11-20",
+              "type": "ESTIMATED"
+            },
+            "dispFirstSubmitDate": "2017-04-03",
+            "dispFirstSubmitQcDate": "2017-04-03",
+            "dispFirstPostDateStruct": {
+              "date": "2017-04-05",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2017-04-09",
+            "lastUpdatePostDateStruct": {
+              "date": "2017-04-11",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "PRINCIPAL_INVESTIGATOR",
+              "investigatorFullName": "Mary (Nora) Disis",
+              "investigatorTitle": "Principal Investigator",
+              "investigatorAffiliation": "University of Washington"
+            },
+            "leadSponsor": {
+              "name": "University of Washington",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "National Cancer Institute (NCI)",
+                "class": "NIH"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": false
+          },
+          "descriptionModule": {
+            "briefSummary": "This phase II trial studies how well vaccine therapy works in treating patients with stage IV hormone receptor positive breast cancer. Vaccines made from peptides may help the body build an effective immune response to kill tumor cells.",
+            "detailedDescription": "PRIMARY OBJECTIVES:\n\nI. To quantify and characterize human epidermal growth factor receptor 2 (HER2)-specific central memory T cell (TCM) and effector memory T cell (TEM) subsets in peripheral blood mononuclear cell (PBMC) of patients vaccinated with a HER2 cytotoxic T lymphocyte (CTL) peptide-based vaccine.\n\nII. To evaluate the feasibility of expanding HER2-specific effector T cells (TE) derived from HER2-specific TCM or TEM precursors in patients vaccinated with a HER2 CTL peptide-based vaccine and characterize their function.\n\nSECONDARY OBJECTIVES:\n\nI. To evaluate the safety of administering a HER2 CTL peptide-based vaccine in patients who are receiving trastuzumab and/or lapatinib (lapatinib ditosylate).\n\nOUTLINE:\n\nPatients receive HER-2/neu peptide vaccine intradermally (ID) once monthly for 3 months.\n\nAfter completion of study treatment, patients are followed up at 4 weeks."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HER2-positive Breast Cancer",
+              "Male Breast Cancer",
+              "Recurrent Breast Cancer",
+              "Stage IV Breast Cancer"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 3,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Treatment (HER-2/neu peptide vaccine)",
+                "type": "EXPERIMENTAL",
+                "description": "Patients receive HER-2/neu peptide vaccine ID once monthly for 3 months.",
+                "interventionNames": [
+                  "Biological: HER-2/neu peptide vaccine"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "HER-2/neu peptide vaccine",
+                "description": "Given ID",
+                "armGroupLabels": [
+                  "Treatment (HER-2/neu peptide vaccine)"
+                ],
+                "otherNames": [
+                  "HER-2"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Quantification and characterization of HER2-specific TCM and TEM subsets in PBMC",
+                "description": "Wilson score 90% confidence intervals will be reported.",
+                "timeFrame": "Up to 4 weeks"
+              },
+              {
+                "measure": "Evaluation of function and phenotype of HER2-specific TE cells derived from HER2-specific TCM and TEM subsets",
+                "description": "Wilson score 90% confidence intervals will be reported. Determined by flow cytometry and reported using descriptive statistics and graphical summaries.",
+                "timeFrame": "Up to 4 weeks"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "The number of subjects reporting adverse events, evaluated according to the Cancer Therapy Evaluation Program (CTEP) Common Terminology Criteria for Adverse Events (CTCAE) version 4.0",
+                "description": "All, severe or worse, serious and related events will be quantified.",
+                "timeFrame": "Up to 4 weeks"
+              },
+              {
+                "measure": "The percent of subjects recording adverse events, evaluated according to the CTEP CTCAE version 4.0",
+                "description": "All, severe or worse, serious and related events will be quantified.",
+                "timeFrame": "Up to 4 weeks"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Patients with HER2+ stage IV breast cancer that have been maximally treated and not in a complete remission\n* Patients must have measurable disease per imaging studies performed within 60 days of enrollment as described below:\n\n  * Extra skeletal disease that can be measured with conventional or spiral computed tomography (CT) techniques\n  * Skeletal or bone-only disease that is measurable by fludeoxyglucose F 18 (FDG) positron emission tomography (PET) or magnetic resonance imaging (MRI)\n* Patients can be receiving trastuzumab and/or lapatinib and/or hormonal therapy and/or bisphosphonate therapy\n* HER2 overexpression in the primary tumor or metastasis by immunohistochemistry (IHC) of 3+, or documented gene amplification by fluorescent in situ hybridization (FISH) analysis\n* Patients must be human leukocyte antigen (HLA)-A2 positive\n* Eastern Cooperative Oncology Group (ECOG)/Zubrod scale of =\\< 1\n* Patients must be off immunosuppressive treatments (i.e., chemotherapy or systemic steroids) 3 weeks prior to first vaccine\n* Patients on trastuzumab must have a baseline left ventricular ejection fraction (LVEF) measured by multi gated acquisition scan (MUGA) or echocardiogram (ECHO) \\>= the lower limit of normal for the facility within 3 months of enrollment to study\n* Subjects of reproductive ability must agree to use contraceptives during the entire study period\n\nExclusion Criteria:\n\n* White blood cell (WBC) \\< 3000/mm\\^3\n* Hemoglobin (Hgb) \\< 10 mg/dl\n* Platelets \\< 100,000/mm\\^3\n* Serum creatinine \\> 2.0 mg/dl\n* Serum bilirubin \\> 1.5 x upper limit of normal\n* Any contraindication to receiving sargramostim (GM-CSF) based vaccine products\n* Concurrent enrollment in other treatment studies\n* New York Heart Association functional class III-IV heart failure, symptomatic pericardial effusion, or unstable angina\n* Pregnant or breast-feeding women\n* History of disorders associated with immunosuppression such as human immunodeficiency virus (HIV)\n* Active brain metastasis",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "19 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Lupe Salazar",
+                "affiliation": "Fred Hutchinson Cancer Research Center/University of Washington Cancer Consortium",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Fred Hutchinson Cancer Research Center/University of Washington Cancer Consortium",
+                "city": "Seattle",
+                "state": "Washington",
+                "zip": "98109",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 47.60621,
+                  "lon": -122.33207
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01729884",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11797435/",
+          "identifier": "PMC:11797435",
+          "title": "Recent advances and applications of peptide-agent conjugates for targeting tumor cells.",
+          "snippet": "Title: Recent advances and applications of peptide-agent conjugates for targeting tumor cells.\nAuthors: Alamdari-Palangi V, Jaberi KR, Shahverdi M et al.\nJournal: J Cancer Res Clin Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:50.044419"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7223380/",
+          "identifier": "PMC:7223380",
+          "title": "HER2-Positive Breast Cancer Immunotherapy: A Focus on Vaccine Development.",
+          "snippet": "Title: HER2-Positive Breast Cancer Immunotherapy: A Focus on Vaccine Development.\nAuthors: Arab A, Yazdian-Robati R, Behravan J\nJournal: Arch Immunol Ther Exp (Warsz)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:50.044500"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4229628/",
+          "identifier": "PMC:4229628",
+          "title": "HER2-positive advanced breast cancer: optimizing patient outcomes and opportunities for drug development.",
+          "snippet": "Title: HER2-positive advanced breast cancer: optimizing patient outcomes and opportunities for drug development.\nAuthors: Singh JC, Jhaveri K, Esteva FJ\nJournal: Br J Cancer",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:50.044514"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3902120/",
+          "identifier": "PMC:3902120",
+          "title": "Trial Watch: Peptide vaccines in cancer therapy.",
+          "snippet": "Title: Trial Watch: Peptide vaccines in cancer therapy.\nAuthors: Aranda F, Vacchelli E, Eggermont A et al.\nJournal: Oncoimmunology",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:33:50.044526"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "11797435",
+          "7223380",
+          "4229628",
+          "3902120"
+        ],
+        "pmc_count": 4,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01729884",
+      "citations": [],
+      "raw_data": {
+        "uniprot_HER-2/neu peptide vaccine": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01729884",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 403
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01729884",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_HER-2/neu peptide vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01729884",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297811/",
+          "identifier": "CHEMBL4297811",
+          "title": "PR1 LEUKEMIA PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: PR1 LEUKEMIA PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:34:26.350559"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4650424/",
+          "identifier": "CHEMBL4650424",
+          "title": "SVN53-67/M57-KLH PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: SVN53-67/M57-KLH PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 2.0\nMechanism: Hemocyanin 1 vaccine antigen; Baculoviral IAP repeat-containing protein 5 vaccine antigen",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:34:26.874027"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'HER-2/neu peptide vaccine'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01729884",
+      "citations": [],
+      "raw_data": {
+        "rcsb_HER-2/neu peptide vaccine": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01729884",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_HER-2/neu peptide vaccine_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT01729884",
+      "citations": [],
+      "raw_data": {
+        "apd_HER-2/neu peptide vaccine": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT01729884",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01729884",
+          "identifier": "NCT01729884",
+          "title": "Vaccine Therapy in Treating Patients With Stage IV Hormone Receptor Positive Breast Cancer",
+          "snippet": "Title: Vaccine Therapy in Treating Patients With Stage IV Hormone Receptor Positive Breast Cancer\nStatus: Terminated\nPhase: Phase 2\nCountries: United States\nConditions: Male Breast Cancer, Recurrent Breast Cancer, Stage IV Breast Cancer, HER2-positive Breast Cancer\nInterventions: Biological: HER-2/neu peptide vaccine\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-19T08:35:33.399878"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT01729884",
+          "public_title": "Vaccine Therapy in Treating Patients With Stage IV Hormone Receptor Positive Breast Cancer",
+          "scientific_title": "Phase II Study to Evaluate the Development of HER2/Neu (HER2)-Specific Memory T Cells After HER2 Peptide-based Vaccination in Patients With Advanced Stage Her2+ Breast Cancer",
+          "recruitment_status": "Terminated",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Intervention model: Single Group Assignment. Primary purpose: Treatment. Masking: None (Open Label).",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Male Breast Cancer",
+            "Recurrent Breast Cancer",
+            "Stage IV Breast Cancer",
+            "HER2-positive Breast Cancer"
+          ],
+          "interventions": [
+            "Biological: HER-2/neu peptide vaccine"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT01729884",
+      "citations": [],
+      "raw_data": {
+        "iuphar_HER-2/neu peptide vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT01729884",
+      "citations": [],
+      "raw_data": {
+        "pdbe_HER-2/neu peptide vaccine_count": 0
+      },
+      "error": null
+    }
+  ]
+}

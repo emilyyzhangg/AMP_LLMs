@@ -1,0 +1,1270 @@
+{
+  "nct_id": "NCT01158846",
+  "metadata": {
+    "nct_id": "NCT01158846",
+    "title": "Bivalirudin Plus Prasugrel vs Abciximab Plus Clopidogrel. Optimizing Ischemic Protection and Bleeding Risk in Patients With ST Elevation Myocardial Infarction Undergoing Primary Percutaneous Coronary Intervention",
+    "phase": "PHASE4",
+    "status": "UNKNOWN",
+    "conditions": [
+      "ST-Elevation Myocardial Infarction",
+      "Primary Percutaneous Coronary Intervention"
+    ],
+    "interventions": [
+      "DRUG: prasugrel/bivalirudin",
+      "DRUG: clopidogrel/abciximab"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "False",
+      "confidence": 0.93,
+      "reasoning": "[Pass 1 extraction] Here are the extracted facts for each intervention:\n\n**Intervention 1: Prasugrel**\n\n1. INTERVENTION NAME: Prasugrel\n2. MOLECULAR CLASS: Small molecule (non-peptide chemical compound, typically <900 Da)\n3. DATABASE CONFIRMATION:\n\t* UniProt: not found\n\t* DRAMP/DBAASP: not found\n\t* ChEMBL: entry found as a small molecule (peptide, small molecule, protein, antibody) - ChEMBL ID: CHEMBL1201586\n\t* PDB: \n[Pass 2 decision] Peptide: Bivalirudin: True, Intervention 2 is a short peptide chain with UniProt and ChEMBL entries.\n\nReasoning:\nStep 1: Intervention 2 has a molecular class of \"Short peptide chain\", so we proceed to Step 2.\nStep 2: The active ingredient role for Intervention 2 is \"Active therapeutic agent\" and it has database confirmation in UniProt, making it a peptide.\nStep 3: We confirm that Bivalirudin is in",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Bivalirudin Plus Prasugrel vs Abciximab Plus Clopidogrel. Optimizing Ischemic Protection and Bleeding Risk in Patients With ST Elevation Myocardial Infarction Undergoing Primary Percutaneous Coronary Intervention",
+          "snippet": "Title: Bivalirudin Plus Prasugrel vs Abciximab Plus Clopidogrel. Optimizing Ischemic Protection and Bleeding Risk in Patients With ST Elevation Myocardial Infarction Undergoing Primary Percutaneous Coronary Intervention",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177510"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Brief Summary",
+          "snippet": "In the setting of ST elevation myocardial infarction newer therapies has been recently studied and, following encouraging results, introduced into the clinical practice. Prasugrel showed to be a valid alternative to overcome limitation of clopidogrel therefore providing a better ischemic protection. On the other hand, bivalirudin is at least as beneficial as heparin/abciximab as anticoagulant agent but associated with fewer hemorrhagic events. The primary hypothesis of the study is that the comb",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177553"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: ST-Elevation Myocardial Infarction, Primary Percutaneous Coronary Intervention | Keywords: STEMI, Primary PCI, anticoagulants, antiplatelets",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177575"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Intervention: prasugrel/bivalirudin",
+          "snippet": "DRUG: prasugrel/bivalirudin - 60mg loading dose followed by 10mg or 5 mg (according to body weight or age)maintenance dose of prasugrel. Bivalirudin during the primary PCI (bolus plus infusion)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177588"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Intervention: clopidogrel/abciximab",
+          "snippet": "DRUG: clopidogrel/abciximab - 600mg loading dose of clopidogrel followed by 75mg maintenance dose. Abciximab will be used during primary PCI, bolus plus infusion.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177596"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/22889871/",
+          "identifier": "PMID:22889871",
+          "title": "Acute ST-elevation myocardial infarction.",
+          "snippet": "Title: Acute ST-elevation myocardial infarction.\nAuthors: Bates Eric R, Menees Daniel S\nJournal: Current opinion in critical care (2012)\nAbstract: PURPOSE OF REVIEW: Acute ST-elevation myocardial infarction (STEMI) is a major cause of morbidity, mortality, and disability. This review summarizes recent advances in the treatment of patients with STEMI. RECENT FINDINGS: The best prehospital and interhospital transfer strategy for patients with ST",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430583"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/31122865/",
+          "identifier": "PMID:31122865",
+          "title": "Adjuvant antithrombotic therapy in ST-elevation myocardial infarction: A narrative review.",
+          "snippet": "Title: Adjuvant antithrombotic therapy in ST-elevation myocardial infarction: A narrative review.\nAuthors: Caldeira Daniel, Pereira H\u00e9lder\nJournal: Revista portuguesa de cardiologia (2019)\nAbstract: This article reviews the major pharmacologic features of, and clinical evidence on, adjuvant medical therapy in patients with ST-elevation myocardial infarction (STEMI) treated with primary percutaneous coronary intervention. These drugs include oral antiplatelets (aspirin and P2Y12 inhibitors such ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430658"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/24630789/",
+          "identifier": "PMID:24630789",
+          "title": "Outcomes in patients with ST-segment elevation acute myocardial infarction treated with clopidogrel versus prasugrel (from the INFUSE-AMI trial).",
+          "snippet": "Title: Outcomes in patients with ST-segment elevation acute myocardial infarction treated with clopidogrel versus prasugrel (from the INFUSE-AMI trial).\nAuthors: Brener Sorin J, Oldroyd Keith G, Maehara Akiko et al.\nJournal: The American journal of cardiology (2014)\nAbstract: Prasugrel is more potent than clopidogrel, but it is not known whether this translates into clinical benefit in patients undergoing primary percutaneous coronary intervention (PCI) with bivalirudin for ST elevation myocardial infarction. In the Intracoronary Abciximab and Aspiration Thrombectomy in ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430687"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/20375882/",
+          "identifier": "PMID:20375882",
+          "title": "Anesthetic concerns for patients with coagulopathy.",
+          "snippet": "Title: Anesthetic concerns for patients with coagulopathy.\nAuthors: Levy Jerrold H, Azran Marc\nJournal: Current opinion in anaesthesiology (2010)\nAbstract: PURPOSE OF REVIEW: Patients often receive preoperative therapies that interfere with hemostasis, and can present for surgery with underlying hemostatic disorders because of pre-existing preoperative anticoagulation or antiplatelet therapy. Perioperative bleeding can occur following surgery due to mu",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430708"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9199999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: False\nDatabase Matches: No evidence found\nMechanism: No evidence found\nTherapeutic Target: ST-Elevation Myocardial Infarction, Primary Percutaneous Coronary Intervention\nImmune Direction: No evidence found\n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is not a peptide (Peptide determination = False). Therefore, it cannot be an AMP. Classification stops here and is \"Other\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Bivalirudin Plus Prasugrel vs Abciximab Plus Clopidogrel. Optimizing Ischemic Protection and Bleeding Risk in Patients With ST Elevation Myocardial Infarction Undergoing Primary Percutaneous Coronary Intervention",
+          "snippet": "Title: Bivalirudin Plus Prasugrel vs Abciximab Plus Clopidogrel. Optimizing Ischemic Protection and Bleeding Risk in Patients With ST Elevation Myocardial Infarction Undergoing Primary Percutaneous Coronary Intervention",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177510"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Brief Summary",
+          "snippet": "In the setting of ST elevation myocardial infarction newer therapies has been recently studied and, following encouraging results, introduced into the clinical practice. Prasugrel showed to be a valid alternative to overcome limitation of clopidogrel therefore providing a better ischemic protection. On the other hand, bivalirudin is at least as beneficial as heparin/abciximab as anticoagulant agent but associated with fewer hemorrhagic events. The primary hypothesis of the study is that the comb",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177553"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: ST-Elevation Myocardial Infarction, Primary Percutaneous Coronary Intervention | Keywords: STEMI, Primary PCI, anticoagulants, antiplatelets",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177575"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Intervention: prasugrel/bivalirudin",
+          "snippet": "DRUG: prasugrel/bivalirudin - 60mg loading dose followed by 10mg or 5 mg (according to body weight or age)maintenance dose of prasugrel. Bivalirudin during the primary PCI (bolus plus infusion)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177588"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Intervention: clopidogrel/abciximab",
+          "snippet": "DRUG: clopidogrel/abciximab - 600mg loading dose of clopidogrel followed by 75mg maintenance dose. Abciximab will be used during primary PCI, bolus plus infusion.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177596"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Bivalirudin/Prasugrel Versus Abciximab/Clopidogrel in Patients Presenting With STEMI",
+          "snippet": "Title: Bivalirudin/Prasugrel Versus Abciximab/Clopidogrel in Patients Presenting With STEMI\nStatus: Not yet recruiting\nPhase: Phase 4\nCountries: Italy\nConditions: Primary Percutaneous Coronary Intervention, ST-Elevation Myocardial Infarction\nInterventions: Drug: prasugrel/bivalirudin, Drug: clopidogrel/abciximab\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-19T08:32:21.690427"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/22889871/",
+          "identifier": "PMID:22889871",
+          "title": "Acute ST-elevation myocardial infarction.",
+          "snippet": "Title: Acute ST-elevation myocardial infarction.\nAuthors: Bates Eric R, Menees Daniel S\nJournal: Current opinion in critical care (2012)\nAbstract: PURPOSE OF REVIEW: Acute ST-elevation myocardial infarction (STEMI) is a major cause of morbidity, mortality, and disability. This review summarizes recent advances in the treatment of patients with STEMI. RECENT FINDINGS: The best prehospital and interhospital transfer strategy for patients with ST",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430583"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/31122865/",
+          "identifier": "PMID:31122865",
+          "title": "Adjuvant antithrombotic therapy in ST-elevation myocardial infarction: A narrative review.",
+          "snippet": "Title: Adjuvant antithrombotic therapy in ST-elevation myocardial infarction: A narrative review.\nAuthors: Caldeira Daniel, Pereira H\u00e9lder\nJournal: Revista portuguesa de cardiologia (2019)\nAbstract: This article reviews the major pharmacologic features of, and clinical evidence on, adjuvant medical therapy in patients with ST-elevation myocardial infarction (STEMI) treated with primary percutaneous coronary intervention. These drugs include oral antiplatelets (aspirin and P2Y12 inhibitors such ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430658"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/24630789/",
+          "identifier": "PMID:24630789",
+          "title": "Outcomes in patients with ST-segment elevation acute myocardial infarction treated with clopidogrel versus prasugrel (from the INFUSE-AMI trial).",
+          "snippet": "Title: Outcomes in patients with ST-segment elevation acute myocardial infarction treated with clopidogrel versus prasugrel (from the INFUSE-AMI trial).\nAuthors: Brener Sorin J, Oldroyd Keith G, Maehara Akiko et al.\nJournal: The American journal of cardiology (2014)\nAbstract: Prasugrel is more potent than clopidogrel, but it is not known whether this translates into clinical benefit in patients undergoing primary percutaneous coronary intervention (PCI) with bivalirudin for ST elevation myocardial infarction. In the Intracoronary Abciximab and Aspiration Thrombectomy in ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430687"
+        }
+      ],
+      "model_name": "qwen2.5:14b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Oral - Unspecified",
+      "confidence": 0.93,
+      "reasoning": "[Pass 1 route extraction] Here are the extracted information:\n\n1. Protocol Route:\nNot specified.\n\n2. FDA/Label Route:\nNot found.\n\n3. Literature Route:\nFrom PMID:24630789: \"Outcomes in patients with ST-segment elevation acute myocardial infarction treated with clopidogrel versus prasugrel (from the INFUSE-AMI trial).\" \nThe text does not mention the route of administration for prasugrel.\nHowever, from PMID:31122865: \"Adjuvan\n[Pass 2 classification] Delivery Mode: Oral - Unspecified\nEvidence: Trial metadata from NCT01158846\nReasoning: The trial metadata describes prasugrel as an oral antiplatelet agent, but does not specify a specific formulation or route. Since there is no information about the route of administration in the literature or othe",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Bivalirudin Plus Prasugrel vs Abciximab Plus Clopidogrel. Optimizing Ischemic Protection and Bleeding Risk in Patients With ST Elevation Myocardial Infarction Undergoing Primary Percutaneous Coronary Intervention",
+          "snippet": "Title: Bivalirudin Plus Prasugrel vs Abciximab Plus Clopidogrel. Optimizing Ischemic Protection and Bleeding Risk in Patients With ST Elevation Myocardial Infarction Undergoing Primary Percutaneous Coronary Intervention",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177510"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Brief Summary",
+          "snippet": "In the setting of ST elevation myocardial infarction newer therapies has been recently studied and, following encouraging results, introduced into the clinical practice. Prasugrel showed to be a valid alternative to overcome limitation of clopidogrel therefore providing a better ischemic protection. On the other hand, bivalirudin is at least as beneficial as heparin/abciximab as anticoagulant agent but associated with fewer hemorrhagic events. The primary hypothesis of the study is that the comb",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177553"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: ST-Elevation Myocardial Infarction, Primary Percutaneous Coronary Intervention | Keywords: STEMI, Primary PCI, anticoagulants, antiplatelets",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177575"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Intervention: prasugrel/bivalirudin",
+          "snippet": "DRUG: prasugrel/bivalirudin - 60mg loading dose followed by 10mg or 5 mg (according to body weight or age)maintenance dose of prasugrel. Bivalirudin during the primary PCI (bolus plus infusion)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177588"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Intervention: clopidogrel/abciximab",
+          "snippet": "DRUG: clopidogrel/abciximab - 600mg loading dose of clopidogrel followed by 75mg maintenance dose. Abciximab will be used during primary PCI, bolus plus infusion.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177596"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/22889871/",
+          "identifier": "PMID:22889871",
+          "title": "Acute ST-elevation myocardial infarction.",
+          "snippet": "Title: Acute ST-elevation myocardial infarction.\nAuthors: Bates Eric R, Menees Daniel S\nJournal: Current opinion in critical care (2012)\nAbstract: PURPOSE OF REVIEW: Acute ST-elevation myocardial infarction (STEMI) is a major cause of morbidity, mortality, and disability. This review summarizes recent advances in the treatment of patients with STEMI. RECENT FINDINGS: The best prehospital and interhospital transfer strategy for patients with ST",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430583"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/31122865/",
+          "identifier": "PMID:31122865",
+          "title": "Adjuvant antithrombotic therapy in ST-elevation myocardial infarction: A narrative review.",
+          "snippet": "Title: Adjuvant antithrombotic therapy in ST-elevation myocardial infarction: A narrative review.\nAuthors: Caldeira Daniel, Pereira H\u00e9lder\nJournal: Revista portuguesa de cardiologia (2019)\nAbstract: This article reviews the major pharmacologic features of, and clinical evidence on, adjuvant medical therapy in patients with ST-elevation myocardial infarction (STEMI) treated with primary percutaneous coronary intervention. These drugs include oral antiplatelets (aspirin and P2Y12 inhibitors such ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430658"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/24630789/",
+          "identifier": "PMID:24630789",
+          "title": "Outcomes in patients with ST-segment elevation acute myocardial infarction treated with clopidogrel versus prasugrel (from the INFUSE-AMI trial).",
+          "snippet": "Title: Outcomes in patients with ST-segment elevation acute myocardial infarction treated with clopidogrel versus prasugrel (from the INFUSE-AMI trial).\nAuthors: Brener Sorin J, Oldroyd Keith G, Maehara Akiko et al.\nJournal: The American journal of cardiology (2014)\nAbstract: Prasugrel is more potent than clopidogrel, but it is not known whether this translates into clinical benefit in patients undergoing primary percutaneous coronary intervention (PCI) with bivalirudin for ST elevation myocardial infarction. In the Intracoronary Abciximab and Aspiration Thrombectomy in ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430687"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/20375882/",
+          "identifier": "PMID:20375882",
+          "title": "Anesthetic concerns for patients with coagulopathy.",
+          "snippet": "Title: Anesthetic concerns for patients with coagulopathy.\nAuthors: Levy Jerrold H, Azran Marc\nJournal: Current opinion in anaesthesiology (2010)\nAbstract: PURPOSE OF REVIEW: Patients often receive preoperative therapies that interfere with hemostasis, and can present for surgery with underlying hemostatic disorders because of pre-existing preoperative anticoagulation or antiplatelet therapy. Perioperative bleeding can occur following surgery due to mu",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430708"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.9199999999999999,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\n**Registry Status:** UNKNOWN\n**Trial Phase:** PHASE 4\n**Published Results:** None found that directly relate to the trial results. However, there are several publications related to ST-elevation myocardial infarction (STEMI) and antithrombotic therapy:\n* PMID:22889871 discusses acute STEMI management.\n* PMID:31122865 reviews adjuvant antithrombotic therapy in STEMI.\n* PMID:24630789 compares outcomes of clopidogrel vs prasugrel in STEMI patients (from the INFUS\n[Pass 2 decision] Since the trial status is unknown and there are no published results directly related to this trial, I applied COMPLETION HEURISTICS H5. As a result, the outcome is classified as \"Unknown\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Bivalirudin Plus Prasugrel vs Abciximab Plus Clopidogrel. Optimizing Ischemic Protection and Bleeding Risk in Patients With ST Elevation Myocardial Infarction Undergoing Primary Percutaneous Coronary Intervention",
+          "snippet": "Title: Bivalirudin Plus Prasugrel vs Abciximab Plus Clopidogrel. Optimizing Ischemic Protection and Bleeding Risk in Patients With ST Elevation Myocardial Infarction Undergoing Primary Percutaneous Coronary Intervention",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177510"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Brief Summary",
+          "snippet": "In the setting of ST elevation myocardial infarction newer therapies has been recently studied and, following encouraging results, introduced into the clinical practice. Prasugrel showed to be a valid alternative to overcome limitation of clopidogrel therefore providing a better ischemic protection. On the other hand, bivalirudin is at least as beneficial as heparin/abciximab as anticoagulant agent but associated with fewer hemorrhagic events. The primary hypothesis of the study is that the comb",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177553"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: ST-Elevation Myocardial Infarction, Primary Percutaneous Coronary Intervention | Keywords: STEMI, Primary PCI, anticoagulants, antiplatelets",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177575"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Intervention: prasugrel/bivalirudin",
+          "snippet": "DRUG: prasugrel/bivalirudin - 60mg loading dose followed by 10mg or 5 mg (according to body weight or age)maintenance dose of prasugrel. Bivalirudin during the primary PCI (bolus plus infusion)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177588"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Intervention: clopidogrel/abciximab",
+          "snippet": "DRUG: clopidogrel/abciximab - 600mg loading dose of clopidogrel followed by 75mg maintenance dose. Abciximab will be used during primary PCI, bolus plus infusion.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177596"
+        },
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Bivalirudin/Prasugrel Versus Abciximab/Clopidogrel in Patients Presenting With STEMI",
+          "snippet": "Title: Bivalirudin/Prasugrel Versus Abciximab/Clopidogrel in Patients Presenting With STEMI\nStatus: Not yet recruiting\nPhase: Phase 4\nCountries: Italy\nConditions: Primary Percutaneous Coronary Intervention, ST-Elevation Myocardial Infarction\nInterventions: Drug: prasugrel/bivalirudin, Drug: clopidogrel/abciximab\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-19T08:32:21.690427"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/22889871/",
+          "identifier": "PMID:22889871",
+          "title": "Acute ST-elevation myocardial infarction.",
+          "snippet": "Title: Acute ST-elevation myocardial infarction.\nAuthors: Bates Eric R, Menees Daniel S\nJournal: Current opinion in critical care (2012)\nAbstract: PURPOSE OF REVIEW: Acute ST-elevation myocardial infarction (STEMI) is a major cause of morbidity, mortality, and disability. This review summarizes recent advances in the treatment of patients with STEMI. RECENT FINDINGS: The best prehospital and interhospital transfer strategy for patients with ST",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430583"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/31122865/",
+          "identifier": "PMID:31122865",
+          "title": "Adjuvant antithrombotic therapy in ST-elevation myocardial infarction: A narrative review.",
+          "snippet": "Title: Adjuvant antithrombotic therapy in ST-elevation myocardial infarction: A narrative review.\nAuthors: Caldeira Daniel, Pereira H\u00e9lder\nJournal: Revista portuguesa de cardiologia (2019)\nAbstract: This article reviews the major pharmacologic features of, and clinical evidence on, adjuvant medical therapy in patients with ST-elevation myocardial infarction (STEMI) treated with primary percutaneous coronary intervention. These drugs include oral antiplatelets (aspirin and P2Y12 inhibitors such ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430658"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/24630789/",
+          "identifier": "PMID:24630789",
+          "title": "Outcomes in patients with ST-segment elevation acute myocardial infarction treated with clopidogrel versus prasugrel (from the INFUSE-AMI trial).",
+          "snippet": "Title: Outcomes in patients with ST-segment elevation acute myocardial infarction treated with clopidogrel versus prasugrel (from the INFUSE-AMI trial).\nAuthors: Brener Sorin J, Oldroyd Keith G, Maehara Akiko et al.\nJournal: The American journal of cardiology (2014)\nAbstract: Prasugrel is more potent than clopidogrel, but it is not known whether this translates into clinical benefit in patients undergoing primary percutaneous coronary intervention (PCI) with bivalirudin for ST elevation myocardial infarction. In the Intracoronary Abciximab and Aspiration Thrombectomy in ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430687"
+        }
+      ],
+      "model_name": "llama3.1:8b",
+      "skip_verification": false
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.3)] [Pre-check skip] Outcome is 'Unknown' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT01158846",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "False",
+        "final_value": "False",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "While bivalirudin is a protein, it's not a peptide. Peptides are short chains of amino acids, while proteins are longer chains with more complex structures and functions. Prasugrel is a small molecule drug.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "The primary intervention focuses on pharmacological treatments using prasugrel and bivalirudin (both classified as small molecules) rather than peptide therapeutics. Although bivalirudin contains peptides, it is not considered a peptide therapeutic in this context due to its role as an anticoagulant agent with the mechanism of action being that of a protein thrombin inhibitor.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "False",
+            "reasoning": "All the drugs mentioned in the trial are small molecules or proteins (antibody), not peptides.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This trial focuses on cardiovascular treatment, specifically comparing antiplatelet and anticoagulant drugs for managing heart attacks. None of the listed drugs are antimicrobial peptides (AMPs) as they do not directly kill or disrupt pathogens. They work by inhibiting platelet aggregation and thrombin activity to prevent blood clots.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "AMP(other)",
+            "reasoning": "Bivalirudin is a thrombin inhibitor (CHEMBL5314348), while prasugrel is an antiplatelet agent (CHEMBL1201584). Neither of these substances directly kills or disrupts pathogens through their own biochemical action, nor do they recruit innate immune cells to kill pathogens. Instead, they are used for anticoagulation and antiplatelet therapy in patients undergoing primary percutaneous coronary intervention for ST-elevation myocardial infarction (STEMI), which is not an infection but a cardiovascula",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Prasugrel is a small molecule with a molecular weight of 373.45 and functions as an integrin alpha-IIb/beta-3 inhibitor, while bivalirudin is a protein with a mechanism of action as a thrombin inhibitor. Neither of these drugs directly interact with pathogens to kill or disrupt them, making them 'Other' in the decision tree classification.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The drugs prasugrel and bivalirudin are used in the trial to manage heart attacks by inhibiting platelet aggregation (prasugrel) and thrombin inhibition (bivalirudin). Neither of these drugs directly interacts with pathogens or disrupts them, which is required for a classification as an antimicrobial peptide (AMP). Therefore, the correct classification based on their mechanisms of action is \"Other\".",
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Oral - Unspecified",
+        "final_value": "IV",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "IV",
+            "reasoning": "The protocol states that bivalirudin is administered as a bolus followed by an infusion during the primary PCI. This indicates intravenous administration.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "Delivery Mode: Injection/Infusion - Other/Unspecified\nEvidence: The clinical trial NCT01158846 involves the use of bivalirudin and prasugrel, as well as clopidogrel and abciximab. Both bivalirudin and abciximab are administered via intravenous (IV) infusion during primary percutaneous coronary intervention (PCI). However, the trial does not specify the exact route of administration for prasugrel and clopidogrel beyond stating that they are administered as oral medications (\"Drug: prasugrel/bival",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "IV",
+            "reasoning": "According to the ROUTE DETERMINATION RULES, Intravenous/IV infusion is 'IV' (not Injection/Infusion - Other). The trial metadata states that bivalirudin and abciximab will be administered during primary PCI as a bolus plus infusion, which indicates an intravenous delivery mode.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence clearly states that both bivalirudin and abciximab are administered via bolus followed by an infusion during the primary PCI procedure. This method of administration is unequivocally intravenous (IV). Therefore, the correct delivery mode for these drugs in this context is IV.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "According to the provided information, the trial's status on ClinicalTrials.gov is \"UNKNOWN.\" This means there is no publicly available data regarding the outcome of the trial. Additionally, despite searching PubMed for relevant publications, no results were found that specifically address the findings of this trial.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "Since the registry does not specify whether the trial was terminated, withdrawn, completed positively, or failed, and there is no evidence of published results showing either positive or negative outcomes, the status remains unknown.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Active, not recruiting",
+            "reasoning": "The trial is currently in the Phase 4 stage and its status on ClinicalTrials.gov is \"Not yet recruiting\". Therefore, it is considered 'Active, not recruiting'.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "The primary evidence from ClinicalTrials.gov indicates that the trial's status is \"UNKNOWN,\" which means there is no definitive information about its outcome. Additionally, WHO ICTRP shows the trial as \"Not yet recruiting.\" Given this lack of conclusive data regarding the trial\u2019s completion or results, it is most conservative to conclude that the outcome remains unknown.",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT01158846",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Bivalirudin Plus Prasugrel vs Abciximab Plus Clopidogrel. Optimizing Ischemic Protection and Bleeding Risk in Patients With ST Elevation Myocardial Infarction Undergoing Primary Percutaneous Coronary Intervention",
+          "snippet": "Title: Bivalirudin Plus Prasugrel vs Abciximab Plus Clopidogrel. Optimizing Ischemic Protection and Bleeding Risk in Patients With ST Elevation Myocardial Infarction Undergoing Primary Percutaneous Coronary Intervention",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177510"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Brief Summary",
+          "snippet": "In the setting of ST elevation myocardial infarction newer therapies has been recently studied and, following encouraging results, introduced into the clinical practice. Prasugrel showed to be a valid alternative to overcome limitation of clopidogrel therefore providing a better ischemic protection. On the other hand, bivalirudin is at least as beneficial as heparin/abciximab as anticoagulant agent but associated with fewer hemorrhagic events. The primary hypothesis of the study is that the comb",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177553"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177563"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: ST-Elevation Myocardial Infarction, Primary Percutaneous Coronary Intervention | Keywords: STEMI, Primary PCI, anticoagulants, antiplatelets",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177575"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Intervention: prasugrel/bivalirudin",
+          "snippet": "DRUG: prasugrel/bivalirudin - 60mg loading dose followed by 10mg or 5 mg (according to body weight or age)maintenance dose of prasugrel. Bivalirudin during the primary PCI (bolus plus infusion)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177588"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Intervention: clopidogrel/abciximab",
+          "snippet": "DRUG: clopidogrel/abciximab - 600mg loading dose of clopidogrel followed by 75mg maintenance dose. Abciximab will be used during primary PCI, bolus plus infusion.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177596"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Phase",
+          "snippet": "Phase: PHASE4",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-19T08:31:27.177604"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT01158846",
+            "orgStudyIdInfo": {
+              "id": "Biva/Pra versus Abcix/clop"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "B/P vs A/C for STEMI",
+                "type": "REGISTRY",
+                "domain": "Milan STEMI registry"
+              },
+              {
+                "id": "Biva/Pra versus Abcix/clop",
+                "type": "REGISTRY",
+                "domain": "Biva/Pra versus Abcix/clop"
+              },
+              {
+                "id": "Biva/Pra versus Abcix/clop",
+                "type": "REGISTRY",
+                "domain": "Milan STEMI registry"
+              }
+            ],
+            "organization": {
+              "fullName": "I.R.C.C.S Ospedale Galeazzi-Sant'Ambrogio",
+              "class": "OTHER"
+            },
+            "briefTitle": "Bivalirudin/Prasugrel Versus Abciximab/Clopidogrel in Patients Presenting With STEMI",
+            "officialTitle": "Bivalirudin Plus Prasugrel vs Abciximab Plus Clopidogrel. Optimizing Ischemic Protection and Bleeding Risk in Patients With ST Elevation Myocardial Infarction Undergoing Primary Percutaneous Coronary Intervention"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2010-06",
+            "overallStatus": "UNKNOWN",
+            "lastKnownStatus": "NOT_YET_RECRUITING",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2010-08"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2011-06",
+              "type": "ESTIMATED"
+            },
+            "completionDateStruct": {
+              "date": "2011-06",
+              "type": "ESTIMATED"
+            },
+            "studyFirstSubmitDate": "2010-06-25",
+            "studyFirstSubmitQcDate": "2010-07-07",
+            "studyFirstPostDateStruct": {
+              "date": "2010-07-08",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2010-07-07",
+            "lastUpdatePostDateStruct": {
+              "date": "2010-07-08",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "oldNameTitle": "Dr. Luca Testa",
+              "oldOrganization": "Istituto Clinico S.Ambrogio"
+            },
+            "leadSponsor": {
+              "name": "I.R.C.C.S Ospedale Galeazzi-Sant'Ambrogio",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "Centro Cardiologico Monzino",
+                "class": "OTHER"
+              },
+              {
+                "name": "Azienda Ospedaliera Niguarda C\u00e0 Granda",
+                "class": "OTHER"
+              },
+              {
+                "name": "Istituto Clinico Humanitas",
+                "class": "OTHER"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": false
+          },
+          "descriptionModule": {
+            "briefSummary": "In the setting of ST elevation myocardial infarction newer therapies has been recently studied and, following encouraging results, introduced into the clinical practice. Prasugrel showed to be a valid alternative to overcome limitation of clopidogrel therefore providing a better ischemic protection. On the other hand, bivalirudin is at least as beneficial as heparin/abciximab as anticoagulant agent but associated with fewer hemorrhagic events. The primary hypothesis of the study is that the combination of prasugrel plus bivalirudin can be associated with a better risk/benefit profile.",
+            "detailedDescription": "Background:\n\nIn the setting of STEMI, adjunctive pharmacological therapy plays a key role in the acute management. Along with the clear benefit of mechanical reperfusion strategies, several drugs showed to be beneficial. On top of clopidogrel, heparins and IIB/IIIa glycoprotein, other drugs have been recently introduced showing encouraging results. These \"new\" drugs, namely prasugrel and bivalirudin, have only been compared separately.\n\nPrimary hypothesis: the combination of prasugrel/bivalirudin is superior to the combination of clopidogrel and heparin/abciximab in terms of net adverse clinical events, i.e. ischemic events plus hemorrhagic events\n\nSetting:\n\n\\- patients presenting with ST-elevation myocardial infarction undergoing primary PCI\n\nMechanical reperfusion:\n\n-primary percutaneous coronary intervention\n\nPharmacological Interventions:\n\n\\- Two arms: Clopidogrel plus heparin/abciximab vs Prasugrel plus Bivalirudin\n\nFollow up:\n\n\\- 1 year\n\nMeasurements:\n\n* efficacy end points in terms of reduction of ischemic events\n* safety end points in terms of reduction of bleeding events"
+          },
+          "conditionsModule": {
+            "conditions": [
+              "ST-Elevation Myocardial Infarction",
+              "Primary Percutaneous Coronary Intervention"
+            ],
+            "keywords": [
+              "STEMI",
+              "Primary PCI",
+              "anticoagulants",
+              "antiplatelets"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE4"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 800,
+              "type": "ESTIMATED"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "prasugrel/bivalirudin",
+                "type": "ACTIVE_COMPARATOR",
+                "description": "60 mg loading dose of prasugrel will be followed by maintenance dose of 10mg (or 5mg according to body weight and age). During primary PCI, Bivalirudin will be used as anticoagulant (bolus plus infusion), on a weight-adjusted dose.",
+                "interventionNames": [
+                  "Drug: prasugrel/bivalirudin"
+                ]
+              },
+              {
+                "label": "clopidogrel/abciximab",
+                "type": "ACTIVE_COMPARATOR",
+                "description": "600mg loading dose of clopidogrel will be followed by 75mg maintenance dose. During primary PCI abciximab (bolus plus infusion) will be used as anticoagulant.",
+                "interventionNames": [
+                  "Drug: clopidogrel/abciximab"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "prasugrel/bivalirudin",
+                "description": "60mg loading dose followed by 10mg or 5 mg (according to body weight or age)maintenance dose of prasugrel. Bivalirudin during the primary PCI (bolus plus infusion)",
+                "armGroupLabels": [
+                  "prasugrel/bivalirudin"
+                ],
+                "otherNames": [
+                  "Efient",
+                  "Angiox"
+                ]
+              },
+              {
+                "type": "DRUG",
+                "name": "clopidogrel/abciximab",
+                "description": "600mg loading dose of clopidogrel followed by 75mg maintenance dose. Abciximab will be used during primary PCI, bolus plus infusion.",
+                "armGroupLabels": [
+                  "clopidogrel/abciximab"
+                ],
+                "otherNames": [
+                  "Plavix",
+                  "ReoPro"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "major adverse cardiovascular events",
+                "description": "Combined outcome of overall death, non fatal MI, major stroke",
+                "timeFrame": "1 year"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "major bleedings",
+                "description": "according to TIMI major bleedings definition",
+                "timeFrame": "1 year"
+              },
+              {
+                "measure": "minor bleedings",
+                "description": "according to TIMI minor bleedings definition",
+                "timeFrame": "1 year"
+              },
+              {
+                "measure": "stent thrombosis",
+                "description": "according to ARC definition of probable/definite stent thrombosis",
+                "timeFrame": "1 year"
+              },
+              {
+                "measure": "overall death",
+                "timeFrame": "1 year"
+              },
+              {
+                "measure": "non fatal myocardial infarction",
+                "description": "defined according to current guidelines",
+                "timeFrame": "1 year"
+              },
+              {
+                "measure": "ischemic stroke",
+                "timeFrame": "1 year"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* ST elevation myocardial infarction\n* No contraindication to primary PCI\n\nExclusion Criteria:\n\n* Known intolerance/allergy to one of the study drugs or their components\n* Clinical indication to treatment with oral anticoagulant, including use of warfarin or dabigatran or other oral anticoagulant agents",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "centralContacts": [
+              {
+                "name": "Luca Testa, MD, PhD",
+                "role": "CONTACT",
+                "phone": "+39-3490808660",
+                "email": "luctes@gmail.com"
+              }
+            ],
+            "overallOfficials": [
+              {
+                "name": "Luca Testa, MD,PhD",
+                "affiliation": "Istituto Clinico S. Ambrogio",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              },
+              {
+                "name": "Fracensco Bedogni, MD",
+                "affiliation": "Istituto Clinico S. Ambrogio",
+                "role": "STUDY_DIRECTOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Istituto Clinico S. Ambrogio",
+                "city": "Milan",
+                "zip": "20149",
+                "country": "Italy",
+                "contacts": [
+                  {
+                    "name": "Luca Testa, MD, PhD",
+                    "role": "CONTACT",
+                    "phone": "+39-3490808660",
+                    "email": "luctes@gmail.com"
+                  },
+                  {
+                    "name": "Luca Testa, Md, PhD",
+                    "role": "PRINCIPAL_INVESTIGATOR"
+                  },
+                  {
+                    "name": "Francesco Bedogni, MD",
+                    "role": "PRINCIPAL_INVESTIGATOR"
+                  }
+                ],
+                "geoPoint": {
+                  "lat": 45.46427,
+                  "lon": 9.18951
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "19249633",
+                "type": "BACKGROUND",
+                "citation": "Montalescot G, Wiviott SD, Braunwald E, Murphy SA, Gibson CM, McCabe CH, Antman EM; TRITON-TIMI 38 investigators. Prasugrel compared with clopidogrel in patients undergoing percutaneous coronary intervention for ST-elevation myocardial infarction (TRITON-TIMI 38): double-blind, randomised controlled trial. Lancet. 2009 Feb 28;373(9665):723-31. doi: 10.1016/S0140-6736(09)60441-4."
+              },
+              {
+                "pmid": "19717185",
+                "type": "BACKGROUND",
+                "citation": "Mehran R, Lansky AJ, Witzenbichler B, Guagliumi G, Peruga JZ, Brodie BR, Dudek D, Kornowski R, Hartmann F, Gersh BJ, Pocock SJ, Wong SC, Nikolsky E, Gambone L, Vandertie L, Parise H, Dangas GD, Stone GW; HORIZONS-AMI Trial Investigators. Bivalirudin in patients undergoing primary angioplasty for acute myocardial infarction (HORIZONS-AMI): 1-year results of a randomised controlled trial. Lancet. 2009 Oct 3;374(9696):1149-59. doi: 10.1016/S0140-6736(09)61484-7. Epub 2009 Aug 28."
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT01158846",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/22889871/",
+          "identifier": "PMID:22889871",
+          "title": "Acute ST-elevation myocardial infarction.",
+          "snippet": "Title: Acute ST-elevation myocardial infarction.\nAuthors: Bates Eric R, Menees Daniel S\nJournal: Current opinion in critical care (2012)\nAbstract: PURPOSE OF REVIEW: Acute ST-elevation myocardial infarction (STEMI) is a major cause of morbidity, mortality, and disability. This review summarizes recent advances in the treatment of patients with STEMI. RECENT FINDINGS: The best prehospital and interhospital transfer strategy for patients with ST",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430583"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/31122865/",
+          "identifier": "PMID:31122865",
+          "title": "Adjuvant antithrombotic therapy in ST-elevation myocardial infarction: A narrative review.",
+          "snippet": "Title: Adjuvant antithrombotic therapy in ST-elevation myocardial infarction: A narrative review.\nAuthors: Caldeira Daniel, Pereira H\u00e9lder\nJournal: Revista portuguesa de cardiologia (2019)\nAbstract: This article reviews the major pharmacologic features of, and clinical evidence on, adjuvant medical therapy in patients with ST-elevation myocardial infarction (STEMI) treated with primary percutaneous coronary intervention. These drugs include oral antiplatelets (aspirin and P2Y12 inhibitors such ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430658"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/24630789/",
+          "identifier": "PMID:24630789",
+          "title": "Outcomes in patients with ST-segment elevation acute myocardial infarction treated with clopidogrel versus prasugrel (from the INFUSE-AMI trial).",
+          "snippet": "Title: Outcomes in patients with ST-segment elevation acute myocardial infarction treated with clopidogrel versus prasugrel (from the INFUSE-AMI trial).\nAuthors: Brener Sorin J, Oldroyd Keith G, Maehara Akiko et al.\nJournal: The American journal of cardiology (2014)\nAbstract: Prasugrel is more potent than clopidogrel, but it is not known whether this translates into clinical benefit in patients undergoing primary percutaneous coronary intervention (PCI) with bivalirudin for ST elevation myocardial infarction. In the Intracoronary Abciximab and Aspiration Thrombectomy in ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430687"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/20375882/",
+          "identifier": "PMID:20375882",
+          "title": "Anesthetic concerns for patients with coagulopathy.",
+          "snippet": "Title: Anesthetic concerns for patients with coagulopathy.\nAuthors: Levy Jerrold H, Azran Marc\nJournal: Current opinion in anaesthesiology (2010)\nAbstract: PURPOSE OF REVIEW: Patients often receive preoperative therapies that interfere with hemostasis, and can present for surgery with underlying hemostatic disorders because of pre-existing preoperative anticoagulation or antiplatelet therapy. Perioperative bleeding can occur following surgery due to mu",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430708"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/29345590/",
+          "identifier": "PMID:29345590",
+          "title": "What is the Role for Glycoprotein IIb/IIIa Inhibitor Use in the Catheterization Laboratory in the Current Era?",
+          "snippet": "Title: What is the Role for Glycoprotein IIb/IIIa Inhibitor Use in the Catheterization Laboratory in the Current Era?\nAuthors: Rubboli Andrea, Patti Giuseppe\nJournal: Current vascular pharmacology (2018)\nAbstract: BACKGROUND: In the era of dual antiplatelet therapy of aspirin and clopidogrel and systematic stent implantation, Glycoprotein IIb/IIIa Inhibitors (GPI), including abciximab, eptifibatide and tirofiban, proved beneficial in improving early outcome of Percutaneous Coronary Intervention (PCI), especia",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-03-19T08:31:39.430728"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "pubmed_fallback_query": "prasugrel/bivalirudin clopidogrel/abciximab",
+        "pubmed_fallback_ids": [
+          "22889871",
+          "31122865",
+          "24630789",
+          "20375882",
+          "29345590"
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT01158846",
+      "citations": [],
+      "raw_data": {
+        "uniprot_prasugrel/bivalirudin": [],
+        "uniprot_clopidogrel/abciximab": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT01158846",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT01158846",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_prasugrel/bivalirudin": {
+          "found": false
+        },
+        "dbaasp_clopidogrel/abciximab": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT01158846",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1201772/",
+          "identifier": "CHEMBL1201772",
+          "title": "PRASUGREL - ChEMBL",
+          "snippet": "Molecule: PRASUGREL\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 373.45\nFirst approval: 2009\nBioactivity: Activity=32.1 % (Rattus norvegicus); Potency=14125.4 nM (Putative uncharacterized protein); Activity=23.0 % (Homo sapiens); Activity=18.0 % (Homo sapiens); TIME=0.15 hr (Mus musculus)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:31:29.466885"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5314348/",
+          "identifier": "CHEMBL5314348",
+          "title": "BIVALIRUDIN - ChEMBL",
+          "snippet": "Molecule: BIVALIRUDIN\nType: Protein\nMax clinical phase: 4.0\nFirst approval: 2000\nMechanism: Thrombin inhibitor\nBioactivity: IC50=133000.0 nM (Bile salt export pump); IC50=133000.0 nM (ATP-binding cassette sub-family C member 2); IC50=133000.0 nM (ATP-binding cassette sub-family C member 3); IC50=133000.0 nM (ATP-binding cassette sub-family C member 4); DILI_severity_class=0.0 (Homo sapiens)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:31:30.143406"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1201584/",
+          "identifier": "CHEMBL1201584",
+          "title": "ABCIXIMAB - ChEMBL",
+          "snippet": "Molecule: ABCIXIMAB\nType: Antibody\nMax clinical phase: 4.0\nFirst approval: 1993\nMechanism: Integrin alpha-IIb/beta-3 inhibitor; Integrin alpha-V/beta-3 inhibitor",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:31:31.255211"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1771/",
+          "identifier": "CHEMBL1771",
+          "title": "CLOPIDOGREL - ChEMBL",
+          "snippet": "Molecule: CLOPIDOGREL\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 321.83\nFirst approval: 1997\nBioactivity: Km=55700.0 nM (Liver carboxylesterase 1); pKm=4.25 (Liver carboxylesterase 1); Potency=19952.6 nM (Nonstructural protein 1)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:31:32.110561"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1333662/",
+          "identifier": "CHEMBL1333662",
+          "title": "CHEMBL1333662 - ChEMBL",
+          "snippet": "Molecule: CHEMBL1333662\nType: Small molecule\nMolecular weight: 321.83\nBioactivity: Potency=1.0 nM (Thyroid hormone receptor beta); Potency=35481.3 nM (Nuclear receptor ROR-gamma); Potency=56234.1 nM (4'-phosphopantetheinyl transferase ffp); Potency=19905.4 nM (Fructose-bisphosphate aldolase); Potency=17740.7 nM (Fructose-bisphosphate aldolase)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-19T08:31:32.581486"
+        }
+      ],
+      "raw_data": {
+        "chembl_{'name': 'prasugrel/bivalirudin'}_count": 5,
+        "chembl_{'name': 'clopidogrel/abciximab'}_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT01158846",
+      "citations": [],
+      "raw_data": {
+        "rcsb_prasugrel/bivalirudin": {
+          "count": 0
+        },
+        "rcsb_clopidogrel/abciximab": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT01158846",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_prasugrel/bivalirudin_count": 0,
+        "ebi_proteins_clopidogrel/abciximab_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT01158846",
+      "citations": [],
+      "raw_data": {
+        "apd_prasugrel/bivalirudin": {
+          "searched": true,
+          "found": false
+        },
+        "apd_clopidogrel/abciximab": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT01158846",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT01158846",
+          "identifier": "NCT01158846",
+          "title": "Bivalirudin/Prasugrel Versus Abciximab/Clopidogrel in Patients Presenting With STEMI",
+          "snippet": "Title: Bivalirudin/Prasugrel Versus Abciximab/Clopidogrel in Patients Presenting With STEMI\nStatus: Not yet recruiting\nPhase: Phase 4\nCountries: Italy\nConditions: Primary Percutaneous Coronary Intervention, ST-Elevation Myocardial Infarction\nInterventions: Drug: prasugrel/bivalirudin, Drug: clopidogrel/abciximab\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-03-19T08:32:21.690427"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT01158846",
+          "public_title": "Bivalirudin/Prasugrel Versus Abciximab/Clopidogrel in Patients Presenting With STEMI",
+          "scientific_title": "Bivalirudin Plus Prasugrel vs Abciximab Plus Clopidogrel. Optimizing Ischemic Protection and Bleeding Risk in Patients With ST Elevation Myocardial Infarction Undergoing Primary Percutaneous Coronary Intervention",
+          "recruitment_status": "Not yet recruiting",
+          "phase": "Phase 4",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Non-Randomized, Endpoint Classification: Safety/Efficacy Study, Intervention Model: Parallel Assignment, Masking: Open Label, Primary Purpose: Treatment",
+          "countries": [
+            "Italy"
+          ],
+          "conditions": [
+            "Primary Percutaneous Coronary Intervention",
+            "ST-Elevation Myocardial Infarction"
+          ],
+          "interventions": [
+            "Drug: prasugrel/bivalirudin",
+            "Drug: clopidogrel/abciximab"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT01158846",
+      "citations": [],
+      "raw_data": {
+        "iuphar_prasugrel/bivalirudin": {
+          "found": false
+        },
+        "iuphar_clopidogrel/abciximab": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT01158846",
+      "citations": [],
+      "raw_data": {
+        "pdbe_prasugrel/bivalirudin_count": 0,
+        "pdbe_clopidogrel/abciximab_count": 0
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 7,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.9
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.85
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}

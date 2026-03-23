@@ -1,0 +1,467 @@
+{
+  "nct_id": "NCT00005779",
+  "completed_at": "2026-03-16 12:36:45 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00005779",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00005779",
+          "identifier": "NCT00005779",
+          "title": "A Phase I, Limited-Center, Sequential Cohort Trial of HIV Vaccine (Polyvalent Peptide Vaccine C4-V3) in Conjunction With Interleukin-12 in Subjects With Maximal Suppression of HIV Replication and CD4 Count > 400 Cells/mm3",
+          "snippet": "Title: A Phase I, Limited-Center, Sequential Cohort Trial of HIV Vaccine (Polyvalent Peptide Vaccine C4-V3) in Conjunction With Interleukin-12 in Subjects With Maximal Suppression of HIV Replication and CD4 Count > 400 Cells/mm3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.590692"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00005779",
+          "identifier": "NCT00005779",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to see if it is safe to give C4-V3, a possible HIV vaccine, alone or in conjunction with 4 different doses of interleukin-12 (IL-12), to HIV-infected patients who are taking anti-HIV drugs that have lowered the amount of HIV in patients' blood. (This study has been changed so that vaccine is administered alone or with 4 different doses of IL-12.) Immune cells known as cytotoxic T lymphocytes (CTLs) help destroy HIV-infected cells. However, in most patients, CTLs decr",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.590700"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00005779",
+          "identifier": "NCT00005779",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.590703"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00005779",
+          "identifier": "NCT00005779",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Virus Replication, HIV-1, AIDS Vaccines, CD4 Lymphocyte Count, Cohort Studies, Interleukin-12, HIV Therapeutic Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.590707"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00005779",
+          "identifier": "NCT00005779",
+          "title": "Intervention: Interleukin-12",
+          "snippet": "DRUG: Interleukin-12",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.590710"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00005779",
+          "identifier": "NCT00005779",
+          "title": "Intervention: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "snippet": "BIOLOGICAL: HIV-1 C4-V3 Polyvalent Peptide Vaccine",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.590713"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00005779",
+          "identifier": "NCT00005779",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.590715"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "Interleukin-12",
+          "title": "FDA Label: Interleukin-12",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-03-16T19:36:30.743244"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00005779",
+            "orgStudyIdInfo": {
+              "id": "A5049"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "AACTG A5049"
+              },
+              {
+                "id": "10893",
+                "type": "REGISTRY",
+                "domain": "DAIDS ES Registry Number"
+              },
+              {
+                "id": "ACTG A5049"
+              }
+            ],
+            "organization": {
+              "fullName": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            },
+            "briefTitle": "Safety of the Candidate Vaccine C4-V3 Alone or With Interleukin-12 (IL-12) in HIV-Infected Patients Receiving Effective Anti-HIV Drug Therapy",
+            "officialTitle": "A Phase I, Limited-Center, Sequential Cohort Trial of HIV Vaccine (Polyvalent Peptide Vaccine C4-V3) in Conjunction With Interleukin-12 in Subjects With Maximal Suppression of HIV Replication and CD4 Count > 400 Cells/mm3"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2021-10",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "completionDateStruct": {
+              "date": "2004-05",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2000-06-03",
+            "studyFirstSubmitQcDate": "2001-08-30",
+            "studyFirstPostDateStruct": {
+              "date": "2001-08-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2021-10-28",
+            "lastUpdatePostDateStruct": {
+              "date": "2021-11-01",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "National Institute of Allergy and Infectious Diseases (NIAID)",
+              "class": "NIH"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "The purpose of this study is to see if it is safe to give C4-V3, a possible HIV vaccine, alone or in conjunction with 4 different doses of interleukin-12 (IL-12), to HIV-infected patients who are taking anti-HIV drugs that have lowered the amount of HIV in patients' blood. (This study has been changed so that vaccine is administered alone or with 4 different doses of IL-12.) Immune cells known as cytotoxic T lymphocytes (CTLs) help destroy HIV-infected cells. However, in most patients, CTLs decrease over time. This allows HIV levels to rise and AIDS symptoms to develop. The C4-V3 vaccine contains small pieces of HIV protein that can boost CTL levels, allowing the body's immune system to fight HIV. Giving IL-12, a normal part of the immune system, with C4-V3 may make the vaccine more effective.",
+            "detailedDescription": "Cytotoxic T lymphocyte (CTL) responses are important to the initial decrease in HIV viral load seen in the first several months after acute infection. These beneficial CTL responses diminish with disease progression and cannot be recovered with antiretroviral therapy alone. Recent studies suggest a vaccine may help restore CTL responses. This study tests the effectiveness of the C4-V3 vaccine, a synthetic peptide vaccine representing 4 epitopes from HIV gp120, including an HLA B7-restricted CTL epitope. Administering IL-12, an immunostimulatory cytokine, in conjunction with C4-V3 may enhance HIV-1 specific immune responses and global immune function.\n\nAll patients continue their antiretroviral regimen during the study. Twelve patients are assigned equally to 1 of 3 cohorts; all patients receive 4 doses of C4-V3. Cohort 1 receives C4-V3 alone; once all 4 patients have received 2 doses and completed 8 weeks of treatment, toxicity data are reviewed. Barring serious adverse events, 4 patients are enrolled in Cohort 2 to receive C4-V3 plus a low dose of IL-12 near the vaccine injection sites. Once all 4 patients have received 2 doses of C4-V3/IL-12 and completed 8 weeks of treatment, toxicity data are reviewed. Barring serious adverse events, 4 patients are enrolled in Cohort 3 to receive C4-V3 plus a higher dose of IL-12 administered as above. \\[AS PER AMENDMENT 8/1/00: Twenty patients are assigned equally to 1 of 5 cohorts; all patients receive 4 doses of C4-V3. Cohort 1 receives C4-V3 alone; once all 4 patients have received 2 doses and completed 6 weeks of treatment, toxicity data are reviewed. Barring serious adverse events, 4 additional patients are enrolled in Cohort 2 to receive C4-V3 plus a low dose (dose level 1) of IL-12. Barring serious adverse events, 4 additional patients are enrolled in Cohort 3 to receive C4-V3 plus a higher dose (dose level 2) of IL-12. Barring serious adverse events, 4 additional patients are enrolled in Cohort 4 to receive C4-V3 plus a higher dose (dose level 3) of IL-12. Barring serious adverse events, 4 patients are enrolled in Cohort 5 to receive C4-V3 plus a higher dose (dose level 4) of IL-12.\\] Patients are followed for safety evaluations and changes in viral load through Week 48. If toxicity related to C4-V3 or IL-12 persists through Week 48, the affected patients are followed until resolution of the toxicity."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections"
+            ],
+            "keywords": [
+              "Virus Replication",
+              "HIV-1",
+              "AIDS Vaccines",
+              "CD4 Lymphocyte Count",
+              "Cohort Studies",
+              "Interleukin-12",
+              "HIV Therapeutic Vaccine"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "primaryPurpose": "TREATMENT"
+            },
+            "enrollmentInfo": {
+              "count": 12
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Interleukin-12"
+              },
+              {
+                "type": "BIOLOGICAL",
+                "name": "HIV-1 C4-V3 Polyvalent Peptide Vaccine"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria\n\nPatients may be eligible for this study if they:\n\n* Are at least 18 years old.\n* Are HIV-positive.\n* Have 2 HIV measurements below 50 copies/ml taken at least 24 hours apart within 90 days prior to study entry.\n* Have a CD4 count above 400 cells/mm3 within 30 days prior to study entry.\n* Have been taking any combination of FDA-approved anti-HIV drugs for at least 3 months prior to study entry. (This study has been changed so that patients taking any combination of FDA-approved drugs for at least 3 months prior to study entry are included.)\n* Test positive for HLA-B7.\n* Agree to practice sexual abstinence or use 2 effective methods of birth control during the study and for 3 months after the study. (This study has been changed so that patients are required to use 2 effective methods of birth control.)\n\nExclusion Criteria\n\nPatients will not be eligible for this study if they:\n\n* Have ever received IL-12.\n* Have received any vaccine within 30 days prior to study entry.\n* Have chronic lung disease.\n* Have participated in any other HIV vaccine trial.\n* Have a history of autoimmune disease.\n* Have gastrointestinal bleeding or peptic ulcer disease.\n* Have received allergy skin testing or other allergy treatments within 30 days prior to study entry.\n* Have received immunomodulatory or cytotoxic treatments within 30 days prior to study entry or will need to receive these treatments during the study.\n* Have certain serious medical conditions or have received certain medications.\n* Are pregnant or breast-feeding.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Michelle Onorato",
+                "role": "STUDY_CHAIR"
+              },
+              {
+                "name": "Beverly Sha",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Rush Presbyterian - Saint Luke's Med Ctr",
+                "city": "Chicago",
+                "state": "Illinois",
+                "zip": "60612",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.85003,
+                  "lon": -87.65005
+                }
+              },
+              {
+                "facility": "Duke Univ Med Ctr",
+                "city": "Durham",
+                "state": "North Carolina",
+                "zip": "27710",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.99403,
+                  "lon": -78.89862
+                }
+              },
+              {
+                "facility": "Univ of Texas Galveston",
+                "city": "Galveston",
+                "state": "Texas",
+                "zip": "775550435",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.30135,
+                  "lon": -94.7977
+                }
+              }
+            ]
+          }
+        },
+        "openfda_Interleukin-12": {
+          "spl_product_data_elements": [
+            "GUNA-RHINO NOSE apis mellifera - aralia racemosa root - ascorbic acid - black currant - copper - euphorbia resinifera resin - european elderberry - helianthemum canadense - histamine dihydrochloride - human interleukin 12 - human interleukin-10 (nonglycosylated) - interferon gamma-1b - manganese gluconate - melilotus - onion - plantago major - rosa canina fruit - silver nitrate - ORANGE JUICE POTASSIUM SORBATE WATER SODIUM BENZOATE ONION ONION APIS MELLIFERA APIS MELLIFERA ARALIA RACEMOSA ROOT ARALIA RACEMOSA ROOT SILVER NITRATE SILVER CATION ASCORBIC ACID ASCORBIC ACID BLACK CURRANT BLACK CURRANT HELIANTHEMUM CANADENSE HELIANTHEMUM CANADENSE COPPER COPPER EUPHORBIA RESINIFERA RESIN EUPHORBIA RESINIFERA RESIN HISTAMINE DIHYDROCHLORIDE HISTAMINE INTERFERON GAMMA-1B INTERFERON GAMMA-1B INTERLEUKIN-10 INTERLEUKIN-10 HUMAN INTERLEUKIN 12 HUMAN INTERLEUKIN 12 MANGANESE GLUCONATE MANGANESE CATION (2+) MELILOTUS MELILOTUS PLANTAGO MAJOR PLANTAGO MAJOR ROSA CANINA FRUIT ROSA CANINA FRUIT EUROPEAN ELDERBERRY EUROPEAN ELDERBERRY"
+          ],
+          "active_ingredient": [
+            "ACTIVE INGREDIENTS/PURPOSE ALIUM CEPA 6X, 8X, 12X EXPECTORANT APIS MELLIFICA 12x, 30X, 200X DECONGESTANT ARALIA RACEMOSA 1X ANTITUSSIVE ARGENTUM NITRICUM 10X ANALGESIC ASCORBIC ACID 2X ANTIOXIDANT BLACK CURRANT, BARK 1X DETOXIFICATION CISTUS CANADENSIS 4X HELPS BRONCHIAL SECRETION CUPRUM METALLICUM 4X ANTIOXIDANT EUPHORBIUM OFFICINARUM 4X MUCOLYTIC HISTAMINUM HYDROCHLORICUM 30X, 200X ANTI-INFLAMMATORY INTERFERON GAMMA 4C ANTIVIRAL INTERLEUKIN 10 4C ANTI-INFLAMMATORY INTERLEUKIN 12 4C SUPPORTS IMMUNE ACTIVITY MANGANESE GLUCONATE 4X DECONGESTANT MELILOTUS OFFICINALIS 3X DECONGESTANT PLANTAGO MAJOR 2X DETOXIFICATION ROSA CANINA, BARK 1X PAIN RELIEF SAMBUCUS NIGRA 2X ANTITUSSIVE"
+          ],
+          "purpose": [
+            "USES For the temporary relief of symptoms due to Seasonal Allergies such as: Sneezing, Watery Eyes, Runny nose"
+          ],
+          "warnings": [
+            "WARNINGS Stop use and ask doctor if symptoms worsen or persist more than 5 days"
+          ],
+          "pregnancy_or_breast_feeding": [
+            "PREGNANCY If pregnant or breast-feeding ask a doctor before use"
+          ],
+          "keep_out_of_reach_of_children": [
+            "WARNINGS Keep this and all medicines out of reach of children"
+          ],
+          "dosage_and_administration": [
+            "DIRECTIONS Adults and children 12 years and older 2 sprays to each nostril , 3-5 times per day Children between 12 years and 6 years of age 1 spray to each nostril, 3-5 times per day Children under 6 years 1 spray to each nostril, 3 times per day"
+          ],
+          "questions": [
+            "QUESTIONS Questions?: info@gunainc.com Tel. (484) 223-3500"
+          ],
+          "indications_and_usage": [
+            "Tilt head slightly forward, place tip of bottle into nose, compress bottle once for each spray, aiming towards the back of the nose."
+          ],
+          "inactive_ingredient": [
+            "Inactive ingredients : Water, Orange juice, Potassium sorbate, Sodium benzoate"
+          ],
+          "package_label_principal_display_panel": [
+            "PRINCIPAL DISPLAY PANEL guna rhino nose spray-8-10-15"
+          ],
+          "set_id": "5baeb698-1735-4586-9984-2a2cb0da871a",
+          "id": "7e02aa23-f955-6990-e053-2a91aa0af032",
+          "effective_time": "20181221",
+          "version": "2",
+          "openfda": {
+            "brand_name": [
+              "GUNA-RHINO NOSE"
+            ],
+            "generic_name": [
+              "APIS MELLIFERA - ARALIA RACEMOSA ROOT - ASCORBIC ACID - BLACK CURRANT - COPPER - EUPHORBIA RESINIFERA RESIN - EUROPEAN ELDERBERRY - HELIANTHEMUM CANADENSE - HISTAMINE DIHYDROCHLORIDE - HUMAN INTERLEUKIN 12 - HUMAN INTERLEUKIN-10 (NONGLYCOSYLATED) - INTERFERON GAMMA-1B - MANGANESE GLUCONATE - MELILOTUS - ONION - PLANTAGO MAJOR - ROSA CANINA FRUIT - SILVER NITRATE -"
+            ],
+            "manufacturer_name": [
+              "Guna spa"
+            ],
+            "product_ndc": [
+              "17089-419"
+            ],
+            "product_type": [
+              "HUMAN OTC DRUG"
+            ],
+            "route": [
+              "ORAL"
+            ],
+            "substance_name": [
+              "APIS MELLIFERA",
+              "ARALIA RACEMOSA ROOT",
+              "ASCORBIC ACID",
+              "BLACK CURRANT",
+              "COPPER",
+              "EUPHORBIA RESINIFERA RESIN",
+              "EUROPEAN ELDERBERRY",
+              "HELIANTHEMUM CANADENSE",
+              "HISTAMINE DIHYDROCHLORIDE",
+              "HUMAN INTERLEUKIN 12",
+              "INTERFERON GAMMA-1B",
+              "INTERLEUKIN-10",
+              "MANGANESE GLUCONATE",
+              "MELILOTUS",
+              "ONION",
+              "PLANTAGO MAJOR",
+              "ROSA CANINA FRUIT",
+              "SILVER NITRATE"
+            ],
+            "spl_id": [
+              "7e02aa23-f955-6990-e053-2a91aa0af032"
+            ],
+            "spl_set_id": [
+              "5baeb698-1735-4586-9984-2a2cb0da871a"
+            ],
+            "package_ndc": [
+              "17089-419-23"
+            ],
+            "is_original_packager": [
+              true
+            ],
+            "upc": [
+              "0317089419235"
+            ],
+            "nui": [
+              "N0000185021",
+              "N0000175629",
+              "N0000184306",
+              "N0000185001",
+              "M0000728",
+              "M0002274",
+              "N0000193618",
+              "M0001797",
+              "M0005152",
+              "N0000175831",
+              "N0000008595",
+              "N0000008924",
+              "N0000175830",
+              "N0000175541",
+              "M0011490",
+              "N0000185371",
+              "M0006342",
+              "M0022575"
+            ],
+            "pharm_class_epc": [
+              "Standardized Insect Venom Allergenic Extract [EPC]",
+              "Vitamin C [EPC]",
+              "Copper-containing Intrauterine Device [EPC]",
+              "Interferon gamma [EPC]",
+              "Non-Standardized Food Allergenic Extract [EPC]"
+            ],
+            "pharm_class_pe": [
+              "Increased Histamine Release [PE]",
+              "Cell-mediated Immunity [PE]",
+              "Increased IgG Production [PE]",
+              "Decreased Embryonic Implantation [PE]",
+              "Decreased Sperm Motility [PE]",
+              "Inhibit Ovum Fertilization [PE]"
+            ],
+            "pharm_class_cs": [
+              "Allergens [CS]",
+              "Bee Venoms [CS]",
+              "Ascorbic Acid [CS]",
+              "Copper [CS]",
+              "Interferon-gamma [CS]",
+              "Dietary Proteins [CS]",
+              "Vegetable Proteins [CS]"
+            ],
+            "unii": [
+              "7S82P3R43Z",
+              "T90W4582DU",
+              "PQ6CK8PD0R",
+              "9755T40D11",
+              "789U1901C5",
+              "1TI1O9028K",
+              "BQY1UBX046",
+              "46G3W789Q3",
+              "3POA0Q644U",
+              "7B590791ER",
+              "21K6M2I7AG",
+              "9SC4O216V9",
+              "9YY2F980SV",
+              "F22I9R6Q0X",
+              "492225Q21H",
+              "W2469WNO6U",
+              "3TNW8D08V3",
+              "95IT3W8JZE"
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00005779",
+      "citations": [],
+      "raw_data": {
+        "pubmed_error": "HTTP 429",
+        "pmc_error": "HTTP 429",
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00005779",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00005779",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00005779",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00005779",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00005779",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00005779",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

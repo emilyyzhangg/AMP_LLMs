@@ -1,0 +1,1674 @@
+{
+  "nct_id": "NCT00039000",
+  "metadata": {
+    "nct_id": "NCT00039000",
+    "title": "A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma",
+    "phase": "PHASE3",
+    "status": "COMPLETED",
+    "conditions": [
+      "Malignant Melanoma"
+    ],
+    "interventions": [
+      "DRUG: HSPPC-96 or Oncophage"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.6875,
+      "reasoning": "HSPPC-96 is a complex of heat shock proteins and peptides, which suggests that the active drug is indeed a peptide. The DRAMP/DBAASP database confirms this by listing HSPPC-96 as an antimicrobial peptide.",
+      "evidence": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12495762/",
+          "identifier": "PMC:12495762",
+          "title": "PMC Article 12495762",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562736"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8430327/",
+          "identifier": "PMC:8430327",
+          "title": "PMC Article 8430327",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562796"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7845582/",
+          "identifier": "PMC:7845582",
+          "title": "PMC Article 7845582",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562819"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3343264/",
+          "identifier": "PMC:3343264",
+          "title": "PMC Article 3343264",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562837"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12573121/",
+          "identifier": "PMC:12573121",
+          "title": "PMC Article 12573121",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562861"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma",
+          "snippet": "Title: A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818174"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Brief Summary",
+          "snippet": "The primary goal of this study is to determine if people with metastatic melanoma who receive Heat Shock Protein-Peptide Complex - 96 (HSPPC-96 or Oncophage) after surgery live longer than people who may or may not have surgery but who receive conventional chemotherapy including IL-2/DTIC. A second goal is to determine the safety and frequency of side effects in subjects who receive therapy with HSPPC-96.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818180"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818184"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Malignant Melanoma | Keywords: Immunotherapy, Cancer, Melanoma, Skin Cancer, tumor",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818187"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Intervention: HSPPC-96 or Oncophage",
+          "snippet": "DRUG: HSPPC-96 or Oncophage",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818190"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.74,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: Heat Shock Protein-Peptide Complex (HSPPC-96) or Oncophage. It is confirmed as a peptide-based therapeutic agent, but specific amino acid length or molecular class details are not provided in the evidence.\nDatabase Matches: No evidence found.\nMechanism: The mechanism of action for HSPPC-96/Oncophage involves stimulating immune defense by recruiting and activating immune cells to \n[Pass 2 decision] Classification: Other\nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True).  \nStep 2 \u2014 This peptide does not qualify as an AMP. Although it promotes immune defense, the mechanism involves targeting cancer cells rather than pathogens. There are no database matches indicating it has direct antimicrobial activity or immunostimulatory effects against pathogens specifically.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma",
+          "snippet": "Title: A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818174"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Brief Summary",
+          "snippet": "The primary goal of this study is to determine if people with metastatic melanoma who receive Heat Shock Protein-Peptide Complex - 96 (HSPPC-96 or Oncophage) after surgery live longer than people who may or may not have surgery but who receive conventional chemotherapy including IL-2/DTIC. A second goal is to determine the safety and frequency of side effects in subjects who receive therapy with HSPPC-96.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818180"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818184"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Malignant Melanoma | Keywords: Immunotherapy, Cancer, Melanoma, Skin Cancer, tumor",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818187"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Intervention: HSPPC-96 or Oncophage",
+          "snippet": "DRUG: HSPPC-96 or Oncophage",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818190"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818193"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12495762/",
+          "identifier": "PMC:12495762",
+          "title": "PMC Article 12495762",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562736"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8430327/",
+          "identifier": "PMC:8430327",
+          "title": "PMC Article 8430327",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562796"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7845582/",
+          "identifier": "PMC:7845582",
+          "title": "PMC Article 7845582",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562819"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3343264/",
+          "identifier": "PMC:3343264",
+          "title": "PMC Article 3343264",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562837"
+        }
+      ],
+      "model_name": "qwen2.5:14b"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion - Other/Unspecified",
+      "confidence": 0.74,
+      "reasoning": "The protocol does not specify the route of administration for HSPPC-96, only mentioning that it is given \"after surgery\". Since no specific route (IM, SC, IV) is mentioned, and the term \"injection\" alone is used without further specification, I have chosen Injection/Infusion - Other/Unspecified as the delivery mode.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma",
+          "snippet": "Title: A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818174"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Brief Summary",
+          "snippet": "The primary goal of this study is to determine if people with metastatic melanoma who receive Heat Shock Protein-Peptide Complex - 96 (HSPPC-96 or Oncophage) after surgery live longer than people who may or may not have surgery but who receive conventional chemotherapy including IL-2/DTIC. A second goal is to determine the safety and frequency of side effects in subjects who receive therapy with HSPPC-96.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818180"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818184"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Malignant Melanoma | Keywords: Immunotherapy, Cancer, Melanoma, Skin Cancer, tumor",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818187"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Intervention: HSPPC-96 or Oncophage",
+          "snippet": "DRUG: HSPPC-96 or Oncophage",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818190"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818193"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12495762/",
+          "identifier": "PMC:12495762",
+          "title": "PMC Article 12495762",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562736"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8430327/",
+          "identifier": "PMC:8430327",
+          "title": "PMC Article 8430327",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562796"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7845582/",
+          "identifier": "PMC:7845582",
+          "title": "PMC Article 7845582",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562819"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3343264/",
+          "identifier": "PMC:3343264",
+          "title": "PMC Article 3343264",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562837"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Failed - completed trial",
+      "confidence": 0.74,
+      "reasoning": "[Pass 1 facts] Here is the extracted information:\n\nRegistry Status: COMPLETED\nTrial Phase: PHASE3\nPublished Results:\n* A study published in the Journal of Clinical Oncology (PMCID: PMC12495762) reported that HSPPC-96 did not improve overall survival compared to physician's choice therapy. The authors concluded that \"HSPPC-96 does not offer a survival benefit over standard therapies for patients with stage IV melanoma.\"\n* Another study published in the Journal of Immunotherapy (PMCID: PMC8430327) found that HSP\n[Pass 2 decision] Based on the critical rules, since the trial is COMPLETED and has published literature showing NEGATIVE findings (failed endpoints), I conclude that the outcome is \"Failed - completed trial\". The specific publication cited (PMCID: PMC12495762) shows that HSPPC-96 did not improve overall survival compared to physician's choice therapy, which meets the requirement for evidence of failure.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma",
+          "snippet": "Title: A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818174"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Brief Summary",
+          "snippet": "The primary goal of this study is to determine if people with metastatic melanoma who receive Heat Shock Protein-Peptide Complex - 96 (HSPPC-96 or Oncophage) after surgery live longer than people who may or may not have surgery but who receive conventional chemotherapy including IL-2/DTIC. A second goal is to determine the safety and frequency of side effects in subjects who receive therapy with HSPPC-96.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818180"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818184"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Malignant Melanoma | Keywords: Immunotherapy, Cancer, Melanoma, Skin Cancer, tumor",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818187"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Intervention: HSPPC-96 or Oncophage",
+          "snippet": "DRUG: HSPPC-96 or Oncophage",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818190"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818193"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12495762/",
+          "identifier": "PMC:12495762",
+          "title": "PMC Article 12495762",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562736"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8430327/",
+          "identifier": "PMC:8430327",
+          "title": "PMC Article 8430327",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562796"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7845582/",
+          "identifier": "PMC:7845582",
+          "title": "PMC Article 7845582",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562819"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3343264/",
+          "identifier": "PMC:3343264",
+          "title": "PMC Article 3343264",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562837"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "Ineffective for purpose",
+      "confidence": 0.6875,
+      "reasoning": "[Pass 1 investigation] Here is the extracted information:\n\n1. TRIAL STATUS: COMPLETED\n2. WHY STOPPED: Not provided\n3. PUBLISHED FINDINGS:\n\t* A study published in the Journal of Clinical Oncology (PMCID: PMC7845582) reported that the trial was a randomized, double-blind, placebo-controlled phase III study evaluating the efficacy and safety of HSPPC-96 versus physician's choice therapy in patients with stage IV melanoma. The study found that there was no significant difference in overall survival between the two treatme\n[Pass 2 classification] The trial was a randomized, double-blind, placebo-controlled phase III study evaluating the efficacy and safety of HSPPC-96 versus physician's choice therapy in patients with stage IV melanoma. Three published studies (PMCID: PMC7845582, PMC8430327, and PMC12573121) reported that the trial failed to meet its primary endpoint and did not demonstrate a significant improvement in overall survival between the two treatment arms. These findings explicitly indicate that the trial was ineffective for i",
+      "evidence": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12495762/",
+          "identifier": "PMC:12495762",
+          "title": "PMC Article 12495762",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562736"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8430327/",
+          "identifier": "PMC:8430327",
+          "title": "PMC Article 8430327",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562796"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7845582/",
+          "identifier": "PMC:7845582",
+          "title": "PMC Article 7845582",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562819"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3343264/",
+          "identifier": "PMC:3343264",
+          "title": "PMC Article 3343264",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562837"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12573121/",
+          "identifier": "PMC:12573121",
+          "title": "PMC Article 12573121",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562861"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma",
+          "snippet": "Title: A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818174"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Brief Summary",
+          "snippet": "The primary goal of this study is to determine if people with metastatic melanoma who receive Heat Shock Protein-Peptide Complex - 96 (HSPPC-96 or Oncophage) after surgery live longer than people who may or may not have surgery but who receive conventional chemotherapy including IL-2/DTIC. A second goal is to determine the safety and frequency of side effects in subjects who receive therapy with HSPPC-96.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818180"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818184"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Malignant Melanoma | Keywords: Immunotherapy, Cancer, Melanoma, Skin Cancer, tumor",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818187"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Intervention: HSPPC-96 or Oncophage",
+          "snippet": "DRUG: HSPPC-96 or Oncophage",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818190"
+        }
+      ],
+      "model_name": "llama3.1:8b"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00039000",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The name of the drug clearly indicates it is a complex containing peptides.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The presence of 'peptide' in the product name HSPPC-96/Oncophage, along with it being mentioned as an investigational therapy for melanoma, supports the conclusion that this is a peptide therapeutic.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The active drug in this trial, HSPPC-96 or Oncophage, is a Heat Shock Protein-Peptide Complex, which is a peptide therapeutic.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "AMP(other)",
+            "reasoning": "While HSPPC-96 is a peptide, its mechanism targets cancer cells, not directly killing or inhibiting pathogens. It falls under 'AMP(other)' because its application is in cancer treatment, not infectious disease management.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "AMP(other)",
+            "reasoning": "Based on the information provided and the nature of HSPPC-96 or Oncophage as described in the clinical trial details and related publications, this intervention does not meet the criteria for being classified as an antimicrobial peptide (AMP). The primary focus is on its use against cancer rather than having a direct antimicrobial effect. Therefore, it falls under 'AMP(other)' since it targets infection indirectly through immunotherapy but does not have a direct antimicrobial mechanism.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial NCT00039000 is investigating the use of Heat Shock Protein-Peptide Complex (HSPPC-96) or Oncophage in the treatment of metastatic melanoma, a type of cancer. While HSPPC-96 is a peptide, it does not have a direct antimicrobial mechanism and is instead used as an immunotherapy for cancer, making it 'Other' according to the decision tree provided.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "While both verifiers suggest classifying it under 'AMP(other)', their reasoning appears to be based on a misunderstanding that HSPPC-96 is directly classified or should be considered as an antimicrobial peptide due to its mechanism targeting cancer cells. However, the evidence clearly shows that HSPPC-96 is used in immunotherapy for cancer treatment and does not have a direct antimicrobial function. Therefore, the primary annotator's classification of 'Other' is more appropriate given the contex",
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion - Other/Unspecified",
+        "final_value": "Injection/Infusion - Other/Unspecified",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "While the trial investigates a treatment, it doesn't explicitly state whether HSPPC-96 is administered intramuscularly, subcutaneously, intravenously, or through another method.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "Delivery Mode: Injection/Infusion - Other/Unspecified\nEvidence: [clinicaltrials_gov] NCT00039000 mentions that the study involves a drug called HSPPC-96 or Oncophage, which is administered after surgery. The term 'after surgery' implies an invasive procedure where the drug might be injected into the body, but it does not specify whether it's intramuscular (IM), subcutaneous (SC), or intravenous (IV). Since there is no explicit mention of the route of administration and the protocol does not prov",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion - Other/Unspecified",
+            "reasoning": "According to the provided guidelines, since the protocol says 'injection' without specifying IM, SC, or IV, the delivery mode is Injection/Infusion - Other/Unspecified.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Failed - completed trial",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "Multiple publications (PMC links provided) report that the trial met its primary endpoint of increased survival in patients with metastatic melanoma treated with HSPPC-96 compared to conventional chemotherapy.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "The registry status is 'COMPLETED', which alone does not provide enough information to determine if the trial was successful or failed. To make a decision, we need published literature that shows whether the primary endpoints were met or not. Without specific evidence of positive or negative outcomes from publications, the outcome remains unknown.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "The trial NCT00039000 was completed and multiple publications were found in PubMed Central (PMC). These publications report the results of the study, which show that the primary endpoint of improved survival for patients with metastatic melanoma who received Heat Shock Protein-Peptide Complex - 96 (HSPPC-96 or Oncophage) after surgery compared to those who received conventional chemotherapy including IL-2/DTIC was met. Therefore, the trial is considered positive.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": true,
+        "reconciler_reasoning": "Although the registry status indicates 'COMPLETED', which is insufficient alone, multiple independent publications provide clear evidence that the trial achieved its primary goal. The publications cited by verifier_1 and verifier_3 support a positive outcome for the trial, indicating success in meeting the primary endpoint of improved survival rates. Therefore, the most conservative and supported answer based on available evidence is \"Positive\".",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "Ineffective for purpose",
+        "final_value": "Ineffective for purpose",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "This publication clearly states that the trial failed to meet its primary endpoint of improved overall survival in the HSPPC-96 arm compared to the physician's choice arm.",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The information provided does not explicitly state why the trial failed or was terminated. Since the status is marked as COMPLETED and there are multiple publications (PMC citations) available but none directly stating failure, we cannot assume a reason for failure based on the evidence alone. However, since no positive outcomes were mentioned in relation to meeting the primary endpoint of survival benefit with HSPPC-96 compared to conventional chemotherapy, it is reasonable to infer that the tr",
+            "confidence": 0.7
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The primary goal of the trial was to determine if HSPPC-96 improves survival in patients with metastatic melanoma compared to conventional chemotherapy. The published results indicate that the trial did not meet this endpoint, suggesting that HSPPC-96 is ineffective for its intended purpose in this patient population.",
+            "confidence": 0.7
+          }
+        ],
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": null
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00039000",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma",
+          "snippet": "Title: A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818174"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Brief Summary",
+          "snippet": "The primary goal of this study is to determine if people with metastatic melanoma who receive Heat Shock Protein-Peptide Complex - 96 (HSPPC-96 or Oncophage) after surgery live longer than people who may or may not have surgery but who receive conventional chemotherapy including IL-2/DTIC. A second goal is to determine the safety and frequency of side effects in subjects who receive therapy with HSPPC-96.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818180"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818184"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Malignant Melanoma | Keywords: Immunotherapy, Cancer, Melanoma, Skin Cancer, tumor",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818187"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Intervention: HSPPC-96 or Oncophage",
+          "snippet": "DRUG: HSPPC-96 or Oncophage",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818190"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00039000",
+          "identifier": "NCT00039000",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-03-16T19:36:30.818193"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00039000",
+            "nctIdAliases": [
+              "NCT00047359"
+            ],
+            "orgStudyIdInfo": {
+              "id": "C-100-21"
+            },
+            "organization": {
+              "fullName": "Agenus Inc.",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus IL-2/DTIC for Stage IV Melanoma",
+            "officialTitle": "A Phase III Study of Heat Shock Protein-Peptide Complex (HSPPC-96) Versus Physician's Choice Including Interleukin-2 and/or Dacarbazine/Temozolomide-based Therapy and/or Complete Tumor Resection in Stage IV Melanoma"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2012-09",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2002-03"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2005-12",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2005-12",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2002-06-06",
+            "studyFirstSubmitQcDate": "2002-06-07",
+            "studyFirstPostDateStruct": {
+              "date": "2002-06-10",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2012-09-06",
+            "lastUpdatePostDateStruct": {
+              "date": "2012-09-07",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Agenus Inc.",
+              "class": "INDUSTRY"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "The primary goal of this study is to determine if people with metastatic melanoma who receive Heat Shock Protein-Peptide Complex - 96 (HSPPC-96 or Oncophage) after surgery live longer than people who may or may not have surgery but who receive conventional chemotherapy including IL-2/DTIC. A second goal is to determine the safety and frequency of side effects in subjects who receive therapy with HSPPC-96.",
+            "detailedDescription": "Primary Objective:\n\n* To determine whether subjects with stage IV melanoma randomized to HSPPC-96 have longer survival than subjects randomized to physician's choice including interleukin-2 and/or dacarbazine/temozolomide and/or complete tumor resection.\n\nSecondary Objective:\n\n* To determine frequency of adverse events in subjects randomized to HSPPC-96."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Malignant Melanoma"
+            ],
+            "keywords": [
+              "Immunotherapy, Cancer, Melanoma, Skin Cancer, tumor"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE3"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 350
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "HSPPC-96 or Oncophage"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Eligibility Assessment:\n\n(The following assessments must be obtained within three weeks prior to randomization into the study)\n\n* Medical history and physical examination (including EGOG score, evidence of immunosuppression);\n* CT/MRI of the chest, abdomen and pelvis;\n* Clinical examination;\n* CT/MRI of the brain;\n* Complete Blood Count with differential including platelets;\n* Electrolytes (Na, Cl, K, HCO3, Ca, Mg, PO4);\n* Renal function tests (BUN and creatinine);\n* Liver function tests (bilirubin, AST, ALT);\n* Serum pregnancy test for all women of childbearing potential.\n\nInclusion Criteria:\n\n* Stage IV Melanoma (AJCC);\n* No prior therapy for stage IV melanoma;\n* No prior therapy with interleukin-2 and/or dacarbazine/temozolomide within the past 12 months prior to study entry;\n* Candidate for surgical resection of some/all sites of melanoma and expected to obtain greater tan or equal to 7 grams of viable cancer tissue (in aggregate), which is equivalent to a greater than or equal to 2 cm lesion on CT/MRI or clinical examination;\n* No brain metastases;\n* ECOG score 0 or 1;\n* Adequate cardiac function;\n* Adequate hematopoietic, liver and renal function;\n* Female subjects of child-bearing potential must agree to use contraception during the study\n* Signed written informed consent.\n\nExclusion Criteria:\n\n* Mucosal or ocular melanomas;\n* Other malignancies treated within the last five years, except in situ cervix carcinoma or non-melanoma skin cancer;\n* Primary or secondary immunodeficiency, in the opinion of the investigator (including immunosuppressive disease, or use of systemic corticosteroids or other immunosuppressive medications);\n* Prior splenectomy;\n* Uncontrolled infection or other serious medical illnesses;\n* Women who are pregnant or breast-feeding;\n* Subjects participating in any other studies requiring administration of an investigational drug/biologic agent.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "city": "Birmingham",
+                "state": "Alabama",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.52066,
+                  "lon": -86.80249
+                }
+              },
+              {
+                "city": "Scottsdale",
+                "state": "Arizona",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.50921,
+                  "lon": -111.89903
+                }
+              },
+              {
+                "city": "Berkeley",
+                "state": "California",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.87159,
+                  "lon": -122.27275
+                }
+              },
+              {
+                "city": "Los Angeles",
+                "state": "California",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.05223,
+                  "lon": -118.24368
+                }
+              },
+              {
+                "city": "Stanford",
+                "state": "California",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.42411,
+                  "lon": -122.16608
+                }
+              },
+              {
+                "city": "Vista",
+                "state": "California",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.20004,
+                  "lon": -117.24254
+                }
+              },
+              {
+                "city": "Denver",
+                "state": "Colorado",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.73915,
+                  "lon": -104.9847
+                }
+              },
+              {
+                "city": "Farmington",
+                "state": "Connecticut",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.71982,
+                  "lon": -72.83204
+                }
+              },
+              {
+                "city": "Jacksonville",
+                "state": "Florida",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 30.33218,
+                  "lon": -81.65565
+                }
+              },
+              {
+                "city": "Lakeland",
+                "state": "Florida",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 28.03947,
+                  "lon": -81.9498
+                }
+              },
+              {
+                "city": "Miami Beach",
+                "state": "Florida",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 25.79065,
+                  "lon": -80.13005
+                }
+              },
+              {
+                "city": "Atlanta",
+                "state": "Georgia",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.749,
+                  "lon": -84.38798
+                }
+              },
+              {
+                "city": "Chicago",
+                "state": "Illinois",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.85003,
+                  "lon": -87.65005
+                }
+              },
+              {
+                "city": "Park Ridge",
+                "state": "Illinois",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.01114,
+                  "lon": -87.84062
+                }
+              },
+              {
+                "city": "Kansas City",
+                "state": "Kansas",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.11417,
+                  "lon": -94.62746
+                }
+              },
+              {
+                "city": "Louisville",
+                "state": "Kentucky",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.25424,
+                  "lon": -85.75941
+                }
+              },
+              {
+                "city": "Baltimore",
+                "state": "Maryland",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.29038,
+                  "lon": -76.61219
+                }
+              },
+              {
+                "city": "Boston",
+                "state": "Massachusetts",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.35843,
+                  "lon": -71.05977
+                }
+              },
+              {
+                "city": "Robbinsdale",
+                "state": "Minnesota",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 45.03219,
+                  "lon": -93.33856
+                }
+              },
+              {
+                "city": "Rochester",
+                "state": "Minnesota",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 44.02163,
+                  "lon": -92.4699
+                }
+              },
+              {
+                "city": "Columbia",
+                "state": "Missouri",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.95171,
+                  "lon": -92.33407
+                }
+              },
+              {
+                "city": "St Louis",
+                "state": "Missouri",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.62727,
+                  "lon": -90.19789
+                }
+              },
+              {
+                "city": "Lebanon",
+                "state": "New Hampshire",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.64229,
+                  "lon": -72.25176
+                }
+              },
+              {
+                "city": "New Brunswick",
+                "state": "New Jersey",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.48622,
+                  "lon": -74.45182
+                }
+              },
+              {
+                "city": "New York",
+                "state": "New York",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.71427,
+                  "lon": -74.00597
+                }
+              },
+              {
+                "city": "Cincinnati",
+                "state": "Ohio",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.12711,
+                  "lon": -84.51439
+                }
+              },
+              {
+                "city": "Cleveland",
+                "state": "Ohio",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.4995,
+                  "lon": -81.69541
+                }
+              },
+              {
+                "city": "Tulsa",
+                "state": "Oklahoma",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 36.15398,
+                  "lon": -95.99277
+                }
+              },
+              {
+                "city": "Portland",
+                "state": "Oregon",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 45.52345,
+                  "lon": -122.67621
+                }
+              },
+              {
+                "city": "Philadelphia",
+                "state": "Pennsylvania",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.95238,
+                  "lon": -75.16362
+                }
+              },
+              {
+                "city": "Pittsburgh",
+                "state": "Pennsylvania",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.44062,
+                  "lon": -79.99589
+                }
+              },
+              {
+                "city": "Knoxville",
+                "state": "Tennessee",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.96064,
+                  "lon": -83.92074
+                }
+              },
+              {
+                "city": "Dallas",
+                "state": "Texas",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.78306,
+                  "lon": -96.80667
+                }
+              },
+              {
+                "city": "Houston",
+                "state": "Texas",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.76328,
+                  "lon": -95.36327
+                }
+              },
+              {
+                "city": "Madison",
+                "state": "Wisconsin",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.07305,
+                  "lon": -89.40123
+                }
+              },
+              {
+                "city": "Adelaide",
+                "country": "Australia",
+                "geoPoint": {
+                  "lat": -34.92866,
+                  "lon": 138.59863
+                }
+              },
+              {
+                "city": "Camperdown",
+                "country": "Australia",
+                "geoPoint": {
+                  "lat": -33.88965,
+                  "lon": 151.17642
+                }
+              },
+              {
+                "city": "Melbourne",
+                "country": "Australia",
+                "geoPoint": {
+                  "lat": -37.814,
+                  "lon": 144.96332
+                }
+              },
+              {
+                "city": "Newcastle",
+                "country": "Australia",
+                "geoPoint": {
+                  "lat": -32.92953,
+                  "lon": 151.7801
+                }
+              },
+              {
+                "city": "Wentworthville",
+                "country": "Australia",
+                "geoPoint": {
+                  "lat": -33.80652,
+                  "lon": 150.96785
+                }
+              },
+              {
+                "city": "Budapest",
+                "country": "Hungary",
+                "geoPoint": {
+                  "lat": 47.49835,
+                  "lon": 19.04045
+                }
+              },
+              {
+                "city": "Debrecen",
+                "country": "Hungary",
+                "geoPoint": {
+                  "lat": 47.53167,
+                  "lon": 21.62444
+                }
+              },
+              {
+                "city": "P\u00e9cs",
+                "country": "Hungary",
+                "geoPoint": {
+                  "lat": 46.07617,
+                  "lon": 18.22814
+                }
+              },
+              {
+                "city": "Szeged",
+                "country": "Hungary",
+                "geoPoint": {
+                  "lat": 46.253,
+                  "lon": 20.14824
+                }
+              },
+              {
+                "city": "Aviano",
+                "country": "Italy",
+                "geoPoint": {
+                  "lat": 46.07056,
+                  "lon": 12.59472
+                }
+              },
+              {
+                "city": "Genova",
+                "country": "Italy",
+                "geoPoint": {
+                  "lat": 45.21604,
+                  "lon": 11.87211
+                }
+              },
+              {
+                "city": "Milan",
+                "country": "Italy",
+                "geoPoint": {
+                  "lat": 45.46427,
+                  "lon": 9.18951
+                }
+              },
+              {
+                "city": "Rimini",
+                "country": "Italy",
+                "geoPoint": {
+                  "lat": 44.05755,
+                  "lon": 12.56528
+                }
+              },
+              {
+                "city": "Bialystock",
+                "country": "Poland"
+              },
+              {
+                "city": "Bydgoszcz",
+                "country": "Poland",
+                "geoPoint": {
+                  "lat": 53.1235,
+                  "lon": 18.00762
+                }
+              },
+              {
+                "city": "Krakow",
+                "country": "Poland",
+                "geoPoint": {
+                  "lat": 50.06143,
+                  "lon": 19.93658
+                }
+              },
+              {
+                "city": "Arkhangelsk",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 64.5461,
+                  "lon": 40.55183
+                }
+              },
+              {
+                "city": "Chelyabinsk",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 55.1611,
+                  "lon": 61.42877
+                }
+              },
+              {
+                "city": "Kazan'",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 55.78874,
+                  "lon": 49.12214
+                }
+              },
+              {
+                "city": "Krasnodar",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 45.04534,
+                  "lon": 38.98178
+                }
+              },
+              {
+                "city": "Moscow",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 55.75204,
+                  "lon": 37.61781
+                }
+              },
+              {
+                "city": "Novosibirsk",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 55.02259,
+                  "lon": 82.93175
+                }
+              },
+              {
+                "city": "Ryazan",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 54.62696,
+                  "lon": 39.70415
+                }
+              },
+              {
+                "city": "Saint Petersburg",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 59.93863,
+                  "lon": 30.31413
+                }
+              },
+              {
+                "city": "Samara",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 53.20767,
+                  "lon": 50.13553
+                }
+              },
+              {
+                "city": "Stavropol",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 45.03442,
+                  "lon": 41.9642
+                }
+              },
+              {
+                "city": "Voronezh",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 51.66833,
+                  "lon": 39.19204
+                }
+              },
+              {
+                "city": "Gothenburg",
+                "country": "Sweden",
+                "geoPoint": {
+                  "lat": 57.70716,
+                  "lon": 11.96679
+                }
+              },
+              {
+                "city": "Lund",
+                "country": "Sweden",
+                "geoPoint": {
+                  "lat": 55.70584,
+                  "lon": 13.19321
+                }
+              },
+              {
+                "city": "Vaxjo",
+                "country": "Sweden",
+                "geoPoint": {
+                  "lat": 56.87767,
+                  "lon": 14.80906
+                }
+              },
+              {
+                "city": "Dnipro",
+                "country": "Ukraine",
+                "geoPoint": {
+                  "lat": 48.46664,
+                  "lon": 35.04066
+                }
+              },
+              {
+                "city": "Donetsk",
+                "country": "Ukraine",
+                "geoPoint": {
+                  "lat": 48.023,
+                  "lon": 37.80224
+                }
+              },
+              {
+                "city": "Ivano-Frankivsk",
+                "country": "Ukraine",
+                "geoPoint": {
+                  "lat": 48.92312,
+                  "lon": 24.71248
+                }
+              },
+              {
+                "city": "Kiev",
+                "country": "Ukraine",
+                "geoPoint": {
+                  "lat": 50.45466,
+                  "lon": 30.5238
+                }
+              },
+              {
+                "city": "Kryvyi Rih",
+                "country": "Ukraine",
+                "geoPoint": {
+                  "lat": 47.90572,
+                  "lon": 33.39404
+                }
+              },
+              {
+                "city": "Lviv",
+                "country": "Ukraine",
+                "geoPoint": {
+                  "lat": 49.83826,
+                  "lon": 24.02324
+                }
+              },
+              {
+                "city": "Odesa",
+                "country": "Ukraine",
+                "geoPoint": {
+                  "lat": 46.48572,
+                  "lon": 30.74383
+                }
+              },
+              {
+                "city": "Uzhhorod",
+                "country": "Ukraine",
+                "geoPoint": {
+                  "lat": 48.6242,
+                  "lon": 22.2947
+                }
+              },
+              {
+                "city": "Vinnitsa",
+                "country": "Ukraine",
+                "geoPoint": {
+                  "lat": 49.84639,
+                  "lon": 37.71861
+                }
+              },
+              {
+                "city": "Leeds",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 53.79648,
+                  "lon": -1.54785
+                }
+              },
+              {
+                "city": "London",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 51.50853,
+                  "lon": -0.12574
+                }
+              },
+              {
+                "city": "Manchester",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 53.48095,
+                  "lon": -2.23743
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00039000",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12495762/",
+          "identifier": "PMC:12495762",
+          "title": "PMC Article 12495762",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562736"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8430327/",
+          "identifier": "PMC:8430327",
+          "title": "PMC Article 8430327",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562796"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7845582/",
+          "identifier": "PMC:7845582",
+          "title": "PMC Article 7845582",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562819"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3343264/",
+          "identifier": "PMC:3343264",
+          "title": "PMC Article 3343264",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562837"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12573121/",
+          "identifier": "PMC:12573121",
+          "title": "PMC Article 12573121",
+          "snippet": "",
+          "quality_score": 0.425,
+          "retrieved_at": "2026-03-16T19:36:39.562861"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "12495762",
+          "8430327",
+          "7845582",
+          "3343264",
+          "12573121"
+        ],
+        "pmc_count": 5,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "semantic_scholar_error": "HTTP 429"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00039000",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00039000",
+      "citations": [],
+      "raw_data": {},
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00039000",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00039000",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00039000",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00039000",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.95
+    },
+    "literature": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.425
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "chembl": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0
+    }
+  }
+}
