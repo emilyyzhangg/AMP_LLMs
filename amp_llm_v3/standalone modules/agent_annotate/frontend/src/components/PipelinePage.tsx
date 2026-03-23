@@ -3,14 +3,30 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getPipelineStatus, cancelJob, getPartialResults } from "../api/client";
 import type { PipelineStatus, PartialResults } from "../types";
 
-const PHASES = ["researching", "annotating", "verifying"] as const;
+const BATCH_PHASES = ["researching", "annotating", "verifying", "saving"] as const;
 
-function phaseIndex(stage: string): number {
+function batchPhaseIndex(stage: string): number {
   const s = stage.toLowerCase();
   if (s.includes("research")) return 0;
   if (s.includes("annot")) return 1;
-  if (s.includes("verif") || s.includes("review")) return 2;
+  if (s.includes("verif")) return 2;
+  if (s.includes("sav") || s.includes("done")) return 3;
   return -1;
+}
+
+function formatAgent(agent: string): string {
+  if (!agent) return "--";
+  return agent
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function formatDuration(secs: number): string {
+  if (secs < 60) return `${Math.round(secs)}s`;
+  if (secs < 3600) return `${Math.floor(secs / 60)}m ${Math.round(secs % 60)}s`;
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  return `${h}h ${m}m`;
 }
 
 export default function PipelinePage() {
@@ -45,14 +61,13 @@ export default function PipelinePage() {
     };
 
     const pollPartial = async () => {
-      if (partialError) return; // Stop trying if endpoint doesn't exist
+      if (partialError) return;
       try {
         const data = await getPartialResults(jobId);
         if (!active) return;
         if (data) {
           setPartialResults(data);
         } else {
-          // null means endpoint not available
           setPartialError(true);
         }
       } catch {
@@ -101,15 +116,28 @@ export default function PipelinePage() {
   const completed = (progress.completed_trials as number) || 0;
   const total = (progress.total_trials as number) || 0;
   const pct = (progress.percent as number) || 0;
-  const currentPhase = phaseIndex((progress.current_stage as string) || "");
+  const stage = (progress.current_stage as string) || "";
+  const currentPhase = batchPhaseIndex(stage);
   const elapsed = (progress.elapsed_display as string) || "";
   const remaining = (progress.estimated_remaining_display as string) || "";
   const avgPerTrial = (progress.avg_per_trial_display as string) || "";
+
+  const currentField = (progress.current_field as string) || "";
+  const currentAgent = (progress.current_agent as string) || "";
+  const currentModel = (progress.current_model as string) || "";
+  const verificationProgress = (progress.verification_progress as string) || "";
+  const fieldTimings = (progress.field_timings as Record<string, number>) || {};
+  const nctId = (progress.current_nct_id as string) || "";
+
+  // Compute effective throughput from raw seconds
+  const elapsedSecs = (progress.elapsed_seconds as number) || 0;
+  const effectiveAvg = completed > 0 ? elapsedSecs / completed : 0;
 
   return (
     <div>
       <h2 style={{ marginBottom: "1rem" }}>Pipeline Progress</h2>
       <div className="card">
+        {/* Header */}
         <div className="flex-between mb-2">
           <span>Job: <strong>{jobId}</strong></span>
           <div className="flex gap-1">
@@ -122,13 +150,13 @@ export default function PipelinePage() {
           </div>
         </div>
 
-        {/* Phase indicators */}
+        {/* Mini-batch phase indicators */}
         <div className="flex gap-2 mb-2">
-          {PHASES.map((phase, i) => {
+          {BATCH_PHASES.map((phase, i) => {
             let style: React.CSSProperties = {
               padding: "0.3rem 0.8rem",
               borderRadius: "var(--radius)",
-              fontSize: "0.8rem",
+              fontSize: "0.75rem",
               fontWeight: 600,
               textTransform: "uppercase",
               letterSpacing: "0.5px",
@@ -148,18 +176,60 @@ export default function PipelinePage() {
           })}
         </div>
 
-        {/* Trial progress */}
+        {/* Trial progress bar */}
         <div className="mb-1">
           <span className="text-sm text-muted">
-            {completed} / {total} trials
-            {progress.current_nct_id && ` \u2014 Processing ${progress.current_nct_id}`}
+            {completed} / {total} trials completed
+            {nctId && ` \u2014 ${nctId}`}
           </span>
         </div>
         <div className="progress-bar">
           <div className="progress-fill" style={{ width: `${pct}%` }} />
         </div>
 
-        {/* Timing info */}
+        {/* Active work panel */}
+        {(currentField || currentAgent || currentModel || verificationProgress) && (
+          <div style={{
+            marginTop: "0.75rem",
+            padding: "0.6rem 0.75rem",
+            background: "var(--bg-secondary)",
+            borderRadius: "var(--radius)",
+            fontSize: "0.8rem",
+          }}>
+            {/* Current activity line */}
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+              {currentAgent && (
+                <span style={{
+                  background: stage.includes("verif") ? "#1e3a5f" : "#064e3b",
+                  color: stage.includes("verif") ? "#60a5fa" : "var(--success)",
+                  padding: "0.15rem 0.5rem",
+                  borderRadius: "var(--radius)",
+                  fontSize: "0.7rem",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                }}>
+                  {formatAgent(currentAgent)}
+                </span>
+              )}
+              {currentField && (
+                <span style={{ color: "var(--text-primary)" }}>{currentField}</span>
+              )}
+              {currentModel && (
+                <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem" }}>
+                  via {currentModel}
+                </span>
+              )}
+            </div>
+            {/* Verification progress */}
+            {verificationProgress && (
+              <div style={{ marginTop: "0.3rem", color: "var(--text-secondary)", fontSize: "0.75rem" }}>
+                {verificationProgress}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Timing grid */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr 1fr",
@@ -171,73 +241,44 @@ export default function PipelinePage() {
           fontSize: "0.85rem",
         }}>
           <div>
-            <div className="text-muted" style={{ fontSize: "0.75rem", marginBottom: "0.2rem" }}>Elapsed</div>
+            <div className="text-muted" style={{ fontSize: "0.7rem", marginBottom: "0.2rem" }}>Elapsed</div>
             <div style={{ fontWeight: 600 }}>{elapsed || "0s"}</div>
           </div>
           <div>
-            <div className="text-muted" style={{ fontSize: "0.75rem", marginBottom: "0.2rem" }}>Est. Remaining</div>
+            <div className="text-muted" style={{ fontSize: "0.7rem", marginBottom: "0.2rem" }}>Est. Remaining</div>
             <div style={{ fontWeight: 600 }}>{remaining || (completed === 0 ? "Calculating..." : "0s")}</div>
           </div>
           <div>
-            <div className="text-muted" style={{ fontSize: "0.75rem", marginBottom: "0.2rem" }}>Avg / Trial</div>
-            <div style={{ fontWeight: 600 }}>{avgPerTrial || (completed === 0 ? "\u2014" : "0s")}</div>
+            <div className="text-muted" style={{ fontSize: "0.7rem", marginBottom: "0.2rem" }}>Throughput</div>
+            <div style={{ fontWeight: 600 }}>
+              {completed > 0 ? formatDuration(effectiveAvg) + "/trial" : "\u2014"}
+            </div>
           </div>
         </div>
 
-        <div className="text-sm text-muted mt-1">
-          Stage: {(progress.current_stage as string) || "initializing"}
-        </div>
-
-        {/* v11: Active work detail */}
-        {((progress.current_field as string) || (progress.current_agent as string) || (progress.current_model as string)) && (
+        {/* Field timings for current trial */}
+        {Object.keys(fieldTimings).length > 0 && (
           <div style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: "1rem",
+            display: "flex",
+            gap: "0.5rem",
+            flexWrap: "wrap",
             marginTop: "0.5rem",
-            padding: "0.5rem 0.75rem",
-            background: "var(--bg-secondary)",
-            borderRadius: "var(--radius)",
-            fontSize: "0.8rem",
+            fontSize: "0.75rem",
           }}>
-            <div>
-              <div className="text-muted" style={{ fontSize: "0.7rem" }}>Field</div>
-              <div>{(progress.current_field as string) || "--"}</div>
-            </div>
-            <div>
-              <div className="text-muted" style={{ fontSize: "0.7rem" }}>Agent</div>
-              <div>{(progress.current_agent as string) || "--"}</div>
-            </div>
-            <div>
-              <div className="text-muted" style={{ fontSize: "0.7rem" }}>Model</div>
-              <div>{(progress.current_model as string) || "--"}</div>
-            </div>
+            {Object.entries(fieldTimings).map(([field, secs]) => (
+              <span key={field} style={{
+                padding: "0.15rem 0.4rem",
+                background: "var(--bg-secondary)",
+                borderRadius: "var(--radius)",
+                color: secs === 0 ? "var(--success)" : "var(--text-secondary)",
+              }}>
+                {field}: {secs === 0 ? "det." : `${Math.round(secs)}s`}
+              </span>
+            ))}
           </div>
         )}
 
-        {/* Verification progress */}
-        {(progress.verification_progress as string) && (
-          <div className="text-sm text-muted mt-1">
-            Verification: {progress.verification_progress as string}
-          </div>
-        )}
-
-        {/* Field timings */}
-        {Object.keys((progress.field_timings as Record<string, number>) || {}).length > 0 && (
-          <div style={{ marginTop: "0.5rem", fontSize: "0.8rem" }}>
-            <div className="text-muted" style={{ fontSize: "0.7rem", marginBottom: "0.2rem" }}>
-              Field Timings
-            </div>
-            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-              {Object.entries((progress.field_timings as Record<string, number>)).map(([field, secs]) => (
-                <span key={field} style={{ color: "var(--text-secondary)" }}>
-                  {field}: {Math.round(secs)}s
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
+        {/* Errors */}
         {((progress.errors as string[]) || []).length > 0 && (
           <div className="mt-2">
             <div className="text-sm" style={{ color: "var(--error)" }}>
@@ -250,7 +291,7 @@ export default function PipelinePage() {
         )}
       </div>
 
-      {/* Partial Results Section */}
+      {/* Partial Results */}
       {completed > 0 && !partialError && (
         <div className="card">
           <div className="card-title flex-between">
@@ -258,7 +299,7 @@ export default function PipelinePage() {
               Partial Results
               {partialResults && (
                 <span className="text-sm text-muted" style={{ fontWeight: 400, marginLeft: "0.75rem" }}>
-                  {partialResults.count?.completed ?? partialResults.trials.length} / {partialResults.count?.total ?? "?"} trials
+                  {partialResults.count?.completed ?? partialResults.trials.length} / {partialResults.count?.total ?? "?"} persisted
                 </span>
               )}
             </span>
@@ -309,7 +350,7 @@ export default function PipelinePage() {
               </table>
             </div>
           ) : (
-            <div className="text-sm text-muted">Waiting for partial results data...</div>
+            <div className="text-sm text-muted">Waiting for first batch to complete...</div>
           )}
         </div>
       )}
