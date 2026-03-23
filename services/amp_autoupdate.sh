@@ -104,7 +104,24 @@ if [ "$LOCAL_HASH" != "$LAST_DEPLOYED_HASH" ]; then
             done
         fi
     fi
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Proceeding with restart (annotation jobs auto-resume)" >> "$LOG_FILE"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Proceeding with restart..." >> "$LOG_FILE"
+
+    # Check if agent-annotate has an active job — if so, skip restarting it.
+    # Restarting mid-job interrupts the current trial and wastes the Ollama
+    # inference time. The code changes will take effect after the job completes
+    # and the service is restarted on the next update cycle.
+    ANNOTATE_URL="http://localhost:8005"
+    ANNOTATE_ACTIVE=0
+    ANNOTATE_RESPONSE=$(curl -s --max-time 3 "$ANNOTATE_URL/api/jobs/active" 2>/dev/null)
+    if [ -n "$ANNOTATE_RESPONSE" ]; then
+        ANNOTATE_ACTIVE=$(echo "$ANNOTATE_RESPONSE" | python3 -c "import sys, json; data = json.load(sys.stdin); print(data.get('active', 0))" 2>/dev/null)
+        ANNOTATE_ACTIVE=${ANNOTATE_ACTIVE:-0}
+    fi
+    SKIP_ANNOTATE=""
+    if [ "$ANNOTATE_ACTIVE" != "0" ]; then
+        SKIP_ANNOTATE="com.amplm.annotate"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⏭️ Skipping annotate restart — $ANNOTATE_ACTIVE active job(s). Code changes apply after job completes." >> "$LOG_FILE"
+    fi
 
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🧹 Restarting MAIN services..." >> "$LOG_FILE"
     SERVICES=""
@@ -115,13 +132,17 @@ if [ "$LOCAL_HASH" != "$LAST_DEPLOYED_HASH" ]; then
                 *.dev) continue ;;
                 "$SELF_SERVICE") continue ;;
             esac
+            # Skip annotate service if it has an active job
+            if [ "$LABEL" = "$SKIP_ANNOTATE" ]; then
+                continue
+            fi
             SERVICES="$SERVICES $LABEL"
         fi
     done
     SERVICES=$(echo "$SERVICES" | xargs)
 
     if [ -z "$SERVICES" ]; then
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️ No com.amplm.* prod plists found" >> "$LOG_FILE"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️ No com.amplm.* prod plists found (or all skipped)" >> "$LOG_FILE"
     else
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] Found services to restart: $SERVICES" >> "$LOG_FILE"
         for service in $SERVICES; do
