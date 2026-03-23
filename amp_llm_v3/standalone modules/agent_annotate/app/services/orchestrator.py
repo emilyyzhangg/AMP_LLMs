@@ -585,123 +585,347 @@ class PipelineOrchestrator:
         skip_nct_ids: set[str],
         pipeline_start: float,
     ) -> list[dict]:
-        """Phase 2: Annotate and verify each trial sequentially.
+        """Phase 2: Annotate and verify in mini-batches.
 
-        Each trial goes through annotation -> consistency -> verification.
-        Ollama calls are serialized by the ollama_client lock.
+        Mini-batch processing reduces Ollama model switches by grouping:
+        1. Annotate N trials (annotation model stays loaded)
+        2. Verify all N trials model-grouped (each verifier processes all trials)
+        3. Reconcile all disagreements (reconciler loaded once)
+        4. Persist each trial after its verification finalizes
+
+        Batch size of 5 reduces model switches from ~4-5/trial to ~0.8/trial.
+        On interruption, at most batch_size trials of annotation work are lost
+        (research is cached, persisted trials are safe).
         """
         import time as _time
+
+        MINI_BATCH_SIZE = 5
 
         job.progress.current_phase = "annotation"
         all_trial_results = []
         trial_times: list[float] = []
 
-        for i, nct_id in enumerate(job.nct_ids):
-            if job.status == "cancelled":
-                break
-
-            # Load cached annotation if already on disk (resume)
+        # Filter out already-completed trials (resume support)
+        pending_ncts = []
+        for nct_id in job.nct_ids:
             if nct_id in skip_nct_ids:
                 cached = persistence.load_annotation(job.job_id, nct_id)
                 if cached:
                     all_trial_results.append(cached)
                     job.progress.completed_trials += 1
-                    logger.info(
-                        f"[{job.job_id}] Loaded cached annotation for {nct_id}"
-                    )
+                    logger.info(f"[{job.job_id}] Loaded cached annotation for {nct_id}")
                     continue
+            pending_ncts.append(nct_id)
 
-            trial_start = _time.monotonic()
-            job.progress.current_nct_id = nct_id
-            research = research_data.get(nct_id, [])
+        # Process in mini-batches
+        for batch_start in range(0, len(pending_ncts), MINI_BATCH_SIZE):
+            if job.status == "cancelled":
+                break
+
+            batch_ncts = pending_ncts[batch_start:batch_start + MINI_BATCH_SIZE]
+            batch_idx_offset = len(job.nct_ids) - len(pending_ncts) + batch_start
             logger.info(
-                f"[{job.job_id}] Annotating {nct_id} ({i+1}/{len(job.nct_ids)})"
+                f"[{job.job_id}] Mini-batch: {len(batch_ncts)} trials "
+                f"({batch_idx_offset+1}-{batch_idx_offset+len(batch_ncts)}/{len(job.nct_ids)})"
             )
 
-            try:
-                # --- Annotation ---
-                job.progress.current_stage = "annotating"
-                job.progress.elapsed_seconds = round(
-                    _time.monotonic() - pipeline_start, 1
-                )
+            # =================================================================
+            # Phase A: Annotate all trials in batch (annotation model stays loaded)
+            # =================================================================
+            job.progress.current_stage = "annotating"
+            batch_annotations = {}  # nct_id → (annotations, research, trial_start)
+            batch_errors = {}       # nct_id → error string
+
+            for j, nct_id in enumerate(batch_ncts):
+                if job.status == "cancelled":
+                    break
+
+                trial_start = _time.monotonic()
+                job.progress.current_nct_id = nct_id
+                job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
                 job.updated_at = now_pacific()
-
-                annotations = await self._run_annotation(
-                    nct_id, research, config, job
-                )
-                self._enforce_consistency(annotations)
-
-                # --- Verification ---
-                job.progress.current_stage = "verifying"
-                job.progress.elapsed_seconds = round(
-                    _time.monotonic() - pipeline_start, 1
-                )
-                job.updated_at = now_pacific()
-
-                verified = await self._run_verification(
-                    nct_id, annotations, research, config, job=job
+                research = research_data.get(nct_id, [])
+                logger.info(
+                    f"[{job.job_id}] Annotating {nct_id} "
+                    f"({batch_idx_offset+j+1}/{len(job.nct_ids)}, "
+                    f"batch {j+1}/{len(batch_ncts)})"
                 )
 
-                # --- Peptide cascade re-verification ---
-                # If verification flipped peptide, re-run classification
-                # with the corrected value
-                annotations, verified = await self._peptide_cascade_check(
-                    nct_id, annotations, verified, research, config
+                try:
+                    annotations = await self._run_annotation(
+                        nct_id, research, config, job
+                    )
+                    self._enforce_consistency(annotations)
+                    batch_annotations[nct_id] = (annotations, research, trial_start)
+                except Exception as e:
+                    logger.error(f"[{job.job_id}] Annotation error for {nct_id}: {e}")
+                    batch_errors[nct_id] = str(e)
+                    # Persist error result immediately
+                    metadata = TrialMetadata(nct_id=nct_id)
+                    trial_output = {
+                        "nct_id": nct_id,
+                        "metadata": metadata.model_dump(),
+                        "annotations": [],
+                        "verification": None,
+                        "research_used": [],
+                        "research_results": [r.model_dump() for r in research],
+                        "error": str(e),
+                    }
+                    all_trial_results.append(trial_output)
+                    job.progress.completed_trials += 1
+                    self._update_timing(job, trial_start, pipeline_start, trial_times)
+                    self._persist_job(job, trial_times)
+
+            if not batch_annotations:
+                continue  # all errored
+
+            # =================================================================
+            # Phase B: Verify all trials model-grouped (3 model switches total)
+            # =================================================================
+            job.progress.current_stage = "verifying"
+            job.progress.elapsed_seconds = round(_time.monotonic() - pipeline_start, 1)
+            job.updated_at = now_pacific()
+
+            batch_verified = {}  # nct_id → (annotations, verified)
+
+            # Collect all annotations that need verification across ALL trials
+            # Structure: {nct_id: {field_name: annotation}}
+            all_trial_annotations = {}
+            for nct_id, (annotations, research, _) in batch_annotations.items():
+                all_trial_annotations[nct_id] = {a.field_name: a for a in annotations}
+
+            # Separate skip vs verify across all trials
+            skip_results = {}     # nct_id → [ConsensusResult]
+            verify_items = []     # [(nct_id, annotation)]
+            any_flagged_by_trial = {nct_id: False for nct_id in batch_annotations}
+            flag_reasons_by_trial = {nct_id: [] for nct_id in batch_annotations}
+
+            for nct_id, (annotations, _, _) in batch_annotations.items():
+                skip_results[nct_id] = []
+                for annotation in annotations:
+                    if annotation.skip_verification:
+                        skip_results[nct_id].append(ConsensusResult(
+                            field_name=annotation.field_name,
+                            original_value=annotation.value,
+                            final_value=annotation.value,
+                            consensus_reached=True,
+                            agreement_ratio=1.0,
+                            opinions=[],
+                        ))
+                    elif annotation.confidence < 0.2 and "[Below threshold" in (annotation.reasoning or ""):
+                        skip_results[nct_id].append(ConsensusResult(
+                            field_name=annotation.field_name,
+                            original_value=annotation.value,
+                            final_value="",
+                            consensus_reached=False,
+                            agreement_ratio=0.0,
+                            opinions=[],
+                            flag_reason="insufficient_evidence",
+                        ))
+                        any_flagged_by_trial[nct_id] = True
+                        flag_reasons_by_trial[nct_id].append(f"{annotation.field_name}: insufficient evidence")
+                    else:
+                        verify_items.append((nct_id, annotation))
+
+            # Model-grouped verification across ALL trials in batch
+            verifier = BlindVerifier()
+            verifier_models = [
+                (key, m) for key, m in config.verification.models.items()
+                if m.role == "verifier"
+            ]
+            server_verifiers = getattr(config.orchestrator, "server_verifiers", [])
+            if config.orchestrator.hardware_profile == "server" and server_verifiers:
+                from app.models.config_models import ModelConfig
+                upgraded = []
+                for vi, (key, m) in enumerate(verifier_models):
+                    if vi < len(server_verifiers):
+                        upgraded.append((key, ModelConfig(name=server_verifiers[vi], role="verifier")))
+                    else:
+                        upgraded.append((key, m))
+                verifier_models = upgraded
+
+            all_opinions = {}  # (nct_id, field_name) → [opinions]
+            for nct_id, ann in verify_items:
+                all_opinions[(nct_id, ann.field_name)] = []
+
+            total_verify = len(verify_items)
+            for model_key, model_cfg in verifier_models:
+                job.progress.current_agent = model_key
+                job.progress.current_model = model_cfg.name
+                logger.info(
+                    f"  Verifier {model_key} ({model_cfg.name}): "
+                    f"{total_verify} fields across {len(batch_annotations)} trials"
                 )
 
-                # --- Post-verification consistency enforcement ---
-                # Cross-field rules on final verified values resolve
-                # ~25 of 32 review items automatically (v7)
-                self._enforce_post_verification_consistency(verified)
-
-                # Build trial result
-                metadata = self._extract_metadata(nct_id, research)
-
-                # Build research coverage metadata (Phase 1.5)
-                research_coverage = self._build_research_coverage(research)
-
-                trial_output = {
-                    "nct_id": nct_id,
-                    "metadata": metadata.model_dump(),
-                    "annotations": [a.model_dump() for a in annotations],
-                    "verification": verified.model_dump(),
-                    "research_used": [r.agent_name for r in research],
-                    "research_results": [r.model_dump() for r in research],
-                    "research_coverage": research_coverage,
-                }
-                all_trial_results.append(trial_output)
-
-                # Persist annotation to disk
-                persistence.save_annotation(job.job_id, nct_id, trial_output)
-
-                # Queue flagged fields for manual review
-                if verified.flagged_for_review:
-                    self._queue_for_review(
-                        job.job_id, nct_id, annotations, verified,
-                        commit_hash=job.commit_hash,
-                        created_at=job.started_at.isoformat() if job.started_at else "",
+                for vi, (nct_id, annotation) in enumerate(verify_items):
+                    if job.status == "cancelled":
+                        break
+                    job.progress.current_nct_id = nct_id
+                    job.progress.current_field = annotation.field_name
+                    job.progress.verification_progress = (
+                        f"{model_key}: {vi+1}/{total_verify} fields"
                     )
 
-                job.progress.completed_trials += 1
-                self._update_timing(job, trial_start, pipeline_start, trial_times)
-                self._persist_job(job, trial_times)
+                    research = batch_annotations[nct_id][1]
+                    opinion = await verifier.verify(
+                        nct_id=nct_id,
+                        field_name=annotation.field_name,
+                        research_results=research,
+                        model_name=model_key,
+                        ollama_model=model_cfg.name,
+                    )
+                    all_opinions[(nct_id, annotation.field_name)].append(opinion)
 
-            except Exception as e:
-                logger.error(f"[{job.job_id}] Error processing {nct_id}: {e}")
-                metadata = TrialMetadata(nct_id=nct_id)
-                trial_output = {
-                    "nct_id": nct_id,
-                    "metadata": metadata.model_dump(),
-                    "annotations": [],
-                    "verification": None,
-                    "research_used": [],
-                    "research_results": [r.model_dump() for r in research],
-                    "error": str(e),
-                }
-                all_trial_results.append(trial_output)
-                job.progress.completed_trials += 1
-                self._update_timing(job, trial_start, pipeline_start, trial_times)
-                self._persist_job(job, trial_times)
+            # Consensus checks (no LLM calls)
+            job.progress.current_agent = "consensus"
+            job.progress.current_model = None
+            job.progress.verification_progress = "checking consensus"
+
+            checker = ConsensusChecker()
+            threshold = config.verification.consensus_threshold
+            reconcile_queue = []  # [(nct_id, annotation, consensus)]
+            consensus_by_trial = {nct_id: list(skip_results[nct_id]) for nct_id in batch_annotations}
+
+            for nct_id, annotation in verify_items:
+                opinions = all_opinions[(nct_id, annotation.field_name)]
+                consensus = checker.check(
+                    field_name=annotation.field_name,
+                    primary_value=annotation.value,
+                    primary_model="primary",
+                    verifier_opinions=opinions,
+                    threshold=threshold,
+                )
+
+                if not consensus.consensus_reached:
+                    # High-confidence primary protection
+                    verifier_max_conf = max(
+                        (o.confidence for o in consensus.opinions if not o.agrees),
+                        default=0.0,
+                    )
+                    if annotation.confidence > 0.85 and verifier_max_conf <= 0.7:
+                        consensus.final_value = annotation.value
+                        consensus.consensus_reached = True
+                        consensus.reconciler_used = False
+                        consensus.reconciler_reasoning = (
+                            f"Primary override: confidence {annotation.confidence:.2f} "
+                            f"> 0.85, dissenting verifiers at {verifier_max_conf:.2f}"
+                        )
+                    else:
+                        reconcile_queue.append((nct_id, annotation, consensus))
+                        continue
+
+                if not consensus.consensus_reached:
+                    any_flagged_by_trial[nct_id] = True
+                    flag_reasons_by_trial[nct_id].append(f"{annotation.field_name}: model disagreement")
+
+                consensus_by_trial[nct_id].append(consensus)
+
+            # Batch reconciliation (one model load)
+            if reconcile_queue:
+                reconciler_model = None
+                for key, m in config.verification.models.items():
+                    if m.role == "reconciler":
+                        reconciler_model = m.name
+                        break
+                if config.orchestrator.hardware_profile == "server":
+                    reconciler_model = getattr(
+                        config.orchestrator, "server_premium_model", reconciler_model
+                    )
+
+                if reconciler_model:
+                    reconciler = ReconciliationAgent()
+                    job.progress.current_agent = "reconciler"
+                    job.progress.current_model = reconciler_model
+                    job.progress.verification_progress = f"reconciling {len(reconcile_queue)} fields"
+
+                    for nct_id, annotation, consensus in reconcile_queue:
+                        job.progress.current_nct_id = nct_id
+                        job.progress.current_field = annotation.field_name
+                        research = batch_annotations[nct_id][1]
+
+                        consensus = await reconciler.reconcile(
+                            field_name=annotation.field_name,
+                            consensus_result=consensus,
+                            research_results=research,
+                            reconciler_model=reconciler_model,
+                            primary_confidence=annotation.confidence,
+                        )
+
+                        if not consensus.consensus_reached:
+                            any_flagged_by_trial[nct_id] = True
+                            flag_reasons_by_trial[nct_id].append(
+                                f"{annotation.field_name}: model disagreement"
+                            )
+
+                        consensus_by_trial[nct_id].append(consensus)
+
+            # =================================================================
+            # Phase C: Finalize + persist each trial
+            # =================================================================
+            job.progress.current_stage = "saving"
+            job.progress.verification_progress = None
+            job.progress.current_field = None
+            job.progress.current_agent = None
+            job.progress.current_model = None
+
+            for nct_id, (annotations, research, trial_start) in batch_annotations.items():
+                try:
+                    verified = VerifiedAnnotation(
+                        nct_id=nct_id,
+                        fields=consensus_by_trial.get(nct_id, []),
+                        overall_consensus=not any_flagged_by_trial.get(nct_id, False),
+                        flagged_for_review=any_flagged_by_trial.get(nct_id, False),
+                        flag_reason="; ".join(flag_reasons_by_trial.get(nct_id, [])) or None,
+                    )
+
+                    # Peptide cascade re-verification
+                    annotations, verified = await self._peptide_cascade_check(
+                        nct_id, annotations, verified, research, config
+                    )
+                    self._enforce_post_verification_consistency(verified)
+
+                    metadata = self._extract_metadata(nct_id, research)
+                    research_coverage = self._build_research_coverage(research)
+
+                    trial_output = {
+                        "nct_id": nct_id,
+                        "metadata": metadata.model_dump(),
+                        "annotations": [a.model_dump() for a in annotations],
+                        "verification": verified.model_dump(),
+                        "research_used": [r.agent_name for r in research],
+                        "research_results": [r.model_dump() for r in research],
+                        "research_coverage": research_coverage,
+                    }
+                    all_trial_results.append(trial_output)
+                    persistence.save_annotation(job.job_id, nct_id, trial_output)
+
+                    if verified.flagged_for_review:
+                        self._queue_for_review(
+                            job.job_id, nct_id, annotations, verified,
+                            commit_hash=job.commit_hash,
+                            created_at=job.started_at.isoformat() if job.started_at else "",
+                        )
+
+                    job.progress.completed_trials += 1
+                    self._update_timing(job, trial_start, pipeline_start, trial_times)
+
+                except Exception as e:
+                    logger.error(f"[{job.job_id}] Finalize error for {nct_id}: {e}")
+                    metadata = TrialMetadata(nct_id=nct_id)
+                    trial_output = {
+                        "nct_id": nct_id,
+                        "metadata": metadata.model_dump(),
+                        "annotations": [a.model_dump() for a in annotations],
+                        "verification": None,
+                        "research_used": [r.agent_name for r in research],
+                        "research_results": [r.model_dump() for r in research],
+                        "error": str(e),
+                    }
+                    all_trial_results.append(trial_output)
+                    job.progress.completed_trials += 1
+                    self._update_timing(job, trial_start, pipeline_start, trial_times)
+
+            self._persist_job(job, trial_times)
 
         return all_trial_results
 
