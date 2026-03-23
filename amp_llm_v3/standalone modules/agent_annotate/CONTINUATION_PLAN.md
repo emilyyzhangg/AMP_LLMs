@@ -1,103 +1,102 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-03-23 ~15:00
-**Current state:** Job #7 (`5ab9fa09b1fa`) running on prod — 63/200 NCTs. v11 fix plan in progress on dev.
+**Last updated:** 2026-03-23 ~17:30
+**Current state:** v11 merged to main. 3 jobs submitted (514 NCTs). Job #10 running.
 
 ## Session Log (2026-03-23)
 
 ### What happened (chronological)
 
-1. **Job #5 completed** (`92fb568c1b96`) — 200 NCTs, v10, finished 2026-03-21 19:18. 12.2h elapsed.
-2. **Job #6 completed** (`829124f16fd5`) — 200 NCTs, v10, finished 2026-03-22 23:59.
-3. **Job #7 running** (`5ab9fa09b1fa`) — 63/200 as of 2026-03-23, batch E.
-4. **Ran concordance on 400 v10 NCTs** (jobs #5+#6) — results below.
-5. **Identified 3 critical issues** — outcome regression, peptide under-calling, AMP subtype blindness.
-6. **v11 fix plan created** — see Fix Plan section below.
+1. **Job #5 completed** (`92fb568c1b96`) — 200 NCTs, v10, finished 2026-03-21 19:18
+2. **Job #6 completed** (`829124f16fd5`) — 200 NCTs, v10, finished 2026-03-22 23:59
+3. **Ran concordance on 400 v10 NCTs** — outcome regressed to 47%, peptide under-calling at 65%
+4. **Identified 3 critical issues** — outcome regression, peptide under-calling, AMP subtype blindness
+5. **Created v11 fix plan** — deterministic rules, confidence fix, self-audit expansion, EDAM purge
+6. **Cancelled jobs #7-9** on prod for v11 upgrade
+7. **Purged 128 bad peptide True→False EDAM corrections** from prod edam.db
+8. **Implemented v11** on dev (commit `efa9baef`), merged to main (commit `2a1ebba`)
+9. **Analyzed v10 re-annotation impact** — 107/400 outcome, 13/400 peptide would change
+10. **Submitted 3 v11 jobs** — 514 remaining NCTs in 3 batches
 
-### Concordance: 400 v10 NCTs (jobs #5+#6 combined)
+### v11 Jobs Submitted
 
-| Field | vs R1 (378 overlap) | vs R2 (318 overlap) | Human R1↔R2 | Status |
-|---|---|---|---|---|
-| Classification | 89.0% / AC₁ 0.883 | 85.2% / AC₁ 0.839 | 91.6% | OK but misses all AMP subtypes |
-| Reason for failure | **89.4%** / AC₁ 0.891 | **91.5%** / AC₁ 0.912 | 87.2% | **Exceeds human baseline** |
-| Peptide | 65.0% / κ 0.274 | 74.2% / κ 0.421 | 83.4% | Under-calling True (-18 pts) |
-| Delivery mode | 57.3% / κ 0.472 | 63.3% / κ 0.539 | 71.3% | Improved from v9 (was 44%) |
-| Outcome | 47.3% / κ 0.287 | 57.7% / κ 0.373 | 56.2% | **Regressed from 80% (batch A)** |
+| Job | ID | NCTs | Status | Notes |
+|-----|-----|------|--------|-------|
+| #10 | `60aa4a590462` | 200 | Running/Queued | Batch E — first v11 job |
+| #11 | `26baede0fdec` | 200 | Queued | Batch F |
+| #12 | `b4536fa3e108` | 114 | Queued | Batch G — final batch |
 
-### EDAM State (2026-03-23)
-
-| Table | Count | Notes |
-|---|---|---|
-| experiences | 2,375 | Jobs #1-6 |
-| corrections | 147 | self_audit=139, self_review=8. **130 are peptide True→False** |
-| stability_index | 2,250 | |
-| embeddings | 3,193 | |
-| prompt_variants | 0 | |
-| config_epochs | 2 | |
-
-## v11 Fix Plan
-
-### Priority 1: Outcome Regression (47.3% → target >70%)
-
-**Root causes:** H1 heuristic violated by 8B model (calls Positive without corroboration), Recruiting under-detected (17.6% recall), confidence decoupled from source count, no EDAM self-audit for outcome.
-
-| Fix | File | What | EDAM Impact |
-|---|---|---|---|
-| 1a | outcome.py | Expand deterministic pass: COMPLETED+hasResults→Positive, Phase1+no pubs→Unknown | None |
-| 1b | outcome.py | Fix confidence: min(citation_quality, source_sufficiency) | None |
-| 1c | self_audit.py | Add outcome audit rules (Positive w/o pubs, missed Recruiting, Unknown w/ hasResults) | Additive corrections |
-| 1d | outcome.py | Tighten Pass 2 prompt: explicit H1 prohibition, negative examples | New epoch (desired) |
-
-### Priority 2: Peptide Under-calling (65% → target >80%)
-
-**Root causes:** 130 True→False EDAM corrections reinforcing bias, self-audit asymmetry, 8B model defaults to False, token truncation.
-
-| Fix | File | What | EDAM Impact |
-|---|---|---|---|
-| 2a | SQL on edam.db | Purge 130 peptide True→False self_audit corrections + embeddings | **Deletes bad corrections** |
-| 2b | self_audit.py | Rebalance: more False→True patterns, require 2+ signals for True→False, guard on DB hits | New corrections |
-| 2c | edam_config.py | Increase Mac Mini snippet to 400 chars for peptide | Config change → new epoch |
-| 2d | peptide.py | Add known peptide drug list (GLP-1 agonists, insulin analogs, AMPs) for deterministic True | None |
-
-### Priority 3: AMP Classification (0/14 infection, 0/14 other → target >70%)
-
-**Root causes:** Agent defaults everything to "Other", existing keyword lists not used in decision path.
-
-| Fix | File | What | EDAM Impact |
-|---|---|---|---|
-| 3a | classification.py | Deterministic rules: AMP drug + infection keyword → AMP(infection), AMP drug alone → AMP(other) | None |
-| 3b | classification.py | Add worked examples of AMP(infection) and AMP(other) to Pass 2 prompt | New epoch |
-| 3c | self_audit.py | Add classification audit: AMP drug in evidence but output="Other" → correct | Additive corrections |
-
-### Execution Order
-
-1. **Fix 2a** — purge bad peptide corrections (SQL only, immediate)
-2. **Fixes 1a + 2d + 3a** — deterministic rules (no EDAM impact, safest)
-3. **Fixes 1b + 2c** — confidence + config (low risk)
-4. **Fixes 1c + 2b + 3c** — self-audit additions (additive EDAM)
-5. **Fixes 1d + 3b** — prompt changes (new epochs, last)
-
-All changes on **dev branch first**. Test with Batch A (25 NCTs) for comparison. Then merge to main.
+Estimated completion: ~31 hours from submission (~2026-03-25 00:30)
 
 ## What to do next
 
-### After v11 implementation
+### When jobs #10-12 complete (~31 hours)
 
-1. Run validation job on dev (port 9005) with Batch A (25 NCTs) — direct comparison to v9/v10
-2. Compare concordance: v9 (batch A) vs v10 (batch A EDAM) vs v11 (batch A dev)
-3. If improvement confirmed → merge to main, re-queue remaining NCTs
+**1. Update this plan and LEARNING_RUN_PLAN.md** — record completion time, trial count, EDAM corrections
 
-### Job #7 status
+**2. Check EDAM corrections:**
+```bash
+PROD="/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/results"
+sqlite3 "$PROD/edam.db" "SELECT source, field_name, original_value, corrected_value, COUNT(*) FROM corrections WHERE epoch=3 GROUP BY source, field_name, original_value, corrected_value ORDER BY COUNT(*) DESC;"
+```
 
-Job #7 is running on prod with v10 agents. Do NOT push to main until it completes or is cancelled.
-v11 development happens on dev branch only.
+Expect corrections for outcome, classification, and peptide (v11 self-audit now covers all 4 fields).
+
+**3. Run concordance on v11 jobs:**
+Compare 514 v11 NCTs against human annotations. Compare v11 concordance vs v10 (400 NCTs) to measure improvement.
+
+**4. Selective v10 re-annotation (if v11 concordance confirms improvement):**
+Submit Job #13: ~120 NCTs from v10 batches that would change with v11 deterministic rules:
+- 107 COMPLETED Phase I trials (outcome: Positive→Unknown)
+- 13 known-peptide false negatives (peptide: False→True)
+
+```bash
+# Generate re-annotation list (run after concordance confirms improvement)
+cd "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate"
+python3 scripts/generate_v10_reannotation_list.py  # TODO: create this script
+```
+
+### After all 964 complete
+
+1. Full concordance across all jobs (v9 batch A+B, v10 C+D, v11 E+F+G, selective re-annotations)
+2. Decision: re-annotate remaining v10 trials or proceed to 884 unannotated NCTs
+3. See LEARNING_RUN_PLAN.md Phases 4-5
 
 ## Environment State
 
 | Environment | Branch | Agent Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v10 (ca50c09) | Job #7: 5ab9fa09b1fa (63/200 running) |
-| Dev (port 9005) | dev | v10 → v11 in progress | None |
+| Prod (port 8005) | main | v11 (2a1ebba) | Job #10: 60aa4a590462 (200 NCTs) |
+| Dev (port 9005) | dev | v11 (efa9baef) | None |
+
+## EDAM Database State (post-purge, pre-v11 jobs)
+
+| Table | Count | Notes |
+|---|---|---|
+| experiences | 2,715 | Jobs #1-7 (v9 epoch 1, v10 epoch 2) |
+| corrections | 42 | Post-purge. 20 pep T→F, 5 pep F→T, 7 dm, 4 outcome, etc. |
+| stability_index | 2,590 | |
+| embeddings | 3,065 | |
+| prompt_variants | 0 | Will fire after job #12 (every 3rd job) |
+| config_epochs | 2 → 3 | v11 creates epoch 3 |
+
+### Epoch decay on v11 start
+
+| Data | Epoch Distance | Weight | Floor |
+|------|---------------|--------|-------|
+| v10 experiences | 1 | 75% | 5% |
+| v10 corrections | 1 | 80% | 10% |
+| v9 experiences | 2 | 56% | 5% |
+
+## Important Notes
+
+- **Workflow:** Develop on `dev`, run jobs on prod. Only merge to `main` when explicitly told.
+- **Update plans after every job** — this file and `LEARNING_RUN_PLAN.md` job registry.
+- Prod autoupdater pulls from `main` every 30s. Do NOT push to main while a job is running.
+- Dev autoupdater pulls from `dev` every 30s.
+- **CRITICAL:** Always commit+push atomically in ONE bash command. Autoupdater wipes uncommitted changes every 30s.
+- EDAM is non-fatal: if it errors, the pipeline still runs.
+- Human annotations: `dev-llm.amphoraxe.ca/docs/clinical_trials-with-sequences.xlsx`
 
 ## Key File Locations
 
@@ -111,12 +110,3 @@ v11 development happens on dev branch only.
 | `results/json/{job_id}.json` | Consolidated output (completed jobs only) |
 | `scripts/human_annotated_ncts.txt` | All 964 NCTs |
 | `scripts/fast_learning_batch_50.txt` | Batches A+B (50 NCTs) |
-
-## Important Notes
-
-- **Workflow:** Develop on `dev`, run jobs on prod. Only merge to `main` when explicitly told.
-- **Update plans after every job** — this file and `LEARNING_RUN_PLAN.md` job registry.
-- Prod autoupdater pulls from `main` every 30s. Do NOT push to main while a job is running.
-- Dev autoupdater pulls from `dev` every 30s.
-- EDAM is non-fatal: if it errors, the pipeline still runs.
-- Human annotations: `dev-llm.amphoraxe.ca/docs/clinical_trials-with-sequences.xlsx`
