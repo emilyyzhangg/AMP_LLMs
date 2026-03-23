@@ -115,6 +115,10 @@ orchestrator:
   # Controls model selection for classification/outcome (high-accuracy fields),
   # reconciliation, concurrency settings, and evidence limits.
   hardware_profile: "mac_mini"
+  # v11: Unified annotation model — all annotation fields use this model on Mac Mini.
+  # Eliminates model switches during annotation phase (was switching between
+  # llama3.1:8b and qwen2.5:14b, costing 60-90s per trial in model reload overhead).
+  annotation_model: "qwen2.5:14b"
 
   # Premium model for server profile — used for classification, outcome, and reconciliation.
   # These are the hardest tasks requiring strong multi-step reasoning.

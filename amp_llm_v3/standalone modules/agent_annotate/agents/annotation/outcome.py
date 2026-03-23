@@ -222,7 +222,11 @@ class OutcomeAgent(BaseAnnotationAgent):
         if profile == "server":
             # Use the configurable premium model for outcome (most unstable field)
             return getattr(config.orchestrator, "server_premium_model", "kimi-k2-thinking")
-        # Default: use primary annotator model
+        # v11: Use unified annotation_model (eliminates model switches)
+        annotation_model = getattr(config.orchestrator, "annotation_model", None)
+        if annotation_model:
+            return annotation_model
+        # Fallback: use primary annotator model
         for model_key, model_cfg in config.verification.models.items():
             if model_cfg.role == "annotator":
                 return model_cfg.name

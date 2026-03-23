@@ -16,6 +16,12 @@ export interface PipelineProgress {
   current_nct_id: string | null;
   current_stage: string;
   errors: string[];
+  // v11: Enhanced progress
+  current_field: string | null;
+  current_agent: string | null;
+  current_model: string | null;
+  field_timings: Record<string, number>;
+  verification_progress: string | null;
 }
 
 export interface PipelineStatus {

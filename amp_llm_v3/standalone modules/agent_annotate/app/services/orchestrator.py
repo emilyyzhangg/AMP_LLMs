@@ -159,6 +159,11 @@ class PipelineOrchestrator:
                 "avg_seconds_per_trial": job.progress.avg_seconds_per_trial,
                 "current_stage": job.progress.current_stage,
                 "current_nct_id": job.progress.current_nct_id,
+                "current_field": job.progress.current_field,
+                "current_agent": job.progress.current_agent,
+                "current_model": job.progress.current_model,
+                "field_timings": job.progress.field_timings,
+                "verification_progress": job.progress.verification_progress,
             },
             "trial_times": trial_times or [],
         }
@@ -478,6 +483,11 @@ class PipelineOrchestrator:
             job.progress.current_stage = "done"
         job.progress.current_nct_id = None
         job.progress.current_phase = ""
+        job.progress.current_field = None
+        job.progress.current_agent = None
+        job.progress.current_model = None
+        job.progress.verification_progress = None
+        job.progress.field_timings = {}
         job.updated_at = now_pacific()
         self._persist_job(job)
         logger.info(f"[{job_id}] Pipeline {job.status}: {len(all_trial_results)} trials")
@@ -859,7 +869,12 @@ class PipelineOrchestrator:
 
             return result
 
+        import time as _field_time
+
         # --- Step 1: Run peptide FIRST (classification depends on it) ---
+        job.progress.current_field = "peptide"
+        job.progress.current_agent = "peptide_annotator"
+        _field_start = _field_time.monotonic()
         try:
             peptide_ann = await annotate_field("peptide")
         except Exception as e:
@@ -869,12 +884,17 @@ class PipelineOrchestrator:
                 reasoning=f"Agent error: {e}",
             )
         annotations.append(peptide_ann)
+        job.progress.field_timings["peptide"] = round(_field_time.monotonic() - _field_start, 1)
+        job.progress.current_model = getattr(peptide_ann, "model_name", None)
         shared_metadata["peptide_result"] = peptide_ann.value
 
         # --- Step 2: Run classification, delivery_mode, outcome (NOT failure_reason yet) ---
         # failure_reason depends on outcome, so we run it after outcome completes.
         step2_fields = [f for f in ANNOTATION_AGENTS if f not in ("peptide", "reason_for_failure")]
 
+        job.progress.current_field = ", ".join(step2_fields)
+        job.progress.current_agent = "annotation (parallel)" if config.orchestrator.parallel_annotation else "annotation"
+        _step2_start = _field_time.monotonic()
         if config.orchestrator.parallel_annotation:
             tasks = []
             for field in step2_fields:
@@ -892,6 +912,9 @@ class PipelineOrchestrator:
             annotations.extend(results)
         else:
             for field in step2_fields:
+                job.progress.current_field = field
+                job.progress.current_agent = f"{field}_annotator"
+                _sf = _field_time.monotonic()
                 try:
                     meta = shared_metadata if field == "classification" else None
                     ann = await annotate_field(field, metadata=meta)
@@ -902,8 +925,21 @@ class PipelineOrchestrator:
                         value="Unknown",
                         reasoning=f"Agent error: {e}",
                     ))
+                job.progress.field_timings[field] = round(_field_time.monotonic() - _sf, 1)
+        # Record step 2 timing for parallel fields
+        if config.orchestrator.parallel_annotation:
+            step2_elapsed = round(_field_time.monotonic() - _step2_start, 1)
+            for field in step2_fields:
+                job.progress.field_timings[field] = step2_elapsed
+            for ann in annotations:
+                if ann.field_name in step2_fields and hasattr(ann, "model_name"):
+                    job.progress.current_model = ann.model_name
+                    break
 
         # --- Step 3: Run failure_reason AFTER outcome (it needs the outcome result) ---
+        job.progress.current_field = "reason_for_failure"
+        job.progress.current_agent = "failure_reason_annotator"
+        _rf_start = _field_time.monotonic()
         outcome_ann = next((a for a in annotations if a.field_name == "outcome"), None)
         if outcome_ann:
             shared_metadata["outcome_result"] = outcome_ann.value
@@ -916,6 +952,7 @@ class PipelineOrchestrator:
                 reasoning=f"Agent error: {e}",
             )
         annotations.append(failure_ann)
+        job.progress.field_timings["reason_for_failure"] = round(_field_time.monotonic() - _rf_start, 1)
 
         return annotations
 
@@ -1291,10 +1328,12 @@ class PipelineOrchestrator:
         any_flagged = False
         flag_reasons = []
 
+        # v11: Separate fields into skip/verify buckets first
+        skip_annotations = []
+        verify_annotations = []
         for annotation in annotations:
             field = annotation.field_name
             primary_value = annotation.value
-            logger.info(f"  Verifying {field}: primary='{primary_value}'")
 
             # v9: Skip verification for deterministic pre-classifier results
             if annotation.skip_verification:
@@ -1310,6 +1349,7 @@ class PipelineOrchestrator:
                     agreement_ratio=1.0,
                     opinions=[],
                 ))
+                skip_annotations.append(annotation)
                 continue
 
             # Skip verification for low-confidence annotations already flagged
@@ -1325,11 +1365,28 @@ class PipelineOrchestrator:
                 ))
                 any_flagged = True
                 flag_reasons.append(f"{field}: insufficient evidence")
+                skip_annotations.append(annotation)
                 continue
 
-            # Run each verifier SEQUENTIALLY (one Ollama model at a time)
-            verifier_opinions = []
-            for model_key, model_cfg in verifier_models:
+            verify_annotations.append(annotation)
+
+        # v11: MODEL-GROUPED VERIFICATION — run each verifier on ALL fields
+        # before switching to the next verifier. Reduces model switches from
+        # ~15 (field×verifier) to ~3 (one per verifier model).
+        all_opinions: dict[str, list] = {a.field_name: [] for a in verify_annotations}
+
+        for model_key, model_cfg in verifier_models:
+            job.progress.current_agent = model_key
+            job.progress.current_model = model_cfg.name
+            logger.info(f"  Verifier {model_key} ({model_cfg.name}): verifying {len(verify_annotations)} fields")
+
+            for j, annotation in enumerate(verify_annotations):
+                field = annotation.field_name
+                job.progress.current_field = field
+                job.progress.verification_progress = (
+                    f"{model_key}: {j+1}/{len(verify_annotations)} fields"
+                )
+
                 opinion = await verifier.verify(
                     nct_id=nct_id,
                     field_name=field,
@@ -1337,23 +1394,28 @@ class PipelineOrchestrator:
                     model_name=model_key,
                     ollama_model=model_cfg.name,
                 )
-                verifier_opinions.append(opinion)
+                all_opinions[field].append(opinion)
 
-            # Consensus check
+        # Phase 2: Run consensus checks (no LLM calls)
+        job.progress.current_agent = "consensus"
+        job.progress.current_model = None
+        job.progress.verification_progress = "checking consensus"
+
+        fields_needing_reconciliation = []
+        ann_by_field = {a.field_name: a for a in verify_annotations}
+
+        for annotation in verify_annotations:
+            field = annotation.field_name
             consensus = checker.check(
                 field_name=field,
-                primary_value=primary_value,
+                primary_value=annotation.value,
                 primary_model="primary",
-                verifier_opinions=verifier_opinions,
+                verifier_opinions=all_opinions[field],
                 threshold=threshold,
             )
 
-            # If no consensus, try reconciliation
             if not consensus.consensus_reached and reconciler_model:
-                # High-confidence primary protection: if primary has strong
-                # evidence (>0.85 confidence) and ALL verifiers are at baseline
-                # confidence (0.7), the primary likely found evidence the
-                # verifiers missed. Accept the primary answer directly.
+                # High-confidence primary protection
                 verifier_max_conf = max(
                     (o.confidence for o in consensus.opinions if not o.agrees),
                     default=0.0,
@@ -1363,9 +1425,9 @@ class PipelineOrchestrator:
                         f"  {field}: HIGH-CONFIDENCE PRIMARY OVERRIDE "
                         f"(primary={annotation.confidence:.2f}, "
                         f"max_dissenting_verifier={verifier_max_conf:.2f}) "
-                        f"— accepting primary value '{primary_value}'"
+                        f"— accepting primary value '{annotation.value}'"
                     )
-                    consensus.final_value = primary_value
+                    consensus.final_value = annotation.value
                     consensus.consensus_reached = True
                     consensus.reconciler_used = False
                     consensus.reconciler_reasoning = (
@@ -1374,20 +1436,44 @@ class PipelineOrchestrator:
                         f"{verifier_max_conf:.2f}"
                     )
                 else:
-                    logger.info(f"  {field}: Attempting reconciliation with {reconciler_model}")
-                    consensus = await reconciler.reconcile(
-                        field_name=field,
-                        consensus_result=consensus,
-                        research_results=research_data,
-                        reconciler_model=reconciler_model,
-                        primary_confidence=annotation.confidence,
-                    )
+                    fields_needing_reconciliation.append((annotation, consensus))
+                    continue  # defer to batch reconciliation
 
             if not consensus.consensus_reached:
                 any_flagged = True
                 flag_reasons.append(f"{field}: model disagreement")
 
             consensus_results.append(consensus)
+
+        # Phase 3: Batch reconciliation (one model load for all disagreements)
+        if fields_needing_reconciliation:
+            job.progress.current_agent = "reconciler"
+            job.progress.current_model = reconciler_model
+            job.progress.verification_progress = f"reconciling {len(fields_needing_reconciliation)} fields"
+
+            for annotation, consensus in fields_needing_reconciliation:
+                field = annotation.field_name
+                job.progress.current_field = field
+                logger.info(f"  {field}: Attempting reconciliation with {reconciler_model}")
+
+                consensus = await reconciler.reconcile(
+                    field_name=field,
+                    consensus_result=consensus,
+                    research_results=research_data,
+                    reconciler_model=reconciler_model,
+                    primary_confidence=annotation.confidence,
+                )
+
+                if not consensus.consensus_reached:
+                    any_flagged = True
+                    flag_reasons.append(f"{field}: model disagreement")
+
+                consensus_results.append(consensus)
+
+        job.progress.verification_progress = None
+        job.progress.current_field = None
+        job.progress.current_agent = None
+        job.progress.current_model = None
 
         return VerifiedAnnotation(
             nct_id=nct_id,

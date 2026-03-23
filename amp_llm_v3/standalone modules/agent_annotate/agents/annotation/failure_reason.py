@@ -156,16 +156,18 @@ class FailureReasonAgent(BaseAnnotationAgent):
         from app.services.config_service import config_service
 
         config = config_service.get()
-        primary_model = None
-        for model_key, model_cfg in config.verification.models.items():
-            if model_cfg.role == "annotator":
-                primary_model = model_cfg.name
-                break
+        # v11: Use unified annotation_model (eliminates model switches during annotation)
+        primary_model = getattr(config.orchestrator, "annotation_model", None)
+        if not primary_model:
+            for model_key, model_cfg in config.verification.models.items():
+                if model_cfg.role == "annotator":
+                    primary_model = model_cfg.name
+                    break
         if not primary_model:
             primary_model = "llama3.1:8b"
 
-        # v9.1: Server profile uses larger model for better accuracy
-        if config.orchestrator.hardware_profile == "server":
+        # Server profile: use larger model if annotation_model not set
+        if config.orchestrator.hardware_profile == "server" and not getattr(config.orchestrator, "annotation_model", None):
             primary_model = "qwen2.5:14b"
 
         # --- PASS 1: Investigate ---

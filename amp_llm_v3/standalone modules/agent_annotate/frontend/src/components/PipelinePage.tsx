@@ -188,6 +188,56 @@ export default function PipelinePage() {
           Stage: {(progress.current_stage as string) || "initializing"}
         </div>
 
+        {/* v11: Active work detail */}
+        {((progress.current_field as string) || (progress.current_agent as string) || (progress.current_model as string)) && (
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gap: "1rem",
+            marginTop: "0.5rem",
+            padding: "0.5rem 0.75rem",
+            background: "var(--bg-secondary)",
+            borderRadius: "var(--radius)",
+            fontSize: "0.8rem",
+          }}>
+            <div>
+              <div className="text-muted" style={{ fontSize: "0.7rem" }}>Field</div>
+              <div>{(progress.current_field as string) || "--"}</div>
+            </div>
+            <div>
+              <div className="text-muted" style={{ fontSize: "0.7rem" }}>Agent</div>
+              <div>{(progress.current_agent as string) || "--"}</div>
+            </div>
+            <div>
+              <div className="text-muted" style={{ fontSize: "0.7rem" }}>Model</div>
+              <div>{(progress.current_model as string) || "--"}</div>
+            </div>
+          </div>
+        )}
+
+        {/* Verification progress */}
+        {(progress.verification_progress as string) && (
+          <div className="text-sm text-muted mt-1">
+            Verification: {progress.verification_progress as string}
+          </div>
+        )}
+
+        {/* Field timings */}
+        {Object.keys((progress.field_timings as Record<string, number>) || {}).length > 0 && (
+          <div style={{ marginTop: "0.5rem", fontSize: "0.8rem" }}>
+            <div className="text-muted" style={{ fontSize: "0.7rem", marginBottom: "0.2rem" }}>
+              Field Timings
+            </div>
+            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+              {Object.entries((progress.field_timings as Record<string, number>)).map(([field, secs]) => (
+                <span key={field} style={{ color: "var(--text-secondary)" }}>
+                  {field}: {Math.round(secs)}s
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         {((progress.errors as string[]) || []).length > 0 && (
           <div className="mt-2">
             <div className="text-sm" style={{ color: "var(--error)" }}>

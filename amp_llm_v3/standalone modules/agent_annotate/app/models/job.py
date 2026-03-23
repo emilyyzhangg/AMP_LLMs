@@ -33,6 +33,12 @@ class JobProgress(BaseModel):
     estimated_remaining_seconds: float = 0.0  # Estimated time left
     researched_trials: int = 0             # Phase 1 counter
     current_phase: str = ""                # "research" | "annotation" | ""
+    # v11: Enhanced progress reporting
+    current_field: Optional[str] = None          # "peptide" / "classification" / etc.
+    current_agent: Optional[str] = None          # "peptide_annotator" / "verifier_1" / "reconciler"
+    current_model: Optional[str] = None          # "qwen2.5:14b" / "gemma2:9b"
+    field_timings: dict[str, float] = {}         # {"peptide": 12.3, ...}
+    verification_progress: Optional[str] = None  # "verifier_1: 3/5 fields"
 
 
 class AnnotationJob(BaseModel):

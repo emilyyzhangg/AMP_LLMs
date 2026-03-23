@@ -54,6 +54,10 @@ class OrchestratorConfig(BaseModel):
     # List of 3 model names. If empty or not set, uses the default verifiers from
     # verification.models. Auto-pulled if not available locally.
     server_verifiers: list[str] = []
+    # v11: Unified annotation model for Mac Mini — eliminates model switches
+    # during annotation phase. All 5 fields use this model instead of the
+    # primary annotator (llama3.1:8b) for some and qwen2.5:14b for others.
+    annotation_model: str = "qwen2.5:14b"
 
 
 class OllamaConfig(BaseModel):
