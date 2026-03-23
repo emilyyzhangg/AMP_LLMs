@@ -639,7 +639,7 @@ class PipelineOrchestrator:
                 job.updated_at = now_pacific()
 
                 verified = await self._run_verification(
-                    nct_id, annotations, research, config
+                    nct_id, annotations, research, config, job=job
                 )
 
                 # --- Peptide cascade re-verification ---
@@ -1287,8 +1287,15 @@ class PipelineOrchestrator:
         annotations: list[FieldAnnotation],
         research_data: list[ResearchResult],
         config,
+        job=None,
     ) -> VerifiedAnnotation:
         """Run blind verification for each annotation field."""
+        # Helper: update progress if job is available (not passed during cascade re-verify)
+        def _progress(**kwargs):
+            if job is not None:
+                for k, v in kwargs.items():
+                    setattr(job.progress, k, v)
+
         verifier = BlindVerifier()
         checker = ConsensusChecker()
         reconciler = ReconciliationAgent()
@@ -1376,15 +1383,14 @@ class PipelineOrchestrator:
         all_opinions: dict[str, list] = {a.field_name: [] for a in verify_annotations}
 
         for model_key, model_cfg in verifier_models:
-            job.progress.current_agent = model_key
-            job.progress.current_model = model_cfg.name
+            _progress(current_agent=model_key, current_model=model_cfg.name)
             logger.info(f"  Verifier {model_key} ({model_cfg.name}): verifying {len(verify_annotations)} fields")
 
             for j, annotation in enumerate(verify_annotations):
                 field = annotation.field_name
-                job.progress.current_field = field
-                job.progress.verification_progress = (
-                    f"{model_key}: {j+1}/{len(verify_annotations)} fields"
+                _progress(
+                    current_field=field,
+                    verification_progress=f"{model_key}: {j+1}/{len(verify_annotations)} fields",
                 )
 
                 opinion = await verifier.verify(
@@ -1397,9 +1403,7 @@ class PipelineOrchestrator:
                 all_opinions[field].append(opinion)
 
         # Phase 2: Run consensus checks (no LLM calls)
-        job.progress.current_agent = "consensus"
-        job.progress.current_model = None
-        job.progress.verification_progress = "checking consensus"
+        _progress(current_agent="consensus", current_model=None, verification_progress="checking consensus")
 
         fields_needing_reconciliation = []
         ann_by_field = {a.field_name: a for a in verify_annotations}
@@ -1447,13 +1451,15 @@ class PipelineOrchestrator:
 
         # Phase 3: Batch reconciliation (one model load for all disagreements)
         if fields_needing_reconciliation:
-            job.progress.current_agent = "reconciler"
-            job.progress.current_model = reconciler_model
-            job.progress.verification_progress = f"reconciling {len(fields_needing_reconciliation)} fields"
+            _progress(
+                current_agent="reconciler",
+                current_model=reconciler_model,
+                verification_progress=f"reconciling {len(fields_needing_reconciliation)} fields",
+            )
 
             for annotation, consensus in fields_needing_reconciliation:
                 field = annotation.field_name
-                job.progress.current_field = field
+                _progress(current_field=field)
                 logger.info(f"  {field}: Attempting reconciliation with {reconciler_model}")
 
                 consensus = await reconciler.reconcile(
@@ -1470,10 +1476,7 @@ class PipelineOrchestrator:
 
                 consensus_results.append(consensus)
 
-        job.progress.verification_progress = None
-        job.progress.current_field = None
-        job.progress.current_agent = None
-        job.progress.current_model = None
+        _progress(verification_progress=None, current_field=None, current_agent=None, current_model=None)
 
         return VerifiedAnnotation(
             nct_id=nct_id,
