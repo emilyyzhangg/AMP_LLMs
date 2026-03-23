@@ -1438,7 +1438,12 @@ class PipelineOrchestrator:
         pipeline_start: float,
         trial_times: list[float],
     ) -> None:
-        """Update elapsed/estimated timing on the job progress."""
+        """Update elapsed/estimated timing on the job progress.
+
+        Uses total_elapsed / completed_trials for avg, which gives true
+        effective throughput in mini-batch mode (where individual trial_start
+        times overlap with other trials in the batch).
+        """
         import time as _time
 
         trial_elapsed = _time.monotonic() - trial_start
@@ -1447,10 +1452,17 @@ class PipelineOrchestrator:
         total_elapsed = _time.monotonic() - pipeline_start
         job.progress.elapsed_seconds = round(total_elapsed, 1)
 
-        avg = sum(trial_times) / len(trial_times)
+        # Use effective throughput: total pipeline time / completed trials.
+        # In mini-batch mode, individual trial times overlap, so summing them
+        # is misleading. Effective throughput is the metric that matters for ETA.
+        completed = job.progress.completed_trials
+        if completed > 0:
+            avg = total_elapsed / completed
+        else:
+            avg = trial_elapsed
         job.progress.avg_seconds_per_trial = round(avg, 1)
 
-        remaining_trials = job.progress.total_trials - job.progress.completed_trials
+        remaining_trials = job.progress.total_trials - completed
         job.progress.estimated_remaining_seconds = round(avg * remaining_trials, 1)
 
     def _queue_for_review(
