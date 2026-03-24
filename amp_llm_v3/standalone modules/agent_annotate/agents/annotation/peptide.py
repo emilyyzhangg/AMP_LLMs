@@ -198,9 +198,8 @@ _KNOWN_PEPTIDE_DRUGS = {
     "streptincor",
     # HIV peptides (still peptides even though not AMPs)
     "enfuvirtide", "t-20", "fuzeon", "peptide t", "dapta",
-    # Natriuretic peptides
-    "nesiritide", "bnp", "brain natriuretic peptide", "b-type natriuretic peptide",
     # Other peptide therapeutics
+    "nesiritide",
     "melittin", "magainin", "cecropin", "lactoferricin",
     "bivalirudin", "ziconotide", "eptifibatide", "icatibant",
     "pramlintide", "romiplostim",
