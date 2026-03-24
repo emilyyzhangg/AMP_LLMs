@@ -61,10 +61,11 @@ CHARS_PER_TOKEN = 4  # heuristic for English text
 
 # Budget allocation by category (must sum to 1.0)
 BUDGET_ALLOCATION = {
-    "corrections": 0.50,       # most valuable (learned mistakes)
-    "stable_exemplars": 0.25,  # known-good few-shot examples
-    "prompt_guidance": 0.15,   # prompt variant instructions
-    "anomaly_warnings": 0.10,  # statistical anomaly flags
+    "corrections": 0.40,           # most valuable (learned mistakes)
+    "stable_exemplars": 0.25,      # known-good few-shot examples
+    "reasoning_patterns": 0.15,    # general rules from consistency/self-audit
+    "prompt_guidance": 0.10,       # prompt variant instructions
+    "anomaly_warnings": 0.10,      # statistical anomaly flags
 }
 
 # ---------------------------------------------------------------------------

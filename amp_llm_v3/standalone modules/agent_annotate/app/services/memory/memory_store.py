@@ -123,6 +123,17 @@ CREATE TABLE IF NOT EXISTS stability_index (
     UNIQUE(nct_id, field_name)
 );
 CREATE INDEX IF NOT EXISTS idx_stab_field ON stability_index(field_name);
+
+CREATE TABLE IF NOT EXISTS drug_names (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    original_name   TEXT NOT NULL,
+    resolved_name   TEXT NOT NULL,
+    context         TEXT,
+    nct_id          TEXT,
+    created_at      TEXT NOT NULL,
+    UNIQUE(original_name, resolved_name)
+);
+CREATE INDEX IF NOT EXISTS idx_drug_orig ON drug_names(original_name);
 """
 
 
@@ -438,6 +449,41 @@ class MemoryStore:
         ).fetchall()
         return [dict(r) for r in rows]
 
+    # --- Drug name resolution cache ---
+
+    def store_drug_name(self, original: str, resolved: str,
+                        context: str = None, nct_id: str = None) -> None:
+        """Store a drug name resolution mapping.
+
+        Non-fatal: silently ignores duplicates (UNIQUE constraint).
+        """
+        try:
+            self._conn.execute(
+                "INSERT OR IGNORE INTO drug_names "
+                "(original_name, resolved_name, context, nct_id, created_at) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (original, resolved, context, nct_id, _now_iso()),
+            )
+            self._conn.commit()
+        except Exception as e:
+            logger.warning("EDAM: failed to store drug name mapping: %s", e)
+
+    def get_resolved_names(self, original_name: str) -> list[str]:
+        """Retrieve all known resolved names for a given drug name.
+
+        Returns empty list if no resolutions found.
+        """
+        try:
+            rows = self._conn.execute(
+                "SELECT resolved_name FROM drug_names "
+                "WHERE original_name = ? ORDER BY created_at DESC",
+                (original_name,),
+            ).fetchall()
+            return [r["resolved_name"] for r in rows]
+        except Exception as e:
+            logger.warning("EDAM: failed to query drug names: %s", e)
+            return []
+
     # --- Prompt variants ---
 
     def store_variant(self, field_name: str, variant_name: str,
@@ -625,7 +671,41 @@ class MemoryStore:
                 parts.append("[STABLE PATTERNS]")
                 parts.extend(ex_lines)
 
-        # --- 3. Anomaly warnings (10% budget) ---
+        # --- 3. Reasoning patterns (15% budget) ---
+        pattern_budget = int(budget_chars * BUDGET_ALLOCATION["reasoning_patterns"])
+        try:
+            pattern_corrections = self._conn.execute(
+                "SELECT field_name, reflection, source, corrected_value "
+                "FROM corrections "
+                "WHERE field_name = ? AND source IN ('consistency_override', 'self_audit') "
+                "ORDER BY epoch DESC, id DESC LIMIT 20",
+                (field_name,),
+            ).fetchall()
+            if pattern_corrections:
+                # Group by pattern type and deduplicate
+                seen_patterns = set()
+                pattern_lines = []
+                pattern_used = 0
+                for pc in pattern_corrections:
+                    reflection = pc["reflection"] or ""
+                    # Extract a general rule from the reflection
+                    rule = self._extract_reasoning_pattern(
+                        field_name, reflection, pc["corrected_value"],
+                    )
+                    if rule and rule not in seen_patterns:
+                        seen_patterns.add(rule)
+                        line = f"- {field_name}: {rule}"
+                        if pattern_used + len(line) > pattern_budget:
+                            break
+                        pattern_lines.append(line)
+                        pattern_used += len(line)
+                if pattern_lines:
+                    parts.append("[REASONING PATTERNS]")
+                    parts.extend(pattern_lines)
+        except Exception:
+            pass  # reasoning pattern extraction is non-fatal
+
+        # --- 4. Anomaly warnings (10% budget) ---
         anomalies = self.detect_anomalies(field_name)
         if anomalies:
             parts.append("[WARNINGS]")
@@ -643,6 +723,73 @@ class MemoryStore:
             block = block[:max_chars - 20] + "\n=== END GUIDANCE ==="
 
         return block
+
+    @staticmethod
+    def _extract_reasoning_pattern(field_name: str, reflection: str,
+                                   corrected_value: str) -> str | None:
+        """Extract a generalised reasoning rule from a correction reflection.
+
+        Returns a short, NCT-agnostic rule string, or None if no pattern
+        can be extracted.
+        """
+        reflection_lower = reflection.lower()
+
+        # Peptide patterns
+        if field_name == "peptide":
+            if "2-50" in reflection or "amino acid" in reflection_lower:
+                return f"UniProt entries with 2-50 amino acids indicate peptide={corrected_value}"
+            if "amp" in reflection_lower and "classification" in reflection_lower:
+                return f"AMP classification implies peptide=True"
+            if ">50" in reflection or "protein" in reflection_lower:
+                return f"Sequences longer than 50 amino acids indicate peptide=False (protein)"
+            if "multi-chain" in reflection_lower:
+                return "Multi-chain complexes indicate peptide=False"
+            if "monoclonal antibody" in reflection_lower:
+                return "Monoclonal antibodies are not peptides (peptide=False)"
+            if "database" in reflection_lower and "hit" in reflection_lower:
+                return "Peptide database hits (UniProt/DRAMP/DBAASP) support peptide=True"
+
+        # Delivery mode patterns
+        if field_name == "delivery_mode":
+            if "infusion" in reflection_lower and ("ng/kg" in reflection_lower or "continuous" in reflection_lower):
+                return "Continuous infusion rates (ng/kg/min) indicate IV administration"
+            if "intravenous" in reflection_lower or "iv " in reflection_lower:
+                return "Explicit intravenous/IV evidence overrides generic route classification"
+            if "subcutaneous" in reflection_lower:
+                return "Explicit subcutaneous evidence overrides generic route classification"
+
+        # Classification patterns
+        if field_name == "classification":
+            if "amp" in reflection_lower and "peptide=false" in reflection_lower:
+                return "peptide=False forces classification to Other"
+            if "dramp" in reflection_lower or "dbaasp" in reflection_lower:
+                return "DRAMP/DBAASP database hits indicate AMP classification"
+            if "antimicrobial" in reflection_lower:
+                return "Known antimicrobial peptide drugs should be classified as AMP"
+
+        # Outcome patterns
+        if field_name == "outcome":
+            if "recruiting" in reflection_lower and "registry" in reflection_lower:
+                return "Registry status RECRUITING overrides other outcome classifications"
+            if "hasresults" in reflection_lower:
+                return "Registry hasResults=true with COMPLETED status indicates reportable outcomes"
+
+        # Reason for failure patterns
+        if field_name == "reason_for_failure":
+            if "positive" in reflection_lower or "recruiting" in reflection_lower or "unknown" in reflection_lower:
+                return "Non-failure outcomes (Positive, Recruiting, Unknown) should have empty failure reason"
+
+        # Fallback: use the first ~100 chars of reflection as a general pattern
+        # but only if it's from consistency_override (these are always rule-based)
+        if len(reflection) > 20:
+            # Strip NCT-specific references
+            import re
+            cleaned = re.sub(r"NCT\d+", "trial", reflection[:150])
+            cleaned = re.sub(r"\b\d{5,}\b", "N", cleaned)
+            if len(cleaned) > 20:
+                return cleaned.strip()
+
+        return None
 
     async def get_anomaly_warnings(self, field_name: str,
                                    max_tokens: int = 200) -> str:
@@ -688,7 +835,8 @@ class MemoryStore:
         """Return table counts and database size for monitoring."""
         stats = {}
         for table in ["experiences", "corrections", "prompt_variants",
-                       "embeddings", "stability_index", "config_epochs"]:
+                       "embeddings", "stability_index", "config_epochs",
+                       "drug_names"]:
             row = self._conn.execute(f"SELECT COUNT(*) as cnt FROM {table}").fetchone()
             stats[table] = row["cnt"]
         stats["db_size_mb"] = round(self._db_path.stat().st_size / (1024 * 1024), 2)

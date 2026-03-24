@@ -655,7 +655,14 @@ class PipelineOrchestrator:
                     annotations = await self._run_annotation(
                         nct_id, research, config, job
                     )
+                    # Snapshot pre-consistency values for EDAM learning
+                    pre_consistency = {a.field_name: a.value for a in annotations}
                     self._enforce_consistency(annotations, research_data=research)
+                    # Store consistency overrides as EDAM corrections
+                    self._store_consistency_overrides(
+                        nct_id, job.job_id, annotations,
+                        pre_consistency, job.config_snapshot,
+                    )
                     batch_annotations[nct_id] = (annotations, research, trial_start)
                 except Exception as e:
                     logger.error(f"[{job.job_id}] Annotation error for {nct_id}: {e}")
@@ -884,6 +891,13 @@ class PipelineOrchestrator:
                     )
                     self._enforce_post_verification_consistency(verified)
 
+                    # Store reconciliation overrides as EDAM corrections
+                    ann_by_field = {a.field_name: a for a in annotations}
+                    self._store_reconciliation_corrections(
+                        nct_id, job.job_id, verified,
+                        ann_by_field, job.config_snapshot,
+                    )
+
                     metadata = self._extract_metadata(nct_id, research)
                     research_coverage = self._build_research_coverage(research)
 
@@ -977,7 +991,7 @@ class PipelineOrchestrator:
 
                     # Layer 1: Resolve drug names (abbreviations/brand names → generic + synonyms)
                     try:
-                        await self._resolve_drug_names(proto_result, interventions, config)
+                        await self._resolve_drug_names(proto_result, interventions, config, nct_id)
                         logger.info(
                             f"  Resolved drug names: "
                             f"{[(i['name'], i.get('resolved', [])) for i in interventions]}"
@@ -1045,6 +1059,7 @@ class PipelineOrchestrator:
         proto_result: ResearchResult,
         interventions: list[dict],
         config,
+        nct_id: str = "",
     ) -> None:
         """Resolve abbreviations/brand names to generic drug names + synonyms.
 
@@ -1053,9 +1068,19 @@ class PipelineOrchestrator:
         resolve each intervention name to its generic name and common synonyms.
         Modifies interventions list in-place, adding a 'resolved' key to each dict.
 
+        EDAM integration: checks the drug_names cache first — if a name has been
+        resolved before, skip the LLM call. After LLM resolves new names, store
+        them in EDAM for future use.
+
         This is a cheap single LLM call per trial — no model switch needed.
         """
         from app.services.ollama_client import ollama_client
+
+        # --- EDAM cache: check for previously resolved names ---
+        try:
+            from app.services.memory.memory_store import memory_store as _edam
+        except Exception:
+            _edam = None
 
         # Extract trial description text from protocol data
         raw = proto_result.raw_data or {}
@@ -1075,13 +1100,39 @@ class PipelineOrchestrator:
         if not names:
             return
 
+        # Check EDAM cache for each name — skip LLM for cached resolutions
+        names_needing_llm = []
+        cached_resolutions = {}  # name -> [resolved_names]
+        for name in names:
+            if _edam:
+                try:
+                    cached = _edam.get_resolved_names(name)
+                    if cached:
+                        cached_resolutions[name] = cached
+                        logger.info(f"  EDAM cache hit for drug '{name}': {cached}")
+                        continue
+                except Exception:
+                    pass  # cache miss is fine
+            names_needing_llm.append(name)
+
+        # Apply cached resolutions immediately
+        for interv in interventions:
+            name = interv.get("name", "")
+            if name in cached_resolutions:
+                interv["resolved"] = cached_resolutions[name]
+
+        # If all names were cached, skip the LLM call entirely
+        if not names_needing_llm:
+            logger.info("  All drug names resolved from EDAM cache — skipping LLM call")
+            return
+
         prompt = (
             f"Given this clinical trial description:\n\n{trial_text[:2000]}\n\n"
             f"For each of the following intervention names, provide the generic "
             f"drug name and any common synonyms (abbreviations, brand names, "
             f"chemical names, or alternative names). If the name is already the "
             f"generic name, still list any known synonyms.\n\n"
-            f"Interventions: {', '.join(names)}\n\n"
+            f"Interventions: {', '.join(names_needing_llm)}\n\n"
             f"Format your response as one line per intervention:\n"
             f"[original name] -> generic: [generic name]; synonyms: [syn1, syn2, ...]\n"
             f"If you cannot determine the generic name, write: [original name] -> generic: unknown; synonyms: none"
@@ -1102,8 +1153,8 @@ class PipelineOrchestrator:
         import re
         for interv in interventions:
             name = interv.get("name", "")
-            if not name:
-                continue
+            if not name or name in cached_resolutions:
+                continue  # already resolved from cache
 
             resolved = []
             # Find the line matching this intervention (case-insensitive)
@@ -1132,6 +1183,20 @@ class PipelineOrchestrator:
                     unique_resolved.append(r)
 
             interv["resolved"] = unique_resolved
+
+            # Store new resolutions in EDAM cache
+            if _edam and unique_resolved:
+                context = brief_summary[:200] if brief_summary else None
+                for resolved_name in unique_resolved:
+                    try:
+                        _edam.store_drug_name(
+                            original=name,
+                            resolved=resolved_name,
+                            context=context,
+                            nct_id=nct_id,
+                        )
+                    except Exception:
+                        pass  # EDAM storage failures are non-fatal
 
     async def _run_annotation(
         self,
@@ -1427,6 +1492,141 @@ class PipelineOrchestrator:
             logger.warning(f"  Peptide cascade re-classification failed: {e}")
 
         return annotations, verified
+
+    @staticmethod
+    def _store_consistency_overrides(
+        nct_id: str,
+        job_id: str,
+        annotations: list[FieldAnnotation],
+        pre_consistency: dict[str, str],
+        config_snapshot: dict,
+    ) -> None:
+        """Store EDAM corrections for any values changed by _enforce_consistency.
+
+        Non-fatal: all errors are logged but never raised.
+        """
+        try:
+            from app.services.memory.memory_store import memory_store as _edam
+            from app.services.version_service import get_git_commit_short
+            import hashlib
+
+            config_str = str(sorted(str(config_snapshot)))
+            config_hash = hashlib.sha256(config_str.encode()).hexdigest()[:12]
+            git_commit = get_git_commit_short()
+
+            for ann in annotations:
+                original = pre_consistency.get(ann.field_name)
+                if original is not None and ann.value != original:
+                    # Extract the override reason from the reasoning prefix
+                    reasoning = ann.reasoning or ""
+                    # The override reason is in brackets at the start
+                    reflection = reasoning
+                    if reasoning.startswith("[Consistency override"):
+                        bracket_end = reasoning.find("]")
+                        if bracket_end > 0:
+                            reflection = reasoning[1:bracket_end]
+
+                    try:
+                        _edam.store_correction(
+                            nct_id=nct_id,
+                            field_name=ann.field_name,
+                            job_id=job_id,
+                            original_value=original,
+                            corrected_value=ann.value,
+                            source="consistency_override",
+                            reflection=reflection,
+                            evidence_citations=[{
+                                "source": "consistency_engine",
+                                "text": reflection[:200],
+                            }],
+                            config_hash=config_hash,
+                            git_commit=git_commit,
+                        )
+                        logger.info(
+                            "EDAM: stored consistency override %s/%s: '%s' -> '%s'",
+                            nct_id, ann.field_name, original, ann.value,
+                        )
+                    except Exception as e:
+                        logger.warning(
+                            "EDAM: failed to store consistency override for %s/%s: %s",
+                            nct_id, ann.field_name, e,
+                        )
+        except Exception as e:
+            logger.warning("EDAM: consistency override storage failed (non-fatal): %s", e)
+
+    @staticmethod
+    def _store_reconciliation_corrections(
+        nct_id: str,
+        job_id: str,
+        verified: 'VerifiedAnnotation',
+        ann_by_field: dict[str, FieldAnnotation],
+        config_snapshot: dict,
+    ) -> None:
+        """Store EDAM corrections for fields changed by verification/reconciliation.
+
+        Compares each verified field's final_value against the original annotation
+        value. Where they differ (and final_value is not empty), stores a
+        correction with source='reconciliation'.
+
+        Non-fatal: all errors are logged but never raised.
+        """
+        try:
+            from app.services.memory.memory_store import memory_store as _edam
+            from app.services.version_service import get_git_commit_short
+            import hashlib
+
+            config_str = str(sorted(str(config_snapshot)))
+            config_hash = hashlib.sha256(config_str.encode()).hexdigest()[:12]
+            git_commit = get_git_commit_short()
+
+            for field in verified.fields:
+                original_ann = ann_by_field.get(field.field_name)
+                if not original_ann:
+                    continue
+
+                original_value = original_ann.value
+                final_value = field.final_value
+
+                # Skip if no change or final_value is empty
+                if not final_value or final_value == original_value:
+                    continue
+
+                # Use reconciler reasoning if available, otherwise generic
+                reflection = (
+                    field.reconciler_reasoning
+                    if field.reconciler_used and field.reconciler_reasoning
+                    else f"Verification changed {field.field_name} from "
+                         f"'{original_value}' to '{final_value}' "
+                         f"(agreement_ratio={field.agreement_ratio:.2f})"
+                )
+
+                try:
+                    _edam.store_correction(
+                        nct_id=nct_id,
+                        field_name=field.field_name,
+                        job_id=job_id,
+                        original_value=original_value,
+                        corrected_value=final_value,
+                        source="reconciliation",
+                        reflection=reflection[:500],
+                        evidence_citations=[{
+                            "source": "verification_consensus",
+                            "text": reflection[:200],
+                        }],
+                        config_hash=config_hash,
+                        git_commit=git_commit,
+                    )
+                    logger.info(
+                        "EDAM: stored reconciliation correction %s/%s: '%s' -> '%s'",
+                        nct_id, field.field_name, original_value, final_value,
+                    )
+                except Exception as e:
+                    logger.warning(
+                        "EDAM: failed to store reconciliation correction for %s/%s: %s",
+                        nct_id, field.field_name, e,
+                    )
+        except Exception as e:
+            logger.warning("EDAM: reconciliation correction storage failed (non-fatal): %s", e)
 
     @staticmethod
     def _enforce_consistency(
