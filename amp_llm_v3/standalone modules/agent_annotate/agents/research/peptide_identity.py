@@ -74,6 +74,7 @@ class PeptideIdentityAgent(BaseResearchAgent):
                         params={
                             "query": structured_query,
                             "format": "json",
+                            "fields": "accession,protein_name,organism_name,sequence",
                             "size": 3,
                         },
                         headers={"Accept": "application/json"},
@@ -93,6 +94,7 @@ class PeptideIdentityAgent(BaseResearchAgent):
                             params={
                                 "query": broader_query,
                                 "format": "json",
+                                "fields": "accession,protein_name,organism_name,sequence",
                                 "size": 3,
                             },
                             headers={"Accept": "application/json"},
@@ -109,6 +111,7 @@ class PeptideIdentityAgent(BaseResearchAgent):
                             params={
                                 "query": f"{intervention} AND (organism_id:9606)",
                                 "format": "json",
+                                "fields": "accession,protein_name,organism_name,sequence",
                                 "size": 2,
                             },
                             headers={"Accept": "application/json"},

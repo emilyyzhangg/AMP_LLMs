@@ -198,10 +198,12 @@ _KNOWN_PEPTIDE_DRUGS = {
     "streptincor",
     # HIV peptides (still peptides even though not AMPs)
     "enfuvirtide", "t-20", "fuzeon", "peptide t", "dapta",
+    # Natriuretic peptides
+    "nesiritide", "bnp", "brain natriuretic peptide", "b-type natriuretic peptide",
     # Other peptide therapeutics
     "melittin", "magainin", "cecropin", "lactoferricin",
     "bivalirudin", "ziconotide", "eptifibatide", "icatibant",
-    "nesiritide", "pramlintide", "romiplostim",
+    "pramlintide", "romiplostim",
 }
 
 
@@ -400,6 +402,42 @@ class PeptideAgent(BaseAnnotationAgent):
         value = self._parse_value(pass2_text)
         reasoning = f"[Pass 1 extraction] {pass1_text[:400]}\n[Pass 2 decision] {pass2_text[:400]}"
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
+
+        # v12: Post-Pass-2 consistency check — if Pass 1 clearly identified a
+        # peptide but Pass 2 contradicted it, trust Pass 1. The LLM's evidence
+        # extraction is more reliable than its classification when the exclusion
+        # list biases it toward False.
+        if value == "False":
+            pass1_lower = pass1_text.lower()
+            mol_match = re.search(r"molecular class:\s*(.+?)(?:\n|$)", pass1_lower)
+            mol_class = mol_match.group(1).strip() if mol_match else ""
+
+            is_peptide_evidence = (
+                "short peptide" in mol_class
+                or ("peptide" in mol_class and "conjugate" in mol_class)
+                or ("peptide" in mol_class and "vaccine" in mol_class)
+                or ("peptide" in mol_class and "immunogen" in mol_class)
+            )
+            # Don't override if Pass 1 found explicit non-peptide signals
+            is_non_peptide = (
+                "antibody" in mol_class
+                or "small molecule" in mol_class
+                or "nutritional" in mol_class
+                or "single amino" in mol_class
+                or "protein" in mol_class and "peptide" not in mol_class
+            )
+
+            if is_peptide_evidence and not is_non_peptide:
+                logger.info(
+                    f"  peptide: Pass 1/Pass 2 inconsistency — Pass 1 found "
+                    f"'{mol_class}' but Pass 2 said False. Overriding to True."
+                )
+                value = "True"
+                reasoning = (
+                    f"[Post-Pass-2 override: Pass 1 identified '{mol_class}' "
+                    f"but Pass 2 said False — trusting extraction over classification] "
+                    + reasoning
+                )
 
         return FieldAnnotation(
             field_name=self.field_name,

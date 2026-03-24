@@ -68,6 +68,10 @@ _KNOWN_NON_AMP_DRUGS = {
     "calcitonin", "teriparatide", "abaloparatide",
     "oxytocin", "vasopressin", "desmopressin", "terlipressin", "carbetocin",
     "peptide t", "dapta",
+    # Natriuretic peptides (cardiac hormones, not antimicrobial)
+    "anp", "atrial natriuretic peptide", "h-anp", "carperitide",
+    "bnp", "brain natriuretic peptide", "nesiritide",
+    "cnp", "c-type natriuretic peptide",
     "rada16", "p11-4", "curodont",
     "lutetium lu 177 dotatate", "lutathera", "177lu-dotatate",
     "gallium ga 68 dotatate", "68ga-dotatate",
