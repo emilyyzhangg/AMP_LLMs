@@ -37,7 +37,7 @@ The review queue (trials flagged for manual review) is persisted to disk and sur
 
 ### 2.1 Definition
 
-An antimicrobial peptide (AMP), also called a host defense peptide, is a peptide (2--100 amino acids) that contributes to pathogen defense through DIRECT antimicrobial mechanisms. "Direct" means the peptide itself physically kills, disrupts, or recruits innate immune effectors against pathogens through its own biochemical action. The pipeline classifies AMPs by three modes of action. A peptide must fit at least one mode to be classified as an AMP.
+An antimicrobial peptide (AMP), also called a host defense peptide, is a single-chain peptide (2--50 amino acids) that contributes to pathogen defense through DIRECT antimicrobial mechanisms. "Direct" means the peptide itself physically kills, disrupts, or recruits innate immune effectors against pathogens through its own biochemical action. The pipeline classifies AMPs by three modes of action. A peptide must fit at least one mode to be classified as an AMP.
 
 **Critically, the AMP classification is independent of the Peptide field.** A trial can have Peptide=True (the drug is a peptide) but Classification=Other (the peptide is not antimicrobial). For example, enfuvirtide is a peptide (Peptide=True) but is a viral entry inhibitor, not an AMP (Classification=Other). Semaglutide is a peptide (Peptide=True) but is a metabolic hormone, not an AMP (Classification=Other).
 
@@ -127,26 +127,29 @@ Applies only when a trial has failed or terminated. Otherwise left empty.
 
 Boolean field (True/False) indicating whether the intervention is a peptide therapeutic.
 
-**Definition:** A peptide therapeutic is a molecule consisting of 2--100 amino acid residues that serves as the ACTIVE therapeutic drug in the clinical trial. The peptide must be the primary pharmacological agent --- not a carrier, adjuvant, nutritional component, or targeting vector.
+**Definition (v12):** A peptide therapeutic is a SINGLE-CHAIN molecule consisting of 2--50 amino acid residues that serves as the ACTIVE therapeutic drug in the clinical trial. The peptide must be the primary pharmacological agent --- not a carrier, adjuvant, nutritional component, or targeting vector.
 
 **Included as peptide (True):**
-- Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37, defensins
-- Hormone analogues: semaglutide (GLP-1), octreotide (somatostatin), leuprolide (GnRH)
+- Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37 (37 aa), defensins
+- Hormone analogues: semaglutide (31 aa, GLP-1), octreotide (8 aa), leuprolide (10 aa)
 - Cyclic peptides and glycopeptides: vancomycin, gramicidin, bacitracin
 - Peptide vaccines where the peptide IS the active immunogen (e.g., StreptInCor, HIV gp120 peptide vaccines)
-- Neuropeptides used as drugs: aviptadil (VIP), substance P antagonists, peptide T
-- Insulin and insulin analogues (51 amino acids)
+- Neuropeptides used as drugs: aviptadil (VIP, 28 aa), substance P antagonists, peptide T
 - Viral entry inhibitors that are peptides: enfuvirtide (T-20, 36 amino acids)
-- Bone/growth peptides: vosoritide (CNP analogue), teriparatide, calcitonin
+- Bone/growth peptides: teriparatide (34 aa), calcitonin (32 aa)
 
 **Excluded as peptide (False):**
-- Monoclonal antibodies (>100 amino acids, distinct drug class): pembrolizumab, trastuzumab
+- Proteins >50 amino acids: insulin (51 aa, also multi-chain A+B), interferons, erythropoietin, vosoritide (CNP analogue, 39 aa but check)
+- Multi-chain complexes forming tertiary/quaternary structure (complex proteins, not peptides)
+- Monoclonal antibodies (multi-chain, ~150 kDa): pembrolizumab, trastuzumab
 - Small molecule drugs: amoxicillin, metformin, ciprofloxacin
 - Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms
 - Heat shock protein-peptide complexes: HSPPC-96/Oncophage (the HSP is the drug)
 - Exosome/dexosome vehicles loaded with peptides (the vehicle is the drug)
 - Gene therapies, cell therapies, medical devices
-- Whole proteins >100 amino acids (interferons, erythropoietin) unless specifically peptide fragments
+- Single amino acids (e.g., L-glutamine, L-arginine supplements)
+
+**Cross-validation with Sequence field (v12):** When the Sequence agent extracts an amino acid sequence, the consistency engine cross-validates: sequence in 2--50 AA range forces peptide=True; sequence >50 AA or multi-chain forces peptide=False.
 
 **Key rule:** The question is whether ANY active intervention drug is a peptide --- not whether the formulation contains peptides. Brand names containing "peptide" do NOT make the product a peptide drug.
 

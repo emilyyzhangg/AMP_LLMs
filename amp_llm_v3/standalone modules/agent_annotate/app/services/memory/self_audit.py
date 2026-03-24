@@ -349,7 +349,7 @@ class SelfAuditor:
                 if match:
                     try:
                         count = int(match.group(1))
-                        if 2 <= count <= 100:  # peptide range
+                        if 2 <= count <= 50:  # peptide range (v12: 2-50, not 2-100)
                             aa_count = count
                             for c in all_citations:
                                 if match.group(0) in c.get("text", "").lower():
@@ -370,7 +370,7 @@ class SelfAuditor:
                     "original_value": "False",
                     "corrected_value": "True",
                     "reflection": (
-                        f"Evidence shows {aa_count} amino acid residues (peptide range 2-100), "
+                        f"Evidence shows {aa_count} amino acid residues (peptide range 2-50), "
                         f"but agent classified as False. Source: {citation.get('source', '?')}. "
                         f"No monoclonal antibody or nutritional formula evidence found to justify False."
                     ),

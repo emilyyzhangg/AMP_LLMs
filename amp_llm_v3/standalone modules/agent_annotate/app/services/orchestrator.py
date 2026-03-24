@@ -1330,6 +1330,8 @@ class PipelineOrchestrator:
         """Enforce cross-field consistency rules after annotation, before verification.
 
         Fixes contradictions that arise from fields being annotated independently:
+        - sequence in 2-50 AA range -> peptide must be True
+        - sequence >50 AA or multi-chain -> peptide must be False
         - peptide=False -> classification must be "Other"
         - outcome is non-failure -> reason_for_failure must be ""
         """
@@ -1338,6 +1340,38 @@ class PipelineOrchestrator:
         classification = ann_by_field.get("classification")
         outcome = ann_by_field.get("outcome")
         failure = ann_by_field.get("reason_for_failure")
+        sequence = ann_by_field.get("sequence")
+
+        # Rule 0: sequence→peptide cross-validation (v12)
+        if sequence and peptide and sequence.value:
+            # Get the longest single sequence (pipe-separated)
+            seqs = [s.strip() for s in sequence.value.split("|") if s.strip()]
+            if seqs:
+                import re
+                longest_len = max(len(re.sub(r"[^A-Za-z]", "", s)) for s in seqs)
+                multi_chain = len(seqs) > 1 and longest_len > 50
+
+                if 2 <= longest_len <= 50 and not multi_chain and peptide.value == "False":
+                    logger.info(
+                        f"  consistency: sequence has {longest_len} aa (2-50 range), "
+                        f"forcing peptide from 'False' to 'True'"
+                    )
+                    peptide.value = "True"
+                    peptide.reasoning = (
+                        f"[Consistency override: sequence {longest_len} aa in 2-50 range -> True] "
+                        + peptide.reasoning
+                    )
+                elif (longest_len > 50 or multi_chain) and peptide.value == "True":
+                    reason = f">{longest_len} aa" if longest_len > 50 else "multi-chain complex"
+                    logger.info(
+                        f"  consistency: sequence is {reason}, "
+                        f"forcing peptide from 'True' to 'False'"
+                    )
+                    peptide.value = "False"
+                    peptide.reasoning = (
+                        f"[Consistency override: sequence {reason} -> False (protein, not peptide)] "
+                        + peptide.reasoning
+                    )
 
         # Rule 1: peptide=False -> classification must be "Other"
         if peptide and classification and peptide.value == "False":

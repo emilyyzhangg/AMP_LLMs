@@ -22,24 +22,25 @@ logger = logging.getLogger("agent_annotate.annotation.peptide")
 VALID_VALUES = ["True", "False"]
 
 # Pass 1: Extract molecular facts about the intervention
-PASS1_SYSTEM = """DEFINITION: A peptide therapeutic is a molecule consisting of 2-100 amino acid residues that serves as the ACTIVE therapeutic drug in the clinical trial. The peptide must be the primary pharmacological agent — not a carrier, adjuvant, nutritional component, or targeting vector.
+PASS1_SYSTEM = """DEFINITION: A peptide therapeutic is a SINGLE-CHAIN molecule consisting of 2-50 amino acid residues that serves as the ACTIVE therapeutic drug in the clinical trial. The peptide must be the primary pharmacological agent — not a carrier, adjuvant, nutritional component, or targeting vector.
 
 INCLUDES as peptide (True):
-- Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37, defensins
-- Hormone analogues: semaglutide (GLP-1), octreotide (somatostatin), leuprolide (GnRH)
+- Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37 (37 aa), defensins
+- Hormone analogues: semaglutide (31 aa, GLP-1), octreotide (8 aa, somatostatin), leuprolide (10 aa, GnRH)
 - Cyclic peptides: vancomycin (glycopeptide), gramicidin, bacitracin
 - Peptide vaccines where the peptide IS the active immunogen (e.g., StreptInCor)
-- Neuropeptides used as drugs: aviptadil (VIP), substance P antagonists
-- Insulin and insulin analogues (51 amino acids, single-chain polypeptide)
+- Neuropeptides used as drugs: aviptadil (VIP, 28 aa), substance P antagonists
 
 EXCLUDES as peptide (False):
-- Monoclonal antibodies (>100 amino acids, distinct drug class): pembrolizumab, trastuzumab
+- Proteins >50 amino acids: insulin (51 aa, also multi-chain A+B), interferons, erythropoietin
+- Multi-chain complexes forming tertiary/quaternary structure (complex proteins, not peptides)
+- Monoclonal antibodies (multi-chain, ~150 kDa): pembrolizumab, trastuzumab
 - Small molecule drugs: amoxicillin, metformin, ciprofloxacin
 - Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms
 - Heat shock protein-peptide complexes: HSPPC-96/Oncophage (the HSP is the drug, not the peptide)
 - Exosome/dexosome vehicles loaded with peptides (the vehicle is the drug)
 - Gene therapies, cell therapies, medical devices
-- Whole proteins >100 amino acids (e.g., interferons, erythropoietin) unless specifically described as peptide fragments
+- Single amino acids (e.g., L-glutamine, L-arginine supplements)
 
 You are a biochemistry fact-extraction specialist. Your job is to extract ONLY factual information about whether ANY intervention in this trial is a peptide. Do NOT make a determination — just extract facts.
 
@@ -50,12 +51,13 @@ For the clinical trial intervention(s) below, answer these questions using ONLY 
 1. INTERVENTION NAME: List ALL drugs/interventions being tested (not just the first one).
 
 2. MOLECULAR CLASS: For EACH intervention, what type of molecule is it? Options:
-   - Short peptide chain (2-50 amino acids)
-   - Longer polypeptide (50-100+ amino acids, but single chain)
+   - Short peptide chain (2-50 amino acids, SINGLE chain)
+   - Protein (>50 amino acids, or multi-chain complex with tertiary/quaternary structure)
    - Monoclonal antibody or antibody fragment (~150 kDa, multi-chain)
    - Small molecule (non-peptide chemical compound, typically <900 Da)
    - Nutritional product/dietary supplement (food, formula, hydrolyzed protein)
-   - Large multi-subunit protein (engineered scaffold, fusion protein)
+   - Large multi-subunit protein (engineered scaffold, fusion protein, multi-chain complex)
+   - Single amino acid (e.g., L-glutamine, L-arginine)
    - Unknown
 
 3. DATABASE CONFIRMATION: For EACH intervention, was it found in any peptide/protein databases?
@@ -85,33 +87,36 @@ Active Ingredient Role: [active drug / food ingredient / targeting vector / bran
 # Pass 2: Apply decision tree to extracted facts
 PASS2_SYSTEM = """You are a peptide identification specialist. You have been given EXTRACTED FACTS about a clinical trial intervention. Use ONLY these facts to determine if the intervention is a peptide therapeutic.
 
-DEFINITION: A peptide therapeutic is a molecule consisting of 2-100 amino acid residues that serves as the ACTIVE therapeutic drug in the clinical trial. The peptide must be the primary pharmacological agent — not a carrier, adjuvant, nutritional component, or targeting vector.
+DEFINITION: A peptide therapeutic is a SINGLE-CHAIN molecule consisting of 2-50 amino acid residues that serves as the ACTIVE therapeutic drug in the clinical trial. The peptide must be the primary pharmacological agent — not a carrier, adjuvant, nutritional component, or targeting vector.
 
 INCLUDES as peptide (True):
-- Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37, defensins
-- Hormone analogues: semaglutide (GLP-1), octreotide (somatostatin), leuprolide (GnRH)
+- Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37 (37 aa), defensins
+- Hormone analogues: semaglutide (31 aa, GLP-1), octreotide (8 aa), leuprolide (10 aa)
 - Cyclic peptides: vancomycin (glycopeptide), gramicidin, bacitracin
 - Peptide vaccines where the peptide IS the active immunogen (e.g., StreptInCor)
-- Neuropeptides used as drugs: aviptadil (VIP), substance P antagonists
-- Insulin and insulin analogues (51 amino acids, single-chain polypeptide)
+- Neuropeptides used as drugs: aviptadil (VIP, 28 aa), substance P antagonists
 
 EXCLUDES as peptide (False):
-- Monoclonal antibodies (>100 amino acids, distinct drug class): pembrolizumab, trastuzumab
+- Proteins >50 amino acids: insulin (51 aa, also multi-chain A+B), interferons, erythropoietin
+- Multi-chain complexes forming tertiary/quaternary structure (complex proteins, not peptides)
+- Monoclonal antibodies (multi-chain, ~150 kDa): pembrolizumab, trastuzumab
 - Small molecule drugs: amoxicillin, metformin, ciprofloxacin
 - Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms
 - Heat shock protein-peptide complexes: HSPPC-96/Oncophage (the HSP is the drug, not the peptide)
 - Exosome/dexosome vehicles loaded with peptides (the vehicle is the drug)
 - Gene therapies, cell therapies, medical devices
-- Whole proteins >100 amino acids (e.g., interferons, erythropoietin) unless specifically described as peptide fragments
+- Single amino acids (e.g., L-glutamine, L-arginine supplements)
 
 DECISION TREE:
 
 STEP 1 — Is the Molecular Class a peptide?
-  - "Short peptide chain" or "Longer polypeptide" → proceed to Step 2
-  - "Monoclonal antibody" → False (antibodies are a separate drug class)
+  - "Short peptide chain" (2-50 aa, single chain) → proceed to Step 2
+  - "Protein" (>50 aa or multi-chain) → False
+  - "Monoclonal antibody" → False (multi-chain complex)
   - "Small molecule" → False
   - "Nutritional product/dietary supplement" → False
-  - "Large multi-subunit protein" → False (unless single-chain <100kDa)
+  - "Large multi-subunit protein" → False (multi-chain complex)
+  - "Single amino acid" → False
   - "Unknown" → check database confirmation in Step 2
 
 STEP 2 — Is the peptide the ACTIVE DRUG?
