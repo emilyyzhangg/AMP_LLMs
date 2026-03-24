@@ -41,7 +41,7 @@ An antimicrobial peptide (AMP), also called a host defense peptide, is a single-
 
 **Critically, the AMP classification is independent of the Peptide field.** A trial can have Peptide=True (the drug is a peptide) but Classification=Other (the peptide is not antimicrobial). For example, enfuvirtide is a peptide (Peptide=True) but is a viral entry inhibitor, not an AMP (Classification=Other). Semaglutide is a peptide (Peptide=True) but is a metabolic hormone, not an AMP (Classification=Other).
 
-### 2.2 Three Modes of Action (v2)
+### 2.2 Four Modes of Action (v12)
 
 **Mode A -- Direct Antimicrobial**
 Peptides that directly kill or inhibit pathogens through membrane disruption, pore formation, or intracellular targeting. Examples: colistin, polymyxin B, melittin, daptomycin, nisin.
@@ -52,7 +52,8 @@ Peptides that directly recruit innate immune cells to kill pathogens at infectio
 **Mode C -- Anti-Biofilm**
 Peptides that directly disrupt microbial biofilms through biochemical interaction. Examples: LL-37, DJK-5, IDR-1018.
 
-**Mode D was removed in v2.** Pathogen-targeting vaccine peptides (StreptInCor, HIV peptide vaccines) were previously classified as AMPs, but 70-trial concordance analysis showed this caused systematic over-classification. Vaccine peptides induce adaptive immune responses --- the peptide itself does not directly kill pathogens. They are now classified as "Other."
+**Mode D -- Pathogen-Targeting Immunogens (re-added v12)**
+Peptide vaccines and immunogens designed to induce immune responses SPECIFICALLY against pathogens (bacteria, viruses, fungi). Examples: HIV gp120/gp41 peptide vaccines, malaria peptide vaccines, StreptInCor (streptococcal). The peptide must target a specific pathogen --- cancer neoantigen vaccines do NOT qualify (they target tumor cells, not pathogens). Mode D was removed in v2 based on 70-trial concordance but re-added in v12 because the AMP definition should encompass all mechanisms of pathogen defense, including adaptive immune induction against specific pathogens.
 
 ### 2.3 Key Distinctions
 
@@ -62,7 +63,7 @@ Peptides that directly disrupt microbial biofilms through biochemical interactio
 
 3. **Promoting defense vs suppressing immunity.** An immunosuppressive peptide is "Other" regardless of its peptide nature. An immunostimulatory peptide is only an AMP if it specifically recruits innate defense against pathogens (Mode B), not if it merely promotes general immune activation.
 
-4. **Vaccine peptides are not AMPs.** Peptides designed to induce antibody responses against pathogens (HIV vaccines, influenza vaccines, etc.) are "Other" --- the adaptive immune response they trigger is not a direct antimicrobial mechanism.
+4. **Pathogen-targeting vaccine peptides ARE AMPs (Mode D).** Peptides designed to induce immune responses against specific pathogens (HIV vaccines, malaria vaccines, etc.) are AMP(infection). However, cancer neoantigen vaccines are NOT AMPs because they target tumor cells, not pathogens.
 
 5. **Peptide ≠ AMP.** Many peptides are not antimicrobial: neuropeptides (VIP/aviptadil, peptide T), metabolic hormones (GLP-1 agonists, insulin), bone growth regulators (vosoritide/CNP, calcitonin), viral entry inhibitors (enfuvirtide), and radiolabeled tracers. All are classified as "Other" despite being peptides (Peptide=True).
 
