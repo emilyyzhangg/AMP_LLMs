@@ -1115,8 +1115,9 @@ class PipelineOrchestrator:
         job.progress.current_model = getattr(peptide_ann, "model_name", None)
         shared_metadata["peptide_result"] = peptide_ann.value
 
-        # --- Step 2: Run classification, delivery_mode, outcome (NOT failure_reason yet) ---
+        # --- Step 2: Run classification, delivery_mode, outcome, sequence (NOT failure_reason yet) ---
         # failure_reason depends on outcome, so we run it after outcome completes.
+        # sequence is deterministic (no LLM) and has no dependencies.
         step2_fields = [f for f in ANNOTATION_AGENTS if f not in ("peptide", "reason_for_failure")]
 
         job.progress.current_field = ", ".join(step2_fields)

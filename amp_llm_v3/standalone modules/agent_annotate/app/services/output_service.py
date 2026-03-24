@@ -19,7 +19,7 @@ from app.services.version_service import get_version_stamp
 from app.models.job import now_pacific
 from app.services.review_service import review_service
 
-ANNOTATION_FIELDS = ["classification", "delivery_mode", "outcome", "reason_for_failure", "peptide"]
+ANNOTATION_FIELDS = ["classification", "delivery_mode", "outcome", "reason_for_failure", "peptide", "sequence"]
 
 # Map annotation field names to their responsible agent
 FIELD_TO_AGENT = {
@@ -28,6 +28,7 @@ FIELD_TO_AGENT = {
     "outcome": "outcome",
     "reason_for_failure": "reason_for_failure",
     "peptide": "peptide",
+    "sequence": "sequence",
 }
 
 # Standard CSV columns (matches human annotation Excel + evidence links + traceability)
@@ -58,6 +59,10 @@ STANDARD_COLUMNS = [
     "Peptide Evidence",
     "Peptide Sources",
     "Peptide Evidence Text",
+    "Sequence",
+    "Sequence Evidence",
+    "Sequence Sources",
+    "Sequence Evidence Text",
 ]
 
 # Full CSV adds evidence, verification, traceability, and review metadata per field

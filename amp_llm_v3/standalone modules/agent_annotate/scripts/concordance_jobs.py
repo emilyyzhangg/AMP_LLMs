@@ -68,6 +68,11 @@ FIELDS = {
         "excel_r2_col": 21,  # V
         "blank_means_skip": True,
     },
+    "sequence": {
+        "excel_r1_col": 13,  # N (Sequence column)
+        "excel_r2_col": 13,  # N
+        "blank_means_skip": True,
+    },
 }
 
 # ---------------------------------------------------------------------------

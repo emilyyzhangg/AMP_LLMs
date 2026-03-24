@@ -102,6 +102,20 @@ FIELD_RELEVANCE = {
         "iuphar": 0.85,
         "pdbe": 0.85,
     },
+    "sequence": {
+        "clinical_protocol": 0.10,
+        "literature": 0.30,
+        "peptide_identity": 0.95,
+        "web_context": 0.15,
+        "dbaasp": 0.90,
+        "chembl": 0.60,
+        "rcsb_pdb": 0.85,
+        "ebi_proteins": 0.95,
+        "apd": 0.90,
+        "who_ictrp": 0.10,
+        "iuphar": 0.40,
+        "pdbe": 0.80,
+    },
 }
 
 

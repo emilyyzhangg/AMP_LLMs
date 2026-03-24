@@ -126,9 +126,13 @@ class PeptideIdentityAgent(BaseResearchAgent):
                         organism = entry.get("organism", {}).get("scientificName", "")
                         length = entry.get("sequence", {}).get("length", "")
 
+                        # v12: Include full sequence for sequence annotation agent
+                        full_seq = entry.get("sequence", {}).get("value", "")
                         snippet = f"Organism: {organism}. Protein: {protein_name}. Accession: {accession}"
                         if length:
                             snippet += f". Length: {length} aa"
+                        if full_seq:
+                            snippet += f". Sequence: {full_seq[:200]}"
 
                         citations.append(SourceCitation(
                             source_name="uniprot",
