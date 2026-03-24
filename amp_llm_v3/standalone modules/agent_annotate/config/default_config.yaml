@@ -27,21 +27,24 @@ verification:
       name: "qwen2.5:14b"
       role: reconciler
 
+# v12: Lowered min_sources from 2→1. ClinicalTrials.gov alone is often
+# sufficient — the 2-source requirement was causing false "Unknown" outcomes
+# for older/completed trials with no PubMed publications.
 evidence_thresholds:
   classification:
-    min_sources: 2
+    min_sources: 1
     min_quality: 0.5
   delivery_mode:
-    min_sources: 2
+    min_sources: 1
     min_quality: 0.5
   outcome:
-    min_sources: 2
-    min_quality: 0.5
+    min_sources: 1
+    min_quality: 0.3
   reason_for_failure:
     min_sources: 1
     min_quality: 0.3
   peptide:
-    min_sources: 2
+    min_sources: 1
     min_quality: 0.5
 
 research_agents:

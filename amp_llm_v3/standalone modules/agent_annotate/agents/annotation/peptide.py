@@ -176,9 +176,7 @@ _KNOWN_PEPTIDE_DRUGS = {
     # GLP-1 / metabolic peptides
     "semaglutide", "liraglutide", "exenatide", "dulaglutide", "tirzepatide",
     "apraglutide", "teduglutide", "glepaglutide",
-    # Insulin analogues (51 AA, single-chain polypeptide)
-    "insulin", "insulin glargine", "insulin lispro", "insulin aspart",
-    "insulin detemir", "insulin degludec",
+    # Insulin removed in v12: 51 AA + multi-chain A+B → protein, not peptide
     # GnRH analogues
     "leuprolide", "leuprorelin", "goserelin", "triptorelin", "buserelin",
     "nafarelin", "degarelix", "cetrorelix", "ganirelix",
@@ -234,7 +232,12 @@ def _check_known_peptide(research_results: list) -> FieldAnnotation | None:
 
 
 def _check_known_non_peptide(research_results: list) -> FieldAnnotation | None:
-    """Check if the intervention is a known non-peptide drug."""
+    """Check if the intervention is a known non-peptide drug.
+
+    v12: Only returns False if ALL interventions are non-peptides or unrecognized.
+    In multi-drug trials (e.g., peptide vaccine + nivolumab), the presence of a
+    non-peptide drug should NOT override the peptide determination for other drugs.
+    """
     intervention_names: list[str] = []
     for result in research_results:
         if result.error or result.agent_name != "clinical_protocol":
@@ -247,15 +250,43 @@ def _check_known_non_peptide(research_results: list) -> FieldAnnotation | None:
             name = interv.get("name", "")
             if name:
                 intervention_names.append(name.lower().strip())
+
+    if not intervention_names:
+        return None
+
+    # Check each intervention — if ANY is NOT a known non-peptide, don't bypass
+    non_peptide_matches = []
+    unmatched = []
     for name in intervention_names:
+        matched = False
         for non_pep in _KNOWN_NON_PEPTIDE_DRUGS:
             if non_pep in name or name in non_pep:
-                logger.info(f"  peptide: deterministic → False (known non-peptide: '{name}' matched '{non_pep}')")
-                return FieldAnnotation(
-                    field_name="peptide", value="False", confidence=0.95,
-                    reasoning=f"[Deterministic v9] Known non-peptide drug: '{name}' matched '{non_pep}'",
-                    evidence=[], model_name="deterministic", skip_verification=True,
-                )
+                non_peptide_matches.append((name, non_pep))
+                matched = True
+                break
+        if not matched:
+            unmatched.append(name)
+
+    # Only bypass if ALL interventions matched non-peptide list (no unrecognized drugs)
+    if non_peptide_matches and not unmatched:
+        matched_name, matched_drug = non_peptide_matches[0]
+        logger.info(
+            f"  peptide: deterministic → False (all {len(intervention_names)} interventions "
+            f"are known non-peptides, first match: '{matched_name}' → '{matched_drug}')"
+        )
+        return FieldAnnotation(
+            field_name="peptide", value="False", confidence=0.95,
+            reasoning=f"[Deterministic v12] All interventions are known non-peptides: {', '.join(n for n, _ in non_peptide_matches)}",
+            evidence=[], model_name="deterministic", skip_verification=True,
+        )
+
+    # If some matched non-peptide but others are unknown → let LLM decide
+    if non_peptide_matches and unmatched:
+        logger.info(
+            f"  peptide: skipping deterministic bypass — multi-drug trial with "
+            f"unrecognized drugs: {unmatched}"
+        )
+
     return None
 
 
