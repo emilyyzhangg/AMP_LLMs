@@ -462,6 +462,7 @@ function AgentVsHumanTab() {
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [grouped, setGrouped] = useState(false);
 
   // Multi-select annotator state
   const [annotators, setAnnotators] = useState<AnnotatorInfo[]>([]);
@@ -511,9 +512,9 @@ function AgentVsHumanTab() {
         const jobIds = [...selectedJobs];
         let data;
         if (jobIds.length === 1) {
-          data = await getJobConcordance(jobIds[0]);
+          data = await getJobConcordance(jobIds[0], grouped);
         } else {
-          data = await getMultiJobConcordance(jobIds);
+          data = await getMultiJobConcordance(jobIds, grouped);
         }
         setConcordance(data);
       } catch (e) {
@@ -524,7 +525,7 @@ function AgentVsHumanTab() {
         setLoading(false);
       }
     })();
-  }, [selectedJobs]);
+  }, [selectedJobs, grouped]);
 
   // Load multi-annotator concordance when selections change
   // For multi-job, uses the first selected job for annotator queries (annotator filtering
@@ -584,7 +585,15 @@ function AgentVsHumanTab() {
       <div className="card mb-2">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
           <label style={{ fontWeight: 600 }}>Select jobs {selectedJobs.size > 0 && <span className="text-sm text-muted">({selectedJobs.size} selected, overlapping NCTs use latest job)</span>}</label>
-          <div style={{ display: "flex", gap: "0.4rem" }}>
+          <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
+            <button
+              className={`btn ${grouped ? "btn-primary" : "btn-secondary"}`}
+              style={{ fontSize: "0.75rem", padding: "0.2rem 0.5rem" }}
+              onClick={() => setGrouped(!grouped)}
+              title="Grouped: AMP(infection)/AMP(other)→AMP, injection subtypes→Injection/Infusion, Recruiting/Active→Active"
+            >
+              {grouped ? "Grouped" : "Exact"}
+            </button>
             <button
               className="btn btn-secondary"
               style={{ fontSize: "0.75rem", padding: "0.2rem 0.5rem" }}

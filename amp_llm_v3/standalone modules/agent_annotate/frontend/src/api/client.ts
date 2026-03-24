@@ -122,11 +122,11 @@ export const submitReview = (
 export const getConcordanceJobs = () =>
   request<{ jobs: Array<{ job_id: string; timestamp: string; total_trials: number }> }>("/concordance/jobs");
 
-export const getJobConcordance = (jobId: string) =>
-  request<{ agent_vs_r1: JobConcordance; agent_vs_r2: JobConcordance; r1_vs_r2: JobConcordance }>(`/concordance/job/${jobId}`);
+export const getJobConcordance = (jobId: string, grouped = false) =>
+  request<{ agent_vs_r1: JobConcordance; agent_vs_r2: JobConcordance; r1_vs_r2: JobConcordance }>(`/concordance/job/${jobId}${grouped ? "?grouped=true" : ""}`);
 
-export const getMultiJobConcordance = (jobIds: string[]) =>
-  request<{ agent_vs_r1: JobConcordance; agent_vs_r2: JobConcordance; r1_vs_r2: JobConcordance }>("/concordance/jobs/multi", {
+export const getMultiJobConcordance = (jobIds: string[], grouped = false) =>
+  request<{ agent_vs_r1: JobConcordance; agent_vs_r2: JobConcordance; r1_vs_r2: JobConcordance }>(`/concordance/jobs/multi${grouped ? "?grouped=true" : ""}`, {
     method: "POST",
     body: JSON.stringify({ job_ids: jobIds }),
   });

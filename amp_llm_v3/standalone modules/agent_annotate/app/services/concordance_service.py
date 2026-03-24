@@ -271,6 +271,56 @@ def _normalise(value: object, field_name: str) -> tuple[str, bool]:
 
 
 # ---------------------------------------------------------------------------
+# Grouped normalisation (simplified categories for high-level comparison)
+# ---------------------------------------------------------------------------
+def _normalise_grouped(value: str, field_name: str) -> str:
+    """Apply grouping to an already-normalised value.
+
+    Reduces granular categories to broad buckets:
+    - Classification: AMP(infection)/AMP(other) → AMP
+    - Delivery mode: injection subtypes → Injection/Infusion, oral → Oral, etc.
+    - Outcome: Active not recruiting/Recruiting → Active
+    - Peptide: unchanged (already binary)
+    - Reason for failure: unchanged
+    - Sequence: unchanged
+    """
+    if not value:
+        return value
+
+    v_lower = value.lower()
+
+    if field_name == "classification":
+        if v_lower.startswith("amp"):
+            return "AMP"
+        return "Other"
+
+    elif field_name == "delivery_mode":
+        # Handle multi-value (comma-separated)
+        parts = [p.strip().lower() for p in value.split(",")]
+        buckets = set()
+        for p in parts:
+            if "iv" == p or "injection" in p or "infusion" in p or "intravenous" in p or "subcutaneous" in p or "intradermal" in p or "intramuscular" in p:
+                buckets.add("Injection/Infusion")
+            elif "oral" in p:
+                buckets.add("Oral")
+            elif "topical" in p:
+                buckets.add("Topical")
+            elif "inhalation" in p or "inhaled" in p:
+                buckets.add("Inhalation")
+            else:
+                buckets.add("Other")
+        return ", ".join(sorted(buckets))
+
+    elif field_name == "outcome":
+        if v_lower in ("active, not recruiting", "recruiting"):
+            return "Active"
+        return value  # Positive, Failed, Terminated, Withdrawn, Unknown stay
+
+    # peptide, reason_for_failure, sequence: no grouping
+    return value
+
+
+# ---------------------------------------------------------------------------
 # Cohen's Kappa (from scratch, no sklearn)
 # ---------------------------------------------------------------------------
 def _cohens_kappa(labels_a: list[str], labels_b: list[str]) -> Optional[float]:
@@ -464,6 +514,7 @@ def _compute_field_concordance(
     label_b: str,
     field_name: str,
     common_ncts: list[str],
+    grouped: bool = False,
 ) -> ConcordanceResult:
     """Compute concordance for a single field between two annotation sets.
 
@@ -532,6 +583,11 @@ def _compute_field_concordance(
                 norm_a = ""
             if blank_b:
                 norm_b = ""
+
+        # Apply grouped normalisation if requested
+        if grouped:
+            norm_a = _normalise_grouped(norm_a, field_name)
+            norm_b = _normalise_grouped(norm_b, field_name)
 
         labels_a.append(norm_a)
         labels_b.append(norm_b)
@@ -635,6 +691,7 @@ def _build_job_concordance(
     job_id: str,
     comparison_label: str,
     timestamp: Optional[str] = None,
+    grouped: bool = False,
 ) -> JobConcordance:
     """Build full concordance results across all fields."""
     common_ncts = sorted(set(data_a.keys()) & set(data_b.keys()))
@@ -645,7 +702,8 @@ def _build_job_concordance(
 
     for field_name in FIELDS:
         result = _compute_field_concordance(
-            data_a, data_b, label_a, label_b, field_name, common_ncts
+            data_a, data_b, label_a, label_b, field_name, common_ncts,
+            grouped=grouped,
         )
         fields.append(result)
         total_agree += result.agree_count
@@ -683,7 +741,7 @@ def _human_data_as_flat(replicate: str) -> dict[str, dict[str, str]]:
     return flat
 
 
-def agent_vs_r1(job_id: str) -> JobConcordance:
+def agent_vs_r1(job_id: str, grouped: bool = False) -> JobConcordance:
     """Compare a single agent job against human replicate 1."""
     agent_data = _load_agent_annotations(job_id)
     if not agent_data:
@@ -703,10 +761,11 @@ def agent_vs_r1(job_id: str) -> JobConcordance:
         job_id=job_id,
         comparison_label="Agent vs R1",
         timestamp=timestamp,
+        grouped=grouped,
     )
 
 
-def agent_vs_r2(job_id: str) -> JobConcordance:
+def agent_vs_r2(job_id: str, grouped: bool = False) -> JobConcordance:
     """Compare a single agent job against human replicate 2."""
     agent_data = _load_agent_annotations(job_id)
     if not agent_data:
@@ -726,10 +785,11 @@ def agent_vs_r2(job_id: str) -> JobConcordance:
         job_id=job_id,
         comparison_label="Agent vs R2",
         timestamp=timestamp,
+        grouped=grouped,
     )
 
 
-def r1_vs_r2() -> JobConcordance:
+def r1_vs_r2(grouped: bool = False) -> JobConcordance:
     """Compare human replicate 1 against replicate 2 (inter-rater agreement)."""
     r1_data = _human_data_as_flat("r1")
     r2_data = _human_data_as_flat("r2")
@@ -741,10 +801,11 @@ def r1_vs_r2() -> JobConcordance:
         label_b="R2",
         job_id="human",
         comparison_label="R1 vs R2",
+        grouped=grouped,
     )
 
 
-def agent_vs_r1_multi(job_ids: list[str]) -> JobConcordance:
+def agent_vs_r1_multi(job_ids: list[str], grouped: bool = False) -> JobConcordance:
     """Compare merged agent annotations from multiple jobs against R1.
 
     Jobs are sorted by timestamp (oldest first) so that later jobs
@@ -770,10 +831,11 @@ def agent_vs_r1_multi(job_ids: list[str]) -> JobConcordance:
         label_b="R1",
         job_id="+".join(jid[:8] for jid in sorted_ids),
         comparison_label=f"Agent vs R1 ({label})",
+        grouped=grouped,
     )
 
 
-def agent_vs_r2_multi(job_ids: list[str]) -> JobConcordance:
+def agent_vs_r2_multi(job_ids: list[str], grouped: bool = False) -> JobConcordance:
     """Compare merged agent annotations from multiple jobs against R2."""
     sorted_ids = sorted(job_ids, key=lambda jid: _get_job_timestamp(jid) or "")
     agent_data = _load_agent_annotations_multi(sorted_ids)
@@ -793,6 +855,7 @@ def agent_vs_r2_multi(job_ids: list[str]) -> JobConcordance:
         label_b="R2",
         job_id="+".join(jid[:8] for jid in sorted_ids),
         comparison_label=f"Agent vs R2 ({label})",
+        grouped=grouped,
     )
 
 

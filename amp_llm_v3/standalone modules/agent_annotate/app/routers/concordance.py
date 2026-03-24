@@ -64,17 +64,23 @@ async def list_concordance_jobs():
 
 
 @router.get("/job/{job_id}", response_model=FullJobConcordanceResponse)
-async def get_job_concordance(job_id: str):
-    """Full concordance of a job against human R1, R2, and inter-rater R1 vs R2."""
-    vs_r1 = concordance_service.agent_vs_r1(job_id)
+async def get_job_concordance(job_id: str, grouped: bool = False):
+    """Full concordance of a job against human R1, R2, and inter-rater R1 vs R2.
+
+    Pass ?grouped=true to use simplified category buckets:
+    - Classification: AMP(infection)/AMP(other) → AMP
+    - Delivery mode: injection subtypes → Injection/Infusion, oral → Oral, etc.
+    - Outcome: Active not recruiting/Recruiting → Active
+    """
+    vs_r1 = concordance_service.agent_vs_r1(job_id, grouped=grouped)
     if not vs_r1.fields:
         raise HTTPException(
             status_code=404,
             detail=f"Job '{job_id}' not found or has no overlapping trials",
         )
 
-    vs_r2 = concordance_service.agent_vs_r2(job_id)
-    human = concordance_service.r1_vs_r2()
+    vs_r2 = concordance_service.agent_vs_r2(job_id, grouped=grouped)
+    human = concordance_service.r1_vs_r2(grouped=grouped)
 
     return FullJobConcordanceResponse(
         agent_vs_r1=vs_r1,
@@ -88,20 +94,20 @@ class MultiJobRequest(BaseModel):
 
 
 @router.post("/jobs/multi", response_model=FullJobConcordanceResponse)
-async def get_multi_job_concordance(req: MultiJobRequest):
+async def get_multi_job_concordance(req: MultiJobRequest, grouped: bool = False):
     """Concordance across multiple jobs merged. Latest job wins for overlapping NCTs."""
     if not req.job_ids:
         raise HTTPException(status_code=400, detail="job_ids list cannot be empty")
 
-    vs_r1 = concordance_service.agent_vs_r1_multi(req.job_ids)
+    vs_r1 = concordance_service.agent_vs_r1_multi(req.job_ids, grouped=grouped)
     if not vs_r1.fields:
         raise HTTPException(
             status_code=404,
             detail="No overlapping trials found across selected jobs",
         )
 
-    vs_r2 = concordance_service.agent_vs_r2_multi(req.job_ids)
-    human = concordance_service.r1_vs_r2()
+    vs_r2 = concordance_service.agent_vs_r2_multi(req.job_ids, grouped=grouped)
+    human = concordance_service.r1_vs_r2(grouped=grouped)
 
     return FullJobConcordanceResponse(
         agent_vs_r1=vs_r1,
