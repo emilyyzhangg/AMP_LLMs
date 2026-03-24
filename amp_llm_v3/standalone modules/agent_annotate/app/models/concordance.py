@@ -136,18 +136,26 @@ class ComparisonResult(BaseModel):
 
 
 class ConcordanceHistoryEntry(BaseModel):
-    """Concordance snapshot for a single job."""
+    """Agreement metrics snapshot for a single job."""
     job_id: str
     timestamp: Optional[str] = None
     field_kappas: dict[str, Optional[float]] = Field(
         default_factory=dict,
         description="Field name -> kappa value for agent vs R1",
     )
+    field_ac1s: dict[str, Optional[float]] = Field(
+        default_factory=dict,
+        description="Field name -> Gwet's AC1 value for agent vs R1",
+    )
+    field_agreements: dict[str, Optional[float]] = Field(
+        default_factory=dict,
+        description="Field name -> raw agreement % for agent vs R1",
+    )
     n_trials: int = Field(default=0, description="Number of trials in this job")
 
 
 class ConcordanceHistory(BaseModel):
-    """Kappa trends across all completed jobs."""
+    """Agreement metric trends across all completed jobs."""
     history: list[ConcordanceHistoryEntry] = Field(default_factory=list)
 
 

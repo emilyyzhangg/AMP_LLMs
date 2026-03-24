@@ -15,7 +15,7 @@ export default function Header() {
           Results
         </NavLink>
         <NavLink to="/concordance" className={({ isActive }) => isActive ? "active" : ""}>
-          Concordance
+          Agreement Metrics
         </NavLink>
         <NavLink to="/history" className={({ isActive }) => isActive ? "active" : ""}>
           History

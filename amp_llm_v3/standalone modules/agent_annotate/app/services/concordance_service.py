@@ -939,11 +939,15 @@ def concordance_history() -> ConcordanceHistory:
             continue
 
         field_kappas: dict[str, Optional[float]] = {}
+        field_ac1s: dict[str, Optional[float]] = {}
+        field_agreements: dict[str, Optional[float]] = {}
         for field_name in FIELDS:
             result = _compute_field_concordance(
                 agent_data, r1_data, "Agent", "R1", field_name, common_ncts
             )
             field_kappas[field_name] = result.kappa
+            field_ac1s[field_name] = result.ac1
+            field_agreements[field_name] = result.agree_pct
 
         # Count trials in this job
         n_trials = len(agent_data)
@@ -953,6 +957,8 @@ def concordance_history() -> ConcordanceHistory:
                 job_id=job_id,
                 timestamp=timestamp,
                 field_kappas=field_kappas,
+                field_ac1s=field_ac1s,
+                field_agreements=field_agreements,
                 n_trials=n_trials,
             )
         )
