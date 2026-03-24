@@ -37,14 +37,14 @@ The review queue (trials flagged for manual review) is persisted to disk and sur
 
 ### 2.1 Definition
 
-An antimicrobial peptide (AMP), also called a host defense peptide, is a single-chain peptide (2--50 amino acids) that contributes to pathogen defense through DIRECT antimicrobial mechanisms. "Direct" means the peptide itself physically kills, disrupts, or recruits innate immune effectors against pathogens through its own biochemical action. The pipeline classifies AMPs by three modes of action. A peptide must fit at least one mode to be classified as an AMP.
+An antimicrobial peptide (AMP), also called a host defense peptide, is a single-chain peptide (2--50 amino acids) that contributes to pathogen defense through antimicrobial mechanisms --- killing, inhibiting the growth of, disrupting, or inducing immune responses against pathogens through the peptide's own biochemical action. Both bactericidal (killing) and bacteriostatic (growth inhibition) mechanisms qualify. The pipeline classifies AMPs by four modes of action. A peptide must fit at least one mode to be classified as an AMP.
 
 **Critically, the AMP classification is independent of the Peptide field.** A trial can have Peptide=True (the drug is a peptide) but Classification=Other (the peptide is not antimicrobial). For example, enfuvirtide is a peptide (Peptide=True) but is a viral entry inhibitor, not an AMP (Classification=Other). Semaglutide is a peptide (Peptide=True) but is a metabolic hormone, not an AMP (Classification=Other).
 
 ### 2.2 Four Modes of Action (v12)
 
 **Mode A -- Direct Antimicrobial**
-Peptides that directly kill or inhibit pathogens through membrane disruption, pore formation, or intracellular targeting. Examples: colistin, polymyxin B, melittin, daptomycin, nisin.
+Peptides that kill, inhibit the growth of, or disrupt pathogens --- includes both bactericidal and bacteriostatic mechanisms: membrane disruption, pore formation, intracellular targeting, growth inhibition, ion channel disruption. Examples: colistin, polymyxin B, melittin, daptomycin, nisin, gramicidin.
 
 **Mode B -- Immunostimulatory / Host Defense**
 Peptides that directly recruit innate immune cells to kill pathogens at infection sites. Examples: LL-37, defensins, cathelicidins. The peptide must specifically recruit innate defense against pathogens --- general immunomodulation or adaptive immune activation does not qualify.
@@ -57,7 +57,7 @@ Peptide vaccines and immunogens designed to induce immune responses SPECIFICALLY
 
 ### 2.3 Key Distinctions
 
-1. **Direct antimicrobial mechanism required.** The peptide must physically kill, lyse, or disrupt pathogens through its own biochemical action --- or directly recruit innate immune cells to kill pathogens. General immunomodulation, antibody induction, or receptor blocking does not qualify.
+1. **Antimicrobial mechanism required.** The peptide must kill, inhibit the growth of, or disrupt pathogens through its own biochemical action --- or recruit immune cells to fight pathogens --- or target a specific pathogen as a vaccine/immunogen. Both bactericidal and bacteriostatic mechanisms qualify. General immunomodulation without pathogen specificity does not qualify.
 
 2. **Treating infection ≠ AMP.** A peptide that treats an infectious disease through a non-antimicrobial mechanism (e.g., enfuvirtide blocks HIV viral fusion but does not kill the virus) is classified as "Other." Being tested in an infection context does not make a peptide an AMP.
 

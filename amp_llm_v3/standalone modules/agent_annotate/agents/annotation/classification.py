@@ -212,13 +212,12 @@ STEP 1 — Is the intervention a peptide?
 
 STEP 2 — Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?
 
-  THE CORE TEST: Does this peptide DIRECTLY kill, inhibit, or disrupt bacteria, fungi,
-  viruses, or other pathogens through its OWN biochemical action? Does it directly
-  stimulate immune DEFENSE specifically against pathogens through antimicrobial mechanisms
-  (membrane disruption, pore formation, pathogen lysis)?
+  THE CORE TEST: Does this peptide contribute to pathogen defense — by killing,
+  inhibiting the growth of, disrupting, or inducing immune responses against
+  bacteria, fungi, viruses, or other pathogens?
 
   An AMP must contribute to pathogen defense through ONE of these modes:
-  A) Direct antimicrobial: physically kills/lyses microorganisms (e.g., colistin disrupts bacterial membranes, nisin forms pores)
+  A) Direct antimicrobial: kills, inhibits growth of, or disrupts microorganisms — includes both bactericidal (killing) AND bacteriostatic (growth inhibition) mechanisms. Examples: colistin (membrane disruption), nisin (pore formation), daptomycin (membrane depolarization), gramicidin (ion channel disruption).
   B) Immunostimulatory HOST DEFENSE peptide: recruits immune cells to kill pathogens at infection sites (e.g., LL-37, defensins, cathelicidins)
   C) Anti-biofilm: disrupts microbial biofilms through biochemical interaction
   D) Pathogen-targeting immunogen: peptide vaccines/immunogens designed to induce immune responses SPECIFICALLY against pathogens (e.g., HIV gp120/gp41 peptide vaccines, malaria peptide vaccines, bacterial peptide vaccines). The peptide must target a specific pathogen — cancer neoantigen vaccines do NOT qualify.
@@ -226,8 +225,9 @@ STEP 2 — Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)
   CHECK THE EXTRACTED FACTS:
   - Database Matches: DRAMP or APD3 hit → evidence FOR AMP, but not sufficient alone. The peptide
     MUST also have a direct antimicrobial mechanism confirmed in the facts.
-  - Mechanism: ONLY "directly kills/inhibits microorganisms" or "directly recruits immune cells to
-    kill pathogens" qualifies. General "immunomodulation" does NOT qualify.
+  - Mechanism: "kills/inhibits growth of/disrupts microorganisms", "recruits immune cells to
+    fight pathogens", or "targets a specific pathogen as vaccine/immunogen" qualifies.
+    General "immunomodulation" without pathogen specificity does NOT qualify.
   - Immune Direction: "PROMOTE" alone is NOT enough. Many peptides promote immune responses but
     are NOT antimicrobial (e.g., cancer vaccines, adjuvants). The immune promotion must be
     SPECIFICALLY directed at killing/clearing pathogens through innate defense mechanisms.

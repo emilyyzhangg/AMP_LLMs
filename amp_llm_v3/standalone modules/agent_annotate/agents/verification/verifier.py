@@ -75,7 +75,7 @@ FIELD_PROMPTS = {
             "STEP 1: Is the intervention a peptide? If not → 'Other'.\n"
             "STEP 2: Is it an ANTIMICROBIAL peptide? The CORE TEST: does this peptide contribute to "
             "pathogen defense through any of these 4 modes?\n"
-            "Mode A: Directly kills/lyses/disrupts pathogens (membrane disruption, pore formation)\n"
+            "Mode A: Kills, inhibits growth of, or disrupts pathogens — bactericidal OR bacteriostatic (membrane disruption, pore formation, growth inhibition)\n"
             "Mode B: Recruits innate immune cells to kill pathogens at infection sites (host defense)\n"
             "Mode C: Disrupts microbial biofilms\n"
             "Mode D: Pathogen-targeting immunogen — vaccine peptide designed to induce immune response "
