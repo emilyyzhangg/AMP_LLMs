@@ -35,15 +35,17 @@
 
 ## NCT Coverage
 
-| Set | Count | Status |
-|---|---|---|
-| Human-annotated (total) | 964 | Target for Phase 1 |
-| Batch A+B (v9) | 50 | Complete |
-| Batch C+D (v10, jobs #5-6) | 400 | Complete — 120 need selective re-annotation |
-| **Batch A test (v11+eff, job #10)** | **25** | **Running — validation job** |
-| Remaining (v11, jobs #11-13) | 514 | Pending — submit after Batch A validated |
-| Selective re-annotation (job #14) | ~120 | Planned |
-| Unannotated (no human ref) | 884 | Phase 5 |
+| Set | Count | Status | Notes |
+|---|---|---|---|
+| Human-annotated (total) | 964 | Target for single-version run | Phase 3 |
+| Batch A (v9, job #1) | 25 | Complete | Baseline reference (do not re-run) |
+| Batch B (v9, job #2) | 25 | Complete | |
+| Batch A repeat (v10, job #3) | 25 | Complete | Same NCTs as job #1 |
+| Batch C (v10, job #5) | 200 | Complete | Will be superseded by Phase 3 |
+| Batch D (v10, job #6) | 200 | Complete | Will be superseded by Phase 3 |
+| Batch A test (v11+eff, job #10c) | 25 | Complete (wrong batch) | Different NCTs — not comparable |
+| **Remaining** | **964** | **Pending** | **All will be re-run fresh in Phase 3 single-version run** |
+| Unannotated (no human ref) | 884 | Phase 5 | |
 
 ## Concordance History
 
@@ -111,64 +113,106 @@
 | Known peptide drugs (False→True) | 13 | 3% |
 | Total would change | 120 | 30% |
 
-## EDAM Database State (2026-03-23 post-purge)
+## EDAM Database State (2026-03-24)
 
 | Table | Count | Notes |
 |---|---|---|
-| experiences | 2,715 | v9 epoch 1 (375), v10 epoch 2 (2,340) |
-| corrections | 42 | Post-purge |
-| stability_index | 2,590 | |
-| embeddings | 3,065 | |
+| experiences | 2,840 | epoch 1: v9 (375), epoch 2: v10 (2,340), epoch 3: v11+eff (125) |
+| corrections | 43 | 28 peptide True→False (may need purge), 10 delivery_mode, 4 outcome, 1 classification |
+| stability_index | 2,590 | Cross-run consistency — unreliable (runs on different code versions) |
+| embeddings | 3,409 | |
 | prompt_variants | 0 | |
-| config_epochs | 2 → 3 | v11 creates epoch 3 |
+| config_epochs | 3 | v9 (epoch 1), v10 (epoch 2), v11+eff (epoch 3) |
 
-### Epoch decay on v11
+### EDAM effectiveness assessment
 
-| Data | Distance | Weight | Floor |
-|------|----------|--------|-------|
-| v10 experiences | 1 | 75% | 5% |
-| v10 corrections | 1 | 80% | 10% |
-| v9 experiences | 2 | 56% | 5% |
+**EDAM has NOT been the primary driver of improvement.** All major accuracy changes (positive or negative) have come from code changes — deterministic rules, prompt engineering, model selection, confidence formulas. EDAM's 43 corrections across 964+ trials have uncertain marginal impact, and the peptide correction pattern (True→False) has already been shown to be harmful once (128 purged in v11).
+
+**EDAM's role going forward:** Supplementary edge-case memory, NOT the primary improvement loop. Code changes are primary. EDAM experiences from older epochs (v9, v10) may teach patterns that newer code contradicts — epoch decay helps but doesn't fully prevent this.
+
+**Known EDAM risks:**
+- 28 remaining peptide True→False corrections may repeat the v11 purge problem
+- v11 epoch 3 experiences include wrong Unknowns from Phase I guard (now removed in v12)
+- Stability index tracks consistency across runs on DIFFERENT code versions — misleading signal
 
 ## Plan
 
-### Phase 1: Validate v12 fixes (NEXT)
+### Approach: Code-first iteration, EDAM supplementary
 
-v12 fixes applied (Phase I guard removed, confidence cap removed, Withdrawn RFR fix, dedup bug fix).
+**Key principle:** Agents improve primarily through code changes (prompts, rules, models, logic) analyzed via concordance after each run. EDAM captures edge-case patterns the code can't handle deterministically. Do NOT run large batches until the code is stable — each code change invalidates prior runs and wastes compute.
 
-1. **Commit v12 to dev**, test locally
-2. **Re-run Batch A** on correct NCTs (`fast_learning_batch_25.txt`) — job #11
-3. **3-way concordance:** v9 (#1) vs v10 (#3) vs v12 (#11) on same 25 NCTs
-4. **Expected improvements:**
-   - Outcome: should recover to ≥v9 levels (80%+) — Phase I guard was sole cause of 9/9 errors
-   - Reason for failure: 5 cascade errors resolve automatically; Withdrawn fix adds ~3 more
-   - Delivery mode: should retain v11+eff improvement (64%+)
+**Convergence criteria for "code stable":** Two consecutive Batch A runs (25 NCTs) with <2% concordance change between them across all fields.
 
-### Phase 2: Complete 514 remaining NCTs
+### Phase 1: Iterate on Batch A until stable (NEXT)
 
-Submit 3 jobs after v12 validation:
-- Job #12: 200 NCTs (batch E)
-- Job #13: 200 NCTs (batch F)
-- Job #14: 114 NCTs (batch G)
+**Run v12 Batch A** on correct NCTs (`fast_learning_batch_25.txt`):
+```bash
+cd "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate"
+NCT_IDS=$(python3 -c "
+with open('scripts/fast_learning_batch_25.txt') as f:
+    ncts = [l.strip() for l in f if l.strip()]
+import json; print(json.dumps(ncts))
+")
+curl -s -X POST http://localhost:8005/api/jobs \
+  -H 'Content-Type: application/json' \
+  -d "{\"nct_ids\": $NCT_IDS}"
+```
 
-Estimated: ~20h total
+After each run:
+1. **3-way concordance** vs v9 (#1) + v10 (#3) on same 25 NCTs
+2. **Error analysis**: categorize each disagreement as code-fixable vs edge-case
+3. **If code-fixable**: implement fix, bump version, re-run Batch A (~3h/cycle)
+4. **If edge-case only**: EDAM is handling it, move to Phase 2
+5. **Expected v12 targets on Batch A:**
+   - Outcome: ≥80% vs R1 (was 80% in v9, 52% in v11 — Phase I guard removed)
+   - Delivery mode: ≥60% vs R1 (was 64% in v11+eff — model improvement retained)
+   - Reason for failure: ≥60% vs R1 (cascade errors resolve with outcome fix)
+   - Classification: ≥90% vs R1 (stable across versions)
+   - Peptide: ≥75% vs R1 (v10 was 82%, check if v12 retains)
 
-### Phase 3: Selective v10 re-annotation
+### Phase 2: Expand to Batch A+B (50 NCTs)
 
-Job #15: ~120 NCTs where v12 deterministic rules change the result
+Once Batch A meets targets:
+1. Run on 50 NCTs (`fast_learning_batch_50.txt`) to confirm improvements generalize
+2. Minor code tweaks only — no major rewrites
+3. If concordance holds, proceed to Phase 3
 
-### Phase 4: Full concordance on all 964
+### Phase 3: Full 964-NCT single-version run
 
-Compare across v9/v10/v12 batches. Targets:
-- Outcome: >75% (human R1↔R2 = 56.2%)
-- Peptide: >80% (human R1↔R2 = 83.4%)
-- Classification: AC₁ > 0.90
-- Delivery mode: >65%
-- Reason for failure: >70%
+**Run ALL 964 human-annotated NCTs in one version** — no piecemeal batches across different code versions.
+- Submit 4-5 jobs (200 NCTs each) sequentially
+- ~40h total (~460s/trial)
+- This gives a clean, single-version concordance across the entire dataset
+- **No selective re-annotation** — everything is fresh on the same code
+
+**Targets (full 964):**
+- Outcome: >70% vs R1 (human R1↔R2 = 56.2%)
+- Peptide: >75% vs R1 (human R1↔R2 = 83.4%)
+- Classification: AC₁ > 0.88
+- Delivery mode: >60% vs R1 (human R1↔R2 = 71.3%)
+- Reason for failure: >80% vs R1 (v10 already hit 89.4%)
+
+### Phase 4: EDAM cleanup + final calibration
+
+After Phase 3 concordance:
+1. **Purge EDAM:** Remove all experiences/corrections from epochs 1-3 (v9/v10/v11). These were generated by inferior code and may teach wrong patterns.
+2. **Seed EDAM fresh** from Phase 3 results — clean epoch with stable code
+3. **Re-run Batch A** one more time to measure EDAM-only impact (code unchanged)
+4. If EDAM helps: keep. If neutral or harmful: disable EDAM injection for Phase 5.
 
 ### Phase 5: Annotate 884 unannotated NCTs
 
-Agent-only, no human counterpart. Full EDAM guidance from 964 validated trials.
+Agent-only, no human counterpart. Final code version + clean EDAM (if validated).
+- Submit 4-5 jobs (200 NCTs each)
+- ~40h total
+- No concordance possible (no human reference) — rely on review queue for quality
+
+### What NOT to do anymore
+
+- **Don't run 200+ NCT batches during active code iteration** — they'll be invalidated by the next fix
+- **Don't selectively re-annotate** subsets from older versions — re-run everything fresh when stable
+- **Don't trust EDAM corrections from pre-v12 epochs** — the code they learned from had known bugs
+- **Don't add EDAM experiences for fields with deterministic outcomes** (Recruiting, Withdrawn, Terminated) — the code handles these perfectly, EDAM noise can only hurt
 
 ## Key Files
 
