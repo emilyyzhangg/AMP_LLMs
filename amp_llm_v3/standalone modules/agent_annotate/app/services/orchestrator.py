@@ -1373,6 +1373,19 @@ class PipelineOrchestrator:
                         + peptide.reasoning
                     )
 
+        # Rule 0b: AMP classification → peptide must be True
+        # All AMPs are peptides (not all peptides are AMPs)
+        if classification and peptide and classification.value.startswith("AMP") and peptide.value == "False":
+            logger.info(
+                f"  consistency: classification='{classification.value}' (AMP), "
+                f"forcing peptide from 'False' to 'True'"
+            )
+            peptide.value = "True"
+            peptide.reasoning = (
+                f"[Consistency override: AMP classification -> peptide=True] "
+                + peptide.reasoning
+            )
+
         # Rule 1: peptide=False -> classification must be "Other"
         if peptide and classification and peptide.value == "False":
             if classification.value != "Other":

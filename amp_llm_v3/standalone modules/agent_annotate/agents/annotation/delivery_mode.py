@@ -151,9 +151,16 @@ _PROTOCOL_ROUTE_KEYWORDS = {
     "intravenous infusion": "IV", "intravenous injection": "IV",
     "administered intravenously": "IV", "given intravenously": "IV",
     "infused intravenously": "IV",
+    # v12: continuous infusion patterns → IV
+    "continuous infusion": "IV", "infusion at": "IV",
+    "ng/kg/min": "IV", "ug/kg/min": "IV", "mg/kg/min": "IV",
+    "mcg/kg/min": "IV", "units/kg/hr": "IV",
     # Abbreviations (space-padded to avoid false matches)
     " iv ": "IV", " im ": "Injection/Infusion - Intramuscular",
     " sc ": "Injection/Infusion - Subcutaneous/Intradermal",
+    "auto-injector": "Injection/Infusion - Subcutaneous/Intradermal",
+    "autoinjector": "Injection/Infusion - Subcutaneous/Intradermal",
+    "pen injector": "Injection/Infusion - Subcutaneous/Intradermal",
     # Oral
     "oral tablet": "Oral - Tablet", "oral capsule": "Oral - Capsule",
     # Intranasal / Inhalation
