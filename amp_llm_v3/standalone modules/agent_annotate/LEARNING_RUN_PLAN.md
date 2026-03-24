@@ -1,6 +1,6 @@
 # EDAM Learning Run Plan
 
-**Last updated:** 2026-03-23 ~18:30
+**Last updated:** 2026-03-24 ~session
 
 ## Job Registry
 
@@ -14,11 +14,14 @@
 | 6 | D (v10) | 829124f16fd5 | 200 | 200/200 | **Complete** | v10 | 28 | First with EDAM corrections. |
 | 7 | E (v10) | 5ab9fa09b1fa | 200 | 68/200 | **Cancelled** | v10 | — | Cancelled for v11. |
 | 8-9 | F-G | various | 314 | 0 | **Cancelled** | — | — | Cancelled for v11. |
-| **10** | **A test** | **19a39aa475a3** | **25** | **0/25** | **Running** | **v11+eff** | **TBD** | **3-way comparison: v9 vs v10 vs v11. Tests model-grouped verification + unified annotation_model.** |
-| *11* | *E (v11)* | *TBD* | *200* | *—* | *Pending* | *v11+eff* | *—* | *Submit after Batch A results confirmed.* |
-| *12* | *F (v11)* | *TBD* | *200* | *—* | *Pending* | *v11+eff* | *—* | |
-| *13* | *G (v11)* | *TBD* | *114* | *—* | *Pending* | *v11+eff* | *—* | *Final batch. Completes all 964.* |
-| *14* | *Selective re-ann* | *TBD* | *~120* | *—* | *Planned* | *v11+eff* | *—* | *v10 trials where v11 deterministic rules change the result.* |
+| 10a | A test (wrong batch) | 19a39aa475a3 | 25 | 10/25 | **Cancelled** | v11+eff | — | Cancelled after 10. |
+| 10b | A test (wrong batch) | 8352a3ea84aa | 25 | 0/25 | **Cancelled** | v11+eff | — | Cancelled immediately. |
+| **10c** | **A test (wrong batch)** | **1ff6092a499c** | **25** | **25/25** | **Complete** | **v11+eff** | **TBD** | **Had 5 duplicate NCTs (bug fixed). Used WRONG NCTs (not fast_learning_batch_25.txt). Outcome regressed to 52% vs R1 — Phase I guard caused 9/9 wrong Unknowns.** |
+| *11* | *A test (correct batch)* | *TBD* | *25* | *—* | *Pending* | *v12* | *—* | *Re-run on correct Batch A NCTs (fast_learning_batch_25.txt) for valid 3-way comparison.* |
+| *12* | *E (v12)* | *TBD* | *200* | *—* | *Pending* | *v12* | *—* | *Submit after Batch A v12 validated.* |
+| *13* | *F (v12)* | *TBD* | *200* | *—* | *Pending* | *v12* | *—* | |
+| *14* | *G (v12)* | *TBD* | *114* | *—* | *Pending* | *v12* | *—* | *Final batch. Completes all 964.* |
+| *15* | *Selective re-ann* | *TBD* | *~120* | *—* | *Planned* | *v12* | *—* | *v10 trials where deterministic rules change the result.* |
 
 ### Agent version summary
 
@@ -28,6 +31,7 @@
 | v10 | 272503c | delivery_mode: 31 keywords, all-source search, 14B model. clinical_protocol: detailedDescription + armGroups. self_audit: searches agent reasoning. |
 | **v11** | **2a1ebba** | **Outcome: expanded deterministic (COMPLETED+hasResults, Phase I guard), confidence=min(quality, sufficiency), tightened prompt. Peptide: _KNOWN_PEPTIDE_DRUGS deterministic True. Self-audit: +outcome, +classification, rebalanced peptide. EDAM: purged 128 bad corrections.** |
 | **v11+eff** | **710912f** | **Model-grouped verification (15→3 switches). Unified annotation_model (qwen2.5:14b for all fields). Enhanced progress (field/agent/model/timings in UI). Batched reconciliation.** |
+| **v12** | **TBD** | **Outcome: removed Phase I guard (caused 9/9 wrong Unknowns), removed confidence source_sufficiency cap (/2 too aggressive). Failure_reason: removed Withdrawn from skip list (withdrawn trials can have reasons). Self-audit: widened evidence keywords for Positive check. Bug fix: dedup in orchestrator (5 NCTs appeared twice in results JSON), dedup safety net in output_service, concordance/results endpoints derive trial count from actual data.** |
 
 ## NCT Coverage
 
@@ -63,9 +67,30 @@
 | Delivery mode | 57.3% / κ 0.472 | 63.3% / κ 0.539 | 71.3% | Improved from v9 |
 | Outcome | 47.3% / κ 0.287 | 57.7% / κ 0.373 | 56.2% | **Regressed** |
 
-### v11+eff Concordance (Batch A, 25 NCTs, job #10) — PENDING
+### v11+eff Concordance (job 1ff6092a499c, 25 NCTs — WRONG BATCH)
 
-Will be compared directly against v9 Batch A results on the same 25 NCTs.
+**CAUTION:** This job used different NCTs than fast_learning_batch_25.txt — only 12/25 overlap with v9 Batch A. Not valid for 3-way comparison.
+
+| Field | vs R1 | vs R2 | vs v9 R1 | Trend |
+|---|---|---|---|---|
+| Classification | 88.0% / κ -0.06 | 88.0% / κ 0.36 | 92.0% | Stable |
+| **Outcome** | **52.0% / κ 0.41** | **60.0% / κ 0.49** | **80.0%** | **Regressed: 9/9 Unknowns wrong. Phase I guard disaster.** |
+| Peptide | 76.0% / κ 0.00 | 75.0% / κ 0.00 | 68.2% | Mixed |
+| **Delivery mode** | **64.0% / κ 0.48** | **84.0% / κ 0.77** | **44.0%** | **Improved significantly** |
+| Reason for failure | 48.0% / κ 0.27 | 60.0% / κ 0.49 | 56.0% | Regressed (cascade from outcome) |
+
+**Root cause analysis (outcome regression):**
+- 6/9 wrong Unknowns from Phase I guard deterministic rule (COMPLETED Phase I without hasResults → Unknown)
+- 3/9 from LLM also defaulting Unknown (confidence cap too harsh: single-source / 2 = 0.5)
+- hasResults is frequently unpopulated even when publications exist
+- All 9 Unknowns disagree with BOTH human annotators unanimously
+
+**Root cause analysis (reason_for_failure regression):**
+- 5/14 errors are cascade from outcome: Unknown → consistency rule blanks RFR
+- 3/14 from Withdrawn trials getting blank RFR (humans annotated real reasons)
+- Remaining are legitimate R1/R2 disagreements
+
+**v12 fixes applied:** Phase I guard removed, confidence cap removed, Withdrawn removed from RFR skip list, self-audit evidence keywords widened.
 
 ## v11 Efficiency Improvements
 
@@ -76,7 +101,7 @@ Will be compared directly against v9 Batch A results on the same 25 NCTs.
 | Reconciliation | per-field inline | batched (1 load) | Variable |
 | Progress reporting | NCT + stage only | Field/agent/model/timings | Visibility |
 
-**Open question:** Does qwen2.5:14b (unified annotation_model) perform the same as llama3.1:8b for outcome and failure_reason? Batch A test will answer this.
+**Answered:** qwen2.5:14b delivery_mode improved significantly (64% vs 44%). Outcome regression was NOT model-related — caused by deterministic rules and confidence formula.
 
 ## v10 → v11 Deterministic Impact Analysis (400 NCTs)
 
@@ -107,34 +132,39 @@ Will be compared directly against v9 Batch A results on the same 25 NCTs.
 
 ## Plan
 
-### Phase 1: Validate v11+efficiency (in progress)
+### Phase 1: Validate v12 fixes (NEXT)
 
-Batch A test job running (`19a39aa475a3`). When complete:
-1. Run 3-way concordance: v9 (#1) vs v10 (#3) vs v11 (#10) on same 25 NCTs
-2. Compare timing (v9 was 180s/trial avg)
-3. Evaluate qwen2.5:14b impact on outcome/failure_reason
-4. Decision: proceed or adjust annotation_model config
+v12 fixes applied (Phase I guard removed, confidence cap removed, Withdrawn RFR fix, dedup bug fix).
+
+1. **Commit v12 to dev**, test locally
+2. **Re-run Batch A** on correct NCTs (`fast_learning_batch_25.txt`) — job #11
+3. **3-way concordance:** v9 (#1) vs v10 (#3) vs v12 (#11) on same 25 NCTs
+4. **Expected improvements:**
+   - Outcome: should recover to ≥v9 levels (80%+) — Phase I guard was sole cause of 9/9 errors
+   - Reason for failure: 5 cascade errors resolve automatically; Withdrawn fix adds ~3 more
+   - Delivery mode: should retain v11+eff improvement (64%+)
 
 ### Phase 2: Complete 514 remaining NCTs
 
-Submit 3 jobs after validation:
-- Job #11: 200 NCTs (batch E)
-- Job #12: 200 NCTs (batch F)
-- Job #13: 114 NCTs (batch G)
+Submit 3 jobs after v12 validation:
+- Job #12: 200 NCTs (batch E)
+- Job #13: 200 NCTs (batch F)
+- Job #14: 114 NCTs (batch G)
 
-Estimated: ~20h total (was ~31h before efficiency improvements)
+Estimated: ~20h total
 
 ### Phase 3: Selective v10 re-annotation
 
-Job #14: ~120 NCTs where v11 deterministic rules change the result
+Job #15: ~120 NCTs where v12 deterministic rules change the result
 
 ### Phase 4: Full concordance on all 964
 
-Compare across v9/v10/v11 batches. Targets:
-- Outcome: >65% (human R1↔R2 = 56.2%)
+Compare across v9/v10/v12 batches. Targets:
+- Outcome: >75% (human R1↔R2 = 56.2%)
 - Peptide: >80% (human R1↔R2 = 83.4%)
 - Classification: AC₁ > 0.90
 - Delivery mode: >65%
+- Reason for failure: >70%
 
 ### Phase 5: Annotate 884 unannotated NCTs
 

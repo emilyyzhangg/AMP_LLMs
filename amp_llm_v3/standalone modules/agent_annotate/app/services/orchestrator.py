@@ -896,8 +896,8 @@ class PipelineOrchestrator:
                         "research_results": [r.model_dump() for r in research],
                         "research_coverage": research_coverage,
                     }
-                    all_trial_results.append(trial_output)
                     persistence.save_annotation(job.job_id, nct_id, trial_output)
+                    all_trial_results.append(trial_output)
 
                     if verified.flagged_for_review:
                         self._queue_for_review(
@@ -911,17 +911,20 @@ class PipelineOrchestrator:
 
                 except Exception as e:
                     logger.error(f"[{job.job_id}] Finalize error for {nct_id}: {e}")
-                    metadata = TrialMetadata(nct_id=nct_id)
-                    trial_output = {
-                        "nct_id": nct_id,
-                        "metadata": metadata.model_dump(),
-                        "annotations": [a.model_dump() for a in annotations],
-                        "verification": None,
-                        "research_used": [r.agent_name for r in research],
-                        "research_results": [r.model_dump() for r in research],
-                        "error": str(e),
-                    }
-                    all_trial_results.append(trial_output)
+                    # Only append if this NCT wasn't already added (avoids duplicates
+                    # when persistence fails after annotation succeeded)
+                    if not any(t["nct_id"] == nct_id for t in all_trial_results):
+                        metadata = TrialMetadata(nct_id=nct_id)
+                        trial_output = {
+                            "nct_id": nct_id,
+                            "metadata": metadata.model_dump(),
+                            "annotations": [a.model_dump() for a in annotations],
+                            "verification": None,
+                            "research_used": [r.agent_name for r in research],
+                            "research_results": [r.model_dump() for r in research],
+                            "error": str(e),
+                        }
+                        all_trial_results.append(trial_output)
                     job.progress.completed_trials += 1
                     self._update_timing(job, trial_start, pipeline_start, trial_times)
 
@@ -1349,6 +1352,7 @@ class PipelineOrchestrator:
                 )
 
         # Rule 2: non-failure outcome -> clear reason_for_failure
+        # Note: Withdrawn excluded — withdrawn trials can have known reasons
         non_failure_outcomes = {
             "Positive", "Recruiting", "Active, not recruiting", "Unknown"
         }
@@ -1391,6 +1395,7 @@ class PipelineOrchestrator:
         peptide_val = effective(peptide_f)
 
         # Rule 1: non-failure outcome → force failure_reason empty
+        # Note: Withdrawn excluded — withdrawn trials can have known reasons
         non_failure = {"Positive", "Recruiting", "Active, not recruiting", "Unknown"}
         if outcome_val in non_failure and failure_f:
             eff_failure = effective(failure_f)

@@ -118,7 +118,7 @@ class FailureReasonAgent(BaseAnnotationAgent):
         # This prevents the dominant error pattern where the 8B model
         # hallucinates "Ineffective for purpose" for non-failed trials.
         outcome_result = metadata.get("outcome_result", "") if metadata else ""
-        if outcome_result in ("Positive", "Recruiting", "Active, not recruiting", "Unknown", "Withdrawn"):
+        if outcome_result in ("Positive", "Recruiting", "Active, not recruiting", "Unknown"):
             logger.info(
                 f"  failure_reason: skipping — outcome='{outcome_result}' is non-failure"
             )

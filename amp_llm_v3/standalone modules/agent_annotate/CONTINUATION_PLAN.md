@@ -1,102 +1,84 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-03-23 ~18:30
-**Current state:** v11+efficiency merged to main. Batch A test job running. All other jobs paused.
+**Last updated:** 2026-03-24
+**Current state:** v12 fixes applied on dev. No active jobs. Needs commit+push to dev, then Batch A re-run.
 
-## Session Log (2026-03-23)
+## Session Log (2026-03-24)
 
 ### What happened (chronological)
 
-1. **Ran concordance on 400 v10 NCTs** — outcome regressed to 47%, peptide 65%, 0/14 AMP subtypes
-2. **Created v11 fix plan** — deterministic rules, confidence fix, self-audit expansion, EDAM purge
-3. **Purged 128 bad peptide True→False EDAM corrections** from prod edam.db
-4. **Implemented v11** — outcome, peptide, classification, self-audit fixes
-5. **Cancelled jobs #7-9** on prod for v11 upgrade
-6. **Submitted 3 v11 jobs** (514 NCTs) — then paused for efficiency improvements
-7. **Implemented efficiency improvements:**
-   - Model-grouped verification (15→3 model switches per trial)
-   - Unified annotation_model (qwen2.5:14b for all fields, 0 annotation switches)
-   - Enhanced progress reporting (field/agent/model/timings in UI)
-8. **Cancelled 3 v11 jobs** to test Batch A first
-9. **Submitted Batch A test** (`19a39aa475a3`, 25 NCTs) — same NCTs as v9 job #1
+1. **Analyzed job 1ff6092a499c** (v11+eff, 25 NCTs) — UI showed 30 trials, actually 25 unique
+2. **Found dedup bug** in `orchestrator.py:899-924` — trial appended before persistence; if persistence failed, except block added duplicate. Fixed: moved append after persistence, added dedup guard in except block.
+3. **Added dedup safety net** in `output_service.py` `save_json_output()`
+4. **Fixed concordance/results endpoints** (`concordance.py`, `results.py`) — were reading stale `total_trials` field from JSON; now derive from actual unique NCT count
+5. **Fixed existing JSON** (`1ff6092a499c.json`) — deduped 30→25 trials, updated total_trials, removed .tmp files
+6. **Ran concordance on v11+eff job** — outcome regressed to 52% vs R1 (was 80% in v9)
+7. **Root-caused outcome regression:**
+   - 6/9 wrong Unknowns from Phase I guard (COMPLETED Phase I without hasResults → Unknown)
+   - hasResults is frequently unpopulated even when publications exist
+   - All 9 Unknowns wrong: humans unanimously agree (5 Failed, 4 Positive)
+8. **Root-caused RFR regression:**
+   - 5/14 errors cascade from wrong Unknown outcome (consistency rule blanks RFR)
+   - 3/14 from Withdrawn trials getting blank RFR (humans annotated real reasons)
+9. **Implemented v12 fixes:**
+   - Removed Phase I guard deterministic rule (`outcome.py`)
+   - Removed confidence source_sufficiency cap /2 (`outcome.py`)
+   - Removed Withdrawn from failure_reason pre-check skip list (`failure_reason.py`)
+   - Removed Withdrawn from consistency rules (`orchestrator.py`, both pre- and post-verification)
+   - Widened self-audit evidence keywords for Positive check (`self_audit.py`)
+10. **Discovered wrong batch** — job 1ff6092a499c used different NCTs than `fast_learning_batch_25.txt` (only 12/25 overlap with v9). 3-way comparison invalid.
+11. **Updated LEARNING_RUN_PLAN.md** — added v12 version entry, updated job registry, concordance results, and phase plan
 
 ### Active Job
 
-| Job | ID | NCTs | Status | Notes |
-|-----|-----|------|--------|-------|
-| Batch A test | `19a39aa475a3` | 25 | **Running** | v11+efficiency. Same NCTs as v9 job #1. |
+None.
 
 ## What to do next
 
-### When Batch A test completes (~1-2 hours)
+### Step 1: Commit and push v12 to dev
 
-**1. Run 3-way concordance: v9 vs v10 vs v11**
+```bash
+cd "/Users/amphoraxe/Developer/amphoraxe/dev-llm.amphoraxe.ca"
+git add -A && git commit -m "v12: fix outcome regression, dedup bug, withdrawn RFR" && git push
+```
 
+### Step 2: Re-run Batch A on CORRECT NCTs
+
+Submit using the correct batch file (`fast_learning_batch_25.txt`):
 ```bash
 cd "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate"
-# v9 job #1: c7e666682865 (Batch A, 25 NCTs)
-# v10 EDAM re-run: 5d207b30f11c (Batch A repeat, 25 NCTs)
-# v11 test: 19a39aa475a3 (Batch A, 25 NCTs)
-# Run concordance on all 3 against human R1/R2
+# Only after v12 is merged to main and prod autoupdater picks it up
+NCT_IDS=$(python3 -c "
+with open('scripts/fast_learning_batch_25.txt') as f:
+    ncts = [l.strip() for l in f if l.strip()]
+import json; print(json.dumps(ncts))
+")
+curl -s -X POST http://localhost:8005/api/jobs \
+  -H 'Content-Type: application/json' \
+  -d "{\"nct_ids\": $NCT_IDS}"
 ```
 
-**2. Compare timing: v9/v10 vs v11+efficiency**
-- v9 Batch A: 3.0h (180s/trial avg)
-- v11 should be significantly faster with model-grouped verification + unified annotation model
-- Check `avg_seconds_per_trial` in job status
+### Step 3: 3-way concordance (v9 vs v10 vs v12)
 
-**3. Evaluate qwen2.5:14b vs llama3.1:8b impact**
-- Compare outcome concordance (was 80% in v9 batch A, 47% in v10 400 NCTs)
-- Compare peptide concordance (was 78.9% in v9 batch A, 65% in v10 400 NCTs)
-- If any field regressed with 14b, consider per-field annotation_model config
+All on same 25 NCTs from `fast_learning_batch_25.txt`:
+- v9 job #1: `c7e666682865`
+- v10 repeat: `5d207b30f11c`
+- v12 job: TBD
 
-**4. If results are good → resume 514 NCT jobs**
+Expected: outcome should recover to 80%+ (Phase I guard was sole cause of 9/9 errors).
 
-Re-submit the 3 jobs (same NCT batches):
-```bash
-curl -s -X POST http://localhost:8005/api/jobs -H "Content-Type: application/json" -d "{\"nct_ids\": $(cat /tmp/batch_e.json)}"
-curl -s -X POST http://localhost:8005/api/jobs -H "Content-Type: application/json" -d "{\"nct_ids\": $(cat /tmp/batch_f.json)}"
-curl -s -X POST http://localhost:8005/api/jobs -H "Content-Type: application/json" -d "{\"nct_ids\": $(cat /tmp/batch_g.json)}"
-```
+### Step 4: If v12 validated → submit remaining 514 NCTs
 
-Or regenerate batch files:
-```bash
-cd "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate"
-python3 -c "
-import json
-with open('scripts/human_annotated_ncts.txt') as f:
-    all_ncts = [l.strip() for l in f if l.strip()]
-with open('scripts/fast_learning_batch_50.txt') as f:
-    batch_ab = set(l.strip() for l in f if l.strip())
-with open('results/jobs/92fb568c1b96.json') as f:
-    job5 = set(json.load(f).get('nct_ids', []))
-with open('results/jobs/829124f16fd5.json') as f:
-    job6 = set(json.load(f).get('nct_ids', []))
-done = batch_ab | job5 | job6
-remaining = [n for n in all_ncts if n not in done]
-print(f'Remaining: {len(remaining)}')
-for i, start in enumerate(range(0, len(remaining), 200)):
-    batch = remaining[start:start+200]
-    with open(f'/tmp/batch_{chr(101+i)}.json', 'w') as f:
-        json.dump(batch, f)
-    print(f'Batch {chr(101+i)}: {len(batch)} NCTs')
-"
-```
-
-### After all 964 complete
-
-1. Full concordance across all jobs
-2. Selective v10 re-annotation (Job #13, ~120 NCTs) if v11 confirmed better
-3. Decision: proceed to 884 unannotated NCTs
+Regenerate batch files and submit 3 jobs (see LEARNING_RUN_PLAN.md Phase 2).
 
 ## Environment State
 
 | Environment | Branch | Agent Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v11+efficiency (710912f) | Batch A test: 19a39aa475a3 |
-| Dev (port 9005) | dev | v11+efficiency (710912f) | None |
+| Prod (port 8005) | main | v11+eff (710912f) | None |
+| Dev (port 9005) | dev | v12 (uncommitted) | None |
 
-## EDAM Database State (post-purge, pre-v11 jobs)
+## EDAM Database State
 
 | Table | Count | Notes |
 |---|---|---|
@@ -105,7 +87,7 @@ for i, start in enumerate(range(0, len(remaining), 200)):
 | stability_index | 2,590 | |
 | embeddings | 3,065 | |
 | prompt_variants | 0 | |
-| config_epochs | 2 → 3 | v11 creates epoch 3 on Batch A test |
+| config_epochs | 2 → 3 | v11 created epoch 3 on job 1ff6092a499c |
 
 ## Important Notes
 
@@ -126,4 +108,4 @@ for i, start in enumerate(range(0, len(remaining), 200)):
 | `results/annotations/{job_id}/{nct_id}.json` | Per-trial annotation results |
 | `results/json/{job_id}.json` | Consolidated output (completed jobs only) |
 | `scripts/human_annotated_ncts.txt` | All 964 NCTs |
-| `scripts/fast_learning_batch_50.txt` | Batches A+B (50 NCTs) |
+| `scripts/fast_learning_batch_25.txt` | Batches A+B original 25 (matches v9 job #1) |

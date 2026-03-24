@@ -49,7 +49,10 @@ async def list_concordance_jobs():
         try:
             with open(json_path) as f:
                 data = json.load(f)
-            total_trials = data.get("total_trials", len(data.get("trials", [])))
+            trials = data.get("trials", [])
+            # Count unique NCTs (not raw array length) to handle any residual duplicates
+            unique_ncts = {t.get("nct_id") for t in trials if t.get("nct_id")}
+            total_trials = len(unique_ncts)
         except Exception:
             pass
         jobs.append({

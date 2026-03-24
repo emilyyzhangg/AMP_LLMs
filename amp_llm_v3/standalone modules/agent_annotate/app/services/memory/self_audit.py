@@ -456,11 +456,17 @@ class SelfAuditor:
         2. Registry says recruiting but agent didn't output "Recruiting"
         3. Agent says "Unknown" but hasResults=true
         """
-        # --- Check 1: Positive without publication evidence ---
+        # --- Check 1: Positive without ANY supporting evidence ---
+        # v12: Widened keyword list and added result-related terms.
+        # The v11 version was too aggressive, correcting Positive→Unknown
+        # when evidence existed in forms not covered by the narrow keyword check.
         if agent_value == "Positive":
-            has_publication = any(kw in evidence_lower for kw in [
+            has_evidence = any(kw in evidence_lower for kw in [
                 "pubmed", "pmc", "doi:", "published", "journal",
                 "efficacy", "effective", "met primary endpoint",
+                "results", "phase ii", "phase iii", "phase 2", "phase 3",
+                "approved", "fda", "ema", "market", "commercial",
+                "succeeded", "successful", "completed",
             ])
             has_results_posted = False
             for raw in raw_data_list:
@@ -471,15 +477,15 @@ class SelfAuditor:
                     has_results_posted = True
                     break
 
-            if not has_publication and not has_results_posted:
+            if not has_evidence and not has_results_posted:
                 return {
                     "field_name": "outcome",
                     "original_value": "Positive",
                     "corrected_value": "Unknown",
                     "reflection": (
-                        "Agent classified outcome as Positive but no publication "
-                        "evidence (PubMed, PMC, journal) and no hasResults=true "
-                        "found in registry data. Positive requires corroboration."
+                        "Agent classified outcome as Positive but no supporting "
+                        "evidence (publications, results, approval, later phases) "
+                        "and no hasResults=true found. Positive requires corroboration."
                     ),
                     "evidence_citations": all_citations[:1] if all_citations else [],
                 }

@@ -38,7 +38,7 @@ async def list_results():
                     "version": version.get("version", ""),
                     "git_commit": version.get("git_commit", ""),
                     "timestamp": version.get("timestamp", ""),
-                    "total_trials": data.get("total_trials", 0),
+                    "total_trials": len({t.get("nct_id") for t in data.get("trials", []) if t.get("nct_id")}),
                     "successful": data.get("successful", 0),
                     "failed": data.get("failed", 0),
                     "manual_review": data.get("manual_review", 0),
@@ -180,7 +180,7 @@ async def results_summary(job_id: str):
     if data:
         return {
             "job_id": job_id,
-            "total_trials": data.get("total_trials", 0),
+            "total_trials": len({t.get("nct_id") for t in data.get("trials", []) if t.get("nct_id")}),
             "successful": data.get("successful", 0),
             "failed": data.get("failed", 0),
             "manual_review": data.get("manual_review", 0),

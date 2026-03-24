@@ -83,20 +83,10 @@ def _deterministic_outcome(research_results: list) -> FieldAnnotation | None:
                     evidence=[], model_name="deterministic", skip_verification=False,
                 )
 
-            # v11: COMPLETED Phase I without hasResults → Unknown (prevent H1 violation)
-            design_mod = proto.get("designModule", {})
-            phases = design_mod.get("phases", [])
-            if isinstance(phases, str):
-                phases = [phases]
-            phase_str = " ".join(phases).upper() if phases else ""
-            is_phase1 = "PHASE1" in phase_str or "EARLY_PHASE1" in phase_str
-            if is_phase1 and not has_results:
-                logger.info(f"  outcome: deterministic → Unknown (COMPLETED Phase I, no hasResults)")
-                return FieldAnnotation(
-                    field_name="outcome", value="Unknown", confidence=0.85,
-                    reasoning="[Deterministic v11] COMPLETED Phase I without hasResults → Unknown (H1 requires corroboration)",
-                    evidence=[], model_name="deterministic", skip_verification=False,
-                )
+            # v11 had a Phase I guard here (COMPLETED Phase I without hasResults → Unknown)
+            # but it caused massive regression: hasResults is often unpopulated even when
+            # publications exist. Removed in v12 — let the LLM pipeline + H1 heuristics
+            # handle Phase I trials with access to full research evidence.
 
     return None
 
@@ -318,12 +308,11 @@ class OutcomeAgent(BaseAnnotationAgent):
         # Include pass 1 extraction in the reasoning for audit trail
         full_reasoning = f"[Pass 1 facts] {pass1_output[:500]}\n[Pass 2 decision] {reasoning}"
 
-        # v11: Confidence = min(citation quality, source sufficiency).
-        # If only 1 source (e.g., just ClinicalTrials.gov), cap confidence at 0.5.
+        # v12: Confidence based on citation quality. The v11 source_sufficiency
+        # divisor (/2) was too aggressive — single-source evidence (ClinicalTrials.gov)
+        # is often sufficient and shouldn't be capped at 0.5.
         citation_quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
-        num_distinct_sources = len({c.source_name for c in cited_sources[:10]})
-        source_sufficiency = min(1.0, num_distinct_sources / 2)
-        confidence = min(citation_quality, source_sufficiency)
+        confidence = citation_quality
 
         return FieldAnnotation(
             field_name=self.field_name,

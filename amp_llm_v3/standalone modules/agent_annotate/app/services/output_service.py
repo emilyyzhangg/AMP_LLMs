@@ -502,10 +502,19 @@ def save_json_output(job_id: str, data: dict) -> Path:
     # Dynamically read review state each time (not cached from completion)
     review_decisions = _get_review_decisions(job_id)
 
+    # Deduplicate trials by nct_id (keep first occurrence)
+    seen_ncts: set[str] = set()
+    unique_trials = []
+    for trial in data.get("trials", []):
+        nct_id = trial.get("nct_id", "")
+        if nct_id not in seen_ncts:
+            seen_ncts.add(nct_id)
+            unique_trials.append(trial)
+
     # Enrich trials with traceability metadata
     enriched_data = dict(data)
     enriched_trials = []
-    for trial in data.get("trials", []):
+    for trial in unique_trials:
         enriched_trials.append(_enrich_trial_json(trial, config_snapshot,
                                                   review_decisions=review_decisions))
     enriched_data["trials"] = enriched_trials
