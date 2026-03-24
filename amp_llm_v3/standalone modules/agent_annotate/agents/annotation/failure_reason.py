@@ -177,7 +177,7 @@ class FailureReasonAgent(BaseAnnotationAgent):
                 model=primary_model,
                 prompt=evidence_text,
                 system=PASS1_PROMPT,
-                temperature=config.ollama.temperature,
+                temperature=config.ollama.field_temperatures.get("reason_for_failure", config.ollama.temperature),
             )
             pass1_output = pass1_response.get("response", "")
         except Exception as e:
@@ -208,7 +208,7 @@ class FailureReasonAgent(BaseAnnotationAgent):
             pass2_response = await ollama_client.generate(
                 model=primary_model,
                 prompt=pass2_prompt + "\n\nOriginal evidence:\n" + evidence_text,
-                temperature=config.ollama.temperature,
+                temperature=config.ollama.field_temperatures.get("reason_for_failure", config.ollama.temperature),
             )
             pass2_output = pass2_response.get("response", "")
         except Exception as e:

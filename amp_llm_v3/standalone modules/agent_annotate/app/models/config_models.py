@@ -65,6 +65,13 @@ class OllamaConfig(BaseModel):
     port: int = 11434
     timeout: int = 600
     temperature: float = 0.10
+    field_temperatures: Dict[str, float] = {
+        "peptide": 0.05,
+        "classification": 0.05,
+        "outcome": 0.15,
+        "delivery_mode": 0.10,
+        "reason_for_failure": 0.10,
+    }
 
 
 class AnnotationConfig(BaseModel):

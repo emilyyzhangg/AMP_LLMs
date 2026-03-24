@@ -39,6 +39,27 @@ def _extract_intervention_names(metadata: dict | None) -> list[str]:
     return names
 
 
+def _extract_resolved_names(metadata: dict | None) -> dict[str, list[str]]:
+    """Extract resolved drug names (generic + synonyms) for each intervention.
+
+    Returns a dict mapping original intervention name -> list of resolved names.
+    Only includes interventions that have a non-empty 'resolved' key.
+    """
+    if not metadata:
+        return {}
+    raw = metadata.get("interventions", [])
+    if not isinstance(raw, list):
+        return {}
+    resolved_map: dict[str, list[str]] = {}
+    for item in raw:
+        if isinstance(item, dict):
+            name = item.get("name") or item.get("intervention_name") or ""
+            resolved = item.get("resolved", [])
+            if name and resolved:
+                resolved_map[str(name)] = [str(r) for r in resolved]
+    return resolved_map
+
+
 class PeptideIdentityAgent(BaseResearchAgent):
     """Identifies peptide/protein entities from UniProt and DRAMP."""
 
@@ -51,6 +72,8 @@ class PeptideIdentityAgent(BaseResearchAgent):
 
         # Extract intervention names to search for peptides
         interventions = _extract_intervention_names(metadata)
+        # Layer 1: Get resolved drug names (generic + synonyms) for fallback searches
+        resolved_names = _extract_resolved_names(metadata)
 
         if not interventions:
             return ResearchResult(
@@ -119,6 +142,49 @@ class PeptideIdentityAgent(BaseResearchAgent):
                         if resp.status_code == 200:
                             data = resp.json()
                             results = data.get("results", [])
+
+                    # Layer 1: If still no results, try resolved names (generic + synonyms)
+                    # e.g., "BNP" returns nothing, but "nesiritide" returns a full entry
+                    if not results and intervention in resolved_names:
+                        for resolved_name in resolved_names[intervention]:
+                            # Try structured query with resolved name
+                            res_query = f'(protein_name:"{resolved_name}") AND (organism_id:9606)'
+                            resp = await resilient_get(
+                                UNIPROT_SEARCH_URL,
+                                client=client,
+                                params={
+                                    "query": res_query,
+                                    "format": "json",
+                                    "fields": "accession,protein_name,organism_name,sequence",
+                                    "size": 3,
+                                },
+                                headers={"Accept": "application/json"},
+                            )
+                            if resp.status_code == 200:
+                                data = resp.json()
+                                results = data.get("results", [])
+                            if results:
+                                raw_data[f"uniprot_{intervention}_resolved_via"] = resolved_name
+                                break
+
+                            # Try free text with resolved name
+                            resp = await resilient_get(
+                                UNIPROT_SEARCH_URL,
+                                client=client,
+                                params={
+                                    "query": f"{resolved_name} AND (organism_id:9606)",
+                                    "format": "json",
+                                    "fields": "accession,protein_name,organism_name,sequence",
+                                    "size": 2,
+                                },
+                                headers={"Accept": "application/json"},
+                            )
+                            if resp.status_code == 200:
+                                data = resp.json()
+                                results = data.get("results", [])
+                            if results:
+                                raw_data[f"uniprot_{intervention}_resolved_via"] = resolved_name
+                                break
 
                     raw_data[f"uniprot_{intervention}"] = results[:3]
                     for entry in results[:2]:

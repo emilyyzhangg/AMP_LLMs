@@ -347,7 +347,7 @@ class DeliveryModeAgent(BaseAnnotationAgent):
                 model=primary_model,
                 prompt=evidence_text,
                 system=PASS1_SYSTEM,
-                temperature=config.ollama.temperature,
+                temperature=config.ollama.field_temperatures.get("delivery_mode", config.ollama.temperature),
             )
             pass1_text = pass1_response.get("response", "")
         except Exception as e:
@@ -367,7 +367,7 @@ class DeliveryModeAgent(BaseAnnotationAgent):
             pass2_response = await ollama_client.generate(
                 model=primary_model,
                 prompt=pass2_prompt + "\n\nOriginal evidence:\n" + evidence_text,
-                temperature=config.ollama.temperature,
+                temperature=config.ollama.field_temperatures.get("delivery_mode", config.ollama.temperature),
             )
             pass2_text = pass2_response.get("response", "")
         except Exception as e:

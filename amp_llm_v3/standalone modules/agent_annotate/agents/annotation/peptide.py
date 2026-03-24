@@ -87,7 +87,7 @@ Active Ingredient Role: [active drug / food ingredient / targeting vector / bran
 # Pass 2: Apply decision tree to extracted facts
 PASS2_SYSTEM = """You are a peptide identification specialist. You have been given EXTRACTED FACTS about a clinical trial intervention. Use ONLY these facts to determine if the intervention is a peptide therapeutic.
 
-DEFINITION: A peptide therapeutic is a SINGLE-CHAIN molecule consisting of 2-50 amino acid residues that serves as the ACTIVE therapeutic drug in the clinical trial. The peptide must be the primary pharmacological agent — not a carrier, adjuvant, nutritional component, or targeting vector.
+DEFINITION: A peptide therapeutic is a SINGLE-CHAIN molecule consisting of 2-50 amino acid residues that serves as the ACTIVE therapeutic drug in the clinical trial.
 
 INCLUDES as peptide (True):
 - Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37 (37 aa), defensins
@@ -95,35 +95,35 @@ INCLUDES as peptide (True):
 - Cyclic peptides: vancomycin (glycopeptide), gramicidin, bacitracin
 - Peptide vaccines where the peptide IS the active immunogen (e.g., StreptInCor)
 - Neuropeptides used as drugs: aviptadil (VIP, 28 aa), substance P antagonists
+- Vasopeptides: nesiritide (BNP, 32 aa), terlipressin, desmopressin
+- Peptide anticoagulants: bivalirudin (20 aa), eptifibatide (7 aa)
 
 EXCLUDES as peptide (False):
-- Proteins >50 amino acids: insulin (51 aa, also multi-chain A+B), interferons, erythropoietin
-- Multi-chain complexes forming tertiary/quaternary structure (complex proteins, not peptides)
-- Monoclonal antibodies (multi-chain, ~150 kDa): pembrolizumab, trastuzumab
-- Small molecule drugs: amoxicillin, metformin, ciprofloxacin
-- Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms
-- Heat shock protein-peptide complexes: HSPPC-96/Oncophage (the HSP is the drug, not the peptide)
-- Exosome/dexosome vehicles loaded with peptides (the vehicle is the drug)
+- Proteins >50 amino acids or multi-chain complexes
+- Monoclonal antibodies (~150 kDa, multi-chain)
+- Small molecule drugs (non-peptide chemical compounds)
+- Nutritional formulas / dietary supplements with hydrolyzed proteins
+- HSP-peptide complexes, exosome/dexosome vehicles (peptide is cargo, not the active drug)
 - Gene therapies, cell therapies, medical devices
-- Single amino acids (e.g., L-glutamine, L-arginine supplements)
+- Single amino acids (e.g., L-glutamine)
 
 DECISION TREE:
 
 STEP 1 — Is the Molecular Class a peptide?
   - "Short peptide chain" (2-50 aa, single chain) → proceed to Step 2
   - "Protein" (>50 aa or multi-chain) → False
-  - "Monoclonal antibody" → False (multi-chain complex)
+  - "Monoclonal antibody" → False
   - "Small molecule" → False
   - "Nutritional product/dietary supplement" → False
-  - "Large multi-subunit protein" → False (multi-chain complex)
+  - "Large multi-subunit protein" → False
   - "Single amino acid" → False
   - "Unknown" → check database confirmation in Step 2
 
 STEP 2 — Is the peptide the ACTIVE DRUG?
   - Active Ingredient Role = "active drug" → proceed to Step 3
-  - Active Ingredient Role = "food ingredient" → False (nutritional product)
-  - Active Ingredient Role = "targeting vector" → False (peptide is delivery mechanism, not the drug)
-  - Active Ingredient Role = "brand name only" → False (word "peptide" in name ≠ peptide drug)
+  - Active Ingredient Role = "food ingredient" → False
+  - Active Ingredient Role = "targeting vector" → False
+  - Active Ingredient Role = "brand name only" → False
 
 STEP 3 — Final confirmation
   - Database confirmation shows UniProt/DRAMP/DBAASP/ChEMBL peptide entry → True
@@ -131,18 +131,17 @@ STEP 3 — Final confirmation
   - No database hits but molecular class is clearly peptide → True
   - Conflicting evidence → weigh database entries > literature descriptions > product names
 
-CRITICAL RULES:
-- The question is whether ANY active drug is a peptide, not whether the formulation contains peptides
-- Brand names containing "peptide" do NOT make the product a peptide drug
-- Nutritional formulas with hydrolyzed proteins are NOT peptide drugs
-- Monoclonal antibodies are NOT peptides (different drug class)
-- MULTI-DRUG TRIALS: If the PRIMARY study drug is a peptide → True. If a peptide is co-administered
-  as background therapy but the primary experimental drug is non-peptide → evaluate the primary drug.
-  You MUST evaluate ALL interventions listed in the extracted facts, not just the first one.
-  Example: a trial testing "decitabine (small molecule) + NY-ESO-1 peptide vaccine" → True
-  because the peptide vaccine is among the interventions.
-- Heat shock protein-peptide complexes (HSPPC-96, Oncophage): the peptide is antigenic cargo, not the active mechanism → False
-- Autologous dexosomes/exosomes loaded with peptides: the vehicle is the drug, not the peptide cargo → False
+MULTI-DRUG TRIALS: Evaluate ALL interventions. If ANY intervention is a peptide therapeutic → True.
+Example: "decitabine (small molecule) + NY-ESO-1 peptide vaccine" → True (peptide vaccine present).
+
+WORKED EXAMPLES (True):
+1. Molecular Class: Short peptide chain | AA Length: 31 | Database Hits: UniProt P01282 | Active Role: active drug → True (semaglutide, 31 aa GLP-1 analogue)
+2. Molecular Class: Short peptide chain | AA Length: 8 | Database Hits: DRAMP entry | Active Role: active drug → True (octreotide, 8 aa somatostatin analogue)
+3. Molecular Class: Short peptide chain | AA Length: 32 | Database Hits: UniProt P16860 | Active Role: active drug → True (nesiritide/BNP, 32 aa natriuretic peptide)
+
+WORKED EXAMPLES (False):
+1. Molecular Class: Nutritional product | AA Length: N/A | Database Hits: none | Active Role: food ingredient → False (Peptide 1.5 is a nutritional formula)
+2. Molecular Class: Monoclonal antibody | AA Length: >1000 | Database Hits: UniProt (antibody) | Active Role: active drug → False (pembrolizumab is an antibody, not a peptide)
 
 Format your response EXACTLY as:
 Peptide: [True or False]
@@ -361,7 +360,7 @@ class PeptideAgent(BaseAnnotationAgent):
                 model=primary_model,
                 prompt=evidence_text,
                 system=PASS1_SYSTEM,
-                temperature=config.ollama.temperature,
+                temperature=config.ollama.field_temperatures.get("peptide", config.ollama.temperature),
             )
             pass1_text = pass1_response.get("response", "")
         except Exception as e:
@@ -375,15 +374,25 @@ class PeptideAgent(BaseAnnotationAgent):
                 model_name=primary_model,
             )
 
+        # --- Layer 2a: Structured Pass 1→Pass 2 handoff ---
+        pass1_parsed = self._parse_pass1(pass1_text)
+        pass2_input = (
+            f"Molecular Class: {pass1_parsed['molecular_class']}\n"
+            f"AA Length: {pass1_parsed.get('aa_length', 'unknown')}\n"
+            f"Database Hits: {', '.join(pass1_parsed.get('database_hits', ['none']))}\n"
+            f"Product Description: {pass1_parsed.get('product_description', 'unknown')}\n"
+            f"Active Role: {pass1_parsed.get('active_role', 'unknown')}"
+        )
+
         # --- Pass 2: Apply decision tree ---
         try:
             logger.info(f"  peptide: Pass 2 — applying decision tree for {nct_id}")
-            pass2_prompt = f"Trial: {nct_id}\n\nEXTRACTED FACTS:\n{pass1_text}\n"
+            pass2_prompt = f"Trial: {nct_id}\n\nEXTRACTED FACTS:\n{pass2_input}\n"
             pass2_response = await ollama_client.generate(
                 model=primary_model,
                 prompt=pass2_prompt,
                 system=PASS2_SYSTEM,
-                temperature=config.ollama.temperature,
+                temperature=config.ollama.field_temperatures.get("peptide", config.ollama.temperature),
             )
             pass2_text = pass2_response.get("response", "")
         except Exception as e:
@@ -497,3 +506,87 @@ class PeptideAgent(BaseAnnotationAgent):
         if match:
             return match.group(1).strip()[:500]
         return text[:500]
+
+    def _parse_pass1(self, pass1_text: str) -> dict:
+        """Parse Pass 1 free-text output into a structured dict.
+
+        Extracts fields: molecular_class, aa_length, database_hits,
+        product_description, active_role from the Pass 1 response.
+        Falls back to 'unknown' for any field that can't be parsed.
+        """
+        result = {
+            "molecular_class": "unknown",
+            "aa_length": "unknown",
+            "database_hits": [],
+            "product_description": "unknown",
+            "active_role": "unknown",
+        }
+
+        lower = pass1_text.lower()
+
+        # Extract molecular class
+        mol_match = re.search(
+            r"molecular\s+class:\s*(.+?)(?:\n|$)", pass1_text, re.IGNORECASE
+        )
+        if mol_match:
+            result["molecular_class"] = mol_match.group(1).strip()
+
+        # Extract amino acid length from various patterns
+        aa_match = re.search(
+            r"(\d+)\s*(?:amino\s*acids?|aa\b|residues?)", lower
+        )
+        if aa_match:
+            result["aa_length"] = aa_match.group(1)
+
+        # Extract database hits — look for UniProt, DRAMP, DBAASP, ChEMBL, PDB references
+        db_hits = []
+        # UniProt accessions (e.g., P12345, Q9NZC2)
+        uniprot_matches = re.findall(
+            r"(?:UniProt|uniprot)[:\s]*([A-Z]\d{4,}[A-Z0-9]*)", pass1_text
+        )
+        for acc in uniprot_matches:
+            db_hits.append(f"UniProt: {acc}")
+        # DRAMP/DBAASP mentions
+        if re.search(r"dramp|dbaasp", lower):
+            dramp_match = re.search(
+                r"(?:dramp|dbaasp)[:\s]*(.+?)(?:\n|$)", pass1_text, re.IGNORECASE
+            )
+            if dramp_match:
+                hit_text = dramp_match.group(1).strip()
+                if "not found" not in hit_text.lower() and "no " not in hit_text.lower():
+                    db_hits.append(f"DRAMP/DBAASP: {hit_text[:80]}")
+        # ChEMBL mentions
+        chembl_match = re.search(
+            r"chembl[:\s]*(.+?)(?:\n|$)", pass1_text, re.IGNORECASE
+        )
+        if chembl_match:
+            hit_text = chembl_match.group(1).strip()
+            if "not found" not in hit_text.lower() and "no " not in hit_text.lower():
+                db_hits.append(f"ChEMBL: {hit_text[:80]}")
+        # Generic "database confirmation" section
+        db_confirm_match = re.search(
+            r"database\s+confirmation:\s*(.+?)(?:\n(?:product|active)|$)",
+            pass1_text, re.IGNORECASE | re.DOTALL
+        )
+        if db_confirm_match and not db_hits:
+            hit_text = db_confirm_match.group(1).strip()
+            if hit_text and "not found" not in hit_text.lower():
+                db_hits.append(hit_text[:120])
+
+        result["database_hits"] = db_hits if db_hits else ["none"]
+
+        # Extract product description
+        prod_match = re.search(
+            r"product\s+description:\s*(.+?)(?:\n|$)", pass1_text, re.IGNORECASE
+        )
+        if prod_match:
+            result["product_description"] = prod_match.group(1).strip()
+
+        # Extract active ingredient role
+        role_match = re.search(
+            r"active\s+ingredient\s+role:\s*(.+?)(?:\n|$)", pass1_text, re.IGNORECASE
+        )
+        if role_match:
+            result["active_role"] = role_match.group(1).strip()
+
+        return result

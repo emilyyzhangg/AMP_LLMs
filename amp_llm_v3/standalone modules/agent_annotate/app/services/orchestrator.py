@@ -655,7 +655,7 @@ class PipelineOrchestrator:
                     annotations = await self._run_annotation(
                         nct_id, research, config, job
                     )
-                    self._enforce_consistency(annotations)
+                    self._enforce_consistency(annotations, research_data=research)
                     batch_annotations[nct_id] = (annotations, research, trial_start)
                 except Exception as e:
                     logger.error(f"[{job.job_id}] Annotation error for {nct_id}: {e}")
@@ -974,6 +974,16 @@ class PipelineOrchestrator:
                         f"  Extracted interventions: "
                         f"{[i['name'] for i in interventions]}"
                     )
+
+                    # Layer 1: Resolve drug names (abbreviations/brand names → generic + synonyms)
+                    try:
+                        await self._resolve_drug_names(proto_result, interventions, config)
+                        logger.info(
+                            f"  Resolved drug names: "
+                            f"{[(i['name'], i.get('resolved', [])) for i in interventions]}"
+                        )
+                    except Exception as resolve_err:
+                        logger.warning(f"  Drug name resolution failed (non-fatal): {resolve_err}")
             except Exception as e:
                 logger.warning(f"clinical_protocol failed: {e}")
                 results.append(ResearchResult(
@@ -1029,6 +1039,99 @@ class PipelineOrchestrator:
                     ))
 
         return results
+
+    async def _resolve_drug_names(
+        self,
+        proto_result: ResearchResult,
+        interventions: list[dict],
+        config,
+    ) -> None:
+        """Resolve abbreviations/brand names to generic drug names + synonyms.
+
+        Uses the trial's own text (brief summary + detailed description) and the
+        annotation_model (qwen2.5:14b, already loaded during research phase) to
+        resolve each intervention name to its generic name and common synonyms.
+        Modifies interventions list in-place, adding a 'resolved' key to each dict.
+
+        This is a cheap single LLM call per trial — no model switch needed.
+        """
+        from app.services.ollama_client import ollama_client
+
+        # Extract trial description text from protocol data
+        raw = proto_result.raw_data or {}
+        proto_section = raw.get(
+            "protocol_section", raw.get("protocolSection", {})
+        )
+        desc_mod = proto_section.get("descriptionModule", {})
+        brief_summary = desc_mod.get("briefSummary", "")
+        detailed_desc = desc_mod.get("detailedDescription", "")
+        trial_text = f"{brief_summary}\n{detailed_desc}".strip()
+
+        if not trial_text or not interventions:
+            return
+
+        # Build the list of intervention names to resolve
+        names = [i["name"] for i in interventions if i.get("name")]
+        if not names:
+            return
+
+        prompt = (
+            f"Given this clinical trial description:\n\n{trial_text[:2000]}\n\n"
+            f"For each of the following intervention names, provide the generic "
+            f"drug name and any common synonyms (abbreviations, brand names, "
+            f"chemical names, or alternative names). If the name is already the "
+            f"generic name, still list any known synonyms.\n\n"
+            f"Interventions: {', '.join(names)}\n\n"
+            f"Format your response as one line per intervention:\n"
+            f"[original name] -> generic: [generic name]; synonyms: [syn1, syn2, ...]\n"
+            f"If you cannot determine the generic name, write: [original name] -> generic: unknown; synonyms: none"
+        )
+
+        model = getattr(config.orchestrator, "annotation_model", "qwen2.5:14b")
+        response = await ollama_client.generate(
+            model=model,
+            prompt=prompt,
+            temperature=0.05,
+        )
+        response_text = response.get("response", "")
+
+        if not response_text:
+            return
+
+        # Parse the response and add resolved names to each intervention
+        import re
+        for interv in interventions:
+            name = interv.get("name", "")
+            if not name:
+                continue
+
+            resolved = []
+            # Find the line matching this intervention (case-insensitive)
+            pattern = re.escape(name) + r"\s*->\s*generic:\s*(.+?);\s*synonyms:\s*(.+?)(?:\n|$)"
+            match = re.search(pattern, response_text, re.IGNORECASE)
+            if match:
+                generic = match.group(1).strip()
+                synonyms_str = match.group(2).strip()
+
+                if generic.lower() not in ("unknown", "none", name.lower()):
+                    resolved.append(generic)
+
+                if synonyms_str.lower() not in ("none", "n/a", ""):
+                    # Split on commas, clean up
+                    for syn in synonyms_str.split(","):
+                        syn = syn.strip().strip(".")
+                        if syn and syn.lower() not in ("none", "n/a", name.lower()):
+                            resolved.append(syn)
+
+            # Deduplicate while preserving order
+            seen = {name.lower()}
+            unique_resolved = []
+            for r in resolved:
+                if r.lower() not in seen:
+                    seen.add(r.lower())
+                    unique_resolved.append(r)
+
+            interv["resolved"] = unique_resolved
 
     async def _run_annotation(
         self,
@@ -1262,7 +1365,7 @@ class PipelineOrchestrator:
                     break
 
             # Re-enforce consistency with new classification
-            self._enforce_consistency(annotations)
+            self._enforce_consistency(annotations, research_data=research_data)
 
             # Re-verify classification only
             verifier = BlindVerifier()
@@ -1326,10 +1429,14 @@ class PipelineOrchestrator:
         return annotations, verified
 
     @staticmethod
-    def _enforce_consistency(annotations: list[FieldAnnotation]) -> None:
+    def _enforce_consistency(
+        annotations: list[FieldAnnotation],
+        research_data: list[ResearchResult] | None = None,
+    ) -> None:
         """Enforce cross-field consistency rules after annotation, before verification.
 
         Fixes contradictions that arise from fields being annotated independently:
+        - UniProt sequence length vs peptide annotation (Layer 3a)
         - sequence in 2-50 AA range -> peptide must be True
         - sequence >50 AA or multi-chain -> peptide must be False
         - peptide=False -> classification must be "Other"
@@ -1341,6 +1448,61 @@ class PipelineOrchestrator:
         outcome = ann_by_field.get("outcome")
         failure = ann_by_field.get("reason_for_failure")
         sequence = ann_by_field.get("sequence")
+
+        # Layer 3a: Research evidence → peptide cross-validation
+        # Use UniProt sequence length from research data to override peptide annotation
+        if research_data and peptide:
+            for r in research_data:
+                if r.error or r.agent_name != "peptide_identity":
+                    continue
+                if not r.raw_data:
+                    continue
+                for key, entries in r.raw_data.items():
+                    if not key.startswith("uniprot_") or not isinstance(entries, list):
+                        continue
+                    for entry in entries:
+                        if not isinstance(entry, dict):
+                            continue
+                        seq_info = entry.get("sequence", {})
+                        if not isinstance(seq_info, dict):
+                            continue
+                        length = seq_info.get("length")
+                        if not length:
+                            continue
+                        try:
+                            length = int(length)
+                        except (ValueError, TypeError):
+                            continue
+
+                        if 2 <= length <= 50 and peptide.value == "False":
+                            logger.info(
+                                f"  consistency (Layer 3a): UniProt entry has "
+                                f"{length} aa (2-50 range), forcing peptide "
+                                f"from 'False' to 'True'"
+                            )
+                            peptide.value = "True"
+                            peptide.reasoning = (
+                                f"[Consistency override Layer 3a: UniProt "
+                                f"sequence {length} aa in 2-50 range -> True] "
+                                + peptide.reasoning
+                            )
+                            break
+                        elif length > 50 and peptide.value == "True":
+                            logger.info(
+                                f"  consistency (Layer 3a): UniProt entry has "
+                                f"{length} aa (>50), forcing peptide "
+                                f"from 'True' to 'False'"
+                            )
+                            peptide.value = "False"
+                            peptide.reasoning = (
+                                f"[Consistency override Layer 3a: UniProt "
+                                f"sequence {length} aa > 50 -> False (protein)] "
+                                + peptide.reasoning
+                            )
+                            break
+                    else:
+                        continue
+                    break  # break outer loop if inner broke
 
         # Rule 0: sequence→peptide cross-validation (v12)
         if sequence and peptide and sequence.value:

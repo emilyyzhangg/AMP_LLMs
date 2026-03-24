@@ -467,7 +467,7 @@ class ClassificationAgent(BaseAnnotationAgent):
                 model=model,
                 prompt=evidence_text,
                 system=PASS1_SYSTEM,
-                temperature=config.ollama.temperature,
+                temperature=config.ollama.field_temperatures.get("classification", config.ollama.temperature),
             )
             pass1_text = pass1_response.get("response", "")
         except Exception as e:
@@ -492,7 +492,7 @@ class ClassificationAgent(BaseAnnotationAgent):
                 model=model,
                 prompt=pass2_prompt,
                 system=PASS2_SYSTEM,
-                temperature=config.ollama.temperature,
+                temperature=config.ollama.field_temperatures.get("classification", config.ollama.temperature),
             )
             pass2_text = pass2_response.get("response", "")
         except Exception as e:
