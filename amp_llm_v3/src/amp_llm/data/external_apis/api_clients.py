@@ -17,7 +17,6 @@ logger = get_logger(__name__)
 class SearchConfig:
     """Configuration for API searches."""
     # API Keys
-    serpapi_key: Optional[str] = None
     meilisearch_url: Optional[str] = "http://localhost:7700"
     meilisearch_key: Optional[str] = None
     swirl_url: Optional[str] = "http://localhost:9000"
@@ -29,7 +28,6 @@ class SearchConfig:
     
     def __post_init__(self):
         """Load from environment if available."""
-        self.serpapi_key = self.serpapi_key or os.getenv('SERPAPI_KEY')
         self.meilisearch_key = self.meilisearch_key or os.getenv('MEILISEARCH_KEY')
         self.semantic_scholar_key = self.semantic_scholar_key or os.getenv('SEMANTIC_SCHOLAR_API_KEY')
 
@@ -53,7 +51,6 @@ class APIManager:
         from amp_llm.data.api_clients.extended.who_ictrp import WHOICTRPClient
         from amp_llm.data.api_clients.extended.semantic_scholar import SemanticScholarClient
         from amp_llm.data.api_clients.extended.duckduckgo import DuckDuckGoClient
-        from amp_llm.data.api_clients.extended.serpapi import SerpAPIClient
         from amp_llm.data.api_clients.extended.openfda import OpenFDAClient
         from amp_llm.data.api_clients.extended.uniprot import UniProtClient
         
@@ -83,12 +80,6 @@ class APIManager:
             max_results=self.config.max_results
         )
         
-        self._clients['serpapi'] = SerpAPIClient(
-            api_key=self.config.serpapi_key,
-            timeout=self.config.timeout,
-            max_results=self.config.max_results
-        )
-
         self._clients['openfda'] = OpenFDAClient(
             timeout=self.config.timeout,
             max_results=self.config.max_results
@@ -174,16 +165,6 @@ class APIManager:
             )
             task_names.append('duckduckgo')
         
-        # Google (SerpAPI)
-        if 'serpapi' in enabled_apis:
-            condition = conditions[0] if conditions else None
-            tasks.append(
-                self._clients['serpapi'].search_by_clinical_trial(
-                    nct_id, title, condition
-                )
-            )
-            task_names.append('serpapi')
-
         # OpenFDA
         if 'openfda' in enabled_apis:
             condition = conditions[0] if conditions else None
@@ -261,13 +242,6 @@ class APIManager:
                 'cost': 'Free',
                 'auth': 'None'
             },
-            'serpapi': {
-                'name': 'Google (SerpAPI)',
-                'type': 'Web Search',
-                'cost': 'Free tier: 100/month',
-                'auth': 'API Key Required'
-            }
-            ,
             'openfda': {
                 'name': 'OpenFDA',
                 'type': 'FDA Drug Database',

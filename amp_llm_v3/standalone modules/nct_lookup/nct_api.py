@@ -226,7 +226,6 @@ def get_file_info(filepath: Path) -> Dict[str, Any]:
 async def startup_event():
     """Initialize search engine on startup."""
     logger.info("Starting NCT Lookup API")
-    logger.info(f"SERPAPI_KEY configured: {bool(os.getenv('SERPAPI_KEY'))}")
     logger.info(f"NCBI_API_KEY configured: {bool(os.getenv('NCBI_API_KEY'))}")
     
     # Log available APIs
@@ -1209,17 +1208,6 @@ def _extract_web_sources(sources: Dict) -> List[Dict]:
                 "url": result.get("url"),
                 "snippet": _truncate(result.get("snippet", ""), 200),
                 "relevance": result.get("relevance_score")
-            })
-
-    # SerpAPI results (if available)
-    serp_data = extended.get("serpapi", {}).get("data", {})
-    if serp_data and serp_data.get("results"):
-        for result in serp_data["results"][:5]:
-            web_results.append({
-                "source": "google",
-                "title": result.get("title"),
-                "url": result.get("url"),
-                "snippet": _truncate(result.get("snippet", ""), 200)
             })
 
     return web_results

@@ -503,55 +503,6 @@ Begin extraction:
                     lines.append(f"  Snippet: {snippet}")
                 lines.append("")
         
-        # Google Search (SERP API)
-        serp = extended_source.get("serpapi", {})
-        if serp.get("success"):
-            has_data = True
-            serp_data = serp.get("data", {})
-            serp_results = serp_data.get("results", [])
-            
-            lines.append("\n### Google Search Results")
-            lines.append(f"**Total Results:** {serp_data.get('total_found', 0)}")
-            lines.append(f"**Query:** {serp_data.get('query', 'N/A')}\n")
-            
-            for i, result in enumerate(serp_results[:5], 1):
-                lines.append(f"**Result {i}:**")
-                lines.append(f"  Title: {result.get('title', 'N/A')}")
-                lines.append(f"  URL: {result.get('url', 'N/A')}")
-                snippet = result.get('snippet', '')
-                if snippet:
-                    if len(snippet) > 300:
-                        snippet = snippet[:300] + "..."
-                    lines.append(f"  Snippet: {snippet}")
-                lines.append("")
-        
-        # Google Scholar
-        scholar = extended_source.get("scholar", {})
-        if scholar.get("success"):
-            has_data = True
-            scholar_data = scholar.get("data", {})
-            scholar_results = scholar_data.get("results", [])
-            
-            lines.append("\n### Google Scholar Results")
-            lines.append(f"**Total Results:** {scholar_data.get('total_found', 0)}")
-            lines.append(f"**Query:** {scholar_data.get('query', 'N/A')}\n")
-            
-            for i, result in enumerate(scholar_results[:5], 1):
-                lines.append(f"**Result {i}:**")
-                lines.append(f"  Title: {result.get('title', 'N/A')}")
-                lines.append(f"  URL: {result.get('url', 'N/A')}")
-                
-                cited_by = result.get('cited_by')
-                if cited_by:
-                    lines.append(f"  Cited by: {cited_by}")
-                
-                snippet = result.get('snippet', '')
-                if snippet:
-                    if len(snippet) > 300:
-                        snippet = snippet[:300] + "..."
-                    lines.append(f"  Snippet: {snippet}")
-                lines.append("")
-        
         # OpenFDA Drug Database
         openfda = extended_source.get("openfda", {})
         if openfda.get("success"):

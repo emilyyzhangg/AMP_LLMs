@@ -32,8 +32,6 @@ These weights determine how much each data source contributes to the overall qua
 | `duckduckgo` | **0.05** | Web search provides supplementary context from various sources. Lower weight due to variable reliability and potential for irrelevant results. |
 | `dramp` | **0.05** | DRAMP antimicrobial peptide database. Highly specific - if a drug appears in DRAMP, it's almost certainly an antimicrobial peptide (strong AMP indicator). |
 | `pmc_bioc` | **0.05** | BioC-annotated data provides structured entity extraction from PMC articles. Supplementary to raw PMC text. |
-| `serpapi` | **0.00** | Paid API (Google Search). Disabled by default. Set >0 if you have an API key configured. |
-| `scholar` | **0.00** | Paid API (Google Scholar). Disabled by default. Set >0 if you have an API key configured. |
 
 ### Why These Weights?
 

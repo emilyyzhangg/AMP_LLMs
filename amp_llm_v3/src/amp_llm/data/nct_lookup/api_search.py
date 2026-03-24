@@ -1,6 +1,6 @@
 """
 Extended API search integration for NCT lookup.
-UPDATED: Now includes DuckDuckGo and Google/SerpAPI.
+UPDATED: Now includes DuckDuckGo.
 """
 from typing import List, Dict, Any, Optional
 
@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 async def get_api_selection() -> List[str]:
     """
     Ask user which APIs to use for extended search.
-    UPDATED: Now includes DuckDuckGo and Google options.
+    UPDATED: Now includes DuckDuckGo.
     
     Returns:
         List of enabled API names (empty list = no extended search)
@@ -33,7 +33,7 @@ async def get_api_selection() -> List[str]:
     await aprint(Fore.WHITE + "  [1] All APIs (Comprehensive - 6 APIs)")
     await aprint(Fore.WHITE + "  [2] Literature Only ( Semantic Scholar)")
     await aprint(Fore.WHITE + "  [3] Clinical Databases (EudraCT, WHO ICTRP)")
-    await aprint(Fore.WHITE + "  [4] Web Search (DuckDuckGo, Google)")
+    await aprint(Fore.WHITE + "  [4] Web Search (DuckDuckGo)")
     await aprint(Fore.WHITE + "  [5] Custom Selection")
     
     api_choice = await ainput(Fore.CYAN + "Select [1-5] or Enter for all [1]: ")
@@ -47,7 +47,7 @@ async def get_api_selection() -> List[str]:
     elif api_choice == "3":
         return ['eudract', 'who_ictrp']
     elif api_choice == "4":
-        return ['duckduckgo', 'serpapi']
+        return ['duckduckgo']
     elif api_choice == "5":
         # Define API list with numbering
         api_list = [
@@ -55,8 +55,7 @@ async def get_api_selection() -> List[str]:
             ('semantic_scholar', 'AI-powered papers (free)'),
             ('eudract', 'European trials (free)'),
             ('who_ictrp', 'International trials (free)'),
-            ('duckduckgo', 'Web search (free)'),
-            ('serpapi', 'Google search (requires API key)')
+            ('duckduckgo', 'Web search (free)')
         ]
         
         await aprint(Fore.CYAN + "\n📋 Available APIs:")

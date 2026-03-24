@@ -118,7 +118,7 @@ agent_annotate/
 - `AGENT_ANNOTATE_PORT=9005`
 - `OLLAMA_HOST`, `OLLAMA_PORT`
 - `NCT_SERVICE_PORT` (to call existing NCT Lookup clients)
-- API keys: `SERPAPI_KEY`, `NCBI_API_KEY`, etc.
+- API keys: `NCBI_API_KEY`, etc.
 - Paths: `RESULTS_DIR`, `LOGS_DIR`
 
 **`app/models/config_models.py`** — Pydantic models mirroring `default_config.yaml`:

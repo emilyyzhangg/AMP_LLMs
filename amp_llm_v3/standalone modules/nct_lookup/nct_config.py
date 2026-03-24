@@ -45,7 +45,6 @@ class NCTConfig:
     OLLAMA_PORT: int = int(os.getenv("ollama_port", "11434"))
     
     # API Keys
-    SERPAPI_KEY: Optional[str] = os.getenv("SERPAPI_KEY")
     NCBI_API_KEY: Optional[str] = os.getenv("NCBI_API_KEY")
     OPENFDA_KEY: Optional[str] = os.getenv("OPENFDA_KEY")
     
@@ -146,7 +145,6 @@ class NCTConfig:
         logger.info(f"Output Directory: {self.OUTPUT_DIR}")
         logger.info(f"Database Directory: {self.DATABASE_DIR}")
         logger.info(f"Cache Directory: {self.CACHE_DIR}")
-        logger.info(f"SERPAPI Key: {'✓ Configured' if self.SERPAPI_KEY else '✗ Not Set'}")
         logger.info(f"NCBI API Key: {'✓ Configured' if self.NCBI_API_KEY else '✗ Not Set'}")
         logger.info(f"OpenFDA Blacklist: {len(self.OPENFDA_BLACKLIST)} terms")
         logger.info("=" * 60)

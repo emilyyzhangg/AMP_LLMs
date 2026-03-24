@@ -34,13 +34,10 @@ class SearchRequest(BaseModel):
     def validate_databases(cls, v):
         """Validate database names."""
         if v is not None:
-            # All available extended databases (free + paid)
+            # All available extended databases (free)
             valid_databases = [
-                # Free APIs
                 'europe_pmc', 'semantic_scholar', 'crossref', 'duckduckgo',
-                'openfda', 'uniprot',
-                # Paid APIs (require API keys)
-                'serpapi', 'scholar'
+                'openfda', 'uniprot'
             ]
             invalid = [db for db in v if db not in valid_databases]
             if invalid:

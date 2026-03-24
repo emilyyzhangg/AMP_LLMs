@@ -557,9 +557,6 @@ Create `.env` file in project root:
 SSH_DEFAULT_IP=100.99.162.98
 SSH_DEFAULT_USERNAME=emilyzhang
 
-# SERP API (Google Search)
-SERPAPI_KEY=your_serpapi_key_here
-
 # Semantic Scholar (optional)
 SEMANTIC_SCHOLAR_API_KEY=your_key_here
 
@@ -580,11 +577,6 @@ LOG_LEVEL=INFO
 ```
 
 ### API Keys (How to Get)
-
-**SERP API** (Google Search):
-1. Sign up: https://serpapi.com
-2. Free tier: 100 searches/month
-3. Copy API key to `.env`
 
 **Semantic Scholar** (Optional):
 1. Sign up: https://www.semanticscholar.org/product/api

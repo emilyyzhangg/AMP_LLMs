@@ -306,9 +306,6 @@ class ImprovedPromptGenerator:
         'duckduckgo': 0.05,       # Web context (lower reliability)
         'dramp': 0.05,            # AMP database (highly specific when available)
 
-        # Paid sources (may not always be available)
-        'serpapi': 0.00,          # Disabled by default (paid)
-        'scholar': 0.00,          # Disabled by default (paid)
     }
 
     def __init__(
@@ -403,8 +400,6 @@ class ImprovedPromptGenerator:
             source_checks['openfda'] = extended.get("openfda", {}).get("success", False)
             source_checks['duckduckgo'] = extended.get("duckduckgo", {}).get("success", False)
             source_checks['dramp'] = extended.get("dramp", {}).get("success", False)
-            source_checks['serpapi'] = extended.get("serpapi", {}).get("success", False)
-            source_checks['scholar'] = extended.get("scholar", {}).get("success", False)
 
         for source, is_available in source_checks.items():
             if is_available:

@@ -22,8 +22,6 @@ from nct_clients import (
     SemanticScholarClient,
     CrossRefClient,
     DuckDuckGoClient,
-    SerpAPIClient,
-    GoogleScholarClient,
     OpenFDAClient,
     UniProtClient,
     DBAASPClient,
@@ -47,11 +45,8 @@ class NCTSearchEngine:
         self.session: Optional[aiohttp.ClientSession] = None
         
         # Load API keys from environment
-        self.serpapi_key = os.getenv('SERPAPI_KEY')
         self.ncbi_key = os.getenv('NCBI_API_KEY')
-        
-        if not self.serpapi_key:
-            logger.warning("SERPAPI_KEY not set - Google/Scholar search unavailable")
+
         if not self.ncbi_key:
             logger.warning("NCBI_API_KEY not set - using default rate limits")
     
@@ -79,10 +74,6 @@ class NCTSearchEngine:
         self.clients['rcsb_pdb'] = RCSBPDBClient(self.session)
         self.clients['ebi_proteins'] = EBIProteinsClient(self.session)
 
-        # Initialize PAID clients (require API keys)
-        self.clients['serpapi'] = SerpAPIClient(self.session, api_key=self.serpapi_key)
-        self.clients['scholar'] = GoogleScholarClient(self.session, api_key=self.serpapi_key)
-        
         logger.info("Search engine initialized with all clients")
     
     async def close(self):
@@ -553,7 +544,7 @@ class NCTSearchEngine:
         if config.enabled_databases:
             databases = config.enabled_databases
         else:
-            # Default: all FREE extended APIs (excludes serpapi and scholar which require paid keys)
+            # Default: all FREE extended APIs
             databases = ["europe_pmc", "semantic_scholar", "crossref", "duckduckgo", "openfda", "uniprot", "dbaasp", "chembl", "rcsb_pdb", "ebi_proteins"]
         
         # Filter to available clients

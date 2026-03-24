@@ -164,27 +164,6 @@ class APIRegistry:
             client_class="EBIProteinsClient",
             enabled_by_default=True
         ),
-        # PAID APIs (require API keys)
-        APIDefinition(
-            id="serpapi",
-            name="Google Search (SERP API)",
-            description="Google search results - requires paid API key",
-            category="extended",
-            requires_key=True,
-            client_class="SerpAPIClient",
-            enabled_by_default=False,
-            config={"env_var": "SERPAPI_KEY"}
-        ),
-        APIDefinition(
-            id="scholar",
-            name="Google Scholar (SERP API)",
-            description="Academic papers via Google Scholar - requires paid API key",
-            category="extended",
-            requires_key=True,
-            client_class="GoogleScholarClient",
-            enabled_by_default=False,
-            config={"env_var": "SERPAPI_KEY"}
-        ),
     ]
 
     @classmethod
