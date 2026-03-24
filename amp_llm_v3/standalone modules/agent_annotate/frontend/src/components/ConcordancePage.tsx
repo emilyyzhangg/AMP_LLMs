@@ -62,7 +62,7 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: "agent-human", label: "Agent vs Human" },
   { key: "version-compare", label: "Version Comparison" },
   { key: "human-inter", label: "Human Inter-Rater" },
-  { key: "trends", label: "Trends" },
+  { key: "trends", label: "Agreement Trends" },
 ];
 
 // ── Concordance summary table (reused in Tab 1 & 3) ─────────────────
@@ -1158,10 +1158,13 @@ function HumanInterRaterTab() {
 
 // ── Tab 4: Trends ────────────────────────────────────────────────────
 
+type TrendMetric = "ac1" | "kappa" | "agreement";
+
 function TrendsTab() {
   const [history, setHistory] = useState<ConcordanceHistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [metric, setMetric] = useState<TrendMetric>("ac1");
 
   useEffect(() => {
     (async () => {
@@ -1180,26 +1183,55 @@ function TrendsTab() {
   // Derive all field names from history entries
   const fieldNames = useMemo(() => {
     const names = new Set<string>();
-    history.forEach((h) => Object.keys(h.field_kappas).forEach((k) => names.add(k)));
+    history.forEach((h) => {
+      Object.keys(h.field_kappas).forEach((k) => names.add(k));
+      Object.keys(h.field_ac1s || {}).forEach((k) => names.add(k));
+    });
     return Array.from(names).sort();
   }, [history]);
 
-  // Build line-chart data
+  // Build line-chart data based on selected metric
   const chartData = useMemo(() => {
-    return history.map((h) => ({
-      label: h.job_id.slice(0, 8),
-      n_trials: h.n_trials || 0,
-      ...h.field_kappas,
-    }));
-  }, [history]);
+    return history.map((h) => {
+      const values = metric === "ac1" ? (h.field_ac1s || h.field_kappas)
+        : metric === "agreement" ? (h.field_agreements || h.field_kappas)
+        : h.field_kappas;
+      return {
+        label: h.job_id.slice(0, 8),
+        n_trials: h.n_trials || 0,
+        ...values,
+      };
+    });
+  }, [history, metric]);
+
+  const metricLabels: Record<TrendMetric, { title: string; yLabel: string; domain: [number, number] }> = {
+    ac1: { title: "Gwet's AC\u2081 Trends Across Jobs", yLabel: "AC\u2081", domain: [-0.1, 1] },
+    kappa: { title: "Cohen's \u03BA Trends Across Jobs", yLabel: "Cohen's \u03BA", domain: [-0.1, 1] },
+    agreement: { title: "Raw Agreement % Trends Across Jobs", yLabel: "Agreement %", domain: [0, 100] },
+  };
+  const ml = metricLabels[metric];
 
   if (loading) return <div className="card text-muted">Loading trend data...</div>;
   if (error) return <div className="card" style={{ color: "var(--error)" }}>{error}</div>;
-  if (history.length === 0) return <div className="card text-muted">No concordance history available yet.</div>;
+  if (history.length === 0) return <div className="card text-muted">No agreement history available yet.</div>;
 
   return (
     <div className="card">
-      <div className="card-title">Kappa Trends Across Jobs</div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+        <div className="card-title" style={{ margin: 0 }}>{ml.title}</div>
+        <div style={{ display: "flex", gap: "0.3rem" }}>
+          {(["ac1", "kappa", "agreement"] as TrendMetric[]).map((m) => (
+            <button
+              key={m}
+              className={`btn ${metric === m ? "btn-primary" : "btn-secondary"}`}
+              style={{ fontSize: "0.7rem", padding: "0.15rem 0.4rem" }}
+              onClick={() => setMetric(m)}
+            >
+              {m === "ac1" ? "AC\u2081" : m === "kappa" ? "\u03BA" : "%"}
+            </button>
+          ))}
+        </div>
+      </div>
       <ResponsiveContainer width="100%" height={360}>
         <ComposedChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -1213,10 +1245,10 @@ function TrendsTab() {
           />
           <YAxis
             yAxisId="left"
-            domain={[-0.1, 1]}
+            domain={ml.domain}
             tick={{ fill: "var(--text-secondary)", fontSize: 12 }}
             label={{
-              value: "Cohen's \u03BA",
+              value: ml.yLabel,
               angle: -90,
               position: "insideLeft",
               style: { fill: "var(--text-secondary)", fontSize: 12 },
@@ -1240,7 +1272,7 @@ function TrendsTab() {
               borderRadius: "var(--radius)",
               color: "var(--text-primary)",
             }}
-            formatter={(value: number) => value.toFixed(3)}
+            formatter={(value: number) => metric === "agreement" ? `${value.toFixed(1)}%` : value.toFixed(3)}
           />
           <Legend wrapperStyle={{ color: "var(--text-secondary)", fontSize: 12 }} />
           <Bar yAxisId="right" dataKey="n_trials" fill="rgba(255,255,255,0.1)" radius={[3, 3, 0, 0]} name="Trials" />
@@ -1360,7 +1392,7 @@ export default function ConcordancePage() {
 
   return (
     <div>
-      <h2 style={{ marginBottom: "1rem" }}>Concordance Dashboard</h2>
+      <h2 style={{ marginBottom: "1rem" }}>Agreement Metrics</h2>
 
       {/* Metrics explainer (collapsed by default) */}
       <MetricsExplainer />

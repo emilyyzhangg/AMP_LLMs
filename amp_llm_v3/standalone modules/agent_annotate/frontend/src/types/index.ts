@@ -161,6 +161,8 @@ export interface ConcordanceHistoryEntry {
   job_id: string;
   timestamp: string;
   field_kappas: Record<string, number>;
+  field_ac1s: Record<string, number>;
+  field_agreements: Record<string, number>;
   n_trials: number;
 }
 
