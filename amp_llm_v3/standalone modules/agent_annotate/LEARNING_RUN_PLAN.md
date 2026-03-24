@@ -16,12 +16,14 @@
 | 8-9 | F-G | various | 314 | 0 | **Cancelled** | — | — | Cancelled for v11. |
 | 10a | A test (wrong batch) | 19a39aa475a3 | 25 | 10/25 | **Cancelled** | v11+eff | — | Cancelled after 10. |
 | 10b | A test (wrong batch) | 8352a3ea84aa | 25 | 0/25 | **Cancelled** | v11+eff | — | Cancelled immediately. |
-| **10c** | **A test (wrong batch)** | **1ff6092a499c** | **25** | **25/25** | **Complete** | **v11+eff** | **TBD** | **Had 5 duplicate NCTs (bug fixed). Used WRONG NCTs (not fast_learning_batch_25.txt). Outcome regressed to 52% vs R1 — Phase I guard caused 9/9 wrong Unknowns.** |
-| *11* | *A test (correct batch)* | *TBD* | *25* | *—* | *Pending* | *v12* | *—* | *Re-run on correct Batch A NCTs (fast_learning_batch_25.txt) for valid 3-way comparison.* |
-| *12* | *E (v12)* | *TBD* | *200* | *—* | *Pending* | *v12* | *—* | *Submit after Batch A v12 validated.* |
-| *13* | *F (v12)* | *TBD* | *200* | *—* | *Pending* | *v12* | *—* | |
-| *14* | *G (v12)* | *TBD* | *114* | *—* | *Pending* | *v12* | *—* | *Final batch. Completes all 964.* |
-| *15* | *Selective re-ann* | *TBD* | *~120* | *—* | *Planned* | *v12* | *—* | *v10 trials where deterministic rules change the result.* |
+| 10c | A test (wrong batch) | 1ff6092a499c | 25 | 25/25 | **Complete** | v11+eff | — | Wrong NCTs. Outcome 52%. Results wiped. |
+| 11 | A (v12 baseline) | cdcfc68c191d | 25 | 25/25 | **Complete** | v12 | — | 5-field only (pre-sequence). Outcome 72%, RFR 80%, classification 92%. Results wiped. |
+| 12 | A (v12+fixes) | 713c1c77385b | 25 | 5/25 | **Cancelled** | v12+fixes | — | Had Mode D, thresholds, AMP→peptide. Cancelled for reasoning-first upgrade. |
+| 13 | A (v12+fixes) | 7b9d0f1fc270 | 25 | 5/25 | **Cancelled** | v12+fixes | — | Same. Cancelled for full reasoning-first stack. |
+| **14** | **A (v12+reasoning)** | **ba1689125a8f** | **25** | **0/25** | **Running** | **v12+reasoning** | **TBD** | **First run with full stack: Layer 1-3, EDAM learning, 6 fields, Mode D, growth inhibition. EDAM epoch 1.** |
+| *15* | *A+B (50 NCTs)* | *TBD* | *50* | *—* | *Pending* | *v12+reasoning* | *—* | *Phase 2: expand to 50 after Batch A validated.* |
+| *16* | *Full 964* | *TBD* | *964* | *—* | *Pending* | *v12+reasoning* | *—* | *Phase 3: single-version full run.* |
+| *17* | *884 unannotated* | *TBD* | *884* | *—* | *Phase 5* | *v12+reasoning* | *—* | *Agent-only, no human reference.* |
 
 ### Agent version summary
 
@@ -31,7 +33,9 @@
 | v10 | 272503c | delivery_mode: 31 keywords, all-source search, 14B model. clinical_protocol: detailedDescription + armGroups. self_audit: searches agent reasoning. |
 | **v11** | **2a1ebba** | **Outcome: expanded deterministic (COMPLETED+hasResults, Phase I guard), confidence=min(quality, sufficiency), tightened prompt. Peptide: _KNOWN_PEPTIDE_DRUGS deterministic True. Self-audit: +outcome, +classification, rebalanced peptide. EDAM: purged 128 bad corrections.** |
 | **v11+eff** | **710912f** | **Model-grouped verification (15→3 switches). Unified annotation_model (qwen2.5:14b for all fields). Enhanced progress (field/agent/model/timings in UI). Batched reconciliation.** |
-| **v12** | **TBD** | **Outcome: removed Phase I guard (caused 9/9 wrong Unknowns), removed confidence source_sufficiency cap (/2 too aggressive). Failure_reason: removed Withdrawn from skip list (withdrawn trials can have reasons). Self-audit: widened evidence keywords for Positive check. Bug fix: dedup in orchestrator (5 NCTs appeared twice in results JSON), dedup safety net in output_service, concordance/results endpoints derive trial count from actual data.** |
+| **v12** | **90fc475** | **Outcome: removed Phase I guard, removed confidence cap. Failure_reason: Withdrawn gets LLM. Self-audit: widened keywords. Bug fix: dedup.** |
+| **v12+seq** | **30b7171** | **Sequence as 6th field (deterministic). Peptide 2-50 AA single-chain. Sequence→peptide cross-validation.** |
+| **v12+reasoning** | **bb2c6fb** | **Layer 1: Drug name resolution via LLM, cached in EDAM. Layer 2: Structured Pass 1→2 handoff, rebalanced prompts, per-field temperature. Layer 3: UniProt AA→peptide, AMP→peptide cross-validation. AMP Mode D re-added (pathogen vaccines). Mode A expanded (growth inhibition). Evidence thresholds 2→1. Multi-drug peptide bypass fixed. EDAM learns from consistency overrides, reconciliation, drug names, reasoning patterns. Grouped concordance toggle. Agreement Metrics (AC₁ primary). SerpAPI removed.** |
 
 ## NCT Coverage
 

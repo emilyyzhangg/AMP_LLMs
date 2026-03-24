@@ -1,111 +1,82 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-03-24
-**Current state:** v12 fixes applied on dev. No active jobs. Needs commit+push to dev, then Batch A re-run.
+**Last updated:** 2026-03-24 (end of session)
+**Current state:** v12+reasoning on both dev and main (bb2c6fb). Batch A running (ba1689125a8f). EDAM epoch 1 starting fresh.
 
-## Session Log (2026-03-24)
+## Active Job
 
-### What happened (chronological)
+| Job | ID | NCTs | Status | Version | Notes |
+|-----|-----|------|--------|---------|-------|
+| Batch A (v12+reasoning) | `ba1689125a8f` | 25 | **Running** | bb2c6fb | First run with full reasoning-first stack. ~3h. |
 
-1. **Analyzed job 1ff6092a499c** (v11+eff, 25 NCTs) — UI showed 30 trials, actually 25 unique
-2. **Found dedup bug** in `orchestrator.py:899-924` — trial appended before persistence; if persistence failed, except block added duplicate. Fixed: moved append after persistence, added dedup guard in except block.
-3. **Added dedup safety net** in `output_service.py` `save_json_output()`
-4. **Fixed concordance/results endpoints** (`concordance.py`, `results.py`) — were reading stale `total_trials` field from JSON; now derive from actual unique NCT count
-5. **Fixed existing JSON** (`1ff6092a499c.json`) — deduped 30→25 trials, updated total_trials, removed .tmp files
-6. **Ran concordance on v11+eff job** — outcome regressed to 52% vs R1 (was 80% in v9)
-7. **Root-caused outcome regression:**
-   - 6/9 wrong Unknowns from Phase I guard (COMPLETED Phase I without hasResults → Unknown)
-   - hasResults is frequently unpopulated even when publications exist
-   - All 9 Unknowns wrong: humans unanimously agree (5 Failed, 4 Positive)
-8. **Root-caused RFR regression:**
-   - 5/14 errors cascade from wrong Unknown outcome (consistency rule blanks RFR)
-   - 3/14 from Withdrawn trials getting blank RFR (humans annotated real reasons)
-9. **Implemented v12 fixes:**
-   - Removed Phase I guard deterministic rule (`outcome.py`)
-   - Removed confidence source_sufficiency cap /2 (`outcome.py`)
-   - Removed Withdrawn from failure_reason pre-check skip list (`failure_reason.py`)
-   - Removed Withdrawn from consistency rules (`orchestrator.py`, both pre- and post-verification)
-   - Widened self-audit evidence keywords for Positive check (`self_audit.py`)
-10. **Discovered wrong batch** — job 1ff6092a499c used different NCTs than `fast_learning_batch_25.txt` (only 12/25 overlap with v9). 3-way comparison invalid.
-11. **Updated LEARNING_RUN_PLAN.md** — added v12 version entry, updated job registry, concordance results, and phase plan
+## What to do when job completes
 
-### Active Job
+### 1. Run concordance
+Check the Agreement Metrics page at `llm.amphoraxe.ca/agent-annotate/concordance` — it should auto-detect the completed job. Compare against v12 baseline (job cdcfc68c191d):
 
-None.
+| Field | v12 baseline | Expected v12+reasoning |
+|---|---|---|
+| Classification | 92% | Should improve (Mode D re-added, growth inhibition) |
+| Outcome | 72% | Should improve (min_sources 1, better research) |
+| Peptide | 73% | Should improve (Pass 1/2 check, drug name resolution, UniProt cross-validation) |
+| Delivery mode | 60% | Should improve (infusion→IV, auto-injector→SC) |
+| Reason for failure | 80% | Should hold or improve |
+| Sequence | N/A | First run — check if any sequences extracted |
 
-## What to do next
-
-### Step 1: Commit and push v12 to dev
-
-```bash
-cd "/Users/amphoraxe/Developer/amphoraxe/dev-llm.amphoraxe.ca"
-git add -A && git commit -m "v12: fix outcome regression, dedup bug, withdrawn RFR" && git push
+### 2. Check EDAM state
+```python
+import sqlite3
+conn = sqlite3.connect('results/edam.db')
+for t in ['experiences','corrections','drug_names','config_epochs']:
+    c = conn.execute(f'SELECT COUNT(*) FROM {t}').fetchone()[0]
+    print(f'{t}: {c}')
 ```
+Verify: drug_names has cached resolutions, corrections include consistency_override and reconciliation sources.
 
-### Step 2: Re-run Batch A on CORRECT NCTs
+### 3. Analyze remaining disagreements
+Focus on: are the remaining errors in researchable drugs (Layer 1 can help) or novel/unknown drugs (fundamental limit)?
 
-Submit using the correct batch file (`fast_learning_batch_25.txt`):
-```bash
-cd "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate"
-# Only after v12 is merged to main and prod autoupdater picks it up
-NCT_IDS=$(python3 -c "
-with open('scripts/fast_learning_batch_25.txt') as f:
-    ncts = [l.strip() for l in f if l.strip()]
-import json; print(json.dumps(ncts))
-")
-curl -s -X POST http://localhost:8005/api/jobs \
-  -H 'Content-Type: application/json' \
-  -d "{\"nct_ids\": $NCT_IDS}"
-```
+### 4. If targets met → Phase 2 (50 NCTs)
+Submit Batch A+B (`fast_learning_batch_50.txt`). If concordance holds → Phase 3 (full 964).
 
-### Step 3: 3-way concordance (v9 vs v10 vs v12)
+## Session Summary (2026-03-24)
 
-All on same 25 NCTs from `fast_learning_batch_25.txt`:
-- v9 job #1: `c7e666682865`
-- v10 repeat: `5d207b30f11c`
-- v12 job: TBD
-
-Expected: outcome should recover to 80%+ (Phase I guard was sole cause of 9/9 errors).
-
-### Step 4: If v12 validated → submit remaining 514 NCTs
-
-Regenerate batch files and submit 3 jobs (see LEARNING_RUN_PLAN.md Phase 2).
+**15 commits** covering:
+- v12 bug fixes (dedup, Phase I guard, confidence cap, Withdrawn RFR)
+- Sequence as 6th annotation field
+- Peptide definition 2-50 AA single-chain
+- AMP Mode D re-added (pathogen-targeting vaccines)
+- AMP Mode A expanded (growth inhibition, bacteriostatic)
+- Reasoning-first strategy (Layers 1-3: drug name resolution, structured handoff, cross-validation)
+- EDAM learning improvements (consistency overrides, reconciliation, drug name caching, reasoning patterns)
+- Grouped concordance toggle, Agreement Metrics (AC₁ primary)
+- SerpAPI removed, evidence thresholds lowered
+- Multi-drug peptide bypass fixed, AMP→peptide consistency rule
 
 ## Environment State
 
-| Environment | Branch | Agent Version | Active Job |
+| Environment | Branch | Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v11+eff (710912f) | None |
-| Dev (port 9005) | dev | v12 (uncommitted) | None |
-
-## EDAM Database State
-
-| Table | Count | Notes |
-|---|---|---|
-| experiences | 2,715 | v9 epoch 1 (375), v10 epoch 2 (2,340) |
-| corrections | 42 | Post-purge |
-| stability_index | 2,590 | |
-| embeddings | 3,065 | |
-| prompt_variants | 0 | |
-| config_epochs | 2 → 3 | v11 created epoch 3 on job 1ff6092a499c |
+| Prod (port 8005) | main | v12+reasoning (bb2c6fb) | ba1689125a8f |
+| Dev (port 9005) | dev | v12+reasoning (bb2c6fb) | None |
 
 ## Important Notes
 
 - **Workflow:** Develop on `dev`, run jobs on prod. Only merge to `main` when explicitly told.
 - **CRITICAL:** Always commit+push atomically in ONE bash command. Autoupdater wipes uncommitted changes every 30s.
-- **Update plans after every job** — this file and `LEARNING_RUN_PLAN.md` job registry.
-- Prod autoupdater pulls from `main` every 30s. Do NOT push to main while a job is running.
-- EDAM is non-fatal: if it errors, the pipeline still runs.
-- Human annotations: `dev-llm.amphoraxe.ca/docs/clinical_trials-with-sequences.xlsx`
+- **Update plans after every job** — this file and `LEARNING_RUN_PLAN.md`.
+- **Drug lists are FROZEN** — no more additions. Improvements through reasoning (Layers 1-3) only.
+- **All AMPs are peptides** — AMP classification forces peptide=True in consistency engine.
 
 ## Key File Locations
 
 | Path | Purpose |
 |---|---|
 | `LEARNING_RUN_PLAN.md` | Overall strategy, job registry, concordance data |
-| `results/edam.db` | EDAM learning database |
+| `results/edam.db` | EDAM learning database (incl. drug_names table) |
 | `results/jobs/{job_id}.json` | Job status files |
-| `results/annotations/{job_id}/{nct_id}.json` | Per-trial annotation results |
-| `results/json/{job_id}.json` | Consolidated output (completed jobs only) |
+| `results/annotations/{job_id}/{nct_id}.json` | Per-trial results |
+| `results/json/{job_id}.json` | Consolidated output |
 | `scripts/human_annotated_ncts.txt` | All 964 NCTs |
-| `scripts/fast_learning_batch_25.txt` | Batches A+B original 25 (matches v9 job #1) |
+| `scripts/fast_learning_batch_25.txt` | Batch A (25 richest NCTs) |
+| `scripts/fast_learning_batch_50.txt` | Batch A+B (50 richest NCTs) |

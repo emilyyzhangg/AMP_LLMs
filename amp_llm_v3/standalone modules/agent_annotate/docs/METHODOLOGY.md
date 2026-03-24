@@ -392,7 +392,7 @@ Uses a larger model (qwen2.5:14b on Mac Mini, kimi-k2-thinking on server) becaus
 3. Does this AMP target infection? Yes → AMP(infection). No → AMP(other).
 
 **v5 changes (from 70-trial concordance analysis):**
-- **AMP definition narrowed to three modes**: Mode D (pathogen-targeting vaccines) was removed. Vaccine peptides induce adaptive immunity; the peptide itself does not kill pathogens. Only Modes A (direct antimicrobial), B (immunostimulatory host defense), and C (anti-biofilm) remain.
+- **AMP definition narrowed to three modes (v5)**: Mode D was removed. *Note: Mode D was re-added in v12 — pathogen-targeting vaccine peptides are now classified as AMP(infection). See Section 2.2.*
 - **Explicit antiretroviral exclusions**: Enfuvirtide/T-20 (viral entry inhibitor, NOT antimicrobial), Peptide T/DAPTA (CCR5 receptor blocker), HIV peptide vaccines (antibody induction). These were the dominant over-classification pattern (30 of 36 classification disagreements).
 - **Mechanism-based decisive rule**: If the mechanism is viral entry inhibition, receptor blocking, vaccine/antibody induction, vasodilation, or metabolic regulation → Other, regardless of infectious disease context.
 - **Default to Other**: When in doubt, false AMP classification is worse than missing a true AMP.
