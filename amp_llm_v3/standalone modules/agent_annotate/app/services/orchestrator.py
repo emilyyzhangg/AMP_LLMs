@@ -890,6 +890,7 @@ class PipelineOrchestrator:
                         nct_id, annotations, verified, research, config
                     )
                     self._enforce_post_verification_consistency(verified)
+                    self._normalize_final_values(verified)
 
                     # Store reconciliation overrides as EDAM corrections
                     ann_by_field = {a.field_name: a for a in annotations}
@@ -1845,6 +1846,63 @@ class PipelineOrchestrator:
             else:
                 verified.flagged_for_review = False
                 verified.flag_reason = ""
+
+    @staticmethod
+    def _normalize_final_values(verified: VerifiedAnnotation) -> None:
+        """Normalize all final_values to canonical forms after verification.
+
+        Catches raw-text outputs from the reconciler that bypass the annotation
+        agent's normalization. Applied as the LAST step before persistence.
+        """
+        for f in verified.fields:
+            val = f.final_value if f.final_value else f.original_value
+            if not val:
+                continue
+
+            field_name = f.field_name
+            lower = val.strip().lower()
+
+            if field_name == "reason_for_failure" and len(val) > 30:
+                # Long text — reconciler output raw sentence. Apply fuzzy matching.
+                if "business" in lower or "funding" in lower or "sponsor" in lower or "administrative" in lower:
+                    f.final_value = "Business Reason"
+                elif "ineffect" in lower or "efficacy" in lower or "futility" in lower or "endpoint" in lower:
+                    f.final_value = "Ineffective for purpose"
+                elif "toxic" in lower or "safety" in lower or "unsafe" in lower or "adverse" in lower:
+                    f.final_value = "Toxic/Unsafe"
+                elif "covid" in lower or "pandemic" in lower or "coronavirus" in lower:
+                    f.final_value = "Due to covid"
+                elif "recruit" in lower or "enrollment" in lower or "accrual" in lower:
+                    f.final_value = "Recruitment issues"
+                else:
+                    f.final_value = ""  # unrecognizable → empty
+                if f.final_value != val:
+                    logger.info(
+                        f"  normalize: {field_name} '{val[:50]}...' → '{f.final_value}'"
+                    )
+
+            elif field_name == "delivery_mode" and len(val) > 50:
+                # Reconciler sometimes outputs verbose descriptions
+                v_lower = val.lower()
+                if "intravenous" in v_lower or "iv " in v_lower:
+                    f.final_value = "IV"
+                elif "subcutaneous" in v_lower or "intradermal" in v_lower:
+                    f.final_value = "Injection/Infusion - Subcutaneous/Intradermal"
+                elif "intramuscular" in v_lower:
+                    f.final_value = "Injection/Infusion - Intramuscular"
+                elif "oral" in v_lower:
+                    f.final_value = "Oral - Unspecified"
+                elif "topical" in v_lower:
+                    f.final_value = "Topical - Unspecified"
+                elif "inhalation" in v_lower or "inhaled" in v_lower:
+                    f.final_value = "Inhalation"
+
+            elif field_name == "peptide":
+                # Ensure canonical True/False
+                if lower in ("true", "[true]", "yes", "1"):
+                    f.final_value = "True"
+                elif lower in ("false", "[false]", "no", "0"):
+                    f.final_value = "False"
 
     @staticmethod
     def _update_timing(
