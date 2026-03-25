@@ -99,23 +99,25 @@ INCLUDES as peptide (True):
 - Peptide anticoagulants: bivalirudin (20 aa), eptifibatide (7 aa)
 
 EXCLUDES as peptide (False):
-- Proteins >50 amino acids or multi-chain complexes
-- Monoclonal antibodies (~150 kDa, multi-chain)
-- Small molecule drugs (non-peptide chemical compounds)
-- Nutritional formulas / dietary supplements with hydrolyzed proteins
-- HSP-peptide complexes, exosome/dexosome vehicles (peptide is cargo, not the active drug)
+- Proteins >50 amino acids: insulin (51 aa, also multi-chain A+B), interferons, erythropoietin
+- Multi-chain complexes forming tertiary/quaternary structure (complex proteins, not peptides)
+- Monoclonal antibodies (multi-chain, ~150 kDa): pembrolizumab, trastuzumab, nivolumab, atezolizumab, ipilimumab, rituximab, bevacizumab, adalimumab, infliximab, cetuximab, durvalumab
+- Small molecule drugs: amoxicillin, metformin, ciprofloxacin, tenofovir, emtricitabine, sofosbuvir
+- Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms, Vital Peptide, Nutri Peptide
+- Heat shock protein-peptide complexes: HSPPC-96/Oncophage (the HSP is the drug, not the peptide)
+- Exosome/dexosome vehicles loaded with peptides (the vehicle is the drug)
 - Gene therapies, cell therapies, medical devices
-- Single amino acids (e.g., L-glutamine)
+- Single amino acids (e.g., L-glutamine, L-arginine supplements)
+- Radiolabeled peptide conjugates where the peptide is just a targeting vector (not the therapeutic agent)
 
 DECISION TREE:
-
 STEP 1 — Is the Molecular Class a peptide?
   - "Short peptide chain" (2-50 aa, single chain) → proceed to Step 2
   - "Protein" (>50 aa or multi-chain) → False
-  - "Monoclonal antibody" → False
+  - "Monoclonal antibody" → False (multi-chain complex)
   - "Small molecule" → False
   - "Nutritional product/dietary supplement" → False
-  - "Large multi-subunit protein" → False
+  - "Large multi-subunit protein" → False (multi-chain complex)
   - "Single amino acid" → False
   - "Unknown" → check database confirmation in Step 2
 
@@ -126,13 +128,19 @@ STEP 2 — Is the peptide the ACTIVE DRUG?
   - Active Ingredient Role = "brand name only" → False
 
 STEP 3 — Final confirmation
-  - Database confirmation shows UniProt/DRAMP/DBAASP/ChEMBL peptide entry → True
+  - Database confirms peptide (UniProt/DRAMP/DBAASP/ChEMBL) → True
   - Literature describes it as a peptide therapeutic → True
   - No database hits but molecular class is clearly peptide → True
-  - Conflicting evidence → weigh database entries > literature descriptions > product names
+  - Conflicting evidence → weigh database entries > literature > product names
 
-MULTI-DRUG TRIALS: Evaluate ALL interventions. If ANY intervention is a peptide therapeutic → True.
-Example: "decitabine (small molecule) + NY-ESO-1 peptide vaccine" → True (peptide vaccine present).
+CRITICAL RULES:
+- The question is whether ANY active drug is a peptide, not whether the formulation contains peptides
+- Brand names containing "peptide" do NOT make the product a peptide drug
+- Nutritional formulas with hydrolyzed proteins are NOT peptide drugs
+- Monoclonal antibodies are NOT peptides (different drug class)
+- MULTI-DRUG TRIALS: If ANY intervention is a peptide → True. Evaluate ALL interventions.
+- Heat shock protein-peptide complexes: the peptide is cargo, not the active drug → False
+- Autologous dexosomes/exosomes loaded with peptides: the vehicle is the drug → False
 
 WORKED EXAMPLES (True):
 1. Molecular Class: Short peptide chain | AA Length: 31 | Database Hits: UniProt P01282 | Active Role: active drug → True (semaglutide, 31 aa GLP-1 analogue)
@@ -142,10 +150,13 @@ WORKED EXAMPLES (True):
 WORKED EXAMPLES (False):
 1. Molecular Class: Nutritional product | AA Length: N/A | Database Hits: none | Active Role: food ingredient → False (Peptide 1.5 is a nutritional formula)
 2. Molecular Class: Monoclonal antibody | AA Length: >1000 | Database Hits: UniProt (antibody) | Active Role: active drug → False (pembrolizumab is an antibody, not a peptide)
+3. Molecular Class: Small molecule | AA Length: N/A | Database Hits: ChEMBL (small molecule) | Active Role: active drug → False (metformin is a small molecule drug)
+4. Molecular Class: Protein | AA Length: 51 | Database Hits: UniProt P01308 | Active Role: active drug → False (insulin, 51 aa + multi-chain A+B, protein not peptide)
+5. Molecular Class: Nutritional product | AA Length: N/A | Database Hits: none | Active Role: food ingredient → False (Peptamen is a hydrolyzed protein formula)
 
 Format your response EXACTLY as:
-Peptide: [True or False]
-Reasoning: [Walk through Steps 1 → 2 → 3 using the extracted facts]"""
+Peptide: True or False
+Reasoning: [Walk through Steps 1 → 2 → 3]"""
 
 
 # --------------------------------------------------------------------------- #

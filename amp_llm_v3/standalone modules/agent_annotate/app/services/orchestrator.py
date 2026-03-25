@@ -1637,104 +1637,20 @@ class PipelineOrchestrator:
         """Enforce cross-field consistency rules after annotation, before verification.
 
         Fixes contradictions that arise from fields being annotated independently:
-        - UniProt sequence length vs peptide annotation (Layer 3a)
-        - sequence in 2-50 AA range -> peptide must be True
-        - sequence >50 AA or multi-chain -> peptide must be False
+        - AMP classification -> peptide must be True
         - peptide=False -> classification must be "Other"
         - outcome is non-failure -> reason_for_failure must be ""
+
+        Note: sequence→peptide cross-validation and UniProt AA length checks
+        were removed in v13 because the sequence agent was returning precursor
+        protein lengths (500-5000+ AA) instead of mature peptide fragments,
+        causing false peptide=False overrides.
         """
         ann_by_field = {a.field_name: a for a in annotations}
         peptide = ann_by_field.get("peptide")
         classification = ann_by_field.get("classification")
         outcome = ann_by_field.get("outcome")
         failure = ann_by_field.get("reason_for_failure")
-        sequence = ann_by_field.get("sequence")
-
-        # Layer 3a: Research evidence → peptide cross-validation
-        # Use UniProt sequence length from research data to override peptide annotation
-        if research_data and peptide:
-            for r in research_data:
-                if r.error or r.agent_name != "peptide_identity":
-                    continue
-                if not r.raw_data:
-                    continue
-                for key, entries in r.raw_data.items():
-                    if not key.startswith("uniprot_") or not isinstance(entries, list):
-                        continue
-                    for entry in entries:
-                        if not isinstance(entry, dict):
-                            continue
-                        seq_info = entry.get("sequence", {})
-                        if not isinstance(seq_info, dict):
-                            continue
-                        length = seq_info.get("length")
-                        if not length:
-                            continue
-                        try:
-                            length = int(length)
-                        except (ValueError, TypeError):
-                            continue
-
-                        if 2 <= length <= 50 and peptide.value == "False":
-                            logger.info(
-                                f"  consistency (Layer 3a): UniProt entry has "
-                                f"{length} aa (2-50 range), forcing peptide "
-                                f"from 'False' to 'True'"
-                            )
-                            peptide.value = "True"
-                            peptide.reasoning = (
-                                f"[Consistency override Layer 3a: UniProt "
-                                f"sequence {length} aa in 2-50 range -> True] "
-                                + peptide.reasoning
-                            )
-                            break
-                        elif length > 50 and peptide.value == "True":
-                            logger.info(
-                                f"  consistency (Layer 3a): UniProt entry has "
-                                f"{length} aa (>50), forcing peptide "
-                                f"from 'True' to 'False'"
-                            )
-                            peptide.value = "False"
-                            peptide.reasoning = (
-                                f"[Consistency override Layer 3a: UniProt "
-                                f"sequence {length} aa > 50 -> False (protein)] "
-                                + peptide.reasoning
-                            )
-                            break
-                    else:
-                        continue
-                    break  # break outer loop if inner broke
-
-        # Rule 0: sequence→peptide cross-validation (v12)
-        if sequence and peptide and sequence.value:
-            # Get the longest single sequence (pipe-separated)
-            seqs = [s.strip() for s in sequence.value.split("|") if s.strip()]
-            if seqs:
-                import re
-                longest_len = max(len(re.sub(r"[^A-Za-z]", "", s)) for s in seqs)
-                multi_chain = len(seqs) > 1 and longest_len > 50
-
-                if 2 <= longest_len <= 50 and not multi_chain and peptide.value == "False":
-                    logger.info(
-                        f"  consistency: sequence has {longest_len} aa (2-50 range), "
-                        f"forcing peptide from 'False' to 'True'"
-                    )
-                    peptide.value = "True"
-                    peptide.reasoning = (
-                        f"[Consistency override: sequence {longest_len} aa in 2-50 range -> True] "
-                        + peptide.reasoning
-                    )
-                elif (longest_len > 50 or multi_chain) and peptide.value == "True":
-                    reason = f">{longest_len} aa" if longest_len > 50 else "multi-chain complex"
-                    logger.info(
-                        f"  consistency: sequence is {reason}, "
-                        f"forcing peptide from 'True' to 'False'"
-                    )
-                    peptide.value = "False"
-                    peptide.reasoning = (
-                        f"[Consistency override: sequence {reason} -> False (protein, not peptide)] "
-                        + peptide.reasoning
-                    )
 
         # Rule 0b: AMP classification → peptide must be True
         # All AMPs are peptides (not all peptides are AMPs)
