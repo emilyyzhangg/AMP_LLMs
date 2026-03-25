@@ -171,8 +171,14 @@ if [ "$LOCAL_HASH" != "$LAST_DEPLOYED_HASH" ]; then
     /Users/amphoraxe/Developer/amphoraxe/auth.amphoraxe.ca/verify/run.sh amp_llm
     /Users/amphoraxe/Developer/amphoraxe/auth.amphoraxe.ca/verify/run.sh agent_annotate
 
-    echo "$LOCAL_HASH" > "$LAST_DEPLOYED_FILE"
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ MAIN update and restart complete." >> "$LOG_FILE"
+    if [ -n "$SKIP_ANNOTATE" ]; then
+        # Don't mark as fully deployed if annotate was skipped — need to
+        # restart it on the next cycle when the job finishes.
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️ NOT marking as deployed — annotate restart was skipped (active job). Will retry next cycle." >> "$LOG_FILE"
+    else
+        echo "$LOCAL_HASH" > "$LAST_DEPLOYED_FILE"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ MAIN update and restart complete." >> "$LOG_FILE"
+    fi
 else
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🟢 No updates found on MAIN branch." >> "$LOG_FILE"
 fi
