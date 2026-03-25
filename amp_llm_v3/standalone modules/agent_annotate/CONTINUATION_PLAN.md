@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-03-25
-**Current state:** v16 on both dev and main (8223691). No active jobs. EDAM has 300 experiences from v14/v15 runs.
+**Current state:** v16 on both dev and main (a599e7a). Batch A running (25366ac24587). EDAM has 300 experiences from v14/v15 runs.
 
 ## Next Step: Run Batch A on v16
 
@@ -60,8 +60,8 @@ curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/
 
 | Environment | Branch | Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v16 (8223691) | None |
-| Dev (port 9005) | dev | v16 (8223691) | None |
+| Prod (port 8005) | main | v16 (a599e7a) | 25366ac24587 (Batch A, 25 NCTs) |
+| Dev (port 9005) | dev | v16 (a599e7a) | None |
 
 ## Important Notes
 

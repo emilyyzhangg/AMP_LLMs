@@ -23,7 +23,7 @@
 | 14 | A (v12+reasoning) | ba1689125a8f | 25 | ?/25 | **Lost** | v12+reasoning | — | Server restarted, results not saved. EDAM epoch 1. |
 | 15 | A (v14) | 2c0c0d3a8a73 | 25 | 25/25 | **Complete** | v14 | — | v14 sequence overhaul. |
 | 16 | A (v15) | c3fa1fbba5c2 | 25 | 25/25 | **Complete** | v15 | — | peptide=False→N/A cascade, investigational drug rename. 142 min. See concordance below. |
-| **17** | **A (v16)** | **TBD** | **25** | **—** | **NEXT** | **v16** | **TBD** | **Sequence fix, outcome heuristics, peptide gate, multi-route, RfF gate, AC1 docs.** |
+| **17** | **A (v16)** | **25366ac24587** | **25** | **—** | **Running** | **v16** | **TBD** | **Sequence fix, outcome heuristics, peptide gate, multi-route, RfF gate, AC1 docs.** |
 | *18* | *A+B (50 NCTs)* | *TBD* | *50* | *—* | *Pending* | *v16+* | *—* | *Phase 2: expand to 50 after Batch A converges.* |
 | *19* | *Full 964* | *TBD* | *964* | *—* | *Pending* | *v16+* | *—* | *Phase 3: single-version full run.* |
 | *20* | *884 unannotated* | *TBD* | *884* | *—* | *Phase 5* | *v16+* | *—* | *Agent-only, no human reference.* |
@@ -154,6 +154,46 @@
 EDAM was wiped clean on 2026-03-24 (all prior v9-v11 data discarded due to known code bugs). Current data is from v14/v15 runs on Batch A. v16 code changes may invalidate some corrections (especially peptide and outcome patterns), but drug_names and stability_index remain valid.
 
 **EDAM's role going forward:** Supplementary edge-case memory, NOT the primary improvement loop. Code changes are primary. EDAM will learn ONLY from v12+ runs on stable code.
+
+## v16 Validation Keys to Watch (job 25366ac24587)
+
+When this job completes, check these specific items in order of priority:
+
+### 1. Sequence — was it fixed? (Critical)
+- v15: 0/25 sequences extracted (completely broken)
+- v16 fix: metadata now passed to sequence agent, raw_data key fallback, prefix stripping
+- **Pass if:** ≥10/25 trials have a non-empty sequence (human R1 had 17/25, R2 had 21/25)
+- **Check specific NCTs:** NCT00972569 (BNP — DBAASP has 3 sequences + ChEMBL HELM), NCT02665377 (Angiotensin — UniProt has entries)
+- **If still 0:** raw_data keys are changing format again, or research agents aren't populating structured data
+
+### 2. Outcome — do adverse-event heuristics help? (High)
+- v15: 4 trials returned "Unknown" where humans said "Failed" or "Positive"
+- v16 fix: adverse-event keyword detection, publications as H1 corroboration, negative valence→Failed
+- **Pass if:** ≥80% vs R1 (v15 was 78.3%)
+- **Check specific NCTs:** NCT00000886 (PubMed paper about "unacceptable reactogenicity" — should now trigger "Failed"), NCT02660736 (should be "Positive")
+
+### 3. Peptide — does confidence gate prevent false-negative wipeout? (High)
+- v15: NCT02624518 and NCT02654587 incorrectly False'd, wiping all fields via N/A cascade
+- v16 fix: require confidence ≥0.90 for cascade
+- **Pass if:** These two trials now have non-N/A annotations for classification/delivery/outcome
+- **Regression risk:** If the peptide agent still returns False with conf≥0.90, the cascade will still fire. Check the actual confidence values.
+
+### 4. Reason for Failure — does Unknown-gate removal help? (Medium)
+- v15: Agent missed "Toxic/Unsafe" (NCT00000886) and "Ineffective" (NCT00972569, NCT02665377)
+- v16 fix: "Unknown" removed from pre-check skip list
+- **Pass if:** ≥84% vs R1 (v15 was 84.0% — should hold or improve)
+- **Regression risk:** If outcome still returns "Unknown" for these trials, the fix won't help. But if outcome correctly returns "Failed", RfF should investigate and find the failure reason.
+
+### 5. Delivery Mode — does multi-route help? (Low)
+- v15: 69.6% strict, 95.7% bucketed
+- v16 fix: multi-route support in Pass 2 prompt
+- **Pass if:** ≥70% strict (slight improvement from multi-route trials)
+- **Check:** NCT05415410 and NCT06126354 — do they now list multiple routes?
+
+### 6. Convergence check
+- Compare v16 concordance vs v15 for all fields except sequence
+- **If <2% change on all non-sequence fields:** code is stable → proceed to Phase 2 (50 NCTs)
+- **If any field regresses >3%:** investigate, fix, re-run Batch A
 
 ## Plan
 
