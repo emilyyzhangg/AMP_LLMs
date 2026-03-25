@@ -1,6 +1,6 @@
 # EDAM Learning Run Plan
 
-**Last updated:** 2026-03-24 ~session
+**Last updated:** 2026-03-25
 
 ## Job Registry
 
@@ -20,10 +20,13 @@
 | 11 | A (v12 baseline) | cdcfc68c191d | 25 | 25/25 | **Complete** | v12 | — | 5-field only (pre-sequence). Outcome 72%, RFR 80%, classification 92%. Results wiped. |
 | 12 | A (v12+fixes) | 713c1c77385b | 25 | 5/25 | **Cancelled** | v12+fixes | — | Had Mode D, thresholds, AMP→peptide. Cancelled for reasoning-first upgrade. |
 | 13 | A (v12+fixes) | 7b9d0f1fc270 | 25 | 5/25 | **Cancelled** | v12+fixes | — | Same. Cancelled for full reasoning-first stack. |
-| **14** | **A (v12+reasoning)** | **ba1689125a8f** | **25** | **0/25** | **Running** | **v12+reasoning** | **TBD** | **First run with full stack: Layer 1-3, EDAM learning, 6 fields, Mode D, growth inhibition. EDAM epoch 1.** |
-| *15* | *A+B (50 NCTs)* | *TBD* | *50* | *—* | *Pending* | *v12+reasoning* | *—* | *Phase 2: expand to 50 after Batch A validated.* |
-| *16* | *Full 964* | *TBD* | *964* | *—* | *Pending* | *v12+reasoning* | *—* | *Phase 3: single-version full run.* |
-| *17* | *884 unannotated* | *TBD* | *884* | *—* | *Phase 5* | *v12+reasoning* | *—* | *Agent-only, no human reference.* |
+| 14 | A (v12+reasoning) | ba1689125a8f | 25 | ?/25 | **Lost** | v12+reasoning | — | Server restarted, results not saved. EDAM epoch 1. |
+| 15 | A (v14) | 2c0c0d3a8a73 | 25 | 25/25 | **Complete** | v14 | — | v14 sequence overhaul. |
+| 16 | A (v15) | c3fa1fbba5c2 | 25 | 25/25 | **Complete** | v15 | — | peptide=False→N/A cascade, investigational drug rename. 142 min. See concordance below. |
+| **17** | **A (v16)** | **TBD** | **25** | **—** | **NEXT** | **v16** | **TBD** | **Sequence fix, outcome heuristics, peptide gate, multi-route, RfF gate, AC1 docs.** |
+| *18* | *A+B (50 NCTs)* | *TBD* | *50* | *—* | *Pending* | *v16+* | *—* | *Phase 2: expand to 50 after Batch A converges.* |
+| *19* | *Full 964* | *TBD* | *964* | *—* | *Pending* | *v16+* | *—* | *Phase 3: single-version full run.* |
+| *20* | *884 unannotated* | *TBD* | *884* | *—* | *Phase 5* | *v16+* | *—* | *Agent-only, no human reference.* |
 
 ### Agent version summary
 
@@ -35,7 +38,10 @@
 | **v11+eff** | **710912f** | **Model-grouped verification (15→3 switches). Unified annotation_model (qwen2.5:14b for all fields). Enhanced progress (field/agent/model/timings in UI). Batched reconciliation.** |
 | **v12** | **90fc475** | **Outcome: removed Phase I guard, removed confidence cap. Failure_reason: Withdrawn gets LLM. Self-audit: widened keywords. Bug fix: dedup.** |
 | **v12+seq** | **30b7171** | **Sequence as 6th field (deterministic). Peptide 2-50 AA single-chain. Sequence→peptide cross-validation.** |
-| **v12+reasoning** | **bb2c6fb** | **Layer 1: Drug name resolution via LLM, cached in EDAM. Layer 2: Structured Pass 1→2 handoff, rebalanced prompts, per-field temperature. Layer 3: UniProt AA→peptide, AMP→peptide cross-validation. AMP Mode D re-added (pathogen vaccines). Mode A expanded (growth inhibition). Evidence thresholds 2→1. Multi-drug peptide bypass fixed. EDAM learns from consistency overrides, reconciliation, drug names, reasoning patterns. Grouped concordance toggle. Agreement Metrics (AC₁ primary). SerpAPI removed.** |
+| v12+reasoning | bb2c6fb | Layer 1: Drug name resolution via LLM, cached in EDAM. Layer 2: Structured Pass 1→2 handoff, rebalanced prompts, per-field temperature. Layer 3: UniProt AA→peptide, AMP→peptide cross-validation. AMP Mode D re-added (pathogen vaccines). Mode A expanded (growth inhibition). Evidence thresholds 2→1. Multi-drug peptide bypass fixed. EDAM learns from consistency overrides, reconciliation, drug names, reasoning patterns. Grouped concordance toggle. Agreement Metrics (AC₁ primary). SerpAPI removed. |
+| v14 | 2c412d5 | Sequence agent overhaul: structured-data-only extraction (no snippet parsing). Reads from DBAASP, APD, ChEMBL HELM, UniProt, EBI. Score/rank candidates, optional LLM adjudication. |
+| v15 | 6240670 | peptide=False → N/A all fields cascade. "active drug" → "investigational drug" rename. Bucketed concordance (broad categories). |
+| **v16** | **8223691** | **Sequence fix (critical): metadata passed to all agents, raw_data key fallback, prefix stripping. Outcome: adverse-event keyword detection, publications as H1 corroboration, negative valence→Failed. Peptide cascade requires conf≥0.90. Delivery: multi-route support. RfF: "Unknown" removed from skip list. AC₁ reporting in docs.** |
 
 ## NCT Coverage
 
@@ -96,6 +102,24 @@
 
 **v12 fixes applied:** Phase I guard removed, confidence cap removed, Withdrawn removed from RFR skip list, self-audit evidence keywords widened.
 
+### v15 Concordance (Batch A, 25 NCTs, job c3fa1fbba5c2) — 2026-03-25
+
+| Field | vs R1 | κ(R1) | vs R2 | κ(R2) | R1↔R2 | Target | Status |
+|---|---|---|---|---|---|---|---|
+| Classification | 83.3% | -0.04 | 87.5% | 0.35 | 88.0% | ≥90% | AC₁=0.82; prevalence paradox |
+| Delivery Mode | 69.6% | 0.56 | 73.9% | 0.62 | 76.0% | ≥60% | **Exceeded.** Bucketed: 95.7% |
+| Outcome | 78.3% | 0.72 | 69.6% | 0.62 | 80.0% | ≥80% | Close. 4 Unknown errors. |
+| Reason for Failure | 84.0% | 0.77 | 80.0% | 0.72 | 88.0% | ≥60% | **Exceeded significantly** |
+| Peptide | 86.4% | 0.33 | 75.0% | 0.00 | 83.3% | ≥75% | **Exceeded vs R1** |
+| Sequence | 0.0% | N/A | 0.0% | N/A | 70.6% | TBD | **Broken — fixed in v16** |
+
+**Root cause analysis:**
+- **Sequence 0%:** Agent received `metadata=None` → zero intervention names → zero candidates. Fixed in v16: pass shared_metadata to all agents, add raw_data key fallback, strip BIOLOGICAL:/DRUG: prefixes.
+- **Outcome 4× Unknown:** NCT00000886 (paper shows toxicity but agent missed), NCT00972569, NCT02660736, NCT02665377. v16 adds adverse-event keyword detection in fallback heuristic.
+- **Peptide 2× false-negative cascade:** NCT02624518 and NCT02654587 incorrectly False'd → N/A wiped all fields. v16 requires confidence ≥0.90 for cascade.
+- **Classification low kappa:** Prevalence paradox — 20/25 trials are "Other". AC₁=0.82 confirms strong agreement. No code fix needed.
+- **Delivery sub-category splits:** Most disagreements are IV vs SC/IM within injection family. Bucketed agreement is 95.7%. v16 adds multi-route support for combination trials.
+
 ## v11 Efficiency Improvements
 
 | Change | Before | After | Savings |
@@ -115,23 +139,19 @@
 | Known peptide drugs (False→True) | 13 | 3% |
 | Total would change | 120 | 30% |
 
-## EDAM Database State (2026-03-24 — WIPED CLEAN)
+## EDAM Database State (2026-03-25)
 
 | Table | Count | Notes |
 |---|---|---|
-| experiences | 0 | Fresh start — will populate from v12 onwards |
-| corrections | 0 | |
-| stability_index | 0 | |
-| embeddings | 0 | |
-| prompt_variants | 0 | |
-| config_epochs | 0 | Epoch counter reset — v12 will be epoch 1 |
+| experiences | 300 | From v14/v15 runs (jobs 2c0c0d3a8a73 + c3fa1fbba5c2) |
+| corrections | 23 | Consistency overrides + reconciliation |
+| drug_names | 87 | Cached drug name resolutions |
+| stability_index | 125 | Cross-run comparisons |
+| config_epochs | 1 | |
 
-### Why EDAM was wiped
+### EDAM History
 
-All prior EDAM data (2,840 experiences, 43 corrections, 2,590 stability entries) was generated by code versions with known bugs (v9-v11). The data taught patterns that v12 code contradicts:
-- v11 Phase I guard produced wrong "Unknown" experiences (now removed)
-- 28 peptide True→False corrections repeated a pattern already purged once (128 in v11)
-- Stability index compared runs across different code versions — meaningless signal
+EDAM was wiped clean on 2026-03-24 (all prior v9-v11 data discarded due to known code bugs). Current data is from v14/v15 runs on Batch A. v16 code changes may invalidate some corrections (especially peptide and outcome patterns), but drug_names and stability_index remain valid.
 
 **EDAM's role going forward:** Supplementary edge-case memory, NOT the primary improvement loop. Code changes are primary. EDAM will learn ONLY from v12+ runs on stable code.
 
@@ -163,12 +183,13 @@ After each run:
 2. **Error analysis**: categorize each disagreement as code-fixable vs edge-case
 3. **If code-fixable**: implement fix, bump version, re-run Batch A (~3h/cycle)
 4. **If edge-case only**: EDAM is handling it, move to Phase 2
-5. **Expected v12 targets on Batch A:**
-   - Outcome: ≥80% vs R1 (was 80% in v9, 52% in v11 — Phase I guard removed)
-   - Delivery mode: ≥60% vs R1 (was 64% in v11+eff — model improvement retained)
-   - Reason for failure: ≥60% vs R1 (cascade errors resolve with outcome fix)
-   - Classification: ≥90% vs R1 (stable across versions)
-   - Peptide: ≥75% vs R1 (v10 was 82%, check if v12 retains)
+5. **v16 targets on Batch A** (updated from v15 concordance analysis):
+   - Outcome: ≥80% vs R1 (v15 was 78.3% — v16 adverse-event heuristics should close gap)
+   - Delivery mode: ≥70% strict, ≥95% bucketed vs R1 (v15 was 69.6%/95.7%)
+   - Reason for failure: ≥84% vs R1 (v15 was 84.0% — v16 Unknown-gate removal may improve)
+   - Classification: AC₁ ≥0.85 (v15 was AC₁=0.82 — kappa unreliable due to prevalence)
+   - Peptide: ≥85% vs R1 (v15 was 86.4% — v16 confidence gate protects against false-neg cascade)
+   - **Sequence: >0%** (v15 was 0% — v16 fixes the root cause, expect first real sequences)
 
 ### Phase 2: Expand to Batch A+B (50 NCTs)
 

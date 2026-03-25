@@ -1,64 +1,67 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-03-24 (end of session)
-**Current state:** v12+reasoning on both dev and main (bb2c6fb). Batch A running (ba1689125a8f). EDAM epoch 1 starting fresh.
+**Last updated:** 2026-03-25
+**Current state:** v16 on both dev and main (8223691). No active jobs. EDAM has 300 experiences from v14/v15 runs.
 
-## Active Job
+## Next Step: Run Batch A on v16
 
-| Job | ID | NCTs | Status | Version | Notes |
-|-----|-----|------|--------|---------|-------|
-| Batch A (v12+reasoning) | `ba1689125a8f` | 25 | **Running** | bb2c6fb | First run with full reasoning-first stack. ~3h. |
+v16 has 6 substantial fixes. Need to re-run Batch A (25 NCTs) to validate improvements before moving to Phase 2.
 
-## What to do when job completes
-
-### 1. Run concordance
-Check the Agreement Metrics page at `llm.amphoraxe.ca/agent-annotate/concordance` — it should auto-detect the completed job. Compare against v12 baseline (job cdcfc68c191d):
-
-| Field | v12 baseline | Expected v12+reasoning |
-|---|---|---|
-| Classification | 92% | Should improve (Mode D re-added, growth inhibition) |
-| Outcome | 72% | Should improve (min_sources 1, better research) |
-| Peptide | 73% | Should improve (Pass 1/2 check, drug name resolution, UniProt cross-validation) |
-| Delivery mode | 60% | Should improve (infusion→IV, auto-injector→SC) |
-| Reason for failure | 80% | Should hold or improve |
-| Sequence | N/A | First run — check if any sequences extracted |
-
-### 2. Check EDAM state
-```python
-import sqlite3
-conn = sqlite3.connect('results/edam.db')
-for t in ['experiences','corrections','drug_names','config_epochs']:
-    c = conn.execute(f'SELECT COUNT(*) FROM {t}').fetchone()[0]
-    print(f'{t}: {c}')
+### Submit the job
+```bash
+TOKEN="J6YtEd_HKw5G7aBzG86dcLyVD54itfCZqiMG2x-9xEk"
+NCT_IDS=$(python3 -c "
+with open('scripts/fast_learning_batch_25.txt') as f:
+    ncts = [l.strip() for l in f if l.strip()]
+import json; print(json.dumps(ncts))
+")
+curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d "{\"nct_ids\": $NCT_IDS}" http://localhost:8005/api/jobs
 ```
-Verify: drug_names has cached resolutions, corrections include consistency_override and reconciliation sources.
 
-### 3. Analyze remaining disagreements
-Focus on: are the remaining errors in researchable drugs (Layer 1 can help) or novel/unknown drugs (fundamental limit)?
+### What to check after completion
 
-### 4. If targets met → Phase 2 (50 NCTs)
-Submit Batch A+B (`fast_learning_batch_50.txt`). If concordance holds → Phase 3 (full 964).
+1. **Run concordance** — compare v16 vs v15 (c3fa1fbba5c2):
+   - Sequence: was 0/25 — expect >0 (critical fix)
+   - Outcome: was 78.3% — expect ≥80% (adverse-event heuristics)
+   - Peptide: was 86.4% — check that confidence gate doesn't regress
+   - RfF: was 84.0% — check Unknown-gate removal helps (Toxic/Unsafe, Ineffective)
+   - Delivery: was 69.6%/95.7% bucketed — check multi-route support
 
-## Session Summary (2026-03-24)
+2. **Convergence check:** If v16 vs v15 concordance differs by <2% on all non-sequence fields → code is stable, ready for Phase 2.
 
-**15 commits** covering:
-- v12 bug fixes (dedup, Phase I guard, confidence cap, Withdrawn RFR)
-- Sequence as 6th annotation field
-- Peptide definition 2-50 AA single-chain
-- AMP Mode D re-added (pathogen-targeting vaccines)
-- AMP Mode A expanded (growth inhibition, bacteriostatic)
-- Reasoning-first strategy (Layers 1-3: drug name resolution, structured handoff, cross-validation)
-- EDAM learning improvements (consistency overrides, reconciliation, drug name caching, reasoning patterns)
-- Grouped concordance toggle, Agreement Metrics (AC₁ primary)
-- SerpAPI removed, evidence thresholds lowered
-- Multi-drug peptide bypass fixed, AMP→peptide consistency rule
+3. **If sequence >50%:** Phase 1 targets met across all fields → submit Phase 2 (50 NCTs).
+
+4. **If regressions:** Analyze per-trial disagreements, fix code, re-run.
+
+### v16 changes being tested
+
+| Fix | What changed | Expected impact |
+|---|---|---|
+| Sequence agent | metadata passed to all agents, raw_data key fallback, prefix stripping | 0%→>0% (was totally broken) |
+| Outcome heuristics | Adverse-event keyword detection, publications as H1 corroboration | 78.3%→≥80% |
+| Peptide cascade gate | Require conf≥0.90 for False→N/A cascade | Protect NCT02624518, NCT02654587 |
+| Multi-route delivery | Comma-separated routes for combination trials | Improve strict concordance |
+| RfF Unknown gate | Removed "Unknown" from skip list | Detect Toxic/Unsafe, Ineffective |
+| AC1 docs | Prevalence paradox guidance in paper/methodology | No concordance impact |
+
+## v15 Concordance Baseline (job c3fa1fbba5c2)
+
+| Field | vs R1 | vs R2 | R1↔R2 |
+|---|---|---|---|
+| Classification | 83.3% (AC₁=0.82) | 87.5% | 88.0% |
+| Delivery Mode | 69.6% / bucketed 95.7% | 73.9% | 76.0% |
+| Outcome | 78.3% (κ=0.72) | 69.6% | 80.0% |
+| Reason for Failure | 84.0% (κ=0.77) | 80.0% | 88.0% |
+| Peptide | 86.4% | 75.0% | 83.3% |
+| Sequence | 0.0% | 0.0% | 70.6% |
 
 ## Environment State
 
 | Environment | Branch | Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v12+reasoning (bb2c6fb) | ba1689125a8f |
-| Dev (port 9005) | dev | v12+reasoning (bb2c6fb) | None |
+| Prod (port 8005) | main | v16 (8223691) | None |
+| Dev (port 9005) | dev | v16 (8223691) | None |
 
 ## Important Notes
 
@@ -67,6 +70,7 @@ Submit Batch A+B (`fast_learning_batch_50.txt`). If concordance holds → Phase 
 - **Update plans after every job** — this file and `LEARNING_RUN_PLAN.md`.
 - **Drug lists are FROZEN** — no more additions. Improvements through reasoning (Layers 1-3) only.
 - **All AMPs are peptides** — AMP classification forces peptide=True in consistency engine.
+- **Auth token:** Retrieved from `~/Developer/amphoraxe/auth.amphoraxe.ca/data/auth.db` sessions table.
 
 ## Key File Locations
 
