@@ -31,12 +31,19 @@ class ChEMBLClient(BaseResearchAgent):
         citations = []
         raw_data = {}
 
-        # Extract intervention names to search for molecules
+        # v14: Fixed intervention extraction — was converting dicts to strings
+        # (e.g., "{'name': 'Liraglutide'}") instead of extracting the name.
         interventions = []
         if metadata:
-            interventions = metadata.get("interventions", [])
-            if isinstance(interventions, list):
-                interventions = [str(i) for i in interventions]
+            raw_interventions = metadata.get("interventions", [])
+            if isinstance(raw_interventions, list):
+                for item in raw_interventions:
+                    if isinstance(item, dict):
+                        name = item.get("name") or item.get("intervention_name") or ""
+                        if name:
+                            interventions.append(str(name))
+                    elif isinstance(item, str) and item:
+                        interventions.append(item)
 
         if not interventions:
             return ResearchResult(
@@ -91,6 +98,8 @@ class ChEMBLClient(BaseResearchAgent):
                     if not relevant_mols:
                         relevant_mols = [m for m in molecules[:2] if isinstance(m, dict)]
 
+                    # v14: Store molecule entries and HELM structurally in raw_data
+                    mol_entries = []
                     for mol in relevant_mols[:3]:
                         if not isinstance(mol, dict):
                             continue
@@ -101,6 +110,16 @@ class ChEMBLClient(BaseResearchAgent):
                         max_phase = mol.get("max_phase", "")
                         helm_notation = mol.get("helm_notation", "")
                         first_approval = mol.get("first_approval", "")
+
+                        mol_entries.append({
+                            "chembl_id": chembl_id,
+                            "pref_name": pref_name,
+                            "mol_type": mol_type,
+                            "helm_notation": helm_notation,
+                            "max_phase": max_phase,
+                        })
+                        if helm_notation:
+                            raw_data[f"chembl_{intervention}_helm"] = helm_notation
 
                         # Extract molecular properties
                         mol_props = mol.get("molecule_properties", {}) or {}
@@ -140,6 +159,10 @@ class ChEMBLClient(BaseResearchAgent):
                             quality_score=self.compute_quality_score("chembl"),
                             retrieved_at=datetime.utcnow().isoformat(),
                         ))
+
+                    # v14: Store structured molecule entries in raw_data
+                    if mol_entries:
+                        raw_data[f"chembl_{intervention}_molecules"] = mol_entries
 
                 except Exception as e:
                     raw_data[f"chembl_{intervention}_error"] = str(e)

@@ -84,6 +84,10 @@ class EBIProteinsClient(BaseResearchAgent):
 
                         raw_data[f"ebi_proteins_{intervention}_count"] = len(proteins)
 
+                        # v14: Store structured entries in raw_data for the
+                        # sequence agent (sequence removed from snippets)
+                        ebi_entries = []
+
                         for entry in proteins[:3]:
                             if not isinstance(entry, dict):
                                 continue
@@ -142,12 +146,25 @@ class EBIProteinsClient(BaseResearchAgent):
                                         if desc:
                                             domains.append(desc)
 
-                            # Build snippet
+                            # v14: Store structured entry for sequence agent
+                            ebi_entries.append({
+                                "accession": accession,
+                                "protein_name": protein_name,
+                                "sequence": sequence,
+                                "seq_length": seq_length,
+                                "features": [
+                                    f for f in (features if isinstance(features, list) else [])
+                                    if isinstance(f, dict) and f.get("type") in ("CHAIN", "PEPTIDE", "Chain", "Peptide")
+                                ],
+                            })
+
+                            # v14: Snippet no longer contains sequence characters
+                            # to prevent Phase 4 re-extraction of precursor proteins.
                             snippet_parts = [f"Protein: {protein_name or accession}"]
                             if organism:
                                 snippet_parts.append(f"Organism: {organism}")
-                            if sequence:
-                                snippet_parts.append(f"Sequence ({seq_length} aa): {sequence[:60]}...")
+                            if seq_length:
+                                snippet_parts.append(f"Length: {seq_length} aa")
                             if seq_mass:
                                 snippet_parts.append(f"Mass: {seq_mass} Da")
                             if function_text:
@@ -170,6 +187,10 @@ class EBIProteinsClient(BaseResearchAgent):
                                 await self._fetch_variation(
                                     client, accession, protein_name, citations, raw_data
                                 )
+
+                        # v14: Store structured entries in raw_data
+                        if ebi_entries:
+                            raw_data[f"ebi_proteins_{intervention}_entries"] = ebi_entries
 
                     else:
                         raw_data[f"ebi_proteins_{intervention}_status"] = resp.status_code

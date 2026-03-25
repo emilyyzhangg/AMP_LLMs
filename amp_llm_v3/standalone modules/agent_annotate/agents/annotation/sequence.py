@@ -1,24 +1,24 @@
 """
-Sequence Annotation Agent (v13).
+Sequence Annotation Agent (v14).
 
-Extracts amino acid sequences from research dossier data.
-Purely deterministic — no LLM needed. Sequences come from UniProt,
-DRAMP, EBI Proteins, APD, and other protein databases.
+Extracts amino acid sequences from structured research data.
+Reads ONLY from raw_data fields — no snippet text parsing.
 
-v13 changes:
-  - Prioritize DRAMP/DBAASP/APD citation snippets (actual peptide sequences)
-    over UniProt full precursor proteins
-  - For UniProt entries, extract mature peptide/chain features instead of
-    full precursor sequence (which can be 500-5000+ AA)
-  - Cap full sequences at 200 AA (skip precursor-length ones)
-  - Filter pipe-separated output to ≤100 AA per fragment
+v14 rewrite:
+  - Eliminated all free-text regex extraction (extract_sequences_from_text deleted)
+  - Reads structured data from raw_data: DBAASP sequences, APD sequences,
+    ChEMBL HELM notation, UniProt mature features, EBI Proteins entries
+  - Scores and ranks candidates by source reliability and drug relevance
+  - Optional LLM adjudication when top candidates conflict
+  - HELM parsing for synthetic/modified peptides (ChEMBL)
 
-Normalization:
-  - Uppercase all amino acid letters
-  - Strip spaces within sequences
-  - Remove modification prefixes/suffixes (Ac-, -NH2, etc.)
-  - Pipe-separate multiple sequences
-  - Preserve non-standard AAs (X, B, Z, J, U, O)
+Sources (priority order):
+  1. DBAASP structured sequences (name-filtered by research agent)
+  2. APD structured sequences (from detail page fetch)
+  3. ChEMBL HELM notation (parsed to linear AA sequence)
+  4. UniProt mature peptide/chain features (from raw_data)
+  5. UniProt full sequence (≤100 AA, relevance > 0.5)
+  6. EBI Proteins structured entries
 """
 
 import re
@@ -31,12 +31,19 @@ from app.models.annotation import FieldAnnotation
 
 logger = logging.getLogger("agent_annotate.annotation.sequence")
 
-# Standard amino acid letters + common non-standard codes
-_AA_PATTERN = re.compile(r"[ACDEFGHIKLMNPQRSTVWYBZXUOJ]{3,}", re.IGNORECASE)
+# Valid amino acid characters for validation (standard + common non-standard)
+_VALID_AA = set("ACDEFGHIKLMNPQRSTVWYBZXUOJ")
 
-# Modification prefixes/suffixes to strip
-_MOD_PREFIXES = re.compile(r"^(Ac-|H-|Fmoc-|Boc-|D-|L-|cyclo\()", re.IGNORECASE)
-_MOD_SUFFIXES = re.compile(r"(-NH2|-OH|-COOH|-amide|-acid)$", re.IGNORECASE)
+# Source reliability weights for scoring
+_SOURCE_WEIGHTS = {
+    "dbaasp": 0.95,
+    "apd": 0.95,
+    "chembl_helm": 0.90,
+    "uniprot_mature": 0.85,
+    "ebi_mature": 0.80,
+    "uniprot_full": 0.70,
+    "ebi_full": 0.65,
+}
 
 
 def normalize_sequence(raw: str) -> str:
@@ -51,55 +58,100 @@ def normalize_sequence(raw: str) -> str:
         return ""
 
     # Remove modification prefixes/suffixes
-    cleaned = _MOD_PREFIXES.sub("", raw.strip())
-    cleaned = _MOD_SUFFIXES.sub("", cleaned)
+    cleaned = re.sub(r"^(Ac-|H-|Fmoc-|Boc-|D-|L-|cyclo\()", "", raw.strip(), flags=re.IGNORECASE)
+    cleaned = re.sub(r"(-NH2|-OH|-COOH|-amide|-acid|\(ol\))$", "", cleaned, flags=re.IGNORECASE)
 
     # Remove spaces (human annotators space every 5 chars)
     cleaned = cleaned.replace(" ", "")
 
     # Remove dashes that are part of single-letter notation (K-K-W-W → KKWW)
-    # but only if it looks like single-AA-dash notation
     if re.match(r"^[A-Z]-[A-Z]-", cleaned):
         cleaned = cleaned.replace("-", "")
 
     # Uppercase
     cleaned = cleaned.upper()
 
-    # Validate: must contain at least 3 consecutive amino acid letters
-    if not _AA_PATTERN.search(cleaned):
+    # Validate: must contain at least 2 consecutive amino acid letters
+    if not re.search(r"[ACDEFGHIKLMNPQRSTVWYBZXUOJ]{2,}", cleaned):
         return ""
+
+    # Strip any remaining non-AA characters from the edges
+    cleaned = cleaned.strip()
 
     return cleaned
 
 
-def extract_sequences_from_text(text: str) -> list[str]:
-    """Extract amino acid sequences from free text.
+def _parse_helm_sequence(helm: str) -> str:
+    """Parse a ChEMBL HELM notation string to extract linear AA sequence.
 
-    Finds stretches of 3+ amino acid characters, filters out
-    common English words that happen to match.
+    HELM format examples:
+      PEPTIDE1{A.S.T.T.T.N.Y.T}$$$$  → ASTTTNYT
+      PEPTIDE1{[ac].M.P.P.A.D.E.D.Y.S.P.[am]}$$$$  → MPPADEDYSP
+      PEPTIDE1{H.S.Q.G.T.F.T.S.D.Y.S.R.Y.L.D}$$$$  → HSQGTFTSDYSRYLD
+
+    Extracts content between { and }, splits on '.', keeps single uppercase
+    letters, discards bracket-enclosed modifications like [ac], [am], [dR].
     """
-    if not text:
+    if not helm:
+        return ""
+
+    # Find the peptide chain content between braces
+    match = re.search(r"PEPTIDE\d*\{([^}]+)\}", helm, re.IGNORECASE)
+    if not match:
+        return ""
+
+    tokens = match.group(1).split(".")
+    aa_letters = []
+    for token in tokens:
+        token = token.strip()
+        # Skip bracket-enclosed modifications: [ac], [am], [dR], [Aib], etc.
+        if token.startswith("["):
+            continue
+        # Single uppercase letter = standard amino acid
+        if len(token) == 1 and token.isupper() and token in _VALID_AA:
+            aa_letters.append(token)
+        # Two-char token starting with lowercase d = D-amino acid, take the AA letter
+        elif len(token) == 2 and token[0] == "d" and token[1].isupper():
+            aa_letters.append(token[1])
+
+    seq = "".join(aa_letters)
+    return seq if len(seq) >= 2 else ""
+
+
+def _score_candidate(candidate: dict) -> float:
+    """Score a sequence candidate for ranking."""
+    source = candidate.get("source", "")
+    relevance = candidate.get("relevance", 0.5)
+    length = candidate.get("length", 0)
+    is_mature = candidate.get("is_mature", False)
+
+    source_weight = _SOURCE_WEIGHTS.get(source, 0.5)
+    length_penalty = 1.0 if 2 <= length <= 100 else (0.5 if length <= 200 else 0.0)
+    maturity_bonus = 1.2 if is_mature else 1.0
+
+    return source_weight * relevance * length_penalty * maturity_bonus
+
+
+def _extract_intervention_names(metadata: dict | None) -> list[str]:
+    """Extract intervention names from metadata."""
+    if not metadata:
         return []
-
-    # Common false positives (English words matching AA pattern)
-    _FALSE_POSITIVES = {
-        "THE", "AND", "FOR", "WITH", "FROM", "THIS", "THAT", "HAVE",
-        "WILL", "WHICH", "THEIR", "EACH", "WERE", "BEEN", "THAN",
-        "LENGTH", "PROTEIN", "PEPTIDE", "SEQUENCE", "TRIAL", "STUDY",
-        "DRUG", "ACTIVE", "CLINICAL", "RESULTS", "PHASE", "SEARCH",
-    }
-
-    matches = _AA_PATTERN.findall(text)
-    sequences = []
-    for m in matches:
-        upper = m.upper()
-        if upper not in _FALSE_POSITIVES and len(upper) >= 5:
-            sequences.append(upper)
-    return sequences
+    raw = metadata.get("interventions", [])
+    if not isinstance(raw, list):
+        return []
+    names = []
+    for item in raw:
+        if isinstance(item, dict):
+            name = item.get("name") or item.get("intervention_name") or ""
+            if name:
+                names.append(str(name))
+        elif isinstance(item, str) and item:
+            names.append(item)
+    return names
 
 
 class SequenceAgent(BaseAnnotationAgent):
-    """Deterministic sequence extraction from research data."""
+    """Structured-data sequence extraction with optional LLM adjudication."""
 
     field_name = "sequence"
 
@@ -109,180 +161,308 @@ class SequenceAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
-        """Extract sequence from research results. No LLM call.
+        """Extract sequence from structured research raw_data. No snippet parsing.
 
-        v13: Priority order for sequence extraction:
-        1. DRAMP/DBAASP/APD citation snippets (actual peptide sequences)
-        2. UniProt mature peptide/chain features (processed fragments)
-        3. UniProt full sequence ONLY if ≤200 AA (skip precursors)
-        4. Citation snippet parsing for explicit "Sequence: ..." strings
+        v14: Priority order for sequence extraction:
+        1. DBAASP structured sequences (name-filtered)
+        2. APD structured sequences (from detail pages)
+        3. ChEMBL HELM notation (parsed to linear AA)
+        4. UniProt mature peptide/chain features
+        5. UniProt full sequence (≤100 AA, verified relevance > 0.5)
+        6. EBI Proteins structured entries
         """
-
-        sequences: list[str] = []
+        interventions = _extract_intervention_names(metadata)
+        candidates: list[dict] = []
         evidence: list[SourceCitation] = []
         reasoning_parts: list[str] = []
+        used_llm = False
 
-        # --- Phase 1: DRAMP/DBAASP/APD citation snippets (highest priority) ---
-        # These databases contain actual peptide sequences, not precursors
+        # Collect all raw_data dicts from research results
+        all_raw: dict = {}
         for result in research_results:
             if result.error:
                 continue
-            for citation in result.citations:
-                if citation.source_name in ("dramp", "dbaasp", "apd"):
-                    snippet = citation.snippet or ""
-                    found = extract_sequences_from_text(snippet)
-                    for seq in found:
-                        norm = normalize_sequence(seq)
-                        if norm and norm not in sequences and len(norm) >= 5:
-                            sequences.append(norm)
-                            reasoning_parts.append(
-                                f"{citation.source_name}: extracted {len(norm)} aa from snippet"
-                            )
-                            evidence.append(citation)
+            if result.raw_data:
+                all_raw.update(result.raw_data)
 
-        # --- Phase 2: UniProt processed features (Chain, Peptide) ---
-        # These are the mature drug fragments, not the full precursor protein
+        # Also keep citation references for evidence attribution
+        citations_by_source: dict[str, list[SourceCitation]] = {}
         for result in research_results:
             if result.error:
                 continue
-            for key, val in (result.raw_data or {}).items():
-                if not isinstance(val, list):
+            for cite in result.citations:
+                citations_by_source.setdefault(cite.source_name, []).append(cite)
+
+        # --- Phase 1: Collect candidates from structured raw_data ---
+
+        for intervention in interventions:
+            # 1. DBAASP structured sequences
+            dbaasp_seqs = all_raw.get(f"dbaasp_{intervention}_sequences", [])
+            for entry in dbaasp_seqs:
+                if not isinstance(entry, dict):
                     continue
-                for entry in val:
-                    if not isinstance(entry, dict):
+                seq = normalize_sequence(entry.get("sequence", ""))
+                if seq and len(seq) >= 2:
+                    candidates.append({
+                        "sequence": seq,
+                        "source": "dbaasp",
+                        "protein_name": entry.get("name", intervention),
+                        "relevance": 0.9,  # Already name-filtered by research agent
+                        "length": len(seq),
+                        "is_mature": True,
+                        "accession": entry.get("dbaasp_id", ""),
+                    })
+                    reasoning_parts.append(f"DBAASP: {entry.get('name', '')} ({len(seq)} aa)")
+
+            # 2. APD structured sequences
+            apd_seqs = all_raw.get(f"apd_{intervention}_sequences", [])
+            for entry in apd_seqs:
+                if not isinstance(entry, dict):
+                    continue
+                seq = normalize_sequence(entry.get("sequence", ""))
+                if seq and len(seq) >= 2:
+                    candidates.append({
+                        "sequence": seq,
+                        "source": "apd",
+                        "protein_name": entry.get("name", intervention),
+                        "relevance": 0.9,
+                        "length": len(seq),
+                        "is_mature": True,
+                        "accession": entry.get("apd_id", ""),
+                    })
+                    reasoning_parts.append(f"APD: {entry.get('apd_id', '')} ({len(seq)} aa)")
+
+            # 3. ChEMBL HELM notation
+            helm = all_raw.get(f"chembl_{intervention}_helm", "")
+            if helm:
+                seq = _parse_helm_sequence(helm)
+                if seq:
+                    candidates.append({
+                        "sequence": seq,
+                        "source": "chembl_helm",
+                        "protein_name": intervention,
+                        "relevance": 0.85,
+                        "length": len(seq),
+                        "is_mature": True,
+                        "accession": "",
+                    })
+                    reasoning_parts.append(f"ChEMBL HELM: parsed {len(seq)} aa from {helm[:40]}")
+
+            # 4. UniProt mature peptide/chain features
+            uniprot_entries = all_raw.get(f"uniprot_{intervention}", [])
+            for entry in uniprot_entries:
+                if not isinstance(entry, dict):
+                    continue
+
+                accession = entry.get("primaryAccession", "")
+                relevance = entry.get("_verified_relevance", 0.5)
+                protein_name = ""
+                pd = entry.get("proteinDescription", {})
+                rn = pd.get("recommendedName", {}) if isinstance(pd, dict) else {}
+                if rn:
+                    fn = rn.get("fullName", {})
+                    protein_name = fn.get("value", "") if isinstance(fn, dict) else ""
+
+                full_seq = ""
+                seq_obj = entry.get("sequence", {})
+                if isinstance(seq_obj, dict):
+                    full_seq = seq_obj.get("value", "")
+
+                # Check for mature peptide/chain features
+                features = entry.get("features", [])
+                best_fragment = None
+                best_fragment_len = float("inf")
+
+                for feat in features:
+                    if not isinstance(feat, dict):
                         continue
-
-                    accession = entry.get("primaryAccession", "")
-                    protein = ""
-                    pd = entry.get("proteinDescription", {})
-                    rn = pd.get("recommendedName", {})
-                    if rn:
-                        protein = rn.get("fullName", {}).get("value", "")
-
-                    full_seq = ""
-                    seq_obj = entry.get("sequence", {})
-                    if isinstance(seq_obj, dict):
-                        full_seq = seq_obj.get("value", "")
-
-                    # Check for mature peptide/chain features
-                    features = entry.get("features", [])
-                    best_fragment = None
-                    best_fragment_len = float("inf")
-
-                    for feat in features:
-                        if not isinstance(feat, dict):
+                    feat_type = feat.get("type", "")
+                    if feat_type not in ("Chain", "Peptide"):
+                        continue
+                    location = feat.get("location", {})
+                    if not isinstance(location, dict):
+                        continue
+                    start = location.get("start", {}).get("value", 0)
+                    end = location.get("end", {}).get("value", 0)
+                    if start and end and full_seq:
+                        try:
+                            start = int(start)
+                            end = int(end)
+                        except (ValueError, TypeError):
                             continue
-                        feat_type = feat.get("type", "")
-                        if feat_type not in ("Chain", "Peptide"):
-                            # Skip Signal peptide — that's the cleaved leader, not the drug
+                        fragment = full_seq[start - 1:end]
+                        frag_len = len(fragment)
+                        if 2 <= frag_len <= 200 and frag_len < best_fragment_len:
+                            best_fragment = fragment
+                            best_fragment_len = frag_len
+
+                if best_fragment:
+                    norm = normalize_sequence(best_fragment)
+                    if norm:
+                        candidates.append({
+                            "sequence": norm,
+                            "source": "uniprot_mature",
+                            "protein_name": protein_name or accession,
+                            "relevance": relevance,
+                            "length": len(norm),
+                            "is_mature": True,
+                            "accession": accession,
+                        })
+                        reasoning_parts.append(
+                            f"UniProt {accession}: {protein_name} — mature fragment ({len(norm)} aa)"
+                        )
+                elif full_seq:
+                    # Phase 5: Full sequence only if ≤100 AA and verified relevant
+                    norm = normalize_sequence(full_seq)
+                    if norm and len(norm) <= 100 and relevance > 0.5:
+                        candidates.append({
+                            "sequence": norm,
+                            "source": "uniprot_full",
+                            "protein_name": protein_name or accession,
+                            "relevance": relevance,
+                            "length": len(norm),
+                            "is_mature": False,
+                            "accession": accession,
+                        })
+                        reasoning_parts.append(
+                            f"UniProt {accession}: {protein_name} ({len(norm)} aa, full ≤100)"
+                        )
+                    elif norm and len(norm) > 100:
+                        reasoning_parts.append(
+                            f"UniProt {accession}: skipped ({len(norm)} aa > 100 cap)"
+                        )
+
+            # 6. EBI Proteins structured entries
+            ebi_entries = all_raw.get(f"ebi_proteins_{intervention}_entries", [])
+            for entry in ebi_entries:
+                if not isinstance(entry, dict):
+                    continue
+                accession = entry.get("accession", "")
+                protein_name = entry.get("protein_name", "")
+                sequence = entry.get("sequence", "")
+                ebi_features = entry.get("features", [])
+
+                # Try mature features first
+                best_fragment = None
+                best_fragment_len = float("inf")
+                for feat in ebi_features:
+                    if not isinstance(feat, dict):
+                        continue
+                    feat_type = feat.get("type", "")
+                    if feat_type not in ("CHAIN", "PEPTIDE", "Chain", "Peptide"):
+                        continue
+                    location = feat.get("location", {})
+                    if not isinstance(location, dict):
+                        continue
+                    begin = location.get("begin", {}).get("value", location.get("start", {}).get("value", 0))
+                    end_val = location.get("end", {}).get("value", 0)
+                    if begin and end_val and sequence:
+                        try:
+                            begin = int(begin)
+                            end_val = int(end_val)
+                        except (ValueError, TypeError):
                             continue
-                        location = feat.get("location", {})
-                        if not isinstance(location, dict):
-                            continue
-                        start = location.get("start", {}).get("value", 0)
-                        end = location.get("end", {}).get("value", 0)
-                        if start and end and full_seq:
-                            try:
-                                start = int(start)
-                                end = int(end)
-                            except (ValueError, TypeError):
-                                continue
-                            fragment = full_seq[start - 1:end]  # 1-based to 0-based
-                            frag_len = len(fragment)
-                            # Use the shortest non-signal fragment as the drug
-                            if 2 <= frag_len <= 200 and frag_len < best_fragment_len:
-                                best_fragment = fragment
-                                best_fragment_len = frag_len
+                        fragment = sequence[begin - 1:end_val]
+                        frag_len = len(fragment)
+                        if 2 <= frag_len <= 200 and frag_len < best_fragment_len:
+                            best_fragment = fragment
+                            best_fragment_len = frag_len
 
-                    if best_fragment:
-                        norm = normalize_sequence(best_fragment)
-                        if norm and norm not in sequences:
-                            sequences.append(norm)
-                            reasoning_parts.append(
-                                f"UniProt {accession}: {protein} — mature fragment ({len(norm)} aa from features)"
-                            )
-                            evidence.append(SourceCitation(
-                                source_name="uniprot",
-                                source_url=f"https://www.uniprot.org/uniprotkb/{accession}",
-                                identifier=accession,
-                                title=protein or accession,
-                                snippet=f"Sequence (feature): {norm[:60]}{'...' if len(norm) > 60 else ''} ({len(norm)} aa)",
-                                quality_score=0.95,
-                            ))
-                    elif full_seq:
-                        # Phase 3: Fall back to full sequence ONLY if ≤200 AA
-                        # Anything longer is a precursor protein, not useful
-                        norm = normalize_sequence(full_seq)
-                        if norm and norm not in sequences and len(norm) <= 200:
-                            sequences.append(norm)
-                            reasoning_parts.append(
-                                f"UniProt {accession}: {protein} ({len(norm)} aa, full sequence ≤200)"
-                            )
-                            evidence.append(SourceCitation(
-                                source_name="uniprot",
-                                source_url=f"https://www.uniprot.org/uniprotkb/{accession}",
-                                identifier=accession,
-                                title=protein or accession,
-                                snippet=f"Sequence: {norm[:60]}{'...' if len(norm) > 60 else ''} ({len(norm)} aa)",
-                                quality_score=0.95,
-                            ))
-                        elif norm and len(norm) > 200:
-                            reasoning_parts.append(
-                                f"UniProt {accession}: skipped precursor ({len(norm)} aa > 200 cap)"
-                            )
+                if best_fragment:
+                    norm = normalize_sequence(best_fragment)
+                    if norm and not any(c["sequence"] == norm for c in candidates):
+                        candidates.append({
+                            "sequence": norm,
+                            "source": "ebi_mature",
+                            "protein_name": protein_name or accession,
+                            "relevance": 0.6,
+                            "length": len(norm),
+                            "is_mature": True,
+                            "accession": accession,
+                        })
+                        reasoning_parts.append(
+                            f"EBI {accession}: mature fragment ({len(norm)} aa)"
+                        )
+                elif sequence:
+                    norm = normalize_sequence(sequence)
+                    if norm and len(norm) <= 100 and not any(c["sequence"] == norm for c in candidates):
+                        candidates.append({
+                            "sequence": norm,
+                            "source": "ebi_full",
+                            "protein_name": protein_name or accession,
+                            "relevance": 0.5,
+                            "length": len(norm),
+                            "is_mature": False,
+                            "accession": accession,
+                        })
 
-        # --- Phase 4: Parse citation snippets for explicit sequence strings ---
-        # The peptide_identity agent includes "Sequence: ..." in UniProt snippets
-        for result in research_results:
-            if result.error:
-                continue
-            for citation in result.citations:
-                if citation.source_name in ("uniprot", "ebi_proteins"):
-                    snippet = citation.snippet or ""
-                    # Look for explicit "Sequence: XXXX" in snippet
-                    seq_match = re.search(r"Sequence:\s*([A-Za-z]{5,})", snippet)
-                    if seq_match:
-                        raw_seq = seq_match.group(1)
-                        norm = normalize_sequence(raw_seq)
-                        if norm and norm not in sequences and len(norm) <= 200:
-                            sequences.append(norm)
-                            reasoning_parts.append(
-                                f"{citation.source_name}: extracted {len(norm)} aa from citation snippet"
-                            )
-                            evidence.append(citation)
-                    else:
-                        # Fall back to general sequence extraction from snippet
-                        found = extract_sequences_from_text(snippet)
-                        for seq in found:
-                            norm = normalize_sequence(seq)
-                            if norm and norm not in sequences and 5 <= len(norm) <= 200:
-                                sequences.append(norm)
-                                reasoning_parts.append(
-                                    f"{citation.source_name}: extracted {len(norm)} aa from snippet"
-                                )
-                                evidence.append(citation)
+        # --- Phase 2: Score and rank candidates ---
+        for c in candidates:
+            c["score"] = _score_candidate(c)
 
-        # --- Filter: only include sequences ≤100 AA in pipe-separated output ---
-        filtered_sequences = [s for s in sequences if len(s) <= 100]
-        if not filtered_sequences and sequences:
-            # If all sequences were >100 AA, keep the shortest one as a fallback
-            shortest = min(sequences, key=len)
-            if len(shortest) <= 200:
-                filtered_sequences = [shortest]
+        # Deduplicate by sequence (keep highest-scoring)
+        seen_seqs: dict[str, dict] = {}
+        for c in candidates:
+            seq = c["sequence"]
+            if seq not in seen_seqs or c["score"] > seen_seqs[seq]["score"]:
+                seen_seqs[seq] = c
+        unique_candidates = sorted(seen_seqs.values(), key=lambda x: x["score"], reverse=True)
+
+        # --- Phase 3: LLM adjudication (optional) ---
+        # Only if top 2 candidates differ and both score > 0.5
+        if (len(unique_candidates) >= 2
+                and unique_candidates[0]["sequence"] != unique_candidates[1]["sequence"]
+                and unique_candidates[0]["score"] > 0.5
+                and unique_candidates[1]["score"] > 0.5
+                and abs(unique_candidates[0]["score"] - unique_candidates[1]["score"]) < 0.3):
+            try:
+                chosen = await self._adjudicate(
+                    unique_candidates[:2],
+                    interventions[0] if interventions else nct_id,
+                    nct_id,
+                    metadata,
+                )
+                if chosen is not None:
+                    unique_candidates = [unique_candidates[chosen]]
+                    used_llm = True
+                    reasoning_parts.append(
+                        f"LLM adjudication: selected candidate {chosen + 1}"
+                    )
+            except Exception as e:
+                logger.warning("LLM adjudication failed for %s: %s", nct_id, e)
+                reasoning_parts.append(f"LLM adjudication failed: {e}")
+
+        # --- Phase 4: Output formatting ---
+        # Filter to ≤100 AA, take at most 2
+        final = [c for c in unique_candidates if c["length"] <= 100][:2]
+        if not final and unique_candidates:
+            # If all >100 AA, keep the shortest one as fallback
+            shortest = min(unique_candidates, key=lambda x: x["length"])
+            if shortest["length"] <= 200:
+                final = [shortest]
                 reasoning_parts.append(
-                    f"All sequences >100 aa; kept shortest ({len(shortest)} aa) as fallback"
+                    f"All sequences >100 aa; kept shortest ({shortest['length']} aa)"
                 )
 
-        # Build result
-        if filtered_sequences:
-            # Pipe-separate multiple sequences (matching human annotation format)
-            value = " | ".join(filtered_sequences)
+        # Collect evidence citations from relevant sources
+        for c in final:
+            source_name = c["source"].replace("_mature", "").replace("_full", "").replace("_helm", "")
+            for cite in citations_by_source.get(source_name, [])[:2]:
+                if cite not in evidence:
+                    evidence.append(cite)
+
+        if final:
+            value = " | ".join(c["sequence"] for c in final)
             confidence = min(0.95, 0.7 + 0.05 * len(evidence))
-            reasoning = f"[Deterministic v13] Extracted {len(filtered_sequences)} sequence(s) from research data. " + "; ".join(reasoning_parts)
+            reasoning = (
+                f"[Structured v14] Extracted {len(final)} sequence(s) "
+                f"from {len(candidates)} candidates. "
+                + "; ".join(reasoning_parts)
+            )
         else:
             value = ""
             confidence = 0.0
-            reasoning = "[Deterministic v13] No amino acid sequence found in research data."
+            reasoning = "[Structured v14] No amino acid sequence found in research data."
             if reasoning_parts:
                 reasoning += " Notes: " + "; ".join(reasoning_parts)
 
@@ -292,6 +472,61 @@ class SequenceAgent(BaseAnnotationAgent):
             confidence=confidence,
             reasoning=reasoning,
             evidence=evidence,
-            model_name="deterministic",
-            skip_verification=True,  # Database extraction, no LLM verification needed
+            model_name="deterministic" if not used_llm else "qwen2.5:14b",
+            skip_verification=not used_llm,
         )
+
+    async def _adjudicate(
+        self,
+        candidates: list[dict],
+        intervention: str,
+        nct_id: str,
+        metadata: Optional[dict],
+    ) -> Optional[int]:
+        """Use LLM to select between ambiguous sequence candidates.
+
+        Returns 0 or 1 for the chosen candidate index, or None if neither/error.
+        """
+        from app.services.ollama_client import ollama_client
+        from app.services.config_service import config_service
+
+        config = config_service.get()
+        model = getattr(config.orchestrator, "annotation_model", "qwen2.5:14b")
+
+        c1 = candidates[0]
+        c2 = candidates[1]
+
+        prompt = (
+            f"Drug: {intervention}\n"
+            f"Trial: {nct_id}\n\n"
+            f"Candidate 1: {c1['sequence'][:60]} "
+            f"({c1['source']}, {c1['protein_name']}, {c1['length']} aa)\n"
+            f"Candidate 2: {c2['sequence'][:60]} "
+            f"({c2['source']}, {c2['protein_name']}, {c2['length']} aa)\n\n"
+            f"Which amino acid sequence is the actual drug molecule being tested "
+            f"in this clinical trial? Answer with just 1, 2, or none."
+        )
+
+        system = (
+            "You are selecting which amino acid sequence corresponds to the drug "
+            "being tested in a clinical trial. Consider the drug name, protein name, "
+            "sequence length, and source database. Answer with just the number "
+            "(1 or 2) or 'none' if neither is correct."
+        )
+
+        logger.info("  sequence: LLM adjudication for %s (%s vs %s)", nct_id, c1["source"], c2["source"])
+        response = await ollama_client.generate(
+            model=model,
+            prompt=prompt,
+            system=system,
+            temperature=0.05,
+        )
+        answer = response.get("response", "").strip().lower()
+
+        if "1" in answer and "2" not in answer:
+            return 0
+        elif "2" in answer and "1" not in answer:
+            return 1
+        elif "none" in answer:
+            return None
+        return None  # Ambiguous answer, keep top candidate by score

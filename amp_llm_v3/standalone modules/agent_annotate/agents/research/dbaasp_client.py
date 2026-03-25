@@ -8,6 +8,11 @@ and structural information.
 The public search endpoint is ``GET /peptides`` with query parameters
 ``name.value`` (substring) and ``name.comparator=like``.  The older
 ``/api/v2/peptides`` path returns empty responses and is not usable.
+
+v14 changes:
+  - Add name-match filtering to prevent floods of unrelated hits
+  - Store sequences structurally in raw_data (not only in snippets)
+  - Remove noise words (Synthesis, Complexity) from snippets
 """
 
 import logging
@@ -47,6 +52,18 @@ def _extract_intervention_names(metadata: dict | None) -> list[str]:
         elif isinstance(item, str) and item:
             names.append(item)
     return names
+
+
+def _name_matches(intervention: str, peptide_name: str) -> bool:
+    """Check if a DBAASP peptide name is relevant to the intervention.
+
+    Case-insensitive substring match in either direction.
+    """
+    iv = intervention.lower().strip()
+    pn = peptide_name.lower().strip()
+    if not iv or not pn:
+        return False
+    return iv in pn or pn in iv
 
 
 class DBAASPClient(BaseResearchAgent):
@@ -112,12 +129,39 @@ class DBAASPClient(BaseResearchAgent):
                     if not peptides:
                         raw_data[f"dbaasp_{intervention}"] = {"found": False}
                         continue
+
+                    # v14: Filter by name relevance — only keep entries whose name
+                    # matches the intervention. Prevents "ANP" from returning dozens
+                    # of unrelated antimicrobial peptides.
+                    filtered = [e for e in peptides if isinstance(e, dict)
+                                and _name_matches(intervention, e.get("name", ""))]
+                    if not filtered:
+                        # None matched by name — the intervention isn't in DBAASP
+                        raw_data[f"dbaasp_{intervention}"] = {
+                            "found": False,
+                            "unfiltered_count": len(peptides),
+                            "note": "No name-matched entries",
+                        }
+                        continue
+
                     raw_data[f"dbaasp_{intervention}"] = {
                         "total": total,
-                        "entries": peptides[:5],
+                        "entries": filtered[:5],
                     }
 
-                    for entry in peptides[:5]:
+                    # v14: Store sequences structurally for the sequence agent
+                    raw_data[f"dbaasp_{intervention}_sequences"] = [
+                        {
+                            "name": e.get("name", intervention),
+                            "sequence": e.get("sequence", ""),
+                            "length": e.get("sequenceLength", ""),
+                            "dbaasp_id": str(e.get("dbaaspId", e.get("id", ""))),
+                        }
+                        for e in filtered[:3]
+                        if e.get("sequence")
+                    ]
+
+                    for entry in filtered[:5]:
                         if not isinstance(entry, dict):
                             continue
 
@@ -125,20 +169,18 @@ class DBAASPClient(BaseResearchAgent):
                         peptide_name = entry.get("name", intervention)
                         sequence = entry.get("sequence", "")
                         seq_length = entry.get("sequenceLength", "")
-                        synthesis = entry.get("synthesisType", "")
-                        complexity = entry.get("complexity", "")
                         pubchem = entry.get("pubchemCid", "")
                         pdb = entry.get("pdb", "")
 
+                        # v14: Snippet contains only the peptide name, sequence,
+                        # length, and identifiers. Noise words like Synthesis and
+                        # Complexity removed (they get false-positive matched as
+                        # AA sequences by downstream agents).
                         snippet_parts = [f"Peptide: {peptide_name}"]
                         if sequence:
                             snippet_parts.append(f"Sequence: {sequence[:80]}")
                         if seq_length:
                             snippet_parts.append(f"Length: {seq_length} aa")
-                        if synthesis:
-                            snippet_parts.append(f"Synthesis: {synthesis}")
-                        if complexity:
-                            snippet_parts.append(f"Complexity: {complexity}")
                         if pubchem:
                             snippet_parts.append(f"PubChem CID: {pubchem}")
                         if pdb:

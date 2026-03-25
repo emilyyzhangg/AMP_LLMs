@@ -8,6 +8,11 @@ The APD does not provide a REST API; this agent submits a POST form to the
 database search endpoint and parses the HTML response. Because the server-side
 search may require a live browser session, results are best-effort and the
 agent falls back gracefully when no data can be extracted.
+
+v14 changes:
+  - Fetch detail pages for each APD ID to extract actual sequences
+  - Store sequences structurally in raw_data for the sequence agent
+  - Include sequence in citation snippets (APD is peptide-specific)
 """
 
 import logging
@@ -113,11 +118,38 @@ class APDClient(BaseResearchAgent):
                         extracted = self._parse_apd_results(html, intervention)
                         raw_data[f"apd_{intervention}"] = extracted
 
+                        # v14: Fetch detail pages to get actual sequences
+                        apd_sequences = []
                         if extracted.get("peptides"):
                             for pep in extracted["peptides"][:3]:
+                                apd_id = pep.get("apd_id", "")
+                                if not apd_id:
+                                    continue
+
+                                detail = await self._fetch_apd_detail(client, apd_id)
+                                if detail.get("sequence"):
+                                    pep["sequence"] = detail["sequence"]
+                                    pep["length"] = detail.get("length", len(detail["sequence"]))
+                                    pep["source_organism"] = detail.get("source_organism", "")
+                                    apd_sequences.append({
+                                        "apd_id": apd_id,
+                                        "name": pep.get("name", intervention),
+                                        "sequence": detail["sequence"],
+                                        "length": detail.get("length", len(detail["sequence"])),
+                                    })
+
+                            # v14: Store sequences structurally in raw_data
+                            if apd_sequences:
+                                raw_data[f"apd_{intervention}_sequences"] = apd_sequences
+
+                            for pep in extracted["peptides"][:3]:
                                 snippet_parts = [f"Peptide: {pep.get('name', intervention)}"]
-                                if pep.get("source"):
+                                if pep.get("source_organism"):
+                                    snippet_parts.append(f"Source: {pep['source_organism']}")
+                                elif pep.get("source"):
                                     snippet_parts.append(f"Source: {pep['source']}")
+                                if pep.get("sequence"):
+                                    snippet_parts.append(f"Sequence: {pep['sequence'][:80]}")
                                 if pep.get("length"):
                                     snippet_parts.append(f"Length: {pep['length']} aa")
                                 if pep.get("activity"):
@@ -155,6 +187,76 @@ class APDClient(BaseResearchAgent):
             citations=citations,
             raw_data=raw_data,
         )
+
+    async def _fetch_apd_detail(self, client: httpx.AsyncClient, apd_id: str) -> dict:
+        """Fetch an APD detail page and extract sequence data.
+
+        Returns dict with keys: sequence, length, source_organism (all optional).
+        Returns empty dict on failure.
+        """
+        try:
+            resp = await client.get(
+                f"{APD_BASE_URL}/peptide/{apd_id}",
+                timeout=10,
+                headers={"Referer": "https://aps.unmc.edu/database"},
+            )
+            if resp.status_code != 200:
+                return {}
+            return self._parse_apd_detail(resp.text)
+        except Exception as e:
+            logger.debug("APD detail fetch failed for %s: %s", apd_id, e)
+            return {}
+
+    @staticmethod
+    def _parse_apd_detail(html: str) -> dict:
+        """Parse an APD peptide detail page for sequence and metadata.
+
+        APD detail pages have labeled fields in table rows or divs.
+        This is best-effort parsing — HTML structure may vary.
+        """
+        result: dict = {}
+
+        # Try multiple patterns for sequence extraction:
+        seq_patterns = [
+            # Table cell: <td>Sequence</td><td>GIGKFLH...</td>
+            re.compile(
+                r'(?:Sequence|Amino\s*acid\s*sequence)\s*(?:</[^>]+>\s*<[^>]+>|:\s*)'
+                r'\s*([A-Z]{3,})',
+                re.IGNORECASE,
+            ),
+            # Plain text after label
+            re.compile(
+                r'(?:Sequence|sequence)\s*[:=]\s*([A-Z]{3,})',
+            ),
+            # Standalone block of uppercase AA after any "sequence" mention
+            re.compile(
+                r'[Ss]equence[^A-Z]{0,50}([A-Z]{5,})',
+            ),
+        ]
+
+        for pattern in seq_patterns:
+            match = pattern.search(html)
+            if match:
+                seq = match.group(1).strip()
+                # Validate: must be mostly valid AA characters
+                valid_aa = set("ACDEFGHIKLMNPQRSTVWY")
+                if len(seq) >= 3 and sum(1 for c in seq if c in valid_aa) / len(seq) > 0.8:
+                    result["sequence"] = seq
+                    result["length"] = len(seq)
+                    break
+
+        # Try to extract source organism
+        source_patterns = [
+            re.compile(r'[Ss]ource\s*(?:organism)?\s*[:=]\s*([^<\n]{3,50})'),
+            re.compile(r'<td[^>]*>\s*Source\s*</td>\s*<td[^>]*>\s*([^<]+)', re.IGNORECASE),
+        ]
+        for pattern in source_patterns:
+            match = pattern.search(html)
+            if match:
+                result["source_organism"] = match.group(1).strip()
+                break
+
+        return result
 
     @staticmethod
     def _parse_apd_results(html: str, query: str) -> dict:

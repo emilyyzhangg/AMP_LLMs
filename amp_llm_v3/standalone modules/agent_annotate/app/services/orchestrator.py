@@ -1695,6 +1695,27 @@ class PipelineOrchestrator:
                     f"no failure reason] " + failure.reasoning
                 )
 
+        # Rule 3 (v14): valid sequence (2-50 AA) → peptide must be True
+        # A drug with a known short peptide sequence is by definition a peptide.
+        # Does NOT apply to >50 AA (could be a protein, not a peptide).
+        # Does NOT enforce the reverse (peptide=True without sequence is fine —
+        # many peptides are synthetic/modified with no database entry).
+        sequence = ann_by_field.get("sequence")
+        if sequence and peptide and sequence.value:
+            # Use length of first sequence if pipe-separated
+            first_seq = sequence.value.split(" | ")[0].strip()
+            seq_len = len(first_seq)
+            if 2 <= seq_len <= 50 and peptide.value == "False":
+                logger.info(
+                    f"  consistency: sequence={seq_len} aa, "
+                    f"forcing peptide from 'False' to 'True'"
+                )
+                peptide.value = "True"
+                peptide.reasoning = (
+                    f"[Consistency override: {seq_len} AA sequence -> peptide=True] "
+                    + peptide.reasoning
+                )
+
     @staticmethod
     def _enforce_post_verification_consistency(verified: VerifiedAnnotation) -> None:
         """Enforce cross-field consistency on FINAL verified values.

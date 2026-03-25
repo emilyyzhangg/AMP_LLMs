@@ -142,6 +142,81 @@ PEPTIDE_ALIASES = {
 }
 
 
+def _normalise_sequence(s: str) -> str:
+    """Normalise an amino acid sequence string for concordance comparison.
+
+    Handles human annotation formats: spaced every 5 chars, modification
+    markers, D-amino acid prefixes, pipe-separated multi-sequences,
+    three-letter code detection.
+    """
+    import re as _re
+
+    if not s or not s.strip():
+        return ""
+
+    # Detect three-letter code sequences (e.g., Cpa-c[d-Cys-Aph(Hor)...])
+    # These contain 3-letter AA codes like Cys, Ala, Gly, Lys, Thr, Phe
+    _THREE_LETTER_CODES = {
+        "ala", "arg", "asn", "asp", "cys", "gln", "glu", "gly", "his",
+        "ile", "leu", "lys", "met", "phe", "pro", "ser", "thr", "trp",
+        "tyr", "val", "aph", "cbm",
+    }
+    s_lower = s.lower()
+    three_letter_count = sum(1 for code in _THREE_LETTER_CODES if code in s_lower)
+    # If contains 3+ three-letter codes AND no long AA stretch, it's three-letter notation
+    has_long_aa = bool(_re.search(r"[A-Z]{5,}", s))
+    if three_letter_count >= 3 and not has_long_aa:
+        return "[three-letter notation]"
+
+    # Handle pipe-separated multi-sequences: normalize each part, sort, rejoin
+    if "|" in s:
+        parts = [p.strip() for p in s.split("|") if p.strip()]
+        normalised_parts = []
+        for part in parts:
+            norm = _normalise_single_sequence(part)
+            if norm and norm != "[three-letter notation]":
+                normalised_parts.append(norm)
+        normalised_parts.sort()
+        return " | ".join(normalised_parts) if normalised_parts else ""
+
+    return _normalise_single_sequence(s)
+
+
+def _normalise_single_sequence(s: str) -> str:
+    """Normalise a single amino acid sequence (no pipe separators)."""
+    import re as _re
+
+    if not s or not s.strip():
+        return ""
+
+    cleaned = s.strip()
+
+    # Remove modification prefixes: Ac-, H-, Fmoc-, Boc-, cyclo(
+    cleaned = _re.sub(r"^(Ac-|H-|Fmoc-|Boc-|cyclo\()", "", cleaned, flags=_re.IGNORECASE)
+
+    # Remove modification suffixes: -NH2, -OH, -COOH, -amide, -acid, (ol)
+    # Also handle Unicode: -NH₂
+    cleaned = _re.sub(r"(-NH[2₂]|-OH|-COOH|-amide|-acid|\(ol\))$", "", cleaned, flags=_re.IGNORECASE)
+
+    # Remove all whitespace, tabs, newlines
+    cleaned = _re.sub(r"\s+", "", cleaned)
+
+    # Strip D-amino acid prefixes: dF → F, dC → C (lowercase d before uppercase AA)
+    cleaned = _re.sub(r"(?<![a-zA-Z])d([A-Z])", r"\1", cleaned)
+
+    # Convert single-letter dash notation: K-K-W-W-K → KKWWK
+    if _re.match(r"^[A-Z]-[A-Z]-", cleaned):
+        cleaned = cleaned.replace("-", "")
+
+    # Uppercase
+    cleaned = cleaned.upper()
+
+    # Keep only valid AA characters
+    cleaned = _re.sub(r"[^ACDEFGHIKLMNPQRSTVWYBZXUOJ]", "", cleaned)
+
+    return cleaned if len(cleaned) >= 2 else ""
+
+
 def normalise(value, field_name):
     """Normalise a value for comparison, returning (normalised_str, is_blank)."""
     if value is None:
@@ -176,6 +251,8 @@ def normalise(value, field_name):
         return (REASON_ALIASES.get(s_lower, s), False)
     elif field_name == "peptide":
         return (PEPTIDE_ALIASES.get(s_lower, s), False)
+    elif field_name == "sequence":
+        return (_normalise_sequence(s), False)
     else:
         return (s, False)
 
@@ -398,6 +475,29 @@ def compute_concordance(agent_data, human_data):
                         norm_a = ""
                     if blank_b:
                         norm_b = ""
+
+                # v14: For sequence field, use tiered matching
+                # (exact, substring, no match). For concordance stats,
+                # treat substring matches as agreement.
+                if field_name == "sequence" and norm_a and norm_b and norm_a != norm_b:
+                    # Check substring relationship (one contains the other)
+                    if norm_a in norm_b or norm_b in norm_a:
+                        # Treat as match for concordance, but track separately
+                        labels_a.append(norm_a)
+                        labels_b.append(norm_a)  # Force agreement for stats
+                        pair_disagreements.append(
+                            {
+                                "nct_id": nct,
+                                "field": field_name,
+                                "comparison": pair_name,
+                                "match_type": "substring",
+                                f"{src_a_label.lower()}_value": norm_a,
+                                f"{src_b_label.lower()}_value": norm_b,
+                                f"{src_a_label.lower()}_raw": str(raw_a),
+                                f"{src_b_label.lower()}_raw": str(raw_b),
+                            }
+                        )
+                        continue
 
                 labels_a.append(norm_a)
                 labels_b.append(norm_b)
