@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Annotate — System Overview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0a0a0a; color: #e0e0e0; }
+  .slide { width: 1280px; min-height: 720px; margin: 0 auto 60px; padding: 60px 80px; background: #111; border: 1px solid #222; border-radius: 12px; position: relative; page-break-after: always; }
+  .slide-num { position: absolute; bottom: 30px; right: 40px; color: #555; font-size: 14px; }
+  .logo { position: absolute; top: 30px; right: 40px; color: #444; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; }
+  h1 { font-size: 42px; font-weight: 700; margin-bottom: 10px; color: #fff; }
+  h2 { font-size: 32px; font-weight: 600; margin-bottom: 24px; color: #fff; }
+  h3 { font-size: 22px; font-weight: 600; margin-bottom: 12px; color: #ccc; }
+  .subtitle { font-size: 20px; color: #888; margin-bottom: 40px; }
+  p, li { font-size: 18px; line-height: 1.6; color: #bbb; }
+  ul { margin-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+  .accent { color: #4fc3f7; }
+  .accent2 { color: #81c784; }
+  .accent3 { color: #ffb74d; }
+  .accent4 { color: #f48fb1; }
+  .warn { color: #ef5350; }
+  .dim { color: #666; }
+  .bold { font-weight: 700; color: #fff; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  th { background: #1a1a2e; color: #4fc3f7; padding: 12px 16px; text-align: left; font-size: 15px; border-bottom: 2px solid #333; }
+  td { padding: 10px 16px; border-bottom: 1px solid #222; font-size: 15px; color: #bbb; }
+  tr:hover td { background: #1a1a1a; }
+  .diagram { background: #0d1117; border: 1px solid #333; border-radius: 8px; padding: 30px; margin: 20px 0; font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 14px; line-height: 1.7; color: #8b949e; white-space: pre; overflow-x: auto; }
+  .diagram .hl { color: #4fc3f7; }
+  .diagram .hl2 { color: #81c784; }
+  .diagram .hl3 { color: #ffb74d; }
+  .diagram .arrow { color: #555; }
+  .grid { display: grid; gap: 20px; margin: 20px 0; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card { background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 20px; }
+  .card h3 { margin-bottom: 8px; }
+  .card p { font-size: 15px; }
+  .metric { text-align: center; padding: 20px; }
+  .metric .value { font-size: 48px; font-weight: 700; }
+  .metric .label { font-size: 14px; color: #888; margin-top: 4px; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 13px; font-weight: 600; margin-right: 4px; }
+  .tag-blue { background: #1a365d; color: #4fc3f7; }
+  .tag-green { background: #1a3d1a; color: #81c784; }
+  .tag-orange { background: #3d2a1a; color: #ffb74d; }
+  .tag-red { background: #3d1a1a; color: #ef5350; }
+  .tag-purple { background: #2a1a3d; color: #ce93d8; }
+  .flow-row { display: flex; align-items: center; gap: 12px; margin: 8px 0; }
+  .flow-box { background: #1a1a2e; border: 1px solid #333; border-radius: 6px; padding: 8px 14px; font-size: 14px; white-space: nowrap; }
+  .flow-arrow { color: #555; font-size: 20px; }
+  @media print { .slide { page-break-after: always; margin: 0; border: none; } }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+  <h1 style="font-size:52px; margin-bottom:20px;">Agent Annotate</h1>
+  <p class="subtitle" style="font-size:24px;">Multi-Agent LLM Pipeline for Publication-Grade<br>Clinical Trial Annotation</p>
+  <div style="margin-top:40px; display:flex; gap:40px;">
+    <div class="metric"><div class="value accent">12</div><div class="label">Research Agents</div></div>
+    <div class="metric"><div class="value accent2">6</div><div class="label">Annotation Fields</div></div>
+    <div class="metric"><div class="value accent3">3</div><div class="label">Blind Verifiers</div></div>
+    <div class="metric"><div class="value accent4">17+</div><div class="label">Free Databases</div></div>
+  </div>
+  <p style="margin-top:40px; color:#555;">Amphoraxe Life Sciences &middot; v12+reasoning &middot; 2026</p>
+  <span class="slide-num">1</span>
+</div>
+
+<!-- SLIDE 2: Three-Phase Pipeline -->
+<div class="slide">
+  <h2>Three-Phase Pipeline</h2>
+  <p class="subtitle">Research &rarr; Annotation &rarr; Verification</p>
+  <div class="diagram"><span class="hl">PHASE 1: RESEARCH</span>          <span class="hl2">PHASE 2: ANNOTATION</span>        <span class="hl3">PHASE 3: VERIFICATION</span>
+<span class="arrow">
+Step 1: Protocol-first</span>
+<span class="hl">[Clinical Protocol]</span>
+   | extracts intervention names
+   | + drug name resolution (LLM)
+   v
+<span class="arrow">Step 2: 11 agents in parallel</span>
+<span class="hl">[Literature        ]</span>  <span class="arrow">--&gt;</span>  <span class="hl2">[Classification ]</span>  <span class="arrow">--&gt;</span>  <span class="hl3">[Verifier 1: gemma2:9b  ]</span>
+<span class="hl">[Peptide Identity  ]</span>  <span class="arrow">--&gt;</span>  <span class="hl2">[Delivery Mode  ]</span>  <span class="arrow">--&gt;</span>  <span class="hl3">[Verifier 2: qwen2.5:7b ]</span>
+<span class="hl">[DBAASP / ChEMBL   ]</span>  <span class="arrow">--&gt;</span>  <span class="hl2">[Outcome        ]</span>  <span class="arrow">--&gt;</span>  <span class="hl3">[Verifier 3: phi4-mini  ]</span>
+<span class="hl">[RCSB PDB / EBI    ]</span>  <span class="arrow">--&gt;</span>  <span class="hl2">[Failure Reason ]</span>  <span class="arrow">--&gt;</span>  <span class="hl3">[Reconciler: qwen2.5:14b]</span>
+<span class="hl">[APD / WHO / IUPHAR]</span>  <span class="arrow">--&gt;</span>  <span class="hl2">[Peptide        ]</span>
+<span class="hl">[Web Context       ]</span>  <span class="arrow">--&gt;</span>  <span class="hl2">[Sequence       ]</span>  <span class="dim">(deterministic, no LLM)</span></div>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">2</span>
+</div>
+
+<!-- SLIDE 3: Research Agents -->
+<div class="slide">
+  <h2>Phase 1: Research Agents <span class="dim">(12 agents, 17+ databases)</span></h2>
+  <table>
+    <tr><th>Agent</th><th>Sources</th><th>Data Provided</th></tr>
+    <tr><td><span class="accent">Clinical Protocol</span></td><td>ClinicalTrials.gov, OpenFDA</td><td>Trial design, interventions, status, safety</td></tr>
+    <tr><td><span class="accent">Literature</span></td><td>PubMed, PMC, Europe PMC</td><td>Published findings, abstracts, full-text</td></tr>
+    <tr><td><span class="accent">Peptide Identity</span></td><td>UniProt, DRAMP</td><td>Protein/peptide ID, sequences, AA length</td></tr>
+    <tr><td><span class="accent">DBAASP</span></td><td>dbaasp.ge</td><td>Antimicrobial activity, MIC values</td></tr>
+    <tr><td><span class="accent">ChEMBL</span></td><td>EMBL-EBI ChEMBL</td><td>Bioactivity, clinical phase, molecule type</td></tr>
+    <tr><td><span class="accent">RCSB PDB</span></td><td>rcsb.org</td><td>3D structure metadata</td></tr>
+    <tr><td><span class="accent">EBI Proteins</span></td><td>ebi.ac.uk/proteins</td><td>Sequences, variants, domains</td></tr>
+    <tr><td><span class="accent">APD</span></td><td>aps.unmc.edu</td><td>AMP database, classifications</td></tr>
+    <tr><td><span class="accent">WHO ICTRP</span></td><td>trialsearch.who.int</td><td>International trial registries</td></tr>
+    <tr><td><span class="accent">IUPHAR</span></td><td>guidetopharmacology.org</td><td>Mechanism of action, drug targets</td></tr>
+    <tr><td><span class="accent">PDBe</span></td><td>ebi.ac.uk/pdbe</td><td>Structure quality metrics</td></tr>
+    <tr><td><span class="accent">Web Context</span></td><td>DuckDuckGo</td><td>Supplementary web context</td></tr>
+  </table>
+  <p><span class="tag tag-green">All free APIs</span> <span class="tag tag-blue">Zero paid services</span> <span class="tag tag-orange">Auto-pull missing Ollama models</span></p>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">3</span>
+</div>
+
+<!-- SLIDE 4: Drug Name Resolution -->
+<div class="slide">
+  <h2>Drug Name Resolution <span class="dim">(Layer 1)</span></h2>
+  <p class="subtitle">LLM resolves abbreviations before database queries</p>
+  <div class="diagram"><span class="hl">Protocol says:</span> "BNP and PDE-V inhibitor"
+
+<span class="hl2">LLM reads trial description &rarr; resolves:</span>
+   BNP <span class="arrow">&rarr;</span> <span class="hl3">nesiritide, brain natriuretic peptide, B-type natriuretic peptide</span>
+   PDE-V <span class="arrow">&rarr;</span> <span class="hl3">sildenafil, phosphodiesterase type 5 inhibitor</span>
+
+<span class="hl2">Research agents now search by ALL names:</span>
+   UniProt: "BNP" <span class="warn">(0 results)</span> &rarr; "nesiritide" <span class="accent2">(found: 32 aa, accession P16860)</span>
+   ChEMBL: "BNP" <span class="warn">(0 results)</span> &rarr; "nesiritide" <span class="accent2">(found: peptide, Phase IV)</span>
+
+<span class="hl2">EDAM caches the mapping:</span>
+   Next trial with "BNP" <span class="arrow">&rarr;</span> instant lookup, no LLM call needed</div>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">4</span>
+</div>
+
+<!-- SLIDE 5: Annotation Agents -->
+<div class="slide">
+  <h2>Phase 2: Annotation Agents <span class="dim">(6 fields)</span></h2>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3><span class="accent">Classification</span></h3>
+      <p>AMP(infection) / AMP(other) / Other</p>
+      <p class="dim" style="font-size:13px; margin-top:8px;">4 modes: Direct antimicrobial (kill + growth inhibition), Host defense, Anti-biofilm, Pathogen-targeting immunogens</p>
+    </div>
+    <div class="card">
+      <h3><span class="accent2">Delivery Mode</span></h3>
+      <p>18 specific routes</p>
+      <p class="dim" style="font-size:13px; margin-top:8px;">IV, IM, SC, Oral variants, Topical variants, Inhalation, Intranasal, Other</p>
+    </div>
+    <div class="card">
+      <h3><span class="accent3">Outcome</span></h3>
+      <p>7 values (Positive, Failed, Terminated, Withdrawn, Recruiting, Active, Unknown)</p>
+      <p class="dim" style="font-size:13px; margin-top:8px;">Two-pass investigative design. Deterministic bypass for clear registry statuses.</p>
+    </div>
+    <div class="card">
+      <h3><span class="accent4">Reason for Failure</span></h3>
+      <p>5 values + empty</p>
+      <p class="dim" style="font-size:13px; margin-top:8px;">Pre-check gate: skips LLM if outcome is non-failure. Runs AFTER outcome.</p>
+    </div>
+    <div class="card">
+      <h3><span class="accent">Peptide</span></h3>
+      <p>True / False (2-50 AA, single chain)</p>
+      <p class="dim" style="font-size:13px; margin-top:8px;">Structured Pass 1&rarr;2 handoff. Post-Pass-2 consistency check. Conservative bias.</p>
+    </div>
+    <div class="card">
+      <h3><span class="accent2">Sequence</span></h3>
+      <p>Amino acid sequence (deterministic)</p>
+      <p class="dim" style="font-size:13px; margin-top:8px;">Extracts drug fragments from DRAMP/APD &rarr; UniProt features &rarr; full seq &le;200 AA. No LLM.</p>
+    </div>
+  </div>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">5</span>
+</div>
+
+<!-- SLIDE 6: Two-Pass Design -->
+<div class="slide">
+  <h2>Two-Pass Annotation Design</h2>
+  <p class="subtitle">Every LLM-based agent uses Pass 1 (extract facts) &rarr; Pass 2 (apply decision tree)</p>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Pass 1: Fact Extraction</h3>
+      <p>LLM extracts <span class="bold">structured facts</span> from evidence:</p>
+      <ul>
+        <li>Molecular class (peptide? protein? small molecule?)</li>
+        <li>Database hits (UniProt, DRAMP, ChEMBL)</li>
+        <li>Mechanism of action</li>
+        <li>Product description</li>
+        <li>Active ingredient role</li>
+      </ul>
+      <p class="dim" style="margin-top:8px;">Output is <span class="accent">parsed into structured dict</span> before Pass 2</p>
+    </div>
+    <div class="card">
+      <h3>Pass 2: Decision Tree</h3>
+      <p>LLM applies <span class="bold">explicit rules</span> to extracted facts:</p>
+      <ul>
+        <li>Step 1: Is the molecular class a peptide?</li>
+        <li>Step 2: Is the peptide the active drug?</li>
+        <li>Step 3: Database confirmation</li>
+      </ul>
+      <p class="dim" style="margin-top:8px;">Prevents 8B models from shortcutting on surface keywords</p>
+      <p style="margin-top:12px;"><span class="tag tag-blue">Post-Pass-2 check</span> If Pass 1 says peptide but Pass 2 says False &rarr; trust extraction</p>
+    </div>
+  </div>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">6</span>
+</div>
+
+<!-- SLIDE 7: Verification -->
+<div class="slide">
+  <h2>Phase 3: Blind Multi-Model Verification</h2>
+  <p class="subtitle">3 cognitively diverse verifiers + reconciler for disputes</p>
+  <div class="grid grid-3">
+    <div class="card" style="border-color:#4fc3f7;">
+      <h3><span class="accent">Conservative</span></h3>
+      <p>gemma2:9b</p>
+      <p class="dim" style="font-size:13px;">Safest interpretation. Defaults to Unknown for ambiguous evidence.</p>
+    </div>
+    <div class="card" style="border-color:#81c784;">
+      <h3><span class="accent2">Evidence-Strict</span></h3>
+      <p>qwen2.5:7b</p>
+      <p class="dim" style="font-size:13px;">Only citable facts. Rejects reasoning not grounded in evidence.</p>
+    </div>
+    <div class="card" style="border-color:#ffb74d;">
+      <h3><span class="accent3">Adversarial</span></h3>
+      <p>phi4-mini:3.8b</p>
+      <p class="dim" style="font-size:13px;">Challenges obvious answers. Tests if the annotation withstands scrutiny.</p>
+    </div>
+  </div>
+  <div class="diagram"><span class="hl">Model-Grouped Verification</span> (v11 optimization)
+
+For each verifier model (3 total):
+   Load model ONCE <span class="arrow">&rarr;</span> verify ALL fields across ALL trials in batch <span class="arrow">&rarr;</span> unload
+
+<span class="hl2">Before:</span> 15 model switches per batch (field &times; verifier)
+<span class="hl2">After:</span>  3 model switches per batch (one per verifier)
+
+<span class="hl3">Consensus:</span> 2 of 3 verifiers agree <span class="arrow">&rarr;</span> accepted
+           Disagree <span class="arrow">&rarr;</span> <span class="accent3">Reconciler (qwen2.5:14b)</span> makes final call</div>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">7</span>
+</div>
+
+<!-- SLIDE 8: Mini-Batch Pipeline -->
+<div class="slide">
+  <h2>Mini-Batch Processing</h2>
+  <p class="subtitle">Batch size 5 &mdash; optimizes model switching and crash resilience</p>
+  <div class="diagram"><span class="hl">MINI-BATCH CYCLE</span> (5 trials per batch)
+
+<span class="hl2">Phase A: Annotate</span>              <span class="hl3">Phase B: Verify</span>                <span class="accent3">Phase C: Finalize</span>
+  annotation model stays          model-grouped:                  reconcile disputes
+  loaded for ALL 5 trials         verifier_1 &rarr; all fields       normalize values
+  &times; 6 fields = 30 calls           verifier_2 &rarr; all fields       enforce consistency
+  <span class="accent">0 model switches</span>               verifier_3 &rarr; all fields       persist to disk
+                                  <span class="accent">3 model switches</span>              <span class="accent">1 model switch</span>
+
+Total: <span class="bold">~4 model loads per 5 trials = 0.8 switches/trial</span>
+Avg time: <span class="bold">~380s/trial</span> on Mac Mini (16GB, qwen2.5:14b annotation model)</div>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">8</span>
+</div>
+
+<!-- SLIDE 9: Cross-Field Consistency -->
+<div class="slide">
+  <h2>Cross-Field Consistency Engine</h2>
+  <p class="subtitle">Structural rules that catch contradictions between independently-annotated fields</p>
+  <table>
+    <tr><th>Rule</th><th>Condition</th><th>Action</th></tr>
+    <tr><td><span class="accent">AMP &rarr; Peptide</span></td><td>Classification = AMP(*)</td><td>Force Peptide = True <span class="dim">(all AMPs are peptides)</span></td></tr>
+    <tr><td><span class="accent2">Peptide &rarr; Classification</span></td><td>Peptide = False</td><td>Force Classification = Other</td></tr>
+    <tr><td><span class="accent3">Outcome &rarr; RFR</span></td><td>Outcome = Positive/Recruiting/Active/Unknown</td><td>Clear Reason for Failure</td></tr>
+    <tr><td><span class="accent4">Pass 1 &rarr; Pass 2</span></td><td>Pass 1 says "short peptide" but Pass 2 says False</td><td>Override to True <span class="dim">(trust extraction over classification)</span></td></tr>
+  </table>
+  <div class="diagram"><span class="hl">Execution order:</span>
+  1. Annotate all fields independently
+  2. <span class="hl2">Pre-verification consistency</span> (AMP&rarr;peptide, peptide&rarr;classification, outcome&rarr;RFR)
+  3. Blind verification (3 verifiers + reconciler)
+  4. <span class="hl3">Post-verification consistency</span> (same rules on final values)
+  5. <span class="accent3">Normalize final values</span> (catch raw reconciler text &rarr; canonical)
+  6. Persist</div>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">9</span>
+</div>
+
+<!-- SLIDE 10: EDAM Overview -->
+<div class="slide">
+  <h2>EDAM: Evidence-Driven Adaptive Memory</h2>
+  <p class="subtitle">Self-learning system that improves across runs without human intervention</p>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>What EDAM Stores</h3>
+      <table style="font-size:14px;">
+        <tr><td><span class="accent">Experiences</span></td><td>Every annotation with evidence + reasoning</td></tr>
+        <tr><td><span class="accent2">Corrections</span></td><td>When the agent contradicts its own evidence</td></tr>
+        <tr><td><span class="accent3">Stability Index</span></td><td>Cross-run consistency per NCT/field</td></tr>
+        <tr><td><span class="accent4">Drug Names</span></td><td>LLM-resolved name mappings (cached)</td></tr>
+        <tr><td><span class="accent">Embeddings</span></td><td>Semantic search for similar corrections</td></tr>
+        <tr><td><span class="accent2">Epochs</span></td><td>Version-gated data (decay old knowledge)</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>5 Learning Sources</h3>
+      <ul style="font-size:15px;">
+        <li><span class="accent">Self-audit</span> &mdash; agent contradicts own evidence</li>
+        <li><span class="accent2">Consistency overrides</span> &mdash; structural rules changed a value</li>
+        <li><span class="accent3">Verification reconciliation</span> &mdash; reconciler overrode annotation</li>
+        <li><span class="accent4">Drug name cache</span> &mdash; LLM name resolutions</li>
+        <li><span class="accent">Self-review</span> &mdash; evidence-grounded reflection</li>
+      </ul>
+    </div>
+  </div>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">10</span>
+</div>
+
+<!-- SLIDE 11: EDAM Learning Cycle -->
+<div class="slide">
+  <h2>EDAM Learning Cycle</h2>
+  <p class="subtitle">How the agent improves across runs</p>
+  <div class="diagram"><span class="hl">RUN 1</span> (clean EDAM, epoch 1)
+  Agent annotates 25 trials
+  <span class="arrow">&rarr;</span> Self-audit catches 3 contradictions <span class="arrow">&rarr;</span> stored as corrections
+  <span class="arrow">&rarr;</span> Consistency engine overrides 25 values <span class="arrow">&rarr;</span> stored as corrections
+  <span class="arrow">&rarr;</span> Reconciler changes 14 values <span class="arrow">&rarr;</span> stored as corrections
+  <span class="arrow">&rarr;</span> Drug names resolved for 86 interventions <span class="arrow">&rarr;</span> cached
+
+<span class="hl2">RUN 2</span> (EDAM populated from run 1)
+  Agent starts each annotation with <span class="accent">[EDAM GUIDANCE]</span> block:
+  <span class="hl3">[PAST CORRECTIONS]</span>
+    - NCT02665377/peptide: corrected False&rarr;True (UniProt showed 28 AA)
+    - NCT00000886/outcome: corrected Unknown&rarr;Failed (literature found toxicity)
+  <span class="hl3">[REASONING PATTERNS]</span>
+    - peptide: UniProt entries with 2-50 AA indicate peptide=True
+    - delivery_mode: continuous infusion rates indicate IV
+  <span class="hl3">[STABLE EXEMPLARS]</span>
+    - NCT02642523: consistently 'Withdrawn' (2 runs, evidence=high)
+
+  Agent makes fewer mistakes <span class="arrow">&rarr;</span> fewer overrides needed
+
+<span class="hl2">RUN N</span> (convergence)
+  &lt;2% change between consecutive runs <span class="arrow">&rarr;</span> code stable <span class="arrow">&rarr;</span> proceed to full 964 NCTs</div>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">11</span>
+</div>
+
+<!-- SLIDE 12: EDAM Guidance Injection -->
+<div class="slide">
+  <h2>EDAM Guidance Injection</h2>
+  <p class="subtitle">Token-budgeted memory block prepended to every LLM annotation call</p>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Budget Allocation (2000 tokens)</h3>
+      <table style="font-size:14px;">
+        <tr><td style="width:60%"><span class="accent">Corrections</span></td><td>40%</td><td>Past mistakes with evidence</td></tr>
+        <tr><td><span class="accent2">Stable Exemplars</span></td><td>25%</td><td>Consistent results across runs</td></tr>
+        <tr><td><span class="accent3">Reasoning Patterns</span></td><td>15%</td><td>Generalized rules from corrections</td></tr>
+        <tr><td><span class="accent4">Prompt Hints</span></td><td>10%</td><td>A/B tested prompt variations</td></tr>
+        <tr><td><span class="dim">Buffer</span></td><td>10%</td><td>Reserved</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Epoch Decay</h3>
+      <p style="font-size:15px;">Old data from previous code versions is downweighted:</p>
+      <ul style="font-size:14px;">
+        <li>Current epoch: 100% weight</li>
+        <li>1 epoch back: 75% (experiences), 80% (corrections)</li>
+        <li>2 epochs back: 56% / 64%</li>
+        <li>Floor: 5% (never fully forgotten)</li>
+      </ul>
+      <p style="font-size:13px; color:#666; margin-top:8px;">New code version = new epoch. Prevents stale knowledge from contaminating new behavior.</p>
+    </div>
+  </div>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">12</span>
+</div>
+
+<!-- SLIDE 13: Self-Audit -->
+<div class="slide">
+  <h2>EDAM Self-Audit</h2>
+  <p class="subtitle">Post-annotation consistency checking against the agent's own research evidence</p>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>4 Audit Types</h3>
+      <ul style="font-size:15px;">
+        <li><span class="accent">Delivery Mode:</span> checks OpenFDA route fields, protocol text for explicit route keywords</li>
+        <li><span class="accent2">Peptide:</span> checks UniProt AA length, database hits, semantic patterns. Requires 2+ signals for True&rarr;False corrections</li>
+        <li><span class="accent3">Outcome:</span> catches Positive without publications, missed Recruiting status, Unknown despite hasResults=true</li>
+        <li><span class="accent4">Classification:</span> catches missed AMP drugs classified as Other using database evidence</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Key Principle</h3>
+      <p style="font-size:16px; color:#fff;">The agent <span class="bold">never sees human annotations</span> during learning.</p>
+      <p style="margin-top:12px;">It improves through evidence-grounded self-correction. The structured research data IS the ground truth.</p>
+      <p style="margin-top:12px;">Human concordance is measured independently as an evaluation metric, not a training signal.</p>
+    </div>
+  </div>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">13</span>
+</div>
+
+<!-- SLIDE 14: Reasoning-First Strategy -->
+<div class="slide">
+  <h2>Reasoning-First Improvement Strategy</h2>
+  <p class="subtitle">Drug lists are frozen. All improvements through reasoning.</p>
+  <div class="grid grid-3">
+    <div class="card" style="border-color:#4fc3f7;">
+      <h3><span class="accent">Layer 1: Research</span></h3>
+      <p style="font-size:14px;">Better evidence in &rarr; better answers out</p>
+      <ul style="font-size:13px;">
+        <li>Drug name resolution via LLM</li>
+        <li>Cached in EDAM after first hit</li>
+        <li>UniProt features (Chain/Peptide)</li>
+        <li>DRAMP/APD priority for sequences</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:#81c784;">
+      <h3><span class="accent2">Layer 2: Reasoning</span></h3>
+      <p style="font-size:14px;">Better LLM reasoning with evidence</p>
+      <ul style="font-size:13px;">
+        <li>Structured Pass 1&rarr;2 handoff</li>
+        <li>Per-field temperature tuning</li>
+        <li>Post-Pass-2 consistency check</li>
+        <li>Conservative bias (more False examples)</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:#ffb74d;">
+      <h3><span class="accent3">Layer 3: Validation</span></h3>
+      <p style="font-size:14px;">Cross-field structural rules</p>
+      <ul style="font-size:13px;">
+        <li>AMP &rarr; peptide=True</li>
+        <li>peptide=False &rarr; classification=Other</li>
+        <li>outcome &rarr; clears failure reason</li>
+        <li>Post-verification normalization</li>
+      </ul>
+    </div>
+  </div>
+  <div style="margin-top:20px; padding:16px; background:#1a1a1a; border-left:3px solid #ef5350; border-radius:4px;">
+    <p><span class="warn bold">Design Principle:</span> No hardcoded drug&rarr;classification lookup tables. The agent must reason from evidence. Drug lists are frozen at ~100 well-known drugs for performance only &mdash; future improvements come from better research, reasoning, and validation.</p>
+  </div>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">14</span>
+</div>
+
+<!-- SLIDE 15: EDAM Plan -->
+<div class="slide">
+  <h2>EDAM Learning Plan</h2>
+  <p class="subtitle">Code-first iteration, EDAM supplementary</p>
+  <table>
+    <tr><th>Phase</th><th>What</th><th>Convergence</th></tr>
+    <tr><td><span class="accent bold">Phase 1</span></td><td>Iterate on Batch A (25 NCTs) until stable</td><td>&lt;2% change between consecutive runs</td></tr>
+    <tr><td><span class="accent2 bold">Phase 2</span></td><td>Expand to Batch A+B (50 NCTs)</td><td>Concordance holds on larger sample</td></tr>
+    <tr><td><span class="accent3 bold">Phase 3</span></td><td>Full 964-NCT single-version run</td><td>Clean concordance across entire dataset</td></tr>
+    <tr><td><span class="accent4 bold">Phase 4</span></td><td>EDAM cleanup + final calibration</td><td>Measure EDAM-only impact</td></tr>
+    <tr><td><span class="bold">Phase 5</span></td><td>884 unannotated NCTs (agent-only)</td><td>No human reference &mdash; rely on review queue</td></tr>
+  </table>
+  <div style="margin-top:20px;">
+    <h3>Current Status</h3>
+    <p><span class="tag tag-blue">Phase 1</span> Three Batch A jobs queued on fixed code (c6e6ea4). Clean EDAM. Jobs 2 &amp; 3 will show EDAM impact + convergence.</p>
+  </div>
+  <span class="logo">Amphoraxe</span>
+  <span class="slide-num">15</span>
+</div>
+
+</body>
+</html>
