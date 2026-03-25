@@ -117,8 +117,12 @@ class FailureReasonAgent(BaseAnnotationAgent):
         # don't bother running the LLM — return empty immediately.
         # This prevents the dominant error pattern where the 8B model
         # hallucinates "Ineffective for purpose" for non-failed trials.
+        # v16: Removed "Unknown" from skip list — completed trials with
+        # unknown outcomes may still have publishable failure reasons
+        # (e.g., toxicity, adverse events). Pass 1 failure detection
+        # provides the hallucination guard.
         outcome_result = metadata.get("outcome_result", "") if metadata else ""
-        if outcome_result in ("Positive", "Recruiting", "Active, not recruiting", "Unknown"):
+        if outcome_result in ("Positive", "Recruiting", "Active, not recruiting"):
             logger.info(
                 f"  failure_reason: skipping — outcome='{outcome_result}' is non-failure"
             )

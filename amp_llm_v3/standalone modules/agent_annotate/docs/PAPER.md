@@ -305,6 +305,7 @@ All five annotation agents employ a two-pass architecture. This universal design
 - *Pass 1* extracts molecular facts: intervention name, molecular class (peptide chain vs antibody vs small molecule vs nutritional product), database confirmation (UniProt, DRAMP, ChEMBL entries), product description, and investigational drug role (investigational drug vs food ingredient vs targeting vector vs brand name).
 - *Pass 2* applies a three-step decision tree: (1) Is the molecular class a peptide? (2) Is it the investigational drug (not a food ingredient or brand name artifact)? (3) Database/literature confirmation.
 - *v15:* If peptide=False, all other fields are set to N/A and annotation is skipped (non-peptide trials are out of scope).
+- *v16:* The N/A cascade requires peptide confidence ≥ 0.90 to trigger. Low-confidence False results proceed to full annotation but are flagged for review, preventing false-negative wipeouts observed in NCT02624518 and NCT02654587.
 
 **Outcome Agent.**
 
@@ -321,6 +322,7 @@ All five annotation agents employ a two-pass architecture. This universal design
    - H2: Results posted on ClinicalTrials.gov → lean Positive.
    - H3: Old trial (pre-2010) completed normally with no negative evidence → lean Positive.
    - H4: Only after exhausting H1-H3 → Unknown.
+- *v16:* Added adverse event detection in the fallback heuristic: publications mentioning toxicity, adverse reactions, abscess formation, or dose-limiting events now trigger "Failed - completed trial" even when the LLM's Pass 2 defaults to "Unknown". Publications count as corroboration for H1 (Phase I completion) even when they describe a related study rather than the exact NCT ID. Negative result valence from Pass 1 now maps to "Failed" in the fallback path.
 
 A critical rule governs the distinction between completion and failure: a registry status of COMPLETED does *not* imply failure. The "Failed - completed trial" classification requires affirmative evidence of a negative result.
 
@@ -328,8 +330,9 @@ A critical rule governs the distinction between completion and failure: a regist
 
 The orchestrator runs the Failure Reason Agent *after* the Outcome Agent completes and passes the outcome result in metadata. The agent implements a deterministic pre-check gate:
 
-1. **Outcome-based pre-check (v2):** If the Outcome Agent classified the trial as Positive, Recruiting, Active not recruiting, or Unknown, the Failure Reason is set to empty *without any LLM call*. This deterministic gate eliminates the dominant error pattern observed in concordance analysis, where the 8B model hallucinated "Ineffective for purpose" for 42 out of 62 non-failed trials.
-2. **Only Terminated and Failed outcomes proceed** to the two-pass LLM investigation.
+1. **Outcome-based pre-check (v2):** If the Outcome Agent classified the trial as Positive, Recruiting, or Active not recruiting, the Failure Reason is set to empty *without any LLM call*. This deterministic gate eliminates the dominant error pattern observed in concordance analysis, where the 8B model hallucinated "Ineffective for purpose" for 42 out of 62 non-failed trials.
+2. *v16:* "Unknown" was removed from the pre-check skip list. Completed trials with Unknown outcomes may still have publishable failure reasons (e.g., toxicity discovered post-completion). The Pass 1 failure detection provides the hallucination guard instead.
+3. **Only Terminated, Failed, and Unknown outcomes proceed** to the two-pass LLM investigation.
 3. When the LLM is invoked, Pass 1 investigates all sources for failure signals, and Pass 2 classifies the failure mode. The "no failure" default for COMPLETED trials without published negative results is preserved.
 
 #### 3.3.3 Deterministic Pre-Classifiers (v9)
@@ -762,7 +765,7 @@ Several limitations constrain the interpretation of the current results:
 
 **Imperfect ground truth.** Human annotations exhibit 19.8% disagreement, meaning that even a perfect system would achieve at most 80.2% agreement with any single annotator. Evaluation against a consensus ground truth (where both annotators agree) would provide a cleaner signal but would exclude the 19.8% of cases that are, by definition, the most difficult.
 
-**Concordance caveats.** R1 is a composite of 7 annotators; internal R1 reliability is not independently measurable from the available data. Missing data (43-65% blank annotations) is likely not missing at random, as harder trials receive less annotation coverage. All kappa values should be interpreted alongside their 95% CIs and the corresponding AC₁, particularly for fields with extreme prevalence (e.g., Peptide, where >90% of trials are non-peptide).
+**Concordance caveats.** R1 is a composite of 7 annotators; internal R1 reliability is not independently measurable from the available data. Missing data (43-65% blank annotations) is likely not missing at random, as harder trials receive less annotation coverage. All kappa values should be interpreted alongside their 95% CIs and the corresponding AC₁, particularly for fields with extreme prevalence (e.g., Peptide, where >90% of trials are non-peptide). For Classification and Peptide, AC₁ should be preferred over kappa as the primary agreement metric because the prevalence index exceeds 0.5 — kappa near zero with >80% raw agreement is the classic prevalence paradox, not poor agreement.
 
 **No cross-validation.** The v3 improvements described in Section 4.4 were designed in response to errors observed on the same 25 trials used for evaluation. Performance on held-out trials may differ.
 

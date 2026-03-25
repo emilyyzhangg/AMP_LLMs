@@ -643,6 +643,8 @@ Cohen's kappa is computed for each field to measure inter-annotator agreement be
 
 All confidence intervals use the large-sample normal approximation. With typical comparison sizes of n=35-62, these intervals should be interpreted with caution; bootstrap CIs may provide tighter estimates for future analyses with larger samples.
 
+**Reporting guidance (v16):** For fields where the prevalence index exceeds 0.5 (Classification, Peptide), kappa is unreliable and AC₁ should be treated as the primary agreement metric. Kappa is retained for completeness and for fields with balanced distributions (Outcome, Delivery Mode, Reason for Failure). All concordance tables should report both kappa and AC₁ side by side. When interpreting kappa near zero with high raw agreement (>80%), the prevalence paradox is almost certainly the explanation — not poor agreement.
+
 ### 8.6 Impact of Value Normalization on Concordance
 
 Verifier value normalization (Section 6.6) directly affects concordance calculations because it changes which trials achieve consensus and which are flagged for review. Retroactive application of the expanded normalization rules to 11 completed jobs produced the following impact:

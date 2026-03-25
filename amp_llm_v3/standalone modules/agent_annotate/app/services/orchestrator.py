@@ -1216,6 +1216,24 @@ class PipelineOrchestrator:
         # Metadata dict that accumulates results for dependent agents
         shared_metadata: dict = {}
 
+        # Extract intervention names from clinical_protocol research data
+        # so annotation agents (especially sequence) can look up raw_data keys.
+        for res in research_data:
+            if res.agent_name == "clinical_protocol" and not res.error and res.raw_data:
+                proto_section = res.raw_data.get(
+                    "protocol_section",
+                    res.raw_data.get("protocolSection", {}),
+                )
+                arms_mod = proto_section.get("armsInterventionsModule", {})
+                intervention_names = [
+                    interv.get("name", "")
+                    for interv in arms_mod.get("interventions", [])
+                    if interv.get("name")
+                ]
+                if intervention_names:
+                    shared_metadata["interventions"] = intervention_names
+                break
+
         async def annotate_field(field_name: str, metadata: Optional[dict] = None) -> FieldAnnotation:
             agent_cls = ANNOTATION_AGENTS.get(field_name)
             if not agent_cls:
@@ -1285,7 +1303,9 @@ class PipelineOrchestrator:
         shared_metadata["peptide_result"] = peptide_ann.value
 
         # v15: If peptide=False, this trial is not a peptide therapeutic — N/A all other fields
-        if peptide_ann.value == "False":
+        # v16: Only trigger cascade if confidence ≥ 0.90 to avoid false-negative wipeouts.
+        # Lower-confidence False results proceed to annotation but flag for review.
+        if peptide_ann.value == "False" and peptide_ann.confidence >= 0.90:
             for field_name in ANNOTATION_AGENTS:
                 if field_name == "peptide":
                     continue
@@ -1297,8 +1317,13 @@ class PipelineOrchestrator:
                     model_name="deterministic",
                     skip_verification=True,
                 ))
-            logger.info(f"  peptide=False for {nct_id}, N/A-ing all other fields")
+            logger.info(f"  peptide=False (conf={peptide_ann.confidence:.2f}) for {nct_id}, N/A-ing all other fields")
             return annotations
+        elif peptide_ann.value == "False":
+            logger.info(
+                f"  peptide=False but low confidence ({peptide_ann.confidence:.2f}) for {nct_id}, "
+                f"proceeding with annotation (will be flagged for review)"
+            )
 
         # --- Step 2: Run classification, delivery_mode, outcome, sequence (NOT failure_reason yet) ---
         # failure_reason depends on outcome, so we run it after outcome completes.
@@ -1311,8 +1336,7 @@ class PipelineOrchestrator:
         if config.orchestrator.parallel_annotation:
             tasks = []
             for field in step2_fields:
-                meta = shared_metadata if field == "classification" else None
-                tasks.append(annotate_field(field, metadata=meta))
+                tasks.append(annotate_field(field, metadata=shared_metadata))
             results = list(await asyncio.gather(*tasks, return_exceptions=True))
             for i, ann in enumerate(results):
                 if isinstance(ann, Exception):
@@ -1329,8 +1353,7 @@ class PipelineOrchestrator:
                 job.progress.current_agent = f"{field}_annotator"
                 _sf = _field_time.monotonic()
                 try:
-                    meta = shared_metadata if field == "classification" else None
-                    ann = await annotate_field(field, metadata=meta)
+                    ann = await annotate_field(field, metadata=shared_metadata)
                     annotations.append(ann)
                 except Exception as e:
                     annotations.append(FieldAnnotation(

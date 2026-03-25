@@ -106,9 +106,13 @@ CLASSIFICATION RULES:
 3. If Literature says "administered intravenously" but Protocol is vague → use IV.
 4. ONLY use "Injection/Infusion - Other/Unspecified" when NO source specifies IM, SC, or IV.
 5. Nutritional formula/shake = Oral - Drink. Nasal spray = Intranasal (not Topical - Spray).
+6. MULTI-ROUTE TRIALS: If the trial tests multiple active drugs that use DIFFERENT routes
+   (e.g., one drug given IV and another given orally), list ALL routes comma-separated in the
+   same order as the drugs appear. Do NOT list multiple routes for a single drug, and do NOT
+   list the placebo/comparator route separately.
 
 Format your response EXACTLY as:
-Delivery Mode: [one of the 18 valid values, exactly as written]
+Delivery Mode: [one of the 18 valid values, exactly as written — or comma-separated if multi-route]
 Evidence: [cite which source determined the route]
 Reasoning: [brief explanation]"""
 

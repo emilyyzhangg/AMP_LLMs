@@ -337,10 +337,22 @@ class OutcomeAgent(BaseAnnotationAgent):
         if match:
             results_section = match.group(1).strip()
 
-        if results_section and results_section not in ("none found", "none", "no results"):
+        has_publications = (
+            results_section
+            and results_section not in ("none found", "none", "no results", "not found")
+        )
+
+        if has_publications:
             if any(kw in results_section for kw in ["efficacy", "effective", "positive", "significant", "met primary"]):
                 return "Positive"
             if any(kw in results_section for kw in ["failed", "negative", "not effective", "did not meet"]):
+                return "Failed - completed trial"
+            # v16: Detect adverse event / toxicity signals in publications
+            if any(kw in results_section for kw in [
+                "unacceptable", "toxicity", "toxic", "adverse", "abscess",
+                "reactogenicity", "safety concern", "not tolerated", "dose-limiting",
+                "serious adverse", "discontinued due to",
+            ]):
                 return "Failed - completed trial"
 
         # Fall back to registry status
@@ -371,10 +383,12 @@ class OutcomeAgent(BaseAnnotationAgent):
                 valence = valence_match.group(1).strip()
                 if "positive" in valence or "mixed" in valence:
                     return "Positive"
+                # v16: Negative valence → Failed
+                if "negative" in valence:
+                    return "Failed - completed trial"
 
             # H1: Phase I completion = Positive, BUT requires corroboration
-            # Without results posted or publications, Phase I completion
-            # alone is insufficient — return Unknown instead.
+            # v16: publications count as corroboration even if indirect
             phase_match = re.search(r"trial phase:\s*(.+?)(?:\n|$)", lower)
             if phase_match:
                 phase = phase_match.group(1).strip()
@@ -382,7 +396,7 @@ class OutcomeAgent(BaseAnnotationAgent):
                     "phase1" in phase or "phase 1" in phase
                     or "early_phase" in phase or "early phase" in phase
                 )
-                if is_phase1 and has_results_posted:
+                if is_phase1 and (has_results_posted or has_publications):
                     return "Positive"
                 # Phase I without corroboration → Unknown (v7 calibration)
 

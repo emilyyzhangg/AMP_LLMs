@@ -132,8 +132,21 @@ def _score_candidate(candidate: dict) -> float:
     return source_weight * relevance * length_penalty * maturity_bonus
 
 
+def _strip_intervention_prefix(name: str) -> str:
+    """Strip ClinicalTrials.gov type prefix (e.g. 'BIOLOGICAL: X' → 'X')."""
+    if ": " in name:
+        prefix, _, rest = name.partition(": ")
+        if prefix.upper() in (
+            "BIOLOGICAL", "DRUG", "DEVICE", "PROCEDURE",
+            "RADIATION", "DIETARY SUPPLEMENT", "GENETIC",
+            "DIAGNOSTIC TEST", "COMBINATION PRODUCT", "OTHER",
+        ):
+            return rest
+    return name
+
+
 def _extract_intervention_names(metadata: dict | None) -> list[str]:
-    """Extract intervention names from metadata."""
+    """Extract intervention names from metadata, stripping type prefixes."""
     if not metadata:
         return []
     raw = metadata.get("interventions", [])
@@ -144,10 +157,27 @@ def _extract_intervention_names(metadata: dict | None) -> list[str]:
         if isinstance(item, dict):
             name = item.get("name") or item.get("intervention_name") or ""
             if name:
-                names.append(str(name))
+                names.append(_strip_intervention_prefix(str(name)))
         elif isinstance(item, str) and item:
-            names.append(item)
+            names.append(_strip_intervention_prefix(item))
     return names
+
+
+def _extract_interventions_from_raw_data(all_raw: dict) -> list[str]:
+    """Fallback: extract intervention names from raw_data keys.
+
+    Raw data keys follow the pattern 'source_interventionName' or
+    'source_interventionName_suffix'. We extract unique intervention
+    names by looking at uniprot_* keys (most reliable pattern).
+    """
+    names = set()
+    for key in all_raw:
+        if key.startswith("uniprot_") and not key.endswith(("_no_structured_match", "_resolved_via")):
+            # uniprot_{name} or uniprot_{name}_other_suffix
+            candidate = key[len("uniprot_"):]
+            if candidate:
+                names.add(candidate)
+    return list(names)
 
 
 class SequenceAgent(BaseAnnotationAgent):
@@ -171,7 +201,6 @@ class SequenceAgent(BaseAnnotationAgent):
         5. UniProt full sequence (≤100 AA, verified relevance > 0.5)
         6. EBI Proteins structured entries
         """
-        interventions = _extract_intervention_names(metadata)
         candidates: list[dict] = []
         evidence: list[SourceCitation] = []
         reasoning_parts: list[str] = []
@@ -185,6 +214,15 @@ class SequenceAgent(BaseAnnotationAgent):
             if result.raw_data:
                 all_raw.update(result.raw_data)
 
+        # Extract intervention names — try metadata first, fall back to raw_data keys
+        interventions = _extract_intervention_names(metadata)
+        if not interventions:
+            interventions = _extract_interventions_from_raw_data(all_raw)
+            if interventions:
+                reasoning_parts.append(
+                    f"Interventions extracted from raw_data keys: {interventions[:3]}"
+                )
+
         # Also keep citation references for evidence attribution
         citations_by_source: dict[str, list[SourceCitation]] = {}
         for result in research_results:
@@ -197,7 +235,13 @@ class SequenceAgent(BaseAnnotationAgent):
 
         for intervention in interventions:
             # 1. DBAASP structured sequences
+            # Key is dbaasp_{name}_sequences when matches exist
             dbaasp_seqs = all_raw.get(f"dbaasp_{intervention}_sequences", [])
+            if not dbaasp_seqs:
+                # Fallback: some versions store entries under the base key
+                base = all_raw.get(f"dbaasp_{intervention}", {})
+                if isinstance(base, dict):
+                    dbaasp_seqs = base.get("entries", [])
             for entry in dbaasp_seqs:
                 if not isinstance(entry, dict):
                     continue
@@ -234,6 +278,13 @@ class SequenceAgent(BaseAnnotationAgent):
 
             # 3. ChEMBL HELM notation
             helm = all_raw.get(f"chembl_{intervention}_helm", "")
+            if not helm:
+                # Fallback: check molecules list for helm_notation field
+                mols = all_raw.get(f"chembl_{intervention}_molecules", [])
+                for mol in (mols if isinstance(mols, list) else []):
+                    if isinstance(mol, dict) and mol.get("helm_notation"):
+                        helm = mol["helm_notation"]
+                        break
             if helm:
                 seq = _parse_helm_sequence(helm)
                 if seq:
