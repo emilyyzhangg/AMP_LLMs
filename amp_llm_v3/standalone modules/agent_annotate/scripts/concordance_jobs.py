@@ -227,7 +227,7 @@ def normalise(value, field_name):
         return (str(value), False)
 
     s = str(value).strip()
-    if s == "" or s.lower() == "none":
+    if s == "" or s.lower() in ("none", "n/a"):
         return ("", True)
 
     s_lower = s.lower()
@@ -255,6 +255,52 @@ def normalise(value, field_name):
         return (_normalise_sequence(s), False)
     else:
         return (s, False)
+
+
+def _bucket_value(normalised_value: str, field_name: str) -> str:
+    """Bucket normalised values into broad categories for concordance.
+
+    Conforms to how concordance is measured:
+    - Classification: AMP(infection) + AMP(other) → AMP
+    - Delivery Mode: injection/infusion, oral, topical, other
+    - Outcome: active + recruiting → Active
+    - Peptide: blank → True (assume peptide unless explicitly False)
+    """
+    if not normalised_value:
+        if field_name == "peptide":
+            return "True"  # Default: assume peptide
+        return normalised_value
+
+    s = normalised_value
+
+    if field_name == "classification":
+        if s.startswith("AMP"):
+            return "AMP"
+        return s
+
+    elif field_name == "delivery_mode":
+        s_lower = s.lower()
+        if "injection" in s_lower or "infusion" in s_lower or s_lower == "iv":
+            return "Injection/Infusion"
+        if "oral" in s_lower:
+            return "Oral"
+        if "topical" in s_lower:
+            return "Topical"
+        if "intranasal" in s_lower:
+            return "Intranasal"
+        if "inhalation" in s_lower:
+            return "Inhalation"
+        return "Other"
+
+    elif field_name == "outcome":
+        if s in ("Active, not recruiting", "Recruiting"):
+            return "Active"
+        return s
+
+    elif field_name == "peptide":
+        return s
+
+    return s
 
 
 # ---------------------------------------------------------------------------
@@ -733,6 +779,115 @@ def compute_concordance_v3(agent_data, human_data, common_ncts):
     return v3_results, coverage_report
 
 
+def compute_concordance_bucketed(agent_data, human_data, common_ncts):
+    """Bucketed concordance: broad-category comparison for all fields.
+
+    Uses _bucket_value to collapse fine-grained values into broad categories:
+    - Classification: AMP(infection)+AMP(other) → AMP
+    - Delivery Mode: 18 values → injection/infusion, oral, topical, intranasal, inhalation, other
+    - Outcome: active+recruiting → Active
+    - Peptide: blank → True
+
+    Returns dict: {field_name: {pair_name: {n, agreements, pct, kappa}}}
+    """
+    bucketed_fields = {"classification", "delivery_mode", "outcome", "peptide"}
+    results = {}
+
+    for field_name in bucketed_fields:
+        field_def = FIELDS[field_name]
+        field_result = {}
+
+        for pair_name, get_a, get_b in [
+            (
+                "Agent vs R1",
+                lambda nct: agent_data[nct].get(field_name, ""),
+                lambda nct: human_data[nct]["r1"].get(field_name),
+            ),
+            (
+                "Agent vs R2",
+                lambda nct: agent_data[nct].get(field_name, ""),
+                lambda nct: human_data[nct]["r2"].get(field_name),
+            ),
+            (
+                "R1 vs R2",
+                lambda nct: human_data[nct]["r1"].get(field_name),
+                lambda nct: human_data[nct]["r2"].get(field_name),
+            ),
+        ]:
+            labels_a = []
+            labels_b = []
+
+            for nct in common_ncts:
+                raw_a = get_a(nct)
+                raw_b = get_b(nct)
+
+                norm_a, blank_a = normalise(raw_a, field_name)
+                norm_b, blank_b = normalise(raw_b, field_name)
+
+                # Apply bucketing (handles blanks for peptide)
+                buck_a = _bucket_value(norm_a, field_name)
+                buck_b = _bucket_value(norm_b, field_name)
+
+                # Skip if either is still blank after bucketing
+                if not buck_a or not buck_b:
+                    continue
+
+                labels_a.append(buck_a)
+                labels_b.append(buck_b)
+
+            n = len(labels_a)
+            if n > 0:
+                kappa, po, pe = cohens_kappa(labels_a, labels_b)
+                agreements = sum(1 for a, b in zip(labels_a, labels_b) if a == b)
+            else:
+                kappa, po = float("nan"), float("nan")
+                agreements = 0
+
+            field_result[pair_name] = {
+                "n": n,
+                "agreements": agreements,
+                "pct": round(po * 100, 1) if n > 0 else None,
+                "kappa": round(kappa, 4) if n > 0 else None,
+            }
+
+        results[field_name] = field_result
+
+    return results
+
+
+def print_concordance_bucketed_table(bucketed_results):
+    """Print the bucketed concordance summary table."""
+    print()
+    print("=" * 100)
+    print("CONCORDANCE SUMMARY (Bucketed — Broad Categories)")
+    print("=" * 100)
+    print(
+        f"{'Field':<22} {'Comparison':<15} "
+        f"{'Agreement':>10} {'Kappa':>8} {'N':>6}"
+    )
+    print("-" * 100)
+
+    for field_name in ["classification", "delivery_mode", "outcome", "peptide"]:
+        field_result = bucketed_results.get(field_name, {})
+        first = True
+        for pair_name in ["Agent vs R1", "Agent vs R2", "R1 vs R2"]:
+            pr = field_result.get(pair_name, {})
+            pct_str = f"{pr['pct']:.1f}%" if pr.get("pct") is not None else "N/A"
+            kappa_str = f"{pr['kappa']:.4f}" if pr.get("kappa") is not None else "N/A"
+
+            label = field_name if first else ""
+            print(
+                f"{label:<22} {pair_name:<15} "
+                f"{pct_str:>10} {kappa_str:>8} {pr.get('n', 0):>6}"
+            )
+            first = False
+        print("-" * 100)
+
+    print("Buckets: Classification(AMP/Other), Delivery(Inj/Oral/Topical/Intranasal/Inhal/Other), "
+          "Outcome(Active=recruiting+active), Peptide(blank=True)")
+    print("=" * 100)
+
+
 def print_concordance_v3_table(v3_results):
     """Print the three-tier concordance summary table."""
     print("=" * 120)
@@ -1173,6 +1328,12 @@ def main():
     print()
     print_concordance_v3_table(v3_results)
     print_coverage_report(coverage_report, len(common_ncts))
+
+    # v15 bucketed concordance (broad categories)
+    bucketed_results = compute_concordance_bucketed(
+        agent_data, human_data, common_ncts
+    )
+    print_concordance_bucketed_table(bucketed_results)
 
     # Value distributions
     print_value_distribution(agent_data, human_data, common_ncts)

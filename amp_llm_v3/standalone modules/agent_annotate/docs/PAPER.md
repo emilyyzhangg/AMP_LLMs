@@ -302,8 +302,9 @@ All five annotation agents employ a two-pass architecture. This universal design
 
 **Peptide Agent.**
 
-- *Pass 1* extracts molecular facts: intervention name, molecular class (peptide chain vs antibody vs small molecule vs nutritional product), database confirmation (UniProt, DRAMP, ChEMBL entries), product description, and active ingredient role (active drug vs food ingredient vs targeting vector vs brand name).
-- *Pass 2* applies a three-step decision tree: (1) Is the molecular class a peptide? (2) Is the peptide the active drug (not a food ingredient or brand name artifact)? (3) Database/literature confirmation.
+- *Pass 1* extracts molecular facts: intervention name, molecular class (peptide chain vs antibody vs small molecule vs nutritional product), database confirmation (UniProt, DRAMP, ChEMBL entries), product description, and investigational drug role (investigational drug vs food ingredient vs targeting vector vs brand name).
+- *Pass 2* applies a three-step decision tree: (1) Is the molecular class a peptide? (2) Is it the investigational drug (not a food ingredient or brand name artifact)? (3) Database/literature confirmation.
+- *v15:* If peptide=False, all other fields are set to N/A and annotation is skipped (non-peptide trials are out of scope).
 
 **Outcome Agent.**
 

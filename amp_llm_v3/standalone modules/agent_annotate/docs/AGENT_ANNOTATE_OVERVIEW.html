@@ -196,7 +196,7 @@ Step 1: Protocol-first</span>
       <p>LLM applies <span class="bold">explicit rules</span> to extracted facts:</p>
       <ul>
         <li>Step 1: Is the molecular class a peptide?</li>
-        <li>Step 2: Is the peptide the active drug?</li>
+        <li>Step 2: Is it the investigational drug?</li>
         <li>Step 3: Database confirmation</li>
       </ul>
       <p class="dim" style="margin-top:8px;">Prevents 8B models from shortcutting on surface keywords</p>
@@ -268,13 +268,13 @@ Avg time: <span class="bold">~380s/trial</span> on Mac Mini (16GB, qwen2.5:14b a
   <table>
     <tr><th>Rule</th><th>Condition</th><th>Action</th></tr>
     <tr><td><span class="accent">AMP &rarr; Peptide</span></td><td>Classification = AMP(*)</td><td>Force Peptide = True <span class="dim">(all AMPs are peptides)</span></td></tr>
-    <tr><td><span class="accent2">Peptide &rarr; Classification</span></td><td>Peptide = False</td><td>Force Classification = Other</td></tr>
+    <tr><td><span class="accent2">Peptide = False &rarr; N/A</span></td><td>Peptide = False</td><td>N/A all other fields, skip annotation <span class="dim">(non-peptide trial out of scope)</span></td></tr>
     <tr><td><span class="accent3">Outcome &rarr; RFR</span></td><td>Outcome = Positive/Recruiting/Active/Unknown</td><td>Clear Reason for Failure</td></tr>
     <tr><td><span class="accent4">Pass 1 &rarr; Pass 2</span></td><td>Pass 1 says "short peptide" but Pass 2 says False</td><td>Override to True <span class="dim">(trust extraction over classification)</span></td></tr>
   </table>
   <div class="diagram"><span class="hl">Execution order:</span>
-  1. Annotate all fields independently
-  2. <span class="hl2">Pre-verification consistency</span> (AMP&rarr;peptide, peptide&rarr;classification, outcome&rarr;RFR)
+  1. Annotate peptide FIRST &mdash; if False, N/A all other fields and skip
+  2. <span class="hl2">Pre-verification consistency</span> (AMP&rarr;peptide, sequence&rarr;peptide, outcome&rarr;RFR)
   3. Blind verification (3 verifiers + reconciler)
   4. <span class="hl3">Post-verification consistency</span> (same rules on final values)
   5. <span class="accent3">Normalize final values</span> (catch raw reconciler text &rarr; canonical)

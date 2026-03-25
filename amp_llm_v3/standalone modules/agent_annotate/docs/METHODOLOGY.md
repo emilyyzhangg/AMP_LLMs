@@ -459,12 +459,14 @@ Critical rule: "Completed" registry status alone does NOT indicate failure. "Fai
 - Molecular class (peptide chain / antibody / small molecule / nutritional product / large multi-subunit protein)
 - Database confirmation (UniProt, DRAMP, DBAASP, ChEMBL entries)
 - Product description (drug vs nutritional formula vs dietary supplement)
-- Active ingredient role (active drug / food ingredient / targeting vector / brand name only)
+- Investigational drug role (investigational drug / food ingredient / targeting vector / brand name only)
 
 **Pass 2:** Applies a three-step decision tree:
 1. Is the molecular class a peptide? (Antibodies, small molecules, nutritional products → False)
-2. Is the peptide the active drug? (Food ingredients, brand name artifacts → False)
+2. Is it the investigational drug? (Food ingredients, brand name artifacts → False)
 3. Database/literature confirmation (DRAMP/UniProt/ChEMBL entry → True; no hits but clearly peptide → True)
+
+**v15:** If peptide=False, all other fields are set to N/A and annotation is skipped. Non-peptide trials are out of scope for this peptide-focused database.
 
 **v5 changes**: Upgraded from single-pass to two-pass. The single-pass agent over-identified peptides (Agent=True for non-peptide interventions) and under-identified (Agent=False for real peptides) because 8B models shortcut on whether "peptide" appeared in the trial text. The two-pass design forces molecular class determination before the True/False decision.
 

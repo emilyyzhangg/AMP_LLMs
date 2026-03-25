@@ -72,7 +72,7 @@ For the clinical trial intervention(s) below, answer these questions using ONLY 
    - OR is it described as a "nutritional formula", "dietary supplement", "tube feeding",
      "enteral nutrition", "medical food", "protein supplement"?
 
-5. ACTIVE INGREDIENT: Is the peptide the ACTIVE therapeutic agent, or is it:
+5. INVESTIGATIONAL DRUG: Is the peptide the investigational therapeutic agent, or is it:
    - A food ingredient (hydrolyzed protein for easier digestion)?
    - A targeting vector (carries another drug to a target)?
    - Part of a brand name but not the actual drug mechanism?
@@ -82,7 +82,7 @@ Intervention: [name]
 Molecular Class: [class from list above]
 Database Confirmation: [hits or none]
 Product Description: [how described]
-Active Ingredient Role: [active drug / food ingredient / targeting vector / brand name only]"""
+Investigational Drug Role: [investigational drug / food ingredient / targeting vector / brand name only]"""
 
 # Pass 2: Apply decision tree to extracted facts
 PASS2_SYSTEM = """You are a peptide identification specialist. You have been given EXTRACTED FACTS about a clinical trial intervention. Use ONLY these facts to determine if the intervention is a peptide therapeutic.
@@ -121,11 +121,11 @@ STEP 1 — Is the Molecular Class a peptide?
   - "Single amino acid" → False
   - "Unknown" → check database confirmation in Step 2
 
-STEP 2 — Is the peptide the ACTIVE DRUG?
-  - Active Ingredient Role = "active drug" → proceed to Step 3
-  - Active Ingredient Role = "food ingredient" → False
-  - Active Ingredient Role = "targeting vector" → False
-  - Active Ingredient Role = "brand name only" → False
+STEP 2 — Is it the INVESTIGATIONAL DRUG?
+  - Investigational Drug Role = "investigational drug" → proceed to Step 3
+  - Investigational Drug Role = "food ingredient" → False
+  - Investigational Drug Role = "targeting vector" → False
+  - Investigational Drug Role = "brand name only" → False
 
 STEP 3 — Final confirmation
   - Database confirms peptide (UniProt/DRAMP/DBAASP/ChEMBL) → True
@@ -143,15 +143,15 @@ CRITICAL RULES:
 - Autologous dexosomes/exosomes loaded with peptides: the vehicle is the drug → False
 
 WORKED EXAMPLES (True):
-1. Molecular Class: Short peptide chain | AA Length: 31 | Database Hits: UniProt P01282 | Active Role: active drug → True (semaglutide, 31 aa GLP-1 analogue)
-2. Molecular Class: Short peptide chain | AA Length: 8 | Database Hits: DRAMP entry | Active Role: active drug → True (octreotide, 8 aa somatostatin analogue)
-3. Molecular Class: Short peptide chain | AA Length: 32 | Database Hits: UniProt P16860 | Active Role: active drug → True (nesiritide/BNP, 32 aa natriuretic peptide)
+1. Molecular Class: Short peptide chain | AA Length: 31 | Database Hits: UniProt P01282 | Investigational Drug Role: investigational drug → True (semaglutide, 31 aa GLP-1 analogue)
+2. Molecular Class: Short peptide chain | AA Length: 8 | Database Hits: DRAMP entry | Investigational Drug Role: investigational drug → True (octreotide, 8 aa somatostatin analogue)
+3. Molecular Class: Short peptide chain | AA Length: 32 | Database Hits: UniProt P16860 | Investigational Drug Role: investigational drug → True (nesiritide/BNP, 32 aa natriuretic peptide)
 
 WORKED EXAMPLES (False):
 1. Molecular Class: Nutritional product | AA Length: N/A | Database Hits: none | Active Role: food ingredient → False (Peptide 1.5 is a nutritional formula)
-2. Molecular Class: Monoclonal antibody | AA Length: >1000 | Database Hits: UniProt (antibody) | Active Role: active drug → False (pembrolizumab is an antibody, not a peptide)
-3. Molecular Class: Small molecule | AA Length: N/A | Database Hits: ChEMBL (small molecule) | Active Role: active drug → False (metformin is a small molecule drug)
-4. Molecular Class: Protein | AA Length: 51 | Database Hits: UniProt P01308 | Active Role: active drug → False (insulin, 51 aa + multi-chain A+B, protein not peptide)
+2. Molecular Class: Monoclonal antibody | AA Length: >1000 | Database Hits: UniProt (antibody) | Investigational Drug Role: investigational drug → False (pembrolizumab is an antibody, not a peptide)
+3. Molecular Class: Small molecule | AA Length: N/A | Database Hits: ChEMBL (small molecule) | Investigational Drug Role: investigational drug → False (metformin is a small molecule drug)
+4. Molecular Class: Protein | AA Length: 51 | Database Hits: UniProt P01308 | Investigational Drug Role: investigational drug → False (insulin, 51 aa + multi-chain A+B, protein not peptide)
 5. Molecular Class: Nutritional product | AA Length: N/A | Database Hits: none | Active Role: food ingredient → False (Peptamen is a hydrolyzed protein formula)
 
 Format your response EXACTLY as:
@@ -392,7 +392,7 @@ class PeptideAgent(BaseAnnotationAgent):
             f"AA Length: {pass1_parsed.get('aa_length', 'unknown')}\n"
             f"Database Hits: {', '.join(pass1_parsed.get('database_hits', ['none']))}\n"
             f"Product Description: {pass1_parsed.get('product_description', 'unknown')}\n"
-            f"Active Role: {pass1_parsed.get('active_role', 'unknown')}"
+            f"Investigational Drug Role: {pass1_parsed.get('active_role', 'unknown')}"
         )
 
         # --- Pass 2: Apply decision tree ---
@@ -484,8 +484,8 @@ class PeptideAgent(BaseAnnotationAgent):
             if "multi-subunit" in mol_class:
                 return "False"
 
-        # Check active ingredient role
-        role_match = re.search(r"active ingredient role:\s*(.+?)(?:\n|$)", lower)
+        # Check investigational drug role (also matches legacy "active ingredient role")
+        role_match = re.search(r"(?:investigational drug|active ingredient) role:\s*(.+?)(?:\n|$)", lower)
         if role_match:
             role = role_match.group(1).strip()
             if "food" in role or "brand name" in role or "targeting" in role:
@@ -596,9 +596,9 @@ class PeptideAgent(BaseAnnotationAgent):
         if prod_match:
             result["product_description"] = prod_match.group(1).strip()
 
-        # Extract active ingredient role
+        # Extract investigational drug role (also matches legacy "active ingredient role")
         role_match = re.search(
-            r"active\s+ingredient\s+role:\s*(.+?)(?:\n|$)", pass1_text, re.IGNORECASE
+            r"(?:investigational\s+drug|active\s+ingredient)\s+role:\s*(.+?)(?:\n|$)", pass1_text, re.IGNORECASE
         )
         if role_match:
             result["active_role"] = role_match.group(1).strip()

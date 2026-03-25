@@ -1284,6 +1284,22 @@ class PipelineOrchestrator:
         job.progress.current_model = getattr(peptide_ann, "model_name", None)
         shared_metadata["peptide_result"] = peptide_ann.value
 
+        # v15: If peptide=False, this trial is not a peptide therapeutic — N/A all other fields
+        if peptide_ann.value == "False":
+            for field_name in ANNOTATION_AGENTS:
+                if field_name == "peptide":
+                    continue
+                annotations.append(FieldAnnotation(
+                    field_name=field_name,
+                    value="N/A",
+                    confidence=1.0,
+                    reasoning="[Peptide=False: non-peptide trial, all fields N/A]",
+                    model_name="deterministic",
+                    skip_verification=True,
+                ))
+            logger.info(f"  peptide=False for {nct_id}, N/A-ing all other fields")
+            return annotations
+
         # --- Step 2: Run classification, delivery_mode, outcome, sequence (NOT failure_reason yet) ---
         # failure_reason depends on outcome, so we run it after outcome completes.
         # sequence is deterministic (no LLM) and has no dependencies.
@@ -1666,7 +1682,10 @@ class PipelineOrchestrator:
             )
 
         # Rule 1: peptide=False -> classification must be "Other"
+        # v15: Skip if fields are already N/A (peptide=False early exit)
         if peptide and classification and peptide.value == "False":
+            if classification.value == "N/A":
+                return  # All fields already N/A from peptide=False early exit
             if classification.value != "Other":
                 logger.info(
                     f"  consistency: peptide=False, forcing classification "
