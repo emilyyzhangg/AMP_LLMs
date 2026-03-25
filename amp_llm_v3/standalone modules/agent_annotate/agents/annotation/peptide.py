@@ -493,12 +493,15 @@ class PeptideAgent(BaseAnnotationAgent):
         return "False"
 
     def _parse_value(self, text: str) -> str:
-        match = re.search(r"Peptide:\s*(True|False)", text, re.IGNORECASE)
+        # Match "Peptide: True", "Peptide: [True]", "Peptide: **True**" etc.
+        match = re.search(r"Peptide:\s*\[?\*{0,2}(True|False)\*{0,2}\]?", text, re.IGNORECASE)
         if match:
             return "True" if match.group(1).lower() == "true" else "False"
         lower = text.lower()
-        if "peptide: true" in lower or "is a peptide" in lower:
+        if "peptide: true" in lower or "peptide: [true]" in lower or "is a peptide" in lower:
             return "True"
+        if "peptide: false" in lower or "peptide: [false]" in lower or "is not a peptide" in lower:
+            return "False"
         return "False"
 
     def _parse_reasoning(self, text: str) -> str:
