@@ -288,6 +288,13 @@ class FailureReasonAgent(BaseAnnotationAgent):
         status_match = re.search(r"trial status:?\s*(.+?)(?:\n|$)", lower)
         status = status_match.group(1).strip() if status_match else ""
 
+        # v18: TERMINATED/WITHDRAWN trials are ALWAYS failures — don't bail out.
+        # These trials explicitly stopped for a reason. The question is WHY,
+        # not WHETHER they failed. Previously the agent returned empty for these,
+        # causing 9/11 RfF disagreements with human annotations.
+        if any(s in status for s in ["terminated", "withdrawn"]):
+            return False
+
         # If clearly active/recruiting and no failure evidence → not a failure
         if any(s in status for s in ["recruiting", "active", "enrolling"]):
             if not has_failure:
@@ -348,6 +355,16 @@ class FailureReasonAgent(BaseAnnotationAgent):
                     return "Due to covid"
                 if any(kw in why for kw in ["recruit", "enrollment"]):
                     return "Recruitment issues"
+                return "Business Reason"
+
+        # v18: TERMINATED/WITHDRAWN status without any other signal → Business Reason.
+        # Human annotators default to "Business Reason" for terminated/withdrawn
+        # trials when no specific cause is documented. This is the most common
+        # category (sponsor decision, funding, regulatory, manufacturing).
+        status_match = re.search(r"trial status:?\s*(.+?)(?:\n|$)", lower)
+        if status_match:
+            status = status_match.group(1).strip()
+            if any(s in status for s in ["terminated", "withdrawn"]):
                 return "Business Reason"
 
         return ""

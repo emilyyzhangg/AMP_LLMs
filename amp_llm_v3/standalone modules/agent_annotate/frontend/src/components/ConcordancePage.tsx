@@ -667,7 +667,7 @@ function AgentVsHumanTab() {
               {/* Combined comparison table: Agent vs R1, Agent vs R2, Human baseline (R1 vs R2) */}
               <div className="card mb-2">
                 <div className="card-title">
-                  Concordance Comparison (AC&#x2081;)
+                  Agreement Comparison (AC&#x2081;)
                   <span className="text-sm text-muted" style={{ fontWeight: 400, marginLeft: "0.75rem" }}>
                     Green = exceeds human baseline, Red = below
                   </span>
@@ -870,7 +870,7 @@ function VersionCompareTab() {
             <option value="">-- select job A --</option>
             {jobs.map((j) => (
               <option key={j.job_id} value={j.job_id}>
-                {j.job_id} ({j.total_trials} trials{j.timestamp ? `, ${j.timestamp}` : ""})
+                {j.job_id.slice(0, 8)} ({j.total_trials} trials{j.timestamp ? `, ${j.timestamp}` : ""})
               </option>
             ))}
           </select>
@@ -881,7 +881,7 @@ function VersionCompareTab() {
             <option value="">-- select job B --</option>
             {jobs.map((j) => (
               <option key={j.job_id} value={j.job_id}>
-                {j.job_id} ({j.total_trials} trials{j.timestamp ? `, ${j.timestamp}` : ""})
+                {j.job_id.slice(0, 8)} ({j.total_trials} trials{j.timestamp ? `, ${j.timestamp}` : ""})
               </option>
             ))}
           </select>
@@ -919,8 +919,8 @@ function VersionCompareTab() {
               <thead>
                 <tr>
                   <th>Field</th>
-                  <th style={{ textAlign: "center" }}>&kappa; (Job A)</th>
-                  <th style={{ textAlign: "center" }}>&kappa; (Job B)</th>
+                  <th style={{ textAlign: "center" }}>AC&#x2081; (Job A)</th>
+                  <th style={{ textAlign: "center" }}>AC&#x2081; (Job B)</th>
                   <th style={{ textAlign: "center" }}>&Delta;</th>
                   <th style={{ textAlign: "center" }}>Direction</th>
                 </tr>
@@ -977,7 +977,7 @@ function VersionCompareTab() {
 
           {/* Side-by-side kappa bar chart */}
           <div className="card">
-            <div className="card-title">Kappa Comparison</div>
+            <div className="card-title">AC&#x2081; Comparison</div>
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                 <XAxis

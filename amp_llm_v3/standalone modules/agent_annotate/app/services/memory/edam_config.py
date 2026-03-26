@@ -9,6 +9,12 @@ All tunable parameters for the self-learning system in one place.
 Designed for the agent_annotate pipeline running on Ollama — no cloud APIs.
 """
 
+import csv
+import logging
+from pathlib import Path
+
+_logger = logging.getLogger("agent_annotate.edam.config")
+
 
 def _get_hardware_profile() -> str:
     """Read the hardware profile from the annotation config.
@@ -181,3 +187,30 @@ FIELD_SNIPPET_OVERRIDES = {
         "peptide": 400,     # up from 250 — preserve AA count evidence
     },
 }
+
+# ---------------------------------------------------------------------------
+# v18: Training NCT allowlist — EDAM only learns from these NCTs.
+# The training set CSV contains 642 dual-annotated NCTs. Remaining NCTs
+# are the held-out test set for final evaluation. This prevents EDAM from
+# learning patterns from test data, which would invalidate the evaluation.
+# ---------------------------------------------------------------------------
+_TRAINING_CSV = Path(__file__).resolve().parents[3] / "docs" / "human_ground_truth_train_df.csv"
+
+
+def _load_training_ncts() -> set[str]:
+    """Load training NCT IDs from the ground truth CSV."""
+    if not _TRAINING_CSV.exists():
+        _logger.warning("Training CSV not found at %s — EDAM will learn from ALL NCTs", _TRAINING_CSV)
+        return set()
+    try:
+        with open(_TRAINING_CSV) as f:
+            reader = csv.DictReader(f)
+            ncts = {row["nct_id"].strip().upper() for row in reader if row.get("nct_id")}
+        _logger.info("Loaded %d training NCTs from %s", len(ncts), _TRAINING_CSV.name)
+        return ncts
+    except Exception as e:
+        _logger.error("Failed to load training CSV: %s", e)
+        return set()
+
+
+TRAINING_NCTS: set[str] = _load_training_ncts()

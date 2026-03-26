@@ -55,7 +55,7 @@ export default function JobsPage() {
                       else if (job.status === "running") navigate(`/pipeline/${job.job_id}`);
                     }}
                   >
-                    <td>{job.job_id}</td>
+                    <td style={{ fontFamily: "monospace", fontSize: "0.85rem" }}>{job.job_id.slice(0, 8)}</td>
                     <td><span className={`badge badge-${job.status}`}>{job.status}</span></td>
                     <td>{job.total_trials}</td>
                     <td>{job.completed_trials} / {job.total_trials}</td>

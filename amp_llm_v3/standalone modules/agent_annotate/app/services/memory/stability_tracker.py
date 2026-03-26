@@ -19,6 +19,7 @@ from app.services.memory.edam_config import (
     EVIDENCE_GRADE_STRONG_MIN_CONFIDENCE, EVIDENCE_GRADE_STRONG_MIN_CONSENSUS,
     EVIDENCE_GRADE_MEDIUM_MIN_CONFIDENCE,
     ANOMALY_THRESHOLD, ANOMALY_MIN_TRIALS,
+    TRAINING_NCTS,
 )
 
 logger = logging.getLogger("agent_annotate.edam.stability")
@@ -43,9 +44,14 @@ class StabilityTracker:
         embedded = 0
 
         # Step 1: Store all annotation outcomes as experiences
+        # v18: Only learn from training set NCTs (held-out test set excluded)
+        skipped_ncts = 0
         for trial in job_results:
             nct_id = trial.get("nct_id", "")
             if not nct_id:
+                continue
+            if TRAINING_NCTS and nct_id.upper() not in TRAINING_NCTS:
+                skipped_ncts += 1
                 continue
 
             verification = trial.get("verification") or {}
@@ -95,12 +101,18 @@ class StabilityTracker:
                     except Exception as e:
                         logger.debug("Embedding failed for %s/%s: %s", nct_id, field_name, e)
 
+        if skipped_ncts:
+            logger.info("EDAM: skipped %d non-training NCTs (stored %d)", skipped_ncts, stored)
+
         # Step 2: Compute stability for all (nct_id, field) pairs in this job
         stable_count = 0
         unstable_count = 0
         newly_unstable = []
 
+        # v18: Only compute stability for training NCTs
         nct_ids = set(t.get("nct_id", "") for t in job_results if t.get("nct_id"))
+        if TRAINING_NCTS:
+            nct_ids = {n for n in nct_ids if n.upper() in TRAINING_NCTS}
         fields = ["classification", "delivery_mode", "outcome", "reason_for_failure", "peptide"]
 
         for nct_id in nct_ids:

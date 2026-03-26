@@ -19,7 +19,7 @@ from app.services.memory.stability_tracker import StabilityTracker
 from app.services.memory.correction_learner import CorrectionLearner
 from app.services.memory.prompt_optimizer import PromptOptimizer
 from app.services.memory.self_audit import SelfAuditor
-from app.services.memory.edam_config import OPTIMIZATION_INTERVAL_JOBS
+from app.services.memory.edam_config import OPTIMIZATION_INTERVAL_JOBS, TRAINING_NCTS
 
 logger = logging.getLogger("agent_annotate.edam")
 
@@ -76,9 +76,11 @@ async def edam_post_job_hook(job_id: str, all_trial_results: list[dict],
         summary["errors"].append(f"stability: {e}")
 
     # --- Loop 2: Self-review flagged items ---
+    # v18: Only self-review training NCTs
     try:
         flagged = [t for t in all_trial_results
-                   if t.get("verification", {}).get("flagged_for_review")]
+                   if t.get("verification", {}).get("flagged_for_review")
+                   and (not TRAINING_NCTS or t.get("nct_id", "").upper() in TRAINING_NCTS)]
         if flagged:
             corrections = await correction_learner.self_review_flagged(
                 job_id, flagged, config_hash, git_commit
@@ -93,9 +95,14 @@ async def edam_post_job_hook(job_id: str, all_trial_results: list[dict],
         summary["errors"].append(f"corrections: {e}")
 
     # --- Loop 2b: Self-audit ALL trials for evidence consistency ---
+    # v18: Only audit training NCTs
     try:
+        audit_trials = all_trial_results
+        if TRAINING_NCTS:
+            audit_trials = [t for t in all_trial_results
+                           if t.get("nct_id", "").upper() in TRAINING_NCTS]
         audit_result = await self_auditor.audit_job(
-            job_id, all_trial_results, config_hash, git_commit
+            job_id, audit_trials, config_hash, git_commit
         )
         summary["self_audit"] = audit_result
     except Exception as e:

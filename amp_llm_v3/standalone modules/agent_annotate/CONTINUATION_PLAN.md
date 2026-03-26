@@ -1,49 +1,60 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-03-25
-**Current state:** v17 code written on dev. Prod still on v16 (a599e7a). Job 25366ac24587 complete. EDAM has 300 experiences from v14/v15 runs.
+**Last updated:** 2026-03-26
+**Current state:** v18 code pushed to dev (fc6fddac). Prod on v17 (66907432). Three v17 Batch A jobs complete (9e1f, a3d5, 4b06). EDAM restricted to training CSV NCTs.
 
-## Next Step: Merge v17 to main and run Batch A
+## Next Step: Run v18 Batch A on new 25 NCTs from training set
 
-v17 has 4 targeted fixes based on v16 concordance root-cause analysis. Need to merge to main, then run Batch A (25 NCTs) to validate.
+v18 has 7 fixes based on v17 concordance analysis (3 runs). Need to merge to main, then run new Batch A (25 NCTs from training CSV).
 
-### v16 Concordance Results (job 25366ac24587) — completed 2026-03-25
+### v17 Concordance Results (3 runs: 9e1f, a3d5, 4b06 — same 25 NCTs)
 
-| Field | v15 vs R1 | v16 vs R1 | Delta | Verdict |
-|---|---|---|---|---|
-| Classification | 83.3% | **84.0%** | +0.7% | Stable |
-| Delivery Mode (strict) | 69.6% | **72.7%** | +3.1% | Improved |
-| Delivery Mode (bucketed) | 95.7% | **95.5%** | -0.2% | Stable |
-| Outcome | 78.3% | **77.3%** | -1.0% | Slight regression |
-| Reason for Failure | 84.0% | **84.0%** | 0.0% | Stable |
-| Peptide | 86.4% | **81.8%** | -4.6% | **Regressed** |
-| Sequence | 0.0% | **14.3%** | +14.3% | **Major improvement** (0→7/25 extracted) |
+| Field | v16 vs R1 | v17 best | v17 worst | v17 range | Target | Met? |
+|---|---|---|---|---|---|---|
+| Classification | 84.0% | **88.0%** | **88.0%** | Stable | AC₁≥0.82 | YES |
+| Delivery Mode | 72.7% | **68.0%** | **64.0%** | Oscillating | ≥73% | NO |
+| Outcome | 77.3% | **76.0%** | **68.0%** | Unstable (-8%) | ≥80% | NO |
+| Reason for Failure | 84.0% | **68.0%** | **56.0%** | **Regressed badly** | ≥84% | NO |
+| Peptide | 81.8% | **90.9%** | **90.9%** | Stable | ≥86% | YES |
+| Sequence | 14.3% | **32.0%** | **32.0%** | Stable (0 exact matches) | ≥30% | MISLEADING |
 
-**Convergence: NOT MET** — peptide regressed 4.6% (threshold was <2%).
+**2/6 targets met.** Classification and peptide are solid. Sequence 32% = all "both empty" matches, 0 exact matches out of 17.
 
-### Root causes identified and fixed in v17
+### Root causes identified and fixed in v18
 
-| Issue | Root Cause | v17 Fix |
+| Issue | Root Cause | v18 Fix |
 |---|---|---|
-| Outcome 4× Unknown | Adverse-event heuristic in dead code (only called on LLM exception, not on LLM "Unknown") | Post-LLM override: call `_infer_from_pass1()` when Pass 2 returns "Unknown". Also inject structured phase from ClinicalTrials.gov into Pass 2. |
-| Peptide -4.6% regression | Confidence gate (≥0.90) checks source quality (static ~0.90-0.95), not classification certainty | Only cascade on `model_name=="deterministic"` (known drug lists). LLM False results no longer trigger cascade. Added OSE2101/TEDOPI/DOTATOC to known peptides. |
-| Sequence 0% accuracy | DBAASP abbreviation collision (BNP→BnPRP1, ANP→HANP). ChEMBL HELM outscored by wrong DBAASP matches. UniProt picks shortest fragment (degradation products). | Word-boundary matching for short names (≤4 chars). ChEMBL HELM boosted 1.3x. UniProt prefers name-matching fragments. Formulation text stripped. |
-| Multi-route not working | Deterministic path returns on first keyword match. " iv " matches disease grading in titles. _parse_value strips to single value. | Collect all routes across all citations. Exclude title text from ambiguous keywords. _parse_value handles comma-separated. |
+| Sequence 0 exact matches | ChEMBL returns wrong molecule (keyword collision). DBAASP returns wrong protein (Insulin for Nesiritide). No candidates for most drugs. | Known-sequences table (12 drugs), cross-validation penalty (0.3x for name mismatch), ChEMBL max_phase disambiguation, EDAM-enriched intervention names |
+| Outcome instability (68-76%) | Phase I corroboration accepts generic publications (vary by run). NCT00000886 false Positive (toxicity missed). | Strong adverse signals checked FIRST in full text. Phase I requires `has_results_posted` or NCT ID in text. |
+| RfF regression (56-68%) | Agent returns empty for TERMINATED/WITHDRAWN trials (9/11 disagreements). `_pass1_says_no_failure()` bails out. Empty vote dropped from reconciler. | TERMINATED/WITHDRAWN always proceed to pass 2. Default "Business Reason" for terminated/withdrawn with no signal. Empty RfF counted as vote. Unanimous-verifier gate for empty override. |
+| EDAM learning from test data | No NCT filtering — EDAM learned from all annotated NCTs | Training CSV allowlist (642 NCTs). Stability, self-review, self-audit all filtered. |
 
-### What to check after v17 Batch A
+### v18 New Batch A (25 NCTs from training CSV)
 
-1. **Outcome:** Expect ≥80% vs R1 (heuristic override catches NCT00000886 reactogenicity)
-2. **Peptide:** Expect ≥86% vs R1 (cascade suppression + OSE2101 in known drugs)
-3. **Sequence:** Expect accuracy improvement (DBAASP collision fixed, ChEMBL HELM boosted)
-4. **Delivery:** NCT05415410 and NCT06126354 should show multi-route values
-5. **Convergence:** If v17 vs v16 <2% on classification/RfF (stable fields) → Phase 2
+Selected for diversity: 8 AMP / 17 Other, 4 peptide=false, 18 with sequences, 5 with RfF, mixed outcomes.
+
+```
+NCT00001060  NCT01639638  NCT03052842  NCT03635437  NCT03772678
+NCT03791515  NCT03923257  NCT03987672  NCT04023331  NCT04389775
+NCT04419610  NCT04671966  NCT04844580  NCT04924660  NCT04954274
+NCT05064137  NCT05127889  NCT05218915  NCT05889728  NCT05940428
+NCT05968846  NCT06045260  NCT06689761  NCT06729606  NCT06801015
+```
+
+### What to check after v18 Batch A
+
+1. **Sequence:** Expect >0 exact matches (known-sequences table covers Nesiritide, Albiglutide, Angiotensin)
+2. **Outcome:** Expect stable (no inter-run flip-flops from Phase I corroboration)
+3. **RfF:** Expect "Business Reason" populated for terminated/withdrawn trials
+4. **EDAM:** Verify only training NCTs stored in experiences table
+5. **Peptide:** Should maintain ≥90% (stable, no changes)
 
 ## Environment State
 
 | Environment | Branch | Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v17 (fc89869) | **9e1f8fa907d5 (Batch A, 25 NCTs)** |
-| Dev (port 9005) | dev | v17 (fc89869) | None |
+| Prod (port 8005) | main | v17 (66907432) | None (4b062214adf0 complete) |
+| Dev (port 9005) | dev | v18 (fc6fddac) | None |
 
 ## Important Notes
 

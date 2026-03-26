@@ -1,6 +1,6 @@
 # EDAM Learning Run Plan
 
-**Last updated:** 2026-03-25
+**Last updated:** 2026-03-26
 
 ## Job Registry
 
@@ -24,10 +24,13 @@
 | 15 | A (v14) | 2c0c0d3a8a73 | 25 | 25/25 | **Complete** | v14 | — | v14 sequence overhaul. |
 | 16 | A (v15) | c3fa1fbba5c2 | 25 | 25/25 | **Complete** | v15 | — | peptide=False→N/A cascade, investigational drug rename. 142 min. See concordance below. |
 | 17 | A (v16) | 25366ac24587 | 25 | 25/25 | **Complete** | v16 | — | 178 min. Sequence 0→7, but 0% accuracy (DBAASP collision). Outcome unchanged. Peptide regressed 4.6%. See concordance below. |
-| **18** | **A (v17)** | **9e1f8fa907d5** | **25** | **—** | **Running** | **v17** | **TBD** | **Outcome heuristic override, peptide cascade fix, DBAASP word-boundary, multi-route collection.** |
-| *19* | *A+B (50 NCTs)* | *TBD* | *50* | *—* | *Pending* | *v17+* | *—* | *Phase 2: expand to 50 after Batch A converges.* |
-| *20* | *Full 964* | *TBD* | *964* | *—* | *Pending* | *v17+* | *—* | *Phase 3: single-version full run.* |
-| *21* | *884 unannotated* | *TBD* | *884* | *—* | *Phase 5* | *v17+* | *—* | *Agent-only, no human reference.* |
+| 18a | A (v17) | 9e1f8fa907d5 | 25 | 25/25 | **Complete** | v17 (fc89869) | — | Outcome heuristic override, peptide cascade fix, DBAASP word-boundary, multi-route. |
+| 18b | A (v17) | a3d5403c19af | 25 | 25/25 | **Complete** | v17 (fc89869) | — | Stability run 2. Same NCTs as 18a. |
+| 18c | A (v17) | 4b062214adf0 | 25 | 25/25 | **Complete** | v17 (66907432) | — | Stability run 3. Same NCTs. Outcome regressed to 68%. RfF crashed to 56%. |
+| **19** | **A (v18, new NCTs)** | **TBD** | **25** | **—** | **Next** | **v18** | **TBD** | **New 25 from training CSV. Known-sequences, RfF TERMINATED fix, outcome adverse-first, EDAM restricted.** |
+| *20* | *A+B (50 NCTs)* | *TBD* | *50* | *—* | *Pending* | *v18+* | *—* | *Phase 2: expand to 50 after Batch A converges.* |
+| *21* | *Full training (642)* | *TBD* | *642* | *—* | *Pending* | *v18+* | *—* | *Phase 3: full training set run.* |
+| *22* | *Test set (remaining)* | *TBD* | *TBD* | *—* | *Phase 4* | *v18+* | *—* | *Held-out evaluation. EDAM frozen.* |
 
 ### Agent version summary
 
@@ -43,7 +46,8 @@
 | v14 | 2c412d5 | Sequence agent overhaul: structured-data-only extraction (no snippet parsing). Reads from DBAASP, APD, ChEMBL HELM, UniProt, EBI. Score/rank candidates, optional LLM adjudication. |
 | v15 | 6240670 | peptide=False → N/A all fields cascade. "active drug" → "investigational drug" rename. Bucketed concordance (broad categories). |
 | v16 | 8223691 | Sequence fix (critical): metadata passed to all agents, raw_data key fallback, prefix stripping. Outcome: adverse-event keyword detection, publications as H1 corroboration, negative valence→Failed. Peptide cascade requires conf≥0.90. Delivery: multi-route support. RfF: "Unknown" removed from skip list. AC₁ reporting in docs. |
-| **v17** | **TBD** | **Outcome: post-LLM heuristic override (call _infer_from_pass1 when Pass 2 returns "Unknown" — was dead code), inject structured phase into Pass 2. Peptide: cascade only on model_name=="deterministic" (source quality gate was useless), added OSE2101/TEDOPI/DOTATOC to known peptides. Sequence: DBAASP word-boundary matching for short names (≤4 chars), ChEMBL HELM 1.3x boost, UniProt name-matching fragment selection, formulation text stripping. Delivery: multi-route collection across all citations (was returning first match), title text excluded from ambiguous keywords (" iv " in "Grade II to IV"), _parse_value handles comma-separated.** |
+| v17 | fc89869 / 66907432 | Outcome: post-LLM heuristic override (call _infer_from_pass1 when Pass 2 returns "Unknown" — was dead code), inject structured phase into Pass 2. Peptide: cascade only on model_name=="deterministic", added OSE2101/TEDOPI/DOTATOC. Sequence: DBAASP word-boundary, ChEMBL HELM 1.3x, UniProt name-matching, formulation stripping. Delivery: multi-route collection, title exclusion, comma-separated parse. |
+| **v18** | **fc6fddac** | **Sequence: _KNOWN_SEQUENCES table (12 drugs, deterministic lookup), cross-validation penalty (0.3x for name mismatch), ChEMBL max_phase + pref_name disambiguation, EDAM-enriched interventions. Outcome: strong adverse signals (multi-word) checked FIRST in full text, Phase I requires has_results_posted or NCT ID in text. RfF: TERMINATED/WITHDRAWN always proceed to pass 2, default "Business Reason" for terminated/withdrawn with no signal, empty vote counted in reconciler, unanimous-verifier gate for empty override. EDAM: training CSV allowlist (642 NCTs), non-training NCTs excluded from all learning loops. Frontend: "Concordance Comparison" → "Agreement Comparison", job ID format consistency (truncated to 8 chars everywhere), Version Compare κ → AC₁ labels.** |
 
 ## NCT Coverage
 
@@ -51,11 +55,11 @@
 
 | Set | Count | Status | Notes |
 |---|---|---|---|
-| Human-annotated (total) | 964 | Target for single-version run | Phase 3 |
-| Batch A (`fast_learning_batch_25.txt`) | 25 | **Next: v12 run** | Phase 1 iteration target |
-| Batch A+B (`fast_learning_batch_50.txt`) | 50 | Pending | Phase 2 expansion |
-| Full 964 | 964 | Pending | Phase 3 single-version run |
-| Unannotated (no human ref) | 884 | Phase 5 | |
+| Training CSV (`human_ground_truth_train_df.csv`) | 642 | EDAM training pool | EDAM only learns from these |
+| Batch A (old, v15-v17) | 25 | Complete (3 v17 runs) | Original batch, retiring |
+| **Batch A (new, v18)** | **25** | **Next** | **Stratified from training CSV** |
+| Full training | 642 | Phase 3 | Single-version run on training set |
+| Test/held-out (remaining) | ~322 | Phase 4 | EDAM frozen, final evaluation |
 
 ## Concordance History
 
@@ -121,6 +125,34 @@
 - **Peptide 2× false-negative cascade:** NCT02624518 and NCT02654587 incorrectly False'd → N/A wiped all fields. v16 requires confidence ≥0.90 for cascade.
 - **Classification low kappa:** Prevalence paradox — 20/25 trials are "Other". AC₁=0.82 confirms strong agreement. No code fix needed.
 - **Delivery sub-category splits:** Most disagreements are IV vs SC/IM within injection family. Bucketed agreement is 95.7%. v16 adds multi-route support for combination trials.
+
+### v17 Concordance (Batch A, 25 NCTs, 3 runs: 9e1f/a3d5/4b06) — 2026-03-26
+
+| Field | v17 best | v17 worst | v17 range | Inter-run stability |
+|---|---|---|---|---|
+| Classification | 88.0% | 88.0% | 0% | Perfect (25/25 agree) |
+| Delivery Mode | 68.0% | 64.0% | 4% | 23/25 agree |
+| Outcome | 76.0% | 68.0% | 8% | 23/25 (NCT00972569, NCT02660736 flip) |
+| Reason for Failure | 68.0% | 56.0% | 12% | 25/25 agree (but wrong) |
+| Peptide | 90.9% | 90.9% | 0% | Perfect |
+| Sequence | 32.0% | 32.0% | 0% | Perfect (but 0 exact matches) |
+
+**Root cause analysis (RfF regression 84% → 56%):**
+- 9/11 disagreements: agent empty, human has value
+- 5 are "Business Reason" for terminated/withdrawn trials — `_pass1_says_no_failure()` bails out for these
+- Agent doesn't default "Business Reason" for terminated/withdrawn without explicit whyStopped
+- v18 fixes: TERMINATED/WITHDRAWN always proceed to pass 2, default Business Reason fallback
+
+**Root cause analysis (outcome instability 68-76%):**
+- NCT00000886: Positive vs Failed. Agent finds positive immunogenicity, misses toxicity signal.
+- NCT00972569/NCT02660736: flip between Unknown↔Positive across runs (Phase I corroboration varies)
+- v18 fixes: strong adverse signals checked first, Phase I requires trial-specific evidence
+
+**Root cause analysis (sequence 0 exact matches):**
+- 4/7 wrong molecule from ChEMBL (keyword collision)
+- 2/7 DBAASP returns wrong protein (Insulin for Nesiritide)
+- 10/25 no candidates found at all
+- v18 fixes: known-sequences table, cross-validation penalty, EDAM name enrichment
 
 ## v11 Efficiency Improvements
 
