@@ -1,5 +1,5 @@
 """
-Outcome Annotation Agent (v4 — v11 accuracy fixes).
+Outcome Annotation Agent (v4 — v11 accuracy fixes, v17 heuristic override).
 
 Determines trial outcome using a two-pass strategy:
   Pass 1: Extract ClinicalTrials.gov status, phase, and published results
@@ -11,6 +11,13 @@ v4/v11 changes (from 400-trial concordance — outcome regressed from 80% to 47%
   - Tightened Pass 2 prompt: explicit H1 prohibition with negative examples
   - Root cause: 8B model was calling "Positive" for Phase I completions without
     corroboration, and "Recruiting" was under-detected (17.6% recall)
+
+v17 changes:
+  - Post-LLM heuristic override: when Pass 2 returns "Unknown", apply _infer_from_pass1()
+    as a safety net. Previously this was only called on Pass 2 LLM exceptions — dead code
+    for the normal path. Now catches adverse-event keywords in publications.
+  - Inject trial phase from structured ClinicalTrials.gov data into Pass 2 prompt so the
+    LLM doesn't rely on Pass 1 extraction (which sometimes returns "NOT FOUND").
 """
 
 import re
@@ -280,6 +287,17 @@ class OutcomeAgent(BaseAnnotationAgent):
                 model_name=primary_model,
             )
 
+        # --- v17: Extract structured phase from ClinicalTrials.gov data ---
+        # The Pass 1 LLM sometimes returns "Trial Phase: NOT FOUND" even when
+        # the phase is in the structured data. Inject it directly into Pass 2.
+        structured_phase = self._extract_structured_phase(research_results)
+        if structured_phase:
+            # Append structured phase to Pass 1 output so Pass 2 always has it
+            phase_check = re.search(r"Trial Phase:\s*(.+?)(?:\n|$)", pass1_output, re.IGNORECASE)
+            if not phase_check or "not found" in phase_check.group(1).lower():
+                pass1_output += f"\nTrial Phase: {structured_phase} [from ClinicalTrials.gov structured data]"
+                logger.info(f"  outcome: injected structured phase '{structured_phase}' into Pass 2 input")
+
         # --- PASS 2: Determine outcome with facts in hand ---
         try:
             logger.info(f"  outcome: Pass 2 — determining outcome for {nct_id}")
@@ -304,6 +322,17 @@ class OutcomeAgent(BaseAnnotationAgent):
 
         value = self._parse_value(pass2_output)
         reasoning = self._parse_reasoning(pass2_output)
+
+        # v17: Post-LLM heuristic override — when Pass 2 returns "Unknown",
+        # apply the adverse-event and completion heuristics against Pass 1 output.
+        # Previously _infer_from_pass1 was only called on LLM exceptions (dead code
+        # in the normal path), so adverse-event keywords never fired.
+        if value == "Unknown":
+            heuristic_value = self._infer_from_pass1(pass1_output)
+            if heuristic_value != "Unknown":
+                logger.info(f"  outcome: heuristic override {value} → {heuristic_value}")
+                value = heuristic_value
+                reasoning = f"[Heuristic override: Pass 2 returned Unknown, _infer_from_pass1 → {heuristic_value}] " + reasoning
 
         # Include pass 1 extraction in the reasoning for audit trail
         full_reasoning = f"[Pass 1 facts] {pass1_output[:500]}\n[Pass 2 decision] {reasoning}"
@@ -401,6 +430,29 @@ class OutcomeAgent(BaseAnnotationAgent):
                 # Phase I without corroboration → Unknown (v7 calibration)
 
         return "Unknown"
+
+    @staticmethod
+    def _extract_structured_phase(research_results: list) -> str:
+        """Extract trial phase directly from ClinicalTrials.gov structured data.
+
+        v17: Ensures Pass 2 always has the trial phase even when Pass 1
+        extraction fails (returns "NOT FOUND").
+        """
+        for result in research_results:
+            if result.error or result.agent_name != "clinical_protocol":
+                continue
+            if not result.raw_data:
+                continue
+            proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
+            design_mod = proto.get("designModule", {})
+            phases = design_mod.get("phases", [])
+            if isinstance(phases, list) and phases:
+                return ", ".join(phases)
+            # Some records use "phase" as a string
+            phase_str = design_mod.get("phase", "")
+            if phase_str:
+                return phase_str
+        return ""
 
     def _parse_value(self, text: str) -> str:
         match = re.search(r"Outcome:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)

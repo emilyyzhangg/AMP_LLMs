@@ -1303,9 +1303,12 @@ class PipelineOrchestrator:
         shared_metadata["peptide_result"] = peptide_ann.value
 
         # v15: If peptide=False, this trial is not a peptide therapeutic — N/A all other fields
-        # v16: Only trigger cascade if confidence ≥ 0.90 to avoid false-negative wipeouts.
-        # Lower-confidence False results proceed to annotation but flag for review.
-        if peptide_ann.value == "False" and peptide_ann.confidence >= 0.90:
+        # v17: Only trigger cascade for DETERMINISTIC False results (known non-peptide drug
+        # lists). The v16 confidence gate (>=0.90) was ineffective because confidence measures
+        # source quality (static weights ~0.90-0.95), not classification certainty. LLM-based
+        # False results are unreliable for edge cases (peptide radiotracers, peptide vaccines)
+        # and should NOT cascade — annotate normally and let verification catch errors.
+        if peptide_ann.value == "False" and getattr(peptide_ann, "model_name", "") == "deterministic":
             for field_name in ANNOTATION_AGENTS:
                 if field_name == "peptide":
                     continue
@@ -1313,16 +1316,16 @@ class PipelineOrchestrator:
                     field_name=field_name,
                     value="N/A",
                     confidence=1.0,
-                    reasoning="[Peptide=False: non-peptide trial, all fields N/A]",
+                    reasoning="[Peptide=False (deterministic): non-peptide trial, all fields N/A]",
                     model_name="deterministic",
                     skip_verification=True,
                 ))
-            logger.info(f"  peptide=False (conf={peptide_ann.confidence:.2f}) for {nct_id}, N/A-ing all other fields")
+            logger.info(f"  peptide=False (deterministic) for {nct_id}, N/A-ing all other fields")
             return annotations
         elif peptide_ann.value == "False":
             logger.info(
-                f"  peptide=False but low confidence ({peptide_ann.confidence:.2f}) for {nct_id}, "
-                f"proceeding with annotation (will be flagged for review)"
+                f"  peptide=False (LLM, conf={peptide_ann.confidence:.2f}) for {nct_id}, "
+                f"proceeding with annotation (cascade suppressed — LLM False not trusted for cascade)"
             )
 
         # --- Step 2: Run classification, delivery_mode, outcome, sequence (NOT failure_reason yet) ---
@@ -1860,8 +1863,10 @@ class PipelineOrchestrator:
                         f"  normalize: {field_name} '{val[:50]}...' → '{f.final_value}'"
                     )
 
-            elif field_name == "delivery_mode" and len(val) > 50:
-                # Reconciler sometimes outputs verbose descriptions
+            elif field_name == "delivery_mode" and len(val) > 50 and "," not in val:
+                # Reconciler sometimes outputs verbose descriptions.
+                # v17: Skip normalization for comma-separated multi-route values
+                # (they are already in canonical form from the deterministic path).
                 v_lower = val.lower()
                 if "intravenous" in v_lower or "iv " in v_lower:
                     f.final_value = "IV"

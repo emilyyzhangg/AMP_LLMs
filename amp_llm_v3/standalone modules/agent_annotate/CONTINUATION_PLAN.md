@@ -1,67 +1,49 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-03-25
-**Current state:** v16 on both dev and main (a599e7a). Batch A running (25366ac24587). EDAM has 300 experiences from v14/v15 runs.
+**Current state:** v17 code written on dev. Prod still on v16 (a599e7a). Job 25366ac24587 complete. EDAM has 300 experiences from v14/v15 runs.
 
-## Next Step: Run Batch A on v16
+## Next Step: Merge v17 to main and run Batch A
 
-v16 has 6 substantial fixes. Need to re-run Batch A (25 NCTs) to validate improvements before moving to Phase 2.
+v17 has 4 targeted fixes based on v16 concordance root-cause analysis. Need to merge to main, then run Batch A (25 NCTs) to validate.
 
-### Submit the job
-```bash
-TOKEN="J6YtEd_HKw5G7aBzG86dcLyVD54itfCZqiMG2x-9xEk"
-NCT_IDS=$(python3 -c "
-with open('scripts/fast_learning_batch_25.txt') as f:
-    ncts = [l.strip() for l in f if l.strip()]
-import json; print(json.dumps(ncts))
-")
-curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d "{\"nct_ids\": $NCT_IDS}" http://localhost:8005/api/jobs
-```
+### v16 Concordance Results (job 25366ac24587) — completed 2026-03-25
 
-### What to check after completion
+| Field | v15 vs R1 | v16 vs R1 | Delta | Verdict |
+|---|---|---|---|---|
+| Classification | 83.3% | **84.0%** | +0.7% | Stable |
+| Delivery Mode (strict) | 69.6% | **72.7%** | +3.1% | Improved |
+| Delivery Mode (bucketed) | 95.7% | **95.5%** | -0.2% | Stable |
+| Outcome | 78.3% | **77.3%** | -1.0% | Slight regression |
+| Reason for Failure | 84.0% | **84.0%** | 0.0% | Stable |
+| Peptide | 86.4% | **81.8%** | -4.6% | **Regressed** |
+| Sequence | 0.0% | **14.3%** | +14.3% | **Major improvement** (0→7/25 extracted) |
 
-1. **Run concordance** — compare v16 vs v15 (c3fa1fbba5c2):
-   - Sequence: was 0/25 — expect >0 (critical fix)
-   - Outcome: was 78.3% — expect ≥80% (adverse-event heuristics)
-   - Peptide: was 86.4% — check that confidence gate doesn't regress
-   - RfF: was 84.0% — check Unknown-gate removal helps (Toxic/Unsafe, Ineffective)
-   - Delivery: was 69.6%/95.7% bucketed — check multi-route support
+**Convergence: NOT MET** — peptide regressed 4.6% (threshold was <2%).
 
-2. **Convergence check:** If v16 vs v15 concordance differs by <2% on all non-sequence fields → code is stable, ready for Phase 2.
+### Root causes identified and fixed in v17
 
-3. **If sequence >50%:** Phase 1 targets met across all fields → submit Phase 2 (50 NCTs).
-
-4. **If regressions:** Analyze per-trial disagreements, fix code, re-run.
-
-### v16 changes being tested
-
-| Fix | What changed | Expected impact |
+| Issue | Root Cause | v17 Fix |
 |---|---|---|
-| Sequence agent | metadata passed to all agents, raw_data key fallback, prefix stripping | 0%→>0% (was totally broken) |
-| Outcome heuristics | Adverse-event keyword detection, publications as H1 corroboration | 78.3%→≥80% |
-| Peptide cascade gate | Require conf≥0.90 for False→N/A cascade | Protect NCT02624518, NCT02654587 |
-| Multi-route delivery | Comma-separated routes for combination trials | Improve strict concordance |
-| RfF Unknown gate | Removed "Unknown" from skip list | Detect Toxic/Unsafe, Ineffective |
-| AC1 docs | Prevalence paradox guidance in paper/methodology | No concordance impact |
+| Outcome 4× Unknown | Adverse-event heuristic in dead code (only called on LLM exception, not on LLM "Unknown") | Post-LLM override: call `_infer_from_pass1()` when Pass 2 returns "Unknown". Also inject structured phase from ClinicalTrials.gov into Pass 2. |
+| Peptide -4.6% regression | Confidence gate (≥0.90) checks source quality (static ~0.90-0.95), not classification certainty | Only cascade on `model_name=="deterministic"` (known drug lists). LLM False results no longer trigger cascade. Added OSE2101/TEDOPI/DOTATOC to known peptides. |
+| Sequence 0% accuracy | DBAASP abbreviation collision (BNP→BnPRP1, ANP→HANP). ChEMBL HELM outscored by wrong DBAASP matches. UniProt picks shortest fragment (degradation products). | Word-boundary matching for short names (≤4 chars). ChEMBL HELM boosted 1.3x. UniProt prefers name-matching fragments. Formulation text stripped. |
+| Multi-route not working | Deterministic path returns on first keyword match. " iv " matches disease grading in titles. _parse_value strips to single value. | Collect all routes across all citations. Exclude title text from ambiguous keywords. _parse_value handles comma-separated. |
 
-## v15 Concordance Baseline (job c3fa1fbba5c2)
+### What to check after v17 Batch A
 
-| Field | vs R1 | vs R2 | R1↔R2 |
-|---|---|---|---|
-| Classification | 83.3% (AC₁=0.82) | 87.5% | 88.0% |
-| Delivery Mode | 69.6% / bucketed 95.7% | 73.9% | 76.0% |
-| Outcome | 78.3% (κ=0.72) | 69.6% | 80.0% |
-| Reason for Failure | 84.0% (κ=0.77) | 80.0% | 88.0% |
-| Peptide | 86.4% | 75.0% | 83.3% |
-| Sequence | 0.0% | 0.0% | 70.6% |
+1. **Outcome:** Expect ≥80% vs R1 (heuristic override catches NCT00000886 reactogenicity)
+2. **Peptide:** Expect ≥86% vs R1 (cascade suppression + OSE2101 in known drugs)
+3. **Sequence:** Expect accuracy improvement (DBAASP collision fixed, ChEMBL HELM boosted)
+4. **Delivery:** NCT05415410 and NCT06126354 should show multi-route values
+5. **Convergence:** If v17 vs v16 <2% on classification/RfF (stable fields) → Phase 2
 
 ## Environment State
 
 | Environment | Branch | Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v16 (a599e7a) | 25366ac24587 (Batch A, 25 NCTs) |
-| Dev (port 9005) | dev | v16 (a599e7a) | None |
+| Prod (port 8005) | main | v16 (a599e7a) | None (25366ac24587 complete) |
+| Dev (port 9005) | dev | **v17 (uncommitted)** | None |
 
 ## Important Notes
 

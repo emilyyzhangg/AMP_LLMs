@@ -23,10 +23,11 @@
 | 14 | A (v12+reasoning) | ba1689125a8f | 25 | ?/25 | **Lost** | v12+reasoning | — | Server restarted, results not saved. EDAM epoch 1. |
 | 15 | A (v14) | 2c0c0d3a8a73 | 25 | 25/25 | **Complete** | v14 | — | v14 sequence overhaul. |
 | 16 | A (v15) | c3fa1fbba5c2 | 25 | 25/25 | **Complete** | v15 | — | peptide=False→N/A cascade, investigational drug rename. 142 min. See concordance below. |
-| **17** | **A (v16)** | **25366ac24587** | **25** | **—** | **Running** | **v16** | **TBD** | **Sequence fix, outcome heuristics, peptide gate, multi-route, RfF gate, AC1 docs.** |
-| *18* | *A+B (50 NCTs)* | *TBD* | *50* | *—* | *Pending* | *v16+* | *—* | *Phase 2: expand to 50 after Batch A converges.* |
-| *19* | *Full 964* | *TBD* | *964* | *—* | *Pending* | *v16+* | *—* | *Phase 3: single-version full run.* |
-| *20* | *884 unannotated* | *TBD* | *884* | *—* | *Phase 5* | *v16+* | *—* | *Agent-only, no human reference.* |
+| 17 | A (v16) | 25366ac24587 | 25 | 25/25 | **Complete** | v16 | — | 178 min. Sequence 0→7, but 0% accuracy (DBAASP collision). Outcome unchanged. Peptide regressed 4.6%. See concordance below. |
+| **18** | **A (v17)** | **TBD** | **25** | **—** | **Pending** | **v17** | **TBD** | **Outcome heuristic override, peptide cascade fix, DBAASP word-boundary, multi-route collection.** |
+| *19* | *A+B (50 NCTs)* | *TBD* | *50* | *—* | *Pending* | *v17+* | *—* | *Phase 2: expand to 50 after Batch A converges.* |
+| *20* | *Full 964* | *TBD* | *964* | *—* | *Pending* | *v17+* | *—* | *Phase 3: single-version full run.* |
+| *21* | *884 unannotated* | *TBD* | *884* | *—* | *Phase 5* | *v17+* | *—* | *Agent-only, no human reference.* |
 
 ### Agent version summary
 
@@ -41,7 +42,8 @@
 | v12+reasoning | bb2c6fb | Layer 1: Drug name resolution via LLM, cached in EDAM. Layer 2: Structured Pass 1→2 handoff, rebalanced prompts, per-field temperature. Layer 3: UniProt AA→peptide, AMP→peptide cross-validation. AMP Mode D re-added (pathogen vaccines). Mode A expanded (growth inhibition). Evidence thresholds 2→1. Multi-drug peptide bypass fixed. EDAM learns from consistency overrides, reconciliation, drug names, reasoning patterns. Grouped concordance toggle. Agreement Metrics (AC₁ primary). SerpAPI removed. |
 | v14 | 2c412d5 | Sequence agent overhaul: structured-data-only extraction (no snippet parsing). Reads from DBAASP, APD, ChEMBL HELM, UniProt, EBI. Score/rank candidates, optional LLM adjudication. |
 | v15 | 6240670 | peptide=False → N/A all fields cascade. "active drug" → "investigational drug" rename. Bucketed concordance (broad categories). |
-| **v16** | **8223691** | **Sequence fix (critical): metadata passed to all agents, raw_data key fallback, prefix stripping. Outcome: adverse-event keyword detection, publications as H1 corroboration, negative valence→Failed. Peptide cascade requires conf≥0.90. Delivery: multi-route support. RfF: "Unknown" removed from skip list. AC₁ reporting in docs.** |
+| v16 | 8223691 | Sequence fix (critical): metadata passed to all agents, raw_data key fallback, prefix stripping. Outcome: adverse-event keyword detection, publications as H1 corroboration, negative valence→Failed. Peptide cascade requires conf≥0.90. Delivery: multi-route support. RfF: "Unknown" removed from skip list. AC₁ reporting in docs. |
+| **v17** | **TBD** | **Outcome: post-LLM heuristic override (call _infer_from_pass1 when Pass 2 returns "Unknown" — was dead code), inject structured phase into Pass 2. Peptide: cascade only on model_name=="deterministic" (source quality gate was useless), added OSE2101/TEDOPI/DOTATOC to known peptides. Sequence: DBAASP word-boundary matching for short names (≤4 chars), ChEMBL HELM 1.3x boost, UniProt name-matching fragment selection, formulation text stripping. Delivery: multi-route collection across all citations (was returning first match), title text excluded from ambiguous keywords (" iv " in "Grade II to IV"), _parse_value handles comma-separated.** |
 
 ## NCT Coverage
 
@@ -155,45 +157,93 @@ EDAM was wiped clean on 2026-03-24 (all prior v9-v11 data discarded due to known
 
 **EDAM's role going forward:** Supplementary edge-case memory, NOT the primary improvement loop. Code changes are primary. EDAM will learn ONLY from v12+ runs on stable code.
 
-## v16 Validation Keys to Watch (job 25366ac24587)
+### v16 Concordance (Batch A, 25 NCTs, job 25366ac24587) — 2026-03-25
+
+| Field | vs R1 | κ(R1) | AC1(R1) | vs R2 | κ(R2) | R1↔R2 | v15→v16 | Status |
+|---|---|---|---|---|---|---|---|---|
+| Classification | 84.0% | -0.04 | 0.827 | 88.0% | 0.35 | 88.0% | +0.7% | Stable |
+| Delivery Mode | 72.7% | 0.61 | 0.701 | 68.2% | 0.55 | 76.0% | +3.1% | Improved |
+| Outcome | 77.3% | 0.71 | 0.740 | 68.2% | 0.59 | 80.0% | -1.0% | Slight regression |
+| Reason for Failure | 84.0% | 0.78 | 0.818 | 80.0% | 0.73 | 88.0% | 0.0% | Stable |
+| Peptide | 81.8% | 0.24 | 0.762 | 75.0% | 0.00 | 83.3% | **-4.6%** | **Regressed** |
+| Sequence | 14.3% | 0.13 | 0.066 | 14.3% | 0.13 | 70.6% | +14.3% | **Major improvement** |
+
+**Bucketed concordance:**
+
+| Field | vs R1 | vs R2 | R1↔R2 |
+|---|---|---|---|
+| Classification | 84.0% | 88.0% | 88.0% |
+| Delivery Mode | 95.5% | 95.5% | 96.0% |
+| Outcome | 81.8% | 77.3% | 88.0% |
+| Peptide | 84.0% | 84.0% | 92.0% |
+
+**Root cause analysis (v16 failures → v17 fixes):**
+
+1. **Outcome (4 persistent Unknowns):** The adverse-event heuristic in `_infer_from_pass1()` was DEAD CODE — only called when the Pass 2 LLM throws an exception, never when it returns "Unknown". NCT00000886 had "unacceptable reactogenicity" in publications but the LLM treated it as inconclusive. Additionally, NCT02665377 had "Trial Phase: NOT FOUND" because Pass 1 failed to extract the phase from structured data.
+   - **v17 fix:** Post-LLM heuristic override + structured phase injection.
+
+2. **Peptide (-4.6% regression):** The confidence gate (≥0.90) checks SOURCE QUALITY (static weights: ClinicalTrials=0.95, PubMed=0.90), NOT classification certainty. Every trial with decent research coverage has conf≥0.90, making the gate useless. NCT02654587 (OSE2101) was misclassified as "large multi-subunit protein" — it's actually 10 synthetic peptides (9-10 aa each).
+   - **v17 fix:** Cascade only on `model_name=="deterministic"`. Added OSE2101/DOTATOC to known peptides.
+
+3. **Sequence (0% accuracy despite 7/25 extracted):** DBAASP `_name_matches()` uses bidirectional substring — "BNP" (3 chars) matches "BnPRP1" (proline-rich AMP), "ANP" matches "HANP" (alpha-defensin). These wrong sequences scored 0.95 (DBAASP weight) and outranked the correct ChEMBL HELM matches (0.90).
+   - **v17 fix:** Word-boundary matching for ≤4 char names. ChEMBL HELM boosted 1.3x. UniProt prefers name-matching fragments.
+
+4. **Multi-route delivery (not working):** `_extract_deterministic_route()` returns on FIRST keyword match. " iv " in "Grade II to IV (MAGIC)" triggered a false positive for NCT05415410. `_parse_value()` can only produce single values.
+   - **v17 fix:** Collect all routes. Exclude title text. Parse comma-separated.
+
+## v17 Validation Keys to Watch (next job TBD)
 
 When this job completes, check these specific items in order of priority:
 
-### 1. Sequence — was it fixed? (Critical)
-- v15: 0/25 sequences extracted (completely broken)
-- v16 fix: metadata now passed to sequence agent, raw_data key fallback, prefix stripping
-- **Pass if:** ≥10/25 trials have a non-empty sequence (human R1 had 17/25, R2 had 21/25)
-- **Check specific NCTs:** NCT00972569 (BNP — DBAASP has 3 sequences + ChEMBL HELM), NCT02665377 (Angiotensin — UniProt has entries)
-- **If still 0:** raw_data keys are changing format again, or research agents aren't populating structured data
+### 1. Outcome — does post-LLM heuristic override work? (Critical)
+- v16: 77.3% vs R1, same 4 Unknowns as v15 (heuristic was dead code)
+- v17 fix: call `_infer_from_pass1()` after Pass 2 "Unknown", inject structured phase
+- **Pass if:** ≥80% vs R1
+- **Check specific NCTs:**
+  - NCT00000886: "unacceptable reactogenicity" in publications → should now return "Failed - completed trial"
+  - NCT02665377: structured phase injected → should help LLM classify
+  - NCT00972569: check if heuristic catches any adverse-event keywords
+  - NCT02660736: should be "Positive" — may need different pathway
+- **Regression risk:** Heuristic may over-fire, converting legitimate "Unknown" to "Failed". Check for new false positives.
 
-### 2. Outcome — do adverse-event heuristics help? (High)
-- v15: 4 trials returned "Unknown" where humans said "Failed" or "Positive"
-- v16 fix: adverse-event keyword detection, publications as H1 corroboration, negative valence→Failed
-- **Pass if:** ≥80% vs R1 (v15 was 78.3%)
-- **Check specific NCTs:** NCT00000886 (PubMed paper about "unacceptable reactogenicity" — should now trigger "Failed"), NCT02660736 (should be "Positive")
+### 2. Peptide — does deterministic-only cascade fix regression? (Critical)
+- v16: 81.8% vs R1 (regressed 4.6% from v15's 86.4%)
+- v17 fix: cascade only on `model_name=="deterministic"`, added OSE2101/DOTATOC to known peptides
+- **Pass if:** ≥86% vs R1 (restore v15 level)
+- **Check specific NCTs:**
+  - NCT02654587 (OSE2101/TEDOPI): should now be True via known peptide list
+  - NCT02624518 (68Ga-RM2): peptide may still be False (genuine edge case) but cascade won't fire
+  - NCT03724409 (DOTATOC): should now be True via known peptide list
+- **Regression risk:** LLM False results now proceed to annotation instead of cascading. This annotates more trials (good) but may produce wrong values for genuinely non-peptide trials. Check for new peptide=False trials that should have cascaded.
 
-### 3. Peptide — does confidence gate prevent false-negative wipeout? (High)
-- v15: NCT02624518 and NCT02654587 incorrectly False'd, wiping all fields via N/A cascade
-- v16 fix: require confidence ≥0.90 for cascade
-- **Pass if:** These two trials now have non-N/A annotations for classification/delivery/outcome
-- **Regression risk:** If the peptide agent still returns False with conf≥0.90, the cascade will still fire. Check the actual confidence values.
+### 3. Sequence — does DBAASP word-boundary fix improve accuracy? (High)
+- v16: 7/25 extracted, 0% accuracy (wrong sequences due to abbreviation collision)
+- v17 fix: word-boundary matching for ≤4 char names, ChEMBL HELM 1.3x boost, name-matching fragment selection
+- **Pass if:** ≥30% accuracy AND ≥10/25 extracted
+- **Check specific NCTs:**
+  - NCT00972569 (BNP): should now get BNP-32 from ChEMBL HELM (not BnPRP1 from DBAASP)
+  - NCT02665377 (ANP): should now get ANP from UniProt (not HANP/defensin from DBAASP)
+  - NCT02642523 (Nesiritide=BNP-32): should get BNP-32 from ChEMBL
 
-### 4. Reason for Failure — does Unknown-gate removal help? (Medium)
-- v15: Agent missed "Toxic/Unsafe" (NCT00000886) and "Ineffective" (NCT00972569, NCT02665377)
-- v16 fix: "Unknown" removed from pre-check skip list
-- **Pass if:** ≥84% vs R1 (v15 was 84.0% — should hold or improve)
-- **Regression risk:** If outcome still returns "Unknown" for these trials, the fix won't help. But if outcome correctly returns "Failed", RfF should investigate and find the failure reason.
+### 4. Delivery Mode — does multi-route collection work? (Medium)
+- v16: 72.7% strict, 95.5% bucketed. Multi-route not producing comma-separated.
+- v17 fix: collect all routes, exclude titles from ambiguous keywords, parse comma-separated
+- **Pass if:** ≥73% strict
+- **Check specific NCTs:**
+  - NCT05415410: should produce "Injection/Infusion - Subcutaneous/Intradermal, IV" (not just "IV" from title false-positive)
+  - NCT06126354: should produce "IV, Oral - Unspecified"
+- **Regression risk:** Multi-route collection may pick up noise routes from citations. Check that single-route trials still produce single values.
 
-### 5. Delivery Mode — does multi-route help? (Low)
-- v15: 69.6% strict, 95.7% bucketed
-- v16 fix: multi-route support in Pass 2 prompt
-- **Pass if:** ≥70% strict (slight improvement from multi-route trials)
-- **Check:** NCT05415410 and NCT06126354 — do they now list multiple routes?
+### 5. Reason for Failure — cascade from outcome improvement? (Medium)
+- v16: 84.0% vs R1 (stable, but bottlenecked by outcome Unknowns)
+- v17: no direct fix, but if outcome improves, RfF should cascade-improve
+- **Pass if:** ≥84% vs R1
+- **Check:** NCT00000886 — if outcome correctly returns "Failed", does RfF find "Toxic/Unsafe"?
 
 ### 6. Convergence check
-- Compare v16 concordance vs v15 for all fields except sequence
-- **If <2% change on all non-sequence fields:** code is stable → proceed to Phase 2 (50 NCTs)
-- **If any field regresses >3%:** investigate, fix, re-run Batch A
+- Compare v17 vs v16 for classification and RfF (the two stable fields)
+- **If classification and RfF change <2%:** underlying stability confirmed
+- **If outcome ≥80% AND peptide ≥86% AND sequence accuracy ≥30%:** Phase 1 targets met → Phase 2
 
 ## Plan
 
@@ -223,13 +273,13 @@ After each run:
 2. **Error analysis**: categorize each disagreement as code-fixable vs edge-case
 3. **If code-fixable**: implement fix, bump version, re-run Batch A (~3h/cycle)
 4. **If edge-case only**: EDAM is handling it, move to Phase 2
-5. **v16 targets on Batch A** (updated from v15 concordance analysis):
-   - Outcome: ≥80% vs R1 (v15 was 78.3% — v16 adverse-event heuristics should close gap)
-   - Delivery mode: ≥70% strict, ≥95% bucketed vs R1 (v15 was 69.6%/95.7%)
-   - Reason for failure: ≥84% vs R1 (v15 was 84.0% — v16 Unknown-gate removal may improve)
-   - Classification: AC₁ ≥0.85 (v15 was AC₁=0.82 — kappa unreliable due to prevalence)
-   - Peptide: ≥85% vs R1 (v15 was 86.4% — v16 confidence gate protects against false-neg cascade)
-   - **Sequence: >0%** (v15 was 0% — v16 fixes the root cause, expect first real sequences)
+5. **v17 targets on Batch A** (updated from v16 concordance analysis):
+   - Outcome: ≥80% vs R1 (v16 was 77.3% — v17 post-LLM heuristic override should close gap)
+   - Delivery mode: ≥73% strict, ≥95% bucketed vs R1 (v16 was 72.7%/95.5% — v17 multi-route)
+   - Reason for failure: ≥84% vs R1 (v16 was 84.0% — should cascade-improve with outcome)
+   - Classification: AC₁ ≥0.82 (v16 was AC₁=0.827 — stable, no changes)
+   - Peptide: ≥86% vs R1 (v16 was 81.8% — v17 deterministic-only cascade restores v15 level)
+   - **Sequence: ≥30% accuracy** (v16 was 14.3% with 0% accuracy — v17 DBAASP/ChEMBL fixes)
 
 ### Phase 2: Expand to Batch A+B (50 NCTs)
 

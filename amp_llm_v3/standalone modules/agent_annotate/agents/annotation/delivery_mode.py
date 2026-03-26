@@ -11,6 +11,15 @@ v10 changes:
     Pass 2, causing "Other/Unspecified" defaults when route info was found.
   - clinical_protocol.py now extracts detailedDescription and armGroups as
     citations, feeding more route info into the deterministic path.
+
+v17 changes:
+  - Multi-route collection: deterministic path now collects ALL distinct routes
+    across all citations instead of returning on the first keyword match.
+    Produces comma-separated values for multi-drug multi-route trials.
+  - False positive prevention: exclude trial title/briefTitle text from
+    keyword matching. " iv " in "Grade II to IV (MAGIC)" is disease grading,
+    not a route. Title citations are identified by section_name == "title".
+  - _parse_value updated to handle comma-separated multi-route values.
 """
 
 import re
@@ -193,9 +202,27 @@ _DRUG_CLASS_ROUTES = {
 }
 
 
+# v17: Citation section names that should be excluded from keyword matching.
+# Title text contains disease grading ("Grade II to IV") which false-positives
+# the " iv " keyword.
+_TITLE_SECTIONS = {"title", "briefTitle", "officialTitle", "brief_title", "official_title"}
+
+
+def _is_title_citation(citation) -> bool:
+    """Check if a citation is from the trial title (should skip ambiguous keywords)."""
+    section = getattr(citation, "section_name", "") or ""
+    return section.lower().replace("_", "") in {s.lower().replace("_", "") for s in _TITLE_SECTIONS}
+
+
 def _extract_deterministic_route(research_results: list) -> FieldAnnotation | None:
-    """Extract delivery route deterministically from OpenFDA and protocol data."""
+    """Extract delivery route deterministically from OpenFDA and protocol data.
+
+    v17: Collects ALL distinct routes across all citations instead of returning
+    on the first match. Produces comma-separated values for multi-route trials.
+    Excludes title text from ambiguous keyword matching.
+    """
     intervention_names: list[str] = []
+    found_routes: dict[str, tuple[float, bool, list]] = {}  # value → (confidence, skip_verify, evidence)
 
     for result in research_results:
         if result.error or result.agent_name != "clinical_protocol":
@@ -210,18 +237,13 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
         for citation in result.citations:
             if citation.source_name == "openfda":
                 snippet_lower = citation.snippet.lower()
-                # Verify OpenFDA label matches a trial intervention
                 if intervention_names and not any(iname in snippet_lower for iname in intervention_names):
-                    logger.debug(f"  delivery_mode: skipping OpenFDA route — label doesn't match interventions")
                     continue
                 for openfda_route, delivery_value in _OPENFDA_ROUTE_MAP.items():
                     if f"route: {openfda_route}" in snippet_lower or f"route\": \"{openfda_route}" in snippet_lower:
-                        logger.info(f"  delivery_mode: deterministic → {delivery_value} (OpenFDA route: '{openfda_route}')")
-                        return FieldAnnotation(
-                            field_name="delivery_mode", value=delivery_value, confidence=0.95,
-                            reasoning=f"[Deterministic v9] OpenFDA route field: '{openfda_route}'",
-                            evidence=[citation], model_name="deterministic", skip_verification=True,
-                        )
+                        if delivery_value not in found_routes:
+                            found_routes[delivery_value] = (0.95, True, [citation])
+                            logger.info(f"  delivery_mode: found {delivery_value} (OpenFDA: '{openfda_route}')")
 
         # Also check raw_data for structured OpenFDA route info
         if result.raw_data:
@@ -230,63 +252,77 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
                 for fda_item in openfda_results:
                     if isinstance(fda_item, dict):
                         openfda_block = fda_item.get("openfda", {})
-                        # Check if this FDA label matches a trial intervention
                         fda_names = openfda_block.get("generic_name", []) + openfda_block.get("brand_name", [])
                         fda_names_lower = [n.lower() for n in fda_names if isinstance(n, str)]
                         if intervention_names and fda_names_lower:
                             if not any(iname in fn or fn in iname for iname in intervention_names for fn in fda_names_lower):
-                                continue  # FDA label is for a different drug
+                                continue
                         routes = openfda_block.get("route", [])
                         if isinstance(routes, list):
                             for route_str in routes:
                                 route_lower = route_str.lower().strip()
                                 if route_lower in _OPENFDA_ROUTE_MAP:
                                     delivery_value = _OPENFDA_ROUTE_MAP[route_lower]
-                                    logger.info(
-                                        f"  delivery_mode: deterministic → {delivery_value} "
-                                        f"(OpenFDA raw_data route: '{route_str}')"
-                                    )
-                                    return FieldAnnotation(
-                                        field_name="delivery_mode",
-                                        value=delivery_value,
-                                        confidence=0.95,
-                                        reasoning=f"[Deterministic v9] OpenFDA raw_data route: '{route_str}'",
-                                        evidence=[],
-                                        model_name="deterministic",
-                                        skip_verification=True,
-                                    )
+                                    if delivery_value not in found_routes:
+                                        found_routes[delivery_value] = (0.95, True, [])
+                                        logger.info(f"  delivery_mode: found {delivery_value} (OpenFDA raw_data: '{route_str}')")
 
-    # v10: Search ALL citations from ALL agents for route keywords
+    # v17: Search ALL citations, collecting all routes instead of returning on first match
+    # Ambiguous short keywords (" iv ", " im ", " sc ") are skipped for title citations
+    _AMBIGUOUS_KEYWORDS = {" iv ", " im ", " sc "}
+
     for result in research_results:
         if result.error:
             continue
         for citation in result.citations:
             snippet_lower = citation.snippet.lower()
+            is_title = _is_title_citation(citation)
             for keyword, delivery_value in _PROTOCOL_ROUTE_KEYWORDS.items():
                 if keyword in snippet_lower:
-                    # OpenFDA and clinicaltrials_gov structured data → high confidence, skip verification
-                    # Literature and other sources → moderate confidence, verify
-                    is_structured = citation.source_name in ("clinicaltrials_gov", "openfda")
-                    conf = 0.95 if is_structured else 0.85
-                    skip = is_structured
-                    logger.info(f"  delivery_mode: deterministic → {delivery_value} (keyword: '{keyword}' in {citation.source_name})")
+                    # v17: Skip ambiguous abbreviation keywords in title text
+                    if is_title and keyword in _AMBIGUOUS_KEYWORDS:
+                        logger.debug(f"  delivery_mode: skipping '{keyword}' in title (false-positive risk)")
+                        continue
+                    if delivery_value not in found_routes:
+                        is_structured = citation.source_name in ("clinicaltrials_gov", "openfda")
+                        conf = 0.95 if is_structured else 0.85
+                        skip = is_structured
+                        found_routes[delivery_value] = (conf, skip, [citation])
+                        logger.info(f"  delivery_mode: found {delivery_value} (keyword: '{keyword}' in {citation.source_name})")
+
+    # Drug-class defaults (lowest priority — only if no other routes found)
+    if not found_routes:
+        for name in intervention_names:
+            for drug_name, delivery_value in _DRUG_CLASS_ROUTES.items():
+                if drug_name in name or name in drug_name:
+                    logger.info(f"  delivery_mode: drug-class default → {delivery_value} (drug: '{name}')")
                     return FieldAnnotation(
-                        field_name="delivery_mode", value=delivery_value, confidence=conf,
-                        reasoning=f"[Deterministic v10] Keyword '{keyword}' found in {citation.source_name}",
-                        evidence=[citation], model_name="deterministic", skip_verification=skip,
+                        field_name="delivery_mode", value=delivery_value, confidence=0.7,
+                        reasoning=f"[Deterministic v9] Drug-class default for '{name}' (matched '{drug_name}').",
+                        evidence=[], model_name="deterministic", skip_verification=False,
                     )
 
-    for name in intervention_names:
-        for drug_name, delivery_value in _DRUG_CLASS_ROUTES.items():
-            if drug_name in name or name in drug_name:
-                logger.info(f"  delivery_mode: drug-class default → {delivery_value} (drug: '{name}')")
-                return FieldAnnotation(
-                    field_name="delivery_mode", value=delivery_value, confidence=0.7,
-                    reasoning=f"[Deterministic v9] Drug-class default for '{name}' (matched '{drug_name}').",
-                    evidence=[], model_name="deterministic", skip_verification=False,
-                )
+    if not found_routes:
+        return None
 
-    return None
+    # Build the result — single route or comma-separated multi-route
+    routes_list = sorted(found_routes.keys())
+    value = ", ".join(routes_list)
+    # Use the lowest confidence and most conservative skip_verification
+    min_conf = min(r[0] for r in found_routes.values())
+    all_skip = all(r[1] for r in found_routes.values())
+    all_evidence = []
+    for r in found_routes.values():
+        all_evidence.extend(r[2])
+
+    multi_tag = f" ({len(routes_list)} routes)" if len(routes_list) > 1 else ""
+    logger.info(f"  delivery_mode: deterministic → {value}{multi_tag}")
+    return FieldAnnotation(
+        field_name="delivery_mode", value=value, confidence=min_conf,
+        reasoning=f"[Deterministic v17] Collected {len(routes_list)} route(s) from all citations",
+        evidence=all_evidence[:5], model_name="deterministic",
+        skip_verification=not (len(routes_list) > 1) and all_skip,  # Always verify multi-route
+    )
 
 
 class DeliveryModeAgent(BaseAnnotationAgent):
@@ -433,7 +469,27 @@ class DeliveryModeAgent(BaseAnnotationAgent):
             return "Other/Unspecified"
 
         raw = match.group(1).strip()
-        lower = raw.lower()
+
+        # v17: Handle comma-separated multi-route values from LLM
+        if "," in raw:
+            parts = [p.strip() for p in raw.split(",") if p.strip()]
+            parsed = [self._parse_single_value(p) for p in parts]
+            # Deduplicate while preserving order
+            seen = set()
+            unique = []
+            for v in parsed:
+                if v not in seen and v != "Other/Unspecified":
+                    seen.add(v)
+                    unique.append(v)
+            if unique:
+                return ", ".join(unique)
+            return "Other/Unspecified"
+
+        return self._parse_single_value(raw)
+
+    def _parse_single_value(self, raw: str) -> str:
+        """Parse a single delivery mode value (not comma-separated)."""
+        lower = raw.lower().strip()
 
         # Exact match first (case-insensitive)
         for valid in VALID_VALUES:

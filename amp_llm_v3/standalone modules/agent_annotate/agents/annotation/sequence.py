@@ -1,5 +1,5 @@
 """
-Sequence Annotation Agent (v14).
+Sequence Annotation Agent (v14, v17 scoring fixes).
 
 Extracts amino acid sequences from structured research data.
 Reads ONLY from raw_data fields — no snippet text parsing.
@@ -19,6 +19,13 @@ Sources (priority order):
   4. UniProt mature peptide/chain features (from raw_data)
   5. UniProt full sequence (≤100 AA, relevance > 0.5)
   6. EBI Proteins structured entries
+
+v17 changes:
+  - Boost ChEMBL HELM score when molecule is a clinical drug (most reliable
+    source for synthetic/clinical peptide sequences)
+  - UniProt fragment selection: prefer fragment whose description best matches
+    the drug name instead of always picking the shortest fragment
+  - Strip formulation/device text from intervention names before database lookups
 """
 
 import re
@@ -119,7 +126,13 @@ def _parse_helm_sequence(helm: str) -> str:
 
 
 def _score_candidate(candidate: dict) -> float:
-    """Score a sequence candidate for ranking."""
+    """Score a sequence candidate for ranking.
+
+    v17: ChEMBL HELM gets a clinical-drug bonus (1.3x) because it represents
+    the actual synthesized drug molecule, not a database entry that may be for
+    a different peptide with a similar name. DBAASP is demoted slightly (0.85)
+    because its substring name matching can return unrelated peptides.
+    """
     source = candidate.get("source", "")
     relevance = candidate.get("relevance", 0.5)
     length = candidate.get("length", 0)
@@ -128,8 +141,10 @@ def _score_candidate(candidate: dict) -> float:
     source_weight = _SOURCE_WEIGHTS.get(source, 0.5)
     length_penalty = 1.0 if 2 <= length <= 100 else (0.5 if length <= 200 else 0.0)
     maturity_bonus = 1.2 if is_mature else 1.0
+    # v17: ChEMBL HELM represents the actual drug molecule → boost
+    clinical_bonus = 1.3 if source == "chembl_helm" else 1.0
 
-    return source_weight * relevance * length_penalty * maturity_bonus
+    return source_weight * relevance * length_penalty * maturity_bonus * clinical_bonus
 
 
 def _strip_intervention_prefix(name: str) -> str:
@@ -143,6 +158,35 @@ def _strip_intervention_prefix(name: str) -> str:
         ):
             return rest
     return name
+
+
+# v17: Formulation/device words to strip from intervention names before DB lookups.
+# "Albiglutide Lyophilized DCC Pen Injector" → "Albiglutide"
+_FORMULATION_WORDS = {
+    "lyophilized", "lyophilised", "powder", "solution", "suspension",
+    "injection", "injector", "pen", "prefilled", "pre-filled", "syringe",
+    "vial", "tablet", "capsule", "cream", "gel", "spray", "inhaler",
+    "dcc", "autoinjector", "auto-injector", "cartridge", "device",
+    "kit", "reconstituted", "diluent",
+}
+
+
+def _strip_formulation(name: str) -> str:
+    """Strip formulation/device words from an intervention name.
+
+    v17: Prevents "Albiglutide Lyophilized DCC Pen Injector" from polluting
+    ChEMBL searches. Returns the first word(s) that aren't formulation terms.
+    """
+    words = name.split()
+    # Keep words until we hit a formulation word
+    clean = []
+    for word in words:
+        if word.lower().rstrip(".,;:") in _FORMULATION_WORDS:
+            break
+        clean.append(word)
+    result = " ".join(clean).strip()
+    # If we stripped everything, return the first word
+    return result if result else words[0] if words else name
 
 
 def _extract_intervention_names(metadata: dict | None) -> list[str]:
@@ -277,13 +321,29 @@ class SequenceAgent(BaseAnnotationAgent):
                     reasoning_parts.append(f"APD: {entry.get('apd_id', '')} ({len(seq)} aa)")
 
             # 3. ChEMBL HELM notation
-            helm = all_raw.get(f"chembl_{intervention}_helm", "")
+            # v17: Also try with formulation words stripped (e.g.,
+            # "Albiglutide Lyophilized DCC Pen Injector" → "Albiglutide")
+            stripped_name = _strip_formulation(intervention)
+            helm_keys = [f"chembl_{intervention}_helm"]
+            if stripped_name != intervention:
+                helm_keys.append(f"chembl_{stripped_name}_helm")
+            helm = ""
+            for hk in helm_keys:
+                helm = all_raw.get(hk, "")
+                if helm:
+                    break
             if not helm:
                 # Fallback: check molecules list for helm_notation field
-                mols = all_raw.get(f"chembl_{intervention}_molecules", [])
-                for mol in (mols if isinstance(mols, list) else []):
-                    if isinstance(mol, dict) and mol.get("helm_notation"):
-                        helm = mol["helm_notation"]
+                mol_keys = [f"chembl_{intervention}_molecules"]
+                if stripped_name != intervention:
+                    mol_keys.append(f"chembl_{stripped_name}_molecules")
+                for mk in mol_keys:
+                    mols = all_raw.get(mk, [])
+                    for mol in (mols if isinstance(mols, list) else []):
+                        if isinstance(mol, dict) and mol.get("helm_notation"):
+                            helm = mol["helm_notation"]
+                            break
+                    if helm:
                         break
             if helm:
                 seq = _parse_helm_sequence(helm)
@@ -320,9 +380,15 @@ class SequenceAgent(BaseAnnotationAgent):
                     full_seq = seq_obj.get("value", "")
 
                 # Check for mature peptide/chain features
+                # v17: Prefer fragment whose description matches the drug name
+                # instead of always picking the shortest. For BNP (UniProt P16860),
+                # the shortest fragment is BNP(4-27) (24aa degradation product),
+                # but the correct therapeutic peptide is "Brain natriuretic peptide 32".
                 features = entry.get("features", [])
                 best_fragment = None
-                best_fragment_len = float("inf")
+                best_fragment_score = -1  # higher is better
+
+                intervention_lower = intervention.lower()
 
                 for feat in features:
                     if not isinstance(feat, dict):
@@ -343,9 +409,21 @@ class SequenceAgent(BaseAnnotationAgent):
                             continue
                         fragment = full_seq[start - 1:end]
                         frag_len = len(fragment)
-                        if 2 <= frag_len <= 200 and frag_len < best_fragment_len:
+                        if not (2 <= frag_len <= 200):
+                            continue
+
+                        # Score: name match > peptide type > shorter length
+                        feat_desc = feat.get("description", "").lower()
+                        name_match = 10 if intervention_lower in feat_desc else 0
+                        type_bonus = 5 if feat_type == "Peptide" else 0
+                        # Prefer moderate-length fragments over very short ones
+                        # (short fragments are often degradation products)
+                        length_score = 1.0 / (1.0 + abs(frag_len - 32))  # bias toward ~32aa
+                        score = name_match + type_bonus + length_score
+
+                        if score > best_fragment_score:
                             best_fragment = fragment
-                            best_fragment_len = frag_len
+                            best_fragment_score = score
 
                 if best_fragment:
                     norm = normalize_sequence(best_fragment)

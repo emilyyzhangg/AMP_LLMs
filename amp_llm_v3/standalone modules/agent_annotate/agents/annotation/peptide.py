@@ -1,5 +1,5 @@
 """
-Peptide Annotation Agent (v11).
+Peptide Annotation Agent (v11, v17 known-drug additions).
 
 Determines whether the intervention is a peptide (True/False).
 
@@ -7,6 +7,12 @@ v11 changes (from 400-trial concordance — peptide at 65% vs 83% human baseline
   - Added _KNOWN_PEPTIDE_DRUGS for deterministic True bypass
   - Field-specific snippet length override (250→400 chars on Mac Mini)
   - Root cause: 130 True→False EDAM corrections + 8B model defaulting to False
+
+v17 changes:
+  - Added OSE2101/TEDOPI (multi-epitope peptide vaccine) and DOTATOC/DOTATATE
+    (peptide receptor radionuclide therapy) to _KNOWN_PEPTIDE_DRUGS.
+  - NCT02654587 was misclassified because the LLM called OSE2101 a "large
+    multi-subunit protein" — it's actually a cocktail of 10 synthetic peptides.
 """
 
 import re
@@ -206,8 +212,13 @@ _KNOWN_PEPTIDE_DRUGS = {
     "ll-37", "ll37", "cathelicidin", "thymosin alpha-1", "thymalfasin",
     # Peptide vaccines (peptide IS the active immunogen)
     "streptincor",
+    # v17: Multi-epitope peptide vaccines (cocktails of synthetic peptides)
+    "ose2101", "tedopi",
     # HIV peptides (still peptides even though not AMPs)
     "enfuvirtide", "t-20", "fuzeon", "peptide t", "dapta",
+    # v17: Peptide receptor radionuclide therapy (peptide IS the targeting mechanism
+    # AND the therapeutic agent — not just a diagnostic carrier)
+    "dotatoc", "dotatate", "lutathera", "177lu-dotatate",
     # Other peptide therapeutics
     "nesiritide",
     "melittin", "magainin", "cecropin", "lactoferricin",

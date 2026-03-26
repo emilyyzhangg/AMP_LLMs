@@ -13,6 +13,11 @@ v14 changes:
   - Add name-match filtering to prevent floods of unrelated hits
   - Store sequences structurally in raw_data (not only in snippets)
   - Remove noise words (Synthesis, Complexity) from snippets
+
+v17 changes:
+  - Fix abbreviation collision in _name_matches: short names (<=4 chars) like
+    "BNP" and "ANP" were substring-matching unrelated peptides (BnPRP1, HANP).
+    Now uses word-boundary matching for short intervention names.
 """
 
 import logging
@@ -57,12 +62,30 @@ def _extract_intervention_names(metadata: dict | None) -> list[str]:
 def _name_matches(intervention: str, peptide_name: str) -> bool:
     """Check if a DBAASP peptide name is relevant to the intervention.
 
-    Case-insensitive substring match in either direction.
+    v17: For short intervention names (<=4 chars like "BNP", "ANP"), use
+    word-boundary matching to prevent abbreviation collisions. "BNP" was
+    substring-matching "BnPRP1" (a proline-rich AMP), and "ANP" was matching
+    "HANP" (human alpha-neutrophil peptide / defensin). These are completely
+    different protein families from the clinical trial drugs.
+
+    For longer names, bidirectional substring matching is safe.
     """
+    import re as _re
+
     iv = intervention.lower().strip()
     pn = peptide_name.lower().strip()
     if not iv or not pn:
         return False
+
+    # Short intervention names (<=4 chars): require word-boundary match
+    # to prevent "BNP" matching "BnPRP1" or "ANP" matching "HANP-1"
+    if len(iv) <= 4:
+        # Exact match or word-boundary match in peptide name
+        if iv == pn:
+            return True
+        return bool(_re.search(r'\b' + _re.escape(iv) + r'\b', pn))
+
+    # Longer names: bidirectional substring is safe
     return iv in pn or pn in iv
 
 
