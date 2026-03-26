@@ -390,10 +390,14 @@ class PipelineOrchestrator:
         job.updated_at = now_pacific()
         config = config_service.get()
 
-        # Configure Ollama keep_alive based on hardware profile
+        # Configure Ollama keep_alive and per-model timeouts
         from app.services.ollama_client import ollama_client
         hw_profile = getattr(config.orchestrator, "hardware_profile", "mac_mini")
         ollama_client.set_hardware_profile(hw_profile)
+        # v17: Load per-model timeout overrides from config
+        model_timeouts = getattr(config.ollama, "model_timeouts", {})
+        if model_timeouts:
+            ollama_client.set_model_timeouts(model_timeouts)
         pipeline_start = _time.monotonic()
         # If resumed, offset the start time backward to account for previous elapsed time
         if job.resumed and job.progress.elapsed_seconds > 0:
@@ -491,6 +495,9 @@ class PipelineOrchestrator:
         job.updated_at = now_pacific()
         self._persist_job(job)
         logger.info(f"[{job_id}] Pipeline {job.status}: {len(all_trial_results)} trials")
+
+        # --- v17: Post-job diagnostics summary ---
+        self._log_job_diagnostics(job_id, all_trial_results, trial_times)
 
         # --- EDAM post-job hook: self-learning feedback loops ---
         try:
@@ -1393,6 +1400,13 @@ class PipelineOrchestrator:
         annotations.append(failure_ann)
         job.progress.field_timings["reason_for_failure"] = round(_field_time.monotonic() - _rf_start, 1)
 
+        # v17: Post-annotation quality check — detect timeout artifacts,
+        # empty/garbage responses, and error messages leaked into values
+        quality_issues = self._check_annotation_quality(nct_id, annotations)
+        if quality_issues:
+            for issue in quality_issues:
+                logger.warning(f"  QUALITY CHECK [{nct_id}]: {issue}")
+
         return annotations
 
     async def _peptide_cascade_check(
@@ -1888,6 +1902,86 @@ class PipelineOrchestrator:
                 elif lower in ("false", "[false]", "no", "0"):
                     f.final_value = "False"
 
+    # ------------------------------------------------------------------ #
+    #  v17: Annotation quality checks
+    # ------------------------------------------------------------------ #
+
+    # Patterns that indicate the LLM response contains an error/timeout
+    # message instead of actual annotation content.
+    _GARBAGE_PATTERNS = [
+        "timed out", "timeout", "ollama", "connection refused",
+        "model may be too large", "hung or under memory pressure",
+        "failed to generate", "internal server error", "502 bad gateway",
+        "connection reset", "broken pipe", "eof", "empty response",
+    ]
+
+    @staticmethod
+    def _check_annotation_quality(
+        nct_id: str,
+        annotations: list,
+    ) -> list[str]:
+        """v17: Post-annotation quality check.
+
+        Detects:
+        - Empty/missing values where one is expected
+        - Timeout/error messages leaked into annotation values or reasoning
+        - Suspiciously short reasoning (LLM may have been cut off)
+        - Identical values across all fields (possible copy-paste from LLM)
+
+        Returns a list of issue descriptions (empty = all clean).
+        """
+        issues: list[str] = []
+
+        for ann in annotations:
+            field = ann.field_name
+            value = ann.value or ""
+            reasoning = ann.reasoning or ""
+            confidence = getattr(ann, "confidence", None)
+            model = getattr(ann, "model_name", "")
+
+            # Check 1: Error/timeout messages in the value itself
+            value_lower = value.lower()
+            for pattern in AnnotationOrchestrator._GARBAGE_PATTERNS:
+                if pattern in value_lower:
+                    issues.append(
+                        f"{field}: value contains error text '{pattern}' "
+                        f"(value='{value[:80]}', model={model})"
+                    )
+                    break
+
+            # Check 2: Error/timeout messages in reasoning
+            reasoning_lower = reasoning.lower()
+            for pattern in AnnotationOrchestrator._GARBAGE_PATTERNS:
+                if pattern in reasoning_lower and "heuristic" not in reasoning_lower:
+                    issues.append(
+                        f"{field}: reasoning contains error text '{pattern}' "
+                        f"(model={model}, conf={confidence})"
+                    )
+                    break
+
+            # Check 3: Empty value for fields that should have one
+            # (sequence can legitimately be empty; N/A from cascade is fine)
+            if not value and field != "sequence" and "N/A" not in (reasoning or ""):
+                issues.append(
+                    f"{field}: empty value (model={model}, conf={confidence})"
+                )
+
+            # Check 4: Zero confidence with a non-empty value (LLM call likely failed)
+            if confidence is not None and confidence == 0.0 and value:
+                issues.append(
+                    f"{field}: zero confidence with value '{value}' "
+                    f"(model={model}) — possible failed LLM call"
+                )
+
+            # Check 5: Reasoning too short (possible truncation or empty LLM response)
+            if reasoning and len(reasoning) < 10 and "deterministic" not in (model or ""):
+                issues.append(
+                    f"{field}: suspiciously short reasoning ({len(reasoning)} chars) "
+                    f"(model={model})"
+                )
+
+        return issues
+
     @staticmethod
     def _update_timing(
         job: AnnotationJob,
@@ -1921,6 +2015,101 @@ class PipelineOrchestrator:
 
         remaining_trials = job.progress.total_trials - completed
         job.progress.estimated_remaining_seconds = round(avg * remaining_trials, 1)
+
+        # v17: Per-trial anomaly detection
+        if len(trial_times) >= 3 and trial_elapsed > 0:
+            recent_avg = sum(trial_times[-10:]) / len(trial_times[-10:])
+            if trial_elapsed > recent_avg * 2.0:
+                nct_id = job.progress.current_nct_id or "unknown"
+                logger.warning(
+                    f"  ANOMALY [{nct_id}]: trial took {trial_elapsed:.0f}s "
+                    f"(avg={recent_avg:.0f}s, {trial_elapsed/recent_avg:.1f}x). "
+                    f"Check field_timings for slow field/model."
+                )
+                # Log the field timings to identify which agent caused the slowdown
+                if job.progress.field_timings:
+                    slowest = max(
+                        job.progress.field_timings.items(),
+                        key=lambda x: x[1],
+                    )
+                    logger.warning(
+                        f"  ANOMALY [{nct_id}]: slowest field = {slowest[0]} "
+                        f"({slowest[1]:.0f}s)"
+                    )
+
+    @staticmethod
+    def _log_job_diagnostics(
+        job_id: str,
+        all_trial_results: list[dict],
+        trial_times: list[float],
+    ) -> None:
+        """v17: Post-job diagnostics summary.
+
+        Logs anomalies, timeout patterns, quality issues, and performance
+        stats so problems can be caught without human inspection.
+        """
+        from app.services.ollama_client import ollama_client
+
+        logger.info(f"[{job_id}] === POST-JOB DIAGNOSTICS ===")
+
+        # 1. Timing anomalies
+        if trial_times:
+            avg_time = sum(trial_times) / len(trial_times)
+            max_time = max(trial_times)
+            min_time = min(trial_times)
+            slow_trials = [t for t in trial_times if t > avg_time * 2]
+            logger.info(
+                f"[{job_id}] Timing: avg={avg_time:.0f}s, "
+                f"min={min_time:.0f}s, max={max_time:.0f}s, "
+                f"anomalous={len(slow_trials)}/{len(trial_times)} trials (>2x avg)"
+            )
+            if slow_trials:
+                total_excess = sum(t - avg_time for t in slow_trials)
+                logger.warning(
+                    f"[{job_id}] Slow trials wasted ~{total_excess:.0f}s "
+                    f"({total_excess/60:.1f} min) above average"
+                )
+
+        # 2. Timeout stats from Ollama client
+        timeout_stats = ollama_client.get_timeout_stats()
+        if timeout_stats:
+            total_timeouts = sum(timeout_stats.values())
+            logger.warning(
+                f"[{job_id}] Timeouts: {total_timeouts} total — {timeout_stats}"
+            )
+        else:
+            logger.info(f"[{job_id}] Timeouts: none")
+
+        # 3. Quality issues in results
+        quality_issue_count = 0
+        empty_value_count = 0
+        zero_conf_count = 0
+        for trial in all_trial_results:
+            for ann in trial.get("annotations", []):
+                if not ann.get("value") and ann.get("field_name") != "sequence":
+                    empty_value_count += 1
+                if ann.get("confidence") == 0.0 and ann.get("value"):
+                    zero_conf_count += 1
+                # Check for error text in values
+                val = (ann.get("value") or "").lower()
+                if any(p in val for p in ["timeout", "error", "failed"]):
+                    quality_issue_count += 1
+
+        if quality_issue_count or empty_value_count or zero_conf_count:
+            logger.warning(
+                f"[{job_id}] Quality: {quality_issue_count} error-in-value, "
+                f"{empty_value_count} empty values, "
+                f"{zero_conf_count} zero-confidence-with-value"
+            )
+        else:
+            logger.info(f"[{job_id}] Quality: all clean")
+
+        # 4. LLM call stats
+        call_counts = ollama_client.get_call_counts_by_model()
+        if call_counts:
+            logger.info(f"[{job_id}] LLM calls by model: {call_counts}")
+
+        logger.info(f"[{job_id}] === END DIAGNOSTICS ===")
 
     def _queue_for_review(
         self,

@@ -430,6 +430,20 @@ class BlindVerifier:
                 confidence=0.0,
             )
 
+        # v17: Check for empty or garbage responses before parsing
+        if not raw_text or len(raw_text.strip()) < 5:
+            logger.warning(
+                f"Verifier {model_name} returned empty/trivial response for "
+                f"{nct_id}/{field_name} ({len(raw_text)} chars)"
+            )
+            return ModelOpinion(
+                model_name=model_name,
+                agrees=False,
+                suggested_value=None,
+                reasoning=f"Empty response from {model_name} ({len(raw_text)} chars)",
+                confidence=0.0,
+            )
+
         # Parse the verifier's independent answer
         value = self._parse_value(raw_text, field_config)
         reasoning = self._parse_reasoning(raw_text)

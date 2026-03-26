@@ -154,3 +154,13 @@ ollama:
   port: 11434
   timeout: 600
   temperature: 0.10
+  # v17: Per-model timeout overrides (seconds).
+  # Smaller models respond in <30s when healthy — a 240s timeout catches hangs
+  # while allowing cold loads (~60s) + inference (~30s) + safety margin.
+  # Larger models (14B+) doing annotation/reconciliation need the full 600s.
+  model_timeouts:
+    "phi4-mini": 240
+    "llama3.1:8b": 300
+    "gemma2:9b": 300
+    "qwen2.5:7b": 300
+    "qwen2.5:14b": 600

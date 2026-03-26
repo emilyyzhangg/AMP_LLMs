@@ -72,6 +72,17 @@ class OllamaConfig(BaseModel):
         "delivery_mode": 0.10,
         "reason_for_failure": 0.10,
     }
+    # v17: Per-model timeout overrides. Maps model name (or prefix) to timeout
+    # in seconds. Models not listed use the global `timeout` value.
+    # Smaller models get shorter timeouts since they either respond quickly
+    # or are hung (bimodal). Larger models doing annotation need more time.
+    model_timeouts: Dict[str, int] = {
+        "phi4-mini": 240,       # 3.8B — normal response 10-31s, cold load ~60s
+        "llama3.1:8b": 300,     # 8B — moderate size
+        "gemma2:9b": 300,       # 9B — moderate size
+        "qwen2.5:7b": 300,      # 7B — moderate size
+        "qwen2.5:14b": 600,     # 14B — large model, annotation + reconciliation
+    }
 
 
 class AnnotationConfig(BaseModel):

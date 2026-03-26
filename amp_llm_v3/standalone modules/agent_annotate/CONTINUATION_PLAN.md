@@ -42,8 +42,8 @@ v17 has 4 targeted fixes based on v16 concordance root-cause analysis. Need to m
 
 | Environment | Branch | Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v16 (a599e7a) | None (25366ac24587 complete) |
-| Dev (port 9005) | dev | **v17 (uncommitted)** | None |
+| Prod (port 8005) | main | v17 (fc89869) | **9e1f8fa907d5 (Batch A, 25 NCTs)** |
+| Dev (port 9005) | dev | v17 (fc89869) | None |
 
 ## Important Notes
 

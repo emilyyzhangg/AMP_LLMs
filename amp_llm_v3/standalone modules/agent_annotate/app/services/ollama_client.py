@@ -5,6 +5,10 @@ Uses asyncio.Lock to ensure only one model is loaded at a time
 (16GB RAM constraint on M4 Mac Mini). On server profiles with
 sufficient RAM, models are kept loaded via keep_alive to avoid
 reload overhead between annotations.
+
+v17: Per-model timeouts. Smaller models (phi4-mini, gemma2:9b, qwen2.5:7b)
+get shorter timeouts (240-300s) since they either respond in <30s or are hung.
+Larger models (qwen2.5:14b) keep 600s for annotation/reconciliation work.
 """
 
 import asyncio
@@ -34,6 +38,9 @@ class OllamaAnnotationClient:
         self._call_count = 0
         self._call_count_by_model: dict[str, int] = {}
         self._verified_models: set[str] = set()  # models confirmed available
+        # v17: Per-model timeout overrides (loaded from config on first use)
+        self._model_timeouts: dict[str, int] = {}
+        self._timeout_stats: dict[str, int] = {}  # model → timeout count
 
     def set_hardware_profile(self, profile: str) -> None:
         """Set keep_alive based on hardware profile."""
@@ -43,6 +50,31 @@ class OllamaAnnotationClient:
         else:
             self._keep_alive = _KEEP_ALIVE_MAC
             logger.info("Ollama keep_alive set to %s (mac_mini profile)", self._keep_alive)
+
+    def set_model_timeouts(self, model_timeouts: dict[str, int]) -> None:
+        """v17: Load per-model timeout overrides from config."""
+        self._model_timeouts = dict(model_timeouts)
+        if model_timeouts:
+            logger.info("Per-model timeouts loaded: %s", model_timeouts)
+
+    def _get_timeout_for_model(self, model: str) -> int:
+        """v17: Resolve timeout for a specific model.
+
+        Checks exact match first, then prefix match (e.g., "phi4-mini"
+        matches "phi4-mini:3.8b"). Falls back to global timeout.
+        """
+        # Exact match
+        if model in self._model_timeouts:
+            return self._model_timeouts[model]
+        # Prefix match (model names often have :tag suffix)
+        for key, timeout in self._model_timeouts.items():
+            if model.startswith(key) or key.startswith(model.split(":")[0]):
+                return timeout
+        return self._timeout
+
+    def get_timeout_stats(self) -> dict[str, int]:
+        """Return timeout counts per model (for diagnostics)."""
+        return dict(self._timeout_stats)
 
     async def ensure_model(self, model: str) -> None:
         """Check if a model is available locally; pull it if not.
@@ -133,9 +165,12 @@ class OllamaAnnotationClient:
         self._call_count += 1
         self._call_count_by_model[model] = self._call_count_by_model.get(model, 0) + 1
 
+        # v17: Per-model timeout
+        model_timeout = self._get_timeout_for_model(model)
+
         async with self._lock:
             try:
-                async with httpx.AsyncClient(timeout=self._timeout) as client:
+                async with httpx.AsyncClient(timeout=model_timeout) as client:
                     resp = await client.post(
                         f"{self._base_url}/api/generate",
                         json=payload,
@@ -149,12 +184,15 @@ class OllamaAnnotationClient:
                     "Ensure Ollama is running (ollama serve)."
                 )
             except httpx.TimeoutException:
+                self._timeout_stats[model] = self._timeout_stats.get(model, 0) + 1
                 logger.error(
-                    "Ollama timeout after %ds for model %s", self._timeout, model
+                    "Ollama timeout after %ds for model %s (timeout #%d for this model)",
+                    model_timeout, model, self._timeout_stats[model],
                 )
                 raise RuntimeError(
-                    f"Ollama timed out after {self._timeout}s. "
-                    f"Model '{model}' may be too large or the prompt too long."
+                    f"Ollama timed out after {model_timeout}s. "
+                    f"Model '{model}' may be hung or under memory pressure. "
+                    f"(timeout #{self._timeout_stats[model]} for this model)"
                 )
             except httpx.HTTPStatusError as e:
                 if e.response.status_code == 404:

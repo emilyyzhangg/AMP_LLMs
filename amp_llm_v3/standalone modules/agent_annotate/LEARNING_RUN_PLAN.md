@@ -24,7 +24,7 @@
 | 15 | A (v14) | 2c0c0d3a8a73 | 25 | 25/25 | **Complete** | v14 | — | v14 sequence overhaul. |
 | 16 | A (v15) | c3fa1fbba5c2 | 25 | 25/25 | **Complete** | v15 | — | peptide=False→N/A cascade, investigational drug rename. 142 min. See concordance below. |
 | 17 | A (v16) | 25366ac24587 | 25 | 25/25 | **Complete** | v16 | — | 178 min. Sequence 0→7, but 0% accuracy (DBAASP collision). Outcome unchanged. Peptide regressed 4.6%. See concordance below. |
-| **18** | **A (v17)** | **TBD** | **25** | **—** | **Pending** | **v17** | **TBD** | **Outcome heuristic override, peptide cascade fix, DBAASP word-boundary, multi-route collection.** |
+| **18** | **A (v17)** | **9e1f8fa907d5** | **25** | **—** | **Running** | **v17** | **TBD** | **Outcome heuristic override, peptide cascade fix, DBAASP word-boundary, multi-route collection.** |
 | *19* | *A+B (50 NCTs)* | *TBD* | *50* | *—* | *Pending* | *v17+* | *—* | *Phase 2: expand to 50 after Batch A converges.* |
 | *20* | *Full 964* | *TBD* | *964* | *—* | *Pending* | *v17+* | *—* | *Phase 3: single-version full run.* |
 | *21* | *884 unannotated* | *TBD* | *884* | *—* | *Phase 5* | *v17+* | *—* | *Agent-only, no human reference.* |
