@@ -17,8 +17,8 @@ export default function Header() {
         <NavLink to="/concordance" className={({ isActive }) => isActive ? "active" : ""}>
           Agreement Metrics
         </NavLink>
-        <NavLink to="/history" className={({ isActive }) => isActive ? "active" : ""}>
-          History
+        <NavLink to="/jobs" className={({ isActive }) => isActive ? "active" : ""}>
+          Jobs
         </NavLink>
         <NavLink to="/settings" className={({ isActive }) => isActive ? "active" : ""}>
           Settings

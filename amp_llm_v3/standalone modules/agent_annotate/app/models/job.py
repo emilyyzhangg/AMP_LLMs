@@ -39,6 +39,10 @@ class JobProgress(BaseModel):
     current_model: Optional[str] = None          # "qwen2.5:14b" / "gemma2:9b"
     field_timings: dict[str, float] = {}         # {"peptide": 12.3, ...}
     verification_progress: Optional[str] = None  # "verifier_1: 3/5 fields"
+    # v17: Diagnostics — surfaced to UI
+    warnings: list[str] = []                    # Quality check warnings, timing anomalies
+    timeouts: dict[str, int] = {}               # Model name → timeout count
+    retries: dict[str, int] = {}                # "annotation" / "verification" → retry count
 
 
 class AnnotationJob(BaseModel):
@@ -74,6 +78,10 @@ class JobSummary(BaseModel):
     elapsed_seconds: float = 0.0
     avg_seconds_per_trial: float = 0.0
     commit_hash: str = ""
+    # v17: Diagnostics summary for UI
+    warnings_count: int = 0
+    timeouts_count: int = 0
+    retries_count: int = 0
 
 
 class ReviewItem(BaseModel):

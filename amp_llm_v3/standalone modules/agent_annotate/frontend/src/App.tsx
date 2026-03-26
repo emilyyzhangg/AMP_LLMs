@@ -7,7 +7,7 @@ import ReviewPage from "./components/ReviewPage";
 import ResultsPage from "./components/ResultsPage";
 import ConcordancePage from "./components/ConcordancePage";
 import SettingsPage from "./components/SettingsPage";
-import HistoryPage from "./components/HistoryPage";
+import JobsPage from "./components/JobsPage";
 
 export default function App() {
   return (
@@ -22,7 +22,7 @@ export default function App() {
           <Route path="/results/:jobId" element={<ResultsPage />} />
           <Route path="/concordance" element={<ConcordancePage />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/jobs" element={<JobsPage />} />
         </Routes>
       </main>
     </AuthGate>

@@ -313,6 +313,9 @@ class PipelineOrchestrator:
                     elapsed_seconds=job.progress.elapsed_seconds,
                     avg_seconds_per_trial=job.progress.avg_seconds_per_trial,
                     commit_hash=job.commit_hash,
+                    warnings_count=len(job.progress.warnings),
+                    timeouts_count=sum(job.progress.timeouts.values()) if job.progress.timeouts else 0,
+                    retries_count=sum(job.progress.retries.values()) if job.progress.retries else 0,
                 )
             )
         summaries.sort(key=lambda s: s.created_at or "", reverse=True)
@@ -474,6 +477,19 @@ class PipelineOrchestrator:
         if job.resumed:
             output["resumed"] = True
             output["resumed_at"] = job.resumed_at.isoformat() if job.resumed_at else None
+
+        # v17: Populate timeouts from Ollama client at job completion
+        from app.services.ollama_client import ollama_client
+        job.progress.timeouts = ollama_client.get_timeout_stats()
+
+        # v17: Add diagnostics to output
+        output["diagnostics"] = {
+            "warnings": job.progress.warnings,
+            "timeouts": job.progress.timeouts,
+            "retries": job.progress.retries,
+            "timing_anomalies": len([w for w in job.progress.warnings if "ANOMALY" in w]),
+            "quality_issues": len([w for w in job.progress.warnings if "QUALITY" in w]),
+        }
 
         save_json_output(job_id, output)
 
@@ -788,6 +804,41 @@ class PipelineOrchestrator:
                         model_name=model_key,
                         ollama_model=model_cfg.name,
                     )
+                    # v17: Retry once on timeout/failure
+                    if (opinion.confidence == 0.0
+                            and opinion.suggested_value is None
+                            and "failed" in (opinion.reasoning or "").lower()):
+                        logger.warning(
+                            f"  Verifier {model_key} failed for {nct_id}/{annotation.field_name} — "
+                            f"retrying in 5s..."
+                        )
+                        import asyncio as _asyncio
+                        await _asyncio.sleep(5)
+                        retry_opinion = await verifier.verify(
+                            nct_id=nct_id,
+                            field_name=annotation.field_name,
+                            research_results=research,
+                            model_name=model_key,
+                            ollama_model=model_cfg.name,
+                        )
+                        if retry_opinion.suggested_value is not None:
+                            logger.info(
+                                f"  Verifier {model_key} retry SUCCEEDED for "
+                                f"{nct_id}/{annotation.field_name}: {retry_opinion.suggested_value}"
+                            )
+                            opinion = retry_opinion
+                        else:
+                            logger.warning(
+                                f"  Verifier {model_key} retry FAILED for "
+                                f"{nct_id}/{annotation.field_name} — accepting failure"
+                            )
+                            job.progress.warnings.append(
+                                f"TIMEOUT [{nct_id}]: {model_key} ({model_cfg.name}) "
+                                f"failed for {annotation.field_name} after retry"
+                            )
+                        job.progress.retries["verification"] = (
+                            job.progress.retries.get("verification", 0) + 1
+                        )
                     all_opinions[(nct_id, annotation.field_name)].append(opinion)
 
             # Consensus checks (no LLM calls)
@@ -1406,6 +1457,44 @@ class PipelineOrchestrator:
         if quality_issues:
             for issue in quality_issues:
                 logger.warning(f"  QUALITY CHECK [{nct_id}]: {issue}")
+                job.progress.warnings.append(f"QUALITY [{nct_id}]: {issue}")
+
+            # v17: Retry fields with actual corruption (error text in value
+            # or zero confidence with a value). One retry per field.
+            retried_fields: set[str] = set()
+            for issue in quality_issues:
+                # Only retry corruption, not cosmetic issues
+                if "error text" not in issue and "zero confidence with value" not in issue:
+                    continue
+                # Extract field name from issue string (format: "field_name: ...")
+                field_name = issue.split(":")[0].strip()
+                if field_name in retried_fields:
+                    continue
+                retried_fields.add(field_name)
+
+                logger.info(f"  RETRY [{nct_id}]: re-running {field_name} annotation")
+                try:
+                    # Remove the bad annotation
+                    annotations[:] = [a for a in annotations if a.field_name != field_name]
+                    retry_ann = await annotate_field(field_name, metadata=shared_metadata)
+                    annotations.append(retry_ann)
+                    job.progress.retries["annotation"] = (
+                        job.progress.retries.get("annotation", 0) + 1
+                    )
+                    # Check retry result quality
+                    retry_issues = self._check_annotation_quality(nct_id, [retry_ann])
+                    if retry_issues:
+                        logger.warning(
+                            f"  RETRY [{nct_id}]: {field_name} still has issues "
+                            f"after retry: {retry_issues[0]}"
+                        )
+                    else:
+                        logger.info(
+                            f"  RETRY [{nct_id}]: {field_name} retry succeeded "
+                            f"(value={retry_ann.value})"
+                        )
+                except Exception as e:
+                    logger.error(f"  RETRY [{nct_id}]: {field_name} retry failed: {e}")
 
         return annotations
 
@@ -2021,21 +2110,25 @@ class PipelineOrchestrator:
             recent_avg = sum(trial_times[-10:]) / len(trial_times[-10:])
             if trial_elapsed > recent_avg * 2.0:
                 nct_id = job.progress.current_nct_id or "unknown"
-                logger.warning(
-                    f"  ANOMALY [{nct_id}]: trial took {trial_elapsed:.0f}s "
+                anomaly_msg = (
+                    f"ANOMALY [{nct_id}]: trial took {trial_elapsed:.0f}s "
                     f"(avg={recent_avg:.0f}s, {trial_elapsed/recent_avg:.1f}x). "
                     f"Check field_timings for slow field/model."
                 )
+                logger.warning(f"  {anomaly_msg}")
+                job.progress.warnings.append(anomaly_msg)
                 # Log the field timings to identify which agent caused the slowdown
                 if job.progress.field_timings:
                     slowest = max(
                         job.progress.field_timings.items(),
                         key=lambda x: x[1],
                     )
-                    logger.warning(
-                        f"  ANOMALY [{nct_id}]: slowest field = {slowest[0]} "
+                    slowest_msg = (
+                        f"ANOMALY [{nct_id}]: slowest field = {slowest[0]} "
                         f"({slowest[1]:.0f}s)"
                     )
+                    logger.warning(f"  {slowest_msg}")
+                    job.progress.warnings.append(slowest_msg)
 
     @staticmethod
     def _log_job_diagnostics(

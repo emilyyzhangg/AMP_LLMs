@@ -101,8 +101,8 @@ export default function PipelinePage() {
     return (
       <div className="card">
         <div style={{ color: "var(--error)" }}>{error}</div>
-        <button className="btn btn-secondary mt-2" onClick={() => navigate("/history")}>
-          Back to History
+        <button className="btn btn-secondary mt-2" onClick={() => navigate("/jobs")}>
+          Back to Jobs
         </button>
       </div>
     );

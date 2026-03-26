@@ -105,6 +105,75 @@ function extractFieldData(trial: Record<string, unknown>): Record<string, FieldD
   return fields;
 }
 
+// --- Diagnostics card (v17) ---
+function DiagnosticsCard({ diagnostics }: { diagnostics: Record<string, unknown> }) {
+  const warnings = (diagnostics.warnings as string[]) || [];
+  const timeouts = (diagnostics.timeouts as Record<string, number>) || {};
+  const retries = (diagnostics.retries as Record<string, number>) || {};
+  const timingAnomalies = (diagnostics.timing_anomalies as number) || 0;
+  const qualityIssues = (diagnostics.quality_issues as number) || 0;
+
+  const totalTimeouts = Object.values(timeouts).reduce((a, b) => a + b, 0);
+  const totalRetries = Object.values(retries).reduce((a, b) => a + b, 0);
+  const hasIssues = totalTimeouts > 0 || totalRetries > 0 || warnings.length > 0;
+
+  if (!hasIssues) return null;
+
+  return (
+    <div className="card" style={{ marginTop: "1rem", borderLeft: "3px solid var(--warning)" }}>
+      <div className="card-title">Diagnostics</div>
+      <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
+        {totalTimeouts > 0 && (
+          <div>
+            <span style={{ color: "var(--error)", fontWeight: 600 }}>
+              {totalTimeouts} timeout{totalTimeouts > 1 ? "s" : ""}
+            </span>
+            <div className="text-sm text-muted">
+              {Object.entries(timeouts).map(([model, count]) => (
+                <div key={model}>{model}: {count}</div>
+              ))}
+            </div>
+          </div>
+        )}
+        {totalRetries > 0 && (
+          <div>
+            <span style={{ color: "var(--warning)", fontWeight: 600 }}>
+              {totalRetries} retry attempt{totalRetries > 1 ? "s" : ""}
+            </span>
+            <div className="text-sm text-muted">
+              {Object.entries(retries).map(([type, count]) => (
+                <div key={type}>{type}: {count}</div>
+              ))}
+            </div>
+          </div>
+        )}
+        {timingAnomalies > 0 && (
+          <div>
+            <span style={{ fontWeight: 600 }}>{timingAnomalies} slow trial{timingAnomalies > 1 ? "s" : ""}</span>
+          </div>
+        )}
+        {qualityIssues > 0 && (
+          <div>
+            <span style={{ fontWeight: 600 }}>{qualityIssues} quality issue{qualityIssues > 1 ? "s" : ""}</span>
+          </div>
+        )}
+      </div>
+      {warnings.length > 0 && (
+        <details>
+          <summary className="text-sm" style={{ cursor: "pointer", color: "var(--text-secondary)" }}>
+            {warnings.length} warning{warnings.length > 1 ? "s" : ""} (click to expand)
+          </summary>
+          <div style={{ marginTop: "0.5rem", maxHeight: "200px", overflow: "auto" }}>
+            {warnings.map((w, i) => (
+              <div key={i} className="text-sm text-muted" style={{ marginBottom: "0.25rem" }}>{w}</div>
+            ))}
+          </div>
+        </details>
+      )}
+    </div>
+  );
+}
+
 // --- Summary cards ---
 function SummaryCards({ summary }: { summary: ResultSummary }) {
   return (
@@ -491,6 +560,11 @@ function ResultDetail({ jobId }: { jobId: string }) {
 
       {/* Section 1: Summary cards */}
       {summary && <SummaryCards summary={summary} />}
+
+      {/* Section 1b: Diagnostics (v17) */}
+      {results?.diagnostics && (
+        <DiagnosticsCard diagnostics={results.diagnostics as Record<string, unknown>} />
+      )}
 
       {/* Section 2: Filter bar */}
       <div className="filter-bar">

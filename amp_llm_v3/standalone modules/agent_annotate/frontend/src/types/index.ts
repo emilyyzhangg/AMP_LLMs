@@ -8,6 +8,18 @@ export interface JobSummary {
   created_at: string;
   total_trials: number;
   completed_trials: number;
+  // v17: Diagnostics summary
+  warnings_count?: number;
+  timeouts_count?: number;
+  retries_count?: number;
+}
+
+export interface JobDiagnostics {
+  warnings: string[];
+  timeouts: Record<string, number>;
+  retries: Record<string, number>;
+  timing_anomalies: number;
+  quality_issues: number;
 }
 
 export interface PipelineProgress {
