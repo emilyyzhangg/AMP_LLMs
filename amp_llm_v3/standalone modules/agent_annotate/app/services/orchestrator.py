@@ -1289,7 +1289,27 @@ class PipelineOrchestrator:
                     if interv.get("name")
                 ]
                 if intervention_names:
-                    shared_metadata["interventions"] = intervention_names
+                    # v18: Enrich intervention names with resolved drug names from EDAM.
+                    # This lets the sequence agent search databases with generic names
+                    # (e.g., "nesiritide") in addition to brand names.
+                    try:
+                        from app.services.memory.memory_store import memory_store as _edam
+                        enriched: list = []
+                        for iname in intervention_names:
+                            resolved = _edam.get_resolved_names(iname)
+                            # Also try with prefix stripped
+                            stripped = iname
+                            if ": " in iname:
+                                _prefix, _, stripped = iname.partition(": ")
+                            if not resolved and stripped != iname:
+                                resolved = _edam.get_resolved_names(stripped)
+                            if resolved:
+                                enriched.append({"name": iname, "resolved": resolved})
+                            else:
+                                enriched.append(iname)
+                        shared_metadata["interventions"] = enriched
+                    except Exception:
+                        shared_metadata["interventions"] = intervention_names
                 break
 
         async def annotate_field(field_name: str, metadata: Optional[dict] = None) -> FieldAnnotation:
@@ -2394,6 +2414,47 @@ class PipelineOrchestrator:
             )
 
             if not consensus.consensus_reached and reconciler_model:
+                # v18: Protect primary's deliberate empty RfF from verification override.
+                # The RfF agent analyzed the evidence and concluded "no failure" — overriding
+                # requires ALL verifiers to unanimously agree on the same non-empty value
+                # with reasonable confidence. Prevents metadata-biased verifiers (who see
+                # whyStopped) from overriding a correct empty assessment.
+                if (field == "reason_for_failure"
+                        and annotation.value == ""
+                        and annotation.confidence >= 0.8):
+                    from agents.verification.consensus import _normalize
+                    non_empty = [
+                        o for o in consensus.opinions
+                        if o.suggested_value and o.suggested_value.strip()
+                    ]
+                    if non_empty:
+                        values = set(
+                            _normalize(o.suggested_value, "reason_for_failure")
+                            for o in non_empty
+                        )
+                        all_confident = all(o.confidence >= 0.7 for o in non_empty)
+                        unanimous = (
+                            len(values) == 1
+                            and all_confident
+                            and len(non_empty) == len(consensus.opinions)
+                        )
+                        if not unanimous:
+                            logger.info(
+                                f"  {field}: EMPTY RfF PROTECTION — primary empty "
+                                f"(conf={annotation.confidence:.2f}), verifiers not "
+                                f"unanimous ({len(values)} values, "
+                                f"confident={all_confident}) — keeping empty"
+                            )
+                            consensus.final_value = ""
+                            consensus.consensus_reached = True
+                            consensus.reconciler_used = False
+                            consensus.reconciler_reasoning = (
+                                f"Primary empty RfF protected: verifiers not unanimous "
+                                f"({len(values)} distinct values)"
+                            )
+                            consensus_results.append(consensus)
+                            continue
+
                 # High-confidence primary protection
                 verifier_max_conf = max(
                     (o.confidence for o in consensus.opinions if not o.agrees),

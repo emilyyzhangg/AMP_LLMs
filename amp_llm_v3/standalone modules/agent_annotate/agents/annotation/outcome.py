@@ -328,7 +328,7 @@ class OutcomeAgent(BaseAnnotationAgent):
         # Previously _infer_from_pass1 was only called on LLM exceptions (dead code
         # in the normal path), so adverse-event keywords never fired.
         if value == "Unknown":
-            heuristic_value = self._infer_from_pass1(pass1_output)
+            heuristic_value = self._infer_from_pass1(pass1_output, nct_id=nct_id)
             if heuristic_value != "Unknown":
                 logger.info(f"  outcome: heuristic override {value} → {heuristic_value}")
                 value = heuristic_value
@@ -352,7 +352,7 @@ class OutcomeAgent(BaseAnnotationAgent):
             model_name=primary_model,
         )
 
-    def _infer_from_pass1(self, pass1_text: str) -> str:
+    def _infer_from_pass1(self, pass1_text: str, nct_id: str = "") -> str:
         """Fallback: infer outcome from pass 1 extraction if pass 2 fails.
 
         Applies completion heuristics for older trials where publications
@@ -372,15 +372,25 @@ class OutcomeAgent(BaseAnnotationAgent):
         )
 
         if has_publications:
+            # v18: Check strong adverse-event signals in FULL pass1 text first.
+            # These override any positive heuristics — a trial with positive
+            # immunogenicity but unacceptable toxicity is still Failed.
+            # Multi-word patterns reduce false positives from scanning full text.
+            _STRONG_ADVERSE = [
+                "unacceptable", "not tolerated", "dose-limiting",
+                "reactogenicity", "sterile abscess", "safety concern",
+                "serious adverse event", "discontinued due to",
+            ]
+            if any(kw in lower for kw in _STRONG_ADVERSE):
+                return "Failed - completed trial"
+            # Then check positive/negative keywords in results_section only
             if any(kw in results_section for kw in ["efficacy", "effective", "positive", "significant", "met primary"]):
                 return "Positive"
             if any(kw in results_section for kw in ["failed", "negative", "not effective", "did not meet"]):
                 return "Failed - completed trial"
-            # v16: Detect adverse event / toxicity signals in publications
+            # v16: Additional adverse signals (single-word, scoped to results_section)
             if any(kw in results_section for kw in [
-                "unacceptable", "toxicity", "toxic", "adverse", "abscess",
-                "reactogenicity", "safety concern", "not tolerated", "dose-limiting",
-                "serious adverse", "discontinued due to",
+                "toxicity", "toxic", "adverse", "abscess",
             ]):
                 return "Failed - completed trial"
 
@@ -417,7 +427,9 @@ class OutcomeAgent(BaseAnnotationAgent):
                     return "Failed - completed trial"
 
             # H1: Phase I completion = Positive, BUT requires corroboration
-            # v16: publications count as corroboration even if indirect
+            # v18: Require trial-specific evidence (NCT ID in text or results_posted).
+            # Generic publications that mention the drug but not this trial are
+            # insufficient — they cause inter-run instability when search results vary.
             phase_match = re.search(r"trial phase:\s*(.+?)(?:\n|$)", lower)
             if phase_match:
                 phase = phase_match.group(1).strip()
@@ -425,9 +437,11 @@ class OutcomeAgent(BaseAnnotationAgent):
                     "phase1" in phase or "phase 1" in phase
                     or "early_phase" in phase or "early phase" in phase
                 )
-                if is_phase1 and (has_results_posted or has_publications):
+                if is_phase1 and has_results_posted:
                     return "Positive"
-                # Phase I without corroboration → Unknown (v7 calibration)
+                if is_phase1 and has_publications and nct_id and nct_id.lower() in lower:
+                    return "Positive"
+                # Phase I without trial-specific evidence → Unknown
 
         return "Unknown"
 

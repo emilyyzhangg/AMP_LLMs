@@ -179,7 +179,10 @@ class ReconciliationAgent:
         from agents.verification.consensus import _normalize
 
         raw_votes: list[str] = []
-        if consensus_result.original_value:
+        # v18: Always include primary vote for reason_for_failure, even when empty.
+        # Previously empty strings were silently dropped (falsy), meaning the
+        # primary's deliberate "no failure" assessment never counted in the vote.
+        if consensus_result.original_value or consensus_result.field_name == "reason_for_failure":
             raw_votes.append(consensus_result.original_value)
         for opinion in consensus_result.opinions:
             if opinion.suggested_value:
