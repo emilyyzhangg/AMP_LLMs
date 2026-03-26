@@ -439,7 +439,7 @@ class PipelineOrchestrator:
 
         # --- Phase 2: Annotation + Verification ---
         persistence.init_annotations_dir(job_id)
-        all_trial_results = await self._run_phase2_annotate(
+        all_trial_results, trial_times = await self._run_phase2_annotate(
             job, config, research_data, persistence, skip_annotations, pipeline_start
         )
 
@@ -1003,7 +1003,7 @@ class PipelineOrchestrator:
 
             self._persist_job(job, trial_times)
 
-        return all_trial_results
+        return all_trial_results, trial_times
 
     async def _run_research(
         self,
@@ -2050,7 +2050,7 @@ class PipelineOrchestrator:
 
             # Check 1: Error/timeout messages in the value itself
             value_lower = value.lower()
-            for pattern in AnnotationOrchestrator._GARBAGE_PATTERNS:
+            for pattern in PipelineOrchestrator._GARBAGE_PATTERNS:
                 if pattern in value_lower:
                     issues.append(
                         f"{field}: value contains error text '{pattern}' "
@@ -2060,7 +2060,7 @@ class PipelineOrchestrator:
 
             # Check 2: Error/timeout messages in reasoning
             reasoning_lower = reasoning.lower()
-            for pattern in AnnotationOrchestrator._GARBAGE_PATTERNS:
+            for pattern in PipelineOrchestrator._GARBAGE_PATTERNS:
                 if pattern in reasoning_lower and "heuristic" not in reasoning_lower:
                     issues.append(
                         f"{field}: reasoning contains error text '{pattern}' "
