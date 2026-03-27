@@ -40,6 +40,8 @@ _REASON_NO_FAILURE_PREFIXES = (
 
 def _normalize(value: str, field_name: str = "") -> str:
     """Normalize a value for consensus comparison."""
+    if value is None:
+        return ""
     lower = value.strip().lower().strip('"').strip("'").strip("*")
     # Direct alias match
     if lower in _VALUE_ALIASES:

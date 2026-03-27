@@ -182,11 +182,14 @@ class ReconciliationAgent:
         # v18: Always include primary vote for reason_for_failure, even when empty.
         # Previously empty strings were silently dropped (falsy), meaning the
         # primary's deliberate "no failure" assessment never counted in the vote.
-        if consensus_result.original_value or consensus_result.field_name == "reason_for_failure":
-            raw_votes.append(consensus_result.original_value)
+        # Guard against None: None means "no value returned", not "empty string".
+        ov = consensus_result.original_value
+        if ov is not None and (ov or consensus_result.field_name == "reason_for_failure"):
+            raw_votes.append(ov)
         for opinion in consensus_result.opinions:
-            if opinion.suggested_value or consensus_result.field_name == "reason_for_failure":
-                raw_votes.append(opinion.suggested_value)
+            sv = opinion.suggested_value
+            if sv is not None and (sv or consensus_result.field_name == "reason_for_failure"):
+                raw_votes.append(sv)
         if not raw_votes:
             return ""
         # Normalize for counting, return the first raw value matching the winner
