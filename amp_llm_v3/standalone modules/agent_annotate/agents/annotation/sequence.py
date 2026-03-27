@@ -395,48 +395,57 @@ class SequenceAgent(BaseAnnotationAgent):
 
         # --- Phase 1: Collect candidates from structured raw_data ---
 
-        for intervention in interventions:
-            # 1. DBAASP structured sequences
-            # Key is dbaasp_{name}_sequences when matches exist
-            dbaasp_seqs = all_raw.get(f"dbaasp_{intervention}_sequences", [])
-            if not dbaasp_seqs:
-                # Fallback: some versions store entries under the base key
-                base = all_raw.get(f"dbaasp_{intervention}", {})
-                if isinstance(base, dict):
-                    dbaasp_seqs = base.get("entries", [])
-            for entry in dbaasp_seqs:
-                if not isinstance(entry, dict):
-                    continue
-                seq = normalize_sequence(entry.get("sequence", ""))
-                if seq and len(seq) >= 2:
-                    candidates.append({
-                        "sequence": seq,
-                        "source": "dbaasp",
-                        "protein_name": entry.get("name", intervention),
-                        "relevance": 0.9,  # Already name-filtered by research agent
-                        "length": len(seq),
-                        "is_mature": True,
-                        "accession": entry.get("dbaasp_id", ""),
-                    })
-                    reasoning_parts.append(f"DBAASP: {entry.get('name', '')} ({len(seq)} aa)")
+        # DBAASP and APD are antimicrobial peptide databases. For non-AMP trials
+        # (classification = Other), their hits are almost always false positives
+        # (e.g., Brevinin from frog skin returned for a cancer vaccine trial).
+        # Skip them entirely when the trial drug is classified as non-AMP.
+        classification_result = str(
+            metadata.get("classification_result", "") if metadata else ""
+        ).lower()
+        use_amp_dbs = classification_result != "other"
 
-            # 2. APD structured sequences
-            apd_seqs = all_raw.get(f"apd_{intervention}_sequences", [])
-            for entry in apd_seqs:
-                if not isinstance(entry, dict):
-                    continue
-                seq = normalize_sequence(entry.get("sequence", ""))
-                if seq and len(seq) >= 2:
-                    candidates.append({
-                        "sequence": seq,
-                        "source": "apd",
-                        "protein_name": entry.get("name", intervention),
-                        "relevance": 0.9,
-                        "length": len(seq),
-                        "is_mature": True,
-                        "accession": entry.get("apd_id", ""),
-                    })
-                    reasoning_parts.append(f"APD: {entry.get('apd_id', '')} ({len(seq)} aa)")
+        for intervention in interventions:
+            # 1. DBAASP structured sequences (AMP trials only)
+            if use_amp_dbs:
+                dbaasp_seqs = all_raw.get(f"dbaasp_{intervention}_sequences", [])
+                if not dbaasp_seqs:
+                    base = all_raw.get(f"dbaasp_{intervention}", {})
+                    if isinstance(base, dict):
+                        dbaasp_seqs = base.get("entries", [])
+                for entry in dbaasp_seqs:
+                    if not isinstance(entry, dict):
+                        continue
+                    seq = normalize_sequence(entry.get("sequence", ""))
+                    if seq and len(seq) >= 2:
+                        candidates.append({
+                            "sequence": seq,
+                            "source": "dbaasp",
+                            "protein_name": entry.get("name", intervention),
+                            "relevance": 0.9,
+                            "length": len(seq),
+                            "is_mature": True,
+                            "accession": entry.get("dbaasp_id", ""),
+                        })
+                        reasoning_parts.append(f"DBAASP: {entry.get('name', '')} ({len(seq)} aa)")
+
+            # 2. APD structured sequences (AMP trials only)
+            if use_amp_dbs:
+                apd_seqs = all_raw.get(f"apd_{intervention}_sequences", [])
+                for entry in apd_seqs:
+                    if not isinstance(entry, dict):
+                        continue
+                    seq = normalize_sequence(entry.get("sequence", ""))
+                    if seq and len(seq) >= 2:
+                        candidates.append({
+                            "sequence": seq,
+                            "source": "apd",
+                            "protein_name": entry.get("name", intervention),
+                            "relevance": 0.9,
+                            "length": len(seq),
+                            "is_mature": True,
+                            "accession": entry.get("apd_id", ""),
+                        })
+                        reasoning_parts.append(f"APD: {entry.get('apd_id', '')} ({len(seq)} aa)")
 
             # 3. ChEMBL HELM notation
             # v17: Also try with formulation words stripped (e.g.,

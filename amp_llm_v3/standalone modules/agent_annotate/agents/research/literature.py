@@ -62,23 +62,30 @@ class LiteratureAgent(BaseResearchAgent):
                 if citations:
                     any_results = True
 
-        # Fallback for old trials: if NCT ID search returned 0 results,
-        # try searching by intervention name + condition. Pre-2005 trials
-        # often have publications that don't reference the NCT ID.
-        if not any_results and metadata:
+        # Fallback for old trials: pre-2005 trials often have publications that
+        # don't reference the NCT ID, so NCT ID search misses the primary paper.
+        # Trigger conditions:
+        #   (a) 0 results from NCT ID search — always try fallback
+        #   (b) Old trial (NCT number < 100000) — primary paper may predate
+        #       ClinicalTrials.gov registration, try title-based search too
+        nct_num = int(nct_id.replace("NCT", "").lstrip("0") or "0")
+        is_old_trial = nct_num < 100_000
+        if (not any_results or is_old_trial) and metadata:
             interventions = metadata.get("interventions", [])
             title = metadata.get("title", "")
             if interventions or title:
-                # Build a broad search term from the first intervention + title keywords
+                # Prefer trial title keywords (more specific than drug name alone)
                 search_terms = []
-                for interv in interventions[:2]:
-                    name = interv.get("name", "") if isinstance(interv, dict) else str(interv)
-                    if name and len(name) > 3:
-                        search_terms.append(name)
-                if not search_terms and title:
-                    # Use first 3 significant words from title
-                    words = [w for w in title.split() if len(w) > 4][:3]
+                if title:
+                    # Use up to 5 significant words from title — long enough to be
+                    # specific but short enough to not over-constrain the query
+                    words = [w for w in title.split() if len(w) > 3][:5]
                     search_terms = words
+                if not search_terms:
+                    for interv in interventions[:2]:
+                        name = interv.get("name", "") if isinstance(interv, dict) else str(interv)
+                        if name and len(name) > 3:
+                            search_terms.append(name)
 
                 if search_terms:
                     fallback_query = " ".join(search_terms)
