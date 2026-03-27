@@ -386,7 +386,13 @@ class OutcomeAgent(BaseAnnotationAgent):
             # Then check positive/negative keywords in results_section only
             if any(kw in results_section for kw in ["efficacy", "effective", "positive", "significant", "met primary"]):
                 return "Positive"
-            if any(kw in results_section for kw in ["failed", "negative", "not effective", "did not meet"]):
+            if any(kw in results_section for kw in [
+                "failed", "negative", "not effective", "did not meet",
+                "did not demonstrate", "did not achieve", "did not show",
+                "no significant", "no benefit", "no improvement",
+                "failed to demonstrate", "failed to meet", "failed primary",
+                "lack of efficacy", "ineffective", "no efficacy",
+            ]):
                 return "Failed - completed trial"
             # v16: Additional adverse signals (single-word, scoped to results_section)
             if any(kw in results_section for kw in [

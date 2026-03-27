@@ -1,2 +1,4 @@
 # LaunchAgent dev service files (tracked in services/ folder)
 dev_services/node_modules/
+# Frontend build dependencies
+amp_llm_v3/standalone modules/agent_annotate/frontend/node_modules/

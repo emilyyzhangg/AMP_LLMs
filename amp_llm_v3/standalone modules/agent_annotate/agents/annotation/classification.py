@@ -37,7 +37,6 @@ _KNOWN_AMP_DRUGS = {
     "melittin", "magainin", "cecropin", "lactoferricin", "lactoferrin",
     "pexiganan", "msrdn-1", "omiganan", "iseganan",
     "djk-5", "idr-1018",
-    "ic41", "ic43",
 }
 
 _INFECTION_KEYWORDS = {
@@ -181,10 +180,9 @@ For the clinical trial intervention below, answer these 5 questions using ONLY t
 
 3. MECHANISM OF ACTION: What is the peptide's known or proposed mechanism? Specifically:
    - Does it directly kill or inhibit microorganisms (bacteria, viruses, fungi)?
-   - Does it stimulate immune defense (recruit immune cells, enhance phagocytosis, activate dendritic cells)?
+   - Does it stimulate INNATE immune defense (recruit immune cells, enhance phagocytosis, activate dendritic cells)?
    - Does it disrupt biofilms?
-   - Is it a vaccine/immunogen designed to induce immune responses against a SPECIFIC PATHOGEN (virus, bacterium, fungus)?
-   - Does it work via a non-antimicrobial mechanism (metabolic hormone, bone growth, vasodilation, immunosuppression, physical/chemical)?
+   - Does it work via a non-antimicrobial mechanism (metabolic hormone, bone growth, vasodilation, immunosuppression, vaccine/antibody induction, physical/chemical)?
 
 4. THERAPEUTIC TARGET: What disease or condition is the trial treating? Is it an infection, infectious disease, or pathogen-specific condition? Or is it cancer, autoimmune, metabolic, structural, or other?
 
@@ -212,25 +210,24 @@ STEP 1 — Is the intervention a peptide?
 
 STEP 2 — Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)?
 
-  THE CORE TEST: Does this peptide contribute to pathogen defense — by killing,
-  inhibiting the growth of, disrupting, or inducing immune responses against
-  bacteria, fungi, viruses, or other pathogens?
+  THE CORE TEST: Does this peptide contribute to pathogen defense — by directly
+  killing, inhibiting the growth of, or disrupting bacteria, fungi, viruses, or
+  other pathogens (or activating INNATE immune cells to do so)?
 
   An AMP must contribute to pathogen defense through ONE of these modes:
   A) Direct antimicrobial: kills, inhibits growth of, or disrupts microorganisms — includes both bactericidal (killing) AND bacteriostatic (growth inhibition) mechanisms. Examples: colistin (membrane disruption), nisin (pore formation), daptomycin (membrane depolarization), gramicidin (ion channel disruption).
-  B) Immunostimulatory HOST DEFENSE peptide: recruits immune cells to kill pathogens at infection sites (e.g., LL-37, defensins, cathelicidins)
+  B) Immunostimulatory HOST DEFENSE peptide: recruits or activates INNATE immune cells to kill pathogens at infection sites — cathelicidins (LL-37), defensins. This is INNATE immunity (direct cellular killing), NOT adaptive immunity (antibody/T-cell induction).
   C) Anti-biofilm: disrupts microbial biofilms through biochemical interaction
-  D) Pathogen-targeting immunogen: peptide vaccines/immunogens designed to induce immune responses SPECIFICALLY against pathogens (e.g., HIV gp120/gp41 peptide vaccines, malaria peptide vaccines, bacterial peptide vaccines). The peptide must target a specific pathogen — cancer neoantigen vaccines do NOT qualify.
 
   CHECK THE EXTRACTED FACTS:
   - Database Matches: DRAMP or APD3 hit → evidence FOR AMP, but not sufficient alone. The peptide
     MUST also have a direct antimicrobial mechanism confirmed in the facts.
-  - Mechanism: "kills/inhibits growth of/disrupts microorganisms", "recruits immune cells to
-    fight pathogens", or "targets a specific pathogen as vaccine/immunogen" qualifies.
-    General "immunomodulation" without pathogen specificity does NOT qualify.
+  - Mechanism: "kills/inhibits growth of/disrupts microorganisms" or "recruits INNATE immune
+    cells to fight pathogens directly" qualifies. Vaccine/antibody induction does NOT qualify.
+    General "immunomodulation" does NOT qualify.
   - Immune Direction: "PROMOTE" alone is NOT enough. Many peptides promote immune responses but
-    are NOT antimicrobial (e.g., cancer vaccines, adjuvants). The immune promotion must be
-    SPECIFICALLY directed at killing/clearing pathogens through innate defense mechanisms.
+    are NOT antimicrobial (e.g., vaccines, adjuvants). The immune promotion must be
+    SPECIFICALLY through INNATE defense mechanisms, not adaptive immunity.
 
   CRITICAL — NOT AMPs. The following are NEVER AMPs regardless of context:
 
@@ -241,14 +238,12 @@ STEP 2 — Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)
   - Peptide T (DAPTA): binds CCR5 chemokine receptor, blocks HIV entry. It does NOT kill HIV
     or any pathogen. Classification: Other.
 
-  PATHOGEN-TARGETING VACCINE PEPTIDES — ARE AMPs (Mode D):
-  - HIV peptide vaccines (gp120 peptides, gp41 peptides): induce immune responses against
-    HIV → AMP(infection). The peptide targets a specific pathogen.
-  - Malaria, hepatitis, influenza peptide vaccines: target specific pathogens → AMP(infection).
-  - StreptInCor: targets streptococcal bacteria → AMP(infection).
-
-  NON-PATHOGEN VACCINES — NOT AMPs:
-  - Cancer neoantigen vaccines: target tumor cells, NOT pathogens. Classification: Other.
+  ALL VACCINES ARE NOT AMPs:
+  Vaccines work through ADAPTIVE immunity (antibody/T-cell induction). AMPs work through DIRECT
+  antimicrobial action or INNATE immune defense. These are fundamentally different mechanisms.
+  - HIV peptide vaccines (gp120, gp41): induce antibodies against HIV but do NOT directly kill/disrupt the virus. Classification: Other.
+  - Malaria, hepatitis, influenza, bacterial peptide vaccines: induce adaptive immune responses, NOT direct antimicrobial action. Classification: Other.
+  - Cancer neoantigen vaccines: target tumor cells, not pathogens. Classification: Other.
   - Autoimmune peptide vaccines: suppress immune responses. Classification: Other.
 
   OTHER NON-AMP PEPTIDES:
@@ -265,12 +260,12 @@ STEP 2 — Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)
   - Vasodilation, immunosuppression, tolerance induction
   - Metabolic regulation, hormone signaling
   - Receptor blocking/agonism (unless the receptor is on a pathogen)
-  - General immunomodulation WITHOUT targeting a specific pathogen
-  - Cancer neoantigen vaccines (target tumors, not pathogens)
+  - Vaccine/antibody induction (adaptive immune response, NOT direct antimicrobial action)
+  - General immunomodulation without direct killing/disruption of pathogens
 
   BUT these ARE AMPs:
-  - Pathogen-targeting vaccine peptides (induce immune response against a specific pathogen)
-  - Any peptide that kills, disrupts, or induces immune defense against bacteria/fungi/viruses
+  - Any peptide that directly kills, inhibits growth of, or disrupts bacteria/fungi/viruses
+  - Peptides that recruit or activate INNATE immune cells to fight pathogens at the site of infection (cathelicidins, defensins)
 
   If NOT an AMP → STOP → answer "Other".
 
@@ -293,7 +288,7 @@ Example D: Enfuvirtide (T-20) for HIV
 → Other. Enfuvirtide blocks HIV fusion with host cells — it is a VIRAL ENTRY INHIBITOR. It does NOT directly kill or lyse HIV. It is NOT an AMP.
 
 Example E: HIV gp120 peptide vaccine
-→ AMP(infection). Induces immune response specifically targeting HIV (a pathogen). Mode D: pathogen-targeting immunogen.
+→ Other. Induces adaptive immune responses (antibodies) against HIV, but does NOT directly kill or disrupt the virus. Vaccine peptides work through adaptive immunity — not direct antimicrobial action. Classification: Other.
 
 Example F: Semaglutide for diabetes
 → Other. GLP-1 analogue — metabolic hormone, not antimicrobial.
@@ -316,11 +311,11 @@ Example J: Influenza peptide vaccine
 CRITICAL RULES:
 - If Database Matches says "No evidence found" AND Mechanism shows no direct antimicrobial activity → "Other"
 - If Immune Direction says "SUPPRESS" → always "Other"
-- If mechanism is viral entry inhibition, receptor blocking, or vaccine/antibody induction → "Other"
+- If mechanism is viral entry inhibition, receptor blocking, vaccine/antibody induction, or adaptive immunostimulation → "Other"
 - A peptide being USED IN an infectious disease trial does NOT make it an AMP
 - A peptide being DERIVED FROM a pathogen does NOT make it an AMP
-- A peptide that TREATS infection but works by a non-antimicrobial mechanism (e.g., blocking viral entry) → "Other"
-- ONLY peptides that DIRECTLY KILL or PHYSICALLY DISRUPT pathogens qualify as AMPs
+- A peptide that TREATS infection but works by a non-antimicrobial mechanism → "Other"
+- VACCINE PEPTIDES ARE NEVER AMPs — regardless of whether they target pathogens, cancer, or anything else
 - When in doubt, default to "Other" — false AMP classification is worse than missing a true AMP
 
 Format your response EXACTLY as:

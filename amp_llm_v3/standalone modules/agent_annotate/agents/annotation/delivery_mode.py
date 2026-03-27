@@ -169,8 +169,11 @@ _PROTOCOL_ROUTE_KEYWORDS = {
     "ng/kg/min": "IV", "ug/kg/min": "IV", "mg/kg/min": "IV",
     "mcg/kg/min": "IV", "units/kg/hr": "IV",
     # Abbreviations (space-padded to avoid false matches)
+    # Note: bare " sc " excluded — too ambiguous (" sc " appears in "SC study", "SC phase", etc.)
     " iv ": "IV", " im ": "Injection/Infusion - Intramuscular",
-    " sc ": "Injection/Infusion - Subcutaneous/Intradermal",
+    "sc injection": "Injection/Infusion - Subcutaneous/Intradermal",
+    "sc administration": "Injection/Infusion - Subcutaneous/Intradermal",
+    "sc dose": "Injection/Infusion - Subcutaneous/Intradermal",
     "auto-injector": "Injection/Infusion - Subcutaneous/Intradermal",
     "autoinjector": "Injection/Infusion - Subcutaneous/Intradermal",
     "pen injector": "Injection/Infusion - Subcutaneous/Intradermal",
