@@ -1672,6 +1672,9 @@ class PipelineOrchestrator:
         Non-fatal: all errors are logged but never raised.
         """
         try:
+            from app.services.memory.edam_config import TRAINING_NCTS
+            if TRAINING_NCTS and nct_id.upper() not in TRAINING_NCTS:
+                return
             from app.services.memory.memory_store import memory_store as _edam
             from app.services.version_service import get_git_commit_short
             import hashlib
@@ -1737,6 +1740,9 @@ class PipelineOrchestrator:
         Non-fatal: all errors are logged but never raised.
         """
         try:
+            from app.services.memory.edam_config import TRAINING_NCTS
+            if TRAINING_NCTS and nct_id.upper() not in TRAINING_NCTS:
+                return
             from app.services.memory.memory_store import memory_store as _edam
             from app.services.version_service import get_git_commit_short
             import hashlib
