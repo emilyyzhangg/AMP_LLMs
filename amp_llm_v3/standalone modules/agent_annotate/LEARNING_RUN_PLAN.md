@@ -30,7 +30,7 @@
 | 19a | A+B (v18+hf, pre-fix) | 4d2030ab0c25 | 50 | 0/50 | **Failed** | v18+hotfix (47f1e63) | — | RfF reconciler NoneType crash at NCT00004984. |
 | 19b | A+B (v18+hf, pre-fix) | 8265084a3a21 | 50 | 0/50 | **Failed** | v18+hotfix (47f1e63) | — | Same crash. Fixed in 776aeea. |
 | **19c** | **A+B (v18+hotfixes)** | **76392846aee8** | **50** | **50/50** | **Complete** | **v18+hf (776aeea)** | **—** | **350 min (420s/trial). See concordance below.** |
-| **20** | **A+B (v19)** | **TBD** | **50** | **—** | **Next** | **v19** | **TBD** | **Fix outcome Failed detection, classification NCT00000886/NCT00002428.** |
+| **20** | **A+B (v19)** | **c1786d005ade** | **50** | **—** | **Running** | **v19 (ee4fdee)** | **TBD** | **Mode D removed, EDAM allowlist fix, DBAASP suppression, old-trial literature fallback.** |
 | *21* | *Full training (642)* | *TBD* | *642* | *—* | *Pending* | *v19+* | *—* | *Phase 3: full training set run.* |
 | *22* | *Test set (remaining)* | *TBD* | *TBD* | *—* | *Phase 4* | *v19+* | *—* | *Held-out evaluation. EDAM frozen.* |
 

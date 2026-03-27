@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-03-27
-**Current state:** v19 (61781e32) on dev. v18+hotfixes (776aeea) on main. Batch A+B (50 NCTs) complete (job 76392846aee8). v19 ready to merge and run.
+**Current state:** v19 (ee4fdee) on main. Batch A+B running (job c1786d005ade, ~7h est). EDAM test-set NCTs purged (15 NCTs removed from experiences/corrections/stability_index).
 
 ## Current Concordance (v18+hotfixes, 50 NCTs)
 
@@ -18,7 +18,7 @@
 
 **2/6 targets met.** Big wins: sequence breakthrough, RfF improvement. Main blocker: outcome Failed under-calling.
 
-## Next Step: Merge v19 to main and run Batch A+B
+## Current: v19 Batch A+B running (job c1786d005ade)
 
 ### v19 changes (all on dev, commit 61781e32)
 
