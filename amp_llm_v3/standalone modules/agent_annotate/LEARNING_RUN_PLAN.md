@@ -1,6 +1,6 @@
 # EDAM Learning Run Plan
 
-**Last updated:** 2026-03-26
+**Last updated:** 2026-03-27
 
 ## Job Registry
 
@@ -27,10 +27,12 @@
 | 18a | A (v17) | 9e1f8fa907d5 | 25 | 25/25 | **Complete** | v17 (fc89869) | — | Outcome heuristic override, peptide cascade fix, DBAASP word-boundary, multi-route. |
 | 18b | A (v17) | a3d5403c19af | 25 | 25/25 | **Complete** | v17 (fc89869) | — | Stability run 2. Same NCTs as 18a. |
 | 18c | A (v17) | 4b062214adf0 | 25 | 25/25 | **Complete** | v17 (66907432) | — | Stability run 3. Same NCTs. Outcome regressed to 68%. RfF crashed to 56%. |
-| **19** | **A (v18, new NCTs)** | **TBD** | **25** | **—** | **Next** | **v18** | **TBD** | **New 25 from training CSV. Known-sequences, RfF TERMINATED fix, outcome adverse-first, EDAM restricted.** |
-| *20* | *A+B (50 NCTs)* | *TBD* | *50* | *—* | *Pending* | *v18+* | *—* | *Phase 2: expand to 50 after Batch A converges.* |
-| *21* | *Full training (642)* | *TBD* | *642* | *—* | *Pending* | *v18+* | *—* | *Phase 3: full training set run.* |
-| *22* | *Test set (remaining)* | *TBD* | *TBD* | *—* | *Phase 4* | *v18+* | *—* | *Held-out evaluation. EDAM frozen.* |
+| 19a | A+B (v18+hf, pre-fix) | 4d2030ab0c25 | 50 | 0/50 | **Failed** | v18+hotfix (47f1e63) | — | RfF reconciler NoneType crash at NCT00004984. |
+| 19b | A+B (v18+hf, pre-fix) | 8265084a3a21 | 50 | 0/50 | **Failed** | v18+hotfix (47f1e63) | — | Same crash. Fixed in 776aeea. |
+| **19c** | **A+B (v18+hotfixes)** | **76392846aee8** | **50** | **50/50** | **Complete** | **v18+hf (776aeea)** | **—** | **350 min (420s/trial). See concordance below.** |
+| **20** | **A+B (v19)** | **TBD** | **50** | **—** | **Next** | **v19** | **TBD** | **Fix outcome Failed detection, classification NCT00000886/NCT00002428.** |
+| *21* | *Full training (642)* | *TBD* | *642* | *—* | *Pending* | *v19+* | *—* | *Phase 3: full training set run.* |
+| *22* | *Test set (remaining)* | *TBD* | *TBD* | *—* | *Phase 4* | *v19+* | *—* | *Held-out evaluation. EDAM frozen.* |
 
 ### Agent version summary
 
@@ -48,6 +50,8 @@
 | v16 | 8223691 | Sequence fix (critical): metadata passed to all agents, raw_data key fallback, prefix stripping. Outcome: adverse-event keyword detection, publications as H1 corroboration, negative valence→Failed. Peptide cascade requires conf≥0.90. Delivery: multi-route support. RfF: "Unknown" removed from skip list. AC₁ reporting in docs. |
 | v17 | fc89869 / 66907432 | Outcome: post-LLM heuristic override (call _infer_from_pass1 when Pass 2 returns "Unknown" — was dead code), inject structured phase into Pass 2. Peptide: cascade only on model_name=="deterministic", added OSE2101/TEDOPI/DOTATOC. Sequence: DBAASP word-boundary, ChEMBL HELM 1.3x, UniProt name-matching, formulation stripping. Delivery: multi-route collection, title exclusion, comma-separated parse. |
 | **v18** | **fc6fddac** | **Sequence: _KNOWN_SEQUENCES table (12 drugs, deterministic lookup), cross-validation penalty (0.3x for name mismatch), ChEMBL max_phase + pref_name disambiguation, EDAM-enriched interventions. Outcome: strong adverse signals (multi-word) checked FIRST in full text, Phase I requires has_results_posted or NCT ID in text. RfF: TERMINATED/WITHDRAWN always proceed to pass 2, default "Business Reason" for terminated/withdrawn with no signal, empty vote counted in reconciler, unanimous-verifier gate for empty override. EDAM: training CSV allowlist (642 NCTs), non-training NCTs excluded from all learning loops. Frontend: "Concordance Comparison" → "Agreement Comparison", job ID format consistency (truncated to 8 chars everywhere), Version Compare κ → AC₁ labels.** |
+| **v18+hotfixes** | **776aeea** | **Fix NoneType crash in _majority_vote/_normalize during RfF reconciliation. Fix quality warnings. Fix peptide verifier bias. Fix sequence miss rate. Fix RfF EMPTY sentinel leaks and verifier empty-vote drop. Fix NameErrors causing jobs to fail despite 25/25 completion.** |
+| **v19** | **d777be62 (dev)** | **Classification: remove Mode D (all vaccines now Other — adaptive immunity ≠ AMP). Fixed classifier/verifier inconsistency (verifier still had HIV/influenza vaccines as AMP). Remove ic41/ic43 from _KNOWN_AMP_DRUGS. Outcome: add negative efficacy heuristics (did not demonstrate, no benefit, lack of efficacy, etc.). Delivery mode: remove bare ' sc ' abbreviation, add cancer vaccine → Other/Unspecified rule. Sequence: filter to EXPERIMENTAL arms only, suppress DBAASP/APD for non-AMP trials. Literature: always run title fallback for old trials (NCT < 100k).** |
 
 ## NCT Coverage
 
@@ -173,14 +177,65 @@
 | Known peptide drugs (False→True) | 13 | 3% |
 | Total would change | 120 | 30% |
 
-## EDAM Database State (2026-03-25)
+### v18+hotfixes Concordance (Batch A+B, 50 NCTs, job 76392846aee8) — 2026-03-27
+
+| Field | vs R1 | κ(R1) | AC₁(R1) | vs R2 | κ(R2) | R1↔R2 | v17→v18+ | Status |
+|---|---|---|---|---|---|---|---|---|
+| Classification | 87.8% | -0.046 | 0.870 | 85.7% | 0.174 | 86.0% | Stable | **Above AC₁ target** |
+| Delivery Mode | 67.3% | 0.551 | 0.654 | 72.0% | 0.602 | 69.4% | Flat | **Below 73% target** |
+| Outcome | 70.0% | 0.608 | 0.657 | 74.0% | 0.653 | 76.0% | Regressed | **Below 80% target** |
+| Reason for Failure | 72.0% | 0.627 | 0.671 | 80.0% | 0.738 | 84.0% | Improved | **Below 84% target** |
+| Peptide | 88.9% | 0.390 | 0.865 | 90.5% | 0.462 | 90.5% | Stable | **Above 86% target** |
+| Sequence | 59.1%* | 0.567 | 0.574 | 54.5% | 0.520 | 68.8% | **Major jump** | **Real exact matches now** |
+
+*Sequence: 13/22 exact matches (both R1 and agent annotated). Agent coverage 22/50 vs R1 33/50.
+
+**Bucketed concordance:**
+
+| Field | vs R1 | vs R2 | R1↔R2 |
+|---|---|---|---|
+| Classification | 87.8% | 85.7% | 86.0% |
+| Delivery Mode | 89.8% | 98.0% | 91.8% |
+| Outcome | 72.0% | 80.0% | 82.0% |
+| Peptide | 90.0% | 90.0% | 96.0% |
+
+**Root cause analysis (outcome regression 76% → 70%):**
+
+Agent value distribution (50 NCTs): Terminated=22, Unknown=8, Withdrawn=9, Positive=5, Recruiting=4, Failed=1, Active=1
+R1 value distribution: Terminated=20, Withdrawn=8, Positive=8, Failed=7, Recruiting=5, Unknown=1, Active=1
+
+- **Failed drastically under-called: 1 vs 7 (R1).** Agent says Unknown for 6/7 Failed trials:
+  - NCT00002428, NCT00004984 (Batch B): adverse-event detection not triggering for completed Phase II/III
+  - NCT00972569, NCT02665377 (persistent Batch A): same issue
+  - NCT04672083 (Batch B): Unknown instead of Failed
+  - NCT04701021 (Batch B): Positive instead of Failed (overcalling positive evidence)
+- **Positive under-called**: NCT00977145, NCT02654587 (agent Terminated vs R1 Positive) — but R1↔R2 also disagree on both
+- **Active trial status confusion** (Batch B): NCT04711135 (Active-not-recruiting vs Recruiting), NCT04749641, NCT04771013 (both R1/R2 disagree)
+- **v19 fix needed**: Outcome Failed detection. The multi-word adverse signal check isn't triggering for completed trials. May need to look at the specific publications for NCT00002428, NCT00004984, NCT04672083.
+
+**Root cause analysis (RfF — improved to 72%, cascade still limiting):**
+
+- 6/14 disagreements cascade from Unknown outcome: NCT00002428, NCT00004984, NCT00972569, NCT02665377, NCT04672083, NCT04701021 — all get empty RfF when agent says Unknown/Positive instead of Failed. Fix outcome → these cascade-fix automatically.
+- 8/14 genuine RfF errors: NCT03018288 (Recruitment issues vs Business Reason), NCT03490942 (Ineffective vs Business Reason), NCT03500484 (Business Reason vs Due to covid), NCT05813314 (Ineffective vs Business Reason). Human R1↔R2 also disagree on several of these.
+
+**Root cause analysis (classification persistent errors):**
+
+- NCT00000886: Agent=AMP(infection), R1=R2=Other. Persistent across v14-v18+. The drug is "HIV-1 immunogen" — immune-based HIV vaccine that stimulates immune response. v18+ still classifies it as AMP despite both humans saying Other. Need to investigate what agent is extracting.
+- NCT00002428: Agent=AMP(infection), R1=R2=Other. Same pattern.
+- These are Mode B (immunostimulatory) candidates that the agent over-classifies as AMP.
+
+**Sequence — major breakthrough:**
+- 13/22 exact matches = 59.1%, up from 0 in v17. Known-sequences table working.
+- Coverage gap: agent annotated 22/50 vs R1's 33/50 — need better coverage for Batch B peptides.
+
+## EDAM Database State (2026-03-27)
 
 | Table | Count | Notes |
 |---|---|---|
-| experiences | 300 | From v14/v15 runs (jobs 2c0c0d3a8a73 + c3fa1fbba5c2) |
-| corrections | 23 | Consistency overrides + reconciliation |
-| drug_names | 87 | Cached drug name resolutions |
-| stability_index | 125 | Cross-run comparisons |
+| experiences | 1,470 | Up from 300 (2026-03-25). From v16-v18+ runs. |
+| corrections | 131 | Up from 23. Consistency overrides + reconciliation. |
+| drug_names | 218 | Up from 87. 131 new name resolutions from recent runs. |
+| stability_index | — | |
 | config_epochs | 1 | |
 
 ### EDAM History
@@ -285,9 +340,35 @@ When this job completes, check these specific items in order of priority:
 
 **Convergence criteria for "code stable":** Two consecutive Batch A runs (25 NCTs) with <2% concordance change between them across all fields.
 
-### Phase 1: Iterate on Batch A until stable (NEXT)
+### Phase 1: Iterate on Batch A+B until stable (IN PROGRESS — v18+ baseline done)
 
-**Run v12 Batch A** on correct NCTs (`fast_learning_batch_25.txt`):
+**v19 targets** (based on v18+hotfixes Batch A+B concordance):
+- Outcome: ≥76% vs R1 (restore v17 level on 50 NCTs). Primary fix: Failed detection.
+- Delivery Mode: ≥70% vs R1 (current 67.3%). Minor improvement possible.
+- RfF: ≥80% vs R1 (current 72%). Mostly cascades from outcome fix.
+- Classification: AC₁≥0.87 (current 0.870). Fix NCT00000886/NCT00002428 AMP mis-classification.
+- Peptide: ≥88% vs R1 (current 88.9% — stable, no changes needed).
+- Sequence: ≥60% strict (current 59.1% — improve coverage for Batch B peptides).
+
+**v19 code changes needed:**
+1. **Outcome — Failed undercalling (priority 1):** Investigate NCT00002428, NCT00004984, NCT04672083 — what signal does the agent find? Why isn't it calling Failed? Possible: publications exist but don't contain multi-word adverse triggers. May need to add "did not demonstrate", "no significant improvement", "failed to meet" as failure signals.
+2. **Classification — AMP over-calling (priority 2):** NCT00000886, NCT00002428 consistently called AMP(infection) when both humans say Other. Drug is "HIV-1 immunogen" — a vaccine, not an AMP. The classification prompt may be applying Mode B (immunostimulatory) too broadly.
+3. **Delivery mode — SC vs Unspecified confusion (priority 3):** NCT00977145, NCT00995358, NCT03593460, NCT03724253 — agent picks SC, humans say Other/Unspecified. Agent may be over-confident about SC when trial doesn't specify the injection route clearly.
+
+**Run v19 on Batch A+B** (`fast_learning_batch_50.txt`) to compare:
+```bash
+NCT_IDS=$(python3 -c "
+with open('/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/scripts/fast_learning_batch_50.txt') as f:
+    ncts = [l.strip() for l in f if l.strip()]
+import json; print(json.dumps(ncts))
+")
+curl -s -X POST http://localhost:8005/api/jobs \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <token>' \
+  -d "{\"nct_ids\": $NCT_IDS}"
+```
+
+**Run v12 Batch A** on correct NCTs (`fast_learning_batch_25.txt`) — HISTORICAL REFERENCE ONLY:
 ```bash
 cd "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate"
 NCT_IDS=$(python3 -c "

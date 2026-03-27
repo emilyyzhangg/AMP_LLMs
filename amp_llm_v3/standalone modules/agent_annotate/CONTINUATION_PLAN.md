@@ -1,60 +1,81 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-03-26
-**Current state:** v18 code pushed to dev (fc6fddac). Prod on v17 (66907432). Three v17 Batch A jobs complete (9e1f, a3d5, 4b06). EDAM restricted to training CSV NCTs.
+**Last updated:** 2026-03-27
+**Current state:** v19 (61781e32) on dev. v18+hotfixes (776aeea) on main. Batch A+B (50 NCTs) complete (job 76392846aee8). v19 ready to merge and run.
 
-## Next Step: Run v18 Batch A on new 25 NCTs from training set
+## Current Concordance (v18+hotfixes, 50 NCTs)
 
-v18 has 7 fixes based on v17 concordance analysis (3 runs). Need to merge to main, then run new Batch A (25 NCTs from training CSV).
+| Field | v18+ vs R1 | v18+ AC₁ | v17 best (25) | Target | Met? |
+|---|---|---|---|---|---|
+| Classification | 87.8% | 0.870 | 88.0% | AC₁≥0.82 | YES |
+| Delivery Mode | 67.3% | 0.654 | 68.0% | ≥73% | NO |
+| Outcome | 70.0% | 0.657 | 76.0% | ≥80% | NO (regressed) |
+| Reason for Failure | 72.0% | 0.671 | 68.0% | ≥84% | NO (improved) |
+| Peptide | 88.9% | 0.865 | 90.9% | ≥86% | YES |
+| Sequence | 59.1%* | 0.574 | 32% (empty) | ≥30% exact | YES (breakthrough) |
 
-### v17 Concordance Results (3 runs: 9e1f, a3d5, 4b06 — same 25 NCTs)
+*Sequence: 13/22 = exact matches. Real sequences now extracted correctly.
 
-| Field | v16 vs R1 | v17 best | v17 worst | v17 range | Target | Met? |
-|---|---|---|---|---|---|---|
-| Classification | 84.0% | **88.0%** | **88.0%** | Stable | AC₁≥0.82 | YES |
-| Delivery Mode | 72.7% | **68.0%** | **64.0%** | Oscillating | ≥73% | NO |
-| Outcome | 77.3% | **76.0%** | **68.0%** | Unstable (-8%) | ≥80% | NO |
-| Reason for Failure | 84.0% | **68.0%** | **56.0%** | **Regressed badly** | ≥84% | NO |
-| Peptide | 81.8% | **90.9%** | **90.9%** | Stable | ≥86% | YES |
-| Sequence | 14.3% | **32.0%** | **32.0%** | Stable (0 exact matches) | ≥30% | MISLEADING |
+**2/6 targets met.** Big wins: sequence breakthrough, RfF improvement. Main blocker: outcome Failed under-calling.
 
-**2/6 targets met.** Classification and peptide are solid. Sequence 32% = all "both empty" matches, 0 exact matches out of 17.
+## Next Step: Merge v19 to main and run Batch A+B
 
-### Root causes identified and fixed in v18
+### v19 changes (all on dev, commit 61781e32)
 
-| Issue | Root Cause | v18 Fix |
-|---|---|---|
-| Sequence 0 exact matches | ChEMBL returns wrong molecule (keyword collision). DBAASP returns wrong protein (Insulin for Nesiritide). No candidates for most drugs. | Known-sequences table (12 drugs), cross-validation penalty (0.3x for name mismatch), ChEMBL max_phase disambiguation, EDAM-enriched intervention names |
-| Outcome instability (68-76%) | Phase I corroboration accepts generic publications (vary by run). NCT00000886 false Positive (toxicity missed). | Strong adverse signals checked FIRST in full text. Phase I requires `has_results_posted` or NCT ID in text. |
-| RfF regression (56-68%) | Agent returns empty for TERMINATED/WITHDRAWN trials (9/11 disagreements). `_pass1_says_no_failure()` bails out. Empty vote dropped from reconciler. | TERMINATED/WITHDRAWN always proceed to pass 2. Default "Business Reason" for terminated/withdrawn with no signal. Empty RfF counted as vote. Unanimous-verifier gate for empty override. |
-| EDAM learning from test data | No NCT filtering — EDAM learned from all annotated NCTs | Training CSV allowlist (642 NCTs). Stability, self-review, self-audit all filtered. |
+**1. Classification — Mode D removed (CRITICAL fix)**
+- Removed Mode D (pathogen-targeting immunogens = AMP) from both classifier and verifier
+- Root cause of persistent NCT00000886/NCT00002428 misclassification: **verifier still had HIV/influenza vaccines as AMP while classifier said Other** — verifier was overriding the correct answer
+- ic41, ic43 removed from _KNOWN_AMP_DRUGS
+- All vaccine peptides now: Other
 
-### v18 New Batch A (25 NCTs from training CSV)
+**2. Outcome — negative efficacy signals added (HIGH)**
+- _infer_from_pass1 now catches: "did not demonstrate/achieve/show", "no significant/benefit/improvement/efficacy", "failed to demonstrate/meet/primary", "lack of efficacy", "ineffective"
+- NCT04672083 (Phase 1, no pubs) → Unknown is correct; R1 wrong on that one
+- Other 4 failing NCTs expected to improve with new signals
 
-Selected for diversity: 8 AMP / 17 Other, 4 peptide=false, 18 with sequences, 5 with RfF, mixed outcomes.
+**3. Delivery mode — SC tightened + cancer vaccine fallback (MEDIUM)**
+- Removed bare " sc " abbreviation from keyword table
+- Added "sc injection", "sc administration", "sc dose" as explicit replacements
+- Added RULE 7: peptide vaccines / cancer immunotherapy → Other/Unspecified, NOT Intranasal when route unspecified
 
+**4. Sequence — primary interventions only + DBAASP/APD suppression (MEDIUM)**
+- _extract_primary_interventions(): filter to EXPERIMENTAL arms only (not comparators/background)
+- DBAASP and APD suppressed for classification=Other trials (they're AMP DBs; return false positives for cancer vaccines)
+- Fixes NCT00995358: Brevinin from frog skin was returned for a cancer peptide vaccine trial
+
+**5. Literature — old trial fallback (LOW)**
+- Trials with NCT number < 100,000 (pre-2005) always run title-based fallback search
+- Fixes NCT00004984 (DPT-1): NCT ID search found secondary papers only; title search finds NEJM 2002 primary paper
+
+### How to run v19 (after merging to main)
+
+```bash
+TOKEN=$(sqlite3 ~/Developer/amphoraxe/auth.amphoraxe.ca/data/auth.db "SELECT token FROM sessions ORDER BY created_at DESC LIMIT 1;")
+NCT_IDS=$(python3 -c "
+with open('/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/scripts/fast_learning_batch_50.txt') as f:
+    ncts = [l.strip() for l in f if l.strip()]
+import json; print(json.dumps(ncts))
+")
+curl -s -X POST http://localhost:8005/api/jobs \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer $TOKEN" \
+  -d "{\"nct_ids\": $NCT_IDS}"
 ```
-NCT00001060  NCT01639638  NCT03052842  NCT03635437  NCT03772678
-NCT03791515  NCT03923257  NCT03987672  NCT04023331  NCT04389775
-NCT04419610  NCT04671966  NCT04844580  NCT04924660  NCT04954274
-NCT05064137  NCT05127889  NCT05218915  NCT05889728  NCT05940428
-NCT05968846  NCT06045260  NCT06689761  NCT06729606  NCT06801015
-```
 
-### What to check after v18 Batch A
+### What to check after v19
 
-1. **Sequence:** Expect >0 exact matches (known-sequences table covers Nesiritide, Albiglutide, Angiotensin)
-2. **Outcome:** Expect stable (no inter-run flip-flops from Phase I corroboration)
-3. **RfF:** Expect "Business Reason" populated for terminated/withdrawn trials
-4. **EDAM:** Verify only training NCTs stored in experiences table
-5. **Peptide:** Should maintain ≥90% (stable, no changes)
+1. **Outcome:** Expect ≥76% vs R1 (6+ Failed cases now correctly identified)
+2. **RfF:** Expect cascade improvement — if outcome Fixed, 6 RfF empties should resolve
+3. **Classification:** NCT00000886 and NCT00002428 should now be "Other"
+4. **Delivery mode:** Expect minor improvement if SC evidence threshold raised
+5. **Sequence + Peptide:** Should stay stable (no changes to these)
 
 ## Environment State
 
 | Environment | Branch | Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v17 (66907432) | None (4b062214adf0 complete) |
-| Dev (port 9005) | dev | v18 (fc6fddac) | None |
+| Prod (port 8005) | main | v18+hotfixes (776aeea) | None (76392846aee8 complete) |
+| Dev (port 9005) | dev | v19 (d777be62) | None |
 
 ## Important Notes
 
@@ -64,6 +85,7 @@ NCT05968846  NCT06045260  NCT06689761  NCT06729606  NCT06801015
 - **Drug lists are FROZEN** — no more additions. Improvements through reasoning (Layers 1-3) only.
 - **All AMPs are peptides** — AMP classification forces peptide=True in consistency engine.
 - **Auth token:** Retrieved from `~/Developer/amphoraxe/auth.amphoraxe.ca/data/auth.db` sessions table.
+- **EDAM allowlist:** Only 642 training CSV NCTs stored in EDAM. Test NCTs excluded.
 
 ## Key File Locations
 
