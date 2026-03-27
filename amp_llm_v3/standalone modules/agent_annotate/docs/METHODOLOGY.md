@@ -37,35 +37,35 @@ The review queue (trials flagged for manual review) is persisted to disk and sur
 
 ### 2.1 Definition
 
-An antimicrobial peptide (AMP), also called a host defense peptide, is a single-chain peptide (2--50 amino acids) that contributes to pathogen defense through antimicrobial mechanisms --- killing, inhibiting the growth of, disrupting, or inducing immune responses against pathogens through the peptide's own biochemical action. Both bactericidal (killing) and bacteriostatic (growth inhibition) mechanisms qualify. The pipeline classifies AMPs by four modes of action. A peptide must fit at least one mode to be classified as an AMP.
+An antimicrobial peptide (AMP), also called a host defense peptide, is a single-chain peptide (2--50 amino acids) that contributes to pathogen defense through antimicrobial mechanisms --- killing, inhibiting the growth of, disrupting, or directly recruiting innate immune cells against pathogens through the peptide's own biochemical action. Both bactericidal (killing) and bacteriostatic (growth inhibition) mechanisms qualify. The pipeline classifies AMPs by three modes of action. A peptide must fit at least one mode to be classified as an AMP.
 
 **Critically, the AMP classification is independent of the Peptide field.** A trial can have Peptide=True (the drug is a peptide) but Classification=Other (the peptide is not antimicrobial). For example, enfuvirtide is a peptide (Peptide=True) but is a viral entry inhibitor, not an AMP (Classification=Other). Semaglutide is a peptide (Peptide=True) but is a metabolic hormone, not an AMP (Classification=Other).
 
-### 2.2 Four Modes of Action (v12)
+### 2.2 Three Modes of Action (v19)
 
 **Mode A -- Direct Antimicrobial**
 Peptides that kill, inhibit the growth of, or disrupt pathogens --- includes both bactericidal and bacteriostatic mechanisms: membrane disruption, pore formation, intracellular targeting, growth inhibition, ion channel disruption. Examples: colistin, polymyxin B, melittin, daptomycin, nisin, gramicidin.
 
-**Mode B -- Immunostimulatory / Host Defense**
-Peptides that directly recruit innate immune cells to kill pathogens at infection sites. Examples: LL-37, defensins, cathelicidins. The peptide must specifically recruit innate defense against pathogens --- general immunomodulation or adaptive immune activation does not qualify.
+**Mode B -- Immunostimulatory / Host Defense (INNATE only)**
+Peptides that directly recruit innate immune cells to kill pathogens at infection sites. Examples: LL-37, defensins, cathelicidins. The peptide must specifically recruit **innate** defense against pathogens --- general immunomodulation or **adaptive** immune activation does NOT qualify.
 
 **Mode C -- Anti-Biofilm**
 Peptides that directly disrupt microbial biofilms through biochemical interaction. Examples: LL-37, DJK-5, IDR-1018.
 
-**Mode D -- Pathogen-Targeting Immunogens (re-added v12)**
-Peptide vaccines and immunogens designed to induce immune responses SPECIFICALLY against pathogens (bacteria, viruses, fungi). Examples: HIV gp120/gp41 peptide vaccines, malaria peptide vaccines, StreptInCor (streptococcal). The peptide must target a specific pathogen --- cancer neoantigen vaccines do NOT qualify (they target tumor cells, not pathogens). Mode D was removed in v2 based on 70-trial concordance but re-added in v12 because the AMP definition should encompass all mechanisms of pathogen defense, including adaptive immune induction against specific pathogens.
+**Mode D -- Removed (v19)**
+Mode D (pathogen-targeting immunogens) was added in v12 to cover peptide vaccines (HIV gp120/gp41 vaccines, StreptInCor, malaria peptide vaccines). It was removed in v19 after concordance analysis of 50 trials revealed systematic over-classification. Vaccine peptides work through **adaptive** immunity (antibody induction, T-cell priming) — the peptide does not directly kill pathogens. This mechanism is categorically different from Modes A--C, which require direct antimicrobial action or innate immune recruitment. All vaccine/immunogen peptides are now classified as **Other**. Representative NCTs that changed: NCT00000886 (HIV gp120 vaccine → Other), NCT00002428 (HIV peptide vaccine → Other).
 
 ### 2.3 Key Distinctions
 
-1. **Antimicrobial mechanism required.** The peptide must kill, inhibit the growth of, or disrupt pathogens through its own biochemical action --- or recruit immune cells to fight pathogens --- or target a specific pathogen as a vaccine/immunogen. Both bactericidal and bacteriostatic mechanisms qualify. General immunomodulation without pathogen specificity does not qualify.
+1. **Antimicrobial mechanism required.** The peptide must kill, inhibit the growth of, or disrupt pathogens through its own biochemical action --- or recruit **innate** immune cells to fight pathogens. Both bactericidal and bacteriostatic mechanisms qualify. General immunomodulation, adaptive immune activation, and vaccine-mediated antibody induction do not qualify.
 
 2. **Treating infection ≠ AMP.** A peptide that treats an infectious disease through a non-antimicrobial mechanism (e.g., enfuvirtide blocks HIV viral fusion but does not kill the virus) is classified as "Other." Being tested in an infection context does not make a peptide an AMP.
 
-3. **Promoting defense vs suppressing immunity.** An immunosuppressive peptide is "Other" regardless of its peptide nature. An immunostimulatory peptide is only an AMP if it specifically recruits innate defense against pathogens (Mode B), not if it merely promotes general immune activation.
+3. **Promoting defense vs suppressing immunity.** An immunosuppressive peptide is "Other" regardless of its peptide nature. An immunostimulatory peptide is only an AMP if it specifically recruits **innate** defense against pathogens (Mode B), not if it promotes general or adaptive immune activation.
 
-4. **Pathogen-targeting vaccine peptides ARE AMPs (Mode D).** Peptides designed to induce immune responses against specific pathogens (HIV vaccines, malaria vaccines, etc.) are AMP(infection). However, cancer neoantigen vaccines are NOT AMPs because they target tumor cells, not pathogens.
+4. **Vaccine/immunogen peptides are NOT AMPs.** Peptides designed to induce antibody or T-cell responses against pathogens (HIV peptide vaccines, malaria vaccines, StreptInCor) are classified as "Other." Vaccines work through adaptive immunity — the peptide itself does not kill pathogens. This applies regardless of whether the pathogen target is a bacterium, virus, or fungus.
 
-5. **Peptide ≠ AMP.** Many peptides are not antimicrobial: neuropeptides (VIP/aviptadil, peptide T), metabolic hormones (GLP-1 agonists, insulin), bone growth regulators (vosoritide/CNP, calcitonin), viral entry inhibitors (enfuvirtide), and radiolabeled tracers. All are classified as "Other" despite being peptides (Peptide=True).
+5. **Peptide ≠ AMP.** Many peptides are not antimicrobial: neuropeptides (VIP/aviptadil, peptide T), metabolic hormones (GLP-1 agonists, insulin), bone growth regulators (vosoritide/CNP, calcitonin), viral entry inhibitors (enfuvirtide), vaccine immunogens, and radiolabeled tracers. All are classified as "Other" despite being peptides (Peptide=True).
 
 ### 2.4 Relationship Between Peptide and Classification Fields
 
@@ -73,7 +73,7 @@ Peptide vaccines and immunogens designed to induce immune responses SPECIFICALLY
 |---|---|---|
 | True | AMP(infection) | Colistin for MDR bacterial infection |
 | True | AMP(other) | LL-37 for diabetic wound healing |
-| True | Other | Enfuvirtide (viral entry inhibitor), semaglutide (GLP-1), calcitonin (bone), peptide T (neuropeptide), HIV peptide vaccine |
+| True | Other | Enfuvirtide (viral entry inhibitor), semaglutide (GLP-1), calcitonin (bone), peptide T (neuropeptide), HIV peptide vaccine (adaptive immunity — not Mode A/B/C) |
 | False | Other | Amoxicillin (small molecule), Peptamen (nutritional formula), pembrolizumab (antibody) |
 
 
@@ -208,6 +208,9 @@ Queries biomedical literature for published results, methods, and outcome data.
 | PubMed | 0.90 |
 | PMC | 0.85 |
 | PMC BioC | 0.80 |
+
+**v19 changes — old trial fallback:**
+Trials with NCT numbers below 100,000 (registered before ~2005) are treated as "old trials." For these trials, the primary paper was almost never published after NCT registration, so the NCT ID rarely appears in paper abstracts or references. A secondary title-keyword search is now always performed for old trials: the first 5 meaningful words from the trial title are used as search terms, which are more specific than drug name searches and successfully recover primary papers. Example: NCT00004984 (DPT-1 Phase III diabetes prevention) — NCT-based PubMed search found only secondary immunology papers; title-keyword search recovers the NEJM 2002 primary outcome paper directly.
 
 ### 4.3 Peptide Identity Agent
 
@@ -392,10 +395,15 @@ Uses a larger model (qwen2.5:14b on Mac Mini, kimi-k2-thinking on server) becaus
 3. Does this AMP target infection? Yes → AMP(infection). No → AMP(other).
 
 **v5 changes (from 70-trial concordance analysis):**
-- **AMP definition narrowed to three modes (v5)**: Mode D was removed. *Note: Mode D was re-added in v12 — pathogen-targeting vaccine peptides are now classified as AMP(infection). See Section 2.2.*
+- **AMP definition narrowed to three modes (v5)**: Mode D was removed. *Note: Mode D was re-added in v12 then removed again in v19 — see Section 2.2.*
 - **Explicit antiretroviral exclusions**: Enfuvirtide/T-20 (viral entry inhibitor, NOT antimicrobial), Peptide T/DAPTA (CCR5 receptor blocker), HIV peptide vaccines (antibody induction). These were the dominant over-classification pattern (30 of 36 classification disagreements).
 - **Mechanism-based decisive rule**: If the mechanism is viral entry inhibition, receptor blocking, vaccine/antibody induction, vasodilation, or metabolic regulation → Other, regardless of infectious disease context.
 - **Default to Other**: When in doubt, false AMP classification is worse than missing a true AMP.
+
+**v19 changes:**
+- **Mode D permanently removed**: Vaccine/immunogen peptides (HIV gp120, StreptInCor, malaria peptide vaccines) are Other. Root cause of persistent NCT00000886/NCT00002428 misclassification: the verifier still listed HIV/influenza vaccines as AMP(infection), overriding correct classifier answers. Both classifier and verifier updated to consistently reflect Mode D removal.
+- **Mode B clarified — INNATE only**: Explicit that Mode B requires innate immune recruitment, NOT adaptive immune activation. This distinction is the mechanistic basis for the vaccine exclusion.
+- **ic41, ic43 removed from known-AMP drug table**: These HIV peptide vaccine identifiers were incorrectly pre-classified as AMP.
 
 ### 5.3 Delivery Mode Agent (v5)
 
@@ -413,6 +421,10 @@ The prompt forces the model to search ALL sources before concluding, explicitly 
 **v5 changes**: Upgraded from single-pass to two-pass. The single-pass agent defaulted to "Injection/Infusion - Other/Unspecified" in 52% of injection cases because it only checked protocol text. The two-pass design forces active search across FDA labels, literature, and databases before classifying.
 
 Never-guess rule preserved: if no source specifies IM, SC, or IV, the answer is Injection/Infusion - Other/Unspecified.
+
+**v19 changes:**
+- **SC abbreviation tightened**: Bare `" sc "` removed from the keyword lookup table — it matched spurious contexts like "SC study", "SC phase", "SC patients". Replaced with explicit phrases: `"sc injection"`, `"sc administration"`, `"sc dose"`.
+- **Cancer vaccine/peptide immunotherapy fallback (Rule 7)**: Peptide vaccines and cancer immunotherapy trials are NOT administered intranasally. When route is unspecified for these trial types, the default is "Injection/Infusion - Other/Unspecified", NOT Intranasal. This corrects a systematic error where the intranasal keyword matched incidental mentions in cancer vaccine protocols.
 
 ### 5.4 Outcome Agent (v4)
 
@@ -439,6 +451,10 @@ Never-guess rule preserved: if no source specifies IM, SC, or IV, the answer is 
    - H4: Only after exhausting H1-H3 → Unknown.
 
 Critical rule: "Completed" registry status alone does NOT indicate failure. "Failed - completed trial" requires affirmative evidence of a negative result.
+
+**v19 changes:**
+- **Negative efficacy signal detection expanded**: The Pass 1 heuristic now catches explicit failure language in results sections: "did not demonstrate / achieve / show", "no significant / benefit / improvement / efficacy", "failed to demonstrate / meet / primary", "lack of efficacy", "ineffective". Previously these phrases returned Unknown; they now correctly trigger "Failed - completed trial".
+- **Phase 1 no-publications → Unknown confirmed correct**: Completed Phase 1 trials with no published results default to Unknown (not "Positive"). Phase 1 completion heuristic H1 applies only when Phase 1 was explicitly completed — not as a fallback for early-stage trials with missing data.
 
 ### 5.5 Failure Reason Agent (v5)
 
@@ -469,6 +485,15 @@ Critical rule: "Completed" registry status alone does NOT indicate failure. "Fai
 **v15:** If peptide=False, all other fields are set to N/A and annotation is skipped. Non-peptide trials are out of scope for this peptide-focused database.
 
 **v5 changes**: Upgraded from single-pass to two-pass. The single-pass agent over-identified peptides (Agent=True for non-peptide interventions) and under-identified (Agent=False for real peptides) because 8B models shortcut on whether "peptide" appeared in the trial text. The two-pass design forces molecular class determination before the True/False decision.
+
+### 5.7 Sequence Agent (v12)
+
+Extracts the amino acid sequence of the primary peptide intervention. Searches DBAASP, APD, EBI Proteins, UniProt, and literature for the sequence string. Results feed the cross-field consistency engine (Section 3.5) to validate Peptide=True/False decisions.
+
+**v19 changes:**
+- **Primary interventions only (EXPERIMENTAL arms)**: Previously, the sequence agent searched all arms including comparators and background therapy, returning sequences for drugs not under investigation. Now only interventions from arms with `armGroupType=EXPERIMENTAL` are used as search targets. EDAM-resolved synonyms for experimental drugs are also included. Fallback to all interventions if no experimental arms are found.
+- **DBAASP/APD suppressed for non-AMP trials**: When Classification=Other (as annotated in Phase 2), DBAASP and APD database queries are skipped. Both are AMP databases and return false positives for cancer vaccine trials — e.g., Brevinin-2 (frog skin AMP) was returned for a cancer-testis antigen vaccine trial (NCT00995358). Non-AMP trials' sequences, if needed, are sourced from UniProt/EBI Proteins/literature only.
+- **LLM sequence extraction fallback**: If peptide=True but no database returned a sequence, the agent now makes an LLM call to extract the sequence from the research text directly, rather than returning empty.
 
 
 ## 6. Phase 3 -- Verification Pipeline
@@ -1075,7 +1100,21 @@ The recommended learning cycle for autonomous operation (no human intervention r
 
 Phases 1-2 build the learning memory. Phase 3 tests generalization. Phase 4 measures the improvement delta. The cycle can be repeated indefinitely — each iteration adds more experiences, corrections, and prompt refinements.
 
-### 16.7 Safeguards Against Runaway Learning
+### 16.7 Training NCT Allowlist (v18)
+
+EDAM learning is gated to a fixed allowlist of 642 training NCTs loaded from `docs/human_ground_truth_train_df.csv`. Trials outside this set are never written into EDAM's experiences, corrections, or stability index — they are annotated with EDAM guidance but do not contribute back to learning.
+
+**Rationale:** The full dataset is split into a training set (642 dual-annotated NCTs) and a held-out test set for final evaluation. If EDAM learned from test-set NCTs, the final concordance measurement would be contaminated — the agent would have indirectly seen the test data during training. The allowlist enforces a strict train/test boundary.
+
+**v18 write paths gated by allowlist:**
+- Stability tracking: Non-training NCTs are skipped before `store_experience` is called
+- Self-audit and self-review: Only training NCTs pass to the audit/correction pipeline
+- Reconciliation corrections: Verifier-changed values for non-training NCTs are not written to EDAM (added v19 — this path previously bypassed the allowlist)
+- Consistency override corrections: Post-verification consistency changes for non-training NCTs are not written to EDAM (added v19 — this path previously bypassed the allowlist)
+
+**Read path:** `build_guidance()` queries corrections and exemplars regardless of NCT origin. This means training-set corrections can still inform annotation of test-set NCTs — which is the intended behavior.
+
+### 16.8 Safeguards Against Runaway Learning
 
 1. **Evidence-grounded corrections only.** Self-corrections must cite a specific source (PMID, database, registry). "I think it should be X" is never stored.
 2. **Anomaly detection.** If >80% of trials receive the same value for any field across recent epochs, a warning is injected into all annotation and verification prompts.
@@ -1083,6 +1122,7 @@ Phases 1-2 build the learning memory. Phase 3 tests generalization. Phase 4 meas
 4. **Human corrections override everything.** When a human reviews an annotation, their decision is stored at maximum weight and never purged.
 5. **Epoch boundaries prevent stale contamination.** Config changes demote old experiences rather than deleting them — the system re-learns under the new config with historical context.
 6. **Database size caps.** Hard limits on all tables prevent unbounded growth. Purge strategy removes oldest, lowest-weight entries first.
+7. **Training allowlist enforces train/test split.** See Section 16.7.
 
 
 ## 17. Design Philosophy

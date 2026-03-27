@@ -28,7 +28,7 @@ This paper describes the complete Agent Annotate system, presents baseline evalu
 
 ### 2.1 Antimicrobial Peptide Classification
 
-Antimicrobial peptides (AMPs) exert their therapeutic effects through direct antimicrobial mechanisms. We classify AMPs by three modes of action (Modes A--C). A fourth mode (Mode D, pathogen-targeting vaccines) was initially included but removed after concordance analysis showed it caused systematic over-classification.
+Antimicrobial peptides (AMPs) exert their therapeutic effects through direct antimicrobial mechanisms. We classify AMPs by three modes of action (Modes A--C). A fourth mode (Mode D, pathogen-targeting vaccine peptides) was removed in v2, re-added in v12, and permanently removed in v19 after concordance analysis on 50 trials demonstrated systematic over-classification of vaccine NCTs.
 
 **Mode A --- Direct Antimicrobial.** Peptides that kill or inhibit microbial growth through direct physical interaction, typically via membrane disruption or pore formation. Representative examples include colistin, polymyxin B, melittin, and nisin. These peptides interact directly with microbial cell membranes, compromising structural integrity and leading to cell death.
 
@@ -36,7 +36,7 @@ Antimicrobial peptides (AMPs) exert their therapeutic effects through direct ant
 
 **Mode C --- Anti-Biofilm.** Peptides that disrupt established microbial biofilms or prevent biofilm formation. Representative examples include LL-37, DJK-5, and IDR-1018. Biofilm disruption is mechanistically distinct from direct antimicrobial activity, as biofilm-resident organisms exhibit phenotypic tolerance that renders them resistant to conventional antimicrobials.
 
-**Mode D --- Removed.** Pathogen-targeting vaccine peptides (StreptInCor, HIV peptide vaccines) were initially classified as AMPs. Concordance analysis on 70 trials revealed this caused systematic over-classification: vaccine peptides induce adaptive immune responses, but the peptide itself does not directly kill pathogens. Mode D peptides are now classified as "Other."
+**Mode D --- Removed (v19).** Pathogen-targeting vaccine peptides (StreptInCor, HIV gp120/gp41 peptide vaccines, malaria peptide vaccines) were re-introduced as Mode D in v12 under the rationale that vaccine-mediated pathogen defense qualifies as AMP activity. Concordance analysis on 50 trials (v18+) revealed this caused systematic over-classification. Root cause: vaccine peptides work through adaptive immunity (antibody induction, T-cell priming) --- the peptide itself does not directly kill pathogens, recruit innate immune cells, or disrupt microbial structures. This mechanism is categorically different from Modes A--C. Additionally, the classifier and verifier were inconsistent: the classifier correctly returned Other for vaccine NCTs while the verifier still listed them as AMP(infection), causing the verification stage to override correct primary annotations. Mode D was permanently removed in v19; all vaccine/immunogen peptides are classified as "Other."
 
 A critical distinction governs classification: the AMP classification is independent of the Peptide field. Many peptides are not antimicrobial --- neuropeptides (VIP/aviptadil, peptide T), metabolic hormones (GLP-1 agonists, insulin), viral entry inhibitors (enfuvirtide), bone regulators (calcitonin, vosoritide), and vaccine immunogens are all classified as "Other" despite being peptides (Peptide=True). Similarly, peptides that *suppress* immunity (autoimmune therapeutics like dnaJP1) are excluded. The core requirement is direct antimicrobial mechanism: the peptide must physically kill, disrupt, or recruit innate immune effectors against pathogens through its own biochemical action.
 
@@ -292,13 +292,14 @@ All five annotation agents employ a two-pass architecture. This universal design
 - *Pass 1* extracts five antimicrobial evidence dimensions: peptide identity, database matches (DRAMP, APD3, UniProt, ChEMBL), mechanism of action, therapeutic target, and immune direction.
 - *Pass 2* applies a three-step decision tree: (1) Is the intervention a peptide? (2) Does this peptide have a DIRECT antimicrobial mechanism — physically killing, lysing, or disrupting pathogens, or directly recruiting innate immune cells to kill pathogens? (3) Does this AMP target infection?
 - The v2 prompt encodes explicit exclusions for the most common over-classification patterns: antiretrovirals (enfuvirtide, peptide T — viral entry inhibitors, not antimicrobial), vaccine peptides (induce adaptive immunity, the peptide itself does not kill pathogens), neuropeptides (VIP/aviptadil — vasodilators), metabolic hormones (GLP-1, GLP-2), and immunosuppressive peptides. The decisive rule: if the mechanism is viral entry inhibition, receptor blocking, vaccine/antibody induction, vasodilation, or metabolic regulation, the answer is Other.
-- The four-mode AMP definition was narrowed to three modes in v2: Mode D (pathogen-targeting vaccines) was removed because vaccine peptides do not directly kill pathogens — they work through adaptive immunity.
+- The four-mode AMP definition was narrowed to three modes in v2, re-expanded to four modes (with Mode D) in v12, and narrowed back to three modes in v19. Mode D (pathogen-targeting vaccines) is permanently removed: vaccine peptides work through adaptive immunity and do not directly kill pathogens. Both the classifier and verifier were updated to ensure consistency — a key root cause of persistent errors was the classifier returning Other for vaccine NCTs while the verifier retained AMP(infection), causing the verification stage to override correct primary answers.
 
 **Delivery Mode Agent.**
 
 - *Pass 1* extracts route evidence from four source categories with explicit priority ordering: (1) FDA/drug label route (highest priority), (2) published literature route descriptions, (3) ClinicalTrials.gov protocol route, (4) database formulation data. The prompt forces the model to search all sources before concluding.
 - *Pass 2* classifies the route using the source hierarchy: FDA label overrides generic protocol text. If the FDA label says "subcutaneous" but the protocol says "injection," the answer is Subcutaneous/Intradermal, not Other/Unspecified.
 - The never-guess rule is preserved: if no source specifies IM, SC, or IV, the answer is Injection/Infusion - Other/Unspecified.
+- *v19:* Bare SC abbreviation removed from keyword lookup (matched spurious contexts). Explicit phrases "sc injection", "sc administration", "sc dose" added. Cancer vaccine / peptide immunotherapy classification rule: when route is unspecified for peptide vaccine trials, the default is Injection/Infusion - Other/Unspecified (not Intranasal).
 
 **Peptide Agent.**
 
@@ -325,6 +326,7 @@ All five annotation agents employ a two-pass architecture. This universal design
 - *v16:* Added adverse event detection in the fallback heuristic: publications mentioning toxicity, adverse reactions, abscess formation, or dose-limiting events now trigger "Failed - completed trial" even when the LLM's Pass 2 defaults to "Unknown". Publications count as corroboration for H1 (Phase I completion) even when they describe a related study rather than the exact NCT ID. Negative result valence from Pass 1 now maps to "Failed" in the fallback path.
 
 A critical rule governs the distinction between completion and failure: a registry status of COMPLETED does *not* imply failure. The "Failed - completed trial" classification requires affirmative evidence of a negative result.
+- *v19:* Negative efficacy signal vocabulary expanded in the Pass 1 heuristic: "did not demonstrate/achieve/show", "no significant/benefit/improvement/efficacy", "failed to demonstrate/meet/primary", "lack of efficacy", "ineffective" now trigger "Failed - completed trial" directly, without requiring a full LLM Pass 2 invocation for obvious failure language.
 
 **Failure Reason Agent.**
 

@@ -347,7 +347,7 @@ AMP stands for **Antimicrobial Peptide**. The classification categories are:
 - **AMP(other)**: The intervention is an AMP but targets something other than infection (wound healing, cancer, immunomodulation)
 - **Other**: Everything else — including peptides that are NOT antimicrobial (GLP-1 analogues, VIP, somatostatin analogues, GnRH analogues)
 
-**Common agent error**: Classifying all peptides as AMP(something). VIP/Aviptadil for headaches is a peptide but NOT an AMP → should be "Other". Semaglutide for diabetes is a peptide but NOT an AMP → should be "Other". Only peptides with antimicrobial activity or that target pathogens qualify as AMP.
+**Common agent error**: Classifying all peptides as AMP(something). VIP/Aviptadil for headaches is a peptide but NOT an AMP → should be "Other". Semaglutide for diabetes is a peptide but NOT an AMP → should be "Other". **Vaccine/immunogen peptides are NOT AMPs** → HIV peptide vaccines (gp120, gp41), malaria peptide vaccines, StreptInCor should be "Other" (they work via adaptive immunity — antibody induction — not direct antimicrobial action).
 
 ### Peptide: Nutritional Formulas vs Peptide Drugs
 
