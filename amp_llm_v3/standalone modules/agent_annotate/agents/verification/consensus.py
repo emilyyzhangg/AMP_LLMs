@@ -28,6 +28,8 @@ _VALUE_ALIASES = {
     "n/a": "",
     "not applicable": "",
     "unknown": "",
+    # Reconciler model sometimes returns the sentinel word literally
+    "empty": "",
 }
 
 # For reason_for_failure: any value starting with these is "no failure" (empty)
