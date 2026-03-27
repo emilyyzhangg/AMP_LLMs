@@ -185,7 +185,7 @@ class ReconciliationAgent:
         if consensus_result.original_value or consensus_result.field_name == "reason_for_failure":
             raw_votes.append(consensus_result.original_value)
         for opinion in consensus_result.opinions:
-            if opinion.suggested_value:
+            if opinion.suggested_value or consensus_result.field_name == "reason_for_failure":
                 raw_votes.append(opinion.suggested_value)
         if not raw_votes:
             return ""
