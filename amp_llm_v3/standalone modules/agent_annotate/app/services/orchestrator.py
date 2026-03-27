@@ -2070,7 +2070,8 @@ class PipelineOrchestrator:
 
             # Check 3: Empty value for fields that should have one
             # (sequence can legitimately be empty; N/A from cascade is fine)
-            if not value and field != "sequence" and "N/A" not in (reasoning or ""):
+            # reason_for_failure is also excluded — "" means "no failure", which is valid
+            if not value and field not in ("sequence", "reason_for_failure") and "N/A" not in (reasoning or ""):
                 issues.append(
                     f"{field}: empty value (model={model}, conf={confidence})"
                 )
