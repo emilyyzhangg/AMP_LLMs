@@ -119,6 +119,10 @@ CLASSIFICATION RULES:
    (e.g., one drug given IV and another given orally), list ALL routes comma-separated in the
    same order as the drugs appear. Do NOT list multiple routes for a single drug, and do NOT
    list the placebo/comparator route separately.
+7. PEPTIDE VACCINES AND CANCER TRIALS: Peptide vaccines (cancer vaccines, anti-tumor peptides,
+   immunotherapy peptides) are NOT administered intranasally. If the protocol does not explicitly
+   specify the route for a peptide vaccine or cancer immunotherapy, use
+   "Injection/Infusion - Other/Unspecified", NOT Intranasal.
 
 Format your response EXACTLY as:
 Delivery Mode: [one of the 18 valid values, exactly as written — or comma-separated if multi-route]
@@ -169,8 +173,11 @@ _PROTOCOL_ROUTE_KEYWORDS = {
     "ng/kg/min": "IV", "ug/kg/min": "IV", "mg/kg/min": "IV",
     "mcg/kg/min": "IV", "units/kg/hr": "IV",
     # Abbreviations (space-padded to avoid false matches)
+    # Note: bare " sc " excluded — too ambiguous (" sc " appears in "SC study", "SC phase", etc.)
     " iv ": "IV", " im ": "Injection/Infusion - Intramuscular",
-    " sc ": "Injection/Infusion - Subcutaneous/Intradermal",
+    "sc injection": "Injection/Infusion - Subcutaneous/Intradermal",
+    "sc administration": "Injection/Infusion - Subcutaneous/Intradermal",
+    "sc dose": "Injection/Infusion - Subcutaneous/Intradermal",
     "auto-injector": "Injection/Infusion - Subcutaneous/Intradermal",
     "autoinjector": "Injection/Infusion - Subcutaneous/Intradermal",
     "pen injector": "Injection/Infusion - Subcutaneous/Intradermal",

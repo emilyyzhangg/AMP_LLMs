@@ -244,6 +244,65 @@ def _extract_intervention_names(metadata: dict | None) -> list[str]:
     return names
 
 
+def _extract_primary_interventions(
+    research_results: list,
+    metadata: dict | None,
+) -> list[str]:
+    """Extract intervention names from EXPERIMENTAL arms only.
+
+    Filters ClinicalTrials.gov arm groups to return only interventions assigned
+    to EXPERIMENTAL arms — the primary investigational drug(s). Excludes background
+    therapy (ACTIVE_COMPARATOR, PLACEBO_COMPARATOR, NO_INTERVENTION).
+
+    Falls back to all interventions if no EXPERIMENTAL arms are found.
+    """
+    for result in research_results:
+        if result.error or result.agent_name != "clinical_protocol":
+            continue
+        if not result.raw_data:
+            continue
+        proto = result.raw_data.get(
+            "protocol_section", result.raw_data.get("protocolSection", {})
+        )
+        arms_mod = proto.get("armsInterventionsModule", {})
+        arm_groups = arms_mod.get("armGroups", [])
+
+        experimental_names: list[str] = []
+        seen: set[str] = set()
+        for arm in arm_groups:
+            arm_type = arm.get("type", arm.get("armGroupType", "")).upper()
+            if arm_type != "EXPERIMENTAL":
+                continue
+            for iname in arm.get("interventionNames", []):
+                if not iname:
+                    continue
+                stripped = _strip_intervention_prefix(iname.strip())
+                if stripped.lower() not in seen:
+                    experimental_names.append(stripped)
+                    seen.add(stripped.lower())
+
+        if experimental_names:
+            # Also include EDAM-resolved synonyms for the experimental drugs
+            # (e.g., "BNP" → "nesiritide") for broader database coverage.
+            exp_lower = {n.lower() for n in experimental_names}
+            if metadata:
+                for item in metadata.get("interventions", []):
+                    if not isinstance(item, dict):
+                        continue
+                    item_name = _strip_intervention_prefix(
+                        str(item.get("name") or item.get("intervention_name") or "")
+                    )
+                    if item_name.lower() in exp_lower:
+                        for resolved in item.get("resolved", []):
+                            if resolved and resolved.lower() not in exp_lower:
+                                experimental_names.append(str(resolved))
+                                exp_lower.add(resolved.lower())
+            return experimental_names
+
+    # Fallback: no arm type data — use all interventions
+    return _extract_intervention_names(metadata)
+
+
 def _extract_interventions_from_raw_data(all_raw: dict) -> list[str]:
     """Fallback: extract intervention names from raw_data keys.
 
@@ -295,8 +354,8 @@ class SequenceAgent(BaseAnnotationAgent):
             if result.raw_data:
                 all_raw.update(result.raw_data)
 
-        # Extract intervention names — try metadata first, fall back to raw_data keys
-        interventions = _extract_intervention_names(metadata)
+        # Extract intervention names — EXPERIMENTAL arms only (primary drug, not comparators)
+        interventions = _extract_primary_interventions(research_results, metadata)
         if not interventions:
             interventions = _extract_interventions_from_raw_data(all_raw)
             if interventions:
@@ -336,48 +395,57 @@ class SequenceAgent(BaseAnnotationAgent):
 
         # --- Phase 1: Collect candidates from structured raw_data ---
 
-        for intervention in interventions:
-            # 1. DBAASP structured sequences
-            # Key is dbaasp_{name}_sequences when matches exist
-            dbaasp_seqs = all_raw.get(f"dbaasp_{intervention}_sequences", [])
-            if not dbaasp_seqs:
-                # Fallback: some versions store entries under the base key
-                base = all_raw.get(f"dbaasp_{intervention}", {})
-                if isinstance(base, dict):
-                    dbaasp_seqs = base.get("entries", [])
-            for entry in dbaasp_seqs:
-                if not isinstance(entry, dict):
-                    continue
-                seq = normalize_sequence(entry.get("sequence", ""))
-                if seq and len(seq) >= 2:
-                    candidates.append({
-                        "sequence": seq,
-                        "source": "dbaasp",
-                        "protein_name": entry.get("name", intervention),
-                        "relevance": 0.9,  # Already name-filtered by research agent
-                        "length": len(seq),
-                        "is_mature": True,
-                        "accession": entry.get("dbaasp_id", ""),
-                    })
-                    reasoning_parts.append(f"DBAASP: {entry.get('name', '')} ({len(seq)} aa)")
+        # DBAASP and APD are antimicrobial peptide databases. For non-AMP trials
+        # (classification = Other), their hits are almost always false positives
+        # (e.g., Brevinin from frog skin returned for a cancer vaccine trial).
+        # Skip them entirely when the trial drug is classified as non-AMP.
+        classification_result = str(
+            metadata.get("classification_result", "") if metadata else ""
+        ).lower()
+        use_amp_dbs = classification_result != "other"
 
-            # 2. APD structured sequences
-            apd_seqs = all_raw.get(f"apd_{intervention}_sequences", [])
-            for entry in apd_seqs:
-                if not isinstance(entry, dict):
-                    continue
-                seq = normalize_sequence(entry.get("sequence", ""))
-                if seq and len(seq) >= 2:
-                    candidates.append({
-                        "sequence": seq,
-                        "source": "apd",
-                        "protein_name": entry.get("name", intervention),
-                        "relevance": 0.9,
-                        "length": len(seq),
-                        "is_mature": True,
-                        "accession": entry.get("apd_id", ""),
-                    })
-                    reasoning_parts.append(f"APD: {entry.get('apd_id', '')} ({len(seq)} aa)")
+        for intervention in interventions:
+            # 1. DBAASP structured sequences (AMP trials only)
+            if use_amp_dbs:
+                dbaasp_seqs = all_raw.get(f"dbaasp_{intervention}_sequences", [])
+                if not dbaasp_seqs:
+                    base = all_raw.get(f"dbaasp_{intervention}", {})
+                    if isinstance(base, dict):
+                        dbaasp_seqs = base.get("entries", [])
+                for entry in dbaasp_seqs:
+                    if not isinstance(entry, dict):
+                        continue
+                    seq = normalize_sequence(entry.get("sequence", ""))
+                    if seq and len(seq) >= 2:
+                        candidates.append({
+                            "sequence": seq,
+                            "source": "dbaasp",
+                            "protein_name": entry.get("name", intervention),
+                            "relevance": 0.9,
+                            "length": len(seq),
+                            "is_mature": True,
+                            "accession": entry.get("dbaasp_id", ""),
+                        })
+                        reasoning_parts.append(f"DBAASP: {entry.get('name', '')} ({len(seq)} aa)")
+
+            # 2. APD structured sequences (AMP trials only)
+            if use_amp_dbs:
+                apd_seqs = all_raw.get(f"apd_{intervention}_sequences", [])
+                for entry in apd_seqs:
+                    if not isinstance(entry, dict):
+                        continue
+                    seq = normalize_sequence(entry.get("sequence", ""))
+                    if seq and len(seq) >= 2:
+                        candidates.append({
+                            "sequence": seq,
+                            "source": "apd",
+                            "protein_name": entry.get("name", intervention),
+                            "relevance": 0.9,
+                            "length": len(seq),
+                            "is_mature": True,
+                            "accession": entry.get("apd_id", ""),
+                        })
+                        reasoning_parts.append(f"APD: {entry.get('apd_id', '')} ({len(seq)} aa)")
 
             # 3. ChEMBL HELM notation
             # v17: Also try with formulation words stripped (e.g.,
