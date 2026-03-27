@@ -698,11 +698,35 @@ class SequenceAgent(BaseAnnotationAgent):
                 + "; ".join(reasoning_parts)
             )
         else:
-            value = ""
-            confidence = 0.0
-            reasoning = "[Structured v14] No amino acid sequence found in research data."
-            if reasoning_parts:
-                reasoning += " Notes: " + "; ".join(reasoning_parts)
+            # LLM fallback: only for confirmed peptide=True trials where structured
+            # sources found nothing. Searches research text for explicit AA sequences.
+            peptide_confirmed = str(metadata.get("peptide_result", "") if metadata else "").lower() == "true"
+            if peptide_confirmed:
+                llm_seq = await self._llm_extract_sequence(
+                    nct_id, interventions, research_results, metadata
+                )
+                if llm_seq:
+                    value = llm_seq
+                    confidence = 0.5
+                    reasoning = (
+                        "[Structured v14] No sequence in databases; "
+                        "[LLM fallback] extracted from research text."
+                    )
+                    if reasoning_parts:
+                        reasoning += " Notes: " + "; ".join(reasoning_parts)
+                    used_llm = True
+                else:
+                    value = ""
+                    confidence = 0.0
+                    reasoning = "[Structured v14] No amino acid sequence found in research data."
+                    if reasoning_parts:
+                        reasoning += " Notes: " + "; ".join(reasoning_parts)
+            else:
+                value = ""
+                confidence = 0.0
+                reasoning = "[Structured v14] No amino acid sequence found in research data."
+                if reasoning_parts:
+                    reasoning += " Notes: " + "; ".join(reasoning_parts)
 
         return FieldAnnotation(
             field_name="sequence",
@@ -768,3 +792,97 @@ class SequenceAgent(BaseAnnotationAgent):
         elif "none" in answer:
             return None
         return None  # Ambiguous answer, keep top candidate by score
+
+    async def _llm_extract_sequence(
+        self,
+        nct_id: str,
+        interventions: list[str],
+        research_results: list,
+        metadata: Optional[dict],
+    ) -> str:
+        """LLM fallback: extract AA sequence from research text when structured
+        sources return nothing.
+
+        Only called for peptide=True trials. Assembles snippets from research
+        results and asks the LLM to identify an explicit amino acid sequence.
+        Returns a validated sequence string, or "" if none found.
+        """
+        from app.services.ollama_client import ollama_client
+        from app.services.config_service import config_service
+
+        config = config_service.get()
+        model = getattr(config.orchestrator, "annotation_model", "qwen2.5:14b")
+
+        # Collect text snippets from research results
+        snippets: list[str] = []
+        for result in research_results:
+            if result.error:
+                continue
+            for cite in getattr(result, "citations", [])[:6]:
+                snippet = getattr(cite, "snippet", "") or ""
+                if snippet and len(snippet) > 20:
+                    snippets.append(f"[{cite.source_name}] {snippet[:300]}")
+
+        # Also include trial title and description from metadata
+        if metadata:
+            title = metadata.get("title", "")
+            if title:
+                snippets.insert(0, f"[Trial title] {title}")
+
+        if not snippets:
+            return ""
+
+        drug_names = ", ".join(interventions[:3]) if interventions else nct_id
+        text_block = "\n".join(snippets[:12])
+
+        prompt = (
+            f"Drug: {drug_names}\n"
+            f"Trial: {nct_id}\n\n"
+            f"Research text:\n{text_block}\n\n"
+            "Extract the amino acid sequence of the drug molecule in one-letter code "
+            "(e.g. ACDEFGHIKLM). Only return a sequence if it is EXPLICITLY stated in "
+            "the text above. If no sequence appears in the text, answer: NONE"
+        )
+
+        system = (
+            "You are extracting amino acid sequences from clinical trial research text. "
+            "Return ONLY the sequence in uppercase one-letter code with no spaces or dashes, "
+            "or the word NONE if no explicit sequence is present in the provided text. "
+            "Do not invent or look up sequences — only extract what is written."
+        )
+
+        try:
+            response = await ollama_client.generate(
+                model=model,
+                prompt=prompt,
+                system=system,
+                temperature=0.05,
+            )
+            raw = response.get("response", "").strip().upper()
+        except Exception as e:
+            logger.warning("LLM sequence fallback failed for %s: %s", nct_id, e)
+            return ""
+
+        # Accept only if it looks like a real AA sequence
+        if raw in ("NONE", "", "N/A", "NOT FOUND"):
+            logger.info("  sequence: LLM fallback found no sequence for %s", nct_id)
+            return ""
+
+        # Strip common non-sequence words the LLM might prepend
+        for prefix in ("SEQUENCE:", "AA SEQUENCE:", "AMINO ACID SEQUENCE:", "ANSWER:"):
+            if raw.startswith(prefix):
+                raw = raw[len(prefix):].strip()
+
+        normalized = normalize_sequence(raw)
+        if len(normalized) >= 2 and len(normalized) <= 200:
+            logger.info(
+                "  sequence: LLM fallback extracted %d aa for %s: %s",
+                len(normalized), nct_id, normalized[:40]
+            )
+            return normalized
+
+        logger.info(
+            "  sequence: LLM fallback response invalid for %s: '%s'",
+            nct_id, raw[:60]
+        )
+        return ""
