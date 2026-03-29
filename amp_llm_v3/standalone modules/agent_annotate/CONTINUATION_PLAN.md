@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-03-29
-**Current state:** v20 (163eaf1) on main. Training-C run 1 running (job ba96acf75132). EDAM fully clean — all 50 test-batch NCTs purged from experiences/corrections/stability_index. Test-batch NCTs now hard-excluded from TRAINING_NCTS in code (edam_config.py).
+**Current state:** v20 (163eaf1) on main. Training-C R1 complete (ba96acf75132, 300 EDAM exp). EDAM: 1,206 experiences / 74 corrections / 91 unique NCTs — all training NCTs, zero test-batch contamination. Jobs 29830f7d3785/798817a09db3/3fc6552eb54e queued. Next: wait for all 3, then submit v20 Batch A+B concordance.
 
 ## Latest Concordance
 
@@ -22,6 +22,28 @@ Key findings:
 - High run-to-run variance on peptide (7%) due to temp=0.05 → fixed in v20 (temp=0.0)
 - Sequence improvement purely from v19 code changes, not EDAM (EDAM hadn't fired)
 - 35 test-batch NCTs were still in EDAM (contamination) → purged in v20
+
+## Strategic Decision Framework (post v20 concordance)
+
+**After all 4 training jobs complete → run Batch A+B concordance (50 test NCTs):**
+
+| Outcome concordance | Action |
+|---|---|
+| ≥76% vs R1 | EDAM is net-positive. Continue training (Batches E/F). Plan full 642-NCT run. |
+| 70-76% | Marginal. Re-run once more to confirm trend. Then decide. |
+| ≤70% | EDAM reinforcing wrong answers. Implement phase-based heuristic before more training. |
+
+**Phase-based outcome heuristic (if needed, prompt-level only):** For COMPLETED trials with no posted results — use phase + years since completion as prior in Pass 2:
+- Phase I completed >5yr ago + no Phase II + no follow-up publications → lean Failed
+- Phase I completed recently (<3yr) + no publications → Unknown (normal lag time)
+- Phase II/III completed >10yr + no negative evidence → Positive (completion heuristic H3)
+This is Layer 2 (prompt reasoning), not hardcoded. Drug lists remain frozen.
+
+**EDAM net-positive condition:** Base field accuracy must be ≥~70% for EDAM to improve rather than harm. Key evidence: R4→R5→R6 same-code runs on test batch showed Outcome declining 76%→72%→68% due to contaminated EDAM. Now fixed.
+
+**Training vs test gap:** Outcome 44-50% on training NCTs vs 68-72% on test NCTs. Test NCTs selected for literature richness. Do NOT use training-NCT concordance to evaluate model quality — always use test batch (fast_learning_batch_50.txt).
+
+**Hardware constraint:** No parallel jobs. Mac Mini M4, 16GB. Submit jobs one at a time.
 
 ## Current: v20 Training runs (jobs ba96acf75132 + 3 queued)
 
@@ -130,7 +152,11 @@ After all 4 complete: run Batch A+B (50 test NCTs) on v20 to measure concordance
 - **Drug lists are FROZEN** — no more additions. Improvements through reasoning (Layers 1-3) only.
 - **All AMPs are peptides** — AMP classification forces peptide=True in consistency engine.
 - **Auth token:** Retrieved from `~/Developer/amphoraxe/auth.amphoraxe.ca/data/auth.db` sessions table.
-- **EDAM allowlist:** Only 642 training CSV NCTs stored in EDAM. Test NCTs excluded.
+- **EDAM allowlist:** Only 642 training CSV NCTs stored in EDAM. Test NCTs (fast_learning_batch_50.txt) hard-excluded by subtraction in edam_config.py.
+- **Hardware:** No parallel jobs. Mac Mini M4, 16GB. Submit jobs one at a time.
+- **EDAM net-positive threshold:** Base accuracy must be ≥~70% for EDAM to help. Below threshold it reinforces wrong answers.
+- **Failed jobs (cf642da98bd6, 434ad7a32ff8):** Both status=failed, 0 EDAM writes. No purge needed.
+- **Training vs test gap:** Outcome 44-50% on training NCTs vs 68-72% on test NCTs. Don't evaluate EDAM effectiveness on training concordance.
 
 ## Key File Locations
 

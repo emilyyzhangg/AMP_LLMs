@@ -30,9 +30,17 @@
 | 19a | A+B (v18+hf, pre-fix) | 4d2030ab0c25 | 50 | 0/50 | **Failed** | v18+hotfix (47f1e63) | — | RfF reconciler NoneType crash at NCT00004984. |
 | 19b | A+B (v18+hf, pre-fix) | 8265084a3a21 | 50 | 0/50 | **Failed** | v18+hotfix (47f1e63) | — | Same crash. Fixed in 776aeea. |
 | **19c** | **A+B (v18+hotfixes)** | **76392846aee8** | **50** | **50/50** | **Complete** | **v18+hf (776aeea)** | **—** | **350 min (420s/trial). See concordance below.** |
-| **20** | **A+B (v19)** | **c1786d005ade** | **50** | **—** | **Running** | **v19 (ee4fdee)** | **TBD** | **Mode D removed, EDAM allowlist fix, DBAASP suppression, old-trial literature fallback.** |
-| *21* | *Full training (642)* | *TBD* | *642* | *—* | *Pending* | *v19+* | *—* | *Phase 3: full training set run.* |
-| *22* | *Test set (remaining)* | *TBD* | *TBD* | *—* | *Phase 4* | *v19+* | *—* | *Held-out evaluation. EDAM frozen.* |
+| **20** | **A+B (v19) R1** | **c1786d005ade** | **50** | **50/50** | **Complete** | **v19 (ee4fdee)** | **—** | **Mode D removed, EDAM allowlist fix. See v19 concordance.** |
+| **21** | **A+B (v19) R2** | **ac6af4e49fe2** | **50** | **50/50** | **Complete** | **v19 (ee4fdee)** | **—** | **Stability run. High peptide variance (7%) → fixed in v20.** |
+| 22 | Train-C partial (v19) | cf642da98bd6 | 25 | 0/25 | **Failed** | v19 (ee4fdee) | 0 exp | ~200s/trial (research truncated). 0 EDAM writes. |
+| 23 | Train-C partial (v19) | 434ad7a32ff8 | 25 | 0/25 | **Failed** | v19 (ee4fdee) | 0 exp | Same batch as 22. 0 EDAM writes. |
+| 24 | Train-C (mystery, v19) | a2da6002df4f | 50 | 50/50 | **Complete** | v19 (ee4fdee) | 300 exp | Mystery job. Training NCTs. 300 EDAM experiences. |
+| 25 | Train-C partial (mystery) | dbd215c03cf3 | 50 | 20/50 | **Cancelled** | v19 (ee4fdee) | 120 exp | Cancelled after 20 NCTs. 120 EDAM experiences. |
+| **26** | **Train-C v20 R1** | **ba96acf75132** | **50** | **50/50** | **Complete** | **v20 (163eaf1)** | **300 exp** | **First v20 training run. 300 EDAM experiences.** |
+| *27* | *Train-C v20 R2* | *29830f7d3785* | *50* | *—* | *Queued* | *v20 (163eaf1)* | *—* | *In queue.* |
+| *28* | *Train-D v20 R1* | *798817a09db3* | *50* | *—* | *Queued* | *v20 (163eaf1)* | *—* | *In queue.* |
+| *29* | *Train-D v20 R2* | *3fc6552eb54e* | *50* | *—* | *Queued* | *v20 (163eaf1)* | *—* | *In queue.* |
+| *30* | *Concordance test (v20)* | *TBD* | *50* | *—* | *Next after training* | *v20 (163eaf1)* | *—* | *Run after all 4 training jobs complete. fast_learning_batch_50.txt.* |
 
 ### Agent version summary
 
@@ -52,6 +60,7 @@
 | **v18** | **fc6fddac** | **Sequence: _KNOWN_SEQUENCES table (12 drugs, deterministic lookup), cross-validation penalty (0.3x for name mismatch), ChEMBL max_phase + pref_name disambiguation, EDAM-enriched interventions. Outcome: strong adverse signals (multi-word) checked FIRST in full text, Phase I requires has_results_posted or NCT ID in text. RfF: TERMINATED/WITHDRAWN always proceed to pass 2, default "Business Reason" for terminated/withdrawn with no signal, empty vote counted in reconciler, unanimous-verifier gate for empty override. EDAM: training CSV allowlist (642 NCTs), non-training NCTs excluded from all learning loops. Frontend: "Concordance Comparison" → "Agreement Comparison", job ID format consistency (truncated to 8 chars everywhere), Version Compare κ → AC₁ labels.** |
 | **v18+hotfixes** | **776aeea** | **Fix NoneType crash in _majority_vote/_normalize during RfF reconciliation. Fix quality warnings. Fix peptide verifier bias. Fix sequence miss rate. Fix RfF EMPTY sentinel leaks and verifier empty-vote drop. Fix NameErrors causing jobs to fail despite 25/25 completion.** |
 | **v19** | **d777be62 (dev)** | **Classification: remove Mode D (all vaccines now Other — adaptive immunity ≠ AMP). Fixed classifier/verifier inconsistency (verifier still had HIV/influenza vaccines as AMP). Remove ic41/ic43 from _KNOWN_AMP_DRUGS. Outcome: add negative efficacy heuristics (did not demonstrate, no benefit, lack of efficacy, etc.). Delivery mode: remove bare ' sc ' abbreviation, add cancer vaccine → Other/Unspecified rule. Sequence: filter to EXPERIMENTAL arms only, suppress DBAASP/APD for non-AMP trials. Literature: always run title fallback for old trials (NCT < 100k).** |
+| **v20** | **163eaf1** | **Reconciler bug fix (CRITICAL): unanimous verifier disagreement (agreement_ratio=0.0) now always routes to reconciler — fixed 15 per-run cases where high-confidence Pass1 was overriding 3/3 verifier disagreement. CT.gov resultsSection: hasResults flag + primary outcome data emitted as citations from already-fetched response (no extra HTTP call). Delivery mode Rule 8: explicit route keyword required — no inferring SC from drug class or IV from mg/kg. Outcome verifier: Failed requires positive evidence of endpoint failure, not merely absence of publications. Classification: AMP(other) requires confirmed antimicrobial mechanism from Step 2. EDAM: test-batch NCTs (fast_learning_batch_50.txt) hard-excluded from TRAINING_NCTS at load time. Peptide field temp 0.05→0.0 (eliminates 7% run-to-run variance on binary field).** |
 
 ## NCT Coverage
 
@@ -228,21 +237,76 @@ R1 value distribution: Terminated=20, Withdrawn=8, Positive=8, Failed=7, Recruit
 - 13/22 exact matches = 59.1%, up from 0 in v17. Known-sequences table working.
 - Coverage gap: agent annotated 22/50 vs R1's 33/50 — need better coverage for Batch B peptides.
 
-## EDAM Database State (2026-03-27)
+### v19 Concordance (Batch A+B, 50 NCTs, 2 runs: c1786d005ade / ac6af4e49fe2) — 2026-03-27
+
+| Field | v19 R1 | v19 R2 | v18+ baseline | Target | Met? |
+|---|---|---|---|---|---|
+| Classification | **92.0% / AC₁=0.917** | **92.0% / AC₁=0.917** | 87.8% / 0.870 | AC₁≥0.82 | YES (+4.7%) |
+| Delivery Mode | 65.3% / 0.632 | 63.3% / 0.614 | 67.3% / 0.654 | ≥73% | NO (slight regress) |
+| Outcome | 72.0% / 0.680 | 68.0% / 0.634 | 70.0% / 0.657 | ≥80% | NO (slight improve) |
+| Reason for Failure | 72.0% / 0.671 | 68.0% / 0.625 | 72.0% / 0.671 | ≥84% | NO (same) |
+| Peptide | 86.7% / 0.834 | 80.0% / 0.734 | 88.9% / 0.865 | ≥86% | Borderline / high variance |
+| Sequence | 65.0% / 0.634 | 68.4% / 0.668 | 59.1% / 0.574 | ≥30% | YES (code-only improvement) |
+
+**Key findings:**
+- **Classification fixed**: NCT00000886/NCT00002428 (vaccine NCTs) now correctly Other — Mode D removal worked
+- **Sequence improvement** (59%→65%+) came purely from v19 code changes; EDAM had not yet fired for test NCTs (correctly excluded)
+- **Delivery mode slight regress** (-2%): SC tightening removed some correct SC calls along with wrong ones
+- **Peptide high run-to-run variance** (7%): binary field with temp=0.05 — fixed in v20 (temp→0.0)
+- **Reconciler bug discovered post-run**: 15 cases per run where `agreement_ratio=0.0` still kept Pass1 value (unanimous verifier disagreement was not routing to reconciler). Case: NCT04701021 (Outcome=Positive should be Unknown — all 3 verifiers said Unknown but high-confidence primary was kept)
+- **EDAM contamination discovered**: 35/50 test-batch NCTs were still in EDAM despite v18 allowlist (prevented new writes but didn't purge existing records). Purged in v20 + hard-excluded from TRAINING_NCTS
+
+**Run-to-run variance analysis (v19):**
+
+| Field | R1 | R2 | Variance |
+|---|---|---|---|
+| Classification | 92.0% | 92.0% | 0% (stable) |
+| Delivery Mode | 65.3% | 63.3% | 2% |
+| Outcome | 72.0% | 68.0% | 4% |
+| RfF | 72.0% | 68.0% | 4% |
+| Peptide | 86.7% | 80.0% | **7% (temp issue — fixed v20)** |
+| Sequence | 65.0% | 68.4% | 3% |
+
+## EDAM Database State (2026-03-29)
 
 | Table | Count | Notes |
 |---|---|---|
-| experiences | 1,470 | Up from 300 (2026-03-25). From v16-v18+ runs. |
-| corrections | 131 | Up from 23. Consistency overrides + reconciliation. |
-| drug_names | 218 | Up from 87. 131 new name resolutions from recent runs. |
-| stability_index | — | |
-| config_epochs | 1 | |
+| experiences | 1,206 | From 7 jobs across v19+v20 training runs (91 unique NCTs). |
+| corrections | 74 | From consistency overrides + reconciliation. |
+| unique_ncts | 91 | All from TRAINING_NCTS allowlist. Zero test-batch NCTs. |
+
+### EDAM Learning Conditions
+
+**EDAM is net-positive ONLY when base accuracy ≥ ~70%.** Evidence from sequential same-code runs on test batch (R4→R5→R6, v18 code):
+- Outcome: 76% → 72% → 68% (declining 3 consecutive runs)
+- Root cause: EDAM reinforced wrong answers from earlier (contaminated) runs
+- Fix: test NCTs purged from EDAM, TRAINING_NCTS hard-excluded in edam_config.py
+
+**Training vs test gap (discovered 2026-03-28):**
+- Outcome: 44-50% on training NCTs vs 68-72% on test batch
+- Root cause: test NCTs selected for richness (high literature density); training NCTs are broader population with less evidence
+- CT.gov resultsSection fix (v20) did not close gap (same 50% on training-C R1)
+- Strategic implication: don't evaluate EDAM on training NCTs; always use test batch for concordance
+
+### Job Coverage (contributing to EDAM)
+
+| Job | NCT count | Exp written | Version | Notes |
+|---|---|---|---|---|
+| a77f77e7083f | 25 | 150 | pre-v19 | Old training run |
+| 655ff74fac2d | 25 | 150 | pre-v19 | Old training run |
+| 04f4b809097b | 21 | 126 | pre-v19 | Partial training run |
+| 5b902ca30b1e | 10 | 60 | pre-v19 | Partial training run |
+| a2da6002df4f | 50 | 300 | v19 | Mystery Train-C, completed |
+| dbd215c03cf3 | 20 | 120 | v19 | Mystery Train-C, cancelled at 20 |
+| ba96acf75132 | 50 | 300 | v20 | Train-C R1, completed |
+
+**Jobs cf642da98bd6 and 434ad7a32ff8**: both status=failed, 0 completed NCTs, **0 EDAM writes** — no purge needed.
 
 ### EDAM History
 
-EDAM was wiped clean on 2026-03-24 (all prior v9-v11 data discarded due to known code bugs). Current data is from v14/v15 runs on Batch A. v16 code changes may invalidate some corrections (especially peptide and outcome patterns), but drug_names and stability_index remain valid.
+EDAM was wiped clean on 2026-03-24 (all prior v9-v11 data discarded due to known code bugs). Test-batch NCTs (fast_learning_batch_50.txt) purged on 2026-03-28 (1,314 experiences, 113 corrections, 175 stability entries removed). Hard-exclusion added to edam_config.py: `TRAINING_NCTS = _load_training_ncts() - _load_test_batch_ncts()`.
 
-**EDAM's role going forward:** Supplementary edge-case memory, NOT the primary improvement loop. Code changes are primary. EDAM will learn ONLY from v12+ runs on stable code.
+**EDAM's role going forward:** Supplementary edge-case memory. Code changes are primary. EDAM should only contribute when base accuracy is ≥70%. Never run concordance test NCTs through EDAM-writing code paths.
 
 ### v16 Concordance (Batch A, 25 NCTs, job 25366ac24587) — 2026-03-25
 
@@ -340,20 +404,41 @@ When this job completes, check these specific items in order of priority:
 
 **Convergence criteria for "code stable":** Two consecutive Batch A runs (25 NCTs) with <2% concordance change between them across all fields.
 
-### Phase 1: Iterate on Batch A+B until stable (IN PROGRESS — v18+ baseline done)
+### Current status (2026-03-29): v20 code stable, training runs in progress
 
-**v19 targets** (based on v18+hotfixes Batch A+B concordance):
-- Outcome: ≥76% vs R1 (restore v17 level on 50 NCTs). Primary fix: Failed detection.
-- Delivery Mode: ≥70% vs R1 (current 67.3%). Minor improvement possible.
-- RfF: ≥80% vs R1 (current 72%). Mostly cascades from outcome fix.
-- Classification: AC₁≥0.87 (current 0.870). Fix NCT00000886/NCT00002428 AMP mis-classification.
-- Peptide: ≥88% vs R1 (current 88.9% — stable, no changes needed).
-- Sequence: ≥60% strict (current 59.1% — improve coverage for Batch B peptides).
+**EDAM decision gate:** After all 4 v20 training runs complete, run Batch A+B (50 test NCTs) for concordance. Decision branches:
+- If Outcome ≥76% → EDAM is net-positive. Continue training (Batches E/F...) and plan full 642-NCT run.
+- If Outcome 70-76% → Marginal. Re-run once more to confirm trend. Then decide.
+- If Outcome ≤70% → EDAM reinforcing wrong answers. Implement phase-based outcome heuristic before training.
 
-**v19 code changes needed:**
-1. **Outcome — Failed undercalling (priority 1):** Investigate NCT00002428, NCT00004984, NCT04672083 — what signal does the agent find? Why isn't it calling Failed? Possible: publications exist but don't contain multi-word adverse triggers. May need to add "did not demonstrate", "no significant improvement", "failed to meet" as failure signals.
-2. **Classification — AMP over-calling (priority 2):** NCT00000886, NCT00002428 consistently called AMP(infection) when both humans say Other. Drug is "HIV-1 immunogen" — a vaccine, not an AMP. The classification prompt may be applying Mode B (immunostimulatory) too broadly.
-3. **Delivery mode — SC vs Unspecified confusion (priority 3):** NCT00977145, NCT00995358, NCT03593460, NCT03724253 — agent picks SC, humans say Other/Unspecified. Agent may be over-confident about SC when trial doesn't specify the injection route clearly.
+**Phase-based outcome heuristic (if needed, prompt-level only):** For COMPLETED trials with no posted results — use phase + years since completion as prior in Pass 2 guidance:
+- Phase I completed >5yr ago + no Phase II registered + no follow-up publications → lean Failed
+- Phase I completed recently (<3yr) + no publications → Unknown (normal lag time)
+- Phase II/III completed >10yr + no negative evidence → Positive (completion heuristic H3)
+This is Layer 2 (prompt reasoning), not hardcoded. Drug lists remain frozen.
+
+**Sequence ordering: no parallel jobs** (hardware restriction — Mac Mini M4, 16GB):
+1. Wait for training-C R2 + training-D R1 + training-D R2 (jobs 29830f7d3785, 798817a09db3, 3fc6552eb54e)
+2. Submit Batch A+B concordance (fast_learning_batch_50.txt) → one job
+3. Evaluate concordance → apply EDAM decision gate above
+
+### Phase 1: Iterate on Batch A+B until stable (IN PROGRESS — v19 baseline done)
+
+**v19 results** (based on v19 R1 Batch A+B concordance):
+- Outcome: 72% vs R1 (target was ≥76% — NOT met, but +2pp from v18+)
+- Delivery Mode: 65.3% vs R1 (target was ≥73% — NOT met, slight regress)
+- RfF: 72% vs R1 (target was ≥80% — NOT met, same as v18+)
+- Classification: AC₁=0.917 (target was ≥0.87 — **MET**, +4.7pp)
+- Peptide: 86.7% vs R1 (target ≥86% — borderline MET R1, high variance)
+- Sequence: 65.0% vs R1 (target ≥60% — **MET**, +6pp from v18+)
+
+**v20 targets** (primary fixes = reconciler bug + CT.gov results):
+- Classification: AC₁≥0.91 (stable at 0.917 — hold)
+- Outcome: ≥76% vs R1 (reconciler bug fix should recover 5-8 cases)
+- RfF: ≥78% vs R1 (cascade improvement from outcome fix)
+- Delivery Mode: ≥67% vs R1 (Rule 8 ambiguity bias helps but won't fully close gap)
+- Peptide: ≥88% vs R1 (temp→0.0 eliminates 7% variance; should stabilize)
+- Sequence: ≥65% vs R1 (no new sequence code — hold)
 
 **Run v19 on Batch A+B** (`fast_learning_batch_50.txt`) to compare:
 ```bash

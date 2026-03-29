@@ -199,6 +199,14 @@ Queries trial registries and drug databases for protocol-level data (design, arm
 | ClinicalTrials.gov | 0.95 |
 | OpenFDA | 0.85 |
 
+**v20 changes — CT.gov results section extraction:**
+The ClinicalTrials.gov API v2 response already includes the full `resultsSection` when `hasResults=True`. Previously this data was discarded after the protocol extraction. In v20, `hasResults` and `outcomeMeasuresModule` are extracted from the already-fetched response at no extra HTTP cost and emitted as citations:
+
+- `hasResults: Yes/No` is always emitted as a Layer 1 citation (authoritative registry fact)
+- When results are posted, `outcomeMeasuresModule.primaryOutcomeMeasures` entries are formatted as: `PRIMARY OUTCOME: <title>: <description> (reporting group: <n> events)` and included in the evidence
+
+This directly improves Outcome Agent accuracy: for trials where CT.gov has posted results (Phase II/III completions), the agent no longer needs to rely solely on PubMed/PMC for outcome valence. The registry's own primary outcome data provides a strong, consistently structured signal. Example: a Phase III trial that posted null results will have explicit outcome measure data showing the endpoint was not met.
+
 ### 4.2 Literature Agent
 
 Queries biomedical literature for published results, methods, and outcome data.
@@ -405,6 +413,9 @@ Uses a larger model (qwen2.5:14b on Mac Mini, kimi-k2-thinking on server) becaus
 - **Mode B clarified — INNATE only**: Explicit that Mode B requires innate immune recruitment, NOT adaptive immune activation. This distinction is the mechanistic basis for the vaccine exclusion.
 - **ic41, ic43 removed from known-AMP drug table**: These HIV peptide vaccine identifiers were incorrectly pre-classified as AMP.
 
+**v20 changes:**
+- **AMP(other) boundary tightened**: Step 3 of the Pass 2 decision tree now requires confirmed antimicrobial mechanism from Step 2 before reaching AMP(other). A peptide with uncertain, unconfirmed, or non-antimicrobial mechanism does NOT qualify for AMP(other) — it is "Other". "IMPORTANT: You only reach Step 3 if Step 2 CONFIRMED the peptide has direct antimicrobial activity (Mode A/B/C)." Example: LL-37 for diabetic wound healing → AMP(other) only because LL-37's direct antimicrobial mechanism is confirmed by DRAMP/DBAASP. A novel peptide wound drug without confirmed antimicrobial activity → Other.
+
 ### 5.3 Delivery Mode Agent (v5)
 
 **Pass 1:** Extracts route evidence from all sources with explicit priority ordering:
@@ -425,6 +436,9 @@ Never-guess rule preserved: if no source specifies IM, SC, or IV, the answer is 
 **v19 changes:**
 - **SC abbreviation tightened**: Bare `" sc "` removed from the keyword lookup table — it matched spurious contexts like "SC study", "SC phase", "SC patients". Replaced with explicit phrases: `"sc injection"`, `"sc administration"`, `"sc dose"`.
 - **Cancer vaccine/peptide immunotherapy fallback (Rule 7)**: Peptide vaccines and cancer immunotherapy trials are NOT administered intranasally. When route is unspecified for these trial types, the default is "Injection/Infusion - Other/Unspecified", NOT Intranasal. This corrects a systematic error where the intranasal keyword matched incidental mentions in cancer vaccine protocols.
+
+**v20 changes:**
+- **Ambiguity bias (Rule 8)**: When route evidence is only INDIRECT (implied by product type, inferred from context, or described only as "injection" / "administered" without an explicit IM/SC/IV qualifier), the agent uses "Injection/Infusion - Other/Unspecified" rather than inferring a specific route. A route keyword must appear EXPLICITLY in the evidence text. Do not infer SC because the drug is a peptide; do not infer IV because the dose is in mg/kg. This rule applies in both Pass 2 (annotation) and the verifier prompt, ensuring consistent treatment of ambiguous cases across the full annotation pipeline.
 
 ### 5.4 Outcome Agent (v4)
 
@@ -455,6 +469,9 @@ Critical rule: "Completed" registry status alone does NOT indicate failure. "Fai
 **v19 changes:**
 - **Negative efficacy signal detection expanded**: The Pass 1 heuristic now catches explicit failure language in results sections: "did not demonstrate / achieve / show", "no significant / benefit / improvement / efficacy", "failed to demonstrate / meet / primary", "lack of efficacy", "ineffective". Previously these phrases returned Unknown; they now correctly trigger "Failed - completed trial".
 - **Phase 1 no-publications → Unknown confirmed correct**: Completed Phase 1 trials with no published results default to Unknown (not "Positive"). Phase 1 completion heuristic H1 applies only when Phase 1 was explicitly completed — not as a fallback for early-stage trials with missing data.
+
+**v20 changes:**
+- **Verifier clarification — Failed requires positive evidence**: The verifier instruction now explicitly states: "'Failed - completed trial' requires POSITIVE EVIDENCE of failure — a publication or posted result that explicitly states the trial did NOT meet its primary endpoint, or that the drug was found ineffective or unsafe. Do NOT choose Failed just because you cannot find positive results. Absence of publications = Unknown, not Failed." This closes a verifier bias introduced by the v19 negative-signal expansion: verifiers were under-applying the Failed label even when the annotation agent's Pass 1 heuristic correctly detected failure language.
 
 ### 5.5 Failure Reason Agent (v5)
 
@@ -564,6 +581,22 @@ The reconciler produces a final annotation with justification.
 ### 6.4 High-Confidence Primary Override (v10)
 
 When the primary annotator has confidence > 0.85 and all dissenting verifiers are at baseline confidence (≤ 0.7), the primary answer is accepted without reconciliation. This prevents low-confidence verifier noise from overriding a high-confidence primary annotation, reducing unnecessary reconciliation calls.
+
+**v20 unanimous-dissent bug fix (CRITICAL).** Concordance analysis of 50 trials (v19 R1) identified 15 cases where `agreement_ratio=0.0` (all 3 verifiers disagree with the primary) but the primary was still accepted. Root cause: the high-confidence override checked `annotation.confidence > 0.85 and verifier_max_conf <= 0.7` but did not check whether any verifier actually agreed. When all 3 verifiers disagree with each other (all propose different values, none agreeing with the primary), `agreement_ratio=0.0` but the override still fired.
+
+**Fix (orchestrator.py, v20):** Added `and consensus.agreement_ratio > 0.0` guard:
+
+```python
+if (annotation.confidence > 0.85 and verifier_max_conf <= 0.7
+        and consensus.agreement_ratio > 0.0):
+    # high-confidence primary accepted
+else:
+    # route to reconciler
+```
+
+"If ALL verifiers disagree (agreement_ratio == 0.0), route to reconciler regardless of primary confidence: unanimous dissent overrides high confidence."
+
+Representative case: NCT04701021 (Outcome). Primary=Positive (confidence 0.91). All 3 verifiers=Unknown. Before fix: Positive accepted (incorrect). After fix: routed to reconciler → Unknown (correct).
 
 ### 6.5 Manual Review Escalation
 
@@ -1114,7 +1147,26 @@ EDAM learning is gated to a fixed allowlist of 642 training NCTs loaded from `do
 
 **Read path:** `build_guidance()` queries corrections and exemplars regardless of NCT origin. This means training-set corrections can still inform annotation of test-set NCTs — which is the intended behavior.
 
-### 16.8 Safeguards Against Runaway Learning
+### 16.8 Test-Set Contamination: Discovery and Fix (v20)
+
+**Discovery (2026-03-28).** During EDAM diagnostic analysis, 35 of the 50 concordance test-batch NCTs (`fast_learning_batch_50.txt`) were found in the EDAM `experiences` table, despite the v18 training allowlist. Root cause: the allowlist prevented new writes during v18+ concordance runs, but earlier runs (v14--v17 batches) had already written experiences for these NCTs before the allowlist existed. The purge that wiped v9--v13 EDAM data on 2026-03-24 did not remove these records because they came from later runs.
+
+**Impact.** EDAM guidance built from test-NCT experiences was being injected into all annotation calls, including subsequent concordance runs on those same 50 NCTs. This created a circular learning path: the agent's own prior answers on the test set were influencing its answers on those same NCTs — effectively allowing it to "study" the test set. Concordance gains from EDAM across v18+ runs may therefore have been partially inflated.
+
+**Evidence of harm.** Sequential same-code concordance runs (R4→R5→R6, v18 code, same 50 test NCTs) showed Outcome concordance declining: 76% → 72% → 68%. EDAM was reinforcing incorrect answers from earlier runs, causing net harm on a field where base accuracy was below the ~70% EDAM net-positive threshold.
+
+**Fix (v20).**
+1. **Database purge**: `DELETE FROM experiences/corrections/stability_index WHERE nct_id IN (50 test-batch NCTs)` — removed 1,314 experiences, 113 corrections, 175 stability entries.
+2. **Hard exclusion in code** (`edam_config.py`):
+   ```python
+   _TEST_BATCH = Path(...) / "scripts" / "fast_learning_batch_50.txt"
+   TRAINING_NCTS: set[str] = _load_training_ncts() - _load_test_batch_ncts()
+   ```
+   Test-batch NCTs are subtracted from `TRAINING_NCTS` at module load time, regardless of whether they appear in the training CSV.
+
+**General rule derived:** EDAM is net-positive ONLY when base field accuracy ≥ ~70%. Below that threshold, EDAM reinforces wrong answers from contaminated or low-quality runs, causing accuracy to decline across sequential runs on the same trials.
+
+### 16.9 Safeguards Against Runaway Learning
 
 1. **Evidence-grounded corrections only.** Self-corrections must cite a specific source (PMID, database, registry). "I think it should be X" is never stored.
 2. **Anomaly detection.** If >80% of trials receive the same value for any field across recent epochs, a warning is injected into all annotation and verification prompts.
@@ -1123,6 +1175,7 @@ EDAM learning is gated to a fixed allowlist of 642 training NCTs loaded from `do
 5. **Epoch boundaries prevent stale contamination.** Config changes demote old experiences rather than deleting them — the system re-learns under the new config with historical context.
 6. **Database size caps.** Hard limits on all tables prevent unbounded growth. Purge strategy removes oldest, lowest-weight entries first.
 7. **Training allowlist enforces train/test split.** See Section 16.7.
+8. **Test-batch hard exclusion.** Concordance test NCTs are subtracted from `TRAINING_NCTS` at load time. See Section 16.8.
 
 
 ## 17. Design Philosophy

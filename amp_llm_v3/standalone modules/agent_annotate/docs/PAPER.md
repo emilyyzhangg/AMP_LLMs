@@ -404,6 +404,22 @@ When unanimous consensus is not reached, the reconciler model (qwen2.5:14b, the 
 
 When a deterministic pre-classifier produces a high-confidence annotation (≥0.95), the `skip_verification` flag bypasses the verification pipeline entirely, creating a synthetic consensus result. This eliminates the failure mode where 8B verifiers override correct deterministic results.
 
+#### 3.4.4 Unanimous Dissent Override Bug and Fix (v20)
+
+The high-confidence primary override contained a systematic bug identified through concordance analysis of 50 trials. The condition `annotation.confidence > 0.85 and verifier_max_conf <= 0.7` accepted the primary annotation without reconciliation, but did not check whether any verifier actually agreed. When all three verifiers independently disagreed with the primary annotation (`agreement_ratio=0.0`), the override still fired — the primary annotation was accepted over unanimous verifier dissent.
+
+Concordance analysis of 50 trials (v19, job c1786d005ade) identified 15 per-run cases where this condition produced incorrect final annotations. Representative case: NCT04701021 (Outcome). Primary=Positive (confidence 0.91). All three verifiers=Unknown. Before fix: Positive accepted. After fix: routed to reconciler → Unknown.
+
+The fix adds an `agreement_ratio > 0.0` guard:
+
+```python
+if (annotation.confidence > 0.85 and verifier_max_conf <= 0.7
+        and consensus.agreement_ratio > 0.0):
+    # high-confidence primary accepted
+```
+
+"Unanimous dissent overrides high confidence." When all three verifiers disagree, the primary must be reconciled regardless of confidence level.
+
 ### 3.5 Concordance Analysis
 
 The concordance analysis methodology (v2) implements the following conventions to ensure fair comparison between agent and human annotations:
@@ -427,6 +443,10 @@ Agent Annotate implements a persistent self-learning layer (EDAM) that improves 
 **Prompt auto-optimization** analyzes per-field accuracy every third job, identifies systematic error patterns, and proposes minimal prompt modifications via the premium model. Variants undergo A/B testing with automatic promotion (≥5% improvement after 20+ trials) or discard (>5% regression after 10 trials). All prompt evolution is reversible.
 
 Memory is version-gated: each configuration change creates a new epoch, and learning entries decay exponentially with epoch distance (human corrections: floor 0.30; self-review: floor 0.10; raw experiences: floor 0.05). A 2,000-token budget caps guidance injection per LLM call. Database hard limits (10K experiences, 5K corrections) with prioritized purging prevent unbounded growth. Verifiers receive only statistical anomaly warnings — never corrections or exemplars — preserving blind verification integrity.
+
+**EDAM test-set contamination (v20 fix).** The v18 training allowlist prevented new writes to EDAM for concordance test-batch NCTs, but did not purge existing records written before the allowlist was introduced (from v14--v17 training runs). Analysis revealed that 35 of 50 concordance test NCTs were present in EDAM at the time of v19 concordance runs. Sequential same-code concordance runs showed Outcome declining across runs (76%→72%→68%), consistent with EDAM reinforcing incorrect prior answers. In v20, these records were purged and the test batch is hard-excluded from `TRAINING_NCTS` at module load time: `TRAINING_NCTS = _load_training_ncts() - _load_test_batch_ncts()`.
+
+**EDAM net-positive threshold.** Empirical analysis identifies a critical condition: EDAM improves accuracy only when the agent's base accuracy on a field exceeds approximately 70%. Below this threshold, EDAM reinforces incorrect answers from prior runs, causing accuracy to decline. The training/test accuracy gap (Outcome: 44--50% on training NCTs vs 68--72% on test NCTs) reflects that test NCTs were selected for high literature density while training NCTs represent the broader population with less evidence. EDAM training runs should not be evaluated against training-NCT concordance; only test-batch concordance (fast_learning_batch_50.txt) is informative for measuring EDAM effectiveness.
 
 ---
 
