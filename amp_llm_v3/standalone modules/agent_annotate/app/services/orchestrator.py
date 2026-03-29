@@ -862,12 +862,16 @@ class PipelineOrchestrator:
                 )
 
                 if not consensus.consensus_reached:
-                    # High-confidence primary protection
+                    # High-confidence primary protection — only when at least one
+                    # verifier agrees (agreement_ratio > 0). If ALL verifiers disagree
+                    # (agreement_ratio == 0.0), route to reconciler regardless of
+                    # primary confidence: unanimous dissent overrides high confidence.
                     verifier_max_conf = max(
                         (o.confidence for o in consensus.opinions if not o.agrees),
                         default=0.0,
                     )
-                    if annotation.confidence > 0.85 and verifier_max_conf <= 0.7:
+                    if (annotation.confidence > 0.85 and verifier_max_conf <= 0.7
+                            and consensus.agreement_ratio > 0.0):
                         consensus.final_value = annotation.value
                         consensus.consensus_reached = True
                         consensus.reconciler_used = False

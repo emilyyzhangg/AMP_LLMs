@@ -47,7 +47,15 @@ class ClinicalProtocolAgent(BaseResearchAgent):
 
                     # Extract structured citations from protocol
                     citations.extend(self._extract_protocol_citations(nct_id, protocol))
-                    logger.info(f"  ClinicalTrials.gov: {len(citations)} citations for {nct_id}")
+
+                    # Extract results section when available (v20)
+                    has_results = ct_data.get("hasResults", False)
+                    results_section = ct_data.get("resultsSection", {})
+                    if has_results or results_section:
+                        raw_data["results_section"] = results_section
+                        citations.extend(self._extract_results_citations(nct_id, has_results, results_section))
+
+                    logger.info(f"  ClinicalTrials.gov: {len(citations)} citations for {nct_id} (hasResults={has_results})")
                 else:
                     raw_data["clinicaltrials_error"] = f"HTTP {resp.status_code}"
                     logger.warning(f"  ClinicalTrials.gov: HTTP {resp.status_code} for {nct_id}")
@@ -204,5 +212,71 @@ class ClinicalProtocolAgent(BaseResearchAgent):
                 quality_score=self.compute_quality_score("clinicaltrials_gov"),
                 retrieved_at=datetime.utcnow().isoformat(),
             ))
+
+        return citations
+
+    def _extract_results_citations(
+        self, nct_id: str, has_results: bool, results_section: dict
+    ) -> list[SourceCitation]:
+        """Extract posted results from the resultsSection (v20).
+
+        Adds a hasResults flag citation (always) and primary outcome results
+        (when resultsSection is populated). This gives the outcome agent direct
+        access to what the trial actually measured and reported.
+        """
+        citations = []
+        base_url = f"https://clinicaltrials.gov/study/{nct_id}"
+
+        # Always emit the hasResults flag — outcome agent needs this for H2
+        citations.append(SourceCitation(
+            source_name="clinicaltrials_gov", identifier=nct_id,
+            source_url=base_url, title="Results Posted",
+            snippet=f"Results Posted: {'Yes' if has_results else 'No'}",
+            quality_score=self.compute_quality_score("clinicaltrials_gov"),
+            retrieved_at=datetime.utcnow().isoformat(),
+        ))
+
+        if not results_section:
+            return citations
+
+        # Primary outcome results
+        outcomes_mod = results_section.get("outcomeMeasuresModule", {})
+        for measure in outcomes_mod.get("outcomeMeasures", []):
+            if measure.get("type", "").upper() != "PRIMARY":
+                continue
+            title = measure.get("title", "")
+            description = measure.get("description", "")
+            time_frame = measure.get("timeFrame", "")
+            # Try to extract a summary of any analysis (p-values, effect sizes)
+            analyses = measure.get("analyses", [])
+            analysis_summary = ""
+            for a in analyses[:2]:
+                param = a.get("paramType", "")
+                value = a.get("paramValue", "")
+                ci = a.get("ciPctValue", "")
+                p_val = a.get("pValue", "")
+                if param and value:
+                    analysis_summary += f"{param}={value}"
+                    if p_val:
+                        analysis_summary += f" p={p_val}"
+                    if ci:
+                        analysis_summary += f" CI={ci}%"
+                    analysis_summary += "; "
+            snippet = f"Primary Outcome: {title}"
+            if description:
+                snippet += f" — {description[:200]}"
+            if time_frame:
+                snippet += f" (timeframe: {time_frame})"
+            if analysis_summary:
+                snippet += f" | Results: {analysis_summary}"
+            citations.append(SourceCitation(
+                source_name="clinicaltrials_gov", identifier=nct_id,
+                source_url=base_url, title=f"Primary Outcome: {title[:80]}",
+                snippet=snippet[:500],
+                quality_score=self.compute_quality_score("clinicaltrials_gov"),
+                retrieved_at=datetime.utcnow().isoformat(),
+            ))
+            if len(citations) >= 8:  # cap results citations
+                break
 
         return citations

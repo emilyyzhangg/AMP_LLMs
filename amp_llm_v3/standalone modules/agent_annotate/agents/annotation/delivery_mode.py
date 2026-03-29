@@ -123,6 +123,12 @@ CLASSIFICATION RULES:
    immunotherapy peptides) are NOT administered intranasally. If the protocol does not explicitly
    specify the route for a peptide vaccine or cancer immunotherapy, use
    "Injection/Infusion - Other/Unspecified", NOT Intranasal.
+8. AMBIGUITY BIAS: When route evidence is only INDIRECT (implied by product type, inferred from
+   context, or described only as "injection" / "administered" without an explicit IM/SC/IV qualifier),
+   use "Injection/Infusion - Other/Unspecified" rather than guessing a specific route. A route
+   keyword must appear EXPLICITLY in the evidence text — do not infer SC because the drug is a
+   peptide, or IV because the dose is in mg/kg. Specificity without explicit evidence is worse
+   than Other/Unspecified.
 
 Format your response EXACTLY as:
 Delivery Mode: [one of the 18 valid values, exactly as written — or comma-separated if multi-route]
