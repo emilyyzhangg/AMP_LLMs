@@ -66,7 +66,7 @@ class OllamaConfig(BaseModel):
     timeout: int = 600
     temperature: float = 0.10
     field_temperatures: Dict[str, float] = {
-        "peptide": 0.05,
+        "peptide": 0.0,
         "classification": 0.05,
         "outcome": 0.15,
         "delivery_mode": 0.10,

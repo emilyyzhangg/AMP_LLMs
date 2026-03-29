@@ -270,8 +270,21 @@ STEP 2 — Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)
   If NOT an AMP → STOP → answer "Other".
 
 STEP 3 — Does this AMP target infection?
-  AMP(infection): Trial treats active infection, infectious disease, AMR, sepsis, or pathogen-specific conditions.
-  AMP(other): AMP used for wound healing, cancer immunotherapy, anti-inflammatory, or non-infectious biofilm.
+
+  IMPORTANT: You only reach Step 3 if Step 2 CONFIRMED the peptide has direct antimicrobial
+  activity (Mode A/B/C). A peptide with uncertain, unconfirmed, or non-antimicrobial mechanism
+  does NOT qualify for AMP(other) — it is "Other".
+
+  AMP(infection): Trial treats active infection, infectious disease, AMR, sepsis, or
+  pathogen-specific conditions AND the peptide has confirmed antimicrobial mechanism.
+
+  AMP(other): The peptide has confirmed antimicrobial mechanism (passes Step 2) BUT the trial
+  targets a non-infectious condition — e.g., wound healing, skin inflammation, non-infectious
+  biofilm, or cancer (where the AMP property is relevant but infection is not the indication).
+  Example: LL-37 for diabetic wound healing → AMP(other). LL-37 directly kills bacteria
+  (Mode A+B confirmed in DRAMP) but the trial treats wounds, not infection.
+
+  "Other" if mechanism is unconfirmed, purely metabolic/hormonal/adaptive-immune.
 
 WORKED EXAMPLES — study these before answering:
 

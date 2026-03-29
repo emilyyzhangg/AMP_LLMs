@@ -195,6 +195,7 @@ FIELD_SNIPPET_OVERRIDES = {
 # learning patterns from test data, which would invalidate the evaluation.
 # ---------------------------------------------------------------------------
 _TRAINING_CSV = Path(__file__).resolve().parents[3] / "docs" / "human_ground_truth_train_df.csv"
+_TEST_BATCH = Path(__file__).resolve().parents[3] / "scripts" / "fast_learning_batch_50.txt"
 
 
 def _load_training_ncts() -> set[str]:
@@ -213,4 +214,24 @@ def _load_training_ncts() -> set[str]:
         return set()
 
 
-TRAINING_NCTS: set[str] = _load_training_ncts()
+def _load_test_batch_ncts() -> set[str]:
+    """Load concordance test-batch NCTs to permanently exclude from EDAM learning.
+
+    These 50 NCTs are used for concordance measurement runs and must never
+    contribute to EDAM learning — doing so would let the system 'study' the
+    test set and inflate concordance scores on subsequent runs.
+    """
+    if not _TEST_BATCH.exists():
+        _logger.warning("Test batch file not found at %s — no NCTs excluded from EDAM", _TEST_BATCH)
+        return set()
+    try:
+        with open(_TEST_BATCH) as f:
+            ncts = {line.strip().upper() for line in f if line.strip()}
+        _logger.info("Excluding %d test-batch NCTs from EDAM learning", len(ncts))
+        return ncts
+    except Exception as e:
+        _logger.error("Failed to load test batch file: %s", e)
+        return set()
+
+
+TRAINING_NCTS: set[str] = _load_training_ncts() - _load_test_batch_ncts()
