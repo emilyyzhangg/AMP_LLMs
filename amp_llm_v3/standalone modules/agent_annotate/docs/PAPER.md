@@ -713,6 +713,60 @@ Failure Reason shows the highest human agreement (94.7%), likely because this fi
 
 The overall human agreement of 80.2% establishes the practical ceiling for automated annotation: a perfect system that agreed with both annotators on every trial would achieve 80.2% agreement with each, since the annotators themselves disagree 19.8% of the time.
 
+### 4.13 v19 Concordance (n=50, 2 runs) — 2026-03-27
+
+The v19 agent revision was evaluated on 50 trials (`fast_learning_batch_50.txt`) across two independent runs (R1: `c1786d005ade`, R2: `ac6af4e49fe2`). v19 targeted two previously identified failure patterns: vaccine misclassification (Mode D removal) and outcome detection gaps (negative efficacy signal expansion).
+
+**Table 7.** v19 concordance vs. v19 R2 and v18+ baseline (n=50, blanks excluded).
+
+| Field | v19 R1 (AC₁) | v19 R2 (AC₁) | v18+ baseline | Target | Met? |
+|---|---|---|---|---|---|
+| Classification | **0.917** | **0.917** | 0.870 | ≥0.82 | **YES** (+4.7pp) |
+| Delivery Mode | 0.632 | 0.614 | 0.654 | ≥0.73 | NO (slight regress) |
+| Outcome | 0.680 | 0.634 | 0.657 | ≥0.80 | NO (slight improve) |
+| Reason for Failure | 0.671 | 0.625 | 0.671 | ≥0.84 | NO (same) |
+| Peptide | 0.834 | 0.734 | 0.865 | ≥0.86 | Borderline / high variance |
+| Sequence | 0.634 | 0.668 | 0.574 | ≥0.30 | **YES** (code-only gain) |
+
+Key findings:
+- Classification target met: vaccine misclassification (NCT00000886, NCT00002428) resolved by Mode D removal. The verifier had been overriding correct "Other" classifications with "AMP" for HIV peptide vaccines.
+- Sequence improvement purely from code changes (EXPERIMENTAL arm filter, DBAASP suppression for non-AMP); EDAM had not yet generated guidance for these NCTs.
+- 7% run-to-run peptide variance traced to temperature=0.05 on a binary field → fixed in v20 (temp=0.0).
+- Post-run: reconciler unanimous-dissent bug discovered (15 cases per run where agreement_ratio=0.0 still accepted Pass1 value → fixed in v20).
+
+### 4.14 v20 Partial Concordance and EDAM Net-Negative Finding (n=15/50) — 2026-03-30
+
+Following four training runs (Batches C and D, 100 NCTs × 2 runs) on v20 code, a concordance run on the 50 test NCTs was initiated. Analysis of the first 15 completed NCTs revealed a substantial outcome regression:
+
+**Table 8.** v20 partial concordance vs. v19 R1 baseline (n=15, early termination).
+
+| Field | v20 partial (15 NCTs) | v19 R1 baseline | Change |
+|---|---|---|---|
+| Classification | 100% | 92.0% | +8pp (small N) |
+| Delivery Mode | 60.0% | 63.3% | -3pp |
+| **Outcome** | **46.7%** | **72.0%** | **-25pp regression** |
+| Reason for Failure | 66.7% | 68.0% | -1pp |
+| Peptide | 100% | 80.0% | +20pp |
+
+The concordance run was cancelled at 15/50 after root cause identification.
+
+**Root cause: Deterministic TERMINATED mapping (v11 regression).** Since v11, `outcome.py` included `"TERMINATED": "Terminated"` in `_DETERMINISTIC_STATUSES`, causing all TERMINATED trials to bypass the LLM pipeline entirely with `skip_verification=True`. This was appropriate for trials genuinely terminated for business reasons, but catastrophically wrong for trials terminated early due to positive efficacy — a pattern common in AMP trials where Phase II trials are halted after interim analysis shows significant benefit. Inspection of failing NCT annotations confirmed the reasoning field contained: `[Deterministic v11] Registry status 'TERMINATED' → 'Terminated'` for cases where the drug had documented positive results and advanced to later-phase trials.
+
+**EDAM amplification.** The four v20 training runs wrote 351 experiences per field for TERMINATED trial annotations. Because the TERMINATED mapping was applied before EDAM guidance was read, EDAM had no opportunity to correct the error — it simply reinforced the "Terminated" label as a stable answer for those NCTs, compounding the harm on subsequent concordance runs.
+
+**EDAM net-negative on outcome and delivery_mode.** Post-analysis of the EDAM corrections table revealed:
+- 8 corrections of the form `Positive → Unknown` and 1 `Failed → Unknown` on outcome, reflecting training NCTs where EDAM-guided annotations on sparse-evidence trials were incorrectly "corrected" to Unknown. These corrections were then injected as guidance on test NCTs with richer evidence, suppressing correct Positive/Failed determinations.
+- 30 delivery_mode corrections with no consistent direction, arising from contradictory route detections across comparator arms.
+
+The EDAM `net-positive threshold` (~70% base accuracy) was not met for either field under v20 code, confirming that EDAM was amplifying systematic errors rather than correcting them.
+
+**Resolution (v21).**
+1. Removed `TERMINATED` from `_DETERMINISTIC_STATUSES`. TERMINATED trials now undergo the full 2-pass LLM pipeline with evidence-based decision tree.
+2. Added phase-based heuristics H1b and H3b to improve accuracy on COMPLETED trials without publications.
+3. Restricted delivery mode `intervention_names` to EXPERIMENTAL arms only.
+4. Full field-selective EDAM purge: all outcome + delivery_mode experiences (702 rows) and corrections (40 rows) deleted. Retained fields (classification, peptide, reason_for_failure, sequence) were unaffected.
+5. New training Batches E/F (50 NCTs, positions 101-150) launched on v21 code to rebuild EDAM outcome and delivery_mode from scratch.
+
 ---
 
 ## 5. Discussion

@@ -37,10 +37,15 @@
 | 24 | Train-C (mystery, v19) | a2da6002df4f | 50 | 50/50 | **Complete** | v19 (ee4fdee) | 300 exp | Mystery job. Training NCTs. 300 EDAM experiences. |
 | 25 | Train-C partial (mystery) | dbd215c03cf3 | 50 | 20/50 | **Cancelled** | v19 (ee4fdee) | 120 exp | Cancelled after 20 NCTs. 120 EDAM experiences. |
 | **26** | **Train-C v20 R1** | **ba96acf75132** | **50** | **50/50** | **Complete** | **v20 (163eaf1)** | **300 exp** | **First v20 training run. 300 EDAM experiences.** |
-| *27* | *Train-C v20 R2* | *29830f7d3785* | *50* | *—* | *Queued* | *v20 (163eaf1)* | *—* | *In queue.* |
-| *28* | *Train-D v20 R1* | *798817a09db3* | *50* | *—* | *Queued* | *v20 (163eaf1)* | *—* | *In queue.* |
-| *29* | *Train-D v20 R2* | *3fc6552eb54e* | *50* | *—* | *Queued* | *v20 (163eaf1)* | *—* | *In queue.* |
-| *30* | *Concordance test (v20)* | *TBD* | *50* | *—* | *Next after training* | *v20 (163eaf1)* | *—* | *Run after all 4 training jobs complete. fast_learning_batch_50.txt.* |
+| 27 | Train-C v20 R2 | 29830f7d3785 | 50 | 50/50 | **Complete** | v20 (163eaf1) | 300 exp | EDAM outcome+delivery_mode later purged |
+| 28 | Train-D v20 R1 | 798817a09db3 | 50 | 50/50 | **Complete** | v20 (163eaf1) | 300 exp | EDAM outcome+delivery_mode later purged |
+| 29 | Train-D v20 R2 | 3fc6552eb54e | 50 | 50/50 | **Complete** | v20 (163eaf1) | 300 exp | EDAM outcome+delivery_mode later purged |
+| 30 | Concordance v20 (partial) | e0f556c703c7 | 50 | 15/50 | **Cancelled** | v20 (163eaf1) | — | Cancelled at 15/50 — regression confirmed, root cause identified |
+| **31** | **Batch E v21 R1** | **83c6ad7fd4d7** | **25** | **—** | **Running** | **v21 (69e7d14)** | **—** | **Positions 101-125. EDAM outcome+delivery_mode rebuilt from scratch.** |
+| *32* | *Batch E v21 R2* | *54acb4a8136d* | *25* | *—* | *Queued* | *v21 (69e7d14)* | *—* | *Stability run.* |
+| *33* | *Batch F v21 R1* | *f78d3554f29f* | *25* | *—* | *Queued* | *v21 (69e7d14)* | *—* | *Positions 126-150.* |
+| *34* | *Batch F v21 R2* | *92fce293f860* | *25* | *—* | *Queued* | *v21 (69e7d14)* | *—* | *Stability run.* |
+| *35* | *Concordance v21* | *TBD* | *50* | *—* | *After jobs 31-34* | *v21 (69e7d14)* | *—* | *fast_learning_batch_50.txt. Primary v21 evaluation.* |
 
 ### Agent version summary
 
@@ -61,6 +66,7 @@
 | **v18+hotfixes** | **776aeea** | **Fix NoneType crash in _majority_vote/_normalize during RfF reconciliation. Fix quality warnings. Fix peptide verifier bias. Fix sequence miss rate. Fix RfF EMPTY sentinel leaks and verifier empty-vote drop. Fix NameErrors causing jobs to fail despite 25/25 completion.** |
 | **v19** | **d777be62 (dev)** | **Classification: remove Mode D (all vaccines now Other — adaptive immunity ≠ AMP). Fixed classifier/verifier inconsistency (verifier still had HIV/influenza vaccines as AMP). Remove ic41/ic43 from _KNOWN_AMP_DRUGS. Outcome: add negative efficacy heuristics (did not demonstrate, no benefit, lack of efficacy, etc.). Delivery mode: remove bare ' sc ' abbreviation, add cancer vaccine → Other/Unspecified rule. Sequence: filter to EXPERIMENTAL arms only, suppress DBAASP/APD for non-AMP trials. Literature: always run title fallback for old trials (NCT < 100k).** |
 | **v20** | **163eaf1** | **Reconciler bug fix (CRITICAL): unanimous verifier disagreement (agreement_ratio=0.0) now always routes to reconciler — fixed 15 per-run cases where high-confidence Pass1 was overriding 3/3 verifier disagreement. CT.gov resultsSection: hasResults flag + primary outcome data emitted as citations from already-fetched response (no extra HTTP call). Delivery mode Rule 8: explicit route keyword required — no inferring SC from drug class or IV from mg/kg. Outcome verifier: Failed requires positive evidence of endpoint failure, not merely absence of publications. Classification: AMP(other) requires confirmed antimicrobial mechanism from Step 2. EDAM: test-batch NCTs (fast_learning_batch_50.txt) hard-excluded from TRAINING_NCTS at load time. Peptide field temp 0.05→0.0 (eliminates 7% run-to-run variance on binary field).** |
+| **v21** | **69e7d14** | **TERMINATED overcalling fix (CRITICAL): removed TERMINATED from _DETERMINISTIC_STATUSES in outcome.py — was blindly mapping all TERMINATED trials to "Terminated" with skip_verification=True, causing -25pp outcome regression on v20 partial concordance. PASS2_PROMPT item 4 now checks evidence (Positive if drug advanced/positive results, Failed if safety/futility, Terminated if business reason). Phase heuristics H1b (Phase I >5yr, no Phase II, no pubs → Unknown) and H3b (Phase II/III >10yr, no pubs, no negative evidence → lean Positive) added to both annotator and verifier. Delivery mode: _deterministic_delivery_mode now filters intervention_names to EXPERIMENTAL arms only (armGroups[type=EXPERIMENTAL]); PASS1+PASS2 prompts updated to focus on experimental arm routes only. EDAM surgical purge: all outcome + delivery_mode experiences (702 rows) and corrections (40 rows) deleted — net-negative on both fields due to biased v20 training data.** |
 
 ## NCT Coverage
 

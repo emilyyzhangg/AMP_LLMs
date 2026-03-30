@@ -440,6 +440,11 @@ Never-guess rule preserved: if no source specifies IM, SC, or IV, the answer is 
 **v20 changes:**
 - **Ambiguity bias (Rule 8)**: When route evidence is only INDIRECT (implied by product type, inferred from context, or described only as "injection" / "administered" without an explicit IM/SC/IV qualifier), the agent uses "Injection/Infusion - Other/Unspecified" rather than inferring a specific route. A route keyword must appear EXPLICITLY in the evidence text. Do not infer SC because the drug is a peptide; do not infer IV because the dose is in mg/kg. This rule applies in both Pass 2 (annotation) and the verifier prompt, ensuring consistent treatment of ambiguous cases across the full annotation pipeline.
 
+**v21 changes:**
+- **EXPERIMENTAL arm filter (deterministic path)**: `_deterministic_delivery_mode()` now builds `intervention_names` from EXPERIMENTAL arms only. The CT.gov `armsInterventionsModule.armGroups[type=EXPERIMENTAL].label` values are used to filter `interventions[armGroupLabels]`. Falls back to all interventions when no arm type data is available (older CT.gov records without arm group typing). Previously all interventions including placebo, active comparator, and standard-of-care arms contributed to the route keyword search, causing false multi-route detections when a comparator drug (e.g., IV chemotherapy) used a different route than the experimental peptide.
+- **PASS1 experimental arm instruction**: The PASS1 system prompt now explicitly instructs: "Focus ONLY on the EXPERIMENTAL arm(s) containing the primary investigational drug. Do NOT report routes for placebo, active comparator, or standard-of-care background arms."
+- **PASS2 Rule 6 clarification**: Multi-route comma-separated output now explicitly applies only to multiple EXPERIMENTAL drugs with different routes — not to experimental + comparator combinations.
+
 ### 5.4 Outcome Agent (v4)
 
 **Pass 1:** Extracts seven evidence elements:
@@ -472,6 +477,12 @@ Critical rule: "Completed" registry status alone does NOT indicate failure. "Fai
 
 **v20 changes:**
 - **Verifier clarification — Failed requires positive evidence**: The verifier instruction now explicitly states: "'Failed - completed trial' requires POSITIVE EVIDENCE of failure — a publication or posted result that explicitly states the trial did NOT meet its primary endpoint, or that the drug was found ineffective or unsafe. Do NOT choose Failed just because you cannot find positive results. Absence of publications = Unknown, not Failed." This closes a verifier bias introduced by the v19 negative-signal expansion: verifiers were under-applying the Failed label even when the annotation agent's Pass 1 heuristic correctly detected failure language.
+
+**v21 changes:**
+- **TERMINATED overcalling fix (CRITICAL)**: Removed `"TERMINATED": "Terminated"` from `_DETERMINISTIC_STATUSES` in `outcome.py`. Since v11 this mapping was bypassing the LLM pipeline entirely with `skip_verification=True`, causing all TERMINATED trials to be labelled "Terminated" regardless of published evidence. Root cause of -25pp outcome regression on v20 partial concordance: trials stopped early for efficacy (positive interim results, drug advanced to later phases) were being incorrectly labelled "Terminated". Fix: TERMINATED trials now fall through to the 2-pass LLM pipeline. PASS2_PROMPT decision tree item 4 checks evidence: Positive if drug advanced or positive results published, Failed if safety/futility, Terminated if business reason or no signal. Both annotator and verifier updated consistently.
+- **Phase-based completion heuristics (H1b, H3b)**: Two new heuristics added to PASS2_PROMPT and verifier instruction:
+  - *H1b* — Phase I completed >5 years ago, no Phase II found, no publications → "Unknown" (absence of follow-on development suggests drug did not advance, but "Failed" requires positive evidence of failure).
+  - *H3b* — Phase II/III completed >10 years ago, no publications, no negative evidence → lean "Positive" (common pattern for older industry-sponsored trials that completed but were never published).
 
 ### 5.5 Failure Reason Agent (v5)
 
@@ -1176,6 +1187,27 @@ EDAM learning is gated to a fixed allowlist of 642 training NCTs loaded from `do
 6. **Database size caps.** Hard limits on all tables prevent unbounded growth. Purge strategy removes oldest, lowest-weight entries first.
 7. **Training allowlist enforces train/test split.** See Section 16.7.
 8. **Test-batch hard exclusion.** Concordance test NCTs are subtracted from `TRAINING_NCTS` at load time. See Section 16.8.
+
+### 16.10 Field-Selective EDAM Purge (v21)
+
+When upstream annotation code contains systematic errors, EDAM can amplify rather than correct them — recording the wrong answer as a "stable" experience and injecting it as guidance on subsequent runs. The v20 concordance analysis demonstrated this on two fields:
+
+**Outcome:** The v20 TERMINATED deterministic mapping (see Section 5.4, v21 changes) caused all TERMINATED trials to be labelled "Terminated" regardless of evidence. Four training batches (Batches C and D, 100 NCTs × 2 runs = 400 trials) wrote experiences reflecting these incorrect annotations. The partial v20 concordance showed -25pp outcome regression, with EDAM guidance citing these experiences as confirmation.
+
+**Delivery mode:** The v20 training runs pulled route keywords from all arm types including placebo and comparator arms. Trials with mixed-arm routes generated contradictory corrections (e.g., "IV" on run 1, "SC" on run 2 for the same NCT depending on which arm the keyword matched). 30 delivery_mode corrections were stored with no consistent signal direction.
+
+**Decision (Option C):** Full purge of both affected fields from both `experiences` and `corrections` tables:
+```sql
+DELETE FROM experiences WHERE field_name IN ('outcome', 'delivery_mode');
+DELETE FROM corrections WHERE field_name IN ('outcome', 'delivery_mode');
+```
+This removed 702 experience rows and 40 correction rows. The retained fields (classification, peptide, reason_for_failure, sequence) had no systematic coding errors and were net-positive.
+
+**Post-purge state (2026-03-30):** 1,404 experiences / 93 corrections / 120 unique NCTs.
+
+**Batches E/F (v21) will rebuild outcome + delivery_mode EDAM from scratch** on code that correctly handles TERMINATED trials and restricts delivery mode to experimental arm routes.
+
+**General rule:** When a code change fixes a systematic annotation error, the EDAM experiences written under the old code must be purged for the affected fields. Experiences written under buggy code teach the wrong behavior at inference time. Field-selective purge (not full wipe) preserves learning on unaffected fields.
 
 
 ## 17. Design Philosophy
