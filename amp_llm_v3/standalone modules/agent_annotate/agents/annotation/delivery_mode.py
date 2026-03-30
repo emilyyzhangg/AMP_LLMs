@@ -20,6 +20,14 @@ v17 changes:
     keyword matching. " iv " in "Grade II to IV (MAGIC)" is disease grading,
     not a route. Title citations are identified by section_name == "title".
   - _parse_value updated to handle comma-separated multi-route values.
+
+v21 changes:
+  - _deterministic_delivery_mode: filter intervention_names to EXPERIMENTAL arm only
+    using armGroups[type=EXPERIMENTAL].label -> interventions[armGroupLabels] mapping.
+    Falls back to all interventions if no arm type data available (older records).
+  - PASS1_SYSTEM: explicit instruction to focus on experimental arm route only,
+    ignore placebo/comparator/background arm routes.
+  - PASS2_SYSTEM Rule 6: clarified multi-route applies to experimental drugs only.
 """
 
 import re
@@ -60,7 +68,10 @@ Your task: Search ALL available evidence to find how this drug is administered. 
 
 Extract the following:
 
-1. PROTOCOL ROUTE: What does the ClinicalTrials.gov protocol say about route of administration? Look in intervention description, arm group descriptions, and detailed description. Quote the exact text.
+1. PROTOCOL ROUTE: What does the ClinicalTrials.gov protocol say about route of administration?
+   IMPORTANT: Focus ONLY on the EXPERIMENTAL arm(s) containing the primary investigational drug.
+   Do NOT report routes for placebo, active comparator, or standard-of-care background arms.
+   Look in the EXPERIMENTAL arm intervention description and the overall protocol description. Quote the exact text.
 
 2. FDA/DRUG LABEL ROUTE: Does any evidence mention an FDA-approved route, drug label route, or prescribing information route? (e.g., "for subcutaneous use", "administered intravenously"). FDA labels are MORE SPECIFIC and MORE RELIABLE than protocol text.
 
@@ -115,10 +126,10 @@ CLASSIFICATION RULES:
 3. If Literature says "administered intravenously" but Protocol is vague → use IV.
 4. ONLY use "Injection/Infusion - Other/Unspecified" when NO source specifies IM, SC, or IV.
 5. Nutritional formula/shake = Oral - Drink. Nasal spray = Intranasal (not Topical - Spray).
-6. MULTI-ROUTE TRIALS: If the trial tests multiple active drugs that use DIFFERENT routes
-   (e.g., one drug given IV and another given orally), list ALL routes comma-separated in the
-   same order as the drugs appear. Do NOT list multiple routes for a single drug, and do NOT
-   list the placebo/comparator route separately.
+6. MULTI-ROUTE TRIALS: If the trial tests multiple EXPERIMENTAL drugs that use DIFFERENT routes
+   (e.g., one experimental drug given IV and another given orally), list ALL routes comma-separated
+   in the same order as the experimental drugs appear.
+   Do NOT list the route of placebo, active comparator, or standard-of-care arms.
 7. PEPTIDE VACCINES AND CANCER TRIALS: Peptide vaccines (cancer vaccines, anti-tumor peptides,
    immunotherapy peptides) are NOT administered intranasally. If the protocol does not explicitly
    specify the route for a peptide vaccine or cancer immunotherapy, use
@@ -243,9 +254,21 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
         if result.raw_data:
             proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
             arms_mod = proto.get("armsInterventionsModule", {})
+            # v21: Identify experimental arm labels to restrict intervention_names to
+            # primary investigational drugs only. Falls back to all interventions if
+            # no arm type data is available (older CT.gov records).
+            arm_groups = arms_mod.get("armGroups", [])
+            experimental_labels: set[str] = {
+                ag.get("label", "") for ag in arm_groups
+                if ag.get("type", "").upper() == "EXPERIMENTAL"
+            }
             for interv in arms_mod.get("interventions", []):
                 name = interv.get("name", "")
-                if name:
+                if not name:
+                    continue
+                arm_labels = interv.get("armGroupLabels", [])
+                # Include if: arm is experimental, or no arm type info available
+                if not experimental_labels or any(lbl in experimental_labels for lbl in arm_labels):
                     intervention_names.append(name.lower().strip())
         for citation in result.citations:
             if citation.source_name == "openfda":

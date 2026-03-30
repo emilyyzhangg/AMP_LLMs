@@ -1,5 +1,5 @@
 """
-Outcome Annotation Agent (v4 — v11 accuracy fixes, v17 heuristic override).
+Outcome Annotation Agent (v4 — v11 accuracy fixes, v17 heuristic override, v21 TERMINATED fix).
 
 Determines trial outcome using a two-pass strategy:
   Pass 1: Extract ClinicalTrials.gov status, phase, and published results
@@ -18,6 +18,15 @@ v17 changes:
     for the normal path. Now catches adverse-event keywords in publications.
   - Inject trial phase from structured ClinicalTrials.gov data into Pass 2 prompt so the
     LLM doesn't rely on Pass 1 extraction (which sometimes returns "NOT FOUND").
+
+v21 changes:
+  - TERMINATED removed from _DETERMINISTIC_STATUSES: trials stopped early for efficacy
+    or with positive published results were being blindly mapped to "Terminated". Now falls
+    through to the 2-pass LLM pipeline which checks evidence before deciding.
+  - PASS2_PROMPT item 4: evidence-based decision tree for TERMINATED (Positive if positive
+    evidence, Failed if safety/futility, Terminated if business reason or no signal).
+  - PASS2_PROMPT heuristics: added H1b (Phase I >5yr, no Phase II -> Unknown) and
+    H3b (Phase II/III >10yr, no pubs, no negative evidence -> lean Positive).
 """
 
 import re
@@ -51,7 +60,9 @@ _DETERMINISTIC_STATUSES = {
     "WITHDRAWN": "Withdrawn",
     "ACTIVE_NOT_RECRUITING": "Active, not recruiting",
     "SUSPENDED": "Unknown",
-    "TERMINATED": "Terminated",
+    # v21: TERMINATED removed from deterministic — some TERMINATED trials have
+    # positive published results (stopped early for efficacy) and should not be
+    # blindly mapped to "Terminated". Let the 2-pass LLM pipeline decide.
 }
 
 
@@ -138,8 +149,15 @@ DECISION TREE (follow in order):
 1. Is the trial RECRUITING, NOT_YET_RECRUITING, or ENROLLING_BY_INVITATION? -> "Recruiting"
 2. Is the trial ACTIVE_NOT_RECRUITING with no results yet? -> "Active, not recruiting"
 3. Was the trial WITHDRAWN before enrollment? -> "Withdrawn"
-4. Was the trial TERMINATED? -> "Terminated"
-   (The REASON for termination goes in reason_for_failure, not here.)
+4. Was the trial TERMINATED?
+   First check the evidence for this TERMINATED trial:
+   a. Published results show POSITIVE findings OR the drug advanced to later-phase trials OR the drug
+      was approved → "Positive" (trial was stopped early for efficacy or succeeded despite termination)
+   b. Published results show safety failure, futility, or termination due to lack of efficacy → "Failed - completed trial"
+   c. Termination was for business/operational reasons (funding, sponsor decision, strategic) with no
+      efficacy evidence either way → "Terminated"
+   d. No publications, no results posted, reason unclear → "Terminated" (default for TERMINATED)
+   (The specific REASON for termination goes in reason_for_failure, not here.)
 5. For COMPLETED or UNKNOWN status, check published literature:
    a. Published results show POSITIVE findings (met endpoints, efficacy shown, favorable safety) -> "Positive"
    b. Published results show NEGATIVE findings (failed endpoints, no efficacy, futility) -> "Failed - completed trial"
@@ -161,11 +179,21 @@ H1. PHASE I COMPLETION: Phase I/Early Phase I trials that completed normally (no
     without corroboration. This is the #1 error in previous annotations. If you have ZERO
     publications AND Results Posted = No/Unknown, the answer MUST be "Unknown". ***
 
+H1b. PHASE I COMPLETED LONG AGO (>5 years, no Phase II found, no publications):
+    If the trial completed >5 years ago, is Phase I, and there is NO evidence of a subsequent
+    Phase II trial for the same drug and NO publications at all → "Unknown". The absence of any
+    follow-on development suggests the drug did not advance, but "Failed" requires positive evidence.
+
 H2. PHASE II/III COMPLETION WITH hasResults=Yes: If ClinicalTrials.gov indicates results were posted
     (hasResults field), the trial produced data. Lean toward "Positive" unless evidence says otherwise.
 
 H3. LONG-COMPLETED TRIALS: If the trial completed more than 10 years ago and led to subsequent
     later-phase trials of the same drug → the earlier trial was likely "Positive" (the drug advanced).
+
+H3b. PHASE II/III COMPLETED LONG AGO (>10 years, no publications, no negative evidence):
+    If the trial is Phase II/III, completed >10 years ago, no publications found, and no evidence
+    of failure → lean "Positive". Phase II/III trials that produced no indexed publications and no
+    negative signal likely completed successfully (common for older industry-sponsored trials).
 
 H4. COMPLETED + RESULTS POSTED: If Results Posted = Yes but you couldn't find specific
     result descriptions, lean "Positive" (the act of posting results for a completed trial
