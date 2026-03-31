@@ -89,12 +89,12 @@ Key finding: Outcome regression confirmed at 15/50 NCTs. Root cause identified a
 
 **Fix E — delivery_mode.py PASS1 (LOW):** Added explicit multi-drug route instruction — if EXPERIMENTAL arm has multiple drugs, report route for each drug separately; do not merge or omit routes.
 
-**Job queue (submitted 2026-03-31):**
-1. Concordance v22 — 50 test NCTs (fast_learning_batch_50.txt) — gate: outcome ≥70%
-2. Batch G R1 — positions 151-175 (25 NCTs)
-3. Batch G R2 — positions 151-175 (25 NCTs)
-4. Batch H R1 — positions 176-200 (25 NCTs)
-5. Batch H R2 — positions 176-200 (25 NCTs)
+**Job queue (submitted 2026-03-31, v22 commit fc02b08):**
+1. Concordance v22 — 6657f8896238 — 50 test NCTs (fast_learning_batch_50.txt) — gate: outcome ≥70%
+2. Batch G R1 — 55826cb5853a — positions 151-175 (25 NCTs)
+3. Batch G R2 — 799905fee5c4 — positions 151-175 (25 NCTs)
+4. Batch H R1 — 6ae5c0fb0de1 — positions 176-200 (25 NCTs)
+5. Batch H R2 — 4953bff0b240 — positions 176-200 (25 NCTs)
 
 **Expected impact:** TERMINATED fix recovers NCT00982696 + NCT03490942 → +2 correct outcomes = +4pp → outcome ~72%. Peptide ISA101b/MELITAC fix recovers ~5pp → peptide ~87%.
 

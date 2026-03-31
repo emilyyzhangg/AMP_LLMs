@@ -46,11 +46,11 @@
 | **33** | **Batch F v21 R1** | **f78d3554f29f** | **25** | **25/25** | **Complete** | **v21 (69e7d14)** | **—** | **Positions 126-150.** |
 | **34** | **Batch F v21 R2** | **92fce293f860** | **25** | **25/25** | **Complete** | **v21 (69e7d14)** | **—** | **Stability run.** |
 | **35** | **Concordance v21** | **c2c43af95162** | **50** | **50/50** | **Complete** | **v21 (69e7d14)** | **—** | **fast_learning_batch_50.txt. Outcome=68% (BELOW 70% threshold). See concordance below.** |
-| **36** | **Concordance v22** | **[pending]** | **50** | **—** | **Queued** | **v22** | **—** | **fast_learning_batch_50.txt. Gate: outcome ≥70%.** |
-| **37** | **Batch G v22 R1** | **[pending]** | **25** | **—** | **Queued** | **v22** | **—** | **Positions 151-175.** |
-| **38** | **Batch G v22 R2** | **[pending]** | **25** | **—** | **Queued** | **v22** | **—** | **Stability run.** |
-| **39** | **Batch H v22 R1** | **[pending]** | **25** | **—** | **Queued** | **v22** | **—** | **Positions 176-200.** |
-| **40** | **Batch H v22 R2** | **[pending]** | **25** | **—** | **Queued** | **v22** | **—** | **Stability run.** |
+| **36** | **Concordance v22** | **6657f8896238** | **50** | **—** | **Queued** | **v22 (fc02b08)** | **—** | **fast_learning_batch_50.txt. Gate: outcome ≥70%.** |
+| **37** | **Batch G v22 R1** | **55826cb5853a** | **25** | **—** | **Queued** | **v22 (fc02b08)** | **—** | **Positions 151-175.** |
+| **38** | **Batch G v22 R2** | **799905fee5c4** | **25** | **—** | **Queued** | **v22 (fc02b08)** | **—** | **Stability run.** |
+| **39** | **Batch H v22 R1** | **6ae5c0fb0de1** | **25** | **—** | **Queued** | **v22 (fc02b08)** | **—** | **Positions 176-200.** |
+| **40** | **Batch H v22 R2** | **4953bff0b240** | **25** | **—** | **Queued** | **v22 (fc02b08)** | **—** | **Stability run.** |
 
 ### Agent version summary
 
