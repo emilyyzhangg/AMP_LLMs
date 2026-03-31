@@ -150,14 +150,16 @@ DECISION TREE (follow in order):
 2. Is the trial ACTIVE_NOT_RECRUITING with no results yet? -> "Active, not recruiting"
 3. Was the trial WITHDRAWN before enrollment? -> "Withdrawn"
 4. Was the trial TERMINATED?
-   First check the evidence for this TERMINATED trial:
-   a. Published results show POSITIVE findings OR the drug advanced to later-phase trials OR the drug
-      was approved → "Positive" (trial was stopped early for efficacy or succeeded despite termination)
-   b. Published results show safety failure, futility, or termination due to lack of efficacy → "Failed - completed trial"
-   c. Termination was for business/operational reasons (funding, sponsor decision, strategic) with no
-      efficacy evidence either way → "Terminated"
-   d. No publications, no results posted, reason unclear → "Terminated" (default for TERMINATED)
-   (The specific REASON for termination goes in reason_for_failure, not here.)
+   CRITICAL: "Failed - completed trial" is NEVER valid for a TERMINATED trial. That value is
+   EXCLUSIVELY for COMPLETED trials with published negative results.
+   For TERMINATED trials there are only two valid outcomes:
+   a. Published results show POSITIVE findings, OR the drug advanced to later-phase trials, OR
+      the drug was approved → "Positive"
+      DRUG ADVANCEMENT CHECK: Later-phase trials of the same drug, licensing, or approval all
+      count as "drug advanced" evidence even without published efficacy data for this trial.
+   b. Any other case — safety failure, futility, efficacy failure, business/operational reasons,
+      enrollment issues, no publications, reason unclear → "Terminated"
+      The specific reason goes in reason_for_failure, not in the outcome value.
 5. For COMPLETED or UNKNOWN status, check published literature:
    a. Published results show POSITIVE findings (met endpoints, efficacy shown, favorable safety) -> "Positive"
    b. Published results show NEGATIVE findings (failed endpoints, no efficacy, futility) -> "Failed - completed trial"
@@ -214,6 +216,9 @@ CRITICAL RULES:
 - RECENCY: If multiple publications exist with conflicting conclusions, the MOST RECENT publication takes priority.
 - COMPLETED + no published results + Results Posted = No/Unknown → "Unknown".
 - COMPLETED + Results Posted = Yes (even without findable publications) → lean "Positive".
+- TERMINATED RULE: If Registry Status = TERMINATED, the answer is either "Positive" or "Terminated".
+  NEVER "Failed - completed trial". This is the most common annotation error. "Failed - completed
+  trial" requires (a) COMPLETED status AND (b) published evidence of negative results.
 
 NEGATIVE EXAMPLE (DO NOT make this mistake):
   Registry Status: COMPLETED

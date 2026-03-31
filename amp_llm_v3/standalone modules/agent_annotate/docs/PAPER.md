@@ -767,6 +767,33 @@ The EDAM `net-positive threshold` (~70% base accuracy) was not met for either fi
 4. Full field-selective EDAM purge: all outcome + delivery_mode experiences (702 rows) and corrections (40 rows) deleted. Retained fields (classification, peptide, reason_for_failure, sequence) were unaffected.
 5. New training Batches E/F (50 NCTs, positions 101-150) launched on v21 code to rebuild EDAM outcome and delivery_mode from scratch.
 
+### 4.15 v21 Concordance (n=50) — 2026-03-31
+
+Following Batches E/F training (50 NCTs × 2 runs, positions 101-150) on v21 code, a full concordance run on the 50 test NCTs was completed (job `c2c43af95162`).
+
+**Table 9.** v21 concordance vs. v19 R1 baseline (n=50, blanks excluded).
+
+| Field | v21 (AC₁) | v19 R1 (AC₁) | v18+ baseline | Target | Met? |
+|---|---|---|---|---|---|
+| Classification | 92.0% / 0.917 | 92.0% / 0.917 | 87.8% / 0.870 | Hold 92% | YES |
+| Delivery Mode | 63.3% / 0.609 | 65.3% / 0.632 | 67.3% / 0.654 | ≥65% | NO (-2pp) |
+| **Outcome** | **68.0% / 0.633** | **72.0% / 0.680** | **70.0% / 0.657** | **≥76%** | **NO (-4pp)** |
+| Reason for Failure | 70.0% / 0.657 | 72.0% / 0.671 | 72.0% / 0.671 | ≥70% | YES (barely) |
+| Peptide | 82.2% / 0.769 | 86.7% / 0.834 | 88.9% / 0.865 | ≥86% | NO (-4.5pp) |
+| Sequence | 61.9% / 0.603 | 65.0% / 0.634 | 59.1% / 0.574 | ≥30% | YES |
+
+**Result: outcome=68% — BELOW the 70% EDAM net-positive threshold. Batches G/H suspended pending code fix.**
+
+Root cause analysis of 16 Agent vs R1 outcome disagreements identified three failure clusters:
+
+1. **TERMINATED semantic error (2 new overcorrection errors introduced by v21 fix).** The v21 TERMINATED fix correctly removed the deterministic bypass but introduced a semantic error in PASS2_PROMPT item 4b: "Published results show safety failure, futility, or termination due to lack of efficacy → 'Failed - completed trial'". This is incorrect. "Failed - completed trial" is exclusively for COMPLETED trials with published negative results. A TERMINATED trial stopped for any reason — including efficacy failure or safety concerns — is still "Terminated", not "Failed". Two concordance NCTs were incorrectly annotated: NCT00982696 (Unknown→Failed, TERMINATED trial with ambiguous history) and NCT03490942 (Terminated→Failed, business-reason termination).
+
+2. **Peptide False→True misses in multi-drug cancer vaccine trials (-4.5pp, 7 cases).** Seven trials where the EXPERIMENTAL arm contains both a peptide cancer vaccine (ISA101b, MELITAC 12.1) and a monoclonal antibody were called False because the agent identified the mAb and stopped evaluating. ISA101b (HPV-derived multi-epitope peptide vaccine) and MELITAC 12.1 (melanoma multi-epitope peptide vaccine) were absent from `_KNOWN_PEPTIDE_DRUGS`, preventing the deterministic True bypass from firing.
+
+3. **Persistent evidence-gap failures (5 NCTs unchanged across all versions).** NCT00002428, NCT00004984, NCT02660736, NCT02665377, NCT04672083 require adverse-event or efficacy publications not accessible through current research sources. No code fix is possible; these represent the structural accuracy floor.
+
+**Resolution (v22, applied 2026-03-31).** Fix A: removed "Failed - completed trial" from the TERMINATED decision branch in both `outcome.py` PASS2_PROMPT and `verifier.py`. TERMINATED trials now resolve to Positive or Terminated only, with an explicit critical rule enforcing this constraint. Fix B: added ISA101b, ISA101, MELITAC 12.1, and MELITAC to `_KNOWN_PEPTIDE_DRUGS`; strengthened PASS2_SYSTEM multi-drug False guard. Fix C: added PASS1 multi-drug route reporting instruction to delivery_mode.py. EDAM targeted purge: 1 bad outcome experience deleted (NCT03232112, "Failed - completed trial" for a TERMINATED trial). All 5 jobs queued (concordance v22 + Batches G/H R1/R2) for unattended execution.
+
 ---
 
 ## 5. Discussion

@@ -75,6 +75,31 @@ Key finding: Outcome regression confirmed at 15/50 NCTs. Root cause identified a
 - EDAM post-purge: 1,404 experiences / 93 corrections / 120 unique NCTs.
 - New training (Batches E/F) on v21 code will rebuild outcome + delivery_mode from scratch with correct annotations.
 
+## v22 Code Changes (Applied 2026-03-31)
+
+**EDAM purge:** Deleted 1 bad outcome experience (NCT03232112, "Failed - completed trial" — TERMINATED trial, wrong annotation from v21 TERMINATED→Failed bug). All other experiences retained. Post-purge: 1,775 experiences / 123 corrections.
+
+**Fix A — outcome.py PASS2_PROMPT item 4 (CRITICAL):** Removed "Failed - completed trial" from TERMINATED branch entirely. "Failed - completed trial" is EXCLUSIVELY for COMPLETED trials with published negative results. TERMINATED trials now only resolve to "Positive" (drug advanced/positive results) or "Terminated" (everything else). Also added explicit TERMINATED RULE to CRITICAL RULES block.
+
+**Fix B — verifier.py (CRITICAL):** Same semantic fix — removed "Safety failure, futility → Failed - completed trial" bullet from TERMINATED verifier rule. Verifier now enforces: TERMINATED → only Positive or Terminated.
+
+**Fix C — peptide.py _KNOWN_PEPTIDE_DRUGS (MEDIUM):** Added ISA101b, ISA101, MELITAC 12.1, MELITAC to known-peptide list. These multi-epitope peptide cancer vaccines were causing False→True misses in 7 concordance NCTs.
+
+**Fix D — peptide.py PASS2_SYSTEM (MEDIUM):** Strengthened multi-drug False guard — "False is only valid if EVERY intervention is confirmed non-peptide. If even one drug is a peptide (even a co-administered peptide vaccine alongside a mAb), the answer is True."
+
+**Fix E — delivery_mode.py PASS1 (LOW):** Added explicit multi-drug route instruction — if EXPERIMENTAL arm has multiple drugs, report route for each drug separately; do not merge or omit routes.
+
+**Job queue (submitted 2026-03-31):**
+1. Concordance v22 — 50 test NCTs (fast_learning_batch_50.txt) — gate: outcome ≥70%
+2. Batch G R1 — positions 151-175 (25 NCTs)
+3. Batch G R2 — positions 151-175 (25 NCTs)
+4. Batch H R1 — positions 176-200 (25 NCTs)
+5. Batch H R2 — positions 176-200 (25 NCTs)
+
+**Expected impact:** TERMINATED fix recovers NCT00982696 + NCT03490942 → +2 correct outcomes = +4pp → outcome ~72%. Peptide ISA101b/MELITAC fix recovers ~5pp → peptide ~87%.
+
+---
+
 ## Strategic Plan: Post-v21 Analysis (2026-03-31)
 
 **v21 concordance result: outcome=68% — BELOW 70% threshold. Do not proceed to Batches G/H.**

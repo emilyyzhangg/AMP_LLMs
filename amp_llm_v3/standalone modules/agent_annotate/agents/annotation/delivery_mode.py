@@ -72,6 +72,9 @@ Extract the following:
    IMPORTANT: Focus ONLY on the EXPERIMENTAL arm(s) containing the primary investigational drug.
    Do NOT report routes for placebo, active comparator, or standard-of-care background arms.
    Look in the EXPERIMENTAL arm intervention description and the overall protocol description. Quote the exact text.
+   If the EXPERIMENTAL arm contains MULTIPLE drugs, report the route for EACH drug separately.
+   Do not merge or omit routes for any drug — include oral, topical, and injection routes for
+   every drug in the arm, even if they differ.
 
 2. FDA/DRUG LABEL ROUTE: Does any evidence mention an FDA-approved route, drug label route, or prescribing information route? (e.g., "for subcutaneous use", "administered intravenously"). FDA labels are MORE SPECIFIC and MORE RELIABLE than protocol text.
 

@@ -1209,6 +1209,48 @@ This removed 702 experience rows and 40 correction rows. The retained fields (cl
 
 **General rule:** When a code change fixes a systematic annotation error, the EDAM experiences written under the old code must be purged for the affected fields. Experiences written under buggy code teach the wrong behavior at inference time. Field-selective purge (not full wipe) preserves learning on unaffected fields.
 
+### 16.11 v22 Changes and Targeted EDAM Purge (2026-03-31)
+
+The v21 concordance (50 NCTs, job c2c43af95162) returned outcome=68%, below the 70% EDAM net-positive threshold. Root cause analysis identified a semantic error in the TERMINATED decision branch and a peptide multi-drug coverage gap.
+
+**v22 Outcome Agent — TERMINATED Semantic Fix (CRITICAL)**
+
+The v21 fix correctly removed the deterministic TERMINATED bypass, but introduced a new semantic error: PASS2_PROMPT item 4b allowed "Failed - completed trial" for TERMINATED trials when safety/futility evidence was found. This is semantically wrong.
+
+The correct rule, now enforced in v22:
+- `"Failed - completed trial"` is EXCLUSIVELY for **COMPLETED** trials with **published negative results**.
+- **TERMINATED** trials resolve to exactly two values: `"Positive"` (drug advanced/positive published results) or `"Terminated"` (everything else — safety failure, futility, business reasons, no publications).
+- A trial that was TERMINATED due to safety concerns is `"Terminated"`, not `"Failed - completed trial"`. The termination reason goes in `reason_for_failure`, not in the outcome value.
+
+Both `outcome.py` PASS2_PROMPT item 4 and `verifier.py` outcome instruction were updated to enforce this rule. An explicit `TERMINATED RULE` was added to the CRITICAL RULES block to prevent future regressions.
+
+**v22 Outcome Agent — TERMINATED→Positive Drug Advancement Check**
+
+PASS2_PROMPT item 4a now includes an explicit DRUG ADVANCEMENT CHECK: later-phase trials of the same drug, licensing, or approval all count as "drug advanced" evidence even without published efficacy data for the specific terminated trial. This strengthens the Positive branch for cases like NCT00977145 and NCT02654587 (drug advanced but no publications directly citing these NCTs).
+
+**v22 Peptide Agent — Known Drug List and Multi-Drug Guard**
+
+`_KNOWN_PEPTIDE_DRUGS` expanded with ISA101b, ISA101, MELITAC 12.1, and MELITAC — multi-epitope peptide cancer vaccines absent from the prior list. These caused 7 False→True misses in concordance NCTs where the agent identified the co-administered monoclonal antibody and called False without checking the peptide vaccine.
+
+PASS2_SYSTEM CRITICAL RULES strengthened: "False is only valid if EVERY intervention in the EXPERIMENTAL arm is confirmed non-peptide. If even one drug is a peptide — even a co-administered peptide vaccine alongside a mAb — the answer is True."
+
+**v22 Delivery Mode Agent — Multi-Drug Route Reporting**
+
+PASS1_SYSTEM now instructs the agent to report the route for each drug separately when the EXPERIMENTAL arm contains multiple drugs. Prevents oral co-medications from being omitted when the primary drug is an injection.
+
+**v22 EDAM Targeted Purge**
+
+Only 1 experience required deletion — NCT03232112 outcome = "Failed - completed trial" (a TERMINATED trial, position 148 in training list, Batch F). All other 1,775 experiences were valid. This demonstrates the targeted purge approach: when only specific records are contaminated, a row-level DELETE is preferable to a full field wipe.
+
+```sql
+DELETE FROM experiences
+WHERE field_name = 'outcome'
+  AND value = 'Failed - completed trial'
+  AND nct_id = 'NCT03232112';
+```
+
+**Post-v22 state (2026-03-31):** 1,775 experiences / 123 corrections. All 5 jobs queued: concordance v22 (50 test NCTs) + Batches G/H R1/R2 (positions 151-200).
+
 
 ## 17. Design Philosophy
 

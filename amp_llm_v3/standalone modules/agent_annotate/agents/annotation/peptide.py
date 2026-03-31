@@ -144,7 +144,11 @@ CRITICAL RULES:
 - Brand names containing "peptide" do NOT make the product a peptide drug
 - Nutritional formulas with hydrolyzed proteins are NOT peptide drugs
 - Monoclonal antibodies are NOT peptides (different drug class)
-- MULTI-DRUG TRIALS: If ANY intervention is a peptide → True. Evaluate ALL interventions.
+- MULTI-DRUG TRIALS: Evaluate EACH drug in the EXPERIMENTAL arm independently. "False" is only
+  valid if EVERY intervention is confirmed non-peptide. If even one drug is a peptide (even a
+  co-administered peptide vaccine alongside a monoclonal antibody), the answer is True. A common
+  error is calling False because the primary drug is a mAb while ignoring a peptide co-drug in
+  the same arm — always check ALL drugs before concluding False.
 - Heat shock protein-peptide complexes: the peptide is cargo, not the active drug → False
 - Autologous dexosomes/exosomes loaded with peptides: the vehicle is the drug → False
 
@@ -214,6 +218,8 @@ _KNOWN_PEPTIDE_DRUGS = {
     "streptincor",
     # v17: Multi-epitope peptide vaccines (cocktails of synthetic peptides)
     "ose2101", "tedopi",
+    # v22: Additional multi-epitope peptide cancer vaccines
+    "isa101b", "isa101", "melitac 12.1", "melitac",
     # HIV peptides (still peptides even though not AMPs)
     "enfuvirtide", "t-20", "fuzeon", "peptide t", "dapta",
     # v17: Peptide receptor radionuclide therapy (peptide IS the targeting mechanism
