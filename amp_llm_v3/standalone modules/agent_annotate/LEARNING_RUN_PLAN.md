@@ -1,6 +1,6 @@
 # EDAM Learning Run Plan
 
-**Last updated:** 2026-03-27
+**Last updated:** 2026-03-31
 
 ## Job Registry
 
@@ -41,11 +41,11 @@
 | 28 | Train-D v20 R1 | 798817a09db3 | 50 | 50/50 | **Complete** | v20 (163eaf1) | 300 exp | EDAM outcome+delivery_mode later purged |
 | 29 | Train-D v20 R2 | 3fc6552eb54e | 50 | 50/50 | **Complete** | v20 (163eaf1) | 300 exp | EDAM outcome+delivery_mode later purged |
 | 30 | Concordance v20 (partial) | e0f556c703c7 | 50 | 15/50 | **Cancelled** | v20 (163eaf1) | — | Cancelled at 15/50 — regression confirmed, root cause identified |
-| **31** | **Batch E v21 R1** | **83c6ad7fd4d7** | **25** | **—** | **Running** | **v21 (69e7d14)** | **—** | **Positions 101-125. EDAM outcome+delivery_mode rebuilt from scratch.** |
-| *32* | *Batch E v21 R2* | *54acb4a8136d* | *25* | *—* | *Queued* | *v21 (69e7d14)* | *—* | *Stability run.* |
-| *33* | *Batch F v21 R1* | *f78d3554f29f* | *25* | *—* | *Queued* | *v21 (69e7d14)* | *—* | *Positions 126-150.* |
-| *34* | *Batch F v21 R2* | *92fce293f860* | *25* | *—* | *Queued* | *v21 (69e7d14)* | *—* | *Stability run.* |
-| *35* | *Concordance v21* | *TBD* | *50* | *—* | *After jobs 31-34* | *v21 (69e7d14)* | *—* | *fast_learning_batch_50.txt. Primary v21 evaluation.* |
+| **31** | **Batch E v21 R1** | **83c6ad7fd4d7** | **25** | **25/25** | **Complete** | **v21 (69e7d14)** | **—** | **Positions 101-125. EDAM outcome+delivery_mode rebuilt from scratch.** |
+| **32** | **Batch E v21 R2** | **54acb4a8136d** | **25** | **25/25** | **Complete** | **v21 (69e7d14)** | **—** | **Stability run.** |
+| **33** | **Batch F v21 R1** | **f78d3554f29f** | **25** | **25/25** | **Complete** | **v21 (69e7d14)** | **—** | **Positions 126-150.** |
+| **34** | **Batch F v21 R2** | **92fce293f860** | **25** | **25/25** | **Complete** | **v21 (69e7d14)** | **—** | **Stability run.** |
+| **35** | **Concordance v21** | **c2c43af95162** | **50** | **50/50** | **Complete** | **v21 (69e7d14)** | **—** | **fast_learning_batch_50.txt. Outcome=68% (BELOW 70% threshold). See concordance below.** |
 
 ### Agent version summary
 
@@ -243,6 +243,46 @@ R1 value distribution: Terminated=20, Withdrawn=8, Positive=8, Failed=7, Recruit
 - 13/22 exact matches = 59.1%, up from 0 in v17. Known-sequences table working.
 - Coverage gap: agent annotated 22/50 vs R1's 33/50 — need better coverage for Batch B peptides.
 
+### v21 Concordance (Batch A+B, 50 NCTs, job c2c43af95162) — 2026-03-31
+
+| Field | v21 | v19 R1 | v18+ baseline | Target | Met? |
+|---|---|---|---|---|---|
+| Classification | **92.0% / AC₁=0.917** | 92.0% / 0.917 | 87.8% / 0.870 | Hold 92% | YES (held) |
+| Delivery Mode | 63.3% / AC₁=0.609 | 65.3% / 0.632 | 67.3% / 0.654 | ≥65% | NO (-2pp) |
+| Outcome | **68.0% / AC₁=0.633** | 72.0% / 0.680 | 70.0% / 0.657 | ≥76% | **NO (-4pp REGRESSION)** |
+| Reason for Failure | 70.0% / AC₁=0.657 | 72.0% / 0.671 | 72.0% / 0.671 | ≥70% | YES (barely) |
+| Peptide | 82.2% / AC₁=0.769 | 86.7% / 0.834 | 88.9% / 0.865 | ≥86% | NO (-4.5pp) |
+| Sequence | 61.9% (21/21) / AC₁=0.603 | 65.0% / 0.634 | 59.1% / 0.574 | ≥30% | YES |
+
+**Key findings:**
+- **TERMINATED fix net-neutral:** Removed TERMINATED deterministic bypass was architecturally correct but evidence-starved. 0 TERMINATED→Positive cases fixed. 2 new overcorrection errors (NCT00982696: Unknown→Failed; NCT03490942: Terminated→Failed) — LLM is calling Failed too aggressively when it finds any failure signal.
+- **Outcome below v18+ baseline** (68% vs 70%). v19's +2pp gain erased. EDAM Batches E/F rebuild did not restore lost signal.
+- **16 Agent vs R1 outcome disagreements:** 5 persistent evidence gaps, 2 TERMINATED-fix failures, 2 new overcorrections, 4 active-trial-status R1/R2 disagreements, 1 regression (NCT00972569), 2 other.
+- **Peptide regression -4.5pp:** 7 False→True misses. Under-calling True. Investigate EDAM Batches E/F bias.
+- **Delivery mode:** Experimental-arm-only filter had zero effect. Structural sub-category confusion (SC/IM/IV/Other) and missing multi-route persist.
+- **Decision: BELOW 70% threshold — code fix required before next training run.** Do not proceed to Batches G/H.
+
+**Outcome disagreements (Agent vs R1):**
+
+| NCT | R1 | v21 | Type |
+|---|---|---|---|
+| NCT00002428 | Failed | Unknown | Evidence gap (persistent) |
+| NCT00004984 | Failed | Unknown | Evidence gap (persistent) |
+| NCT00972569 | Failed | Unknown | Regression (was correct in v19) |
+| NCT00977145 | Positive | Terminated | TERMINATED fix failure |
+| NCT00982696 | Unknown | Failed | Overcorrection (new v21 error) |
+| NCT02654587 | Positive | Terminated | TERMINATED fix failure |
+| NCT02660736 | Positive | Unknown | Evidence gap (persistent) |
+| NCT02665377 | Failed | Unknown | Evidence gap (persistent) |
+| NCT03490942 | Terminated | Failed | Overcorrection (new v21 error) |
+| NCT04672083 | Failed | Unknown | Evidence gap (persistent) |
+| NCT04701021 | Failed | Positive | Overcalling positive (persistent) |
+| NCT04711135 | Recruiting | Active | Status confusion (R1/R2 disagree) |
+| NCT04749641 | Active | Positive | Status confusion (R1/R2 disagree) |
+| NCT04771013 | Recruiting | Positive | Status confusion (R1/R2 disagree) |
+| NCT05361733 | Positive | Recruiting | Status confusion (R1/R2 disagree) |
+| NCT06833931 | Terminated | Withdrawn | R1/R2 disagree (R2=Withdrawn) |
+
 ### v19 Concordance (Batch A+B, 50 NCTs, 2 runs: c1786d005ade / ac6af4e49fe2) — 2026-03-27
 
 | Field | v19 R1 | v19 R2 | v18+ baseline | Target | Met? |
@@ -273,13 +313,15 @@ R1 value distribution: Terminated=20, Withdrawn=8, Positive=8, Failed=7, Recruit
 | Peptide | 86.7% | 80.0% | **7% (temp issue — fixed v20)** |
 | Sequence | 65.0% | 68.4% | 3% |
 
-## EDAM Database State (2026-03-29)
+## EDAM Database State (2026-03-31, post-Batches E/F)
 
 | Table | Count | Notes |
 |---|---|---|
-| experiences | 1,206 | From 7 jobs across v19+v20 training runs (91 unique NCTs). |
-| corrections | 74 | From consistency overrides + reconciliation. |
-| unique_ncts | 91 | All from TRAINING_NCTS allowlist. Zero test-batch NCTs. |
+| experiences | ~1,604 | Post-purge (1,404) + Batches E/F ~200 new exp (50 NCTs × 2 runs × 2 fields) |
+| corrections | ~93+ | Baseline 93, may have grown from E/F runs |
+| unique_ncts | ~170 | 120 baseline + 50 new from positions 101-150 |
+
+**Note:** Batches E/F rebuilt outcome+delivery_mode EDAM from scratch on v21 code. However, concordance did not improve (outcome fell to 68%). EDAM net-positive threshold (≥70% base accuracy) not met. Do NOT run more training jobs until outcome code is fixed.
 
 ### EDAM Learning Conditions
 

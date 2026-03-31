@@ -1,9 +1,30 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-03-30
-**Current state:** v21 (69e7d14) on main. Batch E R1 running (83c6ad7fd4d7, 25 NCTs). EDAM: 1,404 experiences / 93 corrections / 120 unique NCTs — outcome + delivery_mode fully purged (net-negative), classification/peptide/RfF/sequence retained. Jobs 54acb4a8136d / f78d3554f29f / 92fce293f860 queued. Next: wait for all 4 Batch E/F jobs, then run v21 concordance (50 test NCTs).
+**Last updated:** 2026-03-31
+**Current state:** v21 (69e7d14) on main. Batches E/F complete (4 jobs). v21 concordance complete (c2c43af95162, 50 NCTs). Result: outcome=68% — BELOW 70% threshold. TERMINATED fix net-neutral (2 new overcorrected-Failed errors, 0 TERMINATED→Positive fixed). Decision: examine failure cases in detail before any further training.
 
 ## Latest Concordance
+
+### v21 (50 NCTs, job c2c43af95162) — 2026-03-31
+
+| Field | v21 | v19 R1 | v18+ baseline | Target | Met? |
+|---|---|---|---|---|---|
+| Classification | **92.0% / AC₁=0.917** | 92.0% / AC₁=0.917 | 87.8% / 0.870 | Hold 92% | YES (held) |
+| Delivery Mode | 63.3% / AC₁=0.609 | 65.3% / AC₁=0.632 | 67.3% / 0.654 | ≥65% | NO (-2pp regress) |
+| Outcome | **68.0% / AC₁=0.633** | 72.0% / AC₁=0.680 | 70.0% / 0.657 | ≥76% | **NO (-4pp REGRESSION)** |
+| Reason for Failure | 70.0% / AC₁=0.657 | 72.0% / AC₁=0.671 | 72.0% / 0.671 | ≥70% | YES (barely) |
+| Peptide | 82.2% / AC₁=0.769 | 86.7% / AC₁=0.834 | 88.9% / 0.865 | ≥86% | NO (-4.5pp regress) |
+| Sequence | 61.9% (21/21) / AC₁=0.603 | 65.0% / AC₁=0.634 | 59.1% / 0.574 | ≥30% | YES |
+
+**Key findings:**
+- **TERMINATED fix: net-neutral/negative.** 0 TERMINATED→Positive cases fixed (NCT00977145, NCT02654587 still wrong). 2 new overcorrection errors introduced (NCT00982696: Unknown→Failed; NCT03490942: Terminated→Failed). The evidence-based pipeline is too aggressively calling Failed for genuinely-Terminated trials when it finds any failure signal.
+- **Outcome fell BELOW v18+ baseline** (68% vs 70%). v19's +2pp gain was erased. EDAM purge + rebuilt training removed signal without restoring enough.
+- **16 Agent vs R1 outcome disagreements:** 5 persistent evidence gaps (NCT00002428, NCT00004984, NCT02660736, NCT02665377, NCT04672083), 2 TERMINATED-fix failures (NCT00977145, NCT02654587), 2 new overcorrections (NCT00982696, NCT03490942), 4 active-trial-status disagreements (R1/R2 themselves disagree), 1 genuine regression (NCT00972569, correctly Failed in v19, now Unknown in v21), 2 other.
+- **RfF 70%: just made target** — but 3 cascade errors from outcome, multiple Business Reason vs other-category confusions.
+- **Peptide regression -4.5pp:** 7 cases False→True misses. Under-calling True by end of test batch. Possibly EDAM Batches E/F training noise or cascade logic interaction.
+- **Delivery mode -2pp:** Experimental-arm-only filter had zero effect. Errors are structural sub-category confusion (SC/IM/IV/Other) and missing multi-route (oral+injection combos).
+
+**Decision: BELOW 70% threshold → examine failure cases in detail before more training.**
 
 ### v20 partial (15/50 NCTs, job e0f556c703c7) — 2026-03-30 (cancelled at 15/50)
 
@@ -15,7 +36,7 @@
 | Reason for Failure | 66.7% | 68.0% / 0.625 | -1pp |
 | Peptide | 100% | 80.0% / 0.734 | +20pp |
 
-Key finding: Outcome regression confirmed at 15/50 NCTs. Root cause identified as `[Deterministic v11]` mapping `TERMINATED → "Terminated"` in `outcome.py`, bypassing LLM entirely. Trials stopped early for efficacy (positive published results, drug advanced) were blindly labelled "Terminated". Fixed in v21. Concordance cancelled — enough data to confirm regression and root cause.
+Key finding: Outcome regression confirmed at 15/50 NCTs. Root cause identified as `[Deterministic v11]` mapping `TERMINATED → "Terminated"` in `outcome.py`, bypassing LLM entirely. Fixed in v21 — but fix was not sufficient (see v21 results above).
 
 ### v19 (50 NCTs, 2 runs: c1786d005ade / ac6af4e49fe2) — 2026-03-27
 
@@ -54,45 +75,69 @@ Key finding: Outcome regression confirmed at 15/50 NCTs. Root cause identified a
 - EDAM post-purge: 1,404 experiences / 93 corrections / 120 unique NCTs.
 - New training (Batches E/F) on v21 code will rebuild outcome + delivery_mode from scratch with correct annotations.
 
-## Strategic Plan: Post-v21 Concordance
+## Strategic Plan: Post-v21 Analysis (2026-03-31)
 
-**After all 4 Batch E/F jobs complete → run v21 concordance (50 test NCTs):**
+**v21 concordance result: outcome=68% — BELOW 70% threshold. Do not proceed to Batches G/H.**
 
-| v21 outcome concordance | Action |
-|---|---|
-| ≥76% vs v19 R1 (72%) | TERMINATED fix confirmed. EDAM E/F providing good signal. Continue training. |
-| 70-76% | Marginal improvement. Re-run once more. Investigate remaining failures. |
-| ≤70% | Fix not sufficient. Examine failed cases in detail before more training. |
+### Root cause priorities (in order of impact)
 
-**v21 targets:**
-- Outcome: ≥76% (TERMINATED fix expected to recover most of the regression)
-- Delivery mode: ≥65% (experimental-arm-only filter expected to reduce false multi-route)
-- Classification: hold at 92%
-- RfF: ≥70%
+**Priority 1: TERMINATED overcorrection (2 new errors introduced by v21 fix)**
+- NCT00982696: outcome=Unknown (R1), agent=Failed. Trial has TERMINATED status with complex history — agent found some failure signal and called Failed instead of Unknown.
+- NCT03490942: outcome=Terminated (R1), agent=Failed. Business-reason termination, agent incorrectly called Failed.
+- **Fix needed:** The LLM is too eager to call Failed after the deterministic bypass was removed. The evidence-check pipeline needs a higher evidence bar for Failed: require explicit adverse events or efficacy failure reports, not just absence of positive results. Terminated should remain the default when evidence is ambiguous.
 
-**EDAM strategy going forward:**
-- Batches E/F (50 new NCTs, positions 101-150 of training pool) run ×2 each for EDAM stability
-- outcome + delivery_mode EDAM will rebuild from scratch on v21 code
-- After v21 concordance confirms improvement → Batches G/H (positions 151-200), then full 642-NCT run
+**Priority 2: TERMINATED→Positive still not working (0 of 2 cases fixed)**
+- NCT00977145: Positive (R1), agent=Terminated. Drug advanced but no published results accessible.
+- NCT02654587: Positive (R1), agent=Terminated. Same pattern.
+- **Fix needed:** The H3b heuristic (Phase II/III >10yr + no pubs + no negative evidence → lean Positive) may need to be applied more aggressively for TERMINATED trials. Or add Phase heuristic specifically for TERMINATED + drug-advanced evidence.
 
-**EDAM net-positive threshold:** Base field accuracy must be ≥~70% for EDAM to improve rather than harm. outcome and delivery_mode were below this threshold with contaminated data. Now reset.
+**Priority 3: Persistent evidence-gap failures (5 cases, unchanged across all versions)**
+- NCT00002428, NCT00004984, NCT02660736, NCT02665377, NCT04672083: all require adverse event/efficacy publications not accessible through current sources.
+- **No code fix possible.** Structural literature access gap. Accept as floor.
+
+**Priority 4: Peptide regression (-4.5pp)**
+- 7 cases of Agent=False where R1=True. Under-calling peptide.
+- Investigate if EDAM Batches E/F trained on non-peptide cases that are suppressing True calls.
+- Consider: peptide field EDAM contributions from training may be introducing False bias if training NCTs have more non-peptide drugs.
+
+**Priority 5: RfF Business Reason vs other category confusion (5 cases)**
+- NCT03018288, NCT03397966, NCT03490942, NCT03500484, NCT05813314: all confusion between Business Reason and other termination categories.
+- R1/R2 also disagree on several — these may be at the human annotation reliability ceiling.
+
+**Priority 6: NCT00972569 regression (correctly Failed in v19, now Unknown in v21)**
+- Single case but troubling — suggests EDAM or prompt changes destabilized a previously correct answer.
+- Check if EDAM experience for this NCT changed between v19 and v21.
+
+### EDAM net-positive threshold assessment
+- Outcome on test NCTs: 68% (BELOW the 70% threshold). EDAM Batches E/F did NOT help.
+- The purge + rebuild strategy failed to reach baseline. Possible causes:
+  1. 50 training NCTs (Batches E/F, positions 101-150) have lower literature density than test NCTs.
+  2. EDAM rebuilt experiences for outcome include the TERMINATED overcorrection pattern.
+  3. Training vs test gap (outcome 44-50% on training NCTs) means EDAM is learning from unreliable signal.
+- **Decision: Do not run Batches G/H until outcome code is fixed.** Adding more training on broken code will make things worse.
+
+### Next steps (code fixes before any more training)
+1. **Fix TERMINATED overcorrection:** Tighten Failed evidence requirement — require explicit adverse event records or efficacy failure publications, not inference from absence of positive results.
+2. **Fix TERMINATED→Positive:** Strengthen Phase heuristic for TERMINATED + Phase II/III trials where the drug appears to have advanced (infer from later trials, drug approvals, etc.).
+3. **Investigate peptide regression:** Check which EDAM experiences are contributing False bias for NCT00977145, NCT03018288, NCT03165435, NCT03258008, NCT03597282 (all Agent=False, R1=True).
+4. After code fixes → single re-concordance run (50 test NCTs). If outcome ≥70%: add to EDAM and proceed to Batches G/H.
 
 **Training vs test gap:** Outcome 44-50% on training NCTs vs 68-72% on test NCTs. Test NCTs selected for literature richness. Do NOT use training-NCT concordance to evaluate model quality — always use test batch (fast_learning_batch_50.txt).
 
 **Hardware constraint:** No parallel jobs. Mac Mini M4, 16GB. Submit jobs one at a time (API queues them).
 
-## Current: v21 Batch E/F Training
+## Current: Post-v21 Analysis (2026-03-31)
 
-### Training Queue (2026-03-30)
+### v21 Batch E/F Training — Complete
 | Job | Batch | NCTs | Status |
 |---|---|---|---|
-| 83c6ad7fd4d7 | Batch E run 1 | 25 (positions 101-125) | **running** |
-| 54acb4a8136d | Batch E run 2 | 25 (positions 101-125) | queued |
-| f78d3554f29f | Batch F run 1 | 25 (positions 126-150) | queued |
-| 92fce293f860 | Batch F run 2 | 25 (positions 126-150) | queued |
+| 83c6ad7fd4d7 | Batch E run 1 | 25 (positions 101-125) | **Complete** |
+| 54acb4a8136d | Batch E run 2 | 25 (positions 101-125) | **Complete** |
+| f78d3554f29f | Batch F run 1 | 25 (positions 126-150) | **Complete** |
+| 92fce293f860 | Batch F run 2 | 25 (positions 126-150) | **Complete** |
+| c2c43af95162 | Concordance v21 | 50 test NCTs | **Complete — 68% outcome (BELOW threshold)** |
 
-50 unique training NCTs (positions 101-150 of training pool, excl. test batch), each run twice for EDAM stability.
-After all 4 complete: run concordance on fast_learning_batch_50.txt (50 test NCTs).
+### Status: Code fix required before next training run
 
 ### v20 Training (completed, EDAM outcome+delivery_mode purged)
 | Job | Batch | NCTs | EDAM exp written | Notes |
