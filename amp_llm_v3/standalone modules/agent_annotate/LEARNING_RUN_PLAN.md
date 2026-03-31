@@ -72,7 +72,7 @@
 | **v19** | **d777be62 (dev)** | **Classification: remove Mode D (all vaccines now Other — adaptive immunity ≠ AMP). Fixed classifier/verifier inconsistency (verifier still had HIV/influenza vaccines as AMP). Remove ic41/ic43 from _KNOWN_AMP_DRUGS. Outcome: add negative efficacy heuristics (did not demonstrate, no benefit, lack of efficacy, etc.). Delivery mode: remove bare ' sc ' abbreviation, add cancer vaccine → Other/Unspecified rule. Sequence: filter to EXPERIMENTAL arms only, suppress DBAASP/APD for non-AMP trials. Literature: always run title fallback for old trials (NCT < 100k).** |
 | **v20** | **163eaf1** | **Reconciler bug fix (CRITICAL): unanimous verifier disagreement (agreement_ratio=0.0) now always routes to reconciler — fixed 15 per-run cases where high-confidence Pass1 was overriding 3/3 verifier disagreement. CT.gov resultsSection: hasResults flag + primary outcome data emitted as citations from already-fetched response (no extra HTTP call). Delivery mode Rule 8: explicit route keyword required — no inferring SC from drug class or IV from mg/kg. Outcome verifier: Failed requires positive evidence of endpoint failure, not merely absence of publications. Classification: AMP(other) requires confirmed antimicrobial mechanism from Step 2. EDAM: test-batch NCTs (fast_learning_batch_50.txt) hard-excluded from TRAINING_NCTS at load time. Peptide field temp 0.05→0.0 (eliminates 7% run-to-run variance on binary field).** |
 | **v21** | **69e7d14** | **TERMINATED overcalling fix (CRITICAL): removed TERMINATED from _DETERMINISTIC_STATUSES in outcome.py — was blindly mapping all TERMINATED trials to "Terminated" with skip_verification=True, causing -25pp outcome regression on v20 partial concordance. PASS2_PROMPT item 4 now checks evidence (Positive if drug advanced/positive results, Failed if safety/futility, Terminated if business reason). Phase heuristics H1b (Phase I >5yr, no Phase II, no pubs → Unknown) and H3b (Phase II/III >10yr, no pubs, no negative evidence → lean Positive) added to both annotator and verifier. Delivery mode: _deterministic_delivery_mode now filters intervention_names to EXPERIMENTAL arms only (armGroups[type=EXPERIMENTAL]); PASS1+PASS2 prompts updated to focus on experimental arm routes only. EDAM surgical purge: all outcome + delivery_mode experiences (702 rows) and corrections (40 rows) deleted — net-negative on both fields due to biased v20 training data.** |
-| **v22** | **[this commit]** | **TERMINATED semantic fix (CRITICAL): removed "Failed - completed trial" from TERMINATED decision branch in PASS2_PROMPT item 4 (outcome.py) and verifier.py — "Failed - completed trial" is EXCLUSIVELY for COMPLETED trials with published negative results; TERMINATED trials resolve to Positive or Terminated only. Added explicit TERMINATED RULE to CRITICAL RULES. Peptide: added ISA101b/ISA101/MELITAC 12.1/MELITAC to _KNOWN_PEPTIDE_DRUGS (were causing 7 False→True misses in multi-drug cancer vaccine trials); strengthened PASS2_SYSTEM multi-drug False guard (False only valid if ALL interventions non-peptide). Delivery mode: PASS1 now instructs agent to report route for each drug separately in multi-drug EXPERIMENTAL arms. EDAM targeted purge: 1 bad outcome experience deleted (NCT03232112, "Failed - completed trial" for a TERMINATED trial).** |
+| **v22** | **fc02b08** | **TERMINATED semantic fix (CRITICAL): removed "Failed - completed trial" from TERMINATED decision branch in PASS2_PROMPT item 4 (outcome.py) and verifier.py — "Failed - completed trial" is EXCLUSIVELY for COMPLETED trials with published negative results; TERMINATED trials resolve to Positive or Terminated only. Added explicit TERMINATED RULE to CRITICAL RULES. Peptide: added ISA101b/ISA101/MELITAC 12.1/MELITAC to _KNOWN_PEPTIDE_DRUGS (were causing 7 False→True misses in multi-drug cancer vaccine trials); strengthened PASS2_SYSTEM multi-drug False guard (False only valid if ALL interventions non-peptide). Delivery mode: PASS1 now instructs agent to report route for each drug separately in multi-drug EXPERIMENTAL arms. EDAM targeted purge: 1 bad outcome experience deleted (NCT03232112, "Failed - completed trial" for a TERMINATED trial).** |
 
 ## NCT Coverage
 
@@ -319,15 +319,15 @@ R1 value distribution: Terminated=20, Withdrawn=8, Positive=8, Failed=7, Recruit
 | Peptide | 86.7% | 80.0% | **7% (temp issue — fixed v20)** |
 | Sequence | 65.0% | 68.4% | 3% |
 
-## EDAM Database State (2026-03-31, post-Batches E/F)
+## EDAM Database State (2026-03-31, post-v22 purge)
 
 | Table | Count | Notes |
 |---|---|---|
-| experiences | ~1,604 | Post-purge (1,404) + Batches E/F ~200 new exp (50 NCTs × 2 runs × 2 fields) |
-| corrections | ~93+ | Baseline 93, may have grown from E/F runs |
+| experiences | 1,775 | Post-v22 targeted purge (1 bad row deleted: NCT03232112 outcome="Failed - completed trial") |
+| corrections | 123 | Unchanged from post-E/F state |
 | unique_ncts | ~170 | 120 baseline + 50 new from positions 101-150 |
 
-**Note:** Batches E/F rebuilt outcome+delivery_mode EDAM from scratch on v21 code. However, concordance did not improve (outcome fell to 68%). EDAM net-positive threshold (≥70% base accuracy) not met. Do NOT run more training jobs until outcome code is fixed.
+**Note:** v22 targeted purge deleted only 1 experience (NCT03232112). All other E/F outcome/delivery_mode experiences retained. Concordance v22 (6657f8896238) and Batches G/H queued — running unattended. Gate: outcome ≥70% on concordance v22.
 
 ### EDAM Learning Conditions
 

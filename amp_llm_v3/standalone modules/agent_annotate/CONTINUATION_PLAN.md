@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-03-31
-**Current state:** v21 (69e7d14) on main. Batches E/F complete (4 jobs). v21 concordance complete (c2c43af95162, 50 NCTs). Result: outcome=68% — BELOW 70% threshold. TERMINATED fix net-neutral (2 new overcorrected-Failed errors, 0 TERMINATED→Positive fixed). Decision: examine failure cases in detail before any further training.
+**Current state:** v22 (fc02b08) on main. v22 code fixes applied. 5 jobs queued and running unattended: concordance v22 (6657f8896238) + Batches G R1/R2 (55826cb5853a, 799905fee5c4) + Batches H R1/R2 (6ae5c0fb0de1, 4953bff0b240). Next action: when concordance completes, run concordance_jobs.py and check outcome ≥70%.
 
 ## Latest Concordance
 
@@ -151,9 +151,20 @@ Key finding: Outcome regression confirmed at 15/50 NCTs. Root cause identified a
 
 **Hardware constraint:** No parallel jobs. Mac Mini M4, 16GB. Submit jobs one at a time (API queues them).
 
-## Current: Post-v21 Analysis (2026-03-31)
+## Current: v22 Queued (2026-03-31)
 
-### v21 Batch E/F Training — Complete
+### v22 Jobs — Queued and Running
+| Job | Batch | NCTs | Status |
+|---|---|---|---|
+| 6657f8896238 | Concordance v22 | 50 test NCTs | **Running / Queued** |
+| 55826cb5853a | Batch G R1 | 25 (positions 151-175) | **Queued** |
+| 799905fee5c4 | Batch G R2 | 25 (positions 151-175) | **Queued** |
+| 6ae5c0fb0de1 | Batch H R1 | 25 (positions 176-200) | **Queued** |
+| 4953bff0b240 | Batch H R2 | 25 (positions 176-200) | **Queued** |
+
+### Status: All jobs queued — running unattended
+
+### v21 Batch E/F Training — Complete (archived)
 | Job | Batch | NCTs | Status |
 |---|---|---|---|
 | 83c6ad7fd4d7 | Batch E run 1 | 25 (positions 101-125) | **Complete** |
@@ -161,8 +172,6 @@ Key finding: Outcome regression confirmed at 15/50 NCTs. Root cause identified a
 | f78d3554f29f | Batch F run 1 | 25 (positions 126-150) | **Complete** |
 | 92fce293f860 | Batch F run 2 | 25 (positions 126-150) | **Complete** |
 | c2c43af95162 | Concordance v21 | 50 test NCTs | **Complete — 68% outcome (BELOW threshold)** |
-
-### Status: Code fix required before next training run
 
 ### v20 Training (completed, EDAM outcome+delivery_mode purged)
 | Job | Batch | NCTs | EDAM exp written | Notes |
@@ -178,7 +187,7 @@ All 1,200 outcome + delivery_mode experiences from these jobs were purged (see v
 
 | Environment | Branch | Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v21 (69e7d14) | 83c6ad7fd4d7 running (Batch E run 1) |
+| Prod (port 8005) | main | v22 (fc02b08) | 6657f8896238 running (Concordance v22) |
 | Dev (port 9005) | dev | v21 (6ce9aff) | None |
 
 ## Important Notes
