@@ -2078,11 +2078,19 @@ class PipelineOrchestrator:
                 )
 
             # Check 4: Zero confidence with a non-empty value (LLM call likely failed)
+            # v25: N/A is intentional when from cascade (model="cascade") or
+            # deterministic sequence lookup (model="deterministic"). Only flag
+            # if an LLM-based annotation returns N/A — that's suspicious.
             if confidence is not None and confidence == 0.0 and value:
-                issues.append(
-                    f"{field}: zero confidence with value '{value}' "
-                    f"(model={model}) — possible failed LLM call"
+                is_intentional_na = (
+                    value == "N/A"
+                    and model in ("cascade", "deterministic")
                 )
+                if not is_intentional_na:
+                    issues.append(
+                        f"{field}: zero confidence with value '{value}' "
+                        f"(model={model}) — possible failed LLM call"
+                    )
 
             # Check 5: Reasoning too short (possible truncation or empty LLM response)
             if reasoning and len(reasoning) < 10 and "deterministic" not in (model or ""):
