@@ -159,7 +159,7 @@ ollama:
   # while allowing cold loads (~60s) + inference (~30s) + safety margin.
   # Larger models (14B+) doing annotation/reconciliation need the full 600s.
   model_timeouts:
-    "phi4-mini": 240
+    "phi4-mini": 500
     "llama3.1:8b": 300
     "gemma2:9b": 300
     "qwen2.5:7b": 300
