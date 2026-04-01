@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-01
-**Current state:** v25 merged to main (904180a). Baseline concordance job bb302bc7b077 running (50 NCTs, same as v22 set).
+**Current state:** v25 merged to main (904180a). Baseline concordance job b7c5c4fe7a17 running (bb302bc7b077 cancelled for quality checker fix) (50 NCTs, same as v22 set).
 
 ## v24 Changes
 
@@ -18,6 +18,7 @@
 - **15 new known peptide drugs**: pvx-410, polypepi1018, gv1001, gt-001, xfb19, satoreotide, pemziviptadil, emi-137, neobomb1, pd-l1/pd-l2 peptide, bcl-xl_42-caf09b
 - **9 new known sequences**: gv1001 (16aa), abaloparatide (34aa), vosoritide/bmn111 (39aa), satoreotide (8aa), pd-l1 peptide (19aa), emi-137 (26aa), l-carnosine (2aa)
 - **Outcome publication priority (v25)**: Published results override CT.gov registry status. Evidence priority ladder: publications > CT.gov results > CT.gov status > trial phase. Post-LLM _publication_priority_override() for Unknown/Active/Terminated
+- **Quality checker fix**: N/A from cascade/deterministic no longer triggers false retry (was wasting time on intentional N/A results)
 - **Frontend**: Agreement page at /agreement (was /concordance), jobs table shows commit hash, autoupdater rebuilds frontend
 
 ### v22-era Job Performance (old code, mapped to v24 categories)
@@ -122,7 +123,7 @@ The FALSE→TRUE pattern (74% of errors) means the agent is too conservative —
 2. **[P0] DRVYIHP over-matching**: Tighten `_KNOWN_SEQUENCES` matching in sequence.py. Currently matches if drug name substring appears anywhere in intervention name. Change to require the intervention IS the drug (e.g., "Angiotensin II" matches, but "Angiotensin-Converting Enzyme Inhibitor" does not).
 
 **Phase 2: Run v25 baseline concordance (P0 fixes applied)**
-3. v25 baseline concordance job bb302bc7b077 submitted (50 NCTs). Running on prod. Compare against v22 job 6657f8896238.
+3. v25 baseline concordance job b7c5c4fe7a17 running (bb302bc7b077 cancelled after 4/50 to pick up quality checker fix) (50 NCTs). Running on prod. Compare against v22 job 6657f8896238.
 4. Compare results against human R1 using the training CSV
 5. Expected improvements: classification >=94% (was 94.3%), delivery >=85% (was 88.6% minus dedup bugs), sequence metrics now use order-agnostic comparison
 
