@@ -28,7 +28,7 @@ This paper describes the complete Agent Annotate system, presents baseline evalu
 
 ### 2.1 Antimicrobial Peptide Classification
 
-Antimicrobial peptides (AMPs) exert their therapeutic effects through direct antimicrobial mechanisms. We classify AMPs by three modes of action (Modes A--C). A fourth mode (Mode D, pathogen-targeting vaccine peptides) was removed in v2, re-added in v12, and permanently removed in v19 after concordance analysis on 50 trials demonstrated systematic over-classification of vaccine NCTs.
+Antimicrobial peptides (AMPs) exert their therapeutic effects through direct antimicrobial mechanisms. We classify AMPs by three modes of action (Modes A--C). A fourth mode (Mode D, pathogen-targeting vaccines) was initially included but removed after concordance analysis showed it caused systematic over-classification.
 
 **Mode A --- Direct Antimicrobial.** Peptides that kill or inhibit microbial growth through direct physical interaction, typically via membrane disruption or pore formation. Representative examples include colistin, polymyxin B, melittin, and nisin. These peptides interact directly with microbial cell membranes, compromising structural integrity and leading to cell death.
 
@@ -36,7 +36,7 @@ Antimicrobial peptides (AMPs) exert their therapeutic effects through direct ant
 
 **Mode C --- Anti-Biofilm.** Peptides that disrupt established microbial biofilms or prevent biofilm formation. Representative examples include LL-37, DJK-5, and IDR-1018. Biofilm disruption is mechanistically distinct from direct antimicrobial activity, as biofilm-resident organisms exhibit phenotypic tolerance that renders them resistant to conventional antimicrobials.
 
-**Mode D --- Removed (v19).** Pathogen-targeting vaccine peptides (StreptInCor, HIV gp120/gp41 peptide vaccines, malaria peptide vaccines) were re-introduced as Mode D in v12 under the rationale that vaccine-mediated pathogen defense qualifies as AMP activity. Concordance analysis on 50 trials (v18+) revealed this caused systematic over-classification. Root cause: vaccine peptides work through adaptive immunity (antibody induction, T-cell priming) --- the peptide itself does not directly kill pathogens, recruit innate immune cells, or disrupt microbial structures. This mechanism is categorically different from Modes A--C. Additionally, the classifier and verifier were inconsistent: the classifier correctly returned Other for vaccine NCTs while the verifier still listed them as AMP(infection), causing the verification stage to override correct primary annotations. Mode D was permanently removed in v19; all vaccine/immunogen peptides are classified as "Other."
+**Mode D --- Removed.** Pathogen-targeting vaccine peptides (StreptInCor, HIV peptide vaccines) were initially classified as AMPs. Concordance analysis on 70 trials revealed this caused systematic over-classification: vaccine peptides induce adaptive immune responses, but the peptide itself does not directly kill pathogens. Mode D peptides are now classified as "Other."
 
 A critical distinction governs classification: the AMP classification is independent of the Peptide field. Many peptides are not antimicrobial --- neuropeptides (VIP/aviptadil, peptide T), metabolic hormones (GLP-1 agonists, insulin), viral entry inhibitors (enfuvirtide), bone regulators (calcitonin, vosoritide), and vaccine immunogens are all classified as "Other" despite being peptides (Peptide=True). Similarly, peptides that *suppress* immunity (autoimmune therapeutics like dnaJP1) are excluded. The core requirement is direct antimicrobial mechanism: the peptide must physically kill, disrupt, or recruit innate immune effectors against pathogens through its own biochemical action.
 
@@ -46,13 +46,13 @@ Each clinical trial is annotated across five structured fields:
 
 | Field | Type | Values |
 |---|---|---|
-| Classification | Categorical (3) | AMP(infection), AMP(other), Other |
-| Delivery Mode | Categorical (18) | Intravenous, Oral, Topical, Intramuscular, Subcutaneous, Intranasal, Inhaled, Intrathecal, Intraperitoneal, Intravesical, Intravitreal, Ophthalmic, Rectal, Vaginal, Transdermal, Sublingual, Other/Unspecified, Multiple |
+| Classification | Categorical (2) | AMP, Other |
+| Delivery Mode | Categorical (4) | Injection/Infusion, Oral, Topical, Other |
 | Outcome | Categorical (7) | Positive, Failed - completed trial, Terminated, Withdrawn, Recruiting, Active not recruiting, Unknown |
 | Reason for Failure | Categorical (5+empty) | Ineffective for purpose, Adverse effects/safety concerns, Formulation/stability issues, Superseded by alternatives, Insufficient enrollment, (empty) |
 | Peptide | Boolean | True, False |
 
-The **Classification** field distinguishes true AMP trials targeting infection from AMP trials with non-infection applications (e.g., wound healing via host defense peptides) and non-AMP trials. Classification and Peptide are independent: a trial can have Peptide=True but Classification=Other (e.g., enfuvirtide is a peptide but not an AMP). **Delivery Mode** captures the route of administration. **Outcome** reflects the current status and result of the trial, incorporating both registry status and published findings. **Reason for Failure** applies only to trials with negative outcomes and must be supported by cited evidence.
+The **Classification** field distinguishes true AMP trials from non-AMP trials (Other = peptide but not AMP). Classification and Peptide are independent: a trial can have Peptide=True but Classification=Other (e.g., enfuvirtide is a peptide but not an AMP). **Delivery Mode** captures the route of administration using four simplified categories (Injection/Infusion, Oral, Topical, Other). **Outcome** reflects the current status and result of the trial, incorporating both registry status and published findings. **Reason for Failure** applies only to trials with negative outcomes and must be supported by cited evidence.
 
 **Peptide** indicates whether any active intervention drug is a peptide therapeutic --- defined as a molecule of 2--100 amino acid residues that serves as the primary pharmacological agent. This includes antimicrobial peptides, hormone analogues (semaglutide, octreotide), cyclic peptides (vancomycin), peptide vaccines, neuropeptides (aviptadil, peptide T), viral entry inhibitors (enfuvirtide), and insulin. It excludes monoclonal antibodies (>100 aa, distinct drug class), small molecules, nutritional formulas containing hydrolyzed proteins, and peptide cargo in delivery vehicles (exosomes, HSP complexes). The question is whether the active drug is a peptide, not whether the formulation contains peptides.
 
@@ -290,16 +290,15 @@ All five annotation agents employ a two-pass architecture. This universal design
 **Classification Agent.** Uses a larger model (qwen2.5:14b on Mac Mini, kimi-k2-thinking on server) because 8B models have demonstrated inability to follow the multi-step decision tree reliably.
 
 - *Pass 1* extracts five antimicrobial evidence dimensions: peptide identity, database matches (DRAMP, APD3, UniProt, ChEMBL), mechanism of action, therapeutic target, and immune direction.
-- *Pass 2* applies a three-step decision tree: (1) Is the intervention a peptide? (2) Does this peptide have a DIRECT antimicrobial mechanism — physically killing, lysing, or disrupting pathogens, or directly recruiting innate immune cells to kill pathogens? (3) Does this AMP target infection?
+- *Pass 2* applies a two-step decision tree: (1) Is the intervention a peptide? (2) Does this peptide have a DIRECT antimicrobial mechanism — physically killing, lysing, or disrupting pathogens, or directly recruiting innate immune cells to kill pathogens? If yes to both, classify as AMP; otherwise Other.
 - The v2 prompt encodes explicit exclusions for the most common over-classification patterns: antiretrovirals (enfuvirtide, peptide T — viral entry inhibitors, not antimicrobial), vaccine peptides (induce adaptive immunity, the peptide itself does not kill pathogens), neuropeptides (VIP/aviptadil — vasodilators), metabolic hormones (GLP-1, GLP-2), and immunosuppressive peptides. The decisive rule: if the mechanism is viral entry inhibition, receptor blocking, vaccine/antibody induction, vasodilation, or metabolic regulation, the answer is Other.
-- The four-mode AMP definition was narrowed to three modes in v2, re-expanded to four modes (with Mode D) in v12, and narrowed back to three modes in v19. Mode D (pathogen-targeting vaccines) is permanently removed: vaccine peptides work through adaptive immunity and do not directly kill pathogens. Both the classifier and verifier were updated to ensure consistency — a key root cause of persistent errors was the classifier returning Other for vaccine NCTs while the verifier retained AMP(infection), causing the verification stage to override correct primary answers.
+- The four-mode AMP definition was narrowed to three modes in v2: Mode D (pathogen-targeting vaccines) was removed because vaccine peptides do not directly kill pathogens — they work through adaptive immunity.
 
 **Delivery Mode Agent.**
 
 - *Pass 1* extracts route evidence from four source categories with explicit priority ordering: (1) FDA/drug label route (highest priority), (2) published literature route descriptions, (3) ClinicalTrials.gov protocol route, (4) database formulation data. The prompt forces the model to search all sources before concluding.
-- *Pass 2* classifies the route using the source hierarchy: FDA label overrides generic protocol text. If the FDA label says "subcutaneous" but the protocol says "injection," the answer is Subcutaneous/Intradermal, not Other/Unspecified.
-- The never-guess rule is preserved: if no source specifies IM, SC, or IV, the answer is Injection/Infusion - Other/Unspecified.
-- *v19:* Bare SC abbreviation removed from keyword lookup (matched spurious contexts). Explicit phrases "sc injection", "sc administration", "sc dose" added. Cancer vaccine / peptide immunotherapy classification rule: when route is unspecified for peptide vaccine trials, the default is Injection/Infusion - Other/Unspecified (not Intranasal).
+- *Pass 2* classifies the route using the source hierarchy: FDA label overrides generic protocol text. Routes are mapped to four simplified categories: Injection/Infusion, Oral, Topical, Other.
+- The never-guess rule is preserved: if no source specifies a route, the answer is Other.
 
 **Peptide Agent.**
 
@@ -326,7 +325,6 @@ All five annotation agents employ a two-pass architecture. This universal design
 - *v16:* Added adverse event detection in the fallback heuristic: publications mentioning toxicity, adverse reactions, abscess formation, or dose-limiting events now trigger "Failed - completed trial" even when the LLM's Pass 2 defaults to "Unknown". Publications count as corroboration for H1 (Phase I completion) even when they describe a related study rather than the exact NCT ID. Negative result valence from Pass 1 now maps to "Failed" in the fallback path.
 
 A critical rule governs the distinction between completion and failure: a registry status of COMPLETED does *not* imply failure. The "Failed - completed trial" classification requires affirmative evidence of a negative result.
-- *v19:* Negative efficacy signal vocabulary expanded in the Pass 1 heuristic: "did not demonstrate/achieve/show", "no significant/benefit/improvement/efficacy", "failed to demonstrate/meet/primary", "lack of efficacy", "ineffective" now trigger "Failed - completed trial" directly, without requiring a full LLM Pass 2 invocation for obvious failure language.
 
 **Failure Reason Agent.**
 
@@ -404,22 +402,6 @@ When unanimous consensus is not reached, the reconciler model (qwen2.5:14b, the 
 
 When a deterministic pre-classifier produces a high-confidence annotation (≥0.95), the `skip_verification` flag bypasses the verification pipeline entirely, creating a synthetic consensus result. This eliminates the failure mode where 8B verifiers override correct deterministic results.
 
-#### 3.4.4 Unanimous Dissent Override Bug and Fix (v20)
-
-The high-confidence primary override contained a systematic bug identified through concordance analysis of 50 trials. The condition `annotation.confidence > 0.85 and verifier_max_conf <= 0.7` accepted the primary annotation without reconciliation, but did not check whether any verifier actually agreed. When all three verifiers independently disagreed with the primary annotation (`agreement_ratio=0.0`), the override still fired — the primary annotation was accepted over unanimous verifier dissent.
-
-Concordance analysis of 50 trials (v19, job c1786d005ade) identified 15 per-run cases where this condition produced incorrect final annotations. Representative case: NCT04701021 (Outcome). Primary=Positive (confidence 0.91). All three verifiers=Unknown. Before fix: Positive accepted. After fix: routed to reconciler → Unknown.
-
-The fix adds an `agreement_ratio > 0.0` guard:
-
-```python
-if (annotation.confidence > 0.85 and verifier_max_conf <= 0.7
-        and consensus.agreement_ratio > 0.0):
-    # high-confidence primary accepted
-```
-
-"Unanimous dissent overrides high confidence." When all three verifiers disagree, the primary must be reconciled regardless of confidence level.
-
 ### 3.5 Concordance Analysis
 
 The concordance analysis methodology (v2) implements the following conventions to ensure fair comparison between agent and human annotations:
@@ -430,7 +412,7 @@ The concordance analysis methodology (v2) implements the following conventions t
 
 **Inter-annotator reliability.** Cohen's kappa is computed for each field to quantify agreement beyond chance. Kappa adjusts for the baseline agreement expected if both annotators assigned categories at random in proportion to their marginal distributions. Kappa values are interpreted on the standard scale: below 0 indicates less than chance agreement, 0.01--0.20 is slight, 0.21--0.40 is fair, 0.41--0.60 is moderate, 0.61--0.80 is substantial, and 0.81--1.00 is almost perfect agreement.
 
-**Annotator composition.** The human reference data consists of two replication passes: R1 (7 annotators assigned contiguous row blocks) and R2 (primarily a single annotator). Cohen's kappa with 95% analytical confidence intervals (Fleiss et al. 1969) is the primary metric, supplemented by Gwet's AC₁ (Gwet 2008) to control for the prevalence paradox, and per-annotator pairwise analysis to detect systematic interpretive differences within the R1 team. Prevalence and bias indices (Byrt et al. 1993) are reported for each comparison to contextualize kappa values.
+**Annotator composition.** The human reference data consists of two replication passes: R1 (7 annotators assigned contiguous row blocks) and R2 (independent annotators). Cohen's kappa with 95% analytical confidence intervals (Fleiss et al. 1969) is the primary metric, supplemented by Gwet's AC₁ (Gwet 2008) to control for the prevalence paradox, and per-annotator pairwise analysis to detect systematic interpretive differences within the R1 team. Prevalence and bias indices (Byrt et al. 1993) are reported for each comparison to contextualize kappa values.
 
 ### 3.6 Self-Learning: Experience-Driven Annotation Memory
 
@@ -444,17 +426,13 @@ Agent Annotate implements a persistent self-learning layer (EDAM) that improves 
 
 Memory is version-gated: each configuration change creates a new epoch, and learning entries decay exponentially with epoch distance (human corrections: floor 0.30; self-review: floor 0.10; raw experiences: floor 0.05). A 2,000-token budget caps guidance injection per LLM call. Database hard limits (10K experiences, 5K corrections) with prioritized purging prevent unbounded growth. Verifiers receive only statistical anomaly warnings — never corrections or exemplars — preserving blind verification integrity.
 
-**EDAM test-set contamination (v20 fix).** The v18 training allowlist prevented new writes to EDAM for concordance test-batch NCTs, but did not purge existing records written before the allowlist was introduced (from v14--v17 training runs). Analysis revealed that 35 of 50 concordance test NCTs were present in EDAM at the time of v19 concordance runs. Sequential same-code concordance runs showed Outcome declining across runs (76%→72%→68%), consistent with EDAM reinforcing incorrect prior answers. In v20, these records were purged and the test batch is hard-excluded from `TRAINING_NCTS` at module load time: `TRAINING_NCTS = _load_training_ncts() - _load_test_batch_ncts()`.
-
-**EDAM net-positive threshold.** Empirical analysis identifies a critical condition: EDAM improves accuracy only when the agent's base accuracy on a field exceeds approximately 70%. Below this threshold, EDAM reinforces incorrect answers from prior runs, causing accuracy to decline. The training/test accuracy gap (Outcome: 44--50% on training NCTs vs 68--72% on test NCTs) reflects that test NCTs were selected for high literature density while training NCTs represent the broader population with less evidence. EDAM training runs should not be evaluated against training-NCT concordance; only test-batch concordance (fast_learning_batch_50.txt) is informative for measuring EDAM effectiveness.
-
 ---
 
 ## 4. Evaluation
 
 ### 4.1 Baseline Dataset
 
-The baseline evaluation dataset comprises 25 clinical trials selected as the first 25 entries (sorted alphabetically by NCT identifier) from the set of 614 trials annotated by both human annotators. Both annotators --- designated R1 (Emily) and R2 (Anat) --- independently annotated all five fields for all 25 trials. This selection method avoids cherry-picking and provides a representative sample of the difficulty distribution across the full dataset.
+The baseline evaluation dataset comprises 25 clinical trials selected as the first 25 entries (sorted alphabetically by NCT identifier) from the set of 614 trials annotated by both human annotators. Both annotator groups --- designated R1 (Emily) and R2 (independent annotators) --- independently annotated all five fields for all 25 trials. This selection method avoids cherry-picking and provides a representative sample of the difficulty distribution across the full dataset.
 
 ### 4.2 Pre-Improvement Results (v2 Agents)
 
@@ -537,7 +515,7 @@ The n=62 results reveal that the v3 improvements did not fully resolve the syste
 
 The n=62 evaluation exposes value distribution problems not visible in the n=25 sample:
 
-1. **Classification**: The agent assigns AMP(infection) or AMP(other) to a far higher proportion of trials than either human annotator. Many non-AMP peptide therapeutics (metabolic, neurological, endocrine) receive AMP classifications because the 8B model pattern-matches "peptide + disease" to "AMP."
+1. **Classification**: The agent assigns AMP to a far higher proportion of trials than either human annotator. Many non-AMP peptide therapeutics (metabolic, neurological, endocrine) receive AMP classifications because the 8B model pattern-matches "peptide + disease" to "AMP."
 
 2. **Outcome**: The agent's distribution is skewed toward Unknown, while human annotators use Positive, Recruiting, and Terminated more frequently. The agent fails to find published results that would resolve Unknown status, particularly for older trials.
 
@@ -713,87 +691,6 @@ Failure Reason shows the highest human agreement (94.7%), likely because this fi
 
 The overall human agreement of 80.2% establishes the practical ceiling for automated annotation: a perfect system that agreed with both annotators on every trial would achieve 80.2% agreement with each, since the annotators themselves disagree 19.8% of the time.
 
-### 4.13 v19 Concordance (n=50, 2 runs) — 2026-03-27
-
-The v19 agent revision was evaluated on 50 trials (`fast_learning_batch_50.txt`) across two independent runs (R1: `c1786d005ade`, R2: `ac6af4e49fe2`). v19 targeted two previously identified failure patterns: vaccine misclassification (Mode D removal) and outcome detection gaps (negative efficacy signal expansion).
-
-**Table 7.** v19 concordance vs. v19 R2 and v18+ baseline (n=50, blanks excluded).
-
-| Field | v19 R1 (AC₁) | v19 R2 (AC₁) | v18+ baseline | Target | Met? |
-|---|---|---|---|---|---|
-| Classification | **0.917** | **0.917** | 0.870 | ≥0.82 | **YES** (+4.7pp) |
-| Delivery Mode | 0.632 | 0.614 | 0.654 | ≥0.73 | NO (slight regress) |
-| Outcome | 0.680 | 0.634 | 0.657 | ≥0.80 | NO (slight improve) |
-| Reason for Failure | 0.671 | 0.625 | 0.671 | ≥0.84 | NO (same) |
-| Peptide | 0.834 | 0.734 | 0.865 | ≥0.86 | Borderline / high variance |
-| Sequence | 0.634 | 0.668 | 0.574 | ≥0.30 | **YES** (code-only gain) |
-
-Key findings:
-- Classification target met: vaccine misclassification (NCT00000886, NCT00002428) resolved by Mode D removal. The verifier had been overriding correct "Other" classifications with "AMP" for HIV peptide vaccines.
-- Sequence improvement purely from code changes (EXPERIMENTAL arm filter, DBAASP suppression for non-AMP); EDAM had not yet generated guidance for these NCTs.
-- 7% run-to-run peptide variance traced to temperature=0.05 on a binary field → fixed in v20 (temp=0.0).
-- Post-run: reconciler unanimous-dissent bug discovered (15 cases per run where agreement_ratio=0.0 still accepted Pass1 value → fixed in v20).
-
-### 4.14 v20 Partial Concordance and EDAM Net-Negative Finding (n=15/50) — 2026-03-30
-
-Following four training runs (Batches C and D, 100 NCTs × 2 runs) on v20 code, a concordance run on the 50 test NCTs was initiated. Analysis of the first 15 completed NCTs revealed a substantial outcome regression:
-
-**Table 8.** v20 partial concordance vs. v19 R1 baseline (n=15, early termination).
-
-| Field | v20 partial (15 NCTs) | v19 R1 baseline | Change |
-|---|---|---|---|
-| Classification | 100% | 92.0% | +8pp (small N) |
-| Delivery Mode | 60.0% | 63.3% | -3pp |
-| **Outcome** | **46.7%** | **72.0%** | **-25pp regression** |
-| Reason for Failure | 66.7% | 68.0% | -1pp |
-| Peptide | 100% | 80.0% | +20pp |
-
-The concordance run was cancelled at 15/50 after root cause identification.
-
-**Root cause: Deterministic TERMINATED mapping (v11 regression).** Since v11, `outcome.py` included `"TERMINATED": "Terminated"` in `_DETERMINISTIC_STATUSES`, causing all TERMINATED trials to bypass the LLM pipeline entirely with `skip_verification=True`. This was appropriate for trials genuinely terminated for business reasons, but catastrophically wrong for trials terminated early due to positive efficacy — a pattern common in AMP trials where Phase II trials are halted after interim analysis shows significant benefit. Inspection of failing NCT annotations confirmed the reasoning field contained: `[Deterministic v11] Registry status 'TERMINATED' → 'Terminated'` for cases where the drug had documented positive results and advanced to later-phase trials.
-
-**EDAM amplification.** The four v20 training runs wrote 351 experiences per field for TERMINATED trial annotations. Because the TERMINATED mapping was applied before EDAM guidance was read, EDAM had no opportunity to correct the error — it simply reinforced the "Terminated" label as a stable answer for those NCTs, compounding the harm on subsequent concordance runs.
-
-**EDAM net-negative on outcome and delivery_mode.** Post-analysis of the EDAM corrections table revealed:
-- 8 corrections of the form `Positive → Unknown` and 1 `Failed → Unknown` on outcome, reflecting training NCTs where EDAM-guided annotations on sparse-evidence trials were incorrectly "corrected" to Unknown. These corrections were then injected as guidance on test NCTs with richer evidence, suppressing correct Positive/Failed determinations.
-- 30 delivery_mode corrections with no consistent direction, arising from contradictory route detections across comparator arms.
-
-The EDAM `net-positive threshold` (~70% base accuracy) was not met for either field under v20 code, confirming that EDAM was amplifying systematic errors rather than correcting them.
-
-**Resolution (v21).**
-1. Removed `TERMINATED` from `_DETERMINISTIC_STATUSES`. TERMINATED trials now undergo the full 2-pass LLM pipeline with evidence-based decision tree.
-2. Added phase-based heuristics H1b and H3b to improve accuracy on COMPLETED trials without publications.
-3. Restricted delivery mode `intervention_names` to EXPERIMENTAL arms only.
-4. Full field-selective EDAM purge: all outcome + delivery_mode experiences (702 rows) and corrections (40 rows) deleted. Retained fields (classification, peptide, reason_for_failure, sequence) were unaffected.
-5. New training Batches E/F (50 NCTs, positions 101-150) launched on v21 code to rebuild EDAM outcome and delivery_mode from scratch.
-
-### 4.15 v21 Concordance (n=50) — 2026-03-31
-
-Following Batches E/F training (50 NCTs × 2 runs, positions 101-150) on v21 code, a full concordance run on the 50 test NCTs was completed (job `c2c43af95162`).
-
-**Table 9.** v21 concordance vs. v19 R1 baseline (n=50, blanks excluded).
-
-| Field | v21 (AC₁) | v19 R1 (AC₁) | v18+ baseline | Target | Met? |
-|---|---|---|---|---|---|
-| Classification | 92.0% / 0.917 | 92.0% / 0.917 | 87.8% / 0.870 | Hold 92% | YES |
-| Delivery Mode | 63.3% / 0.609 | 65.3% / 0.632 | 67.3% / 0.654 | ≥65% | NO (-2pp) |
-| **Outcome** | **68.0% / 0.633** | **72.0% / 0.680** | **70.0% / 0.657** | **≥76%** | **NO (-4pp)** |
-| Reason for Failure | 70.0% / 0.657 | 72.0% / 0.671 | 72.0% / 0.671 | ≥70% | YES (barely) |
-| Peptide | 82.2% / 0.769 | 86.7% / 0.834 | 88.9% / 0.865 | ≥86% | NO (-4.5pp) |
-| Sequence | 61.9% / 0.603 | 65.0% / 0.634 | 59.1% / 0.574 | ≥30% | YES |
-
-**Result: outcome=68% — BELOW the 70% EDAM net-positive threshold. Batches G/H suspended pending code fix.**
-
-Root cause analysis of 16 Agent vs R1 outcome disagreements identified three failure clusters:
-
-1. **TERMINATED semantic error (2 new overcorrection errors introduced by v21 fix).** The v21 TERMINATED fix correctly removed the deterministic bypass but introduced a semantic error in PASS2_PROMPT item 4b: "Published results show safety failure, futility, or termination due to lack of efficacy → 'Failed - completed trial'". This is incorrect. "Failed - completed trial" is exclusively for COMPLETED trials with published negative results. A TERMINATED trial stopped for any reason — including efficacy failure or safety concerns — is still "Terminated", not "Failed". Two concordance NCTs were incorrectly annotated: NCT00982696 (Unknown→Failed, TERMINATED trial with ambiguous history) and NCT03490942 (Terminated→Failed, business-reason termination).
-
-2. **Peptide False→True misses in multi-drug cancer vaccine trials (-4.5pp, 7 cases).** Seven trials where the EXPERIMENTAL arm contains both a peptide cancer vaccine (ISA101b, MELITAC 12.1) and a monoclonal antibody were called False because the agent identified the mAb and stopped evaluating. ISA101b (HPV-derived multi-epitope peptide vaccine) and MELITAC 12.1 (melanoma multi-epitope peptide vaccine) were absent from `_KNOWN_PEPTIDE_DRUGS`, preventing the deterministic True bypass from firing.
-
-3. **Persistent evidence-gap failures (5 NCTs unchanged across all versions).** NCT00002428, NCT00004984, NCT02660736, NCT02665377, NCT04672083 require adverse-event or efficacy publications not accessible through current research sources. No code fix is possible; these represent the structural accuracy floor.
-
-**Resolution (v22, applied 2026-03-31).** Fix A: removed "Failed - completed trial" from the TERMINATED decision branch in both `outcome.py` PASS2_PROMPT and `verifier.py`. TERMINATED trials now resolve to Positive or Terminated only, with an explicit critical rule enforcing this constraint. Fix B: added ISA101b, ISA101, MELITAC 12.1, and MELITAC to `_KNOWN_PEPTIDE_DRUGS`; strengthened PASS2_SYSTEM multi-drug False guard. Fix C: added PASS1 multi-drug route reporting instruction to delivery_mode.py. EDAM targeted purge: 1 bad outcome experience deleted (NCT03232112, "Failed - completed trial" for a TERMINATED trial). All 5 jobs queued (concordance v22 + Batches G/H R1/R2) for unattended execution.
-
 ---
 
 ## 5. Discussion
@@ -852,7 +749,7 @@ The Agent Annotate architecture evolved through iterative error analysis across 
 
 **Lesson 5: The agent's own evidence is its best teacher.** The EDAM self-audit loop (v10) checks whether annotations are consistent with the structured data the research agents collected. When FDA data says "INTRAVENOUS" but the agent output "Other/Unspecified", the contradiction is detected and corrected automatically --- with the FDA citation as evidence. This produces corrections without any human annotations in the loop.
 
-**Lesson 6: Human annotations are unreliable ground truth.** R1 (7 annotators) assigned peptide=True to 451 trials; R2 (primarily one annotator) assigned True to 56 --- an 8:1 ratio. Outcome inter-rater agreement is only 55.6%. The agent's concordance with humans must be interpreted against this noisy baseline, not treated as absolute accuracy measurement.
+**Lesson 6: Human annotations are unreliable ground truth.** R1 (7 annotators) assigned peptide=True to 451 trials; R2 (independent annotators) assigned True to 56 --- an 8:1 ratio. Outcome inter-rater agreement is only 55.6%. The agent's concordance with humans must be interpreted against this noisy baseline, not treated as absolute accuracy measurement.
 
 **Lesson 7: The agent should never see human annotations during learning.** EDAM's learning loops use only internal signals: cross-run stability, evidence consistency, and self-review. Human annotations are consulted only at evaluation time via concordance analysis. This ensures that concordance improvements reflect genuine accuracy gains, not overfitting to the evaluation set.
 

@@ -71,13 +71,14 @@ _DEFAULT_PERSONA = {
 FIELD_PROMPTS = {
     "classification": {
         "instruction": (
-            "Classify this clinical trial using a three-step decision tree. AMP = Antimicrobial Peptide.\n\n"
+            "Classify this clinical trial using a two-step decision tree. AMP = Antimicrobial Peptide.\n\n"
             "STEP 1: Is the intervention a peptide? If not → 'Other'.\n"
             "STEP 2: Is it an ANTIMICROBIAL peptide? The CORE TEST: does this peptide contribute to "
             "pathogen defense through any of these 3 modes?\n"
             "Mode A: Kills, inhibits growth of, or disrupts pathogens — bactericidal OR bacteriostatic (membrane disruption, pore formation, growth inhibition)\n"
             "Mode B: Recruits or activates INNATE immune cells to kill pathogens at infection sites — cathelicidins (LL-37), defensins. INNATE immunity only, NOT adaptive (antibody/T-cell induction).\n"
             "Mode C: Disrupts microbial biofilms\n\n"
+            "If YES (any mode) → 'AMP'. If NOT an AMP → 'Other'.\n\n"
             "AMPs: colistin, defensins, LL-37, polymyxin, daptomycin, nisin.\n"
             "NOT AMPs (even if they are peptides):\n"
             "- Viral entry inhibitors: Enfuvirtide/T-20 (blocks viral fusion), Peptide T/DAPTA (blocks CCR5)\n"
@@ -87,73 +88,49 @@ FIELD_PROMPTS = {
             "vaccines, influenza vaccines, bacterial peptide vaccines — vaccines work through ADAPTIVE "
             "immunity (antibody induction), NOT direct antimicrobial action. Classification: Other.\n"
             "- Cancer neoantigen vaccines (target tumor cells)\n"
-            "- Immunosuppressive peptides, bone growth regulators, structural peptides\n"
-            "If NOT an AMP → 'Other'.\n"
-            "STEP 3: Does this AMP target infection/pathogens? Yes → 'AMP(infection)'. No (wound healing, non-infection biofilm) → 'AMP(other)'.\n\n"
+            "- Immunosuppressive peptides, bone growth regulators, structural peptides\n\n"
             "EXAMPLES:\n"
-            "- Colistin for UTI → AMP(infection) (Mode A: membrane disruption kills bacteria)\n"
-            "- LL-37 for wound healing → AMP(other) (Mode A+B: kills bacteria, but trial is wound healing)\n"
+            "- Colistin for UTI → AMP (Mode A: membrane disruption kills bacteria)\n"
+            "- LL-37 for wound healing → AMP (Mode A+B: antimicrobial peptide regardless of indication)\n"
             "- HIV gp120 peptide vaccine → Other (adaptive immune response, NOT direct antimicrobial)\n"
             "- Influenza peptide vaccine → Other (induces antibodies, does NOT directly kill virus)\n"
             "- Enfuvirtide for HIV → Other (fusion inhibitor, does NOT kill virus)\n"
             "- VIP/Aviptadil for COVID ARDS → Other (neuropeptide vasodilator)\n"
             "- Semaglutide for diabetes → Other (metabolic hormone)\n"
             "- Cancer neoantigen vaccine → Other (targets tumor, not pathogen)\n"
-            "- Nisin for bacterial mastitis → AMP(infection) (Mode A: pore formation kills bacteria)\n"
-            "- Daptomycin for MRSA → AMP(infection) (Mode A: disrupts bacterial membranes)\n"
+            "- Nisin for bacterial mastitis → AMP (Mode A: pore formation kills bacteria)\n"
+            "- Daptomycin for MRSA → AMP (Mode A: disrupts bacterial membranes)\n"
             "When in doubt about mechanism → 'Other'. False AMP is worse than missing a true AMP."
         ),
-        "valid_values": ["AMP(infection)", "AMP(other)", "Other"],
+        "valid_values": ["AMP", "Other"],
         "parse_pattern": r"Classification:\s*(.+?)(?:\n|$)",
     },
     "delivery_mode": {
         "instruction": (
-            "Determine the specific delivery mode. Choose EXACTLY ONE value from this list:\n"
-            "Injection/Infusion - Intramuscular, Injection/Infusion - Other/Unspecified, "
-            "Injection/Infusion - Subcutaneous/Intradermal, IV, Intranasal, "
-            "Oral - Tablet, Oral - Capsule, Oral - Food, Oral - Drink, Oral - Unspecified, "
-            "Topical - Cream/Gel, Topical - Powder, Topical - Spray, Topical - Strip/Covering, "
-            "Topical - Wash, Topical - Unspecified, Other/Unspecified, Inhalation\n\n"
-            "ROUTE DETERMINATION RULES:\n"
-            "- PREFER specific routes when ANY source (FDA label, literature, protocol) names the route explicitly\n"
-            "- Use 'Injection/Infusion - Other/Unspecified' ONLY when no source provides specificity\n"
-            "- Only use Intramuscular if the words 'intramuscular' or 'IM' appear explicitly\n"
-            "- Only use Subcutaneous if 'subcutaneous', 'SC', 'sub-Q', or 'intradermal' appear explicitly\n"
-            "- If an FDA drug label says 'SUBCUTANEOUS', that overrides a generic 'injection' in the protocol\n"
-            "- Nutritional formula/shake = Oral - Drink, NOT Oral - Food\n"
-            "- Intravenous/IV infusion = 'IV' (not Injection/Infusion - Other)\n"
-            "- Nasal spray = 'Intranasal' (not Topical - Spray)\n"
-            "- AMBIGUITY BIAS: If the route is only inferred (not explicitly stated) — e.g., described as "
-            "'injection' without IM/SC/IV qualifier, or implied by drug class — choose "
-            "'Injection/Infusion - Other/Unspecified'. Do NOT guess SC because it is a peptide drug, "
-            "or IV because the dose is in mg/kg. Explicit text evidence required.\n\n"
+            "Determine the delivery mode. Choose EXACTLY ONE value from this list:\n"
+            "Injection/Infusion, Oral, Topical, Other\n\n"
+            "CATEGORY DEFINITIONS:\n"
+            "- Injection/Infusion: IV, intramuscular (IM), subcutaneous (SC), intradermal, intravitreal, "
+            "any parenteral route\n"
+            "- Oral: tablet, capsule, food, drink, nutritional formula, any route through the mouth\n"
+            "- Topical: cream, gel, spray, wash, powder, strip/covering, any application to skin or mucosal surface\n"
+            "- Other: inhalation, intranasal, or anything that does not fit the above categories\n\n"
             "EXAMPLES:\n"
-            "- 'IV infusion over 12 hours' → IV\n"
-            "- 'subcutaneous injection once weekly' → Injection/Infusion - Subcutaneous/Intradermal\n"
-            "- 'peptide vaccine injection' (no route) → Injection/Infusion - Other/Unspecified\n"
-            "- 'administered by injection once daily' → Injection/Infusion - Other/Unspecified\n"
-            "- 'patients received injections at site visits' (no route) → Injection/Infusion - Other/Unspecified\n"
-            "- 'nutritional formula' → Oral - Drink"
+            "- 'IV infusion over 12 hours' → Injection/Infusion\n"
+            "- 'subcutaneous injection once weekly' → Injection/Infusion\n"
+            "- 'peptide vaccine injection' → Injection/Infusion\n"
+            "- 'intravitreal injection' → Injection/Infusion\n"
+            "- 'oral capsule twice daily' → Oral\n"
+            "- 'nutritional formula' → Oral\n"
+            "- 'topical cream applied to wound' → Topical\n"
+            "- 'nasal spray' → Other\n"
+            "- 'inhaled via nebulizer' → Other"
         ),
         "valid_values": [
-            "Injection/Infusion - Intramuscular",
-            "Injection/Infusion - Other/Unspecified",
-            "Injection/Infusion - Subcutaneous/Intradermal",
-            "IV",
-            "Intranasal",
-            "Oral - Tablet",
-            "Oral - Capsule",
-            "Oral - Food",
-            "Oral - Drink",
-            "Oral - Unspecified",
-            "Topical - Cream/Gel",
-            "Topical - Powder",
-            "Topical - Spray",
-            "Topical - Strip/Covering",
-            "Topical - Wash",
-            "Topical - Unspecified",
-            "Other/Unspecified",
-            "Inhalation",
+            "Injection/Infusion",
+            "Oral",
+            "Topical",
+            "Other",
         ],
         "parse_pattern": r"Delivery Mode:\s*(.+?)(?:\n|$)",
     },

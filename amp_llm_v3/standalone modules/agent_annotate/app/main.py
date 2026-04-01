@@ -125,6 +125,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 or path.endswith("/cancel")
                 or path.startswith("/api/status/pipeline/")
                 or path.startswith("/api/concordance/")
+                or path.startswith("/api/agreement/")
                 or (path == "/api/jobs" and request.method == "POST")
             )
             if not is_exempt:
@@ -161,6 +162,7 @@ app.include_router(results.router)
 app.include_router(review.router)
 app.include_router(settings.router)
 app.include_router(concordance.router)
+app.include_router(concordance.legacy_router)
 
 # Serve frontend SPA (production build)
 if FRONTEND_DIR.exists():

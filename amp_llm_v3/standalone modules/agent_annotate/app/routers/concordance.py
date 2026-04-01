@@ -1,5 +1,5 @@
 """
-Concordance analysis API endpoints.
+Agreement analysis API endpoints (formerly concordance).
 
 All endpoints are read-only reference data for scientific analysis
 and are exempt from authentication.
@@ -7,7 +7,8 @@ and are exempt from authentication.
 
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 
 from app.models.concordance import (
@@ -31,7 +32,10 @@ class HumanMultiAnnotatorRequest(BaseModel):
     r1_annotators: Optional[list[str]] = None
     r2_annotators: Optional[list[str]] = None
 
-router = APIRouter(prefix="/api/concordance", tags=["concordance"])
+router = APIRouter(prefix="/api/agreement", tags=["agreement"])
+
+# Backwards-compatible alias: /api/concordance/* → /api/agreement/*
+legacy_router = APIRouter(prefix="/api/concordance", tags=["agreement"], include_in_schema=False)
 
 
 @router.get("/jobs")
@@ -215,3 +219,13 @@ async def get_human_multi_annotator_concordance(body: HumanMultiAnnotatorRequest
             detail="No overlapping data for selected annotators",
         )
     return result
+
+
+# ---------------------------------------------------------------------------
+# Legacy redirect: /api/concordance/{path} → /api/agreement/{path}
+# ---------------------------------------------------------------------------
+@legacy_router.api_route("/{path:path}", methods=["GET", "POST"])
+async def concordance_redirect(request: Request, path: str):
+    """Redirect legacy /api/concordance/ URLs to /api/agreement/."""
+    new_url = str(request.url).replace("/api/concordance/", "/api/agreement/", 1)
+    return RedirectResponse(url=new_url, status_code=307)

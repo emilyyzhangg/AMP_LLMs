@@ -1,9 +1,9 @@
 """
-Concordance engine for agent-annotate.
+Agreement engine for agent-annotate.
 
-Computes agreement metrics between:
+Computes inter-rater agreement metrics between:
   - Agent annotations (from job result JSON files)
-  - Human annotations (from Excel, two replicates: R1 and R2)
+  - Human annotations (from CSV, two replicates: ann1/ann2)
 
 Supports: agent_vs_r1, agent_vs_r2, r1_vs_r2, compare_jobs, concordance_history.
 """
@@ -15,7 +15,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Optional
 
-import openpyxl
+import csv
+import re
 
 from app.config import RESULTS_DIR
 from app.services.concordance_stats import (
@@ -35,6 +36,9 @@ from app.models.concordance import (
     ConcordanceResult,
     Disagreement,
     JobConcordance,
+    SequenceAnalysis,
+    SequenceAnalysisSummary,
+    SequenceComparisonDetail,
 )
 
 logger = logging.getLogger("agent_annotate.concordance")
@@ -42,90 +46,57 @@ logger = logging.getLogger("agent_annotate.concordance")
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
-EXCEL_PATH = Path(
-    "/Users/amphoraxe/Developer/amphoraxe/dev-llm.amphoraxe.ca/docs/"
-    "clinical_trials-with-sequences.xlsx"
+CSV_PATH = Path(
+    "/Users/amphoraxe/Developer/amphoraxe/dev-llm.amphoraxe.ca/amp_llm_v3/standalone modules/"
+    "agent_annotate/docs/human_ground_truth_train_df.csv"
 )
 JSON_DIR = RESULTS_DIR / "json"
 
 # ---------------------------------------------------------------------------
-# Field definitions (Excel column indices are 0-based)
-# Mirrors scripts/concordance_jobs.py column mapping exactly.
+# Field definitions (CSV column name-based)
 # ---------------------------------------------------------------------------
 FIELDS = {
-    "classification": {
-        "excel_r1_col": 10,  # K
-        "excel_r2_col": 10,  # K
-        "blank_means_skip": True,
-    },
-    "delivery_mode": {
-        "excel_r1_col": 12,  # M
-        "excel_r2_col": 12,  # M
-        "blank_means_skip": True,
-    },
-    "outcome": {
-        "excel_r1_col": 17,  # R
-        "excel_r2_col": 17,  # R
-        "blank_means_skip": True,
-    },
-    "reason_for_failure": {
-        "excel_r1_col": 18,  # S
-        "excel_r2_col": 18,  # S
-        "blank_means_skip": False,  # blank IS a valid value ("no failure")
-    },
-    "peptide": {
-        "excel_r1_col": 21,  # V
-        "excel_r2_col": 21,  # V
-        "blank_means_skip": True,
-    },
-    "sequence": {
-        "excel_r1_col": 13,  # N (Sequence column)
-        "excel_r2_col": 13,  # N
-        "blank_means_skip": True,
-    },
+    "classification": {"csv_ann1": "Classification_ann1", "csv_ann2": "Classification_ann2", "blank_means_skip": True},
+    "delivery_mode": {"csv_ann1": "Delivery Mode_ann1", "csv_ann2": "Delivery Mode_ann2", "blank_means_skip": True},
+    "outcome": {"csv_ann1": "Outcome_ann1", "csv_ann2": "Outcome_ann2", "blank_means_skip": True},
+    "reason_for_failure": {"csv_ann1": "Reason for Failure_ann1", "csv_ann2": "Reason for Failure_ann2", "blank_means_skip": False},
+    "peptide": {"csv_ann1": "Peptide_ann1", "csv_ann2": "Peptide_ann2", "blank_means_skip": True},
+    "sequence": {"csv_ann1": "Sequence_ann1", "csv_ann2": "Sequence_ann2", "blank_means_skip": True},
 }
 
 # ---------------------------------------------------------------------------
 # Value normalisation aliases
 # ---------------------------------------------------------------------------
+CLASSIFICATION_ALIASES: dict[str, str] = {
+    "amp": "AMP", "amp(infection)": "AMP", "amp(other)": "AMP",
+    "amp (infection)": "AMP", "amp (other)": "AMP", "other": "Other",
+}
+
 DELIVERY_MODE_ALIASES: dict[str, str] = {
-    "intravenous": "IV",
-    "iv": "IV",
-    "injection/infusion - intravenous": "IV",
-    "oral - unspecified": "Oral - Unspecified",
-    "oral - capsule": "Oral - Capsule",
-    "oral - tablet": "Oral - Tablet",
-    "oral - drink": "Oral - Drink",
-    "oral - food": "Oral - Food",
-    "injection": "Injection/Infusion - Other/Unspecified",
-    "topical - unspecified": "Topical - Unspecified",
-    "other/unspecified": "Other/Unspecified",
-    "subcutaneous": "Subcutaneous/Intradermal",
-    "sc": "Subcutaneous/Intradermal",
-    "subcutaneous/intradermal": "Subcutaneous/Intradermal",
-    "intradermal": "Subcutaneous/Intradermal",
+    "iv": "Injection/Infusion", "intravenous": "Injection/Infusion",
+    "injection/infusion - intramuscular": "Injection/Infusion",
+    "injection/infusion - subcutaneous/intradermal": "Injection/Infusion",
+    "injection/infusion - other/unspecified": "Injection/Infusion",
+    "injection/infusion": "Injection/Infusion",
+    "subcutaneous": "Injection/Infusion", "intradermal": "Injection/Infusion",
+    "subcutaneous/intradermal": "Injection/Infusion",
+    "intramuscular": "Injection/Infusion", "intravitreal": "Injection/Infusion",
+    "sc": "Injection/Infusion",
+    "oral - tablet": "Oral", "oral - capsule": "Oral", "oral - food": "Oral",
+    "oral - drink": "Oral", "oral - unspecified": "Oral", "oral": "Oral",
+    "topical - cream/gel": "Topical", "topical - powder": "Topical",
+    "topical - spray": "Topical", "topical - strip/covering": "Topical",
+    "topical - wash": "Topical", "topical - unspecified": "Topical", "topical": "Topical",
+    "inhalation": "Other", "intranasal": "Other",
+    "other/unspecified": "Other", "other": "Other",
 }
 
 OUTCOME_ALIASES: dict[str, str] = {
-    "active": "Active, not recruiting",
-    "active, not recruiting": "Active, not recruiting",
-    "active not recruiting": "Active, not recruiting",
-    "recruiting": "Recruiting",
-    "failed": "Failed - completed trial",
+    "active": "Active", "active, not recruiting": "Active",
+    "active not recruiting": "Active", "recruiting": "Recruiting",
     "failed - completed trial": "Failed - completed trial",
-    "completed": "Failed - completed trial",
-    "positive": "Positive",
-    "terminated": "Terminated",
-    "withdrawn": "Withdrawn",
-    "unknown": "Unknown",
-}
-
-CLASSIFICATION_ALIASES: dict[str, str] = {
-    "amp(infection)": "AMP(infection)",
-    "amp(other)": "AMP(other)",
-    "amp (infection)": "AMP(infection)",
-    "amp (other)": "AMP(other)",
-    "other": "Other",
+    "positive": "Positive", "terminated": "Terminated",
+    "withdrawn": "Withdrawn", "unknown": "Unknown",
 }
 
 REASON_ALIASES: dict[str, str] = {
@@ -139,51 +110,14 @@ REASON_ALIASES: dict[str, str] = {
     "toxic_unsafe": "Toxic/Unsafe",
     "due to covid": "Due to covid",
     "due_to_covid": "Due to covid",
+    "unknown": "Unknown",
 }
 
 PEPTIDE_ALIASES: dict[str, str] = {
-    "true": "True",
-    "false": "False",
-    "yes": "True",
-    "no": "False",
-    "1": "True",
-    "0": "False",
+    "true": "TRUE", "false": "FALSE",
+    "yes": "TRUE", "no": "FALSE",
+    "1": "TRUE", "0": "FALSE",
 }
-
-# ---------------------------------------------------------------------------
-# Annotator row ranges (1-indexed Excel rows, data starts at row 2)
-# Row numbers below are 1-indexed data rows (i.e. Excel row 2 = data row 1).
-# ---------------------------------------------------------------------------
-R1_ANNOTATOR_RANGES: list[tuple[str, int, int]] = [
-    ("Mercan", 1, 309),
-    ("Maya", 310, 617),
-    ("Anat", 617, 822),
-    ("Ali", 823, 926),
-    ("Emre", 926, 1186),
-    ("Iris", 1187, 1417),
-    ("Ali", 1417, 1544),   # Ali has a second range
-    ("Berke", 1545, 1846),
-]
-
-R2_ANNOTATOR_RANGES: list[tuple[str, int, int]] = [
-    ("Anat", 462, 480),
-    ("Ali", 923, 941),
-    ("Iris", 1384, 1405),
-]
-
-
-def _get_annotator_for_row(row_num: int, replicate: str) -> str:
-    """Determine which annotator produced a given data row (1-indexed).
-
-    For R2, rows not in the explicit ranges default to Emily.
-    """
-    ranges = R1_ANNOTATOR_RANGES if replicate == "r1" else R2_ANNOTATOR_RANGES
-    for name, start, end in ranges:
-        if start <= row_num <= end:
-            return name
-    # R2 default is Emily; R1 should always match but fall back just in case
-    return "Emily" if replicate == "r2" else "Unknown"
-
 
 # ---------------------------------------------------------------------------
 # Blank handling standard (universal rule)
@@ -237,12 +171,12 @@ def _normalise(value: object, field_name: str) -> tuple[str, bool]:
     if value is None:
         return ("", True)
 
-    # Excel stores Peptide as bool
+    # CSV stores Peptide as string
     if isinstance(value, bool):
-        return (str(value), False)
+        return (str(value).upper(), False)
 
     s = str(value).strip()
-    if s == "" or s.lower() == "none":
+    if s == "" or s.lower() in ("none", "n/a"):
         return ("", True)
 
     s_lower = s.lower()
@@ -254,20 +188,26 @@ def _normalise(value: object, field_name: str) -> tuple[str, bool]:
         for part in parts:
             part_lower = part.strip().lower()
             normalised_parts.append(
-                DELIVERY_MODE_ALIASES.get(part_lower, part.strip())
+                DELIVERY_MODE_ALIASES.get(part_lower, part.strip()).lower()
             )
         normalised_parts.sort()
-        return (", ".join(normalised_parts), False)
+        result = ", ".join(normalised_parts)
     elif field_name == "outcome":
-        return (OUTCOME_ALIASES.get(s_lower, s), False)
+        result = OUTCOME_ALIASES.get(s_lower, s)
     elif field_name == "classification":
-        return (CLASSIFICATION_ALIASES.get(s_lower, s), False)
+        result = CLASSIFICATION_ALIASES.get(s_lower, s)
     elif field_name == "reason_for_failure":
-        return (REASON_ALIASES.get(s_lower, s), False)
+        result = REASON_ALIASES.get(s_lower, s)
     elif field_name == "peptide":
-        return (PEPTIDE_ALIASES.get(s_lower, s), False)
+        result = PEPTIDE_ALIASES.get(s_lower, s)
     else:
-        return (s, False)
+        result = s
+
+    # Case-normalize for comparison: uppercase for peptide (TRUE/FALSE),
+    # lowercase for everything else
+    if field_name == "peptide":
+        return (result.upper(), False)
+    return (result.lower(), False)
 
 
 # ---------------------------------------------------------------------------
@@ -320,6 +260,153 @@ def _normalise_grouped(value: str, field_name: str) -> str:
     return value
 
 
+
+# ---------------------------------------------------------------------------
+# Sequence-specific normalisation (v23: order-agnostic comparison)
+# ---------------------------------------------------------------------------
+def _canonicalise_single_sequence(seq: str) -> str:
+    """Reduce a single sequence string to its canonical form for comparison.
+
+    Strips: whitespace, hyphens, parenthesised modifications, case → uppercase.
+    This lets us detect 'same molecule, different format' situations.
+    """
+    s = seq.strip()
+    if not s or s.upper() in ("N/A", "NONE", ""):
+        return ""
+    # Remove parenthesised modifications: (Ac), (NH2), etc.
+    s = re.sub(r"\([^)]*\)", "", s)
+    # Remove hyphens (format artefact)
+    s = s.replace("-", "")
+    # Remove spaces
+    s = s.replace(" ", "")
+    # Uppercase (D-amino acid lowercase → uppercase for canonical)
+    s = s.upper()
+    return s
+
+
+def _normalise_sequence_for_comparison(
+    raw: str,
+) -> tuple[frozenset[str], list[str]]:
+    """Normalise a sequence field value for order-agnostic comparison.
+
+    Returns:
+        (canonical_set, display_list)
+        - canonical_set: frozenset of canonical AA strings (uppercase, no mods)
+        - display_list: sorted list of original (trimmed) sequence strings
+    """
+    if raw is None:
+        return (frozenset(), [])
+    s = str(raw).strip()
+    if not s or s.upper() in ("N/A", "NONE"):
+        return (frozenset(), [])
+
+    # Split on pipe separator
+    parts = [p.strip() for p in s.split("|")]
+    parts = [p for p in parts if p]
+
+    canonical_set: set[str] = set()
+    display_list: list[str] = []
+    for part in parts:
+        canon = _canonicalise_single_sequence(part)
+        if canon:
+            canonical_set.add(canon)
+            display_list.append(part)
+
+    display_list.sort()
+    return (frozenset(canonical_set), display_list)
+
+
+def _compare_sequences(
+    raw_a: str, raw_b: str, nct_id: str,
+) -> SequenceComparisonDetail:
+    """Compare two sequence field values and classify the match type.
+
+    Match types:
+      EXACT   — identical display strings
+      ORDER   — same sequences, different order
+      FORMAT  — same canonical set, different display formatting
+      PARTIAL — some sequences overlap, but count differs
+      MISMATCH — no canonical overlap at all
+      MISSING — both sides blank/N/A
+    """
+    canon_a, display_a = _normalise_sequence_for_comparison(raw_a)
+    canon_b, display_b = _normalise_sequence_for_comparison(raw_b)
+
+    detail = SequenceComparisonDetail(
+        nct_id=nct_id,
+        agent_sequences=display_a,
+        human_sequences=display_b,
+        match_type="MISSING",
+        matched_sequences=[],
+        agent_only=[],
+        human_only=[],
+        format_differences=[],
+    )
+
+    # Both empty
+    if not canon_a and not canon_b:
+        detail.match_type = "MISSING"
+        return detail
+
+    # One side empty
+    if not canon_a or not canon_b:
+        detail.match_type = "MISMATCH"
+        detail.agent_only = list(canon_a) if canon_a else []
+        detail.human_only = list(canon_b) if canon_b else []
+        return detail
+
+    # Check canonical sets
+    shared = canon_a & canon_b
+    a_only = canon_a - canon_b
+    b_only = canon_b - canon_a
+
+    detail.matched_sequences = sorted(shared)
+    detail.agent_only = sorted(a_only)
+    detail.human_only = sorted(b_only)
+
+    if canon_a == canon_b:
+        # Same canonical set — check display formatting
+        norm_a_str = str(raw_a).strip()
+        norm_b_str = str(raw_b).strip()
+        if norm_a_str == norm_b_str:
+            detail.match_type = "EXACT"
+        elif display_a == display_b:
+            # Same sorted display but original order differed
+            detail.match_type = "ORDER"
+        else:
+            # Same canonical set but display differs (formatting)
+            detail.match_type = "FORMAT"
+            # Build format diff descriptions
+            # Map canonical → display for each side
+            map_a: dict[str, str] = {}
+            map_b: dict[str, str] = {}
+            parts_a = [p.strip() for p in str(raw_a).split("|") if p.strip()]
+            parts_b = [p.strip() for p in str(raw_b).split("|") if p.strip()]
+            for p in parts_a:
+                c = _canonicalise_single_sequence(p)
+                if c:
+                    map_a[c] = p
+            for p in parts_b:
+                c = _canonicalise_single_sequence(p)
+                if c:
+                    map_b[c] = p
+            for canon_seq in shared:
+                da = map_a.get(canon_seq, "?")
+                db = map_b.get(canon_seq, "?")
+                if da != db:
+                    detail.format_differences.append(
+                        f"Agent: {da}, Human: {db} (same canonical: {canon_seq})"
+                    )
+    elif shared:
+        # Partial overlap
+        detail.match_type = "PARTIAL"
+    else:
+        # No overlap at all
+        detail.match_type = "MISMATCH"
+
+    return detail
+
+
 # ---------------------------------------------------------------------------
 # Cohen's Kappa (from scratch, no sklearn)
 # ---------------------------------------------------------------------------
@@ -345,71 +432,60 @@ def _kappa_interpretation(k: Optional[float]) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Data loading: Excel (human annotations)
+# Data loading: CSV (human annotations)
 # ---------------------------------------------------------------------------
-_excel_cache: Optional[dict[str, dict]] = None
+_csv_cache: Optional[dict[str, dict]] = None
 
 
-def _load_excel_annotations() -> dict[str, dict]:
-    """Load human annotations from both replicate sheets.
+def _load_csv_annotations() -> dict[str, dict]:
+    """Load human annotations from training CSV.
 
     Returns: {nct_id: {
-        'r1': {field: raw_value},
-        'r2': {field: raw_value},
-        'r1_annotator': str,
-        'r2_annotator': str,
+        'r1': {field: raw_value},  # ann1 = Emily
+        'r2': {field: raw_value},  # ann2 = others
+        'r1_annotator': 'Emily',
+        'r2_annotator': str,       # from A2_annotator column
     }}
-
-    Results are cached in-memory after first load.
     """
-    global _excel_cache
-    if _excel_cache is not None:
-        return _excel_cache
+    global _csv_cache
+    if _csv_cache is not None:
+        return _csv_cache
 
-    if not EXCEL_PATH.exists():
-        logger.error("Excel file not found: %s", EXCEL_PATH)
+    if not CSV_PATH.exists():
+        logger.error("CSV file not found: %s", CSV_PATH)
         return {}
 
-    logger.info("Loading human annotations from %s", EXCEL_PATH)
-    wb = openpyxl.load_workbook(str(EXCEL_PATH), read_only=True, data_only=True)
-    data: dict[str, dict] = defaultdict(
-        lambda: {"r1": {}, "r2": {}, "r1_annotator": "", "r2_annotator": ""}
-    )
+    logger.info("Loading human annotations from %s", CSV_PATH)
+    data: dict[str, dict] = {}
 
-    for replicate, sheet_name in [
-        ("r1", "Trials Replicate 1"),
-        ("r2", "Trials Replicate 2"),
-    ]:
-        try:
-            ws = wb[sheet_name]
-        except KeyError:
-            logger.error("Sheet '%s' not found in Excel file", sheet_name)
-            continue
-        row_num = 0  # 1-indexed data row counter
-        for row in ws.iter_rows(min_row=2, values_only=True):
-            row_num += 1
-            nct = row[0]
-            if nct is None:
+    with open(CSV_PATH, newline='') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            nct = row.get("nct_id", "").strip()
+            if not nct:
                 continue
-            nct = str(nct).strip()
+            # Normalize NCT ID to uppercase
+            nct = nct.upper() if not nct.startswith("NCT") else "NCT" + nct[3:]
+
+            entry = {"r1": {}, "r2": {}, "r1_annotator": "Emily", "r2_annotator": row.get("A2_annotator", "").strip()}
+
             for field_name, field_def in FIELDS.items():
-                col_idx = field_def[f"excel_{replicate}_col"]
-                raw = row[col_idx] if col_idx < len(row) else None
-                data[nct][replicate][field_name] = raw
-            # Track which annotator produced this row
-            annotator = _get_annotator_for_row(row_num, replicate)
-            data[nct][f"{replicate}_annotator"] = annotator
+                ann1_col = field_def["csv_ann1"]
+                ann2_col = field_def["csv_ann2"]
+                entry["r1"][field_name] = row.get(ann1_col, "").strip()
+                entry["r2"][field_name] = row.get(ann2_col, "").strip()
 
-    wb.close()
-    _excel_cache = dict(data)
-    logger.info("Loaded %d NCT IDs from Excel", len(_excel_cache))
-    return _excel_cache
+            data[nct] = entry
+
+    _csv_cache = data
+    logger.info("Loaded %d NCT IDs from CSV", len(_csv_cache))
+    return _csv_cache
 
 
-def invalidate_excel_cache() -> None:
-    """Force reload of Excel data on next access (e.g. if file is updated)."""
-    global _excel_cache
-    _excel_cache = None
+def invalidate_csv_cache() -> None:
+    """Force reload of CSV data on next access (e.g. if file is updated)."""
+    global _csv_cache
+    _csv_cache = None
 
 
 # ---------------------------------------------------------------------------
@@ -547,20 +623,30 @@ def _compute_field_concordance(
         norm_a, blank_a = _normalise(raw_a, field_name)
         norm_b, blank_b = _normalise(raw_b, field_name)
 
+        # v24: Skip non-peptide fields when either side has peptide=False
+        if field_name != "peptide":
+            pep_a = data_a.get(nct, {}).get("peptide", "")
+            pep_b = data_b.get(nct, {}).get("peptide", "")
+            pep_a_str = str(pep_a).strip().lower()
+            pep_b_str = str(pep_b).strip().lower()
+            if pep_a_str == "false" or pep_b_str == "false":
+                skipped += 1
+                continue
+
         # Blank handling
         if blank_means_skip and (blank_a or blank_b):
             skipped += 1
             continue
 
-        # For reason_for_failure: outcome-aware blank handling (v3).
+        # For reason_for_failure: outcome-aware blank handling (v3/v24).
         # A blank reason is only meaningful if the annotator actually engaged
         # with the trial (i.e., filled in the outcome field). If both outcome
         # AND reason are blank, the annotator skipped the trial entirely.
         if field_name == "reason_for_failure":
             outcome_a = data_a.get(nct, {}).get("outcome", "")
             outcome_b = data_b.get(nct, {}).get("outcome", "")
-            _, outcome_a_blank = _normalise(outcome_a, "outcome")
-            _, outcome_b_blank = _normalise(outcome_b, "outcome")
+            norm_outcome_a, outcome_a_blank = _normalise(outcome_a, "outcome")
+            norm_outcome_b, outcome_b_blank = _normalise(outcome_b, "outcome")
 
             # Both outcome and reason blank on BOTH sides → skip
             if blank_a and outcome_a_blank and blank_b and outcome_b_blank:
@@ -573,7 +659,15 @@ def _compute_field_concordance(
             if blank_b and outcome_b_blank:
                 norm_b = ""
 
-            # Blanks that survive are legitimate "no failure" values
+            # v24: Blank reason + failed outcome → treat as "unknown"
+            if blank_a and "failed" in norm_outcome_a:
+                norm_a = "unknown"
+                blank_a = False
+            if blank_b and "failed" in norm_outcome_b:
+                norm_b = "unknown"
+                blank_b = False
+
+            # Remaining blanks are legitimate "no failure" values
             if blank_a:
                 norm_a = ""
             if blank_b:
@@ -589,8 +683,19 @@ def _compute_field_concordance(
             norm_a = _normalise_grouped(norm_a, field_name)
             norm_b = _normalise_grouped(norm_b, field_name)
 
-        labels_a.append(norm_a)
-        labels_b.append(norm_b)
+        # v23: Sequence field uses order-agnostic canonical comparison
+        if field_name == "sequence":
+            canon_a, _ = _normalise_sequence_for_comparison(norm_a)
+            canon_b, _ = _normalise_sequence_for_comparison(norm_b)
+            # For AC₁/kappa: use sorted canonical string as the label
+            # Same canonical set (regardless of order/format) → same label → agreement
+            label_a_seq = " | ".join(sorted(canon_a)) if canon_a else ""
+            label_b_seq = " | ".join(sorted(canon_b)) if canon_b else ""
+            labels_a.append(label_a_seq)
+            labels_b.append(label_b_seq)
+        else:
+            labels_a.append(norm_a)
+            labels_b.append(norm_b)
 
         # Track distributions
         dist_a[norm_a] += 1
@@ -711,6 +816,9 @@ def _build_job_concordance(
 
     overall_pct = round((total_agree / total_n) * 100, 1) if total_n > 0 else 0.0
 
+    # v23: Build sequence analysis for this comparison
+    seq_analysis = _build_sequence_analysis(data_a, data_b, common_ncts)
+
     return JobConcordance(
         job_id=job_id,
         comparison_label=comparison_label,
@@ -718,22 +826,81 @@ def _build_job_concordance(
         n_overlapping=len(common_ncts),
         fields=fields,
         overall_agree_pct=overall_pct,
+        sequence_analysis=seq_analysis,
     )
 
+
+
+def _build_sequence_analysis(
+    data_a: dict[str, dict[str, str]],
+    data_b: dict[str, dict[str, str]],
+    common_ncts: list[str],
+) -> SequenceAnalysis:
+    """Build detailed sequence comparison for all overlapping NCTs.
+
+    v23: Analyses every NCT where at least one side has a sequence value,
+    classifies match type, and produces aggregate summary stats.
+    """
+    details: list[SequenceComparisonDetail] = []
+    summary = SequenceAnalysisSummary()
+
+    for nct in common_ncts:
+        raw_a = data_a.get(nct, {}).get("sequence", "")
+        raw_b = data_b.get(nct, {}).get("sequence", "")
+
+        # Normalise blanks
+        _, blank_a = _normalise(raw_a, "sequence")
+        _, blank_b = _normalise(raw_b, "sequence")
+
+        if blank_a and blank_b:
+            summary.missing_both += 1
+            continue
+        if blank_a or blank_b:
+            # One side has data, other is blank — only include if the
+            # non-blank side is not "N/A"
+            non_blank = raw_a if not blank_a else raw_b
+            norm_val = str(non_blank).strip().upper()
+            if norm_val in ("N/A", "NONE", ""):
+                summary.missing_both += 1
+                continue
+
+        detail = _compare_sequences(raw_a, raw_b, nct)
+        if detail.match_type == "MISSING":
+            summary.missing_both += 1
+            continue
+
+        details.append(detail)
+        summary.total_compared += 1
+
+        if detail.match_type == "EXACT":
+            summary.exact_matches += 1
+            summary.agreement_for_ac += 1
+        elif detail.match_type == "ORDER":
+            summary.order_matches += 1
+            summary.agreement_for_ac += 1
+        elif detail.match_type == "FORMAT":
+            summary.format_matches += 1
+            summary.agreement_for_ac += 1
+        elif detail.match_type == "PARTIAL":
+            summary.partial_matches += 1
+        elif detail.match_type == "MISMATCH":
+            summary.full_mismatches += 1
+
+    return SequenceAnalysis(summary=summary, details=details)
 
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
 def _human_data_as_flat(replicate: str) -> dict[str, dict[str, str]]:
-    """Convert human Excel data for a replicate into flat {nct: {field: value}} format.
+    """Convert human CSV data for a replicate into flat {nct: {field: value}} format.
 
     Only includes NCTs where the annotator filled in at least one field.
     This matches the universal blank handling standard and the agent
     annotation format so we can reuse _build_job_concordance.
     """
-    excel_data = _load_excel_annotations()
+    csv_data = _load_csv_annotations()
     flat: dict[str, dict[str, str]] = {}
-    for nct_id, reps in excel_data.items():
+    for nct_id, reps in csv_data.items():
         rep_data = reps.get(replicate, {})
         entry = {field: rep_data.get(field, "") for field in FIELDS}
         if _has_any_annotation(entry):
@@ -982,23 +1149,24 @@ def _human_data_for_annotator(
     annotation field. Rows assigned to an annotator but left completely
     blank are excluded — see BLANK_HANDLING_STANDARD in docstring.
     """
-    excel_data = _load_excel_annotations()
+    csv_data = _load_csv_annotations()
     flat: dict[str, dict[str, str]] = {}
     detected_replicate = ""
 
-    # Determine which replicate this annotator belongs to
-    r1_names = {name for name, _, _ in R1_ANNOTATOR_RANGES}
-    r2_names = {name for name, _, _ in R2_ANNOTATOR_RANGES}
-    r2_names.add("Emily")  # Emily is the R2 default
-
-    if annotator in r1_names:
+    # Determine which replicate this annotator belongs to.
+    # ann1 is always Emily (r1). For r2, check A2_annotator column.
+    if annotator == "Emily":
         detected_replicate = "r1"
-    elif annotator in r2_names:
-        detected_replicate = "r2"
     else:
-        return flat, ""
+        # Check if any NCT has this annotator in r2
+        for reps in csv_data.values():
+            if reps.get("r2_annotator") == annotator:
+                detected_replicate = "r2"
+                break
+        if not detected_replicate:
+            return flat, ""
 
-    for nct_id, reps in excel_data.items():
+    for nct_id, reps in csv_data.items():
         if reps.get(f"{detected_replicate}_annotator") == annotator:
             rep_data = reps.get(detected_replicate, {})
             entry = {field: rep_data.get(field, "") for field in FIELDS}
@@ -1015,12 +1183,12 @@ def annotator_list() -> list[AnnotatorInfo]:
     Only counts NCTs where the annotator filled in at least one annotation
     field. Rows assigned but left blank are not counted.
     """
-    excel_data = _load_excel_annotations()
+    csv_data = _load_csv_annotations()
 
     r1_counts: Counter = Counter()
     r2_counts: Counter = Counter()
 
-    for reps in excel_data.values():
+    for reps in csv_data.values():
         r1_ann = reps.get("r1_annotator", "")
         r2_ann = reps.get("r2_annotator", "")
         r1_data = reps.get("r1", {})
@@ -1085,11 +1253,11 @@ def r1_vs_r2_for_annotator(annotator: str) -> JobConcordance:
 
     # Get full data for the other replicate, but only for the same NCTs
     other_rep = "r2" if replicate == "r1" else "r1"
-    excel_data = _load_excel_annotations()
+    csv_data = _load_csv_annotations()
     other_flat: dict[str, dict[str, str]] = {}
     for nct_id in ann_data:
-        if nct_id in excel_data:
-            rep_data = excel_data[nct_id].get(other_rep, {})
+        if nct_id in csv_data:
+            rep_data = csv_data[nct_id].get(other_rep, {})
             other_flat[nct_id] = {field: rep_data.get(field, "") for field in FIELDS}
 
     if replicate == "r1":
@@ -1125,11 +1293,11 @@ def _human_data_for_annotators(
 
     Returns: {nct_id: {field: value}} for all NCTs by the selected annotators.
     """
-    excel_data = _load_excel_annotations()
+    csv_data = _load_csv_annotations()
     flat: dict[str, dict[str, str]] = {}
     name_set = set(annotator_names)
 
-    for nct_id, reps in excel_data.items():
+    for nct_id, reps in csv_data.items():
         annotator = reps.get(f"{replicate}_annotator", "")
         if annotator not in name_set:
             continue
