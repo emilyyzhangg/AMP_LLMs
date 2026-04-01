@@ -527,7 +527,7 @@ function AgentVsHumanTab() {
     })();
   }, [selectedJobs, grouped]);
 
-  // Load multi-annotator concordance when selections change
+  // Load multi-annotator agreement when selections change
   // For multi-job, uses the first selected job for annotator queries (annotator filtering
   // only makes sense per-job since different jobs may cover different NCT ranges)
   const primaryJobId = useMemo(() => {
@@ -643,7 +643,7 @@ function AgentVsHumanTab() {
         </div>
       </div>
 
-      {loading && <div className="card text-muted">Loading concordance data...</div>}
+      {loading && <div className="card text-muted">Loading agreement data...</div>}
       {error && <div className="card" style={{ color: "var(--error)" }}>{error}</div>}
 
       {concordance && (
@@ -659,7 +659,7 @@ function AgentVsHumanTab() {
             />
           )}
 
-          {annotatorLoading && <div className="card text-muted">Loading annotator concordance...</div>}
+          {annotatorLoading && <div className="card text-muted">Loading annotator agreement...</div>}
 
           {/* Default All R1 state: show full comparison grid */}
           {isDefaultState && !annotatorLoading && (
@@ -801,7 +801,7 @@ function AgentVsHumanTab() {
 
           {/* No selection state */}
           {!isDefaultState && !annotatorLoading && !hasAnySelection && (
-            <div className="card text-muted">Select annotators to view concordance data.</div>
+            <div className="card text-muted">Select annotators to view agreement data.</div>
           )}
         </>
       )}
@@ -1134,7 +1134,7 @@ function HumanInterRaterTab() {
         />
       )}
 
-      {annotatorLoading && <div className="card text-muted">Loading annotator concordance...</div>}
+      {annotatorLoading && <div className="card text-muted">Loading annotator agreement...</div>}
 
       {!annotatorLoading && hasAnySelection && activeConcordance && (
         <>
@@ -1150,7 +1150,7 @@ function HumanInterRaterTab() {
       )}
 
       {!annotatorLoading && !hasAnySelection && (
-        <div className="card text-muted">Select annotators to view inter-rater concordance data.</div>
+        <div className="card text-muted">Select annotators to view inter-rater agreement data.</div>
       )}
     </div>
   );
@@ -1387,7 +1387,7 @@ function DataCleaningRules() {
   );
 }
 
-export default function ConcordancePage() {
+export default function AgreementPage() {
   const [activeTab, setActiveTab] = useState<TabKey>("agent-human");
 
   return (
