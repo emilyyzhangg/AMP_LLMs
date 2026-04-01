@@ -147,6 +147,33 @@ export interface ConcordanceField {
   disagreements: Array<{ nct_id: string; field: string; value_a: string; value_b: string }>;
 }
 
+export interface SequenceComparisonDetail {
+  nct_id: string;
+  agent_sequences: string[];
+  human_sequences: string[];
+  match_type: "EXACT" | "ORDER" | "FORMAT" | "PARTIAL" | "MISMATCH" | "MISSING";
+  matched_sequences: string[];
+  agent_only: string[];
+  human_only: string[];
+  format_differences: string[];
+}
+
+export interface SequenceAnalysisSummary {
+  total_compared: number;
+  exact_matches: number;
+  order_matches: number;
+  format_matches: number;
+  partial_matches: number;
+  full_mismatches: number;
+  missing_both: number;
+  agreement_for_ac: number;
+}
+
+export interface SequenceAnalysis {
+  summary: SequenceAnalysisSummary;
+  details: SequenceComparisonDetail[];
+}
+
 export interface JobConcordance {
   job_id: string;
   timestamp: string;
@@ -154,6 +181,7 @@ export interface JobConcordance {
   n_overlapping: number;
   fields: ConcordanceField[];
   overall_agree_pct: number;
+  sequence_analysis?: SequenceAnalysis;
 }
 
 export interface ComparisonField {

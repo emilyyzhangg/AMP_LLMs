@@ -20,6 +20,8 @@ import type {
   CategoryMetrics,
   ComparisonResult,
   ConcordanceHistoryEntry,
+  SequenceAnalysis,
+  SequenceComparisonDetail,
 } from "../types";
 
 // ── Helpers ──────────────────────────────────────────────────────────
@@ -450,6 +452,127 @@ function AnnotatorSelector({
   );
 }
 
+// ── Sequence Analysis Section ───────────────────────────────────────
+
+const MATCH_TYPE_STYLES: Record<string, { color: string; bg: string; label: string }> = {
+  EXACT:    { color: "var(--success)", bg: "#064e3b", label: "Exact" },
+  ORDER:    { color: "var(--accent)",  bg: "#1e3a5f", label: "Order" },
+  FORMAT:   { color: "var(--accent)",  bg: "#1e3a5f", label: "Format" },
+  PARTIAL:  { color: "var(--warning)", bg: "#3b3314", label: "Partial" },
+  MISMATCH: { color: "var(--error)",   bg: "#451a1a", label: "Mismatch" },
+  MISSING:  { color: "var(--text-secondary)", bg: "#2a2a2a", label: "Missing" },
+};
+
+function truncSeq(s: string, max = 30): string {
+  return s.length > max ? s.slice(0, max) + "\u2026" : s;
+}
+
+function SequenceAnalysisSection({ analysis, label }: { analysis: SequenceAnalysis; label: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const s = analysis.summary;
+  const agreePct = s.total_compared > 0 ? ((s.agreement_for_ac / s.total_compared) * 100).toFixed(1) : "0.0";
+
+  return (
+    <div className="card mb-2">
+      <div
+        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <div className="card-title" style={{ margin: 0 }}>Sequence Analysis ({label})</div>
+        <span style={{ fontSize: "1.25rem", color: "var(--text-secondary)" }}>{expanded ? "\u25B2" : "\u25BC"}</span>
+      </div>
+
+      {/* Summary bar */}
+      <div style={{
+        display: "flex", flexWrap: "wrap", gap: "0.75rem", marginTop: "0.75rem",
+        fontSize: "0.85rem", color: "var(--text-secondary)",
+      }}>
+        <span><strong>{s.total_compared}</strong> compared</span>
+        <span style={{ color: "var(--success)" }}><strong>{s.exact_matches}</strong> exact</span>
+        <span style={{ color: "var(--accent)" }}><strong>{s.order_matches}</strong> order</span>
+        <span style={{ color: "var(--accent)" }}><strong>{s.format_matches}</strong> format</span>
+        <span style={{ color: "var(--warning)" }}><strong>{s.partial_matches}</strong> partial</span>
+        <span style={{ color: "var(--error)" }}><strong>{s.full_mismatches}</strong> mismatch</span>
+        <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>
+          Agreement: {s.agreement_for_ac}/{s.total_compared} ({agreePct}%)
+        </span>
+      </div>
+
+      {/* Expandable detail table */}
+      {expanded && analysis.details.length > 0 && (
+        <div style={{ marginTop: "1rem", overflowX: "auto" }}>
+          <table style={{ fontSize: "0.82rem" }}>
+            <thead>
+              <tr>
+                <th>NCT ID</th>
+                <th>Match Type</th>
+                <th>Agent Sequences</th>
+                <th>Human Sequences</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {analysis.details.map((d) => {
+                const style = MATCH_TYPE_STYLES[d.match_type] || MATCH_TYPE_STYLES.MISSING;
+                return (
+                  <tr key={d.nct_id}>
+                    <td style={{ fontFamily: "monospace", fontSize: "0.8rem" }}>{d.nct_id}</td>
+                    <td style={{
+                      fontWeight: 700, color: style.color, background: style.bg,
+                      textAlign: "center", borderRadius: "3px", padding: "2px 6px",
+                    }}>
+                      {style.label}
+                    </td>
+                    <td style={{ fontFamily: "monospace", fontSize: "0.78rem", maxWidth: "220px" }}>
+                      {d.agent_sequences.length > 0
+                        ? d.agent_sequences.map((seq, i) => <div key={i} title={seq}>{truncSeq(seq)}</div>)
+                        : <span className="text-muted">&mdash;</span>}
+                    </td>
+                    <td style={{ fontFamily: "monospace", fontSize: "0.78rem", maxWidth: "220px" }}>
+                      {d.human_sequences.length > 0
+                        ? d.human_sequences.map((seq, i) => <div key={i} title={seq}>{truncSeq(seq)}</div>)
+                        : <span className="text-muted">&mdash;</span>}
+                    </td>
+                    <td style={{ fontSize: "0.78rem" }}>
+                      {d.matched_sequences.length > 0 && (
+                        <div style={{ color: "var(--success)" }}>
+                          Shared: {d.matched_sequences.map(truncSeq).join(", ")}
+                        </div>
+                      )}
+                      {d.agent_only.length > 0 && (
+                        <div style={{ color: "var(--warning)" }}>
+                          Agent only: {d.agent_only.map(truncSeq).join(", ")}
+                        </div>
+                      )}
+                      {d.human_only.length > 0 && (
+                        <div style={{ color: "var(--error)" }}>
+                          Human only: {d.human_only.map(truncSeq).join(", ")}
+                        </div>
+                      )}
+                      {d.format_differences.length > 0 && (
+                        <div style={{ color: "var(--accent)" }}>
+                          Format: {d.format_differences.join("; ")}
+                        </div>
+                      )}
+                      {d.matched_sequences.length === 0 && d.agent_only.length === 0 &&
+                       d.human_only.length === 0 && d.format_differences.length === 0 && (
+                        <span className="text-muted">&mdash;</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {expanded && analysis.details.length === 0 && (
+        <div className="text-muted" style={{ marginTop: "0.75rem" }}>No per-NCT details available.</div>
+      )}
+    </div>
+  );
+}
+
 // ── Tab 1: Agent vs Human ────────────────────────────────────────────
 
 function AgentVsHumanTab() {
@@ -755,6 +878,20 @@ function AgentVsHumanTab() {
                 label={`R1 vs R2 (Human Baseline) — Overall ${concordance.r1_vs_r2.overall_agree_pct.toFixed(1)}% agreement`}
               />
 
+              {/* Sequence analysis */}
+              {concordance.agent_vs_r1.sequence_analysis && (
+                <SequenceAnalysisSection
+                  analysis={concordance.agent_vs_r1.sequence_analysis}
+                  label="Agent vs R1"
+                />
+              )}
+              {concordance.agent_vs_r2.sequence_analysis && (
+                <SequenceAnalysisSection
+                  analysis={concordance.agent_vs_r2.sequence_analysis}
+                  label="Agent vs R2"
+                />
+              )}
+
               {/* Per-field expandable details */}
               <h3 style={{ margin: "1.5rem 0 0.75rem" }}>Field Details (Agent vs R1)</h3>
               {concordance.agent_vs_r1.fields.map((f) => (
@@ -778,6 +915,9 @@ function AgentVsHumanTab() {
                     fields={r1Concordance.fields}
                     label={`${r1Concordance.comparison_label} — Overall ${r1Concordance.overall_agree_pct.toFixed(1)}% agreement (n=${r1Concordance.n_overlapping})`}
                   />
+                  {r1Concordance.sequence_analysis && (
+                    <SequenceAnalysisSection analysis={r1Concordance.sequence_analysis} label={r1Concordance.comparison_label} />
+                  )}
                   {r1Concordance.fields.map((f) => (
                     <FieldDetail key={`r1-${f.field_name}`} field={f} labelA="Agent" labelB="R1" />
                   ))}
@@ -791,6 +931,9 @@ function AgentVsHumanTab() {
                     fields={r2Concordance.fields}
                     label={`${r2Concordance.comparison_label} — Overall ${r2Concordance.overall_agree_pct.toFixed(1)}% agreement (n=${r2Concordance.n_overlapping})`}
                   />
+                  {r2Concordance.sequence_analysis && (
+                    <SequenceAnalysisSection analysis={r2Concordance.sequence_analysis} label={r2Concordance.comparison_label} />
+                  )}
                   {r2Concordance.fields.map((f) => (
                     <FieldDetail key={`r2-${f.field_name}`} field={f} labelA="Agent" labelB="R2" />
                   ))}
