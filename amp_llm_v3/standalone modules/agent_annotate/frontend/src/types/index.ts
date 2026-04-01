@@ -8,6 +8,7 @@ export interface JobSummary {
   created_at: string;
   total_trials: number;
   completed_trials: number;
+  commit_hash?: string;
   // v17: Diagnostics summary
   warnings_count?: number;
   timeouts_count?: number;

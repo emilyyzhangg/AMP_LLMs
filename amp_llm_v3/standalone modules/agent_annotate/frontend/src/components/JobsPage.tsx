@@ -38,6 +38,7 @@ export default function JobsPage() {
                 <th>Trials</th>
                 <th>Progress</th>
                 <th>Issues</th>
+                <th>Version</th>
                 <th>Created</th>
               </tr>
             </thead>
@@ -72,6 +73,9 @@ export default function JobsPage() {
                       ) : (
                         <span className="text-sm text-muted">--</span>
                       )}
+                    </td>
+                    <td style={{ fontFamily: "monospace", fontSize: "0.8rem" }}>
+                      {job.commit_hash ? job.commit_hash.slice(0, 7) : "--"}
                     </td>
                     <td className="text-sm text-muted">
                       {new Date(job.created_at).toLocaleString()}
