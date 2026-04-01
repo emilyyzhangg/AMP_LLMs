@@ -1,5 +1,5 @@
 """
-Outcome Annotation Agent (v4 — v11 accuracy fixes, v17 heuristic override, v21 TERMINATED fix).
+Outcome Annotation Agent (v4 — v11 accuracy fixes, v17 heuristic override, v21 TERMINATED fix, v25 publication-priority).
 
 Determines trial outcome using a two-pass strategy:
   Pass 1: Extract ClinicalTrials.gov status, phase, and published results
@@ -27,6 +27,15 @@ v21 changes:
     evidence, Failed if safety/futility, Terminated if business reason or no signal).
   - PASS2_PROMPT heuristics: added H1b (Phase I >5yr, no Phase II -> Unknown) and
     H3b (Phase II/III >10yr, no pubs, no negative evidence -> lean Positive).
+
+v25 changes (publication-priority — fixes 37% of outcome disagreements):
+  - PASS2_PROMPT: Added EVIDENCE PRIORITY ladder — published results override CT.gov
+    registry status. Previously agent defaulted to "Unknown" when status was ambiguous
+    even when publications reported clear results.
+  - PASS2_PROMPT: Added rules for "Active" with published results (registry may be
+    outdated) and "Terminated" not implying failure.
+  - _infer_from_pass1: Added publication-priority override — when Pass 2 returns Unknown
+    but publications with result valence exist, use the publication signal.
 """
 
 import re
@@ -144,12 +153,37 @@ PASS2_PROMPT = """You are a clinical trial outcome assessment specialist. You ha
 The facts you extracted:
 {pass1_output}
 
+EVIDENCE PRIORITY (highest to lowest — follow this order strictly):
+1. Published results (peer-reviewed publications, press releases with efficacy data)
+   → If publications report clear positive or negative results, USE THEM regardless of CT.gov status.
+2. ClinicalTrials.gov results section (has_results_posted = true)
+3. ClinicalTrials.gov overall status field
+4. Trial phase and design (Phase I safety = limited outcome signal)
+
+CRITICAL RULE: Published results in literature OVERRIDE the ClinicalTrials.gov registry status.
+- If publications report efficacy/positive results → "Positive", even if CT.gov says Active/Terminated/Unknown
+- If publications report failed/negative results → "Failed - completed trial", even if CT.gov says Active/Terminated
+- CT.gov status should only be the PRIMARY signal when NO publications with results are found
+- Do NOT default to "Unknown" just because the registry status is ambiguous — check publications first.
+
 DECISION TREE (follow in order):
 
+0. PUBLICATION OVERRIDE (check this FIRST, before registry status):
+   If published literature reports completed results (positive or negative), use those results
+   regardless of what ClinicalTrials.gov says. Registry status may be outdated or incomplete.
+   a. Published results show POSITIVE findings → "Positive"
+   b. Published results show NEGATIVE findings → "Failed - completed trial"
+   If no publications with results exist, continue to step 1.
+
 1. Is the trial RECRUITING, NOT_YET_RECRUITING, or ENROLLING_BY_INVITATION? -> "Recruiting"
-2. Is the trial ACTIVE_NOT_RECRUITING with no results yet? -> "Active, not recruiting"
+2. Is the trial ACTIVE_NOT_RECRUITING with no results yet?
+   BUT: If ClinicalTrials.gov says Active or Recruiting but published literature reports completed
+   results (positive or negative), use the published results. Registry status may be outdated.
+   Only use "Active, not recruiting" if there are genuinely NO published results.
 3. Was the trial WITHDRAWN before enrollment? -> "Withdrawn"
 4. Was the trial TERMINATED?
+   IMPORTANT: Terminated does NOT mean failed. A terminated trial may have published positive
+   interim results. ALWAYS check literature before concluding.
    First check the evidence for this TERMINATED trial:
    a. Published results show POSITIVE findings OR the drug advanced to later-phase trials OR the drug
       was approved → "Positive" (trial was stopped early for efficacy or succeeded despite termination)
@@ -351,6 +385,17 @@ class OutcomeAgent(BaseAnnotationAgent):
         value = self._parse_value(pass2_output)
         reasoning = self._parse_reasoning(pass2_output)
 
+        # v25: Publication-priority override — when Pass 2 returns "Unknown",
+        # check if Pass 1 found published results with a clear valence. This is
+        # the #1 disagreement pattern: agent=Unknown when publications exist.
+        # Also applies to "Active" and "Terminated" when publications have results.
+        if value in ("Unknown", "Active, not recruiting", "Terminated"):
+            pub_override = self._publication_priority_override(pass1_output, value)
+            if pub_override and pub_override != value:
+                logger.info(f"  outcome: v25 publication-priority override {value} → {pub_override}")
+                value = pub_override
+                reasoning = f"[v25 publication-priority override: Pass 2 returned {value}, publications indicate {pub_override}] " + reasoning
+
         # v17: Post-LLM heuristic override — when Pass 2 returns "Unknown",
         # apply the adverse-event and completion heuristics against Pass 1 output.
         # Previously _infer_from_pass1 was only called on LLM exceptions (dead code
@@ -478,6 +523,68 @@ class OutcomeAgent(BaseAnnotationAgent):
                 # Phase I without trial-specific evidence → Unknown
 
         return "Unknown"
+
+    @staticmethod
+    def _publication_priority_override(pass1_text: str, current_value: str) -> str | None:
+        """v25: Check if Pass 1 found published results that should override the current value.
+
+        This catches the dominant error pattern where the agent defaults to Unknown/Active/Terminated
+        based on CT.gov registry status, but published literature reports clear results.
+
+        Returns the overridden value, or None if no override applies.
+        """
+        lower = pass1_text.lower()
+
+        # Extract published results section
+        results_match = re.search(r"published results?:\s*(.+?)(?:\n[A-Z]|\Z)", lower, re.DOTALL)
+        results_section = results_match.group(1).strip() if results_match else ""
+        has_publications = (
+            results_section
+            and results_section not in ("none found", "none", "no results", "not found", "n/a")
+        )
+
+        if not has_publications:
+            return None
+
+        # Extract result valence from Pass 1
+        valence_match = re.search(r"result valence:\s*(.+?)(?:\n|$)", lower)
+        valence = valence_match.group(1).strip() if valence_match else ""
+
+        # Strong adverse signals always win (same list as _infer_from_pass1)
+        _STRONG_ADVERSE = [
+            "unacceptable", "not tolerated", "dose-limiting",
+            "reactogenicity", "sterile abscess", "safety concern",
+            "serious adverse event", "discontinued due to",
+        ]
+        if any(kw in lower for kw in _STRONG_ADVERSE):
+            return "Failed - completed trial"
+
+        # Publications report positive results → Positive
+        if "positive" in valence or "mixed" in valence:
+            return "Positive"
+        if any(kw in results_section for kw in [
+            "efficacy", "effective", "positive", "significant",
+            "met primary", "well-tolerated", "well tolerated",
+            "safe and effective", "favorable", "promising",
+            "immunogenic", "approved", "granted approval",
+        ]):
+            return "Positive"
+
+        # Publications report negative results → Failed
+        if "negative" in valence:
+            return "Failed - completed trial"
+        if any(kw in results_section for kw in [
+            "failed", "negative", "not effective", "did not meet",
+            "did not demonstrate", "did not achieve", "did not show",
+            "no significant", "no benefit", "no improvement",
+            "failed to demonstrate", "failed to meet", "failed primary",
+            "lack of efficacy", "ineffective", "no efficacy",
+            "futility", "inferior",
+        ]):
+            return "Failed - completed trial"
+
+        # Publications exist but valence is unclear — don't override
+        return None
 
     @staticmethod
     def _extract_structured_phase(research_results: list) -> str:

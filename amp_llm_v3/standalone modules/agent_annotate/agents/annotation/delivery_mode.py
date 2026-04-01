@@ -477,11 +477,11 @@ class DeliveryModeAgent(BaseAnnotationAgent):
         if "," in raw:
             parts = [p.strip() for p in raw.split(",") if p.strip()]
             parsed = [self._parse_single_value(p) for p in parts]
-            # Deduplicate while preserving order
+            # Deduplicate while preserving order (v24: dedup all values equally)
             seen = set()
             unique = []
             for v in parsed:
-                if v not in seen and v != "Other":
+                if v not in seen:
                     seen.add(v)
                     unique.append(v)
             if unique:
