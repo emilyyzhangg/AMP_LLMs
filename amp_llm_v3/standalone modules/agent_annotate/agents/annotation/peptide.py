@@ -230,6 +230,23 @@ _KNOWN_PEPTIDE_DRUGS = {
     "melittin", "magainin", "cecropin", "lactoferricin",
     "bivalirudin", "ziconotide", "eptifibatide", "icatibant",
     "pramlintide", "romiplostim",
+    # v24: from FALSE→TRUE error analysis
+    # Peptide vaccines (multi-peptide or single-peptide immunogens)
+    "pvx-410",              # Multi-peptide cancer vaccine (5 HLA-A2 peptides)
+    "polypepi1018",         # Multi-peptide CRC vaccine
+    "multipept1de",         # Multi-peptide T1D vaccine
+    "gv1001",               # Telomerase peptide vaccine (16 aa)
+    "pd-l1 peptide",        # PD-L1 peptide vaccine
+    "pd-l2 peptide",        # PD-L2 peptide vaccine
+    "bcl-xl_42-caf09b",     # Bcl-Xl peptide vaccine
+    # Novel peptide therapeutics
+    "gt-001",               # GnRH peptide therapeutic
+    "xfb19",                # Synthetic antimicrobial peptide
+    "satoreotide",          # Somatostatin receptor peptide (diagnostic/therapeutic)
+    "pemziviptadil", "pb1046",  # VIP analogue (ELP-VIP fusion, peptide-based)
+    "emi-137",              # cMet-targeting fluorescent peptide
+    # Peptide radioligands (peptide IS the targeting + therapeutic agent)
+    "neobomb1", "68ga-neobomb1",  # Bombesin peptide analogue
 }
 
 

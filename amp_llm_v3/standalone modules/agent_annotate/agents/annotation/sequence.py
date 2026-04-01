@@ -77,6 +77,16 @@ _KNOWN_SEQUENCES: dict[str, str] = {
     "spif": "MVRIKPGSANKPSDD",
     "qrh-882260": "QRHKPRE",                                 # 7aa heptapeptide
     "bnz-1": "CGSGGQITISILSQINRVFHEKFI",                    # 25aa, IL-2/15 inhibitor
+    # v24: from agent-empty error analysis (verified against human R1 ground truth)
+    "gv1001": "EARPALLTSRLRFIPK",                            # Telomerase peptide, 16aa
+    "abaloparatide": "AVSEHQLLHDKGKSIQDLRRRELLEKLLEKLHTA",   # PTHrP analog, 34aa
+    "vosoritide": "PGQEHPNARKYKGANKKGLSKGCFGLKLDRIGSMSGLGC", # CNP analog (BMN 111), 39aa
+    "bmn 111": "PGQEHPNARKYKGANKKGLSKGCFGLKLDRIGSMSGLGC",    # Same as vosoritide
+    "satoreotide": "YNAYWKAF",                                # OPS-202, octapeptide SST analog
+    "pd-l1 peptide": "FMTYWHLLNAFTVTVPKDL",                  # IO103, PD-L1 epitope, 19aa
+    "emi-137": "AGSCYCSGPPRFECWCFETEGTGGGK",                 # cMet-targeting peptide, 26aa
+    "l-carnosine": "AH",                                      # Beta-alanyl-L-histidine dipeptide
+    "carnosine": "AH",                                        # Same
 }
 
 
@@ -412,23 +422,33 @@ class SequenceAgent(BaseAnnotationAgent):
         for intervention in interventions:
             lookup_name = _strip_formulation(intervention).lower()
             for drug_name, known_seq in _KNOWN_SEQUENCES.items():
-                if drug_name in lookup_name or lookup_name in drug_name:
-                    logger.info(
-                        f"  sequence: known sequence match '{drug_name}' "
-                        f"for '{intervention}' ({len(known_seq)} aa)"
-                    )
-                    return FieldAnnotation(
-                        field_name="sequence",
-                        value=known_seq,
-                        confidence=0.95,
-                        reasoning=(
-                            f"[Known sequence] {drug_name} → {known_seq[:20]}... "
-                            f"({len(known_seq)} aa). Matched intervention '{intervention}'."
-                        ),
-                        evidence=[],
-                        model_name="deterministic",
-                        skip_verification=True,
-                    )
+                # Short drug names (<=4 chars) require near-exact match to avoid
+                # false positives (e.g. "bnp" matching "bnp levels in ...")
+                if len(drug_name) <= 4:
+                    if lookup_name != drug_name and not lookup_name.startswith(drug_name + " "):
+                        continue
+                else:
+                    # Word-boundary match: drug_name must appear as a complete
+                    # word/phrase, not as a substring of a longer word
+                    pattern = r'(?:^|[\s\-/])' + re.escape(drug_name) + r'(?:$|[\s\-/,])'
+                    if not (re.search(pattern, lookup_name) or lookup_name == drug_name):
+                        continue
+                logger.info(
+                    f"  sequence: known sequence match '{drug_name}' "
+                    f"for '{intervention}' ({len(known_seq)} aa)"
+                )
+                return FieldAnnotation(
+                    field_name="sequence",
+                    value=known_seq,
+                    confidence=0.95,
+                    reasoning=(
+                        f"[Known sequence] {drug_name} → {known_seq[:20]}... "
+                        f"({len(known_seq)} aa). Matched intervention '{intervention}'."
+                    ),
+                    evidence=[],
+                    model_name="deterministic",
+                    skip_verification=True,
+                )
 
         # Also keep citation references for evidence attribution
         citations_by_source: dict[str, list[SourceCitation]] = {}
