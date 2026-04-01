@@ -36,7 +36,8 @@
 | 38 | Batch G R2 | 799905fee5c4 | 25 | 25/25 | **Complete** | v22 | — | 151-175. Delivery 73.3%. Peptide 70.8%. Sequence 0%. |
 | 39 | Batch H R1 | 6ae5c0fb0de1 | 25 | 25/25 | **Complete** | v22 | 14 timeouts | 176-200. Delivery 46.2%. Sequence 57.1% (4 exact). |
 | 40 | Batch H R2 | 4953bff0b240 | 25 | 25/25 | **Complete** | v22 | 14 timeouts | 176-200. Delivery 46.2%. Outcome 69.2%. |
-| 41 | Concordance v25 | bb302bc7b077 | 50 | —/50 | **Running** | v25 (904180a) | — | Baseline: same 50 NCTs as v22 concordance. First run with simplified categories + all fixes. |
+| 41 | Concordance v25 | bb302bc7b077 | 50 | 4/50 | **Cancelled** | v25 (904180a) | — | Cancelled to pick up quality checker fix. |
+| 42 | Concordance v25 | b7c5c4fe7a17 | 50 | —/50 | **Running** | v25 (3595d06) | — | Resubmitted with quality checker N/A fix. Same 50 NCTs. | | — | Baseline: same 50 NCTs as v22 concordance. First run with simplified categories + all fixes. |
 
 > **Note:** Jobs 36-40 are the last jobs run with old categories (v22 code). v24 is now merged to main (9db9e33) with simplified categories (binary AMP/Other, 4-category delivery mode). All future jobs will use v24+ categories.
 
