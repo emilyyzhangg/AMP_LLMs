@@ -1,7 +1,7 @@
 """
-Concordance engine for agent-annotate.
+Agreement engine for agent-annotate.
 
-Computes agreement metrics between:
+Computes inter-rater agreement metrics between:
   - Agent annotations (from job result JSON files)
   - Human annotations (from Excel, two replicates: R1 and R2)
 
@@ -35,6 +35,9 @@ from app.models.concordance import (
     ConcordanceResult,
     Disagreement,
     JobConcordance,
+    SequenceAnalysis,
+    SequenceAnalysisSummary,
+    SequenceComparisonDetail,
 )
 
 logger = logging.getLogger("agent_annotate.concordance")
@@ -320,6 +323,153 @@ def _normalise_grouped(value: str, field_name: str) -> str:
     return value
 
 
+
+# ---------------------------------------------------------------------------
+# Sequence-specific normalisation (v23: order-agnostic comparison)
+# ---------------------------------------------------------------------------
+def _canonicalise_single_sequence(seq: str) -> str:
+    """Reduce a single sequence string to its canonical form for comparison.
+
+    Strips: whitespace, hyphens, parenthesised modifications, case → uppercase.
+    This lets us detect 'same molecule, different format' situations.
+    """
+    s = seq.strip()
+    if not s or s.upper() in ("N/A", "NONE", ""):
+        return ""
+    # Remove parenthesised modifications: (Ac), (NH2), etc.
+    s = re.sub(r"\([^)]*\)", "", s)
+    # Remove hyphens (format artefact)
+    s = s.replace("-", "")
+    # Remove spaces
+    s = s.replace(" ", "")
+    # Uppercase (D-amino acid lowercase → uppercase for canonical)
+    s = s.upper()
+    return s
+
+
+def _normalise_sequence_for_comparison(
+    raw: str,
+) -> tuple[frozenset[str], list[str]]:
+    """Normalise a sequence field value for order-agnostic comparison.
+
+    Returns:
+        (canonical_set, display_list)
+        - canonical_set: frozenset of canonical AA strings (uppercase, no mods)
+        - display_list: sorted list of original (trimmed) sequence strings
+    """
+    if raw is None:
+        return (frozenset(), [])
+    s = str(raw).strip()
+    if not s or s.upper() in ("N/A", "NONE"):
+        return (frozenset(), [])
+
+    # Split on pipe separator
+    parts = [p.strip() for p in s.split("|")]
+    parts = [p for p in parts if p]
+
+    canonical_set: set[str] = set()
+    display_list: list[str] = []
+    for part in parts:
+        canon = _canonicalise_single_sequence(part)
+        if canon:
+            canonical_set.add(canon)
+            display_list.append(part)
+
+    display_list.sort()
+    return (frozenset(canonical_set), display_list)
+
+
+def _compare_sequences(
+    raw_a: str, raw_b: str, nct_id: str,
+) -> SequenceComparisonDetail:
+    """Compare two sequence field values and classify the match type.
+
+    Match types:
+      EXACT   — identical display strings
+      ORDER   — same sequences, different order
+      FORMAT  — same canonical set, different display formatting
+      PARTIAL — some sequences overlap, but count differs
+      MISMATCH — no canonical overlap at all
+      MISSING — both sides blank/N/A
+    """
+    canon_a, display_a = _normalise_sequence_for_comparison(raw_a)
+    canon_b, display_b = _normalise_sequence_for_comparison(raw_b)
+
+    detail = SequenceComparisonDetail(
+        nct_id=nct_id,
+        agent_sequences=display_a,
+        human_sequences=display_b,
+        match_type="MISSING",
+        matched_sequences=[],
+        agent_only=[],
+        human_only=[],
+        format_differences=[],
+    )
+
+    # Both empty
+    if not canon_a and not canon_b:
+        detail.match_type = "MISSING"
+        return detail
+
+    # One side empty
+    if not canon_a or not canon_b:
+        detail.match_type = "MISMATCH"
+        detail.agent_only = list(canon_a) if canon_a else []
+        detail.human_only = list(canon_b) if canon_b else []
+        return detail
+
+    # Check canonical sets
+    shared = canon_a & canon_b
+    a_only = canon_a - canon_b
+    b_only = canon_b - canon_a
+
+    detail.matched_sequences = sorted(shared)
+    detail.agent_only = sorted(a_only)
+    detail.human_only = sorted(b_only)
+
+    if canon_a == canon_b:
+        # Same canonical set — check display formatting
+        norm_a_str = str(raw_a).strip()
+        norm_b_str = str(raw_b).strip()
+        if norm_a_str == norm_b_str:
+            detail.match_type = "EXACT"
+        elif display_a == display_b:
+            # Same sorted display but original order differed
+            detail.match_type = "ORDER"
+        else:
+            # Same canonical set but display differs (formatting)
+            detail.match_type = "FORMAT"
+            # Build format diff descriptions
+            # Map canonical → display for each side
+            map_a: dict[str, str] = {}
+            map_b: dict[str, str] = {}
+            parts_a = [p.strip() for p in str(raw_a).split("|") if p.strip()]
+            parts_b = [p.strip() for p in str(raw_b).split("|") if p.strip()]
+            for p in parts_a:
+                c = _canonicalise_single_sequence(p)
+                if c:
+                    map_a[c] = p
+            for p in parts_b:
+                c = _canonicalise_single_sequence(p)
+                if c:
+                    map_b[c] = p
+            for canon_seq in shared:
+                da = map_a.get(canon_seq, "?")
+                db = map_b.get(canon_seq, "?")
+                if da != db:
+                    detail.format_differences.append(
+                        f"Agent: {da}, Human: {db} (same canonical: {canon_seq})"
+                    )
+    elif shared:
+        # Partial overlap
+        detail.match_type = "PARTIAL"
+    else:
+        # No overlap at all
+        detail.match_type = "MISMATCH"
+
+    return detail
+
+
 # ---------------------------------------------------------------------------
 # Cohen's Kappa (from scratch, no sklearn)
 # ---------------------------------------------------------------------------
@@ -589,8 +739,19 @@ def _compute_field_concordance(
             norm_a = _normalise_grouped(norm_a, field_name)
             norm_b = _normalise_grouped(norm_b, field_name)
 
-        labels_a.append(norm_a)
-        labels_b.append(norm_b)
+        # v23: Sequence field uses order-agnostic canonical comparison
+        if field_name == "sequence":
+            canon_a, _ = _normalise_sequence_for_comparison(norm_a)
+            canon_b, _ = _normalise_sequence_for_comparison(norm_b)
+            # For AC₁/kappa: use sorted canonical string as the label
+            # Same canonical set (regardless of order/format) → same label → agreement
+            label_a_seq = " | ".join(sorted(canon_a)) if canon_a else ""
+            label_b_seq = " | ".join(sorted(canon_b)) if canon_b else ""
+            labels_a.append(label_a_seq)
+            labels_b.append(label_b_seq)
+        else:
+            labels_a.append(norm_a)
+            labels_b.append(norm_b)
 
         # Track distributions
         dist_a[norm_a] += 1
@@ -711,6 +872,9 @@ def _build_job_concordance(
 
     overall_pct = round((total_agree / total_n) * 100, 1) if total_n > 0 else 0.0
 
+    # v23: Build sequence analysis for this comparison
+    seq_analysis = _build_sequence_analysis(data_a, data_b, common_ncts)
+
     return JobConcordance(
         job_id=job_id,
         comparison_label=comparison_label,
@@ -718,8 +882,67 @@ def _build_job_concordance(
         n_overlapping=len(common_ncts),
         fields=fields,
         overall_agree_pct=overall_pct,
+        sequence_analysis=seq_analysis,
     )
 
+
+
+def _build_sequence_analysis(
+    data_a: dict[str, dict[str, str]],
+    data_b: dict[str, dict[str, str]],
+    common_ncts: list[str],
+) -> SequenceAnalysis:
+    """Build detailed sequence comparison for all overlapping NCTs.
+
+    v23: Analyses every NCT where at least one side has a sequence value,
+    classifies match type, and produces aggregate summary stats.
+    """
+    details: list[SequenceComparisonDetail] = []
+    summary = SequenceAnalysisSummary()
+
+    for nct in common_ncts:
+        raw_a = data_a.get(nct, {}).get("sequence", "")
+        raw_b = data_b.get(nct, {}).get("sequence", "")
+
+        # Normalise blanks
+        _, blank_a = _normalise(raw_a, "sequence")
+        _, blank_b = _normalise(raw_b, "sequence")
+
+        if blank_a and blank_b:
+            summary.missing_both += 1
+            continue
+        if blank_a or blank_b:
+            # One side has data, other is blank — only include if the
+            # non-blank side is not "N/A"
+            non_blank = raw_a if not blank_a else raw_b
+            norm_val = str(non_blank).strip().upper()
+            if norm_val in ("N/A", "NONE", ""):
+                summary.missing_both += 1
+                continue
+
+        detail = _compare_sequences(raw_a, raw_b, nct)
+        if detail.match_type == "MISSING":
+            summary.missing_both += 1
+            continue
+
+        details.append(detail)
+        summary.total_compared += 1
+
+        if detail.match_type == "EXACT":
+            summary.exact_matches += 1
+            summary.agreement_for_ac += 1
+        elif detail.match_type == "ORDER":
+            summary.order_matches += 1
+            summary.agreement_for_ac += 1
+        elif detail.match_type == "FORMAT":
+            summary.format_matches += 1
+            summary.agreement_for_ac += 1
+        elif detail.match_type == "PARTIAL":
+            summary.partial_matches += 1
+        elif detail.match_type == "MISMATCH":
+            summary.full_mismatches += 1
+
+    return SequenceAnalysis(summary=summary, details=details)
 
 # ---------------------------------------------------------------------------
 # Public API

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Concordance Test: Agent (JSON job results) vs Human Annotators (R1 & R2)
+Agreement Test: Agent (JSON job results) vs Human Annotators (R1 & R2)
 
 Aggregates agent annotations from multiple overnight JSON job files,
 matches against two independent human replicates from the clinical
-trials Excel file, and computes concordance metrics.
+trials Excel file, and computes inter-rater agreement metrics.
 
 Reports:
   - Agent vs R1, Agent vs R2, R1 vs R2

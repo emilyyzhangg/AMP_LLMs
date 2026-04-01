@@ -1,5 +1,5 @@
 """
-Pydantic models for concordance analysis results.
+Pydantic models for agreement analysis results.
 
 Covers per-field concordance metrics, job-level summaries,
 inter-version comparisons, and historical trend data.
@@ -93,6 +93,39 @@ class ConcordanceResult(BaseModel):
     disagreements: list[Disagreement] = Field(default_factory=list)
 
 
+class SequenceComparisonDetail(BaseModel):
+    """Per-NCT sequence comparison between agent and human."""
+    nct_id: str
+    agent_sequences: list[str] = Field(default_factory=list, description="Agent sequences (display form, sorted)")
+    human_sequences: list[str] = Field(default_factory=list, description="Human sequences (display form, sorted)")
+    match_type: str = Field(description="EXACT | ORDER | FORMAT | PARTIAL | MISMATCH | MISSING")
+    matched_sequences: list[str] = Field(default_factory=list, description="Sequences present in both (canonical)")
+    agent_only: list[str] = Field(default_factory=list, description="Sequences only in agent output")
+    human_only: list[str] = Field(default_factory=list, description="Sequences only in human annotation")
+    format_differences: list[str] = Field(
+        default_factory=list,
+        description="e.g. 'Agent: CGSGGQ, Human: CGSGG-Q (same canonical)'",
+    )
+
+
+class SequenceAnalysisSummary(BaseModel):
+    """Aggregate stats for sequence comparison."""
+    total_compared: int = 0
+    exact_matches: int = 0
+    order_matches: int = Field(default=0, description="Same seqs, different order")
+    format_matches: int = Field(default=0, description="Same canonical, different formatting")
+    partial_matches: int = Field(default=0, description="Some overlap, count differs")
+    full_mismatches: int = Field(default=0, description="No overlap at all")
+    missing_both: int = Field(default=0, description="Both sides blank/N/A")
+    agreement_for_ac: int = Field(default=0, description="EXACT + ORDER + FORMAT (counted as agreement)")
+
+
+class SequenceAnalysis(BaseModel):
+    """Full sequence analysis appended to agreement report."""
+    summary: SequenceAnalysisSummary = Field(default_factory=SequenceAnalysisSummary)
+    details: list[SequenceComparisonDetail] = Field(default_factory=list)
+
+
 class JobConcordance(BaseModel):
     """Full concordance results for a single comparison (e.g. agent vs R1)."""
     job_id: str = Field(
@@ -110,6 +143,10 @@ class JobConcordance(BaseModel):
     overall_agree_pct: float = Field(
         default=0.0,
         description="Weighted average agreement across all fields",
+    )
+    sequence_analysis: Optional[SequenceAnalysis] = Field(
+        default=None,
+        description="Detailed sequence comparison analysis (agent vs human)",
     )
 
 
@@ -164,6 +201,7 @@ class FullJobConcordanceResponse(BaseModel):
     agent_vs_r1: JobConcordance
     agent_vs_r2: JobConcordance
     r1_vs_r2: JobConcordance
+
 
 
 class AnnotatorInfo(BaseModel):

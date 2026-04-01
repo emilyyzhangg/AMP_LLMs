@@ -1,5 +1,5 @@
 """
-Sequence Annotation Agent (v14, v17 scoring fixes).
+Sequence Annotation Agent (v14, v17 scoring fixes, v23 multi-sequence + format).
 
 Extracts amino acid sequences from structured research data.
 Reads ONLY from raw_data fields — no snippet text parsing.
@@ -19,6 +19,12 @@ Sources (priority order):
   4. UniProt mature peptide/chain features (from raw_data)
   5. UniProt full sequence (≤100 AA, relevance > 0.5)
   6. EBI Proteins structured entries
+
+v23 changes:
+  - Removed 2-sequence cap: extract ALL unique peptide sequences
+  - Output N/A instead of empty string when no sequence found
+  - HELM format preservation: modifications as (Ac)/(NH2), D-amino acids lowercase
+  - Display string tracks source formatting alongside canonical for dedup
 
 v17 changes:
   - Boost ChEMBL HELM score when molecule is a clinical drug (most reliable
@@ -109,41 +115,80 @@ def normalize_sequence(raw: str) -> str:
     return cleaned
 
 
-def _parse_helm_sequence(helm: str) -> str:
+def _parse_helm_sequence(helm: str) -> tuple[str, str]:
     """Parse a ChEMBL HELM notation string to extract linear AA sequence.
 
     HELM format examples:
-      PEPTIDE1{A.S.T.T.T.N.Y.T}$$$$  → ASTTTNYT
-      PEPTIDE1{[ac].M.P.P.A.D.E.D.Y.S.P.[am]}$$$$  → MPPADEDYSP
-      PEPTIDE1{H.S.Q.G.T.F.T.S.D.Y.S.R.Y.L.D}$$$$  → HSQGTFTSDYSRYLD
+      PEPTIDE1{A.S.T.T.T.N.Y.T}$$$$  → ("ASTTTNYT", "ASTTTNYT")
+      PEPTIDE1{[ac].M.P.P.A.D.E.D.Y.S.P.[am]}$$$$  → ("MPPADEDYSP", "(Ac)MPPADEDYSP(NH2)")
+      PEPTIDE1{H.S.Q.G.T.F.T.S.D.Y.S.R.Y.L.D}$$$$  → ("HSQGTFTSDYSRYLD", "HSQGTFTSDYSRYLD")
+
+    v23: Returns (canonical, display) tuple.
+      - canonical: uppercase AA only, for dedup and scoring
+      - display: preserves modifications as (Ac)/(NH2) and D-amino acids as lowercase
 
     Extracts content between { and }, splits on '.', keeps single uppercase
-    letters, discards bracket-enclosed modifications like [ac], [am], [dR].
+    letters. Bracket-enclosed modifications are preserved in display form.
     """
     if not helm:
-        return ""
+        return ("", "")
 
     # Find the peptide chain content between braces
     match = re.search(r"PEPTIDE\d*\{([^}]+)\}", helm, re.IGNORECASE)
     if not match:
-        return ""
+        return ("", "")
+
+    # Map common HELM modifications to display format
+    _HELM_MOD_DISPLAY = {
+        "ac": "Ac", "am": "NH2", "nh2": "NH2",
+        "oh": "OH", "meac": "MeAc", "formyl": "Formyl",
+    }
 
     tokens = match.group(1).split(".")
-    aa_letters = []
-    for token in tokens:
-        token = token.strip()
-        # Skip bracket-enclosed modifications: [ac], [am], [dR], [Aib], etc.
-        if token.startswith("["):
-            continue
-        # Single uppercase letter = standard amino acid
-        if len(token) == 1 and token.isupper() and token in _VALID_AA:
-            aa_letters.append(token)
-        # Two-char token starting with lowercase d = D-amino acid, take the AA letter
-        elif len(token) == 2 and token[0] == "d" and token[1].isupper():
-            aa_letters.append(token[1])
+    canonical_letters: list[str] = []
+    display_parts: list[str] = []
+    prefix_mods: list[str] = []
+    suffix_mods: list[str] = []
 
-    seq = "".join(aa_letters)
-    return seq if len(seq) >= 2 else ""
+    for i, token in enumerate(tokens):
+        token = token.strip()
+        if token.startswith("["):
+            # Bracket-enclosed modification
+            mod_name = token.strip("[]").lower()
+            display_name = _HELM_MOD_DISPLAY.get(mod_name, token.strip("[]"))
+            # If before any AA, it is a prefix; if after all AA, it is a suffix
+            if not canonical_letters:
+                prefix_mods.append(display_name)
+            else:
+                suffix_mods.append(display_name)
+        elif len(token) == 1 and token.isupper() and token in _VALID_AA:
+            # Flush any pending suffix mods as inline (rare mid-chain mods)
+            for sm in suffix_mods:
+                display_parts.append(f"({sm})")
+            suffix_mods.clear()
+            canonical_letters.append(token)
+            display_parts.append(token)
+        elif len(token) == 2 and token[0] == "d" and token[1].isupper():
+            # D-amino acid: canonical uppercase, display lowercase
+            for sm in suffix_mods:
+                display_parts.append(f"({sm})")
+            suffix_mods.clear()
+            canonical_letters.append(token[1])
+            display_parts.append(token[1].lower())  # D-amino acid as lowercase
+
+    canonical = "".join(canonical_letters)
+    if len(canonical) < 2:
+        return ("", "")
+
+    # Build display string with prefix/suffix modifications
+    display = ""
+    for pm in prefix_mods:
+        display += f"({pm})"
+    display += "".join(display_parts)
+    for sm in suffix_mods:
+        display += f"({sm})"
+
+    return (canonical, display)
 
 
 def _score_candidate(candidate: dict) -> float:
@@ -495,18 +540,19 @@ class SequenceAgent(BaseAnnotationAgent):
                     if helm:
                         break
             if helm:
-                seq = _parse_helm_sequence(helm)
-                if seq:
+                canonical, display = _parse_helm_sequence(helm)
+                if canonical:
                     candidates.append({
-                        "sequence": seq,
+                        "sequence": canonical,
+                        "display_sequence": display,
                         "source": "chembl_helm",
                         "protein_name": intervention,
                         "relevance": 0.85,
-                        "length": len(seq),
+                        "length": len(canonical),
                         "is_mature": True,
                         "accession": "",
                     })
-                    reasoning_parts.append(f"ChEMBL HELM: parsed {len(seq)} aa from {helm[:40]}")
+                    reasoning_parts.append(f"ChEMBL HELM: parsed {len(canonical)} aa from {helm[:40]}")
 
             # 4. UniProt mature peptide/chain features
             uniprot_entries = all_raw.get(f"uniprot_{intervention}", [])
@@ -739,8 +785,8 @@ class SequenceAgent(BaseAnnotationAgent):
                 reasoning_parts.append(f"LLM adjudication failed: {e}")
 
         # --- Phase 4: Output formatting ---
-        # Filter to ≤100 AA, take at most 2
-        final = [c for c in unique_candidates if c["length"] <= 100][:2]
+        # v23: Filter to ≤100 AA, extract ALL unique sequences (no cap)
+        final = [c for c in unique_candidates if c["length"] <= 100]
         if not final and unique_candidates:
             # If all >100 AA, keep the shortest one as fallback
             shortest = min(unique_candidates, key=lambda x: x["length"])
@@ -758,10 +804,10 @@ class SequenceAgent(BaseAnnotationAgent):
                     evidence.append(cite)
 
         if final:
-            value = " | ".join(c["sequence"] for c in final)
+            value = " | ".join(c.get("display_sequence", c["sequence"]) for c in final)
             confidence = min(0.95, 0.7 + 0.05 * len(evidence))
             reasoning = (
-                f"[Structured v14] Extracted {len(final)} sequence(s) "
+                f"[Structured v23] Extracted {len(final)} sequence(s) "
                 f"from {len(candidates)} candidates. "
                 + "; ".join(reasoning_parts)
             )
@@ -784,15 +830,15 @@ class SequenceAgent(BaseAnnotationAgent):
                         reasoning += " Notes: " + "; ".join(reasoning_parts)
                     used_llm = True
                 else:
-                    value = ""
+                    value = "N/A"
                     confidence = 0.0
-                    reasoning = "[Structured v14] No amino acid sequence found in research data."
+                    reasoning = "[Structured v23] No amino acid sequence found in research data."
                     if reasoning_parts:
                         reasoning += " Notes: " + "; ".join(reasoning_parts)
             else:
-                value = ""
+                value = "N/A"
                 confidence = 0.0
-                reasoning = "[Structured v14] No amino acid sequence found in research data."
+                reasoning = "[Structured v23] No amino acid sequence found in research data."
                 if reasoning_parts:
                     reasoning += " Notes: " + "; ".join(reasoning_parts)
 
