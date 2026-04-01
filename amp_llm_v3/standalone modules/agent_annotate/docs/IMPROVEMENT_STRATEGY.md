@@ -69,8 +69,8 @@ These disagreements stem from annotators checking ClinicalTrials.gov at differen
 | NCT06729606 | Peptide | False | True | Aviptadil IS VIP (28 AA) — listed in prompt but model ignored it |
 | NCT03987672 | Peptide | True | False (both) | Nutritional formula — prompt warns against this but model ignored |
 | NCT03984812 | Peptide | True | False (R1) | Multi-subunit protein, antibody-like |
-| NCT03998592 | Classification | AMP(other) | AMP(infection) (both) | S. pyogenes vaccine = infection target |
-| NCT03989817 | Classification | AMP(other) | Other (both) | VIP is NOT an AMP |
+| NCT03998592 | Classification | AMP | AMP (both) | S. pyogenes vaccine = infection target |
+| NCT03989817 | Classification | AMP | Other (both) | VIP is NOT an AMP |
 | NCT03998592 | Delivery Mode | IM | Other/Unspecified (both) | Guessed IM — violates rules |
 | NCT05415410 | Delivery Mode | Other/Unspec | SC/ID | Missed FDA label signal |
 | NCT03984812 | Delivery Mode | Other/Unspec | SC/ID (both) | Missed SC from literature |
@@ -485,7 +485,7 @@ All annotation agents and blind verifiers now receive evidence organized into la
 3. **Verifier value normalization** before consensus check:
    - "Intravenous" → "IV"
    - "Active" → "Active, not recruiting"
-   - "AMP" alone → flag as ambiguous
+   - "AMP" alone → valid (binary classification: AMP or Other)
 
 ### Phase B: Few-Shot Prompt Engineering
 
@@ -493,10 +493,9 @@ All annotation agents and blind verifiers now receive evidence organized into la
 
 1. **Peptide agent**: Add 8 worked examples with expected answers. Small models follow examples far better than rules.
 
-2. **Classification agent**: Rewrite as three-step decision tree:
+2. **Classification agent**: Rewrite as two-step decision tree:
    - Step 1: Is intervention a peptide? No → "Other"
-   - Step 2: Is it an ANTIMICROBIAL peptide? No → "Other" (VIP, GLP-1, somatostatin = Not AMPs)
-   - Step 3: Does the AMP target infection? Yes → AMP(infection), No → AMP(other)
+   - Step 2: Is it an ANTIMICROBIAL peptide? Yes → "AMP", No → "Other" (VIP, GLP-1, somatostatin = Not AMPs)
 
 3. **Delivery mode agent**: Add negative examples (what NOT to do). Add positive examples where FDA label specifies route.
 

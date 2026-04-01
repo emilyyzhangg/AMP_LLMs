@@ -46,13 +46,13 @@ Each clinical trial is annotated across five structured fields:
 
 | Field | Type | Values |
 |---|---|---|
-| Classification | Categorical (3) | AMP(infection), AMP(other), Other |
-| Delivery Mode | Categorical (18) | Intravenous, Oral, Topical, Intramuscular, Subcutaneous, Intranasal, Inhaled, Intrathecal, Intraperitoneal, Intravesical, Intravitreal, Ophthalmic, Rectal, Vaginal, Transdermal, Sublingual, Other/Unspecified, Multiple |
+| Classification | Categorical (2) | AMP, Other |
+| Delivery Mode | Categorical (4) | Injection/Infusion, Oral, Topical, Other |
 | Outcome | Categorical (7) | Positive, Failed - completed trial, Terminated, Withdrawn, Recruiting, Active not recruiting, Unknown |
 | Reason for Failure | Categorical (5+empty) | Ineffective for purpose, Adverse effects/safety concerns, Formulation/stability issues, Superseded by alternatives, Insufficient enrollment, (empty) |
 | Peptide | Boolean | True, False |
 
-The **Classification** field distinguishes true AMP trials targeting infection from AMP trials with non-infection applications (e.g., wound healing via host defense peptides) and non-AMP trials. Classification and Peptide are independent: a trial can have Peptide=True but Classification=Other (e.g., enfuvirtide is a peptide but not an AMP). **Delivery Mode** captures the route of administration. **Outcome** reflects the current status and result of the trial, incorporating both registry status and published findings. **Reason for Failure** applies only to trials with negative outcomes and must be supported by cited evidence.
+The **Classification** field distinguishes true AMP trials from non-AMP trials (Other = peptide but not AMP). Classification and Peptide are independent: a trial can have Peptide=True but Classification=Other (e.g., enfuvirtide is a peptide but not an AMP). **Delivery Mode** captures the route of administration using four simplified categories (Injection/Infusion, Oral, Topical, Other). **Outcome** reflects the current status and result of the trial, incorporating both registry status and published findings. **Reason for Failure** applies only to trials with negative outcomes and must be supported by cited evidence.
 
 **Peptide** indicates whether any active intervention drug is a peptide therapeutic --- defined as a molecule of 2--100 amino acid residues that serves as the primary pharmacological agent. This includes antimicrobial peptides, hormone analogues (semaglutide, octreotide), cyclic peptides (vancomycin), peptide vaccines, neuropeptides (aviptadil, peptide T), viral entry inhibitors (enfuvirtide), and insulin. It excludes monoclonal antibodies (>100 aa, distinct drug class), small molecules, nutritional formulas containing hydrolyzed proteins, and peptide cargo in delivery vehicles (exosomes, HSP complexes). The question is whether the active drug is a peptide, not whether the formulation contains peptides.
 
@@ -290,15 +290,15 @@ All five annotation agents employ a two-pass architecture. This universal design
 **Classification Agent.** Uses a larger model (qwen2.5:14b on Mac Mini, kimi-k2-thinking on server) because 8B models have demonstrated inability to follow the multi-step decision tree reliably.
 
 - *Pass 1* extracts five antimicrobial evidence dimensions: peptide identity, database matches (DRAMP, APD3, UniProt, ChEMBL), mechanism of action, therapeutic target, and immune direction.
-- *Pass 2* applies a three-step decision tree: (1) Is the intervention a peptide? (2) Does this peptide have a DIRECT antimicrobial mechanism — physically killing, lysing, or disrupting pathogens, or directly recruiting innate immune cells to kill pathogens? (3) Does this AMP target infection?
+- *Pass 2* applies a two-step decision tree: (1) Is the intervention a peptide? (2) Does this peptide have a DIRECT antimicrobial mechanism — physically killing, lysing, or disrupting pathogens, or directly recruiting innate immune cells to kill pathogens? If yes to both, classify as AMP; otherwise Other.
 - The v2 prompt encodes explicit exclusions for the most common over-classification patterns: antiretrovirals (enfuvirtide, peptide T — viral entry inhibitors, not antimicrobial), vaccine peptides (induce adaptive immunity, the peptide itself does not kill pathogens), neuropeptides (VIP/aviptadil — vasodilators), metabolic hormones (GLP-1, GLP-2), and immunosuppressive peptides. The decisive rule: if the mechanism is viral entry inhibition, receptor blocking, vaccine/antibody induction, vasodilation, or metabolic regulation, the answer is Other.
 - The four-mode AMP definition was narrowed to three modes in v2: Mode D (pathogen-targeting vaccines) was removed because vaccine peptides do not directly kill pathogens — they work through adaptive immunity.
 
 **Delivery Mode Agent.**
 
 - *Pass 1* extracts route evidence from four source categories with explicit priority ordering: (1) FDA/drug label route (highest priority), (2) published literature route descriptions, (3) ClinicalTrials.gov protocol route, (4) database formulation data. The prompt forces the model to search all sources before concluding.
-- *Pass 2* classifies the route using the source hierarchy: FDA label overrides generic protocol text. If the FDA label says "subcutaneous" but the protocol says "injection," the answer is Subcutaneous/Intradermal, not Other/Unspecified.
-- The never-guess rule is preserved: if no source specifies IM, SC, or IV, the answer is Injection/Infusion - Other/Unspecified.
+- *Pass 2* classifies the route using the source hierarchy: FDA label overrides generic protocol text. Routes are mapped to four simplified categories: Injection/Infusion, Oral, Topical, Other.
+- The never-guess rule is preserved: if no source specifies a route, the answer is Other.
 
 **Peptide Agent.**
 
@@ -412,7 +412,7 @@ The concordance analysis methodology (v2) implements the following conventions t
 
 **Inter-annotator reliability.** Cohen's kappa is computed for each field to quantify agreement beyond chance. Kappa adjusts for the baseline agreement expected if both annotators assigned categories at random in proportion to their marginal distributions. Kappa values are interpreted on the standard scale: below 0 indicates less than chance agreement, 0.01--0.20 is slight, 0.21--0.40 is fair, 0.41--0.60 is moderate, 0.61--0.80 is substantial, and 0.81--1.00 is almost perfect agreement.
 
-**Annotator composition.** The human reference data consists of two replication passes: R1 (7 annotators assigned contiguous row blocks) and R2 (primarily a single annotator). Cohen's kappa with 95% analytical confidence intervals (Fleiss et al. 1969) is the primary metric, supplemented by Gwet's AC₁ (Gwet 2008) to control for the prevalence paradox, and per-annotator pairwise analysis to detect systematic interpretive differences within the R1 team. Prevalence and bias indices (Byrt et al. 1993) are reported for each comparison to contextualize kappa values.
+**Annotator composition.** The human reference data consists of two replication passes: R1 (7 annotators assigned contiguous row blocks) and R2 (independent annotators). Cohen's kappa with 95% analytical confidence intervals (Fleiss et al. 1969) is the primary metric, supplemented by Gwet's AC₁ (Gwet 2008) to control for the prevalence paradox, and per-annotator pairwise analysis to detect systematic interpretive differences within the R1 team. Prevalence and bias indices (Byrt et al. 1993) are reported for each comparison to contextualize kappa values.
 
 ### 3.6 Self-Learning: Experience-Driven Annotation Memory
 
@@ -432,7 +432,7 @@ Memory is version-gated: each configuration change creates a new epoch, and lear
 
 ### 4.1 Baseline Dataset
 
-The baseline evaluation dataset comprises 25 clinical trials selected as the first 25 entries (sorted alphabetically by NCT identifier) from the set of 614 trials annotated by both human annotators. Both annotators --- designated R1 (Emily) and R2 (Anat) --- independently annotated all five fields for all 25 trials. This selection method avoids cherry-picking and provides a representative sample of the difficulty distribution across the full dataset.
+The baseline evaluation dataset comprises 25 clinical trials selected as the first 25 entries (sorted alphabetically by NCT identifier) from the set of 614 trials annotated by both human annotators. Both annotator groups --- designated R1 (Emily) and R2 (independent annotators) --- independently annotated all five fields for all 25 trials. This selection method avoids cherry-picking and provides a representative sample of the difficulty distribution across the full dataset.
 
 ### 4.2 Pre-Improvement Results (v2 Agents)
 
@@ -515,7 +515,7 @@ The n=62 results reveal that the v3 improvements did not fully resolve the syste
 
 The n=62 evaluation exposes value distribution problems not visible in the n=25 sample:
 
-1. **Classification**: The agent assigns AMP(infection) or AMP(other) to a far higher proportion of trials than either human annotator. Many non-AMP peptide therapeutics (metabolic, neurological, endocrine) receive AMP classifications because the 8B model pattern-matches "peptide + disease" to "AMP."
+1. **Classification**: The agent assigns AMP to a far higher proportion of trials than either human annotator. Many non-AMP peptide therapeutics (metabolic, neurological, endocrine) receive AMP classifications because the 8B model pattern-matches "peptide + disease" to "AMP."
 
 2. **Outcome**: The agent's distribution is skewed toward Unknown, while human annotators use Positive, Recruiting, and Terminated more frequently. The agent fails to find published results that would resolve Unknown status, particularly for older trials.
 
@@ -749,7 +749,7 @@ The Agent Annotate architecture evolved through iterative error analysis across 
 
 **Lesson 5: The agent's own evidence is its best teacher.** The EDAM self-audit loop (v10) checks whether annotations are consistent with the structured data the research agents collected. When FDA data says "INTRAVENOUS" but the agent output "Other/Unspecified", the contradiction is detected and corrected automatically --- with the FDA citation as evidence. This produces corrections without any human annotations in the loop.
 
-**Lesson 6: Human annotations are unreliable ground truth.** R1 (7 annotators) assigned peptide=True to 451 trials; R2 (primarily one annotator) assigned True to 56 --- an 8:1 ratio. Outcome inter-rater agreement is only 55.6%. The agent's concordance with humans must be interpreted against this noisy baseline, not treated as absolute accuracy measurement.
+**Lesson 6: Human annotations are unreliable ground truth.** R1 (7 annotators) assigned peptide=True to 451 trials; R2 (independent annotators) assigned True to 56 --- an 8:1 ratio. Outcome inter-rater agreement is only 55.6%. The agent's concordance with humans must be interpreted against this noisy baseline, not treated as absolute accuracy measurement.
 
 **Lesson 7: The agent should never see human annotations during learning.** EDAM's learning loops use only internal signals: cross-run stability, evidence consistency, and self-review. Human annotations are consulted only at evaluation time via concordance analysis. This ensures that concordance improvements reflect genuine accuracy gains, not overfitting to the evaluation set.
 

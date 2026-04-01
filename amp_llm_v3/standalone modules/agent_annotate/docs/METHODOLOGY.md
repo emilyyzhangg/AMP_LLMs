@@ -63,7 +63,7 @@ Peptide vaccines and immunogens designed to induce immune responses SPECIFICALLY
 
 3. **Promoting defense vs suppressing immunity.** An immunosuppressive peptide is "Other" regardless of its peptide nature. An immunostimulatory peptide is only an AMP if it specifically recruits innate defense against pathogens (Mode B), not if it merely promotes general immune activation.
 
-4. **Pathogen-targeting vaccine peptides ARE AMPs (Mode D).** Peptides designed to induce immune responses against specific pathogens (HIV vaccines, malaria vaccines, etc.) are AMP(infection). However, cancer neoantigen vaccines are NOT AMPs because they target tumor cells, not pathogens.
+4. **Pathogen-targeting vaccine peptides ARE AMPs (Mode D).** Peptides designed to induce immune responses against specific pathogens (HIV vaccines, malaria vaccines, etc.) are AMP. However, cancer neoantigen vaccines are NOT AMPs because they target tumor cells, not pathogens.
 
 5. **Peptide ≠ AMP.** Many peptides are not antimicrobial: neuropeptides (VIP/aviptadil, peptide T), metabolic hormones (GLP-1 agonists, insulin), bone growth regulators (vosoritide/CNP, calcitonin), viral entry inhibitors (enfuvirtide), and radiolabeled tracers. All are classified as "Other" despite being peptides (Peptide=True).
 
@@ -71,8 +71,7 @@ Peptide vaccines and immunogens designed to induce immune responses SPECIFICALLY
 
 | Peptide | Classification | Example |
 |---|---|---|
-| True | AMP(infection) | Colistin for MDR bacterial infection |
-| True | AMP(other) | LL-37 for diabetic wound healing |
+| True | AMP | Colistin for MDR bacterial infection, LL-37 for diabetic wound healing |
 | True | Other | Enfuvirtide (viral entry inhibitor), semaglutide (GLP-1), calcitonin (bone), peptide T (neuropeptide), HIV peptide vaccine |
 | False | Other | Amoxicillin (small molecule), Peptamen (nutritional formula), pembrolizumab (antibody) |
 
@@ -87,15 +86,14 @@ Categorizes the trial's relationship to AMPs.
 
 | Value | Meaning |
 |---|---|
-| AMP(infection) | Trial involves an AMP used in an infection context |
-| AMP(other) | Trial involves an AMP in a non-infection context (e.g., wound healing, anti-biofilm without active infection) |
-| Other | Trial does not involve an AMP |
+| AMP | Trial involves an antimicrobial peptide (any mode of action: direct antimicrobial, immunostimulatory host defense, anti-biofilm, or pathogen-targeting immunogen) |
+| Other | Trial does not involve an AMP (Other = peptide but not AMP, or not a peptide) |
 
 ### 3.2 Delivery Mode
 
-The route of administration. 18 valid values:
+The route of administration. 4 valid values:
 
-IV, IM, SC, Intranasal, Oral (swallowed), Oral (topical/rinse), Oral (lozenge/troche), Oral (sublingual), Topical (skin), Topical (wound), Topical (eye/ophthalmic), Topical (ear/otic), Topical (nasal), Topical (vaginal), Topical (rectal), Inhalation, Other, empty (when not determinable).
+Injection/Infusion, Oral, Topical, Other.
 
 ### 3.3 Outcome
 
@@ -386,13 +384,12 @@ Uses a larger model (qwen2.5:14b on Mac Mini, kimi-k2-thinking on server) becaus
 - Therapeutic target (infection vs non-infection)
 - Immune direction (promote defense vs suppress vs neutral)
 
-**Pass 2:** Applies a three-step decision tree:
+**Pass 2:** Applies a two-step decision tree (binary AMP/Other classification):
 1. Is the intervention a peptide? If not → Other.
-2. Does this peptide have a DIRECT antimicrobial mechanism — physically killing/lysing/disrupting pathogens or directly recruiting innate immune cells to kill pathogens? If not → Other.
-3. Does this AMP target infection? Yes → AMP(infection). No → AMP(other).
+2. Does this peptide have a DIRECT antimicrobial mechanism — physically killing/lysing/disrupting pathogens or directly recruiting innate immune cells to kill pathogens? If yes → AMP. If not → Other.
 
 **v5 changes (from 70-trial concordance analysis):**
-- **AMP definition narrowed to three modes (v5)**: Mode D was removed. *Note: Mode D was re-added in v12 — pathogen-targeting vaccine peptides are now classified as AMP(infection). See Section 2.2.*
+- **AMP definition narrowed to three modes (v5)**: Mode D was removed. *Note: Mode D was re-added in v12 — pathogen-targeting vaccine peptides are now classified as AMP. See Section 2.2.*
 - **Explicit antiretroviral exclusions**: Enfuvirtide/T-20 (viral entry inhibitor, NOT antimicrobial), Peptide T/DAPTA (CCR5 receptor blocker), HIV peptide vaccines (antibody induction). These were the dominant over-classification pattern (30 of 36 classification disagreements).
 - **Mechanism-based decisive rule**: If the mechanism is viral entry inhibition, receptor blocking, vaccine/antibody induction, vasodilation, or metabolic regulation → Other, regardless of infectious disease context.
 - **Default to Other**: When in doubt, false AMP classification is worse than missing a true AMP.
@@ -408,11 +405,11 @@ Uses a larger model (qwen2.5:14b on Mac Mini, kimi-k2-thinking on server) becaus
 
 The prompt forces the model to search ALL sources before concluding, explicitly noting the most specific route found.
 
-**Pass 2:** Classifies using source hierarchy — FDA label overrides generic protocol text. If the FDA label says "subcutaneous" but the protocol says "injection," the answer is Subcutaneous/Intradermal.
+**Pass 2:** Classifies using source hierarchy — FDA label overrides generic protocol text. Routes are mapped to four simplified categories: Injection/Infusion (covers IV, IM, SC, and all other injection/infusion routes), Oral, Topical, Other.
 
-**v5 changes**: Upgraded from single-pass to two-pass. The single-pass agent defaulted to "Injection/Infusion - Other/Unspecified" in 52% of injection cases because it only checked protocol text. The two-pass design forces active search across FDA labels, literature, and databases before classifying.
+**v5 changes**: Upgraded from single-pass to two-pass. The single-pass agent defaulted to "Other" in 52% of injection cases because it only checked protocol text. The two-pass design forces active search across FDA labels, literature, and databases before classifying.
 
-Never-guess rule preserved: if no source specifies IM, SC, or IV, the answer is Injection/Infusion - Other/Unspecified.
+Never-guess rule preserved: if no source specifies a route, the answer is Other.
 
 ### 5.4 Outcome Agent (v4)
 
@@ -466,7 +463,7 @@ Critical rule: "Completed" registry status alone does NOT indicate failure. "Fai
 2. Is it the investigational drug? (Food ingredients, brand name artifacts → False)
 3. Database/literature confirmation (DRAMP/UniProt/ChEMBL entry → True; no hits but clearly peptide → True)
 
-**v15:** If peptide=False, all other fields are set to N/A and annotation is skipped. Non-peptide trials are out of scope for this peptide-focused database.
+**v15:** If peptide=False, all other fields (Classification, Delivery Mode, Outcome, Reason for Failure) are set to N/A and annotation is skipped. ALL peptide=False cascades set downstream fields to N/A unconditionally --- there is no longer a distinction between deterministic and LLM-based False results for cascade purposes.
 
 **v5 changes**: Upgraded from single-pass to two-pass. The single-pass agent over-identified peptides (Agent=True for non-peptide interventions) and under-identified (Agent=False for real peptides) because 8B models shortcut on whether "peptide" appeared in the trial text. The two-pass design forces molecular class determination before the True/False decision.
 
@@ -579,8 +576,8 @@ Normalization rules differ by field because valid values and common verifier err
 
 - **reason_for_failure**: Status keywords and "N/A"/"None"/"Unknown" all normalize to empty string. This is the field most affected by verifier parsing failures.
 - **outcome**: Status keywords normalize to their canonical outcome values (e.g., "COMPLETED" is not a valid outcome value and is flagged).
-- **classification**: "AMP" alone is flagged as ambiguous (must specify infection or other).
-- **delivery_mode**: Route abbreviations normalize to canonical values (e.g., "Intravenous" to "IV").
+- **classification**: "AMP" is a valid value (binary AMP/Other classification).
+- **delivery_mode**: Route abbreviations normalize to the four canonical categories (e.g., "Intravenous", "IV", "IM", "SC" all normalize to "Injection/Infusion"; "Oral tablet" normalizes to "Oral"; etc.).
 - **peptide**: Boolean normalization ("true"/"yes" to "True", "false"/"no" to "False").
 
 #### 6.6.5 Retroactive Fix Capability
@@ -615,17 +612,23 @@ The human annotation dataset consists of two independent replication passes over
 
 - **R1 ("Trials Replicate 1")**: Annotated by a team of 7 annotators — Mercan (rows 1-309), Maya (310-617), Anat (617-822), Ali (823-926, 1417-1544), Emre (926-1186), Iris (1187-1417), Berke (1545-1846). Each annotator was assigned a contiguous block of trials. The R1 sheet is therefore a composite of 7 annotators with potentially different working definitions and annotation thoroughness.
 
-- **R2 ("Trials Replicate 2")**: Annotated primarily by Emily (rows 1-461, 481-922, 941-1383), with smaller contributions from Anat (462-480), Ali (923-941), and Iris (1384-1405). R2 is predominantly a single-annotator pass, providing more internal consistency but reflecting one individual's interpretive biases.
+- **R2 ("Trials Replicate 2")**: Annotated by multiple independent annotators including Emily (rows 1-461, 481-922, 941-1383), Anat (462-480), Ali (923-941), and Iris (1384-1405).
 
-This structure means that R1 vs R2 concordance measures agreement between a multi-annotator composite and a largely single-annotator validation pass — not between two equivalent independent raters. The 8:1 Peptide ratio (R1=451 True vs R2=56 True) likely reflects inter-annotator variability within R1, not a single coherent disagreement between two replication passes.
+This structure means that R1 vs R2 concordance measures agreement between two multi-annotator composites — not between two single equivalent independent raters. The 8:1 Peptide ratio (R1=451 True vs R2=56 True) likely reflects inter-annotator variability within R1, not a single coherent disagreement between two replication passes.
 
-Annotator row assignments are derived from the "Tentative workload" sheet in the source Excel file, enabling per-annotator concordance analysis.
+Annotator row assignments are derived from the "Tentative workload" sheet in the original source Excel file (now converted to CSV format as `human_ground_truth_train_df.csv`), enabling per-annotator concordance analysis.
 
 ### 8.3 Blank Handling (v2 Protocol)
 
 The v2 concordance protocol excludes blank or empty human annotations from concordance calculations. The rationale: a blank annotation means the annotator did not annotate the field, not that the annotator chose an empty value.
 
 One exception: for the reason_for_failure field, empty IS a valid annotation (meaning "no failure"). A reason_for_failure value is only treated as blank (excluded) when the corresponding outcome field was also blank -- indicating the annotator skipped both fields.
+
+**Additional concordance comparison rules:**
+
+- **"N/A" treated as blank for skip purposes.** When a field value is "N/A" (e.g., from a peptide=False cascade), it is treated as blank/skip --- the pair is excluded from concordance, not counted as a disagreement.
+- **Reason for Failure: blank reason + failure outcome = "Unknown" (not skip).** When an annotator has a failure-class outcome (Terminated, Failed) but left the reason_for_failure blank, the blank is treated as "Unknown" rather than skipped. This prevents inflating agreement by excluding cases where the annotator failed to provide a reason.
+- **Peptide=False exclusion.** When either side (agent or human) has peptide=False, non-peptide fields (Classification, Delivery Mode, Outcome, Reason for Failure) are skipped in concordance. Non-peptide trials are out of scope for AMP annotation, so disagreements on downstream fields are meaningless when the trial is not a peptide.
 
 ### 8.4 Inter-Annotator Reliability
 
@@ -693,7 +696,7 @@ This standard applies everywhere:
 
 ### 8.9 Concordance Limitations
 
-1. **R1 is a multi-annotator composite.** Cohen's kappa between R1 and R2 measures agreement between a 7-person team and a single annotator, not between two equivalent raters. Internal variability within R1 is not captured by the current analysis and may inflate apparent R1-R2 disagreement.
+1. **Both R1 and R2 are multi-annotator composites.** Cohen's kappa between R1 and R2 measures agreement between two teams of annotators, not between two single equivalent raters. Internal variability within each team is not captured by the current analysis and may inflate apparent R1-R2 disagreement.
 
 2. **Missing data is not MCAR.** 43-65% of human annotations are blank across fields. Blanks are more likely for trials that are harder to annotate, introducing selection bias into the filled-only (Tier 1) concordance. The three-tier analysis (Section 8.7) partially mitigates this by reporting coverage-adjusted metrics.
 
@@ -943,7 +946,7 @@ Twenty-five trials selected for maximum human annotation coverage (4-5 fields an
 
 ### 13.1 Annotator Divergence
 
-The two independent human annotators (R1 = Emily, R2 = Anat) showed substantial disagreement on several fields, demonstrating that human annotations are not infallible ground truth.
+The two independent human annotator groups (R1 and R2, each comprising multiple annotators) showed substantial disagreement on several fields, demonstrating that human annotations are not infallible ground truth.
 
 Key divergences observed:
 
@@ -1025,7 +1028,7 @@ EDAM is designed for autonomous operation — it requires zero human interventio
 
 **Loop 2b — Evidence-Driven Self-Audit.** Runs on ALL trials after every job (not just flagged ones). Compares each annotation against the structured data collected by the research agents. Two audit types:
 
-- **Delivery mode audit**: Scans evidence for explicit route keywords from FDA labels and protocol text (INTRAVENOUS, SUBCUTANEOUS, INTRAMUSCULAR, etc.). If evidence contains an explicit route but the agent output a less specific value (e.g., "Injection/Infusion - Other/Unspecified" when FDA says "INTRAVENOUS"), the self-audit auto-corrects with the FDA citation as evidence.
+- **Delivery mode audit**: Scans evidence for explicit route keywords from FDA labels and protocol text (INTRAVENOUS, SUBCUTANEOUS, INTRAMUSCULAR, ORAL, TOPICAL, etc.). If evidence contains an explicit route but the agent output a less specific value (e.g., "Other" when FDA says "INTRAVENOUS", which should map to "Injection/Infusion"), the self-audit auto-corrects with the FDA citation as evidence. Routes are mapped to four categories: Injection/Infusion, Oral, Topical, Other.
 
 - **Peptide audit**: Checks if research evidence (UniProt, DRAMP) contains amino acid counts in the peptide range (2-100 AA) that contradict the agent's peptide=True/False decision. A correction is only generated if no counter-evidence (monoclonal antibody, nutritional formula) is found. This catches cases where the agent has the molecular evidence but failed to apply the peptide definition correctly.
 
@@ -1089,7 +1092,7 @@ Phases 1-2 build the learning memory. Phase 3 tests generalization. Phase 4 meas
 
 ### 17.1 Evidence-Grounded Learning Without Human Supervision
 
-A core design principle of Agent Annotate is that the agent never sees human annotations during annotation or learning. Human annotations from the Excel dataset (R1 and R2) are used exclusively at evaluation time via concordance analysis. The EDAM self-learning system improves the agent through four internal signals:
+A core design principle of Agent Annotate is that the agent never sees human annotations during annotation or learning. Human annotations from the ground truth dataset (`human_ground_truth_train_df.csv`, R1 and R2) are used exclusively at evaluation time via concordance analysis. The EDAM self-learning system improves the agent through four internal signals:
 
 1. **Cross-run stability**: consensus across independent runs as autonomous ground truth
 2. **Evidence consistency**: self-audit compares annotations against the agent's own research data

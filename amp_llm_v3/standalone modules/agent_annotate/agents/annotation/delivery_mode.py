@@ -28,6 +28,13 @@ v21 changes:
   - PASS1_SYSTEM: explicit instruction to focus on experimental arm route only,
     ignore placebo/comparator/background arm routes.
   - PASS2_SYSTEM Rule 6: clarified multi-route applies to experimental drugs only.
+
+v24 changes:
+  - Simplified from ~18 granular categories to 4: Injection/Infusion, Oral,
+    Topical, Other. Removed all sub-category distinctions (no more
+    IV vs Subcutaneous/Intradermal vs Intramuscular, no Oral-Tablet vs
+    Oral-Capsule, etc.). All deterministic mappings, LLM prompts, and
+    parse functions updated to output only the 4 simplified categories.
 """
 
 import re
@@ -41,24 +48,10 @@ from app.models.annotation import FieldAnnotation
 logger = logging.getLogger("agent_annotate.annotation.delivery_mode")
 
 VALID_VALUES = [
-    "Injection/Infusion - Intramuscular",
-    "Injection/Infusion - Other/Unspecified",
-    "Injection/Infusion - Subcutaneous/Intradermal",
-    "IV",
-    "Intranasal",
-    "Oral - Tablet",
-    "Oral - Capsule",
-    "Oral - Food",
-    "Oral - Drink",
-    "Oral - Unspecified",
-    "Topical - Cream/Gel",
-    "Topical - Powder",
-    "Topical - Spray",
-    "Topical - Strip/Covering",
-    "Topical - Wash",
-    "Topical - Unspecified",
-    "Other/Unspecified",
-    "Inhalation",
+    "Injection/Infusion",
+    "Oral",
+    "Topical",
+    "Other",
 ]
 
 # Pass 1: Extract ALL route evidence from every source
@@ -81,11 +74,11 @@ Extract the following:
 
 5. DRUG FORMULATION: Is the drug described as a tablet, capsule, solution, suspension, cream, gel, powder, spray, patch, inhaler, or other formulation? The formulation strongly implies the route.
 
-6. SPECIFICITY LEVEL: Based on ALL sources above, what is the MOST SPECIFIC route you can determine?
-   - If ANY source says "subcutaneous" or "SC" → the route is subcutaneous
-   - If ANY source says "intramuscular" or "IM" → the route is intramuscular
-   - If ANY source says "intravenous" or "IV" → the route is IV
-   - If NONE specify beyond "injection" → route is unspecified injection
+6. ROUTE CATEGORY: Based on ALL sources above, determine which of these 4 categories the route falls into:
+   - Injection/Infusion: IV, intramuscular, subcutaneous, intradermal, intravitreal, any injection or infusion
+   - Oral: tablet, capsule, food, drink, any oral route
+   - Topical: cream, gel, spray, wash, powder, strip, any topical application
+   - Other: inhalation, intranasal, or anything that does not fit the above three
 
 Format your response EXACTLY as:
 Protocol Route: [quote or "not specified"]
@@ -95,7 +88,7 @@ Database Route: [info or "not found"]
 Drug Formulation: [formulation or "not specified"]
 Most Specific Route: [your determination]"""
 
-# Pass 2: Classify into one of the 18 valid values
+# Pass 2: Classify into one of the 4 valid values
 PASS2_SYSTEM = """You are a delivery mode classification specialist. You have extracted route-of-administration evidence. Now classify it into EXACTLY ONE delivery mode.
 
 The route facts you extracted:
@@ -103,46 +96,29 @@ The route facts you extracted:
 
 VALID VALUES (choose exactly one):
 
-Injection/Infusion:
-- IV: Intravenous (IV push, IV drip, IV infusion)
-- Injection/Infusion - Intramuscular: IM injection (ONLY if "intramuscular" or "IM" explicitly stated)
-- Injection/Infusion - Subcutaneous/Intradermal: SC, sub-Q, or intradermal (ONLY if explicitly stated)
-- Injection/Infusion - Other/Unspecified: Any other injection route OR injection without IM/SC/IV specified
-
-Intranasal: Nasal spray, nasal drops (NOT topical spray)
-Inhalation: Inhaler, nebulizer, inhaled
-
-Oral:
-- Oral - Tablet, Oral - Capsule, Oral - Food, Oral - Drink, Oral - Unspecified
-
-Topical:
-- Topical - Cream/Gel, Topical - Powder, Topical - Spray, Topical - Strip/Covering, Topical - Wash, Topical - Unspecified
-
-Other/Unspecified: Does not fit any category above
+- Injection/Infusion: IV, intravenous, intramuscular, subcutaneous, intradermal, intravitreal, any injection or infusion route
+- Oral: tablet, capsule, food, drink, any oral route
+- Topical: cream, gel, spray, wash, powder, strip, any topical application
+- Other: inhalation, intranasal, or anything that does not fit the above three categories
 
 CLASSIFICATION RULES:
 1. USE THE MOST SPECIFIC SOURCE. FDA label > Literature > Protocol text > Database.
-2. If FDA/Label Route specifies "subcutaneous" but Protocol just says "injection" → use Subcutaneous/Intradermal.
-3. If Literature says "administered intravenously" but Protocol is vague → use IV.
-4. ONLY use "Injection/Infusion - Other/Unspecified" when NO source specifies IM, SC, or IV.
-5. Nutritional formula/shake = Oral - Drink. Nasal spray = Intranasal (not Topical - Spray).
-6. MULTI-ROUTE TRIALS: If the trial tests multiple EXPERIMENTAL drugs that use DIFFERENT routes
+2. Any injection, infusion, IV, IM, SC, intradermal, intravitreal → "Injection/Infusion".
+3. Any oral route (tablet, capsule, by mouth, food, drink) → "Oral".
+4. Any topical route (cream, gel, ointment, spray, wash, powder, strip, patch, lotion) → "Topical".
+5. Inhalation, intranasal, nasal spray, nebulizer, or anything else → "Other".
+6. Nutritional formula/shake = Oral. Nasal spray = Other (not Topical).
+7. MULTI-ROUTE TRIALS: If the trial tests multiple EXPERIMENTAL drugs that use DIFFERENT routes
    (e.g., one experimental drug given IV and another given orally), list ALL routes comma-separated
    in the same order as the experimental drugs appear.
    Do NOT list the route of placebo, active comparator, or standard-of-care arms.
-7. PEPTIDE VACCINES AND CANCER TRIALS: Peptide vaccines (cancer vaccines, anti-tumor peptides,
+8. PEPTIDE VACCINES AND CANCER TRIALS: Peptide vaccines (cancer vaccines, anti-tumor peptides,
    immunotherapy peptides) are NOT administered intranasally. If the protocol does not explicitly
    specify the route for a peptide vaccine or cancer immunotherapy, use
-   "Injection/Infusion - Other/Unspecified", NOT Intranasal.
-8. AMBIGUITY BIAS: When route evidence is only INDIRECT (implied by product type, inferred from
-   context, or described only as "injection" / "administered" without an explicit IM/SC/IV qualifier),
-   use "Injection/Infusion - Other/Unspecified" rather than guessing a specific route. A route
-   keyword must appear EXPLICITLY in the evidence text — do not infer SC because the drug is a
-   peptide, or IV because the dose is in mg/kg. Specificity without explicit evidence is worse
-   than Other/Unspecified.
+   "Injection/Infusion", NOT Other.
 
 Format your response EXACTLY as:
-Delivery Mode: [one of the 18 valid values, exactly as written — or comma-separated if multi-route]
+Delivery Mode: [one of the 4 valid values, exactly as written — or comma-separated if multi-route]
 Evidence: [cite which source determined the route]
 Reasoning: [brief explanation]"""
 
@@ -152,77 +128,75 @@ Reasoning: [brief explanation]"""
 # --------------------------------------------------------------------------- #
 
 _OPENFDA_ROUTE_MAP = {
-    "oral": "Oral - Unspecified", "intravenous": "IV",
-    "subcutaneous": "Injection/Infusion - Subcutaneous/Intradermal",
-    "intramuscular": "Injection/Infusion - Intramuscular",
-    "intradermal": "Injection/Infusion - Subcutaneous/Intradermal",
-    "topical": "Topical - Unspecified", "nasal": "Intranasal",
-    "intranasal": "Intranasal", "inhalation": "Inhalation",
-    "respiratory (inhalation)": "Inhalation", "ophthalmic": "Topical - Unspecified",
-    "transdermal": "Topical - Strip/Covering",
-    "intrathecal": "Injection/Infusion - Other/Unspecified",
-    "intraperitoneal": "Injection/Infusion - Other/Unspecified",
+    "oral": "Oral", "intravenous": "Injection/Infusion",
+    "subcutaneous": "Injection/Infusion",
+    "intramuscular": "Injection/Infusion",
+    "intradermal": "Injection/Infusion",
+    "topical": "Topical", "nasal": "Other",
+    "intranasal": "Other", "inhalation": "Other",
+    "respiratory (inhalation)": "Other", "ophthalmic": "Topical",
+    "transdermal": "Topical",
+    "intrathecal": "Injection/Infusion",
+    "intraperitoneal": "Injection/Infusion",
 }
 
 _PROTOCOL_ROUTE_KEYWORDS = {
-    # Specific route terms (highest priority — check these first)
-    "subcutaneous": "Injection/Infusion - Subcutaneous/Intradermal",
-    "sub-q": "Injection/Infusion - Subcutaneous/Intradermal",
-    "sc injection": "Injection/Infusion - Subcutaneous/Intradermal",
-    "subcutaneous injection": "Injection/Infusion - Subcutaneous/Intradermal",
-    "subcutaneous infusion": "Injection/Infusion - Subcutaneous/Intradermal",
-    "given subcutaneously": "Injection/Infusion - Subcutaneous/Intradermal",
-    "administered subcutaneously": "Injection/Infusion - Subcutaneous/Intradermal",
-    "intradermal": "Injection/Infusion - Subcutaneous/Intradermal",
-    "intramuscular": "Injection/Infusion - Intramuscular",
-    "im injection": "Injection/Infusion - Intramuscular",
-    "intramuscular injection": "Injection/Infusion - Intramuscular",
-    "injected intramuscularly": "Injection/Infusion - Intramuscular",
-    "given intramuscularly": "Injection/Infusion - Intramuscular",
-    "administered intramuscularly": "Injection/Infusion - Intramuscular",
-    "intravenous": "IV",
-    "iv infusion": "IV", "iv push": "IV", "iv drip": "IV",
-    "intravenous infusion": "IV", "intravenous injection": "IV",
-    "administered intravenously": "IV", "given intravenously": "IV",
-    "infused intravenously": "IV",
-    # v12: continuous infusion patterns → IV
-    "continuous infusion": "IV", "infusion at": "IV",
-    "ng/kg/min": "IV", "ug/kg/min": "IV", "mg/kg/min": "IV",
-    "mcg/kg/min": "IV", "units/kg/hr": "IV",
-    # Abbreviations (space-padded to avoid false matches)
-    # Note: bare " sc " excluded — too ambiguous (" sc " appears in "SC study", "SC phase", etc.)
-    " iv ": "IV", " im ": "Injection/Infusion - Intramuscular",
-    "sc injection": "Injection/Infusion - Subcutaneous/Intradermal",
-    "sc administration": "Injection/Infusion - Subcutaneous/Intradermal",
-    "sc dose": "Injection/Infusion - Subcutaneous/Intradermal",
-    "auto-injector": "Injection/Infusion - Subcutaneous/Intradermal",
-    "autoinjector": "Injection/Infusion - Subcutaneous/Intradermal",
-    "pen injector": "Injection/Infusion - Subcutaneous/Intradermal",
+    # Injection/Infusion (all sub-routes map to single category)
+    "subcutaneous": "Injection/Infusion",
+    "sub-q": "Injection/Infusion",
+    "sc injection": "Injection/Infusion",
+    "subcutaneous injection": "Injection/Infusion",
+    "subcutaneous infusion": "Injection/Infusion",
+    "given subcutaneously": "Injection/Infusion",
+    "administered subcutaneously": "Injection/Infusion",
+    "intradermal": "Injection/Infusion",
+    "intramuscular": "Injection/Infusion",
+    "im injection": "Injection/Infusion",
+    "intramuscular injection": "Injection/Infusion",
+    "injected intramuscularly": "Injection/Infusion",
+    "given intramuscularly": "Injection/Infusion",
+    "administered intramuscularly": "Injection/Infusion",
+    "intravenous": "Injection/Infusion",
+    "iv infusion": "Injection/Infusion", "iv push": "Injection/Infusion", "iv drip": "Injection/Infusion",
+    "intravenous infusion": "Injection/Infusion", "intravenous injection": "Injection/Infusion",
+    "administered intravenously": "Injection/Infusion", "given intravenously": "Injection/Infusion",
+    "infused intravenously": "Injection/Infusion",
+    "continuous infusion": "Injection/Infusion", "infusion at": "Injection/Infusion",
+    "ng/kg/min": "Injection/Infusion", "ug/kg/min": "Injection/Infusion", "mg/kg/min": "Injection/Infusion",
+    "mcg/kg/min": "Injection/Infusion", "units/kg/hr": "Injection/Infusion",
+    " iv ": "Injection/Infusion", " im ": "Injection/Infusion",
+    "sc injection": "Injection/Infusion",
+    "sc administration": "Injection/Infusion",
+    "sc dose": "Injection/Infusion",
+    "auto-injector": "Injection/Infusion",
+    "autoinjector": "Injection/Infusion",
+    "pen injector": "Injection/Infusion",
+    "intravitreal": "Injection/Infusion",
     # Oral
-    "oral tablet": "Oral - Tablet", "oral capsule": "Oral - Capsule",
-    # Intranasal / Inhalation
-    "intranasal": "Intranasal", "nasal spray": "Intranasal",
-    "inhalation": "Inhalation", "nebulizer": "Inhalation", "nebuliser": "Inhalation",
+    "oral tablet": "Oral", "oral capsule": "Oral",
+    # Other (intranasal / inhalation)
+    "intranasal": "Other", "nasal spray": "Other",
+    "inhalation": "Other", "nebulizer": "Other", "nebuliser": "Other",
     # Topical
-    "topical cream": "Topical - Cream/Gel", "topical gel": "Topical - Cream/Gel",
-    "mouthwash": "Topical - Wash", "mouth rinse": "Topical - Wash",
+    "topical cream": "Topical", "topical gel": "Topical",
+    "mouthwash": "Topical", "mouth rinse": "Topical",
 }
 
 _DRUG_CLASS_ROUTES = {
-    "semaglutide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "liraglutide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "exenatide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "dulaglutide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "tirzepatide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "insulin": "Injection/Infusion - Subcutaneous/Intradermal",
-    "teriparatide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "abaloparatide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "apraglutide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "teduglutide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "enfuvirtide": "Injection/Infusion - Subcutaneous/Intradermal",
-    "colistin": "IV", "colistimethate": "IV", "daptomycin": "IV",
-    "vancomycin": "IV", "teicoplanin": "IV", "aviptadil": "IV",
-    "peptide t": "Intranasal", "dapta": "Intranasal",
+    "semaglutide": "Injection/Infusion",
+    "liraglutide": "Injection/Infusion",
+    "exenatide": "Injection/Infusion",
+    "dulaglutide": "Injection/Infusion",
+    "tirzepatide": "Injection/Infusion",
+    "insulin": "Injection/Infusion",
+    "teriparatide": "Injection/Infusion",
+    "abaloparatide": "Injection/Infusion",
+    "apraglutide": "Injection/Infusion",
+    "teduglutide": "Injection/Infusion",
+    "enfuvirtide": "Injection/Infusion",
+    "colistin": "Injection/Infusion", "colistimethate": "Injection/Infusion", "daptomycin": "Injection/Infusion",
+    "vancomycin": "Injection/Infusion", "teicoplanin": "Injection/Infusion", "aviptadil": "Injection/Infusion",
+    "peptide t": "Other", "dapta": "Other",
 }
 
 
@@ -429,7 +403,7 @@ class DeliveryModeAgent(BaseAnnotationAgent):
         except Exception as e:
             return FieldAnnotation(
                 field_name=self.field_name,
-                value="Other/Unspecified",
+                value="Other",
                 confidence=0.0,
                 reasoning=f"Pass 1 LLM call failed: {e}",
                 evidence=[],
@@ -476,33 +450,23 @@ class DeliveryModeAgent(BaseAnnotationAgent):
         lower = pass1_text.lower()
 
         # Check for explicit route mentions across all sources
-        if any(kw in lower for kw in ["intravenous", " iv ", "iv infusion", "iv push"]):
-            return "IV"
-        if any(kw in lower for kw in ["subcutaneous", " sc ", "sub-q", "intradermal"]):
-            return "Injection/Infusion - Subcutaneous/Intradermal"
-        if any(kw in lower for kw in ["intramuscular", " im "]):
-            return "Injection/Infusion - Intramuscular"
-        if any(kw in lower for kw in ["intranasal", "nasal spray", "nasal drop"]):
-            return "Intranasal"
-        if any(kw in lower for kw in ["inhalation", "inhaler", "nebulizer", "inhaled"]):
-            return "Inhalation"
-        if any(kw in lower for kw in ["tablet"]):
-            return "Oral - Tablet"
-        if any(kw in lower for kw in ["capsule"]):
-            return "Oral - Capsule"
-        if any(kw in lower for kw in ["oral", "by mouth"]):
-            return "Oral - Unspecified"
-        if any(kw in lower for kw in ["injection", "infusion", "parenteral"]):
-            return "Injection/Infusion - Other/Unspecified"
-        if any(kw in lower for kw in ["cream", "gel", "ointment", "topical"]):
-            return "Topical - Cream/Gel"
+        if any(kw in lower for kw in ["intravenous", " iv ", "iv infusion", "iv push",
+                                       "subcutaneous", " sc ", "sub-q", "intradermal",
+                                       "intramuscular", " im ", "intravitreal",
+                                       "injection", "infusion", "parenteral"]):
+            return "Injection/Infusion"
+        if any(kw in lower for kw in ["oral", "by mouth", "tablet", "capsule"]):
+            return "Oral"
+        if any(kw in lower for kw in ["cream", "gel", "ointment", "topical",
+                                       "spray", "wash", "powder", "strip", "patch"]):
+            return "Topical"
 
-        return "Other/Unspecified"
+        return "Other"
 
     def _parse_value(self, text: str) -> str:
         match = re.search(r"Delivery Mode:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)
         if not match:
-            return "Other/Unspecified"
+            return "Other"
 
         raw = match.group(1).strip()
 
@@ -514,17 +478,20 @@ class DeliveryModeAgent(BaseAnnotationAgent):
             seen = set()
             unique = []
             for v in parsed:
-                if v not in seen and v != "Other/Unspecified":
+                if v not in seen and v != "Other":
                     seen.add(v)
                     unique.append(v)
             if unique:
                 return ", ".join(unique)
-            return "Other/Unspecified"
+            return "Other"
 
         return self._parse_single_value(raw)
 
     def _parse_single_value(self, raw: str) -> str:
-        """Parse a single delivery mode value (not comma-separated)."""
+        """Parse a single delivery mode value (not comma-separated).
+
+        v24: Maps any value to one of 4 categories: Injection/Infusion, Oral, Topical, Other.
+        """
         lower = raw.lower().strip()
 
         # Exact match first (case-insensitive)
@@ -532,55 +499,24 @@ class DeliveryModeAgent(BaseAnnotationAgent):
             if valid.lower() == lower:
                 return valid
 
-        # Fuzzy matching by category
+        # Injection/Infusion — any injection, IV, infusion, or specific sub-route
+        if any(kw in lower for kw in ["iv", "intravenous", "intramuscular", "subcutaneous",
+                                       "intradermal", "intravitreal", "injection", "infusion",
+                                       "parenteral"]):
+            return "Injection/Infusion"
 
-        # IV — check before general injection to avoid misclassification
-        if lower in ("iv", "intravenous") or "intravenous" in lower:
-            return "IV"
+        # Oral — any oral route or formulation
+        if any(kw in lower for kw in ["oral", "tablet", "capsule", "food", "drink",
+                                       "by mouth"]):
+            return "Oral"
 
-        # Injection/Infusion subtypes
-        if "intramuscular" in lower:
-            return "Injection/Infusion - Intramuscular"
-        if "subcutaneous" in lower or "intradermal" in lower:
-            return "Injection/Infusion - Subcutaneous/Intradermal"
-        if "injection" in lower or "infusion" in lower:
-            return "Injection/Infusion - Other/Unspecified"
+        # Topical — any topical route or formulation
+        if any(kw in lower for kw in ["topical", "cream", "gel", "ointment", "powder",
+                                       "spray", "strip", "covering", "bandage", "dressing",
+                                       "patch", "wash", "rinse", "mouthwash", "lotion"]):
+            return "Topical"
 
-        # Intranasal
-        if "intranasal" in lower or "nasal" in lower:
-            return "Intranasal"
-
-        # Inhalation
-        if "inhalation" in lower or "inhale" in lower or "nebuliz" in lower or "inhaler" in lower:
-            return "Inhalation"
-
-        # Oral subtypes
-        if "oral" in lower or "tablet" in lower or "capsule" in lower or "food" in lower or "drink" in lower:
-            if "tablet" in lower:
-                return "Oral - Tablet"
-            if "capsule" in lower:
-                return "Oral - Capsule"
-            if "food" in lower:
-                return "Oral - Food"
-            if "drink" in lower:
-                return "Oral - Drink"
-            return "Oral - Unspecified"
-
-        # Topical subtypes
-        if "topical" in lower or "cream" in lower or "gel" in lower or "ointment" in lower or "powder" in lower or "spray" in lower or "strip" in lower or "covering" in lower or "bandage" in lower or "dressing" in lower or "patch" in lower or "wash" in lower or "rinse" in lower or "mouthwash" in lower or "lotion" in lower:
-            if "cream" in lower or "gel" in lower or "ointment" in lower or "lotion" in lower:
-                return "Topical - Cream/Gel"
-            if "powder" in lower:
-                return "Topical - Powder"
-            if "spray" in lower:
-                return "Topical - Spray"
-            if "strip" in lower or "covering" in lower or "bandage" in lower or "dressing" in lower or "patch" in lower:
-                return "Topical - Strip/Covering"
-            if "wash" in lower or "rinse" in lower or "mouthwash" in lower or "irrigat" in lower:
-                return "Topical - Wash"
-            return "Topical - Unspecified"
-
-        return "Other/Unspecified"
+        return "Other"
 
     def _parse_reasoning(self, text: str) -> str:
         match = re.search(r"Reasoning:\s*(.+?)(?:\n\n|$)", text, re.DOTALL)

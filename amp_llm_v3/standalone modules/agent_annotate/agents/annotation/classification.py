@@ -1,8 +1,11 @@
 """
-Classification Annotation Agent — Two-Pass Investigative Design.
+Classification Annotation Agent — Two-Pass Investigative Design (v24).
 
-Determines whether a clinical trial involves an Antimicrobial Peptide (AMP)
-and its purpose. Uses a two-pass approach:
+v24 simplification: outputs only "AMP" or "Other" — the infection vs other
+subtype distinction has been removed.
+
+Determines whether a clinical trial involves an Antimicrobial Peptide (AMP).
+Uses a two-pass approach:
   Pass 1: Extract antimicrobial evidence (database hits, mechanism, target)
   Pass 2: Apply the AMP decision tree to extracted facts
 
@@ -20,7 +23,7 @@ from app.models.annotation import FieldAnnotation
 
 logger = logging.getLogger("agent_annotate.annotation.classification")
 
-VALID_VALUES = ["AMP(infection)", "AMP(other)", "Other"]
+VALID_VALUES = ["AMP", "Other"]
 
 # --------------------------------------------------------------------------- #
 #  Known AMP drugs — deterministic classification bypass (v9)
@@ -131,20 +134,16 @@ def _deterministic_classify(
     for name in intervention_names:
         for amp_drug in _KNOWN_AMP_DRUGS:
             if amp_drug in name or name in amp_drug:
-                all_text = " ".join(conditions + intervention_names)
-                is_infection = any(kw in all_text for kw in _INFECTION_KEYWORDS)
-                value = "AMP(infection)" if is_infection else "AMP(other)"
+                value = "AMP"
                 logger.info(f"  classification: deterministic → {value} (known AMP: '{name}' matched '{amp_drug}')")
                 return FieldAnnotation(
                     field_name="classification", value=value, confidence=0.95,
-                    reasoning=f"[Deterministic v9] Known AMP drug: '{name}' matched '{amp_drug}'. Infection context: {is_infection}",
+                    reasoning=f"[Deterministic v9] Known AMP drug: '{name}' matched '{amp_drug}'",
                     evidence=[], model_name="deterministic", skip_verification=True,
                 )
 
     if has_dramp or has_dbaasp or has_apd:
-        all_text = " ".join(conditions + intervention_names)
-        is_infection = any(kw in all_text for kw in _INFECTION_KEYWORDS)
-        value = "AMP(infection)" if is_infection else "AMP(other)"
+        value = "AMP"
         db_names = []
         if has_dramp: db_names.append("DRAMP")
         if has_dbaasp: db_names.append("DBAASP")
@@ -152,7 +151,7 @@ def _deterministic_classify(
         logger.info(f"  classification: deterministic → {value} (database hits: {', '.join(db_names)})")
         return FieldAnnotation(
             field_name="classification", value=value, confidence=0.95,
-            reasoning=f"[Deterministic v9] AMP database hits: {', '.join(db_names)}. Infection context: {is_infection}",
+            reasoning=f"[Deterministic v9] AMP database hits: {', '.join(db_names)}",
             evidence=[], model_name="deterministic", skip_verification=True,
         )
 
@@ -203,7 +202,7 @@ PASS2_SYSTEM = """You are a clinical trial classification specialist. AMP stands
 
 You have been given EXTRACTED FACTS about a peptide intervention. Use ONLY these facts to classify the trial. Do NOT add information not present in the facts.
 
-THREE-STEP DECISION TREE:
+TWO-STEP DECISION TREE:
 
 STEP 1 — Is the intervention a peptide?
   Check the Peptide determination. If Peptide = False → STOP → answer "Other".
@@ -218,6 +217,9 @@ STEP 2 — Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)
   A) Direct antimicrobial: kills, inhibits growth of, or disrupts microorganisms — includes both bactericidal (killing) AND bacteriostatic (growth inhibition) mechanisms. Examples: colistin (membrane disruption), nisin (pore formation), daptomycin (membrane depolarization), gramicidin (ion channel disruption).
   B) Immunostimulatory HOST DEFENSE peptide: recruits or activates INNATE immune cells to kill pathogens at infection sites — cathelicidins (LL-37), defensins. This is INNATE immunity (direct cellular killing), NOT adaptive immunity (antibody/T-cell induction).
   C) Anti-biofilm: disrupts microbial biofilms through biochemical interaction
+
+  If YES (any mode A/B/C) → answer "AMP".
+  If NO → answer "Other".
 
   CHECK THE EXTRACTED FACTS:
   - Database Matches: DRAMP or APD3 hit → evidence FOR AMP, but not sufficient alone. The peptide
@@ -246,7 +248,7 @@ STEP 2 — Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)
   - Cancer neoantigen vaccines: target tumor cells, not pathogens. Classification: Other.
   - Autoimmune peptide vaccines: suppress immune responses. Classification: Other.
 
-  OTHER NON-AMP PEPTIDES:
+  OTHER NON-AMP PEPTIDES ("Other" means it IS a peptide but NOT an antimicrobial peptide):
   - Neuropeptides and vasodilators: VIP/Aviptadil, substance P, CGRP
   - Metabolic hormones: GLP-1, GLP-2, GnRH, somatostatin, GIP, insulin, oxytocin
   - Bone growth regulators: vosoritide/CNP
@@ -267,59 +269,25 @@ STEP 2 — Is this peptide an AMP (Antimicrobial Peptide / Host Defense Peptide)
   - Any peptide that directly kills, inhibits growth of, or disrupts bacteria/fungi/viruses
   - Peptides that recruit or activate INNATE immune cells to fight pathogens at the site of infection (cathelicidins, defensins)
 
-  If NOT an AMP → STOP → answer "Other".
-
-STEP 3 — Does this AMP target infection?
-
-  IMPORTANT: You only reach Step 3 if Step 2 CONFIRMED the peptide has direct antimicrobial
-  activity (Mode A/B/C). A peptide with uncertain, unconfirmed, or non-antimicrobial mechanism
-  does NOT qualify for AMP(other) — it is "Other".
-
-  AMP(infection): Trial treats active infection, infectious disease, AMR, sepsis, or
-  pathogen-specific conditions AND the peptide has confirmed antimicrobial mechanism.
-
-  AMP(other): The peptide has confirmed antimicrobial mechanism (passes Step 2) BUT the trial
-  targets a non-infectious condition — e.g., wound healing, skin inflammation, non-infectious
-  biofilm, or cancer (where the AMP property is relevant but infection is not the indication).
-  Example: LL-37 for diabetic wound healing → AMP(other). LL-37 directly kills bacteria
-  (Mode A+B confirmed in DRAMP) but the trial treats wounds, not infection.
-
-  "Other" if mechanism is unconfirmed, purely metabolic/hormonal/adaptive-immune.
-
 WORKED EXAMPLES — study these before answering:
 
-Example A: Colistin for drug-resistant bacterial infection
-→ AMP(infection). Direct antimicrobial peptide that disrupts bacterial membranes, treating infection.
+Example A: Colistin for drug-resistant UTI
+→ AMP. Direct antimicrobial peptide that disrupts bacterial membranes.
 
 Example B: LL-37 for diabetic wound healing
-→ AMP(other). LL-37 is a confirmed AMP (in DRAMP, directly kills bacteria) but the trial targets wound healing, not infection.
+→ AMP. LL-37 is a confirmed AMP (in DRAMP, directly kills bacteria). The trial targets wound healing but the peptide has confirmed antimicrobial mechanism.
 
-Example C: Aviptadil (VIP) for COVID-19 ARDS
-→ Other. VIP/Aviptadil is a neuropeptide vasodilator. It does NOT kill pathogens. Testing in COVID patients does NOT make it an AMP.
+Example C: Semaglutide for diabetes
+→ Other. GLP-1 analogue — metabolic hormone, not antimicrobial.
 
 Example D: Enfuvirtide (T-20) for HIV
 → Other. Enfuvirtide blocks HIV fusion with host cells — it is a VIRAL ENTRY INHIBITOR. It does NOT directly kill or lyse HIV. It is NOT an AMP.
 
-Example E: HIV gp120 peptide vaccine
-→ Other. Induces adaptive immune responses (antibodies) against HIV, but does NOT directly kill or disrupt the virus. Vaccine peptides work through adaptive immunity — not direct antimicrobial action. Classification: Other.
-
-Example F: Semaglutide for diabetes
-→ Other. GLP-1 analogue — metabolic hormone, not antimicrobial.
-
-Example G: Cancer neoantigen peptide vaccine
-→ Other. Targets tumor cells, NOT pathogens. Cancer vaccines are not AMPs.
-
-Example G: Nisin for bacterial mastitis
-→ AMP(infection). Nisin directly kills bacteria through membrane pore formation.
-
-Example H: Peptide T (DAPTA) for HIV-associated cognitive impairment
-→ Other. Peptide T blocks CCR5 receptor. It does NOT directly kill HIV or any pathogen. It is NOT an AMP.
-
-Example I: Daptomycin for MRSA bacteremia
-→ AMP(infection). Daptomycin is a lipopeptide that directly disrupts bacterial cell membranes.
-
-Example J: Influenza peptide vaccine
+Example E: Influenza peptide vaccine
 → Other. Induces immune response against influenza. The peptide does NOT directly kill the virus.
+
+Example F: Aviptadil (VIP) for COVID-19 ARDS
+→ Other. VIP/Aviptadil is a neuropeptide vasodilator. It does NOT kill pathogens. Testing in COVID patients does NOT make it an AMP.
 
 CRITICAL RULES:
 - If Database Matches says "No evidence found" AND Mechanism shows no direct antimicrobial activity → "Other"
@@ -332,8 +300,8 @@ CRITICAL RULES:
 - When in doubt, default to "Other" — false AMP classification is worse than missing a true AMP
 
 Format your response EXACTLY as:
-Classification: [AMP(infection), AMP(other), or Other]
-Reasoning: [Walk through Step 1 → 2 → 3 using the extracted facts. Explicitly state the mechanism and why it is/isn't direct antimicrobial action.]"""
+Classification: [AMP or Other]
+Reasoning: [Walk through Step 1 → 2 using the extracted facts. Explicitly state the mechanism and why it is/isn't direct antimicrobial action.]"""
 
 # --------------------------------------------------------------------------- #
 #  Deterministic fallback if Pass 2 fails
@@ -376,12 +344,7 @@ def _fallback_classify(pass1_text: str, peptide_value: str) -> str:
         return "Other"
 
     if has_dramp or has_antimicrobial_mechanism or has_immunostim:
-        # Check if infection target
-        infection_keywords = ["infection", "bacterial", "viral", "fungal",
-                              "sepsis", "antimicrobial resistance", "pathogen"]
-        if any(kw in lower for kw in infection_keywords):
-            return "AMP(infection)"
-        return "AMP(other)"
+        return "AMP"
 
     return "Other"
 
@@ -535,21 +498,7 @@ class ClassificationAgent(BaseAnnotationAgent):
         match = re.search(r"Classification:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)
         raw = match.group(1).strip().lower() if match else text.lower()
 
-        # Check infection subtype with various separators
-        if any(pat in raw for pat in [
-            "amp(infection)", "amp (infection)", "amp-infection",
-            "amp - infection", "amp: infection",
-        ]):
-            return "AMP(infection)"
-        # Check other subtype with various separators
-        if any(pat in raw for pat in [
-            "amp(other)", "amp (other)", "amp-other",
-            "amp - other", "amp: other",
-        ]):
-            return "AMP(other)"
-        # "amp" present but no recognized subtype — infer from context
-        if "amp" in raw and "other" not in raw.replace("amp", ""):
-            if "infection" in raw:
-                return "AMP(infection)"
-            return "AMP(other)"
+        # If "amp" appears and the answer isn't just "other", classify as AMP
+        if "amp" in raw and raw.strip() != "other":
+            return "AMP"
         return "Other"

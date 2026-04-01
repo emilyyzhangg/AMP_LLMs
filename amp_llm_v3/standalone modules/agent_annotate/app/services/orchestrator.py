@@ -1385,12 +1385,8 @@ class PipelineOrchestrator:
         shared_metadata["peptide_result"] = peptide_ann.value
 
         # v15: If peptide=False, this trial is not a peptide therapeutic — N/A all other fields
-        # v17: Only trigger cascade for DETERMINISTIC False results (known non-peptide drug
-        # lists). The v16 confidence gate (>=0.90) was ineffective because confidence measures
-        # source quality (static weights ~0.90-0.95), not classification certainty. LLM-based
-        # False results are unreliable for edge cases (peptide radiotracers, peptide vaccines)
-        # and should NOT cascade — annotate normally and let verification catch errors.
-        if peptide_ann.value == "False" and getattr(peptide_ann, "model_name", "") == "deterministic":
+        # v18: ALL peptide=False results cascade to N/A (deterministic gate removed).
+        if peptide_ann.value == "False":
             for field_name in ANNOTATION_AGENTS:
                 if field_name == "peptide":
                     continue
@@ -1398,17 +1394,12 @@ class PipelineOrchestrator:
                     field_name=field_name,
                     value="N/A",
                     confidence=1.0,
-                    reasoning="[Peptide=False (deterministic): non-peptide trial, all fields N/A]",
-                    model_name="deterministic",
+                    reasoning="[Peptide=False: non-peptide trial, all fields N/A]",
+                    model_name="cascade",
                     skip_verification=True,
                 ))
-            logger.info(f"  peptide=False (deterministic) for {nct_id}, N/A-ing all other fields")
+            logger.info(f"  peptide=False for {nct_id}, N/A-ing all other fields")
             return annotations
-        elif peptide_ann.value == "False":
-            logger.info(
-                f"  peptide=False (LLM, conf={peptide_ann.confidence:.2f}) for {nct_id}, "
-                f"proceeding with annotation (cascade suppressed — LLM False not trusted for cascade)"
-            )
 
         # --- Step 2: Run classification, delivery_mode, outcome, sequence (NOT failure_reason yet) ---
         # failure_reason depends on outcome, so we run it after outcome completes.

@@ -53,9 +53,9 @@ Agent Annotate replaces the single-prompt annotation approach with a network of 
 - **Web Context Agent**: DuckDuckGo — supplementary web context
 
 **Phase 2 — Annotation** (parallel): Five annotation agents each handle one field:
-- **Classification**: AMP(infection), AMP(other), or Other — distinguishes infection-targeting AMPs from other AMP applications
-- **Delivery Mode**: 18 specific routes — Injection/Infusion subtypes (IM, SC/Intradermal, IV, Other), Intranasal, Oral subtypes (Tablet, Capsule, Food, Drink, Unspecified), Topical subtypes (Cream/Gel, Powder, Spray, Strip/Covering, Wash, Unspecified), Inhalation, Other/Unspecified
-- **Outcome**: Positive, Withdrawn, Terminated, Failed - completed trial, Recruiting, Unknown, Active not recruiting — uses a **two-pass investigative strategy** (see below)
+- **Classification**: AMP or Other — identifies antimicrobial peptide trials
+- **Delivery Mode**: 4 categories — Injection/Infusion, Oral, Topical, Other
+- **Outcome**: Positive, Failed - completed trial, Terminated, Withdrawn, Active, Recruiting, Unknown — uses a **two-pass investigative strategy** (see below)
 - **Reason for Failure**: Business Reason, Ineffective for purpose, Toxic/Unsafe, Due to covid, Recruitment issues, or empty — uses a **two-pass investigative strategy** (see below)
 - **Peptide**: True or False
 
@@ -328,11 +328,11 @@ The agent queries live APIs at annotation time, so it always uses the latest ava
 
 | Field | Valid Values |
 |-------|-------------|
-| Classification | AMP(infection), AMP(other), Other |
-| Delivery Mode | 18 values: IV, Injection/Infusion subtypes (IM, SC/Intradermal, Other), Intranasal, Oral subtypes (Tablet, Capsule, Food, Drink, Unspecified), Topical subtypes (Cream/Gel, Powder, Spray, Strip/Covering, Wash, Unspecified), Inhalation, Other/Unspecified |
-| Outcome | Positive, Withdrawn, Terminated, Failed - completed trial, Recruiting, Unknown, Active not recruiting |
+| Classification | AMP, Other |
+| Delivery Mode | Injection/Infusion, Oral, Topical, Other |
+| Outcome | Positive, Failed - completed trial, Terminated, Withdrawn, Active, Recruiting, Unknown |
 | Reason for Failure | Business Reason, Ineffective for purpose, Toxic/Unsafe, Due to covid, Recruitment issues (empty if not applicable) |
-| Peptide | True, False |
+| Peptide | TRUE, FALSE |
 
 ---
 
@@ -343,11 +343,10 @@ Based on comparison of agent output against human annotations (Replicates 1 & 2 
 ### Classification: "AMP" Does Not Mean "Any Peptide"
 
 AMP stands for **Antimicrobial Peptide**. The classification categories are:
-- **AMP(infection)**: The intervention is an AMP AND targets infection
-- **AMP(other)**: The intervention is an AMP but targets something other than infection (wound healing, cancer, immunomodulation)
+- **AMP**: The intervention is an antimicrobial peptide (targets infection, wound healing, cancer, immunomodulation via antimicrobial mechanism)
 - **Other**: Everything else — including peptides that are NOT antimicrobial (GLP-1 analogues, VIP, somatostatin analogues, GnRH analogues)
 
-**Common agent error**: Classifying all peptides as AMP(something). VIP/Aviptadil for headaches is a peptide but NOT an AMP → should be "Other". Semaglutide for diabetes is a peptide but NOT an AMP → should be "Other". Only peptides with antimicrobial activity or that target pathogens qualify as AMP.
+**Common agent error**: Classifying all peptides as AMP. VIP/Aviptadil for headaches is a peptide but NOT an AMP → should be "Other". Semaglutide for diabetes is a peptide but NOT an AMP → should be "Other". Only peptides with antimicrobial activity or that target pathogens qualify as AMP.
 
 ### Peptide: Nutritional Formulas vs Peptide Drugs
 
@@ -365,7 +364,7 @@ Despite explicit instructions not to guess, the agent sometimes defaults to Intr
 
 The agent currently annotates each field independently with no cross-validation. This can produce contradictions:
 - Outcome = "Positive" with Reason for Failure = "Ineffective for purpose" (impossible)
-- Peptide = "False" with Classification = "AMP(infection)" (impossible)
+- Peptide = "False" with Classification = "AMP" (impossible)
 
 A post-annotation consistency check is planned (see `docs/IMPROVEMENT_STRATEGY.md`).
 

@@ -558,7 +558,7 @@ class SelfAuditor:
 
         # Determine infection context
         is_infection = any(kw in evidence_lower for kw in _INFECTION_KEYWORDS_AUDIT)
-        corrected = "AMP(infection)" if is_infection else "AMP(other)"
+        corrected = "AMP"
 
         # Find citation
         citation = None

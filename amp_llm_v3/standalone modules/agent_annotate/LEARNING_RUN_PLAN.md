@@ -1,6 +1,6 @@
 # EDAM Learning Run Plan
 
-**Last updated:** 2026-03-26
+**Last updated:** 2026-04-01
 
 ## Job Registry
 
@@ -48,6 +48,7 @@
 | v16 | 8223691 | Sequence fix (critical): metadata passed to all agents, raw_data key fallback, prefix stripping. Outcome: adverse-event keyword detection, publications as H1 corroboration, negative valence→Failed. Peptide cascade requires conf≥0.90. Delivery: multi-route support. RfF: "Unknown" removed from skip list. AC₁ reporting in docs. |
 | v17 | fc89869 / 66907432 | Outcome: post-LLM heuristic override (call _infer_from_pass1 when Pass 2 returns "Unknown" — was dead code), inject structured phase into Pass 2. Peptide: cascade only on model_name=="deterministic", added OSE2101/TEDOPI/DOTATOC. Sequence: DBAASP word-boundary, ChEMBL HELM 1.3x, UniProt name-matching, formulation stripping. Delivery: multi-route collection, title exclusion, comma-separated parse. |
 | **v18** | **fc6fddac** | **Sequence: _KNOWN_SEQUENCES table (12 drugs, deterministic lookup), cross-validation penalty (0.3x for name mismatch), ChEMBL max_phase + pref_name disambiguation, EDAM-enriched interventions. Outcome: strong adverse signals (multi-word) checked FIRST in full text, Phase I requires has_results_posted or NCT ID in text. RfF: TERMINATED/WITHDRAWN always proceed to pass 2, default "Business Reason" for terminated/withdrawn with no signal, empty vote counted in reconciler, unanimous-verifier gate for empty override. EDAM: training CSV allowlist (642 NCTs), non-training NCTs excluded from all learning loops. Frontend: "Concordance Comparison" → "Agreement Comparison", job ID format consistency (truncated to 8 chars everywhere), Version Compare κ → AC₁ labels.** |
+| v24 | TBD | Binary classification (AMP/Other), 4-category delivery mode, full peptide=False cascade, CSV data source, order-agnostic sequence agreement, agreement API rename |
 
 ## NCT Coverage
 
@@ -62,6 +63,8 @@
 | Test/held-out (remaining) | ~322 | Phase 4 | EDAM frozen, final evaluation |
 
 ## Concordance History
+
+> **Note:** All prior concordance numbers used old categories (3 classification, 18 delivery mode). v24 establishes a new baseline with simplified categories (binary AMP/Other, 4-category delivery mode).
 
 ### v9 Concordance (Batch A, 25 NCTs, job #1)
 
@@ -285,9 +288,9 @@ When this job completes, check these specific items in order of priority:
 
 **Convergence criteria for "code stable":** Two consecutive Batch A runs (25 NCTs) with <2% concordance change between them across all fields.
 
-### Phase 1: Iterate on Batch A until stable (NEXT)
+### Phase 1: Iterate on Batch A until stable (NEXT — run v24 baseline)
 
-**Run v12 Batch A** on correct NCTs (`fast_learning_batch_25.txt`):
+**Run v24 Batch A** on correct NCTs (`fast_learning_batch_25.txt`) to establish new baseline with simplified categories:
 ```bash
 cd "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate"
 NCT_IDS=$(python3 -c "

@@ -1,13 +1,22 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-03-26
-**Current state:** v18 code pushed to dev (fc6fddac). Prod on v17 (66907432). Three v17 Batch A jobs complete (9e1f, a3d5, 4b06). EDAM restricted to training CSV NCTs.
+**Last updated:** 2026-04-01
+**Current state:** v24 pushed to dev (simplified categories, CSV data source, full peptide cascade). Prod on v17 (66907432). Three v17 Batch A jobs complete (9e1f, a3d5, 4b06). EDAM restricted to training CSV NCTs.
 
-## Next Step: Run v18 Batch A on new 25 NCTs from training set
+## v24 Changes
 
-v18 has 7 fixes based on v17 concordance analysis (3 runs). Need to merge to main, then run new Batch A (25 NCTs from training CSV).
+- **Classification:** Binary AMP/Other (was AMP(infection)/AMP(other)/Other)
+- **Delivery mode:** 4 categories — Injection/Infusion, Oral, Topical, Other (was 18 granular sub-categories)
+- **Peptide cascade:** ALL False cascades N/A (was deterministic-only)
+- **Data source:** CSV `human_ground_truth_train_df.csv` (was Excel)
+- **Agreement:** Order-agnostic sequence comparison, RfF blank+failure=Unknown, N/A treated as blank
+- **API:** `/api/agreement/` (was `/api/concordance/`)
 
-### v17 Concordance Results (3 runs: 9e1f, a3d5, 4b06 — same 25 NCTs)
+## Next Step: Run v24 concordance on training data to establish new baseline
+
+v24 simplifies categories and changes the data source. All prior concordance numbers used old categories (3 classification, 18 delivery mode) and are preserved below as "v22 reference (old categories)" for comparison. v24 establishes a new baseline with simplified categories.
+
+### v22 Reference — Old Categories (v17 concordance, 3 runs: 9e1f, a3d5, 4b06 — same 25 NCTs)
 
 | Field | v16 vs R1 | v17 best | v17 worst | v17 range | Target | Met? |
 |---|---|---|---|---|---|---|
