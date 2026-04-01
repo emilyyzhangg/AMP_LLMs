@@ -82,6 +82,26 @@ if [ "$LOCAL_HASH" != "$LAST_DEPLOYED_HASH" ]; then
     done
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Dependencies installed" >> "$LOG_FILE"
 
+    # Rebuild agent-annotate frontend if source files changed
+    ANNOTATE_FE="$REPO_DIR/amp_llm_v3/standalone modules/agent_annotate/frontend"
+    ANNOTATE_SPA="$REPO_DIR/amp_llm_v3/standalone modules/agent_annotate/app/static/spa"
+    if [ -d "$ANNOTATE_FE/src" ]; then
+        # Rebuild if SPA is missing or any src file is newer than the built index.html
+        if [ ! -f "$ANNOTATE_SPA/index.html" ] || \
+           [ -n "$(find "$ANNOTATE_FE/src" -newer "$ANNOTATE_SPA/index.html" -type f 2>/dev/null | head -1)" ]; then
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔨 Rebuilding agent-annotate frontend..." >> "$LOG_FILE"
+            cd "$ANNOTATE_FE"
+            sudo -u "$RUN_USER" npm install --silent >> "$LOG_FILE" 2>&1
+            sudo -u "$RUN_USER" npm run build >> "$LOG_FILE" 2>&1
+            cd "$REPO_DIR"
+            if [ -f "$ANNOTATE_SPA/index.html" ]; then
+                echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Frontend built" >> "$LOG_FILE"
+            else
+                echo "[$(date '+%Y-%m-%d %H:%M:%S')] ❌ Frontend build failed" >> "$LOG_FILE"
+            fi
+        fi
+    fi
+
     # Wait for chat LLM jobs only (short-lived, usually < 60s)
     # Agent-annotate jobs are long-running and auto-resume after restart,
     # so we don't wait for them — just restart and the orchestrator picks up.

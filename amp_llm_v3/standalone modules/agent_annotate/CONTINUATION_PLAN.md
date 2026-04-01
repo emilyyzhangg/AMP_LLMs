@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-01
-**Current state:** v24 pushed to dev (simplified categories, CSV data source, full peptide cascade). Prod on v17 (66907432). Three v17 Batch A jobs complete (9e1f, a3d5, 4b06). EDAM restricted to training CSV NCTs.
+**Current state:** v24 merged to main (9db9e33). Frontend renamed to Agreement. 5 jobs reviewed.
 
 ## v24 Changes
 
@@ -12,51 +12,53 @@
 - **Agreement:** Order-agnostic sequence comparison, RfF blank+failure=Unknown, N/A treated as blank
 - **API:** `/api/agreement/` (was `/api/concordance/`)
 
-## Next Step: Run v24 concordance on training data to establish new baseline
+### v22-era Job Performance (old code, mapped to v24 categories)
 
-v24 simplifies categories and changes the data source. All prior concordance numbers used old categories (3 classification, 18 delivery mode) and are preserved below as "v22 reference (old categories)" for comparison. v24 establishes a new baseline with simplified categories.
+All jobs ran on v22 code (old categories). Results mapped through v24 aliases for comparison against training CSV.
 
-### v22 Reference — Old Categories (v17 concordance, 3 runs: 9e1f, a3d5, 4b06 — same 25 NCTs)
+**Human baseline (R1 vs R2, training CSV, 682 NCTs):**
+| Field | n | Agreement | AC₁ |
+|---|---|---|---|
+| Classification | 454 | 93.2% | 0.919 |
+| Delivery Mode | 488 | 88.3% | 0.864 |
+| Outcome | 269 | 64.3% | 0.583 |
+| Reason for Failure | 387 | 88.6% | 0.881 |
+| Peptide | 680 | 86.0% | 0.790 |
+| Sequence | 227 | 52.0% | 0.518 |
 
-| Field | v16 vs R1 | v17 best | v17 worst | v17 range | Target | Met? |
-|---|---|---|---|---|---|---|
-| Classification | 84.0% | **88.0%** | **88.0%** | Stable | AC₁≥0.82 | YES |
-| Delivery Mode | 72.7% | **68.0%** | **64.0%** | Oscillating | ≥73% | NO |
-| Outcome | 77.3% | **76.0%** | **68.0%** | Unstable (-8%) | ≥80% | NO |
-| Reason for Failure | 84.0% | **68.0%** | **56.0%** | **Regressed badly** | ≥84% | NO |
-| Peptide | 81.8% | **90.9%** | **90.9%** | Stable | ≥86% | YES |
-| Sequence | 14.3% | **32.0%** | **32.0%** | Stable (0 exact matches) | ≥30% | MISLEADING |
+**Agent vs R1 per job:**
+| Field | Conc v22 (n=39) | G R1 (n=24) | G R2 (n=24) | H R1 (n=19) | H R2 (n=19) |
+|---|---|---|---|---|---|
+| Classification | 94.3% | 100% | 100% | 92.3% | 92.3% |
+| Delivery Mode | 88.6% | 66.7% | 73.3% | 46.2% | 46.2% |
+| Outcome | 80.0% | 71.4% | 57.1% | 76.9% | 69.2% |
+| RfF | 82.9% | 100% | 100% | 92.3% | 92.3% |
+| Peptide | 92.3% | 79.2% | 70.8% | 78.9% | 78.9% |
+| Sequence | 40.0% | 0.0% | 0.0% | 57.1% | 57.1% |
 
-**2/6 targets met.** Classification and peptide are solid. Sequence 32% = all "both empty" matches, 0 exact matches out of 17.
+### Key Findings
 
-### Root causes identified and fixed in v18
+1. **Classification**: Excellent (92-100%), consistently meets/beats human baseline (93.2%). No action needed.
 
-| Issue | Root Cause | v18 Fix |
-|---|---|---|
-| Sequence 0 exact matches | ChEMBL returns wrong molecule (keyword collision). DBAASP returns wrong protein (Insulin for Nesiritide). No candidates for most drugs. | Known-sequences table (12 drugs), cross-validation penalty (0.3x for name mismatch), ChEMBL max_phase disambiguation, EDAM-enriched intervention names |
-| Outcome instability (68-76%) | Phase I corroboration accepts generic publications (vary by run). NCT00000886 false Positive (toxicity missed). | Strong adverse signals checked FIRST in full text. Phase I requires `has_results_posted` or NCT ID in text. |
-| RfF regression (56-68%) | Agent returns empty for TERMINATED/WITHDRAWN trials (9/11 disagreements). `_pass1_says_no_failure()` bails out. Empty vote dropped from reconciler. | TERMINATED/WITHDRAWN always proceed to pass 2. Default "Business Reason" for terminated/withdrawn with no signal. Empty RfF counted as vote. Unanimous-verifier gate for empty override. |
-| EDAM learning from test data | No NCT filtering — EDAM learned from all annotated NCTs | Training CSV allowlist (642 NCTs). Stability, self-review, self-audit all filtered. |
+2. **Delivery Mode**: Highly variable. Concordance v22 = 88.6% (matches human baseline), but Batches G/H drop to 46-73%. Root cause: these batch NCTs have fewer overlapping NCTs with the training CSV, so comparison is on a smaller/different population. Also, v22 code used old granular categories — mapping may lose precision.
 
-### v18 New Batch A (25 NCTs from training CSV)
+3. **Outcome**: Concordance v22 = 80.0% (well above human 64.3%). Batches vary 57-77%. Still above human baseline on most runs.
 
-Selected for diversity: 8 AMP / 17 Other, 4 peptide=false, 18 with sequences, 5 with RfF, mixed outcomes.
+4. **Peptide**: 70-92% across jobs, below human baseline (86%). The concordance v22 job (92.3%) is strong but batches regress. Needs investigation — may be population-dependent.
 
-```
-NCT00001060  NCT01639638  NCT03052842  NCT03635437  NCT03772678
-NCT03791515  NCT03923257  NCT03987672  NCT04023331  NCT04389775
-NCT04419610  NCT04671966  NCT04844580  NCT04924660  NCT04954274
-NCT05064137  NCT05127889  NCT05218915  NCT05889728  NCT05940428
-NCT05968846  NCT06045260  NCT06689761  NCT06729606  NCT06801015
-```
+5. **Sequence**: Worst performing field. 0% on Batch G, 40% on concordance, 57% on Batch H. Mismatches are predominantly:
+   - Agent finds nothing, human has a sequence (agent empty, human filled)
+   - Agent defaults to DRVYIHP (angiotensin) for unrelated trials (wrong _KNOWN_SEQUENCES match)
+   - Agent finds a different/partial sequence than human (different peptide picked)
+   - Human annotations include non-standard formatting ((Ac), (NH2), modified residues) that the agent can't match
 
-### What to check after v18 Batch A
+### Next Steps
 
-1. **Sequence:** Expect >0 exact matches (known-sequences table covers Nesiritide, Albiglutide, Angiotensin)
-2. **Outcome:** Expect stable (no inter-run flip-flops from Phase I corroboration)
-3. **RfF:** Expect "Business Reason" populated for terminated/withdrawn trials
-4. **EDAM:** Verify only training NCTs stored in experiences table
-5. **Peptide:** Should maintain ≥90% (stable, no changes)
+1. **Run v24 concordance job**: Submit the concordance v22 NCTs on dev (port 9005) with v24 code to see if simplified categories improve results
+2. **Fix sequence DRVYIHP over-matching**: The known-sequences table matches "angiotensin" too broadly — agent returns DRVYIHP for trials that mention angiotensin in any context
+3. **Investigate delivery mode batch regression**: Compare the specific NCTs in Batches G/H where delivery mode disagrees
+4. **Absorb Batches G+H into EDAM**: Now that they're complete, run edam_learning_cycle
+5. **Queue Batches I/J**: positions 201-250
 
 ## Environment State
 

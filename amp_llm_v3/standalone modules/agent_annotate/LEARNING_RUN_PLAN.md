@@ -31,6 +31,13 @@
 | *20* | *A+B (50 NCTs)* | *TBD* | *50* | *—* | *Pending* | *v18+* | *—* | *Phase 2: expand to 50 after Batch A converges.* |
 | *21* | *Full training (642)* | *TBD* | *642* | *—* | *Pending* | *v18+* | *—* | *Phase 3: full training set run.* |
 | *22* | *Test set (remaining)* | *TBD* | *TBD* | *—* | *Phase 4* | *v18+* | *—* | *Held-out evaluation. EDAM frozen.* |
+| 36 | Concordance v22 | 6657f8896238 | 50 | 50/50 | **Complete** | v22 (fc02b08) | — | 94.3% classification, 88.6% delivery, 80% outcome. Sequence 40%. |
+| 37 | Batch G R1 | 55826cb5853a | 25 | 25/25 | **Complete** | v22 | — | 151-175. Classification 100%. Delivery 66.7%. Sequence 0%. |
+| 38 | Batch G R2 | 799905fee5c4 | 25 | 25/25 | **Complete** | v22 | — | 151-175. Delivery 73.3%. Peptide 70.8%. Sequence 0%. |
+| 39 | Batch H R1 | 6ae5c0fb0de1 | 25 | 25/25 | **Complete** | v22 | 14 timeouts | 176-200. Delivery 46.2%. Sequence 57.1% (4 exact). |
+| 40 | Batch H R2 | 4953bff0b240 | 25 | 25/25 | **Complete** | v22 | 14 timeouts | 176-200. Delivery 46.2%. Outcome 69.2%. |
+
+> **Note:** Jobs 36-40 are the last jobs run with old categories (v22 code). v24 is now merged to main (9db9e33) with simplified categories (binary AMP/Other, 4-category delivery mode). All future jobs will use v24+ categories.
 
 ### Agent version summary
 
