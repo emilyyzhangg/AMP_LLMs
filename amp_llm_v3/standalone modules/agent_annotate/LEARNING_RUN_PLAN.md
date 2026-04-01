@@ -36,6 +36,7 @@
 | 38 | Batch G R2 | 799905fee5c4 | 25 | 25/25 | **Complete** | v22 | — | 151-175. Delivery 73.3%. Peptide 70.8%. Sequence 0%. |
 | 39 | Batch H R1 | 6ae5c0fb0de1 | 25 | 25/25 | **Complete** | v22 | 14 timeouts | 176-200. Delivery 46.2%. Sequence 57.1% (4 exact). |
 | 40 | Batch H R2 | 4953bff0b240 | 25 | 25/25 | **Complete** | v22 | 14 timeouts | 176-200. Delivery 46.2%. Outcome 69.2%. |
+| 41 | Concordance v25 | bb302bc7b077 | 50 | —/50 | **Running** | v25 (904180a) | — | Baseline: same 50 NCTs as v22 concordance. First run with simplified categories + all fixes. |
 
 > **Note:** Jobs 36-40 are the last jobs run with old categories (v22 code). v24 is now merged to main (9db9e33) with simplified categories (binary AMP/Other, 4-category delivery mode). All future jobs will use v24+ categories.
 
@@ -56,6 +57,7 @@
 | v17 | fc89869 / 66907432 | Outcome: post-LLM heuristic override (call _infer_from_pass1 when Pass 2 returns "Unknown" — was dead code), inject structured phase into Pass 2. Peptide: cascade only on model_name=="deterministic", added OSE2101/TEDOPI/DOTATOC. Sequence: DBAASP word-boundary, ChEMBL HELM 1.3x, UniProt name-matching, formulation stripping. Delivery: multi-route collection, title exclusion, comma-separated parse. |
 | **v18** | **fc6fddac** | **Sequence: _KNOWN_SEQUENCES table (12 drugs, deterministic lookup), cross-validation penalty (0.3x for name mismatch), ChEMBL max_phase + pref_name disambiguation, EDAM-enriched interventions. Outcome: strong adverse signals (multi-word) checked FIRST in full text, Phase I requires has_results_posted or NCT ID in text. RfF: TERMINATED/WITHDRAWN always proceed to pass 2, default "Business Reason" for terminated/withdrawn with no signal, empty vote counted in reconciler, unanimous-verifier gate for empty override. EDAM: training CSV allowlist (642 NCTs), non-training NCTs excluded from all learning loops. Frontend: "Concordance Comparison" → "Agreement Comparison", job ID format consistency (truncated to 8 chars everywhere), Version Compare κ → AC₁ labels.** |
 | v24 | TBD | Binary classification (AMP/Other), 4-category delivery mode, full peptide=False cascade, CSV data source, order-agnostic sequence agreement, agreement API rename |
+| v25 | 904180a | Delivery dedup fix, DRVYIHP word-boundary matching, 15 known peptide drugs, 9 known sequences, outcome publication-priority override, frontend agreement rename |
 
 ## NCT Coverage
 

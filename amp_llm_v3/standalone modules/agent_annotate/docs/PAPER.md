@@ -323,6 +323,7 @@ All five annotation agents employ a two-pass architecture. This universal design
    - H3: Old trial (pre-2010) completed normally with no negative evidence → lean Positive.
    - H4: Only after exhausting H1-H3 → Unknown.
 - *v16:* Added adverse event detection in the fallback heuristic: publications mentioning toxicity, adverse reactions, abscess formation, or dose-limiting events now trigger "Failed - completed trial" even when the LLM's Pass 2 defaults to "Unknown". Publications count as corroboration for H1 (Phase I completion) even when they describe a related study rather than the exact NCT ID. Negative result valence from Pass 1 now maps to "Failed" in the fallback path.
+- *v25:* Introduced a post-LLM publication-priority override (`_publication_priority_override()`). When the LLM returns Unknown, Active, or Terminated, the override checks whether published results exist and reclassifies accordingly. The evidence priority ladder is: publications > CT.gov posted results > CT.gov registry status > trial phase. This addresses the dominant error pattern where the LLM defaults to Unknown for trials with published results it failed to incorporate into its reasoning.
 
 A critical rule governs the distinction between completion and failure: a registry status of COMPLETED does *not* imply failure. The "Failed - completed trial" classification requires affirmative evidence of a negative result.
 
@@ -340,6 +341,8 @@ The orchestrator runs the Failure Reason Agent *after* the Outcome Agent complet
 The v9 architecture introduces a deterministic-first strategy for all five annotation agents. Before invoking the LLM, each agent attempts to resolve the annotation programmatically using structured data from the research dossier.
 
 **Classification Pre-Classifier.** Matches intervention names against lookup tables of ~30 known AMP drugs and ~40 known non-AMP drug patterns. Also checks for AMP database hits (DRAMP, DBAASP, APD) in the research results. Deterministic matches return with confidence=0.95 and `skip_verification=True`.
+
+**Peptide Known Drug Expansion (v25).** The `_KNOWN_PEPTIDE_DRUGS` lookup table was expanded with 15 peptide drugs (including peptide vaccines and novel therapeutics identified through error analysis), and the `_KNOWN_SEQUENCES` table was expanded with 9 verified sequences. Short drug names (<=4 characters) now require exact match rather than substring matching to prevent false positives (e.g., DRVYIHP angiotensin matching ACE inhibitor trials).
 
 **Delivery Mode Route Extraction.** Parses OpenFDA route fields (both citation text and structured raw_data) and ClinicalTrials.gov protocol keywords. Drug-class default routes serve as soft defaults with confidence=0.7.
 

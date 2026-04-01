@@ -729,3 +729,16 @@ The v10 changes are complemented by EDAM (Experience-Driven Annotation Memory), 
 - All failures are non-fatal — EDAM never blocks the annotation pipeline
 
 See METHODOLOGY.md Section 16 for full technical details.
+
+---
+
+## 16. v25 Fixes (2026-04-01)
+
+Issues from concordance analysis (CONTINUATION_PLAN.md) resolved in v25:
+
+| Issue | Status | Fix |
+|---|---|---|
+| Delivery mode duplicate output ("Injection/Infusion, Injection/Infusion") | **Fixed in v25** | `_parse_value()` now deduplicates after mapping multi-route values to 4 categories. Was 26% of delivery mode disagreements. |
+| Sequence DRVYIHP over-matching (angiotensin matching ACE inhibitor trials) | **Fixed in v25** | Short drug names (<=4 chars) require exact match in `_KNOWN_SEQUENCES`; longer names use word-boundary regex. |
+| Outcome Unknown defaults for trials with published results | **Addressed in v25** | Post-LLM `_publication_priority_override()` checks for published results when LLM returns Unknown/Active/Terminated. Evidence priority ladder: publications > CT.gov results > status > phase. |
+| Peptide false negatives (agent=False, human=True) | **Partially addressed in v25** | 15 new peptide drugs added to `_KNOWN_PEPTIDE_DRUGS` (peptide vaccines, novel therapeutics from error analysis). 9 new verified sequences added to `_KNOWN_SEQUENCES`. Remaining false negatives require LLM reasoning improvements. |

@@ -150,6 +150,8 @@ Boolean field (True/False) indicating whether the intervention is a peptide ther
 
 **Cross-validation with Sequence field (v12):** When the Sequence agent extracts an amino acid sequence, the consistency engine cross-validates: sequence in 2--50 AA range forces peptide=True; sequence >50 AA or multi-chain forces peptide=False.
 
+**Sequence agent DRVYIHP fix and expanded known sequences (v25):** Short drug names (<=4 characters) now require exact match in `_KNOWN_SEQUENCES`, while longer names use word-boundary regex. This prevents false positives where "angiotensin" in an intervention name (e.g., "Angiotensin-Converting Enzyme Inhibitor") would match the DRVYIHP angiotensin II sequence. The `_KNOWN_SEQUENCES` table was expanded from 12 to 21 drugs with 9 new verified sequences including gv1001 (16aa), abaloparatide (34aa), vosoritide/bmn111 (39aa), satoreotide (8aa), and others.
+
 **Key rule:** The question is whether ANY active intervention drug is a peptide --- not whether the formulation contains peptides. Brand names containing "peptide" do NOT make the product a peptide drug.
 
 
@@ -411,6 +413,8 @@ The prompt forces the model to search ALL sources before concluding, explicitly 
 
 Never-guess rule preserved: if no source specifies a route, the answer is Other.
 
+**v25:** Fixed multi-route deduplication. When multiple intervention drugs map to the same simplified category (e.g., IV + Subcutaneous both map to "Injection/Infusion"), the result is now deduplicated to a single value. Previously, "Injection/Infusion, Injection/Infusion" appeared in output for 26% of delivery mode disagreements. After mapping to four categories, `_parse_value()` now deduplicates before joining.
+
 ### 5.4 Outcome Agent (v4)
 
 **Pass 1:** Extracts seven evidence elements:
@@ -436,6 +440,8 @@ Never-guess rule preserved: if no source specifies a route, the answer is Other.
    - H4: Only after exhausting H1-H3 → Unknown.
 
 Critical rule: "Completed" registry status alone does NOT indicate failure. "Failed - completed trial" requires affirmative evidence of a negative result.
+
+**v25:** Introduces an evidence priority ladder for outcome determination: publications > CT.gov posted results > CT.gov registry status > trial phase. A post-LLM `_publication_priority_override()` function checks whether published results exist when the LLM returns Unknown, Active, or Terminated, and reclassifies accordingly. This addresses the dominant error pattern where the LLM defaults to Unknown for trials with published results it failed to incorporate.
 
 ### 5.5 Failure Reason Agent (v5)
 
@@ -466,6 +472,8 @@ Critical rule: "Completed" registry status alone does NOT indicate failure. "Fai
 **v15:** If peptide=False, all other fields (Classification, Delivery Mode, Outcome, Reason for Failure) are set to N/A and annotation is skipped. ALL peptide=False cascades set downstream fields to N/A unconditionally --- there is no longer a distinction between deterministic and LLM-based False results for cascade purposes.
 
 **v5 changes**: Upgraded from single-pass to two-pass. The single-pass agent over-identified peptides (Agent=True for non-peptide interventions) and under-identified (Agent=False for real peptides) because 8B models shortcut on whether "peptide" appeared in the trial text. The two-pass design forces molecular class determination before the True/False decision.
+
+**v25:** The `_KNOWN_PEPTIDE_DRUGS` deterministic lookup table was expanded with 15 additional peptide drugs identified through error analysis of concordance jobs, including peptide vaccines (pvx-410, polypepi1018, gv1001) and novel therapeutics (satoreotide, pemziviptadil, emi-137, neobomb1). The expanded list now covers peptide vaccines and edge-case therapeutics that the LLM consistently misclassified as non-peptides.
 
 
 ## 6. Phase 3 -- Verification Pipeline
