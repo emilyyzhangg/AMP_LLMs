@@ -36,29 +36,101 @@ All jobs ran on v22 code (old categories). Results mapped through v24 aliases fo
 | Peptide | 92.3% | 79.2% | 70.8% | 78.9% | 78.9% |
 | Sequence | 40.0% | 0.0% | 0.0% | 57.1% | 57.1% |
 
-### Key Findings
+### Detailed Performance Analysis
 
-1. **Classification**: Excellent (92-100%), consistently meets/beats human baseline (93.2%). No action needed.
+**1. Classification: STRONG (92-100% vs 93.2% human baseline)**
+Only 4 disagreements across all 5 jobs. Two are agent=Other/human=AMP, two are agent=AMP/human=Other. No systematic bias. v24 binary AMP/Other simplification removes the infection/other subtype ambiguity entirely — this field is effectively solved.
 
-2. **Delivery Mode**: Highly variable. Concordance v22 = 88.6% (matches human baseline), but Batches G/H drop to 46-73%. Root cause: these batch NCTs have fewer overlapping NCTs with the training CSV, so comparison is on a smaller/different population. Also, v22 code used old granular categories — mapping may lose precision.
+**v24 impact**: Positive. Fewer categories = less LLM confusion. No action needed.
 
-3. **Outcome**: Concordance v22 = 80.0% (well above human 64.3%). Batches vary 57-77%. Still above human baseline on most runs.
+**2. Delivery Mode: WEAK (46-89%, human baseline 88.3%)**
+27 disagreements. Three root causes:
 
-4. **Peptide**: 70-92% across jobs, below human baseline (86%). The concordance v22 job (92.3%) is strong but batches regress. Needs investigation — may be population-dependent.
+| Pattern | Count | Root cause |
+|---|---|---|
+| Agent outputs duplicate "injection/infusion, injection/infusion" | 7 | Multi-drug trial: agent reports route per drug, but both are injection → deduplicated should be single "injection/infusion" |
+| Agent says other/oral/topical, human says injection/infusion | 13 | Agent picks wrong route — often confused by oral comparator drugs or trial title keywords |
+| Agent says injection/infusion, human says other | 4 | Agent over-calls injection for non-injection routes |
 
-5. **Sequence**: Worst performing field. 0% on Batch G, 40% on concordance, 57% on Batch H. Mismatches are predominantly:
-   - Agent finds nothing, human has a sequence (agent empty, human filled)
-   - Agent defaults to DRVYIHP (angiotensin) for unrelated trials (wrong _KNOWN_SEQUENCES match)
-   - Agent finds a different/partial sequence than human (different peptide picked)
-   - Human annotations include non-standard formatting ((Ac), (NH2), modified residues) that the agent can't match
+**v24 impact**: Partial fix. Simplified 4 categories eliminate sub-category confusion (e.g., "Injection/Infusion - Other/Unspecified" vs "IV"). But the duplicate-output bug and wrong-route-selection remain. The deduplication issue is a code bug: when multi-route output maps two old categories (e.g., "IV" + "Subcutaneous") to the same new category ("Injection/Infusion"), the result should be deduplicated to a single value.
 
-### Next Steps
+**Action needed**: Fix multi-route dedup in delivery_mode.py `_parse_value()` — after mapping to 4 categories, deduplicate before joining. Also investigate the 13 wrong-route cases to see if the deterministic keywords are too broad.
 
-1. **Run v24 concordance job**: Submit the concordance v22 NCTs on dev (port 9005) with v24 code to see if simplified categories improve results
-2. **Fix sequence DRVYIHP over-matching**: The known-sequences table matches "angiotensin" too broadly — agent returns DRVYIHP for trials that mention angiotensin in any context
-3. **Investigate delivery mode batch regression**: Compare the specific NCTs in Batches G/H where delivery mode disagrees
-4. **Absorb Batches G+H into EDAM**: Now that they're complete, run edam_learning_cycle
-5. **Queue Batches I/J**: positions 201-250
+**3. Outcome: MODERATE (57-80%, human baseline 64.3%)**
+24 disagreements. Dominant patterns:
+
+| Pattern | Count | Root cause |
+|---|---|---|
+| Agent=Unknown, Human=Positive | 9 | Agent can't find published results → defaults to Unknown. Human found positive results in literature. |
+| Agent=Unknown, Human=Failed | 4 | Same — agent misses negative results in publications |
+| Agent=Active, Human=Positive | 4 | Agent reads ClinicalTrials.gov status as "Active" but human found completed results |
+| Agent=Terminated, Human=Positive | 2 | Trial terminated but still had positive results published |
+
+The agent EXCEEDS human baseline (64.3%) on 3/5 jobs. The biggest gap is the agent defaulting to "Unknown" when it can't find publications — this is a literature search depth issue, not a classification logic issue.
+
+**v24 impact**: Neutral. Category simplification doesn't affect outcome (categories unchanged). The "completed ≠ failed" alias fix prevents one false mapping, but the core issue is literature search coverage.
+
+**Action needed**: Low priority. Agent already beats human baseline. Could improve literature search recall but risk of false positives.
+
+**4. Peptide: BELOW TARGET (71-92%, human baseline 86%)**
+23 disagreements. 17 are agent=FALSE/human=TRUE (agent under-calling peptide), 6 are agent=TRUE/human=FALSE.
+
+The FALSE→TRUE pattern (74% of errors) means the agent is too conservative — it fails to identify peptides that humans correctly tag. These are likely edge cases: peptide vaccines, modified peptides, peptide-drug conjugates where the LLM defaults to "not a peptide."
+
+**v24 impact**: Mixed. The full cascade (all False cascades N/A) means any false-negative peptide call now wipes out ALL downstream annotations for that trial. Previously, LLM-based False calls still ran the other agents as a safety net. This makes peptide accuracy MORE critical. If the agent incorrectly says False, 5 other fields become N/A unnecessarily.
+
+**Action needed**: HIGH PRIORITY. Review the 17 FALSE→TRUE NCTs from the disagreement list. Add any consistently misclassified drugs to `_KNOWN_PEPTIDE_DRUGS` in peptide.py. Consider adding a confidence threshold: only cascade N/A if peptide=False with confidence > 0.8.
+
+**5. Reason for Failure: GOOD (83-100%, human baseline 88.6%)**
+8 disagreements. Most are empty vs. a specific reason. Agent defaults to empty (no failure) when it can't find evidence, human annotators assign reasons from literature. Small n makes this noisy.
+
+**v24 impact**: Positive. The blank+failure=Unknown rule means these empties now become "Unknown" instead of being skipped — more honest about uncertainty.
+
+**6. Sequence: POOR (0-57%, human baseline 52%)**
+51 mismatches analyzed by category:
+
+| Category | Count | % | Description |
+|---|---|---|---|
+| Agent empty, human filled | 27 | 53% | Agent can't find sequence in databases — biggest gap |
+| Human empty, agent filled | 9 | 18% | Agent finds a sequence human didn't — often DRVYIHP default |
+| DRVYIHP wrong match | 4 | 8% | Agent's _KNOWN_SEQUENCES matches "angiotensin" too broadly |
+| Different peptide | 8 | 16% | Agent and human pick different drugs' sequences |
+| Partial match | 3 | 6% | Same peptide but agent has truncated/extended version |
+
+**v24 impact**: Positive for multi-sequence (no cap). But the core issue (53% agent-empty) requires better database coverage or LLM fallback.
+
+**Action needed**:
+1. Fix DRVYIHP over-matching: tighten _KNOWN_SEQUENCES matching to require exact drug name, not substring "angiotensin" in any context
+2. Expand _KNOWN_SEQUENCES table with verified sequences for common peptide drugs
+3. The LLM fallback (only fires for peptide=True trials) needs better prompts to extract sequences from literature text
+4. With full peptide cascade, agent-empty cases will increase (False peptide → N/A sequence), which is correct behavior but reduces the comparable n
+
+---
+
+### Updated Testing Plan
+
+**Phase 1: Fix critical bugs before v24 baseline run**
+1. **[P0] Delivery mode dedup bug**: In `_parse_value()`, after mapping multi-route comma-separated values to 4 categories, deduplicate. "injection/infusion, injection/infusion" → "injection/infusion". This is 7/27 (26%) of delivery disagreements and is a pure code bug.
+2. **[P0] DRVYIHP over-matching**: Tighten `_KNOWN_SEQUENCES` matching in sequence.py. Currently matches if drug name substring appears anywhere in intervention name. Change to require the intervention IS the drug (e.g., "Angiotensin II" matches, but "Angiotensin-Converting Enzyme Inhibitor" does not).
+
+**Phase 2: Run v24 baseline concordance (after P0 fixes)**
+3. Submit the concordance v22 NCTs (50 NCTs) on dev (port 9005) with v24+fixes code
+4. Compare results against human R1 using the training CSV
+5. Expected improvements: classification ≥94% (was 94.3%), delivery ≥85% (was 88.6% minus dedup bugs), sequence metrics now use order-agnostic comparison
+
+**Phase 3: Address peptide under-calling (high priority)**
+6. Review the 17 FALSE→TRUE NCTs from the disagreement list
+7. Add consistently misclassified drugs to `_KNOWN_PEPTIDE_DRUGS`
+8. Consider: should the cascade require confidence > 0.8? Or is the full cascade correct and we just need better peptide accuracy?
+
+**Phase 4: Sequence coverage expansion**
+9. Review the 27 agent-empty sequence cases — which drugs are they?
+10. Add verified sequences to `_KNOWN_SEQUENCES` for high-frequency misses
+11. Improve LLM fallback prompts for literature-based sequence extraction
+
+**Phase 5: Absorb + expand**
+12. Absorb Batches G+H into EDAM (edam_learning_cycle)
+13. Queue Batches I/J (positions 201-250)
 
 ## Environment State
 
