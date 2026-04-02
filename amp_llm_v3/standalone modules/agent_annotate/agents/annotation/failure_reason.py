@@ -230,6 +230,18 @@ class FailureReasonAgent(BaseAnnotationAgent):
         # Normalize through canonical mapper in case LLM returned a variant
         value = self._normalize_failure_value(value)
         reasoning = self._parse_reasoning(pass2_output)
+
+        # v26: Default Business Reason for TERMINATED/WITHDRAWN when LLM returns empty.
+        # Human annotators consistently assign "Business Reason" for terminated/withdrawn
+        # trials without specific cause. The _infer_from_pass1 fallback has this logic
+        # (v18) but only fires on LLM exceptions — this applies it in the normal flow too.
+        if not value and outcome_result in ("Terminated", "Withdrawn"):
+            value = self._infer_from_pass1(pass1_output)
+            if not value:
+                value = "Business Reason"
+            logger.info(f"  failure_reason: v26 default for {outcome_result} → '{value}'")
+            reasoning = f"[v26 default: outcome={outcome_result}, Pass 2 returned empty, inferred '{value}'] " + reasoning
+
         full_reasoning = f"[Pass 1 investigation] {pass1_output[:500]}\n[Pass 2 classification] {reasoning}"
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
 

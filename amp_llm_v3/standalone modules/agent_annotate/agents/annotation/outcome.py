@@ -1,5 +1,5 @@
 """
-Outcome Annotation Agent (v4 — v11 accuracy fixes, v17 heuristic override, v21 TERMINATED fix, v25 publication-priority).
+Outcome Annotation Agent (v4 — v11 accuracy fixes, v17 heuristic override, v21 TERMINATED fix, v25 publication-priority, v26 TERMINATED override fix).
 
 Determines trial outcome using a two-pass strategy:
   Pass 1: Extract ClinicalTrials.gov status, phase, and published results
@@ -169,8 +169,12 @@ CRITICAL RULE: Published results in literature OVERRIDE the ClinicalTrials.gov r
 DECISION TREE (follow in order):
 
 0. PUBLICATION OVERRIDE (check this FIRST, before registry status):
-   If published literature reports completed results (positive or negative), use those results
-   regardless of what ClinicalTrials.gov says. Registry status may be outdated or incomplete.
+   EXCEPTION: If the trial is TERMINATED or WITHDRAWN, skip this step and go directly to
+   step 3 (WITHDRAWN) or step 4 (TERMINATED). Terminated/Withdrawn trials have their own
+   decision logic that accounts for publications in context.
+   For all OTHER statuses: if published literature reports completed results (positive or
+   negative), use those results regardless of what ClinicalTrials.gov says. Registry status
+   may be outdated or incomplete.
    a. Published results show POSITIVE findings → "Positive"
    b. Published results show NEGATIVE findings → "Failed - completed trial"
    If no publications with results exist, continue to step 1.
@@ -388,8 +392,10 @@ class OutcomeAgent(BaseAnnotationAgent):
         # v25: Publication-priority override — when Pass 2 returns "Unknown",
         # check if Pass 1 found published results with a clear valence. This is
         # the #1 disagreement pattern: agent=Unknown when publications exist.
-        # Also applies to "Active" and "Terminated" when publications have results.
-        if value in ("Unknown", "Active, not recruiting", "Terminated"):
+        # v26: Removed "Terminated" — human annotators keep "Terminated" as outcome
+        # regardless of published results. PASS2_PROMPT step 4 handles TERMINATED
+        # nuance; overriding here caused 4/12 outcome disagreements.
+        if value in ("Unknown", "Active, not recruiting"):
             pub_override = self._publication_priority_override(pass1_output, value)
             if pub_override and pub_override != value:
                 logger.info(f"  outcome: v25 publication-priority override {value} → {pub_override}")
