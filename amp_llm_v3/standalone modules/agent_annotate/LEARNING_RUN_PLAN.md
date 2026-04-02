@@ -59,6 +59,8 @@
 | **v18** | **fc6fddac** | **Sequence: _KNOWN_SEQUENCES table (12 drugs, deterministic lookup), cross-validation penalty (0.3x for name mismatch), ChEMBL max_phase + pref_name disambiguation, EDAM-enriched interventions. Outcome: strong adverse signals (multi-word) checked FIRST in full text, Phase I requires has_results_posted or NCT ID in text. RfF: TERMINATED/WITHDRAWN always proceed to pass 2, default "Business Reason" for terminated/withdrawn with no signal, empty vote counted in reconciler, unanimous-verifier gate for empty override. EDAM: training CSV allowlist (642 NCTs), non-training NCTs excluded from all learning loops. Frontend: "Concordance Comparison" → "Agreement Comparison", job ID format consistency (truncated to 8 chars everywhere), Version Compare κ → AC₁ labels.** |
 | v24 | TBD | Binary classification (AMP/Other), 4-category delivery mode, full peptide=False cascade, CSV data source, order-agnostic sequence agreement, agreement API rename |
 | v25 | 904180a | Delivery dedup fix, DRVYIHP word-boundary matching, 15 known peptide drugs, 9 known sequences, outcome publication-priority override, frontend agreement rename |
+| v26 | e04e458 | TERMINATED outcome override fix, RfF empty default fix |
+| **v27b** | **pending** | **AA boundary 50→100 in all prompts. "Peptide / peptide hormone" molecular class. Peptide-conjugate INCLUDES. Insulin True worked example. Consistency cross-validation 2-50→2-100. CSV migration for concordance scripts. Batch files fixed (non-training NCTs replaced).** |
 
 ## NCT Coverage
 

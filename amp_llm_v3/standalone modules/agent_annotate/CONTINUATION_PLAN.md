@@ -22,11 +22,18 @@
 - **Frontend**: Agreement page at /agreement (was /concordance), jobs table shows commit hash, autoupdater rebuilds frontend
 
 ### v27 Changes (2026-04-02)
-- **Peptide prompt fix (insulin)**: Removed "SINGLE-CHAIN" and "2-50 aa" exclusion of insulin from both PASS1 and PASS2 prompts. Multi-chain peptide hormones (e.g., insulin) now classified through LLM reasoning, not by expanding drug lists. Deleted insulin False worked example.
-- **Known sequences**: Added insulin (preproinsulin, 110aa) and cv-mg01 (AChR peptide, 17aa) to `_KNOWN_SEQUENCES` (factual data, not classification bypass).
 - **Concordance scripts CSV migration**: concordance_jobs.py and concordance_test.py now use `human_ground_truth_train_df.csv` instead of the Excel file. Removed openpyxl dependency.
-- **Batch file fix**: Removed 11 NCTs from fast_learning_batch_50.txt and 5 from fast_learning_batch_25.txt that were not in the training CSV. Replaced with training-set NCTs. All future jobs must use only training-set NCTs.
-- **Albiglutide root cause**: NCT02660736 — albiglutide is NOT in `_KNOWN_PEPTIDE_DRUGS` (correct, lists are frozen). LLM initially says TRUE but verifiers flip to FALSE. Fix is through prompt improvements, not drug list additions. Monitor after v27 prompt changes.
+- **Batch file fix**: Removed 11 non-training NCTs from batch files. Replaced with training-set NCTs. All future jobs must use only training-set NCTs.
+- **Known sequences**: Added insulin (preproinsulin, 110aa) and cv-mg01 (AChR peptide, 17aa) to `_KNOWN_SEQUENCES`.
+
+### v27b Changes (2026-04-02) — Peptide boundary fix
+- **Raised AA boundary 50→100**: Definition changed from "2-50 amino acids" to "typically ≤100 amino acids" across all prompts. This correctly classifies insulin (51 aa) as a peptide hormone while still excluding interferons (166+ aa), EPO (165 aa), growth hormone (191 aa).
+- **Added "Peptide / peptide hormone" molecular class**: Replaced "Short peptide chain" label in Pass 1 options. LLM now has explicit category for peptide hormones including multi-chain.
+- **Added peptide-conjugate INCLUDES**: "Peptide-conjugate therapeutics where the peptide IS the active component" — addresses CV-MG01 (two short synthetic peptides conjugated to carrier protein).
+- **Added insulin as True worked example**: Replaced deleted False example with True example (51 aa, multi-chain, UniProt P01308).
+- **Consistency engine threshold raised**: Rule 3 cross-validation now 2-100 AA → force peptide=True (was 2-50).
+- **Test job 3e35811b7698 results**: Albiglutide fixed (TRUE). Insulin and CV-MG01 still FALSE with v27 prompts — root cause was the "2-50 aa" hard boundary in molecular class options causing LLM to pick "Protein" for 51 aa insulin. v27b fixes this.
+- **Albiglutide root cause**: Not in `_KNOWN_PEPTIDE_DRUGS` (correct, lists frozen), but LLM now correctly classifies via reasoning. Verifiers no longer flip because prompt uses clearer category.
 
 ### v22-era Job Performance (old code, mapped to v24 categories)
 

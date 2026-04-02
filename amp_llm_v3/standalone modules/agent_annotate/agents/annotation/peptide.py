@@ -28,18 +28,20 @@ logger = logging.getLogger("agent_annotate.annotation.peptide")
 VALID_VALUES = ["True", "False"]
 
 # Pass 1: Extract molecular facts about the intervention
-PASS1_SYSTEM = """DEFINITION: A peptide therapeutic is a molecule consisting of 2-50 amino acid residues (including multi-chain peptide hormones such as insulin) that serves as the ACTIVE therapeutic drug in the clinical trial. The peptide must be the primary pharmacological agent — not a carrier, adjuvant, nutritional component, or targeting vector.
+PASS1_SYSTEM = """DEFINITION: A peptide therapeutic is a molecule typically consisting of up to ~100 amino acid residues (single-chain or multi-chain) that serves as the ACTIVE therapeutic drug in the clinical trial. This includes peptide hormones such as insulin (51 aa, multi-chain). The peptide must be the primary pharmacological agent — not a carrier, adjuvant, nutritional component, or targeting vector.
 
 INCLUDES as peptide (True):
 - Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37 (37 aa), defensins
 - Hormone analogues: semaglutide (31 aa, GLP-1), octreotide (8 aa, somatostatin), leuprolide (10 aa, GnRH)
+- Peptide hormones: insulin (51 aa, multi-chain A+B), glucagon (29 aa), calcitonin (32 aa)
 - Cyclic peptides: vancomycin (glycopeptide), gramicidin, bacitracin
 - Peptide vaccines where the peptide IS the active immunogen (e.g., StreptInCor)
+- Peptide-conjugate therapeutics where the peptide IS the active component (e.g., synthetic peptides conjugated to a carrier protein for immunotherapy)
 - Neuropeptides used as drugs: aviptadil (VIP, 28 aa), substance P antagonists
 
 EXCLUDES as peptide (False):
-- Proteins >50 amino acids: interferons, erythropoietin, growth hormone
-- Multi-chain complexes forming tertiary/quaternary structure (complex proteins, not peptide hormones)
+- Large proteins >100 amino acids: interferons (166+ aa), erythropoietin (165 aa), growth hormone (191 aa)
+- Multi-domain complex proteins with tertiary/quaternary structure (not peptide hormones)
 - Monoclonal antibodies (multi-chain, ~150 kDa): pembrolizumab, trastuzumab
 - Small molecule drugs: amoxicillin, metformin, ciprofloxacin
 - Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms
@@ -57,8 +59,8 @@ For the clinical trial intervention(s) below, answer these questions using ONLY 
 1. INTERVENTION NAME: List ALL drugs/interventions being tested (not just the first one).
 
 2. MOLECULAR CLASS: For EACH intervention, what type of molecule is it? Options:
-   - Short peptide chain (2-50 amino acids, single or multi-chain peptide hormones)
-   - Protein (>50 amino acids, or multi-chain complex with tertiary/quaternary structure)
+   - Peptide / peptide hormone (typically ≤100 amino acids, single or multi-chain, e.g., insulin 51 aa)
+   - Protein (>100 amino acids, large multi-domain proteins, e.g., interferons, erythropoietin)
    - Monoclonal antibody or antibody fragment (~150 kDa, multi-chain)
    - Small molecule (non-peptide chemical compound, typically <900 Da)
    - Nutritional product/dietary supplement (food, formula, hydrolyzed protein)
@@ -93,20 +95,22 @@ Investigational Drug Role: [investigational drug / food ingredient / targeting v
 # Pass 2: Apply decision tree to extracted facts
 PASS2_SYSTEM = """You are a peptide identification specialist. You have been given EXTRACTED FACTS about a clinical trial intervention. Use ONLY these facts to determine if the intervention is a peptide therapeutic.
 
-DEFINITION: A peptide therapeutic is a molecule consisting of 2-50 amino acid residues (including multi-chain peptide hormones such as insulin) that serves as the ACTIVE therapeutic drug in the clinical trial.
+DEFINITION: A peptide therapeutic is a molecule typically consisting of up to ~100 amino acid residues (single-chain or multi-chain) that serves as the ACTIVE therapeutic drug in the clinical trial. This includes peptide hormones such as insulin (51 aa, multi-chain).
 
 INCLUDES as peptide (True):
 - Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37 (37 aa), defensins
 - Hormone analogues: semaglutide (31 aa, GLP-1), octreotide (8 aa), leuprolide (10 aa)
+- Peptide hormones: insulin (51 aa, multi-chain A+B), glucagon (29 aa), calcitonin (32 aa)
 - Cyclic peptides: vancomycin (glycopeptide), gramicidin, bacitracin
 - Peptide vaccines where the peptide IS the active immunogen (e.g., StreptInCor)
+- Peptide-conjugate therapeutics where the peptide IS the active component (e.g., synthetic peptides conjugated to a carrier protein for immunotherapy)
 - Neuropeptides used as drugs: aviptadil (VIP, 28 aa), substance P antagonists
 - Vasopeptides: nesiritide (BNP, 32 aa), terlipressin, desmopressin
 - Peptide anticoagulants: bivalirudin (20 aa), eptifibatide (7 aa)
 
 EXCLUDES as peptide (False):
-- Proteins >50 amino acids: interferons, erythropoietin, growth hormone
-- Multi-chain complexes forming tertiary/quaternary structure (complex proteins, not peptide hormones)
+- Large proteins >100 amino acids: interferons (166+ aa), erythropoietin (165 aa), growth hormone (191 aa)
+- Multi-domain complex proteins with tertiary/quaternary structure (not peptide hormones)
 - Monoclonal antibodies (multi-chain, ~150 kDa): pembrolizumab, trastuzumab, nivolumab, atezolizumab, ipilimumab, rituximab, bevacizumab, adalimumab, infliximab, cetuximab, durvalumab
 - Small molecule drugs: amoxicillin, metformin, ciprofloxacin, tenofovir, emtricitabine, sofosbuvir
 - Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms, Vital Peptide, Nutri Peptide
@@ -118,8 +122,8 @@ EXCLUDES as peptide (False):
 
 DECISION TREE:
 STEP 1 — Is the Molecular Class a peptide?
-  - "Short peptide chain" (2-50 aa, single or multi-chain peptide hormones) → proceed to Step 2
-  - "Protein" (>50 aa non-peptide proteins, e.g., interferons, erythropoietin) → False
+  - "Peptide / peptide hormone" (typically ≤100 aa, includes multi-chain hormones like insulin) → proceed to Step 2
+  - "Protein" (>100 aa, large multi-domain proteins like interferons, EPO) → False
   - "Monoclonal antibody" → False (multi-chain complex)
   - "Small molecule" → False
   - "Nutritional product/dietary supplement" → False
@@ -153,9 +157,10 @@ CRITICAL RULES:
 - Autologous dexosomes/exosomes loaded with peptides: the vehicle is the drug → False
 
 WORKED EXAMPLES (True):
-1. Molecular Class: Short peptide chain | AA Length: 31 | Database Hits: UniProt P01282 | Investigational Drug Role: investigational drug → True (semaglutide, 31 aa GLP-1 analogue)
-2. Molecular Class: Short peptide chain | AA Length: 8 | Database Hits: DRAMP entry | Investigational Drug Role: investigational drug → True (octreotide, 8 aa somatostatin analogue)
-3. Molecular Class: Short peptide chain | AA Length: 32 | Database Hits: UniProt P16860 | Investigational Drug Role: investigational drug → True (nesiritide/BNP, 32 aa natriuretic peptide)
+1. Molecular Class: Peptide / peptide hormone | AA Length: 31 | Database Hits: UniProt P01282 | Investigational Drug Role: investigational drug → True (semaglutide, 31 aa GLP-1 analogue)
+2. Molecular Class: Peptide / peptide hormone | AA Length: 8 | Database Hits: DRAMP entry | Investigational Drug Role: investigational drug → True (octreotide, 8 aa somatostatin analogue)
+3. Molecular Class: Peptide / peptide hormone | AA Length: 32 | Database Hits: UniProt P16860 | Investigational Drug Role: investigational drug → True (nesiritide/BNP, 32 aa natriuretic peptide)
+4. Molecular Class: Peptide / peptide hormone | AA Length: 51 | Database Hits: UniProt P01308 | Investigational Drug Role: investigational drug → True (insulin, 51 aa multi-chain peptide hormone)
 
 WORKED EXAMPLES (False):
 1. Molecular Class: Nutritional product | AA Length: N/A | Database Hits: none | Active Role: food ingredient → False (Peptide 1.5 is a nutritional formula)
