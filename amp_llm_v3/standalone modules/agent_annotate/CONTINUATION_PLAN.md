@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-01
-**Current state:** v25 merged to main (904180a). Baseline concordance job b7c5c4fe7a17 running (bb302bc7b077 cancelled for quality checker fix) (50 NCTs, same as v22 set).
+**Last updated:** 2026-04-02
+**Current state:** v27 on dev (pending push). v26 on prod (e04e458). Job 86fdce46b3c5 completed (50 NCTs). v26 concordance via API: classification 94.3%, delivery 97.1%, outcome 80.0%, peptide 92.3% (n=39, grouped categories).
 
 ## v24 Changes
 
@@ -20,6 +20,13 @@
 - **Outcome publication priority (v25)**: Published results override CT.gov registry status. Evidence priority ladder: publications > CT.gov results > CT.gov status > trial phase. Post-LLM _publication_priority_override() for Unknown/Active/Terminated
 - **Quality checker fix**: N/A from cascade/deterministic no longer triggers false retry (was wasting time on intentional N/A results)
 - **Frontend**: Agreement page at /agreement (was /concordance), jobs table shows commit hash, autoupdater rebuilds frontend
+
+### v27 Changes (2026-04-02)
+- **Peptide prompt fix (insulin)**: Removed "SINGLE-CHAIN" and "2-50 aa" exclusion of insulin from both PASS1 and PASS2 prompts. Multi-chain peptide hormones (e.g., insulin) now classified through LLM reasoning, not by expanding drug lists. Deleted insulin False worked example.
+- **Known sequences**: Added insulin (preproinsulin, 110aa) and cv-mg01 (AChR peptide, 17aa) to `_KNOWN_SEQUENCES` (factual data, not classification bypass).
+- **Concordance scripts CSV migration**: concordance_jobs.py and concordance_test.py now use `human_ground_truth_train_df.csv` instead of the Excel file. Removed openpyxl dependency.
+- **Batch file fix**: Removed 11 NCTs from fast_learning_batch_50.txt and 5 from fast_learning_batch_25.txt that were not in the training CSV. Replaced with training-set NCTs. All future jobs must use only training-set NCTs.
+- **Albiglutide root cause**: NCT02660736 — albiglutide is NOT in `_KNOWN_PEPTIDE_DRUGS` (correct, lists are frozen). LLM initially says TRUE but verifiers flip to FALSE. Fix is through prompt improvements, not drug list additions. Monitor after v27 prompt changes.
 
 ### v22-era Job Performance (old code, mapped to v24 categories)
 
@@ -116,44 +123,69 @@ The FALSE→TRUE pattern (74% of errors) means the agent is too conservative —
 
 ---
 
+### v25/v26 Concordance (50 NCTs, job c2c43af95162) — 2026-03-31
+
+| Field | vs R1 | AC₁(R1) | vs R2 | AC₁(R2) | R1↔R2 | Status |
+|---|---|---|---|---|---|---|
+| Classification | 92.0% | 0.917 | 90.0% | 0.893 | 86.0% | **Exceeds human** |
+| Peptide | 82.2% | 0.769 | 85.7% | 0.819 | 90.5% | Near baseline |
+| RfF | 70.0% | 0.657 | 80.0% | 0.771 | 84.0% | Near baseline vs R2 |
+| Outcome | 68.0% | 0.633 | 74.0% | 0.703 | 76.0% | Below baseline |
+| Delivery Mode | 63.3% | 0.609 | 70.0% | 0.677 | 69.4% | **Meets baseline vs R2** |
+| Sequence | 61.9% | 0.603 | 54.5% | 0.528 | 68.8% | Below (biggest gap) |
+
+**Key findings:**
+- Classification: SOLVED. Agent beats both reviewers.
+- Delivery: Meets R2 human baseline. Most remaining disagreements are within injection sub-categories (SC vs IV vs Other/Unspecified) — would agree under bucketed comparison.
+- Outcome: 16 disagreements vs R1. v26 has TERMINATED override fix — need concordance run to measure.
+- RfF: 70% vs R1 dragged down by outcome cascading. Should improve with v26 outcome fix.
+- Peptide: 8 disagreements vs R1 (agent under-calling). Phase 3 work still needed.
+- Sequence: Agent-empty is still the dominant failure mode (12 b_only vs R1, 16 vs R2).
+
+### Design Decisions
+
+- **NCT00004984 (Insulin):** 51aa multi-chain protein. Agent correctly classified, humans disagree on peptide definition. **Decision: KEEP the sequence.** Multi-chain proteins at peptide scale should retain their sequence annotation. The agent is correct here — do not penalize or special-case this. If the agent finds a valid sequence, include it regardless of single-chain vs multi-chain debate.
+
 ### Updated Testing Plan
 
-**Phase 1: Fix critical bugs before v24 baseline run**
-1. **[P0] Delivery mode dedup bug**: In `_parse_value()`, after mapping multi-route comma-separated values to 4 categories, deduplicate. "injection/infusion, injection/infusion" → "injection/infusion". This is 7/27 (26%) of delivery disagreements and is a pure code bug.
-2. **[P0] DRVYIHP over-matching**: Tighten `_KNOWN_SEQUENCES` matching in sequence.py. Currently matches if drug name substring appears anywhere in intervention name. Change to require the intervention IS the drug (e.g., "Angiotensin II" matches, but "Angiotensin-Converting Enzyme Inhibitor" does not).
+**Phase 1: DONE** — v25 dedup + DRVYIHP fixes applied.
 
-**Phase 2: Run v25 baseline concordance (P0 fixes applied)**
-3. v25 baseline concordance job b7c5c4fe7a17 running (bb302bc7b077 cancelled after 4/50 to pick up quality checker fix) (50 NCTs). Running on prod. Compare against v22 job 6657f8896238.
-4. Compare results against human R1 using the training CSV
-5. Expected improvements: classification >=94% (was 94.3%), delivery >=85% (was 88.6% minus dedup bugs), sequence metrics now use order-agnostic comparison
+**Phase 2: DONE** — v25 baseline concordance (c2c43af95162, 50 NCTs). Results above.
 
-**Phase 3: Address peptide under-calling (high priority)**
-6. Review the 17 FALSE→TRUE NCTs from the disagreement list
-7. Add consistently misclassified drugs to `_KNOWN_PEPTIDE_DRUGS`
-8. Consider: should the cascade require confidence > 0.8? Or is the full cascade correct and we just need better peptide accuracy?
+**Phase 2b: Run concordance on v26 job 86fdce46b3c5 (NEXT)**
+- v26 has TERMINATED outcome override + RfF empty default fixes
+- Same 50 NCTs — direct comparison to v25 concordance
+- Expected: outcome improvement (TERMINATED trials no longer stuck on Unknown), RfF cascade improvement
 
-**Phase 4: Sequence coverage expansion**
-9. Review the 27 agent-empty sequence cases — which drugs are they?
-10. Add verified sequences to `_KNOWN_SEQUENCES` for high-frequency misses
-11. Improve LLM fallback prompts for literature-based sequence extraction
+**Phase 3: Address peptide under-calling (v27 prompt fix applied)**
+- 3 FALSE→TRUE disagreements in v26: NCT00004984 (insulin), NCT02660736 (albiglutide), NCT03165435 (CV-MG01)
+- v27: Updated LLM prompts to accept multi-chain peptide hormones (insulin). No drug list additions.
+- Albiglutide: LLM says TRUE but verifiers flip — monitor after v27 prompt changes
+- CV-MG01: peptide-conjugate, may still be FALSE via LLM — monitor
+
+**Phase 4: Sequence coverage expansion (highest impact)**
+- Review the 12-16 agent-empty sequence cases — which drugs are they?
+- Add verified sequences to `_KNOWN_SEQUENCES` for high-frequency misses
+- Improve LLM fallback prompts for literature-based sequence extraction
+- Insulin decision: multi-chain proteins keep their sequence
 
 **Phase 5: Absorb + expand**
-12. Absorb Batches G+H into EDAM (edam_learning_cycle)
-13. Queue Batches I/J (positions 201-250)
+- Absorb Batches G+H into EDAM (edam_learning_cycle)
+- Queue Batches I/J (positions 201-250)
 
 ## Environment State
 
 | Environment | Branch | Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v17 (66907432) | None (4b062214adf0 complete) |
-| Dev (port 9005) | dev | v18 (fc6fddac) | None |
+| Prod (port 8005) | main | v26 (e04e458) | None (86fdce46b3c5 complete) |
+| Dev (port 9005) | dev | — | None |
 
 ## Important Notes
 
 - **Workflow:** Develop on `dev`, run jobs on prod. Only merge to `main` when explicitly told.
 - **CRITICAL:** Always commit+push atomically in ONE bash command. Autoupdater wipes uncommitted changes every 30s.
 - **Update plans after every job** — this file and `LEARNING_RUN_PLAN.md`.
-- **Drug lists are FROZEN** — no more additions. Improvements through reasoning (Layers 1-3) only.
+- **Drug lists (`_KNOWN_PEPTIDE_DRUGS`) are FROZEN** — no additions. Fix classification through LLM prompt/reasoning improvements only. `_KNOWN_SEQUENCES` (factual data) is OK to expand.
 - **All AMPs are peptides** — AMP classification forces peptide=True in consistency engine.
 - **Auth token:** Retrieved from `~/Developer/amphoraxe/auth.amphoraxe.ca/data/auth.db` sessions table.
 

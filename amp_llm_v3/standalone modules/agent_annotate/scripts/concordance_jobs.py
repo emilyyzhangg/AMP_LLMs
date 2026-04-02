@@ -19,16 +19,13 @@ from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
 
-import openpyxl
+import csv as csv_module
 
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
-EXCEL_PATH = Path(
-    "/Users/amphoraxe/Developer/amphoraxe/dev-llm.amphoraxe.ca/docs/"
-    "clinical_trials-with-sequences.xlsx"
-)
+CSV_PATH = BASE_DIR / "docs" / "human_ground_truth_train_df.csv"
 JSON_DIR = BASE_DIR / "results" / "json"
 OUTPUT_DIR = BASE_DIR / "results" / "concordance"
 
@@ -40,37 +37,37 @@ JOB_FILES = [
 ]
 
 # ---------------------------------------------------------------------------
-# Field definitions  (Excel column indices are 0-based)
+# Field definitions  (CSV column name-based)
 # ---------------------------------------------------------------------------
 FIELDS = {
     "classification": {
-        "excel_r1_col": 10,  # K
-        "excel_r2_col": 10,  # K
+        "csv_ann1": "Classification_ann1",
+        "csv_ann2": "Classification_ann2",
         "blank_means_skip": True,
     },
     "delivery_mode": {
-        "excel_r1_col": 12,  # M
-        "excel_r2_col": 12,  # M
+        "csv_ann1": "Delivery Mode_ann1",
+        "csv_ann2": "Delivery Mode_ann2",
         "blank_means_skip": True,
     },
     "outcome": {
-        "excel_r1_col": 17,  # R
-        "excel_r2_col": 17,  # R
+        "csv_ann1": "Outcome_ann1",
+        "csv_ann2": "Outcome_ann2",
         "blank_means_skip": True,
     },
     "reason_for_failure": {
-        "excel_r1_col": 18,  # S
-        "excel_r2_col": 18,  # S
+        "csv_ann1": "Reason for Failure_ann1",
+        "csv_ann2": "Reason for Failure_ann2",
         "blank_means_skip": False,  # blank IS valid
     },
     "peptide": {
-        "excel_r1_col": 21,  # V
-        "excel_r2_col": 21,  # V
+        "csv_ann1": "Peptide_ann1",
+        "csv_ann2": "Peptide_ann2",
         "blank_means_skip": True,
     },
     "sequence": {
-        "excel_r1_col": 13,  # N (Sequence column)
-        "excel_r2_col": 13,  # N
+        "csv_ann1": "Sequence_ann1",
+        "csv_ann2": "Sequence_ann2",
         "blank_means_skip": True,
     },
 }
@@ -322,56 +319,49 @@ from app.services.concordance_stats import (
 # ---------------------------------------------------------------------------
 # Data loading
 # ---------------------------------------------------------------------------
-def load_excel_annotations(path):
-    """Load human annotations from both replicate sheets.
-    Returns dict: { nct_id: { 'r1': {field: raw_value}, 'r2': {field: raw_value} } }
+def load_csv_annotations(path):
+    """Load human annotations from training CSV.
+    Returns dict: { nct_id: { 'r1': {field: raw_value}, 'r2': {field: raw_value},
+                               'r2_annotator': str } }
     """
-    wb = openpyxl.load_workbook(str(path), read_only=True, data_only=True)
-    data = defaultdict(lambda: {"r1": {}, "r2": {}})
-
-    for replicate, sheet_name in [
-        ("r1", "Trials Replicate 1"),
-        ("r2", "Trials Replicate 2"),
-    ]:
-        ws = wb[sheet_name]
-        for row in ws.iter_rows(min_row=2, values_only=True):
-            nct = row[0]
-            if nct is None:
+    data = {}
+    with open(str(path), newline='') as f:
+        reader = csv_module.DictReader(f)
+        for row in reader:
+            nct = row.get("nct_id", "").strip()
+            if not nct:
                 continue
-            nct = str(nct).strip()
+            # Normalize to uppercase NCT format
+            nct = nct.upper() if not nct.startswith("NCT") else "NCT" + nct[3:]
+
+            entry = {"r1": {}, "r2": {}, "r2_annotator": row.get("A2_annotator", "").strip()}
             for field_name, field_def in FIELDS.items():
-                col_idx = field_def[f"excel_{replicate}_col"]
-                raw = row[col_idx] if col_idx < len(row) else None
-                data[nct][replicate][field_name] = raw
+                entry["r1"][field_name] = row.get(field_def["csv_ann1"], "").strip() or None
+                entry["r2"][field_name] = row.get(field_def["csv_ann2"], "").strip() or None
 
-    wb.close()
-    return dict(data)
+            data[nct] = entry
+    return data
 
 
-def load_excel_row_to_nct(path):
-    """Load mapping of (sheet_name, data_row_number) -> nct_id.
+def load_csv_annotator_map(path):
+    """Load per-NCT annotator attribution from training CSV.
 
-    data_row_number is 1-based (row 1 = first data row after header).
-    Returns: { sheet_name: { row_number: nct_id } }
+    R1 annotator is always 'Emily'. R2 annotator comes from the A2_annotator column.
+    Returns: { 'Trials Replicate 1': { nct_id: annotator },
+               'Trials Replicate 2': { nct_id: annotator } }
     """
-    wb = openpyxl.load_workbook(str(path), read_only=True, data_only=True)
-    mapping = {}
-
-    for sheet_name in ["Trials Replicate 1", "Trials Replicate 2"]:
-        ws = wb[sheet_name]
-        sheet_map = {}
-        data_row = 0
-        for row in ws.iter_rows(min_row=2, values_only=True):
-            data_row += 1
-            nct = row[0]
-            if nct is None:
+    r1_map = {}
+    r2_map = {}
+    with open(str(path), newline='') as f:
+        reader = csv_module.DictReader(f)
+        for row in reader:
+            nct = row.get("nct_id", "").strip()
+            if not nct:
                 continue
-            nct = str(nct).strip()
-            sheet_map[data_row] = nct
-        mapping[sheet_name] = sheet_map
-
-    wb.close()
-    return mapping
+            nct = nct.upper() if not nct.startswith("NCT") else "NCT" + nct[3:]
+            r1_map[nct] = "Emily"
+            r2_map[nct] = row.get("A2_annotator", "").strip() or "Unknown"
+    return {"Trials Replicate 1": r1_map, "Trials Replicate 2": r2_map}
 
 
 def load_agent_annotations_from_json(json_paths):
@@ -1274,15 +1264,15 @@ def main():
     print("=" * 115)
     print("AGENT ANNOTATE - CONCORDANCE TEST (JSON OVERNIGHT JOBS)")
     print(f"Timestamp: {datetime.now().isoformat()}")
-    print(f"Excel:     {EXCEL_PATH}")
+    print(f"CSV:       {CSV_PATH}")
     print(f"JSON dir:  {JSON_DIR}")
     print(f"Job files: {', '.join(JOB_FILES)}")
     print("=" * 115)
     print()
 
     # Verify files exist
-    if not EXCEL_PATH.exists():
-        print(f"ERROR: Excel file not found: {EXCEL_PATH}")
+    if not CSV_PATH.exists():
+        print(f"ERROR: CSV file not found: {CSV_PATH}")
         sys.exit(1)
 
     json_paths = []
@@ -1294,9 +1284,9 @@ def main():
         json_paths.append(p)
 
     # Load data
-    print("Loading human annotations from Excel...")
-    human_data = load_excel_annotations(EXCEL_PATH)
-    print(f"  Loaded {len(human_data)} NCT IDs from Excel")
+    print("Loading human annotations from CSV...")
+    human_data = load_csv_annotations(CSV_PATH)
+    print(f"  Loaded {len(human_data)} NCT IDs from CSV")
     print()
 
     print("Loading agent annotations from JSON job files...")
@@ -1345,9 +1335,8 @@ def main():
     print_disagreements(all_disagreements)
 
     # Per-annotator analysis
-    print("\nLoading row-to-NCT mapping for annotator attribution...")
-    row_to_nct = load_excel_row_to_nct(EXCEL_PATH)
-    annotator_map = load_annotator_workload(row_to_nct)
+    print("\nLoading annotator attribution from CSV...")
+    annotator_map = load_csv_annotator_map(CSV_PATH)
     print_annotator_analysis(agent_data, human_data, common_ncts, annotator_map)
 
     # Raw values for manual inspection
@@ -1373,7 +1362,7 @@ def main():
     json_output = {
         "timestamp": datetime.now().isoformat(),
         "source": "json_overnight_jobs",
-        "excel_path": str(EXCEL_PATH),
+        "csv_path": str(CSV_PATH),
         "job_files": [str(p) for p in json_paths],
         "common_ncts": common_ncts,
         "n_agent": len(agent_data),

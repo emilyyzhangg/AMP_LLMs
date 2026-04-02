@@ -28,7 +28,7 @@ logger = logging.getLogger("agent_annotate.annotation.peptide")
 VALID_VALUES = ["True", "False"]
 
 # Pass 1: Extract molecular facts about the intervention
-PASS1_SYSTEM = """DEFINITION: A peptide therapeutic is a SINGLE-CHAIN molecule consisting of 2-50 amino acid residues that serves as the ACTIVE therapeutic drug in the clinical trial. The peptide must be the primary pharmacological agent — not a carrier, adjuvant, nutritional component, or targeting vector.
+PASS1_SYSTEM = """DEFINITION: A peptide therapeutic is a molecule consisting of 2-50 amino acid residues (including multi-chain peptide hormones such as insulin) that serves as the ACTIVE therapeutic drug in the clinical trial. The peptide must be the primary pharmacological agent — not a carrier, adjuvant, nutritional component, or targeting vector.
 
 INCLUDES as peptide (True):
 - Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37 (37 aa), defensins
@@ -38,8 +38,8 @@ INCLUDES as peptide (True):
 - Neuropeptides used as drugs: aviptadil (VIP, 28 aa), substance P antagonists
 
 EXCLUDES as peptide (False):
-- Proteins >50 amino acids: insulin (51 aa, also multi-chain A+B), interferons, erythropoietin
-- Multi-chain complexes forming tertiary/quaternary structure (complex proteins, not peptides)
+- Proteins >50 amino acids: interferons, erythropoietin, growth hormone
+- Multi-chain complexes forming tertiary/quaternary structure (complex proteins, not peptide hormones)
 - Monoclonal antibodies (multi-chain, ~150 kDa): pembrolizumab, trastuzumab
 - Small molecule drugs: amoxicillin, metformin, ciprofloxacin
 - Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms
@@ -57,7 +57,7 @@ For the clinical trial intervention(s) below, answer these questions using ONLY 
 1. INTERVENTION NAME: List ALL drugs/interventions being tested (not just the first one).
 
 2. MOLECULAR CLASS: For EACH intervention, what type of molecule is it? Options:
-   - Short peptide chain (2-50 amino acids, SINGLE chain)
+   - Short peptide chain (2-50 amino acids, single or multi-chain peptide hormones)
    - Protein (>50 amino acids, or multi-chain complex with tertiary/quaternary structure)
    - Monoclonal antibody or antibody fragment (~150 kDa, multi-chain)
    - Small molecule (non-peptide chemical compound, typically <900 Da)
@@ -93,7 +93,7 @@ Investigational Drug Role: [investigational drug / food ingredient / targeting v
 # Pass 2: Apply decision tree to extracted facts
 PASS2_SYSTEM = """You are a peptide identification specialist. You have been given EXTRACTED FACTS about a clinical trial intervention. Use ONLY these facts to determine if the intervention is a peptide therapeutic.
 
-DEFINITION: A peptide therapeutic is a SINGLE-CHAIN molecule consisting of 2-50 amino acid residues that serves as the ACTIVE therapeutic drug in the clinical trial.
+DEFINITION: A peptide therapeutic is a molecule consisting of 2-50 amino acid residues (including multi-chain peptide hormones such as insulin) that serves as the ACTIVE therapeutic drug in the clinical trial.
 
 INCLUDES as peptide (True):
 - Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37 (37 aa), defensins
@@ -105,8 +105,8 @@ INCLUDES as peptide (True):
 - Peptide anticoagulants: bivalirudin (20 aa), eptifibatide (7 aa)
 
 EXCLUDES as peptide (False):
-- Proteins >50 amino acids: insulin (51 aa, also multi-chain A+B), interferons, erythropoietin
-- Multi-chain complexes forming tertiary/quaternary structure (complex proteins, not peptides)
+- Proteins >50 amino acids: interferons, erythropoietin, growth hormone
+- Multi-chain complexes forming tertiary/quaternary structure (complex proteins, not peptide hormones)
 - Monoclonal antibodies (multi-chain, ~150 kDa): pembrolizumab, trastuzumab, nivolumab, atezolizumab, ipilimumab, rituximab, bevacizumab, adalimumab, infliximab, cetuximab, durvalumab
 - Small molecule drugs: amoxicillin, metformin, ciprofloxacin, tenofovir, emtricitabine, sofosbuvir
 - Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms, Vital Peptide, Nutri Peptide
@@ -118,8 +118,8 @@ EXCLUDES as peptide (False):
 
 DECISION TREE:
 STEP 1 — Is the Molecular Class a peptide?
-  - "Short peptide chain" (2-50 aa, single chain) → proceed to Step 2
-  - "Protein" (>50 aa or multi-chain) → False
+  - "Short peptide chain" (2-50 aa, single or multi-chain peptide hormones) → proceed to Step 2
+  - "Protein" (>50 aa non-peptide proteins, e.g., interferons, erythropoietin) → False
   - "Monoclonal antibody" → False (multi-chain complex)
   - "Small molecule" → False
   - "Nutritional product/dietary supplement" → False
@@ -161,8 +161,7 @@ WORKED EXAMPLES (False):
 1. Molecular Class: Nutritional product | AA Length: N/A | Database Hits: none | Active Role: food ingredient → False (Peptide 1.5 is a nutritional formula)
 2. Molecular Class: Monoclonal antibody | AA Length: >1000 | Database Hits: UniProt (antibody) | Investigational Drug Role: investigational drug → False (pembrolizumab is an antibody, not a peptide)
 3. Molecular Class: Small molecule | AA Length: N/A | Database Hits: ChEMBL (small molecule) | Investigational Drug Role: investigational drug → False (metformin is a small molecule drug)
-4. Molecular Class: Protein | AA Length: 51 | Database Hits: UniProt P01308 | Investigational Drug Role: investigational drug → False (insulin, 51 aa + multi-chain A+B, protein not peptide)
-5. Molecular Class: Nutritional product | AA Length: N/A | Database Hits: none | Active Role: food ingredient → False (Peptamen is a hydrolyzed protein formula)
+4. Molecular Class: Nutritional product | AA Length: N/A | Database Hits: none | Active Role: food ingredient → False (Peptamen is a hydrolyzed protein formula)
 
 Format your response EXACTLY as:
 Peptide: True or False

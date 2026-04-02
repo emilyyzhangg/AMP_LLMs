@@ -68,6 +68,8 @@ _KNOWN_SEQUENCES: dict[str, str] = {
     # GLP-1 analogues
     "albiglutide": "HGEGTFTSDVSSYLEGQAAKEFIAWLVKGR",        # GLP-1(7-36) amide, 30aa
     "exenatide": "HGEGTFTSDLSKQMEEEAVRLFIEWLKNGGPSSGAPPPS", # Exendin-4, 39aa
+    # Peptide hormones
+    "insulin": "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN",  # Preproinsulin, 110aa (matches human R1)
     # Angiotensin
     "angiotensin-(1-7)": "DRVYIHP",                          # 7aa
     "angiotensin ii": "DRVYIHPF",                             # 8aa
@@ -87,6 +89,8 @@ _KNOWN_SEQUENCES: dict[str, str] = {
     "emi-137": "AGSCYCSGPPRFECWCFETEGTGGGK",                 # cMet-targeting peptide, 26aa
     "l-carnosine": "AH",                                      # Beta-alanyl-L-histidine dipeptide
     "carnosine": "AH",                                        # Same
+    # Peptide-conjugate therapeutics
+    "cv-mg01": "YFSRIIQKQFGHVNNGK",                          # AChR alpha-subunit peptide, 17aa
 }
 
 

@@ -18,16 +18,13 @@ from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
 
-import openpyxl
+import csv as csv_module
 
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
-EXCEL_PATH = Path(
-    "/Users/amphoraxe/Developer/amphoraxe/dev-llm.amphoraxe.ca/docs/"
-    "clinical_trials-with-sequences.xlsx"
-)
+HUMAN_CSV_PATH = BASE_DIR / "docs" / "human_ground_truth_train_df.csv"
 CSV_PATH = (
     BASE_DIR
     / "results"
@@ -40,37 +37,37 @@ OUTPUT_DIR = BASE_DIR / "results" / "concordance"
 # Field definitions
 # ---------------------------------------------------------------------------
 # Maps our canonical field names to:
-#   - Excel column indices (0-based) for Replicate 1 & 2
-#   - CSV column header name
+#   - CSV column header names for ann1 (R1) and ann2 (R2)
+#   - Agent CSV column header name
 #   - Whether blank means "not annotated" (True) or is a valid value (False)
 FIELDS = {
     "classification": {
-        "excel_r1_col": 10,  # K
-        "excel_r2_col": 10,  # K
+        "csv_ann1": "Classification_ann1",
+        "csv_ann2": "Classification_ann2",
         "csv_col": "Classification",
         "blank_means_skip": True,
     },
     "delivery_mode": {
-        "excel_r1_col": 12,  # M
-        "excel_r2_col": 12,  # M
+        "csv_ann1": "Delivery Mode_ann1",
+        "csv_ann2": "Delivery Mode_ann2",
         "csv_col": "Delivery Mode",
         "blank_means_skip": True,
     },
     "outcome": {
-        "excel_r1_col": 17,  # R
-        "excel_r2_col": 17,  # R
+        "csv_ann1": "Outcome_ann1",
+        "csv_ann2": "Outcome_ann2",
         "csv_col": "Outcome",
         "blank_means_skip": True,
     },
     "reason_for_failure": {
-        "excel_r1_col": 18,  # S
-        "excel_r2_col": 18,  # S
+        "csv_ann1": "Reason for Failure_ann1",
+        "csv_ann2": "Reason for Failure_ann2",
         "csv_col": "Reason for Failure",
         "blank_means_skip": False,  # blank IS valid (means "no failure reason")
     },
     "peptide": {
-        "excel_r1_col": 21,  # V
-        "excel_r2_col": 21,  # V
+        "csv_ann1": "Peptide_ann1",
+        "csv_ann2": "Peptide_ann2",
         "csv_col": "Peptide",
         "blank_means_skip": True,
     },
@@ -208,30 +205,27 @@ def cohens_kappa(labels_a, labels_b):
 # ---------------------------------------------------------------------------
 # Data loading
 # ---------------------------------------------------------------------------
-def load_excel_annotations(path):
-    """Load human annotations from both replicate sheets.
+def load_csv_annotations(path):
+    """Load human annotations from training CSV.
     Returns dict: { nct_id: { 'r1': {field: raw_value}, 'r2': {field: raw_value} } }
     """
-    wb = openpyxl.load_workbook(str(path), read_only=True, data_only=True)
-    data = defaultdict(lambda: {"r1": {}, "r2": {}})
-
-    for replicate, sheet_name in [
-        ("r1", "Trials Replicate 1"),
-        ("r2", "Trials Replicate 2"),
-    ]:
-        ws = wb[sheet_name]
-        for row in ws.iter_rows(min_row=2, values_only=True):
-            nct = row[0]
-            if nct is None:
+    data = {}
+    with open(str(path), newline='') as f:
+        reader = csv_module.DictReader(f)
+        for row in reader:
+            nct = row.get("nct_id", "").strip()
+            if not nct:
                 continue
-            nct = str(nct).strip()
-            for field_name, field_def in FIELDS.items():
-                col_idx = field_def[f"excel_{replicate}_col"]
-                raw = row[col_idx] if col_idx < len(row) else None
-                data[nct][replicate][field_name] = raw
+            # Normalize to uppercase NCT format
+            nct = nct.upper() if not nct.startswith("NCT") else "NCT" + nct[3:]
 
-    wb.close()
-    return dict(data)
+            entry = {"r1": {}, "r2": {}}
+            for field_name, field_def in FIELDS.items():
+                entry["r1"][field_name] = row.get(field_def["csv_ann1"], "").strip() or None
+                entry["r2"][field_name] = row.get(field_def["csv_ann2"], "").strip() or None
+
+            data[nct] = entry
+    return data
 
 
 def load_agent_annotations(path):
@@ -772,23 +766,23 @@ def main():
     print("=" * 110)
     print("AGENT ANNOTATE - CONCORDANCE TEST")
     print(f"Timestamp: {datetime.now().isoformat()}")
-    print(f"Excel:     {EXCEL_PATH}")
-    print(f"CSV:       {CSV_PATH}")
+    print(f"Human CSV: {HUMAN_CSV_PATH}")
+    print(f"Agent CSV: {CSV_PATH}")
     print("=" * 110)
     print()
 
     # Verify files exist
-    if not EXCEL_PATH.exists():
-        print(f"ERROR: Excel file not found: {EXCEL_PATH}")
+    if not HUMAN_CSV_PATH.exists():
+        print(f"ERROR: Human CSV file not found: {HUMAN_CSV_PATH}")
         sys.exit(1)
     if not CSV_PATH.exists():
         print(f"ERROR: CSV file not found: {CSV_PATH}")
         sys.exit(1)
 
     # Load data
-    print("Loading human annotations from Excel...")
-    human_data = load_excel_annotations(EXCEL_PATH)
-    print(f"  Loaded {len(human_data)} NCT IDs from Excel")
+    print("Loading human annotations from CSV...")
+    human_data = load_csv_annotations(HUMAN_CSV_PATH)
+    print(f"  Loaded {len(human_data)} NCT IDs from CSV")
 
     print("Loading agent annotations from CSV...")
     agent_data = load_agent_annotations(CSV_PATH)
@@ -849,7 +843,7 @@ def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     json_output = {
         "timestamp": datetime.now().isoformat(),
-        "excel_path": str(EXCEL_PATH),
+        "csv_path": str(HUMAN_CSV_PATH),
         "csv_path": str(CSV_PATH),
         "common_ncts": common_ncts,
         "n_agent": len(agent_data),
