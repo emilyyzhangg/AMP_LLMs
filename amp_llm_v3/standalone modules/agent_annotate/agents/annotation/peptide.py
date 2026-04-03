@@ -445,17 +445,16 @@ class PeptideAgent(BaseAnnotationAgent):
             max_snippet_chars=max_snippet,
         )
 
-        # v27c: Extract peptide signals from arm group descriptions and
-        # UniProt mature chain data. These are authoritative structured facts
-        # that the 14B model tends to miss when buried in free-text citations.
+        # v27e: Structured facts go AFTER evidence (recency bias — last thing
+        # the model reads has most influence). v27d put them before, which
+        # caused format compliance failures on verifiers.
         structured_facts = _extract_peptide_signals(research_results)
         if structured_facts:
             facts_block = (
-                "=== STRUCTURED FACTS (you MUST address each in your analysis) ===\n"
+                "\n=== KEY FACTS TO CONSIDER ===\n"
                 + "\n".join(structured_facts)
-                + "\n"
             )
-            evidence_text = facts_block + "\n" + evidence_text
+            evidence_text = evidence_text + facts_block
 
         # --- EDAM guidance injection ---
         edam_guidance = await self.get_edam_guidance(nct_id, evidence_text)

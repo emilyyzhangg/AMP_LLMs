@@ -32,8 +32,9 @@ Rules:
 - If the evidence genuinely supports multiple interpretations, choose the most conservative/supported answer
 - If the evidence is truly insufficient to determine the answer, respond with "MANUAL_REVIEW" as the value
 - Cite the specific evidence that supports your final decision
-- IMPORTANT: If the primary annotator has HIGH confidence (>0.85) and cites specific published evidence, and the verifiers only show baseline reasoning without citing contradicting evidence, the primary annotator's answer should be preferred. High-confidence primary annotations are backed by stronger evidence extraction.
-- STRUCTURED FACTS: If the evidence contains a "STRUCTURED FACTS" section, these are extracted from authoritative databases and must be addressed. For UniProt entries, the MATURE form length is what matters for peptide classification — NOT the precursor length. The precursor includes signal peptides and propeptides that are cleaved off before the drug is administered.
+- IMPORTANT: If the primary annotator has HIGH confidence (>0.85) and cites specific published evidence, and the verifiers only show baseline reasoning without citing contradicting evidence, the primary annotator's answer should be preferred.
+- VERIFIER MAJORITY: If 2 or more verifiers AGREE with each other but DISAGREE with the primary annotator, and the verifiers cite specific database facts or structured evidence in their reasoning, give strong weight to the verifier majority. The verifiers are independent blind reviewers — when multiple agree on the same answer with evidence-based reasoning, that is a strong signal.
+- For UniProt entries: the MATURE form length is what matters for peptide classification — NOT the precursor length. The precursor includes signal peptides and propeptides that are cleaved off before the drug is administered.
 
 Respond EXACTLY in this format:
 Final Answer: [your answer OR "MANUAL_REVIEW"]
@@ -145,6 +146,8 @@ class ReconciliationAgent:
         # All model opinions
         lines.append("MODEL OPINIONS:")
         lines.append(f"  Primary annotator: {consensus_result.original_value}")
+        # v27e: Count verifier votes to flag majority disagreement
+        dissenting_values: dict[str, int] = {}
         for opinion in consensus_result.opinions:
             agree_str = "AGREES" if opinion.agrees else "DISAGREES"
             lines.append(
@@ -152,6 +155,17 @@ class ReconciliationAgent:
             )
             if opinion.reasoning:
                 lines.append(f"    Reasoning: {opinion.reasoning[:300]}")
+            if not opinion.agrees and opinion.suggested_value is not None:
+                sv = str(opinion.suggested_value).strip()
+                dissenting_values[sv] = dissenting_values.get(sv, 0) + 1
+        # Flag when 2+ verifiers agree on a different answer
+        for val, count in dissenting_values.items():
+            if count >= 2:
+                lines.append(
+                    f"\n  ** NOTE: {count} of {len(consensus_result.opinions)} "
+                    f"independent verifiers agree on '{val}' — this is a "
+                    f"verifier majority that disagrees with the primary. **"
+                )
         lines.append("")
 
         # Raw evidence

@@ -282,8 +282,6 @@ SYSTEM_TEMPLATE = """You are an independent clinical trial data reviewer. You mu
 
 {persona_prefix}{instruction}
 
-IMPORTANT: If the evidence contains a "STRUCTURED FACTS" section, you MUST explicitly address each fact in your reasoning. Do not ignore structured facts — they are extracted from authoritative databases and take precedence over ambiguous free-text snippets. If a structured fact contradicts your initial interpretation, explain why you accept or reject it.
-
 Respond EXACTLY in this format:
 {field_label}: [your answer]
 Confidence: [High, Medium, or Low]
@@ -379,16 +377,6 @@ class BlindVerifier:
 
         evidence_parts = [f"Trial: {nct_id}\n"]
 
-        # v27c: Extract structured facts from citations for the peptide field.
-        # These are authoritative database facts that small models tend to
-        # miss or misinterpret when buried in free-text citation snippets.
-        if field_name == "peptide":
-            structured = self._extract_structured_facts(research_results)
-            if structured:
-                evidence_parts.append("=== STRUCTURED FACTS (address each in your reasoning) ===")
-                evidence_parts.extend(structured)
-                evidence_parts.append("")
-
         for sec_name in [
             "TRIAL METADATA", "PUBLISHED RESULTS", "DRUG/PEPTIDE DATA",
             "ANTIMICROBIAL DATA", "STRUCTURAL DATA", "WEB SOURCES",
@@ -396,6 +384,22 @@ class BlindVerifier:
             if sec_name in sections:
                 evidence_parts.append(f"\n=== {sec_name} ===")
                 evidence_parts.extend(sections[sec_name])
+
+        # v27e: Structured facts go AFTER evidence, not before.
+        # Small models are primed by what they see first — putting facts
+        # before evidence caused gemma2:9b and qwen2.5:7b to enter
+        # "summary mode" instead of following the response format.
+        # Placing facts last leverages recency bias: the last thing the
+        # model reads before generating has the most influence.
+        if field_name == "peptide":
+            structured = self._extract_structured_facts(research_results)
+            if structured:
+                evidence_parts.append("\n=== KEY FACTS TO CONSIDER ===")
+                evidence_parts.extend(structured)
+                evidence_parts.append(
+                    "\nRemember: respond EXACTLY as Peptide: True or False"
+                )
+
         evidence_text = "\n".join(evidence_parts)
 
         # --- EDAM anomaly warnings (safe for verifiers — no answer leakage) ---
