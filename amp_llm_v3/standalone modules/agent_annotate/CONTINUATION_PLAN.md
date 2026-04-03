@@ -51,6 +51,10 @@
 - **Reconciler system prompt updated**: Added explicit instruction that mature form length is what matters for peptide classification, not precursor length.
 - **Primary peptide annotator updated**: Same structured facts injected before Pass 1 evidence, so the 14B model can't miss arm group peptide-conjugate descriptions.
 - **No cheat sheets**: Facts are extracted programmatically from authoritative database results — no drug names hardcoded.
+- **Test job c5de1e0049b0 results (v27d)**:
+  - **Insulin (NCT00004984)**: Primary=True ✓, but verifier_1 (gemma2:9b) and verifier_2 (qwen2.5:7b) produced long summaries instead of following the response format — parser returned None (counts as disagreement). Verifier_3 (phi4-mini:3.8b) said False with wrong reasoning ("parenteral insulin is not peptide therapy" — confused delivery route with molecular class). Agreement=0.0 → reconciler → False. **Root cause**: gemma2 and qwen2.5:7b don't follow the structured response format when given long evidence with structured facts prepended. Parser gets None.
+  - **CV-MG01 (NCT03165435)**: Primary=False ✗ (still ignores arm group description). BUT verifier_1=True, verifier_2=True (both cited structured facts!). Verifier_3=False. Agreement=0.333. Reconciler sided with False, reasoning that "conjugated to carrier protein" means not a peptide. **Progress**: Structured facts worked for 2/3 verifiers on CV-MG01. Primary LLM and reconciler remain the blockers.
+  - **Next steps**: (1) Investigate why gemma2:9b and qwen2.5:7b fail to follow verifier response format with structured facts — may need shorter evidence or format enforcement. (2) CV-MG01 needs the primary to get it right OR the verification flow needs to be able to correct a wrong primary when 2/3 verifiers agree.
 
 ### v22-era Job Performance (old code, mapped to v24 categories)
 
