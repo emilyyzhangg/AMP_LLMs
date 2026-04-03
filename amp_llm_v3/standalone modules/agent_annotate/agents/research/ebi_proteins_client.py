@@ -158,12 +158,30 @@ class EBIProteinsClient(BaseResearchAgent):
                                 ],
                             })
 
+                            # v27c: Extract mature chain info from CHAIN/PEPTIDE features
+                            mature_chains = []
+                            if isinstance(features, list):
+                                for feat in features:
+                                    if isinstance(feat, dict) and feat.get("type") in ("CHAIN", "PEPTIDE", "Chain", "Peptide"):
+                                        loc = feat.get("location", {})
+                                        start = loc.get("start", {}).get("value") if isinstance(loc.get("start"), dict) else None
+                                        end = loc.get("end", {}).get("value") if isinstance(loc.get("end"), dict) else None
+                                        desc = feat.get("description", "")
+                                        if start is not None and end is not None:
+                                            chain_len = int(end) - int(start) + 1
+                                            mature_chains.append((desc, chain_len))
+
                             # v14: Snippet no longer contains sequence characters
                             # to prevent Phase 4 re-extraction of precursor proteins.
                             snippet_parts = [f"Protein: {protein_name or accession}"]
                             if organism:
                                 snippet_parts.append(f"Organism: {organism}")
-                            if seq_length:
+                            if mature_chains:
+                                total_mature = sum(cl for _, cl in mature_chains)
+                                chain_desc = ", ".join(f"{d} {cl} aa" for d, cl in mature_chains)
+                                snippet_parts.append(f"Precursor length: {seq_length} aa")
+                                snippet_parts.append(f"Mature form: {chain_desc} ({total_mature} aa total)")
+                            elif seq_length:
                                 snippet_parts.append(f"Length: {seq_length} aa")
                             if seq_mass:
                                 snippet_parts.append(f"Mass: {seq_mass} Da")

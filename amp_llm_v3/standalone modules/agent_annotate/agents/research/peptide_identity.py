@@ -279,11 +279,30 @@ class PeptideIdentityAgent(BaseResearchAgent):
                         organism = entry.get("organism", {}).get("scientificName", "")
                         length = entry.get("sequence", {}).get("length", "")
 
+                        # v27c: Extract mature chain info from features so the
+                        # snippet reports processed form, not just precursor length.
+                        mature_chains = []
+                        features = entry.get("features", [])
+                        if isinstance(features, list):
+                            for feat in features:
+                                if isinstance(feat, dict) and feat.get("type") in ("CHAIN", "PEPTIDE", "Chain", "Peptide"):
+                                    loc = feat.get("location", {})
+                                    start = loc.get("start", {}).get("value") if isinstance(loc.get("start"), dict) else None
+                                    end = loc.get("end", {}).get("value") if isinstance(loc.get("end"), dict) else None
+                                    desc = feat.get("description", "")
+                                    if start is not None and end is not None:
+                                        chain_len = int(end) - int(start) + 1
+                                        mature_chains.append((desc, chain_len))
+
                         # v14: Sequence REMOVED from snippet to prevent Phase 4
                         # re-extraction of precursor proteins. Sequence data lives
                         # in raw_data where the annotation agent accesses it structurally.
                         snippet = f"Organism: {organism}. Protein: {protein_name}. Accession: {accession}"
-                        if length:
+                        if mature_chains:
+                            total_mature = sum(cl for _, cl in mature_chains)
+                            chain_desc = ", ".join(f"{d} {cl} aa" for d, cl in mature_chains)
+                            snippet += f". Precursor length: {length} aa. Mature form: {chain_desc} ({total_mature} aa total)"
+                        elif length:
                             snippet += f". Length: {length} aa"
 
                         citations.append(SourceCitation(

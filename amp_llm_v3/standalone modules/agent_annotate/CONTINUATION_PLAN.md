@@ -40,6 +40,7 @@
 - **Test job ea9bc98d1ae8 results**: LLM correctly classified insulin as True (Peptide / peptide hormone), but verifiers flipped to False (2/3 disagreed at high confidence). Root cause: verifier 2 cited 110 aa (preproinsulin precursor) instead of mature insulin (51 aa). Needs better verifier reasoning, not cheat-sheet examples or threshold lowering.
 - **CV-MG01 evidence investigation**: Arm group description ("two short synthetic peptides conjugated to carrier protein") IS in the citations passed to the LLM. The 14B model simply ignored it — classified as "Unknown" molecular class. This is an LLM reasoning limit, not a data pipeline issue.
 - **Reverted**: Consensus threshold stays at 1.0 (lowering to 0.667 would weaken verification across ALL fields). Verifier examples reverted (no cheat-sheet drug names).
+- **UniProt snippet fix (data pipeline)**: peptide_identity.py and ebi_proteins_client.py now report mature chain lengths from CHAIN/PEPTIDE features instead of just precursor length. For insulin, snippet now says "Precursor length: 110 aa. Mature form: Insulin B chain 30 aa, Insulin A chain 21 aa (51 aa total)" instead of just "Length: 110 aa". This is the actual root cause — verifiers and reconciler were reasoning correctly from wrong data.
 
 ### v22-era Job Performance (old code, mapped to v24 categories)
 
