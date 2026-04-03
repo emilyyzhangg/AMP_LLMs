@@ -14,7 +14,7 @@ class ModelConfig(BaseModel):
 class VerificationConfig(BaseModel):
     num_verifiers: int = 3
     require_consensus: bool = True
-    consensus_threshold: float = 0.667  # 2/3 agreement (v27b: was 1.0 unanimous)
+    consensus_threshold: float = 1.0
     models: Dict[str, ModelConfig] = {}
 
 
