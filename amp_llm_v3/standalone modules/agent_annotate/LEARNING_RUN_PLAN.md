@@ -63,7 +63,7 @@
 | **v27b** | **pending** | **AA boundary 50→100 in all prompts. "Peptide / peptide hormone" molecular class. Peptide-conjugate INCLUDES. Insulin True worked example. Consistency cross-validation 2-50→2-100. CSV migration for concordance scripts. Batch files fixed (non-training NCTs replaced).** |
 | **v27c** | **pending** | **self_audit AA range 2-50→2-100. memory_store learning patterns 2-50→2-100, multi-chain excludes peptide hormones. UniProt snippet fix: report mature chain lengths from CHAIN/PEPTIDE features (insulin 51 aa, not precursor 110 aa). Consensus threshold stays 1.0.** |
 | **v27d** | **tested** | **Structured data injection: STRUCTURED FACTS block for verifier + primary. Test c5de1e0049b0: insulin verifiers 1+2 failed to follow response format (None), CV-MG01 verifiers 1+2 correctly said True citing structured facts but primary+reconciler still False. Partial success — format compliance and reconciler logic need work.** |
-| **v27e** | **pending** | **Fix v27d regression: restore v26 system template (remove STRUCTURED FACTS instruction), move facts to END of evidence with format reminder, reconciler verifier-majority awareness (flags 2/3 agreement, prompt says "give strong weight to verifier majority").** |
+| **v27e** | **tested** | **Fix v27d regression: restore v26 system template, facts at END of evidence with format reminder, reconciler verifier-majority awareness. Test 05f80bba8946: BOTH FIXED — insulin True (primary override), CV-MG01 True (reconciler flipped using verifier majority). qwen2.5:7b still produces summaries, phi4-mini still times out on CV-MG01.** |
 
 ## NCT Coverage
 
