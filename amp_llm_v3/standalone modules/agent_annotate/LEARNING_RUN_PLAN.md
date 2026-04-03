@@ -61,6 +61,7 @@
 | v25 | 904180a | Delivery dedup fix, DRVYIHP word-boundary matching, 15 known peptide drugs, 9 known sequences, outcome publication-priority override, frontend agreement rename |
 | v26 | e04e458 | TERMINATED outcome override fix, RfF empty default fix |
 | **v27b** | **pending** | **AA boundary 50→100 in all prompts. "Peptide / peptide hormone" molecular class. Peptide-conjugate INCLUDES. Insulin True worked example. Consistency cross-validation 2-50→2-100. CSV migration for concordance scripts. Batch files fixed (non-training NCTs replaced).** |
+| **v27c** | **pending** | **Consensus threshold 1.0→0.667 (2/3 agreement). Verifier peptide prompt: insulin + peptide-conjugate as True examples, ≤100 aa language. self_audit AA range 2-50→2-100. memory_store patterns 2-50→2-100, multi-chain excludes peptide hormones.** |
 
 ## NCT Coverage
 

@@ -736,14 +736,14 @@ class MemoryStore:
 
         # Peptide patterns
         if field_name == "peptide":
-            if "2-50" in reflection or "amino acid" in reflection_lower:
-                return f"UniProt entries with 2-50 amino acids indicate peptide={corrected_value}"
+            if "2-50" in reflection or "2-100" in reflection or "amino acid" in reflection_lower:
+                return f"UniProt entries with 2-100 amino acids indicate peptide={corrected_value}"
             if "amp" in reflection_lower and "classification" in reflection_lower:
                 return f"AMP classification implies peptide=True"
-            if ">50" in reflection or "protein" in reflection_lower:
-                return f"Sequences longer than 50 amino acids indicate peptide=False (protein)"
-            if "multi-chain" in reflection_lower:
-                return "Multi-chain complexes indicate peptide=False"
+            if ">100" in reflection or (">50" not in reflection and "protein" in reflection_lower):
+                return f"Sequences longer than 100 amino acids indicate peptide=False (large protein)"
+            if "multi-chain" in reflection_lower and "hormone" not in reflection_lower:
+                return "Multi-chain complex proteins (not peptide hormones) indicate peptide=False"
             if "monoclonal antibody" in reflection_lower:
                 return "Monoclonal antibodies are not peptides (peptide=False)"
             if "database" in reflection_lower and "hit" in reflection_lower:

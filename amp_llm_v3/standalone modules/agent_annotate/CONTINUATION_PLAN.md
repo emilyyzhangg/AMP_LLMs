@@ -33,7 +33,14 @@
 - **Added insulin as True worked example**: Replaced deleted False example with True example (51 aa, multi-chain, UniProt P01308).
 - **Consistency engine threshold raised**: Rule 3 cross-validation now 2-100 AA → force peptide=True (was 2-50).
 - **Test job 3e35811b7698 results**: Albiglutide fixed (TRUE). Insulin and CV-MG01 still FALSE with v27 prompts — root cause was the "2-50 aa" hard boundary in molecular class options causing LLM to pick "Protein" for 51 aa insulin. v27b fixes this.
-- **Albiglutide root cause**: Not in `_KNOWN_PEPTIDE_DRUGS` (correct, lists frozen), but LLM now correctly classifies via reasoning. Verifiers no longer flip because prompt uses clearer category.
+
+### v27c Changes (2026-04-02) — Verification + definition consistency
+- **Consensus threshold 1.0→0.667**: 2/3 verifier agreement now sufficient (was unanimous). Insulin's LLM annotation (True) was being flipped by verifiers (2/3 said False). With 0.667 threshold, 1/3 agreement + high-confidence primary protection should hold.
+- **Verifier peptide prompt updated**: Added insulin (51 aa, multi-chain) and peptide-conjugate immunotherapy as explicit True examples. Added "peptide hormones" and ≤100 aa language. Verifier 2 was citing 110 aa (preproinsulin precursor) to reject insulin — clearer examples should prevent this.
+- **self_audit.py AA range fixed**: 2-50→2-100 (was contradicting orchestrator and verifier definitions).
+- **memory_store.py learning patterns fixed**: 2-50→2-100, >50→>100, multi-chain rule now excludes peptide hormones.
+- **Test job ea9bc98d1ae8 results**: LLM correctly classified insulin as True (Peptide / peptide hormone), but verifiers flipped to False (2/3 disagreed at high confidence). v27c consensus threshold fix addresses this.
+- **CV-MG01 evidence investigation**: Arm group description ("two short synthetic peptides conjugated to carrier protein") IS in the citations passed to the LLM. The 14B model simply ignored it — classified as "Unknown" molecular class. This is an LLM reasoning limit, not a data pipeline issue.
 
 ### v22-era Job Performance (old code, mapped to v24 categories)
 

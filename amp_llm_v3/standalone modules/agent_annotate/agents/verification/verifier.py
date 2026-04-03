@@ -224,9 +224,10 @@ FIELD_PROMPTS = {
     "peptide": {
         "instruction": (
             "Determine if the primary intervention is a peptide therapeutic: True or False.\n\n"
-            "DEFINITION: A peptide therapeutic is 2-100 amino acid residues serving as the ACTIVE drug. "
-            "Includes: AMPs, hormone analogues, cyclic peptides, peptide vaccines, insulin. "
-            "Excludes: monoclonal antibodies (>100 AA), small molecules, nutritional formulas "
+            "DEFINITION: A peptide therapeutic is typically ≤100 amino acid residues serving as the ACTIVE drug. "
+            "Includes: AMPs, hormone analogues, peptide hormones (insulin 51 aa, glucagon 29 aa), "
+            "cyclic peptides, peptide vaccines, peptide-conjugate immunotherapies. "
+            "Excludes: large proteins >100 AA (interferons, EPO), monoclonal antibodies, small molecules, nutritional formulas "
             "(\"Peptide 1.5\", Peptamen), HSP-peptide complexes (peptide is cargo), exosome vehicles, "
             "whole proteins >100 AA.\n\n"
             "EXAMPLES:\n"
@@ -235,6 +236,8 @@ FIELD_PROMPTS = {
             "- Colistin (lipopeptide antibiotic) → True\n"
             "- StreptInCor (synthetic peptide vaccine) → True\n"
             "- Apraglutide (GLP-2 analogue) → True\n"
+            "- Insulin (peptide hormone, 51 aa, multi-chain) → True\n"
+            "- Peptide-conjugate immunotherapy (synthetic peptides conjugated to carrier protein) → True\n"
             "- Pembrolizumab (monoclonal antibody) → False\n"
             "- Amoxicillin (small molecule) → False\n"
             "- Kate Farm Peptide 1.5 (nutritional formula) → False\n"
