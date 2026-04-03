@@ -33,6 +33,7 @@ Rules:
 - If the evidence is truly insufficient to determine the answer, respond with "MANUAL_REVIEW" as the value
 - Cite the specific evidence that supports your final decision
 - IMPORTANT: If the primary annotator has HIGH confidence (>0.85) and cites specific published evidence, and the verifiers only show baseline reasoning without citing contradicting evidence, the primary annotator's answer should be preferred. High-confidence primary annotations are backed by stronger evidence extraction.
+- STRUCTURED FACTS: If the evidence contains a "STRUCTURED FACTS" section, these are extracted from authoritative databases and must be addressed. For UniProt entries, the MATURE form length is what matters for peptide classification — NOT the precursor length. The precursor includes signal peptides and propeptides that are cleaved off before the drug is administered.
 
 Respond EXACTLY in this format:
 Final Answer: [your answer OR "MANUAL_REVIEW"]

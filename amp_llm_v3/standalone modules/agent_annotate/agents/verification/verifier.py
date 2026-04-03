@@ -282,6 +282,8 @@ SYSTEM_TEMPLATE = """You are an independent clinical trial data reviewer. You mu
 
 {persona_prefix}{instruction}
 
+IMPORTANT: If the evidence contains a "STRUCTURED FACTS" section, you MUST explicitly address each fact in your reasoning. Do not ignore structured facts — they are extracted from authoritative databases and take precedence over ambiguous free-text snippets. If a structured fact contradicts your initial interpretation, explain why you accept or reject it.
+
 Respond EXACTLY in this format:
 {field_label}: [your answer]
 Confidence: [High, Medium, or Low]
@@ -376,6 +378,17 @@ class BlindVerifier:
                 total += 1
 
         evidence_parts = [f"Trial: {nct_id}\n"]
+
+        # v27c: Extract structured facts from citations for the peptide field.
+        # These are authoritative database facts that small models tend to
+        # miss or misinterpret when buried in free-text citation snippets.
+        if field_name == "peptide":
+            structured = self._extract_structured_facts(research_results)
+            if structured:
+                evidence_parts.append("=== STRUCTURED FACTS (address each in your reasoning) ===")
+                evidence_parts.extend(structured)
+                evidence_parts.append("")
+
         for sec_name in [
             "TRIAL METADATA", "PUBLISHED RESULTS", "DRUG/PEPTIDE DATA",
             "ANTIMICROBIAL DATA", "STRUCTURAL DATA", "WEB SOURCES",
@@ -551,3 +564,64 @@ class BlindVerifier:
         if match:
             return match.group(1).strip()[:500]
         return text[:500]
+
+    @staticmethod
+    def _extract_structured_facts(
+        research_results: list[ResearchResult],
+    ) -> list[str]:
+        """v27c: Extract key structured facts from research data for the peptide field.
+
+        Pulls mature chain lengths from UniProt citations and peptide signals
+        from arm group descriptions. These facts are prepended to the evidence
+        so small models can't bury them in free-text noise.
+        """
+        facts: list[str] = []
+
+        for result in research_results:
+            if result.error:
+                continue
+
+            # 1. UniProt mature chain lengths from citations
+            for citation in result.citations:
+                if citation.source_name not in ("uniprot", "ebi_proteins"):
+                    continue
+                snippet = citation.snippet or ""
+                if "Mature form:" in snippet:
+                    # Extract the mature form line
+                    for part in snippet.split(". "):
+                        if "Mature form:" in part:
+                            facts.append(f"- {citation.identifier or 'UniProt'}: {part.strip()}")
+                        elif "Precursor length:" in part:
+                            facts.append(
+                                f"- {citation.identifier or 'UniProt'}: {part.strip()} "
+                                f"(this is the PRECURSOR, not the administered drug)"
+                            )
+
+            # 2. Arm group descriptions mentioning peptides
+            if result.agent_name != "clinical_protocol" or not result.raw_data:
+                continue
+            proto = result.raw_data.get(
+                "protocol_section", result.raw_data.get("protocolSection", {})
+            )
+            arms_mod = proto.get("armsInterventionsModule", {})
+            for arm in arms_mod.get("armGroups", []):
+                desc = arm.get("description", "")
+                label = arm.get("label", "")
+                desc_lower = desc.lower()
+                # Detect peptide-conjugate / synthetic peptide signals
+                if any(
+                    sig in desc_lower
+                    for sig in [
+                        "synthetic peptide",
+                        "peptide conjugat",
+                        "peptide-conjugat",
+                        "short peptide",
+                        "peptide vaccine",
+                        "peptide immunother",
+                    ]
+                ):
+                    facts.append(
+                        f"- Arm '{label}': \"{desc[:200]}\""
+                    )
+
+        return facts

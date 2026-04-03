@@ -40,7 +40,17 @@
 - **Test job ea9bc98d1ae8 results**: LLM correctly classified insulin as True (Peptide / peptide hormone), but verifiers flipped to False (2/3 disagreed at high confidence). Root cause: verifier 2 cited 110 aa (preproinsulin precursor) instead of mature insulin (51 aa). Needs better verifier reasoning, not cheat-sheet examples or threshold lowering.
 - **CV-MG01 evidence investigation**: Arm group description ("two short synthetic peptides conjugated to carrier protein") IS in the citations passed to the LLM. The 14B model simply ignored it — classified as "Unknown" molecular class. This is an LLM reasoning limit, not a data pipeline issue.
 - **Reverted**: Consensus threshold stays at 1.0 (lowering to 0.667 would weaken verification across ALL fields). Verifier examples reverted (no cheat-sheet drug names).
-- **UniProt snippet fix (data pipeline)**: peptide_identity.py and ebi_proteins_client.py now report mature chain lengths from CHAIN/PEPTIDE features instead of just precursor length. For insulin, snippet now says "Precursor length: 110 aa. Mature form: Insulin B chain 30 aa, Insulin A chain 21 aa (51 aa total)" instead of just "Length: 110 aa". This is the actual root cause — verifiers and reconciler were reasoning correctly from wrong data.
+- **UniProt snippet fix (data pipeline)**: peptide_identity.py and ebi_proteins_client.py now report mature chain lengths from CHAIN/PEPTIDE features instead of just precursor length. For insulin, snippet now says "Precursor length: 110 aa. Mature form: Insulin B chain 30 aa, Insulin A chain 21 aa (51 aa total)" instead of just "Length: 110 aa".
+- **Test job 02c65e21dfc7 results**: UniProt snippet fix deployed but verifiers STILL cited precursor 110 aa and ignored "Mature form: 51 aa total" in the same snippet. The data is correct — the small models (qwen2.5:7b, phi4-mini:3.8b) cherry-pick the larger number. CV-MG01 also still False — primary LLM ignores arm group description evidence.
+
+### v27d Changes (2026-04-03) — Structured data injection
+- **Structured facts extraction**: New `_extract_structured_facts()` in verifier.py and `_extract_peptide_signals()` in peptide.py. Pulls two types of signal:
+  1. UniProt mature chain lengths (vs precursor) — clearly labeled as "ADMINISTERED therapeutic form" vs "precursor only — NOT the administered drug"
+  2. Arm group descriptions mentioning synthetic peptides / peptide conjugates
+- **Verifier system prompt updated**: Now requires models to explicitly address each structured fact in their reasoning. Facts are prepended to evidence in a `STRUCTURED FACTS` section that precedes all other evidence.
+- **Reconciler system prompt updated**: Added explicit instruction that mature form length is what matters for peptide classification, not precursor length.
+- **Primary peptide annotator updated**: Same structured facts injected before Pass 1 evidence, so the 14B model can't miss arm group peptide-conjugate descriptions.
+- **No cheat sheets**: Facts are extracted programmatically from authoritative database results — no drug names hardcoded.
 
 ### v22-era Job Performance (old code, mapped to v24 categories)
 

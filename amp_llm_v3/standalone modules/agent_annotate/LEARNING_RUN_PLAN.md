@@ -62,6 +62,7 @@
 | v26 | e04e458 | TERMINATED outcome override fix, RfF empty default fix |
 | **v27b** | **pending** | **AA boundary 50→100 in all prompts. "Peptide / peptide hormone" molecular class. Peptide-conjugate INCLUDES. Insulin True worked example. Consistency cross-validation 2-50→2-100. CSV migration for concordance scripts. Batch files fixed (non-training NCTs replaced).** |
 | **v27c** | **pending** | **self_audit AA range 2-50→2-100. memory_store learning patterns 2-50→2-100, multi-chain excludes peptide hormones. UniProt snippet fix: report mature chain lengths from CHAIN/PEPTIDE features (insulin 51 aa, not precursor 110 aa). Consensus threshold stays 1.0.** |
+| **v27d** | **pending** | **Structured data injection: verifier + primary annotator extract UniProt mature lengths and arm group peptide signals into mandatory STRUCTURED FACTS block. Verifier/reconciler system prompts require explicit engagement with facts. Fixes insulin (verifiers ignoring mature 51 aa) and CV-MG01 (primary ignoring arm group description).** |
 
 ## NCT Coverage
 

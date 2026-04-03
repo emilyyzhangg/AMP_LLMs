@@ -339,6 +339,72 @@ def _check_known_non_peptide(research_results: list) -> FieldAnnotation | None:
     return None
 
 
+def _extract_peptide_signals(research_results: list) -> list[str]:
+    """v27c: Extract structured facts that small models tend to miss.
+
+    Pulls two types of signal:
+    1. UniProt mature chain lengths (vs precursor) — prevents the model from
+       using precursor length (e.g., 110 aa preproinsulin) to reject a peptide
+       whose mature therapeutic form is ≤100 aa (e.g., insulin 51 aa).
+    2. Arm group descriptions mentioning synthetic peptides / peptide conjugates —
+       these are buried in metadata that the model often ignores.
+    """
+    facts: list[str] = []
+
+    for result in research_results:
+        if result.error:
+            continue
+
+        # 1. UniProt mature chain data from citations
+        for citation in getattr(result, "citations", []):
+            source = getattr(citation, "source_name", "")
+            if source not in ("uniprot", "ebi_proteins"):
+                continue
+            snippet = getattr(citation, "snippet", "") or ""
+            if "Mature form:" in snippet:
+                identifier = getattr(citation, "identifier", "") or "UniProt"
+                for part in snippet.split(". "):
+                    if "Mature form:" in part:
+                        facts.append(
+                            f"- {identifier}: {part.strip()} — "
+                            f"this is the ADMINISTERED therapeutic form"
+                        )
+                    elif "Precursor length:" in part:
+                        facts.append(
+                            f"- {identifier}: {part.strip()} "
+                            f"(precursor only — NOT the administered drug)"
+                        )
+
+        # 2. Arm group descriptions with peptide signals
+        if getattr(result, "agent_name", "") != "clinical_protocol":
+            continue
+        raw_data = getattr(result, "raw_data", None) or {}
+        proto = raw_data.get(
+            "protocol_section", raw_data.get("protocolSection", {})
+        )
+        arms_mod = proto.get("armsInterventionsModule", {})
+        for arm in arms_mod.get("armGroups", []):
+            desc = arm.get("description", "")
+            label = arm.get("label", "")
+            desc_lower = desc.lower()
+            if any(
+                sig in desc_lower
+                for sig in [
+                    "synthetic peptide",
+                    "peptide conjugat",
+                    "peptide-conjugat",
+                    "short peptide",
+                    "peptide vaccine",
+                    "peptide immunother",
+                ]
+            ):
+                facts.append(
+                    f"- Arm group '{label}' description states: \"{desc[:250]}\""
+                )
+
+    return facts
+
+
 class PeptideAgent(BaseAnnotationAgent):
     """Determines if the intervention is a peptide using two-pass investigation."""
 
@@ -378,6 +444,18 @@ class PeptideAgent(BaseAnnotationAgent):
             max_citations=max_cites,
             max_snippet_chars=max_snippet,
         )
+
+        # v27c: Extract peptide signals from arm group descriptions and
+        # UniProt mature chain data. These are authoritative structured facts
+        # that the 14B model tends to miss when buried in free-text citations.
+        structured_facts = _extract_peptide_signals(research_results)
+        if structured_facts:
+            facts_block = (
+                "=== STRUCTURED FACTS (you MUST address each in your analysis) ===\n"
+                + "\n".join(structured_facts)
+                + "\n"
+            )
+            evidence_text = facts_block + "\n" + evidence_text
 
         # --- EDAM guidance injection ---
         edam_guidance = await self.get_edam_guidance(nct_id, evidence_text)
