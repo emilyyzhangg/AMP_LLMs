@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-02
-**Current state:** v27 on dev (pending push). v26 on prod (e04e458). Job 86fdce46b3c5 completed (50 NCTs). v26 concordance via API: classification 94.3%, delivery 97.1%, outcome 80.0%, peptide 92.3% (n=39, grouped categories).
+**Last updated:** 2026-04-03
+**Current state:** v27e on prod (8456a66). Job c00a1eef08f4 completed (50 NCTs). v28 plan in progress on dev. v27e agreement (grouped, via API): classification 82.8% (24/29), delivery 93.1% (27/29), outcome 75.9% (22/29), peptide 80.0% (40/50), RfF 74.4% (29/39), sequence 62.5% (10/16).
 
 ## v24 Changes
 
@@ -66,6 +66,59 @@
   - **Insulin (NCT00004984)**: Primary=True ✓. Verifier_1=True (cited "mature form 51 aa"). Verifier_2=None (qwen2.5:7b still produces summaries). Verifier_3=False (but reasoning actually supports True). Agreement=0.333 → **high-confidence primary override** (0.93 > 0.85, dissenters at 0.70). **Final=True ✓**
   - **CV-MG01 (NCT03165435)**: Primary=False ✗ (14B model still wrong). Verifier_1=True, Verifier_2=True (both cited structured facts). Verifier_3=None (phi4-mini timeout). Agreement=0.0 → **reconciler flipped to True** citing "structured facts explicitly state CV-MG01 consists of two short synthetic peptides." **Final=True ✓** — Fix #3 (verifier-majority awareness) worked.
   - **Remaining issues**: (1) qwen2.5:7b (verifier_2) still produces summaries instead of following format on insulin — None parse. (2) phi4-mini:3.8b consistently times out on CV-MG01/peptide. (3) Primary LLM (qwen2.5:14b) still says False for CV-MG01 — reconciler corrects it.
+
+### v27e Full Concordance (50 NCTs, job c00a1eef08f4, prod) — 2026-04-03
+
+| Field | vs R1 (n) | AC₁ | vs R2 (n) | AC₁ | R1↔R2 | Status |
+|---|---|---|---|---|---|---|
+| Delivery | 93.1% (27/29) | 0.926 | 92.6% (25/27) | 0.920 | 88.3% | **Exceeds human** |
+| Classification | 82.8% (24/29) | 0.795 | 74.1% (20/27) | 0.665 | 93.2% | Below (-10pp) |
+| Peptide | 80.0% (40/50) | 0.747 | 76.0% (38/50) | 0.684 | 86.0% | Below (-6pp) |
+| Outcome | 75.9% (22/29) | 0.724 | 70.4% (19/27) | 0.662 | 64.3% | **Exceeds human** |
+| RfF | 74.4% (29/39) | 0.711 | 63.9% (23/36) | 0.592 | 88.6% | Below (-14pp) |
+| Sequence | 62.5% (10/16) | 0.604 | 37.5% (6/16) | 0.343 | 52.0% | Above vs R1 |
+
+**Peptide: 10 false negatives (agent=FALSE, human=TRUE), zero false positives.**
+Root causes:
+- 4 have known sequences in _KNOWN_SEQUENCES but cascade blocks lookup (BMN 111, dnaJP1, BNZ-1, sPIF)
+- 2 are peptide vaccines/imaging (NEO-PV-01, 68Ga-RM2) — "peptide therapeutic" definition too narrow
+- 2 are peptide conjugates (MB1707, PGN-EDO51) — agent prioritizes non-peptide component
+- 2 are boundary/synthesis cases (CPT31 D-peptide, thymic peptides)
+
+**Classification: 5 false negatives, all agent=Other/human=AMP on new old-trial NCTs.**
+All from _KNOWN_NON_AMP_DRUGS blocklist (Peptide T, Enfuvirtide, PCLUS vaccine). Definitional gap, not a bug.
+
+**RfF: 6 of 10 disagreements cascade from peptide=False (trials never evaluated).**
+
+### v28 Plan (2026-04-03) — Peptide pre-cascade + verifier reliability
+
+**Wave 1: Structural (low risk, highest ROI)**
+1. **Pre-cascade _KNOWN_SEQUENCES check** in orchestrator.py: Before peptide=False cascade, look up intervention names against _KNOWN_SEQUENCES. If match with 2-100 AA → force peptide=True (same logic as consistency Rule 3, but pre-cascade). Fixes 4 of 10 false negatives (BMN 111, dnaJP1, BNZ-1, sPIF).
+2. **Expand _KNOWN_SEQUENCES** with CPT31, 68Ga-RM2/RM2, thymic peptide, MB1707. Fixes 2-4 more false negatives.
+3. **Replace phi4-mini:3.8b → llama3.1:8b** as verifier_3. Preserves 3-family diversity (Google/Alibaba/Meta). Eliminates timeouts.
+4. **Reduce verifier evidence budget** 30→15 citations (mac_mini). Verifiers get less than primary annotator (20), improving format compliance.
+
+**Wave 2: Verifier intelligence**
+5. **Fallback parser** in verifier.py: When _parse_value returns None, scan for sentiment signals ("is a peptide" → True). Cap confidence at 0.5. Rescues qwen2.5:7b summaries.
+6. **Smart retry** with 8 citations instead of same 30 on failure.
+7. **Exclude parse-failed verifiers** from consensus denominator. None ≠ disagree. Add `parse_failed` field to ModelOpinion.
+
+**Wave 3: Prompt definition**
+8. **Broaden peptide definition**: "peptide therapeutic" → "peptide molecule." Add INCLUDES for vaccines, imaging agents, conjugates. Keep EXCLUDES for nutritional formulas.
+9. **"Trial says peptide" structured fact**: Extract "peptide" keyword from intervention name/description as a signal for verifiers.
+
+**Wave 4: Quality-of-life**
+10. Fix "empt" truncation in RfF, sequence normalization for concordance, COVID keywords in RfF.
+
+**Targets after v28:**
+| Field | v27e | Target | Mechanism |
+|---|---|---|---|
+| Peptide | 80.0% | 90%+ | Sequence pre-cascade + definition + verifiers |
+| RfF | 74.4% | 82%+ | Cascade fix (6/10) + truncation fix |
+| Sequence | 62.5% | 66%+ | Normalization + pre-cascade enables sequence |
+| Delivery | 93.1% | 93%+ | No change needed |
+| Outcome | 75.9% | 76%+ | No change needed |
+| Classification | 82.8% | 82-85% | Definitional gap, not a bug |
 
 ### v22-era Job Performance (old code, mapped to v24 categories)
 
@@ -191,22 +244,17 @@ The FALSE→TRUE pattern (74% of errors) means the agent is too conservative —
 
 **Phase 2: DONE** — v25 baseline concordance (c2c43af95162, 50 NCTs). Results above.
 
-**Phase 2b: Run concordance on v26 job 86fdce46b3c5 (NEXT)**
-- v26 has TERMINATED outcome override + RfF empty default fixes
-- Same 50 NCTs — direct comparison to v25 concordance
-- Expected: outcome improvement (TERMINATED trials no longer stuck on Unknown), RfF cascade improvement
+**Phase 2b: DONE** — v27e concordance (c00a1eef08f4, 50 NCTs). Results in v27e concordance table above.
 
-**Phase 3: Address peptide under-calling (v27 prompt fix applied)**
-- 3 FALSE→TRUE disagreements in v26: NCT00004984 (insulin), NCT02660736 (albiglutide), NCT03165435 (CV-MG01)
-- v27: Updated LLM prompts to accept multi-chain peptide hormones (insulin). No drug list additions.
-- Albiglutide: LLM says TRUE but verifiers flip — monitor after v27 prompt changes
-- CV-MG01: peptide-conjugate, may still be FALSE via LLM — monitor
+**Phase 3: DONE (partial)** — v27b-v27e fixed insulin (True) and CV-MG01 (True). 10 other peptide false negatives remain. v28 plan addresses these.
 
-**Phase 4: Sequence coverage expansion (highest impact)**
-- Review the 12-16 agent-empty sequence cases — which drugs are they?
-- Add verified sequences to `_KNOWN_SEQUENCES` for high-frequency misses
-- Improve LLM fallback prompts for literature-based sequence extraction
-- Insulin decision: multi-chain proteins keep their sequence
+**Phase 4: v28 implementation (NEXT)**
+- Wave 1: Pre-cascade _KNOWN_SEQUENCES check, expand sequences, replace phi4-mini→llama3.1:8b, reduce verifier evidence
+- Wave 2: Fallback parser, smart retry, parse-failed consensus exclusion
+- Wave 3: Peptide definition alignment (therapeutic → molecule), "trial says peptide" signal
+- Wave 4: RfF truncation fix, sequence normalization, COVID keywords
+- Smoke test: 10 peptide false-negative NCTs
+- Full concordance: 50 NCTs, compare to v27e baseline
 
 **Phase 5: Absorb + expand**
 - Absorb Batches G+H into EDAM (edam_learning_cycle)
@@ -216,8 +264,8 @@ The FALSE→TRUE pattern (74% of errors) means the agent is too conservative —
 
 | Environment | Branch | Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v26 (e04e458) | None (86fdce46b3c5 complete) |
-| Dev (port 9005) | dev | — | None |
+| Prod (port 8005) | main | v27e (8456a66) | None (c00a1eef08f4 complete) |
+| Dev (port 9005) | dev | v28 (in progress) | None |
 
 ## Important Notes
 
