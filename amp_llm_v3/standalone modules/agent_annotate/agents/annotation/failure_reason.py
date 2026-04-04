@@ -332,28 +332,57 @@ class FailureReasonAgent(BaseAnnotationAgent):
 
         return False
 
+    # v29: Section headers produced by PASS1_PROMPT (lowercased).
+    _SECTION_BOUNDARY = (
+        r"\n(?:trial status|why stopped|published findings?"
+        r"|outcome signals?|is this a failure)"
+    )
+
+    @staticmethod
+    def _strip_negated_sentences(text: str) -> str:
+        """Remove sentences containing negation markers.
+
+        Prevents "no safety concerns" from matching the "safety" keyword
+        and returning Toxic/Unsafe.  Simple sentence-level filter — no NLP.
+        """
+        _NEG = [
+            "no evidence of", "not due to", "not related to",
+            "not caused by", "absence of", "ruled out",
+            "no ", "not ", "without ", "nor ", "neither ",
+        ]
+        parts = re.split(r'[.\n;]+', text)
+        kept = [s for s in (p.strip() for p in parts) if s and not any(n in s for n in _NEG)]
+        return " ".join(kept)
+
     def _infer_from_pass1(self, pass1_text: str) -> str:
         """Fallback: infer reason from Pass 1 if Pass 2 fails."""
         lower = pass1_text.lower()
 
-        # Check published findings for signals
-        findings_match = re.search(r"published findings?:\s*(.+?)(?:\n[A-Z]|\Z)", lower, re.DOTALL)
+        # v29: fixed section boundary — was [A-Z] on lowercased text (never matched)
+        _sb = self._SECTION_BOUNDARY
+        findings_match = re.search(
+            r"published findings?:\s*(.+?)(?:" + _sb + r"|\Z)", lower, re.DOTALL
+        )
         findings = findings_match.group(1) if findings_match else ""
 
-        signals_match = re.search(r"outcome signals?:\s*(.+?)(?:\n[A-Z]|\Z)", lower, re.DOTALL)
+        signals_match = re.search(
+            r"outcome signals?:\s*(.+?)(?:" + _sb + r"|\Z)", lower, re.DOTALL
+        )
         signals = signals_match.group(1) if signals_match else ""
 
         combined = findings + " " + signals
+        # v29: strip negated sentences before keyword matching
+        filtered = self._strip_negated_sentences(combined)
 
-        if any(kw in combined for kw in ["toxicity", "adverse", "safety", "unsafe", "dsmb"]):
+        if any(kw in filtered for kw in ["toxicity", "adverse", "safety", "unsafe", "dsmb"]):
             return "Toxic/Unsafe"
-        if any(kw in combined for kw in ["did not meet", "no significant", "failed to", "ineffective", "futility"]):
+        if any(kw in filtered for kw in ["did not meet", "no significant", "failed to", "ineffective", "futility"]):
             return "Ineffective for purpose"
-        if any(kw in combined for kw in ["covid", "pandemic"]):
+        if any(kw in filtered for kw in ["covid", "pandemic"]):
             return "Due to covid"
-        if any(kw in combined for kw in ["recruit", "enrollment", "accrual"]):
+        if any(kw in filtered for kw in ["recruit", "enrollment", "accrual"]):
             return "Recruitment issues"
-        if any(kw in combined for kw in ["sponsor", "funding", "business", "strategic"]):
+        if any(kw in filtered for kw in ["sponsor", "funding", "business", "strategic"]):
             return "Business Reason"
 
         # Check whyStopped field

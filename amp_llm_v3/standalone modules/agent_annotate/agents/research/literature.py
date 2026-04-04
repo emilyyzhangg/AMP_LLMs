@@ -104,6 +104,15 @@ class LiteratureAgent(BaseResearchAgent):
 
         all_citations = self._deduplicate_citations(all_citations)
 
+        # v29: Flag when all literature sources returned empty/failed.
+        # Downstream agents can use this to lower confidence.
+        if not all_citations:
+            raw_data["literature_unavailable"] = True
+            logger.warning(
+                f"Zero literature results for {nct_id} after all sources "
+                f"(pubmed, pmc, europe_pmc) — annotation quality may be degraded"
+            )
+
         return ResearchResult(
             agent_name=self.agent_name,
             nct_id=nct_id,
