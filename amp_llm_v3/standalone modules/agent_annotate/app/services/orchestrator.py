@@ -1398,7 +1398,7 @@ class PipelineOrchestrator:
             from agents.annotation.sequence import _KNOWN_SEQUENCES
             intervention_names = shared_metadata.get("interventions", [])
             for name in intervention_names:
-                name_lower = name.lower().strip()
+                name_lower = (name["name"] if isinstance(name, dict) else name).lower().strip()
                 for drug, seq in _KNOWN_SEQUENCES.items():
                     if drug in name_lower or name_lower in drug:
                         if 2 <= len(seq) <= 100:

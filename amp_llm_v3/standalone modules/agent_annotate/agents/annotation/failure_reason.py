@@ -270,6 +270,19 @@ class FailureReasonAgent(BaseAnnotationAgent):
         """
         lower = pass1_text.lower()
 
+        # Extract trial status FIRST — terminated/withdrawn overrides everything.
+        status_match = re.search(r"trial status:?\s*(.+?)(?:\n|$)", lower)
+        status = status_match.group(1).strip() if status_match else ""
+
+        # v18: TERMINATED/WITHDRAWN trials are ALWAYS failures — don't bail out.
+        # These trials explicitly stopped for a reason. The question is WHY,
+        # not WHETHER they failed. Must check BEFORE the LLM's "Is This A
+        # Failure" answer, because the LLM often says "No" for terminated/
+        # withdrawn trials lacking published evidence — but humans always
+        # assign a reason (usually Business Reason).
+        if any(s in status for s in ["terminated", "withdrawn"]):
+            return False
+
         # Check the explicit "Is This A Failure" field
         match = re.search(r"is this a failure:?\s*(.+?)(?:\n|$)", lower)
         if match:
@@ -295,17 +308,6 @@ class FailureReasonAgent(BaseAnnotationAgent):
             "safety concerns", "stopped early", "discontinued",
             "negative results", "did not demonstrate", "failed to demonstrate",
         ])
-
-        # Extract trial status
-        status_match = re.search(r"trial status:?\s*(.+?)(?:\n|$)", lower)
-        status = status_match.group(1).strip() if status_match else ""
-
-        # v18: TERMINATED/WITHDRAWN trials are ALWAYS failures — don't bail out.
-        # These trials explicitly stopped for a reason. The question is WHY,
-        # not WHETHER they failed. Previously the agent returned empty for these,
-        # causing 9/11 RfF disagreements with human annotations.
-        if any(s in status for s in ["terminated", "withdrawn"]):
-            return False
 
         # If clearly active/recruiting and no failure evidence → not a failure
         if any(s in status for s in ["recruiting", "active", "enrolling"]):
