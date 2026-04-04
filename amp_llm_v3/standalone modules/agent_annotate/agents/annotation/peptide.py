@@ -28,15 +28,18 @@ logger = logging.getLogger("agent_annotate.annotation.peptide")
 VALID_VALUES = ["True", "False"]
 
 # Pass 1: Extract molecular facts about the intervention
-PASS1_SYSTEM = """DEFINITION: A peptide therapeutic is a molecule typically consisting of up to ~100 amino acid residues (single-chain or multi-chain) that serves as the ACTIVE therapeutic drug in the clinical trial. This includes peptide hormones such as insulin (51 aa, multi-chain). The peptide must be the primary pharmacological agent — not a carrier, adjuvant, nutritional component, or targeting vector.
+PASS1_SYSTEM = """DEFINITION: A peptide is a molecule consisting of up to ~100 amino acid residues (single or multi-chain). The question is: does this trial administer a peptide molecule to patients? Answer True if ANY intervention contains a peptide component — regardless of whether it serves as the active drug, a diagnostic agent, a vaccine immunogen, a targeting vector, or a conjugate component.
 
 INCLUDES as peptide (True):
 - Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37 (37 aa), defensins
 - Hormone analogues: semaglutide (31 aa, GLP-1), octreotide (8 aa, somatostatin), leuprolide (10 aa, GnRH)
 - Peptide hormones: insulin (51 aa, multi-chain A+B), glucagon (29 aa), calcitonin (32 aa)
 - Cyclic peptides: vancomycin (glycopeptide), gramicidin, bacitracin
-- Peptide vaccines where the peptide IS the active immunogen (e.g., StreptInCor)
-- Peptide-conjugate therapeutics where the peptide IS the active component (e.g., synthetic peptides conjugated to a carrier protein for immunotherapy)
+- Peptide vaccines: neoantigen vaccines, HIV peptide vaccines, cancer peptide vaccines — True if peptides are administered
+- Peptide-conjugate therapeutics: synthetic peptides conjugated to a carrier protein, peptide-drug conjugates (PDCs)
+- Peptide-conjugated delivery vehicles: peptide-PMO conjugates, cell-penetrating peptide conjugates
+- Radiolabeled peptide imaging agents: 68Ga-DOTATATE, 68Ga-RM2, Lu-177 DOTATATE
+- D-peptide therapeutics: synthetic D-amino acid peptides (e.g., D-peptide HIV entry inhibitors)
 - Neuropeptides used as drugs: aviptadil (VIP, 28 aa), substance P antagonists
 
 EXCLUDES as peptide (False):
@@ -93,17 +96,19 @@ Product Description: [how described]
 Investigational Drug Role: [investigational drug / food ingredient / targeting vector / brand name only]"""
 
 # Pass 2: Apply decision tree to extracted facts
-PASS2_SYSTEM = """You are a peptide identification specialist. You have been given EXTRACTED FACTS about a clinical trial intervention. Use ONLY these facts to determine if the intervention is a peptide therapeutic.
+PASS2_SYSTEM = """You are a peptide identification specialist. You have been given EXTRACTED FACTS about a clinical trial intervention. Use ONLY these facts to determine if a peptide molecule is administered in this trial.
 
-DEFINITION: A peptide therapeutic is a molecule typically consisting of up to ~100 amino acid residues (single-chain or multi-chain) that serves as the ACTIVE therapeutic drug in the clinical trial. This includes peptide hormones such as insulin (51 aa, multi-chain).
+DEFINITION: A peptide is a molecule consisting of up to ~100 amino acid residues (single or multi-chain). The question is: does this trial administer a peptide molecule to patients? Answer True if ANY intervention contains a peptide component — regardless of its role (active drug, diagnostic agent, vaccine immunogen, targeting vector, or conjugate component).
 
 INCLUDES as peptide (True):
 - Antimicrobial peptides: colistin, daptomycin, nisin, polymyxin B, LL-37 (37 aa), defensins
 - Hormone analogues: semaglutide (31 aa, GLP-1), octreotide (8 aa), leuprolide (10 aa)
 - Peptide hormones: insulin (51 aa, multi-chain A+B), glucagon (29 aa), calcitonin (32 aa)
 - Cyclic peptides: vancomycin (glycopeptide), gramicidin, bacitracin
-- Peptide vaccines where the peptide IS the active immunogen (e.g., StreptInCor)
-- Peptide-conjugate therapeutics where the peptide IS the active component (e.g., synthetic peptides conjugated to a carrier protein for immunotherapy)
+- Peptide vaccines: neoantigen vaccines, HIV peptide vaccines, cancer peptide vaccines
+- Peptide-drug conjugates: paclitaxel-peptide conjugates, peptide-PMO conjugates
+- Radiolabeled peptide imaging agents: 68Ga-DOTATATE, 68Ga-RM2, Lu-177 DOTATATE
+- D-peptide therapeutics: synthetic D-amino acid peptides
 - Neuropeptides used as drugs: aviptadil (VIP, 28 aa), substance P antagonists
 - Vasopeptides: nesiritide (BNP, 32 aa), terlipressin, desmopressin
 - Peptide anticoagulants: bivalirudin (20 aa), eptifibatide (7 aa)
@@ -118,7 +123,6 @@ EXCLUDES as peptide (False):
 - Exosome/dexosome vehicles loaded with peptides (the vehicle is the drug)
 - Gene therapies, cell therapies, medical devices
 - Single amino acids (e.g., L-glutamine, L-arginine supplements)
-- Radiolabeled peptide conjugates where the peptide is just a targeting vector (not the therapeutic agent)
 
 DECISION TREE:
 STEP 1 — Is the Molecular Class a peptide?
@@ -131,20 +135,20 @@ STEP 1 — Is the Molecular Class a peptide?
   - "Single amino acid" → False
   - "Unknown" → check database confirmation in Step 2
 
-STEP 2 — Is it the INVESTIGATIONAL DRUG?
-  - Investigational Drug Role = "investigational drug" → proceed to Step 3
-  - Investigational Drug Role = "food ingredient" → False
-  - Investigational Drug Role = "targeting vector" → False
-  - Investigational Drug Role = "brand name only" → False
+STEP 2 — Does this trial administer a peptide molecule?
+  - The intervention IS a peptide (any role: drug, vaccine, imaging, conjugate) → True
+  - The intervention CONTAINS a peptide component (peptide-drug conjugate, peptide-PMO) → True
+  - Investigational Drug Role = "food ingredient" (nutritional formula) → False
+  - Investigational Drug Role = "brand name only" (name contains "peptide" but drug is not) → False
 
 STEP 3 — Final confirmation
   - Database confirms peptide (UniProt/DRAMP/DBAASP/ChEMBL) → True
-  - Literature describes it as a peptide therapeutic → True
+  - Literature or trial description calls it a "peptide" → True
   - No database hits but molecular class is clearly peptide → True
   - Conflicting evidence → weigh database entries > literature > product names
 
 CRITICAL RULES:
-- The question is whether ANY active drug is a peptide, not whether the formulation contains peptides
+- The question is whether ANY intervention is or contains a peptide molecule
 - Brand names containing "peptide" do NOT make the product a peptide drug
 - Nutritional formulas with hydrolyzed proteins are NOT peptide drugs
 - Monoclonal antibodies are NOT peptides (different drug class)
@@ -396,11 +400,27 @@ def _extract_peptide_signals(research_results: list) -> list[str]:
                     "short peptide",
                     "peptide vaccine",
                     "peptide immunother",
+                    "d-peptide",
+                    "neoantigen peptide",
                 ]
             ):
                 facts.append(
                     f"- Arm group '{label}' description states: \"{desc[:250]}\""
                 )
+
+        # 3. v28: Intervention name/description contains "peptide"
+        interventions = arms_mod.get("interventions", [])
+        for intv in interventions:
+            intv_name = intv.get("name", "")
+            intv_desc = intv.get("description", "")
+            combined = f"{intv_name} {intv_desc}".lower()
+            if "peptide" in combined:
+                nutritional_keywords = ("formula", "nutrition", "peptamen",
+                                        "kate farms", "tube feed", "enteral")
+                if not any(nk in combined for nk in nutritional_keywords):
+                    facts.append(
+                        f"- Intervention '{intv_name}': description contains 'peptide'"
+                    )
 
     return facts
 

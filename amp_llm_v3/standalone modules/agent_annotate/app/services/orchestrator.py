@@ -805,12 +805,17 @@ class PipelineOrchestrator:
                         ollama_model=model_cfg.name,
                     )
                     # v17: Retry once on timeout/failure
-                    if (opinion.confidence == 0.0
-                            and opinion.suggested_value is None
-                            and "failed" in (opinion.reasoning or "").lower()):
+                    # v28: Also retry parse failures; use reduced evidence (8 citations)
+                    should_retry = (
+                        (opinion.confidence == 0.0
+                         and opinion.suggested_value is None
+                         and "failed" in (opinion.reasoning or "").lower())
+                        or opinion.parse_failed
+                    )
+                    if should_retry:
                         logger.warning(
                             f"  Verifier {model_key} failed for {nct_id}/{annotation.field_name} — "
-                            f"retrying in 5s..."
+                            f"retrying with reduced evidence..."
                         )
                         import asyncio as _asyncio
                         await _asyncio.sleep(5)
@@ -820,6 +825,7 @@ class PipelineOrchestrator:
                             research_results=research,
                             model_name=model_key,
                             ollama_model=model_cfg.name,
+                            max_citations_override=8,
                         )
                         if retry_opinion.suggested_value is not None:
                             logger.info(
@@ -1383,6 +1389,33 @@ class PipelineOrchestrator:
         job.progress.field_timings["peptide"] = round(_field_time.monotonic() - _field_start, 1)
         job.progress.current_model = getattr(peptide_ann, "model_name", None)
         shared_metadata["peptide_result"] = peptide_ann.value
+
+        # v28: Pre-cascade known-sequence check.
+        # If peptide=False but the intervention matches a _KNOWN_SEQUENCES entry
+        # with 2-100 AA, override to True (same logic as consistency Rule 3,
+        # but BEFORE the cascade wipes sequence to N/A).
+        if peptide_ann.value == "False":
+            from agents.annotation.sequence import _KNOWN_SEQUENCES
+            intervention_names = shared_metadata.get("interventions", [])
+            for name in intervention_names:
+                name_lower = name.lower().strip()
+                for drug, seq in _KNOWN_SEQUENCES.items():
+                    if drug in name_lower or name_lower in drug:
+                        if 2 <= len(seq) <= 100:
+                            peptide_ann.value = "True"
+                            peptide_ann.reasoning = (
+                                f"[Pre-cascade override: '{drug}' has known "
+                                f"{len(seq)}aa sequence → peptide=True] "
+                                + peptide_ann.reasoning
+                            )
+                            shared_metadata["peptide_result"] = "True"
+                            logger.info(
+                                f"  pre-cascade: '{drug}' ({len(seq)}aa) "
+                                f"forces peptide=True for {nct_id}"
+                            )
+                            break
+                if peptide_ann.value == "True":
+                    break
 
         # v15: If peptide=False, this trial is not a peptide therapeutic — N/A all other fields
         # v18: ALL peptide=False results cascade to N/A (deterministic gate removed).

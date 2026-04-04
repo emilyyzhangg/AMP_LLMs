@@ -399,9 +399,11 @@ class FailureReasonAgent(BaseAnnotationAgent):
         lower = raw.strip().lower()
 
         # Empty/no-failure indicators
-        if lower in ("empty", "n/a", "not applicable", "none", "",
-                      "no failure", "no reason", "completed", "unknown",
-                      "active", "recruiting", "positive"):
+        # v28: prefix match for truncated "EMPTY" (e.g., "empt" from LLM)
+        if lower.startswith("empt") or lower in (
+                "n/a", "not applicable", "none", "",
+                "no failure", "no reason", "completed", "unknown",
+                "active", "recruiting", "positive"):
             return ""
 
         for valid in VALID_VALUES:

@@ -13,6 +13,7 @@ class ModelOpinion(BaseModel):
     suggested_value: Optional[str] = None
     reasoning: str = ""
     confidence: float = 0.0
+    parse_failed: bool = False  # v28: True when both primary + fallback parsers returned None
 
 
 class ConsensusResult(BaseModel):

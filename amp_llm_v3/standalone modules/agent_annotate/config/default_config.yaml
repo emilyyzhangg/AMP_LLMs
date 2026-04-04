@@ -21,7 +21,7 @@ verification:
       name: "qwen2.5:7b"         # Alibaba (v2.5 gen upgrade) — evidence-strict persona
       role: verifier
     verifier_3:
-      name: "phi4-mini:3.8b"     # Microsoft Phi-4 Mini — adversarial persona (fast, strong reasoning)
+      name: "llama3.1:8b"        # Meta Llama 3.1 — adversarial persona (replaces phi4-mini:3.8b, v28)
       role: verifier
     reconciliation:
       name: "qwen2.5:14b"

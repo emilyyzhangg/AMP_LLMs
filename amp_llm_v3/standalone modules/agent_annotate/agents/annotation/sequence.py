@@ -91,6 +91,12 @@ _KNOWN_SEQUENCES: dict[str, str] = {
     "carnosine": "AH",                                        # Same
     # Peptide-conjugate therapeutics
     "cv-mg01": "YFSRIIQKQFGHVNNGK",                          # AChR alpha-subunit peptide, 17aa
+    # v28: D-peptide HIV entry inhibitor
+    "cpt31": "HPCDYPEWQWLCELGK",                             # PIE12 D-peptide monomer, 16aa (cholesterol-PEG trimer in vivo)
+    "pie12": "HPCDYPEWQWLCELGK",                             # Same as CPT31 monomer
+    # v28: Radiolabeled peptide imaging agents
+    "68ga-rm2": "FQWAVGHSL",                                 # Bombesin antagonist RM2, 9aa (D-Phe→F, Sta→S)
+    "rm2": "FQWAVGHSL",                                      # Same (BAY86-7548)
 }
 
 

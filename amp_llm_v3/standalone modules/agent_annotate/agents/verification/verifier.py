@@ -223,9 +223,13 @@ FIELD_PROMPTS = {
     },
     "peptide": {
         "instruction": (
-            "Determine if the primary intervention is a peptide therapeutic: True or False.\n\n"
-            "DEFINITION: A peptide therapeutic is 2-100 amino acid residues serving as the ACTIVE drug. "
-            "Includes: AMPs, hormone analogues, cyclic peptides, peptide vaccines, insulin. "
+            "Determine if ANY intervention in this trial is or contains a peptide molecule: True or False.\n\n"
+            "DEFINITION: A peptide is 2-100 amino acid residues. Answer True if ANY intervention "
+            "contains a peptide component — regardless of its role (active drug, diagnostic agent, "
+            "vaccine immunogen, targeting vector, or conjugate component).\n\n"
+            "Includes: AMPs, hormone analogues, cyclic peptides, peptide vaccines (neoantigen, HIV), "
+            "peptide-drug conjugates, radiolabeled peptide imaging agents, D-peptide therapeutics, "
+            "peptide-PMO conjugates, insulin.\n"
             "Excludes: monoclonal antibodies (>100 AA), small molecules, nutritional formulas "
             "(\"Peptide 1.5\", Peptamen), HSP-peptide complexes (peptide is cargo), exosome vehicles, "
             "whole proteins >100 AA.\n\n"
@@ -234,43 +238,24 @@ FIELD_PROMPTS = {
             "- Semaglutide (GLP-1 analogue, 31 AA) → True\n"
             "- Colistin (lipopeptide antibiotic) → True\n"
             "- StreptInCor (synthetic peptide vaccine) → True\n"
-            "- Apraglutide (GLP-2 analogue) → True\n"
+            "- NEO-PV-01 (personalized neoantigen peptide vaccine) → True\n"
+            "- 68Ga-RM2 (radiolabeled bombesin peptide analog for PET imaging) → True\n"
+            "- CPT31 (D-peptide HIV entry inhibitor) → True\n"
+            "- PGN-EDO51 (peptide-conjugated oligonucleotide) → True\n"
+            "- MB1707 (CXCR4 antagonist peptide-drug conjugate) → True\n"
             "- Pembrolizumab (monoclonal antibody) → False\n"
             "- Amoxicillin (small molecule) → False\n"
             "- Kate Farm Peptide 1.5 (nutritional formula) → False\n"
-            "- 'Peptide 1.5' tube feeding formula → False\n"
-            "- Peptamen (semi-elemental nutritional formula) → False\n"
-            "- Hydrolyzed protein formula (nutrition) → False\n"
-            "- Engineered multi-subunit protein (biologic scaffold) → False\n\n"
+            "- Peptamen (semi-elemental nutritional formula) → False\n\n"
             "CRITICAL RULES:\n"
-            "- Is the ACTIVE DRUG a peptide? If 'peptide' is in the product name but it's a "
-            "nutritional formula, dietary supplement, or food → False.\n"
-            "- Brand names containing 'peptide' do NOT make the product a peptide drug. "
-            "'Peptide 1.5', 'Peptamen', 'Kate Farms Peptide' are nutritional formulas → False.\n"
-            "- Nutritional formulas with hydrolyzed proteins are NOT peptide drugs.\n"
-            "- MULTI-DRUG TRIALS: evaluate the PRIMARY study drug. If a peptide is "
-            "co-administered as background therapy but the primary experimental drug is "
-            "non-peptide → False.\n"
-            "- Heat shock protein-peptide complexes: the peptide is antigenic cargo, "
-            "not the active mechanism → False.\n"
-            "- Autologous dexosomes/exosomes loaded with peptides: the vehicle is the "
-            "drug, not the peptide cargo → False.\n"
-            "- CYCLIC PEPTIDES: ChEMBL and other databases often classify cyclic peptides "
-            "as 'small molecules' — this does NOT make them non-peptides. If the drug name "
-            "explicitly states 'cyclic peptide' or contains a named cyclic peptide (e.g. "
-            "cpFT, Fertiline, cyclosporine backbone), classify as True.\n"
-            "- RADIOLABELED PEPTIDES: Drugs like [68Ga]GA-NeoB or [177Lu]Lu-PSMA are "
-            "radiolabeled peptides. The radioactive label ([68Ga], [177Lu], [99mTc] etc.) "
-            "does NOT change the molecular class — classify by the PEPTIDE BACKBONE. "
-            "If the backbone is a peptide chain (e.g. bombesin analog, PSMA ligand peptide, "
-            "neurotensin), classify as True.\n\n"
-            "ADDITIONAL EXAMPLES:\n"
-            "- HSPPC-96/Oncophage (heat shock protein-peptide complex) → False\n"
-            "- Autologous dexosomes loaded with peptides → False\n"
-            "- Amdoxovir + enfuvirtide (nucleoside + peptide combo, primary = amdoxovir) → False\n"
-            "- cpFT / cyclic peptide Fertiline (cyclic peptide, ChEMBL calls it small molecule) → True\n"
-            "- [68Ga]GA-NeoB (radiolabeled bombesin analog, 14aa peptide backbone) → True\n"
-            "- [177Lu]Lu-NeoB (radiolabeled bombesin analog) → True\n"
+            "- If the trial description, intervention name, or arm description says 'peptide', "
+            "'peptide vaccine', 'peptide conjugate', 'D-peptide', or 'synthetic peptide' — "
+            "this is strong evidence for True.\n"
+            "- Brand names containing 'peptide' in NUTRITIONAL contexts are NOT peptide drugs.\n"
+            "- MULTI-DRUG TRIALS: True if ANY drug in the experimental arm is a peptide.\n"
+            "- Heat shock protein-peptide complexes: peptide is cargo → False.\n"
+            "- CYCLIC PEPTIDES: ChEMBL may call them 'small molecules' — still True.\n"
+            "- RADIOLABELED PEPTIDES: classify by the PEPTIDE BACKBONE, not the label.\n"
         ),
         "valid_values": ["True", "False"],
         "parse_pattern": r"Peptide:\s*(True|False)",
@@ -311,6 +296,7 @@ class BlindVerifier:
         research_results: list[ResearchResult],
         model_name: str,
         ollama_model: str,
+        max_citations_override: Optional[int] = None,
     ) -> ModelOpinion:
         """
         Independently annotate a field using only raw research data.
@@ -330,7 +316,10 @@ class BlindVerifier:
 
         # --- Evidence budget matches primary annotator ---
         is_server = config.orchestrator.hardware_profile == "server"
-        max_citations = 50 if is_server else 30
+        # v28: Reduced from 30→15 for mac_mini. Verifiers confirm/reject —
+        # they don't need more evidence than the primary annotator (peptide: 20).
+        # Less context = better format compliance from small models.
+        max_citations = max_citations_override or (35 if is_server else 15)
 
         # Build structured evidence from research (raw data only, no primary answer)
         _SOURCE_TO_SECTION = {
@@ -472,12 +461,26 @@ class BlindVerifier:
         reasoning = self._parse_reasoning(raw_text)
         confidence = self._parse_confidence(raw_text)
 
+        # v28: Fallback parser for unstructured responses (e.g., qwen2.5:7b summaries)
+        parse_failed = False
+        if value is None:
+            value = self._parse_value_fallback(raw_text, field_config)
+            if value is not None:
+                logger.info(
+                    f"Verifier {model_name}: fallback parser rescued '{value}' "
+                    f"for {nct_id}/{field_name}"
+                )
+                confidence = min(confidence, 0.5)  # downweight fallback-parsed values
+            else:
+                parse_failed = True
+
         return ModelOpinion(
             model_name=model_name,
             agrees=False,  # Will be set by consensus checker
             suggested_value=value,
             reasoning=reasoning,
             confidence=confidence,
+            parse_failed=parse_failed,
         )
 
     @staticmethod
@@ -569,6 +572,99 @@ class BlindVerifier:
             return match.group(1).strip()[:500]
         return text[:500]
 
+    def _parse_value_fallback(self, raw_text: str, field_config: dict) -> Optional[str]:
+        """v28: Extract field value from unstructured verifier text via sentiment.
+
+        When _parse_value returns None (model wrote a summary instead of
+        following the format), scan for strong sentiment signals that reveal
+        the model's actual judgment. Returns None if no clear signal found.
+        """
+        lower = raw_text.lower()
+        field_name = field_config.get("parse_pattern", "")
+
+        # --- Peptide ---
+        if "Peptide" in field_config.get("parse_pattern", ""):
+            true_signals = (
+                "is a peptide", "qualifies as a peptide", "is indeed a peptide",
+                "meets the criteria for peptide", "classified as a peptide",
+                "peptide therapeutic", "peptide = true", "peptide: true",
+                "answer is true", "answer: true", "conclusion: true",
+            )
+            false_signals = (
+                "is not a peptide", "is a protein", "does not qualify",
+                "does not meet", "not a peptide", "peptide = false",
+                "peptide: false", "answer is false", "answer: false",
+                "conclusion: false", "is a small molecule",
+            )
+            for sig in true_signals:
+                if sig in lower:
+                    return "True"
+            for sig in false_signals:
+                if sig in lower:
+                    return "False"
+
+        # --- Classification ---
+        elif "Classification" in field_config.get("parse_pattern", ""):
+            amp_signals = (
+                "antimicrobial peptide", "is an amp", "classify as amp",
+                "classification: amp", "mode a", "mode b", "mode c",
+                "direct antimicrobial", "kills pathogen", "disrupts membrane",
+            )
+            other_signals = (
+                "not an amp", "not antimicrobial", "classify as other",
+                "classification: other", "does not meet amp criteria",
+                "is not an antimicrobial",
+            )
+            for sig in other_signals:  # check Other first (more specific)
+                if sig in lower:
+                    return "Other"
+            for sig in amp_signals:
+                if sig in lower:
+                    return "AMP"
+
+        # --- Delivery Mode ---
+        elif "Delivery Mode" in field_config.get("parse_pattern", ""):
+            if any(s in lower for s in ("injection", "intravenous", "subcutaneous",
+                                         "intramuscular", "parenteral", "infusion")):
+                return "Injection/Infusion"
+            if any(s in lower for s in ("oral", "capsule", "tablet")):
+                return "Oral"
+            if any(s in lower for s in ("topical", "cream", "gel")):
+                return "Topical"
+
+        # --- Outcome ---
+        elif "Outcome" in field_config.get("parse_pattern", ""):
+            if any(s in lower for s in ("met its primary endpoint", "positive outcome",
+                                         "demonstrated efficacy", "outcome: positive")):
+                return "Positive"
+            if any(s in lower for s in ("terminated", "was terminated")):
+                return "Terminated"
+            if "withdrawn" in lower:
+                return "Withdrawn"
+            if any(s in lower for s in ("failed to meet", "negative outcome",
+                                         "did not meet", "outcome: failed")):
+                return "Failed - completed trial"
+            if any(s in lower for s in ("unknown", "insufficient evidence",
+                                         "no published results", "cannot determine")):
+                return "Unknown"
+
+        # --- Reason for Failure ---
+        elif "Reason for Failure" in field_config.get("parse_pattern", ""):
+            if any(s in lower for s in ("business", "funding", "sponsor", "strategic")):
+                return "Business Reason"
+            if any(s in lower for s in ("ineffective", "failed to meet endpoint",
+                                         "lack of efficacy", "did not demonstrate")):
+                return "Ineffective for purpose"
+            if any(s in lower for s in ("toxic", "unsafe", "adverse event",
+                                         "safety concern", "toxicity")):
+                return "Toxic/Unsafe"
+            if any(s in lower for s in ("recruitment", "enrollment", "accrual")):
+                return "Recruitment issues"
+            if any(s in lower for s in ("covid", "pandemic")):
+                return "Due to COVID"
+
+        return None
+
     @staticmethod
     def _extract_structured_facts(
         research_results: list[ResearchResult],
@@ -622,10 +718,28 @@ class BlindVerifier:
                         "short peptide",
                         "peptide vaccine",
                         "peptide immunother",
+                        "d-peptide",
+                        "neoantigen peptide",
                     ]
                 ):
                     facts.append(
                         f"- Arm '{label}': \"{desc[:200]}\""
                     )
+
+            # 3. v28: Intervention name/description contains "peptide"
+            # (excludes nutritional contexts)
+            interventions = arms_mod.get("interventions", [])
+            for intv in interventions:
+                intv_name = intv.get("name", "")
+                intv_desc = intv.get("description", "")
+                combined = f"{intv_name} {intv_desc}".lower()
+                if "peptide" in combined:
+                    # Exclude nutritional formula contexts
+                    nutritional_keywords = ("formula", "nutrition", "peptamen",
+                                            "kate farms", "tube feed", "enteral")
+                    if not any(nk in combined for nk in nutritional_keywords):
+                        facts.append(
+                            f"- Intervention '{intv_name}': description contains 'peptide'"
+                        )
 
         return facts

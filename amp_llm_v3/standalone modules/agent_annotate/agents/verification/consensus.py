@@ -89,10 +89,33 @@ class ConsensusChecker:
                 opinions=[],
             )
 
+        # v28: Exclude parse-failed verifiers from consensus denominator.
+        # A model that couldn't parse its response didn't "disagree" — it
+        # didn't answer. None ≠ disagree.
+        valid_opinions = [o for o in verifier_opinions if not o.parse_failed]
+        if not valid_opinions:
+            # All verifiers failed to parse — trust primary
+            logger.warning(
+                f"  {field_name}: ALL verifiers parse-failed — trusting primary '{primary_value}'"
+            )
+            for o in verifier_opinions:
+                o.agrees = False
+            return ConsensusResult(
+                field_name=field_name,
+                original_value=primary_value,
+                final_value=primary_value,
+                consensus_reached=True,
+                agreement_ratio=1.0,
+                opinions=verifier_opinions,
+            )
+
         # Count agreements using normalized values
         primary_norm = _normalize(primary_value, field_name)
         agreements = 0
         for opinion in verifier_opinions:
+            if opinion.parse_failed:
+                opinion.agrees = False  # parse-failed: excluded from ratio
+                continue
             if opinion.suggested_value is not None:
                 verifier_norm = _normalize(opinion.suggested_value, field_name)
                 if verifier_norm == primary_norm:
@@ -103,7 +126,7 @@ class ConsensusChecker:
             else:
                 opinion.agrees = False
 
-        total = len(verifier_opinions)
+        total = len(valid_opinions)
         ratio = agreements / total if total > 0 else 0.0
         consensus = ratio >= threshold
 
