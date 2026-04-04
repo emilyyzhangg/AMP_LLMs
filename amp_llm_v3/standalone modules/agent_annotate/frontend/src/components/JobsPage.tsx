@@ -6,6 +6,7 @@ import type { JobSummary } from "../types";
 export default function JobsPage() {
   const [jobs, setJobs] = useState<JobSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,6 +15,12 @@ export default function JobsPage() {
         const data = await listJobs();
         setJobs(data);
       } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        if (msg.includes("401")) {
+          setError("Not authenticated — please log in.");
+        } else {
+          setError(`Failed to load jobs: ${msg}`);
+        }
         console.error("Failed to load jobs", e);
       } finally {
         setLoading(false);
@@ -26,7 +33,9 @@ export default function JobsPage() {
   return (
     <div>
       <h2 style={{ marginBottom: "1rem" }}>Jobs</h2>
-      {jobs.length === 0 ? (
+      {error ? (
+        <div className="card" style={{ color: "var(--error)" }}>{error}</div>
+      ) : jobs.length === 0 ? (
         <div className="card text-muted">No jobs yet. Submit NCT IDs to start annotating.</div>
       ) : (
         <div className="card">
@@ -52,8 +61,8 @@ export default function JobsPage() {
                     key={job.job_id}
                     style={{ cursor: "pointer" }}
                     onClick={() => {
-                      if (job.status === "completed") navigate(`/results/${job.job_id}`);
-                      else if (job.status === "running") navigate(`/pipeline/${job.job_id}`);
+                      if (job.status === "running") navigate(`/pipeline/${job.job_id}`);
+                      else if (job.completed_trials > 0) navigate(`/results/${job.job_id}`);
                     }}
                   >
                     <td style={{ fontFamily: "monospace", fontSize: "0.85rem" }}>{job.job_id.slice(0, 8)}</td>
