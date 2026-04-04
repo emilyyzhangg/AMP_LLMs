@@ -1,6 +1,6 @@
 # EDAM Learning Run Plan
 
-**Last updated:** 2026-04-01
+**Last updated:** 2026-04-04
 
 ## Job Registry
 
@@ -38,6 +38,9 @@
 | 40 | Batch H R2 | 4953bff0b240 | 25 | 25/25 | **Complete** | v22 | 14 timeouts | 176-200. Delivery 46.2%. Outcome 69.2%. |
 | 41 | Concordance v25 | bb302bc7b077 | 50 | 4/50 | **Cancelled** | v25 (904180a) | — | Cancelled to pick up quality checker fix. |
 | 42 | Concordance v25 | b7c5c4fe7a17 | 50 | —/50 | **Running** | v25 (3595d06) | — | Resubmitted with quality checker N/A fix. Same 50 NCTs. | | — | Baseline: same 50 NCTs as v22 concordance. First run with simplified categories + all fixes. |
+| 43 | v28 test | 27c0f2ef1732 | 10 | 10/10 | **Complete** | v28 (4e81071) | — | First v28 test. Peptide 100% (9/9). RfF 29% (negation bug). NCT00000435 crashed (dict .lower()). |
+| 44 | v28+fix retest | 5d8ed86f257c | 10 | 10/10 | **Complete** | v28+fix (26b6c0d) | — | Crash fixed. RfF 57% (up from 29%). NCT00000435 peptide=False (name mismatch). |
+| 45 | v28 concordance | 3e8c4848fe74 | 50 | 50/50 | **Complete** | v28+fix (26b6c0d) | — | **Peptide 90% (target met)**. RfF 50% (8 Toxic/Unsafe from negation bug). Classification 84.8%. Delivery 89.1%. Outcome 73.9%. |
 
 > **Note:** Jobs 36-40 are the last jobs run with old categories (v22 code). v24 is now merged to main (9db9e33) with simplified categories (binary AMP/Other, 4-category delivery mode). All future jobs will use v24+ categories.
 
@@ -66,6 +69,7 @@
 | **v27e** | **8456a66** | **Fix v27d regression: restore v26 system template, facts at END of evidence with format reminder, reconciler verifier-majority awareness. Test 05f80bba8946: BOTH FIXED — insulin True (primary override), CV-MG01 True (reconciler flipped using verifier majority). qwen2.5:7b still produces summaries, phi4-mini still times out on CV-MG01. Prod job c00a1eef (50 NCTs): peptide 80%, delivery 93.1%, outcome 75.9%.** |
 | **v28** | **2679eaf** | **Pre-cascade _KNOWN_SEQUENCES check, phi4-mini→llama3.1:8b, verifier evidence 30→15, fallback parser, smart retry, parse-failed exclusion, broadened peptide definition, "empt" RfF truncation fix, COVID keywords. First test (job 27c0f2ef1732, 10 NCTs): peptide 100% (+20pp) but RfF regressed to 29% and NCT00000435 crashed.** |
 | **v28+fix** | **f0a4dba** | **Fixed two bugs from v28 test: (1) _pass1_says_no_failure checked LLM's "Is This A Failure: No" before terminated/withdrawn override → moved status check to top. (2) Pre-cascade .lower() on EDAM-resolved dict interventions → handles both types. Deployed to prod+dev.** |
+| **v29** | **dce4466d** | **Three fixes: (1) _infer_from_pass1 negation filter + section boundary regex [A-Z]→section headers. (2) _KNOWN_SEQUENCE_ALIASES + resolve_known_sequence() for pre-cascade. (3) NCBI retry 3→5 + literature_unavailable flag. 50-NCT v28 concordance: peptide 90%, RfF 50% (negation bug on prod, fixed in v29).** |
 
 ## NCT Coverage
 

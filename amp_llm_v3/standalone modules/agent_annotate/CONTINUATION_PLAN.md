@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-03
-**Current state:** v28+fix on prod (f0a4dba) and dev (906cc83). Job 27c0f2ef1732 completed (10 NCTs, v28 first test). Two bugs found and fixed: RfF regression (terminated/withdrawn short-circuit) and pre-cascade crash on EDAM-resolved interventions. Awaiting re-test.
+**Last updated:** 2026-04-04
+**Current state:** v29 merging to prod. 50-NCT concordance (job 3e8c4848fe74, commit 26b6c0d) complete: peptide 90% (target met), RfF 50% (negation bug on prod, fixed on dev dce4466d). Dev has v29 fixes: negation-blind keyword filter, pre-cascade aliases, NCBI retry. Merging to main.
 
 ## v24 Changes
 
@@ -111,35 +111,47 @@ All from _KNOWN_NON_AMP_DRUGS blocklist (Peptide T, Enfuvirtide, PCLUS vaccine).
 - NCT06833931: empty (should be Business Reason) — "development voluntarily discontinued by Sponsor"
 - NCT05465590: Toxic/Unsafe (should be Business Reason) — "terminated due to Sponsor decision"
 
-### v28 Plan (2026-04-03) — Peptide pre-cascade + verifier reliability
+### v28 50-NCT Concordance (job 3e8c4848fe74, prod commit 26b6c0d) — 2026-04-04
 
-**Wave 1: Structural (low risk, highest ROI)**
-1. **Pre-cascade _KNOWN_SEQUENCES check** in orchestrator.py: Before peptide=False cascade, look up intervention names against _KNOWN_SEQUENCES. If match with 2-100 AA → force peptide=True (same logic as consistency Rule 3, but pre-cascade). Fixes 4 of 10 false negatives (BMN 111, dnaJP1, BNZ-1, sPIF).
-2. **Expand _KNOWN_SEQUENCES** with CPT31, 68Ga-RM2/RM2, thymic peptide, MB1707. Fixes 2-4 more false negatives.
-3. **Replace phi4-mini:3.8b → llama3.1:8b** as verifier_3. Preserves 3-family diversity (Google/Alibaba/Meta). Eliminates timeouts.
-4. **Reduce verifier evidence budget** 30→15 citations (mac_mini). Verifiers get less than primary annotator (20), improving format compliance.
+| Field | vs R1 (n) | vs R2 (n) | v27e R1 | v27e R2 | Delta vs R1 | Human R1↔R2 |
+|---|---|---|---|---|---|---|
+| **Peptide** | **90.0% (45/50)** | **86.0% (43/50)** | 80.0% | 76.0% | **+10pp** | 86.0% |
+| Classification | 84.8% (39/46) | 84.8% (39/46) | 82.8% | 74.1% | +2pp | 93.2% |
+| Delivery | 89.1% (41/46) | 87.0% (40/46) | 93.1% | 92.6% | -4pp | 88.3% |
+| Outcome | 73.9% (34/46) | 60.0% (27/45) | 75.9% | 70.4% | -2pp | 64.3% |
+| **RfF** | **50.0% (15/30)** | **48.3% (14/29)** | 74.4% | 63.9% | **-24pp** | 88.6% |
 
-**Wave 2: Verifier intelligence**
-5. **Fallback parser** in verifier.py: When _parse_value returns None, scan for sentiment signals ("is a peptide" → True). Cap confidence at 0.5. Rescues qwen2.5:7b summaries.
-6. **Smart retry** with 8 citations instead of same 30 on failure.
-7. **Exclude parse-failed verifiers** from consensus denominator. None ≠ disagree. Add `parse_failed` field to ModelOpinion.
+**Peptide: 90% target MET.** 4 false negatives (NCT00000435/775/798/846 — old trials, naming issues), 1 false positive (NCT03675126).
 
-**Wave 3: Prompt definition**
-8. **Broaden peptide definition**: "peptide therapeutic" → "peptide molecule." Add INCLUDES for vaccines, imaging agents, conjugates. Keep EXCLUDES for nutritional formulas.
-9. **"Trial says peptide" structured fact**: Extract "peptide" keyword from intervention name/description as a signal for verifiers.
+**RfF: 50% — negation bug.** All 8 Toxic/Unsafe mismatches from `_infer_from_pass1()` negation-blind keyword matching on prod code. Fixed in v29 (dev dce4466d): sentence-level negation filter + section boundary regex fix. Projected RfF after v29: ~70% vs R1.
 
-**Wave 4: Quality-of-life**
-10. Fix "empt" truncation in RfF, sequence normalization for concordance, COVID keywords in RfF.
+**Delivery: -4pp** — NCT00000391/392/393 (old thymic peptide trials → "Other"), NCT04771013 (agent correct, humans wrong — oral formulation), NCT06126354 (multi-route dedup).
 
-**Targets after v28:**
-| Field | v27e | Target | Mechanism |
-|---|---|---|---|
-| Peptide | 80.0% | 90%+ | Sequence pre-cascade + definition + verifiers |
-| RfF | 74.4% | 82%+ | Cascade fix (6/10) + truncation fix |
-| Sequence | 62.5% | 66%+ | Normalization + pre-cascade enables sequence |
-| Delivery | 93.1% | 93%+ | No change needed |
-| Outcome | 75.9% | 76%+ | No change needed |
-| Classification | 82.8% | 82-85% | Definitional gap, not a bug |
+**Outcome: -2pp** — mix of literature gaps (HTTP 429 rate limiting), old trials with no publications, genuine LLM misses.
+
+**Classification: +2pp** — 5 definitional mismatches (old AMP trials where agent follows strict definition). Not a bug.
+
+### v29 Fixes (dev dce4466d, merging to main) — 2026-04-04
+
+1. **Negation-blind `_infer_from_pass1()`**: Section boundary regexes used `[A-Z]` on lowercased text (never matched). Added `_strip_negated_sentences()` to filter "no safety concerns" before keyword matching. Should fix 8 Toxic/Unsafe mismatches.
+2. **Pre-cascade aliases**: Added `_KNOWN_SEQUENCE_ALIASES` dict + `resolve_known_sequence()` for names that aren't substrings (dnajp1↔dnaj peptide). Pre-cascade now also checks EDAM-resolved names.
+3. **NCBI retry**: Increased max_retries 3→5 for eutils.ncbi.nlm.nih.gov. Added `literature_unavailable` flag + WARNING log when all sources return empty.
+
+### Next Steps
+
+- Run 50-NCT concordance on v29 to measure RfF improvement
+- Remaining RfF mismatches (7) are mostly outcome-cascade (wrong outcome → empty RfF) or genuine LLM disagreements
+- Peptide false negatives (4 old trials) need more aliases or EDAM enrichment
+- Delivery multi-route dedup (NCT06126354) is a minor issue
+
+**Targets (updated):**
+| Field | v27e | v28 | v29 target | Mechanism |
+|---|---|---|---|---|
+| Peptide | 80.0% | **90.0%** | 92%+ | More aliases for old trials |
+| RfF | 74.4% | 50.0% | **70%+** | Negation filter fixes 8 mismatches |
+| Delivery | 93.1% | 89.1% | 91%+ | Multi-route dedup fix |
+| Outcome | 75.9% | 73.9% | 74%+ | NCBI retry helps |
+| Classification | 82.8% | 84.8% | 85% | Stable |
 
 ### v22-era Job Performance (old code, mapped to v24 categories)
 
