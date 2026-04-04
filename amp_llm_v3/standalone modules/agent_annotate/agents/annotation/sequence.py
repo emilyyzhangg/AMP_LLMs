@@ -99,6 +99,56 @@ _KNOWN_SEQUENCES: dict[str, str] = {
     "rm2": "FQWAVGHSL",                                      # Same (BAY86-7548)
 }
 
+# v29: Alias mapping for pre-cascade name matching.
+# Maps alternate names / ClinicalTrials.gov intervention names to
+# canonical _KNOWN_SEQUENCES keys when neither is a substring of the other.
+_KNOWN_SEQUENCE_ALIASES: dict[str, str] = {
+    # dnaJ heat shock protein peptide
+    "dnaj peptide": "dnajp1",
+    "dnaj": "dnajp1",
+    "dna-jp1": "dnajp1",
+    # BMN 111 / vosoritide spacing/hyphen variants
+    "bmn111": "bmn 111",
+    "bmn-111": "bmn 111",
+    # Preimplantation factor
+    "pif": "spif",
+    "synthetic preimplantation factor": "spif",
+    # Radiolabeled peptide imaging
+    "68ga rm2": "68ga-rm2",
+    "bay86-7548": "68ga-rm2",
+    # IO103 / PD-L1
+    "io103": "pd-l1 peptide",
+    "io-103": "pd-l1 peptide",
+    # OPS-202 / satoreotide
+    "ops-202": "satoreotide",
+    "ops202": "satoreotide",
+}
+
+
+def resolve_known_sequence(name_lower: str) -> tuple[str, str] | None:
+    """Look up a drug name in _KNOWN_SEQUENCES with alias fallback.
+
+    Returns (drug_key, sequence) if found, None otherwise.
+    Checks: direct key → substring against keys → alias substring → None.
+    """
+    # Direct key match
+    if name_lower in _KNOWN_SEQUENCES:
+        return name_lower, _KNOWN_SEQUENCES[name_lower]
+
+    # Substring match against keys
+    for drug, seq in _KNOWN_SEQUENCES.items():
+        if drug in name_lower or name_lower in drug:
+            return drug, seq
+
+    # Alias lookup (substring both ways)
+    for alias, canonical in _KNOWN_SEQUENCE_ALIASES.items():
+        if alias in name_lower or name_lower in alias:
+            seq = _KNOWN_SEQUENCES.get(canonical)
+            if seq:
+                return canonical, seq
+
+    return None
+
 
 def normalize_sequence(raw: str) -> str:
     """Normalize a raw sequence string to canonical format.

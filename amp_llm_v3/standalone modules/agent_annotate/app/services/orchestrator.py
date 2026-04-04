@@ -1394,13 +1394,24 @@ class PipelineOrchestrator:
         # If peptide=False but the intervention matches a _KNOWN_SEQUENCES entry
         # with 2-100 AA, override to True (same logic as consistency Rule 3,
         # but BEFORE the cascade wipes sequence to N/A).
+        # v29: Uses resolve_known_sequence() with alias support + checks
+        # EDAM-resolved names from enriched intervention dicts.
         if peptide_ann.value == "False":
-            from agents.annotation.sequence import _KNOWN_SEQUENCES
+            from agents.annotation.sequence import resolve_known_sequence
             intervention_names = shared_metadata.get("interventions", [])
             for name in intervention_names:
-                name_lower = (name["name"] if isinstance(name, dict) else name).lower().strip()
-                for drug, seq in _KNOWN_SEQUENCES.items():
-                    if drug in name_lower or name_lower in drug:
+                names_to_check = []
+                if isinstance(name, dict):
+                    names_to_check.append(name["name"].lower().strip())
+                    for resolved in name.get("resolved", []):
+                        names_to_check.append(resolved.lower().strip())
+                else:
+                    names_to_check.append(str(name).lower().strip())
+
+                for name_lower in names_to_check:
+                    match = resolve_known_sequence(name_lower)
+                    if match:
+                        drug, seq = match
                         if 2 <= len(seq) <= 100:
                             peptide_ann.value = "True"
                             peptide_ann.reasoning = (
@@ -1410,8 +1421,8 @@ class PipelineOrchestrator:
                             )
                             shared_metadata["peptide_result"] = "True"
                             logger.info(
-                                f"  pre-cascade: '{drug}' ({len(seq)}aa) "
-                                f"forces peptide=True for {nct_id}"
+                                f"  pre-cascade: '{name_lower}'→'{drug}' "
+                                f"({len(seq)}aa) forces peptide=True for {nct_id}"
                             )
                             break
                 if peptide_ann.value == "True":

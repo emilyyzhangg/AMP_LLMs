@@ -82,6 +82,11 @@ async def resilient_get(
     host = urlparse(url).hostname or "unknown"
     sem = _get_host_semaphore(host)
 
+    # v29: NCBI endpoints get more retries — sustained 429s during batch
+    # jobs can exhaust 3 retries, causing zero literature for trials.
+    if host == "eutils.ncbi.nlm.nih.gov" and max_retries < 5:
+        max_retries = 5
+
     kwargs: dict = {"params": params, "headers": headers}
     if timeout is not None:
         kwargs["timeout"] = timeout
