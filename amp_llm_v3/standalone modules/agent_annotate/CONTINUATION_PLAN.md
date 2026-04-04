@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-03
-**Current state:** v27e on prod (8456a66). Job c00a1eef08f4 completed (50 NCTs). v28 plan in progress on dev. v27e agreement (grouped, via API): classification 82.8% (24/29), delivery 93.1% (27/29), outcome 75.9% (22/29), peptide 80.0% (40/50), RfF 74.4% (29/39), sequence 62.5% (10/16).
+**Current state:** v28+fix on prod (f0a4dba) and dev (906cc83). Job 27c0f2ef1732 completed (10 NCTs, v28 first test). Two bugs found and fixed: RfF regression (terminated/withdrawn short-circuit) and pre-cascade crash on EDAM-resolved interventions. Awaiting re-test.
 
 ## v24 Changes
 
@@ -89,6 +89,27 @@ Root causes:
 All from _KNOWN_NON_AMP_DRUGS blocklist (Peptide T, Enfuvirtide, PCLUS vaccine). Definitional gap, not a bug.
 
 **RfF: 6 of 10 disagreements cascade from peptide=False (trials never evaluated).**
+
+### v28 Test Results (10 NCTs, job 27c0f2ef1732, prod, commit 4e81071) — 2026-04-03
+
+| Field | vs R1 (n) | vs R2 (n) | v27e R1 | v27e R2 | Delta |
+|---|---|---|---|---|---|
+| Peptide | **100% (9/9)** | **100% (9/9)** | 80.0% | 76.0% | **+20pp** |
+| Classification | 78% (7/9) | 100% (9/9) | 82.8% | 74.1% | Mixed |
+| Delivery | 89% (8/9) | 89% (8/9) | 93.1% | 92.6% | -4pp |
+| Outcome | 78% (7/9) | 56% (5/9) | 75.9% | 70.4% | Mixed |
+| RfF | **29% (2/7)** | **29% (2/7)** | 74.4% | 63.9% | **-45pp** |
+
+**NCT00000435 crashed**: `'dict' object has no attribute 'lower'` — EDAM-resolved interventions stored as dicts, pre-cascade loop called `.lower()` on them. **Fixed in f0a4dba.**
+
+**RfF regression root cause**: `_pass1_says_no_failure()` checked the LLM's "Is This A Failure: No" answer (line 277) BEFORE the terminated/withdrawn status override (line 307). LLM said "No" for terminated/withdrawn trials lacking published evidence → early return → Pass 2 never ran → v26 "Business Reason" default never fired. **Fixed in f0a4dba**: moved terminated/withdrawn check to top of function.
+
+**RfF mismatches (pre-fix)**:
+- NCT03597282: empty (should be Recruitment issues/Due to covid) — "slow enrollment compounded by COVID-19"
+- NCT04672083: empty (should be Business Reason) — outcome also wrong (Unknown vs Failed)
+- NCT05813314: empty (should be Business Reason) — "further optimization required"
+- NCT06833931: empty (should be Business Reason) — "development voluntarily discontinued by Sponsor"
+- NCT05465590: Toxic/Unsafe (should be Business Reason) — "terminated due to Sponsor decision"
 
 ### v28 Plan (2026-04-03) — Peptide pre-cascade + verifier reliability
 
