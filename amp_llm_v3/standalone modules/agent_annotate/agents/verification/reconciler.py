@@ -35,6 +35,7 @@ Rules:
 - IMPORTANT: If the primary annotator has HIGH confidence (>0.85) and cites specific published evidence, and the verifiers only show baseline reasoning without citing contradicting evidence, the primary annotator's answer should be preferred.
 - VERIFIER MAJORITY: If 2 or more verifiers AGREE with each other but DISAGREE with the primary annotator, and the verifiers cite specific database facts or structured evidence in their reasoning, give strong weight to the verifier majority. The verifiers are independent blind reviewers — when multiple agree on the same answer with evidence-based reasoning, that is a strong signal.
 - For UniProt entries: the MATURE form length is what matters for peptide classification — NOT the precursor length. The precursor includes signal peptides and propeptides that are cleaved off before the drug is administered.
+- For peptide classification: If the intervention is a CELL THERAPY (dendritic cells loaded/pulsed with peptides, peptide-loaded DC vaccines, CAR-T cells), the therapeutic is the cell product — the peptides are antigens or targeting components, NOT the drug itself. peptide=False. Similarly, dietary/nutritional peptide supplements (collagen peptide, whey protein isolate) are NOT peptide drugs → peptide=False. Do NOT override verifiers just because the word "peptide" appears in the trial description.
 
 Respond EXACTLY in this format:
 Final Answer: [your answer OR "MANUAL_REVIEW"]

@@ -1980,6 +1980,24 @@ class PipelineOrchestrator:
                 classification_f.final_value = "Other"
                 classification_f.consensus_reached = True
 
+        # Rule 3 (v30): valid sequence (2-100 AA) → peptide must be True
+        # Mirror of pre-verification Rule 3. Catches cases where verifiers
+        # incorrectly flip peptide to False despite a validated short sequence
+        # (e.g., vosoritide 39 AA classified as "Protein" by ChEMBL).
+        sequence_f = field_map.get("sequence")
+        if sequence_f and peptide_f:
+            seq_val = effective(sequence_f)
+            if seq_val and seq_val not in ("N/A", ""):
+                first_seq = seq_val.split(" | ")[0].strip()
+                seq_len = len(first_seq)
+                if 2 <= seq_len <= 100 and effective(peptide_f) == "False":
+                    logger.info(
+                        f"  post-verification consistency: sequence={seq_len} aa, "
+                        f"forcing peptide from 'False' to 'True'"
+                    )
+                    peptide_f.final_value = "True"
+                    peptide_f.consensus_reached = True
+
         # Update overall flags
         all_consensus = all(f.consensus_reached for f in verified.fields)
         if all_consensus:

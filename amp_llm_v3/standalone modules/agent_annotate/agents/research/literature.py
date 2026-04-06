@@ -7,11 +7,14 @@ high-quality annotation context.
 """
 
 import asyncio
+import logging
 import xml.etree.ElementTree as ET
 from typing import Optional
 from datetime import datetime
 
 import httpx
+
+logger = logging.getLogger("agent_annotate.research.literature")
 
 from agents.base import BaseResearchAgent
 from agents.research.http_utils import resilient_get

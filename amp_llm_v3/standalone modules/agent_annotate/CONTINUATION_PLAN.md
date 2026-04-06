@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-04
-**Current state:** v29 merging to prod. 50-NCT concordance (job 3e8c4848fe74, commit 26b6c0d) complete: peptide 90% (target met), RfF 50% (negation bug on prod, fixed on dev dce4466d). Dev has v29 fixes: negation-blind keyword filter, pre-cascade aliases, NCBI retry. Merging to main.
+**Last updated:** 2026-04-06
+**Current state:** v30 on dev. v29 test runs complete (3 jobs, 150 NCTs on prod f9ec75a). Concordance methodology corrected: v28 baseline was mixing pre/post-verification values. True v28 verified baseline: peptide 96%, RfF 82.6%. v29 negation fix worked at annotation layer (+16pp RfF) but verification was already catching those errors → net pipeline effect flat. v30 fixes: whyStopped negation filter, post-verification sequence consistency, literature logger bug, cell therapy peptide prompts, DBAASP verification gate.
 
 ## v24 Changes
 
@@ -137,21 +137,101 @@ All from _KNOWN_NON_AMP_DRUGS blocklist (Peptide T, Enfuvirtide, PCLUS vaccine).
 2. **Pre-cascade aliases**: Added `_KNOWN_SEQUENCE_ALIASES` dict + `resolve_known_sequence()` for names that aren't substrings (dnajp1↔dnaj peptide). Pre-cascade now also checks EDAM-resolved names.
 3. **NCBI retry**: Increased max_retries 3→5 for eutils.ncbi.nlm.nih.gov. Added `literature_unavailable` flag + WARNING log when all sources return empty.
 
+### v29 Test Results (3 jobs, 150 NCTs, prod commit f9ec75a) — 2026-04-04
+
+**Jobs:**
+| # | Job ID | NCTs | Purpose | Runtime |
+|---|---|---|---|---|
+| 46 | cee652e301c8 | 50 (same as v28) | v29 validation — direct comparison | 318 min |
+| 47 | 11ca8845fe89 | 50 (unseen batch A) | Generalization test | 226 min |
+| 48 | 4a7f6a167cb3 | 50 (unseen batch B) | Generalization test | 246 min |
+
+#### Concordance Methodology Correction
+
+**IMPORTANT:** The v28 numbers reported above (peptide 90%, RfF 50%) used **pre-verification annotation values** — the raw LLM output BEFORE verifiers corrected them. The v29 concordance script used **post-verification final values** (the actual pipeline output). This made it appear that v29 didn't improve, when in reality:
+
+- v28 pre-verification RfF: 48.4% (15/31 non-empty) → v29 pre-verification: **64.5% (20/31)** = **+16.1pp improvement**
+- The verification step was already fixing those errors in v28 → pipeline-level improvement was masked
+
+**True v28 baseline (verified final values, consistent methodology):**
+| Field | vs R1 | n |
+|---|---|---|
+| Peptide | 96.0% (48/50) | 50 |
+| Classification | 84.8% (39/46) | 46 |
+| Delivery | 93.5% (43/46) | 46 |
+| Outcome | 73.9% (34/46) | 46 |
+| RfF | 82.6% (38/46) | 46 |
+
+#### Job 46: v29 Validation (same 50 NCTs, verified values)
+
+| Field | v28 (verified) | v29 (verified) | Delta |
+|---|---|---|---|
+| Peptide | 96.0% | 92.0% | -4.0pp |
+| Classification | 84.8% | 83.0% | -1.8pp |
+| Delivery | 93.5% | 91.5% | -2.0pp |
+| Outcome | 73.9% | 74.5% | +0.6pp |
+| RfF | 82.6% | 80.9% | -1.7pp |
+
+Only 7 trial-field values changed (LLM nondeterminism). No code regressions.
+
+**Peptide regressions (2, both stochastic — no code change in peptide logic):**
+- NCT03675126 (SRP-5051/vesleteplirsen): Reconciler made different judgment call on "peptide-conjugated" — actually a PPMO antisense oligonucleotide. Verifiers 2/3 correctly said False, reconciler overrode.
+- NCT05813314 (BMN 111/vosoritide): Verifier 3 flipped True→False (cited ChEMBL "Protein" classification), triggering reconciler which also got it wrong. **Critical bug: system has vosoritide's 39 AA sequence stored but `_enforce_post_verification_consistency` lacks Rule 3 (sequence→peptide). Fixed in v30.**
+
+**RfF: Negation fix confirmed working at annotation layer:**
+- 6 of 8 Toxic/Unsafe mismatches fixed by `_strip_negated_sentences()`
+- 2 remaining: NCT05813314 (whyStopped fallback lacks negation filter — **fixed in v30**), NCT03597282 (affirmative "is safe" matches)
+- 1 new regression: NCT03593421 (improved section boundary now catches affirmative safety language in findings — **fixed by v30 whyStopped filter**)
+
+#### Jobs 47-48: Generalization (99 unseen NCTs with ground truth)
+
+| Field | vs R1 | vs R2 | Human R1↔R2 | Assessment |
+|---|---|---|---|---|
+| Peptide | 80.8% | 75.8% | 82.8% | Near human baseline |
+| Classification | 88.9% | 91.8% | 91.5% | Matches human |
+| Delivery | 76.8% | 82.1% | 76.8% | Matches/exceeds human |
+| Outcome | 71.4% | 54.5% | 59.0% | **Exceeds** human vs R1 |
+| RfF | 97.1% | 87.9% | 87.2% | **Exceeds** human |
+
+**Peptide: Reconciler over-calling is the #1 generalization issue.**
+- 11 false positives: 6 are peptide-loaded cell therapies (DCs, CAR-T), 2 nutritional supplements, 3 other. Reconciler sees "peptide" in description and overrides correct False. **Fixed in v30: cell therapy guidance in verifier + reconciler prompts.**
+- 8 false negatives: mix of borderline cases and annotation noise.
+
+**Classification: 3 false AMP hits from DBAASP.**
+- Apelin (NCT03449251), GLP-2 (NCT03867656), Thymalfasin (NCT06821100) have in-vitro DBAASP entries but are not clinical AMPs. **Fixed in v30: DBAASP-only hits now go through verification instead of skip_verification=True.**
+
+**NCT06675917: Total research pipeline failure.**
+- `logger` NameError in literature.py → all sources failed → zero-confidence annotations. Not in ground truth. **Fixed in v30.**
+
+**Outcome conservatism (P2-6): LEAVE AS-IS.**
+- 6 of 10 disagreements are Agent=Unknown, Human=Positive for COMPLETED trials without publications. Agent correctly follows decision tree. Verified that 2 of the 6 "Positive" human annotations are actually wrong (NCT02636582 failed to meet primary endpoint, NCT05328115 R2 says "Failed"). Agent already exceeds human inter-rater (71.4% vs 59.0%). A COMPLETED→Positive heuristic would introduce systematic bias. The real improvement path is better literature search coverage (separate effort).
+
+### v30 Fixes (dev, 2026-04-06)
+
+1. **P0: whyStopped negation filter** (`failure_reason.py`): Apply `_strip_negated_sentences()` to whyStopped text before keyword matching. Fixes NCT05813314 ("not due to any patient safety concerns" → no longer matches "safety") and NCT03593421.
+
+2. **P0: Post-verification sequence consistency** (`orchestrator.py`): Added Rule 3 to `_enforce_post_verification_consistency()` — if verified sequence is 2-100 AA, force peptide=True. Mirrors pre-verification Rule 3. Catches vosoritide regression and any future case where verifiers incorrectly flip a peptide with a known short sequence.
+
+3. **P0: Literature logger fix** (`literature.py`): Added `import logging` and logger definition. Fixes `NameError: name 'logger' is not defined` that caused 7 trials to lose literature data (NCT06675917 lost ALL data).
+
+4. **P1: Cell therapy peptide guidance** (`verifier.py`, `reconciler.py`): Added to verifier Excludes + CRITICAL RULES and reconciler SYSTEM_PROMPT: DCs pulsed with peptides, CAR-T cells, peptide-loaded DC vaccines → peptide=False (the therapy is the cell product). Also dietary supplements (collagen, whey protein). Addresses 6 of 11 peptide FPs in generalization test.
+
+5. **P1: DBAASP verification gate** (`classification.py`): DBAASP-only hits now go through verification (`skip_verification=False`, confidence 0.80) instead of being auto-classified as AMP. DRAMP/APD hits or multi-database hits remain deterministic. Addresses 3 false AMP classifications (apelin, GLP-2, thymalfasin).
+
 ### Next Steps
 
-- Run 50-NCT concordance on v29 to measure RfF improvement
-- Remaining RfF mismatches (7) are mostly outcome-cascade (wrong outcome → empty RfF) or genuine LLM disagreements
-- Peptide false negatives (4 old trials) need more aliases or EDAM enrichment
-- Delivery multi-route dedup (NCT06126354) is a minor issue
+- Run 50-NCT validation on v30 (same set) — smoke test the fixes
+- If whyStopped fix + sequence rule + cell therapy prompts recover regressions → v30 is candidate for full 642-NCT run
+- Literature search coverage improvement (Google Scholar/Semantic Scholar fallback) deferred to v31
 
-**Targets (updated):**
-| Field | v27e | v28 | v29 target | Mechanism |
-|---|---|---|---|---|
-| Peptide | 80.0% | **90.0%** | 92%+ | More aliases for old trials |
-| RfF | 74.4% | 50.0% | **70%+** | Negation filter fixes 8 mismatches |
-| Delivery | 93.1% | 89.1% | 91%+ | Multi-route dedup fix |
-| Outcome | 75.9% | 73.9% | 74%+ | NCBI retry helps |
-| Classification | 82.8% | 84.8% | 85% | Stable |
+**Targets (updated with corrected baselines):**
+| Field | v27e | v28 (verified) | v29 (verified) | v30 target | Mechanism |
+|---|---|---|---|---|---|
+| Peptide | 80.0% | 96.0% | 92.0% | **94%+** | Sequence Rule 3 + cell therapy prompts |
+| RfF | 74.4% | 82.6% | 80.9% | **84%+** | whyStopped negation filter |
+| Delivery | 93.1% | 93.5% | 91.5% | 93%+ | Stable |
+| Outcome | 75.9% | 73.9% | 74.5% | 74%+ | Leave as-is (exceeds human) |
+| Classification | 82.8% | 84.8% | 83.0% | **87%+** | DBAASP verification gate |
 
 ### v22-era Job Performance (old code, mapped to v24 categories)
 
@@ -297,8 +377,8 @@ The FALSE→TRUE pattern (74% of errors) means the agent is too conservative —
 
 | Environment | Branch | Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v27e (8456a66) | None (c00a1eef08f4 complete) |
-| Dev (port 9005) | dev | v28 (in progress) | None |
+| Prod (port 8005) | main | v29 (f9ec75a) | None (3 v29 jobs complete) |
+| Dev (port 9005) | dev | v30 (in progress) | None |
 
 ## Important Notes
 
