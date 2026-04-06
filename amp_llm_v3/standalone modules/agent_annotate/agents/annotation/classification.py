@@ -148,11 +148,22 @@ def _deterministic_classify(
         if has_dramp: db_names.append("DRAMP")
         if has_dbaasp: db_names.append("DBAASP")
         if has_apd: db_names.append("APD")
-        logger.info(f"  classification: deterministic → {value} (database hits: {', '.join(db_names)})")
+        # v30: DBAASP-only hits go through verification — in-vitro antimicrobial
+        # activity (DBAASP) does not always mean clinical AMP (e.g., apelin, GLP-2,
+        # thymalfasin have DBAASP entries but are hormone/immunomodulatory peptides).
+        # DRAMP/APD hits or multi-database hits remain deterministic (higher confidence).
+        db_only_dbaasp = has_dbaasp and not has_dramp and not has_apd
+        logger.info(
+            f"  classification: deterministic → {value} (database hits: {', '.join(db_names)})"
+            f"{' [DBAASP-only: sending to verification]' if db_only_dbaasp else ''}"
+        )
         return FieldAnnotation(
-            field_name="classification", value=value, confidence=0.95,
-            reasoning=f"[Deterministic v9] AMP database hits: {', '.join(db_names)}",
-            evidence=[], model_name="deterministic", skip_verification=True,
+            field_name="classification", value=value,
+            confidence=0.80 if db_only_dbaasp else 0.95,
+            reasoning=f"[Deterministic v{'30' if db_only_dbaasp else '9'}] AMP database hits: {', '.join(db_names)}"
+                      + (" — DBAASP-only, requires verification" if db_only_dbaasp else ""),
+            evidence=[], model_name="deterministic",
+            skip_verification=not db_only_dbaasp,
         )
 
     return None

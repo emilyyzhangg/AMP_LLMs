@@ -232,7 +232,9 @@ FIELD_PROMPTS = {
             "peptide-PMO conjugates, insulin.\n"
             "Excludes: monoclonal antibodies (>100 AA), small molecules, nutritional formulas "
             "(\"Peptide 1.5\", Peptamen), HSP-peptide complexes (peptide is cargo), exosome vehicles, "
-            "whole proteins >100 AA.\n\n"
+            "whole proteins >100 AA, peptide-loaded cell therapies (dendritic cells pulsed with "
+            "peptides, CAR-T cells — the therapy is the cell product, not the peptide antigens), "
+            "dietary/nutritional peptide supplements (collagen peptide, whey protein isolate).\n\n"
             "EXAMPLES:\n"
             "- Aviptadil (VIP, 28 amino acids) → True\n"
             "- Semaglutide (GLP-1 analogue, 31 AA) → True\n"
@@ -256,6 +258,11 @@ FIELD_PROMPTS = {
             "- Heat shock protein-peptide complexes: peptide is cargo → False.\n"
             "- CYCLIC PEPTIDES: ChEMBL may call them 'small molecules' — still True.\n"
             "- RADIOLABELED PEPTIDES: classify by the PEPTIDE BACKBONE, not the label.\n"
+            "- CELL THERAPIES: If the intervention is dendritic cells (DCs) pulsed/loaded with "
+            "peptides, a peptide vaccine administered via DC, or CAR-T cells — the THERAPY is the "
+            "cell product. Peptides are antigens or targeting components, NOT the therapeutic → False.\n"
+            "- DIETARY SUPPLEMENTS: Collagen peptide, whey protein isolate, hydrolyzed protein "
+            "supplements are nutritional products, not peptide drugs → False.\n"
         ),
         "valid_values": ["True", "False"],
         "parse_pattern": r"Peptide:\s*(True|False)",

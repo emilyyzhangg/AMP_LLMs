@@ -386,17 +386,20 @@ class FailureReasonAgent(BaseAnnotationAgent):
             return "Business Reason"
 
         # Check whyStopped field
+        # v30: apply same negation filter as findings/signals — prevents
+        # "not due to any safety concerns" from matching "safety" keyword.
         why_match = re.search(r"why stopped:\s*(.+?)(?:\n|$)", lower)
         if why_match:
             why = why_match.group(1).strip()
             if why != "not provided" and why:
-                if any(kw in why for kw in ["toxic", "safety", "adverse"]):
+                why_filtered = self._strip_negated_sentences(why)
+                if any(kw in why_filtered for kw in ["toxic", "safety", "adverse"]):
                     return "Toxic/Unsafe"
-                if any(kw in why for kw in ["efficacy", "futility", "endpoint"]):
+                if any(kw in why_filtered for kw in ["efficacy", "futility", "endpoint"]):
                     return "Ineffective for purpose"
-                if any(kw in why for kw in ["covid", "pandemic"]):
+                if any(kw in why_filtered for kw in ["covid", "pandemic"]):
                     return "Due to covid"
-                if any(kw in why for kw in ["recruit", "enrollment"]):
+                if any(kw in why_filtered for kw in ["recruit", "enrollment"]):
                     return "Recruitment issues"
                 return "Business Reason"
 
