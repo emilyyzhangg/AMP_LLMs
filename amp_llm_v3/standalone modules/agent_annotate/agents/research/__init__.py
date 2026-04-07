@@ -6,8 +6,10 @@ v8: Removed 3 dead agents:
   - IntAct: 1/10 hit rate, mostly noise (generic protein interactions)
   - CARD: 0/10 hit rate, only relevant for antibiotic resistance trials
 
-Removed Semantic Scholar from literature agent (heavy rate limiting, 429s).
-12 active agents remain, querying 17+ free databases.
+v8: Removed Semantic Scholar from literature agent (heavy rate limiting).
+v31: Reintroduced as standalone agent with proper rate limiting. Added
+     OpenAlex and CrossRef for broader literature coverage.
+15 active agents remain, querying 20+ free databases.
 """
 
 from agents.research.clinical_protocol import ClinicalProtocolAgent
@@ -22,6 +24,9 @@ from agents.research.apd_client import APDClient
 from agents.research.who_ictrp_client import WHOICTRPClient
 from agents.research.iuphar_client import IUPHARClient
 from agents.research.pdbe_client import PDBEClient
+from agents.research.openalex_client import OpenAlexClient
+from agents.research.semantic_scholar_client import SemanticScholarClient
+from agents.research.crossref_client import CrossRefClient
 
 RESEARCH_AGENTS = {
     "clinical_protocol": ClinicalProtocolAgent,
@@ -36,4 +41,7 @@ RESEARCH_AGENTS = {
     "who_ictrp": WHOICTRPClient,
     "iuphar": IUPHARClient,
     "pdbe": PDBEClient,
+    "openalex": OpenAlexClient,
+    "semantic_scholar": SemanticScholarClient,
+    "crossref": CrossRefClient,
 }

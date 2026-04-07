@@ -16,6 +16,7 @@ class FieldAnnotation(BaseModel):
     evidence: list[SourceCitation] = []
     model_name: str = ""       # Which model produced this
     skip_verification: bool = False  # v9: deterministic pre-classifiers set True to bypass blind verification
+    evidence_grade: str = "llm"  # v31: "deterministic", "db_confirmed", or "llm"
 
 
 class TrialMetadata(BaseModel):

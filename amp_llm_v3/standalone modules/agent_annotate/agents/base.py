@@ -28,6 +28,8 @@ SOURCE_WEIGHTS = {
     "who_ictrp": 0.80,
     "iuphar": 0.80,
     "pdbe": 0.80,
+    "openalex": 0.85,    # v31: broad literature index
+    "crossref": 0.75,    # v31: DOI metadata, variable abstract quality
 }
 
 # How relevant each research agent is to each annotation field (0-1)
@@ -45,6 +47,9 @@ FIELD_RELEVANCE = {
         "who_ictrp": 0.50,
         "iuphar": 0.80,
         "pdbe": 0.50,
+        "openalex": 0.60,
+        "semantic_scholar": 0.55,
+        "crossref": 0.40,
     },
     "delivery_mode": {
         "clinical_protocol": 0.90,
@@ -59,6 +64,9 @@ FIELD_RELEVANCE = {
         "who_ictrp": 0.60,
         "iuphar": 0.30,
         "pdbe": 0.15,
+        "openalex": 0.65,
+        "semantic_scholar": 0.55,
+        "crossref": 0.45,
     },
     "outcome": {
         "clinical_protocol": 0.90,
@@ -73,6 +81,9 @@ FIELD_RELEVANCE = {
         "who_ictrp": 0.70,
         "iuphar": 0.30,
         "pdbe": 0.15,
+        "openalex": 0.90,
+        "semantic_scholar": 0.85,
+        "crossref": 0.75,
     },
     "reason_for_failure": {
         "clinical_protocol": 0.60,
@@ -87,6 +98,9 @@ FIELD_RELEVANCE = {
         "who_ictrp": 0.50,
         "iuphar": 0.15,
         "pdbe": 0.10,
+        "openalex": 0.70,
+        "semantic_scholar": 0.65,
+        "crossref": 0.55,
     },
     "peptide": {
         "clinical_protocol": 0.50,
@@ -101,6 +115,9 @@ FIELD_RELEVANCE = {
         "who_ictrp": 0.30,
         "iuphar": 0.85,
         "pdbe": 0.85,
+        "openalex": 0.60,
+        "semantic_scholar": 0.55,
+        "crossref": 0.40,
     },
     "sequence": {
         "clinical_protocol": 0.10,
@@ -115,6 +132,9 @@ FIELD_RELEVANCE = {
         "who_ictrp": 0.10,
         "iuphar": 0.40,
         "pdbe": 0.80,
+        "openalex": 0.30,
+        "semantic_scholar": 0.25,
+        "crossref": 0.20,
     },
 }
 
@@ -220,6 +240,8 @@ class BaseAnnotationAgent(ABC):
             "ebi_proteins": "STRUCTURAL DATA",
             "duckduckgo": "WEB SOURCES",
             "openfda": "TRIAL METADATA",
+            "openalex": "PUBLISHED RESULTS",
+            "crossref": "PUBLISHED RESULTS",
         }
 
         # Extract intervention names for relevance filtering
@@ -269,13 +291,22 @@ class BaseAnnotationAgent(ABC):
             section.sort(key=lambda x: x[1], reverse=True)
 
         # Deduplicate and filter low-value citations
+        # v31: Added identifier-based dedup (PMID/DOI) to prevent the same
+        # paper from consuming budget slots when found by multiple sources
+        # (PubMed + OpenAlex + Semantic Scholar).
         seen_snippets: set[str] = set()
+        seen_identifiers: set[str] = set()
 
         def _is_duplicate(citation: SourceCitation) -> bool:
+            ident = (citation.identifier or "").upper().strip()
+            if ident and ident in seen_identifiers:
+                return True
             key = (citation.snippet or "")[:60].lower()
             if key in seen_snippets:
                 return True
             seen_snippets.add(key)
+            if ident:
+                seen_identifiers.add(ident)
             return False
 
         def _is_noise(citation: SourceCitation) -> bool:

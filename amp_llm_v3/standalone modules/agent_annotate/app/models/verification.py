@@ -24,6 +24,7 @@ class ConsensusResult(BaseModel):
     consensus_reached: bool
     agreement_ratio: float = 0.0   # e.g. 3/3 = 1.0
     opinions: list[ModelOpinion] = []
+    primary_confidence: float = 0.7  # v31: used by confidence-weighted majority vote
     reconciler_used: bool = False
     reconciler_reasoning: Optional[str] = None
     flag_reason: Optional[str] = None

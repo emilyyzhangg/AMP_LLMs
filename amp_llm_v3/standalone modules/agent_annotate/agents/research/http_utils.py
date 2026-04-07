@@ -48,6 +48,8 @@ _HOST_LIMITS = {
     "trialsearch.who.int": 5,
     "www.guidetopharmacology.org": 5,
     "card.mcmaster.ca": 5,
+    "api.openalex.org": 10,    # v31: polite pool with email
+    "api.crossref.org": 10,    # v31: polite pool with email
 }
 _DEFAULT_CONCURRENCY = 10
 
