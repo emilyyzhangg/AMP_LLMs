@@ -91,6 +91,16 @@ research_agents:
   pdbe:
     sources:
       - pdbe
+  # v31: New literature sources for broader publication coverage
+  openalex:
+    sources:
+      - openalex
+  semantic_scholar:
+    sources:
+      - semantic_scholar
+  crossref:
+    sources:
+      - crossref
 
 annotation_agents:
   classification:
