@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-06
-**Current state:** v30 on dev. v29 test runs complete (3 jobs, 150 NCTs on prod f9ec75a). Concordance methodology corrected: v28 baseline was mixing pre/post-verification values. True v28 verified baseline: peptide 96%, RfF 82.6%. v29 negation fix worked at annotation layer (+16pp RfF) but verification was already catching those errors → net pipeline effect flat. v30 fixes: whyStopped negation filter, post-verification sequence consistency, literature logger bug, cell therapy peptide prompts, DBAASP verification gate.
+**Last updated:** 2026-04-07
+**Current state:** v31 on prod (f9150a7). 50-NCT validation running (510e619f5f88). Smoke tests show peptide 90-100%, delivery 80-100% on evaluated trials, CrossRef/OpenAlex/SS all producing citations. Training CSV re-bucketed from original Excel source — fixed 145 injection annotations incorrectly mapped to "other". Human inter-rater delivery mode: 88.9% (was 78.3% with buggy CSV).
 
 ## v24 Changes
 
@@ -218,30 +218,59 @@ Only 7 trial-field values changed (LLM nondeterminism). No code regressions.
 
 5. **P1: DBAASP verification gate** (`classification.py`): DBAASP-only hits now go through verification (`skip_verification=False`, confidence 0.80) instead of being auto-classified as AMP. DRAMP/APD hits or multi-database hits remain deterministic. Addresses 3 false AMP classifications (apelin, GLP-2, thymalfasin).
 
+### v31 Changes (2026-04-07)
+
+**Literature APIs (3 new research agents, 15 total, 20+ databases):**
+- **OpenAlex client** (`openalex_client.py`): 250M+ works, free polite pool. Searches by NCT ID, falls back to title+intervention keywords. Reconstructs abstracts from inverted index. Producing 1-5 citations per trial.
+- **Semantic Scholar client** (`semantic_scholar_client.py`): Reintroduced as standalone agent (removed from literature agent in v8 for 429s). TLDR summaries uniquely valuable for outcome. Rate-limited at 3 concurrent.
+- **CrossRef client** (`crossref_client.py`): Non-PubMed journal coverage. Searches by NCT ID and title keywords.
+- **Evidence dedup** (`base.py`): Identifier-based dedup (PMID/DOI) alongside snippet-based. Prevents same paper from 3 sources wasting budget.
+- **Metadata fix** (`orchestrator.py`): Trial title now included in research metadata for SS/CrossRef fallback searches.
+- Config: `OPENALEX_EMAIL`, `CROSSREF_EMAIL` env vars. Rate limits in `http_utils.py`. Source weights, field relevance, section mappings in `base.py`.
+
+**Peptide verification logic (no cheat sheets):**
+- **Confidence-weighted majority vote** (`reconciler.py`): Replaces equal head count. Primary at 0.93 conf outweighs three verifiers at 0.5 each. Fixes insulin nondeterminism.
+- **Low-confidence unanimous dissent gate** (`orchestrator.py`): Avg dissent conf < 0.55 no longer overrides high-conf primary (> 0.85).
+- **Evidence grade propagation** (`annotation.py`, `orchestrator.py`): `evidence_grade` field — "deterministic", "db_confirmed", or "llm". DB-confirmed annotations require verifier conf > 0.8 to override (vs 0.7).
+- **Per-field verifier evidence budgets** (`verifier.py`): Peptide 25, outcome 20, others 15 citations on mac_mini.
+- **Reconciler override** (`reconciler.py`): After reconciler decides, cross-checks against confidence-weighted vote. If reconciler contradicts the weighted vote and primary had > 0.85 conf aligned with weighted winner, overrides reconciler.
+
+**Delivery mode agent upgrade:**
+- **Radiotracer detection** (`delivery_mode.py`): [68Ga], [18F], [99mTc] etc. and PROCEDURE type with imaging keywords → "Other" immediately.
+- **Intervention description scan**: Checks intervention descriptions for oral (tablet, capsule) and topical (hydrogel, applied topically) before OpenFDA/protocol keyword scan. Catches multi-drug trials.
+- **Tightened topical keywords**: Removed "strip", "spray", "powder", "covering", "bandage", "dressing", "wash", "rinse" from `_parse_single_value` and `_infer_from_pass1`. Added skin prick/test → Injection.
+- **Injection priority**: When both injection and topical routes found, prefer injection.
+- **Removed Rule 8** (peptide vaccine → injection default): If no route evidence, "Other" is correct.
+
+**Training CSV fix:**
+- Re-bucketed delivery mode from original Excel source (`clinical_trials-with-sequences.xlsx`). Previous bucketing only matched "injection/infusion" (full phrase) and "IV" (case-sensitive), missing "intravenous", "subcutaneous", etc.
+- 145 injection annotations recovered from "other". Human inter-rater delivery mode: 88.9% (was 78.3%).
+
 ### Next Steps
 
-- Run 50-NCT validation on v30 (same set) — smoke test the fixes
-- If whyStopped fix + sequence rule + cell therapy prompts recover regressions → v30 is candidate for full 642-NCT run
-- Literature search coverage improvement (Google Scholar/Semantic Scholar fallback) deferred to v31
+- 50-NCT v31 validation running (job 510e619f5f88)
+- If results hold → full 642-NCT run
+- Remaining delivery gaps: multi-route detection (4 cases), oral priority over OpenFDA (3 cases)
 
-**Targets (updated with corrected baselines):**
-| Field | v27e | v28 (verified) | v29 (verified) | v30 target | Mechanism |
-|---|---|---|---|---|---|
-| Peptide | 80.0% | 96.0% | 92.0% | **94%+** | Sequence Rule 3 + cell therapy prompts |
-| RfF | 74.4% | 82.6% | 80.9% | **84%+** | whyStopped negation filter |
-| Delivery | 93.1% | 93.5% | 91.5% | 93%+ | Stable |
-| Outcome | 75.9% | 73.9% | 74.5% | 74%+ | Leave as-is (exceeds human) |
-| Classification | 82.8% | 84.8% | 83.0% | **87%+** | DBAASP verification gate |
+**Updated human baseline (corrected CSV):**
+| Field | n | Agreement | AC₁ |
+|---|---|---|---|
+| Classification | 454 | 93.2% | 0.919 |
+| Delivery Mode | 423 | 88.9% | 0.878 |
+| Outcome | 269 | 64.3% | 0.583 |
+| Reason for Failure | 387 | 88.6% | 0.881 |
+| Peptide | 680 | 86.0% | 0.790 |
+| Sequence | 227 | 52.0% | 0.518 |
 
 ### v22-era Job Performance (old code, mapped to v24 categories)
 
 All jobs ran on v22 code (old categories). Results mapped through v24 aliases for comparison against training CSV.
 
-**Human baseline (R1 vs R2, training CSV, 682 NCTs):**
+**Human baseline (R1 vs R2, corrected training CSV, 680 NCTs):**
 | Field | n | Agreement | AC₁ |
 |---|---|---|---|
 | Classification | 454 | 93.2% | 0.919 |
-| Delivery Mode | 488 | 88.3% | 0.864 |
+| Delivery Mode | 423 | 88.9% | 0.878 |
 | Outcome | 269 | 64.3% | 0.583 |
 | Reason for Failure | 387 | 88.6% | 0.881 |
 | Peptide | 680 | 86.0% | 0.790 |
@@ -377,8 +406,8 @@ The FALSE→TRUE pattern (74% of errors) means the agent is too conservative —
 
 | Environment | Branch | Version | Active Job |
 |---|---|---|---|
-| Prod (port 8005) | main | v29 (f9ec75a) | None (3 v29 jobs complete) |
-| Dev (port 9005) | dev | v30 (in progress) | None |
+| Prod (port 8005) | main | v31 (f9150a7) | 50-NCT validation (510e619f5f88) |
+| Dev (port 9005) | dev | v31 (d9afd8f1) | None |
 
 ## Important Notes
 
