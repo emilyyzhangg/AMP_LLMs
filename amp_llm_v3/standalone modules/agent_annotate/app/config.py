@@ -30,6 +30,10 @@ NCT_SERVICE_URL = f"http://localhost:{NCT_SERVICE_PORT}"
 # --- External API keys (optional, all free-tier) ---
 # NCBI E-utilities key (free registration at ncbi.nlm.nih.gov) — raises rate limit from 3/sec to 10/sec
 PUBMED_API_KEY = os.getenv("PUBMED_API_KEY", "")
+# v31: OpenAlex polite pool (email only, no key needed) — 10 req/sec
+OPENALEX_EMAIL = os.getenv("OPENALEX_EMAIL", "")
+# v31: CrossRef polite pool (email in User-Agent) — faster than anonymous
+CROSSREF_EMAIL = os.getenv("CROSSREF_EMAIL", "")
 
 # --- CORS ---
 CORS_ORIGINS = os.getenv(

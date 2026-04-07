@@ -187,37 +187,42 @@ class ReconciliationAgent:
 
     @staticmethod
     def _majority_vote(consensus_result: ConsensusResult) -> str:
-        """Pick the most common value across primary + all verifiers.
+        """Pick the winner across primary + all verifiers using confidence weighting.
 
-        Uses normalized values for counting to prevent format differences
+        v31: Changed from equal head count to confidence-weighted voting.
+        A high-confidence primary (0.93) outweighs three low-confidence
+        verifiers (0.5 each avg = 0.5 per vote). This prevents uncertain
+        models from overriding a confident primary by sheer numbers.
+
+        Uses normalized values to prevent format differences
         (e.g., "IV" vs "Intravenous") from splitting the vote.
         """
         from agents.verification.consensus import _normalize
 
-        raw_votes: list[str] = []
-        # v18: Always include primary vote for reason_for_failure, even when empty.
-        # Previously empty strings were silently dropped (falsy), meaning the
-        # primary's deliberate "no failure" assessment never counted in the vote.
-        # Guard against None: None means "no value returned", not "empty string".
+        # Collect weighted votes: {normalized_value: (total_weight, first_raw_value)}
+        weighted: dict[str, float] = {}
+        norm_to_raw: dict[str, str] = {}
+
         ov = consensus_result.original_value
         if ov is not None and (ov or consensus_result.field_name == "reason_for_failure"):
-            raw_votes.append(ov)
+            nv = _normalize(ov, consensus_result.field_name)
+            primary_conf = getattr(consensus_result, "primary_confidence", 0.7)
+            weighted[nv] = weighted.get(nv, 0.0) + primary_conf
+            if nv not in norm_to_raw:
+                norm_to_raw[nv] = ov
+
         for opinion in consensus_result.opinions:
             sv = opinion.suggested_value
             if sv is not None and (sv or consensus_result.field_name == "reason_for_failure"):
-                raw_votes.append(sv)
-        if not raw_votes:
+                nv = _normalize(sv, consensus_result.field_name)
+                weighted[nv] = weighted.get(nv, 0.0) + opinion.confidence
+                if nv not in norm_to_raw:
+                    norm_to_raw[nv] = sv
+
+        if not weighted:
             return ""
-        # Normalize for counting, return the first raw value matching the winner
-        norm_to_raw: dict[str, str] = {}
-        norm_votes: list[str] = []
-        for rv in raw_votes:
-            nv = _normalize(rv, consensus_result.field_name)
-            norm_votes.append(nv)
-            if nv not in norm_to_raw:
-                norm_to_raw[nv] = rv
-        counter = Counter(norm_votes)
-        winner_norm, _ = counter.most_common(1)[0]
+
+        winner_norm = max(weighted, key=weighted.get)
         return norm_to_raw[winner_norm]
 
     def _parse_final_answer(self, text: str) -> str:

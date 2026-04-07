@@ -324,9 +324,15 @@ class BlindVerifier:
         # --- Evidence budget matches primary annotator ---
         is_server = config.orchestrator.hardware_profile == "server"
         # v28: Reduced from 30→15 for mac_mini. Verifiers confirm/reject —
-        # they don't need more evidence than the primary annotator (peptide: 20).
-        # Less context = better format compliance from small models.
-        max_citations = max_citations_override or (35 if is_server else 15)
+        # they don't need more evidence than the primary annotator.
+        # v31: Per-field budgets — peptide and outcome verifiers need more
+        # evidence to see database hits that inform the primary's decision.
+        _FIELD_BUDGETS = {
+            "peptide": (35, 25),
+            "outcome": (35, 20),
+        }
+        budget = _FIELD_BUDGETS.get(field_name, (35, 15))
+        max_citations = max_citations_override or (budget[0] if is_server else budget[1])
 
         # Build structured evidence from research (raw data only, no primary answer)
         _SOURCE_TO_SECTION = {

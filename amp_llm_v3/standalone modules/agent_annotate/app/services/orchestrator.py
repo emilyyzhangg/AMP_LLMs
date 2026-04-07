@@ -866,24 +866,39 @@ class PipelineOrchestrator:
                     verifier_opinions=opinions,
                     threshold=threshold,
                 )
+                consensus.primary_confidence = annotation.confidence
 
                 if not consensus.consensus_reached:
-                    # High-confidence primary protection — only when at least one
-                    # verifier agrees (agreement_ratio > 0). If ALL verifiers disagree
-                    # (agreement_ratio == 0.0), route to reconciler regardless of
-                    # primary confidence: unanimous dissent overrides high confidence.
+                    # High-confidence primary protection.
+                    # v31: Two paths to protect the primary:
+                    #   1. At least one verifier agrees (agreement_ratio > 0)
+                    #   2. Unanimous dissent, but all dissenters are low-confidence
+                    #      (avg < 0.55) — uncertain models shouldn't override
+                    #      a confident primary.
+                    dissenting = [o for o in consensus.opinions if not o.agrees]
                     verifier_max_conf = max(
-                        (o.confidence for o in consensus.opinions if not o.agrees),
+                        (o.confidence for o in dissenting),
                         default=0.0,
                     )
-                    if (annotation.confidence > 0.85 and verifier_max_conf <= 0.7
-                            and consensus.agreement_ratio > 0.0):
+                    avg_dissent_conf = (
+                        sum(o.confidence for o in dissenting) / len(dissenting)
+                        if dissenting else 0.0
+                    )
+                    # v31: Also check evidence grade — db-confirmed annotations
+                    # require stronger dissent to override
+                    evidence_grade = getattr(annotation, "evidence_grade", "llm")
+                    override_conf_bar = 0.8 if evidence_grade == "db_confirmed" else 0.7
+
+                    if (annotation.confidence > 0.85
+                            and verifier_max_conf <= override_conf_bar
+                            and (consensus.agreement_ratio > 0.0
+                                 or avg_dissent_conf < 0.55)):
                         consensus.final_value = annotation.value
                         consensus.consensus_reached = True
                         consensus.reconciler_used = False
                         consensus.reconciler_reasoning = (
                             f"Primary override: confidence {annotation.confidence:.2f} "
-                            f"> 0.85, dissenting verifiers at {verifier_max_conf:.2f}"
+                            f"> 0.85, dissenting verifiers avg {avg_dissent_conf:.2f}"
                         )
                     else:
                         reconcile_queue.append((nct_id, annotation, consensus))
@@ -1554,6 +1569,17 @@ class PipelineOrchestrator:
                         )
                 except Exception as e:
                     logger.error(f"  RETRY [{nct_id}]: {field_name} retry failed: {e}")
+
+        # v31: Set evidence_grade for annotations backed by database citations.
+        # DB-confirmed annotations get stronger protection against verifier override.
+        _DB_KEYWORDS = ("uniprot", "dramp", "dbaasp", "chembl", "apd", "rcsb")
+        for ann in annotations:
+            if ann.skip_verification:
+                ann.evidence_grade = "deterministic"
+            elif ann.value and ann.reasoning:
+                reasoning_lower = ann.reasoning.lower()
+                if any(kw in reasoning_lower for kw in _DB_KEYWORDS):
+                    ann.evidence_grade = "db_confirmed"
 
         return annotations
 
