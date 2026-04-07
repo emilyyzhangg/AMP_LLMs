@@ -180,9 +180,14 @@ _PROTOCOL_ROUTE_KEYWORDS = {
     # Other (intranasal / inhalation)
     "intranasal": "Other", "nasal spray": "Other",
     "inhalation": "Other", "nebulizer": "Other", "nebuliser": "Other",
-    # Topical
+    # Topical (v31: tightened — require "topical" qualifier or explicit formulation)
     "topical cream": "Topical", "topical gel": "Topical",
+    "topical ointment": "Topical", "topical application": "Topical",
+    "applied topically": "Topical",
     "mouthwash": "Topical", "mouth rinse": "Topical",
+    # Injection — skin tests and prick tests are intradermal injections
+    "skin prick": "Injection/Infusion", "skin test": "Injection/Infusion",
+    "prick test": "Injection/Infusion",
 }
 
 _DRUG_CLASS_ROUTES = {
@@ -317,6 +322,17 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
 
     if not found_routes:
         return None
+
+    # v31: If OpenFDA returned "ophthalmic" → Topical but protocol evidence
+    # also mentions injection keywords, prefer injection. Many peptide
+    # trials with topical/ophthalmic formulations are annotated as
+    # injection by humans when the primary route is injection.
+    if "Topical" in found_routes and "Injection/Infusion" in found_routes:
+        topical_conf = found_routes["Topical"][0]
+        injection_conf = found_routes["Injection/Infusion"][0]
+        if injection_conf >= topical_conf:
+            del found_routes["Topical"]
+            logger.info("  delivery_mode: dropped Topical in favor of Injection/Infusion (injection priority)")
 
     # Build the result — single route or comma-separated multi-route
     routes_list = sorted(found_routes.keys())
@@ -513,10 +529,13 @@ class DeliveryModeAgent(BaseAnnotationAgent):
                                        "by mouth"]):
             return "Oral"
 
-        # Topical — any topical route or formulation
-        if any(kw in lower for kw in ["topical", "cream", "gel", "ointment", "powder",
-                                       "spray", "strip", "covering", "bandage", "dressing",
-                                       "patch", "wash", "rinse", "mouthwash", "lotion"]):
+        # Topical — v31: tightened keywords. Removed overly broad terms
+        # ("strip", "spray", "powder") that triggered false positives for
+        # dental strips, skin prick tests, and ophthalmic solutions.
+        # Only match when "topical" is explicit or formulation is unambiguous.
+        if any(kw in lower for kw in ["topical", "cream", "gel", "ointment",
+                                       "patch", "mouthwash", "mouth rinse",
+                                       "lotion"]):
             return "Topical"
 
         return "Other"
