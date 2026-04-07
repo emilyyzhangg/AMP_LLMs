@@ -1067,7 +1067,13 @@ class PipelineOrchestrator:
                         if name:
                             interventions.append({"name": name})
                 if interventions:
-                    metadata = {"interventions": interventions}
+                    # v31: Include title for literature API fallback searches
+                    id_mod = proto_section.get("identificationModule", {})
+                    trial_title = (
+                        id_mod.get("briefTitle", "")
+                        or id_mod.get("officialTitle", "")
+                    )
+                    metadata = {"interventions": interventions, "title": trial_title}
                     logger.info(
                         f"  Extracted interventions: "
                         f"{[i['name'] for i in interventions]}"
