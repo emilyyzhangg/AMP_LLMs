@@ -115,10 +115,7 @@ CLASSIFICATION RULES:
    (e.g., one experimental drug given IV and another given orally), list ALL routes comma-separated
    in the same order as the experimental drugs appear.
    Do NOT list the route of placebo, active comparator, or standard-of-care arms.
-8. PEPTIDE VACCINES AND CANCER TRIALS: Peptide vaccines (cancer vaccines, anti-tumor peptides,
-   immunotherapy peptides) are NOT administered intranasally. If the protocol does not explicitly
-   specify the route for a peptide vaccine or cancer immunotherapy, use
-   "Injection/Infusion", NOT Other.
+8. If no route evidence was found from ANY source, classify as "Other" — do NOT guess.
 
 Format your response EXACTLY as:
 Delivery Mode: [one of the 4 valid values, exactly as written — or comma-separated if multi-route]
@@ -226,8 +223,12 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
     v17: Collects ALL distinct routes across all citations instead of returning
     on the first match. Produces comma-separated values for multi-route trials.
     Excludes title text from ambiguous keyword matching.
+    v31: Radiotracer detection, multi-route oral scan, intervention description
+    route extraction, protocol-over-OpenFDA priority.
     """
     intervention_names: list[str] = []
+    intervention_descs: list[str] = []  # v31: intervention descriptions for formulation detection
+    intervention_types: list[str] = []  # v31: DRUG, BIOLOGICAL, PROCEDURE, etc.
     found_routes: dict[str, tuple[float, bool, list]] = {}  # value → (confidence, skip_verify, evidence)
 
     for result in research_results:
@@ -252,6 +253,57 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
                 # Include if: arm is experimental, or no arm type info available
                 if not experimental_labels or any(lbl in experimental_labels for lbl in arm_labels):
                     intervention_names.append(name.lower().strip())
+                    desc = interv.get("description", "")
+                    if desc:
+                        intervention_descs.append(desc.lower().strip())
+                    intervention_types.append(interv.get("type", "").upper())
+
+    # v31: Radiotracer / imaging agent detection.
+    # PET/SPECT tracers are injected IV but humans classify delivery as "Other"
+    # because they're diagnostic, not therapeutic drug delivery.
+    _RADIOTRACER_PATTERNS = ["[68ga]", "[18f]", "[99mtc]", "[111in]", "[64cu]",
+                             "[90y]", "[177lu]", "68ga-", "18f-", "99mtc-"]
+    for name in intervention_names:
+        if any(pat in name for pat in _RADIOTRACER_PATTERNS):
+            logger.info(f"  delivery_mode: radiotracer detected ('{name}') → Other")
+            return FieldAnnotation(
+                field_name="delivery_mode", value="Other", confidence=0.90,
+                reasoning=f"[Deterministic v31] Radiotracer/imaging agent detected: '{name}'",
+                evidence=[], model_name="deterministic", skip_verification=False,
+            )
+    if "PROCEDURE" in intervention_types and any(
+        kw in " ".join(intervention_names) for kw in ["pet", "spect", "imaging", "tracer"]
+    ):
+        logger.info("  delivery_mode: imaging procedure detected → Other")
+        return FieldAnnotation(
+            field_name="delivery_mode", value="Other", confidence=0.85,
+            reasoning="[Deterministic v31] Imaging/diagnostic procedure detected",
+            evidence=[], model_name="deterministic", skip_verification=False,
+        )
+
+    # v31: Scan intervention descriptions for oral formulations.
+    # Catches multi-drug trials where one drug is oral (tablet/capsule)
+    # that the keyword scan on citations would miss.
+    _ORAL_FORMULATION_KEYWORDS = ["tablet", "capsule", "oral", "by mouth", "taken orally"]
+    _TOPICAL_FORMULATION_KEYWORDS = ["hydrogel", "applied to", "topical application",
+                                      "applied topically", "mucosal application"]
+    for desc in intervention_descs:
+        for kw in _ORAL_FORMULATION_KEYWORDS:
+            if kw in desc:
+                if "Oral" not in found_routes:
+                    found_routes["Oral"] = (0.90, False, [])
+                    logger.info(f"  delivery_mode: found Oral (intervention desc: '{kw}')")
+                break
+        for kw in _TOPICAL_FORMULATION_KEYWORDS:
+            if kw in desc:
+                if "Topical" not in found_routes:
+                    found_routes["Topical"] = (0.90, False, [])
+                    logger.info(f"  delivery_mode: found Topical (intervention desc: '{kw}')")
+                break
+
+    for result in research_results:
+        if result.error or result.agent_name != "clinical_protocol":
+            continue
         for citation in result.citations:
             if citation.source_name == "openfda":
                 snippet_lower = citation.snippet.lower()
@@ -476,8 +528,8 @@ class DeliveryModeAgent(BaseAnnotationAgent):
             return "Injection/Infusion"
         if any(kw in lower for kw in ["oral", "by mouth", "tablet", "capsule"]):
             return "Oral"
-        if any(kw in lower for kw in ["cream", "gel", "ointment", "topical",
-                                       "spray", "wash", "powder", "strip", "patch"]):
+        if any(kw in lower for kw in ["topical", "cream", "gel", "ointment",
+                                       "patch", "mouthwash", "lotion"]):
             return "Topical"
 
         return "Other"
