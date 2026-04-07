@@ -48,8 +48,8 @@ class CrossRefClient(BaseResearchAgent):
             citations.extend(nct_citations)
             raw_data["crossref_nct_hits"] = len(nct_citations)
 
-            # Strategy 2: Fallback by title keywords
-            if not nct_citations and metadata:
+            # Strategy 2: Always try title keywords (NCT IDs rarely in CrossRef)
+            if metadata:
                 title = metadata.get("title", "")
                 if title:
                     words = [w for w in title.split() if len(w) > 3][:5]
@@ -76,7 +76,6 @@ class CrossRefClient(BaseResearchAgent):
             "query": query,
             "rows": 5,
             "sort": "relevance",
-            "filter": "type:journal-article",
         }
         try:
             resp = await resilient_get(

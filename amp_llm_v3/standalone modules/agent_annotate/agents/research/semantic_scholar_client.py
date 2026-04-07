@@ -42,15 +42,18 @@ class SemanticScholarClient(BaseResearchAgent):
             citations.extend(nct_citations)
             raw_data["ss_nct_hits"] = len(nct_citations)
 
-            # Strategy 2: Fallback by title keywords
-            if not nct_citations and metadata:
+            # Strategy 2: Always try title keywords (SS rarely indexes NCT IDs)
+            if metadata:
                 title = metadata.get("title", "")
                 if title:
                     words = [w for w in title.split() if len(w) > 3][:6]
                     if words:
                         fallback = await self._search(" ".join(words), client)
-                        citations.extend(fallback[:3])
-                        raw_data["ss_fallback_hits"] = len(fallback)
+                        # Deduplicate against NCT results
+                        seen_ids = {c.identifier for c in citations if c.identifier}
+                        new = [c for c in fallback if c.identifier not in seen_ids]
+                        citations.extend(new[:3])
+                        raw_data["ss_fallback_hits"] = len(new)
 
         return ResearchResult(
             agent_name=self.agent_name,

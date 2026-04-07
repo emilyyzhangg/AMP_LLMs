@@ -124,6 +124,30 @@ class ReconciliationAgent:
             # Handle empty string for reason_for_failure
             if normalized == "" and "" in valid_values:
                 canonical = ""
+
+            # v31: Cross-check reconciler against confidence-weighted vote.
+            # If the reconciler contradicts the weighted vote AND the primary
+            # had high confidence, the weighted vote wins. This prevents
+            # reconciler nondeterminism from overriding strong evidence
+            # (e.g., reconciler acknowledges insulin is a peptide but still
+            # returns False due to reasoning drift).
+            weighted_winner = self._majority_vote(consensus_result)
+            weighted_norm = _normalize(weighted_winner, field_name) if weighted_winner else ""
+            primary_conf = getattr(consensus_result, "primary_confidence", 0.7)
+            if (weighted_norm and weighted_norm != normalized
+                    and primary_conf > 0.85
+                    and _normalize(consensus_result.original_value, field_name) == weighted_norm):
+                logger.warning(
+                    f"  {field_name}: Reconciler said '{canonical}' but "
+                    f"confidence-weighted vote says '{weighted_winner}' "
+                    f"(primary conf={primary_conf:.2f}) — overriding reconciler"
+                )
+                canonical = weighted_winner
+                consensus_result.reconciler_reasoning = (
+                    (consensus_result.reconciler_reasoning or "") +
+                    f" [OVERRIDDEN by weighted vote: primary conf {primary_conf:.2f}]"
+                )
+
             consensus_result.final_value = canonical
             consensus_result.consensus_reached = True
             logger.info(
