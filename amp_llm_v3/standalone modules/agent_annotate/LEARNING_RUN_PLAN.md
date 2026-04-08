@@ -49,7 +49,7 @@
 | 51 | v30 generalization D | 790c4a15793b | 50 | 50/50 | **Complete** | v30 (92d18b7) | — | Unseen batch D. Classification 97.1%, peptide 84%, RfF 94.6%. Delivery 87.5% (corrected CSV). |
 | 52 | v31 smoke A | 37547b9fc3c9 | 10 | 10/10 | **Complete** | v31 (4906908) | — | Verification fixes confirmed: insulin True, glucagon True. OpenAlex working (1-5 cites). SS/CrossRef 0 (title metadata missing). |
 | 53 | v31 smoke B | 47a37e7d97fe | 10 | 10/10 | **Complete** | v31 (f9150a7) | — | Fresh NCTs. Peptide 90%, classification 90%, delivery 100% (on evaluated). CrossRef 3-4 cites/trial (title fix worked). SS 2-5 on 3/10. |
-| 54 | v31 validation | 510e619f5f88 | 50 | —/50 | **Running** | v31 (f9150a7) | — | Full v31: all 3 APIs, verification fixes, delivery upgrade, corrected CSV. |
+| 54 | v31 validation | 510e619f5f88 | 50 | 50/50 | **Complete** | v31 (f9150a7) | — | Peptide 96%, classification 84%, delivery 77.3% (regression from 93.5%), outcome 61.4%. 12 terminated→unknown errors, 7 AMP→Other misclassifications. |
 
 > **Note:** Jobs 36-40 are the last jobs run with old categories (v22 code). v24 is now merged to main (9db9e33) with simplified categories (binary AMP/Other, 4-category delivery mode). All future jobs use v24+ categories. Training CSV re-bucketed from Excel source on 2026-04-07 (v31) — delivery mode 145 injection annotations recovered from "other".
 
