@@ -1,5 +1,5 @@
 """
-Outcome Annotation Agent (v4 — v11 accuracy fixes, v17 heuristic override, v21 TERMINATED fix, v25 publication-priority, v26 TERMINATED override fix).
+Outcome Annotation Agent (v4 — v11 accuracy fixes, v17 heuristic override, v21 TERMINATED fix, v25 publication-priority, v26 TERMINATED override fix, v32 regex + safety nets).
 
 Determines trial outcome using a two-pass strategy:
   Pass 1: Extract ClinicalTrials.gov status, phase, and published results
@@ -57,6 +57,14 @@ VALID_VALUES = [
     "Unknown",
     "Active, not recruiting",
 ]
+
+# v32: Section headers produced by PASS1_PROMPT (lowercased).
+# Used as regex boundary instead of \n[A-Z] which never matches on lowered text.
+# Ported from failure_reason.py v29 fix (commit dce4466d).
+_SECTION_BOUNDARY = (
+    r"\n(?:registry status|trial phase|published results?"
+    r"|result valence|results posted|completion date|why stopped)"
+)
 
 # --------------------------------------------------------------------------- #
 #  Deterministic outcome mapping (v11)
@@ -413,6 +421,48 @@ class OutcomeAgent(BaseAnnotationAgent):
                 value = heuristic_value
                 reasoning = f"[Heuristic override: Pass 2 returned Unknown, _infer_from_pass1 → {heuristic_value}] " + reasoning
 
+        # v32: Terminated safety net — if we still have "Unknown" but the trial
+        # is TERMINATED with no results posted, default to "Terminated". Catches
+        # cases where generic drug publications (from v31 literature APIs) cause
+        # has_publications=True in _infer_from_pass1 and a keyword false-match
+        # returns early before reaching the registry status fallback.
+        if value == "Unknown":
+            lower_p1 = pass1_output.lower()
+            status_match = re.search(r"registry status:\s*(\S+)", lower_p1)
+            if status_match and "terminated" in status_match.group(1):
+                results_posted = (
+                    "results posted: yes" in lower_p1
+                    or "hasresults: true" in lower_p1
+                )
+                if not results_posted:
+                    logger.info("  outcome: v32 Terminated safety net activated")
+                    value = "Terminated"
+                    reasoning = (
+                        "[v32 Terminated safety net: TERMINATED with no results posted] "
+                        + reasoning
+                    )
+
+        # v32: hasResults override — COMPLETED trial with results posted but LLM
+        # said Unknown. H4 in the prompt says "lean Positive" but the LLM may not
+        # follow. _infer_from_pass1 has this at H2/H4 but only when has_publications
+        # is False. This backstop catches the remaining cases.
+        if value == "Unknown":
+            lower_p1 = pass1_output.lower()
+            results_posted = (
+                "results posted: yes" in lower_p1
+                or "hasresults: true" in lower_p1
+            )
+            if results_posted:
+                status_match = re.search(r"registry status:\s*(\S+)", lower_p1)
+                status = status_match.group(1) if status_match else ""
+                if "completed" in status or "complete" in status:
+                    logger.info("  outcome: v32 hasResults override activated (COMPLETED + results posted)")
+                    value = "Positive"
+                    reasoning = (
+                        "[v32 hasResults override: COMPLETED with results posted] "
+                        + reasoning
+                    )
+
         # Include pass 1 extraction in the reasoning for audit trail
         full_reasoning = f"[Pass 1 facts] {pass1_output[:500]}\n[Pass 2 decision] {reasoning}"
 
@@ -440,8 +490,9 @@ class OutcomeAgent(BaseAnnotationAgent):
         lower = pass1_text.lower()
 
         # Check for published results first (most important signal)
+        # v32: fixed section boundary — was \n[A-Z] on lowercased text (never matched)
         results_section = ""
-        match = re.search(r"published results?:\s*(.+?)(?:\n[A-Z]|\Z)", lower, re.DOTALL)
+        match = re.search(r"published results?:\s*(.+?)(?:" + _SECTION_BOUNDARY + r"|\Z)", lower, re.DOTALL)
         if match:
             results_section = match.group(1).strip()
 
@@ -542,7 +593,8 @@ class OutcomeAgent(BaseAnnotationAgent):
         lower = pass1_text.lower()
 
         # Extract published results section
-        results_match = re.search(r"published results?:\s*(.+?)(?:\n[A-Z]|\Z)", lower, re.DOTALL)
+        # v32: fixed section boundary — was \n[A-Z] on lowercased text (never matched)
+        results_match = re.search(r"published results?:\s*(.+?)(?:" + _SECTION_BOUNDARY + r"|\Z)", lower, re.DOTALL)
         results_section = results_match.group(1).strip() if results_match else ""
         has_publications = (
             results_section
