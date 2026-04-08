@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-07
-**Current state:** v31 on prod (f9150a7). 50-NCT validation running (510e619f5f88). Smoke tests show peptide 90-100%, delivery 80-100% on evaluated trials, CrossRef/OpenAlex/SS all producing citations. Training CSV re-bucketed from original Excel source — fixed 145 injection annotations incorrectly mapped to "other". Human inter-rater delivery mode: 88.9% (was 78.3% with buggy CSV).
+**Last updated:** 2026-04-08
+**Current state:** v32 on dev (f1051988). v31 50-NCT validation complete (510e619f5f88) — peptide 96%, delivery 77.3% (regression from 93.5%), outcome 61.4%. v32 fixes delivery regression with expanded oral keywords + injection priority guard.
 
 ## v24 Changes
 
@@ -246,11 +246,35 @@ Only 7 trial-field values changed (LLM nondeterminism). No code regressions.
 - Re-bucketed delivery mode from original Excel source (`clinical_trials-with-sequences.xlsx`). Previous bucketing only matched "injection/infusion" (full phrase) and "IV" (case-sensitive), missing "intravenous", "subcutaneous", etc.
 - 145 injection annotations recovered from "other". Human inter-rater delivery mode: 88.9% (was 78.3%).
 
+### v31 50-NCT Concordance (job 510e619f5f88, prod commit f9150a7) — 2026-04-07
+
+| Field | vs R1 (n) | AC₁ | vs R2 (n) | AC₁ | R1↔R2 | Status |
+|---|---|---|---|---|---|---|
+| Peptide | 96.0% (48/50) | 0.957 | 92.0% (46/50) | 0.910 | 86.0% | **Exceeds human** |
+| Classification | 84.1% (37/44) | 0.814 | 85.7% (36/42) | 0.835 | 93.2% | Stable |
+| Delivery | 77.3% (34/44) | 0.743 | 92.9% (39/42) | 0.922 | 88.9% | **Regression** |
+| Outcome | 61.4% (27/44) | 0.555 | 58.5% (24/41) | 0.522 | 64.3% | Near human |
+| RfF | 78.7% (37/47) | 0.755 | 75.6% (34/45) | 0.718 | 88.6% | Below |
+| Sequence | 60.9% (14/23) | 0.593 | 47.6% (10/21) | 0.454 | 52.0% | Exceeds human vs R1 |
+
+**Delivery regression root cause**: `_PROTOCOL_ROUTE_KEYWORDS` only had "oral tablet" and "oral capsule" — no standalone formulation keywords. Agent missed oral co-routes in 4 multi-drug trials. v31 injection priority rule also dropped Topical even when Oral was a third route.
+
+**Outcome**: 17 disagreements. 12 are Agent=Unknown vs R1=Positive/Failed (literature gaps for old trials). Not a code regression — v29 generalization (99 unseen NCTs) showed 71.4% vs human 59.0%. This 50-NCT set is biased toward hard pre-2005 trials.
+
+**RfF**: 10 disagreements, most cascade from outcome misses (agent doesn't detect failure → doesn't look for reason).
+
+### v32 Changes (2026-04-08)
+
+1. **P0: Delivery oral keyword expansion** (`delivery_mode.py`): Added 11 oral keywords to `_PROTOCOL_ROUTE_KEYWORDS`: tablet, capsule, oral administration, oral dose, oral formulation, oral solution, oral suspension, by mouth, taken orally, administered orally, given orally. Added "tablet" and "capsule" to `_AMBIGUOUS_KEYWORDS` (skipped in title text to avoid "capsule endoscopy" false positives). Should fix 4 missed oral co-routes.
+2. **P0: Injection priority guard** (`delivery_mode.py`): Injection-over-Topical rule now only fires when exactly 2 routes detected. Preserves Topical when Oral is also present (multi-drug trials).
+3. **P1: Evidence dedup quality** (`base.py`): Sort citations by (weight, snippet_length) so richer versions win dedup when the same paper is found by multiple sources (PubMed + OpenAlex + SS).
+
 ### Next Steps
 
-- 50-NCT v31 validation running (job 510e619f5f88)
-- If results hold → full 642-NCT run
-- Remaining delivery gaps: multi-route detection (4 cases), oral priority over OpenFDA (3 cases)
+- Merge v32 to main, run 50-NCT smoke test
+- If delivery recovers to ~90%+ → full 642-NCT run
+- Outcome: accept near-human baseline — further iteration has diminishing returns
+- EDAM learning loop: dormant until agent code stabilizes (drug name resolver and stability index still active and useful)
 
 **Updated human baseline (corrected CSV):**
 | Field | n | Agreement | AC₁ |
