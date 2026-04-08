@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-08
-**Current state:** v32 on dev (f1051988). v31 50-NCT validation complete (510e619f5f88) — peptide 96%, delivery 77.3% (regression from 93.5%), outcome 61.4%. v32 fixes delivery regression with expanded oral keywords + injection priority guard.
+**Current state:** v32 on dev. v31 50-NCT validation complete (510e619f5f88) — peptide 96%, delivery 77.3% (regression from 93.5%), outcome 61.4%. v32 fixes: delivery regression (oral keywords + injection priority guard) + outcome regression (regex bug fix, terminated safety net, hasResults override).
 
 ## v24 Changes
 
@@ -268,13 +268,28 @@ Only 7 trial-field values changed (LLM nondeterminism). No code regressions.
 1. **P0: Delivery oral keyword expansion** (`delivery_mode.py`): Added 11 oral keywords to `_PROTOCOL_ROUTE_KEYWORDS`: tablet, capsule, oral administration, oral dose, oral formulation, oral solution, oral suspension, by mouth, taken orally, administered orally, given orally. Added "tablet" and "capsule" to `_AMBIGUOUS_KEYWORDS` (skipped in title text to avoid "capsule endoscopy" false positives). Should fix 4 missed oral co-routes.
 2. **P0: Injection priority guard** (`delivery_mode.py`): Injection-over-Topical rule now only fires when exactly 2 routes detected. Preserves Topical when Oral is also present (multi-drug trials).
 3. **P1: Evidence dedup quality** (`base.py`): Sort citations by (weight, snippet_length) so richer versions win dedup when the same paper is found by multiple sources (PubMed + OpenAlex + SS).
+4. **P0: Outcome section boundary regex fix** (`outcome.py`): `_infer_from_pass1()` and `_publication_priority_override()` used `\n[A-Z]` as section boundary on **lowercased** text — could never match. `results_section` captured everything to end of string, causing false keyword matches (e.g., "positive" from "result valence: positive"). Ported `_SECTION_BOUNDARY` fix from failure_reason.py v29 (commit dce4466d). Root cause of 3 false-positive outcome errors.
+5. **P0: Terminated safety net** (`outcome.py`): After all overrides, if outcome is still "Unknown" but trial is TERMINATED with no results posted → force "Terminated". Catches 12 terminated→unknown errors where LLM hedges and generic drug publications from v31 literature APIs prevent `_infer_from_pass1` from reaching the registry status fallback.
+6. **P1: hasResults hard override** (`outcome.py`): After terminated safety net, if outcome is still "Unknown" but trial is COMPLETED with results posted → force "Positive". Backstop for H4 heuristic that the LLM doesn't always follow.
+
+### Classification: Known Disagreements (Not Bugs)
+
+7 AMP→Other misclassifications in v31 50-NCT validation are **definitional disagreements**, not code errors:
+- **NCT00000391, 00000392, 00000393** (Peptide T/DAPTA): HIV entry inhibitor, explicitly in `_KNOWN_NON_AMP_DRUGS`. Both R1 and R2 say AMP. Agent's narrow definition excludes entry inhibitors.
+- **NCT00001118** (Enfuvirtide/T-20): HIV fusion inhibitor, explicitly in `_KNOWN_NON_AMP_DRUGS`. Both R1 and R2 say AMP.
+- **NCT00000435** (dnaJ peptide): Immunosuppressive for RA. R1=AMP, R2=Other. Agent aligns with R2.
+- **NCT04672083** (CPT31): HIV entry inhibitor. R1=AMP, R2=Other. Agent aligns with R2.
+- **NCT04771013** (Thymic peptides): Immunomodulatory for COVID. R1=AMP, R2=Other. Agent aligns with R2.
+
+No code change. Agent's Mode A/B/C definition is intentional and documented.
 
 ### Next Steps
 
-- Merge v32 to main, run 50-NCT smoke test
+- Run v32 smoke test on prod (10 NCTs including failing outcome trials)
+- If outcome improves → run full 50-NCT validation
 - If delivery recovers to ~90%+ → full 642-NCT run
-- Outcome: accept near-human baseline — further iteration has diminishing returns
-- EDAM learning loop: dormant until agent code stabilizes (drug name resolver and stability index still active and useful)
+- If verifiers override terminated decisions → add post-verification terminated protection (Fix 4 in orchestrator.py)
+- EDAM learning loop: dormant until agent code stabilizes
 
 **Updated human baseline (corrected CSV):**
 | Field | n | Agreement | AC₁ |
