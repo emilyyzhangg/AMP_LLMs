@@ -172,8 +172,14 @@ _PROTOCOL_ROUTE_KEYWORDS = {
     "autoinjector": "Injection/Infusion",
     "pen injector": "Injection/Infusion",
     "intravitreal": "Injection/Infusion",
-    # Oral
+    # Oral (v32: expanded — standalone formulation keywords for multi-route detection)
     "oral tablet": "Oral", "oral capsule": "Oral",
+    "oral administration": "Oral", "oral dose": "Oral",
+    "oral formulation": "Oral", "oral solution": "Oral",
+    "oral suspension": "Oral",
+    "by mouth": "Oral", "taken orally": "Oral",
+    "administered orally": "Oral", "given orally": "Oral",
+    "tablet": "Oral", "capsule": "Oral",
     # Other (intranasal / inhalation)
     "intranasal": "Other", "nasal spray": "Other",
     "inhalation": "Other", "nebulizer": "Other", "nebuliser": "Other",
@@ -339,7 +345,10 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
 
     # v17: Search ALL citations, collecting all routes instead of returning on first match
     # Ambiguous short keywords (" iv ", " im ", " sc ") are skipped for title citations
-    _AMBIGUOUS_KEYWORDS = {" iv ", " im ", " sc "}
+    # v32: "tablet" and "capsule" are ambiguous in title text — e.g. "capsule
+    # endoscopy" or "tablet scoring study" — but unambiguous in arm/intervention
+    # descriptions. Skip them in titles alongside the existing abbreviations.
+    _AMBIGUOUS_KEYWORDS = {" iv ", " im ", " sc ", "tablet", "capsule"}
 
     for result in research_results:
         if result.error:
@@ -379,12 +388,15 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
     # also mentions injection keywords, prefer injection. Many peptide
     # trials with topical/ophthalmic formulations are annotated as
     # injection by humans when the primary route is injection.
+    # v32: Only drop Topical when it's Topical+Injection with no other routes.
+    # If Oral (or Other) is also detected, keep all routes — it's a multi-drug trial.
     if "Topical" in found_routes and "Injection/Infusion" in found_routes:
-        topical_conf = found_routes["Topical"][0]
-        injection_conf = found_routes["Injection/Infusion"][0]
-        if injection_conf >= topical_conf:
-            del found_routes["Topical"]
-            logger.info("  delivery_mode: dropped Topical in favor of Injection/Infusion (injection priority)")
+        if len(found_routes) == 2:  # Only Topical + Injection, no other routes
+            topical_conf = found_routes["Topical"][0]
+            injection_conf = found_routes["Injection/Infusion"][0]
+            if injection_conf >= topical_conf:
+                del found_routes["Topical"]
+                logger.info("  delivery_mode: dropped Topical in favor of Injection/Infusion (injection priority)")
 
     # Build the result — single route or comma-separated multi-route
     routes_list = sorted(found_routes.keys())

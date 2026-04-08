@@ -286,9 +286,10 @@ class BaseAnnotationAgent(ABC):
                 )
                 sections[section].append((citation, weight))
 
-        # Sort within each section by weight, then truncate
+        # Sort within each section by weight, then by snippet length (richer
+        # versions win dedup when multiple sources find the same paper).
         for section in sections.values():
-            section.sort(key=lambda x: x[1], reverse=True)
+            section.sort(key=lambda x: (x[1], len(x[0].snippet or "")), reverse=True)
 
         # Deduplicate and filter low-value citations
         # v31: Added identifier-based dedup (PMID/DOI) to prevent the same
