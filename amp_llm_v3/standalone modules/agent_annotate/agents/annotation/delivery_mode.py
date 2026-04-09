@@ -394,7 +394,9 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
         if len(found_routes) == 2:  # Only Topical + Injection, no other routes
             topical_conf = found_routes["Topical"][0]
             injection_conf = found_routes["Injection/Infusion"][0]
-            if injection_conf >= topical_conf:
+            # v33: Changed >= to > — equal confidence (e.g. both 0.95 from
+            # OpenFDA) should preserve both routes for multi-drug trials
+            if injection_conf > topical_conf:
                 del found_routes["Topical"]
                 logger.info("  delivery_mode: dropped Topical in favor of Injection/Infusion (injection priority)")
 

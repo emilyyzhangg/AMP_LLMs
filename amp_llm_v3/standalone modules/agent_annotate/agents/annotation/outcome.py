@@ -675,6 +675,21 @@ class OutcomeAgent(BaseAnnotationAgent):
         if not has_publications:
             return None
 
+        # v33: Generic publication filter — same as _infer_from_pass1.
+        # v31 literature APIs return drug-class publications that aren't
+        # about this specific trial. Only trust keyword matching when
+        # publications contain trial-specific language.
+        _TRIAL_SPECIFIC_MARKERS = [
+            "primary endpoint", "our study", "this study", "this trial",
+            "met the", "failed to meet", "results showed", "results demonstrated",
+            "phase i ", "phase ii ", "phase iii ", "phase 1 ", "phase 2 ", "phase 3 ",
+            "enrolled", "randomized", "patients were",
+        ]
+        is_trial_specific = any(m in results_section for m in _TRIAL_SPECIFIC_MARKERS)
+        if not is_trial_specific:
+            # Generic publication — don't override, let registry heuristics decide
+            return None
+
         # Extract result valence from Pass 1
         valence_match = re.search(r"result valence:\s*(.+?)(?:\n|$)", lower)
         valence = valence_match.group(1).strip() if valence_match else ""
