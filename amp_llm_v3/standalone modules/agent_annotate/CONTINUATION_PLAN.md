@@ -1,9 +1,22 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-08
-**Current state:** v33 on dev. v32 50-NCT validation complete (01b7a54efd1a, commit 458edbf) — peptide 96%, classification 81.8% (kappa=0), delivery 77.3%, outcome 61.4%, RfF 76.6%, sequence 60.9%. v33 fixes: 2 critical bugs + outcome/RfF/peptide improvements.
+**Current state:** v33b on main+dev (062a7fd). Two v32 50-NCT validations complete (100 NCTs total). v33 smoke test next.
 
-### v33 Changes (2026-04-08) — Critical bug fixes + outcome/RfF improvements
+### v32 Combined 100-NCT Results (Jobs 01b7a54efd1a + 9583e6660ebd, commit 458edbf)
+
+| Field | Agent (100 NCTs) | Human R1↔R2 | vs Human |
+|---|---|---|---|
+| Peptide | 91.0% (AC₁ 0.885) | 86.0% | **+5pp** |
+| RfF | 85.5% (AC₁ 0.843) | 88.6% | -3pp |
+| Classification | 85.3% (AC₁ 0.830) | 93.2% | -8pp (but 8/11 dis. are R1 errors) |
+| Delivery | 83.8% (AC₁ 0.816) | 88.9% | -5pp |
+| Outcome | 64.0% (AC₁ 0.587) | 64.3% | **=** (at human baseline) |
+| Sequence | 47.2% (AC₁ 0.460) | 52.0% | -5pp |
+
+Per-job variance is high: delivery ranged 77.3–93.3%, RfF 76.6–97.2%, sequence 23.1–60.9% across the two 50-NCT sets. Outcome pattern consistent: 18/27 disagreements are "Unknown vs Positive" (literature/status extraction gap).
+
+### v33+v33b Changes (2026-04-08) — Critical bug fixes + outcome/RfF/delivery improvements
 
 #### Critical Bug Fixes
 1. **consensus.py `"amp": "other"` alias removed**: Since v24 simplified classification to binary AMP/Other, the `"amp": "other"` alias in `_VALUE_ALIASES` made it impossible for AMP to survive the verification layer. Verifier AMP votes were silently normalized to "other", preventing any non-deterministic AMP classification. Removed the alias — "AMP" is now a valid canonical value.
@@ -19,6 +32,10 @@
 
 #### Peptide Fix
 7. **Glucagon added to _KNOWN_SEQUENCES**: 29aa mature form (UniProt P01275). Fixes NCT03490942 false negative where LLM correctly extracted "Peptide / peptide hormone, 29 amino acids" but still returned False.
+
+#### v33b Additional Fixes (062a7fd)
+8. **_publication_priority_override() generic publication filter**: Same trial-specificity gate as _infer_from_pass1. Was incorrectly overriding Unknown → Positive based on generic drug-class keywords like "efficacy" in unrelated publications.
+9. **Delivery mode injection priority `>=` → `>` (strict)**: Equal confidence (both 0.95 from OpenFDA) was always dropping Topical in Topical+Injection combinations. Now preserves both routes for multi-drug trials.
 
 #### Classification Investigation Results
 - All 8 classification disagreements (kappa=0) are **R1 annotation errors**, not agent bugs:
