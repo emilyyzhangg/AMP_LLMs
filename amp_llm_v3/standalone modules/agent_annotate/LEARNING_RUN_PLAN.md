@@ -53,7 +53,8 @@
 | 55 | v32 validation A | 01b7a54efd1a | 50 | 50/50 | **Complete** | v32 (458edbf) | — | Peptide 96%, classification 81.8% (kappa=0), delivery 77.3%, outcome 61.4%, RfF 76.6%. Terminated/withdrawn 100% (v32 safety nets working). |
 | 56 | v32 validation B | 9583e6660ebd | 50 | 50/50 | **Complete** | v32 (458edbf) | — | Peptide 86%, classification 90.3%, delivery 93.3%, outcome 67.7%, RfF 97.2%, sequence 23.1%. Different NCT set from 55. Combined 100-NCT: peptide 91%, outcome 64% (=human), RfF 85.5%. |
 | 57 | v32 prior run | db7d3f85e6f8 | 50 | 50/50 | **Complete** | v32 (2fb4750) | — | Pre-outcome-fix v32. Peptide 98%, delivery 79.5%, outcome 59.1%. |
-| 58 | v33 smoke | TBD | 10 | —/10 | **Next** | v33b (062a7fd) | — | 10 outcome-failing NCTs from v32 validation. Tests: structured status injection, generic pub filter, H3b backstop, pub priority override filter. |
+| 58 | v33 smoke | 543c5f11fafd | 10 | —/10 | **Queued** | v33b (062a7fd) | — | 10 outcome-failing NCTs from v32 validation. Tests: structured status injection, generic pub filter, H3b backstop, pub priority override filter. |
+| 59 | v33 validation (new 50) | ae42b7b27600 | 50 | —/50 | **Queued** | v33b (062a7fd) | — | 50 fresh training NCTs (never run before). First v33 full validation on unseen data. |
 
 > **Note:** Jobs 36-40 are the last jobs run with old categories (v22 code). v24 is now merged to main (9db9e33) with simplified categories (binary AMP/Other, 4-category delivery mode). All future jobs use v24+ categories. Training CSV re-bucketed from Excel source on 2026-04-07 (v31) — delivery mode 145 injection annotations recovered from "other".
 
