@@ -2085,19 +2085,16 @@ class PipelineOrchestrator:
                 # Reconciler sometimes outputs verbose descriptions.
                 # v17: Skip normalization for comma-separated multi-route values
                 # (they are already in canonical form from the deterministic path).
+                # v33: Updated to v24 canonical values (was outputting dead v23 categories)
                 v_lower = val.lower()
-                if "intravenous" in v_lower or "iv " in v_lower:
-                    f.final_value = "IV"
-                elif "subcutaneous" in v_lower or "intradermal" in v_lower:
-                    f.final_value = "Injection/Infusion - Subcutaneous/Intradermal"
-                elif "intramuscular" in v_lower:
-                    f.final_value = "Injection/Infusion - Intramuscular"
+                if "intravenous" in v_lower or "iv " in v_lower or "subcutaneous" in v_lower or "intradermal" in v_lower or "intramuscular" in v_lower or "inject" in v_lower or "infus" in v_lower:
+                    f.final_value = "Injection/Infusion"
                 elif "oral" in v_lower:
-                    f.final_value = "Oral - Unspecified"
+                    f.final_value = "Oral"
                 elif "topical" in v_lower:
-                    f.final_value = "Topical - Unspecified"
-                elif "inhalation" in v_lower or "inhaled" in v_lower:
-                    f.final_value = "Inhalation"
+                    f.final_value = "Topical"
+                elif "inhalation" in v_lower or "inhaled" in v_lower or "intranasal" in v_lower:
+                    f.final_value = "Other"
 
             elif field_name == "peptide":
                 # Ensure canonical True/False

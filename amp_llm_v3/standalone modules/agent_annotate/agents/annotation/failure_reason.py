@@ -374,9 +374,20 @@ class FailureReasonAgent(BaseAnnotationAgent):
         # v29: strip negated sentences before keyword matching
         filtered = self._strip_negated_sentences(combined)
 
-        if any(kw in filtered for kw in ["toxicity", "adverse", "safety", "unsafe", "dsmb"]):
+        # v33: expanded keyword coverage for toxic/unsafe and ineffective
+        if any(kw in filtered for kw in [
+            "toxicity", "adverse", "safety", "unsafe", "dsmb",
+            "adverse event", "dose-limiting toxicity", "dose limiting",
+            "hepatotoxicity", "nephrotoxicity", "serious adverse",
+            "unacceptable toxicity",
+        ]):
             return "Toxic/Unsafe"
-        if any(kw in filtered for kw in ["did not meet", "no significant", "failed to", "ineffective", "futility"]):
+        if any(kw in filtered for kw in [
+            "did not meet", "no significant", "failed to", "ineffective", "futility",
+            "lack of efficacy", "did not demonstrate", "failed to achieve",
+            "no difference", "suboptimal", "no clinical benefit",
+            "did not show", "no improvement", "no benefit",
+        ]):
             return "Ineffective for purpose"
         if any(kw in filtered for kw in ["covid", "pandemic"]):
             return "Due to covid"
@@ -393,9 +404,13 @@ class FailureReasonAgent(BaseAnnotationAgent):
             why = why_match.group(1).strip()
             if why != "not provided" and why:
                 why_filtered = self._strip_negated_sentences(why)
-                if any(kw in why_filtered for kw in ["toxic", "safety", "adverse"]):
+                if any(kw in why_filtered for kw in [
+                    "toxic", "safety", "adverse", "dose-limiting", "hepatotox", "nephrotox",
+                ]):
                     return "Toxic/Unsafe"
-                if any(kw in why_filtered for kw in ["efficacy", "futility", "endpoint"]):
+                if any(kw in why_filtered for kw in [
+                    "efficacy", "futility", "endpoint", "ineffective", "no benefit", "no improvement",
+                ]):
                     return "Ineffective for purpose"
                 if any(kw in why_filtered for kw in ["covid", "pandemic"]):
                     return "Due to covid"

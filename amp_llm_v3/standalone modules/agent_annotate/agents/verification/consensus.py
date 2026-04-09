@@ -15,13 +15,22 @@ logger = logging.getLogger("agent_annotate.verification.consensus")
 # Normalize common value aliases to canonical forms before comparison.
 # This prevents false disagreements from format differences.
 _VALUE_ALIASES = {
-    "intravenous": "iv",
-    "injection/infusion - intravenous": "iv",
+    # v33: normalize verbose delivery mode values to v24 canonical forms
+    "intravenous": "injection/infusion",
+    "injection/infusion - intravenous": "injection/infusion",
+    "iv": "injection/infusion",
+    "subcutaneous": "injection/infusion",
+    "intramuscular": "injection/infusion",
+    "injection/infusion - subcutaneous/intradermal": "injection/infusion",
+    "injection/infusion - intramuscular": "injection/infusion",
+    "oral - unspecified": "oral",
+    "topical - unspecified": "topical",
+    "inhalation": "other",
     "active": "active, not recruiting",
     "active not recruiting": "active, not recruiting",
     "active_not_recruiting": "active, not recruiting",
-    # Bare "AMP" is ambiguous — normalize to "other" (safer default)
-    "amp": "other",
+    # v33: removed "amp": "other" alias. In v24+ classification is binary
+    # AMP/Other — "AMP" is a valid canonical value, not ambiguous.
     # Verifiers sometimes return statuses instead of failure reasons
     "completed": "",
     "none": "",

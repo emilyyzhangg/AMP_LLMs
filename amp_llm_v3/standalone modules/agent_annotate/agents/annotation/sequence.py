@@ -97,6 +97,8 @@ _KNOWN_SEQUENCES: dict[str, str] = {
     # v28: Radiolabeled peptide imaging agents
     "68ga-rm2": "FQWAVGHSL",                                 # Bombesin antagonist RM2, 9aa (D-Phe→F, Sta→S)
     "rm2": "FQWAVGHSL",                                      # Same (BAY86-7548)
+    # v33: Peptide hormones — glucagon false negative fix (NCT03490942)
+    "glucagon": "HSQGTFTSDYSKYLDSRRAQDFVQWLMNT",             # Mature glucagon, 29aa, UniProt P01275
 }
 
 # v29: Alias mapping for pre-cascade name matching.

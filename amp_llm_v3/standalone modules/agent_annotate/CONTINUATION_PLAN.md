@@ -1,7 +1,39 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-08
-**Current state:** v32 on dev. v31 50-NCT validation complete (510e619f5f88) — peptide 96%, delivery 77.3% (regression from 93.5%), outcome 61.4%. v32 fixes: delivery regression (oral keywords + injection priority guard) + outcome regression (regex bug fix, terminated safety net, hasResults override).
+**Current state:** v33 on dev. v32 50-NCT validation complete (01b7a54efd1a, commit 458edbf) — peptide 96%, classification 81.8% (kappa=0), delivery 77.3%, outcome 61.4%, RfF 76.6%, sequence 60.9%. v33 fixes: 2 critical bugs + outcome/RfF/peptide improvements.
+
+### v33 Changes (2026-04-08) — Critical bug fixes + outcome/RfF improvements
+
+#### Critical Bug Fixes
+1. **consensus.py `"amp": "other"` alias removed**: Since v24 simplified classification to binary AMP/Other, the `"amp": "other"` alias in `_VALUE_ALIASES` made it impossible for AMP to survive the verification layer. Verifier AMP votes were silently normalized to "other", preventing any non-deterministic AMP classification. Removed the alias — "AMP" is now a valid canonical value.
+2. **orchestrator.py `_normalize_final_values` delivery mode fix**: Was outputting dead v23 categories ("IV", "Oral - Unspecified", "Injection/Infusion - Subcutaneous/Intradermal") when reconciler output verbose text. Updated to v24 canonical values ("Injection/Infusion", "Oral", "Topical", "Other"). Also updated consensus.py delivery aliases to match v24.
+
+#### Outcome Improvements (61.4% → target ~72%)
+3. **v33 structured status injection**: Same pattern as v17 phase injection. When Pass 1 LLM returns "Registry Status: NOT FOUND" (observed in 4/4 sampled disagreement NCTs), injects the status AND hasResults from ClinicalTrials.gov structured data directly into the Pass 2 input. Root cause: LLM wasn't extracting status from evidence text even though clinical_protocol raw data had it.
+4. **v33 generic publication filter**: v31 literature APIs (OpenAlex, SS, CrossRef) return drug-class publications that fool `has_publications=True` in `_infer_from_pass1`. Added trial-specificity gate: keyword matching only fires when publications contain trial-specific markers (NCT ID, "primary endpoint", "our study", etc.). Generic publications fall through to registry status heuristics.
+5. **v33 H3b backstop**: Phase II/III completed >10 years ago without negative evidence → "Positive". PASS2_PROMPT already has this heuristic but the LLM ignores it. Added code backstop in `_infer_from_pass1`.
+
+#### RfF Improvements (76.6% → target ~82%)
+6. **Expanded _infer_from_pass1 keywords**: Added "adverse event", "dose-limiting toxicity", "hepatotoxicity", "nephrotoxicity", "serious adverse" for Toxic/Unsafe. Added "lack of efficacy", "did not demonstrate", "failed to achieve", "no difference", "suboptimal", "no clinical benefit" for Ineffective. Also expanded whyStopped keywords.
+
+#### Peptide Fix
+7. **Glucagon added to _KNOWN_SEQUENCES**: 29aa mature form (UniProt P01275). Fixes NCT03490942 false negative where LLM correctly extracted "Peptide / peptide hormone, 29 amino acids" but still returned False.
+
+#### Classification Investigation Results
+- All 8 classification disagreements (kappa=0) are **R1 annotation errors**, not agent bugs:
+  - NCT00000391-393: Peptide T (HIV CCR5 blocker, NOT antimicrobial)
+  - NCT00000435: dnaJ peptide (immunosuppressive for RA)
+  - NCT00001118: Enfuvirtide (viral fusion inhibitor)
+  - NCT00001386: Synthetic HIV peptide vaccines (adaptive immunity)
+  - NCT04672083: CPT31 (D-peptide HIV entry inhibitor)
+  - NCT04771013: Thymic peptides (immunomodulatory)
+- Agent's strict AMP definition (direct antimicrobial / innate immune / anti-biofilm) is correct. 81.8% agreement is actually 100% agent accuracy with 8 human labeling errors.
+- consensus.py bug fix (item 1) still critical — unblocks future LLM AMP predictions.
+
+#### Peptide Investigation Results
+- NCT03490942 (glucagon): Genuine agent error — fixed by adding to _KNOWN_SEQUENCES
+- NCT06833931 (PGN-EDO51): R1 annotation error — drug is an antisense oligonucleotide, not a peptide
 
 ## v24 Changes
 

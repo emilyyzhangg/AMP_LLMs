@@ -372,6 +372,24 @@ class OutcomeAgent(BaseAnnotationAgent):
                 pass1_output += f"\nTrial Phase: {structured_phase} [from ClinicalTrials.gov structured data]"
                 logger.info(f"  outcome: injected structured phase '{structured_phase}' into Pass 2 input")
 
+        # --- v33: Extract structured registry status from ClinicalTrials.gov ---
+        # Same pattern as phase injection. The LLM frequently returns
+        # "Registry Status: NOT FOUND" even though the status IS in the
+        # clinical_protocol raw data. This causes _infer_from_pass1 to miss
+        # the status-based heuristics (COMPLETED/TERMINATED/WITHDRAWN fallbacks).
+        structured_status, structured_has_results = self._extract_structured_status(research_results)
+        if structured_status:
+            status_check = re.search(r"Registry Status:\s*(.+?)(?:\n|$)", pass1_output, re.IGNORECASE)
+            if not status_check or "not found" in status_check.group(1).lower():
+                pass1_output += f"\nRegistry Status: {structured_status} [from ClinicalTrials.gov structured data]"
+                logger.info(f"  outcome: v33 injected structured status '{structured_status}' into Pass 2 input")
+            if structured_has_results is not None:
+                hr_check = re.search(r"Results Posted:\s*(.+?)(?:\n|$)", pass1_output, re.IGNORECASE)
+                if not hr_check or "unknown" in hr_check.group(1).lower() or "not found" in hr_check.group(1).lower():
+                    hr_val = "Yes" if structured_has_results else "No"
+                    pass1_output += f"\nResults Posted: {hr_val} [from ClinicalTrials.gov structured data]"
+                    logger.info(f"  outcome: v33 injected hasResults={hr_val} into Pass 2 input")
+
         # --- PASS 2: Determine outcome with facts in hand ---
         try:
             logger.info(f"  outcome: Pass 2 — determining outcome for {nct_id}")
@@ -501,7 +519,25 @@ class OutcomeAgent(BaseAnnotationAgent):
             and results_section not in ("none found", "none", "no results", "not found")
         )
 
-        if has_publications:
+        # v33: Generic publication filter — v31 literature APIs (OpenAlex,
+        # Semantic Scholar, CrossRef) often return drug-class publications that
+        # discuss the molecule but NOT this trial's results. When has_publications
+        # is True but publications are generic, keyword matching produces false
+        # positives/negatives and blocks the registry status fallback. Require
+        # trial-specific language before trusting keyword matching.
+        _TRIAL_SPECIFIC_MARKERS = [
+            "primary endpoint", "our study", "this study", "this trial",
+            "met the", "failed to meet", "results showed", "results demonstrated",
+            "phase i ", "phase ii ", "phase iii ", "phase 1 ", "phase 2 ", "phase 3 ",
+            "enrolled", "randomized", "patients were",
+        ]
+        if nct_id:
+            _TRIAL_SPECIFIC_MARKERS.append(nct_id.lower())
+        is_trial_specific = has_publications and any(
+            m in results_section for m in _TRIAL_SPECIFIC_MARKERS
+        )
+
+        if has_publications and is_trial_specific:
             # v18: Check strong adverse-event signals in FULL pass1 text first.
             # These override any positive heuristics — a trial with positive
             # immunogenicity but unacceptable toxicity is still Failed.
@@ -529,6 +565,11 @@ class OutcomeAgent(BaseAnnotationAgent):
                 "toxicity", "toxic", "adverse", "abscess",
             ]):
                 return "Failed - completed trial"
+        elif has_publications and not is_trial_specific:
+            # v33: Generic publication — don't trust keyword matching. Fall
+            # through to registry status heuristics instead of returning
+            # potentially incorrect keyword-based results.
+            logger.info(f"  outcome: v33 skipping keyword match — publications appear generic for {nct_id}")
 
         # Fall back to registry status
         status_match = re.search(r"registry status:\s*(\S+)", lower)
@@ -578,6 +619,36 @@ class OutcomeAgent(BaseAnnotationAgent):
                 if is_phase1 and has_publications and nct_id and nct_id.lower() in lower:
                     return "Positive"
                 # Phase I without trial-specific evidence → Unknown
+
+                # v33: H3b backstop — Phase II/III completed >10 years ago
+                # without negative evidence → lean Positive. The PASS2_PROMPT
+                # has this heuristic but the LLM often ignores it. This code
+                # backstop ensures it fires reliably.
+                is_phase23 = (
+                    "phase2" in phase or "phase 2" in phase
+                    or "phase3" in phase or "phase 3" in phase
+                    or "phase ii" in phase or "phase iii" in phase
+                    or "phase_2" in phase or "phase_3" in phase
+                )
+                if is_phase23 and not has_publications:
+                    # Check completion date for age
+                    date_match = re.search(r"completion date:\s*(.+?)(?:\n|$)", lower)
+                    if date_match:
+                        date_str = date_match.group(1).strip()
+                        # Simple year extraction — look for 4-digit year
+                        year_match = re.search(r"((?:19|20)\d{2})", date_str)
+                        if year_match:
+                            from datetime import datetime
+                            try:
+                                comp_year = int(year_match.group(1))
+                                years_ago = datetime.now().year - comp_year
+                                if years_ago > 10:
+                                    logger.info(
+                                        f"  outcome: v33 H3b backstop — Phase II/III completed {years_ago} years ago, no negative evidence"
+                                    )
+                                    return "Positive"
+                            except (ValueError, TypeError):
+                                pass
 
         return "Unknown"
 
@@ -666,6 +737,33 @@ class OutcomeAgent(BaseAnnotationAgent):
             if phase_str:
                 return phase_str
         return ""
+
+    @staticmethod
+    def _extract_structured_status(research_results: list) -> tuple:
+        """Extract registry status and hasResults from ClinicalTrials.gov data.
+
+        v33: Same pattern as _extract_structured_phase. The LLM frequently
+        returns "Registry Status: NOT FOUND" even when the status IS in the
+        clinical_protocol raw data, causing _infer_from_pass1 to miss
+        COMPLETED/TERMINATED/WITHDRAWN heuristics.
+
+        Returns:
+            (status_str, has_results_bool) — e.g. ("COMPLETED", True)
+        """
+        for result in research_results:
+            if result.error or result.agent_name != "clinical_protocol":
+                continue
+            if not result.raw_data:
+                continue
+            proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
+            status_mod = proto.get("statusModule", {})
+            overall_status = status_mod.get("overallStatus", "")
+            has_results = status_mod.get("hasResults", None)
+            if has_results is not None:
+                has_results = has_results is True or str(has_results).lower() == "true"
+            if overall_status:
+                return overall_status, has_results
+        return "", None
 
     def _parse_value(self, text: str) -> str:
         match = re.search(r"Outcome:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)
