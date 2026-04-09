@@ -91,6 +91,15 @@ class ConcordanceResult(BaseModel):
         description="Value frequency counts per annotator: {'annotator_a': {val: count}, 'annotator_b': {val: count}}",
     )
     disagreements: list[Disagreement] = Field(default_factory=list)
+    # v34: Cascade-aware metrics
+    cascade_skipped: int = Field(
+        default=0,
+        description="Trials skipped because one/both annotators had peptide=False",
+    )
+    cascade_victims: list[str] = Field(
+        default_factory=list,
+        description="NCT IDs where agent cascaded N/A but GT had real downstream values",
+    )
 
 
 class SequenceComparisonDetail(BaseModel):

@@ -566,10 +566,21 @@ class OutcomeAgent(BaseAnnotationAgent):
             ]):
                 return "Failed - completed trial"
         elif has_publications and not is_trial_specific:
-            # v33: Generic publication — don't trust keyword matching. Fall
-            # through to registry status heuristics instead of returning
-            # potentially incorrect keyword-based results.
-            logger.info(f"  outcome: v33 skipping keyword match — publications appear generic for {nct_id}")
+            # v33: Generic publication — don't trust keyword matching.
+            # v34: But DO trust the LLM's result_valence — it's a holistic
+            # judgment, not a keyword match, so less prone to false positives
+            # from drug-class publications. This fixes NCT03482648 and similar
+            # COMPLETED trials where generic pubs blocked all outcome evidence.
+            valence_match = re.search(r"result valence:\s*(.+?)(?:\n|$)", lower)
+            if valence_match:
+                valence = valence_match.group(1).strip()
+                if "positive" in valence or "mixed" in valence:
+                    logger.info(f"  outcome: v34 generic pub + LLM valence='{valence}' → Positive for {nct_id}")
+                    return "Positive"
+                if "negative" in valence:
+                    logger.info(f"  outcome: v34 generic pub + LLM valence='{valence}' → Failed for {nct_id}")
+                    return "Failed - completed trial"
+            logger.info(f"  outcome: v34 skipping keyword match — publications appear generic, no clear valence for {nct_id}")
 
         # Fall back to registry status
         status_match = re.search(r"registry status:\s*(\S+)", lower)
@@ -687,7 +698,15 @@ class OutcomeAgent(BaseAnnotationAgent):
         ]
         is_trial_specific = any(m in results_section for m in _TRIAL_SPECIFIC_MARKERS)
         if not is_trial_specific:
-            # Generic publication — don't override, let registry heuristics decide
+            # v34: Generic publication — don't trust keyword matching, but DO
+            # trust the LLM's result_valence (holistic judgment, not keywords).
+            valence_match = re.search(r"result valence:\s*(.+?)(?:\n|$)", lower)
+            if valence_match:
+                valence = valence_match.group(1).strip()
+                if "positive" in valence or "mixed" in valence:
+                    return "Positive"
+                if "negative" in valence:
+                    return "Failed - completed trial"
             return None
 
         # Extract result valence from Pass 1

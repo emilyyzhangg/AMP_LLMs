@@ -609,6 +609,8 @@ def _compute_field_concordance(
     labels_b: list[str] = []
     disagreements: list[Disagreement] = []
     skipped = 0
+    cascade_skipped = 0       # v34: peptide=False cascade skips
+    cascade_victims: list[str] = []  # v34: agent N/A but GT has real values
 
     # Confusion matrix: {value_a: {value_b: count}}
     confusion: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
@@ -631,6 +633,12 @@ def _compute_field_concordance(
             pep_b_str = str(pep_b).strip().lower()
             if pep_a_str == "false" or pep_b_str == "false":
                 skipped += 1
+                cascade_skipped += 1
+                # v34: Track cascade victims — agent=N/A but GT has real value
+                if pep_a_str == "false" and pep_b_str == "true" and not blank_b:
+                    cascade_victims.append(nct)
+                elif pep_b_str == "false" and pep_a_str == "true" and not blank_a:
+                    cascade_victims.append(nct)
                 continue
 
         # Blank handling
@@ -785,6 +793,8 @@ def _compute_field_concordance(
         confusion_matrix=confusion_dict,
         value_distribution=distribution,
         disagreements=disagreements,
+        cascade_skipped=cascade_skipped,
+        cascade_victims=cascade_victims,
     )
 
 
