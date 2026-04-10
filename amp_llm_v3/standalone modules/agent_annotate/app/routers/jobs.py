@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 
 from app.services.orchestrator import orchestrator
 from app.services.ollama_client import ollama_client
+from app.services.memory.edam_config import TRAINING_NCTS
 
 logger = logging.getLogger("agent_annotate.jobs")
 
@@ -70,6 +71,19 @@ async def create_job(req: CreateJobRequest):
 
     # Deduplicate
     valid_ids = list(dict.fromkeys(valid_ids))
+
+    # Validate against training CSV — only NCTs with human annotations are scoreable
+    if TRAINING_NCTS:
+        outside = [nct for nct in valid_ids if nct not in TRAINING_NCTS]
+        if outside:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"{len(outside)}/{len(valid_ids)} NCT IDs are not in the training CSV "
+                    f"(human_ground_truth_train_df.csv) and have no human annotations for scoring. "
+                    f"First 10: {outside[:10]}"
+                ),
+            )
 
     job = orchestrator.create_job(valid_ids)
     orchestrator.enqueue_job(job.job_id)
