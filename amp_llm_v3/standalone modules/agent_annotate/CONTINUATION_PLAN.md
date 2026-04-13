@@ -1,7 +1,34 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-09
-**Current state:** v34 on dev. v33b validation complete. v34 addresses all 5 open issues from v33b.
+**Last updated:** 2026-04-13
+**Current state:** v35 on dev. v34 250-NCT analysis complete. v35 addresses peptide accuracy, outcome Unknown→Positive gap, delivery injection bias, and verifier tuning.
+
+### v35 Changes (2026-04-13) — Peptide word-boundary, outcome evidence rescue, delivery multi-intervention, verifier tuning
+
+#### Peptide Agent (`peptide.py`)
+1. **Word-boundary matching for `_check_known_peptide()`**: Replaced substring `in` matching with word-boundary regex. Short entries (≤4 chars) use exact match. Prevents false positives from partial drug name matches.
+2. **UniProt inline residue extraction**: `_extract_peptide_signals()` now catches "N residues" / "N amino acids" patterns in citation snippets without "Mature form:" header. Adds peptide/protein range fact.
+3. **X-mer pattern in `_parse_pass1()`**: Extended AA length regex to match `"16-mer"` patterns common in peptide vaccine descriptions.
+
+#### Outcome Agent (`outcome.py`)
+4. **Generic publication keyword rescue**: When publications exist but aren't trial-specific AND LLM valence is "Not available", scans full Pass 1 text for efficacy/failure keywords before falling to Unknown. Applied in both `_infer_from_pass1()` and `_publication_priority_override()`.
+5. **Structured status injection extended**: Now also injects structured status when LLM-extracted status is unrecognized/malformed (not just "NOT FOUND"). Uses `_VALID_CT_STATUSES` set for recognition.
+
+#### Delivery Mode Agent (`delivery_mode.py`)
+6. **Multi-intervention route preservation**: When `len(intervention_names) > 1` and both Topical + Injection detected, preserves both routes instead of dropping Topical. Single-intervention trials still apply injection priority as before.
+
+#### Verifier (`verifier.py`)
+7. **Outcome evidence budget**: Increased Mac Mini outcome verifier budget from 20 to 30 citations.
+8. **Conservative persona refinement**: Distinguishes no-evidence (Unknown), negative-evidence (report finding), and clear-status (follow registry) scenarios. No drug name examples added.
+
+#### Reconciler (`reconciler.py`)
+9. **Confidence floor**: When primary confidence > 0.80 and average verifier confidence < 0.70, primary wins the weighted vote regardless of verifier numbers.
+
+#### Expected targets (50-NCT validation, DEFERRED until job 4fddbd329286 finishes on main):
+- Peptide: 82.8% → 85%+ (word-boundary prevents FPs)
+- Outcome: 59.7% → 65%+ (keyword rescue + status injection + verifier tuning)
+- Delivery: 82.4% → 86%+ (multi-intervention preservation)
+- RfF/Classification: maintain current levels
 
 ### v32 Combined 100-NCT Results (Jobs 01b7a54efd1a + 9583e6660ebd, commit 458edbf)
 

@@ -377,12 +377,28 @@ class OutcomeAgent(BaseAnnotationAgent):
         # "Registry Status: NOT FOUND" even though the status IS in the
         # clinical_protocol raw data. This causes _infer_from_pass1 to miss
         # the status-based heuristics (COMPLETED/TERMINATED/WITHDRAWN fallbacks).
+        # v35: All valid ClinicalTrials.gov overallStatus values
+        _VALID_CT_STATUSES = {
+            "recruiting", "not_yet_recruiting", "enrolling_by_invitation",
+            "withdrawn", "active_not_recruiting", "suspended",
+            "completed", "terminated", "unknown_status",
+            "active, not recruiting", "not yet recruiting",
+            "enrolling by invitation",
+        }
         structured_status, structured_has_results = self._extract_structured_status(research_results)
         if structured_status:
             status_check = re.search(r"Registry Status:\s*(.+?)(?:\n|$)", pass1_output, re.IGNORECASE)
-            if not status_check or "not found" in status_check.group(1).lower():
-                pass1_output += f"\nRegistry Status: {structured_status} [from ClinicalTrials.gov structured data]"
-                logger.info(f"  outcome: v33 injected structured status '{structured_status}' into Pass 2 input")
+            llm_status = status_check.group(1).strip().lower() if status_check else ""
+            is_not_found = not status_check or "not found" in llm_status
+            is_unrecognized = (
+                not is_not_found
+                and llm_status.replace(" ", "_") not in _VALID_CT_STATUSES
+                and llm_status not in _VALID_CT_STATUSES
+            )
+            if is_not_found or is_unrecognized:
+                suffix = " [corrected from unrecognized]" if is_unrecognized else ""
+                pass1_output += f"\nRegistry Status: {structured_status} [from ClinicalTrials.gov structured data]{suffix}"
+                logger.info(f"  outcome: v35 injected structured status '{structured_status}' (was: '{llm_status}') into Pass 2 input")
             if structured_has_results is not None:
                 hr_check = re.search(r"Results Posted:\s*(.+?)(?:\n|$)", pass1_output, re.IGNORECASE)
                 if not hr_check or "unknown" in hr_check.group(1).lower() or "not found" in hr_check.group(1).lower():
@@ -580,7 +596,26 @@ class OutcomeAgent(BaseAnnotationAgent):
                 if "negative" in valence:
                     logger.info(f"  outcome: v34 generic pub + LLM valence='{valence}' → Failed for {nct_id}")
                     return "Failed - completed trial"
-            logger.info(f"  outcome: v34 skipping keyword match — publications appear generic, no clear valence for {nct_id}")
+            # v35: Before falling to Unknown, scan full pass1 text for
+            # efficacy/failure keywords. Less precise than trial-specific
+            # matching, but better than giving up entirely.
+            _EFFICACY_MARKERS = [
+                "improved", "improvement", "efficacy", "effective",
+                "favorable", "benefit", "promising", "successful",
+                "well-tolerated", "safe and effective",
+            ]
+            _FAILURE_MARKERS = [
+                "failed", "negative", "did not meet",
+                "did not demonstrate", "no efficacy", "futility",
+                "insufficient",
+            ]
+            if any(kw in lower for kw in _EFFICACY_MARKERS):
+                logger.info(f"  outcome: v35 generic pub + efficacy keyword in full text → Positive for {nct_id}")
+                return "Positive"
+            if any(kw in lower for kw in _FAILURE_MARKERS):
+                logger.info(f"  outcome: v35 generic pub + failure keyword in full text → Failed for {nct_id}")
+                return "Failed - completed trial"
+            logger.info(f"  outcome: v35 skipping keyword match — publications appear generic, no clear signal for {nct_id}")
 
         # Fall back to registry status
         status_match = re.search(r"registry status:\s*(\S+)", lower)
@@ -707,6 +742,22 @@ class OutcomeAgent(BaseAnnotationAgent):
                     return "Positive"
                 if "negative" in valence:
                     return "Failed - completed trial"
+            # v35: Same keyword rescue as _infer_from_pass1 — scan full text
+            # for efficacy/failure keywords before giving up.
+            _EFFICACY_MARKERS = [
+                "improved", "improvement", "efficacy", "effective",
+                "favorable", "benefit", "promising", "successful",
+                "well-tolerated", "safe and effective",
+            ]
+            _FAILURE_MARKERS = [
+                "failed", "negative", "did not meet",
+                "did not demonstrate", "no efficacy", "futility",
+                "insufficient",
+            ]
+            if any(kw in lower for kw in _EFFICACY_MARKERS):
+                return "Positive"
+            if any(kw in lower for kw in _FAILURE_MARKERS):
+                return "Failed - completed trial"
             return None
 
         # Extract result valence from Pass 1
