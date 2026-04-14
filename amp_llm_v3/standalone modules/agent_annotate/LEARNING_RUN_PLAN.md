@@ -1,6 +1,6 @@
 # EDAM Learning Run Plan
 
-**Last updated:** 2026-04-13
+**Last updated:** 2026-04-14
 
 ## Job Registry
 
@@ -55,7 +55,9 @@
 | 57 | v32 prior run | db7d3f85e6f8 | 50 | 50/50 | **Complete** | v32 (2fb4750) | — | Pre-outcome-fix v32. Peptide 98%, delivery 79.5%, outcome 59.1%. |
 | 58 | v33 smoke | 543c5f11fafd | 10 | 10/10 | **Complete** | v33b (bf38085) | — | 87 min. Peptide 100%, delivery 100%, outcome 50% (5 still Unknown), RfF 80%. Outcome fixes had limited impact on old trials. |
 | 59 | v33 validation (new 50) | ae42b7b27600 | 50 | 50/50 | **Complete** | v33b (bf38085) | — | 286 min. Peptide 92% (+8pp human), outcome 58.1% (+9.3pp human), RfF 84%. Classification 70.5%, delivery 66.7%, sequence 15.4% — cascade N/A dominant error. 0 warnings/timeouts. |
-| 60 | v35 validation | TBD | 50 | —/50 | **Pending** | v35 | — | DEFERRED until job 4fddbd329286 finishes on main. 9 code changes: peptide word-boundary, outcome keyword rescue, delivery multi-intervention, verifier tuning. |
+| 60 | v35 validation | TBD | 50 | —/50 | **Cancelled** | v35 | — | 9 code changes: peptide word-boundary, outcome keyword rescue, delivery multi-intervention, verifier tuning. |
+| 61 | v35 smoke test | 16e46a1d1492 | 9 | 9/9 | **Running** | v35 (c4a1175) | — | Status injection 7x, confidence floor 1x, pub-priority override 1x. No errors. |
+| 62 | v36 validation | TBD | 50 | —/50 | **Pending** | v36 | — | 56 GT corrections + research-aware outcome rescue + delivery topical/nasal fixes. |
 
 > **Note:** Jobs 36-40 are the last jobs run with old categories (v22 code). v24 is now merged to main (9db9e33) with simplified categories (binary AMP/Other, 4-category delivery mode). All future jobs use v24+ categories. Training CSV re-bucketed from Excel source on 2026-04-07 (v31) — delivery mode 145 injection annotations recovered from "other".
 

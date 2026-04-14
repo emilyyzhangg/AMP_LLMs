@@ -643,7 +643,7 @@ class BlindVerifier:
         # --- Delivery Mode ---
         elif "Delivery Mode" in field_config.get("parse_pattern", ""):
             if any(s in lower for s in ("injection", "intravenous", "subcutaneous",
-                                         "intramuscular", "parenteral", "infusion")):
+                                         "intramuscular", "parenteral", "infusion", 'iv')):
                 return "Injection/Infusion"
             if any(s in lower for s in ("oral", "capsule", "tablet")):
                 return "Oral"

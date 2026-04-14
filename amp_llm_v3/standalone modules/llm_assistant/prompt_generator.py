@@ -630,6 +630,7 @@ think through the decision logic step by step before providing your answer.
 | Delivery Mode | Injection/Infusion, Topical, Oral, Other |
 | Outcome | Positive, Withdrawn, Terminated, Failed - completed trial, Active, Unknown |
 | Peptide | True, False |
+| Reason for Failure | Business reasons, Ineffective for purpose, Toxic/unsafe, Due to covid, Recruitment issues, N/A |                        
 
 ## KEY DECISION REMINDERS
 
