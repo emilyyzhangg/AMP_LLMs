@@ -497,6 +497,44 @@ class OutcomeAgent(BaseAnnotationAgent):
                         + reasoning
                     )
 
+        # v36: Research-aware keyword rescue — scan publication titles and
+        # snippets from the raw research dossier for efficacy/failure keywords.
+        # The LLM's Pass 1 output often omits publication titles, so scanning
+        # the research results directly catches evidence the LLM missed.
+        if value == "Unknown":
+            _RESEARCH_EFFICACY_KW = [
+                "effective", "efficacy", "improved", "improvement",
+                "favorable", "benefit", "promising", "successful",
+                "well-tolerated", "safe and effective", "immunogenic",
+                "safe and immunogenic", "clinical benefit",
+                "objective response", "complete response", "partial response",
+            ]
+            _RESEARCH_FAILURE_KW = [
+                "failed", "did not meet", "did not demonstrate",
+                "no efficacy", "futility", "insufficient", "inferior",
+            ]
+            efficacy_found = False
+            failure_found = False
+            for result in research_results:
+                if result.error:
+                    continue
+                for citation in getattr(result, "citations", []):
+                    snippet = (getattr(citation, "snippet", "") or "").lower()
+                    identifier = (getattr(citation, "identifier", "") or "").lower()
+                    combined = f"{snippet} {identifier}"
+                    if any(kw in combined for kw in _RESEARCH_EFFICACY_KW):
+                        efficacy_found = True
+                    if any(kw in combined for kw in _RESEARCH_FAILURE_KW):
+                        failure_found = True
+            if efficacy_found and not failure_found:
+                logger.info(f"  outcome: v36 research-aware keyword rescue → Positive for {nct_id}")
+                value = "Positive"
+                reasoning = f"[v36 research-aware keyword rescue: efficacy keywords in publication titles/snippets] " + reasoning
+            elif failure_found and not efficacy_found:
+                logger.info(f"  outcome: v36 research-aware keyword rescue → Failed for {nct_id}")
+                value = "Failed - completed trial"
+                reasoning = f"[v36 research-aware keyword rescue: failure keywords in publication titles/snippets] " + reasoning
+
         # Include pass 1 extraction in the reasoning for audit trail
         full_reasoning = f"[Pass 1 facts] {pass1_output[:500]}\n[Pass 2 decision] {reasoning}"
 

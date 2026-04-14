@@ -292,7 +292,22 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
     # that the keyword scan on citations would miss.
     _ORAL_FORMULATION_KEYWORDS = ["tablet", "capsule", "oral", "by mouth", "taken orally"]
     _TOPICAL_FORMULATION_KEYWORDS = ["hydrogel", "applied to", "topical application",
-                                      "applied topically", "mucosal application"]
+                                      "applied topically", "mucosal application",
+                                      "eye drop", "ophthalmic drop", "ophthalmic solution",
+                                      "transdermal patch", "patch applied", "dental",
+                                      "applied to tooth", "applied to teeth", "enamel",
+                                      "topical gel", "topical cream", "topical ointment"]
+    # v36: Nasal/inhaled delivery from intervention descriptions
+    _NASAL_FORMULATION_KEYWORDS = ["nasal spray", "nasal powder", "intranasal",
+                                    "nasal administration", "nasal delivery",
+                                    "inhaler", "inhalation", "nebulizer"]
+    for desc in intervention_descs:
+        for kw in _NASAL_FORMULATION_KEYWORDS:
+            if kw in desc:
+                if "Other" not in found_routes:
+                    found_routes["Other"] = (0.92, False, [])
+                    logger.info(f"  delivery_mode: found Other/nasal (intervention desc: '{kw}')")
+                break
     for desc in intervention_descs:
         for kw in _ORAL_FORMULATION_KEYWORDS:
             if kw in desc:

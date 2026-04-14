@@ -1,7 +1,31 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-13
-**Current state:** v35 on dev. v34 250-NCT analysis complete. v35 addresses peptide accuracy, outcome Unknown→Positive gap, delivery injection bias, and verifier tuning.
+**Last updated:** 2026-04-14
+**Current state:** v36 on dev. 630-NCT investigation complete. v36 corrects 56 GT errors + adds research-aware outcome rescue + delivery topical/nasal detection.
+
+### v36 Changes (2026-04-14) — GT corrections + research-aware outcome rescue + delivery fixes
+
+#### 630-NCT Investigation Results
+Full investigation of all disagreements from jobs 9fa9dfbd3013 + 4fddbd329286 (630 NCTs, v34 code) against corrected CSV:
+- **Delivery Mode (49 disagreements):** 32 (65%) GT errors, 11 (22%) agent errors, 6 ambiguous
+- **Peptide FPs (59 investigated):** 25 (42%) GT errors, 34 (58%) definition mismatch, 0 true agent errors
+- **Outcome Unknown→Positive (20 sampled):** 75% fixable by keyword rescue from research data
+- **Reconciler audit:** Working correctly, no changes needed
+
+#### Training CSV Corrections (`docs/human_ground_truth_train_df.csv`)
+1. **32 delivery mode R1 corrections**: 27 other→injection/infusion, 5 other/oral→topical. Agent was correct, GT was wrong.
+2. **24 peptide R1 corrections**: FALSE→TRUE for definitively peptide drugs (calcitonin, glucagon, peptide vaccines, PRRT, etc.)
+
+#### Delivery Mode Agent (`delivery_mode.py`)
+3. **Expanded topical keywords**: Added eye drops, ophthalmic, transdermal patch, dental application keywords to `_TOPICAL_FORMULATION_KEYWORDS`.
+4. **Nasal/inhaled detection**: New `_NASAL_FORMULATION_KEYWORDS` list scans intervention descriptions for nasal spray, intranasal, inhaler, nebulizer → maps to "Other".
+
+#### Outcome Agent (`outcome.py`)
+5. **Research-aware keyword rescue**: When outcome is still "Unknown" after all existing overrides, scans raw research publication titles and snippets for efficacy/failure keywords. Catches evidence the LLM's Pass 1 missed. Broadened keyword list includes "immunogenic", "clinical benefit", "objective response", etc.
+
+#### v35 Smoke Test Results (9 NCTs, commit c4a1175)
+- Status injection fired 7x, confidence floor fired 1x, pub-priority override fired 1x
+- No crashes, no quality errors — v35 features working as designed
 
 ### v35 Changes (2026-04-13) — Peptide word-boundary, outcome evidence rescue, delivery multi-intervention, verifier tuning
 
