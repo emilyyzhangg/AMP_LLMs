@@ -322,7 +322,16 @@ def _check_known_non_peptide(research_results: list) -> FieldAnnotation | None:
     for name in intervention_names:
         matched = False
         for non_pep in _KNOWN_NON_PEPTIDE_DRUGS:
-            if non_pep in name or name in non_pep:
+            # v36: Word-boundary matching (same fix as _check_known_peptide v35)
+            # Prevents false bypasses from partial name overlaps
+            if len(non_pep) <= 4:
+                is_match = non_pep == name
+            else:
+                is_match = (
+                    bool(re.search(r'(?:^|[\s,;()\-/])' + re.escape(non_pep) + r'(?:$|[\s,;()\-/])', name))
+                    or bool(re.search(r'(?:^|[\s,;()\-/])' + re.escape(name) + r'(?:$|[\s,;()\-/])', non_pep))
+                )
+            if is_match:
                 non_peptide_matches.append((name, non_pep))
                 matched = True
                 break
