@@ -247,6 +247,30 @@ class ReconciliationAgent:
             return ""
 
         winner_norm = max(weighted, key=weighted.get)
+
+        # v35: Minimum average verifier confidence floor.
+        # If the primary is confident (>0.80) but verifiers are uncertain
+        # (avg confidence <0.70), prefer primary — prevents 3 uncertain
+        # verifiers from overriding a confident primary by sheer numbers.
+        primary_norm = None
+        primary_conf_val = 0.0
+        ov = consensus_result.original_value
+        if ov is not None and (ov or consensus_result.field_name == "reason_for_failure"):
+            primary_norm = _normalize(ov, consensus_result.field_name)
+            primary_conf_val = getattr(consensus_result, "primary_confidence", 0.7)
+
+        if (primary_norm and winner_norm != primary_norm
+                and primary_conf_val > 0.80):
+            verifier_confs = [o.confidence for o in consensus_result.opinions]
+            avg_verifier_conf = sum(verifier_confs) / len(verifier_confs) if verifier_confs else 0.0
+            if avg_verifier_conf < 0.70:
+                logger.info(
+                    f"  {consensus_result.field_name}: v35 confidence floor — "
+                    f"primary conf {primary_conf_val:.2f} > 0.80, avg verifier "
+                    f"{avg_verifier_conf:.2f} < 0.70 — preferring primary"
+                )
+                return norm_to_raw.get(primary_norm, ov)
+
         return norm_to_raw[winner_norm]
 
     def _parse_final_answer(self, text: str) -> str:

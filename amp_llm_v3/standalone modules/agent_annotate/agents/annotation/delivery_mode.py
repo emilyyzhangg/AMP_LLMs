@@ -392,13 +392,21 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
     # If Oral (or Other) is also detected, keep all routes — it's a multi-drug trial.
     if "Topical" in found_routes and "Injection/Infusion" in found_routes:
         if len(found_routes) == 2:  # Only Topical + Injection, no other routes
-            topical_conf = found_routes["Topical"][0]
-            injection_conf = found_routes["Injection/Infusion"][0]
-            # v33: Changed >= to > — equal confidence (e.g. both 0.95 from
-            # OpenFDA) should preserve both routes for multi-drug trials
-            if injection_conf > topical_conf:
-                del found_routes["Topical"]
-                logger.info("  delivery_mode: dropped Topical in favor of Injection/Infusion (injection priority)")
+            # v35: If multiple interventions exist, preserve both routes —
+            # they likely represent different drugs in a multi-drug trial
+            if len(intervention_names) > 1:
+                logger.info(
+                    f"  delivery_mode: preserving Topical+Injection — "
+                    f"{len(intervention_names)} interventions detected"
+                )
+            else:
+                topical_conf = found_routes["Topical"][0]
+                injection_conf = found_routes["Injection/Infusion"][0]
+                # v33: Changed >= to > — equal confidence (e.g. both 0.95 from
+                # OpenFDA) should preserve both routes for multi-drug trials
+                if injection_conf > topical_conf:
+                    del found_routes["Topical"]
+                    logger.info("  delivery_mode: dropped Topical in favor of Injection/Infusion (injection priority)")
 
     # Build the result — single route or comma-separated multi-route
     routes_list = sorted(found_routes.keys())

@@ -274,11 +274,20 @@ def _check_known_peptide(research_results: list) -> FieldAnnotation | None:
                 intervention_names.append(name.lower().strip())
     for name in intervention_names:
         for pep_drug in _KNOWN_PEPTIDE_DRUGS:
-            if pep_drug in name or name in pep_drug:
+            # v35: Word-boundary matching to prevent substring false positives
+            # (e.g. "t-20" inside "apt-201"). Short entries use exact match.
+            if len(pep_drug) <= 4:
+                matched = pep_drug == name
+            else:
+                matched = (
+                    bool(re.search(r'(?:^|[\s,;()\-/])' + re.escape(pep_drug) + r'(?:$|[\s,;()\-/])', name))
+                    or bool(re.search(r'(?:^|[\s,;()\-/])' + re.escape(name) + r'(?:$|[\s,;()\-/])', pep_drug))
+                )
+            if matched:
                 logger.info(f"  peptide: deterministic → True (known peptide: '{name}' matched '{pep_drug}')")
                 return FieldAnnotation(
                     field_name="peptide", value="True", confidence=0.95,
-                    reasoning=f"[Deterministic v11] Known peptide drug: '{name}' matched '{pep_drug}'",
+                    reasoning=f"[Deterministic v35] Known peptide drug: '{name}' matched '{pep_drug}'",
                     evidence=[], model_name="deterministic", skip_verification=True,
                 )
     return None
@@ -377,6 +386,22 @@ def _extract_peptide_signals(research_results: list) -> list[str]:
                         facts.append(
                             f"- {identifier}: {part.strip()} "
                             f"(precursor only — NOT the administered drug)"
+                        )
+            elif snippet:
+                # v35: Inline residue count patterns without "Mature form:" header
+                inline_match = re.search(r'(\d+)\s*(?:residues?|amino\s*acids?)', snippet)
+                if inline_match:
+                    count = int(inline_match.group(1))
+                    identifier = getattr(citation, "identifier", "") or "UniProt"
+                    if count <= 100:
+                        facts.append(
+                            f"- {identifier}: contains {count} amino acids "
+                            f"(peptide range)"
+                        )
+                    else:
+                        facts.append(
+                            f"- {identifier}: contains {count} amino acids "
+                            f"(EXCEEDS peptide range — may be protein)"
                         )
 
         # 2. Arm group descriptions with peptide signals
@@ -684,6 +709,9 @@ class PeptideAgent(BaseAnnotationAgent):
         aa_match = re.search(
             r"(\d+)\s*(?:amino\s*acids?|aa\b|residues?)", lower
         )
+        # v35: Also catch "X-mer" patterns (e.g., "16-mer peptide")
+        if not aa_match:
+            aa_match = re.search(r"(\d+)[- ]?mer\b", lower)
         if aa_match:
             result["aa_length"] = aa_match.group(1)
 

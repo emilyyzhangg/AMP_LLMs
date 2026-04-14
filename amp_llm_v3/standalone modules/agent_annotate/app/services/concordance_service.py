@@ -435,10 +435,13 @@ def _kappa_interpretation(k: Optional[float]) -> str:
 # Data loading: CSV (human annotations)
 # ---------------------------------------------------------------------------
 _csv_cache: Optional[dict[str, dict]] = None
+_csv_mtime: float = 0.0
 
 
 def _load_csv_annotations() -> dict[str, dict]:
     """Load human annotations from training CSV.
+
+    v35: Auto-reloads when CSV file is modified (mtime check).
 
     Returns: {nct_id: {
         'r1': {field: raw_value},  # ann1 = Emily
@@ -447,9 +450,13 @@ def _load_csv_annotations() -> dict[str, dict]:
         'r2_annotator': str,       # from A2_annotator column
     }}
     """
-    global _csv_cache
-    if _csv_cache is not None:
-        return _csv_cache
+    global _csv_cache, _csv_mtime
+    if _csv_cache is not None and CSV_PATH.exists():
+        current_mtime = CSV_PATH.stat().st_mtime
+        if current_mtime == _csv_mtime:
+            return _csv_cache
+        logger.info("CSV file modified (mtime %.0f → %.0f), reloading", _csv_mtime, current_mtime)
+        _csv_cache = None
 
     if not CSV_PATH.exists():
         logger.error("CSV file not found: %s", CSV_PATH)
@@ -478,14 +485,16 @@ def _load_csv_annotations() -> dict[str, dict]:
             data[nct] = entry
 
     _csv_cache = data
-    logger.info("Loaded %d NCT IDs from CSV", len(_csv_cache))
+    _csv_mtime = CSV_PATH.stat().st_mtime
+    logger.info("Loaded %d NCT IDs from CSV (mtime %.0f)", len(_csv_cache), _csv_mtime)
     return _csv_cache
 
 
 def invalidate_csv_cache() -> None:
     """Force reload of CSV data on next access (e.g. if file is updated)."""
-    global _csv_cache
+    global _csv_cache, _csv_mtime
     _csv_cache = None
+    _csv_mtime = 0.0
 
 
 # ---------------------------------------------------------------------------

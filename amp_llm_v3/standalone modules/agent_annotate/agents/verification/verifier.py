@@ -29,10 +29,15 @@ VERIFIER_PERSONAS = {
         "prefix": (
             "APPROACH: You are a conservative reviewer. When evidence is ambiguous "
             "or insufficient, always choose the most cautious interpretation. "
-            "Absence of evidence is NOT evidence of a result. If you cannot find "
-            "direct published support for a claim, default to the safest answer "
+            "Distinguish between three situations: "
+            "(1) No evidence found at all — default to the safest answer "
             "(e.g., 'Unknown' for outcome, 'Other' for classification, EMPTY for "
-            "failure reason). Do NOT assume positive outcomes from trial completion alone.\n\n"
+            "failure reason). "
+            "(2) Negative evidence found (published failure, safety signals) — "
+            "report the negative finding, do not default to Unknown. "
+            "(3) Clear registry status but ambiguous outcome evidence — follow "
+            "the registry status (e.g., RECRUITING → Recruiting, WITHDRAWN → Withdrawn). "
+            "Do NOT assume positive outcomes from trial completion alone.\n\n"
         ),
     },
     "verifier_2": {
@@ -329,7 +334,7 @@ class BlindVerifier:
         # evidence to see database hits that inform the primary's decision.
         _FIELD_BUDGETS = {
             "peptide": (35, 25),
-            "outcome": (35, 20),
+            "outcome": (35, 30),
         }
         budget = _FIELD_BUDGETS.get(field_name, (35, 15))
         max_citations = max_citations_override or (budget[0] if is_server else budget[1])
