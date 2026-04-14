@@ -406,6 +406,27 @@ class OutcomeAgent(BaseAnnotationAgent):
                     pass1_output += f"\nResults Posted: {hr_val} [from ClinicalTrials.gov structured data]"
                     logger.info(f"  outcome: v33 injected hasResults={hr_val} into Pass 2 input")
 
+        # --- v36: Stale status detection ---
+        # If registry says Active/Recruiting but completion date is >6 months ago,
+        # the status is likely outdated. Inject a temporal warning so Pass 2 doesn't
+        # blindly trust a stale Active status.
+        completion_date_str = self._extract_completion_date(research_results)
+        if completion_date_str:
+            try:
+                from datetime import datetime
+                comp_dt = datetime.strptime(completion_date_str, "%Y-%m-%d")
+                days_since = (datetime.now() - comp_dt).days
+                if days_since > 180:
+                    status_lower = pass1_output.lower()
+                    if ("active" in status_lower or "recruiting" in status_lower) and "completed" not in status_lower:
+                        pass1_output += (
+                            f"\n[Temporal check] Trial completion date was {completion_date_str} "
+                            f"({days_since} days ago). Registry status may be outdated."
+                        )
+                        logger.info(f"  outcome: v36 stale status detected — completed {days_since} days ago but status says Active/Recruiting")
+            except (ValueError, TypeError):
+                pass
+
         # --- PASS 2: Determine outcome with facts in hand ---
         try:
             logger.info(f"  outcome: Pass 2 — determining outcome for {nct_id}")
@@ -887,6 +908,24 @@ class OutcomeAgent(BaseAnnotationAgent):
             if overall_status:
                 return overall_status, has_results
         return "", None
+
+    @staticmethod
+    def _extract_completion_date(research_results: list) -> str:
+        """v36: Extract primary completion date from ClinicalTrials.gov data."""
+        for result in research_results:
+            if result.error or result.agent_name != "clinical_protocol":
+                continue
+            if not result.raw_data:
+                continue
+            proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
+            status_mod = proto.get("statusModule", {})
+            for date_key in ("primaryCompletionDateStruct", "completionDateStruct"):
+                date_struct = status_mod.get(date_key, {})
+                if isinstance(date_struct, dict):
+                    date_str = date_struct.get("date", "")
+                    if date_str:
+                        return date_str
+        return ""
 
     def _parse_value(self, text: str) -> str:
         match = re.search(r"Outcome:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)

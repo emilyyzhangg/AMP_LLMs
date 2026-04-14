@@ -1,9 +1,27 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-14
-**Current state:** v36 on dev. 630-NCT investigation complete. v36 corrects 56 GT errors + adds research-aware outcome rescue + delivery topical/nasal detection.
+**Current state:** v37 on dev. v36 GT corrections reverted (human annotations should not be modified by agent). v37 adds classification host-defense fallback, peptide non-peptide word-boundary fix, outcome stale-status detection.
 
-### v36 Changes (2026-04-14) — GT corrections + research-aware outcome rescue + delivery fixes
+### v37 Changes (2026-04-14) — Classification fallback + peptide non-peptide fix + outcome stale-status
+
+#### v35 Smoke Test Results (9 NCTs, commit c4a1175, job 16e46a1d1492)
+- Outcome: 100% (n=2) — v35 status injection + confidence floor rescued both Unknown cases
+- Classification: 100% (n=4), RfF: 100% (n=7)
+- Peptide: 77.8% (n=9) — 1 FP (NCT03069989 radiolabeled), 1 FN (NCT05107219)
+- Delivery: 50% (n=2) — NCT05111912 injection vs other (injection bias)
+- Sequence: 0% (n=1) — found glucagon instead of GLP-1
+
+#### Classification Agent (`classification.py`)
+1. **Host defense keywords in fallback**: Added "host defense", "innate immune", "neutrophil recruitment", "cathelicidin", "defensin", "antimicrobial peptide" to `_fallback_classify()`. These are Mode B AMP signals the fallback was missing.
+
+#### Peptide Agent (`peptide.py`)
+2. **Word-boundary matching in `_check_known_non_peptide()`**: Same v35 fix applied to the non-peptide bypass — prevents false bypasses from substring overlaps (e.g., "peptide 1.5" matching inside "peptide candidate x-1.5").
+
+#### Outcome Agent (`outcome.py`)
+3. **Stale status detection**: Extracts completion date from ClinicalTrials.gov structured data. If trial completed >6 months ago but status still says Active/Recruiting, injects temporal warning into Pass 2 input. New `_extract_completion_date()` helper method.
+
+### v36 Changes (2026-04-14) — GT corrections reverted + research-aware outcome rescue + delivery fixes
 
 #### 630-NCT Investigation Results
 Full investigation of all disagreements from jobs 9fa9dfbd3013 + 4fddbd329286 (630 NCTs, v34 code) against corrected CSV:

@@ -332,6 +332,12 @@ def _fallback_classify(pass1_text: str, peptide_value: str) -> str:
         "pore formation", "bactericidal", "bacteriostatic", "antimicrobial activity"
     ])
     has_immunostim = "promote" in lower and "immune" in lower
+    # v36: Host defense signals — innate immune recruitment is AMP Mode B
+    has_host_defense = any(kw in lower for kw in [
+        "host defense", "host defence", "innate immune",
+        "neutrophil recruitment", "recruit neutrophil",
+        "cathelicidin", "defensin", "antimicrobial peptide",
+    ])
     has_suppress = "suppress" in lower and "immune" in lower
 
     # Immune suppression → always Other
@@ -354,7 +360,7 @@ def _fallback_classify(pass1_text: str, peptide_value: str) -> str:
     if any(kw in lower for kw in not_amp_keywords):
         return "Other"
 
-    if has_dramp or has_antimicrobial_mechanism or has_immunostim:
+    if has_dramp or has_antimicrobial_mechanism or has_immunostim or has_host_defense:
         return "AMP"
 
     return "Other"
