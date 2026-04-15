@@ -87,19 +87,11 @@ class StabilityTracker:
                 )
                 stored += 1
 
-                # Store embedding for similarity search (async)
-                if evidence_summary:
-                    try:
-                        embed_text = (
-                            f"Trial {nct_id}, field {field_name}: "
-                            f"value={final_value}. Evidence: {evidence_summary[:500]}"
-                        )
-                        await self._memory.store_embedding(
-                            "experiences", exp_id, embed_text
-                        )
-                        embedded += 1
-                    except Exception as e:
-                        logger.debug("Embedding failed for %s/%s: %s", nct_id, field_name, e)
+                # v38: Embedding generation DISABLED.
+                # Generates an Ollama call per experience for similarity search
+                # in build_guidance(). With reconciliation corrections purged and
+                # guidance now using direct field-name queries instead of semantic
+                # search, embeddings add compute overhead for no value.
 
         if skipped_ncts:
             logger.info("EDAM: skipped %d non-training NCTs (stored %d)", skipped_ncts, stored)

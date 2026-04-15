@@ -975,12 +975,14 @@ class PipelineOrchestrator:
                     self._enforce_post_verification_consistency(verified)
                     self._normalize_final_values(verified)
 
-                    # Store reconciliation overrides as EDAM corrections
-                    ann_by_field = {a.field_name: a for a in annotations}
-                    self._store_reconciliation_corrections(
-                        nct_id, job.job_id, verified,
-                        ann_by_field, job.config_snapshot,
-                    )
+                    # v38: Reconciliation corrections DISABLED for EDAM learning.
+                    # Reconciler decisions are unreliable (hallucinations, assumptions,
+                    # overriding correct answers) and dominated 91.6% of EDAM corrections,
+                    # poisoning the learning signal. Logged for diagnostics only.
+                    # self._store_reconciliation_corrections(
+                    #     nct_id, job.job_id, verified,
+                    #     ann_by_field, job.config_snapshot,
+                    # )
 
                     metadata = self._extract_metadata(nct_id, research)
                     research_coverage = self._build_research_coverage(research)
