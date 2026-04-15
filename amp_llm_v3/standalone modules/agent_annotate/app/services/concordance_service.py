@@ -721,7 +721,14 @@ def _compute_field_concordance(
         # Confusion matrix
         confusion[norm_a][norm_b] += 1
 
-        if norm_a != norm_b:
+        # v37b: For sequence fields, use canonical comparison for disagreement
+        # detection (same as AC₁/kappa). Raw comparison wrongly flagged
+        # formatting differences like "(nh2)" suffix as disagreements.
+        if field_name == "sequence":
+            is_disagree = label_a_seq != label_b_seq
+        else:
+            is_disagree = norm_a != norm_b
+        if is_disagree:
             disagreements.append(
                 Disagreement(
                     nct_id=nct,

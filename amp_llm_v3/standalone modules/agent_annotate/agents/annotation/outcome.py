@@ -529,6 +529,13 @@ class OutcomeAgent(BaseAnnotationAgent):
                 "well-tolerated", "safe and effective", "immunogenic",
                 "safe and immunogenic", "clinical benefit",
                 "objective response", "complete response", "partial response",
+                # v37b: Vaccine/immunotherapy-specific positive signals
+                # (from investigation of 4 holdout cases: NCT01722058,
+                # NCT03042793, NCT03071679, NCT05130060)
+                "immune response", "t cell response", "cd8+", "cd4+",
+                "clinical activity", "early evidence",
+                "preliminary activity", "antitumor activity",
+                "enhanced immune", "immune activation",
             ]
             _RESEARCH_FAILURE_KW = [
                 "failed", "did not meet", "did not demonstrate",
@@ -662,6 +669,9 @@ class OutcomeAgent(BaseAnnotationAgent):
                 "improved", "improvement", "efficacy", "effective",
                 "favorable", "benefit", "promising", "successful",
                 "well-tolerated", "safe and effective",
+                "immunogenic", "immune response", "t cell response",
+                "clinical activity", "antitumor activity",
+                "enhanced immune", "immune activation",
             ]
             _FAILURE_MARKERS = [
                 "failed", "negative", "did not meet",
@@ -807,6 +817,9 @@ class OutcomeAgent(BaseAnnotationAgent):
                 "improved", "improvement", "efficacy", "effective",
                 "favorable", "benefit", "promising", "successful",
                 "well-tolerated", "safe and effective",
+                "immunogenic", "immune response", "t cell response",
+                "clinical activity", "antitumor activity",
+                "enhanced immune", "immune activation",
             ]
             _FAILURE_MARKERS = [
                 "failed", "negative", "did not meet",
