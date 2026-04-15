@@ -195,9 +195,10 @@ _PROTOCOL_ROUTE_KEYWORDS = {
     "topical ointment": "Topical", "topical application": "Topical",
     "applied topically": "Topical",
     "mouthwash": "Topical", "mouth rinse": "Topical",
-    # Injection — skin tests and prick tests are intradermal injections
-    "skin prick": "Injection/Infusion", "skin test": "Injection/Infusion",
-    "prick test": "Injection/Infusion",
+    # v38b: skin prick/skin test REMOVED from injection keywords.
+    # Allergy skin prick tests are classified as "Other" by R1 annotators
+    # (diagnostic procedure, not therapeutic drug delivery).
+    # Previously caused false positives on allergen peptide trials (NCT01719133).
 }
 
 _DRUG_CLASS_ROUTES = {
@@ -442,11 +443,22 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
 
     multi_tag = f" ({len(routes_list)} routes)" if len(routes_list) > 1 else ""
     logger.info(f"  delivery_mode: deterministic → {value}{multi_tag}")
+
+    # v38b: ALL deterministic "Other" returns skip verification.
+    # The reconciler consistently overrides correct "Other" to "Injection/Infusion"
+    # for intranasal, nasal spray, and unspecified-route trials — hallucinating
+    # that these are "parenteral" or "typically injected". This caused 3/9
+    # delivery disagreements in v37b validation. Deterministic Other is backed
+    # by specific keyword matches (nasal, radiotracer, imaging) and should not
+    # be second-guessed by the reconciler.
+    is_other = value == "Other"
+    skip = is_other or (not (len(routes_list) > 1) and all_skip)
+
     return FieldAnnotation(
         field_name="delivery_mode", value=value, confidence=min_conf,
-        reasoning=f"[Deterministic v17] Collected {len(routes_list)} route(s) from all citations",
+        reasoning=f"[Deterministic v38] Collected {len(routes_list)} route(s) from all citations",
         evidence=all_evidence[:5], model_name="deterministic",
-        skip_verification=not (len(routes_list) > 1) and all_skip,  # Always verify multi-route
+        skip_verification=skip,
     )
 
 
@@ -554,33 +566,54 @@ class DeliveryModeAgent(BaseAnnotationAgent):
         # still guesses Injection/Infusion, force to Other. The PASS2 prompt
         # says "do NOT guess" but small LLMs frequently ignore this rule,
         # defaulting to Injection/Infusion for peptide/vaccine trials.
+        #
+        # v38b: Fixed markdown parsing — LLM outputs headers like
+        # "#### Protocol Route:\n The trial...does not specify..." with
+        # content on the NEXT line(s). The regex now grabs multi-line content
+        # up to the next section header.
         if value == "Injection/Infusion":
             p1_lower = pass1_text.lower()
-            # Check all source sections for "not specified" / "not found"
             _NO_EVIDENCE_MARKERS = ["not specified", "not found", "no specific",
                                      "does not specify", "does not provide",
                                      "no mention", "not mentioned", "not available",
-                                     "no information", "not provided", "no explicit"]
-            protocol_section = re.search(
-                r"protocol route:\s*(.+?)(?:\n|$)", p1_lower)
-            fda_section = re.search(
-                r"fda/label route:\s*(.+?)(?:\n|$)", p1_lower)
-            lit_section = re.search(
-                r"literature route:\s*(.+?)(?:\n|$)", p1_lower)
+                                     "no information", "not provided", "no explicit",
+                                     "no evidence", "no route", "not stated",
+                                     "does not state", "not explicitly"]
 
-            def _is_no_evidence(section_match) -> bool:
-                if not section_match:
+            # v38b: Multi-line section extraction — handles both formats:
+            #   "Protocol Route: not specified"  (single-line)
+            #   "#### Protocol Route:\nThe trial does not specify..."  (markdown)
+            # Grab everything from the header to the next section header.
+            _SECTION_HEADERS = [
+                "protocol route", "fda/label route", "fda route",
+                "literature route", "database route",
+                "drug formulation", "most specific route", "route category",
+            ]
+            _SECTION_BOUNDARY = "|".join(re.escape(h) for h in _SECTION_HEADERS)
+
+            def _extract_section(header: str) -> str:
+                """Extract section content, handling both single-line and markdown formats."""
+                # Strip markdown formatting (####, **, etc.) for matching
+                pattern = rf"(?:#{{1,6}}\s*)?(?:\*\*)?{re.escape(header)}(?:\*\*)?:?\s*(.+?)(?={_SECTION_BOUNDARY}|\Z)"
+                m = re.search(pattern, p1_lower, re.DOTALL)
+                return m.group(1).strip() if m else ""
+
+            def _is_no_evidence(section_text: str) -> bool:
+                if not section_text:
                     return True
-                text = section_match.group(1).strip()
-                return any(marker in text for marker in _NO_EVIDENCE_MARKERS)
+                return any(marker in section_text for marker in _NO_EVIDENCE_MARKERS)
 
-            no_protocol = _is_no_evidence(protocol_section)
-            no_fda = _is_no_evidence(fda_section)
-            no_lit = _is_no_evidence(lit_section)
+            proto_text = _extract_section("protocol route")
+            fda_text = _extract_section("fda/label route") or _extract_section("fda route")
+            lit_text = _extract_section("literature route")
+
+            no_protocol = _is_no_evidence(proto_text)
+            no_fda = _is_no_evidence(fda_text)
+            no_lit = _is_no_evidence(lit_text)
 
             if no_protocol and no_fda and no_lit:
                 logger.info(
-                    f"  delivery_mode: v38 not-specified override — "
+                    f"  delivery_mode: v38b not-specified override — "
                     f"Pass 1 found no route evidence from any source, "
                     f"forcing Injection/Infusion → Other"
                 )
