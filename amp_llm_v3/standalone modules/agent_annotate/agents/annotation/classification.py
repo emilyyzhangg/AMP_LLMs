@@ -497,6 +497,38 @@ class ClassificationAgent(BaseAnnotationAgent):
 
         # Parse Pass 2 response
         value = self._parse_value(pass2_text)
+
+        # v37: Post-LLM consistency check — if Pass 2 says "Other" but
+        # strong AMP database evidence exists, override to AMP. The LLM
+        # is systematically conservative: all 31 classification disagreements
+        # in the 630-NCT run were agent=Other vs R1=AMP.
+        if value == "Other" and peptide_value != "False":
+            lower_p1 = pass1_text.lower()
+            has_db_evidence = bool(dramp_hits)
+            has_mechanism = any(kw in lower_p1 for kw in [
+                "kills bacteria", "inhibits bacteria", "membrane disruption",
+                "pore formation", "bactericidal", "bacteriostatic",
+                "antimicrobial activity", "antimicrobial peptide",
+            ])
+            has_host_defense = any(kw in lower_p1 for kw in [
+                "host defense", "host defence", "innate immune",
+                "neutrophil recruitment", "recruit neutrophil",
+                "cathelicidin", "defensin",
+            ])
+            has_immunostim = "promote" in lower_p1 and "immune" in lower_p1
+            has_suppress = "suppress" in lower_p1 and "immune" in lower_p1
+
+            if not has_suppress and (
+                (has_db_evidence and (has_mechanism or has_host_defense or has_immunostim))
+                or has_mechanism
+            ):
+                logger.info(
+                    f"  classification: v37 post-LLM override Other → AMP "
+                    f"(dramp={has_db_evidence}, mechanism={has_mechanism}, "
+                    f"host_defense={has_host_defense}, immunostim={has_immunostim})"
+                )
+                value = "AMP"
+
         # Combine both passes in reasoning for audit trail
         reasoning = f"[Pass 1 extraction] {pass1_text[:400]}\n[Pass 2 decision] {pass2_text[:400]}"
 

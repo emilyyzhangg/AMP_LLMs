@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-14
-**Current state:** v37 on dev. v36 GT corrections reverted (human annotations should not be modified by agent). v37 adds classification host-defense fallback, peptide non-peptide word-boundary fix, outcome stale-status detection.
+**Current state:** v37b on dev. v37b moves classification AMP override from exception-only fallback to post-LLM consistency check. 20-NCT validation confirmed peptide 100%, outcome rescue firing, but classification still missing AMPs because the fallback never triggered.
 
 ### v37 Changes (2026-04-14) — Classification fallback + peptide non-peptide fix + outcome stale-status
 
@@ -14,6 +14,7 @@
 
 #### Classification Agent (`classification.py`)
 1. **Host defense keywords in fallback**: Added "host defense", "innate immune", "neutrophil recruitment", "cathelicidin", "defensin", "antimicrobial peptide" to `_fallback_classify()`. These are Mode B AMP signals the fallback was missing.
+1b. **v37b Post-LLM consistency check**: Moved AMP override logic from exception-only fallback to a post-LLM check that runs on every Pass 2 result. When LLM says "Other" but DRAMP hits exist with antimicrobial mechanism/host defense/immunostim signals in Pass 1, overrides to "AMP". Requires DRAMP evidence + mechanism signal (not DRAMP alone, to avoid false positives from in-vitro-only DBAASP entries). Does NOT override when immune suppression is detected.
 
 #### Peptide Agent (`peptide.py`)
 2. **Word-boundary matching in `_check_known_non_peptide()`**: Same v35 fix applied to the non-peptide bypass — prevents false bypasses from substring overlaps (e.g., "peptide 1.5" matching inside "peptide candidate x-1.5").
