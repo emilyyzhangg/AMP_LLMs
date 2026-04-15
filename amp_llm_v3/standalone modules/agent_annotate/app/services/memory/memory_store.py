@@ -588,10 +588,22 @@ class MemoryStore:
 
     # --- Budget-aware guidance retrieval ---
 
+    # v38: Reliable sources for guidance injection.
+    # ground_truth is highest priority (human R1 vs agent disagreement).
+    # self_audit and consistency_override are evidence-based.
+    # reconciliation is EXCLUDED (unreliable, dominated by hallucinations).
+    # self_review is kept but low priority.
+    _RELIABLE_SOURCES = ("ground_truth", "self_audit", "consistency_override", "self_review")
+
     async def build_guidance(self, nct_id: str, field_name: str,
                              evidence_text: str,
                              max_tokens: int = 0) -> str:
         """Build the full EDAM guidance block for an annotation call.
+
+        v38 redesign: only uses corrections from reliable sources
+        (ground_truth, self_audit, consistency_override). Removed semantic
+        similarity search (depended on expensive embeddings). Kept stable
+        exemplars and anomaly warnings.
 
         Respects token budget. Returns empty string if no relevant memories.
         """
@@ -599,16 +611,33 @@ class MemoryStore:
         if current_epoch == 0:
             return ""  # cold start — no memories yet
 
-        # Use hardware-aware token budget
         if max_tokens <= 0:
             max_tokens = self._get_limit("memory_budget_tokens", 2000)
 
         parts = []
         budget_chars = max_tokens * CHARS_PER_TOKEN
 
-        # --- 1. Corrections (50% budget) ---
+        # --- 1. Corrections from reliable sources only (50% budget) ---
         corr_budget = int(budget_chars * BUDGET_ALLOCATION["corrections"])
-        corrections = self.get_corrections(field_name=field_name, limit=10)
+        # v38: Filter to reliable sources, prioritize ground_truth
+        try:
+            placeholders = ",".join("?" for _ in self._RELIABLE_SOURCES)
+            corrections = self._conn.execute(
+                f"SELECT * FROM corrections "
+                f"WHERE field_name = ? AND source IN ({placeholders}) "
+                f"ORDER BY "
+                f"  CASE source "
+                f"    WHEN 'ground_truth' THEN 0 "
+                f"    WHEN 'self_audit' THEN 1 "
+                f"    WHEN 'consistency_override' THEN 2 "
+                f"    ELSE 3 "
+                f"  END, epoch DESC, id DESC "
+                f"LIMIT 15",
+                (field_name, *self._RELIABLE_SOURCES),
+            ).fetchall()
+        except Exception:
+            corrections = []
+
         if corrections:
             corr_lines = []
             corr_used = 0
@@ -620,8 +649,9 @@ class MemoryStore:
                 )
                 if weight < 0.1:
                     continue
+                source_tag = f"[{c['source']}] " if c["source"] == "ground_truth" else ""
                 line = (
-                    f"- {c['nct_id']}/{c['field_name']}: corrected from "
+                    f"- {source_tag}{c['nct_id']}/{c['field_name']}: corrected from "
                     f"'{c['original_value']}' to '{c['corrected_value']}' — "
                     f"{c['reflection'][:200]}"
                 )
@@ -633,24 +663,7 @@ class MemoryStore:
                 parts.append("[PAST CORRECTIONS]")
                 parts.extend(corr_lines)
 
-        # Also try semantic search for similar corrections
-        if evidence_text:
-            try:
-                similar = await self.search_similar(
-                    evidence_text[:500], "corrections",
-                    field_name=field_name, top_k=3,
-                )
-                for s in similar:
-                    if s.get("corrected_value"):
-                        line = (
-                            f"- Similar trial {s.get('nct_id', '?')}: "
-                            f"'{s.get('original_value', '?')}' was wrong, "
-                            f"correct is '{s['corrected_value']}' "
-                            f"(similarity={s['similarity']:.2f})"
-                        )
-                        parts.append(line)
-            except Exception:
-                pass  # embedding search failure is non-fatal
+        # v38: Semantic similarity search REMOVED (embedding generation disabled)
 
         # --- 2. Stable exemplars (25% budget) ---
         exemplar_budget = int(budget_chars * BUDGET_ALLOCATION["stable_exemplars"])
@@ -671,24 +684,22 @@ class MemoryStore:
                 parts.append("[STABLE PATTERNS]")
                 parts.extend(ex_lines)
 
-        # --- 3. Reasoning patterns (15% budget) ---
+        # --- 3. Reasoning patterns from reliable sources (15% budget) ---
         pattern_budget = int(budget_chars * BUDGET_ALLOCATION["reasoning_patterns"])
         try:
             pattern_corrections = self._conn.execute(
                 "SELECT field_name, reflection, source, corrected_value "
                 "FROM corrections "
-                "WHERE field_name = ? AND source IN ('consistency_override', 'self_audit') "
+                "WHERE field_name = ? AND source IN ('ground_truth', 'consistency_override', 'self_audit') "
                 "ORDER BY epoch DESC, id DESC LIMIT 20",
                 (field_name,),
             ).fetchall()
             if pattern_corrections:
-                # Group by pattern type and deduplicate
                 seen_patterns = set()
                 pattern_lines = []
                 pattern_used = 0
                 for pc in pattern_corrections:
                     reflection = pc["reflection"] or ""
-                    # Extract a general rule from the reflection
                     rule = self._extract_reasoning_pattern(
                         field_name, reflection, pc["corrected_value"],
                     )
@@ -703,7 +714,7 @@ class MemoryStore:
                     parts.append("[REASONING PATTERNS]")
                     parts.extend(pattern_lines)
         except Exception:
-            pass  # reasoning pattern extraction is non-fatal
+            pass
 
         # --- 4. Anomaly warnings (10% budget) ---
         anomalies = self.detect_anomalies(field_name)
@@ -717,7 +728,6 @@ class MemoryStore:
 
         block = "=== EDAM GUIDANCE ===\n" + "\n".join(parts) + "\n=== END GUIDANCE ==="
 
-        # Final budget enforcement
         max_chars = max_tokens * CHARS_PER_TOKEN
         if len(block) > max_chars:
             block = block[:max_chars - 20] + "\n=== END GUIDANCE ==="
