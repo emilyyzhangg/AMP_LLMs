@@ -56,8 +56,12 @@
 | 58 | v33 smoke | 543c5f11fafd | 10 | 10/10 | **Complete** | v33b (bf38085) | — | 87 min. Peptide 100%, delivery 100%, outcome 50% (5 still Unknown), RfF 80%. Outcome fixes had limited impact on old trials. |
 | 59 | v33 validation (new 50) | ae42b7b27600 | 50 | 50/50 | **Complete** | v33b (bf38085) | — | 286 min. Peptide 92% (+8pp human), outcome 58.1% (+9.3pp human), RfF 84%. Classification 70.5%, delivery 66.7%, sequence 15.4% — cascade N/A dominant error. 0 warnings/timeouts. |
 | 60 | v35 validation | TBD | 50 | —/50 | **Cancelled** | v35 | — | 9 code changes: peptide word-boundary, outcome keyword rescue, delivery multi-intervention, verifier tuning. |
-| 61 | v35 smoke test | 16e46a1d1492 | 9 | 9/9 | **Running** | v35 (c4a1175) | — | Status injection 7x, confidence floor 1x, pub-priority override 1x. No errors. |
-| 62 | v36 validation | TBD | 50 | —/50 | **Pending** | v36 | — | 56 GT corrections + research-aware outcome rescue + delivery topical/nasal fixes. |
+| 61 | v35 smoke test | 16e46a1d1492 | 9 | 9/9 | **Complete** | v35 (c4a1175) | — | Status injection 7x, confidence floor 1x, pub-priority override 1x. No errors. |
+| 62 | v36 validation | TBD | 50 | —/50 | **Cancelled** | v36 | — | 56 GT corrections + research-aware outcome rescue + delivery topical/nasal fixes. |
+| 63 | v34 250-NCT baseline | 0af180b09402+bb545136cfa7 | 250 | 250/250 | **Complete** | v34 (1c17bfc) | — | Classification 91.5%, delivery 82.4%, outcome 59.7%, RfF 95.4%, peptide 82.8%, sequence 41.7%. |
+| 64 | v34 630-NCT full run | 9fa9dfbd3013+4fddbd329286 | 630 | 630/630 | **Complete** | v34 (bb9a4d3) | — | Classification 91.2%, delivery 85.3%, outcome 65.2%, RfF 94.9%, peptide 82.2%, sequence 48.1%. |
+| 65 | v37b 94-NCT validation | 89ae1f9f8c1f+3f971ba3bd97 | 94 | 94/94 | **Complete** | v37b (09e84e0) | — | Classification 92.3%, delivery 82.4%, outcome 59.4%, RfF 95.2%, peptide 86.2%, sequence 47.4%. 295s/trial avg. 0 warnings/timeouts. |
+| **66** | **v38 94-NCT validation** | **b02042a06db6+87bc38d018b8** | **94** | **—/94** | **Running** | **v38 (31eee3a)** | — | **Dossier redesign, delivery Other fix, sequence expansion. Same 94 NCTs as v37b for direct comparison.** |
 
 > **Note:** Jobs 36-40 are the last jobs run with old categories (v22 code). v24 is now merged to main (9db9e33) with simplified categories (binary AMP/Other, 4-category delivery mode). All future jobs use v24+ categories. Training CSV re-bucketed from Excel source on 2026-04-07 (v31) — delivery mode 145 injection annotations recovered from "other".
 
@@ -91,6 +95,12 @@
 | **v31** | **f9150a7** | **3 new literature APIs (OpenAlex 250M+ works, Semantic Scholar TLDRs, CrossRef non-PubMed). 15 agents total, 20+ databases. Identifier-based evidence dedup. Confidence-weighted majority vote. Low-confidence dissent gate. Evidence grade propagation (db_confirmed). Per-field verifier evidence budgets (peptide 25, outcome 20). Reconciler override (weighted vote > reconciler when primary conf > 0.85). Delivery mode: radiotracer detection, intervention desc oral/topical scan, removed injection default bias, tightened topical keywords. Training CSV re-bucketed from Excel (145 injection annotations recovered). Smoke: peptide 90-100%, delivery 80-100%, CrossRef producing 3-4 citations/trial.** |
 | **v32** | **458edbf** | **Outcome fixes: (1) Section boundary regex — ported _SECTION_BOUNDARY from failure_reason.py, \n[A-Z] never matched on lowered text. (2) Terminated safety net — Unknown + TERMINATED + no results → force Terminated. (3) hasResults override — Unknown + COMPLETED + results posted → force Positive. Delivery: (4) Expanded oral keywords. (5) Injection priority guard 2-route only. Validation (50 NCTs): Peptide 96%, Classification 81.8%, Delivery 77.3%, Outcome 61.4%, RfF 76.6%.** |
 | **v33b** | **062a7fd** | **9 fixes across 8 files. Critical: (1) consensus.py removed `"amp":"other"` alias blocking AMP since v24. (2) orchestrator.py delivery normalization to v24 values. Outcome: (3) structured status+hasResults injection from CT.gov metadata. (4) generic publication filter in _infer_from_pass1. (5) H3b backstop Phase II/III >10yr. (6) generic publication filter in _publication_priority_override. Delivery: (7) topical injection priority >= to > (strict). RfF: (8) expanded keywords. Peptide: (9) glucagon in _KNOWN_SEQUENCES. v32 100-NCT baseline: outcome 64% (=human), peptide 91% (+5pp human), delivery 83.8%, RfF 85.5%.** |
+| v34 | fc6f41c/1c17bfc | Generic pub filter fix, 3 GT peptide corrections, cascade-aware concordance, NCT training CSV validation gate. |
+| v35 | de5dd87/c4a1175 | Peptide word-boundary, outcome evidence rescue, delivery multi-intervention, verifier tuning, concordance CSV auto-reload. |
+| v36 | c470c56 | Delivery topical/nasal, outcome research-aware keyword rescue. GT CSV corrections reverted (586361d). |
+| v37 | 63daaea | Classification host-defense fallback, peptide non-peptide word-boundary, outcome stale-status. |
+| v37b | 09e84e0 | Sequence concordance fix, outcome keyword expansion, classification post-LLM consistency check for AMP override. |
+| **v38** | **31eee3a** | **Major outcome redesign: 3-tier structured evidence dossier replaces 9-layer cascade. ACTIVE_NOT_RECRUITING removed from deterministic. Publication-anchored skip_verification. Delivery: post-LLM not-specified override, radiotracer skip_verification=True, 71 EDAM corrections cleaned. Sequence: ~70 known drugs (was ~30), ~40 aliases, cross-validation, multi-chain UniProt.** |
 
 ## NCT Coverage
 

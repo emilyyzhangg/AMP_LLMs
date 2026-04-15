@@ -1,7 +1,63 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-14
-**Current state:** v37b on dev. v37b moves classification AMP override from exception-only fallback to post-LLM consistency check. 20-NCT validation confirmed peptide 100%, outcome rescue firing, but classification still missing AMPs because the fallback never triggered.
+**Last updated:** 2026-04-15
+**Current state:** v38 on main (31eee3a) and dev (0175a625). 94-NCT validation jobs queued on prod: b02042a06db6 + 87bc38d018b8.
+
+### v38 Changes (2026-04-15) — Outcome dossier redesign + delivery Other fix + sequence expansion
+
+#### Root cause analysis (from v37b 94-NCT validation)
+
+**Outcome (59.4%, 13 disagreements):** Three failure modes identified:
+1. **Deterministic ACTIVE_NOT_RECRUITING blocking (4 cases):** NCT03164486, NCT03299309, NCT03300817, NCT04706962 — returned "Active, not recruiting" immediately at confidence 0.95 with skip_verification=True, bypassing the entire research pipeline. Stale status detection (v36) only ran in the LLM path.
+2. **Reconciler overriding correct Positive (5 cases):** NCT03314987, NCT03559413, NCT03682172, NCT05709444, NCT03207295 — annotator correctly read publications and called Positive, but reconciler overrode to Unknown because it couldn't independently verify publications. Reconciler contradicted evidence it was given.
+3. **False keyword rescue (2 cases):** NCT04445064, NCT04843761 — v36 keyword rescue triggered on generic drug-class literature.
+
+**Delivery (82.4%, 9 disagreements):** Two failure modes:
+1. **Reconciler overriding correct Other (3 cases):** NCT03597893 (intranasal→Injection, factually wrong), NCT03974685 (radiotracer→Injection, overrode deterministic), NCT05428943 (no route→Injection, assumption).
+2. **LLM ignoring "do NOT guess" (4 cases):** NCT03223103, NCT03381768, NCT05111769, NCT05610826 — Pass 1 said "not specified" for all sources, Pass 2 guessed Injection/Infusion anyway.
+
+**Sequence (47.4%, 10 disagreements):** Wrong-molecule (glucagon returned for GLP-2 trials), missing multi-chain, missing drugs from known sequences table.
+
+#### Outcome Agent (`outcome.py`) — Major redesign
+Replaced 9-layer cascade (deterministic → Pass 1 → Pass 2 → pub override → heuristics → safety nets → keyword rescue → verification → reconciliation) with 3-tier structured evidence dossier:
+
+1. **Tier 1: `_build_evidence_dossier()`** — extracts all machine-readable signals into structured dict before any LLM call: registry_status, has_results, resultsSection primary endpoints (with p-values), publications (PMIDs, titles), phase, completion_date, days_since_completion, drug_max_phase, positive/negative keyword signals, stale_status flag.
+
+2. **Tier 2: `_dossier_deterministic()`** — expanded deterministic rules on dossier: COMPLETED+hasResults+primary endpoint p<0.05→Positive, COMPLETED+hasResults+p≥0.05→Failed, COMPLETED+hasResults→Positive (H4), TERMINATED+whyStopped futility→Failed, TERMINATED+whyStopped business→Terminated, TERMINATED+whyStopped efficacy→Positive.
+
+3. **Tier 3: Single-pass LLM with `DOSSIER_PROMPT`** — feeds structured dossier (not raw evidence), simple 30-line prompt (vs 275-line PASS2_PROMPT), plus full evidence as context.
+
+4. **ACTIVE_NOT_RECRUITING removed from deterministic path** — falls through to Tier 3 where stale status and publications are checked.
+
+5. **Publication-anchored verification:** skip_verification=True when Positive call backed by specific PMIDs + positive keywords, or Failed backed by PMIDs + negative keywords. Prevents reconciler from overriding evidence-backed calls.
+
+6. **Post-LLM safety nets preserved:** Terminated safety net (Unknown+TERMINATED+no results→Terminated), hasResults override (Unknown+COMPLETED+results posted→Positive), dossier publication override (Unknown/Active + positive keywords + pubs→Positive).
+
+#### Delivery Mode Agent (`delivery_mode.py`)
+7. **Post-LLM "not specified" override:** After Pass 2, checks if Pass 1 reported no route evidence from any source (protocol, FDA, literature all "not specified"/"not found"). If so, forces Injection/Infusion→Other. Uses 11 no-evidence markers.
+
+8. **Radiotracer/imaging skip_verification=True:** Deterministic Other returns from radiotracer/imaging detection now set skip_verification=True (was False). Prevents reconciler override.
+
+9. **EDAM cleaned:** Deleted 71 poisoned corrections (Other→Injection/Infusion) from prod edam.db that were teaching future annotations the wrong pattern.
+
+#### Sequence Agent (`sequence.py`)
+10. **Expanded _KNOWN_SEQUENCES:** ~30→~70 drugs. Added GLP-2, GIP, semaglutide, liraglutide, tirzepatide, calcitonin, P11-4, bremelanotide, octreotide, teriparatide, LL-37, oxytocin, vasopressin, secretin, pramlintide, lixisenatide, daptomycin, leuprolide, and more.
+
+11. **~40 new aliases:** Brand names (Ozempic, Mounjaro, Victoza), abbreviations, spelling variants.
+
+12. **Cross-validation against known drug class:** After candidate scoring, if intervention matches a known sequence but the top candidate's sequence is different, penalizes by 90%. Catches wrong-molecule errors (e.g., returning glucagon for GLP-2).
+
+13. **Multi-chain UniProt reporting:** When extracting from UniProt, collects ALL qualifying chain/peptide features (not just the best one). If multiple features match the intervention name, reports all joined by ` | `.
+
+#### Expected Impact
+| Field | v37b (94 NCTs) | v38 Target | Mechanism |
+|---|---|---|---|
+| Outcome | 59.4% | 68%+ | Dossier eliminates 3 failure modes |
+| Delivery | 82.4% | 88%+ | Not-specified override + reconciler protection |
+| Sequence | 47.4% | 52%+ | Known sequence expansion covers top-frequency drugs |
+| Classification | 92.3% | ~92% | No changes |
+| Peptide | 86.2% | ~86% | No changes |
+| RfF | 95.2% | ~95% | No changes |
 
 ### v37 Changes (2026-04-14) — Classification fallback + peptide non-peptide fix + outcome stale-status
 
