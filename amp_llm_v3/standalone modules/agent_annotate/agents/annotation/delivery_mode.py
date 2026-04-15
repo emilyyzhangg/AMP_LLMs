@@ -35,6 +35,13 @@ v24 changes:
     IV vs Subcutaneous/Intradermal vs Intramuscular, no Oral-Tablet vs
     Oral-Capsule, etc.). All deterministic mappings, LLM prompts, and
     parse functions updated to output only the 4 simplified categories.
+
+v38 changes:
+  - Post-LLM "not specified" override: when Pass 1 says route is not
+    specified/not found across all sources but Pass 2 outputs Injection/Infusion,
+    force to Other. Fixes LLM ignoring the "do NOT guess" instruction.
+  - Radiotracer/imaging deterministic Other returns now set skip_verification=True
+    to prevent reconciler from overriding evidence-based deterministic decisions.
 """
 
 import re
@@ -271,20 +278,20 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
                              "[90y]", "[177lu]", "68ga-", "18f-", "99mtc-"]
     for name in intervention_names:
         if any(pat in name for pat in _RADIOTRACER_PATTERNS):
-            logger.info(f"  delivery_mode: radiotracer detected ('{name}') → Other")
+            logger.info(f"  delivery_mode: radiotracer detected ('{name}') → Other (skip_verification=True)")
             return FieldAnnotation(
                 field_name="delivery_mode", value="Other", confidence=0.90,
-                reasoning=f"[Deterministic v31] Radiotracer/imaging agent detected: '{name}'",
-                evidence=[], model_name="deterministic", skip_verification=False,
+                reasoning=f"[Deterministic v38] Radiotracer/imaging agent detected: '{name}'",
+                evidence=[], model_name="deterministic", skip_verification=True,
             )
     if "PROCEDURE" in intervention_types and any(
         kw in " ".join(intervention_names) for kw in ["pet", "spect", "imaging", "tracer"]
     ):
-        logger.info("  delivery_mode: imaging procedure detected → Other")
+        logger.info("  delivery_mode: imaging procedure detected → Other (skip_verification=True)")
         return FieldAnnotation(
             field_name="delivery_mode", value="Other", confidence=0.85,
-            reasoning="[Deterministic v31] Imaging/diagnostic procedure detected",
-            evidence=[], model_name="deterministic", skip_verification=False,
+            reasoning="[Deterministic v38] Imaging/diagnostic procedure detected",
+            evidence=[], model_name="deterministic", skip_verification=True,
         )
 
     # v31: Scan intervention descriptions for oral formulations.
@@ -541,6 +548,44 @@ class DeliveryModeAgent(BaseAnnotationAgent):
             )
 
         value = self._parse_value(pass2_text)
+
+        # v38: Post-LLM "not specified" override.
+        # When Pass 1 reports no route evidence from ANY source but the LLM
+        # still guesses Injection/Infusion, force to Other. The PASS2 prompt
+        # says "do NOT guess" but small LLMs frequently ignore this rule,
+        # defaulting to Injection/Infusion for peptide/vaccine trials.
+        if value == "Injection/Infusion":
+            p1_lower = pass1_text.lower()
+            # Check all source sections for "not specified" / "not found"
+            _NO_EVIDENCE_MARKERS = ["not specified", "not found", "no specific",
+                                     "does not specify", "does not provide",
+                                     "no mention", "not mentioned", "not available",
+                                     "no information", "not provided", "no explicit"]
+            protocol_section = re.search(
+                r"protocol route:\s*(.+?)(?:\n|$)", p1_lower)
+            fda_section = re.search(
+                r"fda/label route:\s*(.+?)(?:\n|$)", p1_lower)
+            lit_section = re.search(
+                r"literature route:\s*(.+?)(?:\n|$)", p1_lower)
+
+            def _is_no_evidence(section_match) -> bool:
+                if not section_match:
+                    return True
+                text = section_match.group(1).strip()
+                return any(marker in text for marker in _NO_EVIDENCE_MARKERS)
+
+            no_protocol = _is_no_evidence(protocol_section)
+            no_fda = _is_no_evidence(fda_section)
+            no_lit = _is_no_evidence(lit_section)
+
+            if no_protocol and no_fda and no_lit:
+                logger.info(
+                    f"  delivery_mode: v38 not-specified override — "
+                    f"Pass 1 found no route evidence from any source, "
+                    f"forcing Injection/Infusion → Other"
+                )
+                value = "Other"
+
         reasoning = f"[Pass 1 route extraction] {pass1_text[:400]}\n[Pass 2 classification] {pass2_text[:300]}"
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
 

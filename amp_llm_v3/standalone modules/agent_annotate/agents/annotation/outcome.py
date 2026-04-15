@@ -1,45 +1,38 @@
 """
-Outcome Annotation Agent (v4 — v11 accuracy fixes, v17 heuristic override, v21 TERMINATED fix, v25 publication-priority, v26 TERMINATED override fix, v32 regex + safety nets).
+Outcome Annotation Agent (v38 — structured evidence dossier redesign).
 
-Determines trial outcome using a two-pass strategy:
-  Pass 1: Extract ClinicalTrials.gov status, phase, and published results
-  Pass 2: Determine outcome using calibrated decision tree
+v38 redesign: replaces the fragile 9-layer cascade (deterministic → Pass 1 → Pass 2
+→ pub override → heuristics → safety nets → keyword rescue → verification → reconciliation)
+with a 3-tier system:
 
-v4/v11 changes (from 400-trial concordance — outcome regressed from 80% to 47%):
-  - Expanded deterministic pass: COMPLETED+hasResults→Positive, Phase I+no pubs→Unknown
-  - Fixed confidence calculation: now min(citation_quality, source_sufficiency)
-  - Tightened Pass 2 prompt: explicit H1 prohibition with negative examples
-  - Root cause: 8B model was calling "Positive" for Phase I completions without
-    corroboration, and "Recruiting" was under-detected (17.6% recall)
+  Tier 1: Structured evidence dossier extraction (no LLM)
+    - Extracts all machine-readable signals from ClinicalTrials.gov, publications,
+      and drug databases into a structured dict before any LLM call.
 
-v17 changes:
-  - Post-LLM heuristic override: when Pass 2 returns "Unknown", apply _infer_from_pass1()
-    as a safety net. Previously this was only called on Pass 2 LLM exceptions — dead code
-    for the normal path. Now catches adverse-event keywords in publications.
-  - Inject trial phase from structured ClinicalTrials.gov data into Pass 2 prompt so the
-    LLM doesn't rely on Pass 1 extraction (which sometimes returns "NOT FOUND").
+  Tier 2: Expanded deterministic rules on dossier
+    - RECRUITING/ENROLLING → Recruiting
+    - WITHDRAWN → Withdrawn
+    - COMPLETED + hasResults + primary endpoint met/failed → Positive/Failed
+    - COMPLETED + hasResults + no parseable endpoints → Positive
+    - TERMINATED + whyStopped efficacy/futility → appropriate value
+    - ACTIVE_NOT_RECRUITING removed from deterministic — falls through to Tier 3
+      where stale status detection and publications are checked.
 
-v21 changes:
-  - TERMINATED removed from _DETERMINISTIC_STATUSES: trials stopped early for efficacy
-    or with positive published results were being blindly mapped to "Terminated". Now falls
-    through to the 2-pass LLM pipeline which checks evidence before deciding.
-  - PASS2_PROMPT item 4: evidence-based decision tree for TERMINATED (Positive if positive
-    evidence, Failed if safety/futility, Terminated if business reason or no signal).
-  - PASS2_PROMPT heuristics: added H1b (Phase I >5yr, no Phase II -> Unknown) and
-    H3b (Phase II/III >10yr, no pubs, no negative evidence -> lean Positive).
+  Tier 3: Single-pass LLM with dossier
+    - Feeds the LLM the structured dossier (not raw evidence text)
+    - Simple prompt with clear rules — 30 lines vs previous 275-line PASS2_PROMPT
+    - Publication-anchored verification: when annotator's Positive call is backed
+      by specific PMIDs, set skip_verification to prevent reconciler from
+      overriding with "Unknown" (fixes 5/13 v37b disagreements).
 
-v25 changes (publication-priority — fixes 37% of outcome disagreements):
-  - PASS2_PROMPT: Added EVIDENCE PRIORITY ladder — published results override CT.gov
-    registry status. Previously agent defaulted to "Unknown" when status was ambiguous
-    even when publications reported clear results.
-  - PASS2_PROMPT: Added rules for "Active" with published results (registry may be
-    outdated) and "Terminated" not implying failure.
-  - _infer_from_pass1: Added publication-priority override — when Pass 2 returns Unknown
-    but publications with result valence exist, use the publication signal.
+Prior version history: v4/v11 accuracy fixes, v17 heuristic override, v21 TERMINATED fix,
+v25 publication-priority, v26 TERMINATED override fix, v32 regex + safety nets,
+v36 stale status detection, v37b keyword expansion.
 """
 
 import re
 import logging
+from datetime import datetime
 from typing import Optional
 
 from agents.base import BaseAnnotationAgent
@@ -75,18 +68,19 @@ _DETERMINISTIC_STATUSES = {
     "NOT_YET_RECRUITING": "Recruiting",
     "ENROLLING_BY_INVITATION": "Recruiting",
     "WITHDRAWN": "Withdrawn",
-    "ACTIVE_NOT_RECRUITING": "Active, not recruiting",
     "SUSPENDED": "Unknown",
-    # v21: TERMINATED removed from deterministic — some TERMINATED trials have
-    # positive published results (stopped early for efficacy) and should not be
-    # blindly mapped to "Terminated". Let the 2-pass LLM pipeline decide.
+    # v21: TERMINATED removed — some TERMINATED trials have positive published results.
+    # v38: ACTIVE_NOT_RECRUITING removed — many trials with this status have stale
+    # registry data and already completed/published. Let the dossier pipeline check
+    # for publications and stale completion dates before deciding.
 }
 
 
 def _deterministic_outcome(research_results: list) -> FieldAnnotation | None:
     """Map clear-cut registry statuses deterministically.
 
-    v11: Also handles COMPLETED trials with hasResults and Phase I without publications.
+    v11: Also handles COMPLETED trials with hasResults.
+    v38: ACTIVE_NOT_RECRUITING removed — falls through to dossier pipeline.
     """
     for result in research_results:
         if result.error or result.agent_name != "clinical_protocol":
@@ -103,187 +97,321 @@ def _deterministic_outcome(research_results: list) -> FieldAnnotation | None:
             logger.info(f"  outcome: deterministic → {value} (registry status: {overall_status})")
             return FieldAnnotation(
                 field_name="outcome", value=value, confidence=0.95,
-                reasoning=f"[Deterministic v11] Registry status '{overall_status}' → '{value}'",
+                reasoning=f"[Deterministic v38] Registry status '{overall_status}' → '{value}'",
                 evidence=[], model_name="deterministic", skip_verification=True,
             )
 
-        # v11: COMPLETED with hasResults=true → Positive (results were posted)
-        if overall_status == "COMPLETED":
-            has_results = status_mod.get("hasResults", False)
-            if has_results is True or str(has_results).lower() == "true":
-                logger.info(f"  outcome: deterministic → Positive (COMPLETED + hasResults=true)")
-                return FieldAnnotation(
-                    field_name="outcome", value="Positive", confidence=0.90,
-                    reasoning="[Deterministic v11] COMPLETED + hasResults=true → Positive",
-                    evidence=[], model_name="deterministic", skip_verification=False,
-                )
+    return None
 
-            # v11 had a Phase I guard here (COMPLETED Phase I without hasResults → Unknown)
-            # but it caused massive regression: hasResults is often unpopulated even when
-            # publications exist. Removed in v12 — let the LLM pipeline + H1 heuristics
-            # handle Phase I trials with access to full research evidence.
+
+# --------------------------------------------------------------------------- #
+#  Structured Evidence Dossier (v38)
+# --------------------------------------------------------------------------- #
+
+def _build_evidence_dossier(research_results: list) -> dict:
+    """Extract all machine-readable signals into a structured dossier.
+
+    This runs BEFORE any LLM call and captures every signal the LLM would
+    need — but structurally, with no interpretation needed.
+    """
+    dossier = {
+        "registry_status": "",
+        "has_results": None,
+        "completion_date": "",
+        "days_since_completion": None,
+        "phase": "",
+        "why_stopped": "",
+        "primary_endpoints": [],     # list of {title, met, p_value, description}
+        "publications": [],          # list of {pmid, title, year, snippet, has_nct_id}
+        "publication_count": 0,
+        "drug_max_phase": None,      # from ChEMBL
+        "positive_keywords": [],     # efficacy keywords found in publication snippets
+        "negative_keywords": [],     # failure keywords found in publication snippets
+        "stale_status": False,       # completion date >180 days ago but status says Active
+    }
+
+    _POSITIVE_KW = [
+        "efficacy", "effective", "improved", "improvement", "favorable",
+        "benefit", "promising", "successful", "well-tolerated", "well tolerated",
+        "safe and effective", "immunogenic", "safe and immunogenic",
+        "clinical benefit", "objective response", "complete response",
+        "partial response", "immune response", "t cell response",
+        "cd8+", "cd4+", "clinical activity", "antitumor activity",
+        "met primary", "met the primary", "results showed", "results demonstrated",
+        "approved", "granted approval", "enhanced immune", "immune activation",
+    ]
+    _NEGATIVE_KW = [
+        "failed", "did not meet", "did not demonstrate", "did not achieve",
+        "did not show", "no significant", "no benefit", "no improvement",
+        "failed to demonstrate", "failed to meet", "failed primary",
+        "lack of efficacy", "ineffective", "no efficacy", "futility",
+        "inferior", "not effective", "negative",
+        "unacceptable", "not tolerated", "dose-limiting", "safety concern",
+        "serious adverse event", "discontinued due to",
+    ]
+
+    for result in research_results:
+        if result.error:
+            continue
+
+        # --- ClinicalTrials.gov structured data ---
+        if result.agent_name == "clinical_protocol" and result.raw_data:
+            proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
+            status_mod = proto.get("statusModule", {})
+            design_mod = proto.get("designModule", {})
+
+            if not dossier["registry_status"]:
+                dossier["registry_status"] = status_mod.get("overallStatus", "")
+
+            hr = status_mod.get("hasResults", None)
+            if hr is not None:
+                dossier["has_results"] = hr is True or str(hr).lower() == "true"
+
+            # Completion date
+            for date_key in ("primaryCompletionDateStruct", "completionDateStruct"):
+                ds = status_mod.get(date_key, {})
+                if isinstance(ds, dict) and ds.get("date") and not dossier["completion_date"]:
+                    dossier["completion_date"] = ds["date"]
+
+            # Phase
+            phases = design_mod.get("phases", [])
+            if isinstance(phases, list) and phases and not dossier["phase"]:
+                dossier["phase"] = ", ".join(phases)
+            elif design_mod.get("phase") and not dossier["phase"]:
+                dossier["phase"] = design_mod["phase"]
+
+            # Why stopped
+            dossier["why_stopped"] = status_mod.get("whyStopped", "") or ""
+
+            # Results section: primary endpoints
+            results_section = result.raw_data.get("resultsSection", {})
+            if results_section:
+                om_module = results_section.get("outcomeMeasuresModule", {})
+                for om in om_module.get("outcomeMeasures", []):
+                    ep = {"title": om.get("title", ""), "met": None,
+                          "p_value": None, "description": om.get("description", "")}
+                    # Check for statistical analyses
+                    for analysis in om.get("analyses", []):
+                        pval = analysis.get("pValue", "")
+                        if pval:
+                            try:
+                                ep["p_value"] = float(pval.replace("<", "").replace(">", "").strip())
+                            except (ValueError, TypeError):
+                                pass
+                        stat_comment = analysis.get("statisticalComment", "")
+                        if stat_comment:
+                            ep["description"] += " " + stat_comment
+                    # Check groups for result values
+                    for group in om.get("groups", []):
+                        ep["description"] += f" [{group.get('title','')}: {group.get('value','')}]"
+                    dossier["primary_endpoints"].append(ep)
+
+        # --- Publication data ---
+        if result.agent_name == "literature":
+            for citation in getattr(result, "citations", []):
+                pmid = getattr(citation, "identifier", "") or ""
+                title = getattr(citation, "snippet", "") or ""
+                pub = {
+                    "pmid": pmid,
+                    "title": title[:300],
+                    "year": getattr(citation, "year", None),
+                    "source": getattr(citation, "source_name", ""),
+                }
+                dossier["publications"].append(pub)
+
+        # --- All citations: scan for valence keywords ---
+        for citation in getattr(result, "citations", []):
+            snippet = (getattr(citation, "snippet", "") or "").lower()
+            identifier = (getattr(citation, "identifier", "") or "").lower()
+            combined = f"{snippet} {identifier}"
+            for kw in _POSITIVE_KW:
+                if kw in combined and kw not in dossier["positive_keywords"]:
+                    dossier["positive_keywords"].append(kw)
+            for kw in _NEGATIVE_KW:
+                if kw in combined and kw not in dossier["negative_keywords"]:
+                    dossier["negative_keywords"].append(kw)
+
+        # --- ChEMBL drug advancement ---
+        if result.agent_name == "chembl" and result.raw_data:
+            for mol in result.raw_data.get("molecules", []):
+                max_phase = mol.get("max_phase")
+                if max_phase and (dossier["drug_max_phase"] is None
+                                  or max_phase > dossier["drug_max_phase"]):
+                    dossier["drug_max_phase"] = max_phase
+
+    # Compute derived fields
+    dossier["publication_count"] = len(dossier["publications"])
+
+    if dossier["completion_date"]:
+        try:
+            # CT.gov dates are YYYY-MM-DD or YYYY-MM
+            date_str = dossier["completion_date"]
+            if len(date_str) == 7:  # YYYY-MM
+                date_str += "-01"
+            comp_dt = datetime.strptime(date_str, "%Y-%m-%d")
+            dossier["days_since_completion"] = (datetime.now() - comp_dt).days
+        except (ValueError, TypeError):
+            pass
+
+    # Stale status detection
+    status_upper = dossier["registry_status"].upper()
+    if status_upper in ("ACTIVE_NOT_RECRUITING", "ACTIVE, NOT RECRUITING"):
+        if dossier["days_since_completion"] is not None and dossier["days_since_completion"] > 180:
+            dossier["stale_status"] = True
+
+    return dossier
+
+
+def _dossier_deterministic(dossier: dict) -> FieldAnnotation | None:
+    """Apply expanded deterministic rules on the structured dossier.
+
+    Handles cases where the outcome can be determined without any LLM call.
+    """
+    status = dossier["registry_status"].upper()
+    has_results = dossier["has_results"]
+    phase = dossier["phase"].upper() if dossier["phase"] else ""
+    endpoints = dossier["primary_endpoints"]
+    days_since = dossier["days_since_completion"]
+    why_stopped = dossier["why_stopped"].lower()
+
+    # COMPLETED + hasResults + primary endpoints parseable
+    if status == "COMPLETED" and has_results is True and endpoints:
+        # Check if any endpoint has a p-value we can interpret
+        for ep in endpoints:
+            if ep.get("p_value") is not None:
+                if ep["p_value"] < 0.05:
+                    logger.info(f"  outcome: v38 dossier deterministic → Positive (primary endpoint met, p={ep['p_value']})")
+                    return FieldAnnotation(
+                        field_name="outcome", value="Positive", confidence=0.95,
+                        reasoning=f"[Dossier v38] COMPLETED + hasResults + primary endpoint met (p={ep['p_value']:.4f}): {ep['title'][:100]}",
+                        evidence=[], model_name="deterministic", skip_verification=True,
+                    )
+                else:
+                    logger.info(f"  outcome: v38 dossier deterministic → Failed (primary endpoint not met, p={ep['p_value']})")
+                    return FieldAnnotation(
+                        field_name="outcome", value="Failed - completed trial", confidence=0.90,
+                        reasoning=f"[Dossier v38] COMPLETED + hasResults + primary endpoint not met (p={ep['p_value']:.4f}): {ep['title'][:100]}",
+                        evidence=[], model_name="deterministic", skip_verification=False,
+                    )
+
+    # COMPLETED + hasResults=true + no parseable endpoints → Positive (H4: results were posted)
+    if status == "COMPLETED" and has_results is True:
+        logger.info("  outcome: v38 dossier deterministic → Positive (COMPLETED + hasResults=true)")
+        return FieldAnnotation(
+            field_name="outcome", value="Positive", confidence=0.90,
+            reasoning="[Dossier v38] COMPLETED + hasResults=true → Positive (results posted confirms data)",
+            evidence=[], model_name="deterministic", skip_verification=False,
+        )
+
+    # TERMINATED + clear reason
+    if status == "TERMINATED":
+        _FUTILITY_REASONS = ["futility", "lack of efficacy", "ineffective", "no benefit",
+                             "did not meet", "unmet primary"]
+        _EFFICACY_REASONS = ["efficacy", "early positive", "stopped early for"]
+        _BUSINESS_REASONS = ["funding", "business", "sponsor", "strategic", "administrative",
+                             "organizational", "slow enrollment", "low enrollment",
+                             "slow accrual", "enrollment", "recruitment"]
+        if any(r in why_stopped for r in _FUTILITY_REASONS):
+            logger.info(f"  outcome: v38 dossier deterministic → Failed (TERMINATED for: {why_stopped[:80]})")
+            return FieldAnnotation(
+                field_name="outcome", value="Failed - completed trial", confidence=0.90,
+                reasoning=f"[Dossier v38] TERMINATED for futility/lack of efficacy: {why_stopped[:100]}",
+                evidence=[], model_name="deterministic", skip_verification=False,
+            )
+        if any(r in why_stopped for r in _EFFICACY_REASONS):
+            logger.info(f"  outcome: v38 dossier deterministic → Positive (TERMINATED early for efficacy)")
+            return FieldAnnotation(
+                field_name="outcome", value="Positive", confidence=0.85,
+                reasoning=f"[Dossier v38] TERMINATED early for efficacy: {why_stopped[:100]}",
+                evidence=[], model_name="deterministic", skip_verification=False,
+            )
+        if any(r in why_stopped for r in _BUSINESS_REASONS):
+            logger.info(f"  outcome: v38 dossier deterministic → Terminated (business/operational: {why_stopped[:80]})")
+            return FieldAnnotation(
+                field_name="outcome", value="Terminated", confidence=0.90,
+                reasoning=f"[Dossier v38] TERMINATED for business/operational reason: {why_stopped[:100]}",
+                evidence=[], model_name="deterministic", skip_verification=True,
+            )
 
     return None
 
-# Pass 1: Extract the registry status and what we know so far
-PASS1_PROMPT = """You are a clinical trial status extraction specialist.
 
-Your task: Extract the FACTUAL STATUS of this trial from the ClinicalTrials.gov data, then summarize what published literature says about its results.
+def _format_dossier_for_llm(dossier: dict, nct_id: str) -> str:
+    """Format the structured dossier as a concise text block for the LLM."""
+    lines = [f"Trial: {nct_id}"]
+    lines.append(f"Registry Status: {dossier['registry_status'] or 'UNKNOWN'}")
+    if dossier["phase"]:
+        lines.append(f"Phase: {dossier['phase']}")
+    if dossier["completion_date"]:
+        age = ""
+        if dossier["days_since_completion"] is not None:
+            days = dossier["days_since_completion"]
+            if days > 0:
+                age = f" ({days} days ago)"
+            else:
+                age = f" (in {-days} days)"
+        lines.append(f"Completion Date: {dossier['completion_date']}{age}")
+    lines.append(f"Results Posted: {'Yes' if dossier['has_results'] is True else 'No' if dossier['has_results'] is False else 'Unknown'}")
+    if dossier["stale_status"]:
+        lines.append("WARNING: Registry status may be outdated — completion date was >6 months ago")
+    if dossier["why_stopped"]:
+        lines.append(f"Why Stopped: {dossier['why_stopped']}")
 
-From the evidence below, extract:
+    if dossier["primary_endpoints"]:
+        lines.append(f"Primary Endpoints ({len(dossier['primary_endpoints'])} measures):")
+        for i, ep in enumerate(dossier["primary_endpoints"][:3]):
+            pval = f", p={ep['p_value']}" if ep.get("p_value") is not None else ""
+            lines.append(f"  {i+1}. {ep['title'][:120]}{pval}")
 
-1. REGISTRY STATUS: The overallStatus from ClinicalTrials.gov (e.g., COMPLETED, TERMINATED, RECRUITING, UNKNOWN, WITHDRAWN, ACTIVE_NOT_RECRUITING, NOT_YET_RECRUITING, ENROLLING_BY_INVITATION, SUSPENDED). If not found, say "NOT FOUND".
+    if dossier["publications"]:
+        lines.append(f"Publications Found: {dossier['publication_count']}")
+        for i, pub in enumerate(dossier["publications"][:5]):
+            year = f" ({pub['year']})" if pub.get("year") else ""
+            pmid = f" PMID:{pub['pmid']}" if pub.get("pmid") and pub["pmid"].isdigit() else ""
+            lines.append(f"  {i+1}. {pub['title'][:150]}{year}{pmid}")
+    else:
+        lines.append("Publications Found: 0")
 
-2. PUBLISHED RESULTS: Search the PubMed, PMC, and web evidence for ANY mention of trial results, outcomes, findings, efficacy, or conclusions. Quote the relevant excerpts. If there are multiple publications, list each one.
+    if dossier["drug_max_phase"]:
+        lines.append(f"Drug Advanced To: Phase {dossier['drug_max_phase']}")
 
-3. RESULTS POSTED: Does ClinicalTrials.gov indicate results have been posted? (hasResults field)
+    if dossier["positive_keywords"]:
+        lines.append(f"Positive Signals in Evidence: {', '.join(dossier['positive_keywords'][:8])}")
+    if dossier["negative_keywords"]:
+        lines.append(f"Negative Signals in Evidence: {', '.join(dossier['negative_keywords'][:8])}")
 
-4. COMPLETION DATE: When did/will the trial complete?
+    return "\n".join(lines)
 
-5. WHY STOPPED: If terminated or withdrawn, what reason was given?
+# v38: Single-pass dossier-based LLM prompt (replaces 2-pass PASS1+PASS2)
+DOSSIER_PROMPT = """You are a clinical trial outcome specialist. You have a structured evidence summary for this trial. Determine the outcome.
 
-6. TRIAL PHASE: The phase from ClinicalTrials.gov (PHASE1, PHASE2, PHASE3, PHASE4, EARLY_PHASE1, N/A). This is critical for interpreting outcome — Phase I success = safety/tolerability shown.
+{dossier_text}
 
-7. RESULT VALENCE: Based on all evidence, were the results POSITIVE, NEGATIVE, MIXED, or NOT AVAILABLE? Pay special attention to: Were primary endpoints met? For Phase I, was the drug safe/tolerable? Did the drug progress to subsequent phases?
+RULES (follow in order):
+1. If publications report POSITIVE results (efficacy shown, endpoints met, drug safe/tolerable) → "Positive"
+   - This overrides the registry status. Published results are more reliable than CT.gov status.
+2. If publications report NEGATIVE results (failed endpoints, no efficacy, futility) → "Failed - completed trial"
+3. If no publications but registry says ACTIVE_NOT_RECRUITING:
+   - If completion date is >6 months in the past (stale status), treat as likely completed. If positive signals exist → "Positive". Otherwise → "Unknown".
+   - If completion date is in the future or recent, → "Active, not recruiting"
+4. If TERMINATED with no publications and no results posted → "Terminated"
+5. If COMPLETED with no publications and no results posted → "Unknown"
+6. Phase I trials that completed with ANY publication mentioning the trial → "Positive" (completing Phase I IS success)
+7. Phase I completion with ZERO publications and no results posted → "Unknown"
+8. Default when truly no signals exist → "Unknown"
+
+CRITICAL: "Failed - completed trial" REQUIRES evidence of failure. Do NOT guess failure.
+CRITICAL: Published results override registry status — always check publications first.
+
+VALID VALUES: Positive, Withdrawn, Terminated, Failed - completed trial, Recruiting, Unknown, Active, not recruiting
 
 Format your response EXACTLY as:
-Registry Status: [status from ClinicalTrials.gov]
-Trial Phase: [phase]
-Published Results: [summary of any published findings, or "None found"]
-Result Valence: [Positive/Negative/Mixed/Not available]
-Results Posted: [Yes/No/Unknown]
-Completion Date: [date or Unknown]
-Why Stopped: [reason or N/A]"""
-
-# Pass 2: Make the outcome determination with all facts in hand
-PASS2_PROMPT = """You are a clinical trial outcome assessment specialist. You have already extracted the facts about this trial. Now you must determine the outcome.
-
-The facts you extracted:
-{pass1_output}
-
-EVIDENCE PRIORITY (highest to lowest — follow this order strictly):
-1. Published results (peer-reviewed publications, press releases with efficacy data)
-   → If publications report clear positive or negative results, USE THEM regardless of CT.gov status.
-2. ClinicalTrials.gov results section (has_results_posted = true)
-3. ClinicalTrials.gov overall status field
-4. Trial phase and design (Phase I safety = limited outcome signal)
-
-CRITICAL RULE: Published results in literature OVERRIDE the ClinicalTrials.gov registry status.
-- If publications report efficacy/positive results → "Positive", even if CT.gov says Active/Terminated/Unknown
-- If publications report failed/negative results → "Failed - completed trial", even if CT.gov says Active/Terminated
-- CT.gov status should only be the PRIMARY signal when NO publications with results are found
-- Do NOT default to "Unknown" just because the registry status is ambiguous — check publications first.
-
-DECISION TREE (follow in order):
-
-0. PUBLICATION OVERRIDE (check this FIRST, before registry status):
-   EXCEPTION: If the trial is TERMINATED or WITHDRAWN, skip this step and go directly to
-   step 3 (WITHDRAWN) or step 4 (TERMINATED). Terminated/Withdrawn trials have their own
-   decision logic that accounts for publications in context.
-   For all OTHER statuses: if published literature reports completed results (positive or
-   negative), use those results regardless of what ClinicalTrials.gov says. Registry status
-   may be outdated or incomplete.
-   a. Published results show POSITIVE findings → "Positive"
-   b. Published results show NEGATIVE findings → "Failed - completed trial"
-   If no publications with results exist, continue to step 1.
-
-1. Is the trial RECRUITING, NOT_YET_RECRUITING, or ENROLLING_BY_INVITATION? -> "Recruiting"
-2. Is the trial ACTIVE_NOT_RECRUITING with no results yet?
-   BUT: If ClinicalTrials.gov says Active or Recruiting but published literature reports completed
-   results (positive or negative), use the published results. Registry status may be outdated.
-   Only use "Active, not recruiting" if there are genuinely NO published results.
-3. Was the trial WITHDRAWN before enrollment? -> "Withdrawn"
-4. Was the trial TERMINATED?
-   IMPORTANT: Terminated does NOT mean failed. A terminated trial may have published positive
-   interim results. ALWAYS check literature before concluding.
-   First check the evidence for this TERMINATED trial:
-   a. Published results show POSITIVE findings OR the drug advanced to later-phase trials OR the drug
-      was approved → "Positive" (trial was stopped early for efficacy or succeeded despite termination)
-   b. Published results show safety failure, futility, or termination due to lack of efficacy → "Failed - completed trial"
-   c. Termination was for business/operational reasons (funding, sponsor decision, strategic) with no
-      efficacy evidence either way → "Terminated"
-   d. No publications, no results posted, reason unclear → "Terminated" (default for TERMINATED)
-   (The specific REASON for termination goes in reason_for_failure, not here.)
-5. For COMPLETED or UNKNOWN status, check published literature:
-   a. Published results show POSITIVE findings (met endpoints, efficacy shown, favorable safety) -> "Positive"
-   b. Published results show NEGATIVE findings (failed endpoints, no efficacy, futility) -> "Failed - completed trial"
-   c. NO published results found -> apply COMPLETION HEURISTICS below
-
-COMPLETION HEURISTICS (when no published results are found for COMPLETED trials):
-
-These rules help determine outcome for older trials (pre-2010) where publications may not be indexed:
-
-H1. PHASE I COMPLETION: Phase I/Early Phase I trials that completed normally (not terminated/withdrawn)
-    are typically "Positive". Phase I success = acceptable safety, tolerability, pharmacokinetics established.
-    Completing a Phase I trial IS the success criterion. → "Positive"
-    BUT: H1 requires at least ONE corroborating signal: results posted on ClinicalTrials.gov,
-    a publication mentioning the trial (even without detailed results), or a subsequent later-phase trial.
-    If Phase I completed but ZERO publications were found and Results Posted = No/Unknown,
-    → "Unknown" (not enough evidence to confirm success). Do NOT apply H1 without corroboration.
-
-    *** CRITICAL: DO NOT say "lean towards Positive" or "likely Positive" for Phase I trials
-    without corroboration. This is the #1 error in previous annotations. If you have ZERO
-    publications AND Results Posted = No/Unknown, the answer MUST be "Unknown". ***
-
-H1b. PHASE I COMPLETED LONG AGO (>5 years, no Phase II found, no publications):
-    If the trial completed >5 years ago, is Phase I, and there is NO evidence of a subsequent
-    Phase II trial for the same drug and NO publications at all → "Unknown". The absence of any
-    follow-on development suggests the drug did not advance, but "Failed" requires positive evidence.
-
-H2. PHASE II/III COMPLETION WITH hasResults=Yes: If ClinicalTrials.gov indicates results were posted
-    (hasResults field), the trial produced data. Lean toward "Positive" unless evidence says otherwise.
-
-H3. LONG-COMPLETED TRIALS: If the trial completed more than 10 years ago and led to subsequent
-    later-phase trials of the same drug → the earlier trial was likely "Positive" (the drug advanced).
-
-H3b. PHASE II/III COMPLETED LONG AGO (>10 years, no publications, no negative evidence):
-    If the trial is Phase II/III, completed >10 years ago, no publications found, and no evidence
-    of failure → lean "Positive". Phase II/III trials that produced no indexed publications and no
-    negative signal likely completed successfully (common for older industry-sponsored trials).
-
-H4. COMPLETED + RESULTS POSTED: If Results Posted = Yes but you couldn't find specific
-    result descriptions, lean "Positive" (the act of posting results for a completed trial
-    typically happens for trials with reportable outcomes).
-
-H5. DEFAULT: If truly no signals exist → "Unknown". But exhaust H1-H4 first.
-
-CRITICAL RULES:
-- "Failed - completed trial" REQUIRES EVIDENCE OF FAILURE. You MUST cite a specific publication showing negative results, failure to meet primary endpoints, or futility. If you cannot cite such evidence, the answer is NOT "Failed".
-- COMPLETED status alone does NOT mean failure.
-- Phase I trials that complete with published safety/tolerability results → "Positive".
-- Phase I completion alone (no publications, no results posted) → "Unknown".
-- BUT: Phase I completion WITH results posted on ClinicalTrials.gov → "Positive" (the act of posting results confirms the trial produced data).
-- Phase II trials that complete with results posted → lean "Positive".
-- If the Result Valence you extracted says "Positive" or "Mixed" -> "Positive".
-- If the Result Valence says "Not available" AND no publications found AND Results Posted = No/Unknown → "Unknown".
-- If the Result Valence says "Not available" BUT Results Posted = Yes → lean "Positive" (results were posted, indicating reportable outcomes).
-- RECENCY: If multiple publications exist with conflicting conclusions, the MOST RECENT publication takes priority.
-- COMPLETED + no published results + Results Posted = No/Unknown → "Unknown".
-- COMPLETED + Results Posted = Yes (even without findable publications) → lean "Positive".
-
-NEGATIVE EXAMPLE (DO NOT make this mistake):
-  Registry Status: COMPLETED
-  Trial Phase: PHASE1
-  Published Results: None found
-  Results Posted: Unknown
-  → WRONG: "Outcome: Positive" (reasoning: "lean towards Positive given Phase I completion")
-  → CORRECT: "Outcome: Unknown" (no corroboration for H1: zero publications, no results posted)
-
-IMPORTANT: Format your response EXACTLY as:
-Outcome: [one of the 7 values above]
-Evidence: [cite the specific source that determined your decision]
-Reasoning: [explain your chain of thought, noting which heuristic you applied if applicable]"""
-
-
-# Hardware profile → model selection for outcome
-# Outcome benefits from a larger model because the decision tree
-# requires nuanced interpretation of published results and status.
-# On server, uses the configurable server_premium_model (kimi-k2 or minimax-m2.7)
-# because outcome is the most unstable field across runs.
-
+Outcome: [one value from above]
+Evidence: [cite the specific source]
+Reasoning: [brief chain of thought]"""
 
 class OutcomeAgent(BaseAnnotationAgent):
-    """Determines trial outcome using two-pass investigation."""
+    """v38: Determines trial outcome using structured evidence dossier."""
 
     field_name = "outcome"
 
@@ -291,13 +419,10 @@ class OutcomeAgent(BaseAnnotationAgent):
         """Select model based on hardware profile."""
         profile = config.orchestrator.hardware_profile
         if profile == "server":
-            # Use the configurable premium model for outcome (most unstable field)
             return getattr(config.orchestrator, "server_premium_model", "kimi-k2-thinking")
-        # v11: Use unified annotation_model (eliminates model switches)
         annotation_model = getattr(config.orchestrator, "annotation_model", None)
         if annotation_model:
             return annotation_model
-        # Fallback: use primary annotator model
         for model_key, model_cfg in config.verification.models.items():
             if model_cfg.role == "annotator":
                 return model_cfg.name
@@ -309,636 +434,188 @@ class OutcomeAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
-        # v11: Try deterministic status mapping first
+        # Tier 0: Simple deterministic statuses (RECRUITING, WITHDRAWN, SUSPENDED)
         det_result = _deterministic_outcome(research_results)
         if det_result is not None:
             return det_result
 
+        # --- Tier 1: Build structured evidence dossier ---
+        dossier = _build_evidence_dossier(research_results)
+        logger.info(
+            f"  outcome: v38 dossier for {nct_id} — status={dossier['registry_status']}, "
+            f"hasResults={dossier['has_results']}, pubs={dossier['publication_count']}, "
+            f"endpoints={len(dossier['primary_endpoints'])}, "
+            f"pos_kw={len(dossier['positive_keywords'])}, neg_kw={len(dossier['negative_keywords'])}, "
+            f"stale={dossier['stale_status']}"
+        )
+
+        # --- Tier 2: Expanded deterministic rules on dossier ---
+        dossier_det = _dossier_deterministic(dossier)
+        if dossier_det is not None:
+            return dossier_det
+
+        # --- Tier 3: LLM with structured dossier ---
         from app.services.config_service import config_service
+        from app.services.ollama_client import ollama_client
 
         config = config_service.get()
-        # Server profile with larger models can digest more evidence
         is_server = config.orchestrator.hardware_profile == "server"
         max_cites = 50 if is_server else 30
         max_snippet = 500 if is_server else 250
+        primary_model = self._get_model(config)
 
-        # Build structured evidence — sections help the LLM locate
-        # trial status, published results, and drug data efficiently
+        # Build evidence text for LLM context (publications, trial data)
         evidence_text, cited_sources = self.build_structured_evidence(
             nct_id, research_results,
             max_citations=max_cites,
             max_snippet_chars=max_snippet,
         )
 
-        # --- EDAM guidance injection ---
+        # EDAM guidance injection
         edam_guidance = await self.get_edam_guidance(nct_id, evidence_text)
         if edam_guidance:
             evidence_text = edam_guidance + "\n\n" + evidence_text
 
-        from app.services.ollama_client import ollama_client
-        from app.services.config_service import config_service
+        # Format dossier for LLM
+        dossier_text = _format_dossier_for_llm(dossier, nct_id)
+        llm_prompt = DOSSIER_PROMPT.format(dossier_text=dossier_text)
 
-        config = config_service.get()
-        primary_model = self._get_model(config)
-
-        # --- PASS 1: Extract facts ---
         try:
-            logger.info(f"  outcome: Pass 1 — extracting facts for {nct_id}")
-            pass1_response = await ollama_client.generate(
+            logger.info(f"  outcome: v38 LLM pass for {nct_id}")
+            response = await ollama_client.generate(
                 model=primary_model,
-                prompt=evidence_text,
-                system=PASS1_PROMPT,
+                prompt=llm_prompt + "\n\nFull research evidence:\n" + evidence_text,
                 temperature=config.ollama.field_temperatures.get("outcome", config.ollama.temperature),
             )
-            pass1_output = pass1_response.get("response", "")
+            llm_output = response.get("response", "")
         except Exception as e:
+            logger.warning(f"  outcome: LLM call failed for {nct_id}: {e}")
+            # Fallback: use dossier signals directly
+            value = self._infer_from_dossier(dossier)
             return FieldAnnotation(
-                field_name=self.field_name,
-                value="Unknown",
-                confidence=0.0,
-                reasoning=f"Pass 1 LLM call failed: {e}",
-                evidence=[],
-                model_name=primary_model,
+                field_name=self.field_name, value=value, confidence=0.3,
+                reasoning=f"LLM failed ({e}), inferred from dossier: {dossier_text[:300]}",
+                evidence=cited_sources[:10], model_name=primary_model,
             )
 
-        # --- v17: Extract structured phase from ClinicalTrials.gov data ---
-        # The Pass 1 LLM sometimes returns "Trial Phase: NOT FOUND" even when
-        # the phase is in the structured data. Inject it directly into Pass 2.
-        structured_phase = self._extract_structured_phase(research_results)
-        if structured_phase:
-            # Append structured phase to Pass 1 output so Pass 2 always has it
-            phase_check = re.search(r"Trial Phase:\s*(.+?)(?:\n|$)", pass1_output, re.IGNORECASE)
-            if not phase_check or "not found" in phase_check.group(1).lower():
-                pass1_output += f"\nTrial Phase: {structured_phase} [from ClinicalTrials.gov structured data]"
-                logger.info(f"  outcome: injected structured phase '{structured_phase}' into Pass 2 input")
+        value = self._parse_value(llm_output)
+        reasoning = self._parse_reasoning(llm_output)
 
-        # --- v33: Extract structured registry status from ClinicalTrials.gov ---
-        # Same pattern as phase injection. The LLM frequently returns
-        # "Registry Status: NOT FOUND" even though the status IS in the
-        # clinical_protocol raw data. This causes _infer_from_pass1 to miss
-        # the status-based heuristics (COMPLETED/TERMINATED/WITHDRAWN fallbacks).
-        # v35: All valid ClinicalTrials.gov overallStatus values
-        _VALID_CT_STATUSES = {
-            "recruiting", "not_yet_recruiting", "enrolling_by_invitation",
-            "withdrawn", "active_not_recruiting", "suspended",
-            "completed", "terminated", "unknown_status",
-            "active, not recruiting", "not yet recruiting",
-            "enrolling by invitation",
-        }
-        structured_status, structured_has_results = self._extract_structured_status(research_results)
-        if structured_status:
-            status_check = re.search(r"Registry Status:\s*(.+?)(?:\n|$)", pass1_output, re.IGNORECASE)
-            llm_status = status_check.group(1).strip().lower() if status_check else ""
-            is_not_found = not status_check or "not found" in llm_status
-            is_unrecognized = (
-                not is_not_found
-                and llm_status.replace(" ", "_") not in _VALID_CT_STATUSES
-                and llm_status not in _VALID_CT_STATUSES
-            )
-            if is_not_found or is_unrecognized:
-                suffix = " [corrected from unrecognized]" if is_unrecognized else ""
-                pass1_output += f"\nRegistry Status: {structured_status} [from ClinicalTrials.gov structured data]{suffix}"
-                logger.info(f"  outcome: v35 injected structured status '{structured_status}' (was: '{llm_status}') into Pass 2 input")
-            if structured_has_results is not None:
-                hr_check = re.search(r"Results Posted:\s*(.+?)(?:\n|$)", pass1_output, re.IGNORECASE)
-                if not hr_check or "unknown" in hr_check.group(1).lower() or "not found" in hr_check.group(1).lower():
-                    hr_val = "Yes" if structured_has_results else "No"
-                    pass1_output += f"\nResults Posted: {hr_val} [from ClinicalTrials.gov structured data]"
-                    logger.info(f"  outcome: v33 injected hasResults={hr_val} into Pass 2 input")
+        # --- Post-LLM safety nets ---
 
-        # --- v36: Stale status detection ---
-        # If registry says Active/Recruiting but completion date is >6 months ago,
-        # the status is likely outdated. Inject a temporal warning so Pass 2 doesn't
-        # blindly trust a stale Active status.
-        completion_date_str = self._extract_completion_date(research_results)
-        if completion_date_str:
-            try:
-                from datetime import datetime
-                comp_dt = datetime.strptime(completion_date_str, "%Y-%m-%d")
-                days_since = (datetime.now() - comp_dt).days
-                if days_since > 180:
-                    status_lower = pass1_output.lower()
-                    if ("active" in status_lower or "recruiting" in status_lower) and "completed" not in status_lower:
-                        pass1_output += (
-                            f"\n[Temporal check] Trial completion date was {completion_date_str} "
-                            f"({days_since} days ago). Registry status may be outdated."
-                        )
-                        logger.info(f"  outcome: v36 stale status detected — completed {days_since} days ago but status says Active/Recruiting")
-            except (ValueError, TypeError):
-                pass
-
-        # --- PASS 2: Determine outcome with facts in hand ---
-        try:
-            logger.info(f"  outcome: Pass 2 — determining outcome for {nct_id}")
-            pass2_prompt = PASS2_PROMPT.format(pass1_output=pass1_output)
-            pass2_response = await ollama_client.generate(
-                model=primary_model,
-                prompt=pass2_prompt + "\n\nOriginal evidence:\n" + evidence_text,
-                temperature=config.ollama.field_temperatures.get("outcome", config.ollama.temperature),
-            )
-            pass2_output = pass2_response.get("response", "")
-        except Exception as e:
-            # Fall back to pass 1 data if pass 2 fails
-            value = self._infer_from_pass1(pass1_output)
-            return FieldAnnotation(
-                field_name=self.field_name,
-                value=value,
-                confidence=0.3,
-                reasoning=f"Pass 2 failed ({e}), inferred from pass 1: {pass1_output[:300]}",
-                evidence=cited_sources[:10],
-                model_name=primary_model,
-            )
-
-        value = self._parse_value(pass2_output)
-        reasoning = self._parse_reasoning(pass2_output)
-
-        # v25: Publication-priority override — when Pass 2 returns "Unknown",
-        # check if Pass 1 found published results with a clear valence. This is
-        # the #1 disagreement pattern: agent=Unknown when publications exist.
-        # v26: Removed "Terminated" — human annotators keep "Terminated" as outcome
-        # regardless of published results. PASS2_PROMPT step 4 handles TERMINATED
-        # nuance; overriding here caused 4/12 outcome disagreements.
+        # If LLM said Unknown/Active but dossier has strong publication signals, override
         if value in ("Unknown", "Active, not recruiting"):
-            pub_override = self._publication_priority_override(pass1_output, value)
-            if pub_override and pub_override != value:
-                logger.info(f"  outcome: v25 publication-priority override {value} → {pub_override}")
-                value = pub_override
-                reasoning = f"[v25 publication-priority override: Pass 2 returned {value}, publications indicate {pub_override}] " + reasoning
+            override = self._dossier_publication_override(dossier, value)
+            if override and override != value:
+                logger.info(f"  outcome: v38 dossier publication override {value} → {override}")
+                reasoning = f"[v38 dossier pub override: {value} → {override}] " + reasoning
+                value = override
 
-        # v17: Post-LLM heuristic override — when Pass 2 returns "Unknown",
-        # apply the adverse-event and completion heuristics against Pass 1 output.
-        # Previously _infer_from_pass1 was only called on LLM exceptions (dead code
-        # in the normal path), so adverse-event keywords never fired.
-        if value == "Unknown":
-            heuristic_value = self._infer_from_pass1(pass1_output, nct_id=nct_id)
-            if heuristic_value != "Unknown":
-                logger.info(f"  outcome: heuristic override {value} → {heuristic_value}")
-                value = heuristic_value
-                reasoning = f"[Heuristic override: Pass 2 returned Unknown, _infer_from_pass1 → {heuristic_value}] " + reasoning
+        # Terminated safety net: Unknown + TERMINATED + no results → Terminated
+        if value == "Unknown" and dossier["registry_status"].upper() == "TERMINATED":
+            if not dossier["has_results"]:
+                logger.info("  outcome: v38 Terminated safety net")
+                value = "Terminated"
+                reasoning = "[v38 Terminated safety net] " + reasoning
 
-        # v32: Terminated safety net — if we still have "Unknown" but the trial
-        # is TERMINATED with no results posted, default to "Terminated". Catches
-        # cases where generic drug publications (from v31 literature APIs) cause
-        # has_publications=True in _infer_from_pass1 and a keyword false-match
-        # returns early before reaching the registry status fallback.
-        if value == "Unknown":
-            lower_p1 = pass1_output.lower()
-            status_match = re.search(r"registry status:\s*(\S+)", lower_p1)
-            if status_match and "terminated" in status_match.group(1):
-                results_posted = (
-                    "results posted: yes" in lower_p1
-                    or "hasresults: true" in lower_p1
-                )
-                if not results_posted:
-                    logger.info("  outcome: v32 Terminated safety net activated")
-                    value = "Terminated"
-                    reasoning = (
-                        "[v32 Terminated safety net: TERMINATED with no results posted] "
-                        + reasoning
-                    )
-
-        # v32: hasResults override — COMPLETED trial with results posted but LLM
-        # said Unknown. H4 in the prompt says "lean Positive" but the LLM may not
-        # follow. _infer_from_pass1 has this at H2/H4 but only when has_publications
-        # is False. This backstop catches the remaining cases.
-        if value == "Unknown":
-            lower_p1 = pass1_output.lower()
-            results_posted = (
-                "results posted: yes" in lower_p1
-                or "hasresults: true" in lower_p1
-            )
-            if results_posted:
-                status_match = re.search(r"registry status:\s*(\S+)", lower_p1)
-                status = status_match.group(1) if status_match else ""
-                if "completed" in status or "complete" in status:
-                    logger.info("  outcome: v32 hasResults override activated (COMPLETED + results posted)")
-                    value = "Positive"
-                    reasoning = (
-                        "[v32 hasResults override: COMPLETED with results posted] "
-                        + reasoning
-                    )
-
-        # v36: Research-aware keyword rescue — scan publication titles and
-        # snippets from the raw research dossier for efficacy/failure keywords.
-        # The LLM's Pass 1 output often omits publication titles, so scanning
-        # the research results directly catches evidence the LLM missed.
-        if value == "Unknown":
-            _RESEARCH_EFFICACY_KW = [
-                "effective", "efficacy", "improved", "improvement",
-                "favorable", "benefit", "promising", "successful",
-                "well-tolerated", "safe and effective", "immunogenic",
-                "safe and immunogenic", "clinical benefit",
-                "objective response", "complete response", "partial response",
-                # v37b: Vaccine/immunotherapy-specific positive signals
-                # (from investigation of 4 holdout cases: NCT01722058,
-                # NCT03042793, NCT03071679, NCT05130060)
-                "immune response", "t cell response", "cd8+", "cd4+",
-                "clinical activity", "early evidence",
-                "preliminary activity", "antitumor activity",
-                "enhanced immune", "immune activation",
-            ]
-            _RESEARCH_FAILURE_KW = [
-                "failed", "did not meet", "did not demonstrate",
-                "no efficacy", "futility", "insufficient", "inferior",
-            ]
-            efficacy_found = False
-            failure_found = False
-            for result in research_results:
-                if result.error:
-                    continue
-                for citation in getattr(result, "citations", []):
-                    snippet = (getattr(citation, "snippet", "") or "").lower()
-                    identifier = (getattr(citation, "identifier", "") or "").lower()
-                    combined = f"{snippet} {identifier}"
-                    if any(kw in combined for kw in _RESEARCH_EFFICACY_KW):
-                        efficacy_found = True
-                    if any(kw in combined for kw in _RESEARCH_FAILURE_KW):
-                        failure_found = True
-            if efficacy_found and not failure_found:
-                logger.info(f"  outcome: v36 research-aware keyword rescue → Positive for {nct_id}")
+        # hasResults override: Unknown + COMPLETED + results posted → Positive
+        if value == "Unknown" and dossier["registry_status"].upper() == "COMPLETED":
+            if dossier["has_results"] is True:
+                logger.info("  outcome: v38 hasResults override (COMPLETED + results posted)")
                 value = "Positive"
-                reasoning = f"[v36 research-aware keyword rescue: efficacy keywords in publication titles/snippets] " + reasoning
-            elif failure_found and not efficacy_found:
-                logger.info(f"  outcome: v36 research-aware keyword rescue → Failed for {nct_id}")
-                value = "Failed - completed trial"
-                reasoning = f"[v36 research-aware keyword rescue: failure keywords in publication titles/snippets] " + reasoning
+                reasoning = "[v38 hasResults override] " + reasoning
 
-        # Include pass 1 extraction in the reasoning for audit trail
-        full_reasoning = f"[Pass 1 facts] {pass1_output[:500]}\n[Pass 2 decision] {reasoning}"
+        # --- Determine if verification should be skipped (publication-anchored) ---
+        skip_verification = False
+        has_pmid_evidence = any(
+            p.get("pmid", "").isdigit() for p in dossier["publications"]
+        )
+        if value == "Positive" and has_pmid_evidence and dossier["positive_keywords"]:
+            skip_verification = True
+            logger.info(f"  outcome: v38 publication-anchored Positive — skip_verification=True")
+        if value == "Failed - completed trial" and has_pmid_evidence and dossier["negative_keywords"]:
+            skip_verification = True
+            logger.info(f"  outcome: v38 publication-anchored Failed — skip_verification=True")
 
-        # v12: Confidence based on citation quality. The v11 source_sufficiency
-        # divisor (/2) was too aggressive — single-source evidence (ClinicalTrials.gov)
-        # is often sufficient and shouldn't be capped at 0.5.
+        full_reasoning = f"[Dossier] {dossier_text[:400]}\n[LLM decision] {reasoning}"
         citation_quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
-        confidence = citation_quality
 
         return FieldAnnotation(
             field_name=self.field_name,
             value=value,
-            confidence=confidence,
+            confidence=citation_quality,
             reasoning=full_reasoning,
             evidence=cited_sources[:10],
             model_name=primary_model,
+            skip_verification=skip_verification,
         )
 
-    def _infer_from_pass1(self, pass1_text: str, nct_id: str = "") -> str:
-        """Fallback: infer outcome from pass 1 extraction if pass 2 fails.
-
-        Applies completion heuristics for older trials where publications
-        may not be found but the trial clearly completed normally.
-        """
-        lower = pass1_text.lower()
-
-        # Check for published results first (most important signal)
-        # v32: fixed section boundary — was \n[A-Z] on lowercased text (never matched)
-        results_section = ""
-        match = re.search(r"published results?:\s*(.+?)(?:" + _SECTION_BOUNDARY + r"|\Z)", lower, re.DOTALL)
-        if match:
-            results_section = match.group(1).strip()
-
-        has_publications = (
-            results_section
-            and results_section not in ("none found", "none", "no results", "not found")
-        )
-
-        # v33: Generic publication filter — v31 literature APIs (OpenAlex,
-        # Semantic Scholar, CrossRef) often return drug-class publications that
-        # discuss the molecule but NOT this trial's results. When has_publications
-        # is True but publications are generic, keyword matching produces false
-        # positives/negatives and blocks the registry status fallback. Require
-        # trial-specific language before trusting keyword matching.
-        _TRIAL_SPECIFIC_MARKERS = [
-            "primary endpoint", "our study", "this study", "this trial",
-            "met the", "failed to meet", "results showed", "results demonstrated",
-            "phase i ", "phase ii ", "phase iii ", "phase 1 ", "phase 2 ", "phase 3 ",
-            "enrolled", "randomized", "patients were",
-        ]
-        if nct_id:
-            _TRIAL_SPECIFIC_MARKERS.append(nct_id.lower())
-        is_trial_specific = has_publications and any(
-            m in results_section for m in _TRIAL_SPECIFIC_MARKERS
-        )
-
-        if has_publications and is_trial_specific:
-            # v18: Check strong adverse-event signals in FULL pass1 text first.
-            # These override any positive heuristics — a trial with positive
-            # immunogenicity but unacceptable toxicity is still Failed.
-            # Multi-word patterns reduce false positives from scanning full text.
-            _STRONG_ADVERSE = [
-                "unacceptable", "not tolerated", "dose-limiting",
-                "reactogenicity", "sterile abscess", "safety concern",
-                "serious adverse event", "discontinued due to",
-            ]
-            if any(kw in lower for kw in _STRONG_ADVERSE):
-                return "Failed - completed trial"
-            # Then check positive/negative keywords in results_section only
-            if any(kw in results_section for kw in ["efficacy", "effective", "positive", "significant", "met primary"]):
-                return "Positive"
-            if any(kw in results_section for kw in [
-                "failed", "negative", "not effective", "did not meet",
-                "did not demonstrate", "did not achieve", "did not show",
-                "no significant", "no benefit", "no improvement",
-                "failed to demonstrate", "failed to meet", "failed primary",
-                "lack of efficacy", "ineffective", "no efficacy",
-            ]):
-                return "Failed - completed trial"
-            # v16: Additional adverse signals (single-word, scoped to results_section)
-            if any(kw in results_section for kw in [
-                "toxicity", "toxic", "adverse", "abscess",
-            ]):
-                return "Failed - completed trial"
-        elif has_publications and not is_trial_specific:
-            # v33: Generic publication — don't trust keyword matching.
-            # v34: But DO trust the LLM's result_valence — it's a holistic
-            # judgment, not a keyword match, so less prone to false positives
-            # from drug-class publications. This fixes NCT03482648 and similar
-            # COMPLETED trials where generic pubs blocked all outcome evidence.
-            valence_match = re.search(r"result valence:\s*(.+?)(?:\n|$)", lower)
-            if valence_match:
-                valence = valence_match.group(1).strip()
-                if "positive" in valence or "mixed" in valence:
-                    logger.info(f"  outcome: v34 generic pub + LLM valence='{valence}' → Positive for {nct_id}")
-                    return "Positive"
-                if "negative" in valence:
-                    logger.info(f"  outcome: v34 generic pub + LLM valence='{valence}' → Failed for {nct_id}")
-                    return "Failed - completed trial"
-            # v35: Before falling to Unknown, scan full pass1 text for
-            # efficacy/failure keywords. Less precise than trial-specific
-            # matching, but better than giving up entirely.
-            _EFFICACY_MARKERS = [
-                "improved", "improvement", "efficacy", "effective",
-                "favorable", "benefit", "promising", "successful",
-                "well-tolerated", "safe and effective",
-                "immunogenic", "immune response", "t cell response",
-                "clinical activity", "antitumor activity",
-                "enhanced immune", "immune activation",
-            ]
-            _FAILURE_MARKERS = [
-                "failed", "negative", "did not meet",
-                "did not demonstrate", "no efficacy", "futility",
-                "insufficient",
-            ]
-            if any(kw in lower for kw in _EFFICACY_MARKERS):
-                logger.info(f"  outcome: v35 generic pub + efficacy keyword in full text → Positive for {nct_id}")
-                return "Positive"
-            if any(kw in lower for kw in _FAILURE_MARKERS):
-                logger.info(f"  outcome: v35 generic pub + failure keyword in full text → Failed for {nct_id}")
-                return "Failed - completed trial"
-            logger.info(f"  outcome: v35 skipping keyword match — publications appear generic, no clear signal for {nct_id}")
-
-        # Fall back to registry status
-        status_match = re.search(r"registry status:\s*(\S+)", lower)
-        status = status_match.group(1).strip() if status_match else ""
-
-        if "withdrawn" in status:
-            return "Withdrawn"
-        if "terminated" in status:
+    @staticmethod
+    def _infer_from_dossier(dossier: dict) -> str:
+        """Fallback: infer outcome from dossier when LLM fails."""
+        status = dossier["registry_status"].upper()
+        if status == "TERMINATED":
             return "Terminated"
-        if "recruiting" in status and "not" not in status and "active" not in status:
-            return "Recruiting"
-        if "active_not_recruiting" in status:
-            return "Active, not recruiting"
-
-        # Completion heuristics for COMPLETED trials without publications
-        if "completed" in status or "complete" in status:
-            # H2/H4: Results posted = lean Positive (strongest signal)
-            has_results_posted = (
-                "results posted: yes" in lower or "hasresults: true" in lower
-            )
-            if has_results_posted:
+        if status in ("ACTIVE_NOT_RECRUITING", "ACTIVE, NOT RECRUITING"):
+            if dossier["stale_status"] and dossier["positive_keywords"]:
                 return "Positive"
-
-            # H3: Check result valence from Pass 1
-            valence_match = re.search(r"result valence:\s*(.+?)(?:\n|$)", lower)
-            if valence_match:
-                valence = valence_match.group(1).strip()
-                if "positive" in valence or "mixed" in valence:
-                    return "Positive"
-                # v16: Negative valence → Failed
-                if "negative" in valence:
-                    return "Failed - completed trial"
-
-            # H1: Phase I completion = Positive, BUT requires corroboration
-            # v18: Require trial-specific evidence (NCT ID in text or results_posted).
-            # Generic publications that mention the drug but not this trial are
-            # insufficient — they cause inter-run instability when search results vary.
-            phase_match = re.search(r"trial phase:\s*(.+?)(?:\n|$)", lower)
-            if phase_match:
-                phase = phase_match.group(1).strip()
-                is_phase1 = (
-                    "phase1" in phase or "phase 1" in phase
-                    or "early_phase" in phase or "early phase" in phase
-                )
-                if is_phase1 and has_results_posted:
-                    return "Positive"
-                if is_phase1 and has_publications and nct_id and nct_id.lower() in lower:
-                    return "Positive"
-                # Phase I without trial-specific evidence → Unknown
-
-                # v33: H3b backstop — Phase II/III completed >10 years ago
-                # without negative evidence → lean Positive. The PASS2_PROMPT
-                # has this heuristic but the LLM often ignores it. This code
-                # backstop ensures it fires reliably.
-                is_phase23 = (
-                    "phase2" in phase or "phase 2" in phase
-                    or "phase3" in phase or "phase 3" in phase
-                    or "phase ii" in phase or "phase iii" in phase
-                    or "phase_2" in phase or "phase_3" in phase
-                )
-                if is_phase23 and not has_publications:
-                    # Check completion date for age
-                    date_match = re.search(r"completion date:\s*(.+?)(?:\n|$)", lower)
-                    if date_match:
-                        date_str = date_match.group(1).strip()
-                        # Simple year extraction — look for 4-digit year
-                        year_match = re.search(r"((?:19|20)\d{2})", date_str)
-                        if year_match:
-                            from datetime import datetime
-                            try:
-                                comp_year = int(year_match.group(1))
-                                years_ago = datetime.now().year - comp_year
-                                if years_ago > 10:
-                                    logger.info(
-                                        f"  outcome: v33 H3b backstop — Phase II/III completed {years_ago} years ago, no negative evidence"
-                                    )
-                                    return "Positive"
-                            except (ValueError, TypeError):
-                                pass
-
+            if not dossier["stale_status"]:
+                return "Active, not recruiting"
+        if status == "COMPLETED":
+            if dossier["has_results"] is True:
+                return "Positive"
+            if dossier["positive_keywords"] and not dossier["negative_keywords"]:
+                return "Positive"
         return "Unknown"
 
     @staticmethod
-    def _publication_priority_override(pass1_text: str, current_value: str) -> str | None:
-        """v25: Check if Pass 1 found published results that should override the current value.
+    def _dossier_publication_override(dossier: dict, current_value: str) -> str | None:
+        """v38: Override Unknown/Active when dossier has clear publication signals."""
+        pos = dossier["positive_keywords"]
+        neg = dossier["negative_keywords"]
+        pubs = dossier["publication_count"]
+        stale = dossier["stale_status"]
+        status = dossier["registry_status"].upper()
 
-        This catches the dominant error pattern where the agent defaults to Unknown/Active/Terminated
-        based on CT.gov registry status, but published literature reports clear results.
+        # Strong negative signals always override
+        _STRONG_ADVERSE = ["unacceptable", "not tolerated", "dose-limiting",
+                           "safety concern", "serious adverse event", "discontinued due to"]
+        if any(kw in neg for kw in _STRONG_ADVERSE):
+            return "Failed - completed trial"
 
-        Returns the overridden value, or None if no override applies.
-        """
-        lower = pass1_text.lower()
+        # Publications with positive signals → Positive
+        if pubs > 0 and pos and not neg:
+            return "Positive"
 
-        # Extract published results section
-        # v32: fixed section boundary — was \n[A-Z] on lowercased text (never matched)
-        results_match = re.search(r"published results?:\s*(.+?)(?:" + _SECTION_BOUNDARY + r"|\Z)", lower, re.DOTALL)
-        results_section = results_match.group(1).strip() if results_match else ""
-        has_publications = (
-            results_section
-            and results_section not in ("none found", "none", "no results", "not found", "n/a")
-        )
+        # Publications with negative signals → Failed
+        if pubs > 0 and neg and not pos:
+            return "Failed - completed trial"
 
-        if not has_publications:
-            return None
-
-        # v33: Generic publication filter — same as _infer_from_pass1.
-        # v31 literature APIs return drug-class publications that aren't
-        # about this specific trial. Only trust keyword matching when
-        # publications contain trial-specific language.
-        _TRIAL_SPECIFIC_MARKERS = [
-            "primary endpoint", "our study", "this study", "this trial",
-            "met the", "failed to meet", "results showed", "results demonstrated",
-            "phase i ", "phase ii ", "phase iii ", "phase 1 ", "phase 2 ", "phase 3 ",
-            "enrolled", "randomized", "patients were",
-        ]
-        is_trial_specific = any(m in results_section for m in _TRIAL_SPECIFIC_MARKERS)
-        if not is_trial_specific:
-            # v34: Generic publication — don't trust keyword matching, but DO
-            # trust the LLM's result_valence (holistic judgment, not keywords).
-            valence_match = re.search(r"result valence:\s*(.+?)(?:\n|$)", lower)
-            if valence_match:
-                valence = valence_match.group(1).strip()
-                if "positive" in valence or "mixed" in valence:
-                    return "Positive"
-                if "negative" in valence:
-                    return "Failed - completed trial"
-            # v35: Same keyword rescue as _infer_from_pass1 — scan full text
-            # for efficacy/failure keywords before giving up.
-            _EFFICACY_MARKERS = [
-                "improved", "improvement", "efficacy", "effective",
-                "favorable", "benefit", "promising", "successful",
-                "well-tolerated", "safe and effective",
-                "immunogenic", "immune response", "t cell response",
-                "clinical activity", "antitumor activity",
-                "enhanced immune", "immune activation",
-            ]
-            _FAILURE_MARKERS = [
-                "failed", "negative", "did not meet",
-                "did not demonstrate", "no efficacy", "futility",
-                "insufficient",
-            ]
-            if any(kw in lower for kw in _EFFICACY_MARKERS):
+        # Stale Active status with any publications → likely completed
+        if current_value == "Active, not recruiting" and stale:
+            if pos:
                 return "Positive"
-            if any(kw in lower for kw in _FAILURE_MARKERS):
+            if neg:
                 return "Failed - completed trial"
-            return None
 
-        # Extract result valence from Pass 1
-        valence_match = re.search(r"result valence:\s*(.+?)(?:\n|$)", lower)
-        valence = valence_match.group(1).strip() if valence_match else ""
-
-        # Strong adverse signals always win (same list as _infer_from_pass1)
-        _STRONG_ADVERSE = [
-            "unacceptable", "not tolerated", "dose-limiting",
-            "reactogenicity", "sterile abscess", "safety concern",
-            "serious adverse event", "discontinued due to",
-        ]
-        if any(kw in lower for kw in _STRONG_ADVERSE):
-            return "Failed - completed trial"
-
-        # Publications report positive results → Positive
-        if "positive" in valence or "mixed" in valence:
-            return "Positive"
-        if any(kw in results_section for kw in [
-            "efficacy", "effective", "positive", "significant",
-            "met primary", "well-tolerated", "well tolerated",
-            "safe and effective", "favorable", "promising",
-            "immunogenic", "approved", "granted approval",
-        ]):
+        # COMPLETED with results posted but LLM said Unknown
+        if status == "COMPLETED" and dossier["has_results"] is True:
             return "Positive"
 
-        # Publications report negative results → Failed
-        if "negative" in valence:
-            return "Failed - completed trial"
-        if any(kw in results_section for kw in [
-            "failed", "negative", "not effective", "did not meet",
-            "did not demonstrate", "did not achieve", "did not show",
-            "no significant", "no benefit", "no improvement",
-            "failed to demonstrate", "failed to meet", "failed primary",
-            "lack of efficacy", "ineffective", "no efficacy",
-            "futility", "inferior",
-        ]):
-            return "Failed - completed trial"
+        # Phase I completion with publications → Positive
+        phase = (dossier["phase"] or "").upper()
+        is_phase1 = "PHASE1" in phase or "EARLY_PHASE" in phase
+        if is_phase1 and status == "COMPLETED" and pubs > 0:
+            return "Positive"
 
-        # Publications exist but valence is unclear — don't override
+        # Phase II/III completed >10 years ago, no negative evidence
+        is_phase23 = any(p in phase for p in ["PHASE2", "PHASE3"])
+        if is_phase23 and status == "COMPLETED" and not neg:
+            days = dossier["days_since_completion"]
+            if days is not None and days > 3650:  # >10 years
+                return "Positive"
+
         return None
-
-    @staticmethod
-    def _extract_structured_phase(research_results: list) -> str:
-        """Extract trial phase directly from ClinicalTrials.gov structured data.
-
-        v17: Ensures Pass 2 always has the trial phase even when Pass 1
-        extraction fails (returns "NOT FOUND").
-        """
-        for result in research_results:
-            if result.error or result.agent_name != "clinical_protocol":
-                continue
-            if not result.raw_data:
-                continue
-            proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
-            design_mod = proto.get("designModule", {})
-            phases = design_mod.get("phases", [])
-            if isinstance(phases, list) and phases:
-                return ", ".join(phases)
-            # Some records use "phase" as a string
-            phase_str = design_mod.get("phase", "")
-            if phase_str:
-                return phase_str
-        return ""
-
-    @staticmethod
-    def _extract_structured_status(research_results: list) -> tuple:
-        """Extract registry status and hasResults from ClinicalTrials.gov data.
-
-        v33: Same pattern as _extract_structured_phase. The LLM frequently
-        returns "Registry Status: NOT FOUND" even when the status IS in the
-        clinical_protocol raw data, causing _infer_from_pass1 to miss
-        COMPLETED/TERMINATED/WITHDRAWN heuristics.
-
-        Returns:
-            (status_str, has_results_bool) — e.g. ("COMPLETED", True)
-        """
-        for result in research_results:
-            if result.error or result.agent_name != "clinical_protocol":
-                continue
-            if not result.raw_data:
-                continue
-            proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
-            status_mod = proto.get("statusModule", {})
-            overall_status = status_mod.get("overallStatus", "")
-            has_results = status_mod.get("hasResults", None)
-            if has_results is not None:
-                has_results = has_results is True or str(has_results).lower() == "true"
-            if overall_status:
-                return overall_status, has_results
-        return "", None
-
-    @staticmethod
-    def _extract_completion_date(research_results: list) -> str:
-        """v36: Extract primary completion date from ClinicalTrials.gov data."""
-        for result in research_results:
-            if result.error or result.agent_name != "clinical_protocol":
-                continue
-            if not result.raw_data:
-                continue
-            proto = result.raw_data.get("protocol_section", result.raw_data.get("protocolSection", {}))
-            status_mod = proto.get("statusModule", {})
-            for date_key in ("primaryCompletionDateStruct", "completionDateStruct"):
-                date_struct = status_mod.get(date_key, {})
-                if isinstance(date_struct, dict):
-                    date_str = date_struct.get("date", "")
-                    if date_str:
-                        return date_str
-        return ""
 
     def _parse_value(self, text: str) -> str:
         match = re.search(r"Outcome:\s*(.+?)(?:\n|$)", text, re.IGNORECASE)

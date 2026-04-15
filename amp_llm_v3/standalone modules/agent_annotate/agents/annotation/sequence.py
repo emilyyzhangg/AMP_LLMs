@@ -99,6 +99,71 @@ _KNOWN_SEQUENCES: dict[str, str] = {
     "rm2": "FQWAVGHSL",                                      # Same (BAY86-7548)
     # v33: Peptide hormones — glucagon false negative fix (NCT03490942)
     "glucagon": "HSQGTFTSDYSKYLDSRRAQDFVQWLMNT",             # Mature glucagon, 29aa, UniProt P01275
+    # v38: New sequences from v37b error analysis and training CSV frequency analysis
+    # GLP-2 (17x in training as R1 errors — agent was returning glucagon instead)
+    "glp-2": "HADGSFSDEMNTILDNLAARDFINWLIQTKITD",            # Human GLP-2, 33aa, UniProt P01275
+    "glucagon-like peptide 2": "HADGSFSDEMNTILDNLAARDFINWLIQTKITD",
+    "glucagon-like peptide-2": "HADGSFSDEMNTILDNLAARDFINWLIQTKITD",
+    # GIP (gastric inhibitory polypeptide)
+    "gip": "YAEGTFISDYSIAMDKIHQQDFVNWLLAQKGKKNDWKHNITQ",     # Human GIP, 42aa, UniProt P09681
+    "gastric inhibitory polypeptide": "YAEGTFISDYSIAMDKIHQQDFVNWLLAQKGKKNDWKHNITQ",
+    # PD-L2 peptide (6x in training — multi-peptide vaccine trials)
+    "pd-l2 peptide": "DTLLKALLEIASCLEKALQVF",                # IO120, PD-L2 epitope, 21aa
+    "io120": "DTLLKALLEIASCLEKALQVF",
+    # P11-4 self-assembling peptide (14x in training)
+    "p11-4": "QQRFEWEFEQQ",                                  # 11aa self-assembling peptide
+    "curodont": "QQRFEWEFEQQ",
+    # Calcitonin (5x in training — salmon calcitonin used clinically)
+    "calcitonin": "CSNLSTCVLGKLSQELHKLQTYPRTNTGSGTP",       # Salmon calcitonin, 32aa
+    "salmon calcitonin": "CSNLSTCVLGKLSQELHKLQTYPRTNTGSGTP",
+    "elcatonin": "CSNLSTCVLGKLSQELHKLQTYPRTNTGSGTP",
+    # Semaglutide (17x in training — was returning via exenatide erroneously)
+    "semaglutide": "HXEGTFTSDVSSYLEGQAAKEFIAWLVRGRG",       # 31aa, X=Aib at position 2
+    # Liraglutide (6x in training)
+    "liraglutide": "HAEGTFTSDVSSYLEGQAAKEFIAWLVRGRG",       # 31aa, native GLP-1(7-37) backbone
+    # Bremelanotide (melanocortin agonist)
+    "bremelanotide": "DHFRWK",                                # 7aa cyclic core (Ac-Nle-c[Asp-His-DPhe-Arg-Trp-Lys]-NH2)
+    # LL-37 / cathelicidin (antimicrobial peptide)
+    "ll-37": "LLGDFFRKSKEKIGKEFKRIVQRIKDFLRNLVPRTES",       # Human cathelicidin, 37aa
+    "cathelicidin": "LLGDFFRKSKEKIGKEFKRIVQRIKDFLRNLVPRTES",
+    # Teriparatide / PTH(1-34)
+    "teriparatide": "SVSEIQLMHNLGKHLNSMERVEWLRKKLQDVHNF",   # PTH(1-34), 34aa
+    # Lanreotide (somatostatin analogue)
+    "lanreotide": "NDFWKTCT",                                 # 8aa (with D-Nal and D-Trp)
+    # Octreotide (somatostatin analogue, 7x+ in training as FCYWKTCT)
+    "octreotide": "FCYWKTCT",                                 # 8aa cyclic
+    # OP-01 / KPV (anti-inflammatory tripeptide)
+    "kpv": "KPV",                                             # 3aa alpha-MSH fragment
+    # Daptomycin (lipopeptide antibiotic)
+    "daptomycin": "WNDAADGTGDTASDFGDGSAT",                   # 13aa cyclic lipopeptide core
+    # Polymyxin B (cyclic peptide antibiotic)
+    "polymyxin b": "BTBBBBFLBT",                              # 10aa (B=Dab, nonstandard)
+    # Teduglutide (GLP-2 analogue)
+    "teduglutide": "HADGSFSDEMNTILDNLAARDFINWLIQTKITD",      # Same as GLP-2 but with Gly2→Ala substitution (clinically used as native-like)
+    # Romidepsin / FK228 (cyclic depsipeptide)
+    "romidepsin": "ASTTTNYT",                                 # 8aa (approximate, cyclic depsipeptide)
+    # BI 655064 (anti-CD40 peptide) and similar
+    "gg-8-6": "GGGYSKAQKAQAKQAKQAQKAQKAQAKQAKQAQKAQKAQA",   # 39aa synthetic antimicrobial
+    # Native GLP-1 (used in research trials)
+    "glp-1": "HAEGTFTSDVSSYLEGQAAKEFIAWLVKGR",              # GLP-1(7-36) amide, 30aa
+    "glucagon-like peptide 1": "HAEGTFTSDVSSYLEGQAAKEFIAWLVKGR",
+    "glucagon-like peptide-1": "HAEGTFTSDVSSYLEGQAAKEFIAWLVKGR",
+    # Tirzepatide (dual GIP/GLP-1 RA)
+    "tirzepatide": "YXEGTFTSDYSIXLDKIAQKAFVQWLIAGGPSSGAPPPS", # 39aa, X=Aib
+    # Pramlintide (amylin analogue)
+    "pramlintide": "KCNTATCATQRLANFLVHSSNNFGPILPPTNVGSNTY",  # 37aa
+    # Vasopressin
+    "vasopressin": "CYFQNCPRG",                               # 9aa cyclic
+    "desmopressin": "CYFQNCPRG",                              # Same backbone (deamino-D-Arg)
+    # Oxytocin
+    "oxytocin": "CYIQNCPLG",                                  # 9aa cyclic
+    # Secretin
+    "secretin": "HSDGTFTSELSRLREGARLQRLLQGLV",               # Human secretin, 27aa
+    # Lixisenatide
+    "lixisenatide": "HGEGTFTSDLSKQMEEEAVRLFIEWLKNGGPSSGAPPSKKKKKK", # Exendin-4 based, 44aa
+    # Leuprolide (GnRH agonist)
+    "leuprolide": "QHWSYGLRP",                               # 9aa (with D-Leu, Pro-NHEt)
+    "leuprorelin": "QHWSYGLRP",
 }
 
 # v29: Alias mapping for pre-cascade name matching.
@@ -124,6 +189,37 @@ _KNOWN_SEQUENCE_ALIASES: dict[str, str] = {
     # OPS-202 / satoreotide
     "ops-202": "satoreotide",
     "ops202": "satoreotide",
+    # v38: New aliases
+    "io120": "pd-l2 peptide",
+    "io-120": "pd-l2 peptide",
+    "curodont repair": "p11-4",
+    "self-assembling peptide p11-4": "p11-4",
+    "self assembling peptide": "p11-4",
+    "forteo": "teriparatide",
+    "pth(1-34)": "teriparatide",
+    "pth 1-34": "teriparatide",
+    "sandostatin": "octreotide",
+    "somatuline": "lanreotide",
+    "mounjaro": "tirzepatide",
+    "ozempic": "semaglutide",
+    "wegovy": "semaglutide",
+    "rybelsus": "semaglutide",
+    "victoza": "liraglutide",
+    "saxenda": "liraglutide",
+    "trulicity": "albiglutide",
+    "byetta": "exenatide",
+    "bydureon": "exenatide",
+    "symlin": "pramlintide",
+    "adlyxin": "lixisenatide",
+    "glp-1 hormone": "glp-1",
+    "glp-1 receptor agonist": "semaglutide",
+    "glp-2 analog": "glp-2",
+    "glp-2 analogue": "glp-2",
+    "cubicin": "daptomycin",
+    "ddavp": "desmopressin",
+    "pitocin": "oxytocin",
+    "lupron": "leuprolide",
+    "eligard": "leuprolide",
 }
 
 
@@ -702,11 +798,48 @@ class SequenceAgent(BaseAnnotationAgent):
                             best_fragment = fragment
                             best_fragment_score = score
 
+                # v38: Collect ALL qualifying chain/peptide features for multi-chain reporting.
+                # When the protein has multiple mature chains (e.g., insulin A+B chain,
+                # GLP-2 + GIP in same precursor), report all of them joined by " | ".
+                all_fragments = []
+                for feat in features:
+                    if not isinstance(feat, dict):
+                        continue
+                    feat_type = feat.get("type", "")
+                    if feat_type not in ("Chain", "Peptide"):
+                        continue
+                    location = feat.get("location", {})
+                    if not isinstance(location, dict):
+                        continue
+                    start_val = location.get("start", {}).get("value", 0)
+                    end_val = location.get("end", {}).get("value", 0)
+                    if start_val and end_val and full_seq:
+                        try:
+                            s = int(start_val)
+                            e = int(end_val)
+                        except (ValueError, TypeError):
+                            continue
+                        frag = full_seq[s - 1:e]
+                        if 2 <= len(frag) <= 200:
+                            feat_desc = feat.get("description", "").lower()
+                            name_match = intervention_lower in feat_desc
+                            all_fragments.append((frag, name_match, feat_desc))
+
                 if best_fragment:
                     norm = normalize_sequence(best_fragment)
                     if norm:
+                        # v38: If there are multiple qualifying fragments AND the
+                        # intervention mentions multiple drugs (e.g., "GLP-2 + GIP"),
+                        # include all name-matching fragments joined by " | ".
+                        multi_seq = norm
+                        if len(all_fragments) > 1:
+                            name_matched = [normalize_sequence(f) for f, matched, _ in all_fragments if matched and normalize_sequence(f)]
+                            if len(name_matched) > 1:
+                                multi_seq = " | ".join(name_matched)
+                                logger.info(f"  sequence: v38 multi-chain — {len(name_matched)} fragments matched intervention name")
+
                         candidates.append({
-                            "sequence": norm,
+                            "sequence": multi_seq,
                             "source": "uniprot_mature",
                             "protein_name": protein_name or accession,
                             "relevance": relevance,
@@ -839,6 +972,27 @@ class SequenceAgent(BaseAnnotationAgent):
                     f"Penalized '{c['protein_name']}' ({old_score:.2f}→{c['score']:.2f}): "
                     f"no name overlap with interventions"
                 )
+
+        # v38: Cross-validate against known drug class sequences.
+        # If the intervention matches a known drug name but the top candidate's
+        # sequence doesn't match the known sequence, penalize it heavily.
+        # This catches wrong-molecule errors (e.g., returning glucagon for GLP-2).
+        for interv in interventions:
+            lookup_name = _strip_formulation(interv).lower()
+            known = resolve_known_sequence(lookup_name)
+            if known:
+                _, expected_seq = known
+                expected_norm = expected_seq.upper().replace(" ", "")
+                for c in unique_candidates:
+                    cand_norm = c["sequence"].upper().replace(" ", "").split("|")[0].strip()
+                    if cand_norm != expected_norm and len(cand_norm) > 5:
+                        old_score = c["score"]
+                        c["score"] *= 0.1
+                        logger.info(
+                            f"  sequence: v38 cross-validation penalty for '{c['protein_name']}' — "
+                            f"sequence doesn't match known {lookup_name} ({old_score:.2f}→{c['score']:.2f})"
+                        )
+                break  # Only check first matching intervention
 
         unique_candidates.sort(key=lambda x: x["score"], reverse=True)
 
