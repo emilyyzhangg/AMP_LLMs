@@ -35,6 +35,30 @@ For delivery, LLM-based "Other" calls don't get `skip_verification` (only determ
 | Outcome | 51.5% | ~75% | 8+ correct Positive calls survive reconciliation |
 | Delivery | 76.5% | ~88% | Not-specified override protected from reconciler |
 
+#### Per-field ceiling analysis (v38 94-NCT, all non-outcome/delivery fields)
+
+**Classification (92.2%, 4 disagreements) — GT-limited, no code fix**
+All 4: agent=Other vs R1=AMP (NCT04843761, NCT05122312, NCT05125718, NCT05584878). Per v33 investigation, this pattern is consistently R1 annotation errors — HIV antivirals, immunomodulators, peptide vaccines that humans mislabel as AMP. Agent's strict definition (direct antimicrobial / innate immune / anti-biofilm) is correct. 92% is effectively 100% agent accuracy with 4 human labeling errors.
+
+**Peptide (88.3%, 11 disagreements) — Above human ceiling (86.0%), diminishing returns**
+- 7 FP (agent=TRUE, R1=FALSE): NCT03255629, NCT03457948, NCT03591614, NCT04007809, NCT05834296, NCT05940428, NCT06430671. v36 investigation found 42% of FPs are GT errors → ~3 of 7 are real agent errors.
+- 4 FN (agent=FALSE, R1=TRUE): NCT03285737, NCT03994198, NCT06512584, NCT06869824. Genuinely missed peptides, but improving further means expanding known-drug lists (frozen) or tuning LLM prompts for marginal gains.
+- Net: ~7 real errors out of 94 NCTs = ~92.5% true accuracy. No actionable fix.
+
+**RfF (92.1%, 5 disagreements) — Outcome-coupled, v39 should recover**
+- NCT01723813: agent=empty, R1=business reason
+- NCT03207295: agent=empty, R1=ineffective for purpose
+- NCT04445064: agent=ineffective, R1=empty
+- NCT04843761: agent=empty, R1=ineffective
+- NCT05589597: agent=business reason, R1=empty
+- 3 of 5 involve outcome coupling — when outcome changes, RfF cascades wrong. v39 outcome fix should recover RfF to ~95% without touching the RfF agent.
+
+**Sequence (58.3%, 10 disagreements) — Above human ceiling (52.0%), notation-dominated**
+- 5 NCTs: agent returns 1 chain, R1 returns 2 joined by `|` (multi-chain gap). v38 added multi-chain UniProt but not catching all cases. NCTs: NCT03381768, NCT03867656, NCT06132477, NCT06374875, NCT06801015.
+- 3 NCTs: missing terminal modifications (`h-`..`-nh2`, beta prefix, `x` prefix). NCTs: NCT03314987, NCT05709444, NCT06722560.
+- 2 NCTs: different sequence variant selected. NCTs: NCT05184322, NCT06621017.
+- Actionable: multi-chain extraction could gain +2-3pp. Terminal modification normalization in agreement comparison could gain +1-2pp. Neither changes the annotation agent — one is research pipeline, the other is evaluation logic.
+
 ### v38 Changes (2026-04-15) — Outcome dossier redesign + delivery Other fix + sequence expansion
 
 #### Root cause analysis (from v37b 94-NCT validation)
