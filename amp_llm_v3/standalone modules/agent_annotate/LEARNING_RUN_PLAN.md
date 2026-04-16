@@ -63,7 +63,8 @@
 | 65 | v37b 94-NCT validation | 89ae1f9f8c1f+3f971ba3bd97 | 94 | 94/94 | **Complete** | v37b (09e84e0) | — | Classification 92.3%, delivery 82.4%, outcome 59.4%, RfF 95.2%, peptide 86.2%, sequence 47.4%. 295s/trial avg. 0 warnings/timeouts. |
 | 66 | v38 94-NCT validation | b02042a06db6+87bc38d018b8 | 94 | 94/94 | **Complete** | v38 (31eee3a) | — | Classification 92.2%, delivery 76.5%, outcome 51.5%, RfF 92.1%, peptide 88.3%, sequence 58.3%. **REGRESSION**: skip_verification bug (see v39). |
 | 67 | v39 94-NCT validation | 14c1d56cc92d+0e182f29b35e | 94 | 94/94 | **Complete** | v39 (ad99b9d) | — | Classification 89.7%, delivery 80.4%, outcome 52.6%, RfF 93.8%, peptide 88.3%, sequence 58.3%. **MISSED TARGETS**: skip_verification protected wrong Positive calls too. |
-| **68** | **v40 94-NCT validation** | **e4858a2904b3+f9689ebdb4ee** | **94** | **—/94** | **Running** | **v40 (cd73e874)** | — | **qwen3:14b model swap (think=false). Same 94 NCTs for direct comparison vs v39/v38/v37b. Prior jobs b1bf657096ee+0b2b70adb0dd cancelled (still had qwen2.5 via YAML config).** |
+| 68 | v40 94-NCT validation | e4858a2904b3+f9689ebdb4ee | 94 | 94/94 | **Complete** | v40 (cd73e874) | — | Classification 91.4%, delivery 85.4%, outcome 60.5%, RfF 92.4%, peptide 88.3%, sequence 58.3%. qwen3:14b model swap. |
+| **69** | **v41 94-NCT validation** | **509eb8b4b732+74083c235d96** | **94** | **—/94** | **Running** | **v41 (7964c040)** | — | **3 outcome fixes: Active guard + pub quality classification + prompt rewrite. Target: outcome 79-87%.** |
 
 > **Note:** Jobs 36-40 are the last jobs run with old categories (v22 code). v24 is now merged to main (9db9e33) with simplified categories (binary AMP/Other, 4-category delivery mode). All future jobs use v24+ categories. Training CSV re-bucketed from Excel source on 2026-04-07 (v31) — delivery mode 145 injection annotations recovered from "other".
 
