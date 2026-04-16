@@ -1,7 +1,42 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-15
-**Current state:** v39 on main (ad99b9d) and dev (b23fee3a). v39 94-NCT validation running on prod: 14c1d56cc92d + 0e182f29b35e.
+**Last updated:** 2026-04-16
+**Current state:** v40 on main (a2a34de) and dev (5289a934). v40 94-NCT validation pending on prod.
+
+### v40 Changes (2026-04-16) — qwen3:14b model swap
+
+#### v39 94-NCT Validation Results (MISSED TARGETS)
+
+| Field | v37b | v38 | v39 | Target | Delta v38→v39 |
+|---|---|---|---|---|---|
+| Classification | 92.3% | 92.2% | **89.7%** | 92% | **-2.5pp** |
+| Delivery | 82.4% | 76.5% | **80.4%** | 88% | +3.9pp |
+| Outcome | 59.4% | 51.5% | **52.6%** | 75% | +1.1pp |
+| RfF | 95.2% | 92.1% | **93.8%** | 95% | +1.7pp |
+| Peptide | 86.2% | 88.3% | **88.3%** | 88% | 0pp |
+| Sequence | 47.4% | 58.3% | **58.3%** | 58% | 0pp |
+
+**Key finding:** skip_verification fix BACKFIRED. The agent overcalls Positive (24 agent vs 20 R1). skip_verification=True protects wrong calls too — 10 of 11 false-Positive calls were protected from reconciler correction. The reconciler was actually doing useful work in v38 by correcting many overcalls.
+
+- Outcome: 18 disagreements. 11 overcalled Positive (10 protected by skip_verification=True). 7 missed Positive.
+- Delivery: 10 disagreements. 7 with skip_verification=True. 5 agent=Other vs R1=Injection/Infusion.
+- Classification: n increased 51→58 (R1 data grew between runs). 2 new disagreements (both agent=Other, R1=AMP). Code unchanged.
+
+**Root cause:** The bottleneck is LLM reasoning quality, not verification mechanics. qwen2.5:14b overcalls Positive when it sees publication evidence, confusing "has published results" with "results were positive."
+
+#### v40 Fix: Model upgrade qwen2.5:14b → qwen3:14b
+
+**Rationale:** Qwen3 has significantly improved reasoning for the same parameter count. Quick test showed qwen3 returns the correct full-form "Failed - completed trial" for an ambiguous case where qwen2.5 only returned truncated "Failed."
+
+**Changes (14 files, dev 5289a934, main a2a34de):**
+1. `ollama_client.py`: Added `"think": False` to generate payload — disables qwen3 thinking mode (270+ token overhead per call, 27s→0.4s). Safely ignored by non-qwen3 models.
+2. All annotation agents, verifier, reconciler, memory, config: `qwen2.5:14b` → `qwen3:14b` default/fallback.
+3. `config_models.py`: Added qwen3:14b timeout entry (600s).
+
+**Performance verified:**
+- qwen3 think=true: 272 tokens, 25.3s per call (UNUSABLE)
+- qwen3 think=false: 5 tokens, 0.4s per call (same as qwen2.5)
+- think=false safely ignored by qwen2.5, gemma2, phi4-mini
 
 ### v39 Changes (2026-04-15) — Fix publication-anchored skip_verification
 

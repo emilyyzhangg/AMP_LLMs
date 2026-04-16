@@ -62,7 +62,8 @@
 | 64 | v34 630-NCT full run | 9fa9dfbd3013+4fddbd329286 | 630 | 630/630 | **Complete** | v34 (bb9a4d3) | — | Classification 91.2%, delivery 85.3%, outcome 65.2%, RfF 94.9%, peptide 82.2%, sequence 48.1%. |
 | 65 | v37b 94-NCT validation | 89ae1f9f8c1f+3f971ba3bd97 | 94 | 94/94 | **Complete** | v37b (09e84e0) | — | Classification 92.3%, delivery 82.4%, outcome 59.4%, RfF 95.2%, peptide 86.2%, sequence 47.4%. 295s/trial avg. 0 warnings/timeouts. |
 | 66 | v38 94-NCT validation | b02042a06db6+87bc38d018b8 | 94 | 94/94 | **Complete** | v38 (31eee3a) | — | Classification 92.2%, delivery 76.5%, outcome 51.5%, RfF 92.1%, peptide 88.3%, sequence 58.3%. **REGRESSION**: skip_verification bug (see v39). |
-| **67** | **v39 94-NCT validation** | **14c1d56cc92d+0e182f29b35e** | **94** | **—/94** | **Running** | **v39 (ad99b9d)** | — | **Fix publication-anchored skip_verification. Same 94 NCTs for direct comparison vs v37b/v38.** |
+| 67 | v39 94-NCT validation | 14c1d56cc92d+0e182f29b35e | 94 | 94/94 | **Complete** | v39 (ad99b9d) | — | Classification 89.7%, delivery 80.4%, outcome 52.6%, RfF 93.8%, peptide 88.3%, sequence 58.3%. **MISSED TARGETS**: skip_verification protected wrong Positive calls too. |
+| **68** | **v40 94-NCT validation** | **TBD** | **94** | **—/94** | **Queued** | **v40 (a2a34de)** | — | **qwen3:14b model swap (think=false). Same 94 NCTs for direct comparison vs v39/v38/v37b.** |
 
 > **Note:** Jobs 36-40 are the last jobs run with old categories (v22 code). v24 is now merged to main (9db9e33) with simplified categories (binary AMP/Other, 4-category delivery mode). All future jobs use v24+ categories. Training CSV re-bucketed from Excel source on 2026-04-07 (v31) — delivery mode 145 injection annotations recovered from "other".
 
@@ -102,7 +103,8 @@
 | v37 | 63daaea | Classification host-defense fallback, peptide non-peptide word-boundary, outcome stale-status. |
 | v37b | 09e84e0 | Sequence concordance fix, outcome keyword expansion, classification post-LLM consistency check for AMP override. |
 | **v38** | **31eee3a** | **Major outcome redesign: 3-tier structured evidence dossier replaces 9-layer cascade. ACTIVE_NOT_RECRUITING removed from deterministic. Publication-anchored skip_verification. Delivery: post-LLM not-specified override, radiotracer skip_verification=True, 71 EDAM corrections cleaned. Sequence: ~70 known drugs (was ~30), ~40 aliases, cross-validation, multi-chain UniProt.** |
-| **v39** | **pending** | **CRITICAL BUG FIX: `.isdigit()` on `PMC:xxx`/`PMID:xxx` identifiers always returned False — publication-anchored skip_verification was completely non-functional since v38. Added `_has_publication_id()` helper. Added mixed-evidence guard (both pos+neg keywords → don't skip). Delivery: not-specified override now sets skip_verification=True. v38 94-NCT results: outcome 51.5% (29/43 Positive overridden by reconciler), delivery 76.5% (10 Other overridden). Expected v39: outcome ~75%, delivery ~88%.** |
+| **v39** | **ad99b9d** | **CRITICAL BUG FIX: `.isdigit()` on `PMC:xxx`/`PMID:xxx` identifiers always returned False — publication-anchored skip_verification was completely non-functional since v38. Added `_has_publication_id()` helper. Added mixed-evidence guard (both pos+neg keywords → don't skip). Delivery: not-specified override now sets skip_verification=True. v39 94-NCT results: outcome 52.6% (+1.1pp, MISSED 75% target), delivery 80.4% (+3.9pp, MISSED 88% target). skip_verification backfired — protected 10 wrong Positive calls from reconciler.** |
+| **v40** | **a2a34de** | **Model swap qwen2.5:14b → qwen3:14b. Added `"think": False` to ollama_client payload (disables 270+ token thinking overhead, 27s→0.4s per call). 14 files updated. think=false safely ignored by non-qwen3 models. Qwen3 produces better-quality answers (correct "Failed - completed trial" vs qwen2.5 truncated "Failed").** |
 
 ## NCT Coverage
 
