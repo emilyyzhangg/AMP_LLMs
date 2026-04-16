@@ -1,7 +1,40 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-16
-**Current state:** v40 on main (a2a34de) and dev (5289a934). v40 94-NCT validation pending on prod.
+**Current state:** v41 pending implementation. v40 batch 1 (47 NCTs): outcome 61.3%, classification 100%, delivery 88.5%, sequence 70.0%.
+
+### v41 Plan (2026-04-16) — Fix outcome Positive overcalling (3 fixes)
+
+#### v40 Batch 1 Results (47 NCTs, qwen3:14b)
+
+| Field | v37b | v38 | v39 | v40 (47) |
+|---|---|---|---|---|
+| Classification | 92.3% | 92.2% | 89.7% | **100.0%** |
+| Delivery | 82.4% | 76.5% | 80.4% | **88.5%** |
+| Outcome | 59.4% | 51.5% | 52.6% | **61.3%** |
+| RfF | 95.2% | 92.1% | 93.8% | 91.7% |
+| Peptide | 86.2% | 88.3% | 88.3% | **89.4%** |
+| Sequence | 47.4% | 58.3% | 58.3% | **70.0%** |
+
+qwen3:14b improved all fields except RfF. Outcome still has 9 false Positive calls (23 agent vs 17 R1).
+
+#### Root cause: 3 types of Positive overcalling
+
+**Type A (3 cases): Agent=Positive, R1=Active.** Agent overrides ACTIVE_NOT_RECRUITING status when publications exist. NCT03989947 (completion 2038!) still called Positive.
+
+**Type B (5 cases): Agent=Positive, R1=Unknown.** Generic review articles (not trial results) from OpenAlex/CrossRef inject false keywords. The prompt says "safe/tolerable" = Positive.
+
+**Type C (1 case): Agent=Positive, R1=Failed.** Generic review misread as positive evidence.
+
+#### 3 coordinated fixes (all in outcome.py)
+
+**Fix 2 — Active status deterministic guard:** ACTIVE_NOT_RECRUITING + future/recent completion → return Active deterministically. Remove Phase I auto-positive and Phase II/III >10yr backstop from `_dossier_publication_override()`.
+
+**Fix 3 — Publication quality classification:** `_classify_publication()` flags pubs as `trial_specific` or `general`. Keyword scanning restricted to trial-specific literature only. Dossier shows [TRIAL-SPECIFIC]/[GENERAL] tags.
+
+**Fix 1 — Prompt rewrite + keyword split:** `_POSITIVE_KW` split into `_EFFICACY_KW` and `_SAFETY_KW`. Prompt requires efficacy evidence for Positive. Safety alone is explicitly insufficient. Post-LLM overrides and skip_verification use efficacy keywords only.
+
+**Target:** Outcome 61.3% → 75-85% (8-10 of 12 disagreements recovered).
 
 ### v40 Changes (2026-04-16) — qwen3:14b model swap
 
