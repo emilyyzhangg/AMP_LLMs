@@ -507,7 +507,7 @@ class DeliveryModeAgent(BaseAnnotationAgent):
         # v10: Use 14B on all profiles — 8B ignores Pass 1 evidence in Pass 2,
         # causing "Other/Unspecified" defaults when route info was extracted.
         if profile in ("mac_mini", "server"):
-            primary_model = "qwen2.5:14b"
+            primary_model = "qwen3:14b"
         else:
             primary_model = None
             for model_key, model_cfg in config.verification.models.items():
@@ -515,7 +515,7 @@ class DeliveryModeAgent(BaseAnnotationAgent):
                     primary_model = model_cfg.name
                     break
             if not primary_model:
-                primary_model = "qwen2.5:14b"
+                primary_model = "qwen3:14b"
 
         # --- Pass 1: Extract route evidence from all sources ---
         try:

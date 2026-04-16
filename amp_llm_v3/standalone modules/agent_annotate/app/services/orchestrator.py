@@ -1156,7 +1156,7 @@ class PipelineOrchestrator:
         """Resolve abbreviations/brand names to generic drug names + synonyms.
 
         Uses the trial's own text (brief summary + detailed description) and the
-        annotation_model (qwen2.5:14b, already loaded during research phase) to
+        annotation_model (qwen3:14b, already loaded during research phase) to
         resolve each intervention name to its generic name and common synonyms.
         Modifies interventions list in-place, adding a 'resolved' key to each dict.
 
@@ -1230,7 +1230,7 @@ class PipelineOrchestrator:
             f"If you cannot determine the generic name, write: [original name] -> generic: unknown; synonyms: none"
         )
 
-        model = getattr(config.orchestrator, "annotation_model", "qwen2.5:14b")
+        model = getattr(config.orchestrator, "annotation_model", "qwen3:14b")
         response = await ollama_client.generate(
             model=model,
             prompt=prompt,

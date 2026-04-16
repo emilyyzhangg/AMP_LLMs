@@ -167,7 +167,7 @@ def _build_evidence_text(evidence: list[dict], max_chars: int = 500) -> str:
 
 
 def _build_verifier_summary(ver: dict) -> str:
-    """Build a compact verifier summary like '3/3 agree' or '1/3 agree, reconciled by qwen2.5:14b'.
+    """Build a compact verifier summary like '3/3 agree' or '1/3 agree, reconciled by qwen3:14b'.
 
     Reads opinions and reconciler info from the verification dict.
     """

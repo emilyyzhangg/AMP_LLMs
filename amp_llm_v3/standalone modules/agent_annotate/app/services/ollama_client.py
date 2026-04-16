@@ -8,7 +8,7 @@ reload overhead between annotations.
 
 v17: Per-model timeouts. Smaller models (phi4-mini, gemma2:9b, qwen2.5:7b)
 get shorter timeouts (240-300s) since they either respond in <30s or are hung.
-Larger models (qwen2.5:14b) keep 600s for annotation/reconciliation work.
+Larger models (qwen3:14b) keep 600s for annotation/reconciliation work.
 """
 
 import asyncio
@@ -92,7 +92,7 @@ class OllamaAnnotationClient:
         for m in models:
             name = m.get("name", "")
             local_names.add(name)
-            # Also match without tag (e.g. "qwen2.5:14b" matches "qwen2.5:14b")
+            # Also match without tag (e.g. "qwen3:14b" matches "qwen3:14b")
             # and base name (e.g. "qwen2.5" matches "qwen2.5:latest")
             if ":" in name:
                 local_names.add(name.split(":")[0])
@@ -156,6 +156,7 @@ class OllamaAnnotationClient:
             "model": model,
             "prompt": prompt,
             "stream": False,
+            "think": False,  # v40: disable qwen3 thinking mode (270+ extra tokens per call)
             "keep_alive": self._keep_alive,
             "options": {"temperature": temperature},
         }
