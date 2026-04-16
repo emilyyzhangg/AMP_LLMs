@@ -76,6 +76,51 @@ def _has_publication_id(identifier: str) -> bool:
     return False
 
 
+def _classify_publication(title_or_snippet: str, nct_id: str) -> str:
+    """Classify a publication as 'trial_specific' or 'general'.
+
+    v41: Prevents generic review articles from contributing valence keywords.
+    Trial-specific = reports results from this specific trial.
+    General = review articles, overviews, editorials, commentaries.
+    """
+    text = title_or_snippet.lower()
+    nct_lower = nct_id.lower() if nct_id else ""
+
+    _TRIAL_SIGNALS = [
+        nct_lower,
+        "randomized", "randomised",
+        "phase i ", "phase ii ", "phase iii ", "phase 1 ", "phase 2 ", "phase 3 ",
+        "primary endpoint", "primary outcome", "secondary endpoint",
+        "placebo-controlled", "placebo controlled",
+        "open-label", "open label", "double-blind", "double blind",
+        "single-arm", "single arm",
+        "dose-escalation", "dose escalation", "first-in-human", "first in human",
+        "interim analysis", "interim results", "final results", "final analysis",
+        "patients were enrolled", "subjects were enrolled",
+        "intention-to-treat", "intent-to-treat", "per-protocol",
+        "safety and efficacy of", "a study of", "a trial of",
+        "our study", "this study", "we report", "we conducted",
+    ]
+
+    for signal in _TRIAL_SIGNALS:
+        if signal and signal in text:
+            return "trial_specific"
+
+    _GENERAL_SIGNALS = [
+        "review", "overview", "advances in", "current state", "state of the art",
+        "emerging", "future directions", "future of", "perspective", "commentary",
+        "editorial", "landscape", "pipeline", "next-generation", "next generation",
+        "systematic review", "meta-analysis", "narrative review", "mini-review",
+        "recent developments", "recent advances",
+    ]
+
+    for signal in _GENERAL_SIGNALS:
+        if signal in text:
+            return "general"
+
+    return "general"
+
+
 # --------------------------------------------------------------------------- #
 #  Deterministic outcome mapping (v11)
 # --------------------------------------------------------------------------- #
@@ -125,7 +170,7 @@ def _deterministic_outcome(research_results: list) -> FieldAnnotation | None:
 #  Structured Evidence Dossier (v38)
 # --------------------------------------------------------------------------- #
 
-def _build_evidence_dossier(research_results: list) -> dict:
+def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
     """Extract all machine-readable signals into a structured dossier.
 
     This runs BEFORE any LLM call and captures every signal the LLM would
@@ -139,24 +184,33 @@ def _build_evidence_dossier(research_results: list) -> dict:
         "phase": "",
         "why_stopped": "",
         "primary_endpoints": [],     # list of {title, met, p_value, description}
-        "publications": [],          # list of {pmid, title, year, snippet, has_nct_id}
+        "publications": [],          # list of {pmid, title, year, source, classification}
         "publication_count": 0,
+        "trial_specific_count": 0,   # v41: publications classified as trial-specific
         "drug_max_phase": None,      # from ChEMBL
-        "positive_keywords": [],     # efficacy keywords found in publication snippets
+        "positive_keywords": [],     # all positive keywords (efficacy + safety)
         "negative_keywords": [],     # failure keywords found in publication snippets
+        "efficacy_keywords": [],     # v41: efficacy-only subset of positive
+        "safety_keywords": [],       # v41: safety-only subset of positive
         "stale_status": False,       # completion date >180 days ago but status says Active
     }
 
-    _POSITIVE_KW = [
-        "efficacy", "effective", "improved", "improvement", "favorable",
-        "benefit", "promising", "successful", "well-tolerated", "well tolerated",
-        "safe and effective", "immunogenic", "safe and immunogenic",
+    # v41: Split positive keywords into efficacy (supports Positive) and safety (does NOT).
+    _EFFICACY_KW = [
+        "efficacy", "effective", "safe and effective",
+        "improved", "improvement", "benefit", "successful",
         "clinical benefit", "objective response", "complete response",
-        "partial response", "immune response", "t cell response",
-        "cd8+", "cd4+", "clinical activity", "antitumor activity",
+        "partial response", "clinical activity", "antitumor activity",
         "met primary", "met the primary", "results showed", "results demonstrated",
-        "approved", "granted approval", "enhanced immune", "immune activation",
+        "approved", "granted approval",
     ]
+    _SAFETY_KW = [
+        "well-tolerated", "well tolerated", "favorable", "promising",
+        "immunogenic", "safe and immunogenic",
+        "immune response", "t cell response", "cd8+", "cd4+",
+        "enhanced immune", "immune activation",
+    ]
+    _POSITIVE_KW = _EFFICACY_KW + _SAFETY_KW
     _NEGATIVE_KW = [
         "failed", "did not meet", "did not demonstrate", "did not achieve",
         "did not show", "no significant", "no benefit", "no improvement",
@@ -233,20 +287,31 @@ def _build_evidence_dossier(research_results: list) -> dict:
                     "title": title[:300],
                     "year": getattr(citation, "year", None),
                     "source": getattr(citation, "source_name", ""),
+                    "classification": _classify_publication(title, nct_id),
                 }
                 dossier["publications"].append(pub)
 
-        # --- All citations: scan for valence keywords ---
-        for citation in getattr(result, "citations", []):
-            snippet = (getattr(citation, "snippet", "") or "").lower()
-            identifier = (getattr(citation, "identifier", "") or "").lower()
-            combined = f"{snippet} {identifier}"
-            for kw in _POSITIVE_KW:
-                if kw in combined and kw not in dossier["positive_keywords"]:
-                    dossier["positive_keywords"].append(kw)
-            for kw in _NEGATIVE_KW:
-                if kw in combined and kw not in dossier["negative_keywords"]:
-                    dossier["negative_keywords"].append(kw)
+        # --- v41: Scan ONLY trial-specific literature for valence keywords ---
+        # Generic reviews from OpenAlex/CrossRef contain drug-class keywords
+        # ("well-tolerated", "favorable") that don't describe this trial's results.
+        if result.agent_name == "literature":
+            for citation in getattr(result, "citations", []):
+                snippet_text = (getattr(citation, "snippet", "") or "")
+                if _classify_publication(snippet_text, nct_id) != "trial_specific":
+                    continue
+                combined = f"{snippet_text.lower()} {(getattr(citation, 'identifier', '') or '').lower()}"
+                for kw in _POSITIVE_KW:
+                    if kw in combined and kw not in dossier["positive_keywords"]:
+                        dossier["positive_keywords"].append(kw)
+                for kw in _NEGATIVE_KW:
+                    if kw in combined and kw not in dossier["negative_keywords"]:
+                        dossier["negative_keywords"].append(kw)
+                for kw in _EFFICACY_KW:
+                    if kw in combined and kw not in dossier["efficacy_keywords"]:
+                        dossier["efficacy_keywords"].append(kw)
+                for kw in _SAFETY_KW:
+                    if kw in combined and kw not in dossier["safety_keywords"]:
+                        dossier["safety_keywords"].append(kw)
 
         # --- ChEMBL drug advancement ---
         if result.agent_name == "chembl" and result.raw_data:
@@ -258,6 +323,9 @@ def _build_evidence_dossier(research_results: list) -> dict:
 
     # Compute derived fields
     dossier["publication_count"] = len(dossier["publications"])
+    dossier["trial_specific_count"] = sum(
+        1 for p in dossier["publications"] if p.get("classification") == "trial_specific"
+    )
 
     if dossier["completion_date"]:
         try:
@@ -290,6 +358,25 @@ def _dossier_deterministic(dossier: dict) -> FieldAnnotation | None:
     endpoints = dossier["primary_endpoints"]
     days_since = dossier["days_since_completion"]
     why_stopped = dossier["why_stopped"].lower()
+
+    # v41: ACTIVE_NOT_RECRUITING with future/recent completion → deterministic Active
+    status_normalized = status.replace(",", "").replace(" ", "_").upper()
+    if status_normalized == "ACTIVE_NOT_RECRUITING":
+        if days_since is not None and days_since <= 0:
+            logger.info(f"  outcome: v41 Active guard — completion in future, returning Active")
+            return FieldAnnotation(
+                field_name="outcome", value="Active, not recruiting",
+                confidence=0.95, reasoning=f"[v41 Active guard] completion date in future ({dossier['completion_date']})",
+                evidence=[], model_name="deterministic", skip_verification=True,
+            )
+        if days_since is not None and days_since <= 180:
+            logger.info(f"  outcome: v41 Active guard — completion {days_since}d ago (<180), returning Active")
+            return FieldAnnotation(
+                field_name="outcome", value="Active, not recruiting",
+                confidence=0.90, reasoning=f"[v41 Active guard] completion {days_since} days ago (<180 threshold)",
+                evidence=[], model_name="deterministic", skip_verification=True,
+            )
+        # days_since > 180 or None → stale or unknown, fall through to LLM
 
     # COMPLETED + hasResults + primary endpoints parseable
     if status == "COMPLETED" and has_results is True and endpoints:
@@ -381,19 +468,24 @@ def _format_dossier_for_llm(dossier: dict, nct_id: str) -> str:
             lines.append(f"  {i+1}. {ep['title'][:120]}{pval}")
 
     if dossier["publications"]:
-        lines.append(f"Publications Found: {dossier['publication_count']}")
+        ts = dossier.get("trial_specific_count", 0)
+        gen = dossier["publication_count"] - ts
+        lines.append(f"Publications Found: {dossier['publication_count']} ({ts} trial-specific, {gen} reviews/general)")
         for i, pub in enumerate(dossier["publications"][:5]):
             year = f" ({pub['year']})" if pub.get("year") else ""
             pmid = f" {pub['pmid']}" if _has_publication_id(pub.get("pmid", "")) else ""
-            lines.append(f"  {i+1}. {pub['title'][:150]}{year}{pmid}")
+            tag = " [TRIAL-SPECIFIC]" if pub.get("classification") == "trial_specific" else " [GENERAL]"
+            lines.append(f"  {i+1}. {pub['title'][:140]}{year}{pmid}{tag}")
     else:
         lines.append("Publications Found: 0")
 
     if dossier["drug_max_phase"]:
         lines.append(f"Drug Advanced To: Phase {dossier['drug_max_phase']}")
 
-    if dossier["positive_keywords"]:
-        lines.append(f"Positive Signals in Evidence: {', '.join(dossier['positive_keywords'][:8])}")
+    if dossier.get("efficacy_keywords"):
+        lines.append(f"Efficacy Signals: {', '.join(dossier['efficacy_keywords'][:6])}")
+    if dossier.get("safety_keywords"):
+        lines.append(f"Safety-Only Signals: {', '.join(dossier['safety_keywords'][:6])}")
     if dossier["negative_keywords"]:
         lines.append(f"Negative Signals in Evidence: {', '.join(dossier['negative_keywords'][:8])}")
 
@@ -405,20 +497,24 @@ DOSSIER_PROMPT = """You are a clinical trial outcome specialist. You have a stru
 {dossier_text}
 
 RULES (follow in order):
-1. If publications report POSITIVE results (efficacy shown, endpoints met, drug safe/tolerable) → "Positive"
-   - This overrides the registry status. Published results are more reliable than CT.gov status.
-2. If publications report NEGATIVE results (failed endpoints, no efficacy, futility) → "Failed - completed trial"
-3. If no publications but registry says ACTIVE_NOT_RECRUITING:
-   - If completion date is >6 months in the past (stale status), treat as likely completed. If positive signals exist → "Positive". Otherwise → "Unknown".
-   - If completion date is in the future or recent, → "Active, not recruiting"
-4. If TERMINATED with no publications and no results posted → "Terminated"
-5. If COMPLETED with no publications and no results posted → "Unknown"
-6. Phase I trials that completed with ANY publication mentioning the trial → "Positive" (completing Phase I IS success)
-7. Phase I completion with ZERO publications and no results posted → "Unknown"
-8. Default when truly no signals exist → "Unknown"
+1. REGISTRY STATUS for ongoing trials:
+   - If status is ACTIVE_NOT_RECRUITING and completion date is in the future or recent → "Active, not recruiting"
+   - Only if completion date is stale (>6 months past) should you consider other evidence.
+2. PUBLICATION QUALITY:
+   - Only [TRIAL-SPECIFIC] publications report actual results from this trial.
+   - [GENERAL] publications are reviews or overviews — they are NOT trial results.
+   - Safety-Only Signals (well-tolerated, immunogenic, favorable) do NOT indicate Positive outcome.
+3. "Positive" requires EFFICACY evidence from trial-specific publications:
+   - Primary endpoint met, clinical benefit demonstrated, regulatory approval, phase advancement based on efficacy.
+   - Safety/tolerability alone is NOT sufficient. A well-tolerated drug that did not show efficacy is NOT Positive.
+4. "Failed - completed trial" requires evidence of failure (endpoints not met, futility, no efficacy).
+5. TERMINATED with no publications and no results posted → "Terminated"
+6. COMPLETED with no trial-specific publications and no results posted → "Unknown"
+7. Phase I: safety AND biological activity/efficacy signals → "Positive". Safety/tolerability alone → "Unknown".
+8. Default → "Unknown"
 
-CRITICAL: "Failed - completed trial" REQUIRES evidence of failure. Do NOT guess failure.
-CRITICAL: Published results override registry status — always check publications first.
+CRITICAL: "Positive" REQUIRES efficacy evidence. Safety/tolerability alone is NEVER sufficient.
+CRITICAL: Do NOT base your decision on [GENERAL] review articles.
 
 VALID VALUES: Positive, Withdrawn, Terminated, Failed - completed trial, Recruiting, Unknown, Active, not recruiting
 
@@ -457,7 +553,7 @@ class OutcomeAgent(BaseAnnotationAgent):
             return det_result
 
         # --- Tier 1: Build structured evidence dossier ---
-        dossier = _build_evidence_dossier(research_results)
+        dossier = _build_evidence_dossier(research_results, nct_id)
         logger.info(
             f"  outcome: v38 dossier for {nct_id} — status={dossier['registry_status']}, "
             f"hasResults={dossier['has_results']}, pubs={dossier['publication_count']}, "
@@ -549,10 +645,11 @@ class OutcomeAgent(BaseAnnotationAgent):
         has_pmid_evidence = any(
             _has_publication_id(p.get("pmid", "")) for p in dossier["publications"]
         )
-        if value == "Positive" and has_pmid_evidence and dossier["positive_keywords"] and not dossier["negative_keywords"]:
+        # v41: Use efficacy keywords (not safety-only) for skip_verification
+        if value == "Positive" and has_pmid_evidence and dossier.get("efficacy_keywords") and not dossier["negative_keywords"]:
             skip_verification = True
-            logger.info(f"  outcome: v39 publication-anchored Positive — skip_verification=True")
-        if value == "Failed - completed trial" and has_pmid_evidence and dossier["negative_keywords"] and not dossier["positive_keywords"]:
+            logger.info(f"  outcome: v41 publication-anchored Positive (efficacy) — skip_verification=True")
+        if value == "Failed - completed trial" and has_pmid_evidence and dossier["negative_keywords"] and not dossier.get("efficacy_keywords", dossier["positive_keywords"]):
             skip_verification = True
             logger.info(f"  outcome: v39 publication-anchored Failed — skip_verification=True")
 
@@ -576,23 +673,27 @@ class OutcomeAgent(BaseAnnotationAgent):
         if status == "TERMINATED":
             return "Terminated"
         if status in ("ACTIVE_NOT_RECRUITING", "ACTIVE, NOT RECRUITING"):
-            if dossier["stale_status"] and dossier["positive_keywords"]:
-                return "Positive"
             if not dossier["stale_status"]:
                 return "Active, not recruiting"
+            # v41: stale Active — use efficacy keywords only (not safety)
+            if dossier["stale_status"] and dossier.get("efficacy_keywords", dossier["positive_keywords"]):
+                return "Positive"
         if status == "COMPLETED":
             if dossier["has_results"] is True:
                 return "Positive"
-            if dossier["positive_keywords"] and not dossier["negative_keywords"]:
+            if dossier.get("efficacy_keywords", dossier["positive_keywords"]) and not dossier["negative_keywords"]:
                 return "Positive"
         return "Unknown"
 
     @staticmethod
     def _dossier_publication_override(dossier: dict, current_value: str) -> str | None:
-        """v38: Override Unknown/Active when dossier has clear publication signals."""
-        pos = dossier["positive_keywords"]
+        """v41: Override Unknown/Active when dossier has clear publication signals.
+
+        Uses efficacy keywords (not safety-only) and trial-specific publication counts.
+        """
+        efficacy = dossier.get("efficacy_keywords", [])
         neg = dossier["negative_keywords"]
-        pubs = dossier["publication_count"]
+        trial_specific = dossier.get("trial_specific_count", dossier["publication_count"])
         stale = dossier["stale_status"]
         status = dossier["registry_status"].upper()
 
@@ -602,17 +703,17 @@ class OutcomeAgent(BaseAnnotationAgent):
         if any(kw in neg for kw in _STRONG_ADVERSE):
             return "Failed - completed trial"
 
-        # Publications with positive signals → Positive
-        if pubs > 0 and pos and not neg:
+        # v41: Trial-specific publications with EFFICACY signals → Positive
+        if trial_specific > 0 and efficacy and not neg:
             return "Positive"
 
-        # Publications with negative signals → Failed
-        if pubs > 0 and neg and not pos:
+        # Trial-specific publications with negative signals → Failed
+        if trial_specific > 0 and neg and not efficacy:
             return "Failed - completed trial"
 
-        # Stale Active status with any publications → likely completed
+        # Stale Active status — use efficacy keywords only
         if current_value == "Active, not recruiting" and stale:
-            if pos:
+            if efficacy:
                 return "Positive"
             if neg:
                 return "Failed - completed trial"
@@ -621,18 +722,8 @@ class OutcomeAgent(BaseAnnotationAgent):
         if status == "COMPLETED" and dossier["has_results"] is True:
             return "Positive"
 
-        # Phase I completion with publications → Positive
-        phase = (dossier["phase"] or "").upper()
-        is_phase1 = "PHASE1" in phase or "EARLY_PHASE" in phase
-        if is_phase1 and status == "COMPLETED" and pubs > 0:
-            return "Positive"
-
-        # Phase II/III completed >10 years ago, no negative evidence
-        is_phase23 = any(p in phase for p in ["PHASE2", "PHASE3"])
-        if is_phase23 and status == "COMPLETED" and not neg:
-            days = dossier["days_since_completion"]
-            if days is not None and days > 3650:  # >10 years
-                return "Positive"
+        # v41: Removed Phase I auto-positive (any pub = Positive was too broad)
+        # v41: Removed Phase II/III >10yr backstop (absence of evidence ≠ positive)
 
         return None
 
