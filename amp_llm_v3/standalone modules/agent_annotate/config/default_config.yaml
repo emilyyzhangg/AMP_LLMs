@@ -24,7 +24,7 @@ verification:
       name: "llama3.1:8b"        # Meta Llama 3.1 — adversarial persona (replaces phi4-mini:3.8b, v28)
       role: verifier
     reconciliation:
-      name: "qwen2.5:14b"
+      name: "qwen3:14b"
       role: reconciler
 
 # v12: Lowered min_sources from 2→1. ClinicalTrials.gov alone is often
@@ -130,8 +130,8 @@ orchestrator:
   hardware_profile: "mac_mini"
   # v11: Unified annotation model — all annotation fields use this model on Mac Mini.
   # Eliminates model switches during annotation phase (was switching between
-  # llama3.1:8b and qwen2.5:14b, costing 60-90s per trial in model reload overhead).
-  annotation_model: "qwen2.5:14b"
+  # llama3.1:8b and qwen3:14b, costing 60-90s per trial in model reload overhead).
+  annotation_model: "qwen3:14b"
 
   # Premium model for server profile — used for classification, outcome, and reconciliation.
   # These are the hardest tasks requiring strong multi-step reasoning.
@@ -154,9 +154,9 @@ orchestrator:
   #   classification:  server_premium_model (decision tree requires strongest reasoning)
   #   outcome:         server_premium_model (nuanced literature interpretation)
   #   reconciler:      server_premium_model (resolves multi-model disagreements)
-  #   peptide:         qwen2.5:14b (deterministic catches most cases)
-  #   delivery_mode:   qwen2.5:14b (deterministic catches most cases)
-  #   failure_reason:  qwen2.5:14b (depends on outcome, not independent)
+  #   peptide:         qwen3:14b (deterministic catches most cases)
+  #   delivery_mode:   qwen3:14b (deterministic catches most cases)
+  #   failure_reason:  qwen3:14b (depends on outcome, not independent)
   #   verifiers:       server_verifiers (above) — replaces Mac Mini defaults
 
 ollama:
@@ -174,3 +174,4 @@ ollama:
     "gemma2:9b": 300
     "qwen2.5:7b": 300
     "qwen2.5:14b": 600
+    "qwen3:14b": 600
