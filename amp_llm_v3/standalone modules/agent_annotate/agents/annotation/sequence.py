@@ -1084,7 +1084,7 @@ class SequenceAgent(BaseAnnotationAgent):
             confidence=confidence,
             reasoning=reasoning,
             evidence=evidence,
-            model_name="deterministic" if not used_llm else "qwen2.5:14b",
+            model_name="deterministic" if not used_llm else "qwen3:14b",
             skip_verification=not used_llm,
         )
 
@@ -1103,7 +1103,7 @@ class SequenceAgent(BaseAnnotationAgent):
         from app.services.config_service import config_service
 
         config = config_service.get()
-        model = getattr(config.orchestrator, "annotation_model", "qwen2.5:14b")
+        model = getattr(config.orchestrator, "annotation_model", "qwen3:14b")
 
         c1 = candidates[0]
         c2 = candidates[1]
@@ -1161,7 +1161,7 @@ class SequenceAgent(BaseAnnotationAgent):
         from app.services.config_service import config_service
 
         config = config_service.get()
-        model = getattr(config.orchestrator, "annotation_model", "qwen2.5:14b")
+        model = getattr(config.orchestrator, "annotation_model", "qwen3:14b")
 
         # Collect text snippets from research results
         snippets: list[str] = []

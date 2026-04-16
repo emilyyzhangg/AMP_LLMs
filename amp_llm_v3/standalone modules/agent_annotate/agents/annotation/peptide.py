@@ -531,7 +531,7 @@ class PeptideAgent(BaseAnnotationAgent):
 
         # Server profile: use larger model if annotation_model not set
         if config.orchestrator.hardware_profile == "server" and not getattr(config.orchestrator, "annotation_model", None):
-            primary_model = "qwen2.5:14b"
+            primary_model = "qwen3:14b"
 
         # --- Pass 1: Extract molecular facts ---
         try:

@@ -56,8 +56,8 @@ class OrchestratorConfig(BaseModel):
     server_verifiers: list[str] = []
     # v11: Unified annotation model for Mac Mini — eliminates model switches
     # during annotation phase. All 5 fields use this model instead of the
-    # primary annotator (llama3.1:8b) for some and qwen2.5:14b for others.
-    annotation_model: str = "qwen2.5:14b"
+    # primary annotator (llama3.1:8b) for some and qwen3:14b for others.
+    annotation_model: str = "qwen3:14b"
 
 
 class OllamaConfig(BaseModel):
@@ -81,7 +81,8 @@ class OllamaConfig(BaseModel):
         "llama3.1:8b": 300,     # 8B — moderate size
         "gemma2:9b": 300,       # 9B — moderate size
         "qwen2.5:7b": 300,      # 7B — moderate size
-        "qwen2.5:14b": 600,     # 14B — large model, annotation + reconciliation
+        "qwen2.5:14b": 600,     # 14B — legacy, kept for backward compat
+        "qwen3:14b": 600,       # 14B — v40 annotation model
     }
 
 

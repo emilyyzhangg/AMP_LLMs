@@ -1236,7 +1236,7 @@ doc.add_paragraph(
     "  \u251c Verifier 2: Evidence-strict (qwen2.5:7b)\n"
     "  \u251c Verifier 3: Adversarial (llama3.1:8b)\n"
     "  \u251c Consensus check (unanimous = accept)\n"
-    "  \u2514 Reconciliation Agent (qwen2.5:14b, weighted voting)"
+    "  \u2514 Reconciliation Agent (qwen3:14b, weighted voting)"
 )
 
 doc.add_heading("12.2  Data Sources & Weights", level=2)

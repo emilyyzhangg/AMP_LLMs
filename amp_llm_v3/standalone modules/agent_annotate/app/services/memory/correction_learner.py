@@ -155,10 +155,10 @@ class CorrectionLearner:
 
         # Select the premium model for self-review
         if config.orchestrator.hardware_profile == "server":
-            model = getattr(config.orchestrator, "server_premium_model", "qwen2.5:14b")
+            model = getattr(config.orchestrator, "server_premium_model", "qwen3:14b")
         else:
             # On Mac Mini, use the reconciler model (largest available)
-            model = "qwen2.5:14b"
+            model = "qwen3:14b"
             for key, m in config.verification.models.items():
                 if m.role == "reconciler":
                     model = m.name
@@ -309,7 +309,7 @@ class CorrectionLearner:
             from app.services.config_service import config_service
             config = config_service.get()
 
-            model = "qwen2.5:14b"
+            model = "qwen3:14b"
             for key, m in config.verification.models.items():
                 if m.role == "reconciler":
                     model = m.name

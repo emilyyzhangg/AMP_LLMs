@@ -172,7 +172,7 @@ class FailureReasonAgent(BaseAnnotationAgent):
 
         # Server profile: use larger model if annotation_model not set
         if config.orchestrator.hardware_profile == "server" and not getattr(config.orchestrator, "annotation_model", None):
-            primary_model = "qwen2.5:14b"
+            primary_model = "qwen3:14b"
 
         # --- PASS 1: Investigate ---
         try:

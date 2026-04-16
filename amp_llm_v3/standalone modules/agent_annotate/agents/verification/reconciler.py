@@ -1,7 +1,7 @@
 """
 Reconciliation Agent.
 
-Uses a larger model (qwen2.5:14b) to resolve disagreements between
+Uses a larger model (qwen3:14b) to resolve disagreements between
 the primary annotator and verifiers. Sees ALL opinions and evidence,
 then makes a final determination or flags for manual review.
 
@@ -61,7 +61,7 @@ class ReconciliationAgent:
             field_name: The annotation field in dispute
             consensus_result: The failed consensus result with all opinions
             research_results: Raw research data for evidence
-            reconciler_model: Ollama model name for the reconciler (e.g., qwen2.5:14b)
+            reconciler_model: Ollama model name for the reconciler (e.g., qwen3:14b)
 
         Returns:
             Updated ConsensusResult with reconciler's decision

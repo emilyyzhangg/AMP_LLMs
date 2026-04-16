@@ -172,7 +172,7 @@ def _deterministic_classify(
 # Classification uses a larger model because 8B ignores worked examples
 # On server, uses the configurable server_premium_model (kimi-k2 or minimax-m2.7)
 MODEL_OVERRIDES = {
-    "mac_mini": "qwen2.5:14b",
+    "mac_mini": "qwen3:14b",
     "server_fallback": "qwen2.5:72b",
 }
 
@@ -385,7 +385,7 @@ class ClassificationAgent(BaseAnnotationAgent):
         for model_key, model_cfg in config.verification.models.items():
             if model_cfg.role == "reconciler":
                 return model_cfg.name
-        return "qwen2.5:14b"
+        return "qwen3:14b"
 
     async def annotate(
         self,

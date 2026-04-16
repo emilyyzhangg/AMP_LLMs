@@ -164,9 +164,9 @@ class PromptOptimizer:
 
         # Use the best available model for prompt generation
         if config.orchestrator.hardware_profile == "server":
-            model = getattr(config.orchestrator, "server_premium_model", "qwen2.5:14b")
+            model = getattr(config.orchestrator, "server_premium_model", "qwen3:14b")
         else:
-            model = "qwen2.5:14b"
+            model = "qwen3:14b"
             for key, m in config.verification.models.items():
                 if m.role == "reconciler":
                     model = m.name
