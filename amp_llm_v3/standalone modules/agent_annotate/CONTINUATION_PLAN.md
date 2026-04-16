@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-15
-**Current state:** v39 on dev (pending commit). v38b on main (30b3958). v38 94-NCT validation complete: b02042a06db6 + 87bc38d018b8.
+**Current state:** v39 on main (ad99b9d) and dev (b23fee3a). v39 94-NCT validation running on prod: 14c1d56cc92d + 0e182f29b35e.
 
 ### v39 Changes (2026-04-15) — Fix publication-anchored skip_verification
 
