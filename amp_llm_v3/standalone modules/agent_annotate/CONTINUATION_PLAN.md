@@ -1,7 +1,39 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-15
-**Current state:** v38 on main (31eee3a) and dev (0175a625). 94-NCT validation jobs queued on prod: b02042a06db6 + 87bc38d018b8.
+**Current state:** v39 on dev (pending commit). v38b on main (30b3958). v38 94-NCT validation complete: b02042a06db6 + 87bc38d018b8.
+
+### v39 Changes (2026-04-15) — Fix publication-anchored skip_verification
+
+#### v38 94-NCT Validation Results (CRITICAL FINDING)
+
+| Field | v37b | v38 | Delta | Notes |
+|---|---|---|---|---|
+| Classification | 92.3% | 92.2% | -0.1pp | Stable |
+| Delivery | 82.4% | 76.5% | **-5.9pp** | Reconciler overrides correct Other |
+| Outcome | 59.4% | 51.5% | **-7.9pp** | Reconciler overrides correct Positive |
+| RfF | 95.2% | 92.1% | -3.1pp | Cascade from outcome |
+| Peptide | 86.2% | 88.3% | +2.1pp | Improved |
+| Sequence | 47.4% | 58.3% | **+10.9pp** | Above human ceiling |
+
+**Root cause:** The v38 annotation agent calls "Positive" correctly in 8+ cases R1 agrees with — the dossier redesign WORKS. But `skip_verification` is NEVER True for any Positive call because `.isdigit()` fails on `PMC:12134401` / `PMID:39938411` identifiers. All 43 Positive calls go through verification. The reconciler overrides 29 of them.
+
+For delivery, LLM-based "Other" calls don't get `skip_verification` (only deterministic paths do). The reconciler overrides 10 correct "Other" calls to "Injection/Infusion".
+
+#### Fix 1: outcome.py — Publication identifier check (CRITICAL)
+- Added `_has_publication_id()` helper that accepts `PMID:xxx`, `PMC:xxx`, `DOI:xxx` formats (not just `.isdigit()`)
+- Applied to `has_pmid_evidence` check (line 544) and dossier display (line 383)
+- Added mixed-evidence guard: skip_verification only fires when valence is unambiguous (pos_keywords present AND neg_keywords absent, or vice versa)
+
+#### Fix 2: delivery_mode.py — Not-specified override skip_verification
+- When not-specified override fires (all 3 sources confirm no evidence, LLM guessed Injection → force Other), now sets `skip_verification=True`
+- Prevents reconciler from overriding evidence-based "no route found" determination
+
+#### Expected Impact
+| Field | v38 (broken) | v39 (fixed) | Mechanism |
+|---|---|---|---|
+| Outcome | 51.5% | ~75% | 8+ correct Positive calls survive reconciliation |
+| Delivery | 76.5% | ~88% | Not-specified override protected from reconciler |
 
 ### v38 Changes (2026-04-15) — Outcome dossier redesign + delivery Other fix + sequence expansion
 

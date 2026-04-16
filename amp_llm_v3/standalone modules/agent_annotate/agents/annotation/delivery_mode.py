@@ -611,13 +611,17 @@ class DeliveryModeAgent(BaseAnnotationAgent):
             no_fda = _is_no_evidence(fda_text)
             no_lit = _is_no_evidence(lit_text)
 
+            # v39: Track override so we can set skip_verification — when all 3
+            # sources confirm no evidence, the reconciler should not second-guess.
+            not_specified_override = False
             if no_protocol and no_fda and no_lit:
                 logger.info(
-                    f"  delivery_mode: v38b not-specified override — "
+                    f"  delivery_mode: v39 not-specified override — "
                     f"Pass 1 found no route evidence from any source, "
-                    f"forcing Injection/Infusion → Other"
+                    f"forcing Injection/Infusion → Other (skip_verification=True)"
                 )
                 value = "Other"
+                not_specified_override = True
 
         reasoning = f"[Pass 1 route extraction] {pass1_text[:400]}\n[Pass 2 classification] {pass2_text[:300]}"
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
@@ -629,6 +633,7 @@ class DeliveryModeAgent(BaseAnnotationAgent):
             reasoning=reasoning,
             evidence=cited_sources[:10],
             model_name=primary_model,
+            skip_verification=not_specified_override if value == "Other" else False,
         )
 
     def _infer_from_pass1(self, pass1_text: str) -> str:

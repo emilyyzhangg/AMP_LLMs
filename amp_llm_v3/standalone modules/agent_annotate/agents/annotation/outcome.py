@@ -1,5 +1,5 @@
 """
-Outcome Annotation Agent (v38 — structured evidence dossier redesign).
+Outcome Annotation Agent (v39 — fix publication-anchored skip_verification).
 
 v38 redesign: replaces the fragile 9-layer cascade (deterministic → Pass 1 → Pass 2
 → pub override → heuristics → safety nets → keyword rescue → verification → reconciliation)
@@ -58,6 +58,23 @@ _SECTION_BOUNDARY = (
     r"\n(?:registry status|trial phase|published results?"
     r"|result valence|results posted|completion date|why stopped)"
 )
+
+
+def _has_publication_id(identifier: str) -> bool:
+    """Check if an identifier represents a real publication reference.
+
+    v39: Literature agents return identifiers as 'PMC:12134401' or 'PMID:39938411',
+    never pure numeric. The previous .isdigit() check always returned False,
+    making publication-anchored skip_verification completely non-functional.
+    """
+    if not identifier:
+        return False
+    if identifier.upper().startswith(("PMID:", "PMC:", "DOI:")):
+        return True
+    if identifier.isdigit():
+        return True
+    return False
+
 
 # --------------------------------------------------------------------------- #
 #  Deterministic outcome mapping (v11)
@@ -367,7 +384,7 @@ def _format_dossier_for_llm(dossier: dict, nct_id: str) -> str:
         lines.append(f"Publications Found: {dossier['publication_count']}")
         for i, pub in enumerate(dossier["publications"][:5]):
             year = f" ({pub['year']})" if pub.get("year") else ""
-            pmid = f" PMID:{pub['pmid']}" if pub.get("pmid") and pub["pmid"].isdigit() else ""
+            pmid = f" {pub['pmid']}" if _has_publication_id(pub.get("pmid", "")) else ""
             lines.append(f"  {i+1}. {pub['title'][:150]}{year}{pmid}")
     else:
         lines.append("Publications Found: 0")
@@ -526,16 +543,18 @@ class OutcomeAgent(BaseAnnotationAgent):
                 reasoning = "[v38 hasResults override] " + reasoning
 
         # --- Determine if verification should be skipped (publication-anchored) ---
+        # v39: Fixed identifier check — PMC:xxx/PMID:xxx formats now recognized.
+        # Added mixed-evidence guard: skip only when valence is unambiguous.
         skip_verification = False
         has_pmid_evidence = any(
-            p.get("pmid", "").isdigit() for p in dossier["publications"]
+            _has_publication_id(p.get("pmid", "")) for p in dossier["publications"]
         )
-        if value == "Positive" and has_pmid_evidence and dossier["positive_keywords"]:
+        if value == "Positive" and has_pmid_evidence and dossier["positive_keywords"] and not dossier["negative_keywords"]:
             skip_verification = True
-            logger.info(f"  outcome: v38 publication-anchored Positive — skip_verification=True")
-        if value == "Failed - completed trial" and has_pmid_evidence and dossier["negative_keywords"]:
+            logger.info(f"  outcome: v39 publication-anchored Positive — skip_verification=True")
+        if value == "Failed - completed trial" and has_pmid_evidence and dossier["negative_keywords"] and not dossier["positive_keywords"]:
             skip_verification = True
-            logger.info(f"  outcome: v38 publication-anchored Failed — skip_verification=True")
+            logger.info(f"  outcome: v39 publication-anchored Failed — skip_verification=True")
 
         full_reasoning = f"[Dossier] {dossier_text[:400]}\n[LLM decision] {reasoning}"
         citation_quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
