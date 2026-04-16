@@ -101,6 +101,7 @@
 | v37 | 63daaea | Classification host-defense fallback, peptide non-peptide word-boundary, outcome stale-status. |
 | v37b | 09e84e0 | Sequence concordance fix, outcome keyword expansion, classification post-LLM consistency check for AMP override. |
 | **v38** | **31eee3a** | **Major outcome redesign: 3-tier structured evidence dossier replaces 9-layer cascade. ACTIVE_NOT_RECRUITING removed from deterministic. Publication-anchored skip_verification. Delivery: post-LLM not-specified override, radiotracer skip_verification=True, 71 EDAM corrections cleaned. Sequence: ~70 known drugs (was ~30), ~40 aliases, cross-validation, multi-chain UniProt.** |
+| **v39** | **pending** | **CRITICAL BUG FIX: `.isdigit()` on `PMC:xxx`/`PMID:xxx` identifiers always returned False — publication-anchored skip_verification was completely non-functional since v38. Added `_has_publication_id()` helper. Added mixed-evidence guard (both pos+neg keywords → don't skip). Delivery: not-specified override now sets skip_verification=True. v38 94-NCT results: outcome 51.5% (29/43 Positive overridden by reconciler), delivery 76.5% (10 Other overridden). Expected v39: outcome ~75%, delivery ~88%.** |
 
 ## NCT Coverage
 
