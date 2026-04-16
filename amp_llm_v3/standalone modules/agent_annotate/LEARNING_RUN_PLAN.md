@@ -61,7 +61,8 @@
 | 63 | v34 250-NCT baseline | 0af180b09402+bb545136cfa7 | 250 | 250/250 | **Complete** | v34 (1c17bfc) | — | Classification 91.5%, delivery 82.4%, outcome 59.7%, RfF 95.4%, peptide 82.8%, sequence 41.7%. |
 | 64 | v34 630-NCT full run | 9fa9dfbd3013+4fddbd329286 | 630 | 630/630 | **Complete** | v34 (bb9a4d3) | — | Classification 91.2%, delivery 85.3%, outcome 65.2%, RfF 94.9%, peptide 82.2%, sequence 48.1%. |
 | 65 | v37b 94-NCT validation | 89ae1f9f8c1f+3f971ba3bd97 | 94 | 94/94 | **Complete** | v37b (09e84e0) | — | Classification 92.3%, delivery 82.4%, outcome 59.4%, RfF 95.2%, peptide 86.2%, sequence 47.4%. 295s/trial avg. 0 warnings/timeouts. |
-| **66** | **v38 94-NCT validation** | **b02042a06db6+87bc38d018b8** | **94** | **—/94** | **Running** | **v38 (31eee3a)** | — | **Dossier redesign, delivery Other fix, sequence expansion. Same 94 NCTs as v37b for direct comparison.** |
+| 66 | v38 94-NCT validation | b02042a06db6+87bc38d018b8 | 94 | 94/94 | **Complete** | v38 (31eee3a) | — | Classification 92.2%, delivery 76.5%, outcome 51.5%, RfF 92.1%, peptide 88.3%, sequence 58.3%. **REGRESSION**: skip_verification bug (see v39). |
+| **67** | **v39 94-NCT validation** | **14c1d56cc92d+0e182f29b35e** | **94** | **—/94** | **Running** | **v39 (ad99b9d)** | — | **Fix publication-anchored skip_verification. Same 94 NCTs for direct comparison vs v37b/v38.** |
 
 > **Note:** Jobs 36-40 are the last jobs run with old categories (v22 code). v24 is now merged to main (9db9e33) with simplified categories (binary AMP/Other, 4-category delivery mode). All future jobs use v24+ categories. Training CSV re-bucketed from Excel source on 2026-04-07 (v31) — delivery mode 145 injection annotations recovered from "other".
 
