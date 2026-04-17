@@ -140,6 +140,8 @@ export interface ConcordanceField {
   agree_pct: number;
   kappa: number | null;
   ac1: number | null;
+  ac1_ci_lower: number | null;
+  ac1_ci_upper: number | null;
   interpretation: string;
   category_metrics: CategoryMetrics[];
   confusion_matrix: Record<string, Record<string, number>>;
