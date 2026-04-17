@@ -55,8 +55,17 @@ function ac1SignificanceTest(
   const p = 1 - erf; // two-tailed
 
   const significant = p < 0.05;
-  const label = significant ? `p=${p.toFixed(3)}*` : `p=${p.toFixed(2)}`;
-  return { z, p, significant, label };
+  // Direction: positive z means agent > human
+  const direction = diff > 0 ? "better" : diff < 0 ? "worse" : "equal";
+  let label: string;
+  if (!significant) {
+    label = `p=${p.toFixed(2)} n.s.`;
+  } else if (direction === "better") {
+    label = `p=${p.toFixed(3)}* better`;
+  } else {
+    label = `p=${p.toFixed(3)}* worse`;
+  }
+  return { z, p, significant, direction, label };
 }
 
 /** Color for agreement metrics (AC1 or kappa). */
@@ -836,7 +845,8 @@ function AgentVsHumanTab() {
                       <th style={{ textAlign: "center" }}>Agent vs R2</th>
                       <th style={{ textAlign: "center", borderLeft: "2px solid var(--warning)", background: "rgba(234,179,8,0.05)" }}>R1 vs R2 (Human Baseline)</th>
                       <th style={{ textAlign: "center", borderLeft: "2px solid var(--border)" }}>Verdict</th>
-                      <th style={{ textAlign: "center" }}>Significance (z-test)</th>
+                      <th style={{ textAlign: "center", borderLeft: "2px solid var(--border)" }}>p (R1 vs Human)</th>
+                      <th style={{ textAlign: "center" }}>p (R2 vs Human)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -848,8 +858,12 @@ function AgentVsHumanTab() {
                       const hAc1 = hf?.ac1 ?? -1;
                       const agentBestAc1 = Math.max(fAc1, r2Ac1);
                       const exceeds = agentBestAc1 > hAc1;
-                      const sigTest = ac1SignificanceTest(
+                      const sigR1 = ac1SignificanceTest(
                         f.ac1, f.ac1_ci_lower, f.ac1_ci_upper,
+                        hf?.ac1 ?? null, hf?.ac1_ci_lower ?? null, hf?.ac1_ci_upper ?? null,
+                      );
+                      const sigR2 = ac1SignificanceTest(
+                        r2f?.ac1 ?? null, r2f?.ac1_ci_lower ?? null, r2f?.ac1_ci_upper ?? null,
                         hf?.ac1 ?? null, hf?.ac1_ci_lower ?? null, hf?.ac1_ci_upper ?? null,
                       );
                       return (
@@ -897,12 +911,24 @@ function AgentVsHumanTab() {
                           </td>
                           <td style={{
                             textAlign: "center",
+                            borderLeft: "2px solid var(--border)",
                             fontSize: "0.85em",
-                            color: sigTest.significant ? "var(--error)" : "var(--text-secondary)",
-                            fontWeight: sigTest.significant ? 700 : 400,
+                            color: sigR1.significant
+                              ? (sigR1.direction === "better" ? "var(--success)" : "var(--error)")
+                              : "var(--text-secondary)",
+                            fontWeight: sigR1.significant ? 700 : 400,
                           }}>
-                            {sigTest.label}
-                            {sigTest.significant && " \u2020"}
+                            {sigR1.label}
+                          </td>
+                          <td style={{
+                            textAlign: "center",
+                            fontSize: "0.85em",
+                            color: sigR2.significant
+                              ? (sigR2.direction === "better" ? "var(--success)" : "var(--error)")
+                              : "var(--text-secondary)",
+                            fontWeight: sigR2.significant ? 700 : 400,
+                          }}>
+                            {sigR2.label}
                           </td>
                         </tr>
                       );
