@@ -118,7 +118,9 @@ def _classify_publication(title_or_snippet: str, nct_id: str) -> str:
         if signal in text:
             return "general"
 
-    return "general"
+    # v41b: Default to trial_specific — only explicit review signals → general.
+    # Literature agent searches by NCT ID, so most results ARE about the trial.
+    return "trial_specific"
 
 
 # --------------------------------------------------------------------------- #
@@ -369,14 +371,10 @@ def _dossier_deterministic(dossier: dict) -> FieldAnnotation | None:
                 confidence=0.95, reasoning=f"[v41 Active guard] completion date in future ({dossier['completion_date']})",
                 evidence=[], model_name="deterministic", skip_verification=True,
             )
-        if days_since is not None and days_since <= 180:
-            logger.info(f"  outcome: v41 Active guard — completion {days_since}d ago (<180), returning Active")
-            return FieldAnnotation(
-                field_name="outcome", value="Active, not recruiting",
-                confidence=0.90, reasoning=f"[v41 Active guard] completion {days_since} days ago (<180 threshold)",
-                evidence=[], model_name="deterministic", skip_verification=True,
-            )
-        # days_since > 180 or None → stale or unknown, fall through to LLM
+        # v41b: Removed days_since <= 180 block — was too broad, blocking trials
+        # with recent completion dates that have real published results.
+        # Only future completion dates (days_since <= 0) force Active now.
+        # Past completion with stale status falls through to LLM.
 
     # COMPLETED + hasResults + primary endpoints parseable
     if status == "COMPLETED" and has_results is True and endpoints:
