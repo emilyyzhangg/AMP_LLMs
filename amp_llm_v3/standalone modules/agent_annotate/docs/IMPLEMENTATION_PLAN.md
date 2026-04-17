@@ -386,7 +386,7 @@ async def _run_verification(self, nct_id, annotations, research_data):
 **Default pipeline (5 sequential Ollama calls per field, 25 total per trial):**
 1. Primary (llama3.1:8b) annotates
 2. Verifier 1 (gemma3:12b) blind-verifies — conservative persona (v42 upgrade from gemma2:9b, same Google Gemma family)
-3. Verifier 2 (qwen2.5:7b) blind-verifies — evidence-strict persona
+3. Verifier 2 (qwen3:8b) blind-verifies — evidence-strict persona (v42 upgrade from qwen2.5:7b, same Alibaba Qwen family)
 4. Verifier 3 (phi4-mini:3.8b) blind-verifies — adversarial persona
 5. Reconciler (qwen2.5:14b) only if disagreement
 
@@ -689,7 +689,7 @@ Agent Annotate has **zero runtime dependencies** on other AMP LLM microservices.
 |------|-------|------|---------|
 | Primary Annotator | llama3.1:8b | 4.9 GB | Best general reasoning |
 | Verifier 1 | gemma3:12b | 8.1 GB | Google Gemma 3 generation — conservative persona (v42 upgrade from gemma2:9b) |
-| Verifier 2 | qwen2.5:7b | 4.4 GB | Alibaba Qwen 2.5 — evidence-strict persona |
+| Verifier 2 | qwen3:8b | 5.2 GB | Alibaba Qwen 3 — evidence-strict persona (v42 upgrade from qwen2.5:7b) |
 | Verifier 3 | phi4-mini:3.8b | 2.2 GB | Microsoft Phi-4 Mini — adversarial persona |
 | Reconciler | qwen2.5:14b | 9.0 GB | Largest model for dispute resolution |
 | v42 Atomic Outcome Assessor | gemma3:12b | 8.1 GB | Per-publication Tier 1b LLM for v42 atomic pipeline — small focused reading-comprehension prompts |

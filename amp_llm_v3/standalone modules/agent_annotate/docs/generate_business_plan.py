@@ -1232,8 +1232,8 @@ doc.add_paragraph(
 
 doc.add_paragraph(
     "Phase 3 \u2014 Verification\n"
-    "  \u251c Verifier 1: Conservative (gemma2:9b)\n"
-    "  \u251c Verifier 2: Evidence-strict (qwen2.5:7b)\n"
+    "  \u251c Verifier 1: Conservative (gemma3:12b)\n"
+    "  \u251c Verifier 2: Evidence-strict (qwen3:8b)\n"
     "  \u251c Verifier 3: Adversarial (llama3.1:8b)\n"
     "  \u251c Consensus check (unanimous = accept)\n"
     "  \u2514 Reconciliation Agent (qwen3:14b, weighted voting)"
@@ -1267,7 +1267,7 @@ doc.add_heading("12.3  Hardware Profiles", level=2)
 add_styled_table(
     ["Profile", "RAM", "Primary Model", "Verifiers", "Per-Trial Time", "Monthly Electricity"],
     [
-        ["Mac Mini (dev)", "16 GB", "llama3.1:8b", "gemma2:9b, qwen2.5:7b, llama3.1:8b", "3\u20135 min", "~$15"],
+        ["Mac Mini (dev)", "16 GB", "qwen3:14b", "gemma3:12b, qwen3:8b, llama3.1:8b", "3\u20135 min", "~$15"],
         ["Server (prod)", "48+ GB", "Kimi K2 Thinking", "Larger verifier models", "2\u20134 min", "~$40\u201380"],
     ],
     col_widths=[1.1, 0.7, 1.2, 1.8, 0.9, 0.8],

@@ -171,7 +171,7 @@ verification:
     - name: "verifier_1"
       ollama_model: "gemma3:12b"          # Conservative persona (v42 upgrade, same Gemma family)
     - name: "verifier_2"
-      ollama_model: "qwen2.5:7b"          # Evidence-strict persona
+      ollama_model: "qwen3:8b"            # Evidence-strict persona (v42 upgrade, same Qwen family)
     - name: "verifier_3"
       ollama_model: "phi4-mini:3.8b"      # Adversarial persona
     - name: "reconciliation"
@@ -209,7 +209,7 @@ On server hardware (240+ GB RAM), the system automatically upgrades to stronger 
 |---|---|---|
 | Premium (classification, outcome, reconciler) | qwen2.5:14b | kimi-k2-thinking (configurable) |
 | Verifier 1 | gemma3:12b | gemma2:27b |
-| Verifier 2 | qwen2.5:7b | qwen2.5:32b |
+| Verifier 2 | qwen3:8b | qwen2.5:32b |
 | Verifier 3 | phi4-mini:3.8b | phi4:14b |
 
 Toggle between `kimi-k2-thinking` and `minimax-m2.7` for the premium model via `server_premium_model` in the config. All models are auto-pulled from Ollama if not available locally.

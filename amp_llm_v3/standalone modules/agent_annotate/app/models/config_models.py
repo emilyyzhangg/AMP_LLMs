@@ -86,13 +86,10 @@ class OllamaConfig(BaseModel):
     # Smaller models get shorter timeouts since they either respond quickly
     # or are hung (bimodal). Larger models doing annotation need more time.
     model_timeouts: Dict[str, int] = {
-        "phi4-mini": 240,       # 3.8B — normal response 10-31s, cold load ~60s
-        "llama3.1:8b": 300,     # 8B — moderate size
-        "gemma2:9b": 300,       # 9B — legacy, retained for backward compat
-        "gemma3:12b": 400,      # 12B — v42 Gemma 3 generation (same-family upgrade)
-        "qwen2.5:7b": 300,      # 7B — moderate size
-        "qwen2.5:14b": 600,     # 14B — legacy, kept for backward compat
-        "qwen3:14b": 600,       # 14B — v40 annotation model
+        "llama3.1:8b": 300,     # 8B — v42: verifier_3 (adversarial)
+        "gemma3:12b": 400,      # 12B — v42: verifier_1 (conservative) + atomic Tier 1b assessor
+        "qwen3:8b": 300,        # 8B — v42: verifier_2 (evidence-strict), upgraded from qwen2.5:7b
+        "qwen3:14b": 600,       # 14B — v40+: primary annotator + reconciler
     }
 
 

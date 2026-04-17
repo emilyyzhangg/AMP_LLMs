@@ -495,7 +495,7 @@ Three verifier models independently review each annotation. The verifiers never 
 | Verifier | Model |
 |---|---|
 | Verifier 1 | gemma3:12b |
-| Verifier 2 | qwen2.5:7b |
+| Verifier 2 | qwen3:8b |
 | Verifier 3 | phi4-mini:3.8b |
 
 **v4 verifier prompt improvements**: The v4 verifier prompts now receive the same level of field-specific detail as the primary annotation agents, including negative examples, decision trees, and extraction hierarchies. In v3, verifiers received condensed instructions, creating an asymmetry where verifiers lacked the context to make accurate independent judgments. The v4 parity ensures that verifier disagreements reflect genuine evidence ambiguity rather than instruction gaps.
@@ -533,7 +533,7 @@ On server hardware (240+ GB RAM), verifiers are upgraded to stronger models:
 | Slot | Mac Mini | Server |
 |---|---|---|
 | Verifier 1 (Conservative) | gemma3:12b | gemma2:27b |
-| Verifier 2 (Evidence-strict) | qwen2.5:7b | qwen2.5:32b |
+| Verifier 2 (Evidence-strict) | qwen3:8b | qwen2.5:32b |
 | Verifier 3 (Adversarial) | phi4-mini:3.8b | phi4:14b |
 
 Server verifiers are configurable via `server_verifiers` in the YAML config and auto-pulled from Ollama if not available locally.

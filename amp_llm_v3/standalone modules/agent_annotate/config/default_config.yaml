@@ -18,7 +18,7 @@ verification:
       name: "gemma3:12b"         # Google — conservative persona (v42: gemma2:9b → gemma3:12b, same-family upgrade)
       role: verifier
     verifier_2:
-      name: "qwen2.5:7b"         # Alibaba (v2.5 gen upgrade) — evidence-strict persona
+      name: "qwen3:8b"           # Alibaba Qwen 3 — evidence-strict persona (v42: qwen2.5:7b → qwen3:8b, within-family upgrade)
       role: verifier
     verifier_3:
       name: "llama3.1:8b"        # Meta Llama 3.1 — adversarial persona (replaces phi4-mini:3.8b, v28)
@@ -169,10 +169,7 @@ ollama:
   # while allowing cold loads (~60s) + inference (~30s) + safety margin.
   # Larger models (14B+) doing annotation/reconciliation need the full 600s.
   model_timeouts:
-    "phi4-mini": 500
-    "llama3.1:8b": 300
-    "gemma2:9b": 300         # legacy, retained for backward compat
-    "gemma3:12b": 400        # v42: Gemma 3 generation, 12B — slightly larger than gemma2:9b
-    "qwen2.5:7b": 300
-    "qwen2.5:14b": 600
-    "qwen3:14b": 600
+    "llama3.1:8b": 300       # v42: verifier_3 (adversarial)
+    "gemma3:12b": 400        # v42: verifier_1 (conservative) + atomic Tier 1b assessor
+    "qwen3:8b": 300          # v42: verifier_2 (evidence-strict)
+    "qwen3:14b": 600         # v40+: primary annotator + reconciler
