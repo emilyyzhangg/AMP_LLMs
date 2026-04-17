@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-17
-**Current state:** v41b on main (239d16f0). 94-NCT validation for v41b in progress (job 99c9c0f0b3e5 @ 144bd8f2, ~11h remaining). v42 **atomic redesign** Phases 1–2 committed to dev (7208fa24, 6aaa2261) — parallel modules, no production wiring. Verifier_1 migrated gemma2:9b → **gemma3:12b** (same-family upgrade); v42 Phase 2 atomic assessor defaults to gemma3:12b — small focused reading-comprehension prompts are a strong fit for the Gemma 3 generation.
+**Current state:** v41b on main (239d16f0). 94-NCT validation for v41b in progress (job 99c9c0f0b3e5 @ 144bd8f2, ~11h remaining). v42 **atomic redesign** Phases 1–3 committed to dev (7208fa24, 6aaa2261, e5d69277 model swap, + Phase 3 aggregator pending commit) — parallel modules, no production wiring. Verifier_1 migrated gemma2:9b → **gemma3:12b** (same-family upgrade); v42 Phase 2 atomic assessor defaults to gemma3:12b — small focused reading-comprehension prompts are a strong fit for the Gemma 3 generation.
 
 ### v42 Plan (2026-04-17) — Atomic Evidence Decomposition
 
@@ -33,9 +33,23 @@ New module `agents/annotation/outcome_pub_assessor.py` — prompts the LLM with 
 
 Integration test on 5 NCTs before Phase 3 — still pending; run after gemma3:12b pull lands on prod and Phase 3 aggregator wires up.
 
-#### Phase 3 pending: Tier 3 aggregator
+#### Phase 3 complete (dev pending-commit, 2026-04-17)
 
-New module `agents/annotation/outcome_aggregator.py` — R1–R8 ordered match. Every verdict names the rule and atomic inputs. Unit tests on synthetic verdict combinations.
+New module `agents/annotation/outcome_aggregator.py` — TIER0 short-circuit then R1–R8 ordered match, returns `AggregatorResult(value, rule_name, rule_description, confidence, trace)`. Every verdict names the rule and the atomic inputs that fired it (per-pub q1–q5 answers listed in trace).
+
+Rule semantics:
+- **R1** any POSITIVE pub-verdict AND 0 FAILED → Positive (conf 0.90)
+- **R2** any FAILED AND 0 POSITIVE → Failed - completed trial (conf 0.90)
+- **R3** both POSITIVE and FAILED present → verdict of most-recent pub; year extracted from title+snippet regex, trial_specific beats ambiguous as tiebreaker, list index as final fallback (conf 0.80)
+- **R4** no trial_specific pubs AND COMPLETED AND drug_max_phase ≥ 3 (Phase III / approved) → Positive (conf 0.80)
+- **R5** no trial_specific pubs AND COMPLETED AND PHASE1 AND ≥1 pub of any kind → Positive (conf 0.70)
+- **R6** ACTIVE_NOT_RECRUITING AND not stale → Active, not recruiting (conf 0.90)
+- **R7** TERMINATED AND no POSITIVE pub → Terminated (conf 0.90)
+- **R8** otherwise → Unknown (conf 0.50)
+
+Voting set for R1–R3 is trial_specific + ambiguous pubs with verdict ∈ {POSITIVE, FAILED}. INDETERMINATE and confident-general pubs don't vote. R7 can be preempted by R2 — FAILED atomic evidence outranks TERMINATED registry status (a trial can terminate for non-failure reasons but a published trial failure IS a failure).
+
+Synthetic unit tests in `scripts/test_aggregator.py` — 18/18 pass covering TIER0 + R1/R2/R3 (both directions) + R4 (Phase 3 and Phase 4/approved) + R5 (both fire and fall-through) + R6 (both) + R7 (pure + R2 preemption) + R8 + confidence ordering.
 
 #### Phase 4 pending: Shadow mode
 
