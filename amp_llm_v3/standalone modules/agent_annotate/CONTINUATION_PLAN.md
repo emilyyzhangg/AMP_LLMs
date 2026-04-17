@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-17
-**Current state:** v41b on main (239d16f0). 94-NCT validation for v41b in progress (job 99c9c0f0b3e5 @ 144bd8f2, ~11h remaining). v42 **atomic redesign** Phase 1 committed to dev (7208fa24) — parallel modules, no production wiring.
+**Current state:** v41b on main (239d16f0). 94-NCT validation for v41b in progress (job 99c9c0f0b3e5 @ 144bd8f2, ~11h remaining). v42 **atomic redesign** Phases 1–2 committed to dev (7208fa24, 6aaa2261) — parallel modules, no production wiring. Verifier_1 migrated gemma2:9b → **gemma3:12b** (same-family upgrade); v42 Phase 2 atomic assessor defaults to gemma3:12b — small focused reading-comprehension prompts are a strong fit for the Gemma 3 generation.
 
 ### v42 Plan (2026-04-17) — Atomic Evidence Decomposition
 
@@ -25,9 +25,13 @@ New files (no production wiring):
 
 Validation: 10/10 synthetic unit tests pass; 47-NCT replay on f6535916f390 runs with zero errors (1 Tier 0 Withdrawn fire, 31 trial_specific / 72 general / 507 ambiguous pubs out of 610 total).
 
-#### Phase 2 pending: Tier 1b LLM assessor
+#### Phase 2 complete (dev 6aaa2261, 2026-04-17)
 
-New module `agents/annotation/outcome_pub_assessor.py` — prompts the LLM with one publication at a time, parses strict JSON to a `PubVerdict`. Per-(NCT, PMID) cache. Integration test on 5 NCTs before Phase 3.
+New module `agents/annotation/outcome_pub_assessor.py` — prompts the LLM with one publication at a time, parses strict JSON to a `PubVerdict`. Per-(NCT, PMID, text-hash) cache. Deterministic verdict function maps atomic answers → POSITIVE/FAILED/INDETERMINATE (6 lines of Python, never uses the LLM for the outcome label itself).
+
+**Model choice: gemma3:12b** (v42 default, same-family upgrade from gemma2:9b). Each assessor call is a tight reading-comprehension task on a single publication (≤1800 chars), 5 atomic Y/N/UNCLEAR questions, strict JSON response. Gemma 3 12B handles this well and leaves qwen3:14b free for the legacy dossier pipeline during shadow mode. 400s timeout. Live test script `scripts/test_atomic_phase2_live.py` now defaults `--model gemma3:12b`.
+
+Integration test on 5 NCTs before Phase 3 — still pending; run after gemma3:12b pull lands on prod and Phase 3 aggregator wires up.
 
 #### Phase 3 pending: Tier 3 aggregator
 

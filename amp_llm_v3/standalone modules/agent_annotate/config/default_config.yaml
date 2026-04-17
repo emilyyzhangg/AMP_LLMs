@@ -15,7 +15,7 @@ verification:
     # Mac Mini verifiers — cognitive diversity via 3 different model families.
     # Each gets a different verification persona (conservative, evidence-strict, adversarial).
     verifier_1:
-      name: "gemma2:9b"          # Google — conservative persona
+      name: "gemma3:12b"         # Google — conservative persona (v42: gemma2:9b → gemma3:12b, same-family upgrade)
       role: verifier
     verifier_2:
       name: "qwen2.5:7b"         # Alibaba (v2.5 gen upgrade) — evidence-strict persona
@@ -171,7 +171,8 @@ ollama:
   model_timeouts:
     "phi4-mini": 500
     "llama3.1:8b": 300
-    "gemma2:9b": 300
+    "gemma2:9b": 300         # legacy, retained for backward compat
+    "gemma3:12b": 400        # v42: Gemma 3 generation, 12B — slightly larger than gemma2:9b
     "qwen2.5:7b": 300
     "qwen2.5:14b": 600
     "qwen3:14b": 600

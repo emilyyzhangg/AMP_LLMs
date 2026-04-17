@@ -16,7 +16,7 @@ Usage:
     python3 scripts/test_atomic_phase2_live.py \
         --annotation-dir /path/to/results/annotations/<job_id> \
         --nct NCT01661192 NCT02660008 \
-        --model qwen3:14b \
+        --model gemma3:12b \
         --limit-pubs 3 \
         --include-ambiguous
 """
@@ -134,7 +134,7 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--annotation-dir", required=True)
     p.add_argument("--nct", nargs="+", required=True)
-    p.add_argument("--model", default="qwen3:14b")
+    p.add_argument("--model", default="gemma3:12b")
     p.add_argument("--limit-pubs", type=int, default=3)
     p.add_argument("--include-ambiguous", action="store_true")
     p.add_argument("--cache-dir", default="")
