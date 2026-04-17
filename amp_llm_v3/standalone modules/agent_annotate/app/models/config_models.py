@@ -58,6 +58,15 @@ class OrchestratorConfig(BaseModel):
     # during annotation phase. All 5 fields use this model instead of the
     # primary annotator (llama3.1:8b) for some and qwen3:14b for others.
     annotation_model: str = "qwen3:14b"
+    # v42 Phase 4: Run the atomic outcome pipeline alongside the legacy dossier
+    # outcome agent. Stored under field_name="outcome_atomic" so the legacy
+    # "outcome" remains authoritative. Default OFF to avoid unexpected LLM
+    # spend on prod — flip to True for Phase 5 shadow-mode validation.
+    outcome_atomic_shadow: bool = False
+    # v42 Phase 4: Model used by the Tier 1b per-publication assessor. Empty
+    # string falls back to the module default (gemma3:12b). Small focused
+    # reading-comprehension calls are a natural fit for Gemma 3 12B.
+    outcome_atomic_model: str = ""
 
 
 class OllamaConfig(BaseModel):

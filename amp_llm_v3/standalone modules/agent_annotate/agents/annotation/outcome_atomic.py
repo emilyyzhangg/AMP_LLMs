@@ -7,13 +7,14 @@ Top-level orchestrator. Runs four tiers:
           COMPLETED+p<0.05)
   Tier 1: per-publication atomic assessment
      1a: Trial-specificity classifier (deterministic, structural)
-     1b: Result-Reporter LLM call per trial-specific publication (Phase 2)
+     1b: Per-publication LLM call (gemma3:12b, 5 atomic Y/N/UNCLEAR questions)
   Tier 2: registry signal extraction (deterministic)
-  Tier 3: deterministic aggregator R1-R8 (Phase 3)
+  Tier 3: deterministic aggregator R1-R8
 
-Phase 1 (current): Tiers 0, 1a, 2 only. Tier 1b and 3 are stubs that return
-AtomicDecision(value=None) so the outer annotate() fall back to marking the
-trial as PENDING until Phases 2-3 land.
+Phase 4 wires all four tiers end-to-end. `field_name = "outcome_atomic"` so the
+agent runs alongside (not in place of) the legacy dossier outcome agent during
+shadow mode. The orchestrator skips this agent unless
+`config.orchestrator.outcome_atomic_shadow` is True.
 
 See docs/ATOMIC_EVIDENCE_DECOMPOSITION.md for the full design.
 """
@@ -25,23 +26,33 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from agents.base import BaseAnnotationAgent
+from app.config import RESULTS_DIR
 from app.models.annotation import FieldAnnotation
-from app.models.research import ResearchResult, SourceCitation
+from app.models.research import ResearchResult
 
-from .outcome_registry_signals import (
-    RegistrySignals,
-    deterministic_prelabel,
-    extract_registry_signals,
+from .outcome_aggregator import AggregatorResult, aggregate
+from .outcome_pub_assessor import (
+    PubAssessmentCache,
+    PubAssessor,
+    PubVerdict,
 )
 from .outcome_pub_classifier import (
     PubCandidate,
     Specificity,
     classify_all_pubs,
+    extract_drug_names,
+)
+from .outcome_registry_signals import (
+    RegistrySignals,
+    deterministic_prelabel,
+    extract_registry_signals,
 )
 
 logger = logging.getLogger("agent_annotate.annotation.outcome_atomic")
 
 
+# Canonical label list — mirrors outcome.VALID_VALUES so downstream analysis
+# can treat "outcome_atomic" values with the same enumeration as "outcome".
 VALID_VALUES = [
     "Positive",
     "Withdrawn",
@@ -53,6 +64,16 @@ VALID_VALUES = [
 ]
 
 
+# Default model for the Tier 1b LLM assessor. Gemma 3 12B is a natural fit for
+# focused reading-comprehension tasks and keeps qwen3:14b free for the legacy
+# dossier pipeline during shadow mode. Overridable via config.
+_DEFAULT_ATOMIC_MODEL = "gemma3:12b"
+
+# Per-(NCT, PMID, text-hash) cache lives alongside other job artifacts so runs
+# are reproducible and replayable without re-spending LLM calls.
+_ATOMIC_CACHE_DIR = RESULTS_DIR / "atomic_pub_cache"
+
+
 @dataclass
 class AtomicSnapshot:
     """Full pre-aggregation state. Serialized into the annotation reasoning for
@@ -61,21 +82,22 @@ class AtomicSnapshot:
     tier0_label: Optional[str] = None
     signals: Optional[RegistrySignals] = None
     classified_pubs: list[tuple[PubCandidate, Specificity]] = field(default_factory=list)
-    pub_verdicts: list[dict] = field(default_factory=list)   # populated in Phase 2
-    aggregator_rule: str = ""                                 # populated in Phase 3
-    final_value: Optional[str] = None                         # populated in Phase 3
+    pub_verdicts: list[dict] = field(default_factory=list)
+    aggregator_rule: str = ""
+    final_value: Optional[str] = None
 
 
 class OutcomeAtomicAgent(BaseAnnotationAgent):
-    """v42 atomic redesign of the outcome agent.
+    """v42 atomic redesign of the outcome agent — Phase 4 shadow-mode wiring.
 
-    Phase 1: runs Tier 0, builds Tier 2 signals, classifies Tier 1a pub
-    specificity. Returns PENDING placeholder until Phases 2-3 implement LLM
-    assessment and aggregation. Safe to instantiate but NOT yet wired into
-    production — the shadow-mode orchestrator will import this class in Phase 4.
+    Runs all four tiers end-to-end. Stores under ``field_name="outcome_atomic"``
+    so the legacy ``outcome`` annotation remains authoritative downstream. The
+    orchestrator conditionally skips this agent via
+    ``config.orchestrator.outcome_atomic_shadow`` — default OFF to avoid
+    unexpected LLM spend on prod.
     """
 
-    field_name = "outcome"
+    field_name = "outcome_atomic"
 
     async def annotate(
         self,
@@ -83,45 +105,36 @@ class OutcomeAtomicAgent(BaseAnnotationAgent):
         research_results: list[ResearchResult],
         metadata: Optional[dict] = None,
     ) -> FieldAnnotation:
+        # Tier 0/1a/2: pure, deterministic snapshot
         snapshot = self.compute_snapshot(nct_id, research_results)
 
+        # Tier 0 short-circuit — aggregator honors the pre-label.
         if snapshot.tier0_label is not None:
-            return FieldAnnotation(
-                field_name=self.field_name,
-                value=snapshot.tier0_label,
-                confidence=0.95,
-                reasoning=self._format_reasoning(snapshot, tier="Tier 0"),
-                evidence=[],
-                model_name="atomic-deterministic",
-                skip_verification=True,
-                evidence_grade="deterministic",
-            )
+            agg = aggregate(snapshot.signals, [], tier0_label=snapshot.tier0_label)
+            return self._to_annotation(snapshot, agg, pub_verdicts=[])
 
-        # Phase 1 placeholder: LLM assessment & aggregation not yet implemented.
-        # Return Unknown with snapshot so shadow-mode analysis can still inspect
-        # Tier 0/1a/2 results without affecting any real annotation.
-        return FieldAnnotation(
-            field_name=self.field_name,
-            value="Unknown",
-            confidence=0.0,
-            reasoning=(
-                "[ATOMIC-PHASE-1 PENDING] Tiers 0/1a/2 computed; Tier 1b LLM "
-                "assessor + Tier 3 aggregator not yet implemented.\n"
-                + self._format_reasoning(snapshot, tier="Pre-aggregation")
-            ),
-            evidence=[],
-            model_name="atomic-phase1",
-            skip_verification=False,
-            evidence_grade="llm",
+        # Tier 1b: LLM-assess each trial_specific or ambiguous pub.
+        drug_names = extract_drug_names(research_results)
+        pub_verdicts = await self._assess_pubs(
+            nct_id, snapshot.classified_pubs, drug_names
         )
 
+        # Tier 3: deterministic aggregator over verdicts + registry signals.
+        pubs_for_agg = [
+            (pub, pv) for (pub, _spec), pv in zip(snapshot.classified_pubs, pub_verdicts)
+        ]
+        agg = aggregate(snapshot.signals, pubs_for_agg, tier0_label=None)
+        snapshot.pub_verdicts = [self._verdict_to_dict(pv) for pv in pub_verdicts]
+        snapshot.aggregator_rule = agg.rule_name
+        snapshot.final_value = agg.value
+        return self._to_annotation(snapshot, agg, pub_verdicts=pub_verdicts)
+
+    # --- Tier 0/1a/2 snapshot (pure; reused by tests) --------------------- #
     def compute_snapshot(
         self,
         nct_id: str,
         research_results: list[ResearchResult],
     ) -> AtomicSnapshot:
-        """Run Tiers 0, 1a, and 2. Pure — no LLM, no I/O. Reusable by tests
-        and by the Phase 4 shadow-mode orchestrator."""
         signals = extract_registry_signals(research_results)
         tier0 = deterministic_prelabel(signals)
         classified = classify_all_pubs(research_results, nct_id)
@@ -146,28 +159,157 @@ class OutcomeAtomicAgent(BaseAnnotationAgent):
             tier0_label=tier0,
             signals=signals,
             classified_pubs=classified,
-            final_value=tier0,  # Until Phase 3, tier0 is the only decisive path.
+        )
+
+    # --- Tier 1b: LLM assessor loop --------------------------------------- #
+    async def _assess_pubs(
+        self,
+        nct_id: str,
+        classified_pubs: list[tuple[PubCandidate, Specificity]],
+        drug_names,
+    ) -> list[PubVerdict]:
+        """Return a PubVerdict per input pub (INDETERMINATE placeholder for
+        confident-general pubs — they don't get LLM cycles)."""
+        # Import here to avoid requiring ollama at module load (keeps the
+        # module testable offline).
+        from app.services.ollama_client import ollama_client
+        from app.services.config_service import config_service
+
+        # Model + cache
+        config = config_service.get()
+        model = getattr(config.orchestrator, "outcome_atomic_model", None) or _DEFAULT_ATOMIC_MODEL
+        cache = PubAssessmentCache(_ATOMIC_CACHE_DIR)
+        assessor = PubAssessor(
+            model=model,
+            ollama_client=ollama_client,
+            cache=cache,
+            temperature=0.0,
+        )
+
+        verdicts: list[PubVerdict] = []
+        drug_list = sorted(drug_names) if drug_names else []
+
+        for pub, spec in classified_pubs:
+            if spec == "general":
+                # Confident-general pubs don't vote — synthesize a placeholder
+                # so the aggregator still sees a 1:1 pub/verdict mapping.
+                verdicts.append(
+                    PubVerdict(
+                        nct_id=nct_id,
+                        pmid=pub.pmid,
+                        source=pub.source,
+                        specificity=spec,
+                        verdict="INDETERMINATE",
+                        error="skipped_general",
+                    )
+                )
+                continue
+            try:
+                pv = await assessor.assess(nct_id, pub, spec, drug_list)
+            except Exception as e:
+                # Never raise out of annotate; record and continue.
+                logger.warning("atomic assess %s pmid=%s crashed: %s", nct_id, pub.pmid, e)
+                pv = PubVerdict(
+                    nct_id=nct_id,
+                    pmid=pub.pmid,
+                    source=pub.source,
+                    specificity=spec,
+                    verdict="INDETERMINATE",
+                    error=f"assessor_exception: {e}",
+                )
+            verdicts.append(pv)
+        return verdicts
+
+    # --- FieldAnnotation builder ------------------------------------------ #
+    def _to_annotation(
+        self,
+        snapshot: AtomicSnapshot,
+        agg: AggregatorResult,
+        pub_verdicts: list[PubVerdict],
+    ) -> FieldAnnotation:
+        reasoning = self._format_reasoning(snapshot, agg, pub_verdicts)
+        # Model name identifies which path produced the verdict for audit.
+        model_name = (
+            "atomic-deterministic"
+            if agg.rule_name == "TIER0" or not pub_verdicts
+            else f"atomic-{_DEFAULT_ATOMIC_MODEL}"
+        )
+        return FieldAnnotation(
+            field_name=self.field_name,
+            value=agg.value,
+            confidence=agg.confidence,
+            reasoning=reasoning,
+            evidence=[],
+            model_name=model_name,
+            skip_verification=True,  # Shadow-mode: don't burn the verifier pool.
+            evidence_grade="deterministic" if not pub_verdicts else "llm",
         )
 
     @staticmethod
-    def _format_reasoning(snapshot: AtomicSnapshot, tier: str) -> str:
-        s = snapshot.signals
-        if s is None:
-            return f"[{tier}] (no signals)"
-        pubs = snapshot.classified_pubs
-        lines = [
-            f"[{tier}] NCT={snapshot.nct_id}",
-            f"  status={s.registry_status or '(unknown)'} (norm={s.status_normalized or '(none)'})",
-            f"  has_results={s.has_results} phase={s.phase_normalized or s.phase or '(unknown)'}",
-            f"  completion_date={s.completion_date or '(unknown)'} "
-            f"days_since={s.days_since_completion} stale={s.stale_status}",
-            f"  primary_endpoints={len(s.primary_endpoints)} "
-            f"(with p-value: {sum(1 for ep in s.primary_endpoints if ep.p_value is not None)})",
-            f"  drug_max_phase={s.drug_max_phase} "
-            f"ctgov_references={len(s.ctgov_reference_pmids)}",
-            f"  pubs: {len(pubs)} total "
-            f"({sum(1 for _, sp in pubs if sp == 'trial_specific')} trial-specific, "
-            f"{sum(1 for _, sp in pubs if sp == 'general')} general, "
-            f"{sum(1 for _, sp in pubs if sp == 'ambiguous')} ambiguous)",
+    def _verdict_to_dict(pv: PubVerdict) -> dict:
+        """Flatten a PubVerdict into the reasoning-serializable form."""
+        a = pv.answers
+        return {
+            "pmid": pv.pmid,
+            "source": pv.source,
+            "specificity": pv.specificity,
+            "verdict": pv.verdict,
+            "model": pv.model,
+            "error": pv.error,
+            "cached": pv.cached,
+            "answers": {
+                "q1": a.q1_reports_results,
+                "q2": a.q2_primary_met,
+                "q3": a.q3_efficacy,
+                "q4": a.q4_failure,
+                "q5": a.q5_advanced,
+                "evidence_quote": a.evidence_quote,
+            },
+        }
+
+    @staticmethod
+    def _format_reasoning(
+        snapshot: AtomicSnapshot,
+        agg: AggregatorResult,
+        pub_verdicts: list[PubVerdict],
+    ) -> str:
+        header = [
+            f"[ATOMIC {agg.rule_name}] {agg.value} (conf={agg.confidence:.2f})",
+            f"  rule: {agg.rule_description}",
         ]
-        return "\n".join(lines)
+        s = snapshot.signals
+        if s is not None:
+            header.append(
+                f"  registry: status={s.registry_status or '(none)'} "
+                f"phase={s.phase_normalized or s.phase or '(none)'} "
+                f"has_results={s.has_results} completion={s.completion_date or '(none)'} "
+                f"days_since={s.days_since_completion} stale={s.stale_status} "
+                f"drug_max_phase={s.drug_max_phase}"
+            )
+            header.append(
+                f"  pubs: {len(snapshot.classified_pubs)} total "
+                f"({sum(1 for _, sp in snapshot.classified_pubs if sp == 'trial_specific')} ts, "
+                f"{sum(1 for _, sp in snapshot.classified_pubs if sp == 'general')} gen, "
+                f"{sum(1 for _, sp in snapshot.classified_pubs if sp == 'ambiguous')} amb)"
+            )
+        if pub_verdicts:
+            voting = [pv for pv in pub_verdicts if pv.verdict in ("POSITIVE", "FAILED")]
+            header.append(
+                f"  voting: {len(voting)} pub(s) "
+                f"({sum(1 for pv in voting if pv.verdict == 'POSITIVE')} POS, "
+                f"{sum(1 for pv in voting if pv.verdict == 'FAILED')} FAIL)"
+            )
+            for pv in voting[:6]:
+                a = pv.answers
+                quote = f' "{a.evidence_quote[:80]}"' if a.evidence_quote else ""
+                header.append(
+                    f"    - {pv.verdict:<13s} {pv.pmid or '(no-pmid)'} ({pv.specificity}) "
+                    f"q1={a.q1_reports_results} q2={a.q2_primary_met} "
+                    f"q3={a.q3_efficacy} q4={a.q4_failure} q5={a.q5_advanced}{quote}"
+                )
+            if len(voting) > 6:
+                header.append(f"    - (+{len(voting) - 6} more)")
+        if agg.trace:
+            header.append("  aggregator trace:")
+            header.extend(f"    {line}" for line in agg.trace)
+        return "\n".join(header)

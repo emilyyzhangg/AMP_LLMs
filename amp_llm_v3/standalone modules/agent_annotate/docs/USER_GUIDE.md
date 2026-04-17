@@ -169,7 +169,7 @@ verification:
       ollama_model: "llama3.1:8b"
       role: "annotator"
     - name: "verifier_1"
-      ollama_model: "gemma2:9b"           # Conservative persona
+      ollama_model: "gemma3:12b"          # Conservative persona (v42 upgrade, same Gemma family)
     - name: "verifier_2"
       ollama_model: "qwen2.5:7b"          # Evidence-strict persona
     - name: "verifier_3"
@@ -208,7 +208,7 @@ On server hardware (240+ GB RAM), the system automatically upgrades to stronger 
 | Role | Mac Mini | Server |
 |---|---|---|
 | Premium (classification, outcome, reconciler) | qwen2.5:14b | kimi-k2-thinking (configurable) |
-| Verifier 1 | gemma2:9b | gemma2:27b |
+| Verifier 1 | gemma3:12b | gemma2:27b |
 | Verifier 2 | qwen2.5:7b | qwen2.5:32b |
 | Verifier 3 | phi4-mini:3.8b | phi4:14b |
 

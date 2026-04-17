@@ -443,6 +443,16 @@ Critical rule: "Completed" registry status alone does NOT indicate failure. "Fai
 
 **v25:** Introduces an evidence priority ladder for outcome determination: publications > CT.gov posted results > CT.gov registry status > trial phase. A post-LLM `_publication_priority_override()` function checks whether published results exist when the LLM returns Unknown, Active, or Terminated, and reclassifies accordingly. This addresses the dominant error pattern where the LLM defaults to Unknown for trials with published results it failed to incorporate.
 
+**v42 Atomic Outcome Pipeline (shadow mode).** After v39→v41b oscillation confirmed that a single-LLM-on-full-dossier architecture cannot be stabilized by prompt tuning (each fix inverted the FP/FN error class), v42 rebuilds outcome as a four-tier atomic pipeline stored under a parallel field `outcome_atomic` during shadow-mode validation:
+
+- **Tier 0** — deterministic pre-label (RECRUITING/WITHDRAWN/SUSPENDED, or COMPLETED+hasResults+p<0.05).
+- **Tier 1a** — structural trial-specificity classifier: three Y/N questions (NCT-in-body, PMID-in-CT.gov-references, title-design+drug) with no keyword list.
+- **Tier 1b** — per-publication LLM call (gemma3:12b) answering five atomic Y/N/UNCLEAR questions grounded in a single pub's text plus one forced evidence_quote.
+- **Tier 2** — deterministic registry signal extractor (status, completion date, stale flag, primary-endpoint p-values, ChEMBL max_phase, CT.gov reference PMIDs).
+- **Tier 3** — deterministic aggregator mapping atomic answers to a label via ordered rules R1–R8 (see `agents/annotation/outcome_aggregator.py`). No LLM makes the final outcome decision; R3 uses most-recent-pub verdict when POSITIVE and FAILED coexist.
+
+Every verdict carries a named rule, a rule description, and the atomic inputs that fired it. Design details in `docs/ATOMIC_EVIDENCE_DECOMPOSITION.md`. Enabled via `config.orchestrator.outcome_atomic_shadow` (default OFF).
+
 ### 5.5 Failure Reason Agent (v5)
 
 **Deterministic pre-check gate (v2):** The orchestrator runs the Failure Reason Agent AFTER the Outcome Agent and passes the outcome result in metadata. Before any LLM call, the agent checks:
@@ -484,7 +494,7 @@ Three verifier models independently review each annotation. The verifiers never 
 
 | Verifier | Model |
 |---|---|
-| Verifier 1 | gemma2:9b |
+| Verifier 1 | gemma3:12b |
 | Verifier 2 | qwen2.5:7b |
 | Verifier 3 | phi4-mini:3.8b |
 
@@ -522,7 +532,7 @@ On server hardware (240+ GB RAM), verifiers are upgraded to stronger models:
 
 | Slot | Mac Mini | Server |
 |---|---|---|
-| Verifier 1 (Conservative) | gemma2:9b | gemma2:27b |
+| Verifier 1 (Conservative) | gemma3:12b | gemma2:27b |
 | Verifier 2 (Evidence-strict) | qwen2.5:7b | qwen2.5:32b |
 | Verifier 3 (Adversarial) | phi4-mini:3.8b | phi4:14b |
 

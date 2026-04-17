@@ -1473,6 +1473,13 @@ class PipelineOrchestrator:
         # sequence is deterministic (no LLM) and has no dependencies.
         step2_fields = [f for f in ANNOTATION_AGENTS if f not in ("peptide", "reason_for_failure")]
 
+        # v42 Phase 4: skip the atomic shadow-mode agent unless explicitly
+        # enabled. The agent is registered globally so tests/scripts can invoke
+        # it directly, but a default annotation run must not burn LLM cycles
+        # on the shadow pipeline.
+        if not getattr(config.orchestrator, "outcome_atomic_shadow", False):
+            step2_fields = [f for f in step2_fields if f != "outcome_atomic"]
+
         job.progress.current_field = ", ".join(step2_fields)
         job.progress.current_agent = "annotation (parallel)" if config.orchestrator.parallel_annotation else "annotation"
         _step2_start = _field_time.monotonic()
