@@ -1,7 +1,47 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-17
-**Current state:** v41 on main (7964c040). v41 overcorrected — outcome 58.1% (was 60.5% in v40). v41b fix pending.
+**Current state:** v41b on main (239d16f0). 94-NCT validation for v41b in progress (job 99c9c0f0b3e5 @ 144bd8f2, ~11h remaining). v42 **atomic redesign** Phase 1 committed to dev (7208fa24) — parallel modules, no production wiring.
+
+### v42 Plan (2026-04-17) — Atomic Evidence Decomposition
+
+Full design: `docs/ATOMIC_EVIDENCE_DECOMPOSITION.md`. The oscillation v39→v40→v41→v41b confirmed a single-LLM dossier agent cannot be stabilized by prompt tuning — each fix inverts the error class (FP ↔ FN). v42 rebuilds outcome as four explicit tiers:
+
+- Tier 0: deterministic pre-label (RECRUITING/WITHDRAWN/SUSPENDED, COMPLETED+hasResults+p<0.05)
+- Tier 1a: structural trial-specificity classifier (NCT-in-body, PMID-in-CTgov-refs, title-design+drug) — no keyword list
+- Tier 1b: per-publication LLM with 5 atomic Y/N/Unclear questions (1 focused call per pub, ~200 tokens)
+- Tier 2: registry signal extraction (status, completion date, stale flag, ChEMBL max phase)
+- Tier 3: deterministic aggregator with 8 ordered rules (R1–R8)
+
+Philosophy: no LLM makes the final outcome decision. The LLM only answers atomic questions about individual publications. Aggregator is 15 lines of Python. Disagreements are categorized (evidence gap / question gap / aggregator gap / R1 judgment call); Category 4 disagreements are allowed to persist — we're not agreement-maxing.
+
+#### Phase 1 complete (dev 7208fa24, 2026-04-17)
+
+New files (no production wiring):
+- `agents/annotation/outcome_registry_signals.py` — Tier 2 + Tier 0
+- `agents/annotation/outcome_pub_classifier.py` — Tier 1a
+- `agents/annotation/outcome_atomic.py` — orchestrator (returns PENDING placeholder until Phases 2–3)
+- `scripts/test_atomic_phase1.py` — replay tool
+
+Validation: 10/10 synthetic unit tests pass; 47-NCT replay on f6535916f390 runs with zero errors (1 Tier 0 Withdrawn fire, 31 trial_specific / 72 general / 507 ambiguous pubs out of 610 total).
+
+#### Phase 2 pending: Tier 1b LLM assessor
+
+New module `agents/annotation/outcome_pub_assessor.py` — prompts the LLM with one publication at a time, parses strict JSON to a `PubVerdict`. Per-(NCT, PMID) cache. Integration test on 5 NCTs before Phase 3.
+
+#### Phase 3 pending: Tier 3 aggregator
+
+New module `agents/annotation/outcome_aggregator.py` — R1–R8 ordered match. Every verdict names the rule and atomic inputs. Unit tests on synthetic verdict combinations.
+
+#### Phase 4 pending: Shadow mode
+
+Both pipelines run; atomic verdict stored in annotation JSON alongside dossier verdict, no behavior change downstream.
+
+#### Phase 5 pending: 94-NCT validation in shadow mode
+
+After v41b validation (99c9c0f0b3e5) completes, next validation is atomic-shadow on same 94-NCT set.
+
+#### Phase 6–8 pending: iteration, cut over, extend to classification + failure_reason
 
 ### v41b Plan (2026-04-17) — Fix overcorrection from v41
 
