@@ -1,7 +1,57 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-16
-**Current state:** v41 pending implementation. v40 batch 1 (47 NCTs): outcome 61.3%, classification 100%, delivery 88.5%, sequence 70.0%.
+**Last updated:** 2026-04-17
+**Current state:** v41 on main (7964c040). v41 overcorrected — outcome 58.1% (was 60.5% in v40). v41b fix pending.
+
+### v41b Plan (2026-04-17) — Fix overcorrection from v41
+
+#### v40 Full 94-NCT Results (qwen3:14b baseline)
+
+| Field | v37b | v38 | v39 | v40 |
+|---|---|---|---|---|
+| Classification | 92.3% | 92.2% | 89.7% | **91.4%** |
+| Delivery | 82.4% | 76.5% | 80.4% | **85.4%** |
+| Outcome | 59.4% | 51.5% | 52.6% | **60.5%** |
+| RfF | 95.2% | 92.1% | 93.8% | 92.4% |
+| Peptide | 86.2% | 88.3% | 88.3% | 88.3% |
+| Sequence | 47.4% | 58.3% | 58.3% | 58.3% |
+
+#### v41 Batch 1 Results (47 NCTs) — OVERCORRECTED
+
+| Metric | v40 (batch 1) | v41 (batch 1) |
+|---|---|---|
+| Outcome agreement | 61.3% (19/31) | **58.1% (18/31)** |
+| Agent Positive calls | 23 | **6** |
+| R1 Positive calls | 17 | 17 |
+| Overcalls (agent=Pos, R1≠Pos) | 9 | **0** (FIXED) |
+| Undercalls (R1=Pos, agent≠Pos) | 3 | **10** (NEW PROBLEM) |
+
+The 3 fixes eliminated ALL overcalling (0 false positives, was 9). But they overcorrected — the agent now massively undercalls Positive (6 calls vs R1's 17).
+
+#### Root cause analysis: 2 specific issues
+
+**Issue 1: `_classify_publication()` default too aggressive.**
+The default return value `"general"` means any paper without explicit trial-methodology language is tagged as a review. The literature agent searches by NCT ID — most results ARE about the trial. Result: 20 of 20 pubs tagged general (NCT03559413), 32 of 33 (NCT03872778), etc. With 0 trial-specific pubs, zero keywords extracted, LLM follows "no evidence = Unknown."
+
+| NCT | Total pubs | Trial-specific | General | v41 value | R1 |
+|---|---|---|---|---|---|
+| NCT03559413 | 20 | 0 | 20 | Unknown | Positive |
+| NCT03872778 | 33 | 1 | 32 | Unknown | Positive |
+| NCT03784040 | 17 | 1 | 16 | Unknown | Positive |
+| NCT03314987 | 6 | 0 | 6 | Unknown | Positive |
+
+**Issue 2: Active guard `days_since <= 180` threshold too broad.**
+NCT04706962 completed 136 days ago — results exist, R1 says Positive, but guard forced Active. Only 1 extra trial caught, but it's wrong.
+
+#### v41b fix (2 targeted changes, outcome.py only)
+
+**Fix A: Flip `_classify_publication()` default from `"general"` to `"trial_specific"`.**
+Papers are only tagged general when they explicitly match review/overview signals (the _GENERAL_SIGNALS list). Everything else assumed trial-related. This is correct because: (a) literature agent searches by NCT ID, most results are relevant; (b) the review signal list is comprehensive; (c) false negatives (missing a review) are far less harmful than false positives (blocking a real trial paper).
+
+**Fix B: Remove `days_since <= 180` condition from Active guard.**
+Only fire when `days_since <= 0` (completion genuinely in future). Stale trials with past completion go to LLM. The `days_since <= 0` condition stays — it correctly catches NCT03989947 (completion 2038).
+
+**What stays unchanged from v41:** efficacy/safety keyword split, prompt rewrite, Phase I/Phase II backstop removal, publication override using efficacy keywords, skip_verification using efficacy keywords. These all prevent overcalling and are working correctly.
 
 ### v41 Plan (2026-04-16) — Fix outcome Positive overcalling (3 fixes)
 
