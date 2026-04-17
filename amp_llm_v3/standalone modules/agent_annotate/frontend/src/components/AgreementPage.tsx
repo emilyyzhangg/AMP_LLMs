@@ -26,6 +26,39 @@ import type {
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
+/**
+ * Two-tailed z-test for difference between two AC1 values.
+ * Derives SE from 95% CI: SE = (upper - lower) / (2 * 1.96).
+ * Returns { z, p, significant } at alpha = 0.05 (two-tailed).
+ */
+function ac1SignificanceTest(
+  ac1_a: number | null, ci_lo_a: number | null, ci_hi_a: number | null,
+  ac1_b: number | null, ci_lo_b: number | null, ci_hi_b: number | null,
+): { z: number; p: number; significant: boolean; label: string } {
+  if (ac1_a == null || ac1_b == null || ci_lo_a == null || ci_hi_a == null || ci_lo_b == null || ci_hi_b == null) {
+    return { z: 0, p: 1, significant: false, label: "N/A" };
+  }
+  const se_a = (ci_hi_a - ci_lo_a) / (2 * 1.96);
+  const se_b = (ci_hi_b - ci_lo_b) / (2 * 1.96);
+  if (se_a <= 0 || se_b <= 0) return { z: 0, p: 1, significant: false, label: "N/A" };
+
+  const diff = ac1_a - ac1_b;
+  const se_diff = Math.sqrt(se_a * se_a + se_b * se_b);
+  const z = se_diff > 0 ? diff / se_diff : 0;
+
+  // Two-tailed p-value via error function approximation
+  const absZ = Math.abs(z);
+  // Abramowitz & Stegun approximation of erf
+  const t = 1 / (1 + 0.3275911 * absZ / Math.SQRT2);
+  const poly = t * (0.254829592 + t * (-0.284496736 + t * (1.421413741 + t * (-1.453152027 + t * 1.061405429))));
+  const erf = 1 - poly * Math.exp(-(absZ * absZ) / 2);
+  const p = 1 - erf; // two-tailed
+
+  const significant = p < 0.05;
+  const label = significant ? `p=${p.toFixed(3)}*` : `p=${p.toFixed(2)}`;
+  return { z, p, significant, label };
+}
+
 /** Color for agreement metrics (AC1 or kappa). */
 function metricColor(k: number): string {
   if (k > 0.6) return "var(--success)";
@@ -803,6 +836,7 @@ function AgentVsHumanTab() {
                       <th style={{ textAlign: "center" }}>Agent vs R2</th>
                       <th style={{ textAlign: "center", borderLeft: "2px solid var(--warning)", background: "rgba(234,179,8,0.05)" }}>R1 vs R2 (Human Baseline)</th>
                       <th style={{ textAlign: "center", borderLeft: "2px solid var(--border)" }}>Verdict</th>
+                      <th style={{ textAlign: "center" }}>Significance (z-test)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -814,6 +848,10 @@ function AgentVsHumanTab() {
                       const hAc1 = hf?.ac1 ?? -1;
                       const agentBestAc1 = Math.max(fAc1, r2Ac1);
                       const exceeds = agentBestAc1 > hAc1;
+                      const sigTest = ac1SignificanceTest(
+                        f.ac1, f.ac1_ci_lower, f.ac1_ci_upper,
+                        hf?.ac1 ?? null, hf?.ac1_ci_lower ?? null, hf?.ac1_ci_upper ?? null,
+                      );
                       return (
                         <tr key={f.field_name}>
                           <td style={{ fontWeight: 500 }}>{f.field_name}</td>
@@ -856,6 +894,15 @@ function AgentVsHumanTab() {
                             color: exceeds ? "var(--success)" : "var(--error)",
                           }}>
                             {exceeds ? "EXCEEDS" : "BELOW"}
+                          </td>
+                          <td style={{
+                            textAlign: "center",
+                            fontSize: "0.85em",
+                            color: sigTest.significant ? "var(--error)" : "var(--text-secondary)",
+                            fontWeight: sigTest.significant ? 700 : 400,
+                          }}>
+                            {sigTest.label}
+                            {sigTest.significant && " \u2020"}
                           </td>
                         </tr>
                       );
