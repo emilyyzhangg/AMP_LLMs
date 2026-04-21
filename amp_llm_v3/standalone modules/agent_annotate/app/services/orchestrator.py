@@ -2253,8 +2253,15 @@ class PipelineOrchestrator:
 
             # Check 3: Empty value for fields that should have one
             # (sequence can legitimately be empty; N/A from cascade is fine)
-            # reason_for_failure is also excluded — "" means "no failure", which is valid
-            if not value and field not in ("sequence", "reason_for_failure") and "N/A" not in (reasoning or ""):
+            # reason_for_failure is also excluded — "" means "no failure", which is valid.
+            # v42 Phase 6: also exempt *_legacy copies (created by prefer_atomic swap)
+            # since they mirror the semantics of the primary field they replaced.
+            empty_ok_fields = (
+                "sequence",
+                "reason_for_failure", "reason_for_failure_legacy",
+                "classification_legacy",  # Same-semantics shadow of classification
+            )
+            if not value and field not in empty_ok_fields and "N/A" not in (reasoning or ""):
                 issues.append(
                     f"{field}: empty value (model={model}, conf={confidence})"
                 )
