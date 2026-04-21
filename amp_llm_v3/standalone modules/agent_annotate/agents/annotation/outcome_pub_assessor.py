@@ -182,17 +182,20 @@ def answers_from_json(payload: dict) -> PubAnswers:
 
 # ---- Cache ---------------------------------------------------------------- #
 
-def _cache_key(nct_id: str, pub: PubCandidate) -> str:
-    """Stable per-(trial, publication, text) key.
+def _cache_key(nct_id: str, pub: PubCandidate, model: str = "") -> str:
+    """Stable per-(trial, publication, text, model) key.
 
     Includes a hash of the publication text so edits to snippet/title invalidate
     the cache — important because we want atomic answers to trace to exactly the
-    text the LLM saw.
+    text the LLM saw. The model slug is part of the key so a Tier 1b model
+    switch (e.g. gemma3:12b → qwen3:14b) doesn't silently reuse stale verdicts
+    from a different model's reasoning.
     """
     body = (pub.title + "\n" + pub.snippet).encode("utf-8", "ignore")
     text_hash = hashlib.sha1(body).hexdigest()[:10]
     pmid_bare = pub.pmid_bare or "no-pmid"
-    return f"{nct_id}__{pmid_bare}__{text_hash}"
+    model_slug = (model or "default").replace(":", "_").replace("/", "_")
+    return f"{nct_id}__{pmid_bare}__{text_hash}__{model_slug}"
 
 
 class PubAssessmentCache:
@@ -281,7 +284,7 @@ class PubAssessor:
     ) -> PubVerdict:
         """Return a PubVerdict for one publication. Never raises — errors land
         in PubVerdict.error with verdict=INDETERMINATE."""
-        cache_key = _cache_key(nct_id, pub) if self.cache else None
+        cache_key = _cache_key(nct_id, pub, self.model) if self.cache else None
         if self.cache and cache_key:
             hit = self.cache.get(cache_key)
             if hit is not None:

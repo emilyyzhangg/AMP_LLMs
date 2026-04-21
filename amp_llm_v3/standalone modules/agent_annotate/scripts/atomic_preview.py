@@ -95,6 +95,18 @@ async def run(args) -> int:
     out_dir = PREVIEW_ROOT / run_id
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    # B1 bake-off: allow per-run override of Tier 1b model without editing YAML.
+    if args.atomic_model:
+        from app.services.config_service import config_service
+        config_service.get()  # force load
+        config_service.update({
+            "orchestrator": {
+                **(config_service._raw.get("orchestrator") or {}),
+                "outcome_atomic_model": args.atomic_model,
+            }
+        })
+        print(f"  atomic model override: {args.atomic_model}")
+
     nct_files = sorted(annotation_dir.glob("NCT*.json"))
     if args.limit:
         nct_files = nct_files[: args.limit]
@@ -269,5 +281,8 @@ if __name__ == "__main__":
                    help="Output dir name (default preview_<unix-ts>)")
     p.add_argument("--no-resume", action="store_true",
                    help="Recompute even if <NCT>.json already exists in out dir")
+    p.add_argument("--atomic-model", default="",
+                   help="Override Tier 1b model at runtime (e.g. qwen3:14b). "
+                        "Does not modify default_config.yaml.")
     args = p.parse_args()
     sys.exit(asyncio.run(run(args)))
