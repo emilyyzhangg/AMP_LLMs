@@ -1465,6 +1465,15 @@ class PipelineOrchestrator:
                     model_name="cascade",
                     skip_verification=True,
                 ))
+            # v42 Phase 6 (cosmetic): apply prefer_atomic swaps to cascaded
+            # annotations so the field-name schema is uniform across the job
+            # (peptide=True normal-flow NCTs apply the swap in step 2/3). All
+            # values are N/A here so it's analysis-equivalent — this is for
+            # consistent JSON shape across the 94-NCT set.
+            if getattr(config.orchestrator, "prefer_atomic_classification", False):
+                self._prefer_atomic_swap(annotations, "classification")
+            if getattr(config.orchestrator, "prefer_atomic_failure_reason", False):
+                self._prefer_atomic_swap(annotations, "reason_for_failure")
             logger.info(f"  peptide=False for {nct_id}, N/A-ing all other fields")
             return annotations
 
