@@ -21,10 +21,12 @@ Rule order (first match wins):
        original list order as final tiebreaker)
   R4 — no trial_specific pubs AND registry status COMPLETED AND drug_max_phase ≥ 3
        (drug advanced to Phase III or beyond, OR ChEMBL max_phase 4 = approved) → "Positive"
-  R5 — no trial_specific pubs AND registry status COMPLETED AND phase PHASE1
-       AND ≥1 pub of any specificity exists → "Positive"
-       (Phase I completion with any published mention is the Phase I success
-       criterion per R1/R2 annotator consensus — completion itself is the win.)
+  R5 — REMOVED (v42 Phase 5 post-hoc). The former rule "Phase I completion +
+       any pub = Positive" agreed with R1 on 6/13 scoreable cases (46%) in
+       the 94-NCT run. Most Phase I completions with only general pubs are
+       genuinely unknown to R1, not tacit positives. R4 (with the fixed
+       drug_max_phase extractor) now covers drug-advancement-based positives
+       in this cohort; R5's former NCTs now fall through to R8 Unknown.
   R6 — registry status ACTIVE_NOT_RECRUITING AND not stale → "Active, not recruiting"
   R7 — registry status TERMINATED AND no POSITIVE pub-verdict → "Terminated"
   R8 — otherwise → "Unknown"
@@ -260,25 +262,7 @@ def aggregate(
             ],
         )
 
-    # --- R5: COMPLETED + no TS + PHASE1 + any pub ------------------------ #
-    if (
-        signals.status_normalized == "COMPLETED"
-        and len(trial_specific) == 0
-        and signals.is_phase1()
-        and len(pubs) >= 1
-    ):
-        return AggregatorResult(
-            value=OUTCOME_POSITIVE,
-            rule_name="R5",
-            rule_description=(
-                f"COMPLETED Phase I, no trial-specific pubs, {len(pubs)} pub(s) "
-                f"mention trial — Phase I completion with publication = success"
-            ),
-            confidence=0.70,
-            trace=base_trace + [
-                "R5 fired: Phase I + completed + any pub → Positive by annotator consensus"
-            ],
-        )
+    # --- R5: REMOVED (v42 Phase 5 post-hoc). See module docstring. ------- #
 
     # --- R6: ACTIVE_NOT_RECRUITING, not stale ---------------------------- #
     if signals.status_normalized == "ACTIVE_NOT_RECRUITING" and not signals.stale_status:

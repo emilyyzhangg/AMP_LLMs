@@ -61,34 +61,50 @@ class RegistryHits:
     """Structural signals that strongly imply AMP classification."""
     dramp: list[str] = field(default_factory=list)       # list of DRAMP IDs
     apd: list[str] = field(default_factory=list)         # list of APD IDs
+    dbaasp: list[str] = field(default_factory=list)      # list of DBAASP IDs
     uniprot_antimicrobial: list[str] = field(default_factory=list)  # UniProt IDs with AMP annotation
 
     @property
     def any_hit(self) -> bool:
-        return bool(self.dramp or self.apd or self.uniprot_antimicrobial)
+        return bool(self.dramp or self.apd or self.dbaasp or self.uniprot_antimicrobial)
 
 
 def extract_registry_hits(research_results: list[ResearchResult]) -> RegistryHits:
-    """Collect deterministic AMP registry signals from peptide_identity results.
+    """Collect deterministic AMP registry signals from peptide_identity,
+    dbaasp, and apd research agents.
 
-    Does NOT interpret the hit beyond presence — a DRAMP match is by
-    construction an antimicrobial peptide database entry. Uniprot matches are
-    only counted when the snippet contains the literal 'antimicrobial' token,
-    which is the curated annotation used by UniProt for AMPs.
+    A hit in any of these databases is a structural AMP signal:
+      - DRAMP:   dedicated antimicrobial peptide database
+      - APD:     Antimicrobial Peptide Database
+      - DBAASP:  DataBase of Antimicrobial Activity and Structure of Peptides
+      - UniProt: entry whose snippet contains 'antimicrobial' (the curated
+                 annotation token used for AMP entries).
+
+    Identification is structural: matches on citation.source_name (preferred)
+    or on parent result.agent_name when source_name is absent. This makes the
+    extractor robust to minor field-name variations across research-agent
+    implementations without hardcoding drug names.
     """
     hits = RegistryHits()
     for result in research_results:
-        if result.error or result.agent_name not in ("peptide_identity", "apd", "dbaasp"):
+        if result.error:
+            continue
+        agent = (result.agent_name or "").lower()
+        if agent not in ("peptide_identity", "apd", "dbaasp"):
             continue
         for citation in result.citations or []:
             src = (citation.source_name or "").lower()
             ident = (citation.identifier or "").strip()
             snippet = (citation.snippet or "").lower()
-            if src == "dramp" and ident:
+            # Prefer explicit source_name; fall back to agent name when absent.
+            effective_src = src or agent
+            if effective_src == "dramp" and ident:
                 hits.dramp.append(ident)
-            elif src == "apd" and ident:
+            elif effective_src == "apd" and ident:
                 hits.apd.append(ident)
-            elif src == "uniprot" and ident and "antimicrobial" in snippet:
+            elif effective_src == "dbaasp" and ident:
+                hits.dbaasp.append(ident)
+            elif effective_src == "uniprot" and ident and "antimicrobial" in snippet:
                 hits.uniprot_antimicrobial.append(ident)
     return hits
 
@@ -248,7 +264,7 @@ def aggregate(hits: RegistryHits, answers: AtomicAnswers) -> ClassificationAgg:
     """Apply R1–R6 in order, first match wins."""
     trace = [
         f"registry: dramp={len(hits.dramp)} apd={len(hits.apd)} "
-        f"uniprot_amp={len(hits.uniprot_antimicrobial)}",
+        f"dbaasp={len(hits.dbaasp)} uniprot_amp={len(hits.uniprot_antimicrobial)}",
         f"atomic: q1={answers.q1_has_peptide_sequence} "
         f"q2={answers.q2_antimicrobial_mechanism} q3={answers.q3_infection_indication}",
     ]
@@ -257,6 +273,7 @@ def aggregate(hits: RegistryHits, answers: AtomicAnswers) -> ClassificationAgg:
         sources = []
         if hits.dramp: sources.append(f"DRAMP[{','.join(hits.dramp[:3])}]")
         if hits.apd: sources.append(f"APD[{','.join(hits.apd[:3])}]")
+        if hits.dbaasp: sources.append(f"DBAASP[{','.join(hits.dbaasp[:3])}]")
         if hits.uniprot_antimicrobial:
             sources.append(f"UniProt-AMP[{','.join(hits.uniprot_antimicrobial[:3])}]")
         return ClassificationAgg(
