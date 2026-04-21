@@ -189,6 +189,9 @@ def classify_pub_specificity(
     Q1/Q2 → trial_specific (high confidence, structural).
     Q3    → trial_specific (medium confidence, positive heuristic).
     Explicit review marker, no trial signals → general.
+    Drug-name absent from entire text AND not ctgov-referenced → general
+      (structural downgrade; without drug mention the pub cannot be this
+      trial's result report).
     Otherwise → ambiguous.
     """
     nct_lower = (nct_id or "").lower().strip()
@@ -217,6 +220,21 @@ def classify_pub_specificity(
     # Explicit review with no other trial signal → confident general.
     if pub.publication_type == "review":
         return "general"
+
+    # Structural downgrade: if we know the drug name(s) and NONE appear
+    # anywhere in title+snippet, the pub cannot be this trial's result report.
+    # Avoids burning Tier 1b LLM cycles on unrelated literature hits that
+    # slipped through the literature agent's keyword search.
+    if drug_names:
+        combined = pub.combined_text
+        any_drug_hit = False
+        for name in drug_names:
+            nm = (name or "").lower().strip()
+            if len(nm) >= 3 and nm in combined:
+                any_drug_hit = True
+                break
+        if not any_drug_hit:
+            return "general"
 
     return "ambiguous"
 

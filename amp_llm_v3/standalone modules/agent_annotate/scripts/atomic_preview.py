@@ -113,10 +113,66 @@ async def run(args) -> int:
     divergences: list[dict] = []
     per_nct: list[dict] = []
     errors = 0
+    skipped_resumed = 0
     t0 = time.monotonic()
+
+    def _write_summary(final: bool) -> None:
+        elapsed = round(time.monotonic() - t0, 1)
+        summary = {
+            "run_id": run_id,
+            "annotation_dir": str(annotation_dir),
+            "n_ncts": len(nct_files),
+            "errors": errors,
+            "resumed_from_cache": skipped_resumed,
+            "total_elapsed_sec": elapsed,
+            "final": final,
+            "rule_counts": dict(rule_counts),
+            "atomic_value_counts": dict(atomic_counts),
+            "legacy_value_counts": dict(legacy_counts),
+            "divergences": divergences,
+            "divergence_rate": round(len(divergences) / max(len(per_nct), 1), 3),
+            "per_nct": per_nct,
+        }
+        (out_dir / "_summary.json").write_text(json.dumps(summary, indent=2))
 
     for i, path in enumerate(nct_files, 1):
         nct = path.stem
+        out_path = out_dir / f"{nct}.json"
+
+        # A3 resume: skip NCTs that already have a valid atomic record.
+        if not args.no_resume and out_path.exists():
+            try:
+                existing = json.loads(out_path.read_text())
+                if (existing.get("atomic") or {}).get("value"):
+                    legacy_existing = existing.get("legacy_outcome") or ""
+                    atomic_existing = existing["atomic"]["value"]
+                    rule_existing = existing["atomic"].get("rule", "?")
+                    diverges = (legacy_existing or "") != (atomic_existing or "")
+                    rule_counts[rule_existing] += 1
+                    legacy_counts[legacy_existing or "(none)"] += 1
+                    atomic_counts[atomic_existing or "(none)"] += 1
+                    if diverges:
+                        divergences.append({
+                            "nct": nct, "legacy": legacy_existing,
+                            "atomic": atomic_existing, "rule": rule_existing,
+                        })
+                    per_nct.append({
+                        "nct": nct, "legacy": legacy_existing,
+                        "atomic": atomic_existing, "rule": rule_existing,
+                        "confidence": existing["atomic"].get("confidence"),
+                        "model": existing["atomic"].get("model_name"),
+                        "elapsed_sec": existing.get("elapsed_sec", 0.0),
+                        "diverges": diverges, "resumed": True,
+                    })
+                    skipped_resumed += 1
+                    print(f"  [{i:3d}/{len(nct_files)}] {nct}  RESUMED "
+                          f"legacy={legacy_existing or '(none)':<25s}  "
+                          f"atomic={atomic_existing:<25s}  rule={rule_existing}")
+                    _write_summary(final=False)
+                    continue
+            except (json.JSONDecodeError, KeyError, TypeError):
+                pass  # fall through and recompute
+
         t_nct = time.monotonic()
         try:
             src = json.loads(path.read_text())
@@ -160,7 +216,7 @@ async def run(args) -> int:
                 "source_annotation_path": str(path),
                 "elapsed_sec": elapsed,
             }
-            (out_dir / f"{nct}.json").write_text(json.dumps(record, indent=2))
+            out_path.write_text(json.dumps(record, indent=2))
 
             print(f"  [{i:3d}/{len(nct_files)}] {nct}  legacy={legacy or '(none)':<25s}  "
                   f"atomic={annotation.value or '(none)':<25s}  rule={rule:<6s}  "
@@ -169,22 +225,12 @@ async def run(args) -> int:
             errors += 1
             print(f"  [{i:3d}/{len(nct_files)}] {nct}  ERROR: {e}")
 
-    total_elapsed = round(time.monotonic() - t0, 1)
+        # A4: flush summary after every NCT so mid-run kill yields readable output.
+        _write_summary(final=False)
 
-    summary = {
-        "run_id": run_id,
-        "annotation_dir": str(annotation_dir),
-        "n_ncts": len(nct_files),
-        "errors": errors,
-        "total_elapsed_sec": total_elapsed,
-        "rule_counts": dict(rule_counts),
-        "atomic_value_counts": dict(atomic_counts),
-        "legacy_value_counts": dict(legacy_counts),
-        "divergences": divergences,
-        "divergence_rate": round(len(divergences) / max(len(nct_files) - errors, 1), 3),
-        "per_nct": per_nct,
-    }
-    (out_dir / "_summary.json").write_text(json.dumps(summary, indent=2))
+    total_elapsed = round(time.monotonic() - t0, 1)
+    _write_summary(final=True)
+    summary = json.loads((out_dir / "_summary.json").read_text())
 
     print()
     print("=" * 80)
@@ -221,5 +267,7 @@ if __name__ == "__main__":
                    help="Cap literature citations per NCT (0 = no cap)")
     p.add_argument("--run-id", default="",
                    help="Output dir name (default preview_<unix-ts>)")
+    p.add_argument("--no-resume", action="store_true",
+                   help="Recompute even if <NCT>.json already exists in out dir")
     args = p.parse_args()
     sys.exit(asyncio.run(run(args)))

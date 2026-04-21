@@ -67,6 +67,13 @@ class OrchestratorConfig(BaseModel):
     # string falls back to the module default (gemma3:12b). Small focused
     # reading-comprehension calls are a natural fit for Gemma 3 12B.
     outcome_atomic_model: str = ""
+    # v42 Phase 4.6 (A1): Hard cap on how many pubs per NCT get Tier 1b LLM
+    # cycles. Pubs are prioritized trial_specific > ambiguous, year desc,
+    # snippet length desc. Overflow pubs get an INDETERMINATE placeholder so
+    # the aggregator still sees a 1:1 pub/verdict mapping.
+    # 0 = unlimited (previous behavior). Default 20 prevents 40+ pub NCTs
+    # from stalling the whole batch on a single trial.
+    outcome_atomic_max_voting_pubs: int = 20
 
 
 class OllamaConfig(BaseModel):

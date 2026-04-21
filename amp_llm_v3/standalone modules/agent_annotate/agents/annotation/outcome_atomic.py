@@ -169,15 +169,22 @@ class OutcomeAtomicAgent(BaseAnnotationAgent):
         drug_names,
     ) -> list[PubVerdict]:
         """Return a PubVerdict per input pub (INDETERMINATE placeholder for
-        confident-general pubs — they don't get LLM cycles)."""
+        confident-general pubs — they don't get LLM cycles).
+
+        Applies a hard cap via orchestrator.outcome_atomic_max_voting_pubs on
+        the number of LLM calls per NCT. Overflow pubs get an INDETERMINATE
+        placeholder with error='skipped_over_cap' so the aggregator still
+        sees a 1:1 pub/verdict mapping.
+        """
         # Import here to avoid requiring ollama at module load (keeps the
         # module testable offline).
         from app.services.ollama_client import ollama_client
         from app.services.config_service import config_service
 
-        # Model + cache
+        # Model + cache + cap
         config = config_service.get()
         model = getattr(config.orchestrator, "outcome_atomic_model", None) or _DEFAULT_ATOMIC_MODEL
+        cap = int(getattr(config.orchestrator, "outcome_atomic_max_voting_pubs", 0) or 0)
         cache = PubAssessmentCache(_ATOMIC_CACHE_DIR)
         assessor = PubAssessor(
             model=model,
@@ -186,10 +193,11 @@ class OutcomeAtomicAgent(BaseAnnotationAgent):
             temperature=0.0,
         )
 
-        verdicts: list[PubVerdict] = []
         drug_list = sorted(drug_names) if drug_names else []
+        voting_idxs = self._select_voting_indices(classified_pubs, cap)
 
-        for pub, spec in classified_pubs:
+        verdicts: list[PubVerdict] = []
+        for idx, (pub, spec) in enumerate(classified_pubs):
             if spec == "general":
                 # Confident-general pubs don't vote — synthesize a placeholder
                 # so the aggregator still sees a 1:1 pub/verdict mapping.
@@ -201,6 +209,19 @@ class OutcomeAtomicAgent(BaseAnnotationAgent):
                         specificity=spec,
                         verdict="INDETERMINATE",
                         error="skipped_general",
+                    )
+                )
+                continue
+            if idx not in voting_idxs:
+                # Over cap — synthesize placeholder, no LLM call.
+                verdicts.append(
+                    PubVerdict(
+                        nct_id=nct_id,
+                        pmid=pub.pmid,
+                        source=pub.source,
+                        specificity=spec,
+                        verdict="INDETERMINATE",
+                        error="skipped_over_cap",
                     )
                 )
                 continue
@@ -219,6 +240,37 @@ class OutcomeAtomicAgent(BaseAnnotationAgent):
                 )
             verdicts.append(pv)
         return verdicts
+
+    @staticmethod
+    def _select_voting_indices(
+        classified_pubs: list[tuple[PubCandidate, Specificity]],
+        cap: int,
+    ) -> set[int]:
+        """Pick which pub indices get Tier 1b LLM calls when a cap is set.
+
+        Priority (desc): trial_specific > ambiguous; then year desc (most
+        recent wins); then snippet length desc (richer text wins). `general`
+        pubs never get LLM cycles and are excluded from the cap entirely.
+        Returns the set of indices in `classified_pubs` that are allowed to
+        call the assessor. Cap of 0 means unlimited.
+        """
+        # Import here to avoid a circular at module import time.
+        from .outcome_aggregator import _year_hint
+
+        candidates: list[tuple[int, int, int, int]] = []
+        for idx, (pub, spec) in enumerate(classified_pubs):
+            if spec == "general":
+                continue
+            spec_rank = 1 if spec == "trial_specific" else 0
+            year = _year_hint(pub) or 0
+            length = len(pub.snippet or "")
+            candidates.append((spec_rank, year, length, idx))
+
+        if cap <= 0 or cap >= len(candidates):
+            return {c[3] for c in candidates}
+
+        candidates.sort(key=lambda t: (t[0], t[1], t[2]), reverse=True)
+        return {c[3] for c in candidates[:cap]}
 
     # --- FieldAnnotation builder ------------------------------------------ #
     def _to_annotation(
