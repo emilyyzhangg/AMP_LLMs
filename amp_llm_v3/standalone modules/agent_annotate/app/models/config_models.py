@@ -89,6 +89,18 @@ class OrchestratorConfig(BaseModel):
     # model is a qwen3:* variant. Costs ~2x tokens but produces better
     # disagreement resolution. Default OFF.
     reconciler_thinking: bool = False
+    # v42 Phase 6: partial cut-over flags. When true, the atomic agent's
+    # value is stored under the primary field name (e.g. `classification`)
+    # and the legacy agent's value moves to `<field>_legacy`. The atomic
+    # shadow flag must also be true for the atomic agent to run in the
+    # first place. Phase 5 data justified these for classification
+    # (92% raw / 75% AMP recall with DBAASP Tier 0) and failure_reason
+    # (67% scoreable with web_context Tier 2). Outcome stays shadow —
+    # Cat 1 evidence-gap cases (23/94) are structural and need research
+    # pipeline expansion first. Default OFF to preserve existing
+    # authoritative behavior; flip on dev only for staged cut-over.
+    prefer_atomic_classification: bool = False
+    prefer_atomic_failure_reason: bool = False
 
 
 class OllamaConfig(BaseModel):

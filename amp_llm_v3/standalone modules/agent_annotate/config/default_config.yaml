@@ -101,6 +101,11 @@ research_agents:
   crossref:
     sources:
       - crossref
+  # v42 Phase 6: preprint-server coverage (bioRxiv + medRxiv via Europe PMC)
+  # for the Cat 1 evidence gaps identified in the 94-NCT shadow run.
+  biorxiv:
+    sources:
+      - biorxiv_medrxiv
 
 annotation_agents:
   classification:

@@ -1,7 +1,44 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-17
-**Current state:** v41b on main (239d16f0). 94-NCT validation for v41b in progress (job 99c9c0f0b3e5 @ 144bd8f2, ~11h remaining). v42 **atomic redesign** Phases 1–4 committed to dev (7208fa24, 6aaa2261, e5d69277, 87dc96aa, + Phase 4 wiring pending commit). Verifier_1 migrated gemma2:9b → **gemma3:12b** (same-family upgrade); v42 Phase 2 atomic assessor defaults to gemma3:12b. Shadow-mode agent registered as `outcome_atomic` in ANNOTATION_AGENTS, gated by `config.orchestrator.outcome_atomic_shadow` (default OFF). Docs (METHODOLOGY.md, IMPLEMENTATION_PLAN.md, PAPER.md, USER_GUIDE.md, AGENT_ANNOTATE_OVERVIEW.html) + PPT deck updated.
+**Last updated:** 2026-04-21 (Phase 5 complete + post-hoc round + docs pass)
+**Current state:** v42 Phase 5 **complete**. 94-NCT shadow validation run finished with three atomic agents evaluated and five post-hoc fixes landed on main.
+
+**Main at:** `9f287521` (or later after doc commits)
+**Active branch:** `dev` (content-identical to main via merge commits)
+**Prod status:** autoupdate synced; shadow agents running on every new annotation job via `<field>_atomic` outputs.
+
+### Phase 5 results (94-NCT, 2026-04-21)
+
+| Agent | Raw agreement | Scoreable | Architecture |
+|---|---|---|---|
+| outcome_atomic | 36/94 (38.3%) | 36/58 (62%) | 0 Cat 3, 1 Cat 2 |
+| classification_atomic | 69/75 (92%); **AMP recall 6/8 (75%)** | — | DBAASP Tier 0 lift of +50pts |
+| reason_for_failure_atomic | 4/6 (67%) | — | web_context Tier 2 catch |
+
+### Phase 5 post-hoc fixes (landed on main 2026-04-21)
+
+1. `classification_atomic.extract_registry_hits` surfaces DBAASP hits — **AMP recall 25% → 75%**.
+2. `outcome_registry_signals.drug_max_phase` walks per-drug `chembl_<drug>_molecules` keys, handles string `max_phase` values.
+3. Outcome aggregator R5 removed (46% precision on Phase I "any pub → Positive").
+4. Outcome aggregator R4 removed (26% precision with fixed drug_max_phase — drug-level signal ≠ trial outcome).
+5. `failure_reason_atomic._assemble_evidence` includes web_context ahead of literature — business-reason coverage.
+
+**Outcome aggregator rule set (current):** TIER0, R1 (any POS + 0 FAIL → Positive), R2 (any FAIL + 0 POS → Failed), R3 (mixed → most-recent), R6 (active not stale), R7 (terminated no POS), R8 (default Unknown). Drug-level rules R4/R5 removed — atomic refuses to call Positive without trial-level evidence.
+
+### Phase 6 — current (partial cut-over + research pipeline expansion)
+
+1. **Partial cut-over flags** — `orchestrator.prefer_atomic_classification` and `orchestrator.prefer_atomic_failure_reason` (both default OFF). When true the atomic value goes in the primary field; legacy becomes shadow. Outcome cut-over deferred pending research-agent expansion.
+2. **New free-API research agents** — bioRxiv/medRxiv preprint search targets the 23 Cat 1 evidence gaps where R1 relied on a publication our pipeline never surfaced.
+
+### Shadow mode — what/when/why
+
+See `docs/METHODOLOGY.md §5.4.1`. Summary: parallel agent writes `<field>_atomic` without displacing the legacy value; added v42 Phase 4 (2026-04-17); purpose is to let atomic architecture accumulate agreement data in production without risking regressions, and to allow graduated cut-over per field when atomic shows parity/superiority.
+
+---
+
+### Prior state (archived 2026-04-21)
+
+**Before Phase 5:** v41b on main (239d16f0). 94-NCT validation for v41b in progress (job 99c9c0f0b3e5 @ 144bd8f2, ~11h remaining). v42 **atomic redesign** Phases 1–4 committed to dev (7208fa24, 6aaa2261, e5d69277, 87dc96aa, + Phase 4 wiring pending commit). Verifier_1 migrated gemma2:9b → **gemma3:12b** (same-family upgrade); v42 Phase 2 atomic assessor defaults to gemma3:12b. Shadow-mode agent registered as `outcome_atomic` in ANNOTATION_AGENTS, gated by `config.orchestrator.outcome_atomic_shadow` (default OFF). Docs (METHODOLOGY.md, IMPLEMENTATION_PLAN.md, PAPER.md, USER_GUIDE.md, AGENT_ANNOTATE_OVERVIEW.html) + PPT deck updated.
 
 ### v42 Plan (2026-04-17) — Atomic Evidence Decomposition
 

@@ -443,15 +443,84 @@ Critical rule: "Completed" registry status alone does NOT indicate failure. "Fai
 
 **v25:** Introduces an evidence priority ladder for outcome determination: publications > CT.gov posted results > CT.gov registry status > trial phase. A post-LLM `_publication_priority_override()` function checks whether published results exist when the LLM returns Unknown, Active, or Terminated, and reclassifies accordingly. This addresses the dominant error pattern where the LLM defaults to Unknown for trials with published results it failed to incorporate.
 
-**v42 Atomic Outcome Pipeline (shadow mode).** After v39→v41b oscillation confirmed that a single-LLM-on-full-dossier architecture cannot be stabilized by prompt tuning (each fix inverted the FP/FN error class), v42 rebuilds outcome as a four-tier atomic pipeline stored under a parallel field `outcome_atomic` during shadow-mode validation:
+**v42 Atomic Evidence Decomposition (shadow-mode family).** After v39→v41b oscillation confirmed that a single-LLM-on-full-dossier architecture cannot be stabilized by prompt tuning (each fix inverted the FP/FN error class), v42 rebuilds outcome as a four-tier atomic pipeline stored under a parallel field `outcome_atomic` during shadow-mode validation. v42 Phase 5 then extended the same pattern to two more fields: `classification_atomic` (binary AMP/Other) and `reason_for_failure_atomic` (gated on outcome_atomic ∈ {Terminated, Failed}).
 
-- **Tier 0** — deterministic pre-label (RECRUITING/WITHDRAWN/SUSPENDED, or COMPLETED+hasResults+p<0.05).
-- **Tier 1a** — structural trial-specificity classifier: three Y/N questions (NCT-in-body, PMID-in-CT.gov-references, title-design+drug) with no keyword list.
-- **Tier 1b** — per-publication LLM call (gemma3:12b) answering five atomic Y/N/UNCLEAR questions grounded in a single pub's text plus one forced evidence_quote.
-- **Tier 2** — deterministic registry signal extractor (status, completion date, stale flag, primary-endpoint p-values, ChEMBL max_phase, CT.gov reference PMIDs).
-- **Tier 3** — deterministic aggregator mapping atomic answers to a label via ordered rules R1–R8 (see `agents/annotation/outcome_aggregator.py`). No LLM makes the final outcome decision; R3 uses most-recent-pub verdict when POSITIVE and FAILED coexist.
+**The atomic family — shared design:**
 
-Every verdict carries a named rule, a rule description, and the atomic inputs that fired it. Design details in `docs/ATOMIC_EVIDENCE_DECOMPOSITION.md`. Enabled via `config.orchestrator.outcome_atomic_shadow` (default OFF).
+- **Tier 0** — deterministic pre-label from registry signals (outcome: RECRUITING/WITHDRAWN/SUSPENDED, or COMPLETED+hasResults+p<0.05; classification: DRAMP/APD/DBAASP/UniProt-AMP registry hit; failure_reason: whyStopped keyword parse).
+- **Tier 1a** — structural trial-specificity classifier for outcome: three Y/N questions (NCT-in-body, PMID-in-CT.gov-references, title-design+drug) plus a drug-name-absence downgrade that routes pubs with zero drug mentions to `general` (no LLM cycles).
+- **Tier 1b** — focused LLM call per evidence unit (outcome: one call per trial-specific/ambiguous pub via gemma3:12b; classification: one call per trial via qwen3:14b; failure_reason: one call per terminated trial via qwen3:14b). All answer narrow Y/N/UNCLEAR questions grounded in the specific evidence, with a forced verbatim evidence_quote.
+- **Tier 2** — deterministic registry signal extractors (status, completion date, stale flag, primary-endpoint p-values, ChEMBL max_phase walked via per-drug keys, CT.gov reference PMIDs, DBAASP/APD/DRAMP citations).
+- **Tier 3** — deterministic aggregator mapping atomic answers to a label via ordered rules (see `agents/annotation/outcome_aggregator.py`, `classification_atomic.py`, `failure_reason_atomic.py`). No LLM makes the final field decision.
+
+**Outcome aggregator rules (post-Phase-5):**
+- TIER0 short-circuit (deterministic labels)
+- R1 — any POSITIVE pub, 0 FAILED → Positive
+- R2 — any FAILED pub, 0 POSITIVE → Failed (preempts R7 by design)
+- R3 — mixed POS + FAIL → most-recent-pub verdict
+- R4, R5 — **REMOVED (v42 Phase 5 post-hoc)**. The former R4 ("no trial-specific pubs + COMPLETED + drug_max_phase ≥ 3 → Positive") and R5 ("no trial-specific pubs + COMPLETED + Phase 1 + any pub → Positive") each agreed with R1 on < 50% of scoreable firings on the 94-NCT set. Drug-level signals (ChEMBL phase advancement) and Phase 1 completion with non-trial-specific mentions are evidence about the drug/cohort, not about this specific trial's outcome. Atomic now refuses to call Positive without trial-level evidence.
+- R6 — ACTIVE_NOT_RECRUITING and not stale → Active, not recruiting
+- R7 — TERMINATED and no POSITIVE pub → Terminated
+- R8 — otherwise → Unknown
+
+**Classification aggregator rules:**
+- R1 — registry hit (DRAMP/APD/DBAASP/UniProt-AMP) → AMP (conf 0.95)
+- R2 — all three atomic YES → AMP (0.90)
+- R3 — ≥ 2 YES, 0 NO → AMP (0.80)
+- R4 — all three NO → Other (0.90)
+- R5 — ≥ 2 NO, 0 YES → Other (0.80)
+- R6 — mixed / unclear → Other (0.55; binary field has no Unknown)
+
+**Failure-reason priority aggregator (gated on outcome_atomic ∈ {Terminated, Failed}):**
+- R1 — whyStopped registry keyword hit → that category (0.90)
+- R2 — atomic Q1 (safety) YES → Toxic/Unsafe (0.85)
+- R3 — atomic Q2 (efficacy failure) YES → Ineffective for purpose (0.85)
+- R4 — atomic Q3 (COVID) YES → Due to covid (0.85)
+- R5 — atomic Q4 (recruitment) YES → Recruitment issues (0.80)
+- R6 — atomic Q5 (business) YES → Business Reason (0.70)
+- R7 — otherwise → empty (0.40)
+
+Design details in `docs/ATOMIC_EVIDENCE_DECOMPOSITION.md`. See §5.7 below for shadow mode semantics and §5.8 for v42 Phase 5 94-NCT results.
+
+### 5.4.1 Shadow Mode
+
+**What it is.** Shadow mode is a release pattern in which a new agent runs in parallel with the legacy agent and writes its output under a distinct `<field>_atomic` key, without displacing the legacy answer. Both values live in the annotation output; only the legacy value is considered authoritative by downstream systems (agreement CSVs, concordance reports, UI). Shadow agents run with `skip_verification=True` so they don't burn the verifier pool.
+
+**When added.** v42 Phase 4 (2026-04-17, commit `13593fba` on dev). Extended to `classification_atomic` and `reason_for_failure_atomic` in v42 Phase 5 (2026-04-21).
+
+**Why.** The v39→v41b outcome oscillation had already happened twice: a prompt change improved one error class and re-introduced the other. The team wanted to deploy a fundamentally different architecture (atomic decomposition) but couldn't afford to cut over blindly. Shadow mode let the new atomic code run for weeks on real production trials, accumulate rule-level agreement data against R1 ground truth, and expose its failure modes (Cat 1 evidence gaps, Cat 2 question gaps, Cat 3 aggregator gaps, Cat 4 R1 judgment calls) — all without the risk of regressing the legacy values users depend on. It also provides a free A/B: every trial produces a legacy answer and an atomic answer, and comparing them on the same evidence set reveals where each succeeds.
+
+**Intended purpose.**
+1. **Observability.** Capture atomic-vs-legacy divergences at scale (94-NCT validation runs and beyond) with triage categorization built in (`scripts/atomic_triage.py`).
+2. **Iteration safety.** Let Phase 6+ fixes (new Tier 0 signals, new research agents, rule removals like R4 and R5) ship without affecting legacy output until the atomic agent is demonstrably better.
+3. **Graduated cut-over.** The `<agent>_atomic_shadow` config flag allows independent promotion: `classification_atomic` and `reason_for_failure_atomic` can graduate to authoritative (via `prefer_atomic_*` flags) while `outcome_atomic` continues to accumulate data.
+
+**Config flags:**
+- `orchestrator.outcome_atomic_shadow` — run the outcome atomic pipeline in parallel (default: true on dev, will stay true on main until cut-over)
+- `orchestrator.classification_atomic_shadow` — same for classification
+- `orchestrator.failure_reason_atomic_shadow` — same for failure_reason
+- `orchestrator.prefer_atomic_classification` — **Phase 6 cut-over (v42 Phase 5 post-hoc)**: when true, classification_atomic value is used in the `classification` field; legacy classification runs as shadow under `classification_legacy`. Default OFF.
+- `orchestrator.prefer_atomic_failure_reason` — same for failure_reason. Default OFF.
+
+### 5.4.2 v42 Phase 5 — 94-NCT Validation Results
+
+Phase 5 ran the full atomic family against prod's 94-NCT training cohort on 2026-04-21 and iterated on the findings.
+
+**outcome_atomic** — 36/94 raw agreement (62% on R1-scoreable). Rule-level: R7 Terminated 8/9 (89%), R1 POSITIVE-pub 8/12 (67%). Architecture health: 1 Cat 2 question gap, 0 Cat 3 aggregator gaps across 94 NCTs. The main remaining lever is Cat 1 evidence gaps (23 NCTs where R1 had a pub our literature pipeline didn't find). Post-hoc: R4 and R5 removed (both had ~46% precision on Positive class), eliminating 14 drug-level false positives.
+
+**classification_atomic** — 92% raw / 75% AMP recall (up from 25% before the DBAASP Tier 0 fix; see 5.4.3). Six of eight AMPs in the cohort caught via deterministic registry hit. Two remaining misses (NCT00002363 SPC3, NCT01639638 CIGB-300) have zero AMP-registry signals and would require a Tier 1b LLM upgrade or an additional research source.
+
+**reason_for_failure_atomic** — 4/6 scoreable (67%, up from 50% after web_context Tier 2 addition). The web_context research agent now surfaces press-release evidence for business-reason terminations that registries don't disclose.
+
+### 5.4.3 v42 Phase 5 Post-Hoc Fixes (2026-04-21)
+
+Five deterministic improvements landed on main after Phase 5 data:
+
+1. **DBAASP Tier 0 for classification** — `classification_atomic.extract_registry_hits` now recognizes DBAASP citations (previously checked only DRAMP / APD / UniProt-AMP). Four of six Phase-5-missed AMPs had DBAASP hits already present in the research data; this fix is what lifted AMP recall to 75%.
+2. **ChEMBL `drug_max_phase` extractor** — the chembl research agent stores molecules under per-drug keys (`chembl_<drug>_molecules`), not at top-level `molecules`. Fixed: walk every `*_molecules` list, handle string values like `"3.0"`/`"-1.0"`, take the max non-negative int.
+3. **R4 removal** — with fix #2, R4 fired 23 times on the 94-NCT cohort but only 6 were correct positives; 7 disagreed with R1=unknown and 10 were unscoreable. Drug phase advancement is evidence about the drug, not the trial.
+4. **R5 removal** — "Phase 1 completion + any pub → Positive" was 46% correct on scoreable firings. Same class of error as R4.
+5. **failure_reason web_context Tier 2** — `_assemble_evidence` now includes web_context snippets ahead of literature. Business-reason terminations are rarely quotable from peer-reviewed pubs but often explicit in press releases and SEC filings.
 
 ### 5.5 Failure Reason Agent (v5)
 
