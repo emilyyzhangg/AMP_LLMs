@@ -55,19 +55,21 @@ Trial (NCT)
   │     • has_later_phase_trials_for_same_drug
   │
   └─▶ Tier 3: Deterministic Aggregator (rules applied in order)
-        R1. Any POSITIVE pub + 0 FAILED pubs           → Positive
-        R2. Any FAILED pub + 0 POSITIVE pubs           → Failed - completed trial
-        R3. Both POSITIVE and FAILED present           → most-recent-pub verdict
-        R4. No trial-specific pubs + COMPLETED + drug
-            advanced to later phase OR approved        → Positive
-        R5. No trial-specific pubs + COMPLETED + Phase
-            I + ≥1 pub mentions trial                  → Positive
-            (Phase I completion with any published
-            mention IS the Phase I success criterion,
-            per R1/R2 annotator consensus)
-        R6. Status ACTIVE_NOT_RECRUITING + not stale   → Active, not recruiting
-        R7. Status TERMINATED + no POSITIVE pub        → Terminated
-        R8. Otherwise                                  → Unknown
+        TIER0 Deterministic pre-label short-circuit
+        R1.   Any POSITIVE pub + 0 FAILED pubs           → Positive
+        R2.   Any FAILED pub + 0 POSITIVE pubs           → Failed - completed trial
+        R3.   Both POSITIVE and FAILED present           → most-recent-pub verdict
+        R4.   REMOVED (Phase 5 post-hoc). Was: "drug advanced"
+              → Positive. Drug-level signals do not imply
+              this specific trial's outcome.
+        R5.   REMOVED (Phase 5 post-hoc). Was: "Phase I
+              + any pub" → Positive. Phase I completion
+              with non-trial-specific pubs is not evidence
+              of THIS trial's success (46% precision on 13
+              scoreable firings in Phase 5 validation).
+        R6.   Status ACTIVE_NOT_RECRUITING + not stale   → Active, not recruiting
+        R7.   Status TERMINATED + no POSITIVE pub        → Terminated
+        R8.   Otherwise                                  → Unknown
 ```
 
 **No LLM call makes the final outcome decision.** The LLM only answers atomic questions about individual publications. The final label comes from R1–R8.
@@ -173,7 +175,28 @@ NCT01653249 → Positive (rule R4: COMPLETED, no trial-specific pubs,
 
 ## 2. Applicability to Other Agents
 
-### 2.1 Classification (AMP vs Other) — HIGH FIT
+### 2.1 Classification (AMP vs Other) — SHIPPED (v42 Phase 5, B2)
+
+Implemented as `agents/annotation/classification_atomic.py`. Runs in shadow by default; `prefer_atomic_classification` flag promotes it to authoritative.
+
+**Tier 0** — deterministic registry hit from peptide_identity, dbaasp, and apd research agents. A citation from any of these databases whose `source_name` (or parent `agent_name`) is `dramp`, `apd`, `dbaasp`, or `uniprot` (with "antimicrobial" in snippet) → AMP with conf 0.95. This caught 6/8 AMPs on the 94-NCT validation set.
+
+**Tier 1b** — single LLM call (qwen3:14b) on the clinical_protocol text (title + summary + conditions + intervention descriptions + primary outcomes), capped at 2400 chars. Three Y/N questions:
+- Q1: Does the trial's intervention include a defined peptide sequence?
+- Q2: Is the stated mechanism antimicrobial (kills or inhibits a pathogen)?
+- Q3: Is the primary indication or endpoint an infectious disease / microbial outcome?
+
+**Aggregator** — six ordered rules, first match wins (all binary AMP/Other, no Unknown):
+- R1 registry hit → AMP (0.95)
+- R2 3/3 YES → AMP (0.90)
+- R3 ≥2 YES, 0 NO → AMP (0.80)
+- R4 3/3 NO → Other (0.90)
+- R5 ≥2 NO, 0 YES → Other (0.80)
+- R6 default → Other (0.55)
+
+No drug-name cheat sheets. No `_KNOWN_AMP_DRUGS` lookups. LLM answers reading-comprehension questions about a single protocol; Python picks the category.
+
+### 2.1 (original — archived for history)
 
 Currently has a two-pass LLM with regex-based Pass1→Pass2 handoff. Fragile.
 
@@ -191,16 +214,29 @@ Currently has a two-pass LLM with regex-based Pass1→Pass2 handoff. Fragile.
 
 Kills Pass1 free-text extraction fragility.
 
-### 2.2 Failure_reason — HIGH FIT
+### 2.2 Failure_reason — SHIPPED (v42 Phase 5, B3)
 
-Currently has a circular dependency with outcome (pre-check: "if outcome=Positive, skip"). Decomposition removes coupling:
+Implemented as `agents/annotation/failure_reason_atomic.py`. Gated on `outcome_atomic ∈ {Terminated, Failed - completed trial}` — non-failed trials short-circuit to empty, mirroring the legacy agent's behavior. Runs in shadow by default; `prefer_atomic_failure_reason` flag promotes it to authoritative.
 
-**Atomic questions (per source: whyStopped field | publication):**
-- Q1: Does this text describe why trial stopped early or failed?
-- Q2: If Q1=YES, which category? (TOXIC / INEFFECTIVE / RECRUITMENT / BUSINESS / OTHER)
-- Q3: Does the text claim the drug was SAFE or EFFECTIVE? (rules out TOXIC/INEFFECTIVE if YES)
+**Tier 0** — `whyStopped` registry text keyword parse. Priority-ordered keyword groups (COVID > Safety > Recruitment > Efficacy > Business) match generic English phrases (`"covid"`, `"pandemic"`, `"adverse event"`, `"hepatotoxicity"`, `"enrollment"`, `"slow accrual"`, `"lack of efficacy"`, `"futility"`, `"sponsor decision"`, `"strategic"`, `"portfolio"`, etc.) — not drug names.
 
-**Aggregator priority:** whyStopped > publication > trial metadata LLM.
+**Tier 1b** — single LLM call (qwen3:14b) on evidence assembled from (1) whyStopped, (2) web_context snippets (press releases, SEC filings — added Phase 5 post-hoc), (3) literature snippets. Five Y/N/UNCLEAR questions:
+- Q1: Does the evidence explicitly cite safety / adverse events as a reason?
+- Q2: Failure to meet efficacy / futility?
+- Q3: COVID / pandemic impact?
+- Q4: Enrollment / accrual difficulties?
+- Q5: Sponsor / business / funding / strategic decision?
+
+**Priority aggregator** — safety > efficacy > COVID > recruitment > business; whyStopped Tier 0 preempts atomic answers:
+- R1 Tier 0 hit → that category (0.90)
+- R2 Q1 YES → Toxic/Unsafe (0.85)
+- R3 Q2 YES → Ineffective for purpose (0.85)
+- R4 Q3 YES → Due to covid (0.85)
+- R5 Q4 YES → Recruitment issues (0.80)
+- R6 Q5 YES → Business Reason (0.70)
+- R7 default → empty (0.40)
+
+Removes the legacy circular dependency with outcome (the legacy agent's "if outcome=Positive, skip" is replaced by a clean outcome_atomic gate).
 
 ### 2.3 Delivery_mode — MEDIUM FIT, DEFER
 
@@ -220,49 +256,45 @@ Structured-data-only with known-sequence lookup. Already atomic in spirit — so
 
 All work on `dev` branch. Atomic commit+push after every change to avoid autoupdater wipe.
 
-### Phase 0 — Branch setup & design doc (30 min) ← CURRENT
-- Confirm dev branch, design doc committed, plan approved
+### Phases 0–5 — COMPLETE (2026-04-17 → 2026-04-21)
 
-### Phase 1 — Scaffolding & Tier 0 (half day)
-- New file: `agents/annotation/outcome_atomic.py` (parallel to existing)
-- Implement Tier 0 deterministic pre-check
-- Implement Registry Signal Extractor as standalone module
-- Implement Trial-Specific Classifier (3-question deterministic)
-- Unit tests on 20 hand-picked NCTs covering each Tier 0 branch
+- **Phase 0** — design doc committed, plan approved
+- **Phase 1** — scaffolding: `outcome_registry_signals.py`, `outcome_pub_classifier.py`, `outcome_atomic.py`; Tier 0 deterministic pre-check; Tier 1a structural classifier (no keyword lists); 10/10 synthetic unit tests + 47-NCT zero-error replay
+- **Phase 2** — `outcome_pub_assessor.py`: per-pub LLM call, 5 atomic Y/N/UNCLEAR questions + forced evidence_quote, strict JSON parser with INDETERMINATE fallback, per-(NCT, PMID, text-hash, model) disk cache
+- **Phase 3** — `outcome_aggregator.py`: TIER0 + R1–R8 ordered match, AggregatorResult with rule name + description + trace; 18/18 synthetic unit tests
+- **Phase 4** — shadow-mode wiring: `OutcomeAtomicAgent` registered in `ANNOTATION_AGENTS`, gated by `outcome_atomic_shadow` config flag, `skip_verification=True` so verifier pool is preserved
+- **Phase 4.5** — tooling: `scripts/atomic_preview.py` replay runner (resume-safe, incremental `_summary.json`), `atomic_vs_r1.py` R1 comparison, `atomic_triage.py` four-category auto-triage
+- **Phase 4.6** — stability fixes (A1–A4): `outcome_atomic_max_voting_pubs` cap (default 20), Tier 1a drug-name-absence downgrade (pubs with zero drug mentions → `general`), `--no-resume` flag, model-scoped cache keys
+- **Phase 5** — 94-NCT prod shadow run + family extension: `classification_atomic` (B2), `reason_for_failure_atomic` (B3), `reconciler_thinking` flag (B4), `--atomic-model` bake-off flag (B1). Unit tests: 22/22 for B2+B3 aggregators + whyStopped parser
 
-### Phase 2 — Tier 1 atomic LLM assessor (1 day)
-- New module: `agents/annotation/outcome_pub_assessor.py`
-- Prompt template + strict JSON parsing + malformed-JSON handling
-- Per-(NCT, PMID) cache so re-runs don't re-call LLM
-- Integration test on 5 NCTs with known pubs
+### Phase 5 post-hoc fixes (2026-04-21)
 
-### Phase 3 — Tier 3 aggregator (half day)
-- R1–R8 ordered rule match
-- Rich logging: every verdict names the rule + atomic inputs
-- Unit tests on synthetic verdict combinations
+All shipped as deterministic code changes with no prompt tuning. Each responded to a specific Phase 5 disagreement pattern.
 
-### Phase 4 — Shadow mode (half day)
-- Outcome agent runs both current and atomic pipelines
-- Both verdicts stored in annotation JSON; current pipeline's is still official
-- No behavior change downstream — observability only
+1. **Tier 0 classification — DBAASP recognition.** `extract_registry_hits` now surfaces DBAASP citations (and falls back to parent `agent_name` when `source_name` is absent). Lifted AMP recall 25% → 75% on the 94-NCT set.
+2. **ChEMBL drug_max_phase extractor.** Was reading non-existent `raw_data["molecules"]`; actual shape is per-drug keys `chembl_<drug>_molecules` with string values `"3.0"`/`"-1.0"`. Walk all `*_molecules` keys, take max non-negative `int(float(...))`.
+3. **R5 removed.** Former rule "Phase I completion + any pub → Positive" agreed with R1 on 6/13 scoreable cases (46%). Phase I completion with only non-trial-specific pubs is typically Unknown to R1, not a tacit positive.
+4. **R4 removed** (post fix #2). With drug_max_phase working, R4 fired 23 times; 6 correct, 7 wrong vs R1=unknown, 10 unscoreable. Drug advancement is evidence about the drug, not this specific trial.
+5. **failure_reason web_context Tier 2.** `_assemble_evidence` now includes web_context snippets ahead of literature. Business-reason terminations are rarely quotable from peer-reviewed pubs. Lifted failure_reason scoreable agreement 50% → 67%.
 
-### Phase 5 — Shadow-mode validation run (overnight)
-- 94-NCT validation on dev with shadow mode
-- Generates two outcomes per NCT
-- Analysis script: atomic vs dossier vs R1
+### Phase 6 — Partial cut-over (in progress)
 
-### Phase 6 — Iteration (variable)
-Scientifically principled phase. When atomic disagrees with R1:
-- Do NOT tune prompts to flip specific cases
-- DO categorize (see §4) and iterate only where the category justifies it
+The atomic architecture is validated (0 Cat 3 across 94 NCTs, 1 Cat 2). Classification and failure_reason have shown strong-enough agreement to promote to authoritative:
 
-### Phase 7 — Cut over (half day)
-- Atomic at parity OR all atomic disagreements defensible → remove dossier path
-- Tag as v42
-- Update CONTINUATION_PLAN.md + LEARNING_RUN_PLAN.md
+- `orchestrator.prefer_atomic_classification` (default OFF) — when true, the atomic value populates `classification` and legacy becomes `classification_legacy` (shadow).
+- `orchestrator.prefer_atomic_failure_reason` (default OFF) — same for reason_for_failure.
+- `outcome_atomic` stays shadow. Overall agreement (62% scoreable) is lower than legacy dossier, and the remaining 23 Cat 1 evidence gaps are structural (research pipeline), not the atomic agent's fault. Cut-over after Phase 6 research-agent expansion.
 
-### Phase 8 — Extend to Classification + Failure_reason (1–2 weeks)
-Same template: parallel atomic agent → shadow mode → validation → iteration → cut over.
+### Phase 6 — Research pipeline expansion (free APIs only)
+
+The 23 Cat 1 evidence gaps from Phase 5 are cases where R1 relied on a publication our literature pipeline never surfaced. To close them, new research agents are added (free APIs only, per project constraint):
+
+- **bioRxiv / medRxiv preprints** — `agents/research/biorxiv_client.py`. Many R1-cited sources are preprints that only later went to peer review; peer-review-only searches miss them.
+- (future) Europe PMC full-text mirror and SEC EDGAR for business-reason context.
+
+### Phase 7 — Outcome cut-over (deferred)
+
+Once outcome_atomic scoreable agreement reaches parity with legacy dossier (currently 58.1% legacy vs 62% atomic — already ahead), promote outcome_atomic to authoritative and delete the dossier path. Blocked on Phase 6 research-agent validation.
 
 ---
 

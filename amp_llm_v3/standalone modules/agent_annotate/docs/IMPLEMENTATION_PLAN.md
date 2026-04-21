@@ -308,10 +308,17 @@ Pass 2 — **Determination**: Given all extracted facts, make the decision. Publ
 
 Failure Reason agent has a **smart short-circuit**: if Pass 1 determines the trial did not fail, skips Pass 2 entirely (saves an Ollama call for ~80% of trials).
 
-**v42 Atomic Outcome Pipeline (shadow mode).** The outcome agent has a parallel atomic implementation at `agents/annotation/outcome_atomic.py` stored under a separate field name `outcome_atomic`:
-- Tier 0 (deterministic pre-label) → Tier 1a (structural trial-specificity classifier, no keywords) → Tier 1b (per-publication gemma3:12b assessor, five atomic Y/N/UNCLEAR questions with forced evidence_quote) → Tier 2 (registry signal extractor) → Tier 3 (deterministic R1–R8 aggregator, no LLM final decision).
-- Every verdict carries a named rule and the atomic inputs that fired it. See `docs/ATOMIC_EVIDENCE_DECOMPOSITION.md` for full design.
-- Gated by `config.orchestrator.outcome_atomic_shadow` (default OFF). When enabled, both pipelines run; the legacy outcome remains authoritative during Phase 5 94-NCT validation.
+**v42 Atomic Evidence Decomposition (shadow-mode family, Phase 5 complete, 2026-04-21).**
+
+Three parallel atomic agents write to `<field>_atomic` keys alongside the legacy authoritative fields:
+
+- `outcome_atomic` (`agents/annotation/outcome_atomic.py`) — four-tier pipeline: Tier 0 deterministic pre-label, Tier 1a structural trial-specificity classifier (no keyword lists), Tier 1b per-publication gemma3:12b LLM answering five Y/N/UNCLEAR questions with forced evidence_quote, Tier 2 deterministic registry signal extractor, Tier 3 deterministic aggregator. Rules R4 ("drug advanced → Positive") and R5 ("Phase I + pub → Positive") were removed in Phase 5 post-hoc after each showed < 50% precision against R1; drug-level signals are evidence about the drug, not this trial's outcome.
+- `classification_atomic` (`agents/annotation/classification_atomic.py`) — binary AMP/Other via Tier 0 registry hit (DRAMP / APD / DBAASP / UniProt-AMP) + three atomic Y/N questions on protocol text (qwen3:14b) + six-rule aggregator. Phase 5 result: 75% AMP recall, 92% overall.
+- `reason_for_failure_atomic` (`agents/annotation/failure_reason_atomic.py`) — gated on `outcome_atomic ∈ {Terminated, Failed}`. Tier 0 whyStopped keyword parse + Tier 1b qwen3:14b with five Y/N questions on whyStopped + web_context + literature evidence + priority aggregator (safety > efficacy > covid > recruitment > business). Phase 5 result: 67% scoreable agreement.
+
+**Shadow mode.** Each atomic agent runs in parallel with its legacy counterpart. The atomic verdict writes to `<field>_atomic` in the annotation JSON; the legacy field remains authoritative. Shadow agents set `skip_verification=True` so they don't burn the verifier pool. Gated independently via `orchestrator.<field>_atomic_shadow` flags (all default true in `config/default_config.yaml` post-Phase 5). A second tier of flags (`prefer_atomic_classification`, `prefer_atomic_failure_reason`) promotes the atomic value to the primary field once parity is established. See `docs/METHODOLOGY.md §5.4.1` for semantics + rationale.
+
+**Audit guarantees.** Every atomic verdict carries a named rule, a rule description, confidence, and the atomic inputs that fired it. No LLM call makes a final field decision — aggregation is pure Python, versioned, reviewable. See `docs/ATOMIC_EVIDENCE_DECOMPOSITION.md` for design.
 
 ### 2.8 Ollama Client
 

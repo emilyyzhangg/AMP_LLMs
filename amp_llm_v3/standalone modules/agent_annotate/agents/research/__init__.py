@@ -27,6 +27,7 @@ from agents.research.pdbe_client import PDBEClient
 from agents.research.openalex_client import OpenAlexClient
 from agents.research.semantic_scholar_client import SemanticScholarClient
 from agents.research.crossref_client import CrossRefClient
+from agents.research.biorxiv_client import BioRxivClient
 
 RESEARCH_AGENTS = {
     "clinical_protocol": ClinicalProtocolAgent,
@@ -44,4 +45,8 @@ RESEARCH_AGENTS = {
     "openalex": OpenAlexClient,
     "semantic_scholar": SemanticScholarClient,
     "crossref": CrossRefClient,
+    # v42 Phase 6: preprint server coverage for the Cat 1 evidence gaps
+    # identified in the 94-NCT shadow run. Queries Europe PMC's SRC:PPR
+    # corpus (bioRxiv + medRxiv + smaller preprint servers).
+    "biorxiv": BioRxivClient,
 }

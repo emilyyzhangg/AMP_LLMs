@@ -1530,6 +1530,13 @@ class PipelineOrchestrator:
                     job.progress.current_model = ann.model_name
                     break
 
+        # v42 Phase 6 cut-over: if prefer_atomic_classification is on, swap the
+        # authoritative field names so downstream (CSV export, UI, concordance)
+        # sees the atomic value under `classification` and the legacy value
+        # under `classification_legacy`. No-op if either agent didn't run.
+        if getattr(config.orchestrator, "prefer_atomic_classification", False):
+            self._prefer_atomic_swap(annotations, "classification")
+
         # --- Step 3: Run failure_reason AFTER outcome (it needs the outcome result) ---
         job.progress.current_field = "reason_for_failure"
         job.progress.current_agent = "failure_reason_annotator"
@@ -1574,6 +1581,11 @@ class PipelineOrchestrator:
             job.progress.field_timings["reason_for_failure_atomic"] = round(
                 _field_time.monotonic() - _fra_start, 1
             )
+
+        # v42 Phase 6 cut-over: failure_reason prefer-atomic swap. Must run
+        # after step 3 so both legacy and atomic annotations are present.
+        if getattr(config.orchestrator, "prefer_atomic_failure_reason", False):
+            self._prefer_atomic_swap(annotations, "reason_for_failure")
 
         # v17: Post-annotation quality check — detect timeout artifacts,
         # empty/garbage responses, and error messages leaked into values
@@ -2159,6 +2171,32 @@ class PipelineOrchestrator:
         "failed to generate", "internal server error", "502 bad gateway",
         "connection reset", "broken pipe", "eof", "empty response",
     ]
+
+    @staticmethod
+    def _prefer_atomic_swap(annotations: list, legacy_field: str) -> None:
+        """v42 Phase 6 cut-over helper. When the user has flipped
+        `prefer_atomic_<field>`, rewrite the field_names so the atomic
+        verdict becomes authoritative:
+          - atomic annotation's field_name ``<legacy>_atomic`` → ``<legacy>``
+          - legacy annotation's field_name ``<legacy>`` → ``<legacy>_legacy``
+
+        No-op if either side is missing (e.g. shadow flag was off). Keeps
+        both values in the output for audit. Downstream consumers (CSV
+        export, concordance, UI) see the atomic value under the primary
+        field name with no code changes.
+        """
+        atomic_field = f"{legacy_field}_atomic"
+        atomic_ann = next(
+            (a for a in annotations if a.field_name == atomic_field), None
+        )
+        if atomic_ann is None:
+            return
+        legacy_ann = next(
+            (a for a in annotations if a.field_name == legacy_field), None
+        )
+        if legacy_ann is not None:
+            legacy_ann.field_name = f"{legacy_field}_legacy"
+        atomic_ann.field_name = legacy_field
 
     @staticmethod
     def _check_annotation_quality(

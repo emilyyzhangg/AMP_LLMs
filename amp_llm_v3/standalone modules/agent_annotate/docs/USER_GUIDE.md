@@ -3,9 +3,14 @@
 Publication-grade clinical trial annotation powered by a network of specialized AI agents with blind multi-model verification.
 
 **Related documents:**
-- `METHODOLOGY.md` — Complete technical methodology for scientific publication (every agent, check, and verification step described in full)
+- `METHODOLOGY.md` — Complete technical methodology for scientific publication (every agent, check, and verification step described in full). §5.4.1 covers shadow mode.
 - `IMPLEMENTATION_PLAN.md` — Development phases and roadmap
 - `IMPROVEMENT_STRATEGY.md` — Accuracy improvement plan based on comparison with human annotations
+- `ATOMIC_EVIDENCE_DECOMPOSITION.md` — v42 atomic architecture design (outcome, classification, failure_reason)
+
+## Shadow-mode fields (v42)
+
+Annotation outputs may include `<field>_atomic` keys alongside the standard fields (for example, `outcome` and `outcome_atomic`). The `_atomic` values come from the v42 atomic evidence-decomposition pipeline running in parallel with the legacy agent. They are observability/A-B data — the legacy field remains authoritative for downstream consumers — until the per-field `prefer_atomic_*` config flag is flipped. See `METHODOLOGY.md §5.4.1` for the full semantics.
 
 ---
 
