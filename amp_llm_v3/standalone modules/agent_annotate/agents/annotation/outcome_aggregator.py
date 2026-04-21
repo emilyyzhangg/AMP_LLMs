@@ -19,14 +19,18 @@ Rule order (first match wins):
   R3 — both POSITIVE and FAILED present → verdict of most-recent pub
        (year from snippet text; trial_specific beats ambiguous as a tiebreaker;
        original list order as final tiebreaker)
-  R4 — no trial_specific pubs AND registry status COMPLETED AND drug_max_phase ≥ 3
-       (drug advanced to Phase III or beyond, OR ChEMBL max_phase 4 = approved) → "Positive"
+  R4 — REMOVED (v42 Phase 5 post-hoc round 2). After drug_max_phase was fixed,
+       R4 fired 23 times on the 94-NCT run with 26% precision on Positive —
+       the same failure mode as R5. Drug-level advancement is evidence about
+       the drug, not about this specific trial's outcome. A drug can hit
+       Phase III approval while many of its earlier trials were genuinely
+       Unknown outcomes.
   R5 — REMOVED (v42 Phase 5 post-hoc). The former rule "Phase I completion +
        any pub = Positive" agreed with R1 on 6/13 scoreable cases (46%) in
        the 94-NCT run. Most Phase I completions with only general pubs are
-       genuinely unknown to R1, not tacit positives. R4 (with the fixed
-       drug_max_phase extractor) now covers drug-advancement-based positives
-       in this cohort; R5's former NCTs now fall through to R8 Unknown.
+       genuinely unknown to R1, not tacit positives. R4's former NCTs now
+       also fall through to R8 Unknown — atomic refuses to call Positive
+       without trial-level evidence.
   R6 — registry status ACTIVE_NOT_RECRUITING AND not stale → "Active, not recruiting"
   R7 — registry status TERMINATED AND no POSITIVE pub-verdict → "Terminated"
   R8 — otherwise → "Unknown"
@@ -242,25 +246,11 @@ def aggregate(
                 trace=trace,
             )
 
-    # --- R4: COMPLETED + no TS + drug advanced --------------------------- #
-    if (
-        signals.status_normalized == "COMPLETED"
-        and len(trial_specific) == 0
-        and signals.drug_max_phase is not None
-        and signals.drug_max_phase >= 3
-    ):
-        return AggregatorResult(
-            value=OUTCOME_POSITIVE,
-            rule_name="R4",
-            rule_description=(
-                f"COMPLETED, no trial-specific pubs, drug_max_phase={signals.drug_max_phase} "
-                f"(advanced to ≥Phase III / approved)"
-            ),
-            confidence=0.80,
-            trace=base_trace + [
-                f"R4 fired: ChEMBL max_phase={signals.drug_max_phase} implies drug advanced"
-            ],
-        )
+    # --- R4: REMOVED (v42 Phase 5 post-hoc round 2). Drug-level signals ---
+    # (ChEMBL max_phase) do not imply trial-level success. After the
+    # drug_max_phase extractor was fixed, R4 fired 23 times on the 94-NCT
+    # set with 26% precision on Positive vs R1 — same failure mode as R5.
+    # Atomic now refuses to call "Positive" without trial-level evidence.
 
     # --- R5: REMOVED (v42 Phase 5 post-hoc). See module docstring. ------- #
 

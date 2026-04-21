@@ -204,22 +204,23 @@ def test_r3_mixed_most_recent_failed():
     check("r3-newer-fail", r.rule_name, "R3", r.value, OUTCOME_FAILED)
 
 
-# R4: no TS + COMPLETED + drug_max_phase ≥ 3 → Positive
-def test_r4_drug_advanced():
-    print("\n[R4] no trial-specific pubs, COMPLETED, drug at Phase 3")
+# R4 was removed v42 Phase 5 post-hoc round 2. These tests now assert that
+# former R4 cases fall through to R8 Unknown.
+def test_r4_removed_drug_advanced_now_r8():
+    print("\n[R4-removed] no TS, COMPLETED, drug at Phase 3 → R8 Unknown")
     sig = make_signals(status="COMPLETED", has_results=False, drug_max_phase=3)
     pubs = [
         (make_pub("401"), make_verdict("401", "INDETERMINATE", "general")),
     ]
     r = aggregate(sig, pubs)
-    check("r4-max-phase-3", r.rule_name, "R4", r.value, OUTCOME_POSITIVE)
+    check("r4-removed-max-phase-3", r.rule_name, "R8", r.value, OUTCOME_UNKNOWN)
 
 
-def test_r4_drug_approved():
-    print("\n[R4] no TS, COMPLETED, drug approved (max_phase=4)")
+def test_r4_removed_drug_approved_now_r8():
+    print("\n[R4-removed] no TS, COMPLETED, drug approved (max_phase=4) → R8 Unknown")
     sig = make_signals(status="COMPLETED", drug_max_phase=4)
     r = aggregate(sig, [])
-    check("r4-max-phase-4", r.rule_name, "R4", r.value, OUTCOME_POSITIVE)
+    check("r4-removed-max-phase-4", r.rule_name, "R8", r.value, OUTCOME_UNKNOWN)
 
 
 # R5 was removed v42 Phase 5 post-hoc. These tests now assert that the former
@@ -298,7 +299,7 @@ def test_r8_completed_no_results_no_drug_signal():
 
 # Confidence sanity
 def test_confidence_ranges():
-    print("\n[confidence] TIER0 > R1/R2/R6/R7 > R3/R4 > R8  (R5 removed)")
+    print("\n[confidence] TIER0 > R1/R2/R6/R7 > R3 > R8  (R4 and R5 removed)")
     r_tier0 = aggregate(make_signals(status="RECRUITING"), [], tier0_label="Recruiting")
     r_r1 = aggregate(
         make_signals(status="COMPLETED"),
@@ -327,8 +328,8 @@ def main() -> int:
         test_r2_failed_alone,
         test_r3_mixed_most_recent_positive,
         test_r3_mixed_most_recent_failed,
-        test_r4_drug_advanced,
-        test_r4_drug_approved,
+        test_r4_removed_drug_advanced_now_r8,
+        test_r4_removed_drug_approved_now_r8,
         test_r5_removed_phase1_pub_now_r8,
         test_r5_removed_no_pubs_still_r8,
         test_r6_active,
