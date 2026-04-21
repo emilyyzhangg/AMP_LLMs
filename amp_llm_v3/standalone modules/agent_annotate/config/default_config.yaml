@@ -152,6 +152,15 @@ orchestrator:
   # Phase 5 data proves it resolves disagreements better.
   reconciler_thinking: false
 
+  # v42 Phase 6 partial cut-over (2026-04-21). When true, the atomic agent's
+  # value becomes authoritative (lives under the primary field name); legacy
+  # is preserved as <field>_legacy in the annotation JSON for audit.
+  # Phase 5 data justified: classification 92% raw / 75% AMP recall; failure
+  # reason 67% scoreable. Outcome stays shadow — Cat 1 evidence gaps need
+  # research-pipeline expansion (bioRxiv agent added Phase 6) first.
+  prefer_atomic_classification: true
+  prefer_atomic_failure_reason: true
+
   # Premium model for server profile — used for classification, outcome, and reconciliation.
   # These are the hardest tasks requiring strong multi-step reasoning.
   # Toggle between models by changing this single value:
