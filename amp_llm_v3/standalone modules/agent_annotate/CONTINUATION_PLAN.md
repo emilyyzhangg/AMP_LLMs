@@ -27,8 +27,10 @@
 
 ### Phase 6 — current (partial cut-over + research pipeline expansion)
 
-1. **Partial cut-over flags** — `orchestrator.prefer_atomic_classification` and `orchestrator.prefer_atomic_failure_reason` (both default OFF). When true the atomic value goes in the primary field; legacy becomes shadow. Outcome cut-over deferred pending research-agent expansion.
-2. **New free-API research agents** — bioRxiv/medRxiv preprint search targets the 23 Cat 1 evidence gaps where R1 relied on a publication our pipeline never surfaced.
+1. **Partial cut-over flags** — `orchestrator.prefer_atomic_classification` and `orchestrator.prefer_atomic_failure_reason` (both default OFF in prod, **both true on dev** as of 2026-04-21 commit `948d2218`). When true the atomic value goes in the primary field; legacy becomes `<field>_legacy`. Outcome cut-over deferred pending research-agent expansion.
+2. **bioRxiv research agent** (commit `c9632deb`) — free Europe PMC `SRC:PPR` query. Hit rate on 29 Cat 1 Phase 5 NCTs: 12 returned any citation, **7 returned drug-name-relevant citations** (~24%). Modest but real lift on the Cat 1 evidence gap.
+3. **Next validation** — full dev annotation job with bioRxiv + prefer_atomic flags active; confirm downstream (CSV export, UI, concordance CSV) render correctly with swapped field names.
+4. **Next merge to main** — only after #3 passes on dev.
 
 ### Shadow mode — what/when/why
 
