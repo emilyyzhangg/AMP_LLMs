@@ -74,6 +74,21 @@ class OrchestratorConfig(BaseModel):
     # 0 = unlimited (previous behavior). Default 20 prevents 40+ pub NCTs
     # from stalling the whole batch on a single trial.
     outcome_atomic_max_voting_pubs: int = 20
+    # v42 B2: Shadow-mode classification_atomic agent. Binary AMP/Other via
+    # registry hits (DRAMP/APD/UniProt-AMP) + three atomic Y/N questions on
+    # protocol text. Default OFF — flip on dev during Phase 5.
+    classification_atomic_shadow: bool = False
+    # Tier 1b model for classification_atomic. Empty → qwen3:14b.
+    classification_atomic_model: str = ""
+    # v42 B3: Shadow-mode reason_for_failure_atomic agent. Runs only when
+    # outcome_atomic ∈ {Terminated, Failed - completed trial}. Default OFF.
+    failure_reason_atomic_shadow: bool = False
+    # Tier 1b model for failure_reason_atomic. Empty → qwen3:14b.
+    failure_reason_atomic_model: str = ""
+    # v42 B4: Enable qwen3 /think-mode on the reconciler when the reconciler
+    # model is a qwen3:* variant. Costs ~2x tokens but produces better
+    # disagreement resolution. Default OFF.
+    reconciler_thinking: bool = False
 
 
 class OllamaConfig(BaseModel):

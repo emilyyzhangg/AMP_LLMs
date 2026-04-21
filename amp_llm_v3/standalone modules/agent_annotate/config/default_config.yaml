@@ -133,6 +133,20 @@ orchestrator:
   # llama3.1:8b and qwen3:14b, costing 60-90s per trial in model reload overhead).
   annotation_model: "qwen3:14b"
 
+  # v42 Phase 5 shadow-mode flags. Each runs a parallel "atomic" agent under a
+  # distinct _atomic field name; legacy authoritative fields are untouched.
+  # These MUST stay true on dev during Phase 5 validation. Flip them off on
+  # prod until the 94-NCT run is analyzed and B1/B2/B3 verdicts are in.
+  outcome_atomic_shadow: true
+  classification_atomic_shadow: true
+  failure_reason_atomic_shadow: true
+  # v42 B1: Tier 1b per-pub LLM cap. Prevents 45-pub NCTs from stalling the
+  # whole batch on a single trial. 0 = unlimited.
+  outcome_atomic_max_voting_pubs: 20
+  # v42 B4: Reconciler /think-mode. qwen3-only. Costs ~2x tokens; off until
+  # Phase 5 data proves it resolves disagreements better.
+  reconciler_thinking: false
+
   # Premium model for server profile — used for classification, outcome, and reconciliation.
   # These are the hardest tasks requiring strong multi-step reasoning.
   # Toggle between models by changing this single value:

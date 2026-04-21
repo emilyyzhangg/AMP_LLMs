@@ -74,14 +74,33 @@ class ReconciliationAgent:
         from app.services.config_service import config_service
         config = config_service.get()
 
+        # v42 B4: qwen3 /think-mode toggle. Appending the "/think" directive
+        # at the end of the prompt activates qwen3's extended reasoning pass.
+        # For other model families the token is ignored as trailing text.
+        thinking = (
+            getattr(config.orchestrator, "reconciler_thinking", False)
+            and reconciler_model.lower().startswith("qwen3")
+        )
+        final_prompt = prompt + ("\n\n/think" if thinking else "")
+        if thinking:
+            logger.info(
+                f"  reconciler: thinking-mode ON for {field_name} "
+                f"(model={reconciler_model})"
+            )
+
         try:
             response = await ollama_client.generate(
                 model=reconciler_model,
-                prompt=prompt,
+                prompt=final_prompt,
                 system=SYSTEM_PROMPT,
                 temperature=config.ollama.temperature,
             )
             raw_text = response.get("response", "")
+            # v42 B4: qwen3 thinking mode emits a <think>...</think> block
+            # before the actual answer. Strip it so the parser sees only the
+            # Final Answer / Evidence / Reasoning section.
+            if thinking and "<think>" in raw_text:
+                raw_text = re.sub(r"<think>.*?</think>", "", raw_text, flags=re.DOTALL).strip()
         except Exception as e:
             logger.error(f"Reconciler failed for {field_name}: {e}")
             # Can't reconcile — use majority vote as fallback
