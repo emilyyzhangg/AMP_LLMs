@@ -222,22 +222,23 @@ def test_r4_drug_approved():
     check("r4-max-phase-4", r.rule_name, "R4", r.value, OUTCOME_POSITIVE)
 
 
-# R5: no TS + COMPLETED + PHASE1 + ≥1 pub → Positive
-def test_r5_phase1_completed_with_pubs():
-    print("\n[R5] no TS pubs, COMPLETED, PHASE1, 1 general pub exists")
+# R5 was removed v42 Phase 5 post-hoc. These tests now assert that the former
+# R5 cases fall through to R8 Unknown.
+def test_r5_removed_phase1_pub_now_r8():
+    print("\n[R5-removed] PHASE1 COMPLETED + 1 general pub → R8 Unknown")
     sig = make_signals(status="COMPLETED", phase="PHASE1", drug_max_phase=1)
     pubs = [
         (make_pub("501"), make_verdict("501", "INDETERMINATE", "general", q2="NA")),
     ]
     r = aggregate(sig, pubs)
-    check("r5-phase1-with-pub", r.rule_name, "R5", r.value, OUTCOME_POSITIVE)
+    check("r5-removed-phase1-with-pub", r.rule_name, "R8", r.value, OUTCOME_UNKNOWN)
 
 
-def test_r5_no_pubs_blocks():
-    print("\n[R5→R8] PHASE1 COMPLETED but no pubs at all → Unknown (R8)")
+def test_r5_removed_no_pubs_still_r8():
+    print("\n[R5-removed] PHASE1 COMPLETED, no pubs → R8 Unknown")
     sig = make_signals(status="COMPLETED", phase="PHASE1")
     r = aggregate(sig, [])
-    check("r5-blocked-nopubs", r.rule_name, "R8", r.value, OUTCOME_UNKNOWN)
+    check("r5-removed-nopubs", r.rule_name, "R8", r.value, OUTCOME_UNKNOWN)
 
 
 # R6: ACTIVE_NOT_RECRUITING, not stale
@@ -297,7 +298,7 @@ def test_r8_completed_no_results_no_drug_signal():
 
 # Confidence sanity
 def test_confidence_ranges():
-    print("\n[confidence] TIER0 > R1/R2/R6/R7 > R3/R4 > R5 > R8")
+    print("\n[confidence] TIER0 > R1/R2/R6/R7 > R3/R4 > R8  (R5 removed)")
     r_tier0 = aggregate(make_signals(status="RECRUITING"), [], tier0_label="Recruiting")
     r_r1 = aggregate(
         make_signals(status="COMPLETED"),
@@ -328,8 +329,8 @@ def main() -> int:
         test_r3_mixed_most_recent_failed,
         test_r4_drug_advanced,
         test_r4_drug_approved,
-        test_r5_phase1_completed_with_pubs,
-        test_r5_no_pubs_blocks,
+        test_r5_removed_phase1_pub_now_r8,
+        test_r5_removed_no_pubs_still_r8,
         test_r6_active,
         test_r6_stale_falls_through,
         test_r7_terminated,

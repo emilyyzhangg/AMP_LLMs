@@ -201,16 +201,26 @@ def extract_registry_signals(
                 signals.primary_endpoints.append(ep)
 
         elif result.agent_name == "chembl" and result.raw_data:
-            for mol in result.raw_data.get("molecules", []) or []:
-                max_phase = mol.get("max_phase")
-                if max_phase is None:
+            # The chembl research agent stores molecules under per-drug keys
+            # like "chembl_<drug>_molecules", not at top-level "molecules".
+            # max_phase arrives as a string such as "3.0" or "-1.0" (ChEMBL's
+            # "unknown" sentinel). Walk every *_molecules list and take the
+            # highest non-negative integer phase across all molecules.
+            for key, val in (result.raw_data or {}).items():
+                if not key.endswith("_molecules") or not isinstance(val, list):
                     continue
-                try:
-                    mp = int(max_phase)
-                except (ValueError, TypeError):
-                    continue
-                if signals.drug_max_phase is None or mp > signals.drug_max_phase:
-                    signals.drug_max_phase = mp
+                for mol in val:
+                    raw = mol.get("max_phase") if isinstance(mol, dict) else None
+                    if raw is None:
+                        continue
+                    try:
+                        mp = int(float(raw))  # "3.0" → 3
+                    except (ValueError, TypeError):
+                        continue
+                    if mp < 0:              # -1 = ChEMBL "unknown"
+                        continue
+                    if signals.drug_max_phase is None or mp > signals.drug_max_phase:
+                        signals.drug_max_phase = mp
 
     signals.days_since_completion = _parse_completion_date(signals.completion_date)
 

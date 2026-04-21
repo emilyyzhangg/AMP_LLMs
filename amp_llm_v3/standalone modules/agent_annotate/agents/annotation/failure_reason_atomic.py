@@ -207,19 +207,41 @@ def _parse_answers(text: str) -> AtomicAnswers:
 def _assemble_evidence(
     why_stopped: str,
     research_results: list[ResearchResult],
-    max_chars: int = 2400,
+    max_chars: int = 2800,
 ) -> str:
-    """Concatenate whyStopped + literature snippets (short-form) for the LLM.
+    """Concatenate whyStopped + web_context + literature snippets for the LLM.
 
-    Takes only the top 6 literature snippets to keep prompts compact. The
-    atomic-outcome pipeline already produced per-pub verdicts; here we pool
-    raw text because failure_reason needs readable context, not classified
-    verdicts.
+    Composition (in priority order):
+      1. whyStopped from the clinical_protocol registry
+      2. web_context snippets (press releases, news) — primary source for
+         business/funding/strategic reasons the registry doesn't disclose
+      3. Top literature snippets
+
+    web_context is surfaced before literature because business-reason
+    terminations are rarely quotable from peer-reviewed pubs but often
+    explicit in press releases / SEC filings / company news.
     """
     parts: list[str] = []
     if why_stopped:
         parts.append(f"whyStopped (ClinicalTrials.gov): {why_stopped}")
-    count = 0
+
+    web_count = 0
+    for result in research_results:
+        if result.error or result.agent_name != "web_context":
+            continue
+        for citation in (result.citations or [])[:20]:
+            title = (citation.title or "").strip()
+            snippet = (citation.snippet or "").strip()
+            if not (title or snippet):
+                continue
+            parts.append(f"[web] {title}\n  {snippet[:500]}")
+            web_count += 1
+            if web_count >= 4:
+                break
+        if web_count >= 4:
+            break
+
+    lit_count = 0
     for result in research_results:
         if result.error or result.agent_name != "literature":
             continue
@@ -228,12 +250,13 @@ def _assemble_evidence(
             snippet = (citation.snippet or "").strip()
             if not (title or snippet):
                 continue
-            parts.append(f"- {title}\n  {snippet[:500]}")
-            count += 1
-            if count >= 6:
+            parts.append(f"[pub] {title}\n  {snippet[:500]}")
+            lit_count += 1
+            if lit_count >= 4:
                 break
-        if count >= 6:
+        if lit_count >= 4:
             break
+
     body = "\n\n".join(parts)
     if len(body) > max_chars:
         body = body[:max_chars].rstrip() + " …"
