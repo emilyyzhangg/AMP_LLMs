@@ -82,8 +82,8 @@ Step 1: Protocol-first</span>
    | + drug name resolution (LLM)
    v
 <span class="arrow">Step 2: 11 agents in parallel</span>
-<span class="hl">[Literature        ]</span>  <span class="arrow">--&gt;</span>  <span class="hl2">[Classification ]</span>  <span class="arrow">--&gt;</span>  <span class="hl3">[Verifier 1: gemma2:9b  ]</span>
-<span class="hl">[Peptide Identity  ]</span>  <span class="arrow">--&gt;</span>  <span class="hl2">[Delivery Mode  ]</span>  <span class="arrow">--&gt;</span>  <span class="hl3">[Verifier 2: qwen2.5:7b ]</span>
+<span class="hl">[Literature        ]</span>  <span class="arrow">--&gt;</span>  <span class="hl2">[Classification ]</span>  <span class="arrow">--&gt;</span>  <span class="hl3">[Verifier 1: gemma3:12b ]</span>
+<span class="hl">[Peptide Identity  ]</span>  <span class="arrow">--&gt;</span>  <span class="hl2">[Delivery Mode  ]</span>  <span class="arrow">--&gt;</span>  <span class="hl3">[Verifier 2: qwen3:8b   ]</span>
 <span class="hl">[DBAASP / ChEMBL   ]</span>  <span class="arrow">--&gt;</span>  <span class="hl2">[Outcome        ]</span>  <span class="arrow">--&gt;</span>  <span class="hl3">[Verifier 3: phi4-mini  ]</span>
 <span class="hl">[RCSB PDB / EBI    ]</span>  <span class="arrow">--&gt;</span>  <span class="hl2">[Failure Reason ]</span>  <span class="arrow">--&gt;</span>  <span class="hl3">[Reconciler: qwen2.5:14b]</span>
 <span class="hl">[APD / WHO / IUPHAR]</span>  <span class="arrow">--&gt;</span>  <span class="hl2">[Peptide        ]</span>
@@ -214,12 +214,12 @@ Step 1: Protocol-first</span>
   <div class="grid grid-3">
     <div class="card" style="border-color:#4fc3f7;">
       <h3><span class="accent">Conservative</span></h3>
-      <p>gemma2:9b</p>
+      <p>gemma3:12b</p>
       <p class="dim" style="font-size:13px;">Safest interpretation. Defaults to Unknown for ambiguous evidence.</p>
     </div>
     <div class="card" style="border-color:#81c784;">
       <h3><span class="accent2">Evidence-Strict</span></h3>
-      <p>qwen2.5:7b</p>
+      <p>qwen3:8b</p>
       <p class="dim" style="font-size:13px;">Only citable facts. Rejects reasoning not grounded in evidence.</p>
     </div>
     <div class="card" style="border-color:#ffb74d;">

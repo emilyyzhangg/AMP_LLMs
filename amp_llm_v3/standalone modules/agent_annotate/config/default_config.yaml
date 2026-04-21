@@ -15,10 +15,10 @@ verification:
     # Mac Mini verifiers — cognitive diversity via 3 different model families.
     # Each gets a different verification persona (conservative, evidence-strict, adversarial).
     verifier_1:
-      name: "gemma2:9b"          # Google — conservative persona
+      name: "gemma3:12b"         # Google — conservative persona (v42: gemma2:9b → gemma3:12b, same-family upgrade)
       role: verifier
     verifier_2:
-      name: "qwen2.5:7b"         # Alibaba (v2.5 gen upgrade) — evidence-strict persona
+      name: "qwen3:8b"           # Alibaba Qwen 3 — evidence-strict persona (v42: qwen2.5:7b → qwen3:8b, within-family upgrade)
       role: verifier
     verifier_3:
       name: "llama3.1:8b"        # Meta Llama 3.1 — adversarial persona (replaces phi4-mini:3.8b, v28)
@@ -133,6 +133,20 @@ orchestrator:
   # llama3.1:8b and qwen3:14b, costing 60-90s per trial in model reload overhead).
   annotation_model: "qwen3:14b"
 
+  # v42 Phase 5 shadow-mode flags. Each runs a parallel "atomic" agent under a
+  # distinct _atomic field name; legacy authoritative fields are untouched.
+  # These MUST stay true on dev during Phase 5 validation. Flip them off on
+  # prod until the 94-NCT run is analyzed and B1/B2/B3 verdicts are in.
+  outcome_atomic_shadow: true
+  classification_atomic_shadow: true
+  failure_reason_atomic_shadow: true
+  # v42 B1: Tier 1b per-pub LLM cap. Prevents 45-pub NCTs from stalling the
+  # whole batch on a single trial. 0 = unlimited.
+  outcome_atomic_max_voting_pubs: 20
+  # v42 B4: Reconciler /think-mode. qwen3-only. Costs ~2x tokens; off until
+  # Phase 5 data proves it resolves disagreements better.
+  reconciler_thinking: false
+
   # Premium model for server profile — used for classification, outcome, and reconciliation.
   # These are the hardest tasks requiring strong multi-step reasoning.
   # Toggle between models by changing this single value:
@@ -169,9 +183,7 @@ ollama:
   # while allowing cold loads (~60s) + inference (~30s) + safety margin.
   # Larger models (14B+) doing annotation/reconciliation need the full 600s.
   model_timeouts:
-    "phi4-mini": 500
-    "llama3.1:8b": 300
-    "gemma2:9b": 300
-    "qwen2.5:7b": 300
-    "qwen2.5:14b": 600
-    "qwen3:14b": 600
+    "llama3.1:8b": 300       # v42: verifier_3 (adversarial)
+    "gemma3:12b": 400        # v42: verifier_1 (conservative) + atomic Tier 1b assessor
+    "qwen3:8b": 300          # v42: verifier_2 (evidence-strict)
+    "qwen3:14b": 600         # v40+: primary annotator + reconciler

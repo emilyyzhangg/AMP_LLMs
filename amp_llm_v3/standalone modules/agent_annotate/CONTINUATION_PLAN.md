@@ -1,7 +1,75 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-17
-**Current state:** v41 on main (7964c040). v41 overcorrected — outcome 58.1% (was 60.5% in v40). v41b fix pending.
+**Current state:** v41b on main (239d16f0). 94-NCT validation for v41b in progress (job 99c9c0f0b3e5 @ 144bd8f2, ~11h remaining). v42 **atomic redesign** Phases 1–4 committed to dev (7208fa24, 6aaa2261, e5d69277, 87dc96aa, + Phase 4 wiring pending commit). Verifier_1 migrated gemma2:9b → **gemma3:12b** (same-family upgrade); v42 Phase 2 atomic assessor defaults to gemma3:12b. Shadow-mode agent registered as `outcome_atomic` in ANNOTATION_AGENTS, gated by `config.orchestrator.outcome_atomic_shadow` (default OFF). Docs (METHODOLOGY.md, IMPLEMENTATION_PLAN.md, PAPER.md, USER_GUIDE.md, AGENT_ANNOTATE_OVERVIEW.html) + PPT deck updated.
+
+### v42 Plan (2026-04-17) — Atomic Evidence Decomposition
+
+Full design: `docs/ATOMIC_EVIDENCE_DECOMPOSITION.md`. The oscillation v39→v40→v41→v41b confirmed a single-LLM dossier agent cannot be stabilized by prompt tuning — each fix inverts the error class (FP ↔ FN). v42 rebuilds outcome as four explicit tiers:
+
+- Tier 0: deterministic pre-label (RECRUITING/WITHDRAWN/SUSPENDED, COMPLETED+hasResults+p<0.05)
+- Tier 1a: structural trial-specificity classifier (NCT-in-body, PMID-in-CTgov-refs, title-design+drug) — no keyword list
+- Tier 1b: per-publication LLM with 5 atomic Y/N/Unclear questions (1 focused call per pub, ~200 tokens)
+- Tier 2: registry signal extraction (status, completion date, stale flag, ChEMBL max phase)
+- Tier 3: deterministic aggregator with 8 ordered rules (R1–R8)
+
+Philosophy: no LLM makes the final outcome decision. The LLM only answers atomic questions about individual publications. Aggregator is 15 lines of Python. Disagreements are categorized (evidence gap / question gap / aggregator gap / R1 judgment call); Category 4 disagreements are allowed to persist — we're not agreement-maxing.
+
+#### Phase 1 complete (dev 7208fa24, 2026-04-17)
+
+New files (no production wiring):
+- `agents/annotation/outcome_registry_signals.py` — Tier 2 + Tier 0
+- `agents/annotation/outcome_pub_classifier.py` — Tier 1a
+- `agents/annotation/outcome_atomic.py` — orchestrator (returns PENDING placeholder until Phases 2–3)
+- `scripts/test_atomic_phase1.py` — replay tool
+
+Validation: 10/10 synthetic unit tests pass; 47-NCT replay on f6535916f390 runs with zero errors (1 Tier 0 Withdrawn fire, 31 trial_specific / 72 general / 507 ambiguous pubs out of 610 total).
+
+#### Phase 2 complete (dev 6aaa2261, 2026-04-17)
+
+New module `agents/annotation/outcome_pub_assessor.py` — prompts the LLM with one publication at a time, parses strict JSON to a `PubVerdict`. Per-(NCT, PMID, text-hash) cache. Deterministic verdict function maps atomic answers → POSITIVE/FAILED/INDETERMINATE (6 lines of Python, never uses the LLM for the outcome label itself).
+
+**Model choice: gemma3:12b** (v42 default, same-family upgrade from gemma2:9b). Each assessor call is a tight reading-comprehension task on a single publication (≤1800 chars), 5 atomic Y/N/UNCLEAR questions, strict JSON response. Gemma 3 12B handles this well and leaves qwen3:14b free for the legacy dossier pipeline during shadow mode. 400s timeout. Live test script `scripts/test_atomic_phase2_live.py` now defaults `--model gemma3:12b`.
+
+Integration test on 5 NCTs before Phase 3 — still pending; run after gemma3:12b pull lands on prod and Phase 3 aggregator wires up.
+
+#### Phase 3 complete (dev pending-commit, 2026-04-17)
+
+New module `agents/annotation/outcome_aggregator.py` — TIER0 short-circuit then R1–R8 ordered match, returns `AggregatorResult(value, rule_name, rule_description, confidence, trace)`. Every verdict names the rule and the atomic inputs that fired it (per-pub q1–q5 answers listed in trace).
+
+Rule semantics:
+- **R1** any POSITIVE pub-verdict AND 0 FAILED → Positive (conf 0.90)
+- **R2** any FAILED AND 0 POSITIVE → Failed - completed trial (conf 0.90)
+- **R3** both POSITIVE and FAILED present → verdict of most-recent pub; year extracted from title+snippet regex, trial_specific beats ambiguous as tiebreaker, list index as final fallback (conf 0.80)
+- **R4** no trial_specific pubs AND COMPLETED AND drug_max_phase ≥ 3 (Phase III / approved) → Positive (conf 0.80)
+- **R5** no trial_specific pubs AND COMPLETED AND PHASE1 AND ≥1 pub of any kind → Positive (conf 0.70)
+- **R6** ACTIVE_NOT_RECRUITING AND not stale → Active, not recruiting (conf 0.90)
+- **R7** TERMINATED AND no POSITIVE pub → Terminated (conf 0.90)
+- **R8** otherwise → Unknown (conf 0.50)
+
+Voting set for R1–R3 is trial_specific + ambiguous pubs with verdict ∈ {POSITIVE, FAILED}. INDETERMINATE and confident-general pubs don't vote. R7 can be preempted by R2 — FAILED atomic evidence outranks TERMINATED registry status (a trial can terminate for non-failure reasons but a published trial failure IS a failure).
+
+Synthetic unit tests in `scripts/test_aggregator.py` — 18/18 pass covering TIER0 + R1/R2/R3 (both directions) + R4 (Phase 3 and Phase 4/approved) + R5 (both fire and fall-through) + R6 (both) + R7 (pure + R2 preemption) + R8 + confidence ordering.
+
+#### Phase 4 complete (dev pending-commit, 2026-04-17)
+
+`OutcomeAtomicAgent.annotate()` now runs the full atomic pipeline end-to-end: Tier 0 → Tier 1a → Tier 1b (per trial_specific/ambiguous pub, calls `PubAssessor` with gemma3:12b and disk-backed per-(NCT, PMID, text-hash) cache at `results/atomic_pub_cache/`) → Tier 3 aggregator. Output: FieldAnnotation with value, aggregator confidence, full reasoning block (registry summary, voting-pub Q1–Q5 answers, aggregator trace), `skip_verification=True` so shadow runs don't burn the verifier pool.
+
+Wiring:
+- `agents/annotation/__init__.py` — registers `OutcomeAtomicAgent` under `"outcome_atomic"` alongside the legacy `"outcome"` agent.
+- `app/services/orchestrator.py` step2 loop — excludes `"outcome_atomic"` unless `config.orchestrator.outcome_atomic_shadow` is True.
+- `app/models/config_models.py` OrchestratorConfig — adds `outcome_atomic_shadow: bool = False` (default OFF to protect prod from premature Phase 5 spend) and `outcome_atomic_model: str = ""` (empty → module default gemma3:12b).
+- `scripts/test_atomic_shadow.py` — integration test: loads real annotation JSONs, runs the full atomic stack via the real ollama_client, prints legacy outcome vs atomic rule/value per NCT.
+
+Smoke-tested NCT01661192 on dev: Tier 1a classified 1 trial-specific pub, Tier 1b gemma3:12b LLM call succeeded (HTTP 200), Tier 3 R8 Unknown fall-through (insufficient atomic signal on that single pub). Pipeline emits no crashes end-to-end.
+
+To enable for the 94-NCT Phase 5 run: set `orchestrator.outcome_atomic_shadow: true` in `config/default_config.yaml` on dev before submitting the job. The atomic annotation will be stored under field_name `outcome_atomic`, independent of the legacy `outcome` field — downstream concordance scripts compare the two.
+
+#### Phase 5 pending: 94-NCT validation in shadow mode
+
+After v41b validation (99c9c0f0b3e5) completes, next validation is atomic-shadow on same 94-NCT set.
+
+#### Phase 6–8 pending: iteration, cut over, extend to classification + failure_reason
 
 ### v41b Plan (2026-04-17) — Fix overcorrection from v41
 

@@ -92,8 +92,8 @@ Step 2: Parallel with metadata
 [Web Context        ]   │
 [DBAASP (v4)        ]   │
 [ChEMBL (v4)        ]   │
-[RCSB PDB (v4)      ]   ├──>  [Classification Agent]  -->  [Blind Verifier 1: gemma2:9b  ]
-[EBI Proteins (v4)  ]   │     [Delivery Mode Agent ]  -->  [Blind Verifier 2: qwen2.5:7b  ]
+[RCSB PDB (v4)      ]   ├──>  [Classification Agent]  -->  [Blind Verifier 1: gemma3:12b ]
+[EBI Proteins (v4)  ]   │     [Delivery Mode Agent ]  -->  [Blind Verifier 2: qwen3:8b    ]
 [APD (v5)           ]   │     [Outcome Agent       ]  -->  [Blind Verifier 3: phi4-mini   ]
 [                   ]   │     [Failure Reason Agent]  -->  [Reconciler: qwen2.5:14b (disputes only)]
 [WHO ICTRP (v5)     ]   │     [Peptide Agent       ]
@@ -380,8 +380,8 @@ The verification pipeline implements blind multi-model peer review. The term "bl
 | Role | Model | Architecture Family | Parameters |
 |---|---|---|---|
 | Primary annotator | llama3.1:8b | Meta LLaMA | 8B |
-| Verifier 1 | gemma2:9b | Google Gemma | 9B |
-| Verifier 2 | qwen2.5:7b | Alibaba Qwen 2.5 | 7B |
+| Verifier 1 | gemma3:12b | Google Gemma 3 | 12B |
+| Verifier 2 | qwen3:8b | Alibaba Qwen 3 | 8B |
 | Verifier 3 | phi4-mini:3.8b | Microsoft Phi-4 Mini | 3.8B |
 | Reconciler | qwen2.5:14b | Alibaba Qwen 2.5 | 14B |
 

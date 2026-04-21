@@ -1471,7 +1471,22 @@ class PipelineOrchestrator:
         # --- Step 2: Run classification, delivery_mode, outcome, sequence (NOT failure_reason yet) ---
         # failure_reason depends on outcome, so we run it after outcome completes.
         # sequence is deterministic (no LLM) and has no dependencies.
-        step2_fields = [f for f in ANNOTATION_AGENTS if f not in ("peptide", "reason_for_failure")]
+        # reason_for_failure_atomic is run with the legacy failure_reason in step 3
+        # because it also depends on the outcome_atomic result.
+        step2_fields = [
+            f for f in ANNOTATION_AGENTS
+            if f not in ("peptide", "reason_for_failure", "reason_for_failure_atomic")
+        ]
+
+        # v42 Phase 4: skip the atomic shadow-mode agent unless explicitly
+        # enabled. The agent is registered globally so tests/scripts can invoke
+        # it directly, but a default annotation run must not burn LLM cycles
+        # on the shadow pipeline.
+        if not getattr(config.orchestrator, "outcome_atomic_shadow", False):
+            step2_fields = [f for f in step2_fields if f != "outcome_atomic"]
+        # v42 B2: classification_atomic shadow. Default OFF.
+        if not getattr(config.orchestrator, "classification_atomic_shadow", False):
+            step2_fields = [f for f in step2_fields if f != "classification_atomic"]
 
         job.progress.current_field = ", ".join(step2_fields)
         job.progress.current_agent = "annotation (parallel)" if config.orchestrator.parallel_annotation else "annotation"
@@ -1522,6 +1537,12 @@ class PipelineOrchestrator:
         outcome_ann = next((a for a in annotations if a.field_name == "outcome"), None)
         if outcome_ann:
             shared_metadata["outcome_result"] = outcome_ann.value
+        # v42 B3: pass atomic outcome through for reason_for_failure_atomic gating.
+        outcome_atomic_ann = next(
+            (a for a in annotations if a.field_name == "outcome_atomic"), None
+        )
+        if outcome_atomic_ann:
+            shared_metadata["outcome_atomic_result"] = outcome_atomic_ann.value
         try:
             failure_ann = await annotate_field("reason_for_failure", metadata=shared_metadata)
         except Exception as e:
@@ -1532,6 +1553,27 @@ class PipelineOrchestrator:
             )
         annotations.append(failure_ann)
         job.progress.field_timings["reason_for_failure"] = round(_field_time.monotonic() - _rf_start, 1)
+
+        # v42 B3: shadow-mode reason_for_failure_atomic. Gated on its own shadow
+        # flag AND on outcome_atomic having produced a failed label — the agent
+        # itself short-circuits on non-failure outcomes, but skipping the
+        # dispatch avoids the overhead entirely.
+        if getattr(config.orchestrator, "failure_reason_atomic_shadow", False):
+            _fra_start = _field_time.monotonic()
+            try:
+                fra_ann = await annotate_field(
+                    "reason_for_failure_atomic", metadata=shared_metadata
+                )
+            except Exception as e:
+                fra_ann = FieldAnnotation(
+                    field_name="reason_for_failure_atomic",
+                    value="",
+                    reasoning=f"Agent error: {e}",
+                )
+            annotations.append(fra_ann)
+            job.progress.field_timings["reason_for_failure_atomic"] = round(
+                _field_time.monotonic() - _fra_start, 1
+            )
 
         # v17: Post-annotation quality check — detect timeout artifacts,
         # empty/garbage responses, and error messages leaked into values

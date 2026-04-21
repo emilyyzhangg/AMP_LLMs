@@ -58,6 +58,37 @@ class OrchestratorConfig(BaseModel):
     # during annotation phase. All 5 fields use this model instead of the
     # primary annotator (llama3.1:8b) for some and qwen3:14b for others.
     annotation_model: str = "qwen3:14b"
+    # v42 Phase 4: Run the atomic outcome pipeline alongside the legacy dossier
+    # outcome agent. Stored under field_name="outcome_atomic" so the legacy
+    # "outcome" remains authoritative. Default OFF to avoid unexpected LLM
+    # spend on prod — flip to True for Phase 5 shadow-mode validation.
+    outcome_atomic_shadow: bool = False
+    # v42 Phase 4: Model used by the Tier 1b per-publication assessor. Empty
+    # string falls back to the module default (gemma3:12b). Small focused
+    # reading-comprehension calls are a natural fit for Gemma 3 12B.
+    outcome_atomic_model: str = ""
+    # v42 Phase 4.6 (A1): Hard cap on how many pubs per NCT get Tier 1b LLM
+    # cycles. Pubs are prioritized trial_specific > ambiguous, year desc,
+    # snippet length desc. Overflow pubs get an INDETERMINATE placeholder so
+    # the aggregator still sees a 1:1 pub/verdict mapping.
+    # 0 = unlimited (previous behavior). Default 20 prevents 40+ pub NCTs
+    # from stalling the whole batch on a single trial.
+    outcome_atomic_max_voting_pubs: int = 20
+    # v42 B2: Shadow-mode classification_atomic agent. Binary AMP/Other via
+    # registry hits (DRAMP/APD/UniProt-AMP) + three atomic Y/N questions on
+    # protocol text. Default OFF — flip on dev during Phase 5.
+    classification_atomic_shadow: bool = False
+    # Tier 1b model for classification_atomic. Empty → qwen3:14b.
+    classification_atomic_model: str = ""
+    # v42 B3: Shadow-mode reason_for_failure_atomic agent. Runs only when
+    # outcome_atomic ∈ {Terminated, Failed - completed trial}. Default OFF.
+    failure_reason_atomic_shadow: bool = False
+    # Tier 1b model for failure_reason_atomic. Empty → qwen3:14b.
+    failure_reason_atomic_model: str = ""
+    # v42 B4: Enable qwen3 /think-mode on the reconciler when the reconciler
+    # model is a qwen3:* variant. Costs ~2x tokens but produces better
+    # disagreement resolution. Default OFF.
+    reconciler_thinking: bool = False
 
 
 class OllamaConfig(BaseModel):
@@ -77,12 +108,10 @@ class OllamaConfig(BaseModel):
     # Smaller models get shorter timeouts since they either respond quickly
     # or are hung (bimodal). Larger models doing annotation need more time.
     model_timeouts: Dict[str, int] = {
-        "phi4-mini": 240,       # 3.8B — normal response 10-31s, cold load ~60s
-        "llama3.1:8b": 300,     # 8B — moderate size
-        "gemma2:9b": 300,       # 9B — moderate size
-        "qwen2.5:7b": 300,      # 7B — moderate size
-        "qwen2.5:14b": 600,     # 14B — legacy, kept for backward compat
-        "qwen3:14b": 600,       # 14B — v40 annotation model
+        "llama3.1:8b": 300,     # 8B — v42: verifier_3 (adversarial)
+        "gemma3:12b": 400,      # 12B — v42: verifier_1 (conservative) + atomic Tier 1b assessor
+        "qwen3:8b": 300,        # 8B — v42: verifier_2 (evidence-strict), upgraded from qwen2.5:7b
+        "qwen3:14b": 600,       # 14B — v40+: primary annotator + reconciler
     }
 
 

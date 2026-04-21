@@ -308,6 +308,11 @@ Pass 2 — **Determination**: Given all extracted facts, make the decision. Publ
 
 Failure Reason agent has a **smart short-circuit**: if Pass 1 determines the trial did not fail, skips Pass 2 entirely (saves an Ollama call for ~80% of trials).
 
+**v42 Atomic Outcome Pipeline (shadow mode).** The outcome agent has a parallel atomic implementation at `agents/annotation/outcome_atomic.py` stored under a separate field name `outcome_atomic`:
+- Tier 0 (deterministic pre-label) → Tier 1a (structural trial-specificity classifier, no keywords) → Tier 1b (per-publication gemma3:12b assessor, five atomic Y/N/UNCLEAR questions with forced evidence_quote) → Tier 2 (registry signal extractor) → Tier 3 (deterministic R1–R8 aggregator, no LLM final decision).
+- Every verdict carries a named rule and the atomic inputs that fired it. See `docs/ATOMIC_EVIDENCE_DECOMPOSITION.md` for full design.
+- Gated by `config.orchestrator.outcome_atomic_shadow` (default OFF). When enabled, both pipelines run; the legacy outcome remains authoritative during Phase 5 94-NCT validation.
+
 ### 2.8 Ollama Client
 
 **`app/services/ollama_client.py`**:
@@ -380,8 +385,8 @@ async def _run_verification(self, nct_id, annotations, research_data):
 
 **Default pipeline (5 sequential Ollama calls per field, 25 total per trial):**
 1. Primary (llama3.1:8b) annotates
-2. Verifier 1 (gemma2:9b) blind-verifies — conservative persona
-3. Verifier 2 (qwen2.5:7b) blind-verifies — evidence-strict persona
+2. Verifier 1 (gemma3:12b) blind-verifies — conservative persona (v42 upgrade from gemma2:9b, same Google Gemma family)
+3. Verifier 2 (qwen3:8b) blind-verifies — evidence-strict persona (v42 upgrade from qwen2.5:7b, same Alibaba Qwen family)
 4. Verifier 3 (phi4-mini:3.8b) blind-verifies — adversarial persona
 5. Reconciler (qwen2.5:14b) only if disagreement
 
@@ -683,10 +688,11 @@ Agent Annotate has **zero runtime dependencies** on other AMP LLM microservices.
 | Role | Model | Size | Purpose |
 |------|-------|------|---------|
 | Primary Annotator | llama3.1:8b | 4.9 GB | Best general reasoning |
-| Verifier 1 | gemma2:9b | 5.4 GB | Google architecture — conservative persona |
-| Verifier 2 | qwen2.5:7b | 4.4 GB | Alibaba Qwen 2.5 — evidence-strict persona |
+| Verifier 1 | gemma3:12b | 8.1 GB | Google Gemma 3 generation — conservative persona (v42 upgrade from gemma2:9b) |
+| Verifier 2 | qwen3:8b | 5.2 GB | Alibaba Qwen 3 — evidence-strict persona (v42 upgrade from qwen2.5:7b) |
 | Verifier 3 | phi4-mini:3.8b | 2.2 GB | Microsoft Phi-4 Mini — adversarial persona |
 | Reconciler | qwen2.5:14b | 9.0 GB | Largest model for dispute resolution |
+| v42 Atomic Outcome Assessor | gemma3:12b | 8.1 GB | Per-publication Tier 1b LLM for v42 atomic pipeline — small focused reading-comprehension prompts |
 
 All sequential (one at a time) due to 16GB RAM.
 
