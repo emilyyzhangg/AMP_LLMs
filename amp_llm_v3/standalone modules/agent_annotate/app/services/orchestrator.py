@@ -281,18 +281,66 @@ class PipelineOrchestrator:
 
     @staticmethod
     def _detect_our_port() -> int:
-        """Detect which port this service is actually running on."""
-        import socket
-        # Try to bind on 8005 — if it fails, we're on 8005
+        """Detect which port this service is actually running on.
+
+        v42.6.6 fix: the previous socket.bind() probe was unreliable because
+        uvicorn sets SO_REUSEADDR on its listener — a second bind attempt on
+        the same port inside our own process can SUCCEED, causing us to
+        mis-identify ourselves as the other branch. The flipped branch ID
+        then makes the cross-branch gate wait for ourselves (a deadlock that
+        silently burns 30s/iteration forever).
+
+        Correct sources, in priority order:
+        1. ``AGENT_ANNOTATE_PORT`` env var (explicit, plist-provided)
+        2. Parse ``--port N`` from sys.argv (uvicorn CLI invocation)
+        3. Fall back to scanning ``lsof``/``ss`` for our PID's listen socket
+        """
+        import os, sys
+
+        # 1. Explicit env var wins.
+        env_port = os.environ.get("AGENT_ANNOTATE_PORT", "").strip()
+        if env_port.isdigit():
+            return int(env_port)
+
+        # 2. Parse uvicorn CLI flags from sys.argv (LaunchDaemon runs
+        #    `uvicorn app.main:app --host 127.0.0.1 --port 8005`).
+        argv = sys.argv
+        for i, arg in enumerate(argv):
+            if arg == "--port" and i + 1 < len(argv):
+                try:
+                    return int(argv[i + 1])
+                except ValueError:
+                    pass
+            if arg.startswith("--port="):
+                try:
+                    return int(arg.split("=", 1)[1])
+                except ValueError:
+                    pass
+
+        # 3. Last resort: inspect our own process's listening sockets.
         try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.bind(("127.0.0.1", 8005))
-            s.close()
-            # Port 8005 is free — we must be on 9005
-            return 9005
-        except OSError:
-            # Port 8005 is in use (by us) — we're on 8005
-            return 8005
+            import psutil  # type: ignore
+            pid = os.getpid()
+            proc = psutil.Process(pid)
+            for conn in proc.net_connections(kind="inet"):
+                if conn.status == "LISTEN" and conn.laddr:
+                    p = conn.laddr.port
+                    if p in (8005, 9005):
+                        return p
+        except Exception:
+            pass
+
+        # 4. Conservative default: 8005 (production). Better to treat
+        #    ourselves as main than as dev — if we ARE dev and wrongly
+        #    return main, we'd check ourselves and wait, which is the
+        #    bug we're fixing. Logging a warning here so the flip is
+        #    visible at least.
+        import logging
+        logging.getLogger("agent_annotate.orchestrator").warning(
+            "Could not detect our service port — falling back to 8005. "
+            "Set AGENT_ANNOTATE_PORT env var in the plist to suppress."
+        )
+        return 8005
 
     def get_job(self, job_id: str) -> Optional[AnnotationJob]:
         return self._jobs.get(job_id)

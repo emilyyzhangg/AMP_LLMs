@@ -14,6 +14,8 @@
     <dict>
         <key>PATH</key>
         <string>/Users/amphoraxe/Developer/amphoraxe/dev-llm.amphoraxe.ca/amp_llm_v3/llm_env/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>AGENT_ANNOTATE_PORT</key>
+        <string>9005</string>
     </dict>
     <key>UserName</key>
     <string>amphoraxe</string>
