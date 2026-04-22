@@ -113,10 +113,21 @@ class BioRxivClient(BaseResearchAgent):
         except Exception:
             return None
 
-        interventions = [
-            n.lower() for n in self._extract_interventions(metadata)
+        # v42.6.4 bugfix: exclude generic terms that appear in many unrelated
+        # medical papers (placebo, vehicle, standard of care, etc.). Without
+        # this, a citation about soybeans passes the filter because both
+        # "placebo" and the soybean paper happen to share that word.
+        _GENERIC = {
+            "placebo", "control", "standard of care", "standard care",
+            "vehicle", "saline", "water", "sugar", "sham",
+            "best supportive care", "no treatment",
+            "matching placebo", "comparator", "active comparator",
+        }
+        raw = [
+            n.lower().strip() for n in self._extract_interventions(metadata)
             if isinstance(n, str) and len(n) >= 3
         ]
+        interventions = [n for n in raw if n not in _GENERIC]
         if not interventions:
             return None
 

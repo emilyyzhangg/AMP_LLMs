@@ -2279,12 +2279,18 @@ class PipelineOrchestrator:
         """v42.6.3 helper. Inspect a partial research_results list (usually
         just clinical_protocol at time of call) and return True iff every
         intervention type is one that cannot be a peptide drug. Conservative:
-        returns False on any ambiguous type (``Biological``, ``Drug``) or
+        returns False on any ambiguous type (``BIOLOGICAL``, ``DRUG``) or
         missing data. Used to decide whether to skip AMP-specific research.
+
+        v42.6.4 bugfix: CT.gov returns intervention types UPPERCASE
+        ("BIOLOGICAL", "DEVICE", "OTHER"). Original check compared against
+        Title Case and never matched, silently no-opping Eff #3 on every
+        trial. Normalize to upper on both sides.
         """
-        clearly_non_peptide_types = {
-            "Device", "Procedure", "Behavioral", "Radiation",
-            "Dietary Supplement", "Genetic", "Other",
+        clearly_non_peptide_types_upper = {
+            "DEVICE", "PROCEDURE", "BEHAVIORAL", "RADIATION",
+            "DIETARY_SUPPLEMENT", "DIETARY SUPPLEMENT",
+            "GENETIC", "OTHER",
         }
         found_types: list[str] = []
         for r in results or []:
@@ -2298,10 +2304,10 @@ class PipelineOrchestrator:
             for interv in (arms.get("interventions") or []):
                 t = (interv.get("type") or "").strip() if isinstance(interv, dict) else ""
                 if t:
-                    found_types.append(t)
+                    found_types.append(t.upper())
         if not found_types:
             return False
-        return all(t in clearly_non_peptide_types for t in found_types)
+        return all(t in clearly_non_peptide_types_upper for t in found_types)
 
     @staticmethod
     def _deterministic_peptide_pregate(
@@ -2358,19 +2364,22 @@ class PipelineOrchestrator:
         if not int_types:
             return None  # No type data → can't be sure; let LLM decide.
 
+        # v42.6.4 bugfix: CT.gov returns intervention types UPPERCASE.
         # Types known to NEVER be peptide drugs on their own.
-        # "Biological" is intentionally absent (many peptide vaccines are
-        # registered as Biological); "Drug" alone is ambiguous but combined
+        # "BIOLOGICAL" is intentionally absent (many peptide vaccines are
+        # registered as Biological); "DRUG" alone is ambiguous but combined
         # with the no-database-hit checks below it's strong evidence.
-        non_peptide_types = {
-            "Device", "Procedure", "Behavioral", "Radiation",
-            "Dietary Supplement", "Genetic", "Other",
+        non_peptide_types_upper = {
+            "DEVICE", "PROCEDURE", "BEHAVIORAL", "RADIATION",
+            "DIETARY_SUPPLEMENT", "DIETARY SUPPLEMENT",
+            "GENETIC", "OTHER",
         }
+        int_types_upper = [t.upper() for t in int_types]
         drug_or_nonpep_only = all(
-            t in non_peptide_types or t == "Drug" for t in int_types
+            t in non_peptide_types_upper or t == "DRUG" for t in int_types_upper
         )
         if not drug_or_nonpep_only:
-            return None  # "Biological" or anything novel → defer to LLM.
+            return None  # "BIOLOGICAL" or anything novel → defer to LLM.
 
         if has_uniprot_hit or has_peptide_db_hit:
             return None  # Database suggests a peptide; LLM should confirm.
@@ -2395,7 +2404,7 @@ class PipelineOrchestrator:
 
         reason = (
             f"[Deterministic pre-gate] intervention types: "
-            f"{sorted(set(int_types))}; no UniProt/DRAMP/APD/DBAASP hit; "
+            f"{sorted(set(int_types_upper))}; no UniProt/DRAMP/APD/DBAASP hit; "
             f"no known-sequence match → peptide=False"
         )
         return {"value": "False", "confidence": 0.85, "reasoning": reason}
