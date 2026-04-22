@@ -25,6 +25,18 @@
 
 **Outcome aggregator rule set (current):** TIER0, R1 (any POS + 0 FAIL → Positive), R2 (any FAIL + 0 POS → Failed), R3 (mixed → most-recent), R6 (active not stale), R7 (terminated no POS), R8 (default Unknown). Drug-level rules R4/R5 removed — atomic refuses to call Positive without trial-level evidence.
 
+### Job #71 (prod) — RESULTS, 2026-04-21
+
+First end-to-end prod run post-Phase-6. Same 94 NCTs as Phase 5 shadow preview (direct comparison).
+
+- 94/94 complete, 8h 27min, 324s/trial avg
+- 0 final warnings / 0 errors
+- **classification atomic: 93% vs R1** (vs 80% legacy shadow); **AMP recall 86%** (vs Phase 5 shadow 75%)
+- classification atomic-vs-legacy disagreements: 13 — atomic correct more often (e.g. calcitonin trials called AMP by legacy, Other by atomic; calcitonin is a bone hormone, not an AMP)
+- outcome_atomic: 40% scoreable (R8 floor 30% on 46 trials); legacy outcome still 50%
+- delivery_mode: 79% — pre-existing multi-intervention route-list issue, not Phase 6 regression
+- bioRxiv underperformed (3/94 trials) — metadata-shape bug fixed (see `biorxiv_client._extract_interventions` handling dict form); live-tested on Omiganan NCT, returns relevant preprint
+
 ### Phase 6 — current (partial cut-over + research pipeline expansion + efficiency pack)
 
 1. **Partial cut-over flags** — `orchestrator.prefer_atomic_classification` and `orchestrator.prefer_atomic_failure_reason` (both default OFF in prod, **both true on dev** as of 2026-04-21 commit `948d2218`). When true the atomic value goes in the primary field; legacy becomes `<field>_legacy`. Outcome cut-over deferred pending research-agent expansion.

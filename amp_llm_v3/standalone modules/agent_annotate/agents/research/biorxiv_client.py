@@ -250,14 +250,36 @@ class BioRxivClient(BaseResearchAgent):
 
     @staticmethod
     def _extract_interventions(metadata: dict) -> list[str]:
-        """Interventions are passed through shared_metadata; accept both the
-        prebuilt list and a minimal protocol-style dict fallback."""
+        """Extract drug names from whatever metadata shape the orchestrator
+        hands us.
+
+        The orchestrator passes interventions as a list of dicts shaped like
+        ``[{"name": "drug_a", "resolved": ["drug_a_synonym"]}, ...]`` (see
+        ``_run_research`` and ``_resolve_drug_names``). Earlier probe code
+        used plain strings. Accept both. Also flatten ``resolved`` aliases
+        so synonym hits count.
+        """
+        out: list[str] = []
         interv = metadata.get("interventions")
         if isinstance(interv, list):
-            return [str(i) for i in interv if i]
+            for entry in interv:
+                if isinstance(entry, dict):
+                    name = (entry.get("name") or "").strip()
+                    if name:
+                        out.append(name)
+                    for resolved in (entry.get("resolved") or []):
+                        r = (str(resolved) or "").strip()
+                        if r:
+                            out.append(r)
+                elif isinstance(entry, str):
+                    s = entry.strip()
+                    if s:
+                        out.append(s)
+            if out:
+                return out
+        # Fallback: walk the raw protocol_section if present.
         proto = metadata.get("protocol_section") or metadata.get("protocolSection") or {}
         arms = proto.get("armsInterventionsModule", {}) if isinstance(proto, dict) else {}
-        out: list[str] = []
         for entry in arms.get("interventions", []) or []:
             name = (entry.get("name") or "").strip() if isinstance(entry, dict) else ""
             if name:

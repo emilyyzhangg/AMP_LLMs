@@ -443,6 +443,58 @@ Critical rule: "Completed" registry status alone does NOT indicate failure. "Fai
 
 **v25:** Introduces an evidence priority ladder for outcome determination: publications > CT.gov posted results > CT.gov registry status > trial phase. A post-LLM `_publication_priority_override()` function checks whether published results exist when the LLM returns Unknown, Active, or Terminated, and reclassifies accordingly. This addresses the dominant error pattern where the LLM defaults to Unknown for trials with published results it failed to incorporate.
 
+### What "atomic" means (terminology)
+
+The system uses the term **atomic** in a very specific sense, borrowed from atomic-evidence-decomposition work in clinical reasoning. It does NOT mean "small," "quick," or "reductionist." It means: **every LLM call is scoped to a single piece of evidence and answers a narrow Y/N/UNCLEAR question about that one piece of evidence.** The field's final value is then assembled from many such atomic answers by a deterministic Python aggregator — no LLM ever sees the field's value space and picks one.
+
+This is the opposite of the **legacy** approach (aka the "dossier approach"), where a single LLM call receives the entire evidence dossier for a trial and is asked to produce the final field value directly, often with multiple possible class labels in the prompt. Legacy pseudocode:
+
+```python
+# legacy / dossier approach
+evidence = gather_all_research(nct)                       # up to 10k+ tokens
+response = llm.generate(prompt=f"""
+    Given this evidence, classify the outcome as one of
+    Positive / Failed / Terminated / Recruiting / Active /
+    Withdrawn / Unknown: {evidence}
+""")
+return parse_response(response)
+```
+
+Atomic pseudocode:
+
+```python
+# atomic approach
+pubs = extract_publications(evidence)
+verdicts = []
+for pub in pubs:                                          # one LLM call per pub
+    answers = llm.generate(prompt=f"""
+        Given this ONE publication, answer Y/N/UNCLEAR:
+        Q1: Does this pub report trial results?
+        Q2: Was the primary endpoint met?
+        ... etc
+        Text: {pub.text}                                  # ~1000 tokens
+    """)
+    verdicts.append(pub_verdict_rules(answers))          # 6-line deterministic map
+return aggregate_rules(verdicts, registry_signals)        # R1-R8 Python rules
+```
+
+**Why the distinction matters for this project.** The legacy outcome agent went through four prompt-tuning cycles (v39 → v40 → v41 → v41b). Each fix improved one error class at the expense of another, because the dossier LLM call integrates every signal at once and its attention lands on whichever signal the prompt currently emphasizes. Atomic decomposition removes that failure mode: Q1 only looks at whether this pub reports results; Q4 only looks at whether this pub reports failure. The deterministic aggregator combines the answers. No prompt tweak can flip the aggregator's logic.
+
+**Why "legacy" is still present.** During Phase 5 and early Phase 6, legacy runs alongside atomic and its output lives under `<field>_legacy` for audit — so a direct A/B against the new architecture is always available. Memory feedback confirms this shadow-mode pattern was intentional from v42 Phase 4 onward. After classification and reason_for_failure demonstrated stable improvement (Phase 5 shadow + Job #71 prod run), those two fields graduated to **atomic-as-primary** via the `prefer_atomic_*` config flags. Outcome stays shadow until its Cat 1 evidence gaps close (new research agents, bioRxiv fix).
+
+### Cross-reference table
+
+| Field | 2026-04-21 state | Primary source | Legacy present? |
+|---|---|---|---|
+| classification | atomic-primary | `classification_atomic` value → `classification` | Yes, as `classification_legacy` |
+| reason_for_failure | atomic-primary | `reason_for_failure_atomic` value → `reason_for_failure` | Yes, as `reason_for_failure_legacy` |
+| outcome | shadow | legacy `outcome` stays authoritative | Atomic available as `outcome_atomic` |
+| peptide | legacy | pre-cascade override + 2-pass LLM | No atomic version (low ROI) |
+| delivery_mode | legacy | deterministic + verifier | No atomic version (already mostly deterministic) |
+| sequence | legacy | structured-data-only | No atomic version (already atomic in spirit) |
+
+---
+
 **v42 Atomic Evidence Decomposition (shadow-mode family).** After v39→v41b oscillation confirmed that a single-LLM-on-full-dossier architecture cannot be stabilized by prompt tuning (each fix inverted the FP/FN error class), v42 rebuilds outcome as a four-tier atomic pipeline stored under a parallel field `outcome_atomic` during shadow-mode validation. v42 Phase 5 then extended the same pattern to two more fields: `classification_atomic` (binary AMP/Other) and `reason_for_failure_atomic` (gated on outcome_atomic ∈ {Terminated, Failed}).
 
 **The atomic family — shared design:**
