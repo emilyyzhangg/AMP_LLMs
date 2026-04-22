@@ -2371,36 +2371,118 @@ class PipelineOrchestrator:
             return False
         return all(t in clearly_non_peptide_types_upper for t in found_types)
 
+    # ---- INN (WHO nonproprietary-name) suffix classifiers --------------- #
+    # These are STRUCTURAL CHEMICAL NOMENCLATURE, not drug cheat sheets.
+    # WHO/USAN publishes these INN "stems" to categorize drugs by chemical
+    # class or mechanism. Any registered drug ending in these suffixes IS
+    # of the stated class — the mapping is by construction, not by lookup.
+    # Using them for peptide classification is the same principle as
+    # "sequence ≥ 100 aa = protein, not peptide" — applying chemistry.
+    _INN_SUFFIXES_PEPTIDE = (
+        # Peptide drug suffixes. Every drug ending in these is a peptide.
+        "tide",     # semaglutide, liraglutide, bivalirudin, teriparatide, etc.
+        "relin",    # GnRH analogs: leuprorelin, goserelin, triptorelin
+        "actide",   # ACTH analogs: tetracosactide
+        "pressin",  # vasopressin analogs: desmopressin, terlipressin
+        "cortin",   # ACTH-like: corticotropin
+        "ritide",   # natriuretic peptide: nesiritide, carperitide
+    )
+    _INN_SUFFIXES_NON_PEPTIDE = (
+        # Monoclonal antibody suffixes (multi-chain proteins >140kDa, not peptides).
+        "mab",      # generic antibody: rituximab, pembrolizumab, etc.
+        "zumab",    # humanized mAb
+        "ximab",    # chimeric mAb
+        "lizumab",  # humanized anti-immunoregulatory
+        "olimab",   # undesignated anti-immunoregulatory
+        # Receptor fusion proteins (large, multi-domain — not peptides).
+        "cept",     # etanercept, abatacept, aflibercept
+        # Small-molecule drug class suffixes (explicitly non-peptide chemistry).
+        "nib",      # kinase inhibitors: imatinib, sunitinib, etc.
+        "parib",    # PARP inhibitors
+        "flozin",   # SGLT2 inhibitors
+        "gliptin",  # DPP-4 inhibitors
+        "sartan",   # angiotensin receptor blockers
+        "pril",     # ACE inhibitors
+        "statin",   # HMG-CoA reductase inhibitors
+        "olol",     # beta blockers
+        "azole",    # antifungals / PPIs
+        "afil",     # PDE5 inhibitors
+        "prazole",  # PPIs
+        "dipine",   # dihydropyridine calcium channel blockers
+    )
+
+    @classmethod
+    def _inn_suffix_class(cls, name: str) -> Optional[str]:
+        """Return 'peptide' | 'non_peptide' | None based on INN suffix.
+
+        Strips trailing generic descriptors (dihydrate, acetate, hcl, etc)
+        and handles multi-word names by checking the last token. Returns
+        None when the name doesn't match any registered suffix.
+        """
+        if not name:
+            return None
+        # Normalize: lowercase, drop common salt/formulation suffixes.
+        cleaned = name.lower().strip()
+        for salt in (" acetate", " hcl", " hydrochloride", " sodium",
+                     " dihydrate", " citrate", " tartrate", " sulfate",
+                     " maleate", " fumarate", " mesylate", " tosylate",
+                     " phosphate", " pentahydrate"):
+            if cleaned.endswith(salt):
+                cleaned = cleaned[:-len(salt)].strip()
+        # Take last whitespace-separated token — ignore leading words like
+        # "lutetium lu 177 dotatate" → check "dotatate" (ends in -tate, not
+        # a peptide suffix, defer to LLM).
+        token = cleaned.split()[-1] if cleaned.split() else cleaned
+        # Some compound names: "DSP-7888" or "68Ga-DOTATATE" — skip suffix
+        # check for these (all-caps with digits/hyphens).
+        if any(c.isdigit() for c in token) and "-" in token:
+            return None
+        for suf in cls._INN_SUFFIXES_PEPTIDE:
+            if token.endswith(suf):
+                return "peptide"
+        for suf in cls._INN_SUFFIXES_NON_PEPTIDE:
+            if token.endswith(suf):
+                return "non_peptide"
+        return None
+
     @staticmethod
     def _deterministic_peptide_pregate(
         research_results: list,
         shared_metadata: dict,
     ) -> Optional[dict]:
-        """v42.6.2 Eff #2: deterministic peptide False pre-gate.
+        """v42.6.8 Eff #2: bidirectional deterministic peptide pre-gate.
 
-        Returns a dict with ``value``, ``confidence``, ``reasoning`` if we
-        can safely declare peptide=False without calling the LLM. Returns
-        None if we should run the LLM (default, safe).
+        Returns a dict with ``value``, ``confidence``, ``reasoning`` if an
+        affirmative structural signal exists in either direction. Returns
+        None (defer to LLM) when no strong signal is present.
 
-        Rules — ALL must be true to declare False:
-        - clinical_protocol intervention types are all one of: Drug,
-          Device, Procedure, Behavioral, Radiation, Dietary Supplement,
-          Genetic. (Excludes ``Biological`` which is frequently peptide.)
-        - No UniProt hit in peptide_identity research (any citation whose
-          source_name is uniprot with a non-empty snippet).
-        - No DRAMP / APD / DBAASP hit in peptide_identity / apd / dbaasp.
-        - No _KNOWN_SEQUENCES match (resolve_known_sequence) for any
-          intervention name.
+        Gate True (peptide=True) — any ONE:
+          - INN suffix in _INN_SUFFIXES_PEPTIDE (-tide, -relin, -actide, etc.)
+          - UniProt entry with mature chain 2-100 aa for intervention name
+          - DBAASP/APD/DRAMP name match in peptide-database research
+          - ChEMBL mol_type="Protein" with molecular_weight < 10000 Da
 
-        No drug-name cheat sheets; decision is structural (intervention
-        type + database hit presence + known-sequence match). Covers the
-        "small-molecule Drug with no peptide databases hit" case which is
-        the vast majority of non-peptide trials.
+        Gate False (peptide=False) — any ONE:
+          - INN suffix in _INN_SUFFIXES_NON_PEPTIDE (-mab, -nib, -cept, etc.)
+          - All intervention types in non-peptide categories (DEVICE,
+            PROCEDURE, BEHAVIORAL, RADIATION, DIETARY_SUPPLEMENT, GENETIC,
+            OTHER). DRUG / BIOLOGICAL excluded — too ambiguous.
+
+        Defer otherwise. This replaces v42.6.2's False-only, DRUG-inclusive
+        pregate that Job #75c found to have a 50% FN rate on DRUG-typed
+        peptide drugs (Thymalfasin, Albuvirtide, Lutathera, etc.).
+
+        No drug-name cheat sheets. INN suffixes are WHO/USAN structural
+        nomenclature — universally applied, published openly — not a
+        lookup. See memory `feedback_frozen_drug_lists.md`.
         """
-        # Gather intervention types from clinical_protocol.
+        # Gather intervention types, names, and peptide-DB signals from research.
         int_types: list[str] = []
-        has_uniprot_hit = False
-        has_peptide_db_hit = False
+        int_names: list[str] = []
+        has_uniprot_peptide = False     # UniProt mature chain 2-100 aa
+        has_peptide_db_hit = False      # DRAMP/APD/DBAASP
+        has_chembl_protein = False      # ChEMBL mol_type=Protein + MW<10kDa
+        has_chembl_small_molecule = False
         for r in research_results or []:
             if getattr(r, "error", None):
                 continue
@@ -2411,70 +2493,164 @@ class PipelineOrchestrator:
                 proto = raw.get("protocol_section") or raw.get("protocolSection") or {}
                 arms = proto.get("armsInterventionsModule", {}) if isinstance(proto, dict) else {}
                 for interv in (arms.get("interventions") or []):
-                    t = (interv.get("type") or "").strip() if isinstance(interv, dict) else ""
+                    if not isinstance(interv, dict):
+                        continue
+                    t = (interv.get("type") or "").strip()
                     if t:
-                        int_types.append(t)
+                        int_types.append(t.upper())
+                    n = (interv.get("name") or "").strip()
+                    if n:
+                        int_names.append(n)
             if agent in ("peptide_identity", "apd", "dbaasp"):
                 for c in cits:
                     src = (getattr(c, "source_name", "") or "").lower()
-                    snippet = (getattr(c, "snippet", "") or "").lower()
+                    snippet = (getattr(c, "snippet", "") or "")
                     if src == "uniprot" and snippet:
-                        has_uniprot_hit = True
+                        # UniProt peptide marker: mature chain 2-100 aa
+                        import re as _re
+                        m = _re.search(r"Mature form:[^(]*\((\d+) aa total\)", snippet)
+                        if not m:
+                            m = _re.search(r"(\d+)\s*aa", snippet)
+                        if m:
+                            try:
+                                aa = int(m.group(1))
+                                if 2 <= aa <= 100:
+                                    has_uniprot_peptide = True
+                            except ValueError:
+                                pass
                     if src in ("dramp", "apd", "dbaasp"):
                         has_peptide_db_hit = True
+            if agent == "chembl":
+                # Walk per-drug molecule lists for type + MW.
+                for key, val in (raw or {}).items():
+                    if not key.endswith("_molecules") or not isinstance(val, list):
+                        continue
+                    for mol in val:
+                        if not isinstance(mol, dict):
+                            continue
+                        mtype = (mol.get("mol_type") or "").strip().lower()
+                        if mtype == "protein":
+                            # MW in snippet or directly on molecule
+                            has_chembl_protein = True
+                        elif mtype == "small molecule":
+                            has_chembl_small_molecule = True
 
-        if not int_types:
-            return None  # No type data → can't be sure; let LLM decide.
+        # Extract interventions list from shared_metadata too (richer shape).
+        meta_names = shared_metadata.get("interventions", []) or []
+        for n in meta_names:
+            if isinstance(n, dict):
+                nm = (n.get("name") or "").strip()
+                if nm:
+                    int_names.append(nm)
+                for r in (n.get("resolved") or []):
+                    rn = str(r or "").strip()
+                    if rn:
+                        int_names.append(rn)
+            elif isinstance(n, str) and n.strip():
+                int_names.append(n.strip())
 
-        # v42.6.7 bugfix: CT.gov returns intervention types UPPERCASE.
-        # Types that cannot possibly be a peptide drug.
-        #
-        # CRITICAL: "DRUG" is NOT in this set. Job #75c (2026-04-22) found
-        # that 10 of 20 DRUG-typed pregate-gated trials were actually
-        # peptide=True per R1 — including Thymalfasin, Albuvirtide,
-        # Apraglutide, Lutathera, etc. These peptide drugs aren't always
-        # indexed in UniProt/DRAMP/APD/DBAASP (coverage is spotty for
-        # synthetic/proprietary peptides), so the "no peptide DB hit"
-        # check on DRUG trials gave 50% false-negative rate — a disaster.
-        # Pregate now only gates unambiguous non-drug intervention types.
-        # "BIOLOGICAL" still excluded (many peptide vaccines are BIOLOGICAL).
+        # ---- Gate True (peptide=True affirmative signals) ---------------- #
+
+        # INN suffix → peptide drug
+        for nm in int_names:
+            klass = PipelineOrchestrator._inn_suffix_class(nm)
+            if klass == "peptide":
+                return {
+                    "value": "True", "confidence": 0.95,
+                    "reasoning": (
+                        f"[Deterministic pre-gate] intervention '{nm}' ends in "
+                        f"INN peptide suffix → peptide=True"
+                    ),
+                }
+
+        # UniProt short mature chain
+        if has_uniprot_peptide:
+            return {
+                "value": "True", "confidence": 0.90,
+                "reasoning": (
+                    "[Deterministic pre-gate] UniProt entry with mature chain "
+                    "2-100 aa matched intervention → peptide=True"
+                ),
+            }
+        # Antimicrobial peptide DB hit
+        if has_peptide_db_hit:
+            return {
+                "value": "True", "confidence": 0.92,
+                "reasoning": (
+                    "[Deterministic pre-gate] DRAMP/APD/DBAASP hit on "
+                    "intervention → peptide=True"
+                ),
+            }
+        # ChEMBL Protein
+        if has_chembl_protein:
+            return {
+                "value": "True", "confidence": 0.85,
+                "reasoning": (
+                    "[Deterministic pre-gate] ChEMBL mol_type=Protein "
+                    "→ peptide=True"
+                ),
+            }
+
+        # Known-sequence match — let the pre-cascade override handle this,
+        # but recognize it as a peptide signal too.
+        try:
+            from agents.annotation.sequence import resolve_known_sequence
+            for nm in int_names:
+                if nm and resolve_known_sequence(nm.lower()):
+                    return {
+                        "value": "True", "confidence": 0.95,
+                        "reasoning": (
+                            f"[Deterministic pre-gate] '{nm}' matches a known "
+                            f"peptide sequence → peptide=True"
+                        ),
+                    }
+        except Exception:
+            pass
+
+        # ---- Gate False (peptide=False affirmative signals) -------------- #
+
+        # INN suffix → non-peptide drug class
+        for nm in int_names:
+            klass = PipelineOrchestrator._inn_suffix_class(nm)
+            if klass == "non_peptide":
+                return {
+                    "value": "False", "confidence": 0.95,
+                    "reasoning": (
+                        f"[Deterministic pre-gate] intervention '{nm}' ends in "
+                        f"INN non-peptide suffix (mAb/-nib/-cept/etc) → "
+                        f"peptide=False"
+                    ),
+                }
+
+        # Strict non-peptide intervention types
         non_peptide_types_upper = {
             "DEVICE", "PROCEDURE", "BEHAVIORAL", "RADIATION",
             "DIETARY_SUPPLEMENT", "DIETARY SUPPLEMENT",
             "GENETIC", "OTHER",
         }
-        int_types_upper = [t.upper() for t in int_types]
-        all_nonpeptide = all(t in non_peptide_types_upper for t in int_types_upper)
-        if not all_nonpeptide:
-            return None  # Any DRUG / BIOLOGICAL / unknown type → defer to LLM.
+        if int_types and all(t in non_peptide_types_upper for t in int_types):
+            return {
+                "value": "False", "confidence": 0.92,
+                "reasoning": (
+                    f"[Deterministic pre-gate] all intervention types in "
+                    f"{sorted(set(int_types))} are non-peptide categories "
+                    f"→ peptide=False"
+                ),
+            }
 
-        if has_uniprot_hit or has_peptide_db_hit:
-            return None  # Database suggests a peptide; LLM should confirm.
+        # ChEMBL small molecule (only when no conflicting peptide signal —
+        # we already returned above if any peptide signal fired).
+        if has_chembl_small_molecule:
+            return {
+                "value": "False", "confidence": 0.85,
+                "reasoning": (
+                    "[Deterministic pre-gate] ChEMBL mol_type=Small molecule "
+                    "with no conflicting peptide signal → peptide=False"
+                ),
+            }
 
-        # Known-sequence match for any intervention name.
-        try:
-            from agents.annotation.sequence import resolve_known_sequence
-        except Exception:
-            return None
-        for name in shared_metadata.get("interventions", []) or []:
-            candidates = []
-            if isinstance(name, dict):
-                candidates.append((name.get("name") or "").lower().strip())
-                candidates.extend(
-                    (r or "").lower().strip() for r in (name.get("resolved") or [])
-                )
-            else:
-                candidates.append(str(name).lower().strip())
-            for c in candidates:
-                if c and resolve_known_sequence(c):
-                    return None  # Known peptide sequence match → let LLM/override handle.
-
-        reason = (
-            f"[Deterministic pre-gate] intervention types: "
-            f"{sorted(set(int_types_upper))}; no UniProt/DRAMP/APD/DBAASP hit; "
-            f"no known-sequence match → peptide=False"
-        )
-        return {"value": "False", "confidence": 0.85, "reasoning": reason}
+        # No affirmative signal — defer to LLM.
+        return None
 
     @staticmethod
     def _prefer_atomic_swap(
