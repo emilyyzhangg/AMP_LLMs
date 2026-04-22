@@ -43,6 +43,11 @@ class JobProgress(BaseModel):
     warnings: list[str] = []                    # Quality check warnings, timing anomalies
     timeouts: dict[str, int] = {}               # Model name → timeout count
     retries: dict[str, int] = {}                # "annotation" / "verification" → retry count
+    # v42.6.5: Efficiency pack telemetry. Counters for how often each flag
+    # actually fires, so analysis can verify flags aren't silently no-opping
+    # (as Job #72 revealed — case mismatch on intervention types defeated
+    # pregate + AMP-skip). Incremented by the orchestrator.
+    eff_firings: dict[str, int] = {}            # "pregate" / "amp_skip" / ...
 
 
 class AnnotationJob(BaseModel):

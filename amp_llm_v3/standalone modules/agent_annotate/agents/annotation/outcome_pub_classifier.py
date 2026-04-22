@@ -135,24 +135,43 @@ def _infer_publication_type(text: str) -> str:
 def extract_pub_candidates(
     research_results: list[ResearchResult],
 ) -> list[PubCandidate]:
-    """Collect publication candidates from literature research agents.
+    """Collect publication candidates from literature + preprint research agents.
 
-    Deduplicates by (PMID | title_prefix) across sources.
+    v42.6.5 fix: previously only ``literature`` agent citations were
+    considered — bioRxiv/medRxiv preprints (agent_name=``biorxiv``)
+    were silently ignored, which defeated the entire point of the
+    bioRxiv agent. Now includes both, deduplicated by (PMID or DOI or
+    title prefix) so a paper that appears in both literature (post-
+    peer-review) and biorxiv (preprint) doesn't double-count.
     """
+    _PUB_AGENTS = {"literature", "biorxiv"}
     seen_keys: set[str] = set()
     pubs: list[PubCandidate] = []
 
-    for result in research_results:
-        if result.error or result.agent_name != "literature":
-            continue
+    # Process peer-reviewed literature first so the dedup prefers the
+    # peer-reviewed version of a paper that also appears as a preprint.
+    ordered_results = sorted(
+        (r for r in research_results if not r.error and r.agent_name in _PUB_AGENTS),
+        key=lambda r: 0 if r.agent_name == "literature" else 1,
+    )
+
+    for result in ordered_results:
         for citation in result.citations or []:
             identifier = (citation.identifier or "").strip()
             title = (citation.title or "").strip()
             snippet = (citation.snippet or "").strip()
 
             pmid_bare = _parse_pmid_bare(identifier)
-            # Primary dedup key: PMID if available, else title prefix.
-            key = pmid_bare or (title[:80].lower() if title else snippet[:80].lower())
+            # DOI-based dedup for preprint → peer-review matching.
+            doi_key = ""
+            if identifier.upper().startswith("DOI:"):
+                doi_key = identifier[4:].lower().strip()
+            # Primary dedup key: PMID if available, else DOI, else title prefix.
+            key = (
+                pmid_bare
+                or doi_key
+                or (title[:80].lower() if title else snippet[:80].lower())
+            )
             if not key or key in seen_keys:
                 continue
             seen_keys.add(key)
@@ -166,7 +185,7 @@ def extract_pub_candidates(
                     title=title or snippet[:120],
                     snippet=snippet,
                     source=citation.source_name or "",
-                    year=citation.retrieved_at and None,  # year not directly on SourceCitation
+                    year=citation.retrieved_at and None,
                     publication_type=pub_type,
                 )
             )
