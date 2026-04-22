@@ -7,6 +7,7 @@ Publication-grade clinical trial annotation powered by a network of specialized 
 - `IMPLEMENTATION_PLAN.md` — Development phases and roadmap
 - `IMPROVEMENT_STRATEGY.md` — Accuracy improvement plan based on comparison with human annotations
 - `ATOMIC_EVIDENCE_DECOMPOSITION.md` — v42 atomic architecture design (outcome, classification, failure_reason)
+- `PERFORMANCE.md` — throughput tuning guide with the v42.6 efficiency flags, recommended configs for high-volume (10k–30k NCT) jobs, and infra-level parallelism recommendations
 
 ## Shadow-mode fields (v42)
 

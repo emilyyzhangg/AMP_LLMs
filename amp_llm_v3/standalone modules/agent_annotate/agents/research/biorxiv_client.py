@@ -72,12 +72,64 @@ class BioRxivClient(BaseResearchAgent):
                     citations.extend(fallback)
                     raw_data["biorxiv_fallback_hits"] = len(fallback)
 
+        # v42.6.5 Eff #5: drug-name prefilter. If the config flag is on AND
+        # we have drug names to check, drop citations that contain zero
+        # intervention-name occurrences. Avoids burning Tier 1b LLM cycles
+        # on clearly off-topic preprints that slipped through the keyword
+        # search. NCT-hits always kept (they explicitly mention the trial).
+        if metadata is not None:
+            prefiltered = await self._maybe_prefilter(
+                citations, nct_hits, metadata,
+            )
+            if prefiltered is not None:
+                raw_data["biorxiv_prefilter_dropped"] = len(citations) - len(prefiltered)
+                citations = prefiltered
+
         return ResearchResult(
             agent_name=self.agent_name,
             nct_id=nct_id,
             citations=citations,
             raw_data=raw_data,
         )
+
+    async def _maybe_prefilter(
+        self,
+        citations: list[SourceCitation],
+        nct_hits: list[SourceCitation],
+        metadata: dict,
+    ) -> Optional[list[SourceCitation]]:
+        """Return a pruned citation list or None if prefilter is off.
+
+        Reads ``orchestrator.biorxiv_drug_name_prefilter`` at call time so
+        tests/scripts that construct this agent directly can still disable
+        the filter. Keeps NCT-hit citations (they already prove the
+        preprint explicitly mentions this trial).
+        """
+        try:
+            from app.services.config_service import config_service
+            cfg = config_service.get()
+            if not getattr(cfg.orchestrator, "biorxiv_drug_name_prefilter", True):
+                return None
+        except Exception:
+            return None
+
+        interventions = [
+            n.lower() for n in self._extract_interventions(metadata)
+            if isinstance(n, str) and len(n) >= 3
+        ]
+        if not interventions:
+            return None
+
+        nct_hit_ids = {c.identifier for c in nct_hits}
+        out: list[SourceCitation] = []
+        for c in citations:
+            if c.identifier in nct_hit_ids:
+                out.append(c)
+                continue
+            blob = f"{c.title or ''} {c.snippet or ''}".lower()
+            if any(drug in blob for drug in interventions):
+                out.append(c)
+        return out
 
     # ---- queries --------------------------------------------------------- #
 
