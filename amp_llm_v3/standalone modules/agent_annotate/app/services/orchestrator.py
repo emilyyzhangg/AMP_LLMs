@@ -773,6 +773,21 @@ class PipelineOrchestrator:
                     else:
                         upgraded.append((key, m))
                 verifier_models = upgraded
+            # v42.6.7 Eff #7: fast-model verifier override. When set,
+            # replaces verifier_1/2/3 names with smaller/faster models to
+            # 3x verifier throughput on high-volume jobs. Reconciliation
+            # still uses the reconciler model (larger); only the blind
+            # verifier pool gets downsized.
+            verifier_fast_models = getattr(config.orchestrator, "verifier_fast_models", [])
+            if verifier_fast_models:
+                from app.models.config_models import ModelConfig
+                downsized = []
+                for vi, (key, m) in enumerate(verifier_models):
+                    if vi < len(verifier_fast_models):
+                        downsized.append((key, ModelConfig(name=verifier_fast_models[vi], role="verifier")))
+                    else:
+                        downsized.append((key, m))
+                verifier_models = downsized
 
             all_opinions = {}  # (nct_id, field_name) → [opinions]
             for nct_id, ann in verify_items:
@@ -1098,11 +1113,30 @@ class PipelineOrchestrator:
                     error=str(e),
                 ))
 
+        # v42.6.3 Eff #3: skip AMP-specific research agents when the
+        # clinical_protocol intervention type clearly indicates a non-peptide
+        # trial (Drug small-molecule / Device / Behavioral / Procedure / etc.).
+        # These agents (DBAASP, APD, RCSB_PDB, PDBe, EBI_proteins) only
+        # produce AMP-specific evidence; burning ~20s per trial on agents
+        # that can't contribute is wasted work on throughput runs.
+        amp_only_agents = {"dbaasp", "apd", "rcsb_pdb", "pdbe", "ebi_proteins"}
+        skip_amp = (
+            getattr(config.orchestrator, "skip_amp_research_for_non_peptides", False)
+            and self._intervention_is_clearly_non_peptide(results)
+        )
+        if skip_amp:
+            logger.info(
+                f"  Eff #3: clinical_protocol indicates non-peptide "
+                f"intervention — skipping AMP-specific research agents"
+            )
+
         # Step 2: Run all other agents in parallel with metadata
         tasks = {}
         for agent_name, agent_cls in RESEARCH_AGENTS.items():
             if agent_name == "clinical_protocol":
                 continue  # already ran
+            if skip_amp and agent_name in amp_only_agents:
+                continue
             agent_config = config.research_agents.get(agent_name)
             if not agent_config:
                 continue
@@ -1400,14 +1434,34 @@ class PipelineOrchestrator:
         job.progress.current_field = "peptide"
         job.progress.current_agent = "peptide_annotator"
         _field_start = _field_time.monotonic()
-        try:
-            peptide_ann = await annotate_field("peptide")
-        except Exception as e:
+        # v42.6.2 Eff #2: deterministic peptide pre-gate. Inspect research
+        # results for structural signals — if clinical_protocol says
+        # intervention is a Drug/Device/Biological with no peptide match in
+        # UniProt, DRAMP, APD, DBAASP, or _KNOWN_SEQUENCES, we can declare
+        # peptide=False without calling the LLM + 3 verifiers (~2 min).
+        pregate_result = None
+        if getattr(config.orchestrator, "deterministic_peptide_pregate", False):
+            pregate_result = self._deterministic_peptide_pregate(
+                research_results=research_data, shared_metadata=shared_metadata,
+            )
+        if pregate_result is not None:
             peptide_ann = FieldAnnotation(
                 field_name="peptide",
-                value="Unknown",
-                reasoning=f"Agent error: {e}",
+                value=pregate_result["value"],
+                confidence=pregate_result["confidence"],
+                reasoning=pregate_result["reasoning"],
+                model_name="deterministic-pregate",
+                skip_verification=True,
             )
+        else:
+            try:
+                peptide_ann = await annotate_field("peptide")
+            except Exception as e:
+                peptide_ann = FieldAnnotation(
+                    field_name="peptide",
+                    value="Unknown",
+                    reasoning=f"Agent error: {e}",
+                )
         annotations.append(peptide_ann)
         job.progress.field_timings["peptide"] = round(_field_time.monotonic() - _field_start, 1)
         job.progress.current_model = getattr(peptide_ann, "model_name", None)
@@ -1496,6 +1550,14 @@ class PipelineOrchestrator:
         # v42 B2: classification_atomic shadow. Default OFF.
         if not getattr(config.orchestrator, "classification_atomic_shadow", False):
             step2_fields = [f for f in step2_fields if f != "classification_atomic"]
+        # v42.6.1 Eff #1: skip the LEGACY classification LLM when atomic is
+        # authoritative AND skip_legacy_when_atomic is set. Saves a two-pass
+        # LLM + 3 verifier calls on every peptide=True trial. The atomic
+        # sibling remains and the swap helper renames its field_name to
+        # "classification" so downstream sees no change.
+        if (getattr(config.orchestrator, "prefer_atomic_classification", False)
+                and getattr(config.orchestrator, "skip_legacy_when_atomic", False)):
+            step2_fields = [f for f in step2_fields if f != "classification"]
 
         job.progress.current_field = ", ".join(step2_fields)
         job.progress.current_agent = "annotation (parallel)" if config.orchestrator.parallel_annotation else "annotation"
@@ -1544,7 +1606,12 @@ class PipelineOrchestrator:
         # sees the atomic value under `classification` and the legacy value
         # under `classification_legacy`. No-op if either agent didn't run.
         if getattr(config.orchestrator, "prefer_atomic_classification", False):
-            self._prefer_atomic_swap(annotations, "classification")
+            self._prefer_atomic_swap(
+                annotations, "classification",
+                skip_verification_on_legacy=getattr(
+                    config.orchestrator, "skip_verification_on_legacy", True,
+                ),
+            )
 
         # --- Step 3: Run failure_reason AFTER outcome (it needs the outcome result) ---
         job.progress.current_field = "reason_for_failure"
@@ -1559,16 +1626,25 @@ class PipelineOrchestrator:
         )
         if outcome_atomic_ann:
             shared_metadata["outcome_atomic_result"] = outcome_atomic_ann.value
-        try:
-            failure_ann = await annotate_field("reason_for_failure", metadata=shared_metadata)
-        except Exception as e:
-            failure_ann = FieldAnnotation(
-                field_name="reason_for_failure",
-                value="",
-                reasoning=f"Agent error: {e}",
-            )
-        annotations.append(failure_ann)
-        job.progress.field_timings["reason_for_failure"] = round(_field_time.monotonic() - _rf_start, 1)
+        # v42.6.1 Eff #1: skip legacy failure_reason LLM when atomic is
+        # authoritative AND efficiency flag set.
+        skip_legacy_fr = (
+            getattr(config.orchestrator, "prefer_atomic_failure_reason", False)
+            and getattr(config.orchestrator, "skip_legacy_when_atomic", False)
+        )
+        if skip_legacy_fr:
+            job.progress.field_timings["reason_for_failure"] = 0.0
+        else:
+            try:
+                failure_ann = await annotate_field("reason_for_failure", metadata=shared_metadata)
+            except Exception as e:
+                failure_ann = FieldAnnotation(
+                    field_name="reason_for_failure",
+                    value="",
+                    reasoning=f"Agent error: {e}",
+                )
+            annotations.append(failure_ann)
+            job.progress.field_timings["reason_for_failure"] = round(_field_time.monotonic() - _rf_start, 1)
 
         # v42 B3: shadow-mode reason_for_failure_atomic. Gated on its own shadow
         # flag AND on outcome_atomic having produced a failed label — the agent
@@ -1594,7 +1670,12 @@ class PipelineOrchestrator:
         # v42 Phase 6 cut-over: failure_reason prefer-atomic swap. Must run
         # after step 3 so both legacy and atomic annotations are present.
         if getattr(config.orchestrator, "prefer_atomic_failure_reason", False):
-            self._prefer_atomic_swap(annotations, "reason_for_failure")
+            self._prefer_atomic_swap(
+                annotations, "reason_for_failure",
+                skip_verification_on_legacy=getattr(
+                    config.orchestrator, "skip_verification_on_legacy", True,
+                ),
+            )
 
         # v17: Post-annotation quality check — detect timeout artifacts,
         # empty/garbage responses, and error messages leaked into values
@@ -1742,6 +1823,18 @@ class PipelineOrchestrator:
                 (key, m) for key, m in config.verification.models.items()
                 if m.role == "verifier"
             ]
+            # v42.6.7 Eff #7: fast-model override (also applied in the
+            # classification re-verify path).
+            verifier_fast_models = getattr(config.orchestrator, "verifier_fast_models", [])
+            if verifier_fast_models:
+                from app.models.config_models import ModelConfig
+                downsized = []
+                for vi, (key, m) in enumerate(verifier_models):
+                    if vi < len(verifier_fast_models):
+                        downsized.append((key, ModelConfig(name=verifier_fast_models[vi], role="verifier")))
+                    else:
+                        downsized.append((key, m))
+                verifier_models = downsized
             threshold = config.verification.consensus_threshold
 
             verifier_opinions = []
@@ -2182,7 +2275,137 @@ class PipelineOrchestrator:
     ]
 
     @staticmethod
-    def _prefer_atomic_swap(annotations: list, legacy_field: str) -> None:
+    def _intervention_is_clearly_non_peptide(results: list) -> bool:
+        """v42.6.3 helper. Inspect a partial research_results list (usually
+        just clinical_protocol at time of call) and return True iff every
+        intervention type is one that cannot be a peptide drug. Conservative:
+        returns False on any ambiguous type (``Biological``, ``Drug``) or
+        missing data. Used to decide whether to skip AMP-specific research.
+        """
+        clearly_non_peptide_types = {
+            "Device", "Procedure", "Behavioral", "Radiation",
+            "Dietary Supplement", "Genetic", "Other",
+        }
+        found_types: list[str] = []
+        for r in results or []:
+            if getattr(r, "error", None):
+                continue
+            if getattr(r, "agent_name", "") != "clinical_protocol":
+                continue
+            raw = getattr(r, "raw_data", {}) or {}
+            proto = raw.get("protocol_section") or raw.get("protocolSection") or {}
+            arms = proto.get("armsInterventionsModule", {}) if isinstance(proto, dict) else {}
+            for interv in (arms.get("interventions") or []):
+                t = (interv.get("type") or "").strip() if isinstance(interv, dict) else ""
+                if t:
+                    found_types.append(t)
+        if not found_types:
+            return False
+        return all(t in clearly_non_peptide_types for t in found_types)
+
+    @staticmethod
+    def _deterministic_peptide_pregate(
+        research_results: list,
+        shared_metadata: dict,
+    ) -> Optional[dict]:
+        """v42.6.2 Eff #2: deterministic peptide False pre-gate.
+
+        Returns a dict with ``value``, ``confidence``, ``reasoning`` if we
+        can safely declare peptide=False without calling the LLM. Returns
+        None if we should run the LLM (default, safe).
+
+        Rules — ALL must be true to declare False:
+        - clinical_protocol intervention types are all one of: Drug,
+          Device, Procedure, Behavioral, Radiation, Dietary Supplement,
+          Genetic. (Excludes ``Biological`` which is frequently peptide.)
+        - No UniProt hit in peptide_identity research (any citation whose
+          source_name is uniprot with a non-empty snippet).
+        - No DRAMP / APD / DBAASP hit in peptide_identity / apd / dbaasp.
+        - No _KNOWN_SEQUENCES match (resolve_known_sequence) for any
+          intervention name.
+
+        No drug-name cheat sheets; decision is structural (intervention
+        type + database hit presence + known-sequence match). Covers the
+        "small-molecule Drug with no peptide databases hit" case which is
+        the vast majority of non-peptide trials.
+        """
+        # Gather intervention types from clinical_protocol.
+        int_types: list[str] = []
+        has_uniprot_hit = False
+        has_peptide_db_hit = False
+        for r in research_results or []:
+            if getattr(r, "error", None):
+                continue
+            agent = getattr(r, "agent_name", "")
+            raw = getattr(r, "raw_data", {}) or {}
+            cits = getattr(r, "citations", []) or []
+            if agent == "clinical_protocol":
+                proto = raw.get("protocol_section") or raw.get("protocolSection") or {}
+                arms = proto.get("armsInterventionsModule", {}) if isinstance(proto, dict) else {}
+                for interv in (arms.get("interventions") or []):
+                    t = (interv.get("type") or "").strip() if isinstance(interv, dict) else ""
+                    if t:
+                        int_types.append(t)
+            if agent in ("peptide_identity", "apd", "dbaasp"):
+                for c in cits:
+                    src = (getattr(c, "source_name", "") or "").lower()
+                    snippet = (getattr(c, "snippet", "") or "").lower()
+                    if src == "uniprot" and snippet:
+                        has_uniprot_hit = True
+                    if src in ("dramp", "apd", "dbaasp"):
+                        has_peptide_db_hit = True
+
+        if not int_types:
+            return None  # No type data → can't be sure; let LLM decide.
+
+        # Types known to NEVER be peptide drugs on their own.
+        # "Biological" is intentionally absent (many peptide vaccines are
+        # registered as Biological); "Drug" alone is ambiguous but combined
+        # with the no-database-hit checks below it's strong evidence.
+        non_peptide_types = {
+            "Device", "Procedure", "Behavioral", "Radiation",
+            "Dietary Supplement", "Genetic", "Other",
+        }
+        drug_or_nonpep_only = all(
+            t in non_peptide_types or t == "Drug" for t in int_types
+        )
+        if not drug_or_nonpep_only:
+            return None  # "Biological" or anything novel → defer to LLM.
+
+        if has_uniprot_hit or has_peptide_db_hit:
+            return None  # Database suggests a peptide; LLM should confirm.
+
+        # Known-sequence match for any intervention name.
+        try:
+            from agents.annotation.sequence import resolve_known_sequence
+        except Exception:
+            return None
+        for name in shared_metadata.get("interventions", []) or []:
+            candidates = []
+            if isinstance(name, dict):
+                candidates.append((name.get("name") or "").lower().strip())
+                candidates.extend(
+                    (r or "").lower().strip() for r in (name.get("resolved") or [])
+                )
+            else:
+                candidates.append(str(name).lower().strip())
+            for c in candidates:
+                if c and resolve_known_sequence(c):
+                    return None  # Known peptide sequence match → let LLM/override handle.
+
+        reason = (
+            f"[Deterministic pre-gate] intervention types: "
+            f"{sorted(set(int_types))}; no UniProt/DRAMP/APD/DBAASP hit; "
+            f"no known-sequence match → peptide=False"
+        )
+        return {"value": "False", "confidence": 0.85, "reasoning": reason}
+
+    @staticmethod
+    def _prefer_atomic_swap(
+        annotations: list,
+        legacy_field: str,
+        skip_verification_on_legacy: bool = True,
+    ) -> None:
         """v42 Phase 6 cut-over helper. When the user has flipped
         `prefer_atomic_<field>`, rewrite the field_names so the atomic
         verdict becomes authoritative:
@@ -2193,6 +2416,10 @@ class PipelineOrchestrator:
         both values in the output for audit. Downstream consumers (CSV
         export, concordance, UI) see the atomic value under the primary
         field name with no code changes.
+
+        v42.6.4 Eff #4: when ``skip_verification_on_legacy`` is True, the
+        swapped-out legacy annotation gets ``skip_verification=True`` so it
+        doesn't burn 3 verifier LLM calls per trial on an audit-only column.
         """
         atomic_field = f"{legacy_field}_atomic"
         atomic_ann = next(
@@ -2205,6 +2432,8 @@ class PipelineOrchestrator:
         )
         if legacy_ann is not None:
             legacy_ann.field_name = f"{legacy_field}_legacy"
+            if skip_verification_on_legacy:
+                legacy_ann.skip_verification = True
         atomic_ann.field_name = legacy_field
 
     @staticmethod
@@ -2512,6 +2741,17 @@ class PipelineOrchestrator:
                 else:
                     upgraded.append((key, m))
             verifier_models = upgraded
+        # v42.6.7 Eff #7: fast-model override in the single-NCT legacy path.
+        verifier_fast_models = getattr(config.orchestrator, "verifier_fast_models", [])
+        if verifier_fast_models:
+            from app.models.config_models import ModelConfig
+            downsized = []
+            for i, (key, m) in enumerate(verifier_models):
+                if i < len(verifier_fast_models):
+                    downsized.append((key, ModelConfig(name=verifier_fast_models[i], role="verifier")))
+                else:
+                    downsized.append((key, m))
+            verifier_models = downsized
 
         reconciler_model = None
         for key, m in config.verification.models.items():

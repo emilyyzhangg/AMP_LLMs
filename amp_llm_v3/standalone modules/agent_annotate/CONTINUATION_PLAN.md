@@ -25,12 +25,21 @@
 
 **Outcome aggregator rule set (current):** TIER0, R1 (any POS + 0 FAIL → Positive), R2 (any FAIL + 0 POS → Failed), R3 (mixed → most-recent), R6 (active not stale), R7 (terminated no POS), R8 (default Unknown). Drug-level rules R4/R5 removed — atomic refuses to call Positive without trial-level evidence.
 
-### Phase 6 — current (partial cut-over + research pipeline expansion)
+### Phase 6 — current (partial cut-over + research pipeline expansion + efficiency pack)
 
 1. **Partial cut-over flags** — `orchestrator.prefer_atomic_classification` and `orchestrator.prefer_atomic_failure_reason` (both default OFF in prod, **both true on dev** as of 2026-04-21 commit `948d2218`). When true the atomic value goes in the primary field; legacy becomes `<field>_legacy`. Outcome cut-over deferred pending research-agent expansion.
 2. **bioRxiv research agent** (commit `c9632deb`) — free Europe PMC `SRC:PPR` query. Hit rate on 29 Cat 1 Phase 5 NCTs: 12 returned any citation, **7 returned drug-name-relevant citations** (~24%). Modest but real lift on the Cat 1 evidence gap.
-3. **Next validation** — full dev annotation job with bioRxiv + prefer_atomic flags active; confirm downstream (CSV export, UI, concordance CSV) render correctly with swapped field names.
-4. **Next merge to main** — only after #3 passes on dev.
+3. **v42.6 efficiency pack** (2026-04-21) — eight throughput optimizations for scaling to 30k-NCT jobs. Config-gated, all default OFF except two known-safe ones (`skip_verification_on_legacy`, `biorxiv_drug_name_prefilter`). Full guide: `docs/PERFORMANCE.md`.
+   - Eff #1: `skip_legacy_when_atomic` — skip legacy LLM under cut-over
+   - Eff #2: `deterministic_peptide_pregate` — structural peptide=False gate (no drug lists)
+   - Eff #3: `skip_amp_research_for_non_peptides` — skip DBAASP/APD/PDB/etc for non-peptide trials
+   - Eff #4: `skip_verification_on_legacy` — no verifier burn on shadow columns
+   - Eff #5: `biorxiv_drug_name_prefilter` — drop off-topic preprints at source
+   - Eff #6: multi-worker split documented as infra option
+   - Eff #7: `verifier_fast_models` — 3B verifier override for high-throughput runs
+   - Eff #8: cross-NCT batch research documented as future refactor
+4. **Next validation** — full dev annotation job with bioRxiv + prefer_atomic flags active; confirm downstream (CSV export, UI, concordance CSV) render correctly with swapped field names.
+5. **Next merge to main** — only after #4 passes on dev.
 
 ### Shadow mode — what/when/why
 

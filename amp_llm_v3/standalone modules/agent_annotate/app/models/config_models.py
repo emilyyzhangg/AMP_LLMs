@@ -101,6 +101,49 @@ class OrchestratorConfig(BaseModel):
     # authoritative behavior; flip on dev only for staged cut-over.
     prefer_atomic_classification: bool = False
     prefer_atomic_failure_reason: bool = False
+    # v42 Phase 6 efficiency pack (v42.6.1). Once atomic is authoritative
+    # (prefer_atomic_* true), the legacy LLM agent is pure audit overhead:
+    # it runs a full two-pass LLM + 3 verifier calls (~3-4 min) to produce
+    # a value that downstream never reads. Turning this on skips the legacy
+    # LLM entirely — the audit trail for the legacy answer is lost, but
+    # wall-time per trial drops ~30%. Safe to enable once you have
+    # sufficient shadow-mode data accumulated to be confident in atomic.
+    skip_legacy_when_atomic: bool = False
+    # v42.6.2: Deterministic peptide pre-gate. Before the peptide LLM call,
+    # inspect clinical_protocol interventions. If intervention type is
+    # clearly non-peptide (Drug small-molecule / Device / non-peptide
+    # Biological) AND no peptide database hit exists (UniProt, DRAMP, APD,
+    # DBAASP, known-sequence match), declare peptide=False without the
+    # LLM + 3-verifier overhead. Trades a small recall hit on edge cases
+    # for a ~2 min/trial saving on ~40% of trials. Safe to enable for
+    # throughput runs; disable for highest-accuracy validation runs.
+    deterministic_peptide_pregate: bool = False
+    # v42.6.3: Conditional AMP-specific research. When enabled AND the
+    # clinical_protocol intervention type indicates a clear non-peptide
+    # (Drug small-molecule / Device / Vaccine-adaptive), skip DBAASP,
+    # APD, RCSB_PDB, PDBe, EBI_proteins. These agents only contribute
+    # AMP-specific evidence; a non-peptide intervention can't benefit.
+    # ~20s/trial saved on ~40% of trials.
+    skip_amp_research_for_non_peptides: bool = False
+    # v42.6.4: Skip verification on legacy shadow fields. When prefer_atomic
+    # is true AND skip_legacy_when_atomic is false (audit mode), mark the
+    # shadow legacy annotation with skip_verification=True so it doesn't
+    # burn 3 verifier calls per trial. Pure audit data preserved; no
+    # verification-based improvement on the legacy column. Default TRUE
+    # (audit data usually doesn't need verification; turn off to force
+    # full verification on legacy for research).
+    skip_verification_on_legacy: bool = True
+    # v42.6.5: bioRxiv drug-name prefilter. Drop returned preprints whose
+    # title+snippet contains zero mention of any intervention name. Reduces
+    # irrelevant Tier 1a "ambiguous" entries that would otherwise burn
+    # Tier 1b LLM cycles. Safe; default true.
+    biorxiv_drug_name_prefilter: bool = True
+    # v42.6.7: Fast-model verifier override. When non-empty, these three
+    # model names replace verifier_1/2/3 for all fields EXCEPT where
+    # reconciliation is involved. Use smaller/faster models (e.g.
+    # llama3.2:3b, qwen3:1.7b, gemma3:4b) to 3x verifier throughput.
+    # Empty list = use verifier_1/2/3 from verification.models.
+    verifier_fast_models: list[str] = []
 
 
 class OllamaConfig(BaseModel):
