@@ -2426,22 +2426,27 @@ class PipelineOrchestrator:
         if not int_types:
             return None  # No type data → can't be sure; let LLM decide.
 
-        # v42.6.4 bugfix: CT.gov returns intervention types UPPERCASE.
-        # Types known to NEVER be peptide drugs on their own.
-        # "BIOLOGICAL" is intentionally absent (many peptide vaccines are
-        # registered as Biological); "DRUG" alone is ambiguous but combined
-        # with the no-database-hit checks below it's strong evidence.
+        # v42.6.7 bugfix: CT.gov returns intervention types UPPERCASE.
+        # Types that cannot possibly be a peptide drug.
+        #
+        # CRITICAL: "DRUG" is NOT in this set. Job #75c (2026-04-22) found
+        # that 10 of 20 DRUG-typed pregate-gated trials were actually
+        # peptide=True per R1 — including Thymalfasin, Albuvirtide,
+        # Apraglutide, Lutathera, etc. These peptide drugs aren't always
+        # indexed in UniProt/DRAMP/APD/DBAASP (coverage is spotty for
+        # synthetic/proprietary peptides), so the "no peptide DB hit"
+        # check on DRUG trials gave 50% false-negative rate — a disaster.
+        # Pregate now only gates unambiguous non-drug intervention types.
+        # "BIOLOGICAL" still excluded (many peptide vaccines are BIOLOGICAL).
         non_peptide_types_upper = {
             "DEVICE", "PROCEDURE", "BEHAVIORAL", "RADIATION",
             "DIETARY_SUPPLEMENT", "DIETARY SUPPLEMENT",
             "GENETIC", "OTHER",
         }
         int_types_upper = [t.upper() for t in int_types]
-        drug_or_nonpep_only = all(
-            t in non_peptide_types_upper or t == "DRUG" for t in int_types_upper
-        )
-        if not drug_or_nonpep_only:
-            return None  # "BIOLOGICAL" or anything novel → defer to LLM.
+        all_nonpeptide = all(t in non_peptide_types_upper for t in int_types_upper)
+        if not all_nonpeptide:
+            return None  # Any DRUG / BIOLOGICAL / unknown type → defer to LLM.
 
         if has_uniprot_hit or has_peptide_db_hit:
             return None  # Database suggests a peptide; LLM should confirm.
