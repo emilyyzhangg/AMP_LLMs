@@ -8,6 +8,7 @@ Publication-grade clinical trial annotation powered by a network of specialized 
 - `IMPROVEMENT_STRATEGY.md` — Accuracy improvement plan based on comparison with human annotations
 - `ATOMIC_EVIDENCE_DECOMPOSITION.md` — v42 atomic architecture design (outcome, classification, failure_reason)
 - `PERFORMANCE.md` — throughput tuning guide with the v42.6 efficiency flags, recommended configs for high-volume (10k–30k NCT) jobs, and infra-level parallelism recommendations
+- `EFFICIENCY_PACK_VALIDATION_CRITERIA.md` — signal-by-signal success criteria for v42.6 throughput flags, with Job #71 baselines and failure rollback plan. Use when analyzing a job that has efficiency flags active.
 
 ## Shadow-mode fields (v42)
 
