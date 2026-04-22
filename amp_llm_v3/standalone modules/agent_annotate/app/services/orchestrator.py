@@ -788,6 +788,12 @@ class PipelineOrchestrator:
                     else:
                         downsized.append((key, m))
                 verifier_models = downsized
+            # v42.6.7b Eff #7b: verifier_count cap. When non-zero, only the
+            # first N verifiers from the pool are used. Saves N*field LLM
+            # calls per trial on throughput runs.
+            verifier_count = getattr(config.orchestrator, "verifier_count", 0)
+            if verifier_count and 0 < verifier_count < len(verifier_models):
+                verifier_models = verifier_models[:verifier_count]
 
             all_opinions = {}  # (nct_id, field_name) → [opinions]
             for nct_id, ann in verify_items:
@@ -1129,6 +1135,10 @@ class PipelineOrchestrator:
                 f"  Eff #3: clinical_protocol indicates non-peptide "
                 f"intervention — skipping AMP-specific research agents"
             )
+            # v42.6.5 telemetry: count AMP-skip firings.
+            job.progress.eff_firings["amp_skip"] = (
+                job.progress.eff_firings.get("amp_skip", 0) + 1
+            )
 
         # Step 2: Run all other agents in parallel with metadata
         tasks = {}
@@ -1452,6 +1462,10 @@ class PipelineOrchestrator:
                 reasoning=pregate_result["reasoning"],
                 model_name="deterministic-pregate",
                 skip_verification=True,
+            )
+            # v42.6.5 telemetry: count pregate firings for analysis.
+            job.progress.eff_firings["pregate"] = (
+                job.progress.eff_firings.get("pregate", 0) + 1
             )
         else:
             try:

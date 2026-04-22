@@ -144,6 +144,20 @@ class OrchestratorConfig(BaseModel):
     # llama3.2:3b, qwen3:1.7b, gemma3:4b) to 3x verifier throughput.
     # Empty list = use verifier_1/2/3 from verification.models.
     verifier_fast_models: list[str] = []
+    # v42.6.5 Eff #2b: per-drug research cache. Shared in-process cache
+    # keyed by (agent, drug_name). Many trial batches repeat the same drug
+    # across many NCTs (e.g. 200+ semaglutide trials). Without the cache,
+    # ChEMBL/UniProt/IUPHAR/DBAASP/APD/RCSB_PDB run full queries per NCT;
+    # with it, only the first trial that names a given drug pays the cost.
+    # Default true; disable for tests or deterministic replays.
+    per_drug_research_cache: bool = True
+    # v42.6.5 Eff #7b: configurable verifier count (1/2/3). Currently
+    # verification.models declares 3 verifiers by default; set this to 1
+    # or 2 to prune the verifier pool for high-throughput jobs. 0 disables
+    # verification entirely (not recommended — reconciler won't fire).
+    # Takes the first N from verification.models (ordered by role=verifier).
+    # Default 0 = use all defined verifiers.
+    verifier_count: int = 0
 
 
 class OllamaConfig(BaseModel):

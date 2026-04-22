@@ -38,9 +38,21 @@ EUROPE_PMC_URL = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
 # republished with new source codes.
 _PREPRINT_SOURCE_FILTER = "SRC:PPR"
 
-# Max hits per query — the preprint layer is supplementary to the main
-# literature agent, so a focused top-N is enough.
-_MAX_RESULTS_PER_QUERY = 10
+# v42.6.5: Increased from 10 to 25. Europe PMC ranking surfaces relevant
+# preprints within the top 25; limiting to 10 was missing trial-specific
+# papers when several generic matches ranked ahead.
+_MAX_RESULTS_PER_QUERY = 25
+
+# Generic terms excluded from fallback drug-name queries AND the prefilter
+# match set. These appear in many unrelated medical papers, so including
+# them as search anchors or match keywords produces garbage citations.
+_GENERIC_INTERVENTION_TERMS = {
+    "placebo", "control", "standard of care", "standard care",
+    "vehicle", "saline", "water", "sugar", "sham",
+    "best supportive care", "no treatment",
+    "matching placebo", "comparator", "active comparator",
+    "normal saline", "usual care",
+}
 
 
 class BioRxivClient(BaseResearchAgent):
@@ -113,21 +125,15 @@ class BioRxivClient(BaseResearchAgent):
         except Exception:
             return None
 
-        # v42.6.4 bugfix: exclude generic terms that appear in many unrelated
-        # medical papers (placebo, vehicle, standard of care, etc.). Without
-        # this, a citation about soybeans passes the filter because both
-        # "placebo" and the soybean paper happen to share that word.
-        _GENERIC = {
-            "placebo", "control", "standard of care", "standard care",
-            "vehicle", "saline", "water", "sugar", "sham",
-            "best supportive care", "no treatment",
-            "matching placebo", "comparator", "active comparator",
-        }
+        # Exclude generic terms (see module-level _GENERIC_INTERVENTION_TERMS
+        # comment). Without this, a citation about soybeans passes the filter
+        # because both "placebo" and the soybean paper happen to share that
+        # word.
         raw = [
             n.lower().strip() for n in self._extract_interventions(metadata)
             if isinstance(n, str) and len(n) >= 3
         ]
-        interventions = [n for n in raw if n not in _GENERIC]
+        interventions = [n for n in raw if n not in _GENERIC_INTERVENTION_TERMS]
         if not interventions:
             return None
 
@@ -158,27 +164,64 @@ class BioRxivClient(BaseResearchAgent):
         interventions: list[str],
         client: httpx.AsyncClient,
     ) -> list[SourceCitation]:
-        """Metadata-based fallback for trials whose preprint doesn't cite the NCT.
+        """Metadata-based fallback — issues one query per non-generic
+        intervention name plus one title query, dedupes by DOI/identifier.
 
-        Builds a focused query from the shortest intervention name that's ≥3
-        characters (brand names are more specific than protocol titles). If
-        no intervention usable, uses the first 60 chars of the trial title
-        as a keyword string.
+        v42.6.5 rewrite: previous version used only the shortest intervention
+        name, which reliably picked 'Placebo' and returned garbage. Now:
+        - Query each non-generic intervention separately (parallel)
+        - Query the trial title as a fallback if no intervention hits
+        - Dedupe results by identifier so overlapping queries don't inflate
+        - Rank by ordering (most relevant surfaces first when deduped)
+
+        Hard cap: up to 6 per-intervention queries per trial to avoid
+        hammering Europe PMC on multi-arm trials with many interventions.
         """
-        target = ""
-        for name in sorted(interventions, key=len):
+        # Filter generics and dedupe (preserve order — first occurrence wins)
+        seen = set()
+        targets: list[str] = []
+        for name in interventions or []:
             n = (name or "").strip()
-            if len(n) >= 3 and not n.lower().startswith("placebo"):
-                target = n
-                break
-        if not target:
-            target = title[:60]
-        if not target:
+            if len(n) < 3 or n.lower() in _GENERIC_INTERVENTION_TERMS:
+                continue
+            key = n.lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            targets.append(n)
+        # Prefer longer (more specific) intervention names first — these
+        # tend to be brand names or full drug descriptors.
+        targets.sort(key=len, reverse=True)
+        targets = targets[:6]
+
+        tasks = []
+        for t in targets:
+            query = f'{_PREPRINT_SOURCE_FILTER} AND "{t}"'
+            tasks.append(self._query(query, client, tag=f"fb:{t[:20]}"))
+
+        if not tasks and title:
+            # Last-resort: title keywords (truncated).
+            query = f'{_PREPRINT_SOURCE_FILTER} AND "{title[:60]}"'
+            tasks.append(self._query(query, client, tag=f"fb-title:{title[:20]}"))
+
+        if not tasks:
             return []
 
-        # Quote the target so multi-word names stay grouped.
-        query = f'{_PREPRINT_SOURCE_FILTER} AND "{target}"'
-        return await self._query(query, client, tag=f"fallback:{target[:30]}")
+        import asyncio
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        # Dedupe across queries by identifier; keep first occurrence.
+        seen_ids: set[str] = set()
+        merged: list[SourceCitation] = []
+        for r in results:
+            if isinstance(r, Exception):
+                continue
+            for c in r:
+                if c.identifier and c.identifier in seen_ids:
+                    continue
+                seen_ids.add(c.identifier)
+                merged.append(c)
+        return merged
 
     async def _query(
         self,
