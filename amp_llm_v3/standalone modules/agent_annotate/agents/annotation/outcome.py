@@ -371,10 +371,36 @@ def _dossier_deterministic(dossier: dict) -> FieldAnnotation | None:
                 confidence=0.95, reasoning=f"[v41 Active guard] completion date in future ({dossier['completion_date']})",
                 evidence=[], model_name="deterministic", skip_verification=True,
             )
-        # v41b: Removed days_since <= 180 block — was too broad, blocking trials
-        # with recent completion dates that have real published results.
-        # Only future completion dates (days_since <= 0) force Active now.
-        # Past completion with stale status falls through to LLM.
+        # v42.6.10 (2026-04-23, Job #78 analysis): Restore narrow ANR Active guard.
+        # v41's broad days_since<=180 block was removed in v41b because it masked
+        # trials with real published positive results. But the removal swung too
+        # far: past-completion ANR trials with NO publications default to "Unknown"
+        # from the LLM, when they're clearly still Active, not recruiting.
+        #
+        # Compromise: if ANR + not stale + zero trial-specific publications + no
+        # hasResults signal, apply deterministic Active. The presence of any
+        # trial-specific pub falls through to the LLM/aggregator, preserving the
+        # v41b win where publication-priority override correctly finds Positive
+        # for trials with published efficacy data.
+        if (not dossier["stale_status"]
+                and dossier.get("trial_specific_count", 0) == 0
+                and not dossier["has_results"]):
+            logger.info(
+                f"  outcome: v42.6.10 ANR guard — no pubs, not stale → Active, not recruiting"
+            )
+            return FieldAnnotation(
+                field_name="outcome", value="Active, not recruiting",
+                confidence=0.85,
+                reasoning=(
+                    f"[v42.6.10 ANR guard] status=ACTIVE_NOT_RECRUITING, "
+                    f"days_since_completion={days_since}, not stale, "
+                    f"0 trial-specific publications, no hasResults — trial is still "
+                    f"actively running without published outcomes"
+                ),
+                evidence=[], model_name="deterministic", skip_verification=True,
+            )
+        # Otherwise (stale OR has publications OR hasResults): fall through to LLM
+        # so dossier/publication-priority override can rule.
 
     # COMPLETED + hasResults + primary endpoints parseable
     if status == "COMPLETED" and has_results is True and endpoints:
