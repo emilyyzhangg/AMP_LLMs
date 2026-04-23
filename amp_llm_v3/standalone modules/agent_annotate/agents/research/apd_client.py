@@ -23,6 +23,7 @@ from datetime import datetime
 import httpx
 
 from agents.base import BaseResearchAgent
+from agents.research.drug_cache import drug_cache
 from agents.research.http_utils import resilient_get
 from app.models.research import ResearchResult, SourceCitation
 
@@ -77,109 +78,18 @@ class APDClient(BaseResearchAgent):
 
         async with httpx.AsyncClient(timeout=15, verify=False) as client:
             for intervention in interventions[:3]:
-                try:
-                    # APD uses a POST form search; submit with the Name field
-                    resp = await client.post(
-                        APD_SEARCH_URL,
-                        data={
-                            "ID": "",
-                            "Name": intervention,
-                            "Name2": "",
-                            "Name3": "",
-                            "source": "",
-                            "Sequence": "",
-                            "Sequence2": "",
-                            "Length": "0",
-                            "Netcharge": "0",
-                            "HydrophobicPer": "0",
-                            "Location": "0",
-                            "LocationID": "",
-                            "Type": "0",
-                            "Method": "0",
-                        },
-                        headers={
-                            "Content-Type": "application/x-www-form-urlencoded",
-                            "Referer": "https://aps.unmc.edu/database",
-                        },
-                        timeout=15,
+                async def compute(intv=intervention):
+                    return await self._fetch_intervention(client, intv)
+
+                if drug_cache.is_enabled():
+                    per_intervention = await drug_cache.get_or_compute(
+                        self.agent_name, intervention, compute,
                     )
-                    if resp.status_code == 200:
-                        html = resp.text
+                else:
+                    per_intervention = await compute()
 
-                        # Check if results were found
-                        if "No Results Found" in html:
-                            raw_data[f"apd_{intervention}"] = {"searched": True, "found": False}
-                            # v8: Do NOT emit a citation for negative results —
-                            # "no exact match" wastes an LLM citation slot without
-                            # adding information. The raw_data records the search.
-                            continue
-
-                        # Try to extract peptide data from the HTML response
-                        extracted = self._parse_apd_results(html, intervention)
-                        raw_data[f"apd_{intervention}"] = extracted
-
-                        # v14: Fetch detail pages to get actual sequences
-                        apd_sequences = []
-                        if extracted.get("peptides"):
-                            for pep in extracted["peptides"][:3]:
-                                apd_id = pep.get("apd_id", "")
-                                if not apd_id:
-                                    continue
-
-                                detail = await self._fetch_apd_detail(client, apd_id)
-                                if detail.get("sequence"):
-                                    pep["sequence"] = detail["sequence"]
-                                    pep["length"] = detail.get("length", len(detail["sequence"]))
-                                    pep["source_organism"] = detail.get("source_organism", "")
-                                    apd_sequences.append({
-                                        "apd_id": apd_id,
-                                        "name": pep.get("name", intervention),
-                                        "sequence": detail["sequence"],
-                                        "length": detail.get("length", len(detail["sequence"])),
-                                    })
-
-                            # v14: Store sequences structurally in raw_data
-                            if apd_sequences:
-                                raw_data[f"apd_{intervention}_sequences"] = apd_sequences
-
-                            for pep in extracted["peptides"][:3]:
-                                snippet_parts = [f"Peptide: {pep.get('name', intervention)}"]
-                                if pep.get("source_organism"):
-                                    snippet_parts.append(f"Source: {pep['source_organism']}")
-                                elif pep.get("source"):
-                                    snippet_parts.append(f"Source: {pep['source']}")
-                                if pep.get("sequence"):
-                                    snippet_parts.append(f"Sequence: {pep['sequence'][:80]}")
-                                if pep.get("length"):
-                                    snippet_parts.append(f"Length: {pep['length']} aa")
-                                if pep.get("activity"):
-                                    snippet_parts.append(f"Activity: {pep['activity']}")
-
-                                citations.append(SourceCitation(
-                                    source_name="apd",
-                                    source_url=pep.get("url", f"{APD_BASE_URL}/database"),
-                                    identifier=pep.get("apd_id", intervention),
-                                    title=f"{pep.get('name', intervention)} - APD",
-                                    snippet="\n".join(snippet_parts),
-                                    quality_score=self.compute_quality_score("apd"),
-                                    retrieved_at=datetime.utcnow().isoformat(),
-                                ))
-                        else:
-                            # Search returned HTML but we couldn't parse structured data
-                            citations.append(SourceCitation(
-                                source_name="apd",
-                                source_url=f"{APD_BASE_URL}/database",
-                                identifier=intervention,
-                                title=f"APD search: {intervention}",
-                                snippet=f"APD database returned results for: {intervention} (HTML response, limited extraction)",
-                                quality_score=self.compute_quality_score("apd", has_content=False),
-                                retrieved_at=datetime.utcnow().isoformat(),
-                            ))
-                    else:
-                        raw_data[f"apd_{intervention}_status"] = resp.status_code
-                except Exception as e:
-                    logger.warning("APD search failed for %s: %s", intervention, e)
-                    raw_data[f"apd_{intervention}_error"] = str(e)
+                citations.extend(per_intervention["citations"])
+                raw_data.update(per_intervention["raw_data"])
 
         return ResearchResult(
             agent_name=self.agent_name,
@@ -187,6 +97,118 @@ class APDClient(BaseResearchAgent):
             citations=citations,
             raw_data=raw_data,
         )
+
+    async def _fetch_intervention(
+        self, client: httpx.AsyncClient, intervention: str,
+    ) -> dict:
+        """Fetch APD data for one intervention. Pure function of intervention name."""
+        citations: list = []
+        raw_data: dict = {}
+        try:
+            # APD uses a POST form search; submit with the Name field
+            resp = await client.post(
+                APD_SEARCH_URL,
+                data={
+                    "ID": "",
+                    "Name": intervention,
+                    "Name2": "",
+                    "Name3": "",
+                    "source": "",
+                    "Sequence": "",
+                    "Sequence2": "",
+                    "Length": "0",
+                    "Netcharge": "0",
+                    "HydrophobicPer": "0",
+                    "Location": "0",
+                    "LocationID": "",
+                    "Type": "0",
+                    "Method": "0",
+                },
+                headers={
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Referer": "https://aps.unmc.edu/database",
+                },
+                timeout=15,
+            )
+            if resp.status_code == 200:
+                html = resp.text
+
+                # Check if results were found
+                if "No Results Found" in html:
+                    raw_data[f"apd_{intervention}"] = {"searched": True, "found": False}
+                    # v8: Do NOT emit a citation for negative results —
+                    # "no exact match" wastes an LLM citation slot without
+                    # adding information. The raw_data records the search.
+                    return {"citations": citations, "raw_data": raw_data}
+
+                # Try to extract peptide data from the HTML response
+                extracted = self._parse_apd_results(html, intervention)
+                raw_data[f"apd_{intervention}"] = extracted
+
+                # v14: Fetch detail pages to get actual sequences
+                apd_sequences = []
+                if extracted.get("peptides"):
+                    for pep in extracted["peptides"][:3]:
+                        apd_id = pep.get("apd_id", "")
+                        if not apd_id:
+                            continue
+
+                        detail = await self._fetch_apd_detail(client, apd_id)
+                        if detail.get("sequence"):
+                            pep["sequence"] = detail["sequence"]
+                            pep["length"] = detail.get("length", len(detail["sequence"]))
+                            pep["source_organism"] = detail.get("source_organism", "")
+                            apd_sequences.append({
+                                "apd_id": apd_id,
+                                "name": pep.get("name", intervention),
+                                "sequence": detail["sequence"],
+                                "length": detail.get("length", len(detail["sequence"])),
+                            })
+
+                    # v14: Store sequences structurally in raw_data
+                    if apd_sequences:
+                        raw_data[f"apd_{intervention}_sequences"] = apd_sequences
+
+                    for pep in extracted["peptides"][:3]:
+                        snippet_parts = [f"Peptide: {pep.get('name', intervention)}"]
+                        if pep.get("source_organism"):
+                            snippet_parts.append(f"Source: {pep['source_organism']}")
+                        elif pep.get("source"):
+                            snippet_parts.append(f"Source: {pep['source']}")
+                        if pep.get("sequence"):
+                            snippet_parts.append(f"Sequence: {pep['sequence'][:80]}")
+                        if pep.get("length"):
+                            snippet_parts.append(f"Length: {pep['length']} aa")
+                        if pep.get("activity"):
+                            snippet_parts.append(f"Activity: {pep['activity']}")
+
+                        citations.append(SourceCitation(
+                            source_name="apd",
+                            source_url=pep.get("url", f"{APD_BASE_URL}/database"),
+                            identifier=pep.get("apd_id", intervention),
+                            title=f"{pep.get('name', intervention)} - APD",
+                            snippet="\n".join(snippet_parts),
+                            quality_score=self.compute_quality_score("apd"),
+                            retrieved_at=datetime.utcnow().isoformat(),
+                        ))
+                else:
+                    # Search returned HTML but we couldn't parse structured data
+                    citations.append(SourceCitation(
+                        source_name="apd",
+                        source_url=f"{APD_BASE_URL}/database",
+                        identifier=intervention,
+                        title=f"APD search: {intervention}",
+                        snippet=f"APD database returned results for: {intervention} (HTML response, limited extraction)",
+                        quality_score=self.compute_quality_score("apd", has_content=False),
+                        retrieved_at=datetime.utcnow().isoformat(),
+                    ))
+            else:
+                raw_data[f"apd_{intervention}_status"] = resp.status_code
+        except Exception as e:
+            logger.warning("APD search failed for %s: %s", intervention, e)
+            raw_data[f"apd_{intervention}_error"] = str(e)
+
+        return {"citations": citations, "raw_data": raw_data}
 
     async def _fetch_apd_detail(self, client: httpx.AsyncClient, apd_id: str) -> dict:
         """Fetch an APD detail page and extract sequence data.

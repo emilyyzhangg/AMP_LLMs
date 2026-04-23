@@ -15,6 +15,7 @@ from datetime import datetime
 import httpx
 
 from agents.base import BaseResearchAgent
+from agents.research.drug_cache import drug_cache
 from agents.research.http_utils import resilient_get
 from app.models.research import ResearchResult, SourceCitation
 
@@ -87,52 +88,18 @@ class PDBEClient(BaseResearchAgent):
 
         async with httpx.AsyncClient(timeout=15) as client:
             for intervention in interventions[:3]:
-                try:
-                    # Step 1: Search PDBe Solr index
-                    resp = await resilient_get(
-                        PDBE_SEARCH_URL,
-                        client=client,
-                        params={
-                            "q": intervention,
-                            "rows": 5,
-                            "wt": "json",
-                            "fl": _SEARCH_FIELDS,
-                        },
-                        headers={"Accept": "application/json"},
+                async def compute(intv=intervention):
+                    return await self._fetch_intervention(client, intv)
+
+                if drug_cache.is_enabled():
+                    per_intervention = await drug_cache.get_or_compute(
+                        self.agent_name, intervention, compute,
                     )
-                    if resp.status_code != 200:
-                        raw_data[f"pdbe_{intervention}_status"] = resp.status_code
-                        continue
+                else:
+                    per_intervention = await compute()
 
-                    search_data = resp.json()
-                    response = search_data.get("response", {})
-                    num_found = response.get("numFound", 0)
-                    docs = response.get("docs", [])
-                    raw_data[f"pdbe_{intervention}_count"] = num_found
-
-                    if not docs:
-                        continue
-
-                    # Step 2: Build citations from search results, enriching
-                    # with entry summary for top hits
-                    for doc in docs[:3]:
-                        pdb_id = doc.get("pdb_id", "")
-                        if not pdb_id:
-                            continue
-
-                        # Enrich with entry summary (ligands, assemblies)
-                        summary = await self._fetch_entry_summary(
-                            client, pdb_id, raw_data
-                        )
-
-                        citation = self._build_citation(
-                            pdb_id, doc, summary, intervention
-                        )
-                        if citation:
-                            citations.append(citation)
-
-                except Exception as e:
-                    raw_data[f"pdbe_{intervention}_error"] = str(e)
+                citations.extend(per_intervention["citations"])
+                raw_data.update(per_intervention["raw_data"])
 
         return ResearchResult(
             agent_name=self.agent_name,
@@ -140,6 +107,61 @@ class PDBEClient(BaseResearchAgent):
             citations=citations,
             raw_data=raw_data,
         )
+
+    async def _fetch_intervention(
+        self, client: httpx.AsyncClient, intervention: str,
+    ) -> dict:
+        """Fetch PDBe data for one intervention. Pure function of intervention name."""
+        citations: list = []
+        raw_data: dict = {}
+        try:
+            # Step 1: Search PDBe Solr index
+            resp = await resilient_get(
+                PDBE_SEARCH_URL,
+                client=client,
+                params={
+                    "q": intervention,
+                    "rows": 5,
+                    "wt": "json",
+                    "fl": _SEARCH_FIELDS,
+                },
+                headers={"Accept": "application/json"},
+            )
+            if resp.status_code != 200:
+                raw_data[f"pdbe_{intervention}_status"] = resp.status_code
+                return {"citations": citations, "raw_data": raw_data}
+
+            search_data = resp.json()
+            response = search_data.get("response", {})
+            num_found = response.get("numFound", 0)
+            docs = response.get("docs", [])
+            raw_data[f"pdbe_{intervention}_count"] = num_found
+
+            if not docs:
+                return {"citations": citations, "raw_data": raw_data}
+
+            # Step 2: Build citations from search results, enriching
+            # with entry summary for top hits
+            for doc in docs[:3]:
+                pdb_id = doc.get("pdb_id", "")
+                if not pdb_id:
+                    continue
+
+                # Enrich with entry summary (ligands, assemblies)
+                summary = await self._fetch_entry_summary(
+                    client, pdb_id, raw_data
+                )
+
+                citation = self._build_citation(
+                    pdb_id, doc, summary, intervention
+                )
+                if citation:
+                    citations.append(citation)
+
+        except Exception as e:
+            raw_data[f"pdbe_{intervention}_error"] = str(e)
+
+        return {"citations": citations, "raw_data": raw_data}
 
     async def _fetch_entry_summary(
         self,
