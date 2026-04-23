@@ -13,6 +13,7 @@ from datetime import datetime
 import httpx
 
 from agents.base import BaseResearchAgent
+from agents.research.drug_cache import drug_cache
 from agents.research.http_utils import resilient_get
 from app.models.research import ResearchResult, SourceCitation
 
@@ -65,63 +66,18 @@ class RCSBPDBClient(BaseResearchAgent):
 
         async with httpx.AsyncClient(timeout=15) as client:
             for intervention in interventions[:3]:
-                try:
-                    # Search RCSB using the full-text search API
-                    # RCSB v2 API uses "paginate" (not "pager") and does NOT
-                    # support "results_content_type" in request_options.
-                    # Simple full_text search is the most reliable approach.
-                    search_query = {
-                        "query": {
-                            "type": "terminal",
-                            "service": "full_text",
-                            "parameters": {
-                                "value": intervention,
-                            },
-                        },
-                        "return_type": "entry",
-                        "request_options": {
-                            "paginate": {
-                                "start": 0,
-                                "rows": 5,
-                            },
-                        },
-                    }
+                async def compute(intv=intervention):
+                    return await self._fetch_intervention(client, intv)
 
-                    resp = await client.post(
-                        RCSB_SEARCH_URL,
-                        json=search_query,
-                        headers={"Content-Type": "application/json"},
-                        timeout=15,
+                if drug_cache.is_enabled():
+                    per_intervention = await drug_cache.get_or_compute(
+                        self.agent_name, intervention, compute,
                     )
+                else:
+                    per_intervention = await compute()
 
-                    if resp.status_code == 204:
-                        # No results
-                        raw_data[f"rcsb_{intervention}"] = {"count": 0}
-                        continue
-
-                    if resp.status_code != 200:
-                        raw_data[f"rcsb_{intervention}_status"] = resp.status_code
-                        continue
-
-                    search_data = resp.json()
-                    result_set = search_data.get("result_set", [])
-                    total_count = search_data.get("total_count", 0)
-                    raw_data[f"rcsb_{intervention}_count"] = total_count
-
-                    # Fetch detailed entry data for each PDB ID
-                    for result in result_set[:3]:
-                        pdb_id = result.get("identifier", "")
-                        if not pdb_id:
-                            continue
-
-                        entry_citation = await self._fetch_entry_details(
-                            client, pdb_id, intervention, raw_data
-                        )
-                        if entry_citation:
-                            citations.append(entry_citation)
-
-                except Exception as e:
-                    raw_data[f"rcsb_{intervention}_error"] = str(e)
+                citations.extend(per_intervention["citations"])
+                raw_data.update(per_intervention["raw_data"])
 
         return ResearchResult(
             agent_name=self.agent_name,
@@ -129,6 +85,72 @@ class RCSBPDBClient(BaseResearchAgent):
             citations=citations,
             raw_data=raw_data,
         )
+
+    async def _fetch_intervention(
+        self, client: httpx.AsyncClient, intervention: str,
+    ) -> dict:
+        """Fetch RCSB PDB data for one intervention. Pure function of intervention name."""
+        citations: list = []
+        raw_data: dict = {}
+        try:
+            # Search RCSB using the full-text search API
+            # RCSB v2 API uses "paginate" (not "pager") and does NOT
+            # support "results_content_type" in request_options.
+            # Simple full_text search is the most reliable approach.
+            search_query = {
+                "query": {
+                    "type": "terminal",
+                    "service": "full_text",
+                    "parameters": {
+                        "value": intervention,
+                    },
+                },
+                "return_type": "entry",
+                "request_options": {
+                    "paginate": {
+                        "start": 0,
+                        "rows": 5,
+                    },
+                },
+            }
+
+            resp = await client.post(
+                RCSB_SEARCH_URL,
+                json=search_query,
+                headers={"Content-Type": "application/json"},
+                timeout=15,
+            )
+
+            if resp.status_code == 204:
+                # No results
+                raw_data[f"rcsb_{intervention}"] = {"count": 0}
+                return {"citations": citations, "raw_data": raw_data}
+
+            if resp.status_code != 200:
+                raw_data[f"rcsb_{intervention}_status"] = resp.status_code
+                return {"citations": citations, "raw_data": raw_data}
+
+            search_data = resp.json()
+            result_set = search_data.get("result_set", [])
+            total_count = search_data.get("total_count", 0)
+            raw_data[f"rcsb_{intervention}_count"] = total_count
+
+            # Fetch detailed entry data for each PDB ID
+            for result in result_set[:3]:
+                pdb_id = result.get("identifier", "")
+                if not pdb_id:
+                    continue
+
+                entry_citation = await self._fetch_entry_details(
+                    client, pdb_id, intervention, raw_data
+                )
+                if entry_citation:
+                    citations.append(entry_citation)
+
+        except Exception as e:
+            raw_data[f"rcsb_{intervention}_error"] = str(e)
+
+        return {"citations": citations, "raw_data": raw_data}
 
     async def _fetch_entry_details(
         self,

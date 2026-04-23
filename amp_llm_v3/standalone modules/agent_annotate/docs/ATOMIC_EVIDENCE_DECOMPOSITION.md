@@ -1,8 +1,33 @@
 # Atomic Evidence Decomposition — Design Plan
 
-Status: Draft — Phase 0 active
+> **2026-04-23 POST-MORTEM BANNER — read this before acting on anything below.**
+>
+> The Phase 6 cut-over described in this doc **was rolled back** on 2026-04-23
+> after v42.6 50-NCT and 100-NCT validations (Jobs #75c, #76, #77) showed
+> systemic regression vs the v40 legacy baseline. Atomic classification,
+> atomic failure_reason, and the v42.6 efficiency pack are all disabled in
+> `config/default_config.yaml` (commit `257810da`). Atomic pipelines still
+> run in **shadow mode only** and write `<field>_atomic` for audit.
+>
+> The forward plan is in **`AGENT_STRATEGY_ROADMAP.md`**. That doc supersedes
+> the "Phase 6 — Partial cut-over", "Phase 7 — Outcome cut-over", and
+> "Implementation Roadmap" sections below.
+>
+> Key verdicts from the experiment (see roadmap §2):
+> - Classification atomic **may** still be a win — re-validate on ≥500 NCTs.
+> - Outcome atomic will **never be promoted** — synthesis-heavy field.
+> - Failure_reason atomic has a gate bug; recoverable.
+> - The `deterministic_peptide_pregate` feature is **permanently frozen**.
+> - Every cut-over rule is now gated behind the iteration loop in roadmap §4.
+>
+> Preserved below for design reference and future re-evaluation.
+
+---
+
+Status: Shadow-mode only — promotion plan in `AGENT_STRATEGY_ROADMAP.md`
 Author: Agent-annotate redesign effort, v41b → v42
 Created: 2026-04-17
+Post-mortem added: 2026-04-23
 
 ## 0. Core Philosophy
 

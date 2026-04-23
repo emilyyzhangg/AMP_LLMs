@@ -1567,31 +1567,39 @@ class PipelineOrchestrator:
                 if peptide_ann.value == "True":
                     break
 
-        # v15: If peptide=False, this trial is not a peptide therapeutic — N/A all other fields
-        # v18: ALL peptide=False results cascade to N/A (deterministic gate removed).
+        # v42.6.10 — NARROWED CASCADE (2026-04-23, after Job #78 analysis).
+        # Previously peptide=False cascaded every field to N/A. Job #78 showed
+        # this was destroying ~27pp of delivery accuracy and ~50pp of outcome
+        # accuracy: GT annotators record delivery_mode (oral/injection/topical),
+        # outcome (active/positive/terminated), and failure_reason for non-
+        # peptide trials, because those fields are not peptide-dependent.
+        # Only `sequence` is inherently peptide-specific; `classification` is
+        # binary AMP/Other where non-peptide is definitionally "Other".
+        # All other fields (delivery_mode, outcome, reason_for_failure) run
+        # normally through the annotation pipeline.
+        # See AGENT_STRATEGY_ROADMAP.md §2.2 lesson 3.
         if peptide_ann.value == "False":
-            for field_name in ANNOTATION_AGENTS:
-                if field_name == "peptide":
-                    continue
-                annotations.append(FieldAnnotation(
-                    field_name=field_name,
-                    value="N/A",
-                    confidence=1.0,
-                    reasoning="[Peptide=False: non-peptide trial, all fields N/A]",
-                    model_name="cascade",
-                    skip_verification=True,
-                ))
-            # v42 Phase 6 (cosmetic): apply prefer_atomic swaps to cascaded
-            # annotations so the field-name schema is uniform across the job
-            # (peptide=True normal-flow NCTs apply the swap in step 2/3). All
-            # values are N/A here so it's analysis-equivalent — this is for
-            # consistent JSON shape across the 94-NCT set.
-            if getattr(config.orchestrator, "prefer_atomic_classification", False):
-                self._prefer_atomic_swap(annotations, "classification")
-            if getattr(config.orchestrator, "prefer_atomic_failure_reason", False):
-                self._prefer_atomic_swap(annotations, "reason_for_failure")
-            logger.info(f"  peptide=False for {nct_id}, N/A-ing all other fields")
-            return annotations
+            annotations.append(FieldAnnotation(
+                field_name="sequence",
+                value="N/A",
+                confidence=1.0,
+                reasoning="[Peptide=False cascade: sequence is peptide-specific]",
+                model_name="cascade",
+                skip_verification=True,
+            ))
+            annotations.append(FieldAnnotation(
+                field_name="classification",
+                value="Other",
+                confidence=0.90,
+                reasoning="[Peptide=False cascade: non-peptide → classification=Other (binary AMP/Other)]",
+                model_name="cascade",
+                skip_verification=True,
+            ))
+            logger.info(
+                f"  peptide=False for {nct_id}: cascaded sequence=N/A + classification=Other; "
+                "delivery_mode/outcome/reason_for_failure proceed normally"
+            )
+            # Fall through — step 2 runs normally for the remaining fields.
 
         # --- Step 2: Run classification, delivery_mode, outcome, sequence (NOT failure_reason yet) ---
         # failure_reason depends on outcome, so we run it after outcome completes.
@@ -1602,6 +1610,11 @@ class PipelineOrchestrator:
             f for f in ANNOTATION_AGENTS
             if f not in ("peptide", "reason_for_failure", "reason_for_failure_atomic")
         ]
+        # v42.6.10: Narrowed cascade may have pre-filled `sequence` and
+        # `classification` when peptide=False. Skip those in step 2 so we
+        # don't overwrite the cascade values.
+        already_filled = {a.field_name for a in annotations}
+        step2_fields = [f for f in step2_fields if f not in already_filled]
 
         # v42 Phase 4: skip the atomic shadow-mode agent unless explicitly
         # enabled. The agent is registered globally so tests/scripts can invoke

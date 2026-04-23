@@ -12,6 +12,7 @@ from datetime import datetime
 import httpx
 
 from agents.base import BaseResearchAgent
+from agents.research.drug_cache import drug_cache
 from agents.research.http_utils import resilient_get
 from app.models.research import ResearchResult, SourceCitation
 
@@ -55,117 +56,20 @@ class ChEMBLClient(BaseResearchAgent):
 
         async with httpx.AsyncClient(timeout=15) as client:
             for intervention in interventions[:3]:
-                try:
-                    # 1. Search molecules by name
-                    resp = await resilient_get(
-                        CHEMBL_MOLECULE_SEARCH_URL,
-                        client=client,
-                        params={
-                            "q": intervention,
-                            "format": "json",
-                            "limit": 5,
-                        },
-                        headers={"Accept": "application/json"},
+                # Per-drug response is a pure function of the drug name — cache
+                # across NCTs within this process. See docs/AGENT_STRATEGY_ROADMAP.md §6.
+                async def compute(intv=intervention):
+                    return await self._fetch_intervention(client, intv)
+
+                if drug_cache.is_enabled():
+                    per_intervention = await drug_cache.get_or_compute(
+                        self.agent_name, intervention, compute,
                     )
-                    if resp.status_code != 200:
-                        raw_data[f"chembl_{intervention}_status"] = resp.status_code
-                        continue
+                else:
+                    per_intervention = await compute()
 
-                    data = resp.json()
-                    molecules = data.get("molecules", [])
-                    raw_data[f"chembl_{intervention}_count"] = len(molecules)
-
-                    # Filter: only keep molecules whose name matches the intervention.
-                    # ChEMBL's q= parameter is a full-text search that returns fuzzy
-                    # matches. "Peptide T" returns botulinum toxin, random small molecules.
-                    intervention_lower = intervention.lower()
-                    relevant_mols = []
-                    for mol in molecules:
-                        if not isinstance(mol, dict):
-                            continue
-                        pref = (mol.get("pref_name") or "").lower()
-                        synonyms = " ".join(
-                            str(s.get("molecule_synonym", ""))
-                            for s in (mol.get("molecule_synonyms") or [])
-                        ).lower() if mol.get("molecule_synonyms") else ""
-                        combined = f"{pref} {synonyms}"
-                        if (intervention_lower in combined
-                                or pref in intervention_lower
-                                or any(word in combined for word in intervention_lower.split() if len(word) > 3)):
-                            relevant_mols.append(mol)
-
-                    # Fall back to top results if nothing matched (rare drug names)
-                    if not relevant_mols:
-                        relevant_mols = [m for m in molecules[:2] if isinstance(m, dict)]
-
-                    # v14: Store molecule entries and HELM structurally in raw_data
-                    mol_entries = []
-                    for mol in relevant_mols[:3]:
-                        if not isinstance(mol, dict):
-                            continue
-
-                        chembl_id = mol.get("molecule_chembl_id", "")
-                        pref_name = mol.get("pref_name", "")
-                        mol_type = mol.get("molecule_type", "")
-                        max_phase = mol.get("max_phase", "")
-                        helm_notation = mol.get("helm_notation", "")
-                        first_approval = mol.get("first_approval", "")
-
-                        mol_entries.append({
-                            "chembl_id": chembl_id,
-                            "pref_name": pref_name,
-                            "mol_type": mol_type,
-                            "helm_notation": helm_notation,
-                            "max_phase": max_phase,
-                        })
-                        if helm_notation:
-                            raw_data[f"chembl_{intervention}_helm"] = helm_notation
-
-                        # Extract molecular properties
-                        mol_props = mol.get("molecule_properties", {}) or {}
-                        mw = mol_props.get("full_mwt", "")
-                        alogp = mol_props.get("alogp", "")
-
-                        snippet_parts = [f"Molecule: {pref_name or chembl_id}"]
-                        if mol_type:
-                            snippet_parts.append(f"Type: {mol_type}")
-                        if max_phase is not None and max_phase != "":
-                            snippet_parts.append(f"Max clinical phase: {max_phase}")
-                        if helm_notation:
-                            snippet_parts.append(f"HELM: {helm_notation[:100]}")
-                        if mw:
-                            snippet_parts.append(f"Molecular weight: {mw}")
-                        if first_approval:
-                            snippet_parts.append(f"First approval: {first_approval}")
-
-                        # 2. Fetch mechanism of action if we have a ChEMBL ID
-                        moa_snippet = await self._fetch_mechanism(client, chembl_id, raw_data)
-                        if moa_snippet:
-                            snippet_parts.append(f"Mechanism: {moa_snippet}")
-
-                        # 3. Fetch bioactivity summary
-                        activity_snippet = await self._fetch_activity_summary(
-                            client, chembl_id, raw_data
-                        )
-                        if activity_snippet:
-                            snippet_parts.append(f"Bioactivity: {activity_snippet}")
-
-                        citations.append(SourceCitation(
-                            source_name="chembl",
-                            source_url=f"https://www.ebi.ac.uk/chembl/compound_report_card/{chembl_id}/" if chembl_id else "https://www.ebi.ac.uk/chembl/",
-                            identifier=chembl_id or pref_name,
-                            title=f"{pref_name or chembl_id} - ChEMBL",
-                            snippet="\n".join(snippet_parts),
-                            quality_score=self.compute_quality_score("chembl"),
-                            retrieved_at=datetime.utcnow().isoformat(),
-                        ))
-
-                    # v14: Store structured molecule entries in raw_data
-                    if mol_entries:
-                        raw_data[f"chembl_{intervention}_molecules"] = mol_entries
-
-                except Exception as e:
-                    raw_data[f"chembl_{intervention}_error"] = str(e)
+                citations.extend(per_intervention["citations"])
+                raw_data.update(per_intervention["raw_data"])
 
         return ResearchResult(
             agent_name=self.agent_name,
@@ -173,6 +77,131 @@ class ChEMBLClient(BaseResearchAgent):
             citations=citations,
             raw_data=raw_data,
         )
+
+    async def _fetch_intervention(
+        self, client: httpx.AsyncClient, intervention: str,
+    ) -> dict:
+        """Fetch ChEMBL data for one intervention. Pure function of intervention name.
+
+        Returns {"citations": [...], "raw_data": {...}}. The raw_data keys are
+        already intervention-prefixed, so merging results from multiple
+        interventions into a per-NCT raw_data dict is collision-free.
+        """
+        citations: list = []
+        raw_data: dict = {}
+        try:
+            # 1. Search molecules by name
+            resp = await resilient_get(
+                CHEMBL_MOLECULE_SEARCH_URL,
+                client=client,
+                params={
+                    "q": intervention,
+                    "format": "json",
+                    "limit": 5,
+                },
+                headers={"Accept": "application/json"},
+            )
+            if resp.status_code != 200:
+                raw_data[f"chembl_{intervention}_status"] = resp.status_code
+                return {"citations": citations, "raw_data": raw_data}
+
+            data = resp.json()
+            molecules = data.get("molecules", [])
+            raw_data[f"chembl_{intervention}_count"] = len(molecules)
+
+            # Filter: only keep molecules whose name matches the intervention.
+            # ChEMBL's q= parameter is a full-text search that returns fuzzy
+            # matches. "Peptide T" returns botulinum toxin, random small molecules.
+            intervention_lower = intervention.lower()
+            relevant_mols = []
+            for mol in molecules:
+                if not isinstance(mol, dict):
+                    continue
+                pref = (mol.get("pref_name") or "").lower()
+                synonyms = " ".join(
+                    str(s.get("molecule_synonym", ""))
+                    for s in (mol.get("molecule_synonyms") or [])
+                ).lower() if mol.get("molecule_synonyms") else ""
+                combined = f"{pref} {synonyms}"
+                if (intervention_lower in combined
+                        or pref in intervention_lower
+                        or any(word in combined for word in intervention_lower.split() if len(word) > 3)):
+                    relevant_mols.append(mol)
+
+            # Fall back to top results if nothing matched (rare drug names)
+            if not relevant_mols:
+                relevant_mols = [m for m in molecules[:2] if isinstance(m, dict)]
+
+            # v14: Store molecule entries and HELM structurally in raw_data
+            mol_entries = []
+            for mol in relevant_mols[:3]:
+                if not isinstance(mol, dict):
+                    continue
+
+                chembl_id = mol.get("molecule_chembl_id", "")
+                pref_name = mol.get("pref_name", "")
+                mol_type = mol.get("molecule_type", "")
+                max_phase = mol.get("max_phase", "")
+                helm_notation = mol.get("helm_notation", "")
+                first_approval = mol.get("first_approval", "")
+
+                mol_entries.append({
+                    "chembl_id": chembl_id,
+                    "pref_name": pref_name,
+                    "mol_type": mol_type,
+                    "helm_notation": helm_notation,
+                    "max_phase": max_phase,
+                })
+                if helm_notation:
+                    raw_data[f"chembl_{intervention}_helm"] = helm_notation
+
+                # Extract molecular properties
+                mol_props = mol.get("molecule_properties", {}) or {}
+                mw = mol_props.get("full_mwt", "")
+                alogp = mol_props.get("alogp", "")
+
+                snippet_parts = [f"Molecule: {pref_name or chembl_id}"]
+                if mol_type:
+                    snippet_parts.append(f"Type: {mol_type}")
+                if max_phase is not None and max_phase != "":
+                    snippet_parts.append(f"Max clinical phase: {max_phase}")
+                if helm_notation:
+                    snippet_parts.append(f"HELM: {helm_notation[:100]}")
+                if mw:
+                    snippet_parts.append(f"Molecular weight: {mw}")
+                if first_approval:
+                    snippet_parts.append(f"First approval: {first_approval}")
+
+                # 2. Fetch mechanism of action if we have a ChEMBL ID
+                moa_snippet = await self._fetch_mechanism(client, chembl_id, raw_data)
+                if moa_snippet:
+                    snippet_parts.append(f"Mechanism: {moa_snippet}")
+
+                # 3. Fetch bioactivity summary
+                activity_snippet = await self._fetch_activity_summary(
+                    client, chembl_id, raw_data
+                )
+                if activity_snippet:
+                    snippet_parts.append(f"Bioactivity: {activity_snippet}")
+
+                citations.append(SourceCitation(
+                    source_name="chembl",
+                    source_url=f"https://www.ebi.ac.uk/chembl/compound_report_card/{chembl_id}/" if chembl_id else "https://www.ebi.ac.uk/chembl/",
+                    identifier=chembl_id or pref_name,
+                    title=f"{pref_name or chembl_id} - ChEMBL",
+                    snippet="\n".join(snippet_parts),
+                    quality_score=self.compute_quality_score("chembl"),
+                    retrieved_at=datetime.utcnow().isoformat(),
+                ))
+
+            # v14: Store structured molecule entries in raw_data
+            if mol_entries:
+                raw_data[f"chembl_{intervention}_molecules"] = mol_entries
+
+        except Exception as e:
+            raw_data[f"chembl_{intervention}_error"] = str(e)
+
+        return {"citations": citations, "raw_data": raw_data}
 
     async def _fetch_mechanism(
         self, client: httpx.AsyncClient, chembl_id: str, raw_data: dict
