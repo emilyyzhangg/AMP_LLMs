@@ -152,31 +152,42 @@ orchestrator:
   # Phase 5 data proves it resolves disagreements better.
   reconciler_thinking: false
 
-  # v42 Phase 6 partial cut-over (2026-04-21). When true, the atomic agent's
-  # value becomes authoritative (lives under the primary field name); legacy
-  # is preserved as <field>_legacy in the annotation JSON for audit.
-  # Phase 5 data justified: classification 92% raw / 75% AMP recall; failure
-  # reason 67% scoreable. Prod job 85154945fadf (94 NCTs) confirmed the
-  # classification cut-over produces 93% vs R1 (vs 80% legacy shadow), with
-  # 86% AMP recall. Outcome stays shadow — Cat 1 evidence gaps need research-
-  # pipeline expansion (bioRxiv agent added Phase 6) first.
-  prefer_atomic_classification: true
-  prefer_atomic_failure_reason: true
+  # v42 Phase 6 cut-over flags — DISABLED 2026-04-23 after Job #76/#77 analysis.
+  # Atomic pipelines stay running in shadow mode (writes <field>_atomic for
+  # audit/comparison) but legacy stays authoritative. Reason: classification
+  # atomic and failure_reason atomic both regressed vs legacy on the v42.6.x
+  # 50/100-NCT validations — atomic classification missed AMPs where the
+  # peptide field was correctly True (Curodont, Self-assembling peptide P11-4,
+  # EOM613, NCT05584878, etc.); atomic failure_reason returned empty 0/7
+  # because the chain only fires on outcome=="Failed" and never on
+  # Terminated/Withdrawn. Re-evaluate after atomic pipelines beat legacy in
+  # head-to-head shadow comparison on a held-out batch.
+  prefer_atomic_classification: false
+  prefer_atomic_failure_reason: false
 
-  # v42.6 efficiency pack (2026-04-21). Three throughput flags flipped on
-  # after the v42.6 code landed and the 94-NCT job validated Phase 6 cut-over.
-  # Full guide: docs/PERFORMANCE.md. Safe to enable together; they compose.
-  # Saves ~3-4 min/trial on peptide=True (Eff #1) and ~2 min/trial on ~40%
-  # of trials that are clearly non-peptide (Eff #2 + #3). Combined ~40-50%
-  # wall-clock reduction vs default.
-  skip_legacy_when_atomic: true
-  deterministic_peptide_pregate: true
-  skip_amp_research_for_non_peptides: true
-  # skip_verification_on_legacy defaults true; keep as-is (audit-only column
-  # doesn't need verifier burn).
-  # biorxiv_drug_name_prefilter defaults true; keep as-is.
-  # verifier_fast_models left empty by default — flip only for throughput
-  # runs where verifier-level quality can drop (reconciler still qwen3:14b).
+  # v42.6 efficiency pack flags — DISABLED 2026-04-23.
+  # skip_legacy_when_atomic: false — legacy is the trusted ground truth, must
+  #   always run. Atomic stays shadow-only.
+  # deterministic_peptide_pregate: false — bidirectional INN-suffix pregate
+  #   had spurious matches ("NS"→peptide via 2-letter sequence, "Curodont"
+  #   brand-name match) and ChEMBL Small-molecule false-negatives on obvious
+  #   peptides ("Liver-enriched antimicrobial peptide 2", "Neoantigen
+  #   Peptides"). Net negative on peptide accuracy vs LLM judgment.
+  # skip_amp_research_for_non_peptides: false — gated AMP research on the
+  #   flawed pregate, propagating its FN rate into AMP recall.
+  skip_legacy_when_atomic: false
+  deterministic_peptide_pregate: false
+  skip_amp_research_for_non_peptides: false
+  # Kept ON (legitimate efficiency, no accuracy cost):
+  # - skip_verification_on_legacy (default true): audit-only legacy_<field>
+  #   columns under shadow mode don't need verifier burn.
+  # - biorxiv_drug_name_prefilter (default true): research-side dedupe + page
+  #   filter, no annotation-output effect.
+  # - per_drug_research_cache (default true): chembl/uniprot/iuphar/dbaasp/
+  #   apd/rcsb queries are pure functions of drug name; coalescing identical
+  #   queries within a job is an unconditional speedup.
+  # - outcome_atomic_max_voting_pubs: 20 — caps Tier 1b LLM passes on 45-pub
+  #   trials. Keeps tail-latency bounded without changing the typical case.
 
   # Premium model for server profile — used for classification, outcome, and reconciliation.
   # These are the hardest tasks requiring strong multi-step reasoning.
