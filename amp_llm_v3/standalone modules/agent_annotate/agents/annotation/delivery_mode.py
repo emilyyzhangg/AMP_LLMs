@@ -561,6 +561,16 @@ class DeliveryModeAgent(BaseAnnotationAgent):
 
         value = self._parse_value(pass2_text)
 
+        # v42.6.14 (2026-04-24): initialize at function scope to prevent
+        # UnboundLocalError when Pass 2 returns "Other" directly. The
+        # "not specified" override below only sets this inside its own
+        # if-branch; without this init, `not_specified_override if value ==
+        # "Other" else False` at the bottom of the function crashed on
+        # 10 peptide=True trials in Job #81 where the LLM emitted "Other"
+        # as Pass 2 output. Exposed by the v42.6.13 diagnostic-preservation
+        # fix (CRASH warnings captured the UnboundLocalError text).
+        not_specified_override = False
+
         # v38: Post-LLM "not specified" override.
         # When Pass 1 reports no route evidence from ANY source but the LLM
         # still guesses Injection/Infusion, force to Other. The PASS2 prompt
@@ -613,7 +623,7 @@ class DeliveryModeAgent(BaseAnnotationAgent):
 
             # v39: Track override so we can set skip_verification — when all 3
             # sources confirm no evidence, the reconciler should not second-guess.
-            not_specified_override = False
+            # (Function-scope init at top of function — v42.6.14.)
             if no_protocol and no_fda and no_lit:
                 logger.info(
                     f"  delivery_mode: v39 not-specified override — "

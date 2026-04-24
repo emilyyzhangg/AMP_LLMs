@@ -762,12 +762,20 @@ class OutcomeAgent(BaseAnnotationAgent):
     # and "antitumor activity" language), producing 9 of 11 Positive over-calls
     # seen in Job #79. These terms are verbatim signals that actually imply
     # the primary endpoint was met; loose efficacy words are NOT sufficient.
+    #
+    # v42.6.14 (2026-04-24): narrowed the "approved" family. Bare "approved"
+    # caught review-article language like "EpiVacCorona was approved for
+    # emergency use in Russia" and over-called NCT04527575 in Job #81. Require
+    # a regulatory qualifier ("FDA approved", "EMA approved", "regulatory
+    # approval") or explicit approval/authorization for this indication.
     _STRONG_EFFICACY = [
         "primary endpoint was met", "primary endpoint met",
         "primary endpoint achieved", "met the primary endpoint",
         "met primary", "met the primary",
         "statistically significant", "p < 0.05", "p<0.05",
-        "approved", "granted approval",
+        "fda approved", "fda-approved", "ema approved", "ema-approved",
+        "regulatory approval", "marketing authorization", "marketing authorisation",
+        "received approval",
     ]
 
     @classmethod
