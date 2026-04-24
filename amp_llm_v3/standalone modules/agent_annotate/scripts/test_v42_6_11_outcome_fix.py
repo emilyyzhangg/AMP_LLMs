@@ -53,15 +53,19 @@ def _base_dossier(**overrides) -> dict:
 
 
 def test_strong_efficacy_detector_positive_cases():
-    """Strong efficacy keywords are recognized."""
+    """Strong efficacy keywords are recognized (updated v42.6.14: bare
+    'approved' no longer qualifies — see test_v42_6_14_delivery_crash_and_
+    approval_narrowing.py for the regulatory-qualified variants)."""
     assert OutcomeAgent._has_strong_efficacy(["primary endpoint met"])
     assert OutcomeAgent._has_strong_efficacy(["the trial met the primary endpoint"])
     assert OutcomeAgent._has_strong_efficacy(["p < 0.05 was observed"])
     assert OutcomeAgent._has_strong_efficacy(["p<0.05 on the primary endpoint"])
     assert OutcomeAgent._has_strong_efficacy(["statistically significant improvement"])
-    assert OutcomeAgent._has_strong_efficacy(["granted approval by the FDA"])
-    assert OutcomeAgent._has_strong_efficacy(["approved for the indication"])
-    print("  ✓ strong efficacy signals recognized (primary endpoint, p<0.05, approval)")
+    # v42.6.14: require a regulatory qualifier on approval phrases
+    assert OutcomeAgent._has_strong_efficacy(["FDA approved"])
+    assert OutcomeAgent._has_strong_efficacy(["regulatory approval"])
+    assert OutcomeAgent._has_strong_efficacy(["received approval from the agency"])
+    print("  ✓ strong efficacy signals recognized (primary endpoint, p<0.05, qualified approval)")
 
 
 def test_strong_efficacy_detector_negative_cases():
