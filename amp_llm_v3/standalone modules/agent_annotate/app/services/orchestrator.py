@@ -11,6 +11,7 @@ and re-annotation without re-researching.
 
 import asyncio
 import logging
+import traceback
 import uuid
 from datetime import datetime
 from typing import Optional
@@ -1774,6 +1775,12 @@ class PipelineOrchestrator:
                 retried_fields.add(field_name)
 
                 logger.info(f"  RETRY [{nct_id}]: re-running {field_name} annotation")
+                # v42.6.13: capture the original bad annotation's reasoning before
+                # removing it so we can preserve the failure trail if retry crashes.
+                original_bad = next(
+                    (a for a in annotations if a.field_name == field_name), None
+                )
+                original_reasoning = (original_bad.reasoning if original_bad else "") or ""
                 try:
                     # Remove the bad annotation
                     annotations[:] = [a for a in annotations if a.field_name != field_name]
@@ -1795,7 +1802,30 @@ class PipelineOrchestrator:
                             f"(value={retry_ann.value})"
                         )
                 except Exception as e:
-                    logger.error(f"  RETRY [{nct_id}]: {field_name} retry failed: {e}")
+                    # v42.6.13: previously this logged and vanished — the field
+                    # had no annotation in saved JSON, making Job #80's 9
+                    # delivery_mode crashes invisible. Now we preserve a sentinel
+                    # annotation with both failure reasons and surface it as a
+                    # diagnostics warning so post-run triage has real signal.
+                    tb = traceback.format_exc()
+                    logger.error(
+                        f"  RETRY [{nct_id}]: {field_name} retry failed: {e}\n{tb}"
+                    )
+                    annotations.append(FieldAnnotation(
+                        field_name=field_name,
+                        value="Unknown",
+                        confidence=0.0,
+                        reasoning=(
+                            f"[Agent crashed twice] original: {original_reasoning[:200]} "
+                            f"| retry error: {type(e).__name__}: {e}"
+                        ),
+                        model_name="agent-crashed",
+                        skip_verification=True,
+                    ))
+                    job.progress.warnings.append(
+                        f"CRASH [{nct_id}]: {field_name} — "
+                        f"original+retry both failed ({type(e).__name__}: {str(e)[:160]})"
+                    )
 
         # v31: Set evidence_grade for annotations backed by database citations.
         # DB-confirmed annotations get stronger protection against verifier override.
@@ -2750,12 +2780,22 @@ class PipelineOrchestrator:
             # reason_for_failure is also excluded — "" means "no failure", which is valid.
             # v42 Phase 6: also exempt *_legacy copies (created by prefer_atomic swap)
             # since they mirror the semantics of the primary field they replaced.
+            # v42.6.13 (2026-04-24): also exempt reason_for_failure_atomic when its
+            # model is 'atomic-fr-gated' — that's the sentinel for "outcome is not
+            # Failed/Terminated, so the atomic failure_reason agent intentionally
+            # returns empty." Job #80 flagged ~50 of these as spurious issues.
             empty_ok_fields = (
                 "sequence",
                 "reason_for_failure", "reason_for_failure_legacy",
                 "classification_legacy",  # Same-semantics shadow of classification
             )
-            if not value and field not in empty_ok_fields and "N/A" not in (reasoning or ""):
+            atomic_fr_gated_empty = (
+                field == "reason_for_failure_atomic" and model == "atomic-fr-gated"
+            )
+            if (not value
+                    and field not in empty_ok_fields
+                    and "N/A" not in (reasoning or "")
+                    and not atomic_fr_gated_empty):
                 issues.append(
                     f"{field}: empty value (model={model}, conf={confidence})"
                 )
