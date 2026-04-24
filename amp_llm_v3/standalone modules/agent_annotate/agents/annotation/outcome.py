@@ -521,9 +521,10 @@ DOSSIER_PROMPT = """You are a clinical trial outcome specialist. You have a stru
 {dossier_text}
 
 RULES (follow in order):
-1. REGISTRY STATUS for ongoing trials:
-   - If status is ACTIVE_NOT_RECRUITING and completion date is in the future or recent → "Active, not recruiting"
-   - If status is ACTIVE_NOT_RECRUITING and completion date is stale (>6 months past), publications are inconclusive, and no "primary endpoint met" statement exists → "Unknown" (do NOT default to Positive).
+1. REGISTRY STATUS is the default anchor for ongoing trials:
+   - If CT.gov status is ACTIVE_NOT_RECRUITING → "Active, not recruiting" (default) UNLESS a publication explicitly states the primary endpoint was met (→ "Positive") or the trial failed (→ "Failed - completed trial"). Staleness alone does NOT flip to "Unknown" — CT.gov is still reporting the trial as active.
+   - If CT.gov status is RECRUITING / NOT_YET_RECRUITING / ENROLLING_BY_INVITATION → "Recruiting".
+   - If status is WITHDRAWN → "Withdrawn".
 2. PUBLICATION QUALITY:
    - Only [TRIAL-SPECIFIC] publications report actual results from this trial.
    - [GENERAL] publications are reviews or overviews — they are NOT trial results.
@@ -671,6 +672,29 @@ class OutcomeAgent(BaseAnnotationAgent):
                 value = "Positive"
                 reasoning = "[v38 hasResults override] " + reasoning
 
+        # v42.6.12 (2026-04-24) — Registry-status safety net.
+        # Job #80 revealed that the v42.6.11 tightened prompt was under-calling
+        # stale ANR trials as "Unknown" (11 of 13 such miscalls). When CT.gov
+        # still reports an active/recruiting status, that IS the trial's current
+        # state regardless of staleness — GT annotators use the CT.gov status,
+        # not "Unknown". The strong-efficacy override above still promotes to
+        # Positive when trial-specific evidence actually exists; remaining
+        # Unknowns here have no such evidence and should fall back to the
+        # canonical status.
+        _STATUS_TO_CANONICAL_OUTCOME = {
+            "ACTIVE_NOT_RECRUITING": "Active, not recruiting",
+            "ACTIVE, NOT RECRUITING": "Active, not recruiting",
+            "RECRUITING": "Recruiting",
+            "NOT_YET_RECRUITING": "Recruiting",
+            "ENROLLING_BY_INVITATION": "Recruiting",
+        }
+        status_upper = dossier["registry_status"].upper()
+        if value == "Unknown" and status_upper in _STATUS_TO_CANONICAL_OUTCOME:
+            canonical = _STATUS_TO_CANONICAL_OUTCOME[status_upper]
+            logger.info(f"  outcome: v42.6.12 registry-status safety net Unknown → {canonical}")
+            reasoning = f"[v42.6.12 registry-status safety net: Unknown → {canonical} (CT.gov status={status_upper})] " + reasoning
+            value = canonical
+
         # --- Determine if verification should be skipped (publication-anchored) ---
         # v39: Fixed identifier check — PMC:xxx/PMID:xxx formats now recognized.
         # Added mixed-evidence guard: skip only when valence is unambiguous.
@@ -716,11 +740,13 @@ class OutcomeAgent(BaseAnnotationAgent):
         if status == "TERMINATED":
             return "Terminated"
         if status in ("ACTIVE_NOT_RECRUITING", "ACTIVE, NOT RECRUITING"):
-            if not dossier["stale_status"]:
-                return "Active, not recruiting"
-            # v42.6.11: stale Active — require STRONG efficacy for Positive
-            if dossier["stale_status"] and cls._has_strong_efficacy(dossier.get("efficacy_keywords", [])):
+            # v42.6.12: CT.gov ANR → Active regardless of staleness, unless
+            # STRONG efficacy signal → Positive. Previous code (v42.6.11)
+            # dropped stale ANR to Unknown implicitly via the next branch;
+            # restore Active as the default.
+            if cls._has_strong_efficacy(dossier.get("efficacy_keywords", [])):
                 return "Positive"
+            return "Active, not recruiting"
         if status == "COMPLETED":
             if dossier["has_results"] is True:
                 return "Positive"
