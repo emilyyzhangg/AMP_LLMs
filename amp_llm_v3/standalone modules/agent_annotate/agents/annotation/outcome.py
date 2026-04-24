@@ -523,21 +523,30 @@ DOSSIER_PROMPT = """You are a clinical trial outcome specialist. You have a stru
 RULES (follow in order):
 1. REGISTRY STATUS for ongoing trials:
    - If status is ACTIVE_NOT_RECRUITING and completion date is in the future or recent → "Active, not recruiting"
-   - Only if completion date is stale (>6 months past) should you consider other evidence.
+   - If status is ACTIVE_NOT_RECRUITING and completion date is stale (>6 months past), publications are inconclusive, and no "primary endpoint met" statement exists → "Unknown" (do NOT default to Positive).
 2. PUBLICATION QUALITY:
    - Only [TRIAL-SPECIFIC] publications report actual results from this trial.
    - [GENERAL] publications are reviews or overviews — they are NOT trial results.
    - Safety-Only Signals (well-tolerated, immunogenic, favorable) do NOT indicate Positive outcome.
-3. "Positive" requires EFFICACY evidence from trial-specific publications:
-   - Primary endpoint met, clinical benefit demonstrated, regulatory approval, phase advancement based on efficacy.
-   - Safety/tolerability alone is NOT sufficient. A well-tolerated drug that did not show efficacy is NOT Positive.
-4. "Failed - completed trial" requires evidence of failure (endpoints not met, futility, no efficacy).
+3. "Positive" requires ONE OF these specific signals from a trial-specific publication:
+   (a) Explicit statement that the PRIMARY ENDPOINT was met / achieved.
+   (b) Statistically significant result on the primary endpoint (p-value < 0.05 reported).
+   (c) Regulatory approval (FDA/EMA/etc.) of the drug for this specific indication.
+   (d) Explicit phase advancement citing the trial's positive results.
+   DO NOT mark Positive based on:
+   - "Efficacy signals" or "clinical benefit" language without a primary-endpoint statement.
+   - "Immunogenic", "T cell response", "immune activation" — these are biomarkers, not efficacy.
+   - Phase I safety + biological activity alone.
+   - Review articles describing the drug class.
+   - Abstract titles that use efficacy words without detailed results.
+4. "Failed - completed trial" requires evidence of failure (primary endpoint not met, futility declared, no efficacy demonstrated).
 5. TERMINATED with no publications and no results posted → "Terminated"
 6. COMPLETED with no trial-specific publications and no results posted → "Unknown"
-7. Phase I: safety AND biological activity/efficacy signals → "Positive". Safety/tolerability alone → "Unknown".
-8. Default → "Unknown"
+7. Phase I: only mark Positive with an explicit primary-endpoint-met statement. Safety + biological activity without that statement → "Unknown".
+8. Default when evidence is inconclusive → "Unknown" (not "Positive").
 
-CRITICAL: "Positive" REQUIRES efficacy evidence. Safety/tolerability alone is NEVER sufficient.
+CRITICAL: "Positive" REQUIRES a specific primary-endpoint-met / p<0.05 / approval / phase-advancement signal. Vague "efficacy" or "benefit" language is NOT sufficient.
+CRITICAL: If in doubt, choose "Unknown". Over-calling Positive is a more harmful error than under-calling it.
 CRITICAL: Do NOT base your decision on [GENERAL] review articles.
 
 VALID VALUES: Positive, Withdrawn, Terminated, Failed - completed trial, Recruiting, Unknown, Active, not recruiting
@@ -669,10 +678,14 @@ class OutcomeAgent(BaseAnnotationAgent):
         has_pmid_evidence = any(
             _has_publication_id(p.get("pmid", "")) for p in dossier["publications"]
         )
-        # v41: Use efficacy keywords (not safety-only) for skip_verification
-        if value == "Positive" and has_pmid_evidence and dossier.get("efficacy_keywords") and not dossier["negative_keywords"]:
+        # v42.6.11: Skip verification for Positive only with STRONG efficacy signals.
+        # Previously any efficacy keyword would short-circuit verification, locking
+        # in over-called Positives without the verifier pool getting a look.
+        if (value == "Positive" and has_pmid_evidence
+                and self._has_strong_efficacy(dossier.get("efficacy_keywords", []))
+                and not dossier["negative_keywords"]):
             skip_verification = True
-            logger.info(f"  outcome: v41 publication-anchored Positive (efficacy) — skip_verification=True")
+            logger.info(f"  outcome: v42.6.11 publication-anchored Positive (STRONG efficacy) — skip_verification=True")
         if value == "Failed - completed trial" and has_pmid_evidence and dossier["negative_keywords"] and not dossier.get("efficacy_keywords", dossier["positive_keywords"]):
             skip_verification = True
             logger.info(f"  outcome: v39 publication-anchored Failed — skip_verification=True")
@@ -690,30 +703,68 @@ class OutcomeAgent(BaseAnnotationAgent):
             skip_verification=skip_verification,
         )
 
-    @staticmethod
-    def _infer_from_dossier(dossier: dict) -> str:
-        """Fallback: infer outcome from dossier when LLM fails."""
+    @classmethod
+    def _infer_from_dossier(cls, dossier: dict) -> str:
+        """Fallback: infer outcome from dossier when LLM fails.
+
+        v42.6.11: tightened — loose efficacy keywords no longer produce Positive
+        inferences. Must see a STRONG signal (primary endpoint met, p<0.05,
+        approval) to infer Positive from keyword bag alone. Structural signals
+        like hasResults=True still promote to Positive.
+        """
         status = dossier["registry_status"].upper()
         if status == "TERMINATED":
             return "Terminated"
         if status in ("ACTIVE_NOT_RECRUITING", "ACTIVE, NOT RECRUITING"):
             if not dossier["stale_status"]:
                 return "Active, not recruiting"
-            # v41: stale Active — use efficacy keywords only (not safety)
-            if dossier["stale_status"] and dossier.get("efficacy_keywords", dossier["positive_keywords"]):
+            # v42.6.11: stale Active — require STRONG efficacy for Positive
+            if dossier["stale_status"] and cls._has_strong_efficacy(dossier.get("efficacy_keywords", [])):
                 return "Positive"
         if status == "COMPLETED":
             if dossier["has_results"] is True:
                 return "Positive"
-            if dossier.get("efficacy_keywords", dossier["positive_keywords"]) and not dossier["negative_keywords"]:
+            # v42.6.11: require STRONG efficacy (not any keyword) for Positive
+            if (cls._has_strong_efficacy(dossier.get("efficacy_keywords", []))
+                    and not dossier["negative_keywords"]):
                 return "Positive"
         return "Unknown"
 
-    @staticmethod
-    def _dossier_publication_override(dossier: dict, current_value: str) -> str | None:
-        """v41: Override Unknown/Active when dossier has clear publication signals.
+    # v42.6.11 (2026-04-24): Strong-efficacy subset required to override LLM
+    # Unknown → Positive. Previous override fired on ANY efficacy keyword
+    # from any trial-specific pub (including review-like "clinical benefit"
+    # and "antitumor activity" language), producing 9 of 11 Positive over-calls
+    # seen in Job #79. These terms are verbatim signals that actually imply
+    # the primary endpoint was met; loose efficacy words are NOT sufficient.
+    _STRONG_EFFICACY = [
+        "primary endpoint was met", "primary endpoint met",
+        "primary endpoint achieved", "met the primary endpoint",
+        "met primary", "met the primary",
+        "statistically significant", "p < 0.05", "p<0.05",
+        "approved", "granted approval",
+    ]
 
-        Uses efficacy keywords (not safety-only) and trial-specific publication counts.
+    @classmethod
+    def _has_strong_efficacy(cls, efficacy_keywords: list[str]) -> bool:
+        """Strong = explicit primary-endpoint-met / p<0.05 / approval signal."""
+        if not efficacy_keywords:
+            return False
+        joined = " ; ".join(str(k).lower() for k in efficacy_keywords)
+        return any(kw in joined for kw in cls._STRONG_EFFICACY)
+
+    @classmethod
+    def _dossier_publication_override(cls, dossier: dict, current_value: str) -> str | None:
+        """v42.6.11: Override Unknown/Active only with STRONG publication evidence.
+
+        v41 fired on any efficacy keyword from any trial-specific pub — too loose,
+        produced systemic Positive over-calls on trials with review-like "clinical
+        benefit" / "antitumor activity" language in titles. v42.6.11 requires:
+          - ≥2 trial-specific publications (singletons are often noisy), AND
+          - at least one STRONG efficacy signal (primary endpoint met, p<0.05,
+            regulatory approval, explicit phase advancement).
+
+        Negative overrides are unchanged — strong adverse signals still flip the
+        outcome. "Unknown" is now the default when evidence is ambiguous.
         """
         efficacy = dossier.get("efficacy_keywords", [])
         neg = dossier["negative_keywords"]
@@ -721,33 +772,35 @@ class OutcomeAgent(BaseAnnotationAgent):
         stale = dossier["stale_status"]
         status = dossier["registry_status"].upper()
 
-        # Strong negative signals always override
+        # Strong negative signals always override — unchanged from v41
         _STRONG_ADVERSE = ["unacceptable", "not tolerated", "dose-limiting",
                            "safety concern", "serious adverse event", "discontinued due to"]
         if any(kw in neg for kw in _STRONG_ADVERSE):
             return "Failed - completed trial"
 
-        # v41: Trial-specific publications with EFFICACY signals → Positive
-        if trial_specific > 0 and efficacy and not neg:
+        # v42.6.11: STRONG-evidence gate for Unknown → Positive
+        if (trial_specific >= 2
+                and cls._has_strong_efficacy(efficacy)
+                and not neg):
             return "Positive"
 
-        # Trial-specific publications with negative signals → Failed
+        # Trial-specific publications with negative signals → Failed (unchanged)
         if trial_specific > 0 and neg and not efficacy:
             return "Failed - completed trial"
 
-        # Stale Active status — use efficacy keywords only
+        # Stale Active: respect the LLM's Unknown unless strong evidence overrides
         if current_value == "Active, not recruiting" and stale:
-            if efficacy:
+            if cls._has_strong_efficacy(efficacy):
                 return "Positive"
             if neg:
                 return "Failed - completed trial"
+            # no override — let the LLM's Unknown stand
 
-        # COMPLETED with results posted but LLM said Unknown
+        # COMPLETED with results posted but LLM said Unknown — results posting
+        # is a verifiable structural signal, not a keyword match, so keep this
+        # override. Confidence is still the LLM's; only the label flips.
         if status == "COMPLETED" and dossier["has_results"] is True:
             return "Positive"
-
-        # v41: Removed Phase I auto-positive (any pub = Positive was too broad)
-        # v41: Removed Phase II/III >10yr backstop (absence of evidence ≠ positive)
 
         return None
 
