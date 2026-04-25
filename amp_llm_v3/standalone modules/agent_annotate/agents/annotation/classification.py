@@ -91,6 +91,11 @@ def _deterministic_classify(
     has_dramp = False
     has_dbaasp = False
     has_apd = False
+    # v42.6.17 (2026-04-25): collect AMP-DB citations so the deterministic
+    # FieldAnnotation can attach them as evidence. Job #83 NCT03196219
+    # (C16G2) hit DBAASP but the FieldAnnotation had evidence=[], so the
+    # downstream evidence-threshold check saw 0 sources and forced Other.
+    amp_db_citations: list = []
 
     for result in research_results:
         if result.error:
@@ -113,10 +118,13 @@ def _deterministic_classify(
                 src = citation.source_name.lower()
                 if "dramp" in src:
                     has_dramp = True
+                    amp_db_citations.append(citation)
                 if "dbaasp" in src:
                     has_dbaasp = True
+                    amp_db_citations.append(citation)
                 if "apd" in src:
                     has_apd = True
+                    amp_db_citations.append(citation)
 
     if not intervention_names:
         return None
@@ -162,7 +170,7 @@ def _deterministic_classify(
             confidence=0.80 if db_only_dbaasp else 0.95,
             reasoning=f"[Deterministic v{'30' if db_only_dbaasp else '9'}] AMP database hits: {', '.join(db_names)}"
                       + (" — DBAASP-only, requires verification" if db_only_dbaasp else ""),
-            evidence=[], model_name="deterministic",
+            evidence=amp_db_citations[:5], model_name="deterministic",
             skip_verification=not db_only_dbaasp,
         )
 

@@ -285,13 +285,23 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
                 reasoning=f"[Deterministic v38] Radiotracer/imaging agent detected: '{name}'",
                 evidence=[], model_name="deterministic", skip_verification=True,
             )
-    if "PROCEDURE" in intervention_types and any(
-        kw in " ".join(intervention_names) for kw in ["pet", "spect", "imaging", "tracer"]
-    ):
+    # v42.6.17 (2026-04-25): only fire imaging detector when the trial is
+    # PRIMARILY a diagnostic study. Multi-modality trials with therapeutic
+    # DRUG/BIOLOGICAL interventions plus supportive CT/MRI/biopsy procedures
+    # should NOT be tagged Other — the therapeutic delivery is primary.
+    # Job #83 surfaced NCT05269381 (Cyclophosphamide + Vaccine + Pembrolizumab
+    # + MRI) being mis-tagged Other when GT was Injection/Infusion.
+    has_therapeutic_intervention = any(
+        t in ("DRUG", "BIOLOGICAL") for t in intervention_types
+    )
+    if (not has_therapeutic_intervention
+            and "PROCEDURE" in intervention_types
+            and any(kw in " ".join(intervention_names)
+                    for kw in ["pet", "spect", "imaging", "tracer"])):
         logger.info("  delivery_mode: imaging procedure detected → Other (skip_verification=True)")
         return FieldAnnotation(
             field_name="delivery_mode", value="Other", confidence=0.85,
-            reasoning="[Deterministic v38] Imaging/diagnostic procedure detected",
+            reasoning="[Deterministic v38] Imaging/diagnostic procedure detected (no therapeutic intervention present)",
             evidence=[], model_name="deterministic", skip_verification=True,
         )
 
